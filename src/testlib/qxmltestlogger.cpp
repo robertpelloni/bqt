@@ -1,21 +1,21 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <stdio.h>
 #include <string.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qlibraryinfo.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qlibraryinfo.h>
 
-#include <QtTest/private/qtestlog_p.h>
-#include <QtTest/private/qxmltestlogger_p.h>
-#include <QtTest/private/qtestresult_p.h>
-#include <QtTest/private/qbenchmark_p.h>
-#include <QtTest/private/qbenchmarkmetric_p.h>
-#include <QtTest/qtestcase.h>
+#include <BobUITest/private/bobuiestlog_p.h>
+#include <BobUITest/private/qxmltestlogger_p.h>
+#include <BobUITest/private/bobuiestresult_p.h>
+#include <BobUITest/private/qbenchmark_p.h>
+#include <BobUITest/private/qbenchmarkmetric_p.h>
+#include <BobUITest/bobuiestcase.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTest {
+namespace BOBUIest {
 
     static const char *xmlMessageType2String(QAbstractTestLogger::MessageTypes type)
     {
@@ -67,9 +67,9 @@ namespace QTest {
 
 /*! \internal
     \class QXmlTestLogger
-    \inmodule QtTest
+    \inmodule BobUITest
 
-    QXmlTestLogger implements two XML formats specific to Qt.
+    QXmlTestLogger implements two XML formats specific to BobUI.
 
     The two formats are distinguished by the XmlMode enum.
 */
@@ -96,14 +96,14 @@ QXmlTestLogger::~QXmlTestLogger() = default;
 void QXmlTestLogger::startLogging()
 {
     QAbstractTestLogger::startLogging();
-    QTestCharBuffer buf;
+    BOBUIestCharBuffer buf;
 
     if (xmlmode == QXmlTestLogger::Complete) {
-        QTestCharBuffer quotedTc;
-        QTest::qt_asprintf(&buf, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        BOBUIestCharBuffer quotedTc;
+        BOBUIest::bobui_asprintf(&buf, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         outputString(buf.constData());
-        if (xmlQuote(&quotedTc, QTestResult::currentTestObjectName())) {
-            QTest::qt_asprintf(&buf, "<TestCase name=\"%s\">\n", quotedTc.constData());
+        if (xmlQuote(&quotedTc, BOBUIestResult::currentTestObjectName())) {
+            BOBUIest::bobui_asprintf(&buf, "<TestCase name=\"%s\">\n", quotedTc.constData());
             outputString(buf.constData());
         } else {
             // Unconditional end-tag => omitting the start tag is bad.
@@ -112,13 +112,13 @@ void QXmlTestLogger::startLogging()
         }
     }
 
-    QTestCharBuffer quotedBuild;
+    BOBUIestCharBuffer quotedBuild;
     if (!QLibraryInfo::build() || xmlQuote(&quotedBuild, QLibraryInfo::build())) {
-        QTest::qt_asprintf(&buf,
+        BOBUIest::bobui_asprintf(&buf,
                            "  <Environment>\n"
-                           "    <QtVersion>%s</QtVersion>\n"
-                           "    <QtBuild>%s</QtBuild>\n"
-                           "    <QTestVersion>" QTEST_VERSION_STR "</QTestVersion>\n"
+                           "    <BobUIVersion>%s</BobUIVersion>\n"
+                           "    <BobUIBuild>%s</BobUIBuild>\n"
+                           "    <BOBUIestVersion>" BOBUIEST_VERSION_STR "</BOBUIestVersion>\n"
                            "  </Environment>\n", qVersion(), quotedBuild.constData());
         outputString(buf.constData());
     }
@@ -126,10 +126,10 @@ void QXmlTestLogger::startLogging()
 
 void QXmlTestLogger::stopLogging()
 {
-    QTestCharBuffer buf;
+    BOBUIestCharBuffer buf;
 
-    QTest::qt_asprintf(&buf, "  <Duration msecs=\"%s\"/>\n",
-        QString::number(QTestLog::msecsTotalTime()).toUtf8().constData());
+    BOBUIest::bobui_asprintf(&buf, "  <Duration msecs=\"%s\"/>\n",
+        QString::number(BOBUIestLog::msecsTotalTime()).toUtf8().constData());
     outputString(buf.constData());
     if (xmlmode == QXmlTestLogger::Complete)
         outputString("</TestCase>\n");
@@ -139,10 +139,10 @@ void QXmlTestLogger::stopLogging()
 
 void QXmlTestLogger::enterTestFunction(const char *function)
 {
-    QTestCharBuffer quotedFunction;
+    BOBUIestCharBuffer quotedFunction;
     if (xmlQuote(&quotedFunction, function)) {
-        QTestCharBuffer buf;
-        QTest::qt_asprintf(&buf, "  <TestFunction name=\"%s\">\n", quotedFunction.constData());
+        BOBUIestCharBuffer buf;
+        BOBUIest::bobui_asprintf(&buf, "  <TestFunction name=\"%s\">\n", quotedFunction.constData());
         outputString(buf.constData());
     } else {
         // Unconditional end-tag => omitting the start tag is bad.
@@ -153,16 +153,16 @@ void QXmlTestLogger::enterTestFunction(const char *function)
 
 void QXmlTestLogger::leaveTestFunction()
 {
-    QTestCharBuffer buf;
-    QTest::qt_asprintf(&buf,
+    BOBUIestCharBuffer buf;
+    BOBUIest::bobui_asprintf(&buf,
                 "    <Duration msecs=\"%s\"/>\n"
                 "  </TestFunction>\n",
-        QString::number(QTestLog::msecsFunctionTime()).toUtf8().constData());
+        QString::number(BOBUIestLog::msecsFunctionTime()).toUtf8().constData());
 
     outputString(buf.constData());
 }
 
-namespace QTest
+namespace BOBUIest
 {
 
 inline static bool isEmpty(const char *str)
@@ -221,25 +221,25 @@ static const char *messageFormatString(bool noDescription, bool noTag)
 void QXmlTestLogger::addIncident(IncidentTypes type, const char *description,
                                 const char *file, int line)
 {
-    QTestCharBuffer buf;
-    const char *tag = QTestResult::currentDataTag();
-    const char *gtag = QTestResult::currentGlobalDataTag();
+    BOBUIestCharBuffer buf;
+    const char *tag = BOBUIestResult::currentDataTag();
+    const char *gtag = BOBUIestResult::currentGlobalDataTag();
     const char *filler = (tag && gtag) ? ":" : "";
-    const bool notag = QTest::isEmpty(tag) && QTest::isEmpty(gtag);
+    const bool notag = BOBUIest::isEmpty(tag) && BOBUIest::isEmpty(gtag);
 
-    QTestCharBuffer quotedFile;
-    QTestCharBuffer cdataGtag;
-    QTestCharBuffer cdataTag;
-    QTestCharBuffer cdataDescription;
+    BOBUIestCharBuffer quotedFile;
+    BOBUIestCharBuffer cdataGtag;
+    BOBUIestCharBuffer cdataTag;
+    BOBUIestCharBuffer cdataDescription;
 
     if (xmlQuote(&quotedFile, file)
         && xmlCdata(&cdataGtag, gtag)
         && xmlCdata(&cdataTag, tag)
         && xmlCdata(&cdataDescription, description)) {
 
-        QTest::qt_asprintf(&buf,
-                           QTest::incidentFormatString(QTest::isEmpty(description), notag),
-                           QTest::xmlIncidentType2String(type),
+        BOBUIest::bobui_asprintf(&buf,
+                           BOBUIest::incidentFormatString(BOBUIest::isEmpty(description), notag),
+                           BOBUIest::xmlIncidentType2String(type),
                            quotedFile.constData(), line,
                            cdataGtag.constData(),
                            filler,
@@ -252,14 +252,14 @@ void QXmlTestLogger::addIncident(IncidentTypes type, const char *description,
 
 void QXmlTestLogger::addBenchmarkResult(const QBenchmarkResult &result)
 {
-    QTestCharBuffer quotedMetric;
-    QTestCharBuffer quotedTag;
+    BOBUIestCharBuffer quotedMetric;
+    BOBUIestCharBuffer quotedTag;
 
     if (xmlQuote(&quotedMetric, benchmarkMetricName(result.measurement.metric))
         && xmlQuote(&quotedTag, result.context.tag.toUtf8().constData())) {
-        QTestCharBuffer buf;
-        QTest::qt_asprintf(&buf,
-                           QTest::benchmarkResultFormatString(),
+        BOBUIestCharBuffer buf;
+        BOBUIest::bobui_asprintf(&buf,
+                           BOBUIest::benchmarkResultFormatString(),
                            quotedMetric.constData(),
                            quotedTag.constData(),
                            result.measurement.value / double(result.iterations),
@@ -271,24 +271,24 @@ void QXmlTestLogger::addBenchmarkResult(const QBenchmarkResult &result)
 void QXmlTestLogger::addMessage(MessageTypes type, const QString &message,
                                 const char *file, int line)
 {
-    QTestCharBuffer buf;
-    const char *tag = QTestResult::currentDataTag();
-    const char *gtag = QTestResult::currentGlobalDataTag();
+    BOBUIestCharBuffer buf;
+    const char *tag = BOBUIestResult::currentDataTag();
+    const char *gtag = BOBUIestResult::currentGlobalDataTag();
     const char *filler = (tag && gtag) ? ":" : "";
-    const bool notag = QTest::isEmpty(tag) && QTest::isEmpty(gtag);
+    const bool notag = BOBUIest::isEmpty(tag) && BOBUIest::isEmpty(gtag);
 
-    QTestCharBuffer quotedFile;
-    QTestCharBuffer cdataGtag;
-    QTestCharBuffer cdataTag;
-    QTestCharBuffer cdataDescription;
+    BOBUIestCharBuffer quotedFile;
+    BOBUIestCharBuffer cdataGtag;
+    BOBUIestCharBuffer cdataTag;
+    BOBUIestCharBuffer cdataDescription;
 
     if (xmlQuote(&quotedFile, file)
         && xmlCdata(&cdataGtag, gtag)
         && xmlCdata(&cdataTag, tag)
         && xmlCdata(&cdataDescription, message.toUtf8().constData())) {
-        QTest::qt_asprintf(&buf,
-                           QTest::messageFormatString(message.isEmpty(), notag),
-                           QTest::xmlMessageType2String(type),
+        BOBUIest::bobui_asprintf(&buf,
+                           BOBUIest::messageFormatString(message.isEmpty(), notag),
+                           BOBUIest::xmlMessageType2String(type),
                            quotedFile.constData(), line,
                            cdataGtag.constData(),
                            filler,
@@ -299,9 +299,9 @@ void QXmlTestLogger::addMessage(MessageTypes type, const QString &message,
     }
 }
 
-int QXmlTestLogger::xmlQuote(QTestCharBuffer *destBuf, char const *src, qsizetype n)
+int QXmlTestLogger::xmlQuote(BOBUIestCharBuffer *destBuf, char const *src, qsizetype n)
 {
-    // QTestCharBuffer initially has size 512, with '\0' at the start of its
+    // BOBUIestCharBuffer initially has size 512, with '\0' at the start of its
     // data; and we only grow it.
     Q_ASSERT(n >= 512 && destBuf->size() == n);
     char *dest = destBuf->data();
@@ -359,7 +359,7 @@ int QXmlTestLogger::xmlQuote(QTestCharBuffer *destBuf, char const *src, qsizetyp
     return n;
 }
 
-int QXmlTestLogger::xmlCdata(QTestCharBuffer *destBuf, char const *src, qsizetype n)
+int QXmlTestLogger::xmlCdata(BOBUIestCharBuffer *destBuf, char const *src, qsizetype n)
 {
     Q_ASSERT(n >= 512 && destBuf->size() == n);
     char *dest = destBuf->data();
@@ -404,13 +404,13 @@ int QXmlTestLogger::xmlCdata(QTestCharBuffer *destBuf, char const *src, qsizetyp
     return n;
 }
 
-typedef int (*StringFormatFunction)(QTestCharBuffer *, char const *, qsizetype);
+typedef int (*StringFormatFunction)(BOBUIestCharBuffer *, char const *, qsizetype);
 
 /*
     A wrapper for string functions written to work with a fixed size buffer so they can be called
     with a dynamically allocated buffer.
 */
-static bool allocateStringFn(QTestCharBuffer *str, char const *src, StringFormatFunction func)
+static bool allocateStringFn(BOBUIestCharBuffer *str, char const *src, StringFormatFunction func)
 {
     constexpr int MAXSIZE = 1024 * 1024 * 2;
     int size = str->size();
@@ -439,7 +439,7 @@ static bool allocateStringFn(QTestCharBuffer *str, char const *src, StringFormat
 
     Returns 0 on invalid or empty input, the actual length written on success.
 */
-bool QXmlTestLogger::xmlQuote(QTestCharBuffer *str, char const *src)
+bool QXmlTestLogger::xmlQuote(BOBUIestCharBuffer *str, char const *src)
 {
     return allocateStringFn(str, src, QXmlTestLogger::xmlQuote);
 }
@@ -452,9 +452,9 @@ bool QXmlTestLogger::xmlQuote(QTestCharBuffer *str, char const *src)
 
     Returns 0 on invalid or empty input, the actual length written on success.
 */
-bool QXmlTestLogger::xmlCdata(QTestCharBuffer *str, char const *src)
+bool QXmlTestLogger::xmlCdata(BOBUIestCharBuffer *str, char const *src)
 {
     return allocateStringFn(str, src, QXmlTestLogger::xmlCdata);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

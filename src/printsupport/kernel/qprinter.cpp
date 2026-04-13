@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qprinter.h"
 #include "qprinter_p.h"
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 #include <qpa/qplatformprintplugin.h>
 #include <qpa/qplatformprintersupport.h>
@@ -20,13 +20,13 @@
 #include "qprintengine_pdf_p.h"
 
 #include <qpicture.h>
-#if QT_CONFIG(printpreviewwidget)
+#if BOBUI_CONFIG(printpreviewwidget)
 #include <private/qpaintengine_preview_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define ABORT_IF_ACTIVE(location) \
     if (d->printEngine->printerState() == QPrinter::Active) { \
@@ -40,8 +40,8 @@ using namespace Qt::StringLiterals;
         return retValue; \
     }
 
-Q_GUI_EXPORT extern qreal qt_pixelMultiplier(int resolution);
-extern QMarginsF qt_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
+Q_GUI_EXPORT extern qreal bobui_pixelMultiplier(int resolution);
+extern QMarginsF bobui_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
 
 QPrinterInfo QPrinterPrivate::findValidPrinter(const QPrinterInfo &printer)
 {
@@ -122,7 +122,7 @@ void QPrinterPrivate::changeEngines(QPrinter::OutputFormat format, const QPrinte
         delete oldPrintEngine;
 }
 
-#if QT_CONFIG(printpreviewwidget)
+#if BOBUI_CONFIG(printpreviewwidget)
 QList<const QPicture *> QPrinterPrivate::previewPages() const
 {
     if (previewEngine)
@@ -152,7 +152,7 @@ void QPrinterPrivate::setPreviewMode(bool enable)
         use_default_engine = had_default_engines;
     }
 }
-#endif // QT_CONFIG(printpreviewwidget)
+#endif // BOBUI_CONFIG(printpreviewwidget)
 
 void QPrinterPrivate::setProperty(QPrintEngine::PrintEnginePropertyKey key, const QVariant &value)
 {
@@ -243,7 +243,7 @@ public:
   \brief The QPrinter class is a paint device that paints on a printer.
 
   \ingroup printing
-  \inmodule QtPrintSupport
+  \inmodule BobUIPrintSupport
 
 
   This device represents a series of pages of printed output, and is
@@ -308,7 +308,7 @@ public:
   extend printing support to cover new types of printing subsystem by
   subclassing QPrintEngine and reimplementing its interface.
 
-  \sa QPrintDialog, {Qt Print Support}
+  \sa QPrintDialog, {BobUI Print Support}
 */
 
 /*!
@@ -416,7 +416,7 @@ public:
   \value Tractor
   \value SmallFormat
   \value Upper
-  \value CustomSource A PaperSource defined by the printer that is unknown to Qt
+  \value CustomSource A PaperSource defined by the printer that is unknown to BobUI
   \value LastPaperSource The highest valid PaperSource value, currently CustomSource
 */
 
@@ -512,7 +512,7 @@ QPrinter::~QPrinter()
     Q_D(QPrinter);
     if (d->use_default_engine)
         delete d->printEngine;
-#if QT_CONFIG(printpreviewwidget)
+#if BOBUI_CONFIG(printpreviewwidget)
     delete d->previewEngine;
 #endif
 }
@@ -707,7 +707,7 @@ QString QPrinter::outputFileName() const
     has a suffix other than ".pdf", the output format used is the
     one set with setOutputFormat().
 
-    QPrinter uses Qt's cross-platform PDF print engines
+    QPrinter uses BobUI's cross-platform PDF print engines
     respectively. If you can produce this format natively, for example
     \macos can generate PDF's from its print engine, set the output format
     back to NativeFormat.
@@ -721,7 +721,7 @@ void QPrinter::setOutputFileName(const QString &fileName)
     ABORT_IF_ACTIVE("QPrinter::setOutputFileName");
 
     QFileInfo fi(fileName);
-    if (!fi.suffix().compare("pdf"_L1, Qt::CaseInsensitive))
+    if (!fi.suffix().compare("pdf"_L1, BobUI::CaseInsensitive))
         setOutputFormat(QPrinter::PdfFormat);
     else if (fileName.isEmpty())
         setOutputFormat(QPrinter::NativeFormat);
@@ -811,8 +811,8 @@ QString QPrinter::creator() const
   Sets the name of the application that created the document to \a
   creator.
 
-  This function is only applicable to the X11 version of Qt. If no
-  creator name is specified, the creator will be set to "Qt"
+  This function is only applicable to the X11 version of BobUI. If no
+  creator name is specified, the creator will be set to "BobUI"
   followed by some version number.
 
   \sa creator()
@@ -1332,7 +1332,7 @@ QString QPrinter::printerSelectionOption() const
     \fn void QPrinter::setPrinterSelectionOption(const QString &option)
 
     Sets the printer to use \a option to select the printer. \a option
-    is null by default (which implies that Qt should be smart enough
+    is null by default (which implies that BobUI should be smart enough
     to guess correctly), but it can be set to other values to use a
     specific printer selection option.
 
@@ -1454,7 +1454,7 @@ QPrinter::PrintRange QPrinter::printRange() const
     \reentrant
 
     \ingroup printing
-    \inmodule QtPrintSupport
+    \inmodule BobUIPrintSupport
 
     \brief The QPrintEngine class defines an interface for how QPrinter
     interacts with a given printing subsystem.
@@ -1602,6 +1602,6 @@ QPrinter::PrintRange QPrinter::printRange() const
     Returns the current state of the printer being used by the print engine.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER

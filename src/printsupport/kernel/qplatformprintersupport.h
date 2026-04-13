@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPLATFORMPRINTERSUPPORT_H
 #define QPLATFORMPRINTERSUPPORT_H
@@ -10,19 +10,19 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#include <QtPrintSupport/qprinter.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#include <BobUIPrintSupport/qprinter.h>
 
-#include <QtCore/qstringlist.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qhash.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 typedef QHash<QString, QString> PrinterOptions;
 
@@ -49,8 +49,8 @@ protected:
     static QPageSize createPageSize(const QString &id, QSize size, const QString &localizedName);
 };
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMPRINTERSUPPORT_H

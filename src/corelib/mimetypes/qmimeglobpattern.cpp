@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qmimeglobpattern_p.h"
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include <QRegularExpression>
 #endif
 #include <QStringList>
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \internal
     \class QMimeGlobMatchResult
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMimeGlobMatchResult class accumulates results from glob matching.
 
     Handles glob weights, and preferring longer matches over shorter matches.
@@ -96,7 +96,7 @@ QMimeGlobPattern::PatternType QMimeGlobPattern::detectPatternType(QStringView pa
 /*!
     \internal
     \class QMimeGlobPattern
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMimeGlobPattern class contains the glob pattern for file names for MIME type matching.
 
     \sa QMimeType, QMimeDatabase, QMimeMagicRuleMatcher, QMimeMagicRule
@@ -107,7 +107,7 @@ bool QMimeGlobPattern::matchFileName(const QString &inputFileName) const
     // "Applications MUST match globs case-insensitively, except when the case-sensitive
     // attribute is set to true."
     // The constructor takes care of putting case-insensitive patterns in lowercase.
-    const QString fileName = m_caseSensitivity == Qt::CaseInsensitive
+    const QString fileName = m_caseSensitivity == BobUI::CaseInsensitive
             ? inputFileName.toLower() : inputFileName;
 
     const qsizetype patternLength = m_pattern.size();
@@ -154,7 +154,7 @@ bool QMimeGlobPattern::matchFileName(const QString &inputFileName) const
     }
     case OtherPattern:
         // Other fallback patterns: slow but correct method
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         auto rx = QRegularExpression::fromWildcard(m_pattern);
         return rx.match(fileName).hasMatch();
 #else
@@ -268,4 +268,4 @@ void QMimeAllGlobPatterns::clear()
     m_lowWeightGlobs.clear();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

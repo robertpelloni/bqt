@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef TORRENTCLIENT_H
 #define TORRENTCLIENT_H
@@ -12,9 +12,9 @@ class MetaInfo;
 class PeerWireClient;
 class TorrentClientPrivate;
 struct TorrentPiece;
-QT_BEGIN_NAMESPACE
-class QTimerEvent;
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+class BOBUIimerEvent;
+BOBUI_END_NAMESPACE
 
 class TorrentPeer {
 public:
@@ -117,7 +117,7 @@ public slots:
     void setupIncomingConnection(PeerWireClient *client);
 
 protected slots:
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
 
 private slots:
     // File management

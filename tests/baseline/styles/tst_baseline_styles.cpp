@@ -1,9 +1,9 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qbaselinetest.h>
 #include <qwidgetbaselinetest.h>
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 class tst_QStyles : public QWidgetBaselineTest
 {
@@ -224,11 +224,11 @@ template <typename E>
 void tst_QStyles::addData()
 {
     auto metaEnum = QMetaEnum::fromType<E>();
-    QTest::addColumn<E>("styleElement");
+    BOBUIest::addColumn<E>("styleElement");
 
     for (int i = 0; i < metaEnum.keyCount() - 1; ++i) {
         auto value = E(metaEnum.value(i));
-        QTest::newRow(metaEnum.key(i)) << value;
+        BOBUIest::newRow(metaEnum.key(i)) << value;
     }
 }
 

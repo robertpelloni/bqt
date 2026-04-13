@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "view.h"
 
-#include <QtGui>
+#include <BobUIGui>
 
 #include "valgrind/callgrind.h"
 
-#ifndef QT_NO_OPENGL
-#include <QtOpenGL>
+#ifndef BOBUI_NO_OPENGL
+#include <BobUIOpenGL>
 #endif
 
 #include <qmath.h>
@@ -41,13 +41,13 @@ View::View(const QString &name, QWidget *parent)
     int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);
     QSize iconSize(size, size);
 
-    QToolButton *zoomInIcon = new QToolButton;
+    BOBUIoolButton *zoomInIcon = new BOBUIoolButton;
     zoomInIcon->setAutoRepeat(true);
     zoomInIcon->setAutoRepeatInterval(33);
     zoomInIcon->setAutoRepeatDelay(0);
     zoomInIcon->setIcon(QPixmap(":/zoomin.png"));
     zoomInIcon->setIconSize(iconSize);
-    QToolButton *zoomOutIcon = new QToolButton;
+    BOBUIoolButton *zoomOutIcon = new BOBUIoolButton;
     zoomOutIcon->setAutoRepeat(true);
     zoomOutIcon->setAutoRepeatInterval(33);
     zoomOutIcon->setAutoRepeatDelay(0);
@@ -65,14 +65,14 @@ View::View(const QString &name, QWidget *parent)
     zoomSliderLayout->addWidget(zoomSlider);
     zoomSliderLayout->addWidget(zoomOutIcon);
 
-    QToolButton *rotateLeftIcon = new QToolButton;
+    BOBUIoolButton *rotateLeftIcon = new BOBUIoolButton;
     rotateLeftIcon->setIcon(QPixmap(":/rotateleft.png"));
     rotateLeftIcon->setIconSize(iconSize);
-    QToolButton *rotateRightIcon = new QToolButton;
+    BOBUIoolButton *rotateRightIcon = new BOBUIoolButton;
     rotateRightIcon->setIcon(QPixmap(":/rotateright.png"));
     rotateRightIcon->setIconSize(iconSize);
     rotateSlider = new QSlider;
-    rotateSlider->setOrientation(Qt::Horizontal);
+    rotateSlider->setOrientation(BobUI::Horizontal);
     rotateSlider->setMinimum(-360);
     rotateSlider->setMaximum(360);
     rotateSlider->setValue(0);
@@ -84,26 +84,26 @@ View::View(const QString &name, QWidget *parent)
     rotateSliderLayout->addWidget(rotateSlider);
     rotateSliderLayout->addWidget(rotateRightIcon);
 
-    resetButton = new QToolButton;
+    resetButton = new BOBUIoolButton;
     resetButton->setText(tr("0"));
     resetButton->setEnabled(false);
 
     // Label layout
     QHBoxLayout *labelLayout = new QHBoxLayout;
     label = new QLabel(name);
-    antialiasButton = new QToolButton;
+    antialiasButton = new BOBUIoolButton;
     antialiasButton->setText(tr("Antialiasing"));
     antialiasButton->setCheckable(true);
     antialiasButton->setChecked(false);
-    openGlButton = new QToolButton;
+    openGlButton = new BOBUIoolButton;
     openGlButton->setText(tr("OpenGL"));
     openGlButton->setCheckable(true);
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     openGlButton->setEnabled(QGLFormat::hasOpenGL());
 #else
     openGlButton->setEnabled(false);
 #endif
-    printButton = new QToolButton;
+    printButton = new BOBUIoolButton;
     printButton->setIcon(QIcon(QPixmap(":/fileprint.png")));
 
     labelLayout->addWidget(label);
@@ -162,7 +162,7 @@ void View::setupMatrix()
 {
     qreal scale = qPow(qreal(2), (zoomSlider->value() - 250) / qreal(50));
 
-    QTransform matrix;
+    BOBUIransform matrix;
     matrix.scale(scale, scale);
     matrix.rotate(rotateSlider->value());
 
@@ -172,7 +172,7 @@ void View::setupMatrix()
 
 void View::toggleOpenGL()
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     graphicsView->setViewport(openGlButton->isChecked() ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget);
 #endif
 }
@@ -184,7 +184,7 @@ void View::toggleAntialiasing()
 
 void View::print()
 {
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
     QPrinter printer;
     QPrintDialog dialog(&printer, this);
     if (dialog.exec() == QDialog::Accepted) {
@@ -214,7 +214,7 @@ void View::rotateRight()
     rotateSlider->setValue(rotateSlider->value() + 10);
 }
 
-void View::timerEvent(QTimerEvent *)
+void View::timerEvent(BOBUIimerEvent *)
 {
     graphicsView->horizontalScrollBar()->setValue(graphicsView->horizontalScrollBar()->value() + 1);
 }

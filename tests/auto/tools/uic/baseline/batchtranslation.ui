@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 </comment>
  <class>databaseTranslationDialog</class>
  <widget class="QDialog" name="databaseTranslationDialog">
@@ -15,7 +15,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Qt Linguist - Batch Translation</string>
+   <string>BobUI Linguist - Batch Translation</string>
   </property>
   <layout class="QVBoxLayout">
    <property name="spacing">
@@ -123,7 +123,7 @@
           <item>
            <spacer>
             <property name="orientation">
-             <enum>Qt::Orientation::Vertical</enum>
+             <enum>BobUI::Orientation::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -161,7 +161,7 @@
      <item>
       <spacer>
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>BobUI::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>

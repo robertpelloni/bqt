@@ -1,27 +1,27 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QACTION_H
 #define QACTION_H
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(shortcut)
-#  include <QtGui/qkeysequence.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(shortcut)
+#  include <BobUIGui/qkeysequence.h>
 #endif
-#include <QtGui/qicon.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qobject.h>
+#include <BobUIGui/qicon.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qobject.h>
 
-QT_REQUIRE_CONFIG(action);
+BOBUI_REQUIRE_CONFIG(action);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QActionEvent;
 class QActionGroup;
 class QActionPrivate;
 class QMenu;
-#if QT_DEPRECATED_SINCE(6,0)
+#if BOBUI_DEPRECATED_SINCE(6,0)
 class QWidget;
 class QGraphicsWidget;
 #endif
@@ -42,12 +42,12 @@ class Q_GUI_EXPORT QAction : public QObject
     Q_PROPERTY(QString statusTip READ statusTip WRITE setStatusTip NOTIFY changed)
     Q_PROPERTY(QString whatsThis READ whatsThis WRITE setWhatsThis NOTIFY changed)
     Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY changed)
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut NOTIFY changed)
-    Q_PROPERTY(Qt::ShortcutContext shortcutContext READ shortcutContext WRITE setShortcutContext
+    Q_PROPERTY(BobUI::ShortcutContext shortcutContext READ shortcutContext WRITE setShortcutContext
                NOTIFY changed)
     Q_PROPERTY(bool autoRepeat READ autoRepeat WRITE setAutoRepeat NOTIFY changed)
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged FINAL)
     Q_PROPERTY(MenuRole menuRole READ menuRole WRITE setMenuRole NOTIFY changed)
     Q_PROPERTY(bool iconVisibleInMenu READ isIconVisibleInMenu WRITE setIconVisibleInMenu
@@ -58,7 +58,7 @@ class Q_GUI_EXPORT QAction : public QObject
 
 public:
     // note this is copied into qplatformmenu.h, which must stay in sync
-    enum MenuRole { NoRole = 0, TextHeuristicRole, ApplicationSpecificRole, AboutQtRole,
+    enum MenuRole { NoRole = 0, TextHeuristicRole, ApplicationSpecificRole, AboutBobUIRole,
                     AboutRole, PreferencesRole, QuitRole };
     Q_ENUM(MenuRole)
     enum Priority { LowPriority = 0,
@@ -73,7 +73,7 @@ public:
 
     QList<QObject *> associatedObjects() const;
 
-#if QT_DEPRECATED_SINCE(6,0)
+#if BOBUI_DEPRECATED_SINCE(6,0)
 #ifdef Q_QDOC
     QWidget *parentWidget() const;
     QList<QWidget*> associatedWidgets() const;
@@ -84,7 +84,7 @@ public:
         QWidget, QMenu, and QGraphicsWidget can be expected to be fully defined.
     */
     template<typename T = QWidget*>
-    QT_DEPRECATED_VERSION_X_6_0("Use parent() with qobject_cast() instead")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use parent() with qobject_cast() instead")
     T parentWidget() const
     {
         auto result = parent();
@@ -94,7 +94,7 @@ public:
     }
 
     template<typename T = QWidget*>
-    QT_DEPRECATED_VERSION_X_6_0("Use associatedObjects() with qobject_cast() instead")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use associatedObjects() with qobject_cast() instead")
     QList<T> associatedWidgets() const
     {
         QList<T> result;
@@ -104,7 +104,7 @@ public:
         return result;
     }
     template<typename T = QGraphicsWidget*>
-    QT_DEPRECATED_VERSION_X_6_0("Use associatedObjects() with qobject_cast() instead")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use associatedObjects() with qobject_cast() instead")
     QList<T> associatedGraphicsWidgets() const
     {
         QList<T> result;
@@ -142,7 +142,7 @@ public:
     void setSeparator(bool b);
     bool isSeparator() const;
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void setShortcut(const QKeySequence &shortcut);
     QKeySequence shortcut() const;
 
@@ -150,12 +150,12 @@ public:
     void setShortcuts(QKeySequence::StandardKey);
     QList<QKeySequence> shortcuts() const;
 
-    void setShortcutContext(Qt::ShortcutContext context);
-    Qt::ShortcutContext shortcutContext() const;
+    void setShortcutContext(BobUI::ShortcutContext context);
+    BobUI::ShortcutContext shortcutContext() const;
 
     void setAutoRepeat(bool);
     bool autoRepeat() const;
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
     void setFont(const QFont &font);
     QFont font() const;
@@ -231,17 +231,17 @@ private:
     friend class QWidget;
     friend class QMenu;
     friend class QMenuPrivate;
-    friend class QToolButton;
+    friend class BOBUIoolButton;
     friend class QGraphicsWidget;
 
     QObject *menuObject() const;
     void setMenuObject(QObject *object);
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QAction *);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QACTION_H

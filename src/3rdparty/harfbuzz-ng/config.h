@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2015 The Qt Company Ltd.
+* Copyright (C) 2015 The BobUI Company Ltd.
 * Copyright (C) 2015 Konstantin Ritt
 *
 * Permission is hereby granted, without written agreement and without
@@ -25,9 +25,9 @@
 #ifndef QHARFBUZZ_CONFIG_H
 #define QHARFBUZZ_CONFIG_H
 
-#include <QtCore/qatomic.h>
+#include <BobUICore/qatomic.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 namespace {
 

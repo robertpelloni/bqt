@@ -1,21 +1,21 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef ANDROIDJNIINPUT_H
 #define ANDROIDJNIINPUT_H
 
 #include <jni.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QRect>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/QRect>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaInputMethods);
 
 class QJniEnvironment;
 
-namespace QtAndroidInput
+namespace BobUIAndroidInput
 {
     // Software keyboard support
     void showSoftwareKeyboard(int top, int left, int width, int height, int inputHints, int enterKeyType);
@@ -34,6 +34,6 @@ namespace QtAndroidInput
     bool registerNatives(QJniEnvironment &env);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ANDROIDJNIINPUT_H

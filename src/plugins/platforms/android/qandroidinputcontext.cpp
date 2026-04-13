@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
 // Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <android/log.h>
 
@@ -12,21 +12,21 @@
 #include "qandroidplatformintegration.h"
 #include "private/qhighdpiscaling_p.h"
 
-#include <QTextBoundaryFinder>
-#include <QTextCharFormat>
-#include <QtCore/QJniEnvironment>
-#include <QtCore/QJniObject>
+#include <BOBUIextBoundaryFinder>
+#include <BOBUIextCharFormat>
+#include <BobUICore/QJniEnvironment>
+#include <BobUICore/QJniObject>
 #include <qevent.h>
 #include <qguiapplication.h>
 #include <qinputmethod.h>
 #include <qsharedpointer.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <qwindow.h>
 #include <qpa/qplatformwindow.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 
@@ -56,8 +56,8 @@ private:
 } // namespace anonymous
 
 static QAndroidInputContext *m_androidInputContext = nullptr;
-static char const *const QtNativeInputConnectionClassName = "org/qtproject/qt/android/QtNativeInputConnection";
-static char const *const QtExtractedTextClassName = "org/qtproject/qt/android/QtExtractedText";
+static char const *const BobUINativeInputConnectionClassName = "org/bobuiproject/bobui/android/BobUINativeInputConnection";
+static char const *const BobUIExtractedTextClassName = "org/bobuiproject/bobui/android/BobUIExtractedText";
 static int m_selectHandleWidth = 0;
 static jclass m_extractedTextClass = 0;
 static jmethodID m_classConstructorMethodID = 0;
@@ -68,13 +68,13 @@ static jfieldID m_selectionStartFieldID = 0;
 static jfieldID m_startOffsetFieldID = 0;
 static jfieldID m_textFieldID = 0;
 
-static void runOnQtThread(const std::function<void()> &func)
+static void runOnBobUIThread(const std::function<void()> &func)
 {
-    QtAndroidPrivate::AndroidDeadlockProtector protector(
-        u"QAndroidInputContext::runOnQtThread()"_s);
+    BobUIAndroidPrivate::AndroidDeadlockProtector protector(
+        u"QAndroidInputContext::runOnBobUIThread()"_s);
     if (!protector.acquire())
         return;
-    QMetaObject::invokeMethod(m_androidInputContext, "safeCall", Qt::BlockingQueuedConnection, Q_ARG(std::function<void()>, func));
+    QMetaObject::invokeMethod(m_androidInputContext, "safeCall", BobUI::BlockingQueuedConnection, Q_ARG(std::function<void()>, func));
 }
 
 static bool hasValidFocusObject()
@@ -99,7 +99,7 @@ static jboolean beginBatchEdit(JNIEnv */*env*/, jobject /*thiz*/)
 
     qCDebug(lcQpaInputMethods) << "@@@ BEGINBATCH";
     jboolean res = JNI_FALSE;
-    runOnQtThread([&res]{res = m_androidInputContext->beginBatchEdit();});
+    runOnBobUIThread([&res]{res = m_androidInputContext->beginBatchEdit();});
     return res;
 }
 
@@ -111,7 +111,7 @@ static jboolean endBatchEdit(JNIEnv */*env*/, jobject /*thiz*/)
     qCDebug(lcQpaInputMethods) << "@@@ ENDBATCH";
 
     jboolean res = JNI_FALSE;
-    runOnQtThread([&res]{res = m_androidInputContext->endBatchEdit();});
+    runOnBobUIThread([&res]{res = m_androidInputContext->endBatchEdit();});
     return res;
 }
 
@@ -128,7 +128,7 @@ static jboolean commitText(JNIEnv *env, jobject /*thiz*/, jstring text, jint new
 
     qCDebug(lcQpaInputMethods) << "@@@ COMMIT" << str << newCursorPosition;
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->commitText(str, newCursorPosition);});
+    runOnBobUIThread([&]{res = m_androidInputContext->commitText(str, newCursorPosition);});
     return res;
 }
 
@@ -139,7 +139,7 @@ static jboolean deleteSurroundingText(JNIEnv */*env*/, jobject /*thiz*/, jint le
 
     qCDebug(lcQpaInputMethods) << "@@@ DELETE" << leftLength << rightLength;
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->deleteSurroundingText(leftLength, rightLength);});
+    runOnBobUIThread([&]{res = m_androidInputContext->deleteSurroundingText(leftLength, rightLength);});
     return res;
 }
 
@@ -150,7 +150,7 @@ static jboolean finishComposingText(JNIEnv */*env*/, jobject /*thiz*/)
 
     qCDebug(lcQpaInputMethods) << "@@@ FINISH";
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->finishComposingText();});
+    runOnBobUIThread([&]{res = m_androidInputContext->finishComposingText();});
     return res;
 }
 
@@ -166,7 +166,7 @@ static jboolean replaceText(JNIEnv *env, jobject /*thiz*/, jint start, jint end,
 
     qCDebug(lcQpaInputMethods) << "@@@ REPLACE" << start << end << str << newCursorPosition;
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->replaceText(start, end, str, newCursorPosition);});
+    runOnBobUIThread([&]{res = m_androidInputContext->replaceText(start, end, str, newCursorPosition);});
 
     return res;
 }
@@ -177,7 +177,7 @@ static jint getCursorCapsMode(JNIEnv */*env*/, jobject /*thiz*/, jint reqModes)
         return 0;
 
     jint res = 0;
-    runOnQtThread([&]{res = m_androidInputContext->getCursorCapsMode(reqModes);});
+    runOnBobUIThread([&]{res = m_androidInputContext->getCursorCapsMode(reqModes);});
     return res;
 }
 
@@ -187,7 +187,7 @@ static jobject getExtractedText(JNIEnv *env, jobject /*thiz*/, int hintMaxChars,
         return 0;
 
     QAndroidInputContext::ExtractedText extractedText;
-    runOnQtThread([&]{extractedText = m_androidInputContext->getExtractedText(hintMaxChars, hintMaxLines, flags);});
+    runOnBobUIThread([&]{extractedText = m_androidInputContext->getExtractedText(hintMaxChars, hintMaxLines, flags);});
 
     qCDebug(lcQpaInputMethods) << "@@@ GETEX" << hintMaxChars << hintMaxLines << QString::fromLatin1("0x") + QString::number(flags,16) << extractedText.text << "partOff:" << extractedText.partialStartOffset << extractedText.partialEndOffset << "sel:" << extractedText.selectionStart << extractedText.selectionEnd << "offset:" << extractedText.startOffset;
 
@@ -211,7 +211,7 @@ static jstring getSelectedText(JNIEnv *env, jobject /*thiz*/, jint flags)
         return 0;
 
     QString text;
-    runOnQtThread([&]{text = m_androidInputContext->getSelectedText(flags);});
+    runOnBobUIThread([&]{text = m_androidInputContext->getSelectedText(flags);});
     qCDebug(lcQpaInputMethods) << "@@@ GETSEL" << text;
     if (text.isEmpty())
         return 0;
@@ -224,7 +224,7 @@ static jstring getTextAfterCursor(JNIEnv *env, jobject /*thiz*/, jint length, ji
         return 0;
 
     QString text;
-    runOnQtThread([&]{text = m_androidInputContext->getTextAfterCursor(length, flags);});
+    runOnBobUIThread([&]{text = m_androidInputContext->getTextAfterCursor(length, flags);});
     qCDebug(lcQpaInputMethods) << "@@@ GETA" << length << text;
     return env->NewString(reinterpret_cast<const jchar *>(text.constData()), jsize(text.length()));
 }
@@ -235,7 +235,7 @@ static jstring getTextBeforeCursor(JNIEnv *env, jobject /*thiz*/, jint length, j
         return 0;
 
     QString text;
-    runOnQtThread([&]{text = m_androidInputContext->getTextBeforeCursor(length, flags);});
+    runOnBobUIThread([&]{text = m_androidInputContext->getTextBeforeCursor(length, flags);});
     qCDebug(lcQpaInputMethods) << "@@@ GETB" << length << text;
     return env->NewString(reinterpret_cast<const jchar *>(text.constData()), jsize(text.length()));
 }
@@ -252,7 +252,7 @@ static jboolean setComposingText(JNIEnv *env, jobject /*thiz*/, jstring text, ji
 
     qCDebug(lcQpaInputMethods) << "@@@ SET" << str << newCursorPosition;
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->setComposingText(str, newCursorPosition);});
+    runOnBobUIThread([&]{res = m_androidInputContext->setComposingText(str, newCursorPosition);});
     return res;
 }
 
@@ -263,7 +263,7 @@ static jboolean setComposingRegion(JNIEnv */*env*/, jobject /*thiz*/, jint start
 
     qCDebug(lcQpaInputMethods) << "@@@ SETR" << start << end;
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->setComposingRegion(start, end);});
+    runOnBobUIThread([&]{res = m_androidInputContext->setComposingRegion(start, end);});
     return res;
 }
 
@@ -275,7 +275,7 @@ static jboolean setSelection(JNIEnv */*env*/, jobject /*thiz*/, jint start, jint
 
     qCDebug(lcQpaInputMethods) << "@@@ SETSEL" << start << end;
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->setSelection(start, end);});
+    runOnBobUIThread([&]{res = m_androidInputContext->setSelection(start, end);});
     return res;
 
 }
@@ -287,7 +287,7 @@ static jboolean selectAll(JNIEnv */*env*/, jobject /*thiz*/)
 
     qCDebug(lcQpaInputMethods) << "@@@ SELALL";
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->selectAll();});
+    runOnBobUIThread([&]{res = m_androidInputContext->selectAll();});
     return res;
 }
 
@@ -298,7 +298,7 @@ static jboolean cut(JNIEnv */*env*/, jobject /*thiz*/)
 
     qCDebug(lcQpaInputMethods) << "@@@";
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->cut();});
+    runOnBobUIThread([&]{res = m_androidInputContext->cut();});
     return res;
 }
 
@@ -309,7 +309,7 @@ static jboolean copy(JNIEnv */*env*/, jobject /*thiz*/)
 
     qCDebug(lcQpaInputMethods) << "@@@";
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->copy();});
+    runOnBobUIThread([&]{res = m_androidInputContext->copy();});
     return res;
 }
 
@@ -320,7 +320,7 @@ static jboolean copyURL(JNIEnv */*env*/, jobject /*thiz*/)
 
     qCDebug(lcQpaInputMethods) << "@@@";
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->copyURL();});
+    runOnBobUIThread([&]{res = m_androidInputContext->copyURL();});
     return res;
 }
 
@@ -331,7 +331,7 @@ static jboolean paste(JNIEnv */*env*/, jobject /*thiz*/)
 
     qCDebug(lcQpaInputMethods) << "@@@ PASTE";
     jboolean res = JNI_FALSE;
-    runOnQtThread([&]{res = m_androidInputContext->paste();});
+    runOnBobUIThread([&]{res = m_androidInputContext->paste();});
     return res;
 }
 
@@ -342,7 +342,7 @@ static jboolean updateCursorPosition(JNIEnv */*env*/, jobject /*thiz*/)
 
     qCDebug(lcQpaInputMethods) << "@@@ UPDATECURSORPOS";
 
-    runOnQtThread([&]{m_androidInputContext->updateCursorPosition();});
+    runOnBobUIThread([&]{m_androidInputContext->updateCursorPosition();});
     return true;
 }
 
@@ -351,7 +351,7 @@ static void reportFullscreenMode(JNIEnv */*env*/, jobject /*thiz*/, jboolean ena
     if (!hasValidFocusObject())
         return;
 
-    runOnQtThread([&]{m_androidInputContext->reportFullscreenMode(enabled);});
+    runOnBobUIThread([&]{m_androidInputContext->reportFullscreenMode(enabled);});
 }
 
 static jboolean fullscreenMode(JNIEnv */*env*/, jobject /*thiz*/)
@@ -369,7 +369,7 @@ static JNINativeMethod methods[] = {
     {"deleteSurroundingText", "(II)Z", (void *)deleteSurroundingText},
     {"finishComposingText", "()Z", (void *)finishComposingText},
     {"getCursorCapsMode", "(I)I", (void *)getCursorCapsMode},
-    {"getExtractedText", "(III)Lorg/qtproject/qt/android/QtExtractedText;", (void *)getExtractedText},
+    {"getExtractedText", "(III)Lorg/bobuiproject/bobui/android/BobUIExtractedText;", (void *)getExtractedText},
     {"getSelectedText", "(I)Ljava/lang/String;", (void *)getSelectedText},
     {"getTextAfterCursor", "(II)Ljava/lang/String;", (void *)getTextAfterCursor},
     {"getTextBeforeCursor", "(II)Ljava/lang/String;", (void *)getTextBeforeCursor},
@@ -404,25 +404,25 @@ QAndroidInputContext::QAndroidInputContext()
     , m_fullScreenMode(false)
 {
     QJniEnvironment env;
-    jclass clazz = env.findClass(QtNativeInputConnectionClassName);
+    jclass clazz = env.findClass(BobUINativeInputConnectionClassName);
     if (Q_UNLIKELY(!clazz)) {
         qCritical() << "Native registration unable to find class '"
-                    << QtNativeInputConnectionClassName
+                    << BobUINativeInputConnectionClassName
                     << '\'';
         return;
     }
 
     if (Q_UNLIKELY(env->RegisterNatives(clazz, methods, sizeof(methods) / sizeof(methods[0])) < 0)) {
         qCritical() << "RegisterNatives failed for '"
-                    << QtNativeInputConnectionClassName
+                    << BobUINativeInputConnectionClassName
                     << '\'';
         return;
     }
 
-    clazz = env.findClass(QtExtractedTextClassName);
+    clazz = env.findClass(BobUIExtractedTextClassName);
     if (Q_UNLIKELY(!clazz)) {
         qCritical() << "Native registration unable to find class '"
-                    << QtExtractedTextClassName
+                    << BobUIExtractedTextClassName
                     << '\'';
         return;
     }
@@ -487,8 +487,8 @@ QAndroidInputContext::QAndroidInputContext()
     });
     m_hideCursorHandleTimer.setInterval(4000);
     m_hideCursorHandleTimer.setSingleShot(true);
-    m_hideCursorHandleTimer.setTimerType(Qt::VeryCoarseTimer);
-    connect(&m_hideCursorHandleTimer, &QTimer::timeout, this, [this]{
+    m_hideCursorHandleTimer.setTimerType(BobUI::VeryCoarseTimer);
+    connect(&m_hideCursorHandleTimer, &BOBUIimer::timeout, this, [this]{
         m_handleMode = Hidden;
         updateSelectionHandles();
     });
@@ -514,15 +514,15 @@ QAndroidInputContext *QAndroidInputContext::androidInputContext()
 // cursor position getter that also works with editors that have not been updated to the new API
 static inline int getAbsoluteCursorPosition(const QSharedPointer<QInputMethodQueryEvent> &query)
 {
-    QVariant absolutePos = query->value(Qt::ImAbsolutePosition);
-    return absolutePos.isValid() ? absolutePos.toInt() : query->value(Qt::ImCursorPosition).toInt();
+    QVariant absolutePos = query->value(BobUI::ImAbsolutePosition);
+    return absolutePos.isValid() ? absolutePos.toInt() : query->value(BobUI::ImCursorPosition).toInt();
 }
 
 // position of the start of the current block
 static inline int getBlockPosition(const QSharedPointer<QInputMethodQueryEvent> &query)
 {
-    QVariant absolutePos = query->value(Qt::ImAbsolutePosition);
-    return  absolutePos.isValid() ? absolutePos.toInt() - query->value(Qt::ImCursorPosition).toInt() : 0;
+    QVariant absolutePos = query->value(BobUI::ImAbsolutePosition);
+    return  absolutePos.isValid() ? absolutePos.toInt() - query->value(BobUI::ImCursorPosition).toInt() : 0;
 }
 
 void QAndroidInputContext::reset()
@@ -532,13 +532,13 @@ void QAndroidInputContext::reset()
     m_batchEditNestingLevel = 0;
     m_handleMode = Hidden;
     if (qGuiApp->focusObject()) {
-        QSharedPointer<QInputMethodQueryEvent> query = focusObjectInputMethodQuery(Qt::ImEnabled);
-        if (!query.isNull() && query->value(Qt::ImEnabled).toBool()) {
-            QtAndroidInput::resetSoftwareKeyboard();
+        QSharedPointer<QInputMethodQueryEvent> query = focusObjectInputMethodQuery(BobUI::ImEnabled);
+        if (!query.isNull() && query->value(BobUI::ImEnabled).toBool()) {
+            BobUIAndroidInput::resetSoftwareKeyboard();
             return;
         }
     }
-    QtAndroidInput::hideSoftwareKeyboard();
+    BobUIAndroidInput::hideSoftwareKeyboard();
 }
 
 void QAndroidInputContext::commit()
@@ -560,8 +560,8 @@ void QAndroidInputContext::updateCursorPosition()
         int realSelectionStart = cursorPos;
         int realSelectionEnd = cursorPos;
 
-        int cpos = query->value(Qt::ImCursorPosition).toInt();
-        int anchor = query->value(Qt::ImAnchorPosition).toInt();
+        int cpos = query->value(BobUI::ImCursorPosition).toInt();
+        int anchor = query->value(BobUI::ImAnchorPosition).toInt();
         if (cpos != anchor) {
             if (!m_composingText.isEmpty()) {
                 qWarning("Selecting text while preediting may give unpredictable results.");
@@ -571,7 +571,7 @@ void QAndroidInputContext::updateCursorPosition()
             realSelectionStart = blockPos + cpos;
             realSelectionEnd = blockPos + anchor;
         }
-        // Qt's idea of the cursor position is the start of the preedit area, so we maintain our own preedit cursor pos
+        // BobUI's idea of the cursor position is the start of the preedit area, so we maintain our own preedit cursor pos
         if (focusObjectIsComposing())
             realSelectionStart = realSelectionEnd = m_composingCursor;
 
@@ -579,7 +579,7 @@ void QAndroidInputContext::updateCursorPosition()
         if (realSelectionStart > realSelectionEnd)
             std::swap(realSelectionStart, realSelectionEnd);
 
-        QtAndroidInput::updateSelection(realSelectionStart, realSelectionEnd,
+        BobUIAndroidInput::updateSelection(realSelectionStart, realSelectionEnd,
                                         m_composingTextStart, m_composingTextStart + composeLength); // pre-edit text
     }
 }
@@ -589,44 +589,44 @@ bool QAndroidInputContext::isImhNoTextHandlesSet()
     QSharedPointer<QInputMethodQueryEvent> query = focusObjectInputMethodQuery();
     if (query.isNull())
         return false;
-    return query->value(Qt::ImHints).toUInt() & Qt::ImhNoTextHandles;
+    return query->value(BobUI::ImHints).toUInt() & BobUI::ImhNoTextHandles;
 }
 
 void QAndroidInputContext::updateSelectionHandles()
 {
     if (m_fullScreenMode) {
-        QtAndroidInput::updateHandles(Hidden);
+        BobUIAndroidInput::updateHandles(Hidden);
         return;
     }
-    static bool noHandles = qEnvironmentVariableIntValue("QT_QPA_NO_TEXT_HANDLES");
+    static bool noHandles = qEnvironmentVariableIntValue("BOBUI_QPA_NO_TEXT_HANDLES");
     if (noHandles || !m_focusObject)
         return;
 
     if (isImhNoTextHandlesSet()) {
-        QtAndroidInput::updateHandles(Hidden);
+        BobUIAndroidInput::updateHandles(Hidden);
         return;
     }
 
     auto im = qGuiApp->inputMethod();
 
-    QInputMethodQueryEvent query(Qt::ImCursorPosition | Qt::ImAnchorPosition | Qt::ImEnabled
-                                 | Qt::ImCurrentSelection | Qt::ImHints | Qt::ImSurroundingText
-                                 | Qt::ImReadOnly);
+    QInputMethodQueryEvent query(BobUI::ImCursorPosition | BobUI::ImAnchorPosition | BobUI::ImEnabled
+                                 | BobUI::ImCurrentSelection | BobUI::ImHints | BobUI::ImSurroundingText
+                                 | BobUI::ImReadOnly);
     QCoreApplication::sendEvent(m_focusObject, &query);
 
-    int cpos = query.value(Qt::ImCursorPosition).toInt();
-    int anchor = query.value(Qt::ImAnchorPosition).toInt();
-    const QVariant readOnlyVariant = query.value(Qt::ImReadOnly);
+    int cpos = query.value(BobUI::ImCursorPosition).toInt();
+    int anchor = query.value(BobUI::ImAnchorPosition).toInt();
+    const QVariant readOnlyVariant = query.value(BobUI::ImReadOnly);
     bool readOnly = readOnlyVariant.toBool();
     QPlatformWindow *qPlatformWindow = qGuiApp->focusWindow()->handle();
 
     if (!readOnly && ((m_handleMode & 0xff) == Hidden)) {
-        QtAndroidInput::updateHandles(Hidden);
+        BobUIAndroidInput::updateHandles(Hidden);
         return;
     }
 
     if ( cpos == anchor && (!readOnlyVariant.isValid() || readOnly)) {
-        QtAndroidInput::updateHandles(Hidden);
+        BobUIAndroidInput::updateHandles(Hidden);
         return;
     }
 
@@ -648,9 +648,9 @@ void QAndroidInputContext::updateSelectionHandles()
         m_handleMode &= ShowEditPopup;
         m_handleMode |= ShowCursor;
         uint32_t buttons = readOnly ? 0 : EditContext::PasteButton;
-        if (!query.value(Qt::ImSurroundingText).toString().isEmpty())
+        if (!query.value(BobUI::ImSurroundingText).toString().isEmpty())
             buttons |= EditContext::SelectAllButton;
-        QtAndroidInput::updateHandles(m_handleMode, editMenuPoint, buttons, cursorPointGlobal);
+        BobUIAndroidInput::updateHandles(m_handleMode, editMenuPoint, buttons, cursorPointGlobal);
         m_hideCursorHandleTimer.start();
 
         return;
@@ -667,10 +667,10 @@ void QAndroidInputContext::updateSelectionHandles()
     QPoint leftPoint(qPlatformWindow->mapToGlobal(leftRect.bottomLeft().toPoint()));
     QPoint rightPoint(qPlatformWindow->mapToGlobal(rightRect.bottomRight().toPoint()));
 
-    QAndroidPlatformIntegration *platformIntegration = QtAndroid::androidPlatformIntegration();
+    QAndroidPlatformIntegration *platformIntegration = BobUIAndroid::androidPlatformIntegration();
     if (platformIntegration) {
         if (m_selectHandleWidth == 0)
-                m_selectHandleWidth = QtAndroidInput::getSelectHandleWidth() / 2;
+                m_selectHandleWidth = BobUIAndroidInput::getSelectHandleWidth() / 2;
 
         int rightSideOfScreen = platformIntegration->screen()->availableGeometry().right();
         if (leftPoint.x() < m_selectHandleWidth)
@@ -683,8 +683,8 @@ void QAndroidInputContext::updateSelectionHandles()
         uint32_t buttons = readOnly ? EditContext::CopyButton | EditContext::SelectAllButton
                                     : EditContext::AllButtons;
 
-        QtAndroidInput::updateHandles(m_handleMode, editPoint, buttons, leftPoint, rightPoint,
-                                      query.value(Qt::ImCurrentSelection).toString().isRightToLeft());
+        BobUIAndroidInput::updateHandles(m_handleMode, editPoint, buttons, leftPoint, rightPoint,
+                                      query.value(BobUI::ImCurrentSelection).toString().isRightToLeft());
         m_hideCursorHandleTimer.stop();
     }
 }
@@ -703,11 +703,11 @@ void QAndroidInputContext::handleLocationChanged(int handleId, int x, int y)
     QPoint point(x, y);
 
     // The handle is down of the cursor, but we want the position in the middle.
-    QInputMethodQueryEvent query(Qt::ImCursorPosition | Qt::ImAnchorPosition
-                                 | Qt::ImAbsolutePosition | Qt::ImCurrentSelection);
+    QInputMethodQueryEvent query(BobUI::ImCursorPosition | BobUI::ImAnchorPosition
+                                 | BobUI::ImAbsolutePosition | BobUI::ImCurrentSelection);
     QCoreApplication::sendEvent(m_focusObject, &query);
-    int cpos = query.value(Qt::ImCursorPosition).toInt();
-    int anchor = query.value(Qt::ImAnchorPosition).toInt();
+    int cpos = query.value(BobUI::ImCursorPosition).toInt();
+    int anchor = query.value(BobUI::ImAnchorPosition).toInt();
     auto leftRect = cursorRectangle();
     auto rightRect = anchorRectangle();
     if (cpos > anchor)
@@ -725,7 +725,7 @@ void QAndroidInputContext::handleLocationChanged(int handleId, int x, int y)
     int dialogMoveX = 0;
     while (object) {
         if (QString::compare(object->metaObject()->className(),
-                             "QDialog", Qt::CaseInsensitive) == 0) {
+                             "QDialog", BobUI::CaseInsensitive) == 0) {
             dialogMoveX += object->property("x").toInt();
         }
         object = object->parent();
@@ -735,8 +735,8 @@ void QAndroidInputContext::handleLocationChanged(int handleId, int x, int y)
             QPointF(QHighDpi::fromNativePixels(point, QGuiApplication::focusWindow()));
     const QPointF fixedPosition = QPointF(position.x() - dialogMoveX, position.y());
     const QInputMethod *im = QGuiApplication::inputMethod();
-    const QTransform mapToLocal = im->inputItemTransform().inverted();
-    const int handlePos = im->queryFocusObject(Qt::ImCursorPosition, mapToLocal.map(fixedPosition)).toInt(&ok);
+    const BOBUIransform mapToLocal = im->inputItemTransform().inverted();
+    const int handlePos = im->queryFocusObject(BobUI::ImCursorPosition, mapToLocal.map(fixedPosition)).toInt(&ok);
 
     if (!ok)
         return;
@@ -761,8 +761,8 @@ void QAndroidInputContext::handleLocationChanged(int handleId, int x, int y)
       least one symbol remains selected.
      */
     if ((handleId == 2 || handleId == 3) && newCpos <= newAnchor) {
-        QTextBoundaryFinder finder(QTextBoundaryFinder::Grapheme,
-                                   query.value(Qt::ImCurrentSelection).toString());
+        BOBUIextBoundaryFinder finder(BOBUIextBoundaryFinder::Grapheme,
+                                   query.value(BobUI::ImCurrentSelection).toString());
 
         const int oldSelectionStartPos = qMin(cpos, anchor);
 
@@ -787,7 +787,7 @@ void QAndroidInputContext::handleLocationChanged(int handleId, int x, int y)
       perform the check only when user drags the cursor handle.
      */
     if (focusObjectIsComposing() && handleId == 1) {
-        int absoluteCpos = query.value(Qt::ImAbsolutePosition).toInt(&ok);
+        int absoluteCpos = query.value(BobUI::ImAbsolutePosition).toInt(&ok);
         if (!ok)
             absoluteCpos = cpos;
         const int blockPos = absoluteCpos - cpos;
@@ -819,9 +819,9 @@ void QAndroidInputContext::touchDown(int x, int y)
 
         if (focusObjectIsComposing()) {
             const int curBlockPos = getBlockPosition(
-                    focusObjectInputMethodQuery(Qt::ImCursorPosition | Qt::ImAbsolutePosition));
+                    focusObjectInputMethodQuery(BobUI::ImCursorPosition | BobUI::ImAbsolutePosition));
             const int touchPosition = curBlockPos
-                    + queryFocusObject(Qt::ImCursorPosition, QPointF(x, y)).toInt();
+                    + queryFocusObject(BobUI::ImCursorPosition, QPointF(x, y)).toInt();
             if (touchPosition != m_composingCursor)
                 focusObjectStopComposing();
         }
@@ -840,7 +840,7 @@ void QAndroidInputContext::touchDown(int x, int y)
 
 void QAndroidInputContext::longPress(int x, int y)
 {
-    static bool noHandles = qEnvironmentVariableIntValue("QT_QPA_NO_TEXT_HANDLES");
+    static bool noHandles = qEnvironmentVariableIntValue("BOBUI_QPA_NO_TEXT_HANDLES");
     if (noHandles)
         return;
 
@@ -851,12 +851,12 @@ void QAndroidInputContext::longPress(int x, int y)
         const QPointF touchPoint(x, y);
         setSelectionOnFocusObject(touchPoint, touchPoint);
 
-        QInputMethodQueryEvent query(Qt::ImCursorPosition | Qt::ImAnchorPosition | Qt::ImTextBeforeCursor | Qt::ImTextAfterCursor);
+        QInputMethodQueryEvent query(BobUI::ImCursorPosition | BobUI::ImAnchorPosition | BobUI::ImTextBeforeCursor | BobUI::ImTextAfterCursor);
         QCoreApplication::sendEvent(m_focusObject, &query);
-        int cursor = query.value(Qt::ImCursorPosition).toInt();
+        int cursor = query.value(BobUI::ImCursorPosition).toInt();
         int anchor = cursor;
-        QString before = query.value(Qt::ImTextBeforeCursor).toString();
-        QString after = query.value(Qt::ImTextAfterCursor).toString();
+        QString before = query.value(BobUI::ImTextBeforeCursor).toString();
+        QString after = query.value(BobUI::ImTextAfterCursor).toString();
         for (const auto &ch : after) {
             if (!ch.isLetterOrNumber())
                 break;
@@ -903,7 +903,7 @@ void QAndroidInputContext::hideSelectionHandles()
     }
 }
 
-void QAndroidInputContext::update(Qt::InputMethodQueries queries)
+void QAndroidInputContext::update(BobUI::InputMethodQueries queries)
 {
     QSharedPointer<QInputMethodQueryEvent> query = focusObjectInputMethodQuery(queries);
     if (query.isNull())
@@ -923,7 +923,7 @@ void QAndroidInputContext::invokeAction(QInputMethod::Action action, int cursorP
 
 QRectF QAndroidInputContext::keyboardRect() const
 {
-    return QtAndroidInput::softwareKeyboardRect();
+    return BobUIAndroidInput::softwareKeyboardRect();
 }
 
 bool QAndroidInputContext::isAnimating() const
@@ -933,8 +933,8 @@ bool QAndroidInputContext::isAnimating() const
 
 void QAndroidInputContext::showInputPanel()
 {
-    if (QGuiApplication::applicationState() != Qt::ApplicationActive) {
-        connect(qGuiApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(showInputPanelLater(Qt::ApplicationState)));
+    if (QGuiApplication::applicationState() != BobUI::ApplicationActive) {
+        connect(qGuiApp, SIGNAL(applicationStateChanged(BobUI::ApplicationState)), this, SLOT(showInputPanelLater(BobUI::ApplicationState)));
         return;
     }
     QSharedPointer<QInputMethodQueryEvent> query = focusObjectInputMethodQuery();
@@ -953,22 +953,22 @@ void QAndroidInputContext::showInputPanel()
         m_updateCursorPosConnection = connect(qGuiApp->focusObject(), SIGNAL(cursorPositionChanged()), this, SLOT(updateCursorPosition()));
 
     QRect rect = screenInputItemRectangle();
-    QtAndroidInput::showSoftwareKeyboard(rect.left(), rect.top(), rect.width(), rect.height(),
-                                         query->value(Qt::ImHints).toUInt(),
-                                         query->value(Qt::ImEnterKeyType).toUInt());
+    BobUIAndroidInput::showSoftwareKeyboard(rect.left(), rect.top(), rect.width(), rect.height(),
+                                         query->value(BobUI::ImHints).toUInt(),
+                                         query->value(BobUI::ImEnterKeyType).toUInt());
 }
 
-void QAndroidInputContext::showInputPanelLater(Qt::ApplicationState state)
+void QAndroidInputContext::showInputPanelLater(BobUI::ApplicationState state)
 {
-    if (state != Qt::ApplicationActive)
+    if (state != BobUI::ApplicationActive)
         return;
-    disconnect(qGuiApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(showInputPanelLater(Qt::ApplicationState)));
+    disconnect(qGuiApp, SIGNAL(applicationStateChanged(BobUI::ApplicationState)), this, SLOT(showInputPanelLater(BobUI::ApplicationState)));
     showInputPanel();
 }
 
-void QAndroidInputContext::safeCall(const std::function<void()> &func, Qt::ConnectionType conType)
+void QAndroidInputContext::safeCall(const std::function<void()> &func, BobUI::ConnectionType conType)
 {
-    if (qGuiApp->thread() == QThread::currentThread())
+    if (qGuiApp->thread() == BOBUIhread::currentThread())
         func();
     else
         QMetaObject::invokeMethod(this, "safeCall", conType, Q_ARG(std::function<void()>, func));
@@ -976,12 +976,12 @@ void QAndroidInputContext::safeCall(const std::function<void()> &func, Qt::Conne
 
 void QAndroidInputContext::hideInputPanel()
 {
-    QtAndroidInput::hideSoftwareKeyboard();
+    BobUIAndroidInput::hideSoftwareKeyboard();
 }
 
 bool QAndroidInputContext::isInputPanelVisible() const
 {
-    return QtAndroidInput::isSoftwareKeyboardVisible();
+    return BobUIAndroidInput::isSoftwareKeyboardVisible();
 }
 
 bool QAndroidInputContext::isComposing() const
@@ -1055,7 +1055,7 @@ jboolean QAndroidInputContext::deleteSurroundingText(jint leftLength, jint right
 
     const int initialBlockPos = getBlockPosition(query);
     const int initialCursorPos = getAbsoluteCursorPosition(query);
-    const int initialAnchorPos = initialBlockPos + query->value(Qt::ImAnchorPosition).toInt();
+    const int initialAnchorPos = initialBlockPos + query->value(BobUI::ImAnchorPosition).toInt();
 
     /*
       According to documentation, we should delete leftLength characters before current selection
@@ -1080,15 +1080,15 @@ jboolean QAndroidInputContext::deleteSurroundingText(jint leftLength, jint right
     int textBeforeCursorLen;
     int textAfterCursorLen;
 
-    QVariant textBeforeCursor = query->value(Qt::ImTextBeforeCursor);
-    QVariant textAfterCursor = query->value(Qt::ImTextAfterCursor);
+    QVariant textBeforeCursor = query->value(BobUI::ImTextBeforeCursor);
+    QVariant textAfterCursor = query->value(BobUI::ImTextAfterCursor);
     if (textBeforeCursor.isValid() && textAfterCursor.isValid()) {
         textBeforeCursorLen = textBeforeCursor.toString().length();
         textAfterCursorLen = textAfterCursor.toString().length();
     } else {
         textBeforeCursorLen = initialCursorPos - initialBlockPos;
         textAfterCursorLen =
-                query->value(Qt::ImSurroundingText).toString().length() - textBeforeCursorLen;
+                query->value(BobUI::ImSurroundingText).toString().length() - textBeforeCursorLen;
     }
 
     leftLength = qMin(qMax(0, textBeforeCursorLen - (initialCursorPos - leftEnd)), leftLength);
@@ -1139,7 +1139,7 @@ jboolean QAndroidInputContext::deleteSurroundingText(jint leftLength, jint right
                 || initialCursorPos != initialAnchorPos) {
             // If we have deleted a newline character, we are now in a new block
             const int currentBlockPos = getBlockPosition(
-                    focusObjectInputMethodQuery(Qt::ImAbsolutePosition | Qt::ImCursorPosition));
+                    focusObjectInputMethodQuery(BobUI::ImAbsolutePosition | BobUI::ImCursorPosition));
 
             QInputMethodEvent event({}, {
                 { QInputMethodEvent::Selection, initialCursorPos - leftLength - currentBlockPos,
@@ -1218,7 +1218,7 @@ void QAndroidInputContext::focusObjectStartComposing()
     if (!query)
         return;
 
-    if (query->value(Qt::ImCursorPosition).toInt() != query->value(Qt::ImAnchorPosition).toInt())
+    if (query->value(BobUI::ImCursorPosition).toInt() != query->value(BobUI::ImAnchorPosition).toInt())
         return;
 
     const int absoluteCursorPos = getAbsoluteCursorPosition(query);
@@ -1228,7 +1228,7 @@ void QAndroidInputContext::focusObjectStartComposing()
 
     m_composingCursor = absoluteCursorPos;
 
-    QTextCharFormat underlined;
+    BOBUIextCharFormat underlined;
     underlined.setFontUnderline(true);
 
     QInputMethodEvent event(m_composingText, {
@@ -1263,7 +1263,7 @@ bool QAndroidInputContext::focusObjectStopComposing()
         sendInputMethodEvent(&event);
     }
     {
-        // Moving Qt's cursor to where the preedit cursor used to be
+        // Moving BobUI's cursor to where the preedit cursor used to be
         QList<QInputMethodEvent::Attribute> attributes;
         attributes.append(
                 QInputMethodEvent::Attribute(QInputMethodEvent::Selection, localCursorPos, 0));
@@ -1281,28 +1281,28 @@ jint QAndroidInputContext::getCursorCapsMode(jint /*reqModes*/)
     if (query.isNull())
         return res;
 
-    const uint qtInputMethodHints = query->value(Qt::ImHints).toUInt();
-    const int localPos = query->value(Qt::ImCursorPosition).toInt();
+    const uint bobuiInputMethodHints = query->value(BobUI::ImHints).toUInt();
+    const int localPos = query->value(BobUI::ImCursorPosition).toInt();
 
     bool atWordBoundary =
             localPos == 0
             && (!focusObjectIsComposing() || m_composingCursor == m_composingTextStart);
 
     if (!atWordBoundary) {
-        QString surroundingText = query->value(Qt::ImSurroundingText).toString();
+        QString surroundingText = query->value(BobUI::ImSurroundingText).toString();
         surroundingText.truncate(localPos);
         if (focusObjectIsComposing())
             surroundingText += QStringView{m_composingText}.left(m_composingCursor - m_composingTextStart);
         // Add a character to see if it is at the end of the sentence or not
-        QTextBoundaryFinder finder(QTextBoundaryFinder::Sentence, surroundingText + u'A');
+        BOBUIextBoundaryFinder finder(BOBUIextBoundaryFinder::Sentence, surroundingText + u'A');
         finder.setPosition(surroundingText.length());
         if (finder.isAtBoundary())
             atWordBoundary = finder.isAtBoundary();
     }
-    if (atWordBoundary && !(qtInputMethodHints & Qt::ImhLowercaseOnly) && !(qtInputMethodHints & Qt::ImhNoAutoUppercase))
+    if (atWordBoundary && !(bobuiInputMethodHints & BobUI::ImhLowercaseOnly) && !(bobuiInputMethodHints & BobUI::ImhNoAutoUppercase))
         res |= CAP_MODE_SENTENCES;
 
-    if (qtInputMethodHints & Qt::ImhUppercaseOnly)
+    if (bobuiInputMethodHints & BobUI::ImhUppercaseOnly)
         res |= CAP_MODE_CHARACTERS;
 
     return res;
@@ -1314,10 +1314,10 @@ const QAndroidInputContext::ExtractedText &QAndroidInputContext::getExtractedTex
 {
     // Note to self: "if the GET_EXTRACTED_TEXT_MONITOR flag is set, you should be calling
     // updateExtractedText(View, int, ExtractedText) whenever you call
-    // updateSelection(View, int, int, int, int)."  QTBUG-37980
+    // updateSelection(View, int, int, int, int)."  BOBUIBUG-37980
 
     QSharedPointer<QInputMethodQueryEvent> query = focusObjectInputMethodQuery(
-            Qt::ImCursorPosition | Qt::ImAbsolutePosition | Qt::ImAnchorPosition);
+            BobUI::ImCursorPosition | BobUI::ImAbsolutePosition | BobUI::ImAnchorPosition);
     if (query.isNull())
         return m_extractedText;
 
@@ -1329,8 +1329,8 @@ const QAndroidInputContext::ExtractedText &QAndroidInputContext::getExtractedTex
     // there are input methods out there that (surprise) seem to depend on
     // what happens in reality rather than what's documented.
 
-    QVariant textBeforeCursor = QInputMethod::queryFocusObject(Qt::ImTextBeforeCursor, INT_MAX);
-    QVariant textAfterCursor = QInputMethod::queryFocusObject(Qt::ImTextAfterCursor, INT_MAX);
+    QVariant textBeforeCursor = QInputMethod::queryFocusObject(BobUI::ImTextBeforeCursor, INT_MAX);
+    QVariant textAfterCursor = QInputMethod::queryFocusObject(BobUI::ImTextAfterCursor, INT_MAX);
     if (textBeforeCursor.isValid() && textAfterCursor.isValid()) {
         if (focusObjectIsComposing()) {
             m_extractedText.text =
@@ -1341,8 +1341,8 @@ const QAndroidInputContext::ExtractedText &QAndroidInputContext::getExtractedTex
 
         m_extractedText.startOffset = qMax(0, cursorPos - textBeforeCursor.toString().length());
     } else {
-        m_extractedText.text = focusObjectInputMethodQuery(Qt::ImSurroundingText)
-                ->value(Qt::ImSurroundingText).toString();
+        m_extractedText.text = focusObjectInputMethodQuery(BobUI::ImSurroundingText)
+                ->value(BobUI::ImSurroundingText).toString();
 
         if (focusObjectIsComposing())
             m_extractedText.text.insert(cursorPos - blockPos, m_composingText);
@@ -1356,7 +1356,7 @@ const QAndroidInputContext::ExtractedText &QAndroidInputContext::getExtractedTex
     } else {
         m_extractedText.selectionStart = cursorPos - m_extractedText.startOffset;
         m_extractedText.selectionEnd =
-                blockPos + query->value(Qt::ImAnchorPosition).toInt() - m_extractedText.startOffset;
+                blockPos + query->value(BobUI::ImAnchorPosition).toInt() - m_extractedText.startOffset;
 
         // Some keyboards misbehave when selectionStart > selectionEnd
         if (m_extractedText.selectionStart > m_extractedText.selectionEnd)
@@ -1372,7 +1372,7 @@ QString QAndroidInputContext::getSelectedText(jint /*flags*/)
     if (query.isNull())
         return QString();
 
-    return query->value(Qt::ImCurrentSelection).toString();
+    return query->value(BobUI::ImCurrentSelection).toString();
 }
 
 QString QAndroidInputContext::getTextAfterCursor(jint length, jint /*flags*/)
@@ -1382,16 +1382,16 @@ QString QAndroidInputContext::getTextAfterCursor(jint length, jint /*flags*/)
 
     QString text;
 
-    QVariant reportedTextAfter = QInputMethod::queryFocusObject(Qt::ImTextAfterCursor, length);
+    QVariant reportedTextAfter = QInputMethod::queryFocusObject(BobUI::ImTextAfterCursor, length);
     if (reportedTextAfter.isValid()) {
         text = reportedTextAfter.toString();
     } else {
         // Compatibility code for old controls that do not implement the new API
         QSharedPointer<QInputMethodQueryEvent> query =
-                focusObjectInputMethodQuery(Qt::ImCursorPosition | Qt::ImSurroundingText);
+                focusObjectInputMethodQuery(BobUI::ImCursorPosition | BobUI::ImSurroundingText);
         if (query) {
-            const int cursorPos = query->value(Qt::ImCursorPosition).toInt();
-            text = query->value(Qt::ImSurroundingText).toString().mid(cursorPos);
+            const int cursorPos = query->value(BobUI::ImCursorPosition).toInt();
+            text = query->value(BobUI::ImSurroundingText).toString().mid(cursorPos);
         }
     }
 
@@ -1402,10 +1402,10 @@ QString QAndroidInputContext::getTextAfterCursor(jint length, jint /*flags*/)
     } else {
         // We must not return selected text if there is any
         QSharedPointer<QInputMethodQueryEvent> query =
-                focusObjectInputMethodQuery(Qt::ImCursorPosition | Qt::ImAnchorPosition);
+                focusObjectInputMethodQuery(BobUI::ImCursorPosition | BobUI::ImAnchorPosition);
         if (query) {
-            const int cursorPos = query->value(Qt::ImCursorPosition).toInt();
-            const int anchorPos = query->value(Qt::ImAnchorPosition).toInt();
+            const int cursorPos = query->value(BobUI::ImCursorPosition).toInt();
+            const int anchorPos = query->value(BobUI::ImAnchorPosition).toInt();
             if (anchorPos > cursorPos)
                 text.remove(0, anchorPos - cursorPos);
         }
@@ -1422,16 +1422,16 @@ QString QAndroidInputContext::getTextBeforeCursor(jint length, jint /*flags*/)
 
     QString text;
 
-    QVariant reportedTextBefore = QInputMethod::queryFocusObject(Qt::ImTextBeforeCursor, length);
+    QVariant reportedTextBefore = QInputMethod::queryFocusObject(BobUI::ImTextBeforeCursor, length);
     if (reportedTextBefore.isValid()) {
         text = reportedTextBefore.toString();
     } else {
         // Compatibility code for old controls that do not implement the new API
         QSharedPointer<QInputMethodQueryEvent> query =
-                focusObjectInputMethodQuery(Qt::ImCursorPosition | Qt::ImSurroundingText);
+                focusObjectInputMethodQuery(BobUI::ImCursorPosition | BobUI::ImSurroundingText);
         if (query) {
-            const int cursorPos = query->value(Qt::ImCursorPosition).toInt();
-            text = query->value(Qt::ImSurroundingText).toString().left(cursorPos);
+            const int cursorPos = query->value(BobUI::ImCursorPosition).toInt();
+            text = query->value(BobUI::ImSurroundingText).toString().left(cursorPos);
         }
     }
 
@@ -1442,10 +1442,10 @@ QString QAndroidInputContext::getTextBeforeCursor(jint length, jint /*flags*/)
     } else {
         // We must not return selected text if there is any
         QSharedPointer<QInputMethodQueryEvent> query =
-                focusObjectInputMethodQuery(Qt::ImCursorPosition | Qt::ImAnchorPosition);
+                focusObjectInputMethodQuery(BobUI::ImCursorPosition | BobUI::ImAnchorPosition);
         if (query) {
-            const int cursorPos = query->value(Qt::ImCursorPosition).toInt();
-            const int anchorPos = query->value(Qt::ImAnchorPosition).toInt();
+            const int cursorPos = query->value(BobUI::ImCursorPosition).toInt();
+            const int anchorPos = query->value(BobUI::ImAnchorPosition).toInt();
             if (anchorPos < cursorPos)
                 text.chop(cursorPos - anchorPos);
         }
@@ -1475,10 +1475,10 @@ jboolean QAndroidInputContext::setComposingText(const QString &text, jint newCur
     BatchEditLock batchEditLock(this);
 
     const int absoluteCursorPos = getAbsoluteCursorPosition(query);
-    int absoluteAnchorPos = getBlockPosition(query) + query->value(Qt::ImAnchorPosition).toInt();
+    int absoluteAnchorPos = getBlockPosition(query) + query->value(BobUI::ImAnchorPosition).toInt();
 
     auto setCursorPosition = [=]() {
-            const int cursorPos = query->value(Qt::ImCursorPosition).toInt();
+            const int cursorPos = query->value(BobUI::ImCursorPosition).toInt();
             QInputMethodEvent event({}, { { QInputMethodEvent::Selection, cursorPos, 0 } });
             QGuiApplication::sendEvent(m_focusObject, &event);
         };
@@ -1490,8 +1490,8 @@ jboolean QAndroidInputContext::setComposingText(const QString &text, jint newCur
         absoluteAnchorPos = absoluteCursorPos;
     }
 
-    // The value of Qt::ImCursorPosition is not updated at the start
-    // when the first character is added, so we must update it (QTBUG-85090)
+    // The value of BobUI::ImCursorPosition is not updated at the start
+    // when the first character is added, so we must update it (BOBUIBUG-85090)
     if (absoluteCursorPos == 0 && text.length() == 1 && getTextAfterCursor(1,1).length() >= 0) {
         setCursorPosition();
     }
@@ -1522,7 +1522,7 @@ jboolean QAndroidInputContext::setComposingText(const QString &text, jint newCur
         m_composingCursor = -1;
 
     if (focusObjectIsComposing()) {
-        QTextCharFormat underlined;
+        BOBUIextCharFormat underlined;
         underlined.setFontUnderline(true);
 
         QInputMethodEvent event(m_composingText, {
@@ -1559,7 +1559,7 @@ jboolean QAndroidInputContext::setComposingText(const QString &text, jint newCur
         // character, then we are now inside an another block
 
         const int newBlockPos = getBlockPosition(
-                focusObjectInputMethodQuery(Qt::ImCursorPosition | Qt::ImAbsolutePosition));
+                focusObjectInputMethodQuery(BobUI::ImCursorPosition | BobUI::ImAbsolutePosition));
 
          QInputMethodEvent event({}, {
             { QInputMethodEvent::Selection, newAbsoluteCursorPos - newBlockPos, 0 }
@@ -1581,9 +1581,9 @@ jboolean QAndroidInputContext::setComposingRegion(jint start, jint end)
 {
     BatchEditLock batchEditLock(this);
 
-    // Qt will not include the current preedit text in the query results, and interprets all
+    // BobUI will not include the current preedit text in the query results, and interprets all
     // parameters relative to the text excluding the preedit. The simplest solution is therefore to
-    // tell Qt that we commit the text before we set the new region. This may cause a little flicker, but is
+    // tell BobUI that we commit the text before we set the new region. This may cause a little flicker, but is
     // much more robust than trying to keep the two different world views in sync
 
     finishComposingText();
@@ -1597,14 +1597,14 @@ jboolean QAndroidInputContext::setComposingRegion(jint start, jint end)
     if (start > end)
         qSwap(start, end);
 
-    QString text = query->value(Qt::ImSurroundingText).toString();
+    QString text = query->value(BobUI::ImSurroundingText).toString();
     int textOffset = getBlockPosition(query);
 
     if (start < textOffset || end > textOffset + text.length()) {
-        const int cursorPos = query->value(Qt::ImCursorPosition).toInt();
+        const int cursorPos = query->value(BobUI::ImCursorPosition).toInt();
 
         if (end - textOffset > text.length()) {
-            const QString after = query->value(Qt::ImTextAfterCursor).toString();
+            const QString after = query->value(BobUI::ImTextAfterCursor).toString();
             const int additionalSuffixLen = after.length() - (text.length() - cursorPos);
 
             if (additionalSuffixLen > 0)
@@ -1612,7 +1612,7 @@ jboolean QAndroidInputContext::setComposingRegion(jint start, jint end)
         }
 
         if (start < textOffset) {
-            QString before = query->value(Qt::ImTextBeforeCursor).toString();
+            QString before = query->value(BobUI::ImTextBeforeCursor).toString();
             before.chop(cursorPos);
 
             if (!before.isEmpty()) {
@@ -1649,15 +1649,15 @@ jboolean QAndroidInputContext::setSelection(jint start, jint end)
             && start <= m_composingTextStart + m_composingText.length()) {
         // not actually changing the selection; just moving the
         // preedit cursor
-        int localOldPos = query->value(Qt::ImCursorPosition).toInt();
+        int localOldPos = query->value(BobUI::ImCursorPosition).toInt();
         int pos = localCursorPos - localOldPos;
         QList<QInputMethodEvent::Attribute> attributes;
         attributes.append(QInputMethodEvent::Attribute(QInputMethodEvent::Cursor, pos, 1));
 
-        //but we have to tell Qt about the compose text all over again
+        //but we have to tell BobUI about the compose text all over again
 
         // Show compose text underlined
-        QTextCharFormat underlined;
+        BOBUIextCharFormat underlined;
         underlined.setFontUnderline(true);
         attributes.append(QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat,0, m_composingText.length(),
                                                    QVariant(underlined)));
@@ -1733,8 +1733,8 @@ void QAndroidInputContext::sendShortcut(const QKeySequence &sequence)
 {
     for (int i = 0; i < sequence.count(); ++i) {
         const QKeyCombination keys = sequence[i];
-        Qt::Key key = Qt::Key(keys.toCombined() & ~Qt::KeyboardModifierMask);
-        Qt::KeyboardModifiers mod = Qt::KeyboardModifiers(keys.toCombined() & Qt::KeyboardModifierMask);
+        BobUI::Key key = BobUI::Key(keys.toCombined() & ~BobUI::KeyboardModifierMask);
+        BobUI::KeyboardModifiers mod = BobUI::KeyboardModifiers(keys.toCombined() & BobUI::KeyboardModifierMask);
 
         QKeyEvent pressEvent(QEvent::KeyPress, key, mod);
         QKeyEvent releaseEvent(QEvent::KeyRelease, key, mod);
@@ -1744,7 +1744,7 @@ void QAndroidInputContext::sendShortcut(const QKeySequence &sequence)
     }
 }
 
-QSharedPointer<QInputMethodQueryEvent> QAndroidInputContext::focusObjectInputMethodQuery(Qt::InputMethodQueries queries) {
+QSharedPointer<QInputMethodQueryEvent> QAndroidInputContext::focusObjectInputMethodQuery(BobUI::InputMethodQueries queries) {
     if (!qGuiApp)
         return {};
 
@@ -1769,4 +1769,4 @@ void QAndroidInputContext::sendInputMethodEvent(QInputMethodEvent *event)
     QCoreApplication::sendEvent(focusObject, event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

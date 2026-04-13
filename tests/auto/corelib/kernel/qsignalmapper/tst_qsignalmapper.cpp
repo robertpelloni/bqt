@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qsignalmapper.h>
 
@@ -12,7 +12,7 @@ private slots:
     void mapped();
 };
 
-class QtTestObject : public QObject
+class BobUITestObject : public QObject
 {
     Q_OBJECT
 public slots:
@@ -29,17 +29,17 @@ public:
     QString str;
 };
 
-void QtTestObject::myIntSlot(int id)
+void BobUITestObject::myIntSlot(int id)
 {
     this->id = id;
 }
 
-void QtTestObject::myStringSlot(const QString &str)
+void BobUITestObject::myStringSlot(const QString &str)
 {
     this->str = str;
 }
 
-void QtTestObject::emit_mysignal(int value)
+void BobUITestObject::emit_mysignal(int value)
 {
     emit mysignal(value);
 }
@@ -48,10 +48,10 @@ void tst_QSignalMapper::mapped()
 {
     QSignalMapper mapper;
 
-    QtTestObject target;
-    QtTestObject src1;
-    QtTestObject src2;
-    QtTestObject src3;
+    BobUITestObject target;
+    BobUITestObject src1;
+    BobUITestObject src2;
+    BobUITestObject src3;
 
     connect(&src1, SIGNAL(mysignal(int)), &mapper, SLOT(map()));
     connect(&src2, SIGNAL(mysignal(int)), &mapper, SLOT(map()));
@@ -63,8 +63,8 @@ void tst_QSignalMapper::mapped()
     mapper.setMapping(&src2, "two");
     mapper.setMapping(&src3, "three");
 
-    connect(&mapper, &QSignalMapper::mappedInt, &target, &QtTestObject::myIntSlot);
-    connect(&mapper, &QSignalMapper::mappedString, &target, &QtTestObject::myStringSlot);
+    connect(&mapper, &QSignalMapper::mappedInt, &target, &BobUITestObject::myIntSlot);
+    connect(&mapper, &QSignalMapper::mappedString, &target, &BobUITestObject::myStringSlot);
 
     src1.emit_mysignal(20);
     QCOMPARE(target.id, 1);
@@ -79,5 +79,5 @@ void tst_QSignalMapper::mapped()
     QCOMPARE(target.str, QLatin1String("three"));
 }
 
-QTEST_MAIN(tst_QSignalMapper)
+BOBUIEST_MAIN(tst_QSignalMapper)
 #include "tst_qsignalmapper.moc"

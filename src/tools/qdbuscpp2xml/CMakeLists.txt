@@ -1,15 +1,15 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## qdbuscpp2xml Tool:
 #####################################################################
 
-qt_get_tool_target_name(target_name qdbuscpp2xml)
-qt_internal_add_tool(${target_name}
+bobui_get_tool_target_name(target_name qdbuscpp2xml)
+bobui_internal_add_tool(${target_name}
     TRY_RUN
     TRY_RUN_FLAGS "-V"
-    TARGET_DESCRIPTION "Qt D-Bus C++ to XML Compiler"
+    TARGET_DESCRIPTION "BobUI D-Bus C++ to XML Compiler"
     TOOLS_TARGET DBus
     SOURCES
         ../moc/cbordevice.h
@@ -24,14 +24,14 @@ qt_internal_add_tool(${target_name}
         ../moc/utils.h
         qdbuscpp2xml.cpp
     DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
+        BOBUI_NO_CAST_FROM_ASCII
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
     INCLUDE_DIRECTORIES
         ../moc
         ../moc/../../3rdparty/tinycbor/src
     LIBRARIES
-        Qt::CorePrivate
-        Qt::DBusPrivate
+        BobUI::CorePrivate
+        BobUI::DBusPrivate
 )
-qt_internal_return_unless_building_tools()
+bobui_internal_return_unless_building_tools()

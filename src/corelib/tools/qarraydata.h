@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2019 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QARRAYDATA_H
 #define QARRAYDATA_H
 
-#include <QtCore/qpair.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qflags.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUICore/qpair.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qflags.h>
+#include <BobUICore/qcontainerfwd.h>
 #include <string.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if __has_cpp_attribute(gnu::malloc)
 #  define Q_DECL_MALLOCLIKE [[nodiscard, gnu::malloc]]
@@ -22,7 +22,7 @@ QT_BEGIN_NAMESPACE
 #  define Q_DECL_MALLOCLIKE [[nodiscard]]
 #endif
 
-template <class T> struct QTypedArrayData;
+template <class T> struct BOBUIypedArrayData;
 
 struct QArrayData
 {
@@ -107,7 +107,7 @@ struct QArrayData
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QArrayData::ArrayOptions)
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 // QArrayData with strictest alignment requirements supported by malloc()
 #if defined(Q_PROCESSOR_X86_32) && defined(Q_CC_GNU)
 // GCC's definition is incorrect since GCC 8 (commit r240248 in SVN; commit
@@ -124,14 +124,14 @@ struct alignas(MaxPrimitiveAlignment) AlignedQArrayData : QArrayData
 }
 
 template <class T>
-struct QTypedArrayData
+struct BOBUIypedArrayData
     : QArrayData
 {
-    struct AlignmentDummy { QtPrivate::AlignedQArrayData header; T data; };
+    struct AlignmentDummy { BobUIPrivate::AlignedQArrayData header; T data; };
 
-    [[nodiscard]] static std::pair<QTypedArrayData *, T *> allocate(qsizetype capacity, AllocationOption option = QArrayData::KeepSize)
+    [[nodiscard]] static std::pair<BOBUIypedArrayData *, T *> allocate(qsizetype capacity, AllocationOption option = QArrayData::KeepSize)
     {
-        static_assert(sizeof(QTypedArrayData) == sizeof(QArrayData));
+        static_assert(sizeof(BOBUIypedArrayData) == sizeof(QArrayData));
         QArrayData *d;
         void *result;
         if constexpr (sizeof(T) == 1) {
@@ -147,21 +147,21 @@ struct QTypedArrayData
         // and yet we do offer results that have stricter alignment
         result = __builtin_assume_aligned(result, Q_ALIGNOF(AlignmentDummy));
 #endif
-        return {static_cast<QTypedArrayData *>(d), static_cast<T *>(result)};
+        return {static_cast<BOBUIypedArrayData *>(d), static_cast<T *>(result)};
     }
 
-    static std::pair<QTypedArrayData *, T *>
-    reallocateUnaligned(QTypedArrayData *data, T *dataPointer, qsizetype capacity, AllocationOption option)
+    static std::pair<BOBUIypedArrayData *, T *>
+    reallocateUnaligned(BOBUIypedArrayData *data, T *dataPointer, qsizetype capacity, AllocationOption option)
     {
-        static_assert(sizeof(QTypedArrayData) == sizeof(QArrayData));
+        static_assert(sizeof(BOBUIypedArrayData) == sizeof(QArrayData));
         std::pair<QArrayData *, void *> pair =
                 QArrayData::reallocateUnaligned(data, dataPointer, sizeof(T), capacity, option);
-        return {static_cast<QTypedArrayData *>(pair.first), static_cast<T *>(pair.second)};
+        return {static_cast<BOBUIypedArrayData *>(pair.first), static_cast<T *>(pair.second)};
     }
 
     static void deallocate(QArrayData *data) noexcept
     {
-        static_assert(sizeof(QTypedArrayData) == sizeof(QArrayData));
+        static_assert(sizeof(BOBUIypedArrayData) == sizeof(QArrayData));
         QArrayData::deallocate(data, sizeof(T), alignof(AlignmentDummy));
     }
 
@@ -177,7 +177,7 @@ struct QTypedArrayData
     constexpr static qsizetype maxSize() noexcept
     {
         // -1 to deal with the pointer one-past-the-end
-        return (QtPrivate::MaxAllocSize - sizeof(QtPrivate::AlignedQArrayData) - 1) / sizeof(T);
+        return (BobUIPrivate::MaxAllocSize - sizeof(BobUIPrivate::AlignedQArrayData) - 1) / sizeof(T);
     }
     constexpr static qsizetype max_size() noexcept
     {
@@ -185,7 +185,7 @@ struct QTypedArrayData
     }
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 struct Q_CORE_EXPORT QContainerImplHelper
 {
     enum CutResult { Null, Empty, Full, Subset };
@@ -225,6 +225,6 @@ struct Q_CORE_EXPORT QContainerImplHelper
 
 #undef Q_DECL_MALLOCLIKE
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // include guard

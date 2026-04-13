@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
@@ -8,16 +8,16 @@
 
 #include "qxcbeglwindow.h"
 
-#include <QtGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLContext>
 #include <qpa/qplatformopenglcontext.h>
-#include <QtGui/qpa/qplatformscreen.h>
-#include <QtGui/QScreen>
+#include <BobUIGui/qpa/qplatformscreen.h>
+#include <BobUIGui/QScreen>
 
 #include "qxcbscreen.h"
 
 #include "qxcbeglinclude.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbEglNativeInterfaceHandler;
 
@@ -51,4 +51,4 @@ private:
     QScopedPointer<QXcbEglNativeInterfaceHandler> m_native_interface_handler;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

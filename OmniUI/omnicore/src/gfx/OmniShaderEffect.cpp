@@ -13,7 +13,7 @@ OmniShaderEffect::OmniShaderEffect(QQuickItem *parent)
     setObjectName("OmniShaderEffect");
     setFlag(ItemHasContents, true);
     
-    connect(&m_animTimer, &QTimer::timeout, this, &OmniShaderEffect::advanceTime);
+    connect(&m_animTimer, &BOBUIimer::timeout, this, &OmniShaderEffect::advanceTime);
     m_animTimer.start(33); // ~30fps visual update for complex CPU shaders
 }
 
@@ -53,12 +53,12 @@ void OmniShaderEffect::renderPlasmaGlow(QPainter* painter, const QRectF& rect) {
 
     QRadialGradient grad1(QPointF(x1, y1), rect.width() * 0.8 * m_intensity);
     grad1.setColorAt(0, m_baseColor);
-    grad1.setColorAt(1, Qt::transparent);
+    grad1.setColorAt(1, BobUI::transparent);
 
     QRadialGradient grad2(QPointF(x2, y2), rect.width() * 0.6 * m_intensity);
     QColor c2 = m_baseColor.darker(150);
     grad2.setColorAt(0, c2);
-    grad2.setColorAt(1, Qt::transparent);
+    grad2.setColorAt(1, BobUI::transparent);
 
     painter->fillRect(rect, grad1);
     painter->setCompositionMode(QPainter::CompositionMode_Plus);

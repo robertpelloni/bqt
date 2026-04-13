@@ -1,13 +1,13 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## qlalr Tool:
 #####################################################################
 
-qt_get_tool_target_name(target_name qlalr)
-qt_internal_add_tool(${target_name}
-    TARGET_DESCRIPTION "Qt Look Ahead LR Parser Generator"
+bobui_get_tool_target_name(target_name qlalr)
+bobui_internal_add_tool(${target_name}
+    TARGET_DESCRIPTION "BobUI Look Ahead LR Parser Generator"
     INSTALL_DIR "${INSTALL_LIBEXECDIR}"
     TOOLS_TARGET Core
     SOURCES
@@ -20,12 +20,12 @@ qt_internal_add_tool(${target_name}
         parsetable.cpp parsetable.h
         recognizer.cpp recognizer.h
     DEFINES
-        QT_NO_FOREACH
-        QT_NO_QPAIR
-        QT_USE_NODISCARD_FILE_OPEN
-        QT_NO_URL_CAST_FROM_STRING
+        BOBUI_NO_FOREACH
+        BOBUI_NO_QPAIR
+        BOBUI_USE_NODISCARD_FILE_OPEN
+        BOBUI_NO_URL_CAST_FROM_STRING
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
+        BobUI::Core
+        BobUI::CorePrivate
 )
-qt_internal_return_unless_building_tools()
+bobui_internal_return_unless_building_tools()

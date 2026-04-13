@@ -2,7 +2,7 @@
 #define OMNIMASTERCLOCK_H
 
 #include <QObject>
-#include <QTimer>
+#include <BOBUIimer>
 #include <atomic>
 
 class OmniMasterClock : public QObject {
@@ -30,7 +30,7 @@ signals:
     void bpmChanged();
     void isRunningChanged();
     
-    // Fired on the Qt Main Thread, synced as closely as possible to the DSP time
+    // Fired on the BobUI Main Thread, synced as closely as possible to the DSP time
     void beat(int beatNumber);
     void sixteenthStep(int stepNumber);
 
@@ -50,7 +50,7 @@ private:
     int m_currentBeat;
     int m_currentStep;
 
-    QTimer m_uiSyncTimer; // Simulates the VSync / DSP polling loop
+    BOBUIimer m_uiSyncTimer; // Simulates the VSync / DSP polling loop
 };
 
 #endif // OMNIMASTERCLOCK_H

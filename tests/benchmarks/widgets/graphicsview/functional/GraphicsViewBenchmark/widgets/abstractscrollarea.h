@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef ABSTRACTSCROLLAREA_H
 #define ABSTRACTSCROLLAREA_H
@@ -20,10 +20,10 @@ public:
 
 public:
 
-    void setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy policy);
-    void setVerticalScrollBarPolicy(Qt::ScrollBarPolicy policy);
-    Qt::ScrollBarPolicy verticalScrollBarPolicy() const;
-    Qt::ScrollBarPolicy horizontalScrollBarPolicy() const;
+    void setHorizontalScrollBarPolicy(BobUI::ScrollBarPolicy policy);
+    void setVerticalScrollBarPolicy(BobUI::ScrollBarPolicy policy);
+    BobUI::ScrollBarPolicy verticalScrollBarPolicy() const;
+    BobUI::ScrollBarPolicy horizontalScrollBarPolicy() const;
 
     QGraphicsWidget *viewport() const;
     void setViewport(QGraphicsWidget *viewport);
@@ -54,8 +54,8 @@ private:
     QGraphicsWidget *m_viewport;
     ScrollBar *m_horizontalScrollBar;
     ScrollBar *m_verticalScrollBar;
-    Qt::ScrollBarPolicy m_verticalScrollBarPolicy;
-    Qt::ScrollBarPolicy m_horizontalScrollBarPolicy;
+    BobUI::ScrollBarPolicy m_verticalScrollBarPolicy;
+    BobUI::ScrollBarPolicy m_horizontalScrollBarPolicy;
     qreal m_prevHorizontalValue;
     qreal m_prevVerticalValue;
 };

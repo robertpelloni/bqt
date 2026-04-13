@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
 #include <qpa/qplatformnativeinterface.h>
 #include <xcb/xcb.h>
 
-#include <QtCore/QRect>
+#include <BobUICore/QRect>
 
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qguiapplication.h>
 
 #include "qxcbexport.h"
 #include "qxcbconnection.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbScreen;
 class QXcbNativeInterfaceHandler;
@@ -53,7 +53,7 @@ public:
     void *nativeResourceForScreen(const QByteArray &resource, QScreen *screen) override;
     void *nativeResourceForWindow(const QByteArray &resourceString, QWindow *window) override;
     void *nativeResourceForBackingStore(const QByteArray &resource, QBackingStore *backingStore) override;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void *nativeResourceForCursor(const QByteArray &resource, const QCursor &cursor) override;
 #endif
 
@@ -118,4 +118,4 @@ private:
     void *handlerNativeResourceForBackingStore(const QByteArray &resource, QBackingStore *backingStore) const;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

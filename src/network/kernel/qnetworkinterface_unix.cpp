@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trusted-data
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trusted-data
 
 #include "qbytearray.h"
 #include "qset.h"
@@ -10,28 +10,28 @@
 #include "qnetworkinterface_unix_p.h"
 #include "qalgorithms.h"
 
-#include <QtCore/private/qduplicatetracker_p.h>
+#include <BobUICore/private/qduplicatetracker_p.h>
 
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 
-#if defined(QT_NO_CLOCK_MONOTONIC)
+#if defined(BOBUI_NO_CLOCK_MONOTONIC)
 #  include "qdatetime.h"
 #endif
 
-#if QT_CONFIG(getifaddrs)
+#if BOBUI_CONFIG(getifaddrs)
 # include <ifaddrs.h>
 #endif
 
-#ifdef QT_LINUXBASE
+#ifdef BOBUI_LINUXBASE
 #  include <arpa/inet.h>
 #  ifndef SIOCGIFBRDADDR
 #    define SIOCGIFBRDADDR 0x8919
 #  endif
-#endif // QT_LINUXBASE
+#endif // BOBUI_LINUXBASE
 
 #include <qplatformdefs.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QHostAddress addressFromSockaddr(sockaddr *sa, int ifindex = 0, const QString &ifname = QString())
 {
@@ -69,11 +69,11 @@ static auto &ifreq_index(Req &req, std::enable_if_t<sizeof(std::declval<Req>().i
 
 uint QNetworkInterfaceManager::interfaceIndexFromName(const QString &name)
 {
-#if QT_CONFIG(ipv6ifname)
+#if BOBUI_CONFIG(ipv6ifname)
     return ::if_nametoindex(name.toLatin1().constData());
 #elif defined(SIOCGIFINDEX)
     struct ifreq req;
-    int socket = qt_safe_socket(AF_INET, SOCK_STREAM, 0);
+    int socket = bobui_safe_socket(AF_INET, SOCK_STREAM, 0);
     if (socket < 0)
         return 0;
 
@@ -83,9 +83,9 @@ uint QNetworkInterfaceManager::interfaceIndexFromName(const QString &name)
         memcpy(req.ifr_name, name8bit.data(), qMin(size_t(name8bit.length()) + 1, sizeof(req.ifr_name) - 1));
 
     uint id = 0;
-    if (qt_safe_ioctl(socket, SIOCGIFINDEX, &req) >= 0)
+    if (bobui_safe_ioctl(socket, SIOCGIFINDEX, &req) >= 0)
         id = ifreq_index(req);
-    qt_safe_close(socket);
+    bobui_safe_close(socket);
     return id;
 #else
     Q_UNUSED(name);
@@ -95,21 +95,21 @@ uint QNetworkInterfaceManager::interfaceIndexFromName(const QString &name)
 
 QString QNetworkInterfaceManager::interfaceNameFromIndex(uint index)
 {
-#if QT_CONFIG(ipv6ifname)
+#if BOBUI_CONFIG(ipv6ifname)
     char buf[IF_NAMESIZE];
     if (::if_indextoname(index, buf))
         return QString::fromLatin1(buf);
 #elif defined(SIOCGIFNAME)
     struct ifreq req;
-    int socket = qt_safe_socket(AF_INET, SOCK_STREAM, 0);
+    int socket = bobui_safe_socket(AF_INET, SOCK_STREAM, 0);
     if (socket >= 0) {
         memset(&req, 0, sizeof(ifreq));
         ifreq_index(req) = index;
-        if (qt_safe_ioctl(socket, SIOCGIFNAME, &req) >= 0) {
-            qt_safe_close(socket);
+        if (bobui_safe_ioctl(socket, SIOCGIFNAME, &req) >= 0) {
+            bobui_safe_close(socket);
             return QString::fromLatin1(req.ifr_name);
         }
-        qt_safe_close(socket);
+        bobui_safe_close(socket);
     }
 #endif
     return QString::number(uint(index));
@@ -118,19 +118,19 @@ QString QNetworkInterfaceManager::interfaceNameFromIndex(uint index)
 static int getMtu(int socket, struct ifreq *req)
 {
 #ifdef SIOCGIFMTU
-    if (qt_safe_ioctl(socket, SIOCGIFMTU, req) == 0)
+    if (bobui_safe_ioctl(socket, SIOCGIFMTU, req) == 0)
         return req->ifr_mtu;
 #endif
     return 0;
 }
 
-#if !QT_CONFIG(getifaddrs)
+#if !BOBUI_CONFIG(getifaddrs)
 // getifaddrs not available
 
 static QSet<QByteArray> interfaceNames(int socket)
 {
     QSet<QByteArray> result;
-#if !QT_CONFIG(ipv6ifname)
+#if !BOBUI_CONFIG(ipv6ifname)
     QByteArray storageBuffer;
     struct ifconf interfaceList;
     static const int STORAGEBUFFER_GROWTH = 256;
@@ -142,7 +142,7 @@ static QSet<QByteArray> interfaceNames(int socket)
         interfaceList.ifc_len = storageBuffer.size();
 
         // get the interface list
-        if (qt_safe_ioctl(socket, SIOCGIFCONF, &interfaceList) >= 0) {
+        if (bobui_safe_ioctl(socket, SIOCGIFCONF, &interfaceList) >= 0) {
             if (int(interfaceList.ifc_len + sizeof(ifreq) + 64) < storageBuffer.size()) {
                 // if the buffer was big enough, break
                 storageBuffer.resize(interfaceList.ifc_len);
@@ -185,10 +185,10 @@ static QNetworkInterfacePrivate *findInterface(int socket, QList<QNetworkInterfa
     QNetworkInterfacePrivate *iface = nullptr;
     int ifindex = 0;
 
-#if QT_CONFIG(ipv6ifname) || defined(SIOCGIFINDEX)
+#if BOBUI_CONFIG(ipv6ifname) || defined(SIOCGIFINDEX)
     // Get the interface index
 #  ifdef SIOCGIFINDEX
-    if (qt_safe_ioctl(socket, SIOCGIFINDEX, &req) >= 0)
+    if (bobui_safe_ioctl(socket, SIOCGIFINDEX, &req) >= 0)
         ifindex = ifreq_index(req);
 #  else
     ifindex = if_nametoindex(req.ifr_name);
@@ -229,7 +229,7 @@ static QList<QNetworkInterfacePrivate *> interfaceListing()
     QList<QNetworkInterfacePrivate *> interfaces;
 
     int socket;
-    if ((socket = qt_safe_socket(AF_INET, SOCK_STREAM, IPPROTO_IP)) == -1)
+    if ((socket = bobui_safe_socket(AF_INET, SOCK_STREAM, IPPROTO_IP)) == -1)
         return interfaces;      // error
 
     QSet<QByteArray> names = interfaceNames(socket);
@@ -245,7 +245,7 @@ static QList<QNetworkInterfacePrivate *> interfaceListing()
 #ifdef SIOCGIFNAME
         // Get the canonical name
         QByteArray oldName = req.ifr_name;
-        if (qt_safe_ioctl(socket, SIOCGIFNAME, &req) >= 0) {
+        if (bobui_safe_ioctl(socket, SIOCGIFNAME, &req) >= 0) {
             iface->name = QString::fromLatin1(req.ifr_name);
 
             // reset the name:
@@ -259,14 +259,14 @@ static QList<QNetworkInterfacePrivate *> interfaceListing()
         }
 
         // Get interface flags
-        if (qt_safe_ioctl(socket, SIOCGIFFLAGS, &req) >= 0) {
+        if (bobui_safe_ioctl(socket, SIOCGIFFLAGS, &req) >= 0) {
             iface->flags = convertFlags(req.ifr_flags);
         }
         iface->mtu = getMtu(socket, &req);
 
 #ifdef SIOCGIFHWADDR
         // Get the HW address
-        if (qt_safe_ioctl(socket, SIOCGIFHWADDR, &req) >= 0) {
+        if (bobui_safe_ioctl(socket, SIOCGIFHWADDR, &req) >= 0) {
             uchar *addr = (uchar *)req.ifr_addr.sa_data;
             iface->hardwareAddress = iface->makeHwAddress(6, addr);
         }
@@ -274,13 +274,13 @@ static QList<QNetworkInterfacePrivate *> interfaceListing()
 
         // Get the address of the interface
         QNetworkAddressEntry entry;
-        if (qt_safe_ioctl(socket, SIOCGIFADDR, &req) >= 0) {
+        if (bobui_safe_ioctl(socket, SIOCGIFADDR, &req) >= 0) {
             sockaddr *sa = &req.ifr_addr;
             entry.setIp(addressFromSockaddr(sa));
 
             // Get the interface broadcast address
             if (iface->flags & QNetworkInterface::CanBroadcast) {
-                if (qt_safe_ioctl(socket, SIOCGIFBRDADDR, &req) >= 0) {
+                if (bobui_safe_ioctl(socket, SIOCGIFBRDADDR, &req) >= 0) {
                     sockaddr *sa = &req.ifr_addr;
                     if (sa->sa_family == AF_INET)
                         entry.setBroadcast(addressFromSockaddr(sa));
@@ -288,7 +288,7 @@ static QList<QNetworkInterfacePrivate *> interfaceListing()
             }
 
             // Get the interface netmask
-            if (qt_safe_ioctl(socket, SIOCGIFNETMASK, &req) >= 0) {
+            if (bobui_safe_ioctl(socket, SIOCGIFNETMASK, &req) >= 0) {
                 sockaddr *sa = &req.ifr_addr;
                 entry.setNetmask(addressFromSockaddr(sa));
             }
@@ -306,19 +306,19 @@ static QList<QNetworkInterfacePrivate *> interfaceListing()
 
 // platform-specific defs:
 # ifdef Q_OS_LINUX
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #  include <features.h>
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 # endif
 
 static int openSocket(int &socket)
 {
     if (socket == -1)
-        socket = qt_safe_socket(AF_INET, SOCK_DGRAM, 0);
+        socket = bobui_safe_socket(AF_INET, SOCK_DGRAM, 0);
     return socket;
 }
 
-# if defined(Q_OS_LINUX) &&  __GLIBC__ - 0 >= 2 && __GLIBC_MINOR__ - 0 >= 1 && !defined(QT_LINUXBASE)
+# if defined(Q_OS_LINUX) &&  __GLIBC__ - 0 >= 2 && __GLIBC_MINOR__ - 0 >= 1 && !defined(BOBUI_LINUXBASE)
 #  include <netpacket/packet.h>
 
 static QList<QNetworkInterfacePrivate *> createInterfaces(ifaddrs *rawList)
@@ -384,17 +384,17 @@ static void getAddressExtraInfo(QNetworkAddressEntry *entry, struct sockaddr *sa
 }
 
 # elif defined(Q_OS_BSD4)
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #  include <net/if_dl.h>
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
 #  include "qnetworkinterface_uikit_p.h"
 #  include <net/if_types.h>
 #else
 #  include <net/if_media.h>
 #  include <net/if_types.h>
 #  include <netinet/in_var.h>
-#endif // QT_PLATFORM_UIKIT
-QT_END_INCLUDE_NAMESPACE
+#endif // BOBUI_PLATFORM_UIKIT
+BOBUI_END_INCLUDE_NAMESPACE
 
 static QNetworkInterface::InterfaceType probeIfType(int socket, int iftype, struct ifmediareq *req)
 {
@@ -426,7 +426,7 @@ static QNetworkInterface::InterfaceType probeIfType(int socket, int iftype, stru
 
     // For the remainder (including Ethernet), let's try SIOGIFMEDIA
     req->ifm_count = 0;
-    if (qt_safe_ioctl(socket, SIOCGIFMEDIA, req) == 0) {
+    if (bobui_safe_ioctl(socket, SIOCGIFMEDIA, req) == 0) {
         // see https://man.openbsd.org/ifmedia.4
 
         switch (IFM_TYPE(req->ifm_current)) {
@@ -480,7 +480,7 @@ static QList<QNetworkInterfacePrivate *> createInterfaces(ifaddrs *rawList)
         }
 
     if (socket != -1)
-        qt_safe_close(socket);
+        bobui_safe_close(socket);
     return interfaces;
 }
 
@@ -492,7 +492,7 @@ static void getAddressExtraInfo(QNetworkAddressEntry *entry, struct sockaddr *sa
 
     struct in6_ifreq ifr;
 
-    int s6 = qt_safe_socket(AF_INET6, SOCK_DGRAM, 0);
+    int s6 = bobui_safe_socket(AF_INET6, SOCK_DGRAM, 0);
     if (Q_UNLIKELY(s6 < 0)) {
         qErrnoWarning("QNetworkInterface: could not create IPv6 socket");
         return;
@@ -502,8 +502,8 @@ static void getAddressExtraInfo(QNetworkAddressEntry *entry, struct sockaddr *sa
 
     // get flags
     ifr.ifr_addr = *reinterpret_cast<struct sockaddr_in6 *>(sa);
-    if (qt_safe_ioctl(s6, SIOCGIFAFLAG_IN6, &ifr) < 0) {
-        qt_safe_close(s6);
+    if (bobui_safe_ioctl(s6, SIOCGIFAFLAG_IN6, &ifr) < 0) {
+        bobui_safe_close(s6);
         return;
     }
     int flags = ifr.ifr_ifru.ifru_flags6;
@@ -513,16 +513,16 @@ static void getAddressExtraInfo(QNetworkAddressEntry *entry, struct sockaddr *sa
 
     // get lifetimes
     ifr.ifr_addr = *reinterpret_cast<struct sockaddr_in6 *>(sa);
-    if (qt_safe_ioctl(s6, SIOCGIFALIFETIME_IN6, &ifr) < 0) {
-        qt_safe_close(s6);
+    if (bobui_safe_ioctl(s6, SIOCGIFALIFETIME_IN6, &ifr) < 0) {
+        bobui_safe_close(s6);
         return;
     }
-    qt_safe_close(s6);
+    bobui_safe_close(s6);
 
     auto toDeadline = [](time_t when) {
         QDeadlineTimer deadline = QDeadlineTimer::Forever;
         if (when) {
-#if defined(QT_NO_CLOCK_MONOTONIC)
+#if defined(BOBUI_NO_CLOCK_MONOTONIC)
             // no monotonic clock
             deadline.setPreciseRemainingTime(when - QDateTime::currentSecsSinceEpoch());
 #else
@@ -571,7 +571,7 @@ static QList<QNetworkInterfacePrivate *> createInterfaces(ifaddrs *rawList)
     }
 
     if (socket != -1)
-        qt_safe_close(socket);
+        bobui_safe_close(socket);
 
     return interfaces;
 }
@@ -647,6 +647,6 @@ QList<QNetworkInterfacePrivate *> QNetworkInterfaceManager::scan()
     return interfaceListing();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE

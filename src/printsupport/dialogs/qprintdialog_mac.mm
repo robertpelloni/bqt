@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <AppKit/AppKit.h>
 
 #include "qprintdialog.h"
 #include "qabstractprintdialog_p.h"
 
-#include <QtCore/qtemporarydir.h>
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtWidgets/private/qapplication_p.h>
-#include <QtPrintSupport/qprinter.h>
-#include <QtPrintSupport/qprintengine.h>
+#include <BobUICore/bobuiemporarydir.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
+#include <BobUIPrintSupport/qprinter.h>
+#include <BobUIPrintSupport/qprintengine.h>
 #include <qpa/qplatformprintdevice.h>
 
-#include <QtPrintSupport/private/qprintengine_mac_p.h>
+#include <BobUIPrintSupport/private/qprintengine_mac_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-extern qreal qt_pointMultiplier(QPageLayout::Unit unit);
+extern qreal bobui_pointMultiplier(QPageLayout::Unit unit);
 
 class QPrintDialogPrivate : public QAbstractPrintDialogPrivate
 {
@@ -29,7 +29,7 @@ public:
     QPrintDialogPrivate() : printInfo(0), printPanel(0)
        {}
 
-    void openCocoaPrintPanel(Qt::WindowModality modality);
+    void openCocoaPrintPanel(BobUI::WindowModality modality);
     void closeCocoaPrintPanel();
 
     inline QPrintDialog *printDialog() { return q_func(); }
@@ -38,17 +38,17 @@ public:
     NSPrintPanel *printPanel;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 
-@class QT_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate);
+@class BOBUI_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate);
 
-@interface QT_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate) : NSObject
+@interface BOBUI_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate) : NSObject
 @end
 
-@implementation QT_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate) {
+@implementation BOBUI_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate) {
     NSPrintInfo *printInfo;
 }
 
@@ -106,7 +106,7 @@ QT_USE_NAMESPACE
             else
                 qWarning() << "Can not print to file type" << outputFile.suffix();
         } else if (dest == kPMDestinationPreview) {
-            static QTemporaryDir printPreviews;
+            static BOBUIemporaryDir printPreviews;
             auto documentName = printer->docName();
             if (documentName.isEmpty())
                 documentName = QGuiApplication::applicationDisplayName();
@@ -155,11 +155,11 @@ QT_USE_NAMESPACE
             // Even if we pass in our own custom size in mm with decimal places, the dialog will still round it!
             // Suspect internal storage is in rounded mm?
             if (QLocale().measurementSystem() == QLocale::MetricSystem) {
-                QSizeF sizef = QSizeF(width, height) / qt_pointMultiplier(QPageLayout::Millimeter);
+                QSizeF sizef = QSizeF(width, height) / bobui_pointMultiplier(QPageLayout::Millimeter);
                 // Round to 0 decimal places
                 pageSize = QPageSize(sizef.toSize(), QPageSize::Millimeter);
             } else {
-                qreal multiplier = qt_pointMultiplier(QPageLayout::Inch);
+                qreal multiplier = bobui_pointMultiplier(QPageLayout::Inch);
                 const int w = qRound(width * 100 / multiplier);
                 const int h = qRound(height * 100 / multiplier);
                 pageSize = QPageSize(QSizeF(w / 100.0, h / 100.0), QPageSize::Inch);
@@ -177,9 +177,9 @@ QT_USE_NAMESPACE
 
 @end
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-void QPrintDialogPrivate::openCocoaPrintPanel(Qt::WindowModality modality)
+void QPrintDialogPrivate::openCocoaPrintPanel(BobUI::WindowModality modality)
 {
     Q_Q(QPrintDialog);
 
@@ -209,11 +209,11 @@ void QPrintDialogPrivate::openCocoaPrintPanel(Qt::WindowModality modality)
     }
     [printInfo updateFromPMPrintSettings];
 
-    QPrintDialog::PrintDialogOptions qtOptions = q->options();
+    QPrintDialog::PrintDialogOptions bobuiOptions = q->options();
     NSPrintPanelOptions macOptions = NSPrintPanelShowsCopies;
-    if (qtOptions & QPrintDialog::PrintPageRange)
+    if (bobuiOptions & QPrintDialog::PrintPageRange)
         macOptions |= NSPrintPanelShowsPageRange;
-    if (qtOptions & QPrintDialog::PrintShowPageSize)
+    if (bobuiOptions & QPrintDialog::PrintShowPageSize)
         macOptions |= NSPrintPanelShowsPaperSize | NSPrintPanelShowsPageSetupAccessory
                       | NSPrintPanelShowsOrientation;
 
@@ -223,12 +223,12 @@ void QPrintDialogPrivate::openCocoaPrintPanel(Qt::WindowModality modality)
 
     // Call processEvents in case the event dispatcher has been interrupted, and needs to do
     // cleanup of modal sessions. Do this before showing the native dialog, otherwise it will
-    // close down during the cleanup (QTBUG-17913):
+    // close down during the cleanup (BOBUIBUG-17913):
     qApp->processEvents(QEventLoop::ExcludeUserInputEvents | QEventLoop::ExcludeSocketNotifiers);
 
-    QT_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate) *delegate = [[QT_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate) alloc] initWithNSPrintInfo:printInfo];
-    if (modality == Qt::ApplicationModal || !q->parentWidget()) {
-        if (modality == Qt::NonModal)
+    BOBUI_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate) *delegate = [[BOBUI_MANGLE_NAMESPACE(QCocoaPrintPanelDelegate) alloc] initWithNSPrintInfo:printInfo];
+    if (modality == BobUI::ApplicationModal || !q->parentWidget()) {
+        if (modality == BobUI::NonModal)
             qWarning("QPrintDialog is required to be modal on OS X");
 
         // Make sure we don't interrupt the runModalWithPrintInfo call.
@@ -260,13 +260,13 @@ void QPrintDialogPrivate::closeCocoaPrintPanel()
 QPrintDialog::QPrintDialog(QPrinter *printer, QWidget *parent)
     : QAbstractPrintDialog(*(new QPrintDialogPrivate), printer, parent)
 {
-    setAttribute(Qt::WA_DontShowOnScreen);
+    setAttribute(BobUI::WA_DontShowOnScreen);
 }
 
 QPrintDialog::QPrintDialog(QWidget *parent)
     : QAbstractPrintDialog(*(new QPrintDialogPrivate), 0, parent)
 {
-    setAttribute(Qt::WA_DontShowOnScreen);
+    setAttribute(BobUI::WA_DontShowOnScreen);
 }
 
 QPrintDialog::~QPrintDialog()
@@ -281,7 +281,7 @@ int QPrintDialog::exec()
     QDialog::setVisible(true);
 
     QMacAutoReleasePool pool;
-    d->openCocoaPrintPanel(Qt::ApplicationModal);
+    d->openCocoaPrintPanel(BobUI::ApplicationModal);
     d->closeCocoaPrintPanel();
 
     QDialog::setVisible(false);
@@ -308,10 +308,10 @@ void QPrintDialog::setVisible(bool visible)
     QDialog::setVisible(visible);
 
     if (visible) {
-        Qt::WindowModality modality = windowModality();
-        if (modality == Qt::NonModal) {
+        BobUI::WindowModality modality = windowModality();
+        if (modality == BobUI::NonModal) {
             // NSPrintPanels can only be modal, so we must pick a type
-            modality = parentWidget() ? Qt::WindowModal : Qt::ApplicationModal;
+            modality = parentWidget() ? BobUI::WindowModal : BobUI::ApplicationModal;
         }
         d->openCocoaPrintPanel(modality);
         return;
@@ -323,6 +323,6 @@ void QPrintDialog::setVisible(bool visible)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qprintdialog.cpp"

@@ -1,32 +1,32 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtTest/private/qjunittestlogger_p.h>
-#include <QtTest/private/qtestelement_p.h>
-#include <QtTest/private/qtestjunitstreamer_p.h>
-#include <QtTest/qtestcase.h>
-#include <QtTest/private/qtestresult_p.h>
-#include <QtTest/private/qbenchmark_p.h>
-#include <QtTest/private/qtestlog_p.h>
+#include <BobUITest/private/qjunittestlogger_p.h>
+#include <BobUITest/private/bobuiestelement_p.h>
+#include <BobUITest/private/bobuiestjunitstreamer_p.h>
+#include <BobUITest/bobuiestcase.h>
+#include <BobUITest/private/bobuiestresult_p.h>
+#include <BobUITest/private/qbenchmark_p.h>
+#include <BobUITest/private/bobuiestlog_p.h>
 
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qlibraryinfo.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qlibraryinfo.h>
 
 #include <cstdio>
 
 #include <string.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 /*! \internal
     \class QJUnitTestLogger
-    \inmodule QtTest
+    \inmodule BobUITest
 
     QJUnitTestLogger implements logging in a JUnit-compatible XML format.
 
     The \l{JUnit XML} format was originally developed for Java testing.
     It is supported by \l{Test Center}.
 */
-// QTBUG-95424 links to further useful documentation.
+// BOBUIBUG-95424 links to further useful documentation.
 
 QJUnitTestLogger::QJUnitTestLogger(const char *filename)
     : QAbstractTestLogger(filename)
@@ -56,35 +56,35 @@ void QJUnitTestLogger::startLogging()
 {
     QAbstractTestLogger::startLogging();
 
-    logFormatter = new QTestJUnitStreamer(this);
+    logFormatter = new BOBUIestJUnitStreamer(this);
 
     Q_ASSERT(!currentTestSuite);
-    currentTestSuite = new QTestElement(QTest::LET_TestSuite);
-    currentTestSuite->addAttribute(QTest::AI_Name, QTestResult::currentTestObjectName());
+    currentTestSuite = new BOBUIestElement(BOBUIest::LET_TestSuite);
+    currentTestSuite->addAttribute(BOBUIest::AI_Name, BOBUIestResult::currentTestObjectName());
 
     auto localTime = QDateTime::currentDateTime();
-    currentTestSuite->addAttribute(QTest::AI_Timestamp,
-        localTime.toString(Qt::ISODate).toUtf8().constData());
+    currentTestSuite->addAttribute(BOBUIest::AI_Timestamp,
+        localTime.toString(BobUI::ISODate).toUtf8().constData());
 
-    currentTestSuite->addAttribute(QTest::AI_Hostname,
+    currentTestSuite->addAttribute(BOBUIest::AI_Hostname,
         QSysInfo::machineHostName().toUtf8().constData());
 
-    QTestElement *property;
-    QTestElement *properties = new QTestElement(QTest::LET_Properties);
+    BOBUIestElement *property;
+    BOBUIestElement *properties = new BOBUIestElement(BOBUIest::LET_Properties);
 
-    property = new QTestElement(QTest::LET_Property);
-    property->addAttribute(QTest::AI_Name, "QTestVersion");
-    property->addAttribute(QTest::AI_PropertyValue, QTEST_VERSION_STR);
+    property = new BOBUIestElement(BOBUIest::LET_Property);
+    property->addAttribute(BOBUIest::AI_Name, "BOBUIestVersion");
+    property->addAttribute(BOBUIest::AI_PropertyValue, BOBUIEST_VERSION_STR);
     properties->addChild(property);
 
-    property = new QTestElement(QTest::LET_Property);
-    property->addAttribute(QTest::AI_Name, "QtVersion");
-    property->addAttribute(QTest::AI_PropertyValue, qVersion());
+    property = new BOBUIestElement(BOBUIest::LET_Property);
+    property->addAttribute(BOBUIest::AI_Name, "BobUIVersion");
+    property->addAttribute(BOBUIest::AI_PropertyValue, qVersion());
     properties->addChild(property);
 
-    property = new QTestElement(QTest::LET_Property);
-    property->addAttribute(QTest::AI_Name, "QtBuild");
-    property->addAttribute(QTest::AI_PropertyValue, QLibraryInfo::build());
+    property = new BOBUIestElement(BOBUIest::LET_Property);
+    property->addAttribute(BOBUIest::AI_Name, "BobUIBuild");
+    property->addAttribute(BOBUIest::AI_PropertyValue, QLibraryInfo::build());
     properties->addChild(property);
 
     currentTestSuite->addChild(properties);
@@ -97,19 +97,19 @@ void QJUnitTestLogger::stopLogging()
     char buf[10];
 
     std::snprintf(buf, sizeof(buf), "%i", testCounter);
-    currentTestSuite->addAttribute(QTest::AI_Tests, buf);
+    currentTestSuite->addAttribute(BOBUIest::AI_Tests, buf);
 
     std::snprintf(buf, sizeof(buf), "%i", failureCounter);
-    currentTestSuite->addAttribute(QTest::AI_Failures, buf);
+    currentTestSuite->addAttribute(BOBUIest::AI_Failures, buf);
 
     std::snprintf(buf, sizeof(buf), "%i", errorCounter);
-    currentTestSuite->addAttribute(QTest::AI_Errors, buf);
+    currentTestSuite->addAttribute(BOBUIest::AI_Errors, buf);
 
-    std::snprintf(buf, sizeof(buf), "%i", QTestLog::skipCount());
-    currentTestSuite->addAttribute(QTest::AI_Skipped, buf);
+    std::snprintf(buf, sizeof(buf), "%i", BOBUIestLog::skipCount());
+    currentTestSuite->addAttribute(BOBUIest::AI_Skipped, buf);
 
-    currentTestSuite->addAttribute(QTest::AI_Time,
-        toSecondsFormat(QTestLog::msecsTotalTime()).constData());
+    currentTestSuite->addAttribute(BOBUIest::AI_Time,
+        toSecondsFormat(BOBUIestLog::msecsTotalTime()).constData());
 
     for (auto *testCase : listOfTestcases)
         currentTestSuite->addChild(testCase);
@@ -132,14 +132,14 @@ void QJUnitTestLogger::enterTestCase(const char *name)
 {
     {
         QMutexLocker locker(&mutex);
-        currentTestCase = new QTestElement(QTest::LET_TestCase);
-        currentTestCase->addAttribute(QTest::AI_Name, name);
-        currentTestCase->addAttribute(QTest::AI_Classname, QTestResult::currentTestObjectName());
+        currentTestCase = new BOBUIestElement(BOBUIest::LET_TestCase);
+        currentTestCase->addAttribute(BOBUIest::AI_Name, name);
+        currentTestCase->addAttribute(BOBUIest::AI_Classname, BOBUIestResult::currentTestObjectName());
         listOfTestcases.push_back(currentTestCase);
 
         Q_ASSERT(!systemOutputElement && !systemErrorElement);
-        systemOutputElement = new QTestElement(QTest::LET_SystemOutput);
-        systemErrorElement = new QTestElement(QTest::LET_SystemError);
+        systemOutputElement = new BOBUIestElement(BOBUIest::LET_SystemOutput);
+        systemErrorElement = new BOBUIestElement(BOBUIest::LET_SystemError);
     }
 
     // The element will be deleted when the suite is deleted
@@ -149,19 +149,19 @@ void QJUnitTestLogger::enterTestCase(const char *name)
     elapsedTestcaseTime.start();
 }
 
-void QJUnitTestLogger::enterTestData(QTestData *)
+void QJUnitTestLogger::enterTestData(BOBUIestData *)
 {
-    QTestCharBuffer testIdentifier;
-    QTestPrivate::generateTestIdentifier(&testIdentifier,
-        QTestPrivate::TestFunction | QTestPrivate::TestDataTag);
+    BOBUIestCharBuffer testIdentifier;
+    BOBUIestPrivate::generateTestIdentifier(&testIdentifier,
+        BOBUIestPrivate::TestFunction | BOBUIestPrivate::TestDataTag);
 
     static const char *lastTestFunction = nullptr;
-    if (QTestResult::currentTestFunction() != lastTestFunction) {
+    if (BOBUIestResult::currentTestFunction() != lastTestFunction) {
         // Adopt existing testcase for the initial test data
-        auto *name = const_cast<QTestElementAttribute*>(
-            currentTestCase->attribute(QTest::AI_Name));
-        name->setPair(QTest::AI_Name, testIdentifier.data());
-        lastTestFunction = QTestResult::currentTestFunction();
+        auto *name = const_cast<BOBUIestElementAttribute*>(
+            currentTestCase->attribute(BOBUIest::AI_Name));
+        name->setPair(BOBUIest::AI_Name, testIdentifier.data());
+        lastTestFunction = BOBUIestResult::currentTestFunction();
         elapsedTestcaseTime.start();
     } else {
         // Create new test cases for remaining test data
@@ -178,7 +178,7 @@ void QJUnitTestLogger::leaveTestFunction()
 void QJUnitTestLogger::leaveTestCase()
 {
     QMutexLocker locker(&mutex);
-    currentTestCase->addAttribute(QTest::AI_Time,
+    currentTestCase->addAttribute(BOBUIest::AI_Time,
         toSecondsFormat(elapsedTestCaseSeconds() * 1000).constData());
 
     if (!systemOutputElement->childElements().empty())
@@ -207,51 +207,51 @@ void QJUnitTestLogger::addIncident(IncidentTypes type, const char *description,
             }
         }();
 
-        addFailure(QTest::LET_Failure, failureType, QString::fromUtf8(description));
+        addFailure(BOBUIest::LET_Failure, failureType, QString::fromUtf8(description));
     } else if (type == XFail) {
         // Since XFAIL does not add a failure to the testlog in JUnit XML we add a
         // message, so we still have some information about the expected failure.
         addMessage(Info, QString::fromUtf8(description), file, line);
     } else if (type == Skip) {
-        auto skippedElement = new QTestElement(QTest::LET_Skipped);
-        skippedElement->addAttribute(QTest::AI_Message, description);
+        auto skippedElement = new BOBUIestElement(BOBUIest::LET_Skipped);
+        skippedElement->addAttribute(BOBUIest::AI_Message, description);
         currentTestCase->addChild(skippedElement);
     }
 }
 
-void QJUnitTestLogger::addFailure(QTest::LogElementType elementType,
+void QJUnitTestLogger::addFailure(BOBUIest::LogElementType elementType,
     const char *failureType, const QString &failureDescription)
 {
-    if (elementType == QTest::LET_Failure) {
+    if (elementType == BOBUIest::LET_Failure) {
         // Make sure we're not adding failure when we already have error,
         // or adding additional failures when we already have a failure.
         for (auto *childElement : currentTestCase->childElements()) {
-            if (childElement->elementType() == QTest::LET_Error ||
-                childElement->elementType() == QTest::LET_Failure)
+            if (childElement->elementType() == BOBUIest::LET_Error ||
+                childElement->elementType() == BOBUIest::LET_Failure)
                 return;
         }
     }
 
-    QTestElement *failureElement = new QTestElement(elementType);
-    failureElement->addAttribute(QTest::AI_Type, failureType);
+    BOBUIestElement *failureElement = new BOBUIestElement(elementType);
+    failureElement->addAttribute(BOBUIest::AI_Type, failureType);
 
     // Assume the first line is the message, and the remainder are details
     QString message = failureDescription.section(u'\n', 0, 0);
     QString details = failureDescription.section(u'\n', 1);
 
-    failureElement->addAttribute(QTest::AI_Message, message.toUtf8().constData());
+    failureElement->addAttribute(BOBUIest::AI_Message, message.toUtf8().constData());
 
     if (!details.isEmpty()) {
-        auto textNode = new QTestElement(QTest::LET_Text);
-        textNode->addAttribute(QTest::AI_Value, details.toUtf8().constData());
+        auto textNode = new BOBUIestElement(BOBUIest::LET_Text);
+        textNode->addAttribute(BOBUIest::AI_Value, details.toUtf8().constData());
         failureElement->addChild(textNode);
     }
 
     currentTestCase->addChild(failureElement);
 
     switch (elementType) {
-    case QTest::LET_Failure: ++failureCounter; break;
-    case QTest::LET_Error: ++errorCounter; break;
+    case BOBUIest::LET_Failure: ++failureCounter; break;
+    case BOBUIest::LET_Error: ++errorCounter; break;
     default: Q_UNREACHABLE();
     }
 }
@@ -263,7 +263,7 @@ void QJUnitTestLogger::addMessage(MessageTypes type, const QString &message, con
 
     QMutexLocker locker(&mutex);
     if (type == QFatal) {
-        addFailure(QTest::LET_Error, "qfatal", message);
+        addFailure(BOBUIest::LET_Error, "qfatal", message);
         return;
     }
 
@@ -285,10 +285,10 @@ void QJUnitTestLogger::addMessage(MessageTypes type, const QString &message, con
     if (!systemLogElement)
         return; // FIXME: Handle messages outside of test functions
 
-    auto textNode = new QTestElement(QTest::LET_Text);
-    textNode->addAttribute(QTest::AI_Value, message.toUtf8().constData());
+    auto textNode = new BOBUIestElement(BOBUIest::LET_Text);
+    textNode->addAttribute(BOBUIest::AI_Value, message.toUtf8().constData());
     systemLogElement->addChild(textNode);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

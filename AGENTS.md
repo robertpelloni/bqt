@@ -8,7 +8,7 @@
 2. **Version Control:** Update `CHANGELOG.md` and `VERSION.md` for every build/session. Commit and push.
 3. **Documentation:** Keep VISION, MEMORY, DEPLOY, ROADMAP, TODO, and IDEAS up to date.
 4. **Git Operations:** Intelligently merge local feature branches to main, pull upstream changes, resolve conflicts carefully without losing features, and sync submodules recursively.
-5. **Implementation:** 100% Qt6 parity. No partial features. Everything must be wired to UI and documented.
+5. **Implementation:** 100% BobUI6 parity. No partial features. Everything must be wired to UI and documented.
 
 ## Sub-Agent Instructions
 See individual model files:

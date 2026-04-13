@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoffscreenintegration_x11.h"
 
@@ -9,12 +9,12 @@
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 
-#include <QtGui/private/qglxconvenience_p.h>
+#include <BobUIGui/private/qglxconvenience_p.h>
 
 #include <qpa/qplatformsurface.h>
 #include <qsurface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOffscreenX11Info
 {
@@ -57,7 +57,7 @@ bool QOffscreenX11Integration::hasCapability(QPlatformIntegration::Capability ca
     }
 }
 
-#if !defined(QT_NO_OPENGL) && QT_CONFIG(xcb_glx_plugin)
+#if !defined(BOBUI_NO_OPENGL) && BOBUI_CONFIG(xcb_glx_plugin)
 QPlatformOpenGLContext *QOffscreenX11Integration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
     auto &connection = nativeInterface()->m_connection;
@@ -70,7 +70,7 @@ QPlatformOpenGLContext *QOffscreenX11Integration::createPlatformOpenGLContext(QO
 
     return new QOffscreenX11GLXContext(connection->x11Info(), context);
 }
-#endif // !defined(QT_NO_OPENGL) && QT_CONFIG(xcb_glx_plugin)
+#endif // !defined(BOBUI_NO_OPENGL) && BOBUI_CONFIG(xcb_glx_plugin)
 
 QOffscreenX11PlatformNativeInterface *QOffscreenX11Integration::nativeInterface() const
 {
@@ -98,7 +98,7 @@ void *QOffscreenX11PlatformNativeInterface::nativeResourceForScreen(const QByteA
     return nullptr;
 }
 
-#if !defined(QT_NO_OPENGL) && QT_CONFIG(xcb_glx_plugin)
+#if !defined(BOBUI_NO_OPENGL) && BOBUI_CONFIG(xcb_glx_plugin)
 void *QOffscreenX11PlatformNativeInterface::nativeResourceForContext(const QByteArray &resource, QOpenGLContext *context) {
     if (resource.toLower() == QByteArrayLiteral("glxconfig") ) {
         if (context) {
@@ -118,7 +118,7 @@ void *QOffscreenX11PlatformNativeInterface::nativeResourceForContext(const QByte
 }
 #endif
 
-#if QT_CONFIG(xcb)
+#if BOBUI_CONFIG(xcb)
 Display *QOffscreenX11PlatformNativeInterface::display() const
 {
     return m_connection ? reinterpret_cast<Display *>(m_connection->display()) : nullptr;
@@ -148,7 +148,7 @@ QOffscreenX11Info *QOffscreenX11Connection::x11Info()
     return m_x11Info.data();
 }
 
-#if QT_CONFIG(xcb_glx_plugin)
+#if BOBUI_CONFIG(xcb_glx_plugin)
 class QOffscreenX11GLXContextData
 {
 public:
@@ -296,5 +296,5 @@ void *QOffscreenX11GLXContext::glxConfig() const
 {
     return d->config;
 }
-#endif // QT_CONFIG(xcb_glx_plugin)
-QT_END_NAMESPACE
+#endif // BOBUI_CONFIG(xcb_glx_plugin)
+BOBUI_END_NAMESPACE

@@ -1,15 +1,15 @@
 // Copyright (C) 2019 Samuel Gaist <samuel.gaist@idiap.ch>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 #include <private/qsessionmanager_p.h>
 #include <private/qguiapplication_p.h>
 
 #include "qcocoasessionmanager.h"
 #include <qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QCocoaSessionManager::QCocoaSessionManager(const QString &id, const QString &key)
     : QPlatformSessionManager(id, key),
@@ -48,6 +48,6 @@ QCocoaSessionManager *QCocoaSessionManager::instance()
     return static_cast<QCocoaSessionManager *>(managerPrivate->platformSessionManager);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_SESSIONMANAGER
+#endif // BOBUI_NO_SESSIONMANAGER

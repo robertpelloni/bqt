@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 void example()
 {
     //! [0]
     QGraphicsScene scene;
-    QGraphicsWidget *textEdit = scene.addWidget(new QTextEdit);
+    QGraphicsWidget *textEdit = scene.addWidget(new BOBUIextEdit);
     QGraphicsWidget *pushButton = scene.addWidget(new QPushButton);
 
     QGraphicsWidget *form = new QGraphicsWidget;

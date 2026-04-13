@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "private/qimagereaderwriterhelpers_p.h"
 
@@ -7,13 +7,13 @@
 #include <qmutex.h>
 #include <private/qfactoryloader_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace QImageReaderWriterHelpers {
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, irhLoader,
                           (QImageIOHandlerFactoryInterface_iid, "/imageformats"_L1))
@@ -50,7 +50,7 @@ static void appendImagePluginMimeTypes(QFactoryLoader *loader,
     QList<QPluginParsedMetaData> metaDataList = loader->metaData();
     const int pluginCount = metaDataList.size();
     for (int i = 0; i < pluginCount; ++i) {
-        const QCborMap metaData = metaDataList.at(i).value(QtPluginMetaDataKeys::MetaData).toMap();
+        const QCborMap metaData = metaDataList.at(i).value(BobUIPluginMetaDataKeys::MetaData).toMap();
         const QCborArray keys = metaData.value("Keys"_L1).toArray();
         const QCborArray mimeTypes = metaData.value("MimeTypes"_L1).toArray();
         QImageIOPlugin *plugin = qobject_cast<QImageIOPlugin *>(loader->instance(i));
@@ -79,18 +79,18 @@ static inline QImageIOPlugin::Capability pluginCapability(Capability cap)
     return cap == CanRead ? QImageIOPlugin::CanRead : QImageIOPlugin::CanWrite;
 }
 
-#endif // QT_NO_IMAGEFORMATPLUGIN
+#endif // BOBUI_NO_IMAGEFORMATPLUGIN
 
 QList<QByteArray> supportedImageFormats(Capability cap)
 {
     QList<QByteArray> formats;
-    formats.reserve(_qt_NumFormats);
-    for (int i = 0; i < _qt_NumFormats; ++i)
-        formats << _qt_BuiltInFormats[i].extension;
+    formats.reserve(_bobui_NumFormats);
+    for (int i = 0; i < _bobui_NumFormats; ++i)
+        formats << _bobui_BuiltInFormats[i].extension;
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
     appendImagePluginFormats(irhLoader(), pluginCapability(cap), &formats);
-#endif // QT_NO_IMAGEFORMATPLUGIN
+#endif // BOBUI_NO_IMAGEFORMATPLUGIN
 
     std::sort(formats.begin(), formats.end());
     formats.erase(std::unique(formats.begin(), formats.end()), formats.end());
@@ -102,13 +102,13 @@ static constexpr QByteArrayView imagePrefix() noexcept { return "image/"; }
 QList<QByteArray> supportedMimeTypes(Capability cap)
 {
     QList<QByteArray> mimeTypes;
-    mimeTypes.reserve(_qt_NumFormats);
-    for (const auto &fmt : _qt_BuiltInFormats)
+    mimeTypes.reserve(_bobui_NumFormats);
+    for (const auto &fmt : _bobui_BuiltInFormats)
         mimeTypes.emplace_back(imagePrefix() + fmt.mimeType);
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
     appendImagePluginMimeTypes(irhLoader(), pluginCapability(cap), &mimeTypes);
-#endif // QT_NO_IMAGEFORMATPLUGIN
+#endif // BOBUI_NO_IMAGEFORMATPLUGIN
 
     std::sort(mimeTypes.begin(), mimeTypes.end());
     mimeTypes.erase(std::unique(mimeTypes.begin(), mimeTypes.end()), mimeTypes.end());
@@ -120,13 +120,13 @@ QList<QByteArray> imageFormatsForMimeType(QByteArrayView mimeType, Capability ca
     QList<QByteArray> formats;
     if (mimeType.startsWith(imagePrefix())) {
         const QByteArrayView type = mimeType.mid(imagePrefix().size());
-        for (const auto &fmt : _qt_BuiltInFormats) {
+        for (const auto &fmt : _bobui_BuiltInFormats) {
             if (fmt.mimeType == type && !formats.contains(fmt.extension))
                 formats << fmt.extension;
         }
     }
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
     QList<QByteArray> mimeTypes;
     QList<QByteArray> keys;
     appendImagePluginMimeTypes(irhLoader(), pluginCapability(cap), &mimeTypes, &keys);
@@ -137,11 +137,11 @@ QList<QByteArray> imageFormatsForMimeType(QByteArrayView mimeType, Capability ca
                 formats << key;
         }
     }
-#endif // QT_NO_IMAGEFORMATPLUGIN
+#endif // BOBUI_NO_IMAGEFORMATPLUGIN
 
     return formats;
 }
 
 } // QImageReaderWriterHelpers
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

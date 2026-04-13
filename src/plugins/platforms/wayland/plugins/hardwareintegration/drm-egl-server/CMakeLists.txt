@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Generated from drm-egl-server.pro.
@@ -7,7 +7,7 @@
 ## DrmEglServerBufferPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(DrmEglServerBufferPlugin
+bobui_internal_add_plugin(DrmEglServerBufferPlugin
     OUTPUT_NAME drm-egl-server
     PLUGIN_TYPE wayland-graphics-integration-client
     SOURCES
@@ -15,15 +15,15 @@ qt_internal_add_plugin(DrmEglServerBufferPlugin
         main.cpp
     LIBRARIES
         EGL::EGL
-        Qt::Core
-        Qt::Gui
-        Qt::OpenGL
-        Qt::WaylandClientPrivate
+        BobUI::Core
+        BobUI::Gui
+        BobUI::OpenGL
+        BobUI::WaylandClientPrivate
         Wayland::Client
-    QT_LICENSE_ID QT_COMMERCIAL_OR_LGPL3
+    BOBUI_LICENSE_ID BOBUI_COMMERCIAL_OR_LGPL3
 )
 
-qt6_generate_wayland_protocol_client_sources(DrmEglServerBufferPlugin
+bobui6_generate_wayland_protocol_client_sources(DrmEglServerBufferPlugin
     PRIVATE_CODE
     FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../3rdparty/wayland/extensions/drm-egl-server-buffer.xml

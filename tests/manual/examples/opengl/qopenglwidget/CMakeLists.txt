@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(qopenglwidget LANGUAGES CXX)
@@ -10,11 +10,11 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/opengl/qopenglwidget")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui OpenGL OpenGLWidgets Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui OpenGL OpenGLWidgets Widgets)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(qopenglwidget
+bobui_add_executable(qopenglwidget
     bubble.cpp bubble.h
     glwidget.cpp glwidget.h
     main.cpp
@@ -27,19 +27,19 @@ set_target_properties(qopenglwidget PROPERTIES
 )
 
 target_link_libraries(qopenglwidget PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::OpenGL
-    Qt6::OpenGLWidgets
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::OpenGL
+    BobUI6::OpenGLWidgets
+    BobUI6::Widgets
 )
 
 # Resources:
 set(texture_resource_files
-    "qt.png"
+    "bobui.png"
 )
 
-qt6_add_resources(qopenglwidget "texture"
+bobui6_add_resources(qopenglwidget "texture"
     PREFIX
         "/"
     FILES

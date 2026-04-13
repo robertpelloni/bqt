@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS       = renderarea.h \
                 window.h
@@ -9,5 +9,5 @@ SOURCES       = main.cpp \
 RESOURCES     = basicdrawing.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/basicdrawing
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/painting/basicdrawing
 INSTALLS += target

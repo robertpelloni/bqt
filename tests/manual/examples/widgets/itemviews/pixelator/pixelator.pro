@@ -1,6 +1,6 @@
-QT += widgets
-requires(qtConfig(tableview))
-qtHaveModule(printsupport): QT += printsupport
+BOBUI += widgets
+requires(bobuiConfig(tableview))
+bobuiHaveModule(printsupport): BOBUI += printsupport
 
 HEADERS     = imagemodel.h \
               mainwindow.h \
@@ -12,5 +12,5 @@ SOURCES     = imagemodel.cpp \
 RESOURCES   += images.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/pixelator
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/pixelator
 INSTALLS += target

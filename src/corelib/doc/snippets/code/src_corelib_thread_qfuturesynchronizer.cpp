@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QFutureSynchronizer>
-#include <QtConcurrent>
+#include <BobUIConcurrent>
 #include <QList>
 
 auto anotherFunction = []() {};
@@ -16,8 +16,8 @@ void someFunction()
 
     //...
 
-    synchronizer.addFuture(QtConcurrent::run(anotherFunction));
-    synchronizer.addFuture(QtConcurrent::map(list, mapFunction));
+    synchronizer.addFuture(BobUIConcurrent::run(anotherFunction));
+    synchronizer.addFuture(BobUIConcurrent::map(list, mapFunction));
 
     return; // QFutureSynchronizer waits for all futures to finish
 }

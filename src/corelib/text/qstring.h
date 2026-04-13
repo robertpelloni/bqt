@@ -1,34 +1,34 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2019 Intel Corporation.
 // Copyright (C) 2019 Mail.ru Group.
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QSTRING_H
 #define QSTRING_H
 
-#if defined(QT_NO_CAST_FROM_ASCII) && defined(QT_RESTRICTED_CAST_FROM_ASCII)
-#error QT_NO_CAST_FROM_ASCII and QT_RESTRICTED_CAST_FROM_ASCII must not be defined at the same time
+#if defined(BOBUI_NO_CAST_FROM_ASCII) && defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+#error BOBUI_NO_CAST_FROM_ASCII and BOBUI_RESTRICTED_CAST_FROM_ASCII must not be defined at the same time
 #endif
 
-#include <QtCore/qchar.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qbytearrayview.h>
-#include <QtCore/qarraydata.h>
-#include <QtCore/qarraydatapointer.h>
-#include <QtCore/qlatin1stringview.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qstringalgorithms.h>
-#include <QtCore/qanystringview.h>
-#include <QtCore/qstringtokenizer.h>
+#include <BobUICore/qchar.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qbytearrayview.h>
+#include <BobUICore/qarraydata.h>
+#include <BobUICore/qarraydatapointer.h>
+#include <BobUICore/qlatin1stringview.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qstringalgorithms.h>
+#include <BobUICore/qanystringview.h>
+#include <BobUICore/qstringtokenizer.h>
 
 #include <string>
 #include <iterator>
-#include <QtCore/q20memory.h>
+#include <BobUICore/q20memory.h>
 #include <string_view>
-#include <QtCore/q23type_traits.h>
+#include <BobUICore/q23type_traits.h>
 
 #include <stdarg.h>
 
@@ -43,14 +43,14 @@ Q_FORWARD_DECLARE_OBJC_CLASS(NSString);
 
 class tst_QString;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class qfloat16;
 class QRegularExpression;
 class QRegularExpressionMatch;
 class QString;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <bool...B> class BoolList;
 
 template <typename Char>
@@ -61,7 +61,7 @@ using IsCompatibleChar32Type
     = IsCompatibleChar32TypeHelper<q20::remove_cvref_t<Char>>;
 
 // hack to work around ushort/uchar etc being treated as both characters and
-// integers, depending on which Qt API you look at:
+// integers, depending on which BobUI API you look at:
 template <typename T> struct treat_as_integral_arg : std::false_type {};
 template <> struct treat_as_integral_arg<unsigned short> : std::true_type {};
 template <> struct treat_as_integral_arg<  signed short> : std::true_type {};
@@ -69,68 +69,68 @@ template <> struct treat_as_integral_arg<unsigned  char> : std::true_type {};
 template <> struct treat_as_integral_arg<  signed  char> : std::true_type {};
 }
 
-// Qt 4.x compatibility
+// BobUI 4.x compatibility
 
 //
 // QLatin1StringView inline implementations
 //
-constexpr bool QtPrivate::isLatin1(QLatin1StringView) noexcept
+constexpr bool BobUIPrivate::isLatin1(QLatin1StringView) noexcept
 { return true; }
 
 //
 // QStringView members that require QLatin1StringView:
 //
-int QStringView::compare(QLatin1StringView s, Qt::CaseSensitivity cs) const noexcept
+int QStringView::compare(QLatin1StringView s, BobUI::CaseSensitivity cs) const noexcept
 {
 #if defined(Q_CC_GNU) || __has_builtin(__builtin_constant_p)
     if (__builtin_constant_p(s.m_size) && s.size() == 1)
         return compare(s.front(), cs);
 #endif
-    return QtPrivate::compareStrings(*this, s, cs);
+    return BobUIPrivate::compareStrings(*this, s, cs);
 }
-bool QStringView::startsWith(QLatin1StringView s, Qt::CaseSensitivity cs) const noexcept
+bool QStringView::startsWith(QLatin1StringView s, BobUI::CaseSensitivity cs) const noexcept
 {
 #if defined(Q_CC_GNU) || __has_builtin(__builtin_constant_p)
     if (__builtin_constant_p(s.m_size) && s.size() == 1)
         return startsWith(s.front(), cs);
 #endif
-    return QtPrivate::startsWith(*this, s, cs);
+    return BobUIPrivate::startsWith(*this, s, cs);
 }
-bool QStringView::endsWith(QLatin1StringView s, Qt::CaseSensitivity cs) const noexcept
+bool QStringView::endsWith(QLatin1StringView s, BobUI::CaseSensitivity cs) const noexcept
 {
 #if defined(Q_CC_GNU) || __has_builtin(__builtin_constant_p)
     if (__builtin_constant_p(s.m_size) && s.size() == 1)
         return endsWith(s.front(), cs);
 #endif
-    return QtPrivate::endsWith(*this, s, cs);
+    return BobUIPrivate::endsWith(*this, s, cs);
 }
-qsizetype QStringView::indexOf(QLatin1StringView s, qsizetype from, Qt::CaseSensitivity cs) const noexcept
+qsizetype QStringView::indexOf(QLatin1StringView s, qsizetype from, BobUI::CaseSensitivity cs) const noexcept
 {
 #if defined(Q_CC_GNU) || __has_builtin(__builtin_constant_p)
     if (__builtin_constant_p(s.m_size) && s.size() == 1)
         return indexOf(s.front(), from, cs);
 #endif
-    return QtPrivate::findString(*this, from, s, cs);
+    return BobUIPrivate::findString(*this, from, s, cs);
 }
-bool QStringView::contains(QLatin1StringView s, Qt::CaseSensitivity cs) const noexcept
+bool QStringView::contains(QLatin1StringView s, BobUI::CaseSensitivity cs) const noexcept
 { return indexOf(s, 0, cs) != qsizetype(-1); }
-qsizetype QStringView::lastIndexOf(QLatin1StringView s, Qt::CaseSensitivity cs) const noexcept
+qsizetype QStringView::lastIndexOf(QLatin1StringView s, BobUI::CaseSensitivity cs) const noexcept
 { return lastIndexOf(s, size(), cs); }
-qsizetype QStringView::lastIndexOf(QLatin1StringView s, qsizetype from, Qt::CaseSensitivity cs) const noexcept
+qsizetype QStringView::lastIndexOf(QLatin1StringView s, qsizetype from, BobUI::CaseSensitivity cs) const noexcept
 {
 #if defined(Q_CC_GNU) || __has_builtin(__builtin_constant_p)
     if (__builtin_constant_p(s.m_size) && s.size() == 1)
         return lastIndexOf(s.front(), from, cs);
 #endif
-    return QtPrivate::lastIndexOf(*this, from, s, cs);
+    return BobUIPrivate::lastIndexOf(*this, from, s, cs);
 }
-qsizetype QStringView::count(QLatin1StringView s, Qt::CaseSensitivity cs) const
+qsizetype QStringView::count(QLatin1StringView s, BobUI::CaseSensitivity cs) const
 {
 #if defined(Q_CC_GNU) || __has_builtin(__builtin_constant_p)
     if (__builtin_constant_p(s.m_size) && s.size() == 1)
         return count(s.front(), cs);
 #endif
-    return QtPrivate::count(*this, s, cs);
+    return BobUIPrivate::count(*this, s, cs);
 }
 
 //
@@ -175,7 +175,7 @@ using QStringPrivate = QArrayDataPointer<char16_t>;
 
 class Q_CORE_EXPORT QString
 {
-    typedef QTypedArrayData<char16_t> Data;
+    typedef BOBUIypedArrayData<char16_t> Data;
 
     friend class ::tst_QString;
 
@@ -189,15 +189,15 @@ class Q_CORE_EXPORT QString
 
     template <typename Char>
     using is_compatible_char_helper = std::disjunction<
-            QtPrivate::IsCompatibleCharType<Char>,
-            QtPrivate::IsCompatibleChar32Type<Char>,
-            QtPrivate::IsCompatibleChar8Type<Char>,
+            BobUIPrivate::IsCompatibleCharType<Char>,
+            BobUIPrivate::IsCompatibleChar32Type<Char>,
+            BobUIPrivate::IsCompatibleChar8Type<Char>,
             std::is_same<Char, QLatin1Char> // special case
         >;
 
     template <typename T>
     using is_string_like = std::conjunction<
-            std::negation<QtPrivate::treat_as_integral_arg<std::remove_cv_t<T>>>, // used to be integral, so keep
+            std::negation<BobUIPrivate::treat_as_integral_arg<std::remove_cv_t<T>>>, // used to be integral, so keep
             std::is_convertible<T, QAnyStringView>
         >;
 
@@ -207,7 +207,7 @@ class Q_CORE_EXPORT QString
     template <typename T>
     using is_floating_point_like = std::disjunction<
         #if QFLOAT16_IS_NATIVE
-            std::is_same<q20::remove_cvref_t<T>, QtPrivate::NativeFloat16Type>,
+            std::is_same<q20::remove_cvref_t<T>, BobUIPrivate::NativeFloat16Type>,
         #endif
             std::is_same<q20::remove_cvref_t<T>, qfloat16>,
             std::is_floating_point<T>
@@ -263,7 +263,7 @@ public:
     QString &operator=(QLatin1StringView latin1);
     inline QString(QString &&other) noexcept
         = default;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QString)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QString)
     void swap(QString &other) noexcept { d.swap(other.d); }
 
     static constexpr qsizetype maxSize() noexcept
@@ -277,8 +277,8 @@ public:
         Q_PRESUME(size_t(d.size) <= MaxSize);
         return d.size;
     }
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_DEPRECATED_VERSION_X_6_4("Use size() or length() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_DEPRECATED_VERSION_X_6_4("Use size() or length() instead.")
     constexpr qsizetype count() const { return size(); }
 #endif
     constexpr qsizetype length() const noexcept { return size(); }
@@ -325,7 +325,7 @@ public:
     [[nodiscard]] inline QChar back() const { return at(size() - 1); }
     [[nodiscard]] inline QChar &back();
 
-#if QT_CORE_REMOVED_SINCE(6, 9)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9)
     [[nodiscard]] QString arg(qlonglong a, int fieldwidth=0, int base=10,
                 QChar fillChar = u' ') const;
     [[nodiscard]] QString arg(qulonglong a, int fieldwidth=0, int base=10,
@@ -403,37 +403,37 @@ public:
     static QString vasprintf(const char *format, va_list ap) Q_ATTRIBUTE_FORMAT_PRINTF(1, 0);
     static QString asprintf(const char *format, ...) Q_ATTRIBUTE_FORMAT_PRINTF(1, 2);
 
-    [[nodiscard]] QT_CORE_INLINE_SINCE(6, 8)
-    qsizetype indexOf(QChar c, qsizetype from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] qsizetype indexOf(QLatin1StringView s, qsizetype from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] qsizetype indexOf(const QString &s, qsizetype from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] qsizetype indexOf(QStringView s, qsizetype from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept
-    { return QtPrivate::findString(*this, from, s, cs); }
-    [[nodiscard]] qsizetype lastIndexOf(QChar c, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept
+    [[nodiscard]] BOBUI_CORE_INLINE_SINCE(6, 8)
+    qsizetype indexOf(QChar c, qsizetype from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] qsizetype indexOf(QLatin1StringView s, qsizetype from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] qsizetype indexOf(const QString &s, qsizetype from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] qsizetype indexOf(QStringView s, qsizetype from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept
+    { return BobUIPrivate::findString(*this, from, s, cs); }
+    [[nodiscard]] qsizetype lastIndexOf(QChar c, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept
     { return lastIndexOf(c, -1, cs); }
-    [[nodiscard]] QT_CORE_INLINE_SINCE(6, 8)
-    qsizetype lastIndexOf(QChar c, qsizetype from, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] qsizetype lastIndexOf(QLatin1StringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
+    [[nodiscard]] BOBUI_CORE_INLINE_SINCE(6, 8)
+    qsizetype lastIndexOf(QChar c, qsizetype from, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] qsizetype lastIndexOf(QLatin1StringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
     { return lastIndexOf(s, size(), cs); }
-    [[nodiscard]] qsizetype lastIndexOf(QLatin1StringView s, qsizetype from, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] qsizetype lastIndexOf(const QString &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
+    [[nodiscard]] qsizetype lastIndexOf(QLatin1StringView s, qsizetype from, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] qsizetype lastIndexOf(const QString &s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
     { return lastIndexOf(s, size(), cs); }
-    [[nodiscard]] qsizetype lastIndexOf(const QString &s, qsizetype from, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    [[nodiscard]] qsizetype lastIndexOf(const QString &s, qsizetype from, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
 
-    [[nodiscard]] qsizetype lastIndexOf(QStringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept
+    [[nodiscard]] qsizetype lastIndexOf(QStringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept
     { return lastIndexOf(s, size(), cs); }
-    [[nodiscard]] qsizetype lastIndexOf(QStringView s, qsizetype from, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept
-    { return QtPrivate::lastIndexOf(*this, from, s, cs); }
+    [[nodiscard]] qsizetype lastIndexOf(QStringView s, qsizetype from, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept
+    { return BobUIPrivate::lastIndexOf(*this, from, s, cs); }
 
-    [[nodiscard]] inline bool contains(QChar c, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] inline bool contains(const QString &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] inline bool contains(QLatin1StringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] inline bool contains(QStringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept;
-    [[nodiscard]] qsizetype count(QChar c, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] qsizetype count(const QString &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] qsizetype count(QStringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    [[nodiscard]] inline bool contains(QChar c, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] inline bool contains(const QString &s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] inline bool contains(QLatin1StringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] inline bool contains(QStringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept;
+    [[nodiscard]] qsizetype count(QChar c, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] qsizetype count(const QString &s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] qsizetype count(QStringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     [[nodiscard]] qsizetype indexOf(const QRegularExpression &re, qsizetype from = 0,
                                     QRegularExpressionMatch *rmatch = nullptr) const;
 #ifdef Q_QDOC
@@ -461,11 +461,11 @@ public:
 
     [[nodiscard]] inline QString section(QChar sep, qsizetype start, qsizetype end = -1, SectionFlags flags = SectionDefault) const;
     [[nodiscard]] QString section(const QString &in_sep, qsizetype start, qsizetype end = -1, SectionFlags flags = SectionDefault) const;
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     [[nodiscard]] QString section(const QRegularExpression &re, qsizetype start, qsizetype end = -1, SectionFlags flags = SectionDefault) const;
 #endif
 
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     QString left(qsizetype n) const;
     QString right(qsizetype n) const;
     QString mid(qsizetype position, qsizetype n = -1) const;
@@ -529,17 +529,17 @@ public:
     [[nodiscard]] QString chopped(qsizetype n) &&
     { verify(0, n); return std::move(*this).first(size() - n); }
 #endif
-    bool startsWith(const QString &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] bool startsWith(QStringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept
-    { return QtPrivate::startsWith(*this, s, cs); }
-    bool startsWith(QLatin1StringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    bool startsWith(QChar c, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    bool startsWith(const QString &s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] bool startsWith(QStringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept
+    { return BobUIPrivate::startsWith(*this, s, cs); }
+    bool startsWith(QLatin1StringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    bool startsWith(QChar c, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
 
-    bool endsWith(const QString &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    [[nodiscard]] bool endsWith(QStringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept
-    { return QtPrivate::endsWith(*this, s, cs); }
-    bool endsWith(QLatin1StringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    bool endsWith(QChar c, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    bool endsWith(const QString &s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    [[nodiscard]] bool endsWith(QStringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept
+    { return BobUIPrivate::endsWith(*this, s, cs); }
+    bool endsWith(QLatin1StringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    bool endsWith(QChar c, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
 
     bool isUpper() const;
     bool isLower() const;
@@ -634,7 +634,7 @@ public:
                 ++first;
             }
             return *this;
-        } else if constexpr (QtPrivate::IsCompatibleChar8Type<V>::value) {
+        } else if constexpr (BobUIPrivate::IsCompatibleChar8Type<V>::value) {
             assign_helper_char8(first, last);
             if (d.constAllocatedCapacity())
                 d.data()[d.size] = u'\0';
@@ -654,7 +654,7 @@ public:
     inline QString &operator+=(QLatin1StringView s) { return append(s); }
     QString &operator+=(QUtf8StringView s) { return append(s); }
 
-#if defined(QT_RESTRICTED_CAST_FROM_ASCII)
+#if defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
     template <qsizetype N>
     QString &insert(qsizetype i, const char (&ch)[N]) { return insert(i, QUtf8StringView(ch)); }
     template <qsizetype N>
@@ -666,9 +666,9 @@ public:
 #endif
 
     QString &remove(qsizetype i, qsizetype len);
-    QString &remove(QChar c, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-    QString &remove(QLatin1StringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-    QString &remove(const QString &s, Qt::CaseSensitivity cs = Qt::CaseSensitive);
+    QString &remove(QChar c, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+    QString &remove(QLatin1StringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+    QString &remove(const QString &s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
 
     QString &removeAt(qsizetype pos)
     { return size_t(pos) < size_t(size()) ? remove(pos, 1) : *this; }
@@ -685,16 +685,16 @@ public:
     QString &replace(qsizetype i, qsizetype len, QChar after);
     QString &replace(qsizetype i, qsizetype len, const QChar *s, qsizetype slen);
     QString &replace(qsizetype i, qsizetype len, const QString &after);
-    QString &replace(QChar before, QChar after, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-    QString &replace(const QChar *before, qsizetype blen, const QChar *after, qsizetype alen, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-    QString &replace(QLatin1StringView before, QLatin1StringView after, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-    QString &replace(QLatin1StringView before, const QString &after, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-    QString &replace(const QString &before, QLatin1StringView after, Qt::CaseSensitivity cs = Qt::CaseSensitive);
+    QString &replace(QChar before, QChar after, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+    QString &replace(const QChar *before, qsizetype blen, const QChar *after, qsizetype alen, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+    QString &replace(QLatin1StringView before, QLatin1StringView after, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+    QString &replace(QLatin1StringView before, const QString &after, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+    QString &replace(const QString &before, QLatin1StringView after, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
     QString &replace(const QString &before, const QString &after,
-                     Qt::CaseSensitivity cs = Qt::CaseSensitive);
-    QString &replace(QChar c, const QString &after, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-    QString &replace(QChar c, QLatin1StringView after, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-#if QT_CONFIG(regularexpression)
+                     BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+    QString &replace(QChar c, const QString &after, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+    QString &replace(QChar c, QLatin1StringView after, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+#if BOBUI_CONFIG(regularexpression)
     QString &replace(const QRegularExpression &re, const QString  &after);
     inline QString &remove(const QRegularExpression &re)
     { return replace(re, QString()); }
@@ -702,15 +702,15 @@ public:
 
 public:
     [[nodiscard]]
-    QStringList split(const QString &sep, Qt::SplitBehavior behavior = Qt::KeepEmptyParts,
-                      Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    QStringList split(const QString &sep, BobUI::SplitBehavior behavior = BobUI::KeepEmptyParts,
+                      BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
     [[nodiscard]]
-    QStringList split(QChar sep, Qt::SplitBehavior behavior = Qt::KeepEmptyParts,
-                      Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-#ifndef QT_NO_REGULAREXPRESSION
+    QStringList split(QChar sep, BobUI::SplitBehavior behavior = BobUI::KeepEmptyParts,
+                      BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+#ifndef BOBUI_NO_REGULAREXPRESSION
     [[nodiscard]]
     QStringList split(const QRegularExpression &sep,
-                      Qt::SplitBehavior behavior = Qt::KeepEmptyParts) const;
+                      BobUI::SplitBehavior behavior = BobUI::KeepEmptyParts) const;
 #endif
 
     template <typename Needle, typename...Flags>
@@ -742,7 +742,7 @@ public:
 
     [[nodiscard]] QString repeated(qsizetype times) const;
 
-    const ushort *utf16() const; // ### Qt 7 char16_t
+    const ushort *utf16() const; // ### BobUI 7 char16_t
     [[nodiscard]] QString nullTerminated() const &;
     [[nodiscard]] QString nullTerminated() &&;
     QString &nullTerminate();
@@ -765,7 +765,7 @@ public:
     [[nodiscard]] QByteArray toUtf8() const;
     [[nodiscard]] QByteArray toLocal8Bit() const;
 #endif
-    [[nodiscard]] QList<uint> toUcs4() const; // ### Qt 7 char32_t
+    [[nodiscard]] QList<uint> toUcs4() const; // ### BobUI 7 char32_t
 
     // note - this are all inline so we can benefit from strlen() compile time optimizations
     static QString fromLatin1(QByteArrayView ba);
@@ -803,14 +803,14 @@ public:
     {
         return QString(DataPointer::fromRawData(unicode, size));
     }
-    QT_CORE_INLINE_SINCE(6, 10)
+    BOBUI_CORE_INLINE_SINCE(6, 10)
     static QString fromRawData(const QChar *, qsizetype size);
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use char16_t* overload.")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use char16_t* overload.")
     static QString fromUtf16(const ushort *str, qsizetype size = -1)
     { return fromUtf16(reinterpret_cast<const char16_t *>(str), size); }
-    QT_DEPRECATED_VERSION_X_6_0("Use char32_t* overload.")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use char32_t* overload.")
     static QString fromUcs4(const uint *str, qsizetype size = -1)
     { return fromUcs4(reinterpret_cast<const char32_t *>(str), size); }
 #endif
@@ -826,31 +826,31 @@ public:
     QString &setUtf16(const char16_t *utf16, qsizetype size)
     { return setUnicode(reinterpret_cast<const QChar *>(utf16), size); }
 
-#if !QT_CORE_REMOVED_SINCE(6, 9)
+#if !BOBUI_CORE_REMOVED_SINCE(6, 9)
     Q_WEAK_OVERLOAD
 #endif
     QString &setUtf16(const ushort *autf16, qsizetype asize)
     { return setUnicode(reinterpret_cast<const QChar *>(autf16), asize); }
 
-    int compare(const QString &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept;
-    int compare(QLatin1StringView other, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept;
-    inline int compare(QStringView s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept;
-    int compare(QChar ch, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept
+    int compare(const QString &s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept;
+    int compare(QLatin1StringView other, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept;
+    inline int compare(QStringView s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept;
+    int compare(QChar ch, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept
     { return compare(QStringView{&ch, 1}, cs); }
 
     static inline int compare(const QString &s1, const QString &s2,
-                              Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept
+                              BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept
     { return s1.compare(s2, cs); }
 
     static inline int compare(const QString &s1, QLatin1StringView s2,
-                              Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept
+                              BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept
     { return s1.compare(s2, cs); }
     static inline int compare(QLatin1StringView s1, const QString &s2,
-                              Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept
+                              BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept
     { return -s2.compare(s1, cs); }
-    static int compare(const QString &s1, QStringView s2, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept
+    static int compare(const QString &s1, QStringView s2, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept
     { return s1.compare(s2, cs); }
-    static int compare(QStringView s1, const QString &s2, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept
+    static int compare(QStringView s1, const QString &s2, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept
     { return -s2.compare(s1, cs); }
 
     int localeAwareCompare(const QString& s) const;
@@ -872,9 +872,9 @@ public:
     { return toIntegral_helper<long>(*this, ok, base); }
     ulong toULong(bool *ok=nullptr, int base=10) const
     { return toIntegral_helper<ulong>(*this, ok, base); }
-    QT_CORE_INLINE_SINCE(6, 5)
+    BOBUI_CORE_INLINE_SINCE(6, 5)
     qlonglong toLongLong(bool *ok=nullptr, int base=10) const;
-    QT_CORE_INLINE_SINCE(6, 5)
+    BOBUI_CORE_INLINE_SINCE(6, 5)
     qulonglong toULongLong(bool *ok=nullptr, int base=10) const;
     float toFloat(bool *ok=nullptr) const;
     double toDouble(bool *ok=nullptr) const;
@@ -900,64 +900,64 @@ public:
 
     friend bool comparesEqual(const QString &s1, const QString &s2) noexcept
     { return comparesEqual(QStringView(s1), QStringView(s2)); }
-    friend Qt::strong_ordering compareThreeWay(const QString &s1, const QString &s2) noexcept
+    friend BobUI::strong_ordering compareThreeWay(const QString &s1, const QString &s2) noexcept
     { return compareThreeWay(QStringView(s1), QStringView(s2)); }
     Q_DECLARE_STRONGLY_ORDERED(QString)
 
     Q_WEAK_OVERLOAD
     friend bool comparesEqual(const QString &s1, QUtf8StringView s2) noexcept
-    { return QtPrivate::equalStrings(s1, s2); }
+    { return BobUIPrivate::equalStrings(s1, s2); }
     Q_WEAK_OVERLOAD
-    friend Qt::strong_ordering compareThreeWay(const QString &s1, QUtf8StringView s2) noexcept
+    friend BobUI::strong_ordering compareThreeWay(const QString &s1, QUtf8StringView s2) noexcept
     {
-        const int res = QtPrivate::compareStrings(s1, s2, Qt::CaseSensitive);
-        return Qt::compareThreeWay(res, 0);
+        const int res = BobUIPrivate::compareStrings(s1, s2, BobUI::CaseSensitive);
+        return BobUI::compareThreeWay(res, 0);
     }
     Q_DECLARE_STRONGLY_ORDERED(QString, QUtf8StringView, Q_WEAK_OVERLOAD)
 
 #ifdef __cpp_char8_t
     friend bool comparesEqual(const QString &s1, const char8_t *s2) noexcept
     { return comparesEqual(s1, QUtf8StringView(s2)); }
-    friend Qt::strong_ordering compareThreeWay(const QString &s1, const char8_t *s2) noexcept
+    friend BobUI::strong_ordering compareThreeWay(const QString &s1, const char8_t *s2) noexcept
     { return compareThreeWay(s1, QUtf8StringView(s2)); }
     Q_DECLARE_STRONGLY_ORDERED(QString, const char8_t *)
 #endif // __cpp_char8_t
 
     friend bool comparesEqual(const QString &s1, QLatin1StringView s2) noexcept
-    { return (s1.size() == s2.size()) && QtPrivate::equalStrings(s1, s2); }
-    friend Qt::strong_ordering
+    { return (s1.size() == s2.size()) && BobUIPrivate::equalStrings(s1, s2); }
+    friend BobUI::strong_ordering
     compareThreeWay(const QString &s1, QLatin1StringView s2) noexcept
     {
-        const int res = QtPrivate::compareStrings(s1, s2, Qt::CaseSensitive);
-        return Qt::compareThreeWay(res, 0);
+        const int res = BobUIPrivate::compareStrings(s1, s2, BobUI::CaseSensitive);
+        return BobUI::compareThreeWay(res, 0);
     }
     Q_DECLARE_STRONGLY_ORDERED(QString, QLatin1StringView)
 
     // Check isEmpty() instead of isNull() for backwards compatibility.
     friend bool comparesEqual(const QString &s1, std::nullptr_t) noexcept
     { return s1.isEmpty(); }
-    friend Qt::strong_ordering compareThreeWay(const QString &s1, std::nullptr_t) noexcept
-    { return s1.isEmpty() ? Qt::strong_ordering::equivalent : Qt::strong_ordering::greater; }
+    friend BobUI::strong_ordering compareThreeWay(const QString &s1, std::nullptr_t) noexcept
+    { return s1.isEmpty() ? BobUI::strong_ordering::equivalent : BobUI::strong_ordering::greater; }
     Q_DECLARE_STRONGLY_ORDERED(QString, std::nullptr_t)
 
     friend bool comparesEqual(const QString &s1, const char16_t *s2) noexcept
     { return comparesEqual(s1, QStringView(s2)); }
-    friend Qt::strong_ordering compareThreeWay(const QString &s1, const char16_t *s2) noexcept
+    friend BobUI::strong_ordering compareThreeWay(const QString &s1, const char16_t *s2) noexcept
     { return compareThreeWay(s1, QStringView(s2)); }
     Q_DECLARE_STRONGLY_ORDERED(QString, const char16_t *)
 
     // QChar <> QString
     friend bool comparesEqual(const QString &lhs, QChar rhs) noexcept
     { return lhs.size() == 1 && rhs == lhs.front(); }
-    friend Qt::strong_ordering compareThreeWay(const QString &lhs, QChar rhs) noexcept
+    friend BobUI::strong_ordering compareThreeWay(const QString &lhs, QChar rhs) noexcept
     {
         const int res = compare_helper(lhs.data(), lhs.size(), &rhs, 1);
-        return Qt::compareThreeWay(res, 0);
+        return BobUI::compareThreeWay(res, 0);
     }
     Q_DECLARE_STRONGLY_ORDERED(QString, QChar)
 
     // ASCII compatibility
-#if defined(QT_RESTRICTED_CAST_FROM_ASCII)
+#if defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
     template <qsizetype N>
     inline QString(const char (&ch)[N])
         : QString(fromUtf8(ch))
@@ -970,14 +970,14 @@ public:
     template <qsizetype N>
     QString &operator=(char (&)[N]) = delete;
 #endif
-#if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
-    QT_ASCII_CAST_WARN inline QString(const char *ch)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+    BOBUI_ASCII_CAST_WARN inline QString(const char *ch)
         : QString(fromUtf8(ch))
     {}
-    QT_ASCII_CAST_WARN inline QString(const QByteArray &a)
+    BOBUI_ASCII_CAST_WARN inline QString(const QByteArray &a)
         : QString(fromUtf8(a))
     {}
-    QT_ASCII_CAST_WARN inline QString &operator=(const char *ch)
+    BOBUI_ASCII_CAST_WARN inline QString &operator=(const char *ch)
     {
         if (!ch) {
             clear();
@@ -985,7 +985,7 @@ public:
         }
         return assign(ch);
     }
-    QT_ASCII_CAST_WARN inline QString &operator=(const QByteArray &a)
+    BOBUI_ASCII_CAST_WARN inline QString &operator=(const QByteArray &a)
     {
         if (a.isNull()) {
             clear();
@@ -994,72 +994,72 @@ public:
         return assign(a);
     }
     // these are needed, so it compiles with STL support enabled
-    QT_ASCII_CAST_WARN inline QString &prepend(const char *s)
+    BOBUI_ASCII_CAST_WARN inline QString &prepend(const char *s)
     { return prepend(QUtf8StringView(s)); }
-    QT_ASCII_CAST_WARN inline QString &prepend(const QByteArray &s)
+    BOBUI_ASCII_CAST_WARN inline QString &prepend(const QByteArray &s)
     { return prepend(QUtf8StringView(s)); }
-    QT_ASCII_CAST_WARN inline QString &append(const char *s)
+    BOBUI_ASCII_CAST_WARN inline QString &append(const char *s)
     { return append(QUtf8StringView(s)); }
-    QT_ASCII_CAST_WARN inline QString &append(const QByteArray &s)
+    BOBUI_ASCII_CAST_WARN inline QString &append(const QByteArray &s)
     { return append(QUtf8StringView(s)); }
-    QT_ASCII_CAST_WARN inline QString &insert(qsizetype i, const char *s)
+    BOBUI_ASCII_CAST_WARN inline QString &insert(qsizetype i, const char *s)
     { return insert(i, QUtf8StringView(s)); }
-    QT_ASCII_CAST_WARN inline QString &insert(qsizetype i, const QByteArray &s)
+    BOBUI_ASCII_CAST_WARN inline QString &insert(qsizetype i, const QByteArray &s)
     { return insert(i, QUtf8StringView(s)); }
-    QT_ASCII_CAST_WARN inline QString &operator+=(const char *s)
+    BOBUI_ASCII_CAST_WARN inline QString &operator+=(const char *s)
     { return append(QUtf8StringView(s)); }
-    QT_ASCII_CAST_WARN inline QString &operator+=(const QByteArray &s)
+    BOBUI_ASCII_CAST_WARN inline QString &operator+=(const QByteArray &s)
     { return append(QUtf8StringView(s)); }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
-    QT_ASCII_CAST_WARN inline bool operator==(const char *s) const;
-    QT_ASCII_CAST_WARN inline bool operator!=(const char *s) const;
-    QT_ASCII_CAST_WARN inline bool operator<(const char *s) const;
-    QT_ASCII_CAST_WARN inline bool operator<=(const char *s) const;
-    QT_ASCII_CAST_WARN inline bool operator>(const char *s) const;
-    QT_ASCII_CAST_WARN inline bool operator>=(const char *s) const;
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
+    BOBUI_ASCII_CAST_WARN inline bool operator==(const char *s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator!=(const char *s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator<(const char *s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator<=(const char *s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator>(const char *s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator>=(const char *s) const;
 
-    QT_ASCII_CAST_WARN inline bool operator==(const QByteArray &s) const;
-    QT_ASCII_CAST_WARN inline bool operator!=(const QByteArray &s) const;
-    QT_ASCII_CAST_WARN inline bool operator<(const QByteArray &s) const;
-    QT_ASCII_CAST_WARN inline bool operator>(const QByteArray &s) const;
-    QT_ASCII_CAST_WARN inline bool operator<=(const QByteArray &s) const;
-    QT_ASCII_CAST_WARN inline bool operator>=(const QByteArray &s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator==(const QByteArray &s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator!=(const QByteArray &s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator<(const QByteArray &s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator>(const QByteArray &s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator<=(const QByteArray &s) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator>=(const QByteArray &s) const;
 #else
     friend bool comparesEqual(const QString &lhs, QByteArrayView rhs) noexcept
     {
         return QString::compare_helper(lhs.constData(), lhs.size(),
                                        rhs.constData(), rhs.size()) == 0;
     }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QString &lhs, QByteArrayView rhs) noexcept
     {
         const int res = QString::compare_helper(lhs.constData(), lhs.size(),
                                                 rhs.constData(), rhs.size());
-        return Qt::compareThreeWay(res, 0);
+        return BobUI::compareThreeWay(res, 0);
     }
-    Q_DECLARE_STRONGLY_ORDERED(QString, QByteArrayView, QT_ASCII_CAST_WARN)
+    Q_DECLARE_STRONGLY_ORDERED(QString, QByteArrayView, BOBUI_ASCII_CAST_WARN)
 
     friend bool comparesEqual(const QString &lhs, const QByteArray &rhs) noexcept
     { return comparesEqual(lhs, QByteArrayView(rhs)); }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QString &lhs, const QByteArray &rhs) noexcept
     {
         return compareThreeWay(lhs, QByteArrayView(rhs));
     }
-    Q_DECLARE_STRONGLY_ORDERED(QString, QByteArray, QT_ASCII_CAST_WARN)
+    Q_DECLARE_STRONGLY_ORDERED(QString, QByteArray, BOBUI_ASCII_CAST_WARN)
 
     friend bool comparesEqual(const QString &lhs, const char *rhs) noexcept
     { return comparesEqual(lhs, QByteArrayView(rhs)); }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QString &lhs, const char *rhs) noexcept
     {
         return compareThreeWay(lhs, QByteArrayView(rhs));
     }
-    Q_DECLARE_STRONGLY_ORDERED(QString, const char *, QT_ASCII_CAST_WARN)
-#endif // QT_CORE_REMOVED_SINCE(6, 8)
+    Q_DECLARE_STRONGLY_ORDERED(QString, const char *, BOBUI_ASCII_CAST_WARN)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 8)
 
-#endif // !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
+#endif // !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
 
     typedef QChar *iterator;
     typedef const QChar *const_iterator;
@@ -1132,12 +1132,12 @@ public:
     [[nodiscard]] bool isValidUtf16() const noexcept
     { return QStringView(*this).isValidUtf16(); }
 
-    QString(qsizetype size, Qt::Initialization);
+    QString(qsizetype size, BobUI::Initialization);
     explicit QString(DataPointer &&dd) : d(std::move(dd)) {}
 
 private:
-#if defined(QT_NO_CAST_FROM_ASCII)
-#define QSTRING_DECL_DELETED_ASCII_OP Q_DECL_EQ_DELETE_X("This function is not available under QT_NO_CAST_FROM_ASCII")
+#if defined(BOBUI_NO_CAST_FROM_ASCII)
+#define QSTRING_DECL_DELETED_ASCII_OP Q_DECL_EQ_DELETE_X("This function is not available under BOBUI_NO_CAST_FROM_ASCII")
     QString &operator+=(const char *s) QSTRING_DECL_DELETED_ASCII_OP;
     QString &operator+=(const QByteArray &s) QSTRING_DECL_DELETED_ASCII_OP;
     QString(const char *ch) QSTRING_DECL_DELETED_ASCII_OP;
@@ -1159,10 +1159,10 @@ private:
     void assign_helper_char8(InputIterator first, InputIterator last);
     static int compare_helper(const QChar *data1, qsizetype length1,
                               const QChar *data2, qsizetype length2,
-                              Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+                              BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
     static int compare_helper(const QChar *data1, qsizetype length1,
                               const char *data2, qsizetype length2,
-                              Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+                              BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
     static int localeAwareCompare_helper(const QChar *data1, qsizetype length1,
                                          const QChar *data2, qsizetype length2);
     static QString sliced_helper(QString &str, qsizetype pos, qsizetype n);
@@ -1180,7 +1180,7 @@ private:
     static QByteArray toLatin1_helper_inplace(QString &);
     static QByteArray toUtf8_helper(const QString &);
     static QByteArray toLocal8Bit_helper(const QChar *data, qsizetype size);
-#if QT_CORE_REMOVED_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 6)
     static qsizetype toUcs4_helper(const ushort *uc, qsizetype length, uint *out);
 #endif
     static qsizetype toUcs4_helper(const char16_t *uc, qsizetype length, char32_t *out);
@@ -1235,8 +1235,8 @@ public:
 // QLatin1StringView inline members that require QUtf8StringView:
 //
 
-int QLatin1StringView::compare(QUtf8StringView other, Qt::CaseSensitivity cs) const noexcept
-{ return QtPrivate::compareStrings(*this, other, cs); }
+int QLatin1StringView::compare(QUtf8StringView other, BobUI::CaseSensitivity cs) const noexcept
+{ return BobUIPrivate::compareStrings(*this, other, cs); }
 
 //
 // QLatin1StringView inline members that require QString:
@@ -1248,8 +1248,8 @@ QString QLatin1StringView::toString() const { return *this; }
 // QStringView inline members that require QUtf8StringView:
 //
 
-int QStringView::compare(QUtf8StringView other, Qt::CaseSensitivity cs) const noexcept
-{ return QtPrivate::compareStrings(*this, other, cs); }
+int QStringView::compare(QUtf8StringView other, BobUI::CaseSensitivity cs) const noexcept
+{ return BobUIPrivate::compareStrings(*this, other, cs); }
 
 //
 // QStringView inline members that require QString:
@@ -1280,27 +1280,27 @@ ushort QStringView::toUShort(bool *ok, int base) const
 //
 
 template <bool UseChar8T>
-int QBasicUtf8StringView<UseChar8T>::compare(QChar other, Qt::CaseSensitivity cs) const noexcept
+int QBasicUtf8StringView<UseChar8T>::compare(QChar other, BobUI::CaseSensitivity cs) const noexcept
 {
-    return QtPrivate::compareStrings(*this, QStringView(&other, 1), cs);
+    return BobUIPrivate::compareStrings(*this, QStringView(&other, 1), cs);
 }
 
 template <bool UseChar8T>
-int QBasicUtf8StringView<UseChar8T>::compare(QStringView other, Qt::CaseSensitivity cs) const noexcept
+int QBasicUtf8StringView<UseChar8T>::compare(QStringView other, BobUI::CaseSensitivity cs) const noexcept
 {
-    return QtPrivate::compareStrings(*this, other, cs);
+    return BobUIPrivate::compareStrings(*this, other, cs);
 }
 
 template <bool UseChar8T>
 [[nodiscard]] bool QBasicUtf8StringView<UseChar8T>::equal(QChar other) const noexcept
 {
-    return QtPrivate::equalStrings(*this, QStringView(&other, 1));
+    return BobUIPrivate::equalStrings(*this, QStringView(&other, 1));
 }
 
 template <bool UseChar8T>
 [[nodiscard]] bool QBasicUtf8StringView<UseChar8T>::equal(QStringView other) const noexcept
 {
-    return QtPrivate::equalStrings(*this, other);
+    return BobUIPrivate::equalStrings(*this, other);
 }
 
 //
@@ -1315,16 +1315,16 @@ QString QBasicUtf8StringView<UseChar8T>::toString() const
 
 template<bool UseChar8T>
 [[nodiscard]] int QBasicUtf8StringView<UseChar8T>::compare(QLatin1StringView other,
-                                                           Qt::CaseSensitivity cs) const noexcept
+                                                           BobUI::CaseSensitivity cs) const noexcept
 {
-    return QtPrivate::compareStrings(*this, other, cs);
+    return BobUIPrivate::compareStrings(*this, other, cs);
 }
 
 template<bool UseChar8T>
 [[nodiscard]] int QBasicUtf8StringView<UseChar8T>::compare(const QByteArray &other,
-                                                           Qt::CaseSensitivity cs) const noexcept
+                                                           BobUI::CaseSensitivity cs) const noexcept
 {
-    return QtPrivate::compareStrings(*this,
+    return BobUIPrivate::compareStrings(*this,
                                      QBasicUtf8StringView<UseChar8T>(other.data(), other.size()),
                                      cs);
 }
@@ -1332,14 +1332,14 @@ template<bool UseChar8T>
 template <bool UseChar8T>
 [[nodiscard]] bool QBasicUtf8StringView<UseChar8T>::equal(QLatin1StringView other) const noexcept
 {
-    return QtPrivate::equalStrings(*this, other);
+    return BobUIPrivate::equalStrings(*this, other);
 }
 
 template <bool UseChar8T>
 [[nodiscard]] bool QBasicUtf8StringView<UseChar8T>::equal(const QByteArray &other) const noexcept
 {
     return size() == other.size()
-            && QtPrivate::equalStrings(*this, QBasicUtf8StringView<UseChar8T>(other.data(),
+            && BobUIPrivate::equalStrings(*this, QBasicUtf8StringView<UseChar8T>(other.data(),
                                                                               other.size()));
 }
 
@@ -1353,7 +1353,7 @@ QAnyStringView::QAnyStringView(const QString &str) noexcept
     : QAnyStringView{str.begin(), str.size()} {}
 
 QString QAnyStringView::toString() const
-{ return QtPrivate::convertToQString(*this); }
+{ return BobUIPrivate::convertToQString(*this); }
 
 //
 // QString inline members
@@ -1368,7 +1368,7 @@ const QChar *QString::unicode() const
 { return data(); }
 const QChar *QString::data() const
 {
-#if QT5_NULL_STRINGS == 1
+#if BOBUI5_NULL_STRINGS == 1
     return reinterpret_cast<const QChar *>(d.data() ? d.data() : &_empty);
 #else
     return reinterpret_cast<const QChar *>(d.data());
@@ -1405,7 +1405,7 @@ QString &QString::setNum(ulong n, int base)
 { return setNum(qulonglong(n), base); }
 QString &QString::setNum(float n, char f, int prec)
 { return setNum(double(n),f,prec); }
-#if QT_CORE_REMOVED_SINCE(6, 9)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9)
 QString QString::arg(int a, int fieldWidth, int base, QChar fillChar) const
 { return arg(qlonglong(a), fieldWidth, base, fillChar); }
 QString QString::arg(uint a, int fieldWidth, int base, QChar fillChar) const
@@ -1418,14 +1418,14 @@ QString QString::arg(short a, int fieldWidth, int base, QChar fillChar) const
 { return arg(qlonglong(a), fieldWidth, base, fillChar); }
 QString QString::arg(ushort a, int fieldWidth, int base, QChar fillChar) const
 { return arg(qulonglong(a), fieldWidth, base, fillChar); }
-#endif // QT_CORE_REMOVED_SINCE
+#endif // BOBUI_CORE_REMOVED_SINCE
 
 QString QString::section(QChar asep, qsizetype astart, qsizetype aend, SectionFlags aflags) const
 { return section(QString(asep), astart, aend, aflags); }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4127)   // "conditional expression is constant"
-QT_WARNING_DISABLE_INTEL(111)   // "statement is unreachable"
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4127)   // "conditional expression is constant"
+BOBUI_WARNING_DISABLE_INTEL(111)   // "statement is unreachable"
 
 qsizetype QString::toWCharArray(wchar_t *array) const
 {
@@ -1443,14 +1443,14 @@ qsizetype QStringView::toWCharArray(wchar_t *array) const
     }
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 QString QString::fromWCharArray(const wchar_t *string, qsizetype size)
 {
     if constexpr (sizeof(wchar_t) == sizeof(QChar)) {
         return QString(reinterpret_cast<const QChar *>(string), size);
     } else {
-#ifdef QT_BOOTSTRAPPED
+#ifdef BOBUI_BOOTSTRAPPED
         Q_UNREACHABLE_RETURN(QString());
 #else
         return fromUcs4(reinterpret_cast<const char32_t *>(string), size);
@@ -1499,17 +1499,17 @@ QString::const_iterator QString::cend() const
 { return reinterpret_cast<const QChar*>(d.data() + d.size); }
 QString::const_iterator QString::constEnd() const
 { return reinterpret_cast<const QChar*>(d.data() + d.size); }
-bool QString::contains(const QString &s, Qt::CaseSensitivity cs) const
+bool QString::contains(const QString &s, BobUI::CaseSensitivity cs) const
 { return indexOf(s, 0, cs) != -1; }
-bool QString::contains(QLatin1StringView s, Qt::CaseSensitivity cs) const
+bool QString::contains(QLatin1StringView s, BobUI::CaseSensitivity cs) const
 { return indexOf(s, 0, cs) != -1; }
-bool QString::contains(QChar c, Qt::CaseSensitivity cs) const
+bool QString::contains(QChar c, BobUI::CaseSensitivity cs) const
 { return indexOf(c, 0, cs) != -1; }
-bool QString::contains(QStringView s, Qt::CaseSensitivity cs) const noexcept
+bool QString::contains(QStringView s, BobUI::CaseSensitivity cs) const noexcept
 { return indexOf(s, 0, cs) != -1; }
 
-#if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
 bool QString::operator==(const char *s) const
 { return QString::compare_helper(constData(), size(), s, -1) == 0; }
 bool QString::operator!=(const char *s) const
@@ -1523,17 +1523,17 @@ bool QString::operator<=(const char *s) const
 bool QString::operator>=(const char *s) const
 { return QString::compare_helper(constData(), size(), s, -1) >= 0; }
 
-QT_ASCII_CAST_WARN bool QString::operator==(const QByteArray &s) const
+BOBUI_ASCII_CAST_WARN bool QString::operator==(const QByteArray &s) const
 { return QString::compare_helper(constData(), size(), s.constData(), s.size()) == 0; }
-QT_ASCII_CAST_WARN bool QString::operator!=(const QByteArray &s) const
+BOBUI_ASCII_CAST_WARN bool QString::operator!=(const QByteArray &s) const
 { return QString::compare_helper(constData(), size(), s.constData(), s.size()) != 0; }
-QT_ASCII_CAST_WARN bool QString::operator<(const QByteArray &s) const
+BOBUI_ASCII_CAST_WARN bool QString::operator<(const QByteArray &s) const
 { return QString::compare_helper(constData(), size(), s.constData(), s.size()) < 0; }
-QT_ASCII_CAST_WARN bool QString::operator>(const QByteArray &s) const
+BOBUI_ASCII_CAST_WARN bool QString::operator>(const QByteArray &s) const
 { return QString::compare_helper(constData(), size(), s.constData(), s.size()) > 0; }
-QT_ASCII_CAST_WARN bool QString::operator<=(const QByteArray &s) const
+BOBUI_ASCII_CAST_WARN bool QString::operator<=(const QByteArray &s) const
 { return QString::compare_helper(constData(), size(), s.constData(), s.size()) <= 0; }
-QT_ASCII_CAST_WARN bool QString::operator>=(const QByteArray &s) const
+BOBUI_ASCII_CAST_WARN bool QString::operator>=(const QByteArray &s) const
 { return QString::compare_helper(constData(), size(), s.constData(), s.size()) >= 0; }
 
 bool QByteArray::operator==(const QString &s) const
@@ -1548,10 +1548,10 @@ bool QByteArray::operator<=(const QString &s) const
 { return QString::compare_helper(s.constData(), s.size(), constData(), size()) >= 0; }
 bool QByteArray::operator>=(const QString &s) const
 { return QString::compare_helper(s.constData(), s.size(), constData(), size()) <= 0; }
-#endif // QT_CORE_REMOVED_SINCE(6, 8)
-#endif // !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 8)
+#endif // !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
 
-#if !defined(QT_USE_FAST_OPERATOR_PLUS) && !defined(QT_USE_QSTRINGBUILDER)
+#if !defined(BOBUI_USE_FAST_OPERATOR_PLUS) && !defined(BOBUI_USE_QSTRINGBUILDER)
 // QString + QString
 inline QString operator+(const QString &s1, const QString &s2)
 { QString t(s1); t += s2; return t; }
@@ -1565,30 +1565,30 @@ inline QString operator+(QChar s1, const QString &s2)
 { QString t(s1); t += s2; return t; }
 inline QString operator+(const QString &lhs, QStringView rhs)
 {
-    QString ret{lhs.size() + rhs.size(), Qt::Uninitialized};
+    QString ret{lhs.size() + rhs.size(), BobUI::Uninitialized};
     return ret.assign(lhs).append(rhs);
 }
 inline QString operator+(QStringView lhs, const QString &rhs)
 {
-    QString ret{lhs.size() + rhs.size(), Qt::Uninitialized};
+    QString ret{lhs.size() + rhs.size(), BobUI::Uninitialized};
     return ret.assign(lhs).append(rhs);
 }
 
-#  if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
-QT_ASCII_CAST_WARN inline QString operator+(const QString &s1, const char *s2)
+#  if !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+BOBUI_ASCII_CAST_WARN inline QString operator+(const QString &s1, const char *s2)
 { QString t(s1); t += QUtf8StringView(s2); return t; }
-QT_ASCII_CAST_WARN inline QString operator+(QString &&lhs, const char *rhs)
-{ QT_IGNORE_DEPRECATIONS(return std::move(lhs += rhs);) }
-QT_ASCII_CAST_WARN inline QString operator+(const char *s1, const QString &s2)
+BOBUI_ASCII_CAST_WARN inline QString operator+(QString &&lhs, const char *rhs)
+{ BOBUI_IGNORE_DEPRECATIONS(return std::move(lhs += rhs);) }
+BOBUI_ASCII_CAST_WARN inline QString operator+(const char *s1, const QString &s2)
 { QString t = QString::fromUtf8(s1); t += s2; return t; }
-QT_ASCII_CAST_WARN inline QString operator+(const QByteArray &ba, const QString &s)
+BOBUI_ASCII_CAST_WARN inline QString operator+(const QByteArray &ba, const QString &s)
 { QString t = QString::fromUtf8(ba); t += s; return t; }
-QT_ASCII_CAST_WARN inline QString operator+(const QString &s, const QByteArray &ba)
+BOBUI_ASCII_CAST_WARN inline QString operator+(const QString &s, const QByteArray &ba)
 { QString t(s); t += QUtf8StringView(ba); return t; }
-QT_ASCII_CAST_WARN inline QString operator+(QString &&lhs, const QByteArray &rhs)
-{ QT_IGNORE_DEPRECATIONS(return std::move(lhs += rhs);) }
-#  endif // QT_NO_CAST_FROM_ASCII
-#endif // QT_USE_QSTRINGBUILDER
+BOBUI_ASCII_CAST_WARN inline QString operator+(QString &&lhs, const QByteArray &rhs)
+{ BOBUI_IGNORE_DEPRECATIONS(return std::move(lhs += rhs);) }
+#  endif // BOBUI_NO_CAST_FROM_ASCII
+#endif // BOBUI_USE_QSTRINGBUILDER
 
 QString QString::fromStdString(const std::string &s)
 { return fromUtf8(s.data(), qsizetype(s.size())); }
@@ -1627,7 +1627,7 @@ QString::operator std::u16string_view() const noexcept
     return std::u16string_view(d.data(), size_t(d.size));
 }
 
-#if !defined(QT_NO_DATASTREAM) || defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_NO_DATASTREAM) || defined(BOBUI_BOOTSTRAPPED)
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QString &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QString &);
 #endif
@@ -1635,7 +1635,7 @@ Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QString &);
 Q_DECLARE_SHARED(QString)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QString::SectionFlags)
 
-int QString::compare(QStringView s, Qt::CaseSensitivity cs) const noexcept
+int QString::compare(QStringView s, BobUI::CaseSensitivity cs) const noexcept
 { return -s.compare(*this, cs); }
 
 int QString::localeAwareCompare(QStringView s) const
@@ -1645,7 +1645,7 @@ int QString::localeAwareCompare(QStringView s1, QStringView s2)
 int QStringView::localeAwareCompare(QStringView other) const
 { return QString::localeAwareCompare(*this, other); }
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 5)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 5)
 qint64 QString::toLongLong(bool *ok, int base) const
 {
     return toIntegral_helper<qlonglong>(*this, ok, base);
@@ -1656,35 +1656,35 @@ quint64 QString::toULongLong(bool *ok, int base) const
     return toIntegral_helper<qulonglong>(*this, ok, base);
 }
 #endif
-#if QT_CORE_INLINE_IMPL_SINCE(6, 8)
-qsizetype QString::indexOf(QChar ch, qsizetype from, Qt::CaseSensitivity cs) const
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 8)
+qsizetype QString::indexOf(QChar ch, qsizetype from, BobUI::CaseSensitivity cs) const
 {
     return qToStringViewIgnoringNull(*this).indexOf(ch, from, cs);
 }
-qsizetype QString::lastIndexOf(QChar ch, qsizetype from, Qt::CaseSensitivity cs) const
+qsizetype QString::lastIndexOf(QChar ch, qsizetype from, BobUI::CaseSensitivity cs) const
 {
     return qToStringViewIgnoringNull(*this).lastIndexOf(ch, from, cs);
 }
 #endif
-#if QT_CORE_INLINE_IMPL_SINCE(6, 10)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 10)
 QString QString::fromRawData(const QChar *unicode, qsizetype size)
 {
     return fromRawData(reinterpret_cast<const char16_t *>(unicode), size);
 }
 #endif
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 // used by qPrintable() and qUtf8Printable() macros
 inline const QString &asString(const QString &s)    { return s; }
 inline QString &&asString(QString &&s)              { return std::move(s); }
 }
 
 #ifndef qPrintable
-#  define qPrintable(string) QtPrivate::asString(string).toLocal8Bit().constData()
+#  define qPrintable(string) BobUIPrivate::asString(string).toLocal8Bit().constData()
 #endif
 
 #ifndef qUtf8Printable
-#  define qUtf8Printable(string) QtPrivate::asString(string).toUtf8().constData()
+#  define qUtf8Printable(string) BobUIPrivate::asString(string).toUtf8().constData()
 #endif
 
 /*
@@ -1694,14 +1694,14 @@ inline QString &&asString(QString &&s)              { return std::move(s); }
 #ifndef qUtf16Printable
 #  define qUtf16Printable(string) \
     static_cast<const wchar_t *>( \
-        static_cast<const void *>(QtPrivate::asString(string).nullTerminated().constData()))
+        static_cast<const void *>(BobUIPrivate::asString(string).nullTerminated().constData()))
 #endif
 
 //
 // QStringView::arg() implementation
 //
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 struct ArgBase {
     enum Tag : uchar { L1, Any, U16 } tag;
@@ -1725,7 +1725,7 @@ struct QAnyStringArg : ArgBase {
     constexpr explicit QAnyStringArg(QAnyStringView v) noexcept : ArgBase{Any}, string{v} {}
 };
 
-#if QT_CORE_REMOVED_SINCE(6, 9)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9)
 [[nodiscard]] Q_CORE_EXPORT QString argToQString(QStringView pattern, size_t n, const ArgBase **args);
 [[nodiscard]] Q_CORE_EXPORT QString argToQString(QLatin1StringView pattern, size_t n, const ArgBase **args);
 #endif
@@ -1735,38 +1735,38 @@ template <typename...Args>
 [[nodiscard]] Q_ALWAYS_INLINE QString argToQStringDispatch(QAnyStringView pattern, const Args &...args)
 {
     const ArgBase *argBases[] = {&args..., /* avoid zero-sized array */ nullptr};
-    return QtPrivate::argToQString(pattern, sizeof...(Args), argBases);
+    return BobUIPrivate::argToQString(pattern, sizeof...(Args), argBases);
 }
 
 constexpr inline QAnyStringArg qStringLikeToArg(QAnyStringView s) noexcept { return QAnyStringArg{s}; }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <typename...Args>
 Q_ALWAYS_INLINE
 QString QStringView::arg(Args &&...args) const
 {
-    return QtPrivate::argToQStringDispatch(*this, QtPrivate::qStringLikeToArg(args)...);
+    return BobUIPrivate::argToQStringDispatch(*this, BobUIPrivate::qStringLikeToArg(args)...);
 }
 
 template <typename...Args>
 Q_ALWAYS_INLINE
 QString QLatin1StringView::arg(Args &&...args) const
 {
-    return QtPrivate::argToQStringDispatch(*this, QtPrivate::qStringLikeToArg(args)...);
+    return BobUIPrivate::argToQStringDispatch(*this, BobUIPrivate::qStringLikeToArg(args)...);
 }
 
 template <bool HasChar8T>
 template <typename...Args>
 QString QBasicUtf8StringView<HasChar8T>::arg(Args &&...args) const
 {
-    return QtPrivate::argToQStringDispatch(*this, QtPrivate::qStringLikeToArg(args)...);
+    return BobUIPrivate::argToQStringDispatch(*this, BobUIPrivate::qStringLikeToArg(args)...);
 }
 
 template <typename...Args>
 QString QAnyStringView::arg(Args &&...args) const
 {
-    return QtPrivate::argToQStringDispatch(*this, QtPrivate::qStringLikeToArg(args)...);
+    return BobUIPrivate::argToQStringDispatch(*this, BobUIPrivate::qStringLikeToArg(args)...);
 }
 
 template <typename T>
@@ -1781,7 +1781,7 @@ qsizetype erase_if(QString &s, Predicate pred)
     return s.removeIf_helper(pred);
 }
 
-namespace Qt {
+namespace BobUI {
 inline namespace Literals {
 inline namespace StringLiterals {
 inline QString operator""_s(const char16_t *str, size_t size) noexcept
@@ -1791,28 +1791,28 @@ inline QString operator""_s(const char16_t *str, size_t size) noexcept
 
 } // StringLiterals
 } // Literals
-} // Qt
+} // BobUI
 
-inline namespace QtLiterals {
-#if QT_DEPRECATED_SINCE(6, 8)
+inline namespace BobUILiterals {
+#if BOBUI_DEPRECATED_SINCE(6, 8)
 
-QT_DEPRECATED_VERSION_X_6_8("Use _s from Qt::StringLiterals namespace instead.")
+BOBUI_DEPRECATED_VERSION_X_6_8("Use _s from BobUI::StringLiterals namespace instead.")
 inline QString operator""_qs(const char16_t *str, size_t size) noexcept
 {
-    return Qt::StringLiterals::operator""_s(str, size);
+    return BobUI::StringLiterals::operator""_s(str, size);
 }
 
-#endif // QT_DEPRECATED_SINCE(6, 8)
-} // QtLiterals
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
+} // BobUILiterals
 
 // all our supported compilers support Unicode string literals,
 // even if their Q_COMPILER_UNICODE_STRING has been revoked due
 // to lacking stdlib support. But QStringLiteral only needs the
 // core language feature, so just use u"" here unconditionally:
 
-#define QT_UNICODE_LITERAL(str) u"" str
+#define BOBUI_UNICODE_LITERAL(str) u"" str
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <qsizetype N>
 Q_ALWAYS_INLINE static QStringPrivate qMakeStringPrivate(const char16_t (&literal)[N])
 {
@@ -1820,14 +1820,14 @@ Q_ALWAYS_INLINE static QStringPrivate qMakeStringPrivate(const char16_t (&litera
     auto str = const_cast<char16_t *>(literal);
     return { nullptr, str, N - 1 };
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-#define QStringLiteral(str) (QString(QtPrivate::qMakeStringPrivate(QT_UNICODE_LITERAL(str)))) /**/
+#define QStringLiteral(str) (QString(BobUIPrivate::qMakeStringPrivate(BOBUI_UNICODE_LITERAL(str)))) /**/
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#include <QtCore/qstringbuilder.h>
-#include <QtCore/qstringconverter.h>
+#include <BobUICore/qstringbuilder.h>
+#include <BobUICore/qstringconverter.h>
 
 #ifdef Q_L1S_VIEW_IS_PRIMARY
 #    undef Q_L1S_VIEW_IS_PRIMARY

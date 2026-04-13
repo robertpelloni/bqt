@@ -1,0 +1,63 @@
+include($BOBUI_INSTALL_DOCS/global/bobui-module-defaults.qdocconf)
+include($BOBUI_INSTALL_DOCS/config/exampleurl-bobuibase.qdocconf)
+
+project                 = BobUISql
+description             = BobUI SQL Reference Documentation
+version                 = $BOBUI_VERSION
+
+examplesinstallpath     = sql
+
+# Path to the root of bobuibase (for automatic linking to source code)
+url.sources.rootdir     = ../../..
+
+qhp.projects            = BobUISql
+
+qhp.BobUISql.file            = bobuisql.qhp
+qhp.BobUISql.namespace           = org.bobui-project.bobuisql.$BOBUI_VERSION_TAG
+qhp.BobUISql.virtualFolder       = bobuisql
+qhp.BobUISql.indexTitle          = BobUI SQL
+qhp.BobUISql.indexRoot           =
+
+qhp.BobUISql.subprojects = manual classes
+qhp.BobUISql.subprojects.manual.title = BobUI SQL
+qhp.BobUISql.subprojects.manual.indexTitle = BobUI SQL module topics
+qhp.BobUISql.subprojects.manual.type = manual
+
+qhp.BobUISql.subprojects.classes.title = C++ Classes
+qhp.BobUISql.subprojects.classes.indexTitle = BobUI SQL C++ Classes
+qhp.BobUISql.subprojects.classes.selectors = class fake:headerfile
+qhp.BobUISql.subprojects.classes.sortPages = true
+
+tagfile                 = ../../../doc/bobuisql/bobuisql.tags
+
+depends                 += bobuicore bobuiwidgets bobuidoc qmake bobuicmake
+
+headerdirs  += ..
+
+sourcedirs  += .. \
+               ../../../examples/sql/doc/src
+
+exampledirs += ../../../examples/sql \
+               ../ \
+               . \ \
+               snippets
+
+imagedirs   += images \
+               ../../../examples/sql/doc/images
+
+navigation.landingpage = "BobUI SQL"
+navigation.cppclassespage = "BobUI SQL C++ Classes"
+# Auto-generate navigation linking based on "BobUI SQL module topics":
+navigation.toctitles = "BobUI SQL module topics"
+navigation.toctitles.inclusive = false
+
+# Highlighted examples in Data Processing & IO category
+manifestmeta.highlighted.names = \
+    "BobUISql/Master Detail Example" \
+    "BobUISql/SQL Browser"
+
+# Enforce zero documentation warnings
+warninglimit = 0
+
+# Report warnings for images without alt text
+reportmissingalttextforimages = true

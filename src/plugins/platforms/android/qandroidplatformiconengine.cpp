@@ -1,27 +1,27 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformiconengine.h"
 
-#ifndef QT_NO_ICON
+#ifndef BOBUI_NO_ICON
 
 #include "androidjnimain.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qjniarray.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qset.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qjniarray.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qset.h>
 
-#include <QtGui/qfontdatabase.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpalette.h>
+#include <BobUIGui/qfontdatabase.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpalette.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-Q_STATIC_LOGGING_CATEGORY(lcIconEngineFontDownload, "qt.qpa.iconengine.fontdownload")
+using namespace BobUI::StringLiterals;
+Q_STATIC_LOGGING_CATEGORY(lcIconEngineFontDownload, "bobui.qpa.iconengine.fontdownload")
 
 // the primary types to work with the FontRequest API
 Q_DECLARE_JNI_CLASS(FontRequest, "androidx/core/provider/FontRequest")
@@ -43,7 +43,7 @@ namespace FontProvider {
 
 static QString fetchFont(const QString &query)
 {
-    using namespace QtJniTypes;
+    using namespace BobUIJniTypes;
 
     static QMap<QString, QString> triedFonts;
     const auto it = triedFonts.find(query);
@@ -64,7 +64,7 @@ static QString fetchFont(const QString &query)
         const QString authority = u"com.google.android.gms.fonts"_s;
 
         // First we access the content provider to get the signatures of the authority for the package
-        const auto context = QtAndroidPrivate::context();
+        const auto context = BobUIAndroidPrivate::context();
 
         auto packageManager = context.callMethod<PackageManager>("getPackageManager");
         if (!packageManager.isValid()) {
@@ -242,13 +242,13 @@ static QFont selectFont()
         "MaterialIconsTwoTone-Regular.otf",
     };
     for (const auto &fontCandidate : fontCandidates) {
-        fontFamily = FontProvider::fetchFont(u":/qt-project.org/icons/%1"_s.arg(fontCandidate));
+        fontFamily = FontProvider::fetchFont(u":/bobui-project.org/icons/%1"_s.arg(fontCandidate));
         if (!fontFamily.isEmpty())
             break;
     }
 
     // Otherwise we try to download the Outlined version of Material Symbols
-    const QString key = qEnvironmentVariable("QT_GOOGLE_FONTS_KEY");
+    const QString key = qEnvironmentVariable("BOBUI_GOOGLE_FONTS_KEY");
     if (fontFamily.isEmpty() && !key.isEmpty())
         fontFamily = FontProvider::fetchFont(u"key=%1&name=Material+Symbols+Outlined"_s.arg(key));
 
@@ -553,6 +553,6 @@ QString QAndroidPlatformIconEngine::string() const
     return m_glyphs;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_ICON
+#endif // BOBUI_NO_ICON

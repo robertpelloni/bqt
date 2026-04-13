@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef LISTITEM_H
 #define LISTITEM_H
@@ -41,8 +41,8 @@ public:
     QString text(const TextPos position) const;
     void setFont(const QFont font, const TextPos position);
 
-    QVariant data(int role = Qt::DisplayRole) const;
-    void setData(const QVariant &value, int role = Qt::DisplayRole);
+    QVariant data(int role = BobUI::DisplayRole) const;
+    void setData(const QVariant &value, int role = BobUI::DisplayRole);
 
     void setBorderPen(const QPen pen) { m_borderPen = pen; }
     void setBackgroundBrush(const QBrush brush) { m_backgroundBrush = brush; }

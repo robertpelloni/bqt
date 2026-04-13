@@ -1,31 +1,31 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_manual_test(rhiwidgetproto
+bobui_internal_add_manual_test(rhiwidgetproto
     GUI
     SOURCES
         examplewidget.cpp examplewidget.h
         rhiwidget.cpp rhiwidget.h rhiwidget_p.h
         main.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Widgets
-        Qt::WidgetsPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Widgets
+        BobUI::WidgetsPrivate
 )
 
 set_source_files_properties("../shared/texture.vert.qsb"
-    PROPERTIES QT_RESOURCE_ALIAS "texture.vert.qsb"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "texture.vert.qsb"
 )
 set_source_files_properties("../shared/texture.frag.qsb"
-    PROPERTIES QT_RESOURCE_ALIAS "texture.frag.qsb"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "texture.frag.qsb"
 )
 set(rhiwidgetproto_resource_files
     "../shared/texture.vert.qsb"
     "../shared/texture.frag.qsb"
 )
 
-qt_internal_add_resource(rhiwidgetproto "rhiwidgetproto"
+bobui_internal_add_resource(rhiwidgetproto "rhiwidgetproto"
     PREFIX
         "/"
     FILES

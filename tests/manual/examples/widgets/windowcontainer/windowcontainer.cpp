@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "openglwindow.h"
 
@@ -24,20 +24,20 @@ public:
     {
         QLinearGradient g(0, 0, 0, height());
         g.setColorAt(0, QColor("lightsteelblue"));
-        g.setColorAt(1, Qt::black);
+        g.setColorAt(1, BobUI::black);
         p->fillRect(0, 0, width(), height(), g);
 
-        p->setPen(Qt::white);
+        p->setPen(BobUI::white);
 
         p->drawText(20, 30, QLatin1String("This is an OpenGL based QWindow"));
 
         if (m_key.trimmed().length() > 0) {
-            QRect bounds = p->boundingRect(QRect(0, 0, width(), height()), Qt::AlignTop | Qt::AlignLeft, m_key);
+            QRect bounds = p->boundingRect(QRect(0, 0, width(), height()), BobUI::AlignTop | BobUI::AlignLeft, m_key);
             p->save();
             p->translate(width() / 2.0, height() / 2.0);
             p->scale(10, 10);
             p->translate(-bounds.width() / 2.0, -bounds.height() / 2.0);
-            p->drawText(bounds, Qt::AlignCenter, m_key);
+            p->drawText(bounds, BobUI::AlignCenter, m_key);
             p->restore();
         }
 
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     container->setMinimumSize(300, 300);
     container->setMaximumSize(600, 600);
     container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    container->setFocusPolicy(Qt::StrongFocus);
+    container->setFocusPolicy(BobUI::StrongFocus);
 
     window->setGeometry(100, 100, 300, 200);
 

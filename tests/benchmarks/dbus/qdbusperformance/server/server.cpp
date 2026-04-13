@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtCore/QtCore>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUICore/BobUICore>
 
 
 #include "../serverobject.h"
 
-static const char serviceName[] = "org.qtproject.autotests.performance";
+static const char serviceName[] = "org.bobuiproject.autotests.performance";
 static const char objectPath[] = "/";
 
 int main(int argc, char *argv[])

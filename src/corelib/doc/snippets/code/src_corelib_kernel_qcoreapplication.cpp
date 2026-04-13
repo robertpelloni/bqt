@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include <QCoreApplication>
 #include <QMouseEvent>
 #include <QPointF>
 #include <QObject>
 
-#if __has_include(<QtWidgets>)
+#if __has_include(<BobUIWidgets>)
 #  include <QPushButton>
 void example(QPointF &localPos, QPointF &globalPos, QObject *mainWindow, QObject app)
 {
     //! [0]
-    QMouseEvent event(QEvent::MouseButtonPress, localPos, globalPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QMouseEvent event(QEvent::MouseButtonPress, localPos, globalPos, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier);
     QCoreApplication::sendEvent(mainWindow, &event);
     //! [0]
 
     //! [1]
     QPushButton *quitButton = new QPushButton("Quit");
-    QObject::connect(quitButton, &QPushButton::clicked, &app, &QCoreApplication::quit, Qt::QueuedConnection);
+    QObject::connect(quitButton, &QPushButton::clicked, &app, &QCoreApplication::quit, BobUI::QueuedConnection);
     //! [1]
 }
 #endif

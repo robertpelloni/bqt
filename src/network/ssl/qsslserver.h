@@ -1,28 +1,28 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Kurt Pattyn <pattyn.kurt@gmail.com>.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSSLSERVER_H
 #define QSSLSERVER_H
 
-#include <QtNetwork/QTcpServer>
+#include <BobUINetwork/BOBUIcpServer>
 
-QT_REQUIRE_CONFIG(ssl);
+BOBUI_REQUIRE_CONFIG(ssl);
 
-#include <QtNetwork/QSslError>
-#include <QtNetwork/QSslConfiguration>
-#include <QtNetwork/QSslPreSharedKeyAuthenticator>
-#include <QtNetwork/QSslSocket>
+#include <BobUINetwork/QSslError>
+#include <BobUINetwork/QSslConfiguration>
+#include <BobUINetwork/QSslPreSharedKeyAuthenticator>
+#include <BobUINetwork/QSslSocket>
 
-#include <QtCore/QList>
+#include <BobUICore/QList>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSslSocket;
 class QSslServerPrivate;
 
-class Q_NETWORK_EXPORT QSslServer : public QTcpServer
+class Q_NETWORK_EXPORT QSslServer : public BOBUIcpServer
 {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(QSslServer)
@@ -57,6 +57,6 @@ private:
     Q_DECLARE_PRIVATE(QSslServer)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSSLSERVER_H

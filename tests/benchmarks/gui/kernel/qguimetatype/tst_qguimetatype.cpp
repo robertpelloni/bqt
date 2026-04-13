@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
-#include <QtCore/qmetatype.h>
+#include <bobuiest.h>
+#include <BobUICore/qmetatype.h>
 #include <QScopeGuard>
 
 class tst_QGuiMetaType : public QObject
@@ -21,10 +21,10 @@ private:
 
 void tst_QGuiMetaType::constructableGuiTypes()
 {
-    QTest::addColumn<int>("typeId");
+    BOBUIest::addColumn<int>("typeId");
     for (int i = QMetaType::FirstGuiType; i <= QMetaType::LastGuiType; ++i) {
         if (QMetaType metaType(i); metaType.isValid())
-            QTest::newRow(metaType.name()) << i;
+            BOBUIest::newRow(metaType.name()) << i;
     }
 }
 
@@ -79,5 +79,5 @@ void tst_QGuiMetaType::constructInPlaceCopy()
     }
 }
 
-QTEST_MAIN(tst_QGuiMetaType)
+BOBUIEST_MAIN(tst_QGuiMetaType)
 #include "tst_qguimetatype.moc"

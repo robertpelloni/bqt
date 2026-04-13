@@ -1,16 +1,16 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDATETIME_H
 #define QDATETIME_H
 
-#include <QtCore/qcalendar.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qlocale.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qcalendar.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qlocale.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qstring.h>
 
 #include <climits>
 #include <chrono>
@@ -20,9 +20,9 @@ Q_FORWARD_DECLARE_CF_TYPE(CFDate);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSDate);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTimeZone;
+class BOBUIimeZone;
 class QDateTime;
 
 class Q_CORE_EXPORT QDate
@@ -36,33 +36,33 @@ public:
     QDate(int y, int m, int d, QCalendar cal);
 // INTEGRITY incident-85878 (timezone and clock_cast are not supported)
 #if (__cpp_lib_chrono >= 201907L && !defined(Q_OS_INTEGRITY)) || defined(Q_QDOC)
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     Q_IMPLICIT constexpr QDate(std::chrono::year_month_day date) noexcept
         : jd(date.ok() ? stdSysDaysToJulianDay(date) : nullJd())
     {}
 
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     Q_IMPLICIT constexpr QDate(std::chrono::year_month_day_last date) noexcept
         : jd(date.ok() ? stdSysDaysToJulianDay(date) : nullJd())
     {}
 
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     Q_IMPLICIT constexpr QDate(std::chrono::year_month_weekday date) noexcept
         : jd(date.ok() ? stdSysDaysToJulianDay(date) : nullJd())
     {}
 
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     Q_IMPLICIT constexpr QDate(std::chrono::year_month_weekday_last date) noexcept
         : jd(date.ok() ? stdSysDaysToJulianDay(date) : nullJd())
     {}
 
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     static constexpr QDate fromStdSysDays(const std::chrono::sys_days &days) noexcept
     {
         return QDate(stdSysDaysToJulianDay(days));
     }
 
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     constexpr std::chrono::sys_days toStdSysDays() const noexcept
     {
         const qint64 days = isValid() ? jd - unixEpochJd() : 0;
@@ -91,20 +91,20 @@ public:
     int daysInMonth(QCalendar cal) const;
     int daysInYear(QCalendar cal) const;
 
-#if QT_DEPRECATED_SINCE(6, 9)
-    QT_DEPRECATED_VERSION_X_6_9("Pass QTimeZone instead")
-    QDateTime startOfDay(Qt::TimeSpec spec, int offsetSeconds = 0) const;
-    QT_DEPRECATED_VERSION_X_6_9("Pass QTimeZone instead")
-    QDateTime endOfDay(Qt::TimeSpec spec, int offsetSeconds = 0) const;
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+    BOBUI_DEPRECATED_VERSION_X_6_9("Pass BOBUIimeZone instead")
+    QDateTime startOfDay(BobUI::TimeSpec spec, int offsetSeconds = 0) const;
+    BOBUI_DEPRECATED_VERSION_X_6_9("Pass BOBUIimeZone instead")
+    QDateTime endOfDay(BobUI::TimeSpec spec, int offsetSeconds = 0) const;
 #endif
 
-    QDateTime startOfDay(const QTimeZone &zone) const;
-    QDateTime endOfDay(const QTimeZone &zone) const;
+    QDateTime startOfDay(const BOBUIimeZone &zone) const;
+    QDateTime endOfDay(const BOBUIimeZone &zone) const;
     QDateTime startOfDay() const;
     QDateTime endOfDay() const;
 
-#if QT_CONFIG(datestring)
-    QString toString(Qt::DateFormat format = Qt::TextDate) const;
+#if BOBUI_CONFIG(datestring)
+    QString toString(BobUI::DateFormat format = BobUI::TextDate) const;
     QString toString(const QString &format) const;
     QString toString(const QString &format, QCalendar cal) const
     { return toString(qToStringViewIgnoringNull(format), cal); }
@@ -119,7 +119,7 @@ public:
     [[nodiscard]] QDate addDays(qint64 days) const;
 // INTEGRITY incident-85878 (timezone and clock_cast are not supported)
 #if (__cpp_lib_chrono >= 201907L && !defined(Q_OS_INTEGRITY)) || defined(Q_QDOC)
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     [[nodiscard]] QDate addDuration(std::chrono::days days) const
     {
         return addDays(days.count());
@@ -133,16 +133,16 @@ public:
     qint64 daysTo(QDate d) const;
 
     static QDate currentDate();
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     // No DateFormat accepts a two-digit year, so no need for baseYear:
-    static QDate fromString(QStringView string, Qt::DateFormat format = Qt::TextDate);
-    static QDate fromString(const QString &string, Qt::DateFormat format = Qt::TextDate)
+    static QDate fromString(QStringView string, BobUI::DateFormat format = BobUI::TextDate);
+    static QDate fromString(const QString &string, BobUI::DateFormat format = BobUI::TextDate)
     { return fromString(qToStringViewIgnoringNull(string), format); }
 
     // Accept calendar without over-ride of base year:
     static QDate fromString(QStringView string, QStringView format, QCalendar cal)
     { return fromString(string.toString(), format, QLocale::DefaultTwoDigitBaseYear, cal); }
-    QT_CORE_INLINE_SINCE(6, 7)
+    BOBUI_CORE_INLINE_SINCE(6, 7)
     static QDate fromString(const QString &string, QStringView format, QCalendar cal);
     static QDate fromString(const QString &string, const QString &format, QCalendar cal)
     { return fromString(string, qToStringViewIgnoringNull(format), QLocale::DefaultTwoDigitBaseYear, cal); }
@@ -182,8 +182,8 @@ private:
 
 // INTEGRITY incident-85878 (timezone and clock_cast are not supported)
 #if __cpp_lib_chrono >= 201907L && !defined(Q_OS_INTEGRITY)
-#if !QT_CORE_REMOVED_SINCE(6, 7)
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+#if !BOBUI_CORE_REMOVED_SINCE(6, 7)
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
 #endif
     static constexpr qint64
     stdSysDaysToJulianDay(const std::chrono::sys_days &days) noexcept
@@ -208,9 +208,9 @@ private:
 
     friend constexpr bool comparesEqual(const QDate &lhs, const QDate &rhs) noexcept
     { return lhs.jd == rhs.jd; }
-    friend constexpr Qt::strong_ordering
+    friend constexpr BobUI::strong_ordering
     compareThreeWay(const QDate &lhs, const QDate &rhs) noexcept
-    { return Qt::compareThreeWay(lhs.jd, rhs.jd); }
+    { return BobUI::compareThreeWay(lhs.jd, rhs.jd); }
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QDate)
 
     friend QDate &operator++(QDate &date)
@@ -239,21 +239,21 @@ private:
         return old;
     }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, QDate);
     friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QDate &);
 #endif
 };
 Q_DECLARE_TYPEINFO(QDate, Q_RELOCATABLE_TYPE);
 
-class Q_CORE_EXPORT QTime
+class Q_CORE_EXPORT BOBUIime
 {
-    explicit constexpr QTime(int ms) : mds(ms)
+    explicit constexpr BOBUIime(int ms) : mds(ms)
     {}
 public:
-    constexpr QTime(): mds(NullTime)
+    constexpr BOBUIime(): mds(NullTime)
     {}
-    QTime(int h, int m, int s = 0, int ms = 0);
+    BOBUIime(int h, int m, int s = 0, int ms = 0);
 
     constexpr bool isNull() const { return mds == NullTime; }
     bool isValid() const;
@@ -262,31 +262,31 @@ public:
     int minute() const;
     int second() const;
     int msec() const;
-#if QT_CONFIG(datestring)
-    QString toString(Qt::DateFormat f = Qt::TextDate) const;
+#if BOBUI_CONFIG(datestring)
+    QString toString(BobUI::DateFormat f = BobUI::TextDate) const;
     QString toString(const QString &format) const
     { return toString(qToStringViewIgnoringNull(format)); }
     QString toString(QStringView format) const;
 #endif
     bool setHMS(int h, int m, int s, int ms = 0);
 
-    [[nodiscard]] QTime addSecs(int secs) const;
-    int secsTo(QTime t) const;
-    [[nodiscard]] QTime addMSecs(int ms) const;
-    int msecsTo(QTime t) const;
+    [[nodiscard]] BOBUIime addSecs(int secs) const;
+    int secsTo(BOBUIime t) const;
+    [[nodiscard]] BOBUIime addMSecs(int ms) const;
+    int msecsTo(BOBUIime t) const;
 
-    static constexpr inline QTime fromMSecsSinceStartOfDay(int msecs) { return QTime(msecs); }
+    static constexpr inline BOBUIime fromMSecsSinceStartOfDay(int msecs) { return BOBUIime(msecs); }
     constexpr inline int msecsSinceStartOfDay() const { return mds == NullTime ? 0 : mds; }
 
-    static QTime currentTime();
-#if QT_CONFIG(datestring)
-    static QTime fromString(QStringView string, Qt::DateFormat format = Qt::TextDate);
-    static QTime fromString(QStringView string, QStringView format)
+    static BOBUIime currentTime();
+#if BOBUI_CONFIG(datestring)
+    static BOBUIime fromString(QStringView string, BobUI::DateFormat format = BobUI::TextDate);
+    static BOBUIime fromString(QStringView string, QStringView format)
     { return fromString(string.toString(), format); }
-    static QTime fromString(const QString &string, QStringView format);
-    static QTime fromString(const QString &string, Qt::DateFormat format = Qt::TextDate)
+    static BOBUIime fromString(const QString &string, QStringView format);
+    static BOBUIime fromString(const QString &string, BobUI::DateFormat format = BobUI::TextDate)
     { return fromString(qToStringViewIgnoringNull(string), format); }
-    static QTime fromString(const QString &string, const QString &format)
+    static BOBUIime fromString(const QString &string, const QString &format)
     { return fromString(string, qToStringViewIgnoringNull(format)); }
 #endif
     static bool isValid(int h, int m, int s, int ms = 0);
@@ -296,28 +296,28 @@ private:
     constexpr inline int ds() const { return mds == -1 ? 0 : mds; }
     int mds;
 
-    friend constexpr bool comparesEqual(const QTime &lhs, const QTime &rhs) noexcept
+    friend constexpr bool comparesEqual(const BOBUIime &lhs, const BOBUIime &rhs) noexcept
     { return lhs.mds == rhs.mds; }
-    friend constexpr Qt::strong_ordering
-    compareThreeWay(const QTime &lhs, const QTime &rhs) noexcept
-    { return Qt::compareThreeWay(lhs.mds, rhs.mds); }
-    Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QTime)
+    friend constexpr BobUI::strong_ordering
+    compareThreeWay(const BOBUIime &lhs, const BOBUIime &rhs) noexcept
+    { return BobUI::compareThreeWay(lhs.mds, rhs.mds); }
+    Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(BOBUIime)
 
     friend class QDateTime;
     friend class QDateTimePrivate;
-#ifndef QT_NO_DATASTREAM
-    friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, QTime);
-    friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QTime &);
+#ifndef BOBUI_NO_DATASTREAM
+    friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, BOBUIime);
+    friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, BOBUIime &);
 #endif
 };
-Q_DECLARE_TYPEINFO(QTime, Q_RELOCATABLE_TYPE);
+Q_DECLARE_TYPEINFO(BOBUIime, Q_RELOCATABLE_TYPE);
 
 class QDateTimePrivate;
 
 class Q_CORE_EXPORT QDateTime
 {
     struct ShortData {
-#if QT_VERSION >= QT_VERSION_CHECK(7,0,0) || defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7,0,0) || defined(BOBUI_BOOTSTRAPPED)
 #  if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
         qint64 status : 8;
 #  endif
@@ -348,7 +348,7 @@ class Q_CORE_EXPORT QDateTime
         static constexpr bool CanBeSmall = sizeof(ShortData) * 8 > 50;
 
         Data() noexcept;
-        Data(const QTimeZone &);
+        Data(const BOBUIimeZone &);
         Data(const Data &other) noexcept;
         Data(Data &&other) noexcept;
         Data &operator=(const Data &other) noexcept;
@@ -361,7 +361,7 @@ class Q_CORE_EXPORT QDateTime
         bool isShort() const;
         inline void invalidate();
         void detach();
-        QTimeZone timeZone() const;
+        BOBUIimeZone timeZone() const;
 
         const QDateTimePrivate *operator->() const;
         QDateTimePrivate *operator->();
@@ -385,23 +385,23 @@ public:
         LegacyBehavior = RelativeToBefore
     };
 
-#if QT_DEPRECATED_SINCE(6, 9)
-    QT_DEPRECATED_VERSION_X_6_9("Pass QTimeZone instead")
-    QDateTime(QDate date, QTime time, Qt::TimeSpec spec, int offsetSeconds = 0);
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+    BOBUI_DEPRECATED_VERSION_X_6_9("Pass BOBUIimeZone instead")
+    QDateTime(QDate date, BOBUIime time, BobUI::TimeSpec spec, int offsetSeconds = 0);
 #endif
-#if QT_CORE_REMOVED_SINCE(6, 7)
-    QDateTime(QDate date, QTime time, const QTimeZone &timeZone);
-    QDateTime(QDate date, QTime time);
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
+    QDateTime(QDate date, BOBUIime time, const BOBUIimeZone &timeZone);
+    QDateTime(QDate date, BOBUIime time);
 #endif
-    QDateTime(QDate date, QTime time, const QTimeZone &timeZone,
+    QDateTime(QDate date, BOBUIime time, const BOBUIimeZone &timeZone,
               TransitionResolution resolve = TransitionResolution::LegacyBehavior);
-    QDateTime(QDate date, QTime time,
+    QDateTime(QDate date, BOBUIime time,
               TransitionResolution resolve = TransitionResolution::LegacyBehavior);
     QDateTime(const QDateTime &other) noexcept;
     QDateTime(QDateTime &&other) noexcept;
     ~QDateTime();
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QDateTime)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QDateTime)
     QDateTime &operator=(const QDateTime &other) noexcept;
 
     void swap(QDateTime &other) noexcept { d.swap(other.d); }
@@ -410,12 +410,12 @@ public:
     bool isValid() const;
 
     QDate date() const;
-    QTime time() const;
-    Qt::TimeSpec timeSpec() const;
+    BOBUIime time() const;
+    BobUI::TimeSpec timeSpec() const;
     int offsetFromUtc() const;
-    QTimeZone timeRepresentation() const;
-#if QT_CONFIG(timezone)
-    QTimeZone timeZone() const;
+    BOBUIimeZone timeRepresentation() const;
+#if BOBUI_CONFIG(timezone)
+    BOBUIimeZone timeZone() const;
 #endif // timezone
     QString timeZoneAbbreviation() const;
     bool isDaylightTime() const;
@@ -423,29 +423,29 @@ public:
     qint64 toMSecsSinceEpoch() const;
     qint64 toSecsSinceEpoch() const;
 
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     void setDate(QDate date);
-    void setTime(QTime time);
+    void setTime(BOBUIime time);
 #endif
     void setDate(QDate date, TransitionResolution resolve = TransitionResolution::LegacyBehavior);
-    void setTime(QTime time, TransitionResolution resolve = TransitionResolution::LegacyBehavior);
+    void setTime(BOBUIime time, TransitionResolution resolve = TransitionResolution::LegacyBehavior);
 
-#if QT_DEPRECATED_SINCE(6, 9)
-    QT_DEPRECATED_VERSION_X_6_9("Use setTimeZone() instead")
-    void setTimeSpec(Qt::TimeSpec spec);
-    QT_DEPRECATED_VERSION_X_6_9("Use setTimeZone() instead")
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+    BOBUI_DEPRECATED_VERSION_X_6_9("Use setTimeZone() instead")
+    void setTimeSpec(BobUI::TimeSpec spec);
+    BOBUI_DEPRECATED_VERSION_X_6_9("Use setTimeZone() instead")
     void setOffsetFromUtc(int offsetSeconds);
 #endif
-#if QT_CORE_REMOVED_SINCE(6, 7)
-    void setTimeZone(const QTimeZone &toZone);
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
+    void setTimeZone(const BOBUIimeZone &toZone);
 #endif
-    void setTimeZone(const QTimeZone &toZone,
+    void setTimeZone(const BOBUIimeZone &toZone,
                      TransitionResolution resolve = TransitionResolution::LegacyBehavior);
     void setMSecsSinceEpoch(qint64 msecs);
     void setSecsSinceEpoch(qint64 secs);
 
-#if QT_CONFIG(datestring)
-    QString toString(Qt::DateFormat format = Qt::TextDate) const;
+#if BOBUI_CONFIG(datestring)
+    QString toString(BobUI::DateFormat format = BobUI::TextDate) const;
     QString toString(const QString &format) const;
     QString toString(const QString &format, QCalendar cal) const
     { return toString(qToStringViewIgnoringNull(format), cal); }
@@ -462,32 +462,32 @@ public:
         return addMSecs(msecs.count());
     }
 
-#if QT_DEPRECATED_SINCE(6, 9)
-    QT_DEPRECATED_VERSION_X_6_9("Use toTimeZone instead")
-    QDateTime toTimeSpec(Qt::TimeSpec spec) const;
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+    BOBUI_DEPRECATED_VERSION_X_6_9("Use toTimeZone instead")
+    QDateTime toTimeSpec(BobUI::TimeSpec spec) const;
 #endif
     QDateTime toLocalTime() const;
     QDateTime toUTC() const;
     QDateTime toOffsetFromUtc(int offsetSeconds) const;
-    QDateTime toTimeZone(const QTimeZone &toZone) const;
+    QDateTime toTimeZone(const BOBUIimeZone &toZone) const;
 
     qint64 daysTo(const QDateTime &) const;
     qint64 secsTo(const QDateTime &) const;
     qint64 msecsTo(const QDateTime &) const;
 
-    static QDateTime currentDateTime(const QTimeZone &zone);
+    static QDateTime currentDateTime(const BOBUIimeZone &zone);
     static QDateTime currentDateTime();
     static QDateTime currentDateTimeUtc();
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     // No DateFormat accepts a two-digit year, so no need for baseYear:
-    static QDateTime fromString(QStringView string, Qt::DateFormat format = Qt::TextDate);
-    static QDateTime fromString(const QString &string, Qt::DateFormat format = Qt::TextDate)
+    static QDateTime fromString(QStringView string, BobUI::DateFormat format = BobUI::TextDate);
+    static QDateTime fromString(const QString &string, BobUI::DateFormat format = BobUI::TextDate)
     { return fromString(qToStringViewIgnoringNull(string), format); }
 
     // Accept calendar without over-ride of base year:
     static QDateTime fromString(QStringView string, QStringView format, QCalendar cal)
     { return fromString(string.toString(), format, QLocale::DefaultTwoDigitBaseYear, cal); }
-    QT_CORE_INLINE_SINCE(6, 7)
+    BOBUI_CORE_INLINE_SINCE(6, 7)
     static QDateTime fromString(const QString &string, QStringView format, QCalendar cal);
     static QDateTime fromString(const QString &string, const QString &format, QCalendar cal)
     { return fromString(string, qToStringViewIgnoringNull(format), QLocale::DefaultTwoDigitBaseYear, cal); }
@@ -512,15 +512,15 @@ public:
     { return fromString(string, qToStringViewIgnoringNull(format), baseYear, cal); }
 #endif
 
-#if QT_DEPRECATED_SINCE(6, 9)
-    QT_DEPRECATED_VERSION_X_6_9("Pass QTimeZone instead of time-spec, offset")
-    static QDateTime fromMSecsSinceEpoch(qint64 msecs, Qt::TimeSpec spec, int offsetFromUtc = 0);
-    QT_DEPRECATED_VERSION_X_6_9("Pass QTimeZone instead of time-spec, offset")
-    static QDateTime fromSecsSinceEpoch(qint64 secs, Qt::TimeSpec spec, int offsetFromUtc = 0);
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+    BOBUI_DEPRECATED_VERSION_X_6_9("Pass BOBUIimeZone instead of time-spec, offset")
+    static QDateTime fromMSecsSinceEpoch(qint64 msecs, BobUI::TimeSpec spec, int offsetFromUtc = 0);
+    BOBUI_DEPRECATED_VERSION_X_6_9("Pass BOBUIimeZone instead of time-spec, offset")
+    static QDateTime fromSecsSinceEpoch(qint64 secs, BobUI::TimeSpec spec, int offsetFromUtc = 0);
 #endif
 
-    static QDateTime fromMSecsSinceEpoch(qint64 msecs, const QTimeZone &timeZone);
-    static QDateTime fromSecsSinceEpoch(qint64 secs, const QTimeZone &timeZone);
+    static QDateTime fromMSecsSinceEpoch(qint64 msecs, const BOBUIimeZone &timeZone);
+    static QDateTime fromSecsSinceEpoch(qint64 secs, const BOBUIimeZone &timeZone);
     static QDateTime fromMSecsSinceEpoch(qint64 msecs);
     static QDateTime fromSecsSinceEpoch(qint64 secs);
 
@@ -577,36 +577,36 @@ public:
 #endif // __cpp_concepts
 
     // local_time
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     static QDateTime fromStdTimePoint(const std::chrono::local_time<std::chrono::milliseconds> &time)
     {
         return fromStdLocalTime(time);
     }
 
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     static QDateTime fromStdLocalTime(const std::chrono::local_time<std::chrono::milliseconds> &time)
     {
-        QDateTime result(QDate(1970, 1, 1), QTime(0, 0, 0), TransitionResolution::LegacyBehavior);
+        QDateTime result(QDate(1970, 1, 1), BOBUIime(0, 0, 0), TransitionResolution::LegacyBehavior);
         return result.addMSecs(time.time_since_epoch().count());
     }
 
-#if QT_CONFIG(timezone) && (__cpp_lib_chrono >= 201907L || defined(Q_QDOC))
-    // zoned_time. defined in qtimezone.h
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+#if BOBUI_CONFIG(timezone) && (__cpp_lib_chrono >= 201907L || defined(Q_QDOC))
+    // zoned_time. defined in bobuiimezone.h
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     static QDateTime fromStdZonedTime(const std::chrono::zoned_time<
                                           std::chrono::milliseconds,
                                           const std::chrono::time_zone *
                                       > &time);
-#endif // QT_CONFIG(timezone)
+#endif // BOBUI_CONFIG(timezone)
 
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     std::chrono::sys_time<std::chrono::milliseconds> toStdSysMilliseconds() const
     {
         const std::chrono::milliseconds duration(toMSecsSinceEpoch());
         return std::chrono::sys_time<std::chrono::milliseconds>(duration);
     }
 
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     std::chrono::sys_seconds toStdSysSeconds() const
     {
         const std::chrono::seconds duration(toSecsSinceEpoch());
@@ -652,7 +652,7 @@ public:
 
 private:
     bool equals(const QDateTime &other) const;
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     bool precedes(const QDateTime &other) const;
 #endif
     friend class QDateTimePrivate;
@@ -661,33 +661,33 @@ private:
 
     friend bool comparesEqual(const QDateTime &lhs, const QDateTime &rhs)
     { return lhs.equals(rhs); }
-    friend Q_CORE_EXPORT Qt::weak_ordering
+    friend Q_CORE_EXPORT BobUI::weak_ordering
     compareThreeWay(const QDateTime &lhs, const QDateTime &rhs);
     Q_DECLARE_WEAKLY_ORDERED_NON_NOEXCEPT(QDateTime)
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QDateTime &);
     friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QDateTime &);
 #endif
 
-#if !defined(QT_NO_DEBUG_STREAM) && QT_CONFIG(datestring)
+#if !defined(BOBUI_NO_DEBUG_STREAM) && BOBUI_CONFIG(datestring)
     friend Q_CORE_EXPORT QDebug operator<<(QDebug, const QDateTime &);
 #endif
 };
 Q_DECLARE_SHARED(QDateTime)
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, QDate);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QDate &);
-Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, QTime);
-Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QTime &);
+Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, BOBUIime);
+Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, BOBUIime &);
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QDateTime &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QDateTime &);
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#if !defined(QT_NO_DEBUG_STREAM) && QT_CONFIG(datestring)
+#if !defined(BOBUI_NO_DEBUG_STREAM) && BOBUI_CONFIG(datestring)
 Q_CORE_EXPORT QDebug operator<<(QDebug, QDate);
-Q_CORE_EXPORT QDebug operator<<(QDebug, QTime);
+Q_CORE_EXPORT QDebug operator<<(QDebug, BOBUIime);
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QDateTime &);
 #endif
 
@@ -695,9 +695,9 @@ Q_CORE_EXPORT QDebug operator<<(QDebug, const QDateTime &);
 // timezone and calendaring support is added
 Q_CORE_EXPORT size_t qHash(const QDateTime &key, size_t seed = 0);
 Q_CORE_EXPORT size_t qHash(QDate key, size_t seed = 0) noexcept;
-Q_CORE_EXPORT size_t qHash(QTime key, size_t seed = 0) noexcept;
+Q_CORE_EXPORT size_t qHash(BOBUIime key, size_t seed = 0) noexcept;
 
-#if QT_CONFIG(datestring) && QT_CORE_INLINE_IMPL_SINCE(6, 7)
+#if BOBUI_CONFIG(datestring) && BOBUI_CORE_INLINE_IMPL_SINCE(6, 7)
 QDate QDate::fromString(const QString &string, QStringView format, QCalendar cal)
 {
     return fromString(string, format, QLocale::DefaultTwoDigitBaseYear, cal);
@@ -709,6 +709,6 @@ QDateTime QDateTime::fromString(const QString &string, QStringView format, QCale
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDATETIME_H

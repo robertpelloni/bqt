@@ -1,18 +1,18 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxinputcontext_noimf.h"
 #include "qqnxabstractvirtualkeyboard.h"
 #include "qqnxintegration.h"
 #include "qqnxscreen.h"
 
-#include <QtCore/QDebug>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QInputMethodEvent>
+#include <BobUICore/QDebug>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QInputMethodEvent>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaInputMethods, "qt.qpa.input.methods");
+Q_LOGGING_CATEGORY(lcQpaInputMethods, "bobui.qpa.input.methods");
 
 QQnxInputContext::QQnxInputContext(QQnxIntegration *integration, QQnxAbstractVirtualKeyboard &keyboard) :
     QPlatformInputContext(),
@@ -138,14 +138,14 @@ void QQnxInputContext::setFocusObject(QObject *object)
         if (m_inputPanelVisible)
             hideInputPanel();
     } else {
-        QInputMethodQueryEvent query(Qt::ImHints | Qt::ImEnterKeyType);
+        QInputMethodQueryEvent query(BobUI::ImHints | BobUI::ImEnterKeyType);
         QCoreApplication::sendEvent(object, &query);
-        int inputHints = query.value(Qt::ImHints).toInt();
-        Qt::EnterKeyType qtEnterKeyType = Qt::EnterKeyType(query.value(Qt::ImEnterKeyType).toInt());
+        int inputHints = query.value(BobUI::ImHints).toInt();
+        BobUI::EnterKeyType bobuiEnterKeyType = BobUI::EnterKeyType(query.value(BobUI::ImEnterKeyType).toInt());
 
         m_virtualKeyboard.setInputHints(inputHints);
         m_virtualKeyboard.setEnterKeyType(
-            QQnxAbstractVirtualKeyboard::qtEnterKeyTypeToQnx(qtEnterKeyType)
+            QQnxAbstractVirtualKeyboard::bobuiEnterKeyTypeToQnx(bobuiEnterKeyType)
         );
 
         if (!m_inputPanelVisible)
@@ -153,4 +153,4 @@ void QQnxInputContext::setFocusObject(QObject *object)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

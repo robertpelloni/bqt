@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include <QApplication>
 #include <QSlider>
@@ -24,7 +24,7 @@ public:
     ScrollArea(QWidget *parent = nullptr)
         : QScrollArea(parent), outside(false)
     {
-        viewport()->grabGesture(Qt::PanGesture, Qt::ReceivePartialGestures);
+        viewport()->grabGesture(BobUI::PanGesture, BobUI::ReceivePartialGestures);
     }
 
 protected:
@@ -35,8 +35,8 @@ protected:
             return true;
         } else if (event->type() == QEvent::GestureOverride) {
             QGestureEvent *ge = static_cast<QGestureEvent *>(event);
-            if (QPanGesture *pan = static_cast<QPanGesture *>(ge->gesture(Qt::PanGesture)))
-                if (pan->state() == Qt::GestureStarted) {
+            if (QPanGesture *pan = static_cast<QPanGesture *>(ge->gesture(BobUI::PanGesture)))
+                if (pan->state() == BobUI::GestureStarted) {
                     outside = false;
                 }
         }
@@ -44,17 +44,17 @@ protected:
     }
     void gestureEvent(QGestureEvent *event)
     {
-        QPanGesture *pan = static_cast<QPanGesture *>(event->gesture(Qt::PanGesture));
+        QPanGesture *pan = static_cast<QPanGesture *>(event->gesture(BobUI::PanGesture));
         if (pan) {
             switch(pan->state()) {
-            case Qt::GestureStarted: qDebug() << this << "Pan: started"; break;
-            case Qt::GestureFinished: qDebug() << this << "Pan: finished"; break;
-            case Qt::GestureCanceled: qDebug() << this << "Pan: canceled"; break;
-            case Qt::GestureUpdated: break;
+            case BobUI::GestureStarted: qDebug() << this << "Pan: started"; break;
+            case BobUI::GestureFinished: qDebug() << this << "Pan: finished"; break;
+            case BobUI::GestureCanceled: qDebug() << this << "Pan: canceled"; break;
+            case BobUI::GestureUpdated: break;
             default: qDebug() << this << "Pan: <unknown state>"; break;
             }
 
-            if (pan->state() == Qt::GestureStarted)
+            if (pan->state() == BobUI::GestureStarted)
                 outside = false;
             event->ignore();
             event->ignore(pan);
@@ -89,10 +89,10 @@ private:
 class Slider : public QSlider
 {
 public:
-    Slider(Qt::Orientation orientation, QWidget *parent = nullptr)
+    Slider(BobUI::Orientation orientation, QWidget *parent = nullptr)
         : QSlider(orientation, parent)
     {
-        grabGesture(Qt::PanGesture);
+        grabGesture(BobUI::PanGesture);
     }
 protected:
     bool event(QEvent *event)
@@ -105,17 +105,17 @@ protected:
     }
     void gestureEvent(QGestureEvent *event)
     {
-        QPanGesture *pan = static_cast<QPanGesture *>(event->gesture(Qt::PanGesture));
+        QPanGesture *pan = static_cast<QPanGesture *>(event->gesture(BobUI::PanGesture));
         if (pan) {
             switch (pan->state()) {
-            case Qt::GestureStarted: qDebug() << this << "Pan: started"; break;
-            case Qt::GestureFinished: qDebug() << this << "Pan: finished"; break;
-            case Qt::GestureCanceled: qDebug() << this << "Pan: canceled"; break;
-            case Qt::GestureUpdated: break;
+            case BobUI::GestureStarted: qDebug() << this << "Pan: started"; break;
+            case BobUI::GestureFinished: qDebug() << this << "Pan: finished"; break;
+            case BobUI::GestureCanceled: qDebug() << this << "Pan: canceled"; break;
+            case BobUI::GestureUpdated: break;
             default: qDebug() << this << "Pan: <unknown state>"; break;
             }
 
-            if (pan->state() == Qt::GestureStarted)
+            if (pan->state() == BobUI::GestureStarted)
                 outside = false;
             event->ignore();
             event->ignore(pan);
@@ -123,7 +123,7 @@ protected:
                 return;
             const QPointF delta = pan->delta();
             const QPointF totalOffset = pan->offset();
-            if (orientation() == Qt::Horizontal) {
+            if (orientation() == BobUI::Horizontal) {
                 if ((value() == minimum() && totalOffset.x() < -10) ||
                     (value() == maximum() && totalOffset.x() > 10)) {
                     outside = true;
@@ -135,7 +135,7 @@ protected:
                 } else {
                     outside = true;
                 }
-            } else if (orientation() == Qt::Vertical) {
+            } else if (orientation() == BobUI::Vertical) {
                 if ((value() == maximum() && totalOffset.y() < -10) ||
                     (value() == minimum() && totalOffset.y() > 10)) {
                     outside = true;
@@ -167,10 +167,10 @@ public:
         root->setFixedSize(3000, 3000);
         rootScrollArea->setWidget(root);
 
-        Slider *verticalSlider = new Slider(Qt::Vertical, root);
+        Slider *verticalSlider = new Slider(BobUI::Vertical, root);
         verticalSlider->setObjectName(QLatin1String("verticalSlider"));
         verticalSlider ->move(650, 1100);
-        Slider *horizontalSlider = new Slider(Qt::Horizontal, root);
+        Slider *horizontalSlider = new Slider(BobUI::Horizontal, root);
         horizontalSlider->setObjectName(QLatin1String("horizontalSlider"));
         horizontalSlider ->move(600, 1000);
 
@@ -190,12 +190,12 @@ public:
         }
         childScrollArea->setWidget(w);
 #if defined(Q_OS_WIN)
-        // Windows can force Qt to create a native window handle for an
+        // Windows can force BobUI to create a native window handle for an
         // intermediate widget and that will block gesture to get touch events.
         // So this hack to make sure gestures get all touch events they need.
         foreach (QObject *w, children())
             if (w->isWidgetType())
-                static_cast<QWidget *>(w)->setAttribute(Qt::WA_AcceptTouchEvents);
+                static_cast<QWidget *>(w)->setAttribute(BobUI::WA_AcceptTouchEvents);
 #endif
     }
 private:

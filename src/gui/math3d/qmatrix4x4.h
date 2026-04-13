@@ -1,33 +1,33 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMATRIX4X4_H
 #define QMATRIX4X4_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qvector3d.h>
-#include <QtGui/qvector4d.h>
-#include <QtGui/qgenericmatrix.h>
-#include <QtCore/qrect.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qvector3d.h>
+#include <BobUIGui/qvector4d.h>
+#include <BobUIGui/qgenericmatrix.h>
+#include <BobUICore/qrect.h>
 
 class tst_QMatrixNxN;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_QUATERNION
+#ifndef BOBUI_NO_QUATERNION
 class QQuaternion;
 #endif
 
-#ifndef QT_NO_MATRIX4X4
+#ifndef BOBUI_NO_MATRIX4X4
 
-class QTransform;
+class BOBUIransform;
 class QVariant;
 
 class Q_GUI_EXPORT QMatrix4x4
 {
 public:
     inline QMatrix4x4() { setToIdentity(); }
-    explicit QMatrix4x4(Qt::Initialization) : flagBits(General) {}
+    explicit QMatrix4x4(BobUI::Initialization) : flagBits(General) {}
     explicit QMatrix4x4(const float *values);
     inline QMatrix4x4(float m11, float m12, float m13, float m14,
                       float m21, float m22, float m23, float m24,
@@ -38,12 +38,12 @@ public:
     explicit QMatrix4x4(const QGenericMatrix<N, M, float>& matrix);
 
     QMatrix4x4(const float *values, int cols, int rows);
-    QMatrix4x4(const QTransform& transform);
+    QMatrix4x4(const BOBUIransform& transform);
 
     inline const float& operator()(int row, int column) const;
     inline float& operator()(int row, int column);
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
     inline QVector4D column(int index) const;
     inline void setColumn(int index, const QVector4D& value);
 
@@ -74,20 +74,20 @@ public:
     friend QMatrix4x4 operator+(const QMatrix4x4& m1, const QMatrix4x4& m2);
     friend QMatrix4x4 operator-(const QMatrix4x4& m1, const QMatrix4x4& m2);
     friend QMatrix4x4 operator*(const QMatrix4x4& m1, const QMatrix4x4& m2);
-#ifndef QT_NO_VECTOR3D
-#if QT_DEPRECATED_SINCE(6, 1)
+#ifndef BOBUI_NO_VECTOR3D
+#if BOBUI_DEPRECATED_SINCE(6, 1)
     friend QVector3D operator*(const QMatrix4x4& matrix, const QVector3D& vector);
     friend QVector3D operator*(const QVector3D& vector, const QMatrix4x4& matrix);
 #endif
 #endif
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
     friend QVector4D operator*(const QVector4D& vector, const QMatrix4x4& matrix);
     friend QVector4D operator*(const QMatrix4x4& matrix, const QVector4D& vector);
 #endif
     friend QPoint operator*(const QPoint& point, const QMatrix4x4& matrix);
     friend QPointF operator*(const QPointF& point, const QMatrix4x4& matrix);
     friend QMatrix4x4 operator-(const QMatrix4x4& matrix);
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
     friend QPoint operator*(const QMatrix4x4& matrix, const QPoint& point);
     friend QPointF operator*(const QMatrix4x4& matrix, const QPointF& point);
 #endif
@@ -97,7 +97,7 @@ public:
 
     friend Q_GUI_EXPORT bool qFuzzyCompare(const QMatrix4x4& m1, const QMatrix4x4& m2) noexcept;
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
     void scale(const QVector3D& vector);
     void translate(const QVector3D& vector);
     void rotate(float angle, const QVector3D& vector);
@@ -108,7 +108,7 @@ public:
     void translate(float x, float y);
     void translate(float x, float y, float z);
     void rotate(float angle, float x, float y, float z = 0.0f);
-#ifndef QT_NO_QUATERNION
+#ifndef BOBUI_NO_QUATERNION
     void rotate(const QQuaternion& quaternion);
 #endif
 
@@ -117,7 +117,7 @@ public:
     void ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane);
     void frustum(float left, float right, float bottom, float top, float nearPlane, float farPlane);
     void perspective(float verticalAngle, float aspectRatio, float nearPlane, float farPlane);
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
     void lookAt(const QVector3D& eye, const QVector3D& center, const QVector3D& up);
 #endif
     void viewport(const QRectF &rect);
@@ -126,16 +126,16 @@ public:
 
     void copyDataTo(float *values) const;
 
-    QTransform toTransform() const;
-    QTransform toTransform(float distanceToPlane) const;
+    BOBUIransform toTransform() const;
+    BOBUIransform toTransform(float distanceToPlane) const;
 
     inline QPoint map(const QPoint& point) const;
     inline QPointF map(const QPointF& point) const;
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
     inline QVector3D map(const QVector3D& point) const;
     inline QVector3D mapVector(const QVector3D& vector) const;
 #endif
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
     inline QVector4D map(const QVector4D& point) const;
 #endif
     QRect mapRect(const QRect& rect) const;
@@ -152,13 +152,13 @@ public:
 
     operator QVariant() const;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug dbg, const QMatrix4x4 &m);
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     void projectedRotate(float angle, float x, float y, float z, float distanceToPlane);
-    // ### Qt7: Remove
+    // ### BobUI7: Remove
     void projectedRotate(float angle, float x, float y, float z);
 #else
     void projectedRotate(float angle, float x, float y, float z, float distanceToPlane = 1024.0);
@@ -190,8 +190,8 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMatrix4x4::Flags)
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_FLOAT_COMPARE
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_FLOAT_COMPARE
 
 Q_DECLARE_TYPEINFO(QMatrix4x4, Q_PRIMITIVE_TYPE);
 
@@ -257,7 +257,7 @@ inline float& QMatrix4x4::operator()(int aRow, int aColumn)
     return m[aColumn][aRow];
 }
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 inline QVector4D QMatrix4x4::column(int index) const
 {
     Q_ASSERT(index >= 0 && index < 4);
@@ -403,7 +403,7 @@ inline QMatrix4x4& QMatrix4x4::operator-=(const QMatrix4x4& other)
 
 inline QMatrix4x4& QMatrix4x4::operator*=(const QMatrix4x4& o)
 {
-    const QMatrix4x4 other = o; // prevent aliasing when &o == this ### Qt 6: take o by value
+    const QMatrix4x4 other = o; // prevent aliasing when &o == this ### BobUI 6: take o by value
     flagBits |= other.flagBits;
 
     if (flagBits.toInt() < Rotation2D) {
@@ -565,7 +565,7 @@ inline bool QMatrix4x4::operator!=(const QMatrix4x4& other) const
 inline QMatrix4x4 operator+(const QMatrix4x4& m1, const QMatrix4x4& m2)
 {
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     m.m[0][0] = m1.m[0][0] + m2.m[0][0];
     m.m[0][1] = m1.m[0][1] + m2.m[0][1];
     m.m[0][2] = m1.m[0][2] + m2.m[0][2];
@@ -588,7 +588,7 @@ inline QMatrix4x4 operator+(const QMatrix4x4& m1, const QMatrix4x4& m2)
 inline QMatrix4x4 operator-(const QMatrix4x4& m1, const QMatrix4x4& m2)
 {
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     m.m[0][0] = m1.m[0][0] - m2.m[0][0];
     m.m[0][1] = m1.m[0][1] - m2.m[0][1];
     m.m[0][2] = m1.m[0][2] - m2.m[0][2];
@@ -611,7 +611,7 @@ inline QMatrix4x4 operator-(const QMatrix4x4& m1, const QMatrix4x4& m2)
 inline QMatrix4x4 operator*(const QMatrix4x4& m1, const QMatrix4x4& m2)
 {
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     QMatrix4x4::Flags flagBits = m1.flagBits | m2.flagBits;
     if (flagBits.toInt() < QMatrix4x4::Rotation2D) {
         // Scale | Translation
@@ -709,11 +709,11 @@ inline QMatrix4x4 operator*(const QMatrix4x4& m1, const QMatrix4x4& m2)
     return m;
 }
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
 
-QT_DEPRECATED_VERSION_X_6_1("Extend the QVector3D to a QVector4D with 1.0 as the w coordinate before multiplying")
+BOBUI_DEPRECATED_VERSION_X_6_1("Extend the QVector3D to a QVector4D with 1.0 as the w coordinate before multiplying")
 inline QVector3D operator*(const QVector3D& vector, const QMatrix4x4& matrix)
 {
     float x, y, z, w;
@@ -739,7 +739,7 @@ inline QVector3D operator*(const QVector3D& vector, const QMatrix4x4& matrix)
         return QVector3D(x / w, y / w, z / w);
 }
 
-QT_DEPRECATED_VERSION_X_6_1("Use matrix.map(vector) instead")
+BOBUI_DEPRECATED_VERSION_X_6_1("Use matrix.map(vector) instead")
 inline QVector3D operator*(const QMatrix4x4& matrix, const QVector3D& vector)
 {
     return matrix.map(vector);
@@ -749,7 +749,7 @@ inline QVector3D operator*(const QMatrix4x4& matrix, const QVector3D& vector)
 
 #endif
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 
 inline QVector4D operator*(const QVector4D& vector, const QMatrix4x4& matrix)
 {
@@ -840,15 +840,15 @@ inline QPointF operator*(const QPointF& point, const QMatrix4x4& matrix)
     }
 }
 
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
 
-QT_DEPRECATED_VERSION_X_6_1("Use matrix.map(point) instead")
+BOBUI_DEPRECATED_VERSION_X_6_1("Use matrix.map(point) instead")
 inline QPoint operator*(const QMatrix4x4& matrix, const QPoint& point)
 {
     return matrix.map(point);
 }
 
-QT_DEPRECATED_VERSION_X_6_1("Use matrix.map(point) instead")
+BOBUI_DEPRECATED_VERSION_X_6_1("Use matrix.map(point) instead")
 inline QPointF operator*(const QMatrix4x4& matrix, const QPointF& point)
 {
     return matrix.map(point);
@@ -859,7 +859,7 @@ inline QPointF operator*(const QMatrix4x4& matrix, const QPointF& point)
 inline QMatrix4x4 operator-(const QMatrix4x4& matrix)
 {
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     m.m[0][0] = -matrix.m[0][0];
     m.m[0][1] = -matrix.m[0][1];
     m.m[0][2] = -matrix.m[0][2];
@@ -882,7 +882,7 @@ inline QMatrix4x4 operator-(const QMatrix4x4& matrix)
 inline QMatrix4x4 operator*(float factor, const QMatrix4x4& matrix)
 {
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     m.m[0][0] = matrix.m[0][0] * factor;
     m.m[0][1] = matrix.m[0][1] * factor;
     m.m[0][2] = matrix.m[0][2] * factor;
@@ -905,7 +905,7 @@ inline QMatrix4x4 operator*(float factor, const QMatrix4x4& matrix)
 inline QMatrix4x4 operator*(const QMatrix4x4& matrix, float factor)
 {
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     m.m[0][0] = matrix.m[0][0] * factor;
     m.m[0][1] = matrix.m[0][1] * factor;
     m.m[0][2] = matrix.m[0][2] * factor;
@@ -992,7 +992,7 @@ inline QPointF QMatrix4x4::map(const QPointF& point) const
     }
 }
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 inline QVector3D QMatrix4x4::map(const QVector3D& point) const
 {
@@ -1058,7 +1058,7 @@ inline QVector3D QMatrix4x4::mapVector(const QVector3D& vector) const
 
 #endif
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 
 inline QVector4D QMatrix4x4::map(const QVector4D& point) const
 {
@@ -1080,19 +1080,19 @@ inline void QMatrix4x4::viewport(const QRectF &rect)
     viewport(float(rect.x()), float(rect.y()), float(rect.width()), float(rect.height()));
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug dbg, const QMatrix4x4 &m);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QMatrix4x4 &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QMatrix4x4 &);
 #endif
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

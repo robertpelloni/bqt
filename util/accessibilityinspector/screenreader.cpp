@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "screenreader.h"
 #include "optionswidget.h"
 #include "accessibilityscenemanager.h"
-#include <QtGui>
+#include <BobUIGui>
 
 ScreenReader::ScreenReader(QObject *parent) :
     QObject(parent)
@@ -35,7 +35,7 @@ void ScreenReader::touchPoint(const QPoint &point)
     // (activate will then be called and cancel the touch processing)
     m_activateCalled = false;
     m_currentTouchPoint = point;
-    QTimer::singleShot(200, this, SLOT(processTouchPoint()));
+    BOBUIimer::singleShot(200, this, SLOT(processTouchPoint()));
 }
 
 void ScreenReader::processTouchPoint()

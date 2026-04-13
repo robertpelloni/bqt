@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMAKEARRAY_P_H
 #define QMAKEARRAY_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtCore/private/qglobal_p.h"
+#include "BobUICore/private/qglobal_p.h"
 
 #include <array>
 #include <type_traits>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template<typename T>
 constexpr T &&Forward(typename std::remove_reference<T>::type &t) noexcept
 {
@@ -119,26 +119,26 @@ struct QuickSort<QuickSortData<>>
 {
     using Type = QuickSortData<>;
 };
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <typename ManualType = void, typename ... Types>
-constexpr QtPrivate::ArrayType<ManualType, Types...> qMakeArray(Types && ... t) noexcept
+constexpr BobUIPrivate::ArrayType<ManualType, Types...> qMakeArray(Types && ... t) noexcept
 {
-    return {{QtPrivate::Forward<typename QtPrivate::ArrayType<ManualType, Types...>::value_type>(t)...}};
+    return {{BobUIPrivate::Forward<typename BobUIPrivate::ArrayType<ManualType, Types...>::value_type>(t)...}};
 }
 
 template<typename ... Values>
 struct QSortedData {
-    using Data = typename QtPrivate::QuickSort<typename QtPrivate::QuickSortData<Values...>>::Type;
+    using Data = typename BobUIPrivate::QuickSort<typename BobUIPrivate::QuickSortData<Values...>>::Type;
 };
 
 template<typename ... Values>
-constexpr auto qMakeArray(QtPrivate::QuickSortData<Values...>) noexcept -> decltype(qMakeArray(Values::data()...))
+constexpr auto qMakeArray(BobUIPrivate::QuickSortData<Values...>) noexcept -> decltype(qMakeArray(Values::data()...))
 {
     return qMakeArray(Values::data() ...);
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMAKEARRAY_P_H

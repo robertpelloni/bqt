@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 Samuel Gaist <samuel.gaist@edeltech.ch>
 // Copyright (C) 2014 Petroules Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qstring.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/quuid.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qrect.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/quuid.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qrect.h>
 
-#if QT_CONFIG(timezone)
-#include <QtCore/qtimezone.h>
-#include <QtCore/private/qtimezoneprivate_p.h>
-#include <QtCore/private/qcore_mac_p.h>
+#if BOBUI_CONFIG(timezone)
+#include <BobUICore/bobuiimezone.h>
+#include <BobUICore/private/bobuiimezoneprivate_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 #endif
 
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
 #import <CoreGraphics/CoreGraphics.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \fn QByteArray QByteArray::fromCFData(CFDataRef data)
@@ -189,7 +189,7 @@ QString QString::fromCFString(CFStringRef string)
     if (chars)
         return QString(reinterpret_cast<const QChar *>(chars), length);
 
-    QString ret(length, Qt::Uninitialized);
+    QString ret(length, BobUI::Uninitialized);
     CFStringGetCharacters(string, CFRangeMake(0, length), reinterpret_cast<UniChar *>(ret.data()));
     return ret;
 }
@@ -471,24 +471,24 @@ NSDate *QDateTime::toNSDate() const
 
 // ----------------------------------------------------------------------------
 
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 /*!
-    \brief Constructs a new QTimeZone containing a copy of the CFTimeZone \a timeZone.
+    \brief Constructs a new BOBUIimeZone containing a copy of the CFTimeZone \a timeZone.
 
     \since 5.9
     \ingroup platform-type-conversions
 
     \sa toCFTimeZone()
 */
-QTimeZone QTimeZone::fromCFTimeZone(CFTimeZoneRef timeZone)
+BOBUIimeZone BOBUIimeZone::fromCFTimeZone(CFTimeZoneRef timeZone)
 {
     if (!timeZone)
-        return QTimeZone();
-    return QTimeZone(QString::fromCFString(CFTimeZoneGetName(timeZone)).toLatin1());
+        return BOBUIimeZone();
+    return BOBUIimeZone(QString::fromCFString(CFTimeZoneGetName(timeZone)).toLatin1());
 }
 
 /*!
-    \brief Creates a CFTimeZone from a QTimeZone.
+    \brief Creates a CFTimeZone from a BOBUIimeZone.
 
     The caller owns the CFTimeZone object and is responsible for releasing it.
 
@@ -497,9 +497,9 @@ QTimeZone QTimeZone::fromCFTimeZone(CFTimeZoneRef timeZone)
 
     \sa fromCFTimeZone()
 */
-CFTimeZoneRef QTimeZone::toCFTimeZone() const
+CFTimeZoneRef BOBUIimeZone::toCFTimeZone() const
 {
-#ifndef QT_NO_DYNAMIC_CAST
+#ifndef BOBUI_NO_DYNAMIC_CAST
     Q_ASSERT(dynamic_cast<const QMacTimeZonePrivate *>(d.d));
 #endif
     const QMacTimeZonePrivate *p = static_cast<const QMacTimeZonePrivate *>(d.d);
@@ -507,22 +507,22 @@ CFTimeZoneRef QTimeZone::toCFTimeZone() const
 }
 
 /*!
-    \brief Constructs a new QTimeZone containing a copy of the NSTimeZone \a timeZone.
+    \brief Constructs a new BOBUIimeZone containing a copy of the NSTimeZone \a timeZone.
 
     \since 5.9
     \ingroup platform-type-conversions
 
     \sa toNSTimeZone()
 */
-QTimeZone QTimeZone::fromNSTimeZone(const NSTimeZone *timeZone)
+BOBUIimeZone BOBUIimeZone::fromNSTimeZone(const NSTimeZone *timeZone)
 {
     if (!timeZone)
-        return QTimeZone();
-    return QTimeZone(QString::fromNSString(timeZone.name).toLatin1());
+        return BOBUIimeZone();
+    return BOBUIimeZone(QString::fromNSString(timeZone.name).toLatin1());
 }
 
 /*!
-    \brief Creates an NSTimeZone from a QTimeZone.
+    \brief Creates an NSTimeZone from a BOBUIimeZone.
 
     The NSTimeZone object is autoreleased.
 
@@ -531,7 +531,7 @@ QTimeZone QTimeZone::fromNSTimeZone(const NSTimeZone *timeZone)
 
     \sa fromNSTimeZone()
 */
-NSTimeZone *QTimeZone::toNSTimeZone() const
+NSTimeZone *BOBUIimeZone::toNSTimeZone() const
 {
     return [static_cast<NSTimeZone *>(toCFTimeZone()) autorelease];
 }
@@ -660,4 +660,4 @@ QSizeF QSizeF::fromCGSize(CGSize size) noexcept
     return QSizeF(size.width, size.height);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

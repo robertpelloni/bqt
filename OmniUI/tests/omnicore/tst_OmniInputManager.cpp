@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <BobUITest/BobUITest>
 #include <QObject>
 #include <QKeyEvent>
 #include "../../omnicore/include/OmniInputManager.h"
@@ -82,22 +82,22 @@ void tst_OmniInputManager::testConcurrentEventRouting() {
     m_manager->setDeviceFocus("test-kb-1", &targetA);
     m_manager->setDeviceFocus("test-kb-2", &targetB);
 
-    // Simulate User A typing 'A' (Qt::Key_A = 0x41)
-    QKeyEvent eventA(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, "A");
+    // Simulate User A typing 'A' (BobUI::Key_A = 0x41)
+    QKeyEvent eventA(QEvent::KeyPress, BobUI::Key_A, BobUI::NoModifier, "A");
     bool routedA = m_manager->routeKeyEvent("test-kb-1", &eventA);
 
     QVERIFY(routedA);
     QCOMPARE(targetA.receivedKeyCount, 1);
-    QCOMPARE(targetA.lastReceivedKey, Qt::Key_A);
+    QCOMPARE(targetA.lastReceivedKey, BobUI::Key_A);
     QCOMPARE(targetB.receivedKeyCount, 0); // User B should receive nothing
 
-    // Simulate User B typing 'B' (Qt::Key_B = 0x42)
-    QKeyEvent eventB(QEvent::KeyPress, Qt::Key_B, Qt::NoModifier, "B");
+    // Simulate User B typing 'B' (BobUI::Key_B = 0x42)
+    QKeyEvent eventB(QEvent::KeyPress, BobUI::Key_B, BobUI::NoModifier, "B");
     bool routedB = m_manager->routeKeyEvent("test-kb-2", &eventB);
 
     QVERIFY(routedB);
     QCOMPARE(targetB.receivedKeyCount, 1);
-    QCOMPARE(targetB.lastReceivedKey, Qt::Key_B);
+    QCOMPARE(targetB.lastReceivedKey, BobUI::Key_B);
     QCOMPARE(targetA.receivedKeyCount, 1); // User A should remain at 1
 }
 
@@ -105,5 +105,5 @@ void tst_OmniInputManager::cleanupTestCase() {
     // The manager is a singleton, no deletion needed here
 }
 
-QTEST_MAIN(tst_OmniInputManager)
+BOBUIEST_MAIN(tst_OmniInputManager)
 #include "tst_OmniInputManager.moc"

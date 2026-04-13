@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mandelbrotwidget.h"
 
@@ -33,8 +33,8 @@ MandelbrotWidget::MandelbrotWidget(QWidget *parent) :
             this, &MandelbrotWidget::updatePixmap);
 
     setWindowTitle(tr("Mandelbrot"));
-#if QT_CONFIG(cursor)
-    setCursor(Qt::CrossCursor);
+#if BOBUI_CONFIG(cursor)
+    setCursor(BobUI::CrossCursor);
 #endif
 }
 //! [1]
@@ -43,11 +43,11 @@ MandelbrotWidget::MandelbrotWidget(QWidget *parent) :
 void MandelbrotWidget::paintEvent(QPaintEvent * /* event */)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), Qt::black);
+    painter.fillRect(rect(), BobUI::black);
 
     if (pixmap.isNull()) {
-        painter.setPen(Qt::white);
-        painter.drawText(rect(), Qt::AlignCenter|Qt::TextWordWrap,
+        painter.setPen(BobUI::white);
+        painter.drawText(rect(), BobUI::AlignCenter|BobUI::TextWordWrap,
                          tr("Rendering initial image, please wait..."));
 //! [2] //! [3]
         return;
@@ -64,8 +64,8 @@ void MandelbrotWidget::paintEvent(QPaintEvent * /* event */)
 //! [7] //! [8]
         const auto previewPixmap = qFuzzyCompare(pixmap.devicePixelRatio(), qreal(1))
             ? pixmap
-            : pixmap.scaled(pixmap.deviceIndependentSize().toSize(), Qt::KeepAspectRatio,
-                            Qt::SmoothTransformation);
+            : pixmap.scaled(pixmap.deviceIndependentSize().toSize(), BobUI::KeepAspectRatio,
+                            BobUI::SmoothTransformation);
         const double scaleFactor = pixmapScale / curScale;
         const int newWidth = int(previewPixmap.width() * scaleFactor);
         const int newHeight = int(previewPixmap.height() * scaleFactor);
@@ -88,24 +88,24 @@ void MandelbrotWidget::paintEvent(QPaintEvent * /* event */)
         const int infoWidth = metrics.horizontalAdvance(info);
         const int infoHeight = (infoWidth/width() + 1) * (metrics.height() + 5);
 
-        painter.setPen(Qt::NoPen);
+        painter.setPen(BobUI::NoPen);
         painter.setBrush(QColor(0, 0, 0, 127));
         painter.drawRect((width() - infoWidth) / 2 - 5, 0, infoWidth + 10, infoHeight);
 
-        painter.setPen(Qt::white);
-        painter.drawText(rect(), Qt::AlignHCenter|Qt::AlignTop|Qt::TextWordWrap, info);
+        painter.setPen(BobUI::white);
+        painter.drawText(rect(), BobUI::AlignHCenter|BobUI::AlignTop|BobUI::TextWordWrap, info);
     }
 
     const int helpWidth = metrics.horizontalAdvance(help);
     const int helpHeight = (helpWidth/width() + 1) * (metrics.height() + 5);
 
-    painter.setPen(Qt::NoPen);
+    painter.setPen(BobUI::NoPen);
     painter.setBrush(QColor(0, 0, 0, 127));
     painter.drawRect((width() - helpWidth) / 2 - 5, height()-helpHeight, helpWidth + 10,
                      helpHeight);
 
-    painter.setPen(Qt::white);
-    painter.drawText(rect(), Qt::AlignHCenter|Qt::AlignBottom|Qt::TextWordWrap, help);
+    painter.setPen(BobUI::white);
+    painter.drawText(rect(), BobUI::AlignHCenter|BobUI::AlignBottom|BobUI::TextWordWrap, help);
 
 }
 //! [9]
@@ -121,25 +121,25 @@ void MandelbrotWidget::resizeEvent(QResizeEvent * /* event */)
 void MandelbrotWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Plus:
+    case BobUI::Key_Plus:
         zoom(ZoomInFactor);
         break;
-    case Qt::Key_Minus:
+    case BobUI::Key_Minus:
         zoom(ZoomOutFactor);
         break;
-    case Qt::Key_Left:
+    case BobUI::Key_Left:
         scroll(-ScrollStep, 0);
         break;
-    case Qt::Key_Right:
+    case BobUI::Key_Right:
         scroll(+ScrollStep, 0);
         break;
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         scroll(0, -ScrollStep);
         break;
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         scroll(0, +ScrollStep);
         break;
-    case Qt::Key_Q:
+    case BobUI::Key_Q:
         close();
         break;
     default:
@@ -148,7 +148,7 @@ void MandelbrotWidget::keyPressEvent(QKeyEvent *event)
 }
 //! [11]
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 //! [12]
 void MandelbrotWidget::wheelEvent(QWheelEvent *event)
 {
@@ -162,7 +162,7 @@ void MandelbrotWidget::wheelEvent(QWheelEvent *event)
 //! [13]
 void MandelbrotWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
+    if (event->button() == BobUI::LeftButton)
         lastDragPos = event->position().toPoint();
 }
 //! [13]
@@ -170,7 +170,7 @@ void MandelbrotWidget::mousePressEvent(QMouseEvent *event)
 //! [14]
 void MandelbrotWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->buttons() & Qt::LeftButton) {
+    if (event->buttons() & BobUI::LeftButton) {
         pixmapOffset += event->position().toPoint() - lastDragPos;
         lastDragPos = event->position().toPoint();
         update();
@@ -181,7 +181,7 @@ void MandelbrotWidget::mouseMoveEvent(QMouseEvent *event)
 //! [15]
 void MandelbrotWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == BobUI::LeftButton) {
         pixmapOffset += event->position().toPoint() - lastDragPos;
         lastDragPos = QPoint();
 
@@ -229,10 +229,10 @@ void MandelbrotWidget::scroll(int deltaX, int deltaY)
 //! [18]
 
 //! [gesture1]
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 bool MandelbrotWidget::gestureEvent(QGestureEvent *event)
 {
-    if (auto *pinch = static_cast<QPinchGesture *>(event->gesture(Qt::PinchGesture))) {
+    if (auto *pinch = static_cast<QPinchGesture *>(event->gesture(BobUI::PinchGesture))) {
         if (pinch->changeFlags().testFlag(QPinchGesture::ScaleFactorChanged))
             zoom(1.0 / pinch->scaleFactor());
         return true;

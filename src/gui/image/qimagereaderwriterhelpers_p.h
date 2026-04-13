@@ -1,10 +1,10 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QIMAGEREADERWRITERHELPERS_P_H
 #define QIMAGEREADERWRITERHELPERS_P_H
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <qsharedpointer.h>
 #include "qimageiohandler.h"
 
@@ -12,50 +12,50 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFactoryLoader;
 
 namespace QImageReaderWriterHelpers {
 
-enum _qt_BuiltInFormatType {
-#ifndef QT_NO_IMAGEFORMAT_PNG
-    _qt_PngFormat,
+enum _bobui_BuiltInFormatType {
+#ifndef BOBUI_NO_IMAGEFORMAT_PNG
+    _bobui_PngFormat,
 #endif
-#ifndef QT_NO_IMAGEFORMAT_BMP
-    _qt_BmpFormat,
+#ifndef BOBUI_NO_IMAGEFORMAT_BMP
+    _bobui_BmpFormat,
 #endif
-#ifndef QT_NO_IMAGEFORMAT_PPM
-    _qt_PpmFormat,
-    _qt_PgmFormat,
-    _qt_PbmFormat,
+#ifndef BOBUI_NO_IMAGEFORMAT_PPM
+    _bobui_PpmFormat,
+    _bobui_PgmFormat,
+    _bobui_PbmFormat,
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XBM
-    _qt_XbmFormat,
+#ifndef BOBUI_NO_IMAGEFORMAT_XBM
+    _bobui_XbmFormat,
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XPM
-    _qt_XpmFormat,
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
+    _bobui_XpmFormat,
 #endif
-    _qt_NumFormats,
-    _qt_NoFormat = -1
+    _bobui_NumFormats,
+    _bobui_NoFormat = -1
 };
 
-#if !defined(QT_NO_IMAGEFORMAT_PPM)
+#if !defined(BOBUI_NO_IMAGEFORMAT_PPM)
 # define MAX_MT_SIZE 20
-#elif !defined(QT_NO_IMAGEFORMAT_XBM) || !defined(QT_NO_IMAGEFORMAT_XPM)
+#elif !defined(BOBUI_NO_IMAGEFORMAT_XBM) || !defined(BOBUI_NO_IMAGEFORMAT_XPM)
 #  define MAX_MT_SIZE 10
 #else
 #  define MAX_MT_SIZE 4
 #endif
 
-struct _qt_BuiltInFormatStruct
+struct _bobui_BuiltInFormatStruct
 {
     char extension[4];
     char mimeType[MAX_MT_SIZE];
@@ -63,28 +63,28 @@ struct _qt_BuiltInFormatStruct
 
 #undef MAX_MT_SIZE
 
-static const _qt_BuiltInFormatStruct _qt_BuiltInFormats[] = {
-#ifndef QT_NO_IMAGEFORMAT_PNG
+static const _bobui_BuiltInFormatStruct _bobui_BuiltInFormats[] = {
+#ifndef BOBUI_NO_IMAGEFORMAT_PNG
     {"png", "png"},
 #endif
-#ifndef QT_NO_IMAGEFORMAT_BMP
+#ifndef BOBUI_NO_IMAGEFORMAT_BMP
     {"bmp", "bmp"},
 #endif
-#ifndef QT_NO_IMAGEFORMAT_PPM
+#ifndef BOBUI_NO_IMAGEFORMAT_PPM
     {"ppm", "x-portable-pixmap"},
     {"pgm", "x-portable-graymap"},
     {"pbm", "x-portable-bitmap"},
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XBM
+#ifndef BOBUI_NO_IMAGEFORMAT_XBM
     {"xbm", "x-xbitmap"},
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XPM
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
     {"xpm", "x-xpixmap"},
 #endif
 };
-static_assert(_qt_NumFormats == sizeof _qt_BuiltInFormats / sizeof *_qt_BuiltInFormats);
+static_assert(_bobui_NumFormats == sizeof _bobui_BuiltInFormats / sizeof *_bobui_BuiltInFormats);
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
 QSharedPointer<QFactoryLoader> pluginLoader();
 #endif
 
@@ -98,6 +98,6 @@ QList<QByteArray> imageFormatsForMimeType(QByteArrayView mimeType, Capability ca
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIMAGEREADERWRITERHELPERS_P_H

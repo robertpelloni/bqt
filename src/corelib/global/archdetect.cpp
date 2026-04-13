@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qprocessordetection.h"
 
@@ -71,15 +71,15 @@
 // pointer type
 #if defined(Q_OS_WIN64)
 #  define ARCH_POINTER "llp64"
-#elif defined(__LP64__) || QT_POINTER_SIZE - 0 == 8
+#elif defined(__LP64__) || BOBUI_POINTER_SIZE - 0 == 8
 #  define ARCH_POINTER "lp64"
 #else
 #  define ARCH_POINTER "ilp32"
 #endif
 
 // qreal type, if not double (includes the dash)
-#ifdef QT_COORD_TYPE_STRING
-#  define ARCH_COORD_TYPE   "-qreal_" QT_COORD_TYPE_STRING
+#ifdef BOBUI_COORD_TYPE_STRING
+#  define ARCH_COORD_TYPE   "-qreal_" BOBUI_COORD_TYPE_STRING
 #else
 #  define ARCH_COORD_TYPE  ""
 #endif

@@ -1,4 +1,4 @@
-Here is a list of changes in Qt from 0.91 to 0.92.  Also look out
+Here is a list of changes in BobUI from 0.91 to 0.92.  Also look out
 for a few new classes; QPrinter, QFileDialog, QDir and QFileInfo.
 
 
@@ -65,9 +65,9 @@ QButton and friends:
 --------------------
     QIconButton removed, setPixmap() added to QButton to replace QIconButton
 
-QTableWidget:
+BOBUIableWidget:
 -------------
-    Renamed to QTableView (qtablevw.h)
+    Renamed to BOBUIableView (bobuiablevw.h)
     Using int to identify rows and columns, not long.
 
 QRangeControl:

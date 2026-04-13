@@ -1,7 +1,7 @@
 # OmniUI Deployment Guide
 
 ## Prerequisites
-- Qt 6.5 or higher installed.
+- BobUI 6.5 or higher installed.
 - CMake 3.16 or higher.
 - A C++20 compatible compiler (GCC 11+, Clang 14+, MSVC 2022+).
 - Node.js 18+ (for the CLI).

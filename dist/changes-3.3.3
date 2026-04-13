@@ -1,5 +1,5 @@
-Qt 3.3.3 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.3.2, Qt 3.3.1 and Qt 3.3.0.
+BobUI 3.3.3 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.3.2, BobUI 3.3.1 and BobUI 3.3.0.
 
 
 ****************************************************************************
@@ -20,11 +20,11 @@ Meta Object Compiler (moc)
 Allow classnames containing the substring 'const' in signal
 parameters.
 
-Qt Assistant
+BobUI Assistant
 ------------
 Fixed crash when an empty file is part of the profile.
 
-Qt Designer
+BobUI Designer
 -----------
 Fixed occasional crash when closing the form window.
 
@@ -73,7 +73,7 @@ General Fixes
 	(Fixes GUI lock-up on Windows.)
 
 - QDateTimeEdit
-	Propagate enabled state correctly when adding a QDateEdit/QTimeEdit
+	Propagate enabled state correctly when adding a QDateEdit/BOBUIimeEdit
 	to a disabled parent.
 
 - QDataStream
@@ -176,13 +176,13 @@ General Fixes
 - QSvgDevice
 	Fixed some clipping issues.
 
-- QTable
+- BOBUIable
 	Fixed memory leak in key event handling.
 	Fixed bug where calling setNumRows() or setNumCols() would not
 	change the sizeHint().
 	Improved speed of deleting rows/columns in big tables.
 
-- QTextEdit
+- BOBUIextEdit
 	Hide the cursor again when a drag leaves the text edit.
 	Don't crash if the text edit is deleted while the popup menu is
 	active.
@@ -191,18 +191,18 @@ General Fixes
 	selected, on a single line, and the cursor is at the start of the
 	text.
 
-- QTextEngine
+- BOBUIextEngine
 	Fixed a small bug in the bidi engine.
 	Fixed two small issues with Bengali rendering.
 	Fixed small issue with Khmer rendering.
 	Fixed an issue with ideographic space (U+0x3000).
 
-- QThread
+- BOBUIhread
 	Fixed bug on HP-UX when starting a thread with LowPriority.
-	Provide a safety mechanism when trying to use QThreadStorage from
-	non-QThread threads: spit out a warning and do nothing.
+	Provide a safety mechanism when trying to use BOBUIhreadStorage from
+	non-BOBUIhread threads: spit out a warning and do nothing.
 
-- QToolBar
+- BOBUIoolBar
 	Create a disabled popup menu when a disabled combobox is added to
 	the extension menu.
 
@@ -254,14 +254,14 @@ Windows:
 - QFontDatabase
 	Select correct font when family is empty and style hint is set.
 	Fixed problem where Chinese fonts were a pixel smaller than with
-	older Qt versions.
+	older BobUI versions.
 
 - QFtp
 	Improved performance by increasing buffer sizes.
 
 - QLocale
 	Obtain correct locale information on Win95, so that
-	QTextCodec::locale() works properly.
+	BOBUIextCodec::locale() works properly.
 
 - QPixmap
 	Fixed problems when alpha blending in 32bpp depth.
@@ -281,7 +281,7 @@ Windows:
 - QSound
 	Removed race condition.
 
-- QTextEngine
+- BOBUIextEngine
 	Draw CJK compatibility characters in the 0xffxx range correctly.
 	Fixed crash on invalid UTF-8 when using the newest Uniscribe library
 	on XP.
@@ -362,7 +362,7 @@ Mac:
 - QSettings
 	Fixed bug that caused settings files to end up in the wrong place.
 
-- QTableHeader
+- BOBUIableHeader
 	Fixed sizing bug.
 
 - QWidget
@@ -372,10 +372,10 @@ Mac:
 X11:
 
 - QApplication
-	Made the '-inputstyle' command line option override the ~/.qt/qtrc
+	Made the '-inputstyle' command line option override the ~/.bobui/bobuirc
 	setting.
 	Fixed crash when using the QApplication( Display *,...) constructor
-	without any settings file in ~/.qt/.
+	without any settings file in ~/.bobui/.
 	Fixed bug when passing a Tk Visual* to the QApplication constructor.
 
 - QClipboard
@@ -383,7 +383,7 @@ X11:
 
 - QFontDatabase
 	Fixed bug that caused some special TTF fonts to display incorrectly.
-	Fixed bug where Qt would not find some non-scalable fonts.
+	Fixed bug where BobUI would not find some non-scalable fonts.
 
 - QFontEngine
 	Fixed bug that caused incorrect metrics and drawing in some cases
@@ -408,14 +408,14 @@ X11:
 	Fixed restoration from fullscreen/maximize on non-EWMH supporting
 	window managers.
 	Do not clear the fullscreen/maximize state if the window manager
-	ignores a resize request from Qt.
+	ignores a resize request from BobUI.
 	Worked around bugs in window placement for the SGI 4Dwm window
 	manager.
 
 Embedded:
 
 Makeqpf tool
-	Use the same way of finding the font directory as the rest of Qt.
+	Use the same way of finding the font directory as the rest of BobUI.
 
 - QVNCServer
 	It is now possible to have several different VNC servers active on

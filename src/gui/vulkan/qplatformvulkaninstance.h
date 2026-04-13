@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMVULKANINSTANCE_H
 #define QPLATFORMVULKANINSTANCE_H
@@ -10,16 +10,16 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#if QT_CONFIG(vulkan) || defined(Q_QDOC)
+#if BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
 
 #include <qvulkaninstance.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPlatformVulkanInstancePrivate;
 
@@ -54,9 +54,9 @@ private:
     Q_DISABLE_COPY(QPlatformVulkanInstance)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(vulkan)
+#endif // BOBUI_CONFIG(vulkan)
 
 #if defined(Q_QDOC)
 /*
@@ -70,18 +70,18 @@ QT_END_NAMESPACE
 #ifndef QVULKANFUNCTIONS_H
 #define QVULKANFUNCTIONS_H
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#if QT_CONFIG(vulkan) || defined(Q_QDOC)
+#if BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
 
 #ifndef VK_NO_PROTOTYPES
 #define VK_NO_PROTOTYPES
 #endif
 #include <vulkan/vulkan.h>
 
-#include <QtCore/qscopedpointer.h>
+#include <BobUICore/qscopedpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVulkanInstance;
 class QVulkanFunctionsPrivate;
@@ -113,9 +113,9 @@ private:
     friend class QVulkanInstance;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(vulkan) || defined(Q_QDOC)
+#endif // BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
 #endif // QVULKANFUNCTIONS_H;
 #endif // Q_QDOC
 

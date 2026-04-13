@@ -3,7 +3,7 @@
 
 // All of our supported compilers support <immintrin.h>
 #include <immintrin.h>
-#define T(x)                      (QT_COMPILER_SUPPORTS_ ## x)
+#define T(x)                      (BOBUI_COMPILER_SUPPORTS_ ## x)
 
 #if !defined(__INTEL_COMPILER) && !defined(_MSC_VER) && !defined(NO_ATTRIBUTE)
 /* GCC requires attributes for a function */

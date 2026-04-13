@@ -1,6 +1,6 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsql_sqlite_vfs_p.h"
 
@@ -17,7 +17,7 @@
 typedef const char *sqlite3_filename;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 struct Vfs : sqlite3_vfs {
@@ -26,14 +26,14 @@ struct Vfs : sqlite3_vfs {
 };
 
 struct File : sqlite3_file {
-    class QtFile : public QFile {
+    class BobUIFile : public QFile {
     public:
-        QtFile(const QString &name, bool removeOnClose)
+        BobUIFile(const QString &name, bool removeOnClose)
             : QFile(name)
             , removeOnClose(removeOnClose)
         {}
 
-        ~QtFile() override
+        ~BobUIFile() override
         {
             if (removeOnClose)
                 remove();
@@ -41,7 +41,7 @@ struct File : sqlite3_file {
     private:
         bool removeOnClose;
     };
-    QtFile *pFile;
+    BobUIFile *pFile;
 };
 
 
@@ -151,7 +151,7 @@ int xOpen(sqlite3_vfs *svfs, sqlite3_filename zName, sqlite3_file *sfile,
     }
 
     file->pMethods = &vfs->ioMethods;
-    file->pFile = new File::QtFile(QString::fromUtf8(zName), bool(flags & SQLITE_OPEN_DELETEONCLOSE));
+    file->pFile = new File::BobUIFile(QString::fromUtf8(zName), bool(flags & SQLITE_OPEN_DELETEONCLOSE));
     if (!file->pFile->open(mode))
         return SQLITE_CANTOPEN;
     if (pOutFlags)
@@ -225,14 +225,14 @@ int xCurrentTimeInt64(sqlite3_vfs *svfs, sqlite3_int64 *zOut)
 }
 } // namespace {
 
-void register_qt_vfs()
+void register_bobui_vfs()
 {
     static Vfs vfs;
     memset(&vfs, 0, sizeof(Vfs));
     vfs.iVersion = 1;
     vfs.szOsFile = sizeof(File);
     vfs.mxPathname = PATH_MAX;
-    vfs.zName = "QtVFS";
+    vfs.zName = "BobUIVFS";
     vfs.xOpen = &xOpen;
     vfs.xDelete = &xDelete;
     vfs.xAccess = &xAccess;
@@ -260,4 +260,4 @@ void register_qt_vfs()
     sqlite3_vfs_register(&vfs, 0);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

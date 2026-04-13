@@ -1,23 +1,23 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QVULKANWINDOW_H
 #define QVULKANWINDOW_H
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
 #if 0
-#pragma qt_no_master_include
-#pragma qt_sync_skip_header_check
+#pragma bobui_no_master_include
+#pragma bobui_sync_skip_header_check
 #endif
 
-#if QT_CONFIG(vulkan) || defined(Q_QDOC)
+#if BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
 
-#include <QtGui/qvulkaninstance.h>
-#include <QtGui/qwindow.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qmatrix4x4.h>
-#include <QtCore/qset.h>
+#include <BobUIGui/qvulkaninstance.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/qmatrix4x4.h>
+#include <BobUICore/qset.h>
 
 #ifdef Q_QDOC
 typedef void* VkQueue;
@@ -33,7 +33,7 @@ typedef int VkFormat;
 typedef int VkSampleCountFlagBits;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVulkanWindowPrivate;
 
@@ -156,8 +156,8 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QVulkanWindow::Flags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(vulkan)
+#endif // BOBUI_CONFIG(vulkan)
 
 #endif

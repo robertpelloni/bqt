@@ -17,7 +17,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QtCore/qmath.h>
+#include <BobUICore/qmath.h>
 #include <math.h>
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -26,7 +26,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #define M_PI_2 (M_PI / 2)
 #endif
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 /**
  * Easing equation function for a simple linear tweening, with no easing.
@@ -616,12 +616,12 @@ static qreal easeOutInBounce(qreal t, qreal a)
     return 1.0 - easeOutBounce_helper (2.0-2*t, 0.5, a);
 }
 
-static inline qreal qt_sinProgress(qreal value)
+static inline qreal bobui_sinProgress(qreal value)
 {
     return qSin((value * M_PI) - M_PI_2) / 2 + qreal(0.5);
 }
 
-static inline qreal qt_smoothBeginEndMixFactor(qreal value)
+static inline qreal bobui_smoothBeginEndMixFactor(qreal value)
 {
     return qMin(qMax(1 - value * 2 + qreal(0.3), qreal(0.0)), qreal(1.0));
 }
@@ -636,8 +636,8 @@ static inline qreal qt_smoothBeginEndMixFactor(qreal value)
  */
 static qreal easeInCurve(qreal t)
 {
-    const qreal sinProgress = qt_sinProgress(t);
-    const qreal mix = qt_smoothBeginEndMixFactor(t);
+    const qreal sinProgress = bobui_sinProgress(t);
+    const qreal mix = bobui_smoothBeginEndMixFactor(t);
     return sinProgress * mix + t * (1 - mix);
 }
 
@@ -646,8 +646,8 @@ static qreal easeInCurve(qreal t)
  */
 static qreal easeOutCurve(qreal t)
 {
-    const qreal sinProgress = qt_sinProgress(t);
-    const qreal mix = qt_smoothBeginEndMixFactor(1 - t);
+    const qreal sinProgress = bobui_sinProgress(t);
+    const qreal mix = bobui_smoothBeginEndMixFactor(1 - t);
     return sinProgress * mix + t * (1 - mix);
 }
 

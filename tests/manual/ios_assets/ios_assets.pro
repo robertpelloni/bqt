@@ -1,6 +1,6 @@
 TEMPLATE = app
 SOURCES += main.cpp
-QT += core gui testlib
+BOBUI += core gui testlib
 CONFIG += app_bundle
 TARGET = tst_manual_ios_assets
 

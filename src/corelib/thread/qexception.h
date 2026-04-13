@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#ifndef QTCORE_QEXCEPTION_H
-#define QTCORE_QEXCEPTION_H
+#ifndef BOBUICORE_QEXCEPTION_H
+#define BOBUICORE_QEXCEPTION_H
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qshareddata.h>
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 #  include <exception>
 #endif
 
-QT_REQUIRE_CONFIG(future);
+BOBUI_REQUIRE_CONFIG(future);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#if !defined(QT_NO_EXCEPTIONS) || defined(Q_QDOC)
+#if !defined(BOBUI_NO_EXCEPTIONS) || defined(Q_QDOC)
 
 class Q_CORE_EXPORT QException : public std::exception
 {
@@ -42,7 +42,7 @@ public:
 
     void swap(QUnhandledException &other) noexcept { d.swap(other.d); }
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QUnhandledException)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QUnhandledException)
     QUnhandledException &operator=(const QUnhandledException &other) noexcept;
 
     void raise() const override;
@@ -54,7 +54,7 @@ private:
     QSharedDataPointer<QUnhandledExceptionPrivate> d;
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class Q_CORE_EXPORT ExceptionStore
 {
@@ -68,11 +68,11 @@ public:
     std::exception_ptr exceptionHolder;
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-#else // QT_NO_EXCEPTIONS
+#else // BOBUI_NO_EXCEPTIONS
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class Q_CORE_EXPORT ExceptionStore
 {
@@ -82,10 +82,10 @@ public:
     inline void rethrowException() const { }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

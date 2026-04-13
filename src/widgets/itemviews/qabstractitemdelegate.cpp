@@ -1,42 +1,42 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qabstractitemdelegate.h"
 
 #include <qabstractitemmodel.h>
 #include <qabstractitemview.h>
 #include <qfontmetrics.h>
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #include <qwhatsthis.h>
 #endif
-#if QT_CONFIG(tooltip)
-#include <qtooltip.h>
+#if BOBUI_CONFIG(tooltip)
+#include <bobuiooltip.h>
 #endif
 #include <qevent.h>
 #include <qstring.h>
 #include <qdebug.h>
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 #include <qlineedit.h>
 #endif
-#if QT_CONFIG(textedit)
-#include <qtextedit.h>
+#if BOBUI_CONFIG(textedit)
+#include <bobuiextedit.h>
 #include <qplaintextedit.h>
 #endif
 #include <qapplication.h>
 #include <qvalidator.h>
 #include <qjsonvalue.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 #include <private/qabstractitemdelegate_p.h>
 
 #include <qpa/qplatformintegration.h>
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <qpa/qplatformdrag.h>
 #include <private/qdnd_p.h>
 #endif
 #include <private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QAbstractItemDelegate
@@ -45,14 +45,14 @@ QT_BEGIN_NAMESPACE
     data items from a model.
 
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A QAbstractItemDelegate provides the interface and common functionality
     for delegates in the model/view architecture. Delegates display
     individual items in views, and handle the editing of model data.
 
     The QAbstractItemDelegate class is one of the \l{Model/View Classes}
-    and is part of Qt's \l{Model/View Programming}{model/view framework}.
+    and is part of BobUI's \l{Model/View Programming}{model/view framework}.
 
     To render an item in a custom way, you must implement paint() and
     sizeHint(). The QStyledItemDelegate class provides default implementations for
@@ -209,7 +209,7 @@ QAbstractItemDelegate::~QAbstractItemDelegate()
     The base implementation returns \nullptr. If you want custom editing you
     will need to reimplement this function.
 
-    The returned editor widget should have Qt::StrongFocus;
+    The returned editor widget should have BobUI::StrongFocus;
     otherwise, \l{QMouseEvent}s received by the widget will propagate
     to the view. The view's background will shine through unless the
     editor paints its own background (e.g., with
@@ -335,29 +335,29 @@ bool QAbstractItemDelegate::helpEvent(QHelpEvent *event,
     Q_UNUSED(index);
     Q_UNUSED(option);
     switch (event->type()) {
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     case QEvent::ToolTip: {
         Q_D(QAbstractItemDelegate);
         QHelpEvent *he = static_cast<QHelpEvent*>(event);
         const int precision = inherits("QItemDelegate") ? 10 : 6; // keep in sync with DBL_DIG in qitemdelegate.cpp
         const QString tooltip = index.isValid() ?
-              d->textForRole(Qt::ToolTipRole, index.data(Qt::ToolTipRole), option.locale, precision) :
+              d->textForRole(BobUI::ToolTipRole, index.data(BobUI::ToolTipRole), option.locale, precision) :
               QString();
-        QToolTip::showText(he->globalPos(), tooltip, view->viewport(), option.rect);
+        BOBUIoolTip::showText(he->globalPos(), tooltip, view->viewport(), option.rect);
         event->setAccepted(!tooltip.isEmpty());
         break;
         }
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     case QEvent::QueryWhatsThis:
-        event->setAccepted(index.data(Qt::WhatsThisRole).isValid());
+        event->setAccepted(index.data(BobUI::WhatsThisRole).isValid());
         break;
     case QEvent::WhatsThis: {
         Q_D(QAbstractItemDelegate);
         QHelpEvent *he = static_cast<QHelpEvent*>(event);
         const int precision = inherits("QItemDelegate") ? 10 : 6; // keep in sync with DBL_DIG in qitemdelegate.cpp
         const QString whatsthis = index.isValid() ?
-              d->textForRole(Qt::WhatsThisRole, index.data(Qt::WhatsThisRole), option.locale, precision) :
+              d->textForRole(BobUI::WhatsThisRole, index.data(BobUI::WhatsThisRole), option.locale, precision) :
               QString();
         QWhatsThis::showText(he->globalPos(), whatsthis, view);
         event->setAccepted(!whatsthis.isEmpty());
@@ -374,7 +374,7 @@ bool QAbstractItemDelegate::helpEvent(QHelpEvent *event,
 /*!
     \internal
 
-    This virtual method is reserved and will be used in Qt 5.1.
+    This virtual method is reserved and will be used in BobUI 5.1.
 */
 QList<int> QAbstractItemDelegate::paintingRoles() const
 {
@@ -406,7 +406,7 @@ QAbstractItemDelegatePrivate::QAbstractItemDelegatePrivate()
         \li \uicontrol Esc
     \endlist
 
-    If the \a editor's type is QTextEdit or QPlainTextEdit then \uicontrol Tab,
+    If the \a editor's type is BOBUIextEdit or QPlainTextEdit then \uicontrol Tab,
     \uicontrol Backtab, \uicontrol Enter and \uicontrol Return keys are \e not
     handled.
 
@@ -431,21 +431,21 @@ bool QAbstractItemDelegate::handleEditorEvent(QObject *object, QEvent *event)
 
 static bool editorHandlesKeyEvent(QWidget *editor, const QKeyEvent *event)
 {
-#if QT_CONFIG(textedit)
-    // do not filter enter / return / tab / backtab for QTextEdit or QPlainTextEdit
-    if (qobject_cast<QTextEdit *>(editor) || qobject_cast<QPlainTextEdit *>(editor)) {
+#if BOBUI_CONFIG(textedit)
+    // do not filter enter / return / tab / backtab for BOBUIextEdit or QPlainTextEdit
+    if (qobject_cast<BOBUIextEdit *>(editor) || qobject_cast<QPlainTextEdit *>(editor)) {
         switch (event->key()) {
-        case Qt::Key_Tab:
-        case Qt::Key_Backtab:
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
+        case BobUI::Key_Tab:
+        case BobUI::Key_Backtab:
+        case BobUI::Key_Enter:
+        case BobUI::Key_Return:
             return true;
 
         default:
             break;
         }
     }
-#endif // QT_CONFIG(textedit)
+#endif // BOBUI_CONFIG(textedit)
 
     Q_UNUSED(editor);
     Q_UNUSED(event);
@@ -464,7 +464,7 @@ bool QAbstractItemDelegatePrivate::handleEditorEvent(QObject *object, QEvent *ev
         if (editorHandlesKeyEvent(editor, keyEvent))
             return false;
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         if (keyEvent->matches(QKeySequence::Cancel)) {
             // don't commit data
             emit q->closeEditor(editor, QAbstractItemDelegate::RevertModelCache);
@@ -473,20 +473,20 @@ bool QAbstractItemDelegatePrivate::handleEditorEvent(QObject *object, QEvent *ev
 #endif
 
         switch (keyEvent->key()) {
-        case Qt::Key_Tab:
+        case BobUI::Key_Tab:
             if (tryFixup(editor)) {
                 emit q->commitData(editor);
                 emit q->closeEditor(editor, QAbstractItemDelegate::EditNextItem);
             }
             return true;
-        case Qt::Key_Backtab:
+        case BobUI::Key_Backtab:
             if (tryFixup(editor)) {
                 emit q->commitData(editor);
                 emit q->closeEditor(editor, QAbstractItemDelegate::EditPreviousItem);
             }
             return true;
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
+        case BobUI::Key_Enter:
+        case BobUI::Key_Return:
             // We want the editor to be able to process the key press
             // before committing the data (e.g. so it can do
             // validation/fixup of the input).
@@ -494,7 +494,7 @@ bool QAbstractItemDelegatePrivate::handleEditorEvent(QObject *object, QEvent *ev
                 return true;
 
             QMetaObject::invokeMethod(q, "_q_commitDataAndCloseEditor",
-                                      Qt::QueuedConnection, Q_ARG(QWidget*, editor));
+                                      BobUI::QueuedConnection, Q_ARG(QWidget*, editor));
             return false;
         default:
             return false;
@@ -508,7 +508,7 @@ bool QAbstractItemDelegatePrivate::handleEditorEvent(QObject *object, QEvent *ev
                     return false;
                 w = w->parentWidget();
             }
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
             // The window may lose focus during an drag operation.
             // i.e when dragging involves the taskbar on Windows.
             QPlatformDrag *platformDrag = QGuiApplicationPrivate::instance()->platformIntegration()->drag();
@@ -525,12 +525,12 @@ bool QAbstractItemDelegatePrivate::handleEditorEvent(QObject *object, QEvent *ev
             QWidget *editorParent = editor->parentWidget();
             const bool manuallyFixFocus = (event->type() == QEvent::FocusOut) && !editor->hasFocus() &&
                     editorParent &&
-                    (static_cast<QFocusEvent *>(event)->reason() == Qt::ActiveWindowFocusReason);
+                    (static_cast<QFocusEvent *>(event)->reason() == BobUI::ActiveWindowFocusReason);
             emit q->closeEditor(editor, QAbstractItemDelegate::NoHint);
             if (manuallyFixFocus)
                 editorParent->setFocus();
         }
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     } else if (event->type() == QEvent::ShortcutOverride) {
         if (static_cast<QKeyEvent*>(event)->matches(QKeySequence::Cancel)) {
             event->accept();
@@ -543,10 +543,10 @@ bool QAbstractItemDelegatePrivate::handleEditorEvent(QObject *object, QEvent *ev
 
 bool QAbstractItemDelegatePrivate::tryFixup(QWidget *editor)
 {
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
     if (QLineEdit *e = qobject_cast<QLineEdit*>(editor)) {
         if (!e->hasAcceptableInput()) {
-#if QT_CONFIG(validator)
+#if BOBUI_CONFIG(validator)
             if (const QValidator *validator = e->validator()) {
                 QString text = e->text();
                 validator->fixup(text);
@@ -557,7 +557,7 @@ bool QAbstractItemDelegatePrivate::tryFixup(QWidget *editor)
         }
     }
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
     // Give a chance to the spinbox to interpret the text and emit
     // the appropriate signals before committing data.
     if (QAbstractSpinBox *sb = qobject_cast<QAbstractSpinBox *>(editor)) {
@@ -566,14 +566,14 @@ bool QAbstractItemDelegatePrivate::tryFixup(QWidget *editor)
     }
 #else
     Q_UNUSED(editor);
-#endif // QT_CONFIG(lineedit)
+#endif // BOBUI_CONFIG(lineedit)
 
     return true;
 }
 
-QString QAbstractItemDelegatePrivate::textForRole(Qt::ItemDataRole role, const QVariant &value, const QLocale &locale, int precision) const
+QString QAbstractItemDelegatePrivate::textForRole(BobUI::ItemDataRole role, const QVariant &value, const QLocale &locale, int precision) const
 {
-    const QLocale::FormatType formatType = (role == Qt::DisplayRole) ? QLocale::ShortFormat : QLocale::LongFormat;
+    const QLocale::FormatType formatType = (role == BobUI::DisplayRole) ? QLocale::ShortFormat : QLocale::LongFormat;
     QString text;
     switch (value.userType()) {
     case QMetaType::Float:
@@ -593,7 +593,7 @@ QString QAbstractItemDelegatePrivate::textForRole(Qt::ItemDataRole role, const Q
     case QMetaType::QDate:
         text = locale.toString(value.toDate(), formatType);
         break;
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
         text = locale.toString(value.toTime(), formatType);
         break;
     case QMetaType::QDateTime:
@@ -614,7 +614,7 @@ QString QAbstractItemDelegatePrivate::textForRole(Qt::ItemDataRole role, const Q
     }
     default: {
         text = value.toString();
-        if (role == Qt::DisplayRole)
+        if (role == BobUI::DisplayRole)
             text.replace(u'\n', QChar::LineSeparator);
         break;
     }
@@ -629,6 +629,6 @@ void QAbstractItemDelegatePrivate::_q_commitDataAndCloseEditor(QWidget *editor)
     emit q->closeEditor(editor, QAbstractItemDelegate::SubmitModelCache);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractitemdelegate.cpp"

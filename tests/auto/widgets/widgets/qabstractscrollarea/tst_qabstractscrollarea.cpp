@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -52,7 +52,7 @@ void tst_QAbstractScrollArea::scrollBarWidgets()
     QWidget *w2 = new QWidget(0);
     QWidget *w3 = new QWidget(0);
 
-    Qt::Alignment all = Qt::AlignLeft | Qt::AlignRight | Qt::AlignTop | Qt::AlignBottom;
+    BobUI::Alignment all = BobUI::AlignLeft | BobUI::AlignRight | BobUI::AlignTop | BobUI::AlignBottom;
 
     QWidgetList w1List = QWidgetList() << w1;
     QWidgetList w2List = QWidgetList() << w2;
@@ -65,43 +65,43 @@ void tst_QAbstractScrollArea::scrollBarWidgets()
     area.show();
     QCOMPARE(area.scrollBarWidgets(all), QWidgetList());
 
-    area.addScrollBarWidget(w1, Qt::AlignLeft);
+    area.addScrollBarWidget(w1, BobUI::AlignLeft);
     QCOMPARE(area.scrollBarWidgets(all), w1List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignLeft), w1List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignRight), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignTop), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignBottom), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignLeft), w1List);
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignRight), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignTop), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignBottom), QWidgetList());
 
-    area.addScrollBarWidget(w2, Qt::AlignBottom);
+    area.addScrollBarWidget(w2, BobUI::AlignBottom);
     QCOMPARE(area.scrollBarWidgets(all), w1w2List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignLeft), w1List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignRight), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignTop), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignBottom), w2List);
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignLeft), w1List);
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignRight), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignTop), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignBottom), w2List);
 
     // duplicate add
-    area.addScrollBarWidget(w2, Qt::AlignBottom);
+    area.addScrollBarWidget(w2, BobUI::AlignBottom);
     QCOMPARE(area.scrollBarWidgets(all), w1w2List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignLeft), w1List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignRight), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignTop), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignBottom), w2List);
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignLeft), w1List);
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignRight), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignTop), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignBottom), w2List);
 
     //reparent
     w2->setParent(w1);
     QCOMPARE(area.scrollBarWidgets(all), w1List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignLeft), w1List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignRight), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignTop), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignBottom), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignLeft), w1List);
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignRight), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignTop), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignBottom), QWidgetList());
 
     // add after reparent
-    area.addScrollBarWidget(w2, Qt::AlignBottom);
+    area.addScrollBarWidget(w2, BobUI::AlignBottom);
     QCOMPARE(area.scrollBarWidgets(all), w1w2List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignLeft), w1List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignRight), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignTop), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignBottom), w2List);
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignLeft), w1List);
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignRight), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignTop), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignBottom), w2List);
 
     auto sort = [](const QWidgetList l) {
         QWidgetList list = l;
@@ -110,12 +110,12 @@ void tst_QAbstractScrollArea::scrollBarWidgets()
     };
 
     // two widgets at Bottom.
-    area.addScrollBarWidget(w3, Qt::AlignBottom);
+    area.addScrollBarWidget(w3, BobUI::AlignBottom);
     QCOMPARE(sort(area.scrollBarWidgets(all)), sort(allList));
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignLeft), w1List);
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignRight), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignTop), QWidgetList());
-    QCOMPARE(sort(area.scrollBarWidgets(Qt::AlignBottom)), sort(w2List + w3List));
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignLeft), w1List);
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignRight), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignTop), QWidgetList());
+    QCOMPARE(sort(area.scrollBarWidgets(BobUI::AlignBottom)), sort(w2List + w3List));
 
     //delete
     delete w1;
@@ -123,10 +123,10 @@ void tst_QAbstractScrollArea::scrollBarWidgets()
     delete w3;
 
     QCOMPARE(area.scrollBarWidgets(all), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignLeft), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignRight), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignTop), QWidgetList());
-    QCOMPARE(area.scrollBarWidgets(Qt::AlignBottom), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignLeft), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignRight), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignTop), QWidgetList());
+    QCOMPARE(area.scrollBarWidgets(BobUI::AlignBottom), QWidgetList());
 }
 
 void tst_QAbstractScrollArea::setScrollBars()
@@ -248,12 +248,12 @@ void tst_QAbstractScrollArea::setScrollBars2()
 }
 
 // we need to make sure the viewport internal widget is named
-// qt_scrollarea_viewport, otherwise we're going to confuse Squish
+// bobui_scrollarea_viewport, otherwise we're going to confuse Squish
 // and friends.
 void tst_QAbstractScrollArea::objectNaming()
 {
     QScrollArea area;
-    QCOMPARE(area.viewport()->objectName(), QString("qt_scrollarea_viewport"));
+    QCOMPARE(area.viewport()->objectName(), QString("bobui_scrollarea_viewport"));
 }
 
 class ViewportCrashWidget : public QDialog
@@ -262,15 +262,15 @@ public:
     ViewportCrashWidget()
     {
         // temprorary set PaintOnScreen to set the nativeChildrenForced flag.
-        setAttribute(Qt::WA_PaintOnScreen, true);
-        setAttribute(Qt::WA_PaintOnScreen, false);
+        setAttribute(BobUI::WA_PaintOnScreen, true);
+        setAttribute(BobUI::WA_PaintOnScreen, false);
 
-        setAttribute(Qt::WA_DropSiteRegistered, true);
+        setAttribute(BobUI::WA_DropSiteRegistered, true);
 
         startTimer(2000);
     }
 
-    void timerEvent(QTimerEvent * /* event */) override
+    void timerEvent(BOBUIimerEvent * /* event */) override
     {
         // should not crash.
         (void)new QScrollArea(this);
@@ -285,19 +285,19 @@ void tst_QAbstractScrollArea::viewportCrash()
     w.exec();
 }
 
-Q_DECLARE_METATYPE(Qt::LayoutDirection);
-Q_DECLARE_METATYPE(Qt::Key);
+Q_DECLARE_METATYPE(BobUI::LayoutDirection);
+Q_DECLARE_METATYPE(BobUI::Key);
 
 void tst_QAbstractScrollArea::task214488_layoutDirection_data()
 {
-    QTest::addColumn<Qt::LayoutDirection>("dir");
-    QTest::addColumn<Qt::Key>("key");
-    QTest::addColumn<bool>("lessThan");
+    BOBUIest::addColumn<BobUI::LayoutDirection>("dir");
+    BOBUIest::addColumn<BobUI::Key>("key");
+    BOBUIest::addColumn<bool>("lessThan");
 
-    QTest::newRow("LTR left")  << Qt::LeftToRight << Qt::Key_Left << true;
-    QTest::newRow("LTR right") << Qt::LeftToRight << Qt::Key_Right << false;
-    QTest::newRow("RTL left")  << Qt::RightToLeft << Qt::Key_Left << false;
-    QTest::newRow("RTL right") << Qt::RightToLeft << Qt::Key_Right << true;
+    BOBUIest::newRow("LTR left")  << BobUI::LeftToRight << BobUI::Key_Left << true;
+    BOBUIest::newRow("LTR right") << BobUI::LeftToRight << BobUI::Key_Right << false;
+    BOBUIest::newRow("RTL left")  << BobUI::RightToLeft << BobUI::Key_Left << false;
+    BOBUIest::newRow("RTL right") << BobUI::RightToLeft << BobUI::Key_Right << true;
 }
 
 void tst_QAbstractScrollArea::task214488_layoutDirection()
@@ -311,15 +311,15 @@ void tst_QAbstractScrollArea::task214488_layoutDirection()
     QScrollBar *hbar = scrollArea.horizontalScrollBar();
     hbar->setValue((hbar->minimum() + hbar->maximum()) / 2);
 
-    QFETCH(Qt::LayoutDirection, dir);
-    QFETCH(Qt::Key, key);
+    QFETCH(BobUI::LayoutDirection, dir);
+    QFETCH(BobUI::Key, key);
     QFETCH(bool, lessThan);
 
     scrollArea.setLayoutDirection(dir);
 
     int refValue = hbar->value();
     {
-        QKeyEvent ke(QEvent::KeyPress, key, Qt::NoModifier);
+        QKeyEvent ke(QEvent::KeyPress, key, BobUI::NoModifier);
         qApp->sendEvent(&scrollArea, &ke);
     }
     QVERIFY(lessThan ? (hbar->value() < refValue) : (hbar->value() > refValue));
@@ -334,20 +334,20 @@ void tst_QAbstractScrollArea::patternBackground()
     widget.resize(600, 600);
     scrollArea.setWidget(&widget);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
     QLinearGradient linearGrad(QPointF(250, 250), QPointF(300, 300));
-    linearGrad.setColorAt(0, Qt::yellow);
-    linearGrad.setColorAt(1, Qt::red);
+    linearGrad.setColorAt(0, BobUI::yellow);
+    linearGrad.setColorAt(1, BobUI::red);
     QBrush bg(linearGrad);
-    scrollArea.viewport()->setPalette(QPalette(Qt::black, bg, bg, bg, bg, bg, bg, bg, bg));
-    widget.setPalette(Qt::transparent);
+    scrollArea.viewport()->setPalette(QPalette(BobUI::black, bg, bg, bg, bg, bg, bg, bg, bg));
+    widget.setPalette(BobUI::transparent);
 
 
     QImage image(200, 200, QImage::Format_ARGB32);
     scrollArea.render(&image);
 
-    QCOMPARE(image.pixel(QPoint(20,20)) , QColor(Qt::yellow).rgb());
+    QCOMPARE(image.pixel(QPoint(20,20)) , QColor(BobUI::yellow).rgb());
 
     QScrollBar *hbar = scrollArea.horizontalScrollBar();
     hbar->setValue(hbar->maximum());
@@ -356,7 +356,7 @@ void tst_QAbstractScrollArea::patternBackground()
 
 
     scrollArea.render(&image);
-    QCOMPARE(image.pixel(QPoint(20,20)) , QColor(Qt::red).rgb());
+    QCOMPARE(image.pixel(QPoint(20,20)) , QColor(BobUI::red).rgb());
 }
 
 class ScrollArea : public QAbstractScrollArea
@@ -391,26 +391,26 @@ void tst_QAbstractScrollArea::resizeWithOvershoot()
     QScroller::grabGesture(&scrollArea, QScroller::LeftMouseButtonGesture);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
 
     const QPoint originAtRest = scrollArea.viewport()->pos();
 
     QPoint center = scrollArea.viewport()->mapToGlobal(scrollArea.viewport()->rect().center());
     center = window.windowHandle()->mapFromGlobal(center);
-    QTest::mousePress(window.windowHandle(), Qt::LeftButton, {}, center);
-    QTest::mouseMove(window.windowHandle(), center + QPoint(0, 50));
-    QTRY_COMPARE(scrollArea.viewport()->pos(), originAtRest + QPoint(0, 25));
+    BOBUIest::mousePress(window.windowHandle(), BobUI::LeftButton, {}, center);
+    BOBUIest::mouseMove(window.windowHandle(), center + QPoint(0, 50));
+    BOBUIRY_COMPARE(scrollArea.viewport()->pos(), originAtRest + QPoint(0, 25));
     QPoint overshootPosition = scrollArea.viewport()->pos();
 
     // trigger a layout of the scroll area while there's overshoot
     scrollArea.setGeometry(0, 0, 100, 120);
     QCOMPARE(scrollArea.viewport()->pos(), overshootPosition);
-    QTest::mouseRelease(window.windowHandle(), Qt::LeftButton, {}, center + QPoint(0, 50));
-    QTRY_COMPARE(scrollArea.viewport()->pos(), originAtRest);
+    BOBUIest::mouseRelease(window.windowHandle(), BobUI::LeftButton, {}, center + QPoint(0, 50));
+    BOBUIRY_COMPARE(scrollArea.viewport()->pos(), originAtRest);
     // Process a few more events and verify that the scroll area
     // doesn't overcompensate for the overshoot.
     QApplication::processEvents();
-    QTRY_COMPARE(scrollArea.viewport()->pos(), originAtRest);
+    BOBUIRY_COMPARE(scrollArea.viewport()->pos(), originAtRest);
 }
 
 void tst_QAbstractScrollArea::sizeHint()
@@ -435,22 +435,22 @@ void tst_QAbstractScrollArea::sizeHint()
     QCOMPARE(sizeHint, scrollArea.viewportSizeHint());
 
     // check if the hScrollbar is taken into account
-    scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
+    scrollArea.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     QCOMPARE_GT(scrollArea.sizeHint().height(), scrollArea.viewportSizeHint().height());
 
     // check if the vScrollbar is taken into account
-    scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    scrollArea.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    scrollArea.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
     QCOMPARE_GT(scrollArea.sizeHint().width(), scrollArea.viewportSizeHint().width());
 
-    scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    scrollArea.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
 
-    scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    scrollArea.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
+    scrollArea.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
     const QSize sizeHintWithScrollBars = scrollArea.sizeHint();
-    QTRY_COMPARE_GT(sizeHintWithScrollBars.width(), sizeHint.width());
-    QTRY_COMPARE_GT(sizeHintWithScrollBars.height(), sizeHint.height());
+    BOBUIRY_COMPARE_GT(sizeHintWithScrollBars.width(), sizeHint.width());
+    BOBUIRY_COMPARE_GT(sizeHintWithScrollBars.height(), sizeHint.height());
 
     sizeHint = scrollArea.sizeHint();
 
@@ -461,13 +461,13 @@ void tst_QAbstractScrollArea::sizeHint()
     scrollArea.show();
     QCOMPARE(scrollArea.sizeHint(), sizeHint);
 
-    scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    scrollArea.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
 
     QCOMPARE(scrollArea.sizeHint(), scrollArea.viewportSizeHint());
 
-    scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea.setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
+    scrollArea.setHorizontalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
 
     scrollArea.verticalScrollBar()->setRange(0, 1);
     scrollArea.horizontalScrollBar()->setRange(0, 1);
@@ -476,5 +476,5 @@ void tst_QAbstractScrollArea::sizeHint()
     QCOMPARE(scrollArea.sizeHint(), sizeHintWithScrollBars);
 }
 
-QTEST_MAIN(tst_QAbstractScrollArea)
+BOBUIEST_MAIN(tst_QAbstractScrollArea)
 #include "tst_qabstractscrollarea.moc"

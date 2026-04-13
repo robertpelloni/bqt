@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopengltextureblitter.h"
 
-#include <QtOpenGL/QOpenGLShaderProgram>
-#include <QtOpenGL/QOpenGLVertexArrayObject>
-#include <QtOpenGL/QOpenGLBuffer>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QOpenGLExtraFunctions>
+#include <BobUIOpenGL/QOpenGLShaderProgram>
+#include <BobUIOpenGL/QOpenGLVertexArrayObject>
+#include <BobUIOpenGL/QOpenGLBuffer>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/QOpenGLExtraFunctions>
 
 #ifndef GL_TEXTURE_EXTERNAL_OES
 #define GL_TEXTURE_EXTERNAL_OES           0x8D65
@@ -23,14 +23,14 @@
 #define GL_TEXTURE_HEIGHT                 0x1001
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QOpenGLTextureBlitter
     \brief The QOpenGLTextureBlitter class provides a convenient way to draw textured quads via OpenGL.
     \since 5.8
     \ingroup painting-3D
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
 
     Drawing textured quads, in order to get the contents of a texture
     onto the screen, is a common operation when developing 2D user
@@ -776,4 +776,4 @@ QMatrix3x3 QOpenGLTextureBlitter::sourceTransform(const QRectF &subTexture,
     return matrix;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLFRAMEBUFFEROBJECT_H
 #define QOPENGLFRAMEBUFFEROBJECT_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#include <QtGui/qopengl.h>
-#include <QtGui/qpaintdevice.h>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/qpaintdevice.h>
 
-#include <QtCore/qscopedpointer.h>
+#include <BobUICore/qscopedpointer.h>
 
 #if defined(Q_QDOC)
 #undef GLuint
@@ -22,7 +22,7 @@ typedef unsigned int GLenum;
 typedef unsigned int GLbitfield;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLFramebufferObjectPrivate;
 class QOpenGLFramebufferObjectFormat;
@@ -154,6 +154,6 @@ private:
     void detach();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOPENGLFRAMEBUFFEROBJECT_H

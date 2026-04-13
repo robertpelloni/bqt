@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qpa/qplatformgraphicsbuffer.h>
+#include <BobUIGui/qpa/qplatformgraphicsbuffer.h>
 
 #include "qplatformgraphicsbufferhelper.h"
-#include <QtCore/QDebug>
-#include <QtGui/qopengl.h>
-#include <QtGui/QImage>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFunctions>
+#include <BobUICore/QDebug>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/QImage>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLFunctions>
 
 #ifndef GL_UNPACK_ROW_LENGTH
 #define GL_UNPACK_ROW_LENGTH              0x0CF2
@@ -22,11 +22,11 @@
 #define GL_UNSIGNED_INT_2_10_10_10_REV    0x8368
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \namespace QPlatformGraphicsBufferHelper
-    \inmodule QtGui
+    \inmodule BobUIGui
     \internal
 */
 
@@ -86,11 +86,11 @@ bool QPlatformGraphicsBufferHelper::lockAndBindToTexture(QPlatformGraphicsBuffer
 
     \a swizzleRandB is meant to be used by the caller to decide if the Red and
     Blue color channels need to be swizzled when rendering. This is an
-    optimization. Qt often renders to software buffers interpreting pixels as
+    optimization. BobUI often renders to software buffers interpreting pixels as
     unsigned ints. When these buffers are uploaded to textures and each color
     channel per pixel is interpreted as a byte (read sequentially), then the
     Red and Blue channels are swapped. Conveniently, the Alpha buffer will be
-    correct, since Qt historically has had the alpha channel as the first
+    correct, since BobUI historically has had the alpha channel as the first
     channel, while OpenGL typically expects the alpha channel to be the last
     channel.
 
@@ -109,7 +109,7 @@ bool QPlatformGraphicsBufferHelper::bindSWToTexture(const QPlatformGraphicsBuffe
                                                     bool *swizzleRandB, bool *premultipliedB,
                                                     const QRect &subRect)
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx)
         return false;
@@ -224,7 +224,7 @@ bool QPlatformGraphicsBufferHelper::bindSWToTexture(const QPlatformGraphicsBuffe
     Q_UNUSED(premultipliedB);
     Q_UNUSED(subRect);
     return false;
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

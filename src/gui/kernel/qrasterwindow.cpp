@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrasterwindow.h"
 
-#include <QtGui/private/qpaintdevicewindow_p.h>
+#include <BobUIGui/private/qpaintdevicewindow_p.h>
 
-#include <QtGui/QBackingStore>
-#include <QtGui/QPainter>
+#include <BobUIGui/QBackingStore>
+#include <BobUIGui/QPainter>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
   \class QRasterWindow
-  \inmodule QtGui
+  \inmodule BobUIGui
   \since 5.4
   \brief QRasterWindow is a convenience class for using QPainter on a QWindow.
 
@@ -112,6 +112,6 @@ void QRasterWindow::resizeEvent(QResizeEvent *)
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qrasterwindow.cpp"

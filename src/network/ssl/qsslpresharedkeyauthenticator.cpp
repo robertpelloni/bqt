@@ -1,16 +1,16 @@
 // Copyright (C) 2014 Governikus GmbH & Co. KG.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsslpresharedkeyauthenticator.h"
 #include "qsslpresharedkeyauthenticator_p.h"
 
 #include <QSharedData>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QSslPreSharedKeyAuthenticator)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QSslPreSharedKeyAuthenticator*, QSslPreSharedKeyAuthenticator_ptr)
+BOBUI_IMPL_METATYPE_EXTERN(QSslPreSharedKeyAuthenticator)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QSslPreSharedKeyAuthenticator*, QSslPreSharedKeyAuthenticator_ptr)
 
 /*!
     \internal
@@ -27,7 +27,7 @@ QSslPreSharedKeyAuthenticatorPrivate::QSslPreSharedKeyAuthenticatorPrivate()
     \brief The QSslPreSharedKeyAuthenticator class provides authentication data for pre
     shared keys (PSK) ciphersuites.
 
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \reentrant
 
@@ -238,4 +238,4 @@ bool QSslPreSharedKeyAuthenticator::isEqual(const QSslPreSharedKeyAuthenticator 
              d->maximumPreSharedKeyLength == other.d->maximumPreSharedKeyLength));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

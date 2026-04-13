@@ -1,18 +1,18 @@
 // Copyright (C) 2014 Governikus GmbH & Co. KG.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsslellipticcurve.h"
-#include "qtlsbackend_p.h"
+#include "bobuilsbackend_p.h"
 #include "qsslsocket_p.h"
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 #include <QDebug>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QSslEllipticCurve)
+BOBUI_IMPL_METATYPE_EXTERN(QSslEllipticCurve)
 
 /*!
     \class QSslEllipticCurve
@@ -23,7 +23,7 @@ QT_IMPL_METATYPE_EXTERN(QSslEllipticCurve)
     \reentrant
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     The class QSslEllipticCurve represents an elliptic curve for use by
     elliptic-curve cipher algorithms.
@@ -166,7 +166,7 @@ bool QSslEllipticCurve::isTlsNamedCurve() const noexcept
     \qhashold{QHash}
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     \relates QSslEllipticCurve
     \since 5.5
@@ -185,4 +185,4 @@ QDebug operator<<(QDebug debug, QSslEllipticCurve curve)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

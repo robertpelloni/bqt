@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtCore/QString>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUICore/QString>
 #include "almostplugin.h"
-#include <QtCore/qplugin.h>
+#include <BobUICore/qplugin.h>
 
 QString AlmostPlugin::pluginName() const
 {

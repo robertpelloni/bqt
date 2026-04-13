@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstyle.h"
 #include "qapplication.h"
@@ -14,15 +14,15 @@
 #include "private/qstylehelper_p.h"
 #include "private/qguiapplication_p.h"
 #include <qpa/qplatformtheme.h>
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
 #include "qdebug.h"
 #endif
-#include <QtCore/q20utility.h>
+#include <BobUICore/q20utility.h>
 
 #include <limits.h>
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const int MaxBits = 8 * sizeof(QSizePolicy::ControlType);
 
@@ -49,16 +49,16 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     \page qwidget-styling.html
     \title Styling
 
-    Qt's built-in widgets use the QStyle class to perform nearly all
+    BobUI's built-in widgets use the QStyle class to perform nearly all
     of their drawing.  QStyle is an abstract base class that
     encapsulates the look and feel of a GUI, and can be used to make
     the widgets look exactly like the equivalent native widgets or to
     give the widgets a custom look.
 
-    Qt provides a set of QStyle subclasses that emulate the native
-    look of the different platforms supported by Qt (QWindowsStyle,
+    BobUI provides a set of QStyle subclasses that emulate the native
+    look of the different platforms supported by BobUI (QWindowsStyle,
     QMacStyle, etc.). These styles are built into the
-    Qt GUI module, other styles can be made available using Qt's
+    BobUI GUI module, other styles can be made available using BobUI's
     plugin mechanism.
 
     Most functions for drawing style elements take four arguments:
@@ -90,14 +90,14 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
 
     \table 100%
     \row
-    \li \inlineimage paintsystem-icon.png {Icon used in Qt}
+    \li \inlineimage paintsystem-icon.png {Icon used in BobUI}
     \li \b QIcon
 
     The QIcon class provides scalable icons in different modes and states.
 
     QIcon can generate pixmaps reflecting an icon's state, mode and
     size. These pixmaps are generated from the set of pixmaps
-    made available to the icon, and are used by Qt widgets to show an
+    made available to the icon, and are used by BobUI widgets to show an
     icon representing a particular action.
 
     The rendering of a QIcon object is handled by the QIconEngine
@@ -117,15 +117,15 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     \brief The QStyle class is an abstract base class that encapsulates the look and feel of a GUI.
 
     \ingroup appearance
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    Qt contains a set of QStyle subclasses that emulate the styles of
-    the different platforms supported by Qt (QWindowsStyle,
+    BobUI contains a set of QStyle subclasses that emulate the styles of
+    the different platforms supported by BobUI (QWindowsStyle,
     QMacStyle etc.). By default, these styles are built
-    into the Qt GUI module. Styles can also be made available as
+    into the BobUI GUI module. Styles can also be made available as
     plugins.
 
-    Qt's built-in widgets use QStyle to perform nearly all of their
+    BobUI's built-in widgets use QStyle to perform nearly all of their
     drawing, ensuring that they look exactly like the equivalent
     native widgets. The diagram below shows a QComboBox in nine
     different styles.
@@ -142,7 +142,7 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
 
     \snippet code/src_gui_styles_qstyle.cpp 0
 
-    If no style is specified, Qt will choose the most appropriate
+    If no style is specified, BobUI will choose the most appropriate
     style for the user's platform or desktop environment.
 
     A style can also be set on an individual widget using the
@@ -183,7 +183,7 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     QStyleOption and its subclasses have public data members. See the
     QStyleOption class documentation for details on how to use it.
 
-    For convenience, Qt provides the QStylePainter class, which
+    For convenience, BobUI provides the QStylePainter class, which
     combines a QStyle, a QPainter, and a QWidget. This makes it
     possible to write
 
@@ -209,10 +209,10 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     described below. The dynamic approach is described in QProxyStyle.
 
     The first step in the static approach is to pick one of the styles
-    provided by Qt from which you will build your custom style. Your
+    provided by BobUI from which you will build your custom style. Your
     choice of QStyle class will depend on which style resembles your
     desired style the most. The most general class that you can use as
-    a base is QCommonStyle (not QStyle). This is because Qt requires
+    a base is QCommonStyle (not QStyle). This is because BobUI requires
     its styles to be \l{QCommonStyle}s.
 
     Depending on which parts of the base style you want to change,
@@ -248,13 +248,13 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     widget is a QSpinBox just because the enum value is called
     PE_IndicatorSpinUp or PE_IndicatorSpinDown.
 
-    \warning Qt style sheets are currently not supported for custom QStyle
+    \warning BobUI style sheets are currently not supported for custom QStyle
     subclasses. We plan to address this in some future release.
 
 
     \section1 Using a Custom Style
 
-    There are several ways of using a custom style in a Qt
+    There are several ways of using a custom style in a BobUI
     application. The simplest way is to pass the custom style to the
     QApplication::setStyle() static function before creating the
     QApplication object:
@@ -267,14 +267,14 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
 
     You may want to make your custom style available for use in other
     applications, which may not be yours and hence not available for
-    you to recompile. The Qt Plugin system makes it possible to create
+    you to recompile. The BobUI Plugin system makes it possible to create
     styles as plugins. Styles created as plugins are loaded as shared
-    objects at runtime by Qt itself. Please refer to the \l{How to Create Qt Plugins}{Qt Plugin}
+    objects at runtime by BobUI itself. Please refer to the \l{How to Create BobUI Plugins}{BobUI Plugin}
     documentation for more information on how to go about creating a style
     plugin.
 
-    Compile your plugin and put it into Qt's \c plugins/styles
-    directory. We now have a pluggable style that Qt can load
+    Compile your plugin and put it into BobUI's \c plugins/styles
+    directory. We now have a pluggable style that BobUI can load
     automatically. To use your new style with existing applications,
     simply start the application with the following argument:
 
@@ -311,10 +311,10 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
 
     \section1 Styles in Item Views
 
-    The painting of items in views is performed by a delegate. Qt's
+    The painting of items in views is performed by a delegate. BobUI's
     default delegate, QStyledItemDelegate, is also used for calculating bounding
     rectangles of items, and their sub-elements for the various kind
-    of item \l{Qt::ItemDataRole}{data roles}
+    of item \l{BobUI::ItemDataRole}{data roles}
     QStyledItemDelegate supports. See the QStyledItemDelegate class
     description to find out which datatypes and roles are supported. You
     can read more about item data roles in \l{Model/View Programming}.
@@ -420,7 +420,7 @@ void QStyle::setName(const QString &name)
     QWidget::setBackgroundMode() function for the widget. Do not use
     the function to set, for example, the geometry. Reimplementing
     this function provides a back-door through which the appearance
-    of a widget can be changed, but with Qt's style engine it is
+    of a widget can be changed, but with BobUI's style engine it is
     rarely necessary to implement this function; reimplement
     drawItemPixmap(), drawItemText(), drawPrimitive(), etc. instead.
 
@@ -447,7 +447,7 @@ void QStyle::polish(QWidget * /* widget */)
     Note that unpolish() will only be called if the widget is
     destroyed.  This can cause problems in some cases, e.g, if you
     remove a widget from the UI, cache it, and then reinsert it after
-    the style has changed; some of Qt's classes cache their widgets.
+    the style has changed; some of BobUI's classes cache their widgets.
 
     \sa polish()
 */
@@ -499,12 +499,12 @@ void QStyle::polish(QPalette & /* pal */)
     If the given \a rectangle is larger than the area needed to render
     the \a text, the rectangle that is returned will be offset within
     \a rectangle according to the specified \a alignment.  For
-    example, if \a alignment is Qt::AlignCenter, the returned
+    example, if \a alignment is BobUI::AlignCenter, the returned
     rectangle will be centered within \a rectangle. If the given \a
     rectangle is smaller than the area needed, the returned rectangle
     will be the smallest rectangle large enough to render the \a text.
 
-    \sa Qt::Alignment
+    \sa BobUI::Alignment
 */
 QRect QStyle::itemTextRect(const QFontMetrics &metrics, const QRect &rect, int alignment, bool enabled,
                        const QString &text) const
@@ -540,15 +540,15 @@ QRect QStyle::itemPixmapRect(const QRect &rect, int alignment, const QPixmap &pi
     const int pixmapWidth = pixmapSize.width();
     const int pixmapHeight = pixmapSize.height();
 
-    if ((alignment & Qt::AlignVCenter) == Qt::AlignVCenter)
+    if ((alignment & BobUI::AlignVCenter) == BobUI::AlignVCenter)
         y += h/2 - pixmapHeight/2;
-    else if ((alignment & Qt::AlignBottom) == Qt::AlignBottom)
+    else if ((alignment & BobUI::AlignBottom) == BobUI::AlignBottom)
         y += h - pixmapHeight;
-    if ((alignment & Qt::AlignRight) == Qt::AlignRight)
+    if ((alignment & BobUI::AlignRight) == BobUI::AlignRight)
         x += w - pixmapWidth;
-    else if ((alignment & Qt::AlignHCenter) == Qt::AlignHCenter)
+    else if ((alignment & BobUI::AlignHCenter) == BobUI::AlignHCenter)
         x += w/2 - pixmapWidth/2;
-    else if ((alignment & Qt::AlignLeft) != Qt::AlignLeft && QGuiApplication::isRightToLeft())
+    else if ((alignment & BobUI::AlignLeft) != BobUI::AlignLeft && QGuiApplication::isRightToLeft())
         x += w - pixmapWidth;
     result = QRect(x, y, pixmapWidth, pixmapHeight);
     return result;
@@ -568,7 +568,7 @@ QRect QStyle::itemPixmapRect(const QRect &rect, int alignment, const QPixmap &pi
     function, the \a enabled parameter should influence how the item is
     drawn.
 
-    \sa Qt::Alignment, drawItemPixmap()
+    \sa BobUI::Alignment, drawItemPixmap()
 */
 void QStyle::drawItemText(QPainter *painter, const QRect &rect, int alignment, const QPalette &pal,
                           bool enabled, const QString& text, QPalette::ColorRole textRole) const
@@ -584,7 +584,7 @@ void QStyle::drawItemText(QPainter *painter, const QRect &rect, int alignment, c
         if (proxy()->styleHint(SH_DitherDisabledText)) {
             QRect br;
             painter->drawText(rect, alignment, text, &br);
-            painter->fillRect(br, QBrush(painter->background().color(), Qt::Dense5Pattern));
+            painter->fillRect(br, QBrush(painter->background().color(), BobUI::Dense5Pattern));
             return;
         } else if (proxy()->styleHint(SH_EtchDisabledText)) {
             QPen pen = painter->pen();
@@ -630,7 +630,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \value PE_FrameDefaultButton  This frame around a default button, e.g. in a dialog.
     \value PE_PanelButtonBevel  Generic panel with a button bevel.
-    \value PE_PanelButtonTool  Panel for a Tool button, used with QToolButton.
+    \value PE_PanelButtonTool  Panel for a Tool button, used with BOBUIoolButton.
     \value PE_PanelLineEdit  Panel for a QLineEdit.
     \value PE_IndicatorButtonDropDown  Indicator for a drop down button, for example, a tool
                                        button that displays a menu.
@@ -835,7 +835,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CE_RadioButton  A QRadioButton, draws a PE_IndicatorRadioButton, a CE_RadioButtonLabel and a PE_FrameFocusRect.
     \value CE_RadioButtonLabel  The label (text or pixmap) of a QRadioButton.
 
-    \value CE_TabBarTab       The tab and label within a QTabBar.
+    \value CE_TabBarTab       The tab and label within a BOBUIabBar.
     \value CE_TabBarTabShape  The tab shape within a tab bar.
     \value CE_TabBarTabLabel  The label within a tab.
 
@@ -859,7 +859,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CE_MenuHMargin  The horizontal extra space on the left/right of a menu.
     \value CE_MenuVMargin  The vertical extra space on the top/bottom of a menu.
 
-    \value CE_ToolBoxTab  The toolbox's tab and label within a QToolBox.
+    \value CE_ToolBoxTab  The toolbox's tab and label within a BOBUIoolBox.
     \value CE_SizeGrip  Window resize handle; see also QSizeGrip.
 
     \value CE_Header         A header.
@@ -884,7 +884,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CE_CustomBase  Base value for custom control elements;
     custom values must be greater than this value.
     \value CE_ComboBoxLabel The label of a non-editable QComboBox.
-    \value CE_ToolBar A toolbar like QToolBar.
+    \value CE_ToolBar A toolbar like BOBUIoolBar.
     \value CE_ToolBoxTabShape  The toolbox's tab shape.
     \value CE_ToolBoxTabLabel  The toolbox's tab label.
     \value CE_HeaderEmptyArea  The area of a header view where there are no header sections.
@@ -1127,7 +1127,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CC_ComboBox          A combobox, like QComboBox.
     \value CC_ScrollBar         A scroll bar, like QScrollBar.
     \value CC_Slider            A slider, like QSlider.
-    \value CC_ToolButton        A tool button, like QToolButton.
+    \value CC_ToolButton        A tool button, like BOBUIoolButton.
     \value CC_TitleBar          A Title bar, like those used in QMdiSubWindow.
     \value CC_GroupBox          A group box, like QGroupBox.
     \value CC_Dial              A dial, like QDial.
@@ -1176,7 +1176,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value SC_SliderHandle  Slider handle.
     \value SC_SliderTickmarks  Slider tickmarks.
 
-    \value SC_ToolButton  Tool button (see also QToolButton).
+    \value SC_ToolButton  Tool button (see also BOBUIoolButton).
     \value SC_ToolButtonMenu  Sub-control for opening a popup menu in a
         tool button.
 
@@ -1399,7 +1399,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
          vertical toolbar.
 
     \value PM_TabBarTabOverlap  Number of pixels the tabs should overlap.
-        (Currently only used in styles, not inside of QTabBar)
+        (Currently only used in styles, not inside of BOBUIabBar)
     \value PM_TabBarTabHSpace  Extra space added to the tab width.
     \value PM_TabBarTabVSpace  Extra space added to the tab height.
     \value PM_TabBarBaseHeight  Height of the area between the tab bar
@@ -1470,9 +1470,9 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value [since 5.4] PM_TreeViewIndentation The indentation of items in a tree view.
 
     \value PM_HeaderDefaultSectionSizeHorizontal The default size of sections
-           in a horizontal header. This enum value has been introduced in Qt 5.5.
+           in a horizontal header. This enum value has been introduced in BobUI 5.5.
     \value PM_HeaderDefaultSectionSizeVertical The default size of sections
-           in a vertical header. This enum value has been introduced in Qt 5.5.
+           in a vertical header. This enum value has been introduced in BobUI 5.5.
 
     \value [since 5.8] PM_TitleBarButtonIconSize The size of button icons on a title bar.
     \value [since 5.8] PM_TitleBarButtonSize The size of buttons on a title bar.
@@ -1541,9 +1541,9 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CT_ScrollBar A scroll bar, like QScrollBar.
     \value CT_SpinBox A spin box, like QSpinBox.
     \value CT_Splitter A splitter, like QSplitter.
-    \value CT_TabBarTab A tab on a tab bar, like QTabBar.
-    \value CT_TabWidget A tab widget, like QTabWidget.
-    \value CT_ToolButton A tool button, like QToolButton.
+    \value CT_TabBarTab A tab on a tab bar, like BOBUIabBar.
+    \value CT_TabWidget A tab widget, like BOBUIabWidget.
+    \value CT_ToolButton A tool button, like BOBUIoolButton.
     \value CT_GroupBox A group box, like QGroupBox.
     \value CT_ItemViewItem An item inside an item view.
 
@@ -1650,13 +1650,13 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
         original button is released and nothing happens (like a push button).
 
     \value SH_TabBar_Alignment  The alignment for tabs in a
-        QTabWidget. Possible values are Qt::AlignLeft,
-        Qt::AlignCenter and Qt::AlignRight.
+        BOBUIabWidget. Possible values are BobUI::AlignLeft,
+        BobUI::AlignCenter and BobUI::AlignRight.
 
     \value SH_Header_ArrowAlignment The placement of the sorting
         indicator may appear in list or table headers. Possible values
-        are Qt::Alignment values (that is, an OR combination of
-        Qt::AlignmentFlag flags).
+        are BobUI::Alignment values (that is, an OR combination of
+        BobUI::AlignmentFlag flags).
 
     \value SH_Slider_SnapToValue  Sliders snap to values while moving,
         as they do on Windows.
@@ -1668,8 +1668,8 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
         progress dialogs, otherwise right aligned.
 
     \value SH_ProgressDialog_TextLabelAlignment The alignment for text
-    labels in progress dialogs; Qt::AlignCenter on Windows,
-    Qt::AlignVCenter otherwise.
+    labels in progress dialogs; BobUI::AlignCenter on Windows,
+    BobUI::AlignVCenter otherwise.
 
     \value SH_PrintDialog_RightAlignButtons  Right align buttons in
         the print dialog, as done on Windows.
@@ -1700,30 +1700,30 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
         other items of the menu. This is supported on most modern
         desktop platforms.
 
-    \value SH_Menu_SubMenuUniDirection Since Qt 5.5. If the cursor has
+    \value SH_Menu_SubMenuUniDirection Since BobUI 5.5. If the cursor has
         to move towards the submenu (like it is on \macos), or if the
         cursor can move in any direction as long as it reaches the
         submenu before the sloppy timeout.
 
-    \value SH_Menu_SubMenuUniDirectionFailCount Since Qt 5.5.  When
+    \value SH_Menu_SubMenuUniDirectionFailCount Since BobUI 5.5.  When
         SH_Menu_SubMenuUniDirection is defined this enum defines the
         number of failed mouse moves before the sloppy submenu is
         discarded.  This can be used to control the "strictness" of the
         uni direction algorithm.
 
-    \value SH_Menu_SubMenuSloppySelectOtherActions Since Qt 5.5. Should
+    \value SH_Menu_SubMenuSloppySelectOtherActions Since BobUI 5.5. Should
         other action items be selected when the mouse moves towards a
         sloppy submenu.
 
-    \value SH_Menu_SubMenuSloppyCloseTimeout Since Qt 5.5. The timeout
+    \value SH_Menu_SubMenuSloppyCloseTimeout Since BobUI 5.5. The timeout
         used to close sloppy submenus.
 
-    \value SH_Menu_SubMenuResetWhenReenteringParent Since Qt 5.5. When
+    \value SH_Menu_SubMenuResetWhenReenteringParent Since BobUI 5.5. When
         entering parent from child submenu, should the sloppy state be
         reset, effectively closing the child and making the current
         submenu active.
 
-    \value SH_Menu_SubMenuDontStartSloppyOnLeave Since Qt 5.5. Do not
+    \value SH_Menu_SubMenuDontStartSloppyOnLeave Since BobUI 5.5. Do not
         start sloppy timers when the mouse leaves a sub-menu.
 
     \value SH_ScrollView_FrameOnlyAroundContents  Whether scrollviews
@@ -1798,13 +1798,13 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
         default status in a dialog's button widget.
 
     \value SH_ToolBox_SelectedPageTitleBold  Boldness of the selected
-    page title in a QToolBox.
+    page title in a BOBUIoolBox.
 
     \value SH_LineEdit_PasswordCharacter  The Unicode character to be
     used for passwords.
 
     \value SH_LineEdit_PasswordMaskDelay  Determines the delay before visible character is masked
-    with password character, in milliseconds. This enum value was added in Qt 5.4.
+    with password character, in milliseconds. This enum value was added in BobUI 5.4.
 
     \value SH_Table_GridLineColor The RGBA value of the grid for a table.
 
@@ -1890,8 +1890,8 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \value SH_FormLayoutWrapPolicy Provides a default for how rows are wrapped in a QFormLayout. Returns a QFormLayout::RowWrapPolicy enum.
     \value SH_FormLayoutFieldGrowthPolicy Provides a default for how fields can grow in a QFormLayout. Returns a QFormLayout::FieldGrowthPolicy enum.
-    \value SH_FormLayoutFormAlignment Provides a default for how a QFormLayout aligns its contents within the available space. Returns a Qt::Alignment enum.
-    \value SH_FormLayoutLabelAlignment Provides a default for how a QFormLayout aligns labels within the available space. Returns a Qt::Alignment enum.
+    \value SH_FormLayoutFormAlignment Provides a default for how a QFormLayout aligns its contents within the available space. Returns a BobUI::Alignment enum.
+    \value SH_FormLayoutLabelAlignment Provides a default for how a QFormLayout aligns labels within the available space. Returns a BobUI::Alignment enum.
 
     \value SH_ItemView_ArrowKeysNavigateIntoChildren Controls whether the tree view will select the first child when it is exapanded and the right arrow key is pressed.
     \value SH_ComboBox_PopupFrameStyle  The frame style used when drawing a combobox popup menu.
@@ -1903,8 +1903,8 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value SH_FocusFrame_AboveWidget The FocusFrame is stacked above the widget that it is "focusing on".
 
     \value SH_TextControl_FocusIndicatorTextCharFormat Specifies the text format used to highlight focused anchors in rich text
-    documents displayed for example in QTextBrowser. The format has to be a QTextCharFormat returned in the variant of the
-    QStyleHintReturnVariant return value. The QTextFormat::OutlinePen property is used for the outline and QTextFormat::BackgroundBrush
+    documents displayed for example in BOBUIextBrowser. The format has to be a BOBUIextCharFormat returned in the variant of the
+    QStyleHintReturnVariant return value. The BOBUIextFormat::OutlinePen property is used for the outline and BOBUIextFormat::BackgroundBrush
     for the background of the highlighted area.
 
     \value SH_Menu_FlashTriggeredItem Flash triggered item.
@@ -1914,7 +1914,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \value SH_ToolBar_Movable Determines if the tool bar is movable by default.
 
-    \value SH_ItemView_PaintAlternatingRowColorsForEmptyArea Whether QTreeView paints alternating row colors for the area that does not have any items.
+    \value SH_ItemView_PaintAlternatingRowColorsForEmptyArea Whether BOBUIreeView paints alternating row colors for the area that does not have any items.
 
     \value SH_Menu_Mask The mask for a popup menu.
 
@@ -1924,7 +1924,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \value SH_DockWidget_ButtonsHaveFrame Determines if dockwidget buttons should have frames. Default is true.
 
-    \value SH_ToolButtonStyle Determines the default system style for tool buttons that uses Qt::ToolButtonFollowStyle.
+    \value SH_ToolButtonStyle Determines the default system style for tool buttons that uses BobUI::ToolButtonFollowStyle.
 
     \value SH_RequestSoftwareInputPanel Determines when a software input panel should
            be requested by input widgets. Returns an enum of type QStyle::RequestSoftwareInputPanel.
@@ -1944,51 +1944,51 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value SH_Widget_Animate Deprecated. Use \l{SH_Widget_Animation_Duration} instead.
 
     \value SH_Splitter_OpaqueResize Determines if widgets are resized dynamically (opaquely) while
-           interactively moving the splitter. This enum value was introduced in Qt 5.2.
+           interactively moving the splitter. This enum value was introduced in BobUI 5.2.
 
     \value SH_TabBar_ChangeCurrentDelay Determines the delay before the current
            tab is changed while dragging over the tabbar, in milliseconds. This
-           enum value has been introduced in Qt 5.4
+           enum value has been introduced in BobUI 5.4
 
     \value SH_ItemView_ScrollMode The default vertical and horizontal scroll mode as specified
            by the style. Can be overridden with QAbstractItemView::setVerticalScrollMode() and
-           QAbstractItemView::setHorizontalScrollMode(). This enum value has been introduced in Qt 5.7.
+           QAbstractItemView::setHorizontalScrollMode(). This enum value has been introduced in BobUI 5.7.
 
     \value SH_TitleBar_ShowToolTipsOnButtons
            Determines if tool tips are shown on window title bar buttons.
            The Mac style, for example, sets this to false.
-           This enum value has been introduced in Qt 5.10.
+           This enum value has been introduced in BobUI 5.10.
 
     \value SH_Widget_Animation_Duration
            Determines how much an animation should last (in ms).
            A value equal to zero means that the animations will be disabled.
-           This enum value has been introduced in Qt 5.10.
+           This enum value has been introduced in BobUI 5.10.
 
     \value SH_ComboBox_AllowWheelScrolling
            Determines if the mouse wheel can be used to scroll inside a QComboBox.
            This is on by default in all styles except the Mac style.
-           This enum value has been introduced in Qt 5.10.
+           This enum value has been introduced in BobUI 5.10.
 
     \value SH_SpinBox_ButtonsInsideFrame
            Determines if the spin box buttons are inside the line edit frame.
-           This enum value has been introduced in Qt 5.11.
+           This enum value has been introduced in BobUI 5.11.
 
     \value SH_SpinBox_StepModifier
-           Determines which Qt::KeyboardModifier increases the step rate of
-           QAbstractSpinBox. Possible values are Qt::NoModifier,
-           Qt::ControlModifier (default) or Qt::ShiftModifier. Qt::NoModifier
+           Determines which BobUI::KeyboardModifier increases the step rate of
+           QAbstractSpinBox. Possible values are BobUI::NoModifier,
+           BobUI::ControlModifier (default) or BobUI::ShiftModifier. BobUI::NoModifier
            disables this feature.
-           This enum value has been introduced in Qt 5.12.
+           This enum value has been introduced in BobUI 5.12.
 
     \value SH_TabBar_AllowWheelScrolling
            Determines if the mouse wheel can be used to cycle through the tabs
-           of a QTabBar.
-           This enum value has been introduced in Qt 6.1.
+           of a BOBUIabBar.
+           This enum value has been introduced in BobUI 6.1.
 
     \value SH_Table_AlwaysDrawLeftTopGridLines
            Determines if the far left and top grid lines are drawn in a table or
            not when the header is hidden. Defaults to false.
-           This enum value has been introduced in Qt 6.3.
+           This enum value has been introduced in BobUI 6.3.
 
     \sa styleHint()
 */
@@ -2066,8 +2066,8 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value SP_ArrowDown Icon arrow pointing down.
     \value SP_ArrowLeft Icon arrow pointing left.
     \value SP_ArrowRight Icon arrow pointing right.
-    \value SP_ArrowBack Equivalent to SP_ArrowLeft when the current layout direction is Qt::LeftToRight, otherwise SP_ArrowRight.
-    \value SP_ArrowForward Equivalent to SP_ArrowRight when the current layout direction is Qt::LeftToRight, otherwise SP_ArrowLeft.
+    \value SP_ArrowBack Equivalent to SP_ArrowLeft when the current layout direction is BobUI::LeftToRight, otherwise SP_ArrowRight.
+    \value SP_ArrowForward Equivalent to SP_ArrowRight when the current layout direction is BobUI::LeftToRight, otherwise SP_ArrowLeft.
     \value SP_CommandLink Icon used to indicate a Vista style command link glyph.
     \value SP_VistaShield Icon used to indicate UAC prompts on Windows Vista. This will return a null pixmap or icon on all other platforms.
     \value SP_BrowserReload  Icon indicating that the current page should be reloaded.
@@ -2089,7 +2089,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value [since 5.14] SP_DialogRetryButton Icon for a standard Retry button in a QDialogButtonBox.
     \value [since 5.14] SP_DialogIgnoreButton Icon for a standard Ignore button in a QDialogButtonBox.
     \value [since 5.14] SP_RestoreDefaultsButton Icon for a standard RestoreDefaults button in a QDialogButtonBox.
-    \value [since 6.3] SP_TabCloseButton Icon for the close button in the tab of a QTabBar.
+    \value [since 6.3] SP_TabCloseButton Icon for the close button in the tab of a BOBUIabBar.
     \omitvalue NStandardPixmap
     \value SP_CustomBase  Base value for custom standard pixmaps;
     custom values must be greater than this value.
@@ -2135,7 +2135,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
 
 /*!
-    \fn QRect QStyle::visualRect(Qt::LayoutDirection direction, const QRect &boundingRectangle, const QRect &logicalRectangle)
+    \fn QRect QStyle::visualRect(BobUI::LayoutDirection direction, const QRect &boundingRectangle, const QRect &logicalRectangle)
 
     Returns the given \a logicalRectangle converted to screen
     coordinates based on the specified \a direction. The \a
@@ -2147,9 +2147,9 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \sa QWidget::layoutDirection
 */
-QRect QStyle::visualRect(Qt::LayoutDirection direction, const QRect &boundingRect, const QRect &logicalRect)
+QRect QStyle::visualRect(BobUI::LayoutDirection direction, const QRect &boundingRect, const QRect &logicalRect)
 {
-    if (direction == Qt::LeftToRight)
+    if (direction == BobUI::LeftToRight)
         return logicalRect;
     QRect rect = logicalRect;
     rect.translate(2 * (boundingRect.right() - logicalRect.right()) +
@@ -2158,7 +2158,7 @@ QRect QStyle::visualRect(Qt::LayoutDirection direction, const QRect &boundingRec
 }
 
 /*!
-    \fn QPoint QStyle::visualPos(Qt::LayoutDirection direction, const QRect &boundingRectangle, const QPoint &logicalPosition)
+    \fn QPoint QStyle::visualPos(BobUI::LayoutDirection direction, const QRect &boundingRectangle, const QPoint &logicalPosition)
 
     Returns the given \a logicalPosition converted to screen
     coordinates based on the specified \a direction.  The \a
@@ -2166,9 +2166,9 @@ QRect QStyle::visualRect(Qt::LayoutDirection direction, const QRect &boundingRec
 
     \sa QWidget::layoutDirection
 */
-QPoint QStyle::visualPos(Qt::LayoutDirection direction, const QRect &boundingRect, const QPoint &logicalPos)
+QPoint QStyle::visualPos(BobUI::LayoutDirection direction, const QRect &boundingRect, const QPoint &logicalPos)
 {
-    if (direction == Qt::LeftToRight)
+    if (direction == BobUI::LeftToRight)
         return logicalPos;
     return QPoint(boundingRect.right() - logicalPos.x(), logicalPos.y());
 }
@@ -2177,28 +2177,28 @@ QPoint QStyle::visualPos(Qt::LayoutDirection direction, const QRect &boundingRec
      Returns a new rectangle of the specified \a size that is aligned to the given \a
      rectangle according to the specified \a alignment and \a direction.
  */
-QRect QStyle::alignedRect(Qt::LayoutDirection direction, Qt::Alignment alignment, const QSize &size, const QRect &rectangle)
+QRect QStyle::alignedRect(BobUI::LayoutDirection direction, BobUI::Alignment alignment, const QSize &size, const QRect &rectangle)
 {
     alignment = visualAlignment(direction, alignment);
     int x = rectangle.x();
     int y = rectangle.y();
     int w = size.width();
     int h = size.height();
-    if ((alignment & Qt::AlignVCenter) == Qt::AlignVCenter)
+    if ((alignment & BobUI::AlignVCenter) == BobUI::AlignVCenter)
         y += rectangle.size().height()/2 - h/2;
-    else if ((alignment & Qt::AlignBottom) == Qt::AlignBottom)
+    else if ((alignment & BobUI::AlignBottom) == BobUI::AlignBottom)
         y += rectangle.size().height() - h;
-    if ((alignment & Qt::AlignRight) == Qt::AlignRight)
+    if ((alignment & BobUI::AlignRight) == BobUI::AlignRight)
         x += rectangle.size().width() - w;
-    else if ((alignment & Qt::AlignHCenter) == Qt::AlignHCenter)
+    else if ((alignment & BobUI::AlignHCenter) == BobUI::AlignHCenter)
         x += rectangle.size().width()/2 - w/2;
     return QRect(x, y, w, h);
 }
 
 /*!
-  Transforms an \a alignment of Qt::AlignLeft or Qt::AlignRight
-  without Qt::AlignAbsolute into Qt::AlignLeft or Qt::AlignRight with
-  Qt::AlignAbsolute according to the layout \a direction. The other
+  Transforms an \a alignment of BobUI::AlignLeft or BobUI::AlignRight
+  without BobUI::AlignAbsolute into BobUI::AlignLeft or BobUI::AlignRight with
+  BobUI::AlignAbsolute according to the layout \a direction. The other
   alignment flags are left untouched.
 
   If no horizontal alignment was specified, the function returns the
@@ -2206,7 +2206,7 @@ QRect QStyle::alignedRect(Qt::LayoutDirection direction, Qt::Alignment alignment
 
   QWidget::layoutDirection
 */
-Qt::Alignment QStyle::visualAlignment(Qt::LayoutDirection direction, Qt::Alignment alignment)
+BobUI::Alignment QStyle::visualAlignment(BobUI::LayoutDirection direction, BobUI::Alignment alignment)
 {
     return QGuiApplicationPrivate::visualAlignment(direction, alignment);
 }
@@ -2311,8 +2311,8 @@ QPalette QStyle::standardPalette() const
 
     QColor light(background.lighter());
     QColor dark(background.darker());
-    QColor mid(Qt::gray);
-    QPalette palette(Qt::black, background, light, dark, mid, Qt::black, Qt::white);
+    QColor mid(BobUI::gray);
+    QPalette palette(BobUI::black, background, light, dark, mid, BobUI::black, BobUI::white);
     palette.setBrush(QPalette::Disabled, QPalette::WindowText, dark);
     palette.setBrush(QPalette::Disabled, QPalette::Text, dark);
     palette.setBrush(QPalette::Disabled, QPalette::ButtonText, dark);
@@ -2339,7 +2339,7 @@ QPalette QStyle::standardPalette() const
     \since 4.3
 
     \fn int QStyle::layoutSpacing(QSizePolicy::ControlType control1,
-                                  QSizePolicy::ControlType control2, Qt::Orientation orientation,
+                                  QSizePolicy::ControlType control2, BobUI::Orientation orientation,
                                   const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const
 
     Returns the spacing that should be used between \a control1 and
@@ -2376,7 +2376,7 @@ QPalette QStyle::standardPalette() const
     \sa layoutSpacing()
 */
 int QStyle::combinedLayoutSpacing(QSizePolicy::ControlTypes controls1,
-                                  QSizePolicy::ControlTypes controls2, Qt::Orientation orientation,
+                                  QSizePolicy::ControlTypes controls2, BobUI::Orientation orientation,
                                   QStyleOption *option, QWidget *widget) const
 {
     QSizePolicy::ControlType array1[MaxBits];
@@ -2477,6 +2477,6 @@ void QCachedPainter::cleanupPixmapCache()
     s_pixmapCacheKeys.clear();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstyle.cpp"

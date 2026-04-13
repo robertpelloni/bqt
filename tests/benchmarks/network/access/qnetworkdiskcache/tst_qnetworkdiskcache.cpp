@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QNetworkDiskCache>
 #include <QNetworkCacheMetaData>
 #include <QDir>
 #include <QBuffer>
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QDebug>
-#include <QTest>
+#include <BOBUIest>
 #include <QIODevice>
 #include <QStandardPaths>
 #include <QDirIterator>
@@ -23,7 +23,7 @@ enum Numbers { NumFakeCacheObjects   = 200,    //entries in pre-populated cache
 
 const QString fakeURLbase = "http://127.0.0.1/fake/";
 //fake HTTP body aka payload
-const QByteArray payload("Qt rocks!");
+const QByteArray payload("BobUI rocks!");
 
 class tst_qnetworkdiskcache : public QObject
 {
@@ -70,10 +70,10 @@ void tst_qnetworkdiskcache::cleanupTestCase()
 
 void tst_qnetworkdiskcache::timeInsertion_data()
 {
-    QTest::addColumn<QString>("cacheRootDirectory");
+    BOBUIest::addColumn<QString>("cacheRootDirectory");
 
     QString cacheLoc = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-    QTest::newRow("QStandardPaths Cache Location") << cacheLoc;
+    BOBUIest::newRow("QStandardPaths Cache Location") << cacheLoc;
 }
 
 //This functions times an insert() operation.
@@ -110,7 +110,7 @@ void tst_qnetworkdiskcache::timeInsertion()
             //prepare metata for url
             QNetworkCacheMetaData meta;
             QString fakeURL;
-            QTextStream stream(&fakeURL);
+            BOBUIextStream stream(&fakeURL);
             stream << fakeURLbase << i;
             QUrl url(fakeURL);
             meta.setUrl(url);
@@ -131,10 +131,10 @@ void tst_qnetworkdiskcache::timeInsertion()
 
 void tst_qnetworkdiskcache::timeRead_data()
 {
-    QTest::addColumn<QString>("cacheRootDirectory");
+    BOBUIest::addColumn<QString>("cacheRootDirectory");
 
     QString cacheLoc = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-    QTest::newRow("QStandardPaths Cache Location") << cacheLoc;
+    BOBUIest::newRow("QStandardPaths Cache Location") << cacheLoc;
 }
 
 //Times metadata as well payload lookup
@@ -165,7 +165,7 @@ void tst_qnetworkdiskcache::timeRead()
     QBENCHMARK_ONCE {
         for (quint32 i = 0; i < NumReadContent; i++) {
             QString fakeURL;
-            QTextStream stream(&fakeURL);
+            BOBUIextStream stream(&fakeURL);
             stream << fakeURLbase << i;
             QUrl url(fakeURL);
 
@@ -190,10 +190,10 @@ void tst_qnetworkdiskcache::timeRead()
 
 void tst_qnetworkdiskcache::timeRemoval_data()
 {
-    QTest::addColumn<QString>("cacheRootDirectory");
+    BOBUIest::addColumn<QString>("cacheRootDirectory");
 
     QString cacheLoc = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-    QTest::newRow("QStandardPaths Cache Location") << cacheLoc;
+    BOBUIest::newRow("QStandardPaths Cache Location") << cacheLoc;
 }
 
 void tst_qnetworkdiskcache::timeRemoval()
@@ -225,7 +225,7 @@ void tst_qnetworkdiskcache::timeRemoval()
     QBENCHMARK_ONCE {
         for (quint32 i = 0; i < NumRemovals; i++) {
             QString fakeURL;
-            QTextStream stream(&fakeURL);
+            BOBUIextStream stream(&fakeURL);
             stream << fakeURLbase << i;
             QUrl url(fakeURL);
             cache->remove(url);
@@ -240,10 +240,10 @@ void tst_qnetworkdiskcache::timeRemoval()
 
 void tst_qnetworkdiskcache::timeExpiration_data()
 {
-    QTest::addColumn<QString>("cacheRootDirectory");
+    BOBUIest::addColumn<QString>("cacheRootDirectory");
 
     QString cacheLoc = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-    QTest::newRow("QStandardPaths Cache Location") << cacheLoc;
+    BOBUIest::newRow("QStandardPaths Cache Location") << cacheLoc;
 }
 
 void tst_qnetworkdiskcache::timeExpiration()
@@ -281,7 +281,7 @@ void tst_qnetworkdiskcache::timeExpiration()
             //prepare metata for url
             QNetworkCacheMetaData meta;
             QString fakeURL;
-            QTextStream stream(&fakeURL);
+            BOBUIextStream stream(&fakeURL);
             stream << fakeURLbase << i;//codescanner::leave
             QUrl url(fakeURL);
             meta.setUrl(url);
@@ -316,7 +316,7 @@ void tst_qnetworkdiskcache::injectFakeData()
         //prepare metata for url
         QNetworkCacheMetaData meta;
         QString fakeURL;
-        QTextStream stream(&fakeURL);
+        BOBUIextStream stream(&fakeURL);
         stream << fakeURLbase << i;
         QUrl url(fakeURL);
         meta.setUrl(url);
@@ -336,7 +336,7 @@ void tst_qnetworkdiskcache::injectFakeData()
 bool tst_qnetworkdiskcache::isUrlCached(quint32 id)
 {
     QString str;
-    QTextStream stream(&str);
+    BOBUIextStream stream(&str);
     stream << fakeURLbase << id;
     QUrl url(str);
     QIODevice *iod = cache->data(url);
@@ -375,5 +375,5 @@ void tst_qnetworkdiskcache::initCacheObject()
    cache = new QNetworkDiskCache();
 
 }
-QTEST_MAIN(tst_qnetworkdiskcache)
+BOBUIEST_MAIN(tst_qnetworkdiskcache)
 #include "tst_qnetworkdiskcache.moc"

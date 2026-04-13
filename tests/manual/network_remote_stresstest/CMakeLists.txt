@@ -1,18 +1,18 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_network_remote_stresstest Binary:
 #####################################################################
 
-qt_internal_add_manual_test(tst_network_remote_stresstest
+bobui_internal_add_manual_test(tst_network_remote_stresstest
     SOURCES
         tst_network_remote_stresstest.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Network
-        Qt::NetworkPrivate
-        Qt::Test
+        BobUI::CorePrivate
+        BobUI::Network
+        BobUI::NetworkPrivate
+        BobUI::Test
 )
 
 # Resources:
@@ -20,7 +20,7 @@ set(url-list_resource_files
     "url-list.txt"
 )
 
-qt_internal_add_resource(tst_network_remote_stresstest "url-list"
+bobui_internal_add_resource(tst_network_remote_stresstest "url-list"
     PREFIX
         "/"
     FILES

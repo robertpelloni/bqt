@@ -1,0 +1,102 @@
+include($BOBUI_INSTALL_DOCS/global/bobui-module-defaults.qdocconf)
+include($BOBUI_INSTALL_DOCS/config/exampleurl-bobuibase.qdocconf)
+
+project                 = BobUIWidgets
+description             = BobUI Widgets Reference Documentation
+version                 = $BOBUI_VERSION
+
+# dummy macOS headers for generating docs under non-mac platforms
+includepaths           += -I./macOS
+
+examplesinstallpath     = widgets
+
+# Path to the root of bobuibase (for automatic linking to source code)
+url.sources.rootdir     = ../../..
+
+qhp.projects            = BobUIWidgets
+
+qhp.BobUIWidgets.file         = bobuiwidgets.qhp
+qhp.BobUIWidgets.namespace           = org.bobui-project.bobuiwidgets.$BOBUI_VERSION_TAG
+qhp.BobUIWidgets.virtualFolder       = bobuiwidgets
+qhp.BobUIWidgets.indexTitle          = BobUI Widgets
+qhp.BobUIWidgets.indexRoot           =
+
+qhp.BobUIWidgets.subprojects = manual classes
+qhp.BobUIWidgets.subprojects.classes.title = C++ Classes
+qhp.BobUIWidgets.subprojects.classes.indexTitle = BobUI Widgets C++ Classes
+qhp.BobUIWidgets.subprojects.classes.selectors = class fake:headerfile
+qhp.BobUIWidgets.subprojects.classes.sortPages = true
+qhp.BobUIWidgets.subprojects.manual.title = BobUI Widgets
+qhp.BobUIWidgets.subprojects.manual.indexTitle = BobUI Widgets module topics
+qhp.BobUIWidgets.subprojects.manual.type = manual
+
+tagfile                 = ../../../doc/bobuiwidgets/bobuiwidgets.tags
+
+depends += \
+    bobuicore \
+    bobuigui \
+    bobuidoc \
+    bobuisql \
+    bobuidesigner \
+    bobuiquick \
+    qmake \
+    bobuinetwork \
+    bobuicmake \
+    bobuisvg \
+    bobuilinguist \
+    bobuihelp \
+    bobuiopengl \
+    bobuishadertools \
+    bobuitestlib
+
+headerdirs  += ..
+
+sourcedirs  += .. \
+               ../../../examples/widgets/doc/src
+
+exampledirs += ../../../examples/widgets \
+               ../../../doc/src/snippets \
+               .. \
+               . \
+               snippets
+
+excludedirs += snippets
+
+# Included in bobuitestlib.qdocconf instead
+excludefiles += ../kernel/bobuiestsupport_widgets.cpp
+
+# Exclude forwarding headers to BobUIGUI to avoid duplicates in the node tree
+excludefiles += \
+    ../dialogs/qfilesystemmodel.h \
+    ../kernel/qaction.h \
+    ../kernel/qactiongroup.h \
+    ../kernel/qshortcut.h \
+    ../util/qundogroup.h \
+    ../util/qundostack.h
+
+imagedirs   += images \
+               ../../../doc/src/images \
+               ../../../examples/widgets/doc/images \
+               ../../../examples/widgets
+
+navigation.landingpage = "BobUI Widgets"
+navigation.cppclassespage = "BobUI Widgets C++ Classes"
+# Auto-generate navigation linking based on "BobUI Widgets module topics":
+navigation.toctitles = "BobUI Widgets module topics"
+navigation.toctitles.inclusive = false
+
+# Highlighted examples for User Interface Components category
+manifestmeta.highlighted.names = \
+    "BobUIWidgets/Editable Tree Model Example" \
+    "BobUIWidgets/Menus Example"
+
+# Highlighted examples for Desktop category
+manifestmeta.highlighted.names += \
+    "BobUIWidgets/System Tray Icon Example" \
+    "BobUIWidgets/Taking a Screenshot"
+
+# Enforce zero documentation warnings
+warninglimit = 0
+
+reportmissingalttextforimages = true
+

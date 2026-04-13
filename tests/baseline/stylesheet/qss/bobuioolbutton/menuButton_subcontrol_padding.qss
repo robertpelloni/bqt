@@ -1,0 +1,12 @@
+BOBUIoolButton {
+    border: 5px solid #9e9e9e;
+    background: #ffffff;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+BOBUIoolButton[popupMode=InstantPopup] {
+    padding-right: 75px;
+}
+BOBUIoolButton::menu-indicator {
+    subcontrol-position: right;
+};

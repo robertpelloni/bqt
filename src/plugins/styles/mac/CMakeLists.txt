@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QMacStylePlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QMacStylePlugin
+bobui_internal_add_plugin(QMacStylePlugin
     OUTPUT_NAME qmacstyle
     PLUGIN_TYPE styles
     SOURCES
@@ -14,9 +14,9 @@ qt_internal_add_plugin(QMacStylePlugin
         qmacstyle_mac_p_p.h
     LIBRARIES
         ${FWAppKit}
-        Qt::Core
-        Qt::Gui
-        Qt::WidgetsPrivate
+        BobUI::Core
+        BobUI::Gui
+        BobUI::WidgetsPrivate
 )
 
 set_target_properties(QMacStylePlugin

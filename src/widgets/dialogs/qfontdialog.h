@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFONTDIALOG_H
 #define QFONTDIALOG_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtGui/qfont.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUIGui/qfont.h>
 
-#include <QtWidgets/qdialog.h>
+#include <BobUIWidgets/qdialog.h>
 
-QT_REQUIRE_CONFIG(fontdialog);
+BOBUI_REQUIRE_CONFIG(fontdialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFontDialogPrivate;
 
@@ -75,6 +75,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QFontDialog::FontDialogOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFONTDIALOG_H

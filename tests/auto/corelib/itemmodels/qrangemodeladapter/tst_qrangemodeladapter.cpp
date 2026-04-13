@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #define Q_ASSERT(cond) ((cond) ? static_cast<void>(0) : qCritical(#cond))
 #define Q_ASSERT_X(cond, x, msg) ((cond) ? static_cast<void>(0) \
@@ -7,14 +7,14 @@
 
 #include "../qrangemodel/data.h"
 
-#include <QtTest/qtest.h>
-#include <QtTest/qsignalspy.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qrangemodeladapter.h>
-#include <QtCore/qregularexpression.h>
-#include <QtCore/qxptype_traits.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/qsignalspy.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qrangemodeladapter.h>
+#include <BobUICore/qregularexpression.h>
+#include <BobUICore/qxptype_traits.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QRangeModelAdapter : public QRangeModelTest
 {
@@ -100,11 +100,11 @@ private slots:
 private:
     void expectInvalidIndex(int count)
     {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         static QRegularExpression invalidIndex{".* - Index at position is invalid"};
 
         for (int i = 0; i < count; ++i) // at and DataRef accesses when testing out-of-bounds
-            QTest::ignoreMessage(QtCriticalMsg, invalidIndex);
+            BOBUIest::ignoreMessage(BobUICriticalMsg, invalidIndex);
 #else
         Q_UNUSED(count);
 #endif
@@ -1210,10 +1210,10 @@ void tst_QRangeModelAdapter::listAccess()
             QCOMPARE(adapter.at(0), gadgets.at(0));
             QCOMPARE(adapter.data(0).metaType(), QMetaType::fromType<MultiRoleGadget>());
             QCOMPARE(adapter.data(0).value<MultiRoleGadget>(), gadgets.at(0));
-            QCOMPARE(adapter.data(0, Qt::DisplayRole), gadgets.at(0).m_display);
-            QCOMPARE(adapter.data(1, Qt::DecorationRole), gadgets.at(1).m_decoration);
-            QCOMPARE(adapter.data(2, Qt::UserRole), gadgets.at(2).number());
-            QCOMPARE(adapter.data(2, Qt::UserRole + 1), gadgets.at(2).m_user);
+            QCOMPARE(adapter.data(0, BobUI::DisplayRole), gadgets.at(0).m_display);
+            QCOMPARE(adapter.data(1, BobUI::DecorationRole), gadgets.at(1).m_decoration);
+            QCOMPARE(adapter.data(2, BobUI::UserRole), gadgets.at(2).number());
+            QCOMPARE(adapter.data(2, BobUI::UserRole + 1), gadgets.at(2).m_user);
             QCOMPARE(adapter.at(size - 1), gadgets.at(size - 1));
             expectInvalidIndex(1);  // access of vector
             QCOMPARE(adapter.at(size), MultiRoleGadget{});
@@ -1502,8 +1502,8 @@ void tst_QRangeModelAdapter::tableWriteAccess()
         QCOMPARE(dataChangedSpy.at(1).at(1).value<QModelIndex>(), adapter.index(size - 1, 1));
         dataChangedSpy.clear();
 
-        QVERIFY(adapter.setData(0, 0, -1, Qt::DisplayRole));
-        QVERIFY(adapter.setData(0, 1, "Minus one", Qt::DisplayRole));
+        QVERIFY(adapter.setData(0, 0, -1, BobUI::DisplayRole));
+        QVERIFY(adapter.setData(0, 1, "Minus one", BobUI::DisplayRole));
         QCOMPARE(dataChangedSpy.size(), 2);
     }
 
@@ -1530,8 +1530,8 @@ void tst_QRangeModelAdapter::tableWriteAccess()
         dataChangedSpy.clear();
 
         // this breaks table topology, and would assert; we have to do it last
-#ifndef QT_NO_DEBUG
-        QTest::ignoreMessage(QtCriticalMsg,
+#ifndef BOBUI_NO_DEBUG
+        BOBUIest::ignoreMessage(BobUICriticalMsg,
                              QRegularExpression(".* The new row has the wrong size!"));
 #endif
         adapter[0] = std::vector<double>{1.0};
@@ -1575,12 +1575,12 @@ void tst_QRangeModelAdapter::tableWriteAccess()
 
         QVERIFY(adapter.at(0, 0) != nullptr);
         QCOMPARE(dataChangedSpy.count(), 0);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         // we can't replace items that are pointers
-        QTest::ignoreMessage(QtCriticalMsg,
+        BOBUIest::ignoreMessage(BobUICriticalMsg,
                              QRegularExpression("Not able to assign QVariant"));
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("Writing value of type Object\\* to "
-                             "role Qt::RangeModelAdapterRole at index .* failed"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("Writing value of type Object\\* to "
+                             "role BobUI::RangeModelAdapterRole at index .* failed"));
 #endif
         adapter.at(0, 0) = new Object;
         QCOMPARE(dataChangedSpy.count(), 0);
@@ -2777,7 +2777,7 @@ void tst_QRangeModelAdapter::insertAutoConnectObjects()
     QCOMPARE(dataChangedSpy.count(), 2);
 }
 
-QTEST_MAIN(tst_QRangeModelAdapter)
+BOBUIEST_MAIN(tst_QRangeModelAdapter)
 #include "tst_qrangemodeladapter.moc"
 
 #undef HAS_API

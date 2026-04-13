@@ -1,7 +1,7 @@
-# Copyright (C) 2025 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2025 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-qt_add_library(gui_snippets OBJECT
+bobui_add_library(gui_snippets OBJECT
     brush/brush.cpp
     brush/gradientcreationsnippet.cpp
     image/image.cpp
@@ -9,20 +9,20 @@ qt_add_library(gui_snippets OBJECT
     picture/picture.cpp
     polygon/polygon.cpp
     qimagewriter/main.cpp
-    qtextobject/textobjectinterface.h
+    bobuiextobject/textobjectinterface.h
     rhioffscreen/main.cpp
     textdocument-end/textdocumentendsnippet.cpp
 )
 
 target_link_libraries(gui_snippets PRIVATE
-    Qt::Core
-    Qt::Gui
-    Qt::GuiPrivate
+    BobUI::Core
+    BobUI::Gui
+    BobUI::GuiPrivate
 )
 
-if(QT_FEATURE_widgets)
+if(BOBUI_FEATURE_widgets)
     target_link_libraries(gui_snippets PRIVATE
-        Qt::Widgets
+        BobUI::Widgets
     )
     target_sources(gui_snippets PRIVATE
         draganddrop/dragwidget.cpp
@@ -57,25 +57,25 @@ if(QT_FEATURE_widgets)
 endif()
 
 
-if(QT_FEATURE_xml)
+if(BOBUI_FEATURE_xml)
     target_link_libraries(gui_snippets PRIVATE
-        Qt::Xml
+        BobUI::Xml
     )
     target_sources(gui_snippets PRIVATE
         textblock-fragments/xmlwriter.cpp
     )
 endif()
 
-if(QT_FEATURE_printsupport)
+if(BOBUI_FEATURE_printsupport)
     target_link_libraries(gui_snippets PRIVATE
-        Qt::PrintSupport
+        BobUI::PrintSupport
     )
     target_sources(gui_snippets PRIVATE
         textdocument-printing/mainwindow.cpp
     )
 endif()
 
-if(QT_FEATURE_widgets AND QT_FEATURE_clipboard)
+if(BOBUI_FEATURE_widgets AND BOBUI_FEATURE_clipboard)
     target_sources(gui_snippets PRIVATE
         clipboard/clipwindow.cpp
     )

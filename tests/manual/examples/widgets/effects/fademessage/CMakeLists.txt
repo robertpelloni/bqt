@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(fademessage LANGUAGES CXX)
@@ -10,11 +10,11 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/widgets/effects/fademessage")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Widgets)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(fademessage
+bobui_add_executable(fademessage
     fademessage.cpp fademessage.h
     main.cpp
 )
@@ -25,9 +25,9 @@ set_target_properties(fademessage PROPERTIES
 )
 
 target_link_libraries(fademessage PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Widgets
 )
 
 # Resources:
@@ -35,7 +35,7 @@ set(fademessage_resource_files
     "background.jpg"
 )
 
-qt_add_resources(fademessage "fademessage"
+bobui_add_resources(fademessage "fademessage"
     PREFIX
         "/"
     FILES

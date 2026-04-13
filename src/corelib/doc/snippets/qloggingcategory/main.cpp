@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QCoreApplication>
 #include <QLoggingCategory>
@@ -13,7 +13,7 @@ Q_LOGGING_CATEGORY(driverUsb, "driver.usb")
 //![1]
 
 //![5]
-Q_LOGGING_CATEGORY(driverUsbEvents, "driver.usb.events", QtWarningMsg)
+Q_LOGGING_CATEGORY(driverUsbEvents, "driver.usb.events", BobUIWarningMsg)
 //![5]
 
 // Completely made up example, inspired by en.wikipedia.org/wiki/USB :)
@@ -52,7 +52,7 @@ void myCategoryFilter(QLoggingCategory *category)
 
     // Tweak driver.usb's logging, over-riding the default filter:
     if (qstrcmp(category->categoryName(), "driver.usb") == 0)
-        category->setEnabled(QtDebugMsg, true);
+        category->setEnabled(BobUIDebugMsg, true);
 }
 //![21]
 

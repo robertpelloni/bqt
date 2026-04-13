@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 import { BatchedTestRunner } from './batchedtestrunner.js'
 import { EmrunAdapter, EmrunCommunication } from './emrunadapter.js'
@@ -9,14 +9,14 @@ import {
     ResourceLocator,
 } from './qwasmjsruntime.js';
 import { parseQuery } from './util.js';
-import { VisualOutputProducer, UI, ScannerFactory } from './qtestoutputreporter.js'
+import { VisualOutputProducer, UI, ScannerFactory } from './bobuiestoutputreporter.js'
 
 const StandardArg = {
     qVisualOutput: 'qvisualoutput',
-    qTestName: 'qtestname',
+    qTestName: 'bobuiestname',
     qBatchedTest: 'qbatchedtest',
     qUseEmrun: 'quseemrun',
-    qTestOutputFormat: 'qtestoutputformat',
+    qTestOutputFormat: 'bobuiestoutputformat',
 }
 
 const allArgs = new Set(Object.getOwnPropertyNames(StandardArg).map(arg => StandardArg[arg]));
@@ -29,7 +29,7 @@ Object.defineProperty(StandardArg, 'isKnown', {
 
 (() => {
     const setPageTitle = (useEmrun, testName, isBatch) => {
-        document.title = 'Qt WASM test runner';
+        document.title = 'BobUI WASM test runner';
         if (useEmrun || testName || isBatch) {
             document.title += `(${[
                     ...[useEmrun ? ['emrun'] : []],
@@ -43,8 +43,8 @@ Object.defineProperty(StandardArg, 'isKnown', {
 
     // Get test name from data attribute or query parameter
     const getTestNameFromDataAttribute = () => {
-        const scriptTag = document.querySelector('script[data-qtestname]');
-        return scriptTag?.dataset?.qtestname;
+        const scriptTag = document.querySelector('script[data-bobuiestname]');
+        return scriptTag?.dataset?.bobuiestname;
     };
 
     const isBatch = parsed.has(StandardArg.qBatchedTest);
@@ -57,9 +57,9 @@ Object.defineProperty(StandardArg, 'isKnown', {
 
     if (testName === undefined) {
         if (!isBatch)
-            throw new Error('The qtestname parameter is required if not running a batch');
+            throw new Error('The bobuiestname parameter is required if not running a batch');
     } else if (testName === '') {
-        throw new Error(`The qtestname=${testName} parameter is incorrect`);
+        throw new Error(`The bobuiestname=${testName} parameter is incorrect`);
     }
 
     const testOutputFormat = (() => {
@@ -73,13 +73,13 @@ Object.defineProperty(StandardArg, 'isKnown', {
 
     // Get or create container elements
     const testOutputContainer = document.querySelector('#test-output-container') || document.querySelector('body');
-    const qtGuiContainer = document.querySelector('#qt-gui-container');
+    const bobuiGuiContainer = document.querySelector('#bobui-gui-container');
 
     const testRunner = new BatchedTestRunner(
         new ModuleLoader(new ResourceFetcher(resourceLocator), resourceLocator),
-        qtGuiContainer ? [qtGuiContainer] : undefined
+        bobuiGuiContainer ? [bobuiGuiContainer] : undefined
     );
-    window.qtTestRunner = testRunner;
+    window.bobuiTestRunner = testRunner;
 
     if (useEmrun) {
         const adapter = new EmrunAdapter(new EmrunCommunication(), testRunner, () => {

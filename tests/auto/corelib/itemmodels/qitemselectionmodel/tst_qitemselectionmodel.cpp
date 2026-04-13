@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 #include <QSignalSpy>
 
-#include <QtGui/QtGui>
+#include <BobUIGui/BobUIGui>
 
 #include <algorithm>
 
 Q_DECLARE_METATYPE(QItemSelectionModel::SelectionFlag)
-Q_DECLARE_METATYPE(Qt::SortOrder)
+Q_DECLARE_METATYPE(BobUI::SortOrder)
 
 class tst_QItemSelectionModel : public QObject
 {
@@ -58,7 +58,7 @@ private slots:
     void isRowSelected();
     void isColumnSelected();
     void childrenDeselectionSignal();
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
     void layoutChangedWithAllSelected1();
     void layoutChangedWithAllSelected2();
 #endif
@@ -74,29 +74,29 @@ private slots:
     void testChainedSelectionClear();
     void testClearCurrentIndex();
 
-    void QTBUG48402_data();
-    void QTBUG48402();
+    void BOBUIBUG48402_data();
+    void BOBUIBUG48402();
 
-    void QTBUG58851_data();
-#if QT_CONFIG(proxymodel)
-    void QTBUG58851();
+    void BOBUIBUG58851_data();
+#if BOBUI_CONFIG(proxymodel)
+    void BOBUIBUG58851();
 #endif
 
-    void QTBUG18001_data();
-    void QTBUG18001();
+    void BOBUIBUG18001_data();
+    void BOBUIBUG18001();
 
-    void QTBUG93305();
+    void BOBUIBUG93305();
 
     void testSignalsDisconnection();
     void destroyModel();
 
 private:
-    static void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
+    static void messageHandler(BobUIMsgType type, const QMessageLogContext &context, const QString &msg);
     QAbstractItemModel *model;
     QItemSelectionModel *selection;
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QDataStream &operator<<(QDataStream &, const QModelIndex &);
 QDataStream &operator>>(QDataStream &, QModelIndex &);
@@ -125,7 +125,7 @@ public:
         { return 0; }
     int columnCount(const QModelIndex & = QModelIndex()) const override
         { return 0; }
-    QVariant data(const QModelIndex &, int = Qt::DisplayRole) const override
+    QVariant data(const QModelIndex &, int = BobUI::DisplayRole) const override
         { return QVariant(); }
     bool hasChildren(const QModelIndex &) const override
         { return false; }
@@ -170,7 +170,7 @@ QDataStream &operator>>(QDataStream &s, QModelIndexList &output)
     return s;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 tst_QItemSelectionModel::tst_QItemSelectionModel()
     : model(0), selection(0)
@@ -222,13 +222,13 @@ void tst_QItemSelectionModel::init()
 
 void tst_QItemSelectionModel::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QItemSelectionRange>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QItemSelectionRange>();
 }
 
 void tst_QItemSelectionModel::clear_data()
 {
-    QTest::addColumn<QModelIndexList>("indexList");
-    QTest::addColumn<IntList>("commandList");
+    BOBUIest::addColumn<QModelIndexList>("indexList");
+    BOBUIest::addColumn<IntList>("commandList");
     {
         QModelIndexList index;
         IntList command;
@@ -236,7 +236,7 @@ void tst_QItemSelectionModel::clear_data()
         command << (QItemSelectionModel::Select | QItemSelectionModel::Rows);
         index << model->index(1, 0, QModelIndex());
         command << (QItemSelectionModel::Select | QItemSelectionModel::Rows);
-        QTest::newRow("(0, 0) and (1, 0): Select|Rows")
+        BOBUIest::newRow("(0, 0) and (1, 0): Select|Rows")
             << index
             << command;
     }
@@ -247,7 +247,7 @@ void tst_QItemSelectionModel::clear_data()
         command << (QItemSelectionModel::Select | QItemSelectionModel::Columns);
         index << model->index(0, 1, QModelIndex());
         command << (QItemSelectionModel::Select | QItemSelectionModel::Columns);
-        QTest::newRow("(0, 0) and (1, 0): Select|Columns")
+        BOBUIest::newRow("(0, 0) and (1, 0): Select|Columns")
             << index
             << command;
     }
@@ -260,7 +260,7 @@ void tst_QItemSelectionModel::clear_data()
         command << QItemSelectionModel::Select;
         index << model->index(2, 2, QModelIndex());
         command << QItemSelectionModel::SelectCurrent;
-        QTest::newRow("(0, 0), (1, 1) and (2, 2): Select, Select, SelectCurrent")
+        BOBUIest::newRow("(0, 0), (1, 1) and (2, 2): Select, Select, SelectCurrent")
             << index
             << command;
     }
@@ -273,7 +273,7 @@ void tst_QItemSelectionModel::clear_data()
         command << QItemSelectionModel::Select;
         index << model->index(1, 1, QModelIndex());
         command << QItemSelectionModel::Toggle;
-        QTest::newRow("(0, 0), (1, 1) and (1, 1): Select, Select, Toggle")
+        BOBUIest::newRow("(0, 0), (1, 1) and (1, 1): Select, Select, Toggle")
             << index
             << command;
     }
@@ -282,7 +282,7 @@ void tst_QItemSelectionModel::clear_data()
         IntList command;
         index << model->index(0, 0, model->index(0, 0, QModelIndex()));
         command << (QItemSelectionModel::Select | QItemSelectionModel::Rows);
-        QTest::newRow("child (0, 0) of (0, 0): Select|Rows")
+        BOBUIest::newRow("child (0, 0) of (0, 0): Select|Rows")
             << index
             << command;
     }
@@ -351,10 +351,10 @@ void tst_QItemSelectionModel::toggleSelection()
 
 void tst_QItemSelectionModel::select_data()
 {
-    QTest::addColumn<QModelIndexList>("indexList");
-    QTest::addColumn<bool>("useRanges");
-    QTest::addColumn<IntList>("commandList");
-    QTest::addColumn<QModelIndexList>("expectedList");
+    BOBUIest::addColumn<QModelIndexList>("indexList");
+    BOBUIest::addColumn<bool>("useRanges");
+    BOBUIest::addColumn<IntList>("commandList");
+    BOBUIest::addColumn<QModelIndexList>("expectedList");
 
     {
         QModelIndexList index;
@@ -363,7 +363,7 @@ void tst_QItemSelectionModel::select_data()
         index << model->index(0, 0, QModelIndex());
         command << QItemSelectionModel::Select;
         expected << model->index(0, 0, QModelIndex());
-        QTest::newRow("(0, 0): Select")
+        BOBUIest::newRow("(0, 0): Select")
             << index
             << false
             << command
@@ -376,7 +376,7 @@ void tst_QItemSelectionModel::select_data()
         index << model->index(0, 0, model->index(0, 0, QModelIndex()));
         command << QItemSelectionModel::Select;
         expected << model->index(0, 0, model->index(0, 0, QModelIndex()));
-        QTest::newRow("child (0, 0) of (0, 0): Select")
+        BOBUIest::newRow("child (0, 0) of (0, 0): Select")
             << index
             << false
             << command
@@ -388,7 +388,7 @@ void tst_QItemSelectionModel::select_data()
         IntList command;
         index << model->index(0, 0, QModelIndex());
         command << QItemSelectionModel::Deselect;
-        QTest::newRow("(0, 0): Deselect")
+        BOBUIest::newRow("(0, 0): Deselect")
             << index
             << false
             << command
@@ -401,7 +401,7 @@ void tst_QItemSelectionModel::select_data()
         index << model->index(0, 0, QModelIndex());
         command << QItemSelectionModel::Toggle;
         expected << model->index(0, 0, QModelIndex());
-        QTest::newRow("(0, 0): Toggle")
+        BOBUIest::newRow("(0, 0): Toggle")
             << index
             << false
             << command
@@ -415,7 +415,7 @@ void tst_QItemSelectionModel::select_data()
         command << QItemSelectionModel::Select;
         index << model->index(0, 0, QModelIndex());
         command << QItemSelectionModel::Toggle;
-        QTest::newRow("(0, 0) and (0, 0): Select and Toggle")
+        BOBUIest::newRow("(0, 0) and (0, 0): Select and Toggle")
             << index
             << false
             << command
@@ -429,7 +429,7 @@ void tst_QItemSelectionModel::select_data()
         command << QItemSelectionModel::Select;
         index << model->index(0, 0, QModelIndex());
         command << QItemSelectionModel::Deselect;
-        QTest::newRow("(0, 0) and (0, 0): Select and Deselect")
+        BOBUIest::newRow("(0, 0) and (0, 0): Select and Deselect")
             << index
             << false
             << command
@@ -444,7 +444,7 @@ void tst_QItemSelectionModel::select_data()
         index << model->index(0, 0, model->index(0, 0, QModelIndex()));
         command << QItemSelectionModel::ClearAndSelect;
         expected << model->index(0, 0, model->index(0, 0, QModelIndex()));
-        QTest::newRow("(0, 0) and child (0, 0) of (0, 0): Select and ClearAndSelect")
+        BOBUIest::newRow("(0, 0) and child (0, 0) of (0, 0): Select and ClearAndSelect")
             << index
             << false
             << command
@@ -463,7 +463,7 @@ void tst_QItemSelectionModel::select_data()
         index << model->index(0, 0, QModelIndex());
         index << model->index(4, 1, QModelIndex());
         command << QItemSelectionModel::Deselect;
-        QTest::newRow("(0, 0 to 4, 0) and (0, 1 to 4, 1) and (0, 0 to 4, 1): Select and Select and Deselect")
+        BOBUIest::newRow("(0, 0 to 4, 0) and (0, 1 to 4, 1) and (0, 0 to 4, 1): Select and Select and Deselect")
             << index
             << true
             << command
@@ -478,7 +478,7 @@ void tst_QItemSelectionModel::select_data()
         index << model->index(4, 4, QModelIndex());
         command << QItemSelectionModel::Select;
         expected << model->index(0, 0, QModelIndex()) << model->index(4, 4, QModelIndex());
-        QTest::newRow("(0, 0) and (4, 4): Select")
+        BOBUIest::newRow("(0, 0) and (4, 4): Select")
             << index
             << false
             << command
@@ -493,7 +493,7 @@ void tst_QItemSelectionModel::select_data()
         index << model->index(4, 4, QModelIndex());
         command << QItemSelectionModel::ClearAndSelect;
         expected << model->index(4, 4, QModelIndex());
-        QTest::newRow("(0, 0) and (4, 4): Select and ClearAndSelect")
+        BOBUIest::newRow("(0, 0) and (4, 4): Select and ClearAndSelect")
             << index
             << false
             << command
@@ -517,7 +517,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(4, 2, QModelIndex())
                  << model->index(4, 3, QModelIndex())
                  << model->index(4, 4, QModelIndex());
-        QTest::newRow("(0, 0) and (4, 4): Select|Rows")
+        BOBUIest::newRow("(0, 0) and (4, 4): Select|Rows")
             << index
             << false
             << command
@@ -542,7 +542,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(4, 2, parent)
                  << model->index(4, 3, parent)
                  << model->index(4, 4, parent);
-        QTest::newRow("child (0, 0) and (4, 4) of (0, 0): Select|Rows")
+        BOBUIest::newRow("child (0, 0) and (4, 4) of (0, 0): Select|Rows")
             << index
             << false
             << command
@@ -566,7 +566,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 4, QModelIndex())
                  << model->index(3, 4, QModelIndex())
                  << model->index(4, 4, QModelIndex());
-        QTest::newRow("(0, 0) and (4, 4): Select|Columns")
+        BOBUIest::newRow("(0, 0) and (4, 4): Select|Columns")
             << index
             << false
             << command
@@ -590,7 +590,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 4, model->index(0, 0, QModelIndex()))
                  << model->index(3, 4, model->index(0, 0, QModelIndex()))
                  << model->index(4, 4, model->index(0, 0, QModelIndex()));
-        QTest::newRow("child (0, 0) and (4, 4) of (0, 0): Select|Columns")
+        BOBUIest::newRow("child (0, 0) and (4, 4) of (0, 0): Select|Columns")
             << index
             << false
             << command
@@ -608,7 +608,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 0, QModelIndex())
                  << model->index(3, 0, QModelIndex())
                  << model->index(4, 0, QModelIndex());
-        QTest::newRow("(0, 0 to 4, 0): Select")
+        BOBUIest::newRow("(0, 0 to 4, 0): Select")
             << index
             << true
             << command
@@ -621,7 +621,7 @@ void tst_QItemSelectionModel::select_data()
         index << model->index(0, 0, QModelIndex());
         index << model->index(0, 0, model->index(0, 0, QModelIndex()));
         command << QItemSelectionModel::Select;
-        QTest::newRow("(0, 0 to child 0, 0): Select")
+        BOBUIest::newRow("(0, 0 to child 0, 0): Select")
             << index
             << true
             << command
@@ -634,7 +634,7 @@ void tst_QItemSelectionModel::select_data()
         index << model->index(0, 0, model->index(0, 0, QModelIndex()));
         index << model->index(0, 0, model->index(1, 0, QModelIndex()));
         command << QItemSelectionModel::Select;
-        QTest::newRow("child (0, 0) of (0, 0) to child (0, 0) of (1, 0): Select")
+        BOBUIest::newRow("child (0, 0) of (0, 0) to child (0, 0) of (1, 0): Select")
             << index
             << true
             << command
@@ -672,7 +672,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(4, 2, QModelIndex())
                  << model->index(4, 3, QModelIndex())
                  << model->index(4, 4, QModelIndex());
-        QTest::newRow("(0, 0 to 4, 4): Select")
+        BOBUIest::newRow("(0, 0 to 4, 4): Select")
             << index
             << true
             << command
@@ -710,7 +710,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(4, 2, QModelIndex())
                  << model->index(4, 3, QModelIndex())
                  << model->index(4, 4, QModelIndex());
-        QTest::newRow("(0, 0 to 4, 0): Select|Rows")
+        BOBUIest::newRow("(0, 0 to 4, 0): Select|Rows")
             << index
             << true
             << command
@@ -748,7 +748,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(4, 2, QModelIndex())
                  << model->index(4, 3, QModelIndex())
                  << model->index(4, 4, QModelIndex());
-        QTest::newRow("(0, 0 to 0, 4): Select|Columns")
+        BOBUIest::newRow("(0, 0 to 0, 4): Select|Columns")
             << index
             << true
             << command
@@ -786,7 +786,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(4, 2, QModelIndex())
                  << model->index(4, 3, QModelIndex())
                  << model->index(4, 4, QModelIndex());
-        QTest::newRow("(0, 0 to 4, 4): Select|Rows")
+        BOBUIest::newRow("(0, 0 to 4, 4): Select|Rows")
             << index
             << true
             << command
@@ -824,7 +824,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(4, 2, QModelIndex())
                  << model->index(4, 3, QModelIndex())
                  << model->index(4, 4, QModelIndex());
-        QTest::newRow("(0, 0 to 4, 4): Select|Columns")
+        BOBUIest::newRow("(0, 0 to 4, 4): Select|Columns")
             << index
             << true
             << command
@@ -849,7 +849,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 1, QModelIndex())
                  << model->index(2, 3, QModelIndex())
                  << model->index(2, 4, QModelIndex());
-        QTest::newRow("(0, 2 to 4, 2) and (2, 0 to 2, 4): Select")
+        BOBUIest::newRow("(0, 2 to 4, 2) and (2, 0 to 2, 4): Select")
             << index
             << true
             << command
@@ -870,7 +870,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 2, QModelIndex())
                  << model->index(2, 3, QModelIndex())
                  << model->index(2, 4, QModelIndex());
-        QTest::newRow("(0, 2 to 4, 2) and (2, 0 to 2, 4): Select and SelectCurrent")
+        BOBUIest::newRow("(0, 2 to 4, 2) and (2, 0 to 2, 4): Select and SelectCurrent")
             << index
             << true
             << command
@@ -894,7 +894,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 1, QModelIndex())
                  << model->index(2, 3, QModelIndex())
                  << model->index(2, 4, QModelIndex());
-        QTest::newRow("(0, 2 to 4, 2) and (2, 0 to 2, 4): Select and Toggle")
+        BOBUIest::newRow("(0, 2 to 4, 2) and (2, 0 to 2, 4): Select and Toggle")
             << index
             << true
             << command
@@ -914,7 +914,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(1, 2, QModelIndex())
                  << model->index(3, 2, QModelIndex())
                  << model->index(4, 2, QModelIndex());
-        QTest::newRow("(0, 2 to 4, 2) and (2, 0 to 2, 4): Select and Deselect")
+        BOBUIest::newRow("(0, 2 to 4, 2) and (2, 0 to 2, 4): Select and Deselect")
             << index
             << true
             << command
@@ -942,7 +942,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 1, QModelIndex())
                  << model->index(2, 2, QModelIndex());
 
-        QTest::newRow("(0, 0 to 2, 2) and (0, 0 to 0, 0): Select and Toggle at selection boundary")
+        BOBUIest::newRow("(0, 0 to 2, 2) and (0, 0 to 0, 0): Select and Toggle at selection boundary")
             << index
             << true
             << command
@@ -970,7 +970,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 1, QModelIndex())
                  << model->index(2, 2, QModelIndex());
 
-        QTest::newRow("(0, 0 to 2, 2) and (0, 1 to 0, 1): Select and Toggle at selection boundary")
+        BOBUIest::newRow("(0, 0 to 2, 2) and (0, 1 to 0, 1): Select and Toggle at selection boundary")
             << index
             << true
             << command
@@ -998,7 +998,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 1, QModelIndex())
                  << model->index(2, 2, QModelIndex());
 
-        QTest::newRow("(0, 0 to 2, 2) and (0, 2 to 0, 2): Select and Toggle at selection boundary")
+        BOBUIest::newRow("(0, 0 to 2, 2) and (0, 2 to 0, 2): Select and Toggle at selection boundary")
             << index
             << true
             << command
@@ -1026,7 +1026,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 1, QModelIndex())
                  << model->index(2, 2, QModelIndex());
 
-        QTest::newRow("(0, 0 to 2, 2) and (1, 0 to 1, 0): Select and Toggle at selection boundary")
+        BOBUIest::newRow("(0, 0 to 2, 2) and (1, 0 to 1, 0): Select and Toggle at selection boundary")
             << index
             << true
             << command
@@ -1054,7 +1054,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 1, QModelIndex())
                  << model->index(2, 2, QModelIndex());
 
-        QTest::newRow("(0, 0 to 2, 2) and (1, 1 to 1, 1): Select and Toggle at selection boundary")
+        BOBUIest::newRow("(0, 0 to 2, 2) and (1, 1 to 1, 1): Select and Toggle at selection boundary")
             << index
             << true
             << command
@@ -1081,7 +1081,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 1, QModelIndex())
                  << model->index(2, 2, QModelIndex());
 
-        QTest::newRow("(0, 0 to 2, 2) and (1, 2 to 1, 2): Select and Toggle at selection boundary")
+        BOBUIest::newRow("(0, 0 to 2, 2) and (1, 2 to 1, 2): Select and Toggle at selection boundary")
             << index
             << true
             << command
@@ -1108,7 +1108,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 1, QModelIndex())
                  << model->index(2, 2, QModelIndex());
 
-        QTest::newRow("(0, 0 to 2, 2) and (2, 0 to 2, 0): Select and Toggle at selection boundary")
+        BOBUIest::newRow("(0, 0 to 2, 2) and (2, 0 to 2, 0): Select and Toggle at selection boundary")
             << index
             << true
             << command
@@ -1135,7 +1135,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 0, QModelIndex())
                  << model->index(2, 2, QModelIndex());
 
-        QTest::newRow("(0, 0 to 2, 2) and (2, 1 to 2, 1): Select and Toggle at selection boundary")
+        BOBUIest::newRow("(0, 0 to 2, 2) and (2, 1 to 2, 1): Select and Toggle at selection boundary")
             << index
             << true
             << command
@@ -1163,7 +1163,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(2, 0, QModelIndex())
                  << model->index(2, 1, QModelIndex());
 
-        QTest::newRow("(0, 0 to 2, 2) and (2, 2 to 2, 2): Select and Toggle at selection boundary")
+        BOBUIest::newRow("(0, 0 to 2, 2) and (2, 2 to 2, 2): Select and Toggle at selection boundary")
             << index
             << true
             << command
@@ -1220,7 +1220,7 @@ void tst_QItemSelectionModel::select_data()
                  << model->index(3, 3, QModelIndex())
                  << model->index(3, 4, QModelIndex());
 
-        QTest::newRow("simulated treeview multiselection behavior")
+        BOBUIest::newRow("simulated treeview multiselection behavior")
             << indexes
             << true
             << commands
@@ -1298,13 +1298,13 @@ void tst_QItemSelectionModel::select()
 
 void tst_QItemSelectionModel::persistentselections_data()
 {
-    QTest::addColumn<PairList>("indexList");
-    QTest::addColumn<IntList>("commandList");
-    QTest::addColumn<IntList>("insertRows"); // start, count
-    QTest::addColumn<IntList>("insertColumns"); // start, count
-    QTest::addColumn<IntList>("deleteRows"); // start, count
-    QTest::addColumn<IntList>("deleteColumns"); // start, count
-    QTest::addColumn<PairList>("expectedList");
+    BOBUIest::addColumn<PairList>("indexList");
+    BOBUIest::addColumn<IntList>("commandList");
+    BOBUIest::addColumn<IntList>("insertRows"); // start, count
+    BOBUIest::addColumn<IntList>("insertColumns"); // start, count
+    BOBUIest::addColumn<IntList>("deleteRows"); // start, count
+    BOBUIest::addColumn<IntList>("deleteColumns"); // start, count
+    BOBUIest::addColumn<PairList>("expectedList");
 
     PairList index, expected;
     IntList command, insertRows, insertColumns, deleteRows, deleteColumns;
@@ -1316,7 +1316,7 @@ void tst_QItemSelectionModel::persistentselections_data()
     command << QItemSelectionModel::ClearAndSelect;
     deleteRows << 4 << 1;
     expected << IntPair(0, 0);
-    QTest::newRow("ClearAndSelect (0, 0). Delete last row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0). Delete last row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1326,7 +1326,7 @@ void tst_QItemSelectionModel::persistentselections_data()
     index << IntPair(0, 0);
     command << QItemSelectionModel::ClearAndSelect;
     deleteRows << 0 << 1;
-    QTest::newRow("ClearAndSelect (0, 0). Delete first row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0). Delete first row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1337,7 +1337,7 @@ void tst_QItemSelectionModel::persistentselections_data()
     command << QItemSelectionModel::ClearAndSelect;
     deleteRows << 0 << 1;
     expected << IntPair(0, 0);
-    QTest::newRow("ClearAndSelect (1, 0). Delete first row.")
+    BOBUIest::newRow("ClearAndSelect (1, 0). Delete first row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1348,7 +1348,7 @@ void tst_QItemSelectionModel::persistentselections_data()
     command << QItemSelectionModel::ClearAndSelect;
     insertRows << 5 << 1;
     expected << IntPair(0, 0);
-    QTest::newRow("ClearAndSelect (0, 0). Append row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0). Append row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1359,7 +1359,7 @@ void tst_QItemSelectionModel::persistentselections_data()
     command << QItemSelectionModel::ClearAndSelect;
     insertRows << 0 << 1;
     expected << IntPair(1, 0);
-    QTest::newRow("ClearAndSelect (0, 0). Insert before first row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0). Insert before first row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1375,7 +1375,7 @@ void tst_QItemSelectionModel::persistentselections_data()
              << IntPair(2, 0)
              << IntPair(3, 0)
              << IntPair(4, 0);
-    QTest::newRow("ClearAndSelect (0, 0) to (4, 0). Append row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0) to (4, 0). Append row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1391,7 +1391,7 @@ void tst_QItemSelectionModel::persistentselections_data()
              << IntPair(3, 0)
              << IntPair(4, 0)
              << IntPair(5, 0);
-    QTest::newRow("ClearAndSelect (0, 0) to (4, 0). Insert before first row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0) to (4, 0). Insert before first row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1406,7 +1406,7 @@ void tst_QItemSelectionModel::persistentselections_data()
              << IntPair(1, 0)
              << IntPair(2, 0)
              << IntPair(3, 0);
-    QTest::newRow("ClearAndSelect (0, 0) to (4, 0). Delete first row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0) to (4, 0). Delete first row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1421,7 +1421,7 @@ void tst_QItemSelectionModel::persistentselections_data()
              << IntPair(1, 0)
              << IntPair(2, 0)
              << IntPair(3, 0);
-    QTest::newRow("ClearAndSelect (0, 0) to (4, 0). Delete last row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0) to (4, 0). Delete last row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1434,7 +1434,7 @@ void tst_QItemSelectionModel::persistentselections_data()
     deleteRows << 1  << 3;
     expected << IntPair(0, 0)
              << IntPair(1, 0);
-    QTest::newRow("ClearAndSelect (0, 0) to (4, 0). Deleting all but first and last row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0) to (4, 0). Deleting all but first and last row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1451,7 +1451,7 @@ void tst_QItemSelectionModel::persistentselections_data()
              << IntPair(3, 0)
              << IntPair(4, 0)
              << IntPair(5, 0);
-    QTest::newRow("ClearAndSelect (0, 0) to (4, 0). Insert after first row.")
+    BOBUIest::newRow("ClearAndSelect (0, 0) to (4, 0). Insert after first row.")
         << index << command
         << insertRows << insertColumns << deleteRows << deleteColumns
         << expected;
@@ -1549,23 +1549,23 @@ void tst_QItemSelectionModel::resetModel()
 
 void tst_QItemSelectionModel::removeRows_data()
 {
-    QTest::addColumn<int>("rowCount");
-    QTest::addColumn<int>("columnCount");
+    BOBUIest::addColumn<int>("rowCount");
+    BOBUIest::addColumn<int>("columnCount");
 
-    QTest::addColumn<int>("selectTop");
-    QTest::addColumn<int>("selectLeft");
-    QTest::addColumn<int>("selectBottom");
-    QTest::addColumn<int>("selectRight");
+    BOBUIest::addColumn<int>("selectTop");
+    BOBUIest::addColumn<int>("selectLeft");
+    BOBUIest::addColumn<int>("selectBottom");
+    BOBUIest::addColumn<int>("selectRight");
 
-    QTest::addColumn<int>("removeTop");
-    QTest::addColumn<int>("removeBottom");
+    BOBUIest::addColumn<int>("removeTop");
+    BOBUIest::addColumn<int>("removeBottom");
 
-    QTest::addColumn<int>("expectedTop");
-    QTest::addColumn<int>("expectedLeft");
-    QTest::addColumn<int>("expectedBottom");
-    QTest::addColumn<int>("expectedRight");
+    BOBUIest::addColumn<int>("expectedTop");
+    BOBUIest::addColumn<int>("expectedLeft");
+    BOBUIest::addColumn<int>("expectedBottom");
+    BOBUIest::addColumn<int>("expectedRight");
 
-    QTest::newRow("4x4 <0,1><1,1>")
+    BOBUIest::newRow("4x4 <0,1><1,1>")
         << 4 << 4
         << 0 << 1 << 1 << 1
         << 0 << 0
@@ -1612,23 +1612,23 @@ void tst_QItemSelectionModel::removeRows()
 
 void tst_QItemSelectionModel::removeColumns_data()
 {
-    QTest::addColumn<int>("rowCount");
-    QTest::addColumn<int>("columnCount");
+    BOBUIest::addColumn<int>("rowCount");
+    BOBUIest::addColumn<int>("columnCount");
 
-    QTest::addColumn<int>("selectTop");
-    QTest::addColumn<int>("selectLeft");
-    QTest::addColumn<int>("selectBottom");
-    QTest::addColumn<int>("selectRight");
+    BOBUIest::addColumn<int>("selectTop");
+    BOBUIest::addColumn<int>("selectLeft");
+    BOBUIest::addColumn<int>("selectBottom");
+    BOBUIest::addColumn<int>("selectRight");
 
-    QTest::addColumn<int>("removeLeft");
-    QTest::addColumn<int>("removeRight");
+    BOBUIest::addColumn<int>("removeLeft");
+    BOBUIest::addColumn<int>("removeRight");
 
-    QTest::addColumn<int>("expectedTop");
-    QTest::addColumn<int>("expectedLeft");
-    QTest::addColumn<int>("expectedBottom");
-    QTest::addColumn<int>("expectedRight");
+    BOBUIest::addColumn<int>("expectedTop");
+    BOBUIest::addColumn<int>("expectedLeft");
+    BOBUIest::addColumn<int>("expectedBottom");
+    BOBUIest::addColumn<int>("expectedRight");
 
-    QTest::newRow("4x4 <0,1><1,1>")
+    BOBUIest::newRow("4x4 <0,1><1,1>")
         << 4 << 4
         << 1 << 0 << 1 << 1
         << 0 << 0
@@ -1679,50 +1679,50 @@ typedef QList<IntPairPair> IntPairPairList;
 
 void tst_QItemSelectionModel::modelLayoutChanged_data()
 {
-    QTest::addColumn<IntListList>("items");
-    QTest::addColumn<IntPairPairList>("initialSelectedRanges");
-    QTest::addColumn<Qt::SortOrder>("sortOrder");
-    QTest::addColumn<int>("sortColumn");
-    QTest::addColumn<IntPairPairList>("expectedSelectedRanges");
+    BOBUIest::addColumn<IntListList>("items");
+    BOBUIest::addColumn<IntPairPairList>("initialSelectedRanges");
+    BOBUIest::addColumn<BobUI::SortOrder>("sortOrder");
+    BOBUIest::addColumn<int>("sortColumn");
+    BOBUIest::addColumn<IntPairPairList>("expectedSelectedRanges");
 
-    QTest::newRow("everything selected, then row order reversed")
+    BOBUIest::newRow("everything selected, then row order reversed")
         << (IntListList()
             << (IntList() << 0 << 1 << 2 << 3)
             << (IntList() << 3 << 2 << 1 << 0))
         << (IntPairPairList()
             << IntPairPair(IntPair(0, 0), IntPair(3, 1)))
-        << Qt::DescendingOrder
+        << BobUI::DescendingOrder
         << 0
         << (IntPairPairList()
             << IntPairPair(IntPair(0, 0), IntPair(3, 1)));
-    QTest::newRow("first two rows selected, then row order reversed")
+    BOBUIest::newRow("first two rows selected, then row order reversed")
         << (IntListList()
             << (IntList() << 0 << 1 << 2 << 3)
             << (IntList() << 3 << 2 << 1 << 0))
         << (IntPairPairList()
             << IntPairPair(IntPair(0, 0), IntPair(1, 1)))
-        << Qt::DescendingOrder
+        << BobUI::DescendingOrder
         << 0
         << (IntPairPairList()
             << IntPairPair(IntPair(2, 0), IntPair(3, 1)));
-    QTest::newRow("middle two rows selected, then row order reversed")
+    BOBUIest::newRow("middle two rows selected, then row order reversed")
         << (IntListList()
             << (IntList() << 0 << 1 << 2 << 3)
             << (IntList() << 3 << 2 << 1 << 0))
         << (IntPairPairList()
             << IntPairPair(IntPair(1, 0), IntPair(2, 1)))
-        << Qt::DescendingOrder
+        << BobUI::DescendingOrder
         << 0
         << (IntPairPairList()
             << IntPairPair(IntPair(1, 0), IntPair(2, 1)));
-    QTest::newRow("two ranges")
+    BOBUIest::newRow("two ranges")
         << (IntListList()
             << (IntList() << 2 << 0 << 3 << 1)
             << (IntList() << 2 << 0 << 3 << 1))
         << (IntPairPairList()
             << IntPairPair(IntPair(1, 0), IntPair(1, 1))
             << IntPairPair(IntPair(3, 0), IntPair(3, 1)))
-        << Qt::AscendingOrder
+        << BobUI::AscendingOrder
         << 0
         << (IntPairPairList()
             << IntPairPair(IntPair(0, 0), IntPair(0, 1))
@@ -1733,7 +1733,7 @@ void tst_QItemSelectionModel::modelLayoutChanged()
 {
     QFETCH(IntListList, items);
     QFETCH(const IntPairPairList, initialSelectedRanges);
-    QFETCH(Qt::SortOrder, sortOrder);
+    QFETCH(BobUI::SortOrder, sortOrder);
     QFETCH(int, sortColumn);
     QFETCH(IntPairPairList, expectedSelectedRanges);
 
@@ -1742,7 +1742,7 @@ void tst_QItemSelectionModel::modelLayoutChanged()
     for (int i = 0; i < model.rowCount(); ++i) {
         for (int j = 0; j < model.columnCount(); ++j) {
             QModelIndex index = model.index(i, j);
-            model.setData(index, items.at(j).at(i), Qt::DisplayRole);
+            model.setData(index, items.at(j).at(i), BobUI::DisplayRole);
         }
     }
 
@@ -1781,26 +1781,26 @@ void tst_QItemSelectionModel::modelLayoutChanged()
 
 void tst_QItemSelectionModel::selectedRows_data()
 {
-    QTest::addColumn<int>("rowCount");
-    QTest::addColumn<int>("columnCount");
-    QTest::addColumn<int>("column");
-    QTest::addColumn<IntList>("selectRows");
-    QTest::addColumn<IntList>("expectedRows");
-    QTest::addColumn<IntList>("unexpectedRows");
+    BOBUIest::addColumn<int>("rowCount");
+    BOBUIest::addColumn<int>("columnCount");
+    BOBUIest::addColumn<int>("column");
+    BOBUIest::addColumn<IntList>("selectRows");
+    BOBUIest::addColumn<IntList>("expectedRows");
+    BOBUIest::addColumn<IntList>("unexpectedRows");
 
-    QTest::newRow("10x10, first row")
+    BOBUIest::newRow("10x10, first row")
         << 10 << 10 << 0
         << (IntList() << 0)
         << (IntList() << 0)
         << (IntList() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9);
 
-    QTest::newRow("10x10, first 4 rows")
+    BOBUIest::newRow("10x10, first 4 rows")
         << 10 << 10 << 0
         << (IntList() << 0 << 1 << 2 << 3)
         << (IntList() << 0 << 1 << 2 << 3)
         << (IntList() << 4 << 5 << 6 << 7 << 8 << 9);
 
-    QTest::newRow("10x10, last 4 rows")
+    BOBUIest::newRow("10x10, last 4 rows")
         << 10 << 10 << 0
         << (IntList() << 6 << 7 << 8 << 9)
         << (IntList() << 6 << 7 << 8 << 9)
@@ -1841,26 +1841,26 @@ void tst_QItemSelectionModel::selectedRows()
 
 void tst_QItemSelectionModel::selectedColumns_data()
 {
-    QTest::addColumn<int>("rowCount");
-    QTest::addColumn<int>("columnCount");
-    QTest::addColumn<int>("row");
-    QTest::addColumn<IntList>("selectColumns");
-    QTest::addColumn<IntList>("expectedColumns");
-    QTest::addColumn<IntList>("unexpectedColumns");
+    BOBUIest::addColumn<int>("rowCount");
+    BOBUIest::addColumn<int>("columnCount");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<IntList>("selectColumns");
+    BOBUIest::addColumn<IntList>("expectedColumns");
+    BOBUIest::addColumn<IntList>("unexpectedColumns");
 
-    QTest::newRow("10x10, first columns")
+    BOBUIest::newRow("10x10, first columns")
         << 10 << 10 << 0
         << (IntList() << 0)
         << (IntList() << 0)
         << (IntList() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9);
 
-    QTest::newRow("10x10, first 4 columns")
+    BOBUIest::newRow("10x10, first 4 columns")
         << 10 << 10 << 0
         << (IntList() << 0 << 1 << 2 << 3)
         << (IntList() << 0 << 1 << 2 << 3)
         << (IntList() << 4 << 5 << 6 << 7 << 8 << 9);
 
-    QTest::newRow("10x10, last 4 columns")
+    BOBUIest::newRow("10x10, last 4 columns")
         << 10 << 10 << 0
         << (IntList() << 6 << 7 << 8 << 9)
         << (IntList() << 6 << 7 << 8 << 9)
@@ -2090,11 +2090,11 @@ void tst_QItemSelectionModel::selectedIndexes()
 }
 
 
-class QtTestTableModel: public QAbstractTableModel
+class BobUITestTableModel: public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    QtTestTableModel(int rows = 0, int columns = 0, QObject *parent = nullptr)
+    BobUITestTableModel(int rows = 0, int columns = 0, QObject *parent = nullptr)
         : QAbstractTableModel(parent)
         , row_count(rows)
         , column_count(columns)
@@ -2107,7 +2107,7 @@ public:
 
     QVariant data(const QModelIndex &idx, int role) const override
     {
-        if (role == Qt::DisplayRole || role == Qt::EditRole)
+        if (role == BobUI::DisplayRole || role == BobUI::EditRole)
             return QLatin1Char('[') + QString::number(idx.row()) + QLatin1Char(',')
                 + QString::number(idx.column()) + QLatin1Char(']');
         return QVariant();
@@ -2121,7 +2121,7 @@ public:
 
 void tst_QItemSelectionModel::layoutChanged()
 {
-    QtTestTableModel model(1,1);
+    BobUITestTableModel model(1,1);
     QItemSelectionModel selectionModel(&model);
     selectionModel.select(model.index(0,0), QItemSelectionModel::Select);
     QCOMPARE(selectionModel.selectedIndexes().size() , 1);
@@ -2137,42 +2137,42 @@ void tst_QItemSelectionModel::layoutChanged()
 
 void tst_QItemSelectionModel::merge_data()
 {
-    QTest::addColumn<QItemSelection>("init");
-    QTest::addColumn<QItemSelection>("other");
-    QTest::addColumn<QItemSelectionModel::SelectionFlag>("command");
-    QTest::addColumn<QItemSelection>("result");
+    BOBUIest::addColumn<QItemSelection>("init");
+    BOBUIest::addColumn<QItemSelection>("other");
+    BOBUIest::addColumn<QItemSelectionModel::SelectionFlag>("command");
+    BOBUIest::addColumn<QItemSelection>("result");
 
-    QTest::newRow("Simple select")
+    BOBUIest::newRow("Simple select")
         << QItemSelection()
         << QItemSelection(model->index(2, 1) , model->index(3, 4))
         << QItemSelectionModel::Select
         << QItemSelection(model->index(2, 1) , model->index(3, 4));
 
-    QTest::newRow("Simple deselect")
+    BOBUIest::newRow("Simple deselect")
         << QItemSelection(model->index(2, 1) , model->index(3, 4))
         << QItemSelection(model->index(2, 1) , model->index(3, 4))
         << QItemSelectionModel::Deselect
         << QItemSelection();
 
-    QTest::newRow("Simple Toggle deselect")
+    BOBUIest::newRow("Simple Toggle deselect")
         << QItemSelection(model->index(2, 1) , model->index(3, 4))
         << QItemSelection(model->index(2, 1) , model->index(3, 4))
         << QItemSelectionModel::Toggle
         << QItemSelection();
 
-    QTest::newRow("Simple Toggle select")
+    BOBUIest::newRow("Simple Toggle select")
         << QItemSelection()
         << QItemSelection(model->index(2, 1) , model->index(3, 4))
         << QItemSelectionModel::Toggle
         << QItemSelection(model->index(2, 1) , model->index(3, 4));
 
-    QTest::newRow("Add select")
+    BOBUIest::newRow("Add select")
         << QItemSelection(model->index(2, 1) , model->index(3, 3))
         << QItemSelection(model->index(2, 2) , model->index(3, 4))
         << QItemSelectionModel::Select
         << QItemSelection(model->index(2, 1) , model->index(3, 4));
 
-    QTest::newRow("Deselect")
+    BOBUIest::newRow("Deselect")
         << QItemSelection(model->index(2, 1) , model->index(3, 4))
         << QItemSelection(model->index(2, 2) , model->index(3, 4))
         << QItemSelectionModel::Deselect
@@ -2180,7 +2180,7 @@ void tst_QItemSelectionModel::merge_data()
 
     QItemSelection r1(model->index(2, 1) , model->index(3, 1));
     r1.select(model->index(2, 4) , model->index(3, 4));
-    QTest::newRow("Toggle")
+    BOBUIest::newRow("Toggle")
         << QItemSelection(model->index(2, 1) , model->index(3, 3))
         << QItemSelection(model->index(2, 2) , model->index(3, 4))
         << QItemSelectionModel::Toggle
@@ -2208,7 +2208,7 @@ void tst_QItemSelectionModel::merge()
 void tst_QItemSelectionModel::isRowSelected()
 {
     QStandardItemModel model(2, 2);
-    model.setData(model.index(0, 0), 0, Qt::UserRole - 1);
+    model.setData(model.index(0, 0), 0, BobUI::UserRole - 1);
     QItemSelectionModel sel(&model);
     sel.select(QItemSelection(model.index(0, 0), model.index(0, 1)), QItemSelectionModel::Select);
     QCOMPARE(sel.selectedIndexes().size(), 1);
@@ -2233,7 +2233,7 @@ void tst_QItemSelectionModel::isRowSelected()
 void tst_QItemSelectionModel::isColumnSelected()
 {
     QStandardItemModel model(2, 2);
-    model.setData(model.index(0, 0), 0, Qt::UserRole - 1);
+    model.setData(model.index(0, 0), 0, BobUI::UserRole - 1);
     QItemSelectionModel sel(&model);
     sel.select(QItemSelection(model.index(0, 0), model.index(1, 0)), QItemSelectionModel::Select);
     QCOMPARE(sel.selectedIndexes().size(), 1);
@@ -2310,7 +2310,7 @@ void tst_QItemSelectionModel::childrenDeselectionSignal()
     QVERIFY(selectionModel.selection().contains(sel2));
 }
 
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
 void tst_QItemSelectionModel::layoutChangedWithAllSelected1()
 {
     QStringListModel model( QStringList() << "foo" << "bar" << "foo2");
@@ -2342,7 +2342,7 @@ void tst_QItemSelectionModel::layoutChangedWithAllSelected1()
 }
 
 // Same as layoutChangedWithAllSelected1, but with a slightly bigger model.
-// This test is a regression test for QTBUG-5671.
+// This test is a regression test for BOBUIBUG-5671.
 void tst_QItemSelectionModel::layoutChangedWithAllSelected2()
 {
     struct MyFilterModel : public QSortFilterProxyModel
@@ -2364,7 +2364,7 @@ void tst_QItemSelectionModel::layoutChangedWithAllSelected2()
 
     // Populate the tree view.
     for (unsigned int i = 0; i < cNumCols; i++)
-        model.setHeaderData( i, Qt::Horizontal, QLatin1String("Column ") + QString::number(i));
+        model.setHeaderData( i, BobUI::Horizontal, QLatin1String("Column ") + QString::number(i));
 
     for (unsigned int r = 0; r < cNumRows; r++) {
         const QString prefix = QLatin1String("r:") + QString::number(r) + QLatin1String("/c:");
@@ -2391,7 +2391,7 @@ void tst_QItemSelectionModel::layoutChangedWithAllSelected2()
 }
 #endif
 
-// This test is a regression test for QTBUG-2804.
+// This test is a regression test for BOBUIBUG-2804.
 void tst_QItemSelectionModel::layoutChangedTreeSelection()
 {
     QStandardItemModel model;
@@ -2490,9 +2490,9 @@ void tst_QItemSelectionModel::bindableModel()
     std::unique_ptr<QStringListModel> changedModel(
             new QStringListModel(QStringList { "Other", "random", "content" }));
 
-    QTestPrivate::testReadWritePropertyBasics<QItemSelectionModel, QAbstractItemModel *>(
+    BOBUIestPrivate::testReadWritePropertyBasics<QItemSelectionModel, QAbstractItemModel *>(
             sel, firstModel.get(), changedModel.get(), "model");
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QItemSelectionModel::model");
         return;
     }
@@ -2684,49 +2684,49 @@ void tst_QItemSelectionModel::testClearCurrentIndex()
     QCOMPARE(currentIndexSpy.size(), 2);
 }
 
-void tst_QItemSelectionModel::QTBUG48402_data()
+void tst_QItemSelectionModel::BOBUIBUG48402_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
 
-    QTest::addColumn<int>("selectTop");
-    QTest::addColumn<int>("selectLeft");
-    QTest::addColumn<int>("selectBottom");
-    QTest::addColumn<int>("selectRight");
+    BOBUIest::addColumn<int>("selectTop");
+    BOBUIest::addColumn<int>("selectLeft");
+    BOBUIest::addColumn<int>("selectBottom");
+    BOBUIest::addColumn<int>("selectRight");
 
-    QTest::addColumn<int>("removeTop");
-    QTest::addColumn<int>("removeBottom");
+    BOBUIest::addColumn<int>("removeTop");
+    BOBUIest::addColumn<int>("removeBottom");
 
-    QTest::addColumn<int>("deselectTop");
-    QTest::addColumn<int>("deselectLeft");
-    QTest::addColumn<int>("deselectBottom");
-    QTest::addColumn<int>("deselectRight");
+    BOBUIest::addColumn<int>("deselectTop");
+    BOBUIest::addColumn<int>("deselectLeft");
+    BOBUIest::addColumn<int>("deselectBottom");
+    BOBUIest::addColumn<int>("deselectRight");
 
-    QTest::newRow("4x4 top intersection")
+    BOBUIest::newRow("4x4 top intersection")
         << 4 << 4
         << 0 << 2 << 1 << 3
         << 1 << 1
         << 1 << 2 << 1 << 3;
 
-    QTest::newRow("4x4 bottom intersection")
+    BOBUIest::newRow("4x4 bottom intersection")
         << 4 << 4
         << 0 << 2 << 1 << 3
         << 0 << 0
         << 0 << 2 << 0 << 3;
 
-    QTest::newRow("4x4 middle intersection")
+    BOBUIest::newRow("4x4 middle intersection")
         << 4 << 4
         << 0 << 2 << 2 << 3
         << 1 << 1
         << 1 << 2 << 1 << 3;
 
-    QTest::newRow("4x4 full inclusion")
+    BOBUIest::newRow("4x4 full inclusion")
         << 4 << 4
         << 0 << 2 << 1 << 3
         << 0 << 1
         << 0 << 2 << 1 << 3;
 }
-class QTBUG48402_helper : public QObject
+class BOBUIBUG48402_helper : public QObject
 {
     Q_OBJECT
 public:
@@ -2740,7 +2740,7 @@ public slots:
     }
 };
 
-void tst_QItemSelectionModel::QTBUG48402()
+void tst_QItemSelectionModel::BOBUIBUG48402()
 {
     QFETCH(int, rows);
     QFETCH(int, columns);
@@ -2764,8 +2764,8 @@ void tst_QItemSelectionModel::QTBUG48402()
     QModelIndex dbr = model.index(deselectBottom, deselectRight);
 
     selections.select(QItemSelection(stl, sbr), QItemSelectionModel::ClearAndSelect);
-    QTBUG48402_helper helper;
-    helper.connect(&selections, &QItemSelectionModel::selectionChanged, &helper, &QTBUG48402_helper::changed);
+    BOBUIBUG48402_helper helper;
+    helper.connect(&selections, &QItemSelectionModel::selectionChanged, &helper, &BOBUIBUG48402_helper::changed);
     QVERIFY(selections.isSelected(stl));
     QVERIFY(selections.isSelected(sbr));
     QVERIFY(selections.hasSelection());
@@ -2773,27 +2773,27 @@ void tst_QItemSelectionModel::QTBUG48402()
     model.removeRows(removeTop, removeBottom - removeTop + 1);
 
     QCOMPARE(QItemSelectionRange(helper.tl, helper.br), QItemSelectionRange(dtl, dbr));
-    QT_TEST_EQUALITY_OPS(QItemSelectionRange(helper.tl, helper.br), QItemSelectionRange(dtl, dbr), true);
-    QT_TEST_EQUALITY_OPS(QItemSelectionRange(), QItemSelectionRange(), true);
-    QT_TEST_EQUALITY_OPS(QItemSelectionRange(helper.tl, helper.br), QItemSelectionRange(), false);
+    BOBUI_TEST_EQUALITY_OPS(QItemSelectionRange(helper.tl, helper.br), QItemSelectionRange(dtl, dbr), true);
+    BOBUI_TEST_EQUALITY_OPS(QItemSelectionRange(), QItemSelectionRange(), true);
+    BOBUI_TEST_EQUALITY_OPS(QItemSelectionRange(helper.tl, helper.br), QItemSelectionRange(), false);
 }
 
-void tst_QItemSelectionModel::QTBUG58851_data()
+void tst_QItemSelectionModel::BOBUIBUG58851_data()
 {
     using IntPair = std::pair<int, int>;
     using IntPairList = QList<IntPair>;
     using IntPairPair = std::pair<IntPair, IntPair>;
     using IntPairPairList = QList<IntPairPair>;
 
-    QTest::addColumn<IntPairPairList>("rangesToSelect");
-    QTest::addColumn<IntPairList>("expectedSelectedIndexesPairs");
-    QTest::newRow("Single index in > 0 column")
+    BOBUIest::addColumn<IntPairPairList>("rangesToSelect");
+    BOBUIest::addColumn<IntPairList>("expectedSelectedIndexesPairs");
+    BOBUIest::newRow("Single index in > 0 column")
             << (IntPairPairList() << IntPairPair(IntPair(0, 1), IntPair(0, 1)))
             << (IntPairList() << IntPair(0, 1));
-    QTest::newRow("Rectangle in > 0 column")
+    BOBUIest::newRow("Rectangle in > 0 column")
             << (IntPairPairList() << IntPairPair(IntPair(0, 1), IntPair(1, 2)))
             << (IntPairList() << IntPair(0, 1) << IntPair(0, 2) << IntPair(1, 1) << IntPair(1, 2));
-    QTest::newRow("Diagonal in > 0 column")
+    BOBUIest::newRow("Diagonal in > 0 column")
             << (IntPairPairList()
                 << IntPairPair(IntPair(0, 1), IntPair(0, 1))
                 << IntPairPair(IntPair(1, 2), IntPair(1, 2))
@@ -2804,8 +2804,8 @@ void tst_QItemSelectionModel::QTBUG58851_data()
                 << IntPair(2, 3));
 }
 
-#if QT_CONFIG(proxymodel)
-void tst_QItemSelectionModel::QTBUG58851()
+#if BOBUI_CONFIG(proxymodel)
+void tst_QItemSelectionModel::BOBUIBUG58851()
 {
     using IntPair = std::pair<int, int>;
     using IntPairList = QList<IntPair>;
@@ -2825,7 +2825,7 @@ void tst_QItemSelectionModel::QTBUG58851()
 
     QSortFilterProxyModel proxy;
     proxy.setSourceModel(&model);
-    proxy.setSortRole(Qt::DisplayRole);
+    proxy.setSortRole(BobUI::DisplayRole);
 
     std::vector<QPersistentModelIndex> expectedSelectedIndexes;
     for (const IntPair &index : expectedSelectedIndexesPairs)
@@ -2843,7 +2843,7 @@ void tst_QItemSelectionModel::QTBUG58851()
     for (const QPersistentModelIndex &i : expectedSelectedIndexes) {
         QVERIFY(selections.isSelected(i));
     }
-    proxy.sort(1, Qt::DescendingOrder);
+    proxy.sort(1, BobUI::DescendingOrder);
     QCOMPARE(selections.selectedIndexes().size(), (int)expectedSelectedIndexes.size());
     for (const QPersistentModelIndex &i : expectedSelectedIndexes) {
         QVERIFY(selections.isSelected(i));
@@ -2851,47 +2851,47 @@ void tst_QItemSelectionModel::QTBUG58851()
 }
 #endif
 
-void tst_QItemSelectionModel::QTBUG18001_data()
+void tst_QItemSelectionModel::BOBUIBUG18001_data()
 {
     using IntPair = std::pair<int, int>;
     using IntPairList = QList<IntPair>;
     using IntList = QList<int>;
     using BoolList = QList<bool>;
 
-    QTest::addColumn<IntPairList>("indexesToSelect");
-    QTest::addColumn<IntList>("selectionCommands");
-    QTest::addColumn<BoolList>("expectedSelectedRows");
-    QTest::addColumn<BoolList>("expectedSelectedColums");
+    BOBUIest::addColumn<IntPairList>("indexesToSelect");
+    BOBUIest::addColumn<IntList>("selectionCommands");
+    BOBUIest::addColumn<BoolList>("expectedSelectedRows");
+    BOBUIest::addColumn<BoolList>("expectedSelectedColums");
 
     int colSelect = QItemSelectionModel::Select | QItemSelectionModel::Columns;
     int rowSelect = QItemSelectionModel::Select | QItemSelectionModel::Rows;
 
-    QTest::newRow("Select column 1")
+    BOBUIest::newRow("Select column 1")
           << IntPairList { {0, 1} }
           << IntList{ colSelect }
           << BoolList{ false, false, false, false, false }
           << BoolList{ false, true, false, false, false };
 
-    QTest::newRow("Select row 1")
+    BOBUIest::newRow("Select row 1")
           << IntPairList { {1, 0} }
           << IntList{ rowSelect }
           << BoolList{ false, true, false, false, false }
           << BoolList{ false, false, false, false, false };
 
-    QTest::newRow("Select column 1+2, row 1+2")
+    BOBUIest::newRow("Select column 1+2, row 1+2")
           << IntPairList { {0, 1}, {0, 2}, {1, 0}, {2, 0} }
           << IntList{ colSelect, colSelect, rowSelect, rowSelect }
           << BoolList{ false, true, true, false, false }
           << BoolList{ false, true, true, false, false };
 
-    QTest::newRow("Select row 1+2, col 1+2")
+    BOBUIest::newRow("Select row 1+2, col 1+2")
           << IntPairList { {1, 0}, {2, 0}, {0, 1}, {0, 2} }
           << IntList{ rowSelect, rowSelect, colSelect, colSelect }
           << BoolList{ false, true, true, false, false }
           << BoolList{ false, true, true, false, false };
 }
 
-void tst_QItemSelectionModel::QTBUG18001()
+void tst_QItemSelectionModel::BOBUIBUG18001()
 {
     using IntPair = std::pair<int, int>;
     using IntPairList = QList<IntPair>;
@@ -2944,7 +2944,7 @@ void tst_QItemSelectionModel::QTBUG18001()
 
 }
 
-void tst_QItemSelectionModel::QTBUG93305()
+void tst_QItemSelectionModel::BOBUIBUG93305()
 {
     // make sure the model is sane (5x5)
     QCOMPARE(model->rowCount(QModelIndex()), 5);
@@ -2985,17 +2985,17 @@ void tst_QItemSelectionModel::QTBUG93305()
     QCOMPARE(spy.size(), 4);
 }
 
-static void (*oldMessageHandler)(QtMsgType, const QMessageLogContext&, const QString&);
+static void (*oldMessageHandler)(BobUIMsgType, const QMessageLogContext&, const QString&);
 static bool signalError = false;
 
 // detect disconnect warning:
-// qt.core.qobject.connect: QObject::disconnect: No such signal
-void tst_QItemSelectionModel::messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+// bobui.core.qobject.connect: QObject::disconnect: No such signal
+void tst_QItemSelectionModel::messageHandler(BobUIMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     Q_ASSERT(oldMessageHandler);
 
-    if (type == QtWarningMsg
-            && QString(context.category) == "qt.core.qobject.connect"
+    if (type == BobUIWarningMsg
+            && QString(context.category) == "bobui.core.qobject.connect"
             && msg.contains("No such")) {
         signalError = true;
     }
@@ -3011,7 +3011,7 @@ void tst_QItemSelectionModel::testSignalsDisconnection()
     selection->setModel(newModel);
     QSignalSpy spy(newModel, &QObject::destroyed);
     delete newModel;
-    QTRY_COMPARE(spy.count(), 1);
+    BOBUIRY_COMPARE(spy.count(), 1);
     qDebug() << spy;
     selection->setModel(nullptr);
     QVERIFY(!signalError);
@@ -3027,11 +3027,11 @@ void tst_QItemSelectionModel::destroyModel()
     selectionModel->setCurrentIndex(itemModel->index(1, 0), QItemSelectionModel::Select);
     QVERIFY(selectionModel->currentIndex().isValid());
 
-    QTest::failOnWarning();
+    BOBUIest::failOnWarning();
     itemModel.reset();
     QVERIFY(!selectionModel->currentIndex().isValid());
     QVERIFY(selectionModel->selection().isEmpty());
 }
 
-QTEST_MAIN(tst_QItemSelectionModel)
+BOBUIEST_MAIN(tst_QItemSelectionModel)
 #include "tst_qitemselectionmodel.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmscreen.h"
 
@@ -13,18 +13,18 @@
 #include <emscripten/val.h>
 
 #include <qpa/qwindowsysteminterface.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIGui/qguiapplication.h>
 #include <private/qhighdpiscaling_p.h>
 
 #include <tuple>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace emscripten;
 
 const char *QWasmScreen::m_canvasResizeObserverCallbackContextPropertyName =
-        "data-qtCanvasResizeObserverCallbackContext";
+        "data-bobuiCanvasResizeObserverCallbackContext";
 
 QWasmScreen::QWasmScreen(const emscripten::val &containerOrCanvas)
     : m_container(containerOrCanvas),
@@ -38,16 +38,16 @@ QWasmScreen::QWasmScreen(const emscripten::val &containerOrCanvas)
     // This is required due to the attachShadow() call below; there is no corresponding
     // "detachShadow()" API to return the container to its previous state.
     m_intermediateContainer = document.call<emscripten::val>("createElement", emscripten::val("div"));
-    m_intermediateContainer.set("id", std::string("qt-shadow-container"));
+    m_intermediateContainer.set("id", std::string("bobui-shadow-container"));
     emscripten::val intermediateContainerStyle = m_intermediateContainer["style"];
     intermediateContainerStyle.set("width", std::string("100%"));
     intermediateContainerStyle.set("height", std::string("100%"));
     m_container.call<void>("appendChild", m_intermediateContainer);
     // Each screen is represented by a div container. All of the windows exist therein as
-    // its children. Qt versions < 6.5 used to represent screens as canvas elements; this
+    // its children. BobUI versions < 6.5 used to represent screens as canvas elements; this
     // is no longer supported.
     if (m_container["tagName"].call<std::string>("toLowerCase") == "canvas")
-        qFatal() << "Qt does not support using a canvas element as the container element. Use a div element instead";
+        qFatal() << "BobUI does not support using a canvas element as the container element. Use a div element instead";
 
     auto shadowOptions = emscripten::val::object();
     shadowOptions.set("mode", "open");
@@ -59,11 +59,11 @@ QWasmScreen::QWasmScreen(const emscripten::val &containerOrCanvas)
 
     shadow.call<void>("appendChild", m_shadowContainer);
 
-    m_shadowContainer.set("id", std::string("qt-screen-") + std::to_string(uintptr_t(this)));
+    m_shadowContainer.set("id", std::string("bobui-screen-") + std::to_string(uintptr_t(this)));
 
-    m_shadowContainer["classList"].call<void>("add", std::string("qt-screen"));
+    m_shadowContainer["classList"].call<void>("add", std::string("bobui-screen"));
 
-    // Disable the default context menu; Qt applications typically
+    // Disable the default context menu; BobUI applications typically
     // provide custom right-click behavior.
     m_onContextMenu = std::make_unique<qstdweb::EventCallback>(
             m_shadowContainer, "contextmenu",
@@ -156,7 +156,7 @@ QImage::Format QWasmScreen::format() const
 
 QDpi QWasmScreen::logicalDpi() const
 {
-    emscripten::val dpi = emscripten::val::module_property("qtFontDpi");
+    emscripten::val dpi = emscripten::val::module_property("bobuiFontDpi");
     if (!dpi.isUndefined()) {
         qreal dpiValue = dpi.as<qreal>();
         return QDpi(dpiValue, dpiValue);
@@ -250,11 +250,11 @@ void QWasmScreen::onSubtreeChanged(QWasmWindowTreeNodeChangeType changeType,
     Q_UNUSED(parent);
 
     QWindow *window = child->window();
-    const bool isMaxFull = (window->windowState() & Qt::WindowMaximized) ||
-                           (window->windowState() & Qt::WindowFullScreen);
+    const bool isMaxFull = (window->windowState() & BobUI::WindowMaximized) ||
+                           (window->windowState() & BobUI::WindowFullScreen);
     if (changeType == QWasmWindowTreeNodeChangeType::NodeInsertion && parent == this
         && childStack().size() == 1 && isMaxFull) {
-        window->setFlag(Qt::WindowStaysOnBottomHint);
+        window->setFlag(BobUI::WindowStaysOnBottomHint);
     }
     QWasmWindowTreeNode::onSubtreeChanged(changeType, parent, child);
     m_compositor->onWindowTreeChanged(changeType, child);
@@ -295,9 +295,9 @@ void QWasmScreen::canvasResizeObserverCallback(emscripten::val entries, emscript
     screen->updateQScreenSize();
 }
 
-EMSCRIPTEN_BINDINGS(qtCanvasResizeObserverCallback)
+EMSCRIPTEN_BINDINGS(bobuiCanvasResizeObserverCallback)
 {
-    emscripten::function("qtCanvasResizeObserverCallback",
+    emscripten::function("bobuiCanvasResizeObserverCallback",
                          &QWasmScreen::canvasResizeObserverCallback);
 }
 
@@ -307,7 +307,7 @@ void QWasmScreen::installCanvasResizeObserver()
     if (ResizeObserver == emscripten::val::undefined())
         return; // ResizeObserver API is not available
     emscripten::val resizeObserver =
-            ResizeObserver.new_(emscripten::val::module_property("qtCanvasResizeObserverCallback"));
+            ResizeObserver.new_(emscripten::val::module_property("bobuiCanvasResizeObserverCallback"));
     if (resizeObserver == emscripten::val::undefined())
         return; // Something went horribly wrong
 
@@ -351,4 +351,4 @@ QList<QWasmWindow *> QWasmScreen::allWindows() const
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

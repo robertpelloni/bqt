@@ -1,12 +1,12 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2023 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
-#include <QtGui/QRasterWindow>
-#include <QtGui/qpa/qplatformnativeinterface.h>
-#include <QtWaylandClient/private/wayland-wayland-client-protocol.h>
-#include <QtWaylandClient/private/qwaylandwindow_p.h>
+#include <BobUIGui/QRasterWindow>
+#include <BobUIGui/qpa/qplatformnativeinterface.h>
+#include <BobUIWaylandClient/private/wayland-wayland-client-protocol.h>
+#include <BobUIWaylandClient/private/qwaylandwindow_p.h>
 
 using namespace MockCompositor;
 
@@ -15,7 +15,7 @@ class tst_xdgshell : public QObject, private DefaultCompositor
     Q_OBJECT
 private slots:
     void initTestCase();
-    void cleanup() { QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
     void showMinimized();
     void basicConfigure();
     void configureSize();
@@ -43,7 +43,7 @@ private slots:
 
 void tst_xdgshell::initTestCase()
 {
-    qputenv("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1");
+    qputenv("BOBUI_WAYLAND_DISABLE_WINDOWDECORATION", "1");
 }
 
 void tst_xdgshell::showMinimized()
@@ -53,7 +53,7 @@ void tst_xdgshell::showMinimized()
     // between a window preview and an unminimized window.
     QWindow window;
     window.showMinimized();
-    QTRY_COMPARE(window.windowStates(), Qt::WindowNoState); // rejected by handleWindowStateChanged
+    BOBUIRY_COMPARE(window.windowStates(), BobUI::WindowNoState); // rejected by handleWindowStateChanged
 
     // Make sure the window on the compositor side is/was created here, and not after the test
     // finishes, as that may mess up for later tests.
@@ -70,16 +70,16 @@ void tst_xdgshell::basicConfigure()
 
     QSignalSpy configureSpy(exec([&] { return xdgSurface(); }), &XdgSurface::configureCommitted);
 
-    QTRY_VERIFY(window.isVisible());
+    BOBUIRY_VERIFY(window.isVisible());
     // The window should not be exposed before the first xdg_surface configure event
-    QTRY_VERIFY(!window.isExposed());
+    BOBUIRY_VERIFY(!window.isExposed());
 
     exec([&] {
         xdgToplevel()->sendConfigure({0, 0}, {}); // Let the window decide the size
     });
 
     // Nothing should happen before the *xdg_surface* configure
-    QTRY_VERIFY(!window.isExposed()); //Window should not be exposed before the first configure event
+    BOBUIRY_VERIFY(!window.isExposed()); //Window should not be exposed before the first configure event
     QVERIFY(configureSpy.isEmpty());
 
     const uint serial = exec([&] { return nextSerial(); });
@@ -89,10 +89,10 @@ void tst_xdgshell::basicConfigure()
     });
 
     // Finally, we're exposed
-    QTRY_VERIFY(window.isExposed());
+    BOBUIRY_VERIFY(window.isExposed());
 
     // The client is now going to ack the configure
-    QTRY_COMPARE(configureSpy.size(), 1);
+    BOBUIRY_COMPARE(configureSpy.size(), 1);
     QCOMPARE(configureSpy.takeFirst().at(0).toUInt(), serial);
 
     // And attach a buffer
@@ -120,7 +120,7 @@ void tst_xdgshell::configureSize()
         pendingSerial = xdgSurface()->m_pendingConfigureSerials.last();
     });
 
-    QTRY_COMPARE(configureSpy.size(), 1);
+    BOBUIRY_COMPARE(configureSpy.size(), 1);
     QCOMPARE(configureSpy.last()[0].toInt(), pendingSerial);
 
     exec([&] {
@@ -136,7 +136,7 @@ void tst_xdgshell::configureSize()
         pendingSerial = xdgSurface()->m_pendingConfigureSerials.last();
     });
 
-    QTRY_COMPARE(configureSpy.size(), 2);
+    BOBUIRY_COMPARE(configureSpy.size(), 2);
     QCOMPARE(configureSpy.last()[0].toInt(), pendingSerial);
 
     exec([&] {
@@ -148,7 +148,7 @@ void tst_xdgshell::configureSize()
 
 void tst_xdgshell::configureStates()
 {
-    QVERIFY(qputenv("QT_WAYLAND_FRAME_CALLBACK_TIMEOUT", "0"));
+    QVERIFY(qputenv("BOBUI_WAYLAND_FRAME_CALLBACK_TIMEOUT", "0"));
     QRasterWindow window;
     window.resize(64, 48);
     window.show();
@@ -160,17 +160,17 @@ void tst_xdgshell::configureStates()
     });
     QCOMPOSITOR_TRY_COMPARE(xdgSurface()->m_committedConfigureSerial, windowedSerial);
     QCOMPARE(window.visibility(), QWindow::Windowed);
-    QCOMPARE(window.windowStates(), Qt::WindowNoState);
+    QCOMPARE(window.windowStates(), BobUI::WindowNoState);
     QCOMPARE(window.frameGeometry().size(), windowedSize);
     // Toplevel windows don't know their position on xdg-shell
 //    QCOMPARE(window.frameGeometry().topLeft(), QPoint()); // TODO: this doesn't currently work when window decorations are enabled
 
     // window.windowstate() is driven by keyboard focus, however for decorations we want to follow
-    // XDGShell this is internal to QtWayland so it is queried directly
-    auto waylandWindow = static_cast<QtWaylandClient::QWaylandWindow *>(window.handle());
+    // XDGShell this is internal to BobUIWayland so it is queried directly
+    auto waylandWindow = static_cast<BobUIWaylandClient::QWaylandWindow *>(window.handle());
     Q_ASSERT(waylandWindow);
-    QTRY_VERIFY(waylandWindow->windowStates().testFlag(
-            Qt::WindowActive)); // Just make sure it eventually get's set correctly
+    BOBUIRY_VERIFY(waylandWindow->windowStates().testFlag(
+            BobUI::WindowActive)); // Just make sure it eventually get's set correctly
 
     const QSize screenSize(640, 480);
     const uint maximizedSerial = exec([&] {
@@ -178,7 +178,7 @@ void tst_xdgshell::configureStates()
     });
     QCOMPOSITOR_TRY_COMPARE(xdgSurface()->m_committedConfigureSerial, maximizedSerial);
     QCOMPARE(window.visibility(), QWindow::Maximized);
-    QCOMPARE(window.windowStates(), Qt::WindowMaximized);
+    QCOMPARE(window.windowStates(), BobUI::WindowMaximized);
     QCOMPARE(window.frameGeometry().size(), screenSize);
 //    QCOMPARE(window.frameGeometry().topLeft(), QPoint()); // TODO: this doesn't currently work when window decorations are enabled
 
@@ -187,7 +187,7 @@ void tst_xdgshell::configureStates()
     });
     QCOMPOSITOR_TRY_COMPARE(xdgSurface()->m_committedConfigureSerial, fullscreenSerial);
     QCOMPARE(window.visibility(), QWindow::FullScreen);
-    QCOMPARE(window.windowStates(), Qt::WindowFullScreen);
+    QCOMPARE(window.windowStates(), BobUI::WindowFullScreen);
     QCOMPARE(window.frameGeometry().size(), screenSize);
 //    QCOMPARE(window.frameGeometry().topLeft(), QPoint()); // TODO: this doesn't currently work when window decorations are enabled
 
@@ -197,10 +197,10 @@ void tst_xdgshell::configureStates()
     });
     QCOMPOSITOR_TRY_COMPARE(xdgSurface()->m_committedConfigureSerial, restoreSerial);
     QCOMPARE(window.visibility(), QWindow::Windowed);
-    QCOMPARE(window.windowStates(), Qt::WindowNoState);
+    QCOMPARE(window.windowStates(), BobUI::WindowNoState);
     QCOMPARE(window.frameGeometry().size(), windowedSize);
 //    QCOMPARE(window.frameGeometry().topLeft(), QPoint()); // TODO: this doesn't currently work when window decorations are enabled
-    QVERIFY(qunsetenv("QT_WAYLAND_FRAME_CALLBACK_TIMEOUT"));
+    QVERIFY(qunsetenv("BOBUI_WAYLAND_FRAME_CALLBACK_TIMEOUT"));
 }
 
 void tst_xdgshell::configureBounds()
@@ -236,7 +236,7 @@ void tst_xdgshell::popup()
             QRasterWindow::mousePressEvent(event);
             m_popup.reset(new QRasterWindow);
             m_popup->setTransientParent(this);
-            m_popup->setFlags(Qt::Popup);
+            m_popup->setFlags(BobUI::Popup);
             m_popup->resize(100, 100);
             m_popup->show();
         }
@@ -249,7 +249,7 @@ void tst_xdgshell::popup()
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
     QSignalSpy toplevelConfigureSpy(exec([&] { return xdgSurface(); }), &XdgSurface::configureCommitted);
     exec([&] { xdgToplevel()->sendCompleteConfigure(); });
-    QTRY_COMPARE(toplevelConfigureSpy.size(), 1);
+    BOBUIRY_COMPARE(toplevelConfigureSpy.size(), 1);
 
     uint clickSerial = exec([&] {
         auto *surface = xdgToplevel()->surface();
@@ -263,7 +263,7 @@ void tst_xdgshell::popup()
         return serial;
     });
 
-    QTRY_VERIFY(window.m_popup);
+    BOBUIRY_VERIFY(window.m_popup);
     QCOMPOSITOR_TRY_VERIFY(xdgPopup());
     QSignalSpy popupConfigureSpy(exec([&] { return xdgPopup()->m_xdgSurface; }), &XdgSurface::configureCommitted);
     QCOMPOSITOR_TRY_VERIFY(xdgPopup()->m_grabbed);
@@ -276,7 +276,7 @@ void tst_xdgshell::popup()
     exec([&] { xdgPopup()->sendConfigure(rect1); });
 
     // Nothing should happen before the *xdg_surface* configure
-    QTRY_VERIFY(!popup->isExposed()); // Popup shouldn't be exposed before the first configure event
+    BOBUIRY_VERIFY(!popup->isExposed()); // Popup shouldn't be exposed before the first configure event
     QVERIFY(popupConfigureSpy.isEmpty());
 
     const uint configureSerial = exec([&] {
@@ -284,10 +284,10 @@ void tst_xdgshell::popup()
     });
 
     // Finally, we're exposed
-    QTRY_VERIFY(popup->isExposed());
+    BOBUIRY_VERIFY(popup->isExposed());
 
     // The client is now going to ack the configure
-    QTRY_COMPARE(popupConfigureSpy.size(), 1);
+    BOBUIRY_COMPARE(popupConfigureSpy.size(), 1);
     QCOMPARE(popupConfigureSpy.takeFirst().at(0).toUInt(), configureSerial);
     QCOMPARE(popup->geometry(), rect1);
 
@@ -298,7 +298,7 @@ void tst_xdgshell::popup()
         return xdgPopup()->m_xdgSurface->sendConfigure();
     });
 
-    QTRY_COMPARE(popupConfigureSpy.size(), 1);
+    BOBUIRY_COMPARE(popupConfigureSpy.size(), 1);
     QCOMPARE(popupConfigureSpy.takeFirst().at(0).toUInt(), configureSerial2);
     QCOMPARE(popup->geometry(), rect2);
 
@@ -316,7 +316,7 @@ void tst_xdgshell::tooltipOnPopup()
     public:
         explicit Popup(QWindow *parent) {
             setTransientParent(parent);
-            setFlags(Qt::Popup);
+            setFlags(BobUI::Popup);
             resize(100, 100);
             show();
         }
@@ -324,7 +324,7 @@ void tst_xdgshell::tooltipOnPopup()
             QRasterWindow::mousePressEvent(event);
             m_tooltip = new QRasterWindow;
             m_tooltip->setTransientParent(this);
-            m_tooltip->setFlags(Qt::ToolTip);
+            m_tooltip->setFlags(BobUI::ToolTip);
             m_tooltip->resize(100, 100);
             m_tooltip->show();
         }
@@ -397,7 +397,7 @@ void tst_xdgshell::tooltipAndSiblingPopup()
     public:
         explicit ToolTip(QWindow *parent) {
             setTransientParent(parent);
-            setFlags(Qt::ToolTip);
+            setFlags(BobUI::ToolTip);
             resize(100, 100);
             show();
         }
@@ -405,7 +405,7 @@ void tst_xdgshell::tooltipAndSiblingPopup()
             QRasterWindow::mousePressEvent(event);
             m_popup = new QRasterWindow;
             m_popup->setTransientParent(transientParent());
-            m_popup->setFlags(Qt::Popup);
+            m_popup->setFlags(BobUI::Popup);
             m_popup->resize(100, 100);
             m_popup->show();
         }
@@ -497,7 +497,7 @@ void tst_xdgshell::windowTypeChanges()
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel(1)->m_xdgSurface->m_committedConfigureSerial);
 
     // now change it to a popup
-    window.setFlag(Qt::ToolTip, true);
+    window.setFlag(BobUI::ToolTip, true);
     QCOMPOSITOR_TRY_VERIFY(!xdgToplevel(1));
     QCOMPOSITOR_TRY_VERIFY(xdgPopup());
     exec([&] { xdgPopup()->sendCompleteConfigure(QRect(100, 100, 100, 100)); });
@@ -507,21 +507,21 @@ void tst_xdgshell::windowTypeChanges()
     QCOMPOSITOR_TRY_VERIFY(!xdgPopup());
 
     // change to a toplevel again this time whilst hidden
-    window.setFlag(Qt::ToolTip, false);
+    window.setFlag(BobUI::ToolTip, false);
     window.show();
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel(1));
     exec([&] { xdgToplevel(1)->sendCompleteConfigure(); });
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel(1)->m_xdgSurface->m_committedConfigureSerial);
 }
 
-// QTBUG-65680
+// BOBUIBUG-65680
 void tst_xdgshell::switchPopups()
 {
     class Popup : public QRasterWindow {
     public:
         explicit Popup(QWindow *parent) {
             setTransientParent(parent);
-            setFlags(Qt::Popup);
+            setFlags(BobUI::Popup);
             resize(10, 10);
             show();
         }
@@ -613,7 +613,7 @@ void tst_xdgshell::hidePopupParent()
             QRasterWindow::mousePressEvent(event);
             m_popup.reset(new QRasterWindow);
             m_popup->setTransientParent(this);
-            m_popup->setFlags(Qt::Popup);
+            m_popup->setFlags(BobUI::Popup);
             m_popup->resize(100, 100);
             m_popup->show();
         }
@@ -652,7 +652,7 @@ void tst_xdgshell::popupsWithoutParent()
 {
     QRasterWindow popup;
     QSignalSpy popupDoneSpy(&popup, &QWindow::visibilityChanged);
-    popup.setFlags(Qt::Popup);
+    popup.setFlags(BobUI::Popup);
     popup.resize(100, 100);
     popup.show();
     QVERIFY(popup.isVisible());
@@ -677,7 +677,7 @@ void tst_xdgshell::popupsWithoutParent()
         keyboard()->sendKey(client(), 72, Keyboard::key_state_pressed); // related with native scan code
         keyboard()->sendKey(client(), 72, Keyboard::key_state_released); // related with native scan code
     });
-    QTRY_COMPARE(qGuiApp->focusWindow(), &window);
+    BOBUIRY_COMPARE(qGuiApp->focusWindow(), &window);
 
     // now re-show our popup, it should be able to guess a transient this time
     // and correctly show as a popup
@@ -705,36 +705,36 @@ void tst_xdgshell::pongs()
         wl_resource *resource = base->resourceMap().first()->handle;
         base->send_ping(resource, serial);
     });
-    QTRY_COMPARE(pongSpy.size(), 1);
+    BOBUIRY_COMPARE(pongSpy.size(), 1);
     QCOMPARE(pongSpy.first().at(0).toUInt(), serial);
 }
 
 void tst_xdgshell::minMaxSize_data()
 {
-    QTest::addColumn<QSize>("initialMinSize");
-    QTest::addColumn<QSize>("initialMaxSize");
-    QTest::addColumn<QSize>("nextMinSize");
-    QTest::addColumn<QSize>("nextMaxSize");
-    QTest::addColumn<QSize>("expectedInitialMinSize");
-    QTest::addColumn<QSize>("expectedInitialMaxSize");
-    QTest::addColumn<QSize>("expectedNextMinSize");
-    QTest::addColumn<QSize>("expectedNextMaxSize");
+    BOBUIest::addColumn<QSize>("initialMinSize");
+    BOBUIest::addColumn<QSize>("initialMaxSize");
+    BOBUIest::addColumn<QSize>("nextMinSize");
+    BOBUIest::addColumn<QSize>("nextMaxSize");
+    BOBUIest::addColumn<QSize>("expectedInitialMinSize");
+    BOBUIest::addColumn<QSize>("expectedInitialMaxSize");
+    BOBUIest::addColumn<QSize>("expectedNextMinSize");
+    BOBUIest::addColumn<QSize>("expectedNextMaxSize");
 
-    QTest::newRow("onlyMinSize") << QSize(50, 60) << QSize() << QSize(500, 600) << QSize()
+    BOBUIest::newRow("onlyMinSize") << QSize(50, 60) << QSize() << QSize(500, 600) << QSize()
                                  << QSize(50, 60) << QSize(0, 0) << QSize(500, 600) << QSize(0, 0);
 
-    QTest::newRow("onlyMaxSize") << QSize() << QSize(70, 80) << QSize() << QSize(700, 800)
+    BOBUIest::newRow("onlyMaxSize") << QSize() << QSize(70, 80) << QSize() << QSize(700, 800)
                                  << QSize(0,0 ) << QSize(70, 80) << QSize(0, 0) << QSize(700, 800);
 
-    QTest::newRow("maxIsSentAsZero") << QSize() << QSize(QWINDOWSIZE_MAX, QWINDOWSIZE_MAX) << QSize() << QSize()
+    BOBUIest::newRow("maxIsSentAsZero") << QSize() << QSize(QWINDOWSIZE_MAX, QWINDOWSIZE_MAX) << QSize() << QSize()
                                  << QSize(0,0 ) << QSize(0, 0) << QSize(0, 0) << QSize(0, 0);
 
 
-    QTest::newRow("fullHints") << QSize(50, 60) << QSize(700, 800) << QSize(500, 600) << QSize(710, 810)
+    BOBUIest::newRow("fullHints") << QSize(50, 60) << QSize(700, 800) << QSize(500, 600) << QSize(710, 810)
                                << QSize(50, 60) << QSize(700, 800) << QSize(500, 600) << QSize(710, 810);
 
     // setting a minimum above the maximum is not allowed, we should no-op
-    QTest::newRow("invalidResize") << QSize(50, 60) << QSize(100, 100) << QSize(500, 600) << QSize(100, 100)
+    BOBUIest::newRow("invalidResize") << QSize(50, 60) << QSize(100, 100) << QSize(500, 600) << QSize(100, 100)
                                    << QSize(50, 60) << QSize(100, 100) << QSize(50, 60) << QSize(100, 100);}
 
 void tst_xdgshell::minMaxSize()
@@ -815,7 +815,7 @@ void tst_xdgshell::foreignSurface()
     // the pointer events above are handled.
     QSignalSpy spy(exec([&] { return surface(newSurfaceIndex); }), &Surface::commit);
     wl_surface_commit(foreignSurface);
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIRY_COMPARE(spy.size(), 1);
 
     wl_surface_destroy(foreignSurface);
 }
@@ -848,15 +848,15 @@ void tst_xdgshell::suspended()
 
     uint serial = 0;
     exec([&] { serial = xdgToplevel()->sendCompleteConfigure(); });
-    QTRY_VERIFY(window.isExposed());
+    BOBUIRY_VERIFY(window.isExposed());
     QCOMPOSITOR_TRY_COMPARE(xdgToplevel()->m_xdgSurface->m_committedConfigureSerial, serial);
 
     exec([&] { serial = xdgToplevel()->sendCompleteConfigure(QSize(), {XdgToplevel::state_suspended}); });
-    QTRY_VERIFY(!window.isExposed());
+    BOBUIRY_VERIFY(!window.isExposed());
     QCOMPOSITOR_TRY_COMPARE(xdgToplevel()->m_xdgSurface->m_committedConfigureSerial, serial);
 
     exec([&] { serial = xdgToplevel()->sendCompleteConfigure(QSize(), {}); });
-    QTRY_VERIFY(window.isExposed());
+    BOBUIRY_VERIFY(window.isExposed());
     QCOMPOSITOR_TRY_COMPARE(xdgToplevel()->m_xdgSurface->m_committedConfigureSerial, serial);
 }
 
@@ -885,7 +885,7 @@ void tst_xdgshell::modality()
     QCOMPOSITOR_VERIFY(!xdgDialog());
 
     child.hide();
-    child.setModality(Qt::WindowModal);
+    child.setModality(BobUI::WindowModal);
     child.show();
     QCOMPOSITOR_TRY_VERIFY(xdgDialog());
     QCOMPOSITOR_VERIFY(xdgDialog()->modal);
@@ -893,7 +893,7 @@ void tst_xdgshell::modality()
     child.hide();
     QCOMPOSITOR_TRY_VERIFY(!xdgDialog());
 
-    child.setModality(Qt::ApplicationModal);
+    child.setModality(BobUI::ApplicationModal);
     child.show();
     QCOMPOSITOR_TRY_VERIFY(xdgDialog());
     QCOMPOSITOR_VERIFY(xdgDialog()->modal);
@@ -902,7 +902,7 @@ void tst_xdgshell::modality()
     QCOMPOSITOR_TRY_VERIFY(!xdgDialog());
 
     child.show();
-    child.setModality(Qt::NonModal);
+    child.setModality(BobUI::NonModal);
     QCOMPOSITOR_TRY_VERIFY(!xdgDialog());
 }
 
@@ -915,7 +915,7 @@ void tst_xdgshell::modalityWithoutTransientParent()
     QCOMPOSITOR_VERIFY(!xdgDialog());
 
     child.hide();
-    child.setModality(Qt::WindowModal);
+    child.setModality(BobUI::WindowModal);
     child.show();
     QCOMPOSITOR_TRY_VERIFY(xdgDialog());
     QCOMPOSITOR_VERIFY(xdgDialog()->modal);
@@ -923,7 +923,7 @@ void tst_xdgshell::modalityWithoutTransientParent()
     child.hide();
     QCOMPOSITOR_TRY_VERIFY(!xdgDialog());
 
-    child.setModality(Qt::ApplicationModal);
+    child.setModality(BobUI::ApplicationModal);
     child.show();
     QCOMPOSITOR_TRY_VERIFY(xdgDialog());
     QCOMPOSITOR_VERIFY(xdgDialog()->modal);
@@ -932,7 +932,7 @@ void tst_xdgshell::modalityWithoutTransientParent()
     QCOMPOSITOR_TRY_VERIFY(!xdgDialog());
 
     child.show();
-    child.setModality(Qt::NonModal);
+    child.setModality(BobUI::NonModal);
     QCOMPOSITOR_TRY_VERIFY(!xdgDialog());
 }
 
@@ -945,7 +945,7 @@ void tst_xdgshell::grabbingSiblingPopups()
             QRasterWindow::mousePressEvent(event);
             auto popup = new QRasterWindow;
             popup->setTransientParent(this);
-            popup->setFlags(Qt::Popup);
+            popup->setFlags(BobUI::Popup);
             popup->resize(100, 100);
             popup->show();
             m_popups << popup;
@@ -981,7 +981,7 @@ void tst_xdgshell::grabbingSiblingPopups()
     };
 
     triggerPopup(0);
-    // QtWayland will make popup1 a child of popup0, despite them being siblings at a Qt level
+    // BobUIWayland will make popup1 a child of popup0, despite them being siblings at a BobUI level
     triggerPopup(1);
 
     // This is illegal from a wayland POV as popup2 is the latest grabbing popup

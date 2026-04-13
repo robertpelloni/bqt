@@ -77,7 +77,7 @@
    <item row="3" column="1">
     <widget class="QSlider" name="spacing">
      <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
+      <enum>BobUI::Orientation::Horizontal</enum>
      </property>
     </widget>
    </item>

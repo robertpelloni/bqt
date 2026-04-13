@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
-#include <QtCore/QSharedData>
+#include <BobUICore/QSharedData>
 
 /*!
  \class tst_QExplicitlySharedDataPointer
@@ -68,12 +68,12 @@ public:
     virtual bool isBase() const override { return false; }
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 template<> Base *QExplicitlySharedDataPointer<Base>::clone()
 {
     return d->clone();
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void tst_QExplicitlySharedDataPointer::pointerOperatorOnConst() const
 {
@@ -232,10 +232,10 @@ void tst_QExplicitlySharedDataPointer::swap() const
 
 void tst_QExplicitlySharedDataPointer::compareCompiles() const
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QExplicitlySharedDataPointer<MyClass>>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QExplicitlySharedDataPointer<MyClass>,
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QExplicitlySharedDataPointer<MyClass>>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QExplicitlySharedDataPointer<MyClass>,
                                                     MyClass*>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QExplicitlySharedDataPointer<MyClass>,
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QExplicitlySharedDataPointer<MyClass>,
                                                     std::nullptr_t>();
 }
 
@@ -243,28 +243,28 @@ void tst_QExplicitlySharedDataPointer::compare() const
 {
     const QExplicitlySharedDataPointer<MyClass> ptr;
     const QExplicitlySharedDataPointer<MyClass> ptr2;
-    QT_TEST_ALL_COMPARISON_OPS(ptr, nullptr, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(ptr2, nullptr, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(ptr, ptr2, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(ptr, nullptr, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(ptr2, nullptr, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(ptr, ptr2, BobUI::strong_ordering::equal);
 
     const QExplicitlySharedDataPointer<MyClass> copy(ptr);
-    QT_TEST_ALL_COMPARISON_OPS(ptr, copy, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(ptr, copy, BobUI::strong_ordering::equal);
 
     MyClass* pointer = nullptr;
-    QT_TEST_ALL_COMPARISON_OPS(pointer, ptr, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(pointer, ptr, BobUI::strong_ordering::equal);
 
     const QExplicitlySharedDataPointer<MyClass> pointer2(new MyClass());
-    QT_TEST_ALL_COMPARISON_OPS(pointer, pointer2, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(pointer, pointer2, BobUI::strong_ordering::less);
 
     std::array<MyClass, 3> myArray {MyClass(2), MyClass(1), MyClass(0)};
     const QExplicitlySharedDataPointer<const MyClass> val0(&myArray[0]);
     const QExplicitlySharedDataPointer<const MyClass> val1(&myArray[1]);
-    QT_TEST_ALL_COMPARISON_OPS(val0, val1, Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(val0, &myArray[1], Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(val1, val0, Qt::strong_ordering::greater);
-    QT_TEST_ALL_COMPARISON_OPS(&myArray[1], val0, Qt::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(val0, val1, BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(val0, &myArray[1], BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(val1, val0, BobUI::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(&myArray[1], val0, BobUI::strong_ordering::greater);
 }
 
-QTEST_MAIN(tst_QExplicitlySharedDataPointer)
+BOBUIEST_MAIN(tst_QExplicitlySharedDataPointer)
 
 #include "tst_qexplicitlyshareddatapointer.moc"

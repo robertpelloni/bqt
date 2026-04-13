@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtGui/QtGui>
-#include <private/qtextengine_p.h>
+#include <BOBUIest>
+#include <BobUIGui/BobUIGui>
+#include <private/bobuiextengine_p.h>
 
 #include "bidireorderstring.h"
 
@@ -14,7 +14,7 @@ Q_OBJECT
 private slots:
     void bidiReorderString_data();
     void bidiReorderString();
-    void bidiCursor_qtbug2795();
+    void bidiCursor_bobuibug2795();
     void bidiCursor_PDF();
     void bidiCursorMovement_data();
     void bidiCursorMovement();
@@ -30,19 +30,19 @@ private slots:
 
 void tst_QComplexText::bidiReorderString_data()
 {
-    QTest::addColumn<QString>("logical");
-    QTest::addColumn<QString>("VISUAL");
-    QTest::addColumn<int>("basicDir");
+    BOBUIest::addColumn<QString>("logical");
+    BOBUIest::addColumn<QString>("VISUAL");
+    BOBUIest::addColumn<int>("basicDir");
 
     const LV *data = logical_visual;
     while ( data->name ) {
         //next we fill it with data
-        QTest::newRow( data->name )
+        BOBUIest::newRow( data->name )
             << QString::fromUtf8( data->logical )
             << QString::fromUtf8( data->visual )
             << (int) data->basicDir;
 
-        QTest::newRow( QByteArray(data->name) + " (doubled)" )
+        BOBUIest::newRow( QByteArray(data->name) + " (doubled)" )
             << (QString::fromUtf8( data->logical ) + QChar(QChar::ParagraphSeparator) + QString::fromUtf8( data->logical ))
             << (QString::fromUtf8( data->visual ) + QChar(QChar::ParagraphSeparator) + QString::fromUtf8( data->visual ))
             << (int) data->basicDir;
@@ -50,7 +50,7 @@ void tst_QComplexText::bidiReorderString_data()
     }
 
     QString isolateAndBoundary =  QString(QChar(0x2068 /* DirFSI */)) + QChar(0x1c /* DirB */) + QChar(0x2069 /* DirPDI */);
-    QTest::newRow( "isolateAndBoundary" )
+    BOBUIest::newRow( "isolateAndBoundary" )
         << QString::fromUtf8( data->logical )
         << QString::fromUtf8( data->visual )
         << (int) QChar::DirL;
@@ -64,8 +64,8 @@ void tst_QComplexText::bidiReorderString()
     // replace \n with Unicode newline. The new algorithm ignores \n
     logical.replace(QChar('\n'), QChar(0x2028));
 
-    QTextEngine e(logical, QFont());
-    e.option.setTextDirection((QChar::Direction)basicDir == QChar::DirL ? Qt::LeftToRight : Qt::RightToLeft);
+    BOBUIextEngine e(logical, QFont());
+    e.option.setTextDirection((QChar::Direction)basicDir == QChar::DirL ? BobUI::LeftToRight : BobUI::RightToLeft);
     e.itemize();
     quint8 levels[256];
     int visualOrder[256];
@@ -104,26 +104,26 @@ void tst_QComplexText::bidiReorderString()
     // replace Unicode newline back with  \n to compare.
     visual.replace(QChar(0x2028), QChar('\n'));
 
-    QTEST(visual, "VISUAL");
+    BOBUIEST(visual, "VISUAL");
 }
 
-void tst_QComplexText::bidiCursor_qtbug2795()
+void tst_QComplexText::bidiCursor_bobuibug2795()
 {
     QString str = QString::fromUtf8("الجزيرة نت");
-    QTextLayout l1(str);
+    BOBUIextLayout l1(str);
 
     l1.beginLayout();
     l1.setCacheEnabled(true);
-    QTextLine line1 = l1.createLine();
+    BOBUIextLine line1 = l1.createLine();
     l1.endLayout();
 
     qreal x1 = line1.cursorToX(0) - line1.cursorToX(str.size());
 
     str.append("1");
-    QTextLayout l2(str);
+    BOBUIextLayout l2(str);
     l2.setCacheEnabled(true);
     l2.beginLayout();
-    QTextLine line2 = l2.createLine();
+    BOBUIextLine line2 = l2.createLine();
     l2.endLayout();
 
     qreal x2 = line2.cursorToX(0) - line2.cursorToX(str.size());
@@ -134,13 +134,13 @@ void tst_QComplexText::bidiCursor_qtbug2795()
 
 void tst_QComplexText::bidiCursorMovement_data()
 {
-    QTest::addColumn<QString>("logical");
-    QTest::addColumn<int>("basicDir");
+    BOBUIest::addColumn<QString>("logical");
+    BOBUIest::addColumn<int>("basicDir");
 
     const LV *data = logical_visual;
     while ( data->name ) {
         //next we fill it with data
-        QTest::newRow( data->name )
+        BOBUIest::newRow( data->name )
             << QString::fromUtf8( data->logical )
             << (int) data->basicDir;
         data++;
@@ -152,19 +152,19 @@ void tst_QComplexText::bidiCursorMovement()
     QFETCH(QString, logical);
     QFETCH(int,  basicDir);
 
-    QTextLayout layout(logical);
+    BOBUIextLayout layout(logical);
     layout.setCacheEnabled(true);
 
-    QTextOption option = layout.textOption();
-    option.setTextDirection(basicDir == QChar::DirL ? Qt::LeftToRight : Qt::RightToLeft);
+    BOBUIextOption option = layout.textOption();
+    option.setTextDirection(basicDir == QChar::DirL ? BobUI::LeftToRight : BobUI::RightToLeft);
     layout.setTextOption(option);
-    layout.setCursorMoveStyle(Qt::VisualMoveStyle);
+    layout.setCursorMoveStyle(BobUI::VisualMoveStyle);
     bool moved;
     int oldPos, newPos = 0;
     qreal x, newX;
 
     layout.beginLayout();
-    QTextLine line = layout.createLine();
+    BOBUIextLine line = layout.createLine();
     layout.endLayout();
 
     newX = line.cursorToX(0);
@@ -194,10 +194,10 @@ void tst_QComplexText::bidiCursorLogicalMovement()
     QFETCH(QString, logical);
     QFETCH(int,  basicDir);
 
-    QTextLayout layout(logical);
+    BOBUIextLayout layout(logical);
 
-    QTextOption option = layout.textOption();
-    option.setTextDirection(basicDir == QChar::DirL ? Qt::LeftToRight : Qt::RightToLeft);
+    BOBUIextOption option = layout.textOption();
+    option.setTextDirection(basicDir == QChar::DirL ? BobUI::LeftToRight : BobUI::RightToLeft);
     layout.setTextOption(option);
     bool moved;
     int oldPos, newPos = 0;
@@ -227,10 +227,10 @@ void tst_QComplexText::bidiInvalidCursorNoMovement()
     QFETCH(QString, logical);
     QFETCH(int,  basicDir);
 
-    QTextLayout layout(logical);
+    BOBUIextLayout layout(logical);
 
-    QTextOption option = layout.textOption();
-    option.setTextDirection(basicDir == QChar::DirL ? Qt::LeftToRight : Qt::RightToLeft);
+    BOBUIextOption option = layout.textOption();
+    option.setTextDirection(basicDir == QChar::DirL ? BobUI::LeftToRight : BobUI::RightToLeft);
     layout.setTextOption(option);
 
     // visual
@@ -251,11 +251,11 @@ void tst_QComplexText::bidiInvalidCursorNoMovement()
 void tst_QComplexText::bidiCursor_PDF()
 {
     QString str = QString::fromUtf8("\342\200\252hello\342\200\254");
-    QTextLayout layout(str);
+    BOBUIextLayout layout(str);
     layout.setCacheEnabled(true);
 
     layout.beginLayout();
-    QTextLine line = layout.createLine();
+    BOBUIextLine line = layout.createLine();
     layout.endLayout();
 
     int size = str.size();
@@ -268,12 +268,12 @@ static void testBidiString(const QString &data, int paragraphDirection,
 {
     Q_UNUSED(resolvedLevels);
 
-    QTextEngine e(data, QFont());
-    Qt::LayoutDirection pDir = Qt::LeftToRight;
+    BOBUIextEngine e(data, QFont());
+    BobUI::LayoutDirection pDir = BobUI::LeftToRight;
     if (paragraphDirection == 1)
-        pDir = Qt::RightToLeft;
+        pDir = BobUI::RightToLeft;
     else if (paragraphDirection == 2)
-        pDir = Qt::LayoutDirectionAuto;
+        pDir = BobUI::LayoutDirectionAuto;
 
     e.option.setTextDirection(pDir);
     e.itemize();
@@ -507,5 +507,5 @@ void tst_QComplexText::bidiTest()
 
 
 
-QTEST_MAIN(tst_QComplexText)
+BOBUIEST_MAIN(tst_QComplexText)
 #include "tst_qcomplextext.moc"

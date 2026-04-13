@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qiosglobal.h"
 #include "qiosintegration.h"
@@ -15,11 +15,11 @@
 #include "qiostheme.h"
 #include "quiwindow.h"
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <private/qcoregraphics_p.h>
 #include <qpa/qwindowsysteminterface.h>
 
@@ -49,7 +49,7 @@ typedef void (^DisplayLinkBlock)(CADisplayLink *displayLink);
 // -------------------------------------------------------------------------
 
 #if !defined(Q_OS_VISIONOS)
-static QIOSScreen* qtPlatformScreenFor(UIScreen *uiScreen)
+static QIOSScreen* bobuiPlatformScreenFor(UIScreen *uiScreen)
 {
     foreach (QScreen *screen, QGuiApplication::screens()) {
         QIOSScreen *platformScreen = static_cast<QIOSScreen *>(screen->handle());
@@ -89,7 +89,7 @@ static QIOSScreen* qtPlatformScreenFor(UIScreen *uiScreen)
     if (!QIOSIntegration::instance())
         return;
 
-    QIOSScreen *screen = qtPlatformScreenFor([notification object]);
+    QIOSScreen *screen = bobuiPlatformScreenFor([notification object]);
     Q_ASSERT_X(screen, Q_FUNC_INFO, "Screen disconnected that we didn't know about");
 
     QWindowSystemInterface::handleScreenRemoved(screen);
@@ -100,7 +100,7 @@ static QIOSScreen* qtPlatformScreenFor(UIScreen *uiScreen)
     if (!QIOSIntegration::instance())
         return;
 
-    QIOSScreen *screen = qtPlatformScreenFor([notification object]);
+    QIOSScreen *screen = bobuiPlatformScreenFor([notification object]);
     Q_ASSERT_X(screen, Q_FUNC_INFO, "Screen changed that we didn't know about");
 
     screen->updateProperties();
@@ -112,9 +112,9 @@ static QIOSScreen* qtPlatformScreenFor(UIScreen *uiScreen)
 
 // -------------------------------------------------------------------------
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #if !defined(Q_OS_VISIONOS)
 /*!
@@ -142,7 +142,7 @@ static QString deviceModelIdentifier()
 void QIOSScreen::initializeScreens()
 {
 #if defined(Q_OS_VISIONOS)
-    // Qt requires a screen, so let's give it a dummy one
+    // BobUI requires a screen, so let's give it a dummy one
     QWindowSystemInterface::handleScreenAdded(new QIOSScreen);
 #else
     Q_ASSERT([UIScreen.screens containsObject:UIScreen.mainScreen]);
@@ -218,7 +218,7 @@ QIOSScreen::QIOSScreen(UIScreen *screen)
     // We're pausing the display link if the application moves out of the active state,
     // so make sure to deliver to any windows that need it once the app becomes active.
     QObject::connect(qGuiApp, &QGuiApplication::applicationStateChanged, this, [this](auto newState) {
-        if (newState == Qt::ApplicationActive) {
+        if (newState == BobUI::ApplicationActive) {
             qCDebug(lcQpaApplication) << "Attempting update request delivery after becoming active";
             deliverUpdateRequests();
         }
@@ -260,8 +260,8 @@ void QIOSScreen::updateProperties()
 
     if (m_geometry != previousGeometry) {
         // We can't use the primaryOrientation of screen(), as we haven't reported the new geometry yet
-        Qt::ScreenOrientation primaryOrientation = m_geometry.width() >= m_geometry.height() ?
-            Qt::LandscapeOrientation : Qt::PortraitOrientation;
+        BobUI::ScreenOrientation primaryOrientation = m_geometry.width() >= m_geometry.height() ?
+            BobUI::LandscapeOrientation : BobUI::PortraitOrientation;
 
         // On iPhone 6+ devices, or when display zoom is enabled, the render buffer is scaled
         // before being output on the physical display. We have to take this into account when
@@ -284,7 +284,7 @@ void QIOSScreen::updateProperties()
     // At construction time, we don't yet have an associated QScreen, but we still want
     // to compute the properties above so they are ready for when the QScreen attaches.
     // Also, at destruction time the QScreen has already been torn down, so notifying
-    // Qt about changes to the screen will cause asserts in the event delivery system.
+    // BobUI about changes to the screen will cause asserts in the event delivery system.
     if (!screen())
         return;
 
@@ -309,7 +309,7 @@ void QIOSScreen::deliverUpdateRequests() const
 {
     bool pauseUpdates = true;
 
-    if (QGuiApplication::applicationState() != Qt::ApplicationActive) {
+    if (QGuiApplication::applicationState() != BobUI::ApplicationActive) {
         // The applicationWillResignActive documentation describes that the app
         // should "use this method to pause ongoing tasks, disable timers, and
         // throttle down OpenGL ES frame rates", so we skip update request
@@ -395,11 +395,11 @@ qreal QIOSScreen::refreshRate() const
 #endif
 }
 
-Qt::ScreenOrientation QIOSScreen::nativeOrientation() const
+BobUI::ScreenOrientation QIOSScreen::nativeOrientation() const
 {
 #if defined(Q_OS_VISIONOS)
     // Based on iPad app reporting native bounds 1668x2388
-    return Qt::PortraitOrientation;
+    return BobUI::PortraitOrientation;
 #else
     CGRect nativeBounds =
 #if defined(Q_OS_IOS)
@@ -411,11 +411,11 @@ Qt::ScreenOrientation QIOSScreen::nativeOrientation() const
     // All known iOS devices have a native orientation of portrait, but to
     // be on the safe side we compare the width and height of the bounds.
     return nativeBounds.size.width >= nativeBounds.size.height ?
-        Qt::LandscapeOrientation : Qt::PortraitOrientation;
+        BobUI::LandscapeOrientation : BobUI::PortraitOrientation;
 #endif
 }
 
-Qt::ScreenOrientation QIOSScreen::orientation() const
+BobUI::ScreenOrientation QIOSScreen::orientation() const
 {
     // We don't report UIDevice.currentDevice.orientation here,
     // as that would report the actual orientation of the device,
@@ -432,21 +432,21 @@ Qt::ScreenOrientation QIOSScreen::orientation() const
 
     switch (interfaceOrientation) {
     case UIInterfaceOrientationPortrait:
-        return Qt::PortraitOrientation;
+        return BobUI::PortraitOrientation;
     case UIInterfaceOrientationPortraitUpsideDown:
-        return Qt::InvertedPortraitOrientation;
+        return BobUI::InvertedPortraitOrientation;
     case UIInterfaceOrientationLandscapeLeft:
-        return Qt::LandscapeOrientation;
+        return BobUI::LandscapeOrientation;
     case UIInterfaceOrientationLandscapeRight:
-        return Qt::InvertedLandscapeOrientation;
+        return BobUI::InvertedLandscapeOrientation;
     case UIInterfaceOrientationUnknown:
     default:
         // Fall back to the primary orientation, but with a concrete
-        // orientation instead of Qt::PrimaryOrientation, as when we
+        // orientation instead of BobUI::PrimaryOrientation, as when we
         // report orientation changes the primary orientation has not
         // been updated yet, so user's can't query it in response.
         return m_geometry.width() >= m_geometry.height() ?
-            Qt::LandscapeOrientation : Qt::PortraitOrientation;
+            BobUI::LandscapeOrientation : BobUI::PortraitOrientation;
     }
 }
 
@@ -494,7 +494,7 @@ QPixmap QIOSScreen::grabWindow(WId window, int x, int y, int width, int height) 
         [view.window drawViewHierarchyInRect:view.window.bounds afterScreenUpdates:NO];
     }];
 
-    return QPixmap::fromImage(qt_mac_toQImage(screenshot.CGImage));
+    return QPixmap::fromImage(bobui_mac_toQImage(screenshot.CGImage));
 }
 
 #if !defined(Q_OS_VISIONOS)
@@ -504,6 +504,6 @@ UIScreen *QIOSScreen::uiScreen() const
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qiosscreen.cpp"

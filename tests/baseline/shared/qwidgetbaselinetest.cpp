@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwidgetbaselinetest.h"
 
@@ -14,15 +14,15 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-#include <QtCore/private/qabstractanimation_p.h>
-#include <QtWidgets/private/qapplication_p.h>
-#include <QtWidgets/private/qstyle_p.h>
+#include <BobUICore/private/qabstractanimation_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qstyle_p.h>
 
 #if defined(Q_OS_APPLE)
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class DebugStyle : public QProxyStyle
 {
@@ -37,19 +37,19 @@ public:
     void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override
     {
         QProxyStyle::drawPrimitive(element, option, painter, widget);
-        drawDebugRect("QStyle::drawPrimitive", Qt::magenta, element, option, widget, painter);
+        drawDebugRect("QStyle::drawPrimitive", BobUI::magenta, element, option, widget, painter);
     }
 
     void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override
     {
         QProxyStyle::drawControl(element, option, painter, widget);
-        drawDebugRect("QStyle::drawControl", Qt::magenta, element, option, widget, painter);
+        drawDebugRect("QStyle::drawControl", BobUI::magenta, element, option, widget, painter);
     }
 
     void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const override
     {
         QProxyStyle::drawComplexControl(control, option, painter, widget);
-        drawDebugRect("QStyle::drawComplexControl", Qt::magenta, control, option, widget, painter);
+        drawDebugRect("QStyle::drawComplexControl", BobUI::magenta, control, option, widget, painter);
 
         // Report all matching sub-controls, independently of whether the above call queries them
         static QMetaEnum complexControlEnum = QMetaEnum::fromType<ComplexControl>();
@@ -78,17 +78,17 @@ private:
 
         if (widget) {
             auto *className = widget->metaObject()->className();
-            baselineTest->reportDebugRect("QWidget::rect", Qt::green,
+            baselineTest->reportDebugRect("QWidget::rect", BobUI::green,
                 QString::fromLatin1(className), widget->rect(),
                 widget, painter);
 
-            baselineTest->reportDebugRect("QWidget::contentsRect", Qt::green,
+            baselineTest->reportDebugRect("QWidget::contentsRect", BobUI::green,
                 QString::fromLatin1(className), widget->contentsRect(),
                 widget, painter);
         }
 
         if (painter) {
-            baselineTest->reportDebugRect("QPainter::clipRegion", Qt::red,
+            baselineTest->reportDebugRect("QPainter::clipRegion", BobUI::red,
                 QString::fromLatin1(elementName), painter->clipRegion().boundingRect(),
                 widget, painter);
         }
@@ -100,7 +100,7 @@ private:
 QWidgetBaselineTest::QWidgetBaselineTest()
 {
     // Fail by throwing, since we QVERIFY deep in the helper functions
-    QTest::setThrowOnFail(true);
+    BOBUIest::setThrowOnFail(true);
 
     qApp->setStyle(new DebugStyle(qApp->style(), this));
 
@@ -115,13 +115,13 @@ QWidgetBaselineTest::QWidgetBaselineTest()
     QPalette palette;
     QFont font;
     const QString styleName =
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6, 0, 0)
             QApplication::style()->metaObject()->className();
 #else
             QApplication::style()->name();
 #endif
     // turn off animations and make the cursor flash time really long to avoid blinking
-    QApplication::style()->setProperty("_qt_animation_time", QTime());
+    QApplication::style()->setProperty("_bobui_animation_time", BOBUIime());
     QApplication::style()->setProperty("_q_no_animation", true);
     QUnifiedTimer::instance()->setSpeedModifier(100000);
     QGuiApplication::styleHints()->setCursorFlashTime(50000);
@@ -131,7 +131,7 @@ QWidgetBaselineTest::QWidgetBaselineTest()
         QDataStream appearanceStream(&appearanceBytes, QIODevice::WriteOnly);
         appearanceStream << palette << font;
     }
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6, 0, 0)
     const quint16 appearanceId = qChecksum(appearanceBytes, appearanceBytes.size());
 #else
     const quint16 appearanceId = qChecksum(appearanceBytes);
@@ -149,7 +149,7 @@ QWidgetBaselineTest::QWidgetBaselineTest()
 
 #if defined(Q_OS_APPLE)
     QBaselineTest::addClientProperty("LiquidGlass",
-        qt_apple_runningWithLiquidGlass() ? "enabled" : "disabled");
+        bobui_apple_runningWithLiquidGlass() ? "enabled" : "disabled");
 #endif
 
     QBaselineTest::addClientProperty("DevicePixelRatio",
@@ -182,23 +182,23 @@ void QWidgetBaselineTest::initTestCase()
 void QWidgetBaselineTest::init()
 {
     QVERIFY(!window);
-    background = new QWidget(nullptr, Qt::FramelessWindowHint);
+    background = new QWidget(nullptr, BobUI::FramelessWindowHint);
     QPalette pal;
 
     QImage checkerboard(QSize(20, 20), QImage::Format_Grayscale8);
-    checkerboard.fill(Qt::white);
+    checkerboard.fill(BobUI::white);
     QPainter painter(&checkerboard);
-    painter.fillRect(0, 0, 10, 10, Qt::lightGray);
-    painter.fillRect(10, 10, 10, 10, Qt::lightGray);
+    painter.fillRect(0, 0, 10, 10, BobUI::lightGray);
+    painter.fillRect(10, 10, 10, 10, BobUI::lightGray);
     painter.end();
 
     pal.setBrush(QPalette::Window, checkerboard);
     background->setPalette(pal);
 
-    window = new QWidget(background, Qt::Window | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
-    window->setWindowTitle(QTest::currentDataTag());
-    window->setFocusPolicy(Qt::StrongFocus);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    window = new QWidget(background, BobUI::Window | BobUI::FramelessWindowHint | BobUI::NoDropShadowWindowHint);
+    window->setWindowTitle(BOBUIest::currentDataTag());
+    window->setFocusPolicy(BobUI::StrongFocus);
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(6, 0, 0)
     background->setScreen(QGuiApplication::primaryScreen());
     window->setScreen(QGuiApplication::primaryScreen());
 #endif
@@ -235,18 +235,18 @@ void QWidgetBaselineTest::makeVisible()
     background->setScreen(preferredScreen);
     background->move(preferredScreenRect.topLeft());
     background->showMaximized();
-    QVERIFY(QTest::qWaitForWindowExposed(background));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(background));
 
     window->setScreen(preferredScreen);
     window->move(preferredScreenRect.topLeft());
     window->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window));
 
     QApplicationPrivate::setActiveWindow(window);
-    QVERIFY(QTest::qWaitForWindowActive(window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(window));
     // explicitly set focus on the window so that the test widget doesn't have it
-    window->setFocus(Qt::OtherFocusReason);
-    QTRY_COMPARE(window->focusWidget(), window);
+    window->setFocus(BobUI::OtherFocusReason);
+    BOBUIRY_COMPARE(window->focusWidget(), window);
 }
 
 /*
@@ -267,7 +267,7 @@ QImage QWidgetBaselineTest::takeSnapshot()
     QImage image(size * dpr, QImage::Format_ARGB32_Premultiplied);
     image.setDevicePixelRatio(dpr);
     // The widget might claim to be be opaque, but we want to detect if it lies
-    image.fill(Qt::transparent);
+    image.fill(BobUI::transparent);
     window->render(&image, {}, QRect({}, size),
         QWidget::DrawWindowBackground
       | QWidget::DrawChildren
@@ -292,7 +292,7 @@ QImage QWidgetBaselineTest::takeScreenSnapshot(const QRect& windowRect)
 {
     // make sure all effects are done - wait longer here because entire
     // windows might be fading in and out.
-    QTest::qWait(750);
+    BOBUIest::qWait(750);
     return window->screen()->grabWindow(0, windowRect.x(), windowRect.y(),
                                         windowRect.width(), windowRect.height()).toImage();
 }
@@ -318,12 +318,12 @@ void QWidgetBaselineTest::takeStandardSnapshots()
         testWidget = window->findChild<QWidget*>();
     QVERIFY(testWidget);
     // use TabFocusReason, some widgets handle that specifically to e.g. select
-    testWidget->setFocus(Qt::TabFocusReason);
+    testWidget->setFocus(BobUI::TabFocusReason);
 
     if (testWindow()->focusWidget() != oldFocusWidget) {
         QBASELINE_CHECK_DEFERRED(takeSnapshot(), "focused");
         // set focus back
-        oldFocusWidget->setFocus(Qt::OtherFocusReason);
+        oldFocusWidget->setFocus(BobUI::OtherFocusReason);
     } else {
         qWarning() << "Couldn't set focus on tested widget" << testWidget;
     }
@@ -337,14 +337,14 @@ void QWidgetBaselineTest::takeStandardSnapshots()
     QWidget otherWindow;
     otherWindow.move(window->geometry().bottomRight() + QPoint(10, 10));
     otherWindow.resize(50, 50);
-    otherWindow.setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+    otherWindow.setWindowFlags(BobUI::CustomizeWindowHint | BobUI::FramelessWindowHint | BobUI::NoDropShadowWindowHint);
     otherWindow.show();
     otherWindow.windowHandle()->requestActivate();
-    QVERIFY(QTest::qWaitForWindowActive(&otherWindow));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&otherWindow));
     QBASELINE_CHECK_DEFERRED(takeSnapshot(), "inactive");
 
     window->windowHandle()->requestActivate();
-    QVERIFY(QTest::qWaitForWindowActive(window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(window));
     if (window->focusWidget())
         window->focusWidget()->clearFocus();
 }
@@ -380,4 +380,4 @@ void QWidgetBaselineTest::reportDebugRect(const QString &type, const QColor &col
     debugRects[type] = typeObject;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

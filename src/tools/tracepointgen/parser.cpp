@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "tracepointgen.h"
 #include "parser.h"
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qregularexpression.h>
 #include <qfileinfo.h>
 
@@ -248,7 +248,7 @@ QStringList Parser::findEnumValues(const QString &name, const QStringList &inclu
             return ret;
         }
         QString data;
-        QTextStream stream(&input);
+        BOBUIextStream stream(&input);
         while (!stream.atEnd()) {
             QString line = stream.readLine().trimmed();
             data += line + QLatin1Char('\n');
@@ -498,7 +498,7 @@ void Parser::addIncludesRecursive(const QString &filename, QList<QString> &inclu
         return;
     }
     QString data;
-    QTextStream stream(&input);
+    BOBUIextStream stream(&input);
     while (!stream.atEnd()) {
         QString line = stream.readLine().trimmed();
         data += line + QLatin1Char(QLatin1Char('\n'));
@@ -520,8 +520,8 @@ void Parser::addIncludesRecursive(const QString &filename, QList<QString> &inclu
             rinc = info2.absoluteFilePath();
             filename = info2.fileName();
         }
-        // only search possible qt headers
-        if (QFileInfo(filename).baseName().startsWith(QLatin1Char('q'), Qt::CaseInsensitive)) {
+        // only search possible bobui headers
+        if (QFileInfo(filename).baseName().startsWith(QLatin1Char('q'), BobUI::CaseInsensitive)) {
             QString resolved = resolveInclude(rinc);
             if (!resolved.isEmpty() && !includes.contains(resolved)) {
                 includes.push_back(resolved);
@@ -534,7 +534,7 @@ void Parser::addIncludesRecursive(const QString &filename, QList<QString> &inclu
 void Parser::parse(QIODevice &input, const QString &name)
 {
     QString data;
-    QTextStream stream(&input);
+    BOBUIextStream stream(&input);
     int lineNumber = 1;
     qsizetype prev = 0;
     while (!stream.atEnd()) {
@@ -553,8 +553,8 @@ void Parser::parse(QIODevice &input, const QString &name)
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
         const QString filename = match.captured(1);
-        // only search possible qt headers
-        if (filename.startsWith(QLatin1Char('q'), Qt::CaseInsensitive)) {
+        // only search possible bobui headers
+        if (filename.startsWith(QLatin1Char('q'), BobUI::CaseInsensitive)) {
             const QString resolved = resolveInclude(filename);
             if (!resolved.isEmpty() && !includes.contains(resolved)) {
                 includes.push_back(resolved);
@@ -589,7 +589,7 @@ void Parser::parse(QIODevice &input, const QString &name)
 
 void Parser::write(QIODevice &input) const
 {
-    QTextStream out(&input);
+    BOBUIextStream out(&input);
     if (m_prefixes.size() > 0) {
         out << QStringLiteral("{\n");
         for (const auto &prefix : m_prefixes)

@@ -1,15 +1,15 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #ifndef ADDRESSDIALOG_H
 #define ADDRESSDIALOG_H
 
 #include <QDialog>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 namespace Ui {
 class AddressDialog;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class AddressDialog : public QDialog
 {

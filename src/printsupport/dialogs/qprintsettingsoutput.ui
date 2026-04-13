@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTabWidget" name="tabs">
+    <widget class="BOBUIabWidget" name="tabs">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -133,7 +133,7 @@
             <item>
              <spacer>
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>BobUI::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -213,7 +213,7 @@
           <item>
            <spacer name="verticalSpacer">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>BobUI::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -255,7 +255,7 @@
           <item row="0" column="3">
            <spacer name="horizontalSpacer">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>BobUI::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -292,7 +292,7 @@
           <item row="3" column="0" colspan="4">
            <spacer name="verticalSpacer_2">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>BobUI::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -321,7 +321,7 @@
           <item row="2" column="0">
            <spacer name="verticalSpacer_6">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>BobUI::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -384,7 +384,7 @@
           <item>
            <spacer name="verticalSpacer_42">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>BobUI::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>

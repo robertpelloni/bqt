@@ -1,17 +1,17 @@
-Qt 4.5.2 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.5.1. For more details,
+BobUI 4.5.2 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.5.1. For more details,
 refer to the online documentation included in this distribution. The
 documentation is also available online:
 
-  http://qt.nokia.com/doc/4.5
+  http://bobui.nokia.com/doc/4.5
 
-The Qt version 4.5 series is binary compatible with the 4.4.x series.
+The BobUI version 4.5 series is binary compatible with the 4.4.x series.
 Applications compiled for 4.4 will continue to run with 4.5.
 
 Some of the changes listed in this file include issue tracking numbers
 corresponding to tasks in the Task Tracker:
 
-  http://qt.nokia.com/developer/task-tracker
+  http://bobui.nokia.com/developer/task-tracker
 
 Each of these identifiers can be entered in the task tracker to obtain more
 information about a particular change.
@@ -25,18 +25,18 @@ General Improvements
 
 - Documentation and Examples
    * Added a new example (fancy browser) which shows how to use jQuery
-     in QtWebKit.
+     in BobUIWebKit.
 
 
 ****************************************************************************
 *                          Library                                         *
 ****************************************************************************
 
-- QtDBus
-   * [236955] Fixed an issue that would cause QtDBus to crash when
+- BobUIDBus
+   * [236955] Fixed an issue that would cause BobUIDBus to crash when
      relaying a signal emitted from a class under certain conditions.
 
-- QtOpenGL
+- BobUIOpenGL
     * [247083] Re-enabled anti-aliasing for large font sizes in OpenGL paint
       engine.
     * [251485] Fixed crash that could occur with projective transforms and
@@ -44,7 +44,7 @@ General Improvements
     * [253468] Fixed a crash in the GL 2 paint engine that could occur
       when drawing text.
 
-- QtWebKit
+- BobUIWebKit
    * Backported fixes for critical bugs, memory leaks, and crashes from
      WebKit trunk (with revision numbers) related to:
        Canvas (r40546, r41221 r41355, r42996, r43645)
@@ -72,7 +72,7 @@ General Improvements
 - QApplication
    * [249589] Fixed bug that prevented any part of the application from
      receiving focus when Graphics View was disabled using
-     QT_NO_GRAPHICSVIEW.
+     BOBUI_NO_GRAPHICSVIEW.
 
 - QByteArrayMatcher
     * [251958] Assignment operator and copy constructor miss data.
@@ -94,8 +94,8 @@ General Improvements
 - QDir
    * Fix reentrancy (listing directories in different threads)
 
-- QFile and QTemporaryFile
-    * Fixed a leak of file descriptors in QTemporaryFile::rename,
+- QFile and BOBUIemporaryFile
+    * Fixed a leak of file descriptors in BOBUIemporaryFile::rename,
       introduced in 4.5.1
     * [165920] QFile::copy leaves the source file open after the file has
       been copied.
@@ -103,13 +103,13 @@ General Improvements
       fails on Windows.
     * [197857] QFile::copy of resource files leaves temporary files on
       file system.
-    * [248223] QTemporaryFile: Access denied error when (re-)opening through
+    * [248223] BOBUIemporaryFile: Access denied error when (re-)opening through
       QFile interface.
-    * [252659] QTemporaryFile::rename may leave source file behind.
+    * [252659] BOBUIemporaryFile::rename may leave source file behind.
 
 - QFileSystemModel
    * [254701] QFileSystemModel doesn't sort subfolders when being used in a
-     QTreeView.
+     BOBUIreeView.
    * [251295] Windows path names incorrectly constructed in calls to
      updateIcon().
 
@@ -134,7 +134,7 @@ General Improvements
     * [253415] Reset the 'connectedToScene' flag when changing the scene of a view
 
 - QGraphicsWidget
-    * Fixed a bug with Qt::WidgetWithChildren shortcut context.
+    * Fixed a bug with BobUI::WidgetWithChildren shortcut context.
 
 - QGtkStyle
     * [250731] Fixed a build issue with glib version lower than 2.3.2
@@ -231,16 +231,16 @@ General Improvements
       the SVG file, even though there was a cached pixmap for that size
       available.
 
-- QTabBar
+- BOBUIabBar
     * [252472] Fixed problem with the current tab not being visible after
       calling setTabButton() on a scrolled tab bar.
 
-- QToolButton
+- BOBUIoolButton
     * [252554] Fixed a problem where text labels would be partially clipped 
-    when using Qt::ToolButtonTextUnderIcon.
+    when using BobUI::ToolButtonTextUnderIcon.
 
-- QTransform
-    * Fixed issue in QTransform::type() causing a projective transform to be
+- BOBUIransform
+    * Fixed issue in BOBUIransform::type() causing a projective transform to be
     treated as a scaling transform.
 
 - QVector
@@ -249,7 +249,7 @@ General Improvements
 - QWidget
     * [250668] Don't send extra wheel events when using the scroll wheel in
       Cocoa.
-    * [253448] Prevent a crash when using the Qt::WA_MacBrushedMetal
+    * [253448] Prevent a crash when using the BobUI::WA_MacBrushedMetal
       attribute in conjunction with style sheets.
 
 - QWizard
@@ -260,14 +260,14 @@ General Improvements
 *                      Platform Specific Changes                           *
 ****************************************************************************
 
-Qt for Linux/X11
+BobUI for Linux/X11
 ----------------
 [253186] Fixed compile error in qfontengine_ft.cpp on 64-bit platforms with
          legacy FreeType headers.
 [241361] Prevented asynchronous access to non-thread safe libfontconfig API.
 [244362] Worked around X server crash when calling XFillPolygon with more
          than 200000 points by falling back to raster paint engine.
-[250326] Title bar wasn't shown on X11 with Qt::CustomizeWindowHint for
+[250326] Title bar wasn't shown on X11 with BobUI::CustomizeWindowHint for
          fixed-size windows.
 [251925] Improved showing QMessageBox on small screens.
 [252042] Fixed the loading of the OpenSSL libraries on OpenBSD.
@@ -282,7 +282,7 @@ Qt for Linux/X11
 [251928] Made the file dialog show suffixes if no filter name is provided 
          when using the GTK+ file dialog.  
 
-Qt for Windows
+BobUI for Windows
 --------------
 
 Fixed an issue with text rendering in 16 bit mode.
@@ -290,11 +290,11 @@ Fixed an issue with text rendering in 16 bit mode.
 [246196] Fixed an issue with clipped glyphs when rendering text with
          certain fonts.
 [251259] Switching to another application left text cursor in line edits
-         with QtMfc framework.
+         with BobUIMfc framework.
 [253367] Fixed a memory leak when loading system icons on Windows.
 
 
-Qt for Mac OS X
+BobUI for Mac OS X
 ---------------
 [252795] Ensure that we send Apple Events in the Cocoa port even when Cocoa
          isn't ready.
@@ -305,11 +305,11 @@ Qt for Mac OS X
 [250066] Fixed an issue that caused reparenting of QGLWidgets to output
          warnings on Mac/Cocoa.
 
-Qt for Windows CE
+BobUI for Windows CE
 -----------------
 [248846] Handle the back soft key on Windows mobile.
 [252319] Fix regression in native menu integration.
-[242484] Fixed crash if Qt::WindowCancelButtonHint is used for a QDialog.
+[242484] Fixed crash if BobUI::WindowCancelButtonHint is used for a QDialog.
 
 ****************************************************************************
 *                          Tools                                           *

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSARGUMENT_P_H
 #define QDBUSARGUMENT_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the QLibrary class.  This header file may change from
 // version to version without notice, or even be removed.
 //
@@ -22,7 +22,7 @@
 #include "qdbusunixfiledescriptor.h"
 #include "qdbus_symbols_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 #ifndef DBUS_TYPE_UNIX_FD
 # define DBUS_TYPE_UNIX_FD int('h')
@@ -196,5 +196,5 @@ inline QDBusDemarshaller *QDBusArgumentPrivate::demarshaller()
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

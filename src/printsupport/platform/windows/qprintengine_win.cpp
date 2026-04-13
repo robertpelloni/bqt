@@ -1,10 +1,10 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 #include "qprintengine_win_p.h"
 
@@ -14,7 +14,7 @@
 #include <private/qfont_p.h>
 #include <private/qfontengine_p.h>
 #include <private/qpainter_p.h>
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
 #  include <private/qwindowsfontenginedirectwrite_p.h>
 #endif
 
@@ -28,21 +28,21 @@
 #include <qpa/qplatformpixmap.h>
 #include <private/qpicture_p.h>
 #include <private/qpixmap_raster_p.h>
-#include <QtCore/QMetaType>
-#include <QtCore/qt_windows.h>
-#include <QtGui/qpagelayout.h>
-#include <QtGui/private/qpixmap_win_p.h>
+#include <BobUICore/QMetaType>
+#include <BobUICore/bobui_windows.h>
+#include <BobUIGui/qpagelayout.h>
+#include <BobUIGui/private/qpixmap_win_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-extern QPainterPath qt_regionToPath(const QRegion &region);
-extern QMarginsF qt_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
+extern QPainterPath bobui_regionToPath(const QRegion &region);
+extern QMarginsF bobui_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
 
-// #define QT_DEBUG_DRAW
-// #define QT_DEBUG_METRICS
+// #define BOBUI_DEBUG_DRAW
+// #define BOBUI_DEBUG_METRICS
 
-static void draw_text_item_win(const QPointF &_pos, const QTextItemInt &ti, HDC hdc,
-                               const QTransform &xform, const QPointF &topLeft);
+static void draw_text_item_win(const QPointF &_pos, const BOBUIextItemInt &ti, HDC hdc,
+                               const BOBUIransform &xform, const QPointF &topLeft);
 
 QWin32PrintEngine::QWin32PrintEngine(QPrinter::PrinterMode mode, const QString &deviceId)
     : QAlphaPaintEngine(*(new QWin32PrintEnginePrivate),
@@ -65,7 +65,7 @@ QWin32PrintEngine::QWin32PrintEngine(QPrinter::PrinterMode mode, const QString &
 static QByteArray msgBeginFailed(const char *function, const DOCINFO &d)
 {
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     str << "QWin32PrintEngine::begin: " << function << " failed";
     if (d.lpszDocName && d.lpszDocName[0])
        str << ", document \"" << QString::fromWCharArray(d.lpszDocName) << '"';
@@ -123,9 +123,9 @@ bool QWin32PrintEngine::begin(QPaintDevice *pdev)
         d->state = QPrinter::Active;
     }
 
-    d->matrix = QTransform();
+    d->matrix = BOBUIransform();
     d->has_pen = true;
-    d->pen = QColor(Qt::black);
+    d->pen = QColor(BobUI::black);
     d->has_brush = false;
 
     d->complex_xform = false;
@@ -135,10 +135,10 @@ bool QWin32PrintEngine::begin(QPaintDevice *pdev)
     if (!ok)
         cleanUp();
 
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
     qDebug("QWin32PrintEngine::begin()");
     d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
 
     return ok;
 }
@@ -202,10 +202,10 @@ bool QWin32PrintEngine::newPage()
     if (transparent)
         SetBkMode(d->hdc, TRANSPARENT);
 
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
     qDebug("QWin32PrintEngine::newPage()");
     d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
 
     // ###
     return true;
@@ -243,7 +243,7 @@ bool QWin32PrintEngine::abort()
     return false;
 }
 
-void QWin32PrintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
+void QWin32PrintEngine::drawTextItem(const QPointF &p, const BOBUIextItem &textItem)
 {
     Q_D(const QWin32PrintEngine);
 
@@ -251,11 +251,11 @@ void QWin32PrintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem
     if (!continueCall())
         return;
 
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
+    const BOBUIextItemInt &ti = static_cast<const BOBUIextItemInt &>(textItem);
     QRgb brushColor = state->pen().brush().color().rgb();
-    bool fallBack = state->pen().brush().style() != Qt::SolidPattern
+    bool fallBack = state->pen().brush().style() != BobUI::SolidPattern
                     || qAlpha(brushColor) != 0xff
-                    || d->txop >= QTransform::TxProject
+                    || d->txop >= BOBUIransform::TxProject
                     || !d->embed_fonts;
 
     if (!fallBack) {
@@ -264,7 +264,7 @@ void QWin32PrintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem
         if (ti.fontEngine->type() == QFontEngine::Win) {
             hfont = static_cast<HFONT>(ti.fontEngine->handle());
         }
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
         else if (ti.fontEngine->type() == QFontEngine::DirectWrite) {
             QWindowsFontEngineDirectWrite *fedw = static_cast<QWindowsFontEngineDirectWrite *>(ti.fontEngine);
             hfont = fedw->createHFONT();
@@ -322,17 +322,17 @@ int QWin32PrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
     switch (m) {
     case QPaintDevice::PdmWidth:
         val = d->m_paintRectPixels.width();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
     qDebug() << "QWin32PrintEngine::metric(PdmWidth) = " << val;
     d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         break;
     case QPaintDevice::PdmHeight:
         val = d->m_paintRectPixels.height();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
     qDebug() << "QWin32PrintEngine::metric(PdmHeight) = " << val;
     d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         break;
     case QPaintDevice::PdmDpiX:
         val = res;
@@ -348,17 +348,17 @@ int QWin32PrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
         break;
     case QPaintDevice::PdmWidthMM:
         val = d->m_paintSizeMM.width();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
     qDebug() << "QWin32PrintEngine::metric(PdmWidthMM) = " << val;
     d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         break;
     case QPaintDevice::PdmHeightMM:
         val = d->m_paintSizeMM.height();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
     qDebug() << "QWin32PrintEngine::metric(PdmHeightMM) = " << val;
     d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         break;
     case QPaintDevice::PdmNumColors:
         {
@@ -401,20 +401,20 @@ void QWin32PrintEngine::updateState(const QPaintEngineState &state)
 
     if (state.state() & DirtyPen) {
         d->pen = state.pen();
-        d->has_pen = d->pen.style() != Qt::NoPen && d->pen.isSolid();
+        d->has_pen = d->pen.style() != BobUI::NoPen && d->pen.isSolid();
     }
 
     if (state.state() & DirtyBrush) {
         QBrush brush = state.brush();
-        d->has_brush = brush.style() == Qt::SolidPattern;
+        d->has_brush = brush.style() == BobUI::SolidPattern;
         d->brush_color = brush.color();
     }
 
     if (state.state() & DirtyClipEnabled) {
         if (state.isClipEnabled())
-            updateClipPath(painter()->clipPath(), Qt::ReplaceClip);
+            updateClipPath(painter()->clipPath(), BobUI::ReplaceClip);
         else
-            updateClipPath(QPainterPath(), Qt::NoClip);
+            updateClipPath(QPainterPath(), BobUI::NoClip);
     }
 
     if (state.state() & DirtyClipPath) {
@@ -423,17 +423,17 @@ void QWin32PrintEngine::updateState(const QPaintEngineState &state)
 
     if (state.state() & DirtyClipRegion) {
         QRegion clipRegion = state.clipRegion();
-        QPainterPath clipPath = qt_regionToPath(clipRegion);
+        QPainterPath clipPath = bobui_regionToPath(clipRegion);
         updateClipPath(clipPath, state.clipOperation());
     }
 }
 
-void QWin32PrintEngine::updateClipPath(const QPainterPath &clipPath, Qt::ClipOperation op)
+void QWin32PrintEngine::updateClipPath(const QPainterPath &clipPath, BobUI::ClipOperation op)
 {
     Q_D(QWin32PrintEngine);
 
     bool doclip = true;
-    if (op == Qt::NoClip) {
+    if (op == BobUI::NoClip) {
         SelectClipRgn(d->hdc, nullptr);
         doclip = false;
     }
@@ -449,35 +449,35 @@ void QWin32PrintEngine::updateClipPath(const QPainterPath &clipPath, Qt::ClipOpe
         } else {
             d->composeGdiPath(xformed);
             const int ops[] = {
-                -1,         // Qt::NoClip, covered above
-                RGN_COPY,   // Qt::ReplaceClip
-                RGN_AND,    // Qt::IntersectClip
-                RGN_OR      // Qt::UniteClip
+                -1,         // BobUI::NoClip, covered above
+                RGN_COPY,   // BobUI::ReplaceClip
+                RGN_AND,    // BobUI::IntersectClip
+                RGN_OR      // BobUI::UniteClip
             };
             Q_ASSERT(op > 0 && unsigned(op) <= sizeof(ops) / sizeof(int));
             SelectClipPath(d->hdc, ops[op]);
         }
     }
 
-    QPainterPath aclip = qt_regionToPath(alphaClipping());
+    QPainterPath aclip = bobui_regionToPath(alphaClipping());
     if (!aclip.isEmpty()) {
-        QTransform tx(d->stretch_x, 0, 0, d->stretch_y, d->origin_x, d->origin_y);
+        BOBUIransform tx(d->stretch_x, 0, 0, d->stretch_y, d->origin_x, d->origin_y);
         d->composeGdiPath(tx.map(aclip));
         SelectClipPath(d->hdc, RGN_DIFF);
     }
 }
 
-void QWin32PrintEngine::updateMatrix(const QTransform &m)
+void QWin32PrintEngine::updateMatrix(const BOBUIransform &m)
 {
     Q_D(QWin32PrintEngine);
 
-    QTransform stretch(d->stretch_x, 0, 0, d->stretch_y, d->origin_x, d->origin_y);
+    BOBUIransform stretch(d->stretch_x, 0, 0, d->stretch_y, d->origin_x, d->origin_y);
     d->painterMatrix = m;
     d->matrix = d->painterMatrix * stretch;
     d->txop = d->matrix.type();
-    d->complex_xform = (d->txop > QTransform::TxScale)
+    d->complex_xform = (d->txop > BOBUIransform::TxScale)
                         //or is TxScale and inverted
-                        || (d->txop == QTransform::TxScale
+                        || (d->txop == BOBUIransform::TxScale
                             && (d->matrix.m11() < 0 || d->matrix.m22() < 0));
 }
 
@@ -511,8 +511,8 @@ void QWin32PrintEngine::drawPixmap(const QRectF &targetRect,
     qreal scaleX = 1.0f;
     qreal scaleY = 1.0f;
 
-    QTransform scaleMatrix = QTransform::fromScale(r.width() / pixmap.width(), r.height() / pixmap.height());
-    QTransform adapted = QPixmap::trueMatrix(d->painterMatrix * scaleMatrix,
+    BOBUIransform scaleMatrix = BOBUIransform::fromScale(r.width() / pixmap.width(), r.height() / pixmap.height());
+    BOBUIransform adapted = QPixmap::trueMatrix(d->painterMatrix * scaleMatrix,
                                              pixmap.width(), pixmap.height());
 
     qreal xform_offset_x = adapted.dx();
@@ -566,12 +566,12 @@ void QWin32PrintEngine::drawPixmap(const QRectF &targetRect,
 
             QImage img(QSize(imgw, imgh), QImage::Format_RGB32);
             img.setDevicePixelRatio(pixmap.devicePixelRatio());
-            img.fill(Qt::white);
+            img.fill(BobUI::white);
             QPainter painter(&img);
             painter.drawPixmap(0,0, pixmap, tileSize * x, tileSize * y, imgw, imgh);
             QPixmap p = QPixmap::fromImage(img);
 
-            HBITMAP hbitmap = qt_pixmapToWinHBITMAP(p, HBitmapNoAlpha);
+            HBITMAP hbitmap = bobui_pixmapToWinHBITMAP(p, HBitmapNoAlpha);
             HDC hbitmap_hdc = CreateCompatibleDC(d->hdc);
             HGDIOBJ null_bitmap = SelectObject(hbitmap_hdc, hbitmap);
 
@@ -602,7 +602,7 @@ void QWin32PrintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pm, cons
     } else {
         int dc_state = SaveDC(d->hdc);
 
-        HBITMAP hbitmap = qt_pixmapToWinHBITMAP(pm, HBitmapNoAlpha);
+        HBITMAP hbitmap = bobui_pixmapToWinHBITMAP(pm, HBitmapNoAlpha);
         HDC hbitmap_hdc = CreateCompatibleDC(d->hdc);
         HGDIOBJ null_bitmap = SelectObject(hbitmap_hdc, hbitmap);
 
@@ -689,13 +689,13 @@ void QWin32PrintEnginePrivate::composeGdiPath(const QPainterPath &path)
     if (!EndPath(hdc))
         qErrnoWarning("QWin32PaintEngine::drawPath: EndPath failed");
 
-    SetPolyFillMode(hdc, path.fillRule() == Qt::WindingFill ? WINDING : ALTERNATE);
+    SetPolyFillMode(hdc, path.fillRule() == BobUI::WindingFill ? WINDING : ALTERNATE);
 }
 
 
 void QWin32PrintEnginePrivate::fillPath_dev(const QPainterPath &path, const QColor &color)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " --- QWin32PrintEnginePrivate::fillPath() bound:" << path.boundingRect() << color;
 #endif
 
@@ -715,14 +715,14 @@ void QWin32PrintEnginePrivate::strokePath_dev(const QPainterPath &path, const QC
     brush.lbColor = RGB(color.red(), color.green(), color.blue());
     DWORD capStyle = PS_ENDCAP_SQUARE;
     DWORD joinStyle = PS_JOIN_BEVEL;
-    if (pen.capStyle() == Qt::FlatCap)
+    if (pen.capStyle() == BobUI::FlatCap)
         capStyle = PS_ENDCAP_FLAT;
-    else if (pen.capStyle() == Qt::RoundCap)
+    else if (pen.capStyle() == BobUI::RoundCap)
         capStyle = PS_ENDCAP_ROUND;
 
-    if (pen.joinStyle() == Qt::MiterJoin)
+    if (pen.joinStyle() == BobUI::MiterJoin)
         joinStyle = PS_JOIN_MITER;
-    else if (pen.joinStyle() == Qt::RoundJoin)
+    else if (pen.joinStyle() == BobUI::RoundJoin)
         joinStyle = PS_JOIN_ROUND;
 
     HPEN pen = ExtCreatePen(PS_GEOMETRIC | PS_SOLID | capStyle | joinStyle,
@@ -742,7 +742,7 @@ void QWin32PrintEnginePrivate::fillPath(const QPainterPath &path, const QColor &
 void QWin32PrintEnginePrivate::strokePath(const QPainterPath &path, const QColor &color)
 {
     QPainterPathStroker stroker;
-    if (pen.style() == Qt::CustomDashLine) {
+    if (pen.style() == BobUI::CustomDashLine) {
         stroker.setDashPattern(pen.dashPattern());
         stroker.setDashOffset(pen.dashOffset());
     } else {
@@ -755,7 +755,7 @@ void QWin32PrintEnginePrivate::strokePath(const QPainterPath &path, const QColor
     QPainterPath stroke;
     qreal width = pen.widthF();
     bool cosmetic = pen.isCosmetic();
-    if (pen.style() == Qt::SolidLine && (cosmetic || matrix.type() < QTransform::TxScale)) {
+    if (pen.style() == BobUI::SolidLine && (cosmetic || matrix.type() < BOBUIransform::TxScale)) {
         strokePath_dev(path * matrix, color, width);
     } else {
         stroker.setWidth(width);
@@ -763,7 +763,7 @@ void QWin32PrintEnginePrivate::strokePath(const QPainterPath &path, const QColor
             stroke = stroker.createStroke(path * matrix);
         } else {
             stroke = stroker.createStroke(path) * painterMatrix;
-            QTransform stretch(stretch_x, 0, 0, stretch_y, origin_x, origin_y);
+            BOBUIransform stretch(stretch_x, 0, 0, stretch_y, origin_x, origin_y);
             stroke = stroke * stretch;
         }
 
@@ -777,7 +777,7 @@ void QWin32PrintEnginePrivate::strokePath(const QPainterPath &path, const QColor
 
 void QWin32PrintEngine::drawPath(const QPainterPath &path)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " - QWin32PrintEngine::drawPath(), bounds: " << path.boundingRect();
 #endif
 
@@ -797,7 +797,7 @@ void QWin32PrintEngine::drawPath(const QPainterPath &path)
 
 void QWin32PrintEngine::drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " - QWin32PrintEngine::drawPolygon(), pointCount: " << pointCount;
 #endif
 
@@ -843,7 +843,7 @@ void QWin32PrintEnginePrivate::initialize()
     if (!m_printDevice.isValid())
         return;
 
-    txop = QTransform::TxNone;
+    txop = BOBUIransform::TxNone;
 
     QString printerName = m_printDevice.id();
     bool ok = OpenPrinter(reinterpret_cast<LPWSTR>(const_cast<ushort *>(printerName.utf16())),
@@ -915,10 +915,10 @@ void QWin32PrintEnginePrivate::initialize()
         updatePageLayout();
     }
 
-#if defined QT_DEBUG_DRAW || defined QT_DEBUG_METRICS
+#if defined BOBUI_DEBUG_DRAW || defined BOBUI_DEBUG_METRICS
     qDebug("QWin32PrintEngine::initialize()");
     debugMetrics();
-#endif // QT_DEBUG_DRAW || QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_DRAW || BOBUI_DEBUG_METRICS
 }
 
 void QWin32PrintEnginePrivate::initializeDevMode(DEVMODE *devMode)
@@ -1131,10 +1131,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         else
             d->m_pageLayout.setMode(QPageLayout::StandardMode);
         d->updateMetrics();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
         qDebug() << "QWin32PrintEngine::setProperty(PPK_FullPage," << value.toBool() << + ")";
         d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         break;
 
     case PPK_CopyCount:
@@ -1156,10 +1156,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         d->m_pageLayout.setOrientation(orientation);
         d->doReinit();
         d->updateMetrics();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
         qDebug() << "QWin32PrintEngine::setProperty(PPK_Orientation," << orientation << ')';
         d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         break;
     }
 
@@ -1179,10 +1179,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         if (pageSize.isValid()) {
             d->setPageSize(pageSize);
             d->doReinit();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
             qDebug() << "QWin32PrintEngine::setProperty(PPK_PageSize," << value.toInt() << ')';
             d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         }
         break;
     }
@@ -1195,10 +1195,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         if (pageSize.isValid()) {
             d->setPageSize(pageSize);
             d->doReinit();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
             qDebug() << "QWin32PrintEngine::setProperty(PPK_PaperName," << value.toString() << ')';
             d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         }
         break;
     }
@@ -1246,10 +1246,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         d->stretch_x = d->dpi_x / double(d->resolution);
         d->stretch_y = d->dpi_y / double(d->resolution);
         d->updateMetrics();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
         qDebug() << "QWin32PrintEngine::setProperty(PPK_Resolution," << value.toInt() << ')';
         d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         break;
     }
 
@@ -1260,10 +1260,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         if (pageSize.isValid()) {
             d->setPageSize(pageSize);
             d->doReinit();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
             qDebug() << "QWin32PrintEngine::setProperty(PPK_WindowsPageSize," << value.toInt() << ')';
             d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
             break;
         }
         break;
@@ -1276,10 +1276,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         if (pageSize.isValid()) {
             d->setPageSize(pageSize);
             d->doReinit();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
             qDebug() << "QWin32PrintEngine::setProperty(PPK_CustomPaperSize," << value.toSizeF() << ')';
             d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         }
         break;
     }
@@ -1292,10 +1292,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
                                              margins.at(2).toReal(), margins.at(3).toReal()),
                                    QPageLayout::OutOfBoundsPolicy::Clamp);
         d->updateMetrics();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
         qDebug() << "QWin32PrintEngine::setProperty(PPK_PageMargins," << margins << ')';
         d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         break;
     }
 
@@ -1307,10 +1307,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         if (pageSize.isValid()) {
             d->setPageSize(pageSize);
             d->doReinit();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
             qDebug() << "QWin32PrintEngine::setProperty(PPK_QPageSize," << pageSize << ')';
             d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         }
         break;
     }
@@ -1320,10 +1320,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         d->m_pageLayout.setUnits(pair.second);
         d->m_pageLayout.setMargins(pair.first, QPageLayout::OutOfBoundsPolicy::Clamp);
         d->updateMetrics();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
         qDebug() << "QWin32PrintEngine::setProperty(PPK_QPageMargins," << pair.first << pair.second << ')';
         d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         break;
     }
 
@@ -1336,10 +1336,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
             d->m_pageLayout.setUnits(pageLayout.units());
             d->m_pageLayout.setMargins(pageLayout.margins(), QPageLayout::OutOfBoundsPolicy::Clamp);
             d->updateMetrics();
-#ifdef QT_DEBUG_METRICS
+#ifdef BOBUI_DEBUG_METRICS
             qDebug() << "QWin32PrintEngine::setProperty(PPK_QPageLayout," << pageLayout << ')';
             d->debugMetrics();
-#endif // QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_METRICS
         }
         break;
     }
@@ -1608,10 +1608,10 @@ void QWin32PrintEngine::setGlobalDevMode(HGLOBAL globalDevNames, HGLOBAL globalD
     if (d->hdc)
         d->initHDC();
 
-#if defined QT_DEBUG_DRAW || defined QT_DEBUG_METRICS
+#if defined BOBUI_DEBUG_DRAW || defined BOBUI_DEBUG_METRICS
     qDebug("QWin32PrintEngine::setGlobalDevMode()");
     d->debugMetrics();
-#endif // QT_DEBUG_DRAW || QT_DEBUG_METRICS
+#endif // BOBUI_DEBUG_DRAW || BOBUI_DEBUG_METRICS
 }
 
 HGLOBAL QWin32PrintEngine::globalDevMode()
@@ -1632,7 +1632,7 @@ void QWin32PrintEnginePrivate::setPageSize(const QPageSize &pageSize)
     const QPageSize usePageSize = printerPageSize.isValid() ? printerPageSize : pageSize;
 
     const QMarginsF printable = m_printDevice.printableMargins(usePageSize, m_pageLayout.orientation(), resolution);
-    m_pageLayout.setPageSize(usePageSize, qt_convertMargins(printable, QPageLayout::Point, m_pageLayout.units()));
+    m_pageLayout.setPageSize(usePageSize, bobui_convertMargins(printable, QPageLayout::Point, m_pageLayout.units()));
 
     // Setup if Windows custom size, i.e. not a known Windows ID
     if (printerPageSize.isValid()) {
@@ -1706,7 +1706,7 @@ void QWin32PrintEnginePrivate::updateMetrics()
     const int pageHeight = m_pageLayout.fullRectPixels(dpi_y).height();
     const qreal pageScaleX = (devWidth && pageWidth) ? qreal(devWidth) / pageWidth : 1;
     const qreal pageScaleY = (devHeight && pageHeight) ? qreal(devHeight) / pageHeight : 1;
-    m_paintRectPixels = QTransform::fromScale(pageScaleX, pageScaleY).mapRect(m_paintRectPixels);
+    m_paintRectPixels = BOBUIransform::fromScale(pageScaleX, pageScaleY).mapRect(m_paintRectPixels);
 
     QSizeF sizeMM = m_pageLayout.paintRect(QPageLayout::Millimeter).size();
     m_paintSizeMM = QSize(qRound(sizeMM.width()), qRound(sizeMM.height()));
@@ -1730,8 +1730,8 @@ void QWin32PrintEnginePrivate::debugMetrics() const
     qDebug() << "";
 }
 
-static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC hdc,
-                               const QTransform &xform, const QPointF &topLeft)
+static void draw_text_item_win(const QPointF &pos, const BOBUIextItemInt &ti, HDC hdc,
+                               const BOBUIransform &xform, const QPointF &topLeft)
 {
     QPointF baseline_pos = xform.inverted().map(xform.map(pos) - topLeft);
 
@@ -1744,10 +1744,10 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
     bool deleteFont = false;
 
     if (ti.fontEngine->type() == QFontEngine::Win) {
-        if (ti.fontEngine->supportsTransformation(QTransform::fromScale(0.5, 0.5))) // is TrueType font?
+        if (ti.fontEngine->supportsTransformation(BOBUIransform::fromScale(0.5, 0.5))) // is TrueType font?
             hfont = static_cast<HFONT>(ti.fontEngine->handle());
     }
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     else if (ti.fontEngine->type() == QFontEngine::DirectWrite) {
         QWindowsFontEngineDirectWrite *fedw = static_cast<QWindowsFontEngineDirectWrite *>(ti.fontEngine);
         hfont = fedw->createHFONT();
@@ -1763,7 +1763,7 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
     unsigned int options = ETO_GLYPH_INDEX;
     QGlyphLayout glyphs = ti.glyphs;
 
-    bool fast = !has_kerning && !(ti.flags & QTextItem::RightToLeft);
+    bool fast = !has_kerning && !(ti.flags & BOBUIextItem::RightToLeft);
     for (int i = 0; fast && i < glyphs.numGlyphs; i++) {
         if (glyphs.offsets[i].x != 0 || glyphs.offsets[i].y != 0 || glyphs.justifications[i].space_18d6 != 0
             || glyphs.attributes[i].dontPrint) {
@@ -1797,7 +1797,7 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
         QVarLengthArray<QFixedPoint> positions;
         QVarLengthArray<glyph_t> _glyphs;
 
-        QTransform matrix = QTransform::fromTranslate(baseline_pos.x(), baseline_pos.y());
+        BOBUIransform matrix = BOBUIransform::fromTranslate(baseline_pos.x(), baseline_pos.y());
         ti.fontEngine->getGlyphPositions(ti.glyphs, matrix, ti.flags,
             _glyphs, positions);
         if (_glyphs.isEmpty()) {
@@ -1832,6 +1832,6 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
         DeleteObject(hfont);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER

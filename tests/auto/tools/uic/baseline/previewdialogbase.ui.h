@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'previewdialogbase.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,22 +9,22 @@
 #ifndef PREVIEWDIALOGBASE_H
 #define PREVIEWDIALOGBASE_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QProgressBar>
-#include <QtWidgets/QScrollArea>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QProgressBar>
+#include <BobUIWidgets/QScrollArea>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIreeWidget>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_PreviewDialogBase
 {
@@ -37,7 +37,7 @@ public:
     QComboBox *paperOrientationCombo;
     QSpacerItem *spacerItem;
     QHBoxLayout *hboxLayout1;
-    QTreeWidget *pageList;
+    BOBUIreeWidget *pageList;
     QScrollArea *previewArea;
     QHBoxLayout *hboxLayout2;
     QProgressBar *progressBar;
@@ -104,7 +104,7 @@ public:
 #endif
         hboxLayout1->setContentsMargins(0, 0, 0, 0);
         hboxLayout1->setObjectName("hboxLayout1");
-        pageList = new QTreeWidget(PreviewDialogBase);
+        pageList = new BOBUIreeWidget(PreviewDialogBase);
         pageList->setObjectName("pageList");
         pageList->setIndentation(0);
         pageList->setRootIsDecorated(false);
@@ -143,13 +143,13 @@ public:
         progressBar->setSizePolicy(sizePolicy2);
         progressBar->setValue(0);
         progressBar->setTextVisible(false);
-        progressBar->setOrientation(Qt::Orientation::Horizontal);
+        progressBar->setOrientation(BobUI::Orientation::Horizontal);
 
         hboxLayout2->addWidget(progressBar);
 
         buttonBox = new QDialogButtonBox(PreviewDialogBase);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         hboxLayout2->addWidget(buttonBox);
@@ -157,10 +157,10 @@ public:
 
         vboxLayout->addLayout(hboxLayout2);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(paperSizeCombo);
         label_2->setBuddy(paperOrientationCombo);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(PreviewDialogBase);
         QObject::connect(buttonBox, &QDialogButtonBox::accepted, PreviewDialogBase, qOverload<>(&QDialog::accept));
@@ -174,8 +174,8 @@ public:
         PreviewDialogBase->setWindowTitle(QCoreApplication::translate("PreviewDialogBase", "Print Preview", nullptr));
         label->setText(QCoreApplication::translate("PreviewDialogBase", "&Paper Size:", nullptr));
         label_2->setText(QCoreApplication::translate("PreviewDialogBase", "&Orientation:", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem = pageList->headerItem();
-        ___qtreewidgetitem->setText(0, QCoreApplication::translate("PreviewDialogBase", "1", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem = pageList->headerItem();
+        ___bobuireewidgetitem->setText(0, QCoreApplication::translate("PreviewDialogBase", "1", nullptr));
     } // retranslateUi
 
 };
@@ -184,6 +184,6 @@ namespace Ui {
     class PreviewDialogBase: public Ui_PreviewDialogBase {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PREVIEWDIALOGBASE_H

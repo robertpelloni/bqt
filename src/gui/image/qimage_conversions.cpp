@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <private/qguiapplication_p.h>
 #include <private/qcolortransform_p.h>
@@ -13,15 +13,15 @@
 
 #include <qendian.h>
 #include <qrgbafloat.h>
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 #include <private/qlatch_p.h>
-#include <qthreadpool.h>
-#include <private/qthreadpool_p.h>
+#include <bobuihreadpool.h>
+#include <private/bobuihreadpool_p.h>
 #endif
 
-#include <QtCore/q20utility.h>
+#include <BobUICore/q20utility.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QDefaultColorTables
 {
@@ -69,7 +69,7 @@ static const uchar bitflip[256] = {
     15, 143, 79, 207, 47, 175, 111, 239, 31, 159, 95, 223, 63, 191, 127, 255
 };
 
-const uchar *qt_get_bitflip_array()
+const uchar *bobui_get_bitflip_array()
 {
     return bitflip;
 }
@@ -96,7 +96,7 @@ void qGamma_correct_back_to_linear_cs(QImage *image)
 
 // The drawhelper conversions from/to RGB32 are passthroughs which is not always correct for general image conversion
 #if !defined(__ARM_NEON__) || !(Q_BYTE_ORDER == Q_LITTLE_ENDIAN)
-static void QT_FASTCALL storeRGB32FromARGB32PM(uchar *dest, const uint *src, int index, int count,
+static void BOBUI_FASTCALL storeRGB32FromARGB32PM(uchar *dest, const uint *src, int index, int count,
                                                const QList<QRgb> *, QDitherInfo *)
 {
     uint *d = reinterpret_cast<uint *>(dest) + index;
@@ -105,7 +105,7 @@ static void QT_FASTCALL storeRGB32FromARGB32PM(uchar *dest, const uint *src, int
 }
 #endif
 
-static void QT_FASTCALL storeRGB32FromARGB32(uchar *dest, const uint *src, int index, int count,
+static void BOBUI_FASTCALL storeRGB32FromARGB32(uchar *dest, const uint *src, int index, int count,
                                              const QList<QRgb> *, QDitherInfo *)
 {
     uint *d = reinterpret_cast<uint *>(dest) + index;
@@ -113,7 +113,7 @@ static void QT_FASTCALL storeRGB32FromARGB32(uchar *dest, const uint *src, int i
         d[i] = 0xff000000 | src[i];
 }
 
-static const uint *QT_FASTCALL fetchRGB32ToARGB32PM(uint *buffer, const uchar *src, int index, int count,
+static const uint *BOBUI_FASTCALL fetchRGB32ToARGB32PM(uint *buffer, const uchar *src, int index, int count,
                                                     const QList<QRgb> *, QDitherInfo *)
 {
     const uint *s = reinterpret_cast<const uint *>(src) + index;
@@ -122,19 +122,19 @@ static const uint *QT_FASTCALL fetchRGB32ToARGB32PM(uint *buffer, const uchar *s
     return buffer;
 }
 
-#ifdef QT_COMPILER_SUPPORTS_SSE4_1
-extern void QT_FASTCALL storeRGB32FromARGB32PM_sse4(uchar *dest, const uint *src, int index, int count,
+#ifdef BOBUI_COMPILER_SUPPORTS_SSE4_1
+extern void BOBUI_FASTCALL storeRGB32FromARGB32PM_sse4(uchar *dest, const uint *src, int index, int count,
                                                     const QList<QRgb> *, QDitherInfo *);
 #elif defined(__ARM_NEON__) && (Q_BYTE_ORDER == Q_LITTLE_ENDIAN)
-extern void QT_FASTCALL storeRGB32FromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
+extern void BOBUI_FASTCALL storeRGB32FromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
                                                     const QList<QRgb> *, QDitherInfo *);
-#elif defined QT_COMPILER_SUPPORTS_LSX
+#elif defined BOBUI_COMPILER_SUPPORTS_LSX
 // from painting/qdrawhelper_lsx.cpp
-extern void QT_FASTCALL storeRGB32FromARGB32PM_lsx(uchar *dest, const uint *src, int index, int count,
+extern void BOBUI_FASTCALL storeRGB32FromARGB32PM_lsx(uchar *dest, const uint *src, int index, int count,
                                                    const QList<QRgb> *, QDitherInfo *);
 #endif
 
-void convert_generic(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags flags)
+void convert_generic(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags flags)
 {
     // Cannot be used with indexed formats.
     Q_ASSERT(dest->format > QImage::Format_Indexed8);
@@ -152,12 +152,12 @@ void convert_generic(QImageData *dest, const QImageData *src, Qt::ImageConversio
         if (src->format == QImage::Format_RGB32)
             fetch = fetchRGB32ToARGB32PM;
         if (dest->format == QImage::Format_RGB32) {
-#ifdef QT_COMPILER_SUPPORTS_SSE4_1
+#ifdef BOBUI_COMPILER_SUPPORTS_SSE4_1
             if (qCpuHasFeature(SSE4_1))
                 store = storeRGB32FromARGB32PM_sse4;
             else
                 store = storeRGB32FromARGB32PM;
-#elif defined QT_COMPILER_SUPPORTS_LSX
+#elif defined BOBUI_COMPILER_SUPPORTS_LSX
             if (qCpuHasFeature(LSX))
                 store = storeRGB32FromARGB32PM_lsx;
             else
@@ -172,7 +172,7 @@ void convert_generic(QImageData *dest, const QImageData *src, Qt::ImageConversio
     if (srcLayout->hasAlphaChannel && !srcLayout->premultiplied &&
             !destLayout->hasAlphaChannel && destLayout->storeFromRGB32) {
         // Avoid unnecessary premultiply and unpremultiply when converting from unpremultiplied src format.
-        fetch = qPixelLayouts[qt_toPremultipliedFormat(src->format)].fetchToARGB32PM;
+        fetch = qPixelLayouts[bobui_toPremultipliedFormat(src->format)].fetchToARGB32PM;
         if (dest->format == QImage::Format_RGB32)
             store = storeRGB32FromARGB32;
         else
@@ -186,7 +186,7 @@ void convert_generic(QImageData *dest, const QImageData *src, Qt::ImageConversio
         uchar *destData = dest->data + dest->bytes_per_line * yStart;
         QDitherInfo dither;
         QDitherInfo *ditherPtr = nullptr;
-        if ((flags & Qt::PreferDither) && (flags & Qt::Dither_Mask) != Qt::ThresholdDither)
+        if ((flags & BobUI::PreferDither) && (flags & BobUI::Dither_Mask) != BobUI::ThresholdDither)
             ditherPtr = &dither;
         for (int y = yStart; y < yEnd; ++y) {
             dither.y = y;
@@ -207,12 +207,12 @@ void convert_generic(QImageData *dest, const QImageData *src, Qt::ImageConversio
         }
     };
 
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     int segments = (qsizetype(src->width) * src->height) >> 16;
     segments = std::min(segments, src->height);
 
-    QThreadPool *threadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    if (segments <= 1 || !threadPool || threadPool->contains(QThread::currentThread()))
+    BOBUIhreadPool *threadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    if (segments <= 1 || !threadPool || threadPool->contains(BOBUIhread::currentThread()))
         return convertSegment(0, src->height);
 
     QLatch latch(segments);
@@ -231,7 +231,7 @@ void convert_generic(QImageData *dest, const QImageData *src, Qt::ImageConversio
 #endif
 }
 
-void convert_generic_over_rgb64(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+void convert_generic_over_rgb64(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(dest->format > QImage::Format_Indexed8);
     Q_ASSERT(src->format > QImage::Format_Indexed8);
@@ -262,12 +262,12 @@ void convert_generic_over_rgb64(QImageData *dest, const QImageData *src, Qt::Ima
             destData += dest->bytes_per_line;
         }
     };
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     int segments = (qsizetype(src->width) * src->height) >> 16;
     segments = std::min(segments, src->height);
 
-    QThreadPool *threadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    if (segments <= 1 || !threadPool || threadPool->contains(QThread::currentThread()))
+    BOBUIhreadPool *threadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    if (segments <= 1 || !threadPool || threadPool->contains(BOBUIhread::currentThread()))
         return convertSegment(0, src->height);
 
     QLatch latch(segments);
@@ -286,8 +286,8 @@ void convert_generic_over_rgb64(QImageData *dest, const QImageData *src, Qt::Ima
 #endif
 }
 
-#if QT_CONFIG(raster_fp)
-void convert_generic_over_rgba32f(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+#if BOBUI_CONFIG(raster_fp)
+void convert_generic_over_rgba32f(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(dest->format >= QImage::Format_RGBX16FPx4);
     Q_ASSERT(src->format >= QImage::Format_RGBX16FPx4);
@@ -316,12 +316,12 @@ void convert_generic_over_rgba32f(QImageData *dest, const QImageData *src, Qt::I
             destData += dest->bytes_per_line;
         }
     };
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     int segments = (qsizetype(src->width) * src->height) >> 16;
     segments = std::min(segments, src->height);
 
-    QThreadPool *threadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    if (segments <= 1 || !threadPool || threadPool->contains(QThread::currentThread()))
+    BOBUIhreadPool *threadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    if (segments <= 1 || !threadPool || threadPool->contains(BOBUIhread::currentThread()))
         return convertSegment(0, src->height);
 
     QLatch latch(segments);
@@ -341,13 +341,13 @@ void convert_generic_over_rgba32f(QImageData *dest, const QImageData *src, Qt::I
 }
 #endif
 
-bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, Qt::ImageConversionFlags flags)
+bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, BobUI::ImageConversionFlags flags)
 {
     // Cannot be used with indexed formats or between formats with different pixel depths.
     Q_ASSERT(dst_format > QImage::Format_Indexed8);
     Q_ASSERT(dst_format < QImage::NImageFormats);
     Q_ASSERT(data->format > QImage::Format_Indexed8);
-    const int destDepth = qt_depthForFormat(dst_format);
+    const int destDepth = bobui_depthForFormat(dst_format);
     if (data->depth < destDepth)
         return false;
 
@@ -356,8 +356,8 @@ bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, Qt::Im
 
     // The precision here is only ARGB32PM so don't convert between higher accuracy
     // formats.
-    Q_ASSERT(!qt_highColorPrecision(data->format, !destLayout->hasAlphaChannel)
-             || !qt_highColorPrecision(dst_format, !srcLayout->hasAlphaChannel));
+    Q_ASSERT(!bobui_highColorPrecision(data->format, !destLayout->hasAlphaChannel)
+             || !bobui_highColorPrecision(dst_format, !srcLayout->hasAlphaChannel));
 
     QImageData::ImageSizeParameters params = { data->bytes_per_line, data->nbytes };
     if (data->depth != destDepth) {
@@ -376,12 +376,12 @@ bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, Qt::Im
         if (data->format == QImage::Format_RGB32)
             fetch = fetchRGB32ToARGB32PM;
         if (dst_format == QImage::Format_RGB32) {
-#ifdef QT_COMPILER_SUPPORTS_SSE4_1
+#ifdef BOBUI_COMPILER_SUPPORTS_SSE4_1
             if (qCpuHasFeature(SSE4_1))
                 store = storeRGB32FromARGB32PM_sse4;
             else
                 store = storeRGB32FromARGB32PM;
-#elif defined QT_COMPILER_SUPPORTS_LSX
+#elif defined BOBUI_COMPILER_SUPPORTS_LSX
             if (qCpuHasFeature(LSX))
                 store = storeRGB32FromARGB32PM_lsx;
             else
@@ -396,7 +396,7 @@ bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, Qt::Im
     if (srcLayout->hasAlphaChannel && !srcLayout->premultiplied &&
             !destLayout->hasAlphaChannel && destLayout->storeFromRGB32) {
         // Avoid unnecessary premultiply and unpremultiply when converting from unpremultiplied src format.
-        fetch = qPixelLayouts[qt_toPremultipliedFormat(data->format)].fetchToARGB32PM;
+        fetch = qPixelLayouts[bobui_toPremultipliedFormat(data->format)].fetchToARGB32PM;
         if (dst_format == QImage::Format_RGB32)
             store = storeRGB32FromARGB32;
         else
@@ -410,7 +410,7 @@ bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, Qt::Im
         uchar *destData = srcData; // This can be temporarily wrong if we doing a shrinking conversion
         QDitherInfo dither;
         QDitherInfo *ditherPtr = nullptr;
-        if ((flags & Qt::PreferDither) && (flags & Qt::Dither_Mask) != Qt::ThresholdDither)
+        if ((flags & BobUI::PreferDither) && (flags & BobUI::Dither_Mask) != BobUI::ThresholdDither)
             ditherPtr = &dither;
         for (int y = yStart; y < yEnd; ++y) {
             dither.y = y;
@@ -430,11 +430,11 @@ bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, Qt::Im
             destData += params.bytesPerLine;
         }
     };
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     int segments = (qsizetype(data->width) * data->height) >> 16;
     segments = std::min(segments, data->height);
-    QThreadPool *threadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    if (segments > 1 && threadPool && !threadPool->contains(QThread::currentThread())) {
+    BOBUIhreadPool *threadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    if (segments > 1 && threadPool && !threadPool->contains(BOBUIhread::currentThread())) {
         QLatch latch(segments);
         int y = 0;
         for (int i = 0; i < segments; ++i) {
@@ -475,12 +475,12 @@ bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, Qt::Im
     return true;
 }
 
-bool convert_generic_inplace_over_rgb64(QImageData *data, QImage::Format dst_format, Qt::ImageConversionFlags)
+bool convert_generic_inplace_over_rgb64(QImageData *data, QImage::Format dst_format, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format > QImage::Format_Indexed8);
     Q_ASSERT(dst_format > QImage::Format_Indexed8);
     Q_ASSERT(dst_format < QImage::NImageFormats);
-    const int destDepth = qt_depthForFormat(dst_format);
+    const int destDepth = bobui_depthForFormat(dst_format);
     if (data->depth < destDepth)
         return false;
 
@@ -499,8 +499,8 @@ bool convert_generic_inplace_over_rgb64(QImageData *data, QImage::Format dst_for
     if (srcLayout->hasAlphaChannel && !srcLayout->premultiplied &&
         destLayout->hasAlphaChannel && !destLayout->premultiplied) {
         // Avoid unnecessary premultiply and unpremultiply when converting between two unpremultiplied formats.
-        fetch = qPixelLayouts[qt_toPremultipliedFormat(data->format)].fetchToRGBA64PM;
-        store = qStoreFromRGBA64PM[qt_toPremultipliedFormat(dst_format)];
+        fetch = qPixelLayouts[bobui_toPremultipliedFormat(data->format)].fetchToRGBA64PM;
+        store = qStoreFromRGBA64PM[bobui_toPremultipliedFormat(dst_format)];
     }
 
     auto convertSegment = [=](int yStart, int yEnd) {
@@ -524,11 +524,11 @@ bool convert_generic_inplace_over_rgb64(QImageData *data, QImage::Format dst_for
             destData += params.bytesPerLine;
         }
     };
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     int segments = (qsizetype(data->width) * data->height) >> 16;
     segments = std::min(segments, data->height);
-    QThreadPool *threadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    if (segments > 1 && threadPool && !threadPool->contains(QThread::currentThread())) {
+    BOBUIhreadPool *threadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    if (segments > 1 && threadPool && !threadPool->contains(BOBUIhread::currentThread())) {
         QLatch latch(segments);
         int y = 0;
         for (int i = 0; i < segments; ++i) {
@@ -569,13 +569,13 @@ bool convert_generic_inplace_over_rgb64(QImageData *data, QImage::Format dst_for
     return true;
 }
 
-#if QT_CONFIG(raster_fp)
-bool convert_generic_inplace_over_rgba32f(QImageData *data, QImage::Format dst_format, Qt::ImageConversionFlags)
+#if BOBUI_CONFIG(raster_fp)
+bool convert_generic_inplace_over_rgba32f(QImageData *data, QImage::Format dst_format, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format >= QImage::Format_RGBX16FPx4);
     Q_ASSERT(dst_format >= QImage::Format_RGBX16FPx4);
     Q_ASSERT(dst_format < QImage::NImageFormats);
-    const int destDepth = qt_depthForFormat(dst_format);
+    const int destDepth = bobui_depthForFormat(dst_format);
     if (data->depth < destDepth)
         return false;
 
@@ -594,8 +594,8 @@ bool convert_generic_inplace_over_rgba32f(QImageData *data, QImage::Format dst_f
     if (srcLayout->hasAlphaChannel && !srcLayout->premultiplied &&
         destLayout->hasAlphaChannel && !destLayout->premultiplied) {
         // Avoid unnecessary premultiply and unpremultiply when converting between two unpremultiplied formats.
-        fetch = qFetchToRGBA32F[qt_toPremultipliedFormat(data->format)];
-        store = qStoreFromRGBA32F[qt_toPremultipliedFormat(dst_format)];
+        fetch = qFetchToRGBA32F[bobui_toPremultipliedFormat(data->format)];
+        store = qStoreFromRGBA32F[bobui_toPremultipliedFormat(dst_format)];
     }
 
     auto convertSegment = [=](int yStart, int yEnd) {
@@ -619,11 +619,11 @@ bool convert_generic_inplace_over_rgba32f(QImageData *data, QImage::Format dst_f
             destData += params.bytesPerLine;
         }
     };
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     int segments = (qsizetype(data->width) * data->height) >> 16;
     segments = std::min(segments, data->height);
-    QThreadPool *threadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    if (segments > 1 && threadPool && !threadPool->contains(QThread::currentThread())) {
+    BOBUIhreadPool *threadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    if (segments > 1 && threadPool && !threadPool->contains(BOBUIhread::currentThread())) {
         QLatch latch(segments);
         int y = 0;
         for (int i = 0; i < segments; ++i) {
@@ -665,7 +665,7 @@ bool convert_generic_inplace_over_rgba32f(QImageData *data, QImage::Format dst_f
 }
 #endif
 
-static void convert_passthrough(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_passthrough(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->width == dest->width);
     Q_ASSERT(src->height == dest->height);
@@ -683,7 +683,7 @@ static void convert_passthrough(QImageData *dest, const QImageData *src, Qt::Ima
 }
 
 template<QImage::Format Format>
-static bool convert_passthrough_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_passthrough_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     static_assert(Format > QImage::Format_Invalid);
     static_assert(Format < QImage::NImageFormats);
@@ -691,7 +691,7 @@ static bool convert_passthrough_inplace(QImageData *data, Qt::ImageConversionFla
     return true;
 }
 
-Q_GUI_EXPORT void QT_FASTCALL qt_convert_rgb888_to_rgb32(quint32 *dest_data, const uchar *src_data, int len)
+Q_GUI_EXPORT void BOBUI_FASTCALL bobui_convert_rgb888_to_rgb32(quint32 *dest_data, const uchar *src_data, int len)
 {
     int pixel = 0;
     // prolog: align input to 32bit
@@ -726,7 +726,7 @@ Q_GUI_EXPORT void QT_FASTCALL qt_convert_rgb888_to_rgb32(quint32 *dest_data, con
     }
 }
 
-Q_GUI_EXPORT void QT_FASTCALL qt_convert_rgb888_to_rgbx8888(quint32 *dest_data, const uchar *src_data, int len)
+Q_GUI_EXPORT void BOBUI_FASTCALL bobui_convert_rgb888_to_rgbx8888(quint32 *dest_data, const uchar *src_data, int len)
 {
     int pixel = 0;
     // prolog: align input to 32bit
@@ -768,10 +768,10 @@ Q_GUI_EXPORT void QT_FASTCALL qt_convert_rgb888_to_rgbx8888(quint32 *dest_data, 
     }
 }
 
-typedef void (QT_FASTCALL *Rgb888ToRgbConverter)(quint32 *dst, const uchar *src, int len);
+typedef void (BOBUI_FASTCALL *Rgb888ToRgbConverter)(quint32 *dst, const uchar *src, int len);
 
 template <bool rgbx>
-static void convert_RGB888_to_RGB(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_RGB888_to_RGB(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_RGB888 || src->format == QImage::Format_BGR888);
     if (rgbx ^ (src->format == QImage::Format_BGR888))
@@ -784,7 +784,7 @@ static void convert_RGB888_to_RGB(QImageData *dest, const QImageData *src, Qt::I
     const uchar *src_data = (uchar *) src->data;
     quint32 *dest_data = (quint32 *) dest->data;
 
-    Rgb888ToRgbConverter line_converter= rgbx ? qt_convert_rgb888_to_rgbx8888 : qt_convert_rgb888_to_rgb32;
+    Rgb888ToRgbConverter line_converter= rgbx ? bobui_convert_rgb888_to_rgbx8888 : bobui_convert_rgb888_to_rgb32;
 
     for (int i = 0; i < src->height; ++i) {
         line_converter(dest_data, src_data, src->width);
@@ -793,7 +793,7 @@ static void convert_RGB888_to_RGB(QImageData *dest, const QImageData *src, Qt::I
     }
 }
 
-static void convert_ARGB_to_RGBx(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_ARGB_to_RGBx(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_ARGB32);
     Q_ASSERT(dest->format == QImage::Format_RGBX8888);
@@ -817,7 +817,7 @@ static void convert_ARGB_to_RGBx(QImageData *dest, const QImageData *src, Qt::Im
     }
 }
 
-static void convert_ARGB_to_RGBA(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_ARGB_to_RGBA(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_ARGB32 || src->format == QImage::Format_ARGB32_Premultiplied);
     Q_ASSERT(dest->format == QImage::Format_RGBA8888 || dest->format == QImage::Format_RGBA8888_Premultiplied);
@@ -842,7 +842,7 @@ static void convert_ARGB_to_RGBA(QImageData *dest, const QImageData *src, Qt::Im
 }
 
 template<QImage::Format DestFormat>
-static bool convert_ARGB_to_RGBA_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_ARGB_to_RGBA_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     static_assert(DestFormat > QImage::Format_Invalid);
     static_assert(DestFormat < QImage::NImageFormats);
@@ -865,7 +865,7 @@ static bool convert_ARGB_to_RGBA_inplace(QImageData *data, Qt::ImageConversionFl
     return true;
 }
 
-static void convert_RGBA_to_ARGB(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_RGBA_to_ARGB(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_RGBX8888 || src->format == QImage::Format_RGBA8888 || src->format == QImage::Format_RGBA8888_Premultiplied);
     Q_ASSERT(dest->format == QImage::Format_ARGB32 || dest->format == QImage::Format_ARGB32_Premultiplied);
@@ -890,7 +890,7 @@ static void convert_RGBA_to_ARGB(QImageData *dest, const QImageData *src, Qt::Im
 }
 
 template<QImage::Format DestFormat>
-static bool convert_RGBA_to_ARGB_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_RGBA_to_ARGB_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     static_assert(DestFormat > QImage::Format_Invalid);
     static_assert(DestFormat < QImage::NImageFormats);
@@ -912,7 +912,7 @@ static bool convert_RGBA_to_ARGB_inplace(QImageData *data, Qt::ImageConversionFl
     return true;
 }
 
-static void convert_rgbswap_generic(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_rgbswap_generic(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->width == dest->width);
     Q_ASSERT(src->height == dest->height);
@@ -933,7 +933,7 @@ static void convert_rgbswap_generic(QImageData *dest, const QImageData *src, Qt:
     }
 }
 
-static bool convert_rgbswap_generic_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_rgbswap_generic_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     const RbSwapFunc func = qPixelLayouts[data->format].rbSwap;
     Q_ASSERT(func);
@@ -973,8 +973,8 @@ static bool convert_rgbswap_generic_inplace(QImageData *data, Qt::ImageConversio
     return true;
 }
 
-template<QtPixelOrder PixelOrder, bool RGBA>
-static void convert_ARGB_to_A2RGB30(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+template<BobUIPixelOrder PixelOrder, bool RGBA>
+static void convert_ARGB_to_A2RGB30(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
 
     Q_ASSERT(RGBA || src->format == QImage::Format_ARGB32);
@@ -1006,8 +1006,8 @@ static void convert_ARGB_to_A2RGB30(QImageData *dest, const QImageData *src, Qt:
     }
 }
 
-template<QtPixelOrder PixelOrder, bool RGBA>
-static bool convert_ARGB_to_A2RGB30_inplace(QImageData *data, Qt::ImageConversionFlags)
+template<BobUIPixelOrder PixelOrder, bool RGBA>
+static bool convert_ARGB_to_A2RGB30_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(RGBA || data->format == QImage::Format_ARGB32);
     Q_ASSERT(!RGBA || data->format == QImage::Format_RGBA8888);
@@ -1057,7 +1057,7 @@ static inline uint qUnpremultiplyRgb30(uint rgb30)
 }
 
 template<bool rgbswap>
-static void convert_A2RGB30_PM_to_RGB30(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_A2RGB30_PM_to_RGB30(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_A2RGB30_Premultiplied || src->format == QImage::Format_A2BGR30_Premultiplied);
     Q_ASSERT(dest->format == QImage::Format_RGB30 || dest->format == QImage::Format_BGR30);
@@ -1083,7 +1083,7 @@ static void convert_A2RGB30_PM_to_RGB30(QImageData *dest, const QImageData *src,
 }
 
 template<bool rgbswap>
-static bool convert_A2RGB30_PM_to_RGB30_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_A2RGB30_PM_to_RGB30_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format == QImage::Format_A2RGB30_Premultiplied || data->format == QImage::Format_A2BGR30_Premultiplied);
 
@@ -1107,7 +1107,7 @@ static bool convert_A2RGB30_PM_to_RGB30_inplace(QImageData *data, Qt::ImageConve
     return true;
 }
 
-static bool convert_BGR30_to_A2RGB30_inplace(QImageData *data, Qt::ImageConversionFlags flags)
+static bool convert_BGR30_to_A2RGB30_inplace(QImageData *data, BobUI::ImageConversionFlags flags)
 {
     Q_ASSERT(data->format == QImage::Format_RGB30 || data->format == QImage::Format_BGR30);
     if (!convert_rgbswap_generic_inplace(data, flags))
@@ -1120,8 +1120,8 @@ static bool convert_BGR30_to_A2RGB30_inplace(QImageData *data, Qt::ImageConversi
     return true;
 }
 
-template<QtPixelOrder PixelOrder, bool RGBA>
-static void convert_A2RGB30_PM_to_ARGB(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+template<BobUIPixelOrder PixelOrder, bool RGBA>
+static void convert_A2RGB30_PM_to_ARGB(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_A2RGB30_Premultiplied || src->format == QImage::Format_A2BGR30_Premultiplied);
     Q_ASSERT(RGBA ? dest->format == QImage::Format_RGBA8888 : dest->format == QImage::Format_ARGB32);
@@ -1147,8 +1147,8 @@ static void convert_A2RGB30_PM_to_ARGB(QImageData *dest, const QImageData *src, 
     }
 }
 
-template<QtPixelOrder PixelOrder, bool RGBA>
-static bool convert_A2RGB30_PM_to_ARGB_inplace(QImageData *data, Qt::ImageConversionFlags)
+template<BobUIPixelOrder PixelOrder, bool RGBA>
+static bool convert_A2RGB30_PM_to_ARGB_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format == QImage::Format_A2RGB30_Premultiplied || data->format == QImage::Format_A2BGR30_Premultiplied);
 
@@ -1172,7 +1172,7 @@ static bool convert_A2RGB30_PM_to_ARGB_inplace(QImageData *data, Qt::ImageConver
     return true;
 }
 
-static void convert_RGBA_to_RGB(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_RGBA_to_RGB(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_RGBA8888 || src->format == QImage::Format_RGBX8888);
     Q_ASSERT(dest->format == QImage::Format_RGB32);
@@ -1196,7 +1196,7 @@ static void convert_RGBA_to_RGB(QImageData *dest, const QImageData *src, Qt::Ima
     }
 }
 
-static void swap_bit_order(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void swap_bit_order(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_Mono || src->format == QImage::Format_MonoLSB);
     Q_ASSERT(dest->format == QImage::Format_Mono || dest->format == QImage::Format_MonoLSB);
@@ -1217,7 +1217,7 @@ static void swap_bit_order(QImageData *dest, const QImageData *src, Qt::ImageCon
     }
 }
 
-static void mask_alpha_converter(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void mask_alpha_converter(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->width == dest->width);
     Q_ASSERT(src->height == dest->height);
@@ -1240,7 +1240,7 @@ static void mask_alpha_converter(QImageData *dest, const QImageData *src, Qt::Im
 }
 
 template<QImage::Format DestFormat>
-static bool mask_alpha_converter_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool mask_alpha_converter_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     static_assert(DestFormat > QImage::Format_Invalid);
     static_assert(DestFormat < QImage::NImageFormats);
@@ -1262,7 +1262,7 @@ static bool mask_alpha_converter_inplace(QImageData *data, Qt::ImageConversionFl
     return true;
 }
 
-static void mask_alpha_converter_RGBx(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags flags)
+static void mask_alpha_converter_RGBx(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags flags)
 {
 #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
     return mask_alpha_converter(dest, src, flags);
@@ -1289,7 +1289,7 @@ static void mask_alpha_converter_RGBx(QImageData *dest, const QImageData *src, Q
 #endif
 }
 
-static bool mask_alpha_converter_rgbx_inplace(QImageData *data, Qt::ImageConversionFlags flags)
+static bool mask_alpha_converter_rgbx_inplace(QImageData *data, BobUI::ImageConversionFlags flags)
 {
 #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
     return mask_alpha_converter_inplace<QImage::Format_RGBX8888>(data, flags);
@@ -1313,7 +1313,7 @@ static bool mask_alpha_converter_rgbx_inplace(QImageData *data, Qt::ImageConvers
 }
 
 template<bool RGBA>
-static void convert_RGBA64_to_ARGB32(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_RGBA64_to_ARGB32(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_RGBA64);
     Q_ASSERT(RGBA || dest->format == QImage::Format_ARGB32);
@@ -1327,14 +1327,14 @@ static void convert_RGBA64_to_ARGB32(QImageData *dest, const QImageData *src, Qt
     for (int i = 0; i < src->height; ++i) {
         uint *d = reinterpret_cast<uint *>(destData);
         const QRgba64 *s = reinterpret_cast<const QRgba64 *>(srcData);
-        qt_convertRGBA64ToARGB32<RGBA>(d, s, src->width);
+        bobui_convertRGBA64ToARGB32<RGBA>(d, s, src->width);
         srcData += src->bytes_per_line;
         destData += dest->bytes_per_line;
     }
 }
 
 template<bool RGBA>
-static void convert_ARGB32_to_RGBA64(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_ARGB32_to_RGBA64(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(RGBA || src->format == QImage::Format_ARGB32);
     Q_ASSERT(!RGBA || src->format == QImage::Format_RGBA8888);
@@ -1344,7 +1344,7 @@ static void convert_ARGB32_to_RGBA64(QImageData *dest, const QImageData *src, Qt
 
     const uchar *src_data = src->data;
     uchar *dest_data = dest->data;
-    const FetchAndConvertPixelsFunc64 fetch = qPixelLayouts[qt_toPremultipliedFormat(src->format)].fetchToRGBA64PM;
+    const FetchAndConvertPixelsFunc64 fetch = qPixelLayouts[bobui_toPremultipliedFormat(src->format)].fetchToRGBA64PM;
 
     for (int i = 0; i < src->height; ++i) {
         fetch(reinterpret_cast<QRgba64 *>(dest_data), src_data, 0, src->width, nullptr, nullptr);
@@ -1353,7 +1353,7 @@ static void convert_ARGB32_to_RGBA64(QImageData *dest, const QImageData *src, Qt
     }
 }
 
-static void convert_RGBA64_to_RGBx64(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_RGBA64_to_RGBx64(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_RGBA64);
     Q_ASSERT(dest->format == QImage::Format_RGBX64);
@@ -1378,7 +1378,7 @@ static void convert_RGBA64_to_RGBx64(QImageData *dest, const QImageData *src, Qt
     }
 }
 
-static bool convert_RGBA64_to_RGBx64_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_RGBA64_to_RGBx64_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format == QImage::Format_RGBA64);
 
@@ -1397,7 +1397,7 @@ static bool convert_RGBA64_to_RGBx64_inplace(QImageData *data, Qt::ImageConversi
     return true;
 }
 
-static void convert_gray16_to_RGBA64(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_gray16_to_RGBA64(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_Grayscale16);
     Q_ASSERT(dest->format == QImage::Format_RGBA64 || dest->format == QImage::Format_RGBX64 ||
@@ -1423,7 +1423,7 @@ static void convert_gray16_to_RGBA64(QImageData *dest, const QImageData *src, Qt
 }
 
 template<bool Premultiplied>
-static void convert_ARGB_to_gray8(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_ARGB_to_gray8(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(dest->format == QImage::Format_Grayscale8);
     Q_ASSERT(src->format == QImage::Format_RGB32 ||
@@ -1453,7 +1453,7 @@ static void convert_ARGB_to_gray8(QImageData *dest, const QImageData *src, Qt::I
 }
 
 template<bool Premultiplied>
-static void convert_ARGB_to_gray16(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_ARGB_to_gray16(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(dest->format == QImage::Format_Grayscale16);
     Q_ASSERT(src->format == QImage::Format_RGB32 ||
@@ -1492,7 +1492,7 @@ static void convert_ARGB_to_gray16(QImageData *dest, const QImageData *src, Qt::
 }
 
 template<bool Premultiplied>
-static void convert_RGBA64_to_gray8(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_RGBA64_to_gray8(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(dest->format == QImage::Format_Grayscale8);
     Q_ASSERT(src->format == QImage::Format_RGBX64 ||
@@ -1522,7 +1522,7 @@ static void convert_RGBA64_to_gray8(QImageData *dest, const QImageData *src, Qt:
             const int len = std::min(src->width - j, BufferSize);
             tfd->apply(gray_line, src_line + j, len, flags);
             for (int k = 0; k < len; ++k)
-                dest_line[j + k] = qt_div_257(gray_line[k]);
+                dest_line[j + k] = bobui_div_257(gray_line[k]);
             j += len;
         }
         src_data += sbpl;
@@ -1531,7 +1531,7 @@ static void convert_RGBA64_to_gray8(QImageData *dest, const QImageData *src, Qt:
 }
 
 template<bool Premultiplied>
-static void convert_RGBA64_to_gray16(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_RGBA64_to_gray16(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(dest->format == QImage::Format_Grayscale16);
     Q_ASSERT(src->format == QImage::Format_RGBX64 ||
@@ -1562,7 +1562,7 @@ static void convert_RGBA64_to_gray16(QImageData *dest, const QImageData *src, Qt
 }
 
 template<bool MaskAlpha>
-static void convert_RGBA16FPM_to_RGBA16F(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_RGBA16FPM_to_RGBA16F(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_RGBA16FPx4_Premultiplied);
     Q_ASSERT(dest->format == QImage::Format_RGBA16FPx4 || dest->format == QImage::Format_RGBX16FPx4);
@@ -1589,7 +1589,7 @@ static void convert_RGBA16FPM_to_RGBA16F(QImageData *dest, const QImageData *src
 }
 
 template<bool MaskAlpha>
-static bool convert_RGBA16FPM_to_RGBA16F_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_RGBA16FPM_to_RGBA16F_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format == QImage::Format_RGBA16FPx4_Premultiplied);
 
@@ -1631,7 +1631,7 @@ static QList<QRgb> fix_color_table(const QList<QRgb> &ctbl, QImage::Format forma
 //
 
 void dither_to_Mono(QImageData *dst, const QImageData *src,
-                           Qt::ImageConversionFlags flags, bool fromalpha)
+                           BobUI::ImageConversionFlags flags, bool fromalpha)
 {
     Q_ASSERT(src->width == dst->width);
     Q_ASSERT(src->height == dst->height);
@@ -1644,16 +1644,16 @@ void dither_to_Mono(QImageData *dst, const QImageData *src,
     enum { Threshold, Ordered, Diffuse } dithermode;
 
     if (fromalpha) {
-        if ((flags & Qt::AlphaDither_Mask) == Qt::DiffuseAlphaDither)
+        if ((flags & BobUI::AlphaDither_Mask) == BobUI::DiffuseAlphaDither)
             dithermode = Diffuse;
-        else if ((flags & Qt::AlphaDither_Mask) == Qt::OrderedAlphaDither)
+        else if ((flags & BobUI::AlphaDither_Mask) == BobUI::OrderedAlphaDither)
             dithermode = Ordered;
         else
             dithermode = Threshold;
     } else {
-        if ((flags & Qt::Dither_Mask) == Qt::ThresholdDither)
+        if ((flags & BobUI::Dither_Mask) == BobUI::ThresholdDither)
             dithermode = Threshold;
-        else if ((flags & Qt::Dither_Mask) == Qt::OrderedDither)
+        else if ((flags & BobUI::Dither_Mask) == BobUI::OrderedDither)
             dithermode = Ordered;
         else
             dithermode = Diffuse;
@@ -1784,7 +1784,7 @@ void dither_to_Mono(QImageData *dst, const QImageData *src,
                 int j = 0;
                 if (fromalpha) {
                     while (p < end) {
-                        if ((*p++ >> 24) >= qt_bayer_matrix[j++&15][i&15])
+                        if ((*p++ >> 24) >= bobui_bayer_matrix[j++&15][i&15])
                             *m |= 1 << bit;
                         if (bit == 0) {
                             m++;
@@ -1795,7 +1795,7 @@ void dither_to_Mono(QImageData *dst, const QImageData *src,
                     }
                 } else {
                     while (p < end) {
-                        if (q20::cmp_less(qGray(*p++), qt_bayer_matrix[j++&15][i&15]))
+                        if (q20::cmp_less(qGray(*p++), bobui_bayer_matrix[j++&15][i&15]))
                             *m |= 1 << bit;
                         if (bit == 0) {
                             m++;
@@ -1816,7 +1816,7 @@ void dither_to_Mono(QImageData *dst, const QImageData *src,
                 int bit = 7;
                 int j = 0;
                 while (p < end) {
-                    if ((uint)gray[*p++] < qt_bayer_matrix[j++&15][i&15])
+                    if ((uint)gray[*p++] < bobui_bayer_matrix[j++&15][i&15])
                         *m |= 1 << bit;
                     if (bit == 0) {
                         m++;
@@ -1903,15 +1903,15 @@ void dither_to_Mono(QImageData *dst, const QImageData *src,
     }
 }
 
-static void convert_X_to_Mono(QImageData *dst, const QImageData *src, Qt::ImageConversionFlags flags)
+static void convert_X_to_Mono(QImageData *dst, const QImageData *src, BobUI::ImageConversionFlags flags)
 {
     dither_to_Mono(dst, src, flags, false);
 }
 
-static void convert_ARGB_PM_to_Mono(QImageData *dst, const QImageData *src, Qt::ImageConversionFlags flags)
+static void convert_ARGB_PM_to_Mono(QImageData *dst, const QImageData *src, BobUI::ImageConversionFlags flags)
 {
     QScopedPointer<QImageData> tmp(QImageData::create(QSize(src->width, src->height), QImage::Format_ARGB32));
-    convert_generic(tmp.data(), src, Qt::AutoColor);
+    convert_generic(tmp.data(), src, BobUI::AutoColor);
     dither_to_Mono(dst, tmp.data(), flags, false);
 }
 
@@ -1930,14 +1930,14 @@ struct QRgbMap {
     QRgb  rgb;
 };
 
-static void convert_RGB_to_Indexed8(QImageData *dst, const QImageData *src, Qt::ImageConversionFlags flags)
+static void convert_RGB_to_Indexed8(QImageData *dst, const QImageData *src, BobUI::ImageConversionFlags flags)
 {
     Q_ASSERT(src->format == QImage::Format_RGB32 || src->format == QImage::Format_ARGB32);
     Q_ASSERT(dst->format == QImage::Format_Indexed8);
     Q_ASSERT(src->width == dst->width);
     Q_ASSERT(src->height == dst->height);
 
-    bool    do_quant = (flags & Qt::DitherMode_Mask) == Qt::PreferDither
+    bool    do_quant = (flags & BobUI::DitherMode_Mask) == BobUI::PreferDither
                        || src->format == QImage::Format_ARGB32;
     uint alpha_mask = src->format == QImage::Format_RGB32 ? 0xff000000 : 0;
 
@@ -1977,7 +1977,7 @@ static void convert_RGB_to_Indexed8(QImageData *dst, const QImageData *src, Qt::
         }
     }
 
-    if ((flags & Qt::DitherMode_Mask) != Qt::PreferDither) {
+    if ((flags & BobUI::DitherMode_Mask) != BobUI::PreferDither) {
         dst->colortable.resize(256);
         const uchar *src_data = src->data;
         uchar *dest_data = dst->data;
@@ -2037,7 +2037,7 @@ static void convert_RGB_to_Indexed8(QImageData *dst, const QImageData *src, Qt::
 
         const uchar *src_data = src->data;
         uchar *dest_data = dst->data;
-        if ((flags & Qt::Dither_Mask) == Qt::ThresholdDither) {
+        if ((flags & BobUI::Dither_Mask) == BobUI::ThresholdDither) {
             for (int y = 0; y < src->height; y++) {
                 const QRgb *p = (const QRgb *)src_data;
                 const QRgb *end = p + src->width;
@@ -2057,7 +2057,7 @@ static void convert_RGB_to_Indexed8(QImageData *dst, const QImageData *src, Qt::
                 src_data += src->bytes_per_line;
                 dest_data += dst->bytes_per_line;
             }
-        } else if ((flags & Qt::Dither_Mask) == Qt::DiffuseDither) {
+        } else if ((flags & BobUI::Dither_Mask) == BobUI::DiffuseDither) {
             int* line1[3];
             int* line2[3];
             int* pv[3];
@@ -2141,7 +2141,7 @@ static void convert_RGB_to_Indexed8(QImageData *dst, const QImageData *src, Qt::
 
                 int x = 0;
                 while (p < end) {
-                    uint d = qt_bayer_matrix[y & 15][x & 15] << 8;
+                    uint d = bobui_bayer_matrix[y & 15][x & 15] << 8;
 
 #define DITHER(p, d, m) ((uchar) ((((256 * (m) + (m) + 1)) * (p) + (d)) >> 16))
                     *b++ =
@@ -2188,19 +2188,19 @@ static void convert_RGB_to_Indexed8(QImageData *dst, const QImageData *src, Qt::
     }
 }
 
-static void convert_ARGB_PM_to_Indexed8(QImageData *dst, const QImageData *src, Qt::ImageConversionFlags flags)
+static void convert_ARGB_PM_to_Indexed8(QImageData *dst, const QImageData *src, BobUI::ImageConversionFlags flags)
 {
     QScopedPointer<QImageData> tmp(QImageData::create(QSize(src->width, src->height), QImage::Format_ARGB32));
-    convert_generic(tmp.data(), src, Qt::AutoColor);
+    convert_generic(tmp.data(), src, BobUI::AutoColor);
     convert_RGB_to_Indexed8(dst, tmp.data(), flags);
 }
 
-static void convert_ARGB_to_Indexed8(QImageData *dst, const QImageData *src, Qt::ImageConversionFlags flags)
+static void convert_ARGB_to_Indexed8(QImageData *dst, const QImageData *src, BobUI::ImageConversionFlags flags)
 {
     convert_RGB_to_Indexed8(dst, src, flags);
 }
 
-static void convert_Indexed8_to_X32(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_Indexed8_to_X32(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_Indexed8);
     Q_ASSERT(dest->format == QImage::Format_RGB32
@@ -2240,7 +2240,7 @@ static void convert_Indexed8_to_X32(QImageData *dest, const QImageData *src, Qt:
     }
 }
 
-static void convert_Mono_to_X32(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_Mono_to_X32(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_Mono || src->format == QImage::Format_MonoLSB);
     Q_ASSERT(dest->format == QImage::Format_RGB32
@@ -2282,7 +2282,7 @@ static void convert_Mono_to_X32(QImageData *dest, const QImageData *src, Qt::Ima
 }
 
 
-static void convert_Mono_to_Indexed8(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_Mono_to_Indexed8(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_Mono || src->format == QImage::Format_MonoLSB);
     Q_ASSERT(dest->format == QImage::Format_Indexed8);
@@ -2337,7 +2337,7 @@ static void copy_8bit_pixels(QImageData *dest, const QImageData *src)
     }
 }
 
-static void convert_Indexed8_to_Alpha8(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_Indexed8_to_Alpha8(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_Indexed8);
     Q_ASSERT(dest->format == QImage::Format_Alpha8);
@@ -2365,7 +2365,7 @@ static void convert_Indexed8_to_Alpha8(QImageData *dest, const QImageData *src, 
     }
 }
 
-static void convert_Indexed8_to_Grayscale8(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_Indexed8_to_Grayscale8(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_Indexed8);
     Q_ASSERT(dest->format == QImage::Format_Grayscale8);
@@ -2399,7 +2399,7 @@ static void convert_Indexed8_to_Grayscale8(QImageData *dest, const QImageData *s
     }
 }
 
-static bool convert_Indexed8_to_Alpha8_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_Indexed8_to_Alpha8_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format == QImage::Format_Indexed8);
 
@@ -2418,7 +2418,7 @@ static bool convert_Indexed8_to_Alpha8_inplace(QImageData *data, Qt::ImageConver
     return true;
 }
 
-static bool convert_Indexed8_to_Grayscale8_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_Indexed8_to_Grayscale8_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format == QImage::Format_Indexed8);
 
@@ -2437,7 +2437,7 @@ static bool convert_Indexed8_to_Grayscale8_inplace(QImageData *data, Qt::ImageCo
     return true;
 }
 
-static void convert_Alpha8_to_Indexed8(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_Alpha8_to_Indexed8(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_Alpha8);
     Q_ASSERT(dest->format == QImage::Format_Indexed8);
@@ -2447,7 +2447,7 @@ static void convert_Alpha8_to_Indexed8(QImageData *dest, const QImageData *src, 
     dest->colortable = defaultColorTables->alpha;
 }
 
-static void convert_Grayscale8_to_Indexed8(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_Grayscale8_to_Indexed8(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_Grayscale8);
     Q_ASSERT(dest->format == QImage::Format_Indexed8);
@@ -2457,7 +2457,7 @@ static void convert_Grayscale8_to_Indexed8(QImageData *dest, const QImageData *s
     dest->colortable = defaultColorTables->gray;
 }
 
-static bool convert_Alpha8_to_Indexed8_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_Alpha8_to_Indexed8_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format == QImage::Format_Alpha8);
 
@@ -2467,7 +2467,7 @@ static bool convert_Alpha8_to_Indexed8_inplace(QImageData *data, Qt::ImageConver
     return true;
 }
 
-static bool convert_Grayscale8_to_Indexed8_inplace(QImageData *data, Qt::ImageConversionFlags)
+static bool convert_Grayscale8_to_Indexed8_inplace(QImageData *data, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(data->format == QImage::Format_Grayscale8);
 
@@ -2478,7 +2478,7 @@ static bool convert_Grayscale8_to_Indexed8_inplace(QImageData *data, Qt::ImageCo
 }
 
 template <bool SourceIsPremultiplied>
-static void convert_ARGB32_to_CMYK8888(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+static void convert_ARGB32_to_CMYK8888(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_RGB32 ||
              src->format == QImage::Format_ARGB32 ||
@@ -2762,9 +2762,9 @@ static void qInitImageConversions()
             convert_passthrough_inplace<QImage::Format_RGBA32FPx4_Premultiplied>;
 
     // Now architecture specific conversions:
-#if defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSSE3)
+#if defined(__SSE2__) && defined(BOBUI_COMPILER_SUPPORTS_SSSE3)
     if (qCpuHasFeature(SSSE3)) {
-        extern void convert_RGB888_to_RGB32_ssse3(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags);
+        extern void convert_RGB888_to_RGB32_ssse3(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags);
         qimage_converter_map[QImage::Format_RGB888][QImage::Format_RGB32] = convert_RGB888_to_RGB32_ssse3;
         qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32] = convert_RGB888_to_RGB32_ssse3;
         qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32_Premultiplied] = convert_RGB888_to_RGB32_ssse3;
@@ -2774,9 +2774,9 @@ static void qInitImageConversions()
     }
 #endif
 
-#if defined(QT_COMPILER_SUPPORTS_LSX)
+#if defined(BOBUI_COMPILER_SUPPORTS_LSX)
     if (qCpuHasFeature(LSX)) {
-        extern void convert_RGB888_to_RGB32_lsx(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags);
+        extern void convert_RGB888_to_RGB32_lsx(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags);
         qimage_converter_map[QImage::Format_RGB888][QImage::Format_RGB32] = convert_RGB888_to_RGB32_lsx;
         qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32] = convert_RGB888_to_RGB32_lsx;
         qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32_Premultiplied] = convert_RGB888_to_RGB32_lsx;
@@ -2786,9 +2786,9 @@ static void qInitImageConversions()
     }
 #endif
 
-#if defined(QT_COMPILER_SUPPORTS_LASX)
+#if defined(BOBUI_COMPILER_SUPPORTS_LASX)
     if (qCpuHasFeature(LASX)) {
-        extern void convert_RGB888_to_RGB32_lasx(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags);
+        extern void convert_RGB888_to_RGB32_lasx(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags);
         qimage_converter_map[QImage::Format_RGB888][QImage::Format_RGB32] = convert_RGB888_to_RGB32_lasx;
         qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32] = convert_RGB888_to_RGB32_lasx;
         qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32_Premultiplied] = convert_RGB888_to_RGB32_lasx;
@@ -2799,17 +2799,17 @@ static void qInitImageConversions()
 #endif
 
 #if defined(__ARM_NEON__)
-    extern void convert_RGB888_to_RGB32_neon(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags);
+    extern void convert_RGB888_to_RGB32_neon(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags);
     qimage_converter_map[QImage::Format_RGB888][QImage::Format_RGB32] = convert_RGB888_to_RGB32_neon;
     qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32] = convert_RGB888_to_RGB32_neon;
     qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32_Premultiplied] = convert_RGB888_to_RGB32_neon;
 #endif
 
 #if defined(__MIPS_DSPR2__)
-    extern bool convert_ARGB_to_ARGB_PM_inplace_mips_dspr2(QImageData *data, Qt::ImageConversionFlags);
+    extern bool convert_ARGB_to_ARGB_PM_inplace_mips_dspr2(QImageData *data, BobUI::ImageConversionFlags);
     qimage_inplace_converter_map[QImage::Format_ARGB32][QImage::Format_ARGB32_Premultiplied] = convert_ARGB_to_ARGB_PM_inplace_mips_dspr2;
 
-    extern void convert_RGB888_to_RGB32_mips_dspr2(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags);
+    extern void convert_RGB888_to_RGB32_mips_dspr2(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags);
     qimage_converter_map[QImage::Format_RGB888][QImage::Format_RGB32] = convert_RGB888_to_RGB32_mips_dspr2;
     qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32] = convert_RGB888_to_RGB32_mips_dspr2;
     qimage_converter_map[QImage::Format_RGB888][QImage::Format_ARGB32_Premultiplied] = convert_RGB888_to_RGB32_mips_dspr2;
@@ -2818,4 +2818,4 @@ static void qInitImageConversions()
 
 Q_CONSTRUCTOR_FUNCTION(qInitImageConversions);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

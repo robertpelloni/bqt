@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDataStream>
 #include <QElapsedTimer>
@@ -8,7 +8,7 @@
 #include <QMap>
 #include <QScopeGuard>
 #include <QSet>
-#include <QTest>
+#include <BOBUIest>
 
 // These tests are way too slow to be part of automatic unit tests
 class tst_QDataStream : public QObject
@@ -40,11 +40,11 @@ private slots:
 
 void tst_QDataStream::initTestCase()
 {
-    qputenv("QTEST_FUNCTION_TIMEOUT", "9000000");
+    qputenv("BOBUIEST_FUNCTION_TIMEOUT", "9000000");
 
-    QTest::addColumn<QDataStream::Version>("streamVersion");
-    QTest::addRow("current") << QDataStream::Qt_DefaultCompiledVersion;
-    QTest::addRow("Qt_6_6") << QDataStream::Qt_6_6;
+    BOBUIest::addColumn<QDataStream::Version>("streamVersion");
+    BOBUIest::addRow("current") << QDataStream::BobUI_DefaultCompiledVersion;
+    BOBUIest::addRow("BobUI_6_6") << QDataStream::BobUI_6_6;
 }
 
 template <class T>
@@ -117,7 +117,7 @@ void tst_QDataStream::fill(QHash<qsizetype, qsizetype> &input)
 template <class T>
 void tst_QDataStream::stream_big()
 {
-#if QT_POINTER_SIZE > 4
+#if BOBUI_POINTER_SIZE > 4
     QFETCH_GLOBAL(const QDataStream::Version, streamVersion);
     QElapsedTimer timer;
     T input;
@@ -132,7 +132,7 @@ void tst_QDataStream::stream_big()
         QSKIP("Not enough memory to copy into QDataStream.");
     }
     qDebug("Streamed into QDataStream in %lld ms", timer.elapsed());
-    if (streamVersion < QDataStream::Qt_6_7) {
+    if (streamVersion < QDataStream::BobUI_6_7) {
         // old versions do not support data size more than 4 GiB
         QCOMPARE(inputstream.status(), QDataStream::SizeLimitExceeded);
         QVERIFY(ba.isEmpty());
@@ -210,7 +210,7 @@ void tst_QDataStream::stream_bigCString()
         QSKIP("Not enough memory to copy into QDataStream.");
     }
     qDebug("Streamed into QDataStream in %lld ms", timer.elapsed());
-    if (streamVersion < QDataStream::Qt_6_7) {
+    if (streamVersion < QDataStream::BobUI_6_7) {
         // old versions do not support data size more than 4 GiB
         QCOMPARE(inputstream.status(), QDataStream::SizeLimitExceeded);
         QVERIFY(ba.isEmpty());
@@ -230,6 +230,6 @@ void tst_QDataStream::stream_bigCString()
     }
 }
 
-QTEST_MAIN(tst_QDataStream)
+BOBUIEST_MAIN(tst_QDataStream)
 
 #include "tst_manualqdatastream.moc"

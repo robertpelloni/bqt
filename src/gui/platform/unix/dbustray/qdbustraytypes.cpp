@@ -1,9 +1,9 @@
 // Copyright (C) 2009 Marco Martin <notmart@gmail.com>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
 #include "qdbustraytypes_p.h"
 
@@ -15,18 +15,18 @@
 #include <QImage>
 #include <QPixmap>
 #include <QDebug>
-#include <QtEndian>
+#include <BobUIEndian>
 #include <QPainter>
 #include <QGuiApplication>
 #include <qpa/qplatformmenu.h>
 #include <private/qdbusplatformmenu_p.h>
 #include <private/qicon_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QXdgDBusImageStruct)
-QT_IMPL_METATYPE_EXTERN(QXdgDBusImageVector)
-QT_IMPL_METATYPE_EXTERN(QXdgDBusToolTipStruct)
+BOBUI_IMPL_METATYPE_EXTERN(QXdgDBusImageStruct)
+BOBUI_IMPL_METATYPE_EXTERN(QXdgDBusImageVector)
+BOBUI_IMPL_METATYPE_EXTERN(QXdgDBusToolTipStruct)
 
 static const int IconSizeLimit = 64;
 static const int IconNormalSmallSize = 22;
@@ -70,7 +70,7 @@ QXdgDBusImageVector iconToQXdgDBusImageVector(const QIcon &icon)
         if (im.height() != im.width()) {
             int maxSize = qMax(im.width(), im.height());
             QImage padded(maxSize, maxSize, QImage::Format_ARGB32);
-            padded.fill(Qt::transparent);
+            padded.fill(BobUI::transparent);
             QPainter painter(&padded);
             painter.drawImage((maxSize - im.width()) / 2, (maxSize - im.height()) / 2, im);
             im = padded;
@@ -178,5 +178,5 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, QXdgDBusToolTipSt
     return argument;
 }
 
-QT_END_NAMESPACE
-#endif // QT_NO_SYSTEMTRAYICON
+BOBUI_END_NAMESPACE
+#endif // BOBUI_NO_SYSTEMTRAYICON

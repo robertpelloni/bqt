@@ -1,8 +1,8 @@
 // Copyright (C) 2016 Stephen Kelly <steveire@gmail,com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
 class TestClass : public QObject
 {
@@ -21,5 +21,5 @@ void TestClass::doTest()
     QCOMPARE(f.readAll().trimmed(), QByteArrayLiteral("This is a test."));
 }
 
-QTEST_MAIN(TestClass)
+BOBUIEST_MAIN(TestClass)
 #include "main.moc"

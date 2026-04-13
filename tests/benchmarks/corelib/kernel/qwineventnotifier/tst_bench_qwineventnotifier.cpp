@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/qglobal.h>
-#include <QtCore/qwineventnotifier.h>
-#include <QtCore/qeventloop.h>
-#include <QtCore/qvector.h>
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qt_windows.h>
+#include <BOBUIest>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qwineventnotifier.h>
+#include <BobUICore/qeventloop.h>
+#include <BobUICore/qvector.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/bobui_windows.h>
 
 class tst_QWinEventNotifier : public QObject
 {
@@ -79,11 +79,11 @@ protected:
 
 void tst_QWinEventNotifier::waves_data()
 {
-    QTest::addColumn<int>("waves");
-    QTest::addColumn<int>("notifiers");
+    BOBUIest::addColumn<int>("waves");
+    BOBUIest::addColumn<int>("notifiers");
     for (int waves : {1, 3, 10}) {
         for (int notifiers : {10, 100, 1000})
-            QTest::addRow("waves: %d, notifiers: %d", waves, notifiers) << waves << notifiers;
+            BOBUIest::addRow("waves: %d, notifiers: %d", waves, notifiers) << waves << notifiers;
     }
 }
 
@@ -106,6 +106,6 @@ void tst_QWinEventNotifier::waves()
     emit factory.stop();
 }
 
-QTEST_MAIN(tst_QWinEventNotifier)
+BOBUIEST_MAIN(tst_QWinEventNotifier)
 
 #include "tst_bench_qwineventnotifier.moc"

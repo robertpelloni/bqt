@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qplatformdefs.h"
 #include "qdir.h"
 #include "qdir_p.h"
 #include "qabstractfileengine_p.h"
 #include "qfsfileengine_p.h"
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 #include "qdebug.h"
 #endif
 #include "qdirlisting.h"
 #include "qdatetime.h"
 #include "qstring.h"
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #  include <qregularexpression.h>
 #endif
 #include "qvarlengtharray.h"
@@ -22,7 +22,7 @@
 #include "qfilesystemengine_p.h"
 #include <qstringbuilder.h>
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #  include <qcollator.h>
 #  include "qreadwritelock.h"
 #  include "qmutex.h"
@@ -34,9 +34,9 @@
 #include <memory>
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #if defined(Q_OS_WIN)
 static QString driveSpec(const QString &path)
@@ -222,32 +222,32 @@ struct QDirSortItem
 
 class QDirSortItemComparator
 {
-    QDir::SortFlags qt_cmp_si_sort_flags;
+    QDir::SortFlags bobui_cmp_si_sort_flags;
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     QCollator *collator = nullptr;
 #endif
 public:
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     QDirSortItemComparator(QDir::SortFlags flags, QCollator *coll = nullptr)
-        : qt_cmp_si_sort_flags(flags), collator(coll)
+        : bobui_cmp_si_sort_flags(flags), collator(coll)
     {
-        Q_ASSERT(!qt_cmp_si_sort_flags.testAnyFlag(QDir::LocaleAware) || collator);
+        Q_ASSERT(!bobui_cmp_si_sort_flags.testAnyFlag(QDir::LocaleAware) || collator);
 
-        if (collator && qt_cmp_si_sort_flags.testAnyFlag(QDir::IgnoreCase))
-            collator->setCaseSensitivity(Qt::CaseInsensitive);
+        if (collator && bobui_cmp_si_sort_flags.testAnyFlag(QDir::IgnoreCase))
+            collator->setCaseSensitivity(BobUI::CaseInsensitive);
     }
 #else
     QDirSortItemComparator(QDir::SortFlags flags)
-        : qt_cmp_si_sort_flags(flags)
+        : bobui_cmp_si_sort_flags(flags)
     {
     }
 #endif
     bool operator()(const QDirSortItem &, const QDirSortItem &) const;
 
-    int compareStrings(const QString &a, const QString &b, Qt::CaseSensitivity cs) const
+    int compareStrings(const QString &a, const QString &b, BobUI::CaseSensitivity cs) const
     {
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
         if (collator)
             return collator->compare(a, b);
 #endif
@@ -260,22 +260,22 @@ bool QDirSortItemComparator::operator()(const QDirSortItem &n1, const QDirSortIt
     const QDirSortItem* f1 = &n1;
     const QDirSortItem* f2 = &n2;
 
-    if ((qt_cmp_si_sort_flags & QDir::DirsFirst) && (f1->item.isDir() != f2->item.isDir()))
+    if ((bobui_cmp_si_sort_flags & QDir::DirsFirst) && (f1->item.isDir() != f2->item.isDir()))
         return f1->item.isDir();
-    if ((qt_cmp_si_sort_flags & QDir::DirsLast) && (f1->item.isDir() != f2->item.isDir()))
+    if ((bobui_cmp_si_sort_flags & QDir::DirsLast) && (f1->item.isDir() != f2->item.isDir()))
         return !f1->item.isDir();
 
-    const bool ic = qt_cmp_si_sort_flags.testAnyFlag(QDir::IgnoreCase);
-    const auto qtcase = ic ? Qt::CaseInsensitive : Qt::CaseSensitive;
+    const bool ic = bobui_cmp_si_sort_flags.testAnyFlag(QDir::IgnoreCase);
+    const auto bobuicase = ic ? BobUI::CaseInsensitive : BobUI::CaseSensitive;
 
     qint64 r = 0;
-    int sortBy = ((qt_cmp_si_sort_flags & QDir::SortByMask)
-                 | (qt_cmp_si_sort_flags & QDir::Type)).toInt();
+    int sortBy = ((bobui_cmp_si_sort_flags & QDir::SortByMask)
+                 | (bobui_cmp_si_sort_flags & QDir::Type)).toInt();
 
     switch (sortBy) {
       case QDir::Time: {
-        const QDateTime firstModified = f1->item.lastModified(QTimeZone::UTC);
-        const QDateTime secondModified = f2->item.lastModified(QTimeZone::UTC);
+        const QDateTime firstModified = f1->item.lastModified(BOBUIimeZone::UTC);
+        const QDateTime secondModified = f2->item.lastModified(BOBUIimeZone::UTC);
         r = firstModified.msecsTo(secondModified);
         break;
       }
@@ -283,7 +283,7 @@ bool QDirSortItemComparator::operator()(const QDirSortItem &n1, const QDirSortIt
           r = f2->item.size() - f1->item.size();
         break;
     case QDir::Type:
-        r = compareStrings(f1->suffix_cache, f2->suffix_cache, qtcase);
+        r = compareStrings(f1->suffix_cache, f2->suffix_cache, bobuicase);
         break;
       default:
         ;
@@ -297,9 +297,9 @@ bool QDirSortItemComparator::operator()(const QDirSortItem &n1, const QDirSortIt
         if (f2->filename_cache.isNull())
             f2->filename_cache = f2->item.fileName();
 
-        r = compareStrings(f1->filename_cache, f2->filename_cache, qtcase);
+        r = compareStrings(f1->filename_cache, f2->filename_cache, bobuicase);
     }
-    if (qt_cmp_si_sort_flags & QDir::Reversed)
+    if (bobui_cmp_si_sort_flags & QDir::Reversed)
         return r > 0;
     return r < 0;
 }
@@ -329,7 +329,7 @@ inline void QDirPrivate::sortFileList(QDir::SortFlags sort, const QFileInfoList 
         for (qsizetype i = 0; i < n; ++i)
             si.emplace_back(l.at(i), sort);
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     if (sort.testAnyFlag(QDir::LocaleAware)) {
             QCollator coll;
             std::sort(si.data(), si.data() + n, QDirSortItemComparator(sort, &coll));
@@ -338,7 +338,7 @@ inline void QDirPrivate::sortFileList(QDir::SortFlags sort, const QFileInfoList 
         }
 #else
         std::sort(si.data(), si.data() + n, QDirSortItemComparator(sort));
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
         // put them back in the list(s)
         for (qsizetype i = 0; i < n; ++i) {
@@ -353,7 +353,7 @@ inline void QDirPrivate::sortFileList(QDir::SortFlags sort, const QFileInfoList 
     }
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*! \internal
 
     Returns \c true if the permissions flags set in \a filters match the
@@ -465,7 +465,7 @@ inline void QDirPrivate::initFileLists(const QDir &dir) const
         fileCache.fileListsInitialized = true;
     }
 }
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
 inline void QDirPrivate::clearCache(MetaDataClearing mode)
 {
@@ -480,7 +480,7 @@ inline void QDirPrivate::clearCache(MetaDataClearing mode)
 
 /*!
     \class QDir
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QDir class provides access to directory structures and their contents.
 
     \ingroup io
@@ -491,11 +491,11 @@ inline void QDirPrivate::clearCache(MetaDataClearing mode)
 
     A QDir is used to manipulate path names, access information
     regarding paths and files, and manipulate the underlying file
-    system. It can also be used to access Qt's \l{resource system}.
+    system. It can also be used to access BobUI's \l{resource system}.
 
-    Qt uses "/" as a universal directory separator in the same way
+    BobUI uses "/" as a universal directory separator in the same way
     that "/" is used as a path separator in URLs. If you always use
-    "/" as a directory separator, Qt will translate your paths to
+    "/" as a directory separator, BobUI will translate your paths to
     conform to the underlying operating system.
 
     A QDir can point to a file using either a relative or an absolute
@@ -865,7 +865,7 @@ static qsizetype drivePrefixLength(QStringView path)
 
 static bool treatAsAbsolute(const QString &path)
 {
-    // ### Qt 6: be consistent about absolute paths
+    // ### BobUI 6: be consistent about absolute paths
 
     // QFileInfo will use the right FS-engine for virtual file-systems
     // (e.g. resource paths).  Unfortunately, for real file-systems, it relies
@@ -982,8 +982,8 @@ QString QDir::relativeFilePath(const QString &fileName) const
 #endif
 
     QString result;
-    const auto dirElts = dir.tokenize(u'/', Qt::SkipEmptyParts);
-    const auto fileElts = file.tokenize(u'/', Qt::SkipEmptyParts);
+    const auto dirElts = dir.tokenize(u'/', BobUI::SkipEmptyParts);
+    const auto fileElts = file.tokenize(u'/', BobUI::SkipEmptyParts);
 
     const auto dend = dirElts.end();
     const auto fend = fileElts.end();
@@ -993,7 +993,7 @@ QString QDir::relativeFilePath(const QString &fileName) const
     const auto eq = [](QStringView lhs, QStringView rhs) {
         return
 #if defined(Q_OS_WIN)
-           lhs.compare(rhs, Qt::CaseInsensitive) == 0;
+           lhs.compare(rhs, BobUI::CaseInsensitive) == 0;
 #else
            lhs == rhs;
 #endif
@@ -1080,7 +1080,7 @@ QString QDir::fromNativeSeparators(const QString &pathName)
 #endif
 }
 
-static bool qt_cleanPath(QString *path);
+static bool bobui_cleanPath(QString *path);
 
 /*!
     Changes the QDir's directory to \a dirName.
@@ -1103,7 +1103,7 @@ bool QDir::cd(const QString &dirName)
     QString newPath;
     if (isAbsolutePath(dirName)) {
         newPath = dirName;
-        qt_cleanPath(&newPath);
+        bobui_cleanPath(&newPath);
     } else {
         newPath = d->dirEntry.filePath();
         if (!newPath.endsWith(u'/'))
@@ -1112,7 +1112,7 @@ bool QDir::cd(const QString &dirName)
         if (dirName.indexOf(u'/') >= 0
             || dirName == ".."_L1
             || d->dirEntry.filePath() == u'.') {
-            if (!qt_cleanPath(&newPath))
+            if (!bobui_cleanPath(&newPath))
                 return false;
             /*
               If newPath starts with .., we convert it to absolute to
@@ -1186,7 +1186,7 @@ void QDir::setNameFilters(const QStringList &nameFilters)
     d->nameFilters = nameFilters;
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 
 namespace {
 struct DirSearchPaths {
@@ -1200,14 +1200,14 @@ Q_GLOBAL_STATIC(DirSearchPaths, dirSearchPaths)
 /*!
     \since 4.3
 
-    Sets or replaces Qt's search paths for file names with the prefix \a prefix
+    Sets or replaces BobUI's search paths for file names with the prefix \a prefix
     to \a searchPaths.
 
     To specify a prefix for a file name, prepend the prefix followed by a single
     colon (e.g., "images:undo.png", "xmldocs:books.xml"). \a prefix can only
     contain letters or numbers (e.g., it cannot contain a colon, nor a slash).
 
-    Qt uses this search path to locate files with a known prefix. The search
+    BobUI uses this search path to locate files with a known prefix. The search
     path entries are tested in order, starting with the first entry.
 
     \snippet code/src_corelib_io_qdir.cpp 8
@@ -1215,7 +1215,7 @@ Q_GLOBAL_STATIC(DirSearchPaths, dirSearchPaths)
     File name prefix must be at least 2 characters long to avoid conflicts with
     Windows drive letters.
 
-    Search paths may contain paths to \l{The Qt Resource System}.
+    Search paths may contain paths to \l{The BobUI Resource System}.
 */
 void QDir::setSearchPaths(const QString &prefix, const QStringList &searchPaths)
 {
@@ -1274,7 +1274,7 @@ QStringList QDir::searchPaths(const QString &prefix)
     return conf.paths.value(prefix);
 }
 
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
 /*!
     Returns the value set by setFilter()
@@ -1404,7 +1404,7 @@ QDir::SortFlags QDir::sorting() const
     after the directories, again in reverse order.
 */
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
     Sets the sort order used by entryList() and entryInfoList().
 
@@ -1425,12 +1425,12 @@ void QDir::setSorting(SortFlags sort)
 
     Equivalent to entryList().count().
 
-    \note In Qt versions prior to 6.5, this function returned \c{uint}, not
+    \note In BobUI versions prior to 6.5, this function returned \c{uint}, not
     \c{qsizetype}.
 
     \sa operator[](), entryList()
 */
-qsizetype QDir::count(QT6_IMPL_NEW_OVERLOAD) const
+qsizetype QDir::count(BOBUI6_IMPL_NEW_OVERLOAD) const
 {
     Q_D(const QDir);
     d->initFileLists(*this);
@@ -1442,7 +1442,7 @@ qsizetype QDir::count(QT6_IMPL_NEW_OVERLOAD) const
     names. Equivalent to entryList().at(index).
     \a pos must be a valid index position in the list (i.e., 0 <= pos < count()).
 
-    \note In Qt versions prior to 6.5, \a pos was an \c{int}, not \c{qsizetype}.
+    \note In BobUI versions prior to 6.5, \a pos was an \c{int}, not \c{qsizetype}.
 
     \sa count(), entryList()
 */
@@ -1591,7 +1591,7 @@ QFileInfoList QDir::entryInfoList(const QStringList &nameFilters, Filters filter
     d->sortFileList(sort, l, nullptr, &ret);
     return ret;
 }
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
 /*!
     Creates a sub-directory called \a dirName with the given \a permissions.
@@ -1620,7 +1620,7 @@ QFileInfoList QDir::entryInfoList(const QStringList &nameFilters, Filters filter
     group all permissions granted to others avoids such warnings.
 //! [windows-permissions-acls]
 
-    \note Qt 6.10 added the \a permissions parameter. To get the old behavior
+    \note BobUI 6.10 added the \a permissions parameter. To get the old behavior
     (using the default platform-specific permissions) of \c{mkdir(const QString &)}
     set \a permissions to \c std::nullopt (the default). This new method also
     transparently replaces the \c {mkdir(const QString &, QFile::Permissions)}
@@ -1687,7 +1687,7 @@ bool QDir::rmdir(const QString &dirName) const
 
     \include qdir.cpp windows-permissions-acls
 
-    \note Qt 6.10 added the \a permissions parameter. To get the old behavior
+    \note BobUI 6.10 added the \a permissions parameter. To get the old behavior
     (using the default platform-specific permissions) of \c{mkpath(const QString &)}
     set \a permissions to \c std::nullopt (the default).
 
@@ -1734,7 +1734,7 @@ bool QDir::rmpath(const QString &dirPath) const
     return d->fileEngine->rmdir(fn, true);
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
     \since 5.0
     Removes the directory, including all its contents.
@@ -1786,7 +1786,7 @@ bool QDir::removeRecursively()
 
     return success;
 }
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
 /*!
     Returns \c true if the directory is readable \e and we can open files
@@ -1940,7 +1940,7 @@ bool comparesEqual(const QDir &lhs, const QDir &rhs)
 
     if (d == other)
         return true;
-    Qt::CaseSensitivity sensitive;
+    BobUI::CaseSensitivity sensitive;
     if (!d->fileEngine || !other->fileEngine) {
         if (d->fileEngine.get() != other->fileEngine.get()) // one is native, the other is a custom file-engine
             return false;
@@ -1950,11 +1950,11 @@ bool comparesEqual(const QDir &lhs, const QDir &rhs)
         if (thisCaseSensitive != QFileSystemEngine::isCaseSensitive(other->dirEntry, other->fileCache.metaData))
             return false;
 
-        sensitive = thisCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
+        sensitive = thisCaseSensitive ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
     } else {
         if (d->fileEngine->caseSensitive() != other->fileEngine->caseSensitive())
             return false;
-        sensitive = d->fileEngine->caseSensitive() ? Qt::CaseSensitive : Qt::CaseInsensitive;
+        sensitive = d->fileEngine->caseSensitive() ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
     }
 
     if (d->filters == other->filters
@@ -2035,7 +2035,7 @@ bool QDir::remove(const QString &fileName)
     \a newName points to an open file.
 
     If \a oldName is a file (not a directory) that can't be renamed
-    right away, Qt will try to copy \a oldName to \a newName and remove
+    right away, BobUI will try to copy \a oldName to \a newName and remove
     \a oldName.
 
     \sa QFile::rename()
@@ -2072,7 +2072,7 @@ bool QDir::exists(const QString &name) const
     return QFileInfo::exists(filePath(name));
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
     Returns whether the directory is empty.
 
@@ -2097,7 +2097,7 @@ bool QDir::isEmpty(Filters filters) const
     }
     return true;
 }
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
 /*!
     Returns a list of the root directories on this system.
@@ -2111,7 +2111,7 @@ bool QDir::isEmpty(Filters filters) const
 */
 QFileInfoList QDir::drives()
 {
-#ifdef QT_NO_FSFILEENGINE
+#ifdef BOBUI_NO_FSFILEENGINE
     return QFileInfoList();
 #else
     return QFSFileEngine::drives();
@@ -2125,7 +2125,7 @@ QFileInfoList QDir::drives()
     and "\\" under Windows.
 
     You do not need to use this function to build file paths. If you
-    always use "/", Qt will translate your paths to conform to the
+    always use "/", BobUI will translate your paths to conform to the
     underlying operating system. If you want to display paths to the
     user using their operating system's separator use
     toNativeSeparators().
@@ -2286,7 +2286,7 @@ QString QDir::rootPath()
     return QFileSystemEngine::rootPath();
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 /*!
     \overload
 
@@ -2300,7 +2300,7 @@ bool QDir::match(const QStringList &filters, const QString &fileName)
 {
     for (QStringList::ConstIterator sit = filters.constBegin(); sit != filters.constEnd(); ++sit) {
         // Insensitive exact match
-        auto rx = QRegularExpression::fromWildcard(*sit, Qt::CaseInsensitive);
+        auto rx = QRegularExpression::fromWildcard(*sit, BobUI::CaseInsensitive);
         if (rx.match(fileName).hasMatch())
             return true;
     }
@@ -2319,7 +2319,7 @@ bool QDir::match(const QString &filter, const QString &fileName)
 {
     return match(nameFiltersFromString(filter), fileName);
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
 static qsizetype findStartOfNonNormalizedPath(const QChar *in, qsizetype i, qsizetype n,
                                               QDirPrivate::PathNormalizations flags) noexcept
@@ -2346,7 +2346,7 @@ static qsizetype findStartOfNonNormalizedPath(const QChar *in, qsizetype i, qsiz
     return i;
 }
 
-bool qt_isPathNormalized(const QString &path, QDirPrivate::PathNormalizations flags) noexcept
+bool bobui_isPathNormalized(const QString &path, QDirPrivate::PathNormalizations flags) noexcept
 {
     const qsizetype prefixLength = rootLength(path, flags);
     qsizetype where = findStartOfNonNormalizedPath(path.constBegin(), prefixLength, path.size(), flags);
@@ -2373,9 +2373,9 @@ bool qt_isPathNormalized(const QString &path, QDirPrivate::PathNormalizations fl
        "a/b/" and "a/b//../.." becomes "a/"), which matches the behavior
        observed in web browsers.
 
-    As a Qt extension, for local URLs we treat multiple slashes as one slash.
+    As a BobUI extension, for local URLs we treat multiple slashes as one slash.
 */
-bool qt_normalizePathSegments(QString *path, QDirPrivate::PathNormalizations flags)
+bool bobui_normalizePathSegments(QString *path, QDirPrivate::PathNormalizations flags)
 {
     const bool isRemote = flags.testAnyFlag(QDirPrivate::RemotePath);
     const qsizetype prefixLength = rootLength(*path, flags);
@@ -2496,14 +2496,14 @@ bool qt_normalizePathSegments(QString *path, QDirPrivate::PathNormalizations fla
     return ok || prefixLength == 0;
 }
 
-static bool qt_cleanPath(QString *path)
+static bool bobui_cleanPath(QString *path)
 {
     if (path->isEmpty())
         return true;
 
     QString &ret = *path;
     ret = QDir::fromNativeSeparators(ret);
-    bool ok = qt_normalizePathSegments(&ret, QDirPrivate::DefaultNormalization);
+    bool ok = bobui_normalizePathSegments(&ret, QDirPrivate::DefaultNormalization);
 
     // Strip away last slash except for root directories
     if (ret.size() > 1 && ret.endsWith(u'/')) {
@@ -2531,7 +2531,7 @@ static bool qt_cleanPath(QString *path)
 QString QDir::cleanPath(const QString &path)
 {
     QString ret = path;
-    qt_cleanPath(&ret);
+    bobui_cleanPath(&ret);
     return ret;
 }
 
@@ -2578,7 +2578,7 @@ QStringList QDir::nameFiltersFromString(const QString &nameFilter)
     return QDirPrivate::splitFilters(nameFilter);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, QDir::Filters filters)
 {
     QDebugStateSaver save(debug);
@@ -2643,7 +2643,7 @@ QDebug operator<<(QDebug debug, const QDir &dir)
           << ')';
     return debug;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
 /*!
     \fn QDir::QDir(const std::filesystem::path &path)
@@ -2706,4 +2706,4 @@ QDebug operator<<(QDebug debug, const QDir &dir)
     \sa canonicalPath()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbglxwindow.h"
 
 #include "qxcbscreen.h"
-#include <QtGui/private/qglxconvenience_p.h>
+#include <BobUIGui/private/qglxconvenience_p.h>
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QXcbGlxWindow::QXcbGlxWindow(QWindow *window)
     : QXcbWindow(window)
@@ -52,4 +52,4 @@ const xcb_visualtype_t *QXcbGlxWindow::createVisual()
     return xcb_visualtype;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

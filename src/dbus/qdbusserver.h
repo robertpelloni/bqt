@@ -1,15 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 #ifndef QDBUSSERVER_H
 #define QDBUSSERVER_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
+<<<<<<< HEAD
 #include <QtCore/qobject.h>
 #include <QtCore/qstring.h>
+=======
+#include <BobUICore/qobject.h>
+#include <BobUICore/qstring.h>
+>>>>>>> origin/dev
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
@@ -44,5 +49,5 @@ private:
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

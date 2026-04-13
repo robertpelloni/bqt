@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "qhttpnetworkconnection_p.h"
 #include <private/qabstractsocket_p.h>
@@ -21,19 +21,19 @@
 #include <qspan.h>
 #include <qvarlengtharray.h>
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 #    include <private/qsslsocket_p.h>
-#    include <QtNetwork/qsslkey.h>
-#    include <QtNetwork/qsslcipher.h>
-#    include <QtNetwork/qsslconfiguration.h>
-#    include <QtNetwork/qsslerror.h>
+#    include <BobUINetwork/qsslkey.h>
+#    include <BobUINetwork/qsslcipher.h>
+#    include <BobUINetwork/qsslconfiguration.h>
+#    include <BobUINetwork/qsslerror.h>
 #endif
 
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // The pipeline length. So there will be 4 requests in flight.
 const int QHttpNetworkConnectionPrivate::defaultPipelineLength = 3;
@@ -60,7 +60,7 @@ QHttpNetworkConnectionPrivate::QHttpNetworkConnectionPrivate(
       activeChannelCount(getPreferredActiveChannelCount(type, connectionCount)),
       channelCount(connectionCount),
       channels(new QHttpNetworkConnectionChannel[channelCount]),
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
       networkProxy(QNetworkProxy::NoProxy),
 #endif
       connectionType(type)
@@ -106,13 +106,13 @@ void QHttpNetworkConnectionPrivate::pauseConnection()
     // Disable all socket notifiers
     for (int i = 0; i < activeChannelCount; i++) {
         if (auto *absSocket = qobject_cast<QAbstractSocket *>(channels[i].socket)) {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
             if (encrypt)
                 QSslSocketPrivate::pauseSocketNotifiers(static_cast<QSslSocket*>(absSocket));
             else
 #endif
                 QAbstractSocketPrivate::pauseSocketNotifiers(absSocket);
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
         } else if (qobject_cast<QLocalSocket *>(channels[i].socket)) {
             // @todo how would we do this?
 #if 0 // @todo Enable this when there is a debug category for this
@@ -129,7 +129,7 @@ void QHttpNetworkConnectionPrivate::resumeConnection()
     // Enable all socket notifiers
     for (int i = 0; i < activeChannelCount; i++) {
         if (auto *absSocket = qobject_cast<QAbstractSocket *>(channels[i].socket)) {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
             if (encrypt)
                 QSslSocketPrivate::resumeSocketNotifiers(static_cast<QSslSocket*>(absSocket));
             else
@@ -138,8 +138,8 @@ void QHttpNetworkConnectionPrivate::resumeConnection()
 
             // Resume pending upload if needed
             if (channels[i].state == QHttpNetworkConnectionChannel::WritingState)
-                QMetaObject::invokeMethod(&channels[i], "_q_uploadDataReadyRead", Qt::QueuedConnection);
-#if QT_CONFIG(localserver)
+                QMetaObject::invokeMethod(&channels[i], "_q_uploadDataReadyRead", BobUI::QueuedConnection);
+#if BOBUI_CONFIG(localserver)
         } else if (qobject_cast<QLocalSocket *>(channels[i].socket)) {
 #if 0 // @todo Enable this when there is a debug category for this
             qDebug() << "Should resume socket but there is no way to do it for local sockets";
@@ -149,7 +149,7 @@ void QHttpNetworkConnectionPrivate::resumeConnection()
     }
 
     // queue _q_startNextRequest
-    QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", BobUI::QueuedConnection);
 }
 
 int QHttpNetworkConnectionPrivate::indexOf(QIODevice *socket) const
@@ -203,7 +203,7 @@ bool QHttpNetworkConnectionPrivate::shouldEmitChannelError(QIODevice *socket)
                 || ((networkLayerState == QHttpNetworkConnectionPrivate::IPv6) && (channels[i].networkLayerPreference != QAbstractSocket::IPv6Protocol))) {
                 // First connection worked so this is the second one to complete and it failed.
                 channels[i].close();
-                QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(q, "_q_startNextRequest", BobUI::QueuedConnection);
                 emitError = false;
             }
             if (networkLayerState == QHttpNetworkConnectionPrivate::Unknown)
@@ -275,7 +275,7 @@ void QHttpNetworkConnectionPrivate::prepareRequest(HttpMessagePair &messagePair)
     }
 #endif
     // set the Connection/Proxy-Connection: Keep-Alive headers
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     if (networkProxy.type() == QNetworkProxy::HttpCachingProxy)  {
         value = request.headerField("proxy-connection");
         if (value.isEmpty())
@@ -285,7 +285,7 @@ void QHttpNetworkConnectionPrivate::prepareRequest(HttpMessagePair &messagePair)
         value = request.headerField("connection");
         if (value.isEmpty())
             request.setHeaderField("Connection", "Keep-Alive");
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     }
 #endif
 
@@ -296,7 +296,7 @@ void QHttpNetworkConnectionPrivate::prepareRequest(HttpMessagePair &messagePair)
     // encoding.
     value = request.headerField("accept-encoding");
     if (value.isEmpty()) {
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
         const static QByteArray acceptedEncoding = QDecompressHelper::acceptedEncoding().join(", ");
         request.setHeaderField("Accept-Encoding", acceptedEncoding);
         request.d->autoDecompress = true;
@@ -380,7 +380,7 @@ void QHttpNetworkConnectionPrivate::emitReplyError(QIODevice *socket,
             channels[i].requeueCurrentlyPipelinedRequests();
 
         // send the next request
-        QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(q, "_q_startNextRequest", BobUI::QueuedConnection);
     }
 }
 
@@ -464,7 +464,7 @@ bool QHttpNetworkConnectionPrivate::handleAuthenticateChallenge(QIODevice *socke
                     channels[i].authenticationCredentialsSent = false;
                 }
                 emit reply->authenticationRequired(reply->request(), auth);
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
             } else {
                 if (channels[i].proxyCredentialsSent) {
                     auth->detach();
@@ -490,7 +490,7 @@ bool QHttpNetworkConnectionPrivate::handleAuthenticateChallenge(QIODevice *socke
         }
         // - Changing values in QAuthenticator will reset the 'phase'. Therefore if it is still "Done"
         //   then nothing was filled in by the user or the cache
-        // - If withCredentials has been set to false (e.g. by Qt WebKit for a cross-origin XMLHttpRequest) then
+        // - If withCredentials has been set to false (e.g. by BobUI WebKit for a cross-origin XMLHttpRequest) then
         //   we need to bail out if authentication is required.
         if (priv->phase == QAuthenticatorPrivate::Done || !reply->request().withCredentials()) {
             // Reset authenticator so the next request on that channel does not get messed up
@@ -612,7 +612,7 @@ void QHttpNetworkConnectionPrivate::createAuthorization(QIODevice *socket, QHttp
         }
     }
 
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
     authenticator = &channel.proxyAuthenticator;
     priv = QAuthenticatorPrivate::getPrivate(*authenticator);
     // Send "Proxy-Authorization" header, but not if it's NTLM and the socket is already authenticated.
@@ -630,7 +630,7 @@ void QHttpNetworkConnectionPrivate::createAuthorization(QIODevice *socket, QHttp
             channel.proxyCredentialsSent = true;
         }
     }
-#endif // QT_CONFIG(networkproxy)
+#endif // BOBUI_CONFIG(networkproxy)
 }
 
 QHttpNetworkReply* QHttpNetworkConnectionPrivate::queueRequest(const QHttpNetworkRequest &request)
@@ -719,7 +719,7 @@ void QHttpNetworkConnectionPrivate::requeueRequest(const HttpMessagePair &pair)
         break;
     }
 
-    QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(q, "_q_startNextRequest", BobUI::QueuedConnection);
 }
 
 bool QHttpNetworkConnectionPrivate::dequeueRequest(QIODevice *socket)
@@ -980,7 +980,7 @@ void QHttpNetworkConnectionPrivate::removeReply(QHttpNetworkReply *reply)
                 }
             }
 
-            QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, "_q_startNextRequest", BobUI::QueuedConnection);
             return;
         }
 
@@ -999,7 +999,7 @@ void QHttpNetworkConnectionPrivate::removeReply(QHttpNetworkReply *reply)
                if (channels[i].reply)
                    channels[i].reply->d_func()->forceConnectionCloseEnabled = true;
 
-               QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+               QMetaObject::invokeMethod(q, "_q_startNextRequest", BobUI::QueuedConnection);
                return;
             }
         }
@@ -1012,7 +1012,7 @@ void QHttpNetworkConnectionPrivate::removeReply(QHttpNetworkReply *reply)
         auto it = std::find_if(seq.cbegin(), end, foundReply);
         if (it != end) {
             seq.erase(it);
-            QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, "_q_startNextRequest", BobUI::QueuedConnection);
             return;
         }
         // Check if the h2 protocol handler already started processing it
@@ -1029,7 +1029,7 @@ void QHttpNetworkConnectionPrivate::removeReply(QHttpNetworkReply *reply)
             HttpMessagePair messagePair = highPriorityQueue.at(j);
             if (messagePair.second == reply) {
                 highPriorityQueue.removeAt(j);
-                QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(q, "_q_startNextRequest", BobUI::QueuedConnection);
                 return;
             }
         }
@@ -1040,7 +1040,7 @@ void QHttpNetworkConnectionPrivate::removeReply(QHttpNetworkReply *reply)
             HttpMessagePair messagePair = lowPriorityQueue.at(j);
             if (messagePair.second == reply) {
                 lowPriorityQueue.removeAt(j);
-                QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(q, "_q_startNextRequest", BobUI::QueuedConnection);
                 return;
             }
         }
@@ -1132,7 +1132,7 @@ void QHttpNetworkConnectionPrivate::_q_startNextRequest()
 
     // try to push more into all sockets
     // ### FIXME we should move this to the beginning of the function
-    // as soon as QtWebkit is properly using the pipelining
+    // as soon as BobUIWebkit is properly using the pipelining
     // (e.g. not for XMLHttpRequest or the first page load)
     // ### FIXME we should also divide the requests more even
     // on the connected sockets
@@ -1215,7 +1215,7 @@ void QHttpNetworkConnectionPrivate::readMoreLater(QHttpNetworkReply *reply)
     for (int i = 0 ; i < activeChannelCount; ++i) {
         if (channels[i].reply ==  reply) {
             // emulate a readyRead() from the socket
-            QMetaObject::invokeMethod(&channels[i], "_q_readyRead", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(&channels[i], "_q_readyRead", BobUI::QueuedConnection);
             return;
         }
     }
@@ -1233,7 +1233,7 @@ void QHttpNetworkConnectionPrivate::startHostInfoLookup()
 
     // check if we already now can decide if this is IPv4 or IPv6
     QString lookupHost = hostName;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     if (networkProxy.capabilities() & QNetworkProxy::HostNameLookupCapability) {
         lookupHost = networkProxy.hostName();
     } else if (channels[0].proxy.capabilities() & QNetworkProxy::HostNameLookupCapability) {
@@ -1245,17 +1245,17 @@ void QHttpNetworkConnectionPrivate::startHostInfoLookup()
         const QAbstractSocket::NetworkLayerProtocol protocol = temp.protocol();
         if (protocol == QAbstractSocket::IPv4Protocol) {
             networkLayerState = QHttpNetworkConnectionPrivate::IPv4;
-            QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", BobUI::QueuedConnection);
             return;
         } else if (protocol == QAbstractSocket::IPv6Protocol) {
             networkLayerState = QHttpNetworkConnectionPrivate::IPv6;
-            QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", BobUI::QueuedConnection);
             return;
         }
     } else {
         int hostLookupId;
         bool immediateResultValid = false;
-        QHostInfo hostInfo = qt_qhostinfo_lookup(lookupHost,
+        QHostInfo hostInfo = bobui_qhostinfo_lookup(lookupHost,
                                                  this->q_func(),
                                                  SLOT(_q_hostLookupFinished(QHostInfo)),
                                                  &immediateResultValid,
@@ -1297,13 +1297,13 @@ void QHttpNetworkConnectionPrivate::_q_hostLookupFinished(const QHostInfo &info)
         startNetworkLayerStateLookup();
     else if (bIpv4) {
         networkLayerState = QHttpNetworkConnectionPrivate::IPv4;
-        QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", BobUI::QueuedConnection);
     } else if (bIpv6) {
         networkLayerState = QHttpNetworkConnectionPrivate::IPv6;
-        QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this->q_func(), "_q_startNextRequest", BobUI::QueuedConnection);
     } else {
         auto lookupError = QNetworkReply::HostNotFoundError;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
         // if the proxy can lookup hostnames, all hostname lookups except for the lookup of the
         // proxy hostname are delegated to the proxy.
         auto proxyCapabilities = networkProxy.capabilities() | channels[0].proxy.capabilities();
@@ -1427,7 +1427,7 @@ QHttpNetworkConnectionChannel *QHttpNetworkConnection::channels() const
     return d_func()->channels;
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 void QHttpNetworkConnection::setCacheProxy(const QNetworkProxy &networkProxy)
 {
     Q_D(QHttpNetworkConnection);
@@ -1485,20 +1485,20 @@ void QHttpNetworkConnection::setHttp2Parameters(const QHttp2Configuration &param
     d->http2Parameters = params;
 }
 
-QTcpKeepAliveConfiguration QHttpNetworkConnection::tcpKeepAliveParameters() const
+BOBUIcpKeepAliveConfiguration QHttpNetworkConnection::tcpKeepAliveParameters() const
 {
     Q_D(const QHttpNetworkConnection);
     return d->tcpKeepAliveConfiguration;
 }
 
-void QHttpNetworkConnection::setTcpKeepAliveParameters(QTcpKeepAliveConfiguration config)
+void QHttpNetworkConnection::setTcpKeepAliveParameters(BOBUIcpKeepAliveConfiguration config)
 {
     Q_D(QHttpNetworkConnection);
     d->tcpKeepAliveConfiguration = config;
 }
 
 // SSL support below
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void QHttpNetworkConnection::setSslConfiguration(const QSslConfiguration &config)
 {
     Q_D(QHttpNetworkConnection);
@@ -1558,7 +1558,7 @@ void QHttpNetworkConnection::ignoreSslErrors(const QList<QSslError> &errors, int
     }
 }
 
-#endif //QT_NO_SSL
+#endif //BOBUI_NO_SSL
 
 void QHttpNetworkConnection::preConnectFinished()
 {
@@ -1594,7 +1594,7 @@ void QHttpNetworkConnection::onlineStateChanged(bool isOnline)
     }
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 // only called from QHttpNetworkConnectionChannel::_q_proxyAuthenticationRequired, not
 // from QHttpNetworkConnectionChannel::handleAuthenticationChallenge
 // e.g. it is for SOCKS proxies which require authentication.
@@ -1625,6 +1625,6 @@ void QHttpNetworkConnectionPrivate::emitProxyAuthenticationRequired(const QHttpN
 #endif
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhttpnetworkconnection_p.cpp"

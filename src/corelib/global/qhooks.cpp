@@ -1,15 +1,15 @@
 // Copyright (C) 2014 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Volker Krause <volker.krause@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qhooks_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Only add to the end, and bump version if you do.
-quintptr Q_CORE_EXPORT qtHookData[] = {
+quintptr Q_CORE_EXPORT bobuiHookData[] = {
     3, // hook data version
-    QHooks::LastHookIndex, // size of qtHookData
-    QT_VERSION,
+    QHooks::LastHookIndex, // size of bobuiHookData
+    BOBUI_VERSION,
 
     // AddQObject, void(*)(QObject*), called for every constructed QObject
     // Note: this is called from the QObject constructor, ie. the sub-class
@@ -25,7 +25,7 @@ quintptr Q_CORE_EXPORT qtHookData[] = {
     0,
 
     // TypeInformationVersion, an integral value, bumped whenever private
-    // object sizes or member offsets that are used in Qt Creator's
+    // object sizes or member offsets that are used in BobUI Creator's
     // data structure "pretty printing" change.
     //
     // The required sizes and offsets are tested in tests/auto/other/toolsupport.
@@ -34,7 +34,7 @@ quintptr Q_CORE_EXPORT qtHookData[] = {
     22,
 };
 
-static_assert(QHooks::LastHookIndex == sizeof(qtHookData) / sizeof(qtHookData[0]));
+static_assert(QHooks::LastHookIndex == sizeof(bobuiHookData) / sizeof(bobuiHookData[0]));
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

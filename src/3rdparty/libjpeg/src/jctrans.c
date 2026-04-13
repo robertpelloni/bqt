@@ -70,7 +70,7 @@ jpeg_write_coefficients(j_compress_ptr cinfo, jvirt_barray_ptr *coef_arrays)
 GLOBAL(void)
 jpeg_copy_critical_parameters(j_decompress_ptr srcinfo, j_compress_ptr dstinfo)
 {
-  JQUANT_TBL **qtblptr;
+  JQUANT_TBL **bobuiblptr;
   jpeg_component_info *incomp, *outcomp;
   JQUANT_TBL *c_quant, *slot_quant;
   int tblno, ci, coefi;
@@ -103,12 +103,12 @@ jpeg_copy_critical_parameters(j_decompress_ptr srcinfo, j_compress_ptr dstinfo)
   /* Copy the source's quantization tables. */
   for (tblno = 0; tblno < NUM_QUANT_TBLS; tblno++) {
     if (srcinfo->quant_tbl_ptrs[tblno] != NULL) {
-      qtblptr = &dstinfo->quant_tbl_ptrs[tblno];
-      if (*qtblptr == NULL)
-        *qtblptr = jpeg_alloc_quant_table((j_common_ptr)dstinfo);
-      memcpy((*qtblptr)->quantval, srcinfo->quant_tbl_ptrs[tblno]->quantval,
-             sizeof((*qtblptr)->quantval));
-      (*qtblptr)->sent_table = FALSE;
+      bobuiblptr = &dstinfo->quant_tbl_ptrs[tblno];
+      if (*bobuiblptr == NULL)
+        *bobuiblptr = jpeg_alloc_quant_table((j_common_ptr)dstinfo);
+      memcpy((*bobuiblptr)->quantval, srcinfo->quant_tbl_ptrs[tblno]->quantval,
+             sizeof((*bobuiblptr)->quantval));
+      (*bobuiblptr)->sent_table = FALSE;
     }
   }
   /* Copy the source's per-component info.
@@ -124,8 +124,8 @@ jpeg_copy_critical_parameters(j_decompress_ptr srcinfo, j_compress_ptr dstinfo)
     outcomp->h_samp_factor = incomp->h_samp_factor;
     outcomp->v_samp_factor = incomp->v_samp_factor;
     outcomp->quant_tbl_no = incomp->quant_tbl_no;
-    /* Make sure saved quantization table for component matches the qtable
-     * slot.  If not, the input file re-used this qtable slot.
+    /* Make sure saved quantization table for component matches the bobuiable
+     * slot.  If not, the input file re-used this bobuiable slot.
      * IJG encoder currently cannot duplicate this.
      */
     tblno = outcomp->quant_tbl_no;

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDebug>
 #include <QGraphicsGridLayout>
@@ -28,11 +28,11 @@ Q_DECLARE_METATYPE(ItemData);
 ListItem::ListItem(QGraphicsWidget *parent)
   : GvbWidget(parent)
   , m_txtlayout(new QGraphicsGridLayout())
-  , m_layout(new QGraphicsLinearLayout(Qt::Horizontal))
-  , m_liconlayout(new QGraphicsLinearLayout(Qt::Horizontal))
-  , m_riconlayout(new QGraphicsLinearLayout(Qt::Horizontal))
+  , m_layout(new QGraphicsLinearLayout(BobUI::Horizontal))
+  , m_liconlayout(new QGraphicsLinearLayout(BobUI::Horizontal))
+  , m_riconlayout(new QGraphicsLinearLayout(BobUI::Horizontal))
   , m_fonts()
-  , m_borderPen(Qt::NoPen)
+  , m_borderPen(BobUI::NoPen)
   , m_backgroundBrush(QBrush())
   , m_backgroundOpacity(1.0)
   , m_rounding(0.0, 0.0)
@@ -108,7 +108,7 @@ IconItem* ListItem::icon(const IconItemPos iconPos) const
 
 QVariant ListItem::data(int role) const
 {
-    if (role != Qt::DisplayRole)
+    if (role != BobUI::DisplayRole)
         return QVariant();
 
     ItemData data;
@@ -156,7 +156,7 @@ QVariant ListItem::data(int role) const
 
 void ListItem::setData(const QVariant &value, int role)
 {
-    if (role != Qt::DisplayRole)
+    if (role != BobUI::DisplayRole)
         return;
 
     ItemData data = value.value<ItemData>();
@@ -248,13 +248,13 @@ void ListItem::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option
     QRectF r = rect();
     r.adjust(penWidth, penWidth, -penWidth, -penWidth);
 
-    if (m_borderPen != Qt::NoPen) {
+    if (m_borderPen != BobUI::NoPen) {
         painter->setPen(m_borderPen);
         painter->drawRoundedRect(r, m_rounding.width(), m_rounding.height());
     }
 
-    if (m_backgroundBrush != Qt::NoBrush) {
-        painter->setPen(Qt::NoPen);
+    if (m_backgroundBrush != BobUI::NoBrush) {
+        painter->setPen(BobUI::NoPen);
         painter->setBrush(m_backgroundBrush);
         painter->setOpacity(m_backgroundOpacity);
         painter->drawRoundedRect(r, m_rounding.width(), m_rounding.height());

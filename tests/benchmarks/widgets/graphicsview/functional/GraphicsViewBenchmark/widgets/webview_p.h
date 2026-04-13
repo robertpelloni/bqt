@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef WEBVIEW_P_H
 #define WEBVIEW_P_H
 
 #include "webview.h"
-#include <QtWebKit/qgraphicswebview.h>
-#include <QtWebKit/qwebpage.h>
-#include <QtWebKit/qwebframe.h>
+#include <BobUIWebKit/qgraphicswebview.h>
+#include <BobUIWebKit/qwebpage.h>
+#include <BobUIWebKit/qwebframe.h>
 #include <QGraphicsEffect>
 #include <QPainter>
 #include <QPixmapCache>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QDebug>
 
 class WebViewCache;
@@ -30,7 +30,7 @@ public:
     WebView *q;
     QGraphicsWebView *web;
     WebViewCache *cache;
-    QTimer motionTimer;
+    BOBUIimer motionTimer;
 };
 
 class WebViewCache : public QGraphicsEffect

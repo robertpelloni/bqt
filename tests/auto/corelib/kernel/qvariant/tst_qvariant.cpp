@@ -1,13 +1,13 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qvariant.h>
 
-#include <QtCore/qttypetraits.h>
-#include <QtCore/qsequentialiterable.h>
-#include <QtCore/qassociativeiterable.h>
+#include <BobUICore/bobuitypetraits.h>
+#include <BobUICore/qsequentialiterable.h>
+#include <BobUICore/qassociativeiterable.h>
 
 // don't assume <type_traits>
 template <typename T, typename U>
@@ -51,13 +51,13 @@ CHECK_GET(MyVariant, const &&);
 #undef CHECK_GET
 #undef CHECK_IMPL
 
-#include <QTest>
+#include <BOBUIest>
 
 // In each group:
 // Please stick to alphabetic order.
-#include <QtGui/qtransform.h>
+#include <BobUIGui/bobuiransform.h>
 
-// QtCore:
+// BobUICore:
 #include <QMetaAssociation>
 #include <QBitArray>
 #include <QBuffer>
@@ -79,12 +79,12 @@ CHECK_GET(MyVariant, const &&);
 #include <QMetaSequence>
 #include <QSet>
 #include <QStack>
-#include <QTimeZone>
-#include <QtNumeric>
+#include <BOBUIimeZone>
+#include <BobUINumeric>
 #include <QUrl>
 #include <QUuid>
 
-#if QT_CONFIG(library) && defined(QT_SHARED)
+#if BOBUI_CONFIG(library) && defined(BOBUI_SHARED)
 #  include <QLibrary>
 #endif
 
@@ -102,7 +102,7 @@ CHECK_GET(MyVariant, const &&);
 #define WHICH_TYPE_IS_RELOCATABLE RelocatableInAppType
 #include "relocatable_change.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class CustomNonQObject;
 struct NonDefaultConstructible;
@@ -288,7 +288,7 @@ private slots:
     void qvariant_cast_QObject_wrapper();
     void qvariant_cast_QSharedPointerQObject();
     void qvariant_cast_const();
-    void qvariant_cast_QTransform();
+    void qvariant_cast_BOBUIransform();
 
     void toLocale();
 
@@ -309,7 +309,7 @@ private slots:
     void operator_eq_eq_data();
     void operator_eq_eq();
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     void typeName_data();
     void typeName();
     void typeToName();
@@ -372,19 +372,19 @@ private slots:
     void forwardDeclare();
     void debugStream_data();
     void debugStream();
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     void debugStreamType_data();
     void debugStreamType();
 #endif
 
-    void loadQt4Stream_data();
-    void loadQt4Stream();
-    void saveQt4Stream_data();
-    void saveQt4Stream();
-    void loadQt5Stream_data();
-    void loadQt5Stream();
-    void saveQt5Stream_data();
-    void saveQt5Stream();
+    void loadBobUI4Stream_data();
+    void loadBobUI4Stream();
+    void saveBobUI4Stream_data();
+    void saveBobUI4Stream();
+    void loadBobUI5Stream_data();
+    void loadBobUI5Stream();
+    void saveBobUI5Stream_data();
+    void saveBobUI5Stream();
     void saveInvalid_data();
     void saveInvalid();
     void saveNewBuiltinWithOldStream();
@@ -415,7 +415,7 @@ private slots:
     void shouldDeleteVariantDataWorksForSequential();
     void shouldDeleteVariantDataWorksForAssociative();
     void fromStdVariant();
-    void qt4UuidDataStream();
+    void bobui4UuidDataStream();
     void sequentialIterableEndianessSanityCheck();
     void sequentialIterableAppend();
 
@@ -429,7 +429,7 @@ private slots:
 
     void constructFromIncompatibleMetaType_data();
     void constructFromIncompatibleMetaType();
-    void constructFromQtLT65MetaType();
+    void constructFromBobUILT65MetaType();
     void copyNonDefaultConstructible();
 
     void inplaceConstruct();
@@ -437,13 +437,13 @@ private slots:
 
     void getIf_int() { getIf_impl(42); }
     void getIf_QString() { getIf_impl(u"string"_s); };
-    void getIf_QTransform() { getIf_impl(QTransform{1, 2, 3, 4, 5, 6, 7, 8, 9}); } // too large
+    void getIf_BOBUIransform() { getIf_impl(BOBUIransform{1, 2, 3, 4, 5, 6, 7, 8, 9}); } // too large
     void getIf_NonDefaultConstructible();
     void getIfSpecial();
 
     void get_int() { get_impl(42); }
     void get_QString() { get_impl(u"string"_s); }
-    void get_QTransform() { get_impl(QTransform{1, 2, 3, 4, 5, 6, 7, 8, 9}); } // too large
+    void get_BOBUIransform() { get_impl(BOBUIransform{1, 2, 3, 4, 5, 6, 7, 8, 9}); } // too large
     void get_NonDefaultConstructible();
 
     void reference();
@@ -457,7 +457,7 @@ private:
             // list here all the types with which we instantiate getIf_impl:
             int,
             QString,
-            QTransform,
+            BOBUIransform,
             NonDefaultConstructible
         >;
     template <typename T>
@@ -529,12 +529,12 @@ void tst_QVariant::constructor()
 
 void tst_QVariant::constructor_invalid_data()
 {
-    QTest::addColumn<uint>("typeId");
+    BOBUIest::addColumn<uint>("typeId");
 
-    QTest::newRow("-1") << uint(-1);
-    QTest::newRow("-122234567") << uint(-122234567);
-    QTest::newRow("0xfffffffff") << uint(0xfffffffff);
-    QTest::newRow("LastCoreType + 1") << uint(QMetaType::LastCoreType + 1);
+    BOBUIest::newRow("-1") << uint(-1);
+    BOBUIest::newRow("-122234567") << uint(-122234567);
+    BOBUIest::newRow("0xfffffffff") << uint(0xfffffffff);
+    BOBUIest::newRow("LastCoreType + 1") << uint(QMetaType::LastCoreType + 1);
     QVERIFY(!QMetaType::isRegistered(QMetaType::LastCoreType + 1));
 }
 
@@ -543,7 +543,7 @@ void tst_QVariant::constructor_invalid()
 
     QFETCH(uint, typeId);
     {
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
         QVariant variant {QMetaType(typeId)};
         QVERIFY(!variant.isValid());
         QVERIFY(variant.isNull());
@@ -551,7 +551,7 @@ void tst_QVariant::constructor_invalid()
         QCOMPARE(variant.userType(), int(QMetaType::UnknownType));
     }
     {
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
         QVariant variant = QVariant::fromMetaType(QMetaType(typeId));
         QVERIFY(!variant.isValid());
         QVERIFY(variant.isNull());
@@ -559,7 +559,7 @@ void tst_QVariant::constructor_invalid()
         QCOMPARE(variant.userType(), int(QMetaType::UnknownType));
     }
     {
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
         QVariant variant(QMetaType(typeId), /* copy */ nullptr);
         QVERIFY(!variant.isValid());
         QVERIFY(variant.isNull());
@@ -664,82 +664,82 @@ void tst_QVariant::canConvert_data()
 
 
     QVariant var(QBitArray(0));
-    QTest::newRow("BitArray")
+    BOBUIest::newRow("BitArray")
         << var << Y << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N;
     var = QVariant(QByteArray());
-    QTest::newRow("ByteArray")
+    BOBUIest::newRow("ByteArray")
         << var << N << N << Y << N << Y << Y << N << N << N << Y << N << N << Y << N << N << Y << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant(QDate());
-    QTest::newRow("Date")
+    BOBUIest::newRow("Date")
         << var << N << N << N << N << N << N << N << Y << Y << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N;
     var = QVariant(QDateTime());
-    QTest::newRow("DateTime")
+    BOBUIest::newRow("DateTime")
         << var << N << N << N << N << N << N << N << Y << Y << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << Y << N << N;
     var = QVariant((double)0.1);
-    QTest::newRow("Double")
+    BOBUIest::newRow("Double")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << N << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant(0.1f);
-    QTest::newRow("Float")
+    BOBUIest::newRow("Float")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << N << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant((int)1);
-    QTest::newRow("Int")
+    BOBUIest::newRow("Int")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << Y << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant();
-    QTest::newRow("Invalid")
+    BOBUIest::newRow("Invalid")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N;
     var = QVariant(QList<QVariant>());
-    QTest::newRow("List")
+    BOBUIest::newRow("List")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N;
     var = QVariant((qlonglong)1);
-    QTest::newRow("LongLong")
+    BOBUIest::newRow("LongLong")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << N << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant(QMap<QString,QVariant>());
-    QTest::newRow("Map")
+    BOBUIest::newRow("Map")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N << N << N << N;
     var = QVariant(QPoint());
-    QTest::newRow("Point")
+    BOBUIest::newRow("Point")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N;
     var = QVariant(QRect());
-    QTest::newRow("Rect")
+    BOBUIest::newRow("Rect")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N;
     var = QVariant(QSize());
-    QTest::newRow("Size")
+    BOBUIest::newRow("Size")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N;
     var = QVariant(QString());
-    QTest::newRow("String")
+    BOBUIest::newRow("String")
         << var << N << N << Y << N << Y << Y << N << Y << Y << Y << Y << N << Y << N << Y << Y << Y << N << N << N << N << N << N << N << N << N << Y << Y << Y << Y << Y;
    var = QVariant(QStringList("entry"));
-    QTest::newRow("StringList")
+    BOBUIest::newRow("StringList")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N << Y << Y << N << N << N;
-    var = QVariant(QTime());
-    QTest::newRow("Time")
+    var = QVariant(BOBUIime());
+    BOBUIest::newRow("Time")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << Y << N << N;
     var = QVariant((uint)1);
-    QTest::newRow("UInt")
+    BOBUIest::newRow("UInt")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << N << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant((qulonglong)1);
-    QTest::newRow("ULongLong")
+    BOBUIest::newRow("ULongLong")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << N << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant::fromValue('a');
-    QTest::newRow("Char")
+    BOBUIest::newRow("Char")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << N << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant::fromValue<signed char>(-1);
-    QTest::newRow("SChar")
+    BOBUIest::newRow("SChar")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << N << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant::fromValue((short)-3);
-    QTest::newRow("Short")
+    BOBUIest::newRow("Short")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << N << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant::fromValue((ushort)7);
-    QTest::newRow("UShort")
+    BOBUIest::newRow("UShort")
         << var << N << N << Y << N << Y << N << N << N << N << Y << N << N << Y << N << N << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant::fromValue<QJsonValue>(QJsonValue(QStringLiteral("hello")));
-    QTest::newRow("JsonValue")
+    BOBUIest::newRow("JsonValue")
         << var << N << N << Y << N << N << N << N << N << N << Y << N << N << Y << N << N << Y << Y << Y << N << N << N << N << N << N << N << N << Y << N << N << Y << Y;
     var = QVariant::fromValue<QJsonArray>(QJsonArray());
-    QTest::newRow("JsonArray")
+    BOBUIest::newRow("JsonArray")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N;
     var = QVariant::fromValue<QJsonObject>(QJsonObject());
-    QTest::newRow("JsonObject")
+    BOBUIest::newRow("JsonObject")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N << N << N << N;
 
 #undef N
@@ -750,28 +750,28 @@ void tst_QVariant::canConvert()
 {
     TST_QVARIANT_CANCONVERT_FETCH_DATA
 
-    // This test links against QtGui but not QtWidgets, so QSizePolicy isn't real for it.
-    QTest::ignoreMessage(QtWarningMsg, // QSizePolicy's id is 0x2000, a.k.a. 8192
+    // This test links against BobUIGui but not BobUIWidgets, so QSizePolicy isn't real for it.
+    BOBUIest::ignoreMessage(BobUIWarningMsg, // QSizePolicy's id is 0x2000, a.k.a. 8192
                          "Trying to construct an instance of an invalid type, type id: 8192");
     TST_QVARIANT_CANCONVERT_COMPARE_DATA
 
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
     // Invalid type ids
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "Trying to construct an instance of an invalid type, type id: -1");
     QCOMPARE(val.canConvert(-1), false);
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "Trying to construct an instance of an invalid type, type id: -23");
     QCOMPARE(val.canConvert(-23), false);
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "Trying to construct an instance of an invalid type, type id: -23876");
     QCOMPARE(val.canConvert(-23876), false);
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "Trying to construct an instance of an invalid type, type id: 23876");
     QCOMPARE(val.canConvert(23876), false);
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 }
 
 namespace {
@@ -804,7 +804,7 @@ void addRowForPointerValueConversion()
         const QMetaType fromType = QMetaType::fromType<T>();
         const QMetaType toType = QMetaType::fromType<TargetType>();
 
-        QTest::addRow("%s->%s", fromType.name(), toType.name())
+        BOBUIest::addRow("%s->%s", fromType.name(), toType.name())
                 << variant << QMetaType::fromType<TargetType>();
     }
 }
@@ -813,18 +813,18 @@ void addRowForPointerValueConversion()
 
 void tst_QVariant::canConvertAndConvert_ReturnFalse_WhenConvertingBetweenPointerAndValue_data()
 {
-    QTest::addColumn<QVariant>("variant");
-    QTest::addColumn<QMetaType>("targetType");
+    BOBUIest::addColumn<QVariant>("variant");
+    BOBUIest::addColumn<QMetaType>("targetType");
 
 #define ADD_ROW(typeName, typeNameId, realType)  \
     addRowForPointerValueConversion<realType>(); \
     addRowForPointerValueConversion<realType *>();
 
     // Add rows for static primitive types
-    QT_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(ADD_ROW)
+    BOBUI_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(ADD_ROW)
 
     // Add rows for static core types
-    QT_FOR_EACH_STATIC_CORE_CLASS(ADD_ROW)
+    BOBUI_FOR_EACH_STATIC_CORE_CLASS(ADD_ROW)
 #undef ADD_ROW
 
 }
@@ -856,8 +856,8 @@ void tst_QVariant::canConvertAndConvert_ReturnFalse_WhenConvertingQObjectBetween
     constexpr QMetaType targetType = QMetaType::fromType<QObjectDerived>();
     QVERIFY(!variant.canConvert(targetType));
 
-    QTest::ignoreMessage(
-            QtWarningMsg,
+    BOBUIest::ignoreMessage(
+            BobUIWarningMsg,
             QRegularExpression(".*does not support destruction and copy construction"));
 
     QVERIFY(!variant.convert(targetType));
@@ -891,22 +891,22 @@ template <typename To, typename From> static void addNumberConversionHelper(From
         STo s = STo(v);
         Q_ASSERT(v < 0);
         Q_ASSERT(s < 0);
-        QTest::addRow("negative-%s", var.typeName()) << var << To(s) << true;
+        BOBUIest::addRow("negative-%s", var.typeName()) << var << To(s) << true;
 
         v = -v;
         to = To(v);
         var = QVariant::fromValue(v);
     }
-    QTest::addRow("%s", var.typeName()) << var << to << true;
+    BOBUIest::addRow("%s", var.typeName()) << var << to << true;
 }
 
 template <typename To> static void addNumberConversions()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<To>("result");
-    QTest::addColumn<bool>("valueOK");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<To>("result");
+    BOBUIest::addColumn<bool>("valueOK");
 
-    QTest::newRow("invalid") << QVariant() << To{} << false;
+    BOBUIest::newRow("invalid") << QVariant() << To{} << false;
 
     auto addNumber = [](auto v) { addNumberConversionHelper<To>(v); };
     addNumber(true);
@@ -930,46 +930,46 @@ template <typename To> static void addNumberConversions()
     if constexpr (sizeof(To) > sizeof(int)) {
         // note: this includes double
         qint64 value64 = (Q_INT64_C(12) << 35) + 8;
-        QTest::newRow("qint64") << QVariant::fromValue(value64) << To(value64) << true;
-        QTest::newRow("-qint64") << QVariant::fromValue(-value64) << To(-value64) << true;
-        QTest::newRow("LONG_MIN") << QVariant::fromValue(LONG_MIN) << To(LONG_MIN)  << true;
-        QTest::newRow("-LONG_MIN/2") << QVariant::fromValue(-(LONG_MIN / 2)) << -To(LONG_MIN/2)  << true;
+        BOBUIest::newRow("qint64") << QVariant::fromValue(value64) << To(value64) << true;
+        BOBUIest::newRow("-qint64") << QVariant::fromValue(-value64) << To(-value64) << true;
+        BOBUIest::newRow("LONG_MIN") << QVariant::fromValue(LONG_MIN) << To(LONG_MIN)  << true;
+        BOBUIest::newRow("-LONG_MIN/2") << QVariant::fromValue(-(LONG_MIN / 2)) << -To(LONG_MIN/2)  << true;
 
         if constexpr (std::is_integral_v<To>) {
-            QTest::newRow("LONG_MAX") << QVariant::fromValue(LONG_MAX) << To(LONG_MAX)  << true;
-            QTest::newRow("ULONG_MAX") << QVariant::fromValue(ULONG_MAX) << To(ULONG_MAX)  << true;
+            BOBUIest::newRow("LONG_MAX") << QVariant::fromValue(LONG_MAX) << To(LONG_MAX)  << true;
+            BOBUIest::newRow("ULONG_MAX") << QVariant::fromValue(ULONG_MAX) << To(ULONG_MAX)  << true;
         }
     }
 
     if constexpr (std::is_integral_v<To>) {
-        QTest::newRow("QChar") << QVariant(QChar('a')) << To('a') << true;
+        BOBUIest::newRow("QChar") << QVariant(QChar('a')) << To('a') << true;
 
-        QTest::newRow("NaN") << QVariant::fromValue(qQNaN()) << To(0) << false;
+        BOBUIest::newRow("NaN") << QVariant::fromValue(qQNaN()) << To(0) << false;
 
         constexpr qint64 maximal = std::numeric_limits<qint64>::max();
         constexpr qint64 minimal = std::numeric_limits<qint64>::min();
 
-        QTest::newRow("positive overflow") << QVariant(1.0e200) << To(maximal) << true;
-        QTest::newRow("positive inf") << QVariant(qInf()) << To(maximal) << true;
-        QTest::newRow("negative overflow") << QVariant(-1.0e200) << To(minimal) << true;
-        QTest::newRow("negative inf") << QVariant(-qInf()) << To(minimal) << true;
+        BOBUIest::newRow("positive overflow") << QVariant(1.0e200) << To(maximal) << true;
+        BOBUIest::newRow("positive inf") << QVariant(qInf()) << To(maximal) << true;
+        BOBUIest::newRow("negative overflow") << QVariant(-1.0e200) << To(minimal) << true;
+        BOBUIest::newRow("negative inf") << QVariant(-qInf()) << To(minimal) << true;
     }
 
-    QTest::newRow("nonint-QByteArray") << QVariant(QByteArray("zzzz")) << To{} << false;
-    QTest::newRow("nonint-QString") << QVariant(QString("zzzz")) << To{} << false;
-    QTest::newRow("undefined-QCborValue") << QVariant::fromValue<QCborValue>({}) << To{} << false;
-    QTest::newRow("undefined-QJsonValue") << QVariant(QJsonValue()) << To{} << false;
+    BOBUIest::newRow("nonint-QByteArray") << QVariant(QByteArray("zzzz")) << To{} << false;
+    BOBUIest::newRow("nonint-QString") << QVariant(QString("zzzz")) << To{} << false;
+    BOBUIest::newRow("undefined-QCborValue") << QVariant::fromValue<QCborValue>({}) << To{} << false;
+    BOBUIest::newRow("undefined-QJsonValue") << QVariant(QJsonValue()) << To{} << false;
 
-    QTest::newRow("int-QByteArray") << QVariant(QByteArray("123")) << To(123) << true;
-    QTest::newRow("int-QCborValue") << QVariant::fromValue(QCborValue(321)) << To(321) << true;
-    QTest::newRow("int-QJsonValue") << QVariant(QJsonValue(321)) << To(321) << true;
-    QTest::newRow("int-QString") << QVariant(QString("123")) << To(123) << true;
+    BOBUIest::newRow("int-QByteArray") << QVariant(QByteArray("123")) << To(123) << true;
+    BOBUIest::newRow("int-QCborValue") << QVariant::fromValue(QCborValue(321)) << To(321) << true;
+    BOBUIest::newRow("int-QJsonValue") << QVariant(QJsonValue(321)) << To(321) << true;
+    BOBUIest::newRow("int-QString") << QVariant(QString("123")) << To(123) << true;
 
     if constexpr (std::numeric_limits<To>::is_iec559) {
-        QTest::newRow("fp-QByteArray") << QVariant(QByteArray("32.1")) << To(32.1) << true;
-        QTest::newRow("fp-QCborValue") << QVariant::fromValue(QCborValue(32.1)) << To(32.1) << true;
-        QTest::newRow("fp-QJsonValue") << QVariant(QJsonValue(32.1)) << To(32.1) << true;
-        QTest::newRow("fp-QString") << QVariant(QString("32.1")) << To(32.1) << true;
+        BOBUIest::newRow("fp-QByteArray") << QVariant(QByteArray("32.1")) << To(32.1) << true;
+        BOBUIest::newRow("fp-QCborValue") << QVariant::fromValue(QCborValue(32.1)) << To(32.1) << true;
+        BOBUIest::newRow("fp-QJsonValue") << QVariant(QJsonValue(32.1)) << To(32.1) << true;
+        BOBUIest::newRow("fp-QString") << QVariant(QString("32.1")) << To(32.1) << true;
     }
 }
 
@@ -978,8 +978,8 @@ void tst_QVariant::toInt_data()
     addNumberConversions<int>();
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-# define EXEC_DEPRECATED_CALL(x) QT_IGNORE_DEPRECATIONS(x)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+# define EXEC_DEPRECATED_CALL(x) BOBUI_IGNORE_DEPRECATIONS(x)
 #else
 # define EXEC_DEPRECATED_CALL(x)
 #endif
@@ -1027,12 +1027,12 @@ void tst_QVariant::toUInt()
 
 void tst_QVariant::toSize_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QSize>("result");
-    QTest::newRow( "qsizef4" ) << QVariant( QSizeF(4, 2) ) << QSize(4, 2);
-    QTest::newRow( "qsizef1" ) << QVariant( QSizeF(0, 0) ) << QSize(0, 0);
-    QTest::newRow( "qsizef2" ) << QVariant( QSizeF(-5, -1) ) << QSize(-5, -1);
-    QTest::newRow( "qsizef3" ) << QVariant( QSizeF() ) << QSize();
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QSize>("result");
+    BOBUIest::newRow( "qsizef4" ) << QVariant( QSizeF(4, 2) ) << QSize(4, 2);
+    BOBUIest::newRow( "qsizef1" ) << QVariant( QSizeF(0, 0) ) << QSize(0, 0);
+    BOBUIest::newRow( "qsizef2" ) << QVariant( QSizeF(-5, -1) ) << QSize(-5, -1);
+    BOBUIest::newRow( "qsizef3" ) << QVariant( QSizeF() ) << QSize();
 }
 
 void tst_QVariant::toSize()
@@ -1049,12 +1049,12 @@ void tst_QVariant::toSize()
 
 void tst_QVariant::toSizeF_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QSizeF>("result");
-    QTest::newRow( "qsize1" ) << QVariant( QSize(0, 0) ) << QSizeF(0, 0);
-    QTest::newRow( "qsize2" ) << QVariant( QSize(-5, -1) ) << QSizeF(-5, -1);
-     QTest::newRow( "qsize3" ) << QVariant( QSize() ) << QSizeF();
-    QTest::newRow( "qsize4" ) << QVariant(QSize(4,2)) << QSizeF(4,2);
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QSizeF>("result");
+    BOBUIest::newRow( "qsize1" ) << QVariant( QSize(0, 0) ) << QSizeF(0, 0);
+    BOBUIest::newRow( "qsize2" ) << QVariant( QSize(-5, -1) ) << QSizeF(-5, -1);
+     BOBUIest::newRow( "qsize3" ) << QVariant( QSize() ) << QSizeF();
+    BOBUIest::newRow( "qsize4" ) << QVariant(QSize(4,2)) << QSizeF(4,2);
 }
 
 void tst_QVariant::toSizeF()
@@ -1071,12 +1071,12 @@ void tst_QVariant::toSizeF()
 
 void tst_QVariant::toLine_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QLine>("result");
-    QTest::newRow( "linef1" ) << QVariant( QLineF(1, 2, 3, 4) ) << QLine(1, 2, 3, 4);
-    QTest::newRow( "linef2" ) << QVariant( QLineF(-1, -2, -3, -4) ) << QLine(-1, -2, -3, -4);
-    QTest::newRow( "linef3" ) << QVariant( QLineF(0, 0, 0, 0) ) << QLine(0, 0, 0, 0);
-    QTest::newRow( "linef4" ) << QVariant( QLineF() ) << QLine();
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QLine>("result");
+    BOBUIest::newRow( "linef1" ) << QVariant( QLineF(1, 2, 3, 4) ) << QLine(1, 2, 3, 4);
+    BOBUIest::newRow( "linef2" ) << QVariant( QLineF(-1, -2, -3, -4) ) << QLine(-1, -2, -3, -4);
+    BOBUIest::newRow( "linef3" ) << QVariant( QLineF(0, 0, 0, 0) ) << QLine(0, 0, 0, 0);
+    BOBUIest::newRow( "linef4" ) << QVariant( QLineF() ) << QLine();
 }
 
 void tst_QVariant::toLine()
@@ -1093,12 +1093,12 @@ void tst_QVariant::toLine()
 
 void tst_QVariant::toLineF_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QLineF>("result");
-    QTest::newRow( "line1" ) << QVariant( QLine(-1, -2, -3, -4) ) << QLineF(-1, -2, -3, -4);
-    QTest::newRow( "line2" ) << QVariant( QLine(0, 0, 0, 0) ) << QLineF(0, 0, 0, 0);
-    QTest::newRow( "line3" ) << QVariant( QLine() ) << QLineF();
-    QTest::newRow( "line4" ) << QVariant( QLine(1, 2, 3, 4) ) << QLineF(1, 2, 3, 4);
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QLineF>("result");
+    BOBUIest::newRow( "line1" ) << QVariant( QLine(-1, -2, -3, -4) ) << QLineF(-1, -2, -3, -4);
+    BOBUIest::newRow( "line2" ) << QVariant( QLine(0, 0, 0, 0) ) << QLineF(0, 0, 0, 0);
+    BOBUIest::newRow( "line3" ) << QVariant( QLine() ) << QLineF();
+    BOBUIest::newRow( "line4" ) << QVariant( QLine(1, 2, 3, 4) ) << QLineF(1, 2, 3, 4);
 }
 
 void tst_QVariant::toLineF()
@@ -1115,13 +1115,13 @@ void tst_QVariant::toLineF()
 
 void tst_QVariant::toPoint_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QPoint>("result");
-    QTest::newRow( "pointf1" ) << QVariant( QPointF(4, 2) ) << QPoint(4, 2);
-    QTest::newRow( "pointf2" ) << QVariant( QPointF(0, 0) ) << QPoint(0, 0);
-    QTest::newRow( "pointf3" ) << QVariant( QPointF(-4, -2) ) << QPoint(-4, -2);
-    QTest::newRow( "pointf4" ) << QVariant( QPointF() ) << QPoint();
-    QTest::newRow( "pointf5" ) << QVariant( QPointF(-4.2f, -2.3f) ) << QPoint(-4, -2);
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QPoint>("result");
+    BOBUIest::newRow( "pointf1" ) << QVariant( QPointF(4, 2) ) << QPoint(4, 2);
+    BOBUIest::newRow( "pointf2" ) << QVariant( QPointF(0, 0) ) << QPoint(0, 0);
+    BOBUIest::newRow( "pointf3" ) << QVariant( QPointF(-4, -2) ) << QPoint(-4, -2);
+    BOBUIest::newRow( "pointf4" ) << QVariant( QPointF() ) << QPoint();
+    BOBUIest::newRow( "pointf5" ) << QVariant( QPointF(-4.2f, -2.3f) ) << QPoint(-4, -2);
 }
 
 void tst_QVariant::toPoint()
@@ -1137,13 +1137,13 @@ void tst_QVariant::toPoint()
 
 void tst_QVariant::toRect_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QRect>("result");
-    QTest::newRow( "rectf1" ) << QVariant(QRectF(1, 2, 3, 4)) << QRect(1, 2, 3, 4);
-    QTest::newRow( "rectf2" ) << QVariant(QRectF(0, 0, 0, 0)) << QRect(0, 0, 0, 0);
-    QTest::newRow( "rectf3" ) << QVariant(QRectF(-1, -2, -3, -4)) << QRect(-1, -2, -3, -4);
-    QTest::newRow( "rectf4" ) << QVariant(QRectF(-1.3f, 0, 3.9f, -4.0)) << QRect(-1, 0, 4, -4);
-    QTest::newRow( "rectf5" ) << QVariant(QRectF()) << QRect();
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QRect>("result");
+    BOBUIest::newRow( "rectf1" ) << QVariant(QRectF(1, 2, 3, 4)) << QRect(1, 2, 3, 4);
+    BOBUIest::newRow( "rectf2" ) << QVariant(QRectF(0, 0, 0, 0)) << QRect(0, 0, 0, 0);
+    BOBUIest::newRow( "rectf3" ) << QVariant(QRectF(-1, -2, -3, -4)) << QRect(-1, -2, -3, -4);
+    BOBUIest::newRow( "rectf4" ) << QVariant(QRectF(-1.3f, 0, 3.9f, -4.0)) << QRect(-1, 0, 4, -4);
+    BOBUIest::newRow( "rectf5" ) << QVariant(QRectF()) << QRect();
 }
 
 void tst_QVariant::toRect()
@@ -1159,10 +1159,10 @@ void tst_QVariant::toRect()
 
 void tst_QVariant::toChar_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QChar>("result");
-    QTest::newRow( "longlong" ) << QVariant(qlonglong('6')) << QChar('6');
-    QTest::newRow( "ulonglong" ) << QVariant(qulonglong('7')) << QChar('7');
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QChar>("result");
+    BOBUIest::newRow( "longlong" ) << QVariant(qlonglong('6')) << QChar('6');
+    BOBUIest::newRow( "ulonglong" ) << QVariant(qulonglong('7')) << QChar('7');
 }
 
 void tst_QVariant::toChar()
@@ -1179,33 +1179,33 @@ void tst_QVariant::toChar()
 
 void tst_QVariant::toBool_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<bool>("result");
 
-    QTest::newRow( "int0" ) << QVariant( 0 ) << false;
-    QTest::newRow( "int1" ) << QVariant( 123 ) << true;
-    QTest::newRow( "uint0" ) << QVariant( 0u ) << false;
-    QTest::newRow( "uint1" ) << QVariant( 123u ) << true;
-    QTest::newRow( "double0" ) << QVariant( 0.0 ) << false;
-    QTest::newRow( "float0" ) << QVariant( 0.0f ) << false;
-    QTest::newRow( "float16_0" ) << QVariant::fromValue( qfloat16() ) << false;
-    QTest::newRow( "double1" ) << QVariant( 3.1415927 ) << true;
-    QTest::newRow( "float1" ) << QVariant( 3.1415927f ) << true;
-    QTest::newRow( "float16_1" ) << QVariant::fromValue( qfloat16(3.1415927f) ) << true;
-    QTest::newRow( "string0" ) << QVariant( QString("3") ) << true;
-    QTest::newRow( "string1" ) << QVariant( QString("true") ) << true;
-    QTest::newRow( "string2" ) << QVariant( QString("0") ) << false;
-    QTest::newRow( "string3" ) << QVariant( QString("fAlSe") ) << false;
-    QTest::newRow( "longlong0" ) << QVariant( (qlonglong)0 ) << false;
-    QTest::newRow( "longlong1" ) << QVariant( (qlonglong)1 ) << true;
-    QTest::newRow( "ulonglong0" ) << QVariant( (qulonglong)0 ) << false;
-    QTest::newRow( "ulonglong1" ) << QVariant( (qulonglong)1 ) << true;
-    QTest::newRow( "QChar" ) << QVariant(QChar('a')) << true;
-    QTest::newRow( "Null_QChar" ) << QVariant(QChar(0)) << false;
-    QTest::newRow("QJsonValue(true)") << QVariant(QJsonValue(true)) << true;
-    QTest::newRow("QJsonValue(false)") << QVariant(QJsonValue(false)) << false;
-    QTest::newRow("QCborValue(true)") << QVariant::fromValue(QCborValue(true)) << true;
-    QTest::newRow("QCborValue(false)") << QVariant::fromValue(QCborValue(false)) << false;
+    BOBUIest::newRow( "int0" ) << QVariant( 0 ) << false;
+    BOBUIest::newRow( "int1" ) << QVariant( 123 ) << true;
+    BOBUIest::newRow( "uint0" ) << QVariant( 0u ) << false;
+    BOBUIest::newRow( "uint1" ) << QVariant( 123u ) << true;
+    BOBUIest::newRow( "double0" ) << QVariant( 0.0 ) << false;
+    BOBUIest::newRow( "float0" ) << QVariant( 0.0f ) << false;
+    BOBUIest::newRow( "float16_0" ) << QVariant::fromValue( qfloat16() ) << false;
+    BOBUIest::newRow( "double1" ) << QVariant( 3.1415927 ) << true;
+    BOBUIest::newRow( "float1" ) << QVariant( 3.1415927f ) << true;
+    BOBUIest::newRow( "float16_1" ) << QVariant::fromValue( qfloat16(3.1415927f) ) << true;
+    BOBUIest::newRow( "string0" ) << QVariant( QString("3") ) << true;
+    BOBUIest::newRow( "string1" ) << QVariant( QString("true") ) << true;
+    BOBUIest::newRow( "string2" ) << QVariant( QString("0") ) << false;
+    BOBUIest::newRow( "string3" ) << QVariant( QString("fAlSe") ) << false;
+    BOBUIest::newRow( "longlong0" ) << QVariant( (qlonglong)0 ) << false;
+    BOBUIest::newRow( "longlong1" ) << QVariant( (qlonglong)1 ) << true;
+    BOBUIest::newRow( "ulonglong0" ) << QVariant( (qulonglong)0 ) << false;
+    BOBUIest::newRow( "ulonglong1" ) << QVariant( (qulonglong)1 ) << true;
+    BOBUIest::newRow( "QChar" ) << QVariant(QChar('a')) << true;
+    BOBUIest::newRow( "Null_QChar" ) << QVariant(QChar(0)) << false;
+    BOBUIest::newRow("QJsonValue(true)") << QVariant(QJsonValue(true)) << true;
+    BOBUIest::newRow("QJsonValue(false)") << QVariant(QJsonValue(false)) << false;
+    BOBUIest::newRow("QCborValue(true)") << QVariant::fromValue(QCborValue(true)) << true;
+    BOBUIest::newRow("QCborValue(false)") << QVariant::fromValue(QCborValue(false)) << false;
 }
 
 void tst_QVariant::toBool()
@@ -1225,10 +1225,10 @@ void tst_QVariant::toBool()
 
 void tst_QVariant::toPointF_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QPointF>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QPointF>("result");
 
-    QTest::newRow( "QPoint" ) << QVariant( QPointF( 19, 84) ) << QPointF( 19, 84 );
+    BOBUIest::newRow( "QPoint" ) << QVariant( QPointF( 19, 84) ) << QPointF( 19, 84 );
 }
 
 void tst_QVariant::toPointF()
@@ -1244,12 +1244,12 @@ void tst_QVariant::toPointF()
 
 void tst_QVariant::toRectF_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QRectF>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QRectF>("result");
 
     QRect r( 1, 9, 8, 4 );
     QRectF rf( 1.0, 9.0, 8.0, 4.0 );
-    QTest::newRow( "QRect" ) << QVariant( r ) << rf;
+    BOBUIest::newRow( "QRect" ) << QVariant( r ) << rf;
 }
 
 void tst_QVariant::toRectF()
@@ -1376,8 +1376,8 @@ void tst_QVariant::toULongLong()
 
 void tst_QVariant::toByteArray_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QByteArray>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QByteArray>("result");
 
     QByteArray ba(5, ' ');
     ba[0] = 'T';
@@ -1388,18 +1388,18 @@ void tst_QVariant::toByteArray_data()
 
     QByteArray variantBa = ba;
 
-    QTest::newRow( "qbytearray" ) << QVariant( variantBa ) << ba;
-    QTest::newRow( "int" ) << QVariant( -123 ) << QByteArray( "-123" );
-    QTest::newRow( "uint" ) << QVariant( (uint)123 ) << QByteArray( "123" );
-    QTest::newRow( "double" ) << QVariant( 123.456 ) << QByteArray( "123.456" );
+    BOBUIest::newRow( "qbytearray" ) << QVariant( variantBa ) << ba;
+    BOBUIest::newRow( "int" ) << QVariant( -123 ) << QByteArray( "-123" );
+    BOBUIest::newRow( "uint" ) << QVariant( (uint)123 ) << QByteArray( "123" );
+    BOBUIest::newRow( "double" ) << QVariant( 123.456 ) << QByteArray( "123.456" );
 
     // Conversion from float to double adds bits of which the double-to-string converter doesn't
     // know they're insignificant
-    QTest::newRow( "float" ) << QVariant( 123.456f ) << QByteArray( "123.45600128173828" );
+    BOBUIest::newRow( "float" ) << QVariant( 123.456f ) << QByteArray( "123.45600128173828" );
 
-    QTest::newRow( "longlong" ) << QVariant( (qlonglong)34 ) << QByteArray( "34" );
-    QTest::newRow( "ulonglong" ) << QVariant( (qulonglong)34 ) << QByteArray( "34" );
-    QTest::newRow( "nullptr" ) << QVariant::fromValue(nullptr) << QByteArray();
+    BOBUIest::newRow( "longlong" ) << QVariant( (qlonglong)34 ) << QByteArray( "34" );
+    BOBUIest::newRow( "ulonglong" ) << QVariant( (qulonglong)34 ) << QByteArray( "34" );
+    BOBUIest::newRow( "nullptr" ) << QVariant::fromValue(nullptr) << QByteArray();
 }
 
 void tst_QVariant::toByteArray()
@@ -1419,30 +1419,30 @@ void tst_QVariant::toByteArray()
 
 void tst_QVariant::toString_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QString>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QString>("result");
 
-    QTest::newRow( "qstring" ) << QVariant( QString( "Test" ) ) << QString( "Test" );
-    QTest::newRow( "charstar" ) << QVariant(QLatin1String("Test")) << QString("Test");
-    QTest::newRow( "qbytearray") << QVariant( QByteArray( "Test\0" ) ) << QString( "Test" );
-    QTest::newRow( "int" ) << QVariant( -123 ) << QString( "-123" );
-    QTest::newRow( "uint" ) << QVariant( (uint)123 ) << QString( "123" );
-    QTest::newRow( "double" ) << QVariant( 123.456 ) << QString( "123.456" );
+    BOBUIest::newRow( "qstring" ) << QVariant( QString( "Test" ) ) << QString( "Test" );
+    BOBUIest::newRow( "charstar" ) << QVariant(QLatin1String("Test")) << QString("Test");
+    BOBUIest::newRow( "qbytearray") << QVariant( QByteArray( "Test\0" ) ) << QString( "Test" );
+    BOBUIest::newRow( "int" ) << QVariant( -123 ) << QString( "-123" );
+    BOBUIest::newRow( "uint" ) << QVariant( (uint)123 ) << QString( "123" );
+    BOBUIest::newRow( "double" ) << QVariant( 123.456 ) << QString( "123.456" );
 
     // Conversion from float to double adds bits of which the double-to-string converter doesn't
     // know they're insignificant
-    QTest::newRow( "float" ) << QVariant( 123.456f ) << QString( "123.45600128173828" );
+    BOBUIest::newRow( "float" ) << QVariant( 123.456f ) << QString( "123.45600128173828" );
 
-    QTest::newRow( "bool" ) << QVariant( true ) << QString( "true" );
-    QTest::newRow( "qdate" ) << QVariant( QDate( 2002, 1, 1 ) ) << QString( "2002-01-01" );
-    QTest::newRow( "qtime" ) << QVariant( QTime( 12, 34, 56 ) ) << QString( "12:34:56.000" );
-    QTest::newRow( "qtime-with-ms" ) << QVariant( QTime( 12, 34, 56, 789 ) ) << QString( "12:34:56.789" );
-    QTest::newRow( "qdatetime" ) << QVariant( QDateTime( QDate( 2002, 1, 1 ), QTime( 12, 34, 56, 789 ) ) ) << QString( "2002-01-01T12:34:56.789" );
-    QTest::newRow( "llong" ) << QVariant( (qlonglong)Q_INT64_C(123456789012) ) <<
+    BOBUIest::newRow( "bool" ) << QVariant( true ) << QString( "true" );
+    BOBUIest::newRow( "qdate" ) << QVariant( QDate( 2002, 1, 1 ) ) << QString( "2002-01-01" );
+    BOBUIest::newRow( "bobuiime" ) << QVariant( BOBUIime( 12, 34, 56 ) ) << QString( "12:34:56.000" );
+    BOBUIest::newRow( "bobuiime-with-ms" ) << QVariant( BOBUIime( 12, 34, 56, 789 ) ) << QString( "12:34:56.789" );
+    BOBUIest::newRow( "qdatetime" ) << QVariant( QDateTime( QDate( 2002, 1, 1 ), BOBUIime( 12, 34, 56, 789 ) ) ) << QString( "2002-01-01T12:34:56.789" );
+    BOBUIest::newRow( "llong" ) << QVariant( (qlonglong)Q_INT64_C(123456789012) ) <<
         QString( "123456789012" );
-    QTest::newRow("QJsonValue") << QVariant(QJsonValue(QString("hello"))) << QString("hello");
-    QTest::newRow("QJsonValue(Null)") << QVariant(QJsonValue(QJsonValue::Null)) << QString();
-    QTest::newRow("nullptr") << QVariant::fromValue(nullptr) << QString();
+    BOBUIest::newRow("QJsonValue") << QVariant(QJsonValue(QString("hello"))) << QString("hello");
+    BOBUIest::newRow("QJsonValue(Null)") << QVariant(QJsonValue(QJsonValue::Null)) << QString();
+    BOBUIest::newRow("nullptr") << QVariant::fromValue(nullptr) << QString();
 }
 
 void tst_QVariant::toString()
@@ -1462,12 +1462,12 @@ void tst_QVariant::toString()
 
 void tst_QVariant::toDate_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QDate>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QDate>("result");
 
-    QTest::newRow( "qdate" ) << QVariant( QDate( 2002, 10, 10 ) ) << QDate( 2002, 10, 10 );
-    QTest::newRow( "qdatetime" ) << QVariant( QDateTime( QDate( 2002, 10, 10 ), QTime( 12, 34, 56 ) ) ) << QDate( 2002, 10, 10 );
-    QTest::newRow( "qstring" ) << QVariant( QString( "2002-10-10" ) ) << QDate( 2002, 10, 10 );
+    BOBUIest::newRow( "qdate" ) << QVariant( QDate( 2002, 10, 10 ) ) << QDate( 2002, 10, 10 );
+    BOBUIest::newRow( "qdatetime" ) << QVariant( QDateTime( QDate( 2002, 10, 10 ), BOBUIime( 12, 34, 56 ) ) ) << QDate( 2002, 10, 10 );
+    BOBUIest::newRow( "qstring" ) << QVariant( QString( "2002-10-10" ) ) << QDate( 2002, 10, 10 );
 }
 
 void tst_QVariant::toDate()
@@ -1482,39 +1482,39 @@ void tst_QVariant::toDate()
 
 void tst_QVariant::toTime_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QTime>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<BOBUIime>("result");
 
-    QTest::newRow( "qtime" ) << QVariant( QTime( 12, 34, 56 ) ) << QTime( 12, 34, 56 );
-    QTest::newRow( "qdatetime" ) << QVariant( QDateTime( QDate( 2002, 10, 10 ), QTime( 12, 34, 56 ) ) ) << QTime( 12, 34, 56 );
-    QTest::newRow( "qstring" ) << QVariant( QString( "12:34:56" ) ) << QTime( 12, 34, 56 );
-    QTest::newRow( "qstring-with-ms" ) << QVariant( QString( "12:34:56.789" ) ) << QTime( 12, 34, 56, 789 );
+    BOBUIest::newRow( "bobuiime" ) << QVariant( BOBUIime( 12, 34, 56 ) ) << BOBUIime( 12, 34, 56 );
+    BOBUIest::newRow( "qdatetime" ) << QVariant( QDateTime( QDate( 2002, 10, 10 ), BOBUIime( 12, 34, 56 ) ) ) << BOBUIime( 12, 34, 56 );
+    BOBUIest::newRow( "qstring" ) << QVariant( QString( "12:34:56" ) ) << BOBUIime( 12, 34, 56 );
+    BOBUIest::newRow( "qstring-with-ms" ) << QVariant( QString( "12:34:56.789" ) ) << BOBUIime( 12, 34, 56, 789 );
 }
 
 void tst_QVariant::toTime()
 {
     QFETCH( QVariant, value );
-    QFETCH( QTime, result );
+    QFETCH( BOBUIime, result );
     QVERIFY( value.isValid() );
     EXEC_DEPRECATED_CALL(QVERIFY( value.canConvert( QVariant::Time ) );)
-    QVERIFY( value.canConvert(QMetaType::fromType<QTime>()) );
+    QVERIFY( value.canConvert(QMetaType::fromType<BOBUIime>()) );
     QCOMPARE( value.toTime(), result );
 }
 
 void tst_QVariant::toDateTime_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QDateTime>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QDateTime>("result");
 
-    QTest::newRow( "qdatetime" ) << QVariant( QDateTime( QDate( 2002, 10, 10 ), QTime( 12, 34, 56 ) ) )
-        << QDateTime( QDate( 2002, 10, 10 ), QTime( 12, 34, 56 ) );
-    QTest::newRow( "qdate" ) << QVariant( QDate( 2002, 10, 10 ) ) << QDateTime( QDate( 2002, 10, 10 ), QTime( 0, 0, 0 ) );
-    QTest::newRow( "qstring" ) << QVariant( QString( "2002-10-10T12:34:56" ) ) << QDateTime( QDate( 2002, 10, 10 ), QTime( 12, 34, 56 ) );
-    QTest::newRow("qstring-utc")
+    BOBUIest::newRow( "qdatetime" ) << QVariant( QDateTime( QDate( 2002, 10, 10 ), BOBUIime( 12, 34, 56 ) ) )
+        << QDateTime( QDate( 2002, 10, 10 ), BOBUIime( 12, 34, 56 ) );
+    BOBUIest::newRow( "qdate" ) << QVariant( QDate( 2002, 10, 10 ) ) << QDateTime( QDate( 2002, 10, 10 ), BOBUIime( 0, 0, 0 ) );
+    BOBUIest::newRow( "qstring" ) << QVariant( QString( "2002-10-10T12:34:56" ) ) << QDateTime( QDate( 2002, 10, 10 ), BOBUIime( 12, 34, 56 ) );
+    BOBUIest::newRow("qstring-utc")
         << QVariant(QString("2002-10-10T12:34:56Z"))
-        << QDateTime(QDate(2002, 10, 10), QTime(12, 34, 56), QTimeZone::UTC);
-    QTest::newRow( "qstring-with-ms" ) << QVariant( QString( "2002-10-10T12:34:56.789" ) )
-                                       << QDateTime( QDate( 2002, 10, 10 ), QTime( 12, 34, 56, 789 ) );
+        << QDateTime(QDate(2002, 10, 10), BOBUIime(12, 34, 56), BOBUIimeZone::UTC);
+    BOBUIest::newRow( "qstring-with-ms" ) << QVariant( QString( "2002-10-10T12:34:56.789" ) )
+                                       << QDateTime( QDate( 2002, 10, 10 ), BOBUIime( 12, 34, 56, 789 ) );
 }
 
 void tst_QVariant::toDateTime()
@@ -1574,96 +1574,96 @@ Q_DECLARE_METATYPE(CustomStreamableClass);
 
 void tst_QVariant::writeToReadFromDataStream_data()
 {
-    QTest::addColumn<QVariant>("writeVariant");
-    QTest::addColumn<bool>("isNull");
+    BOBUIest::addColumn<QVariant>("writeVariant");
+    BOBUIest::addColumn<bool>("isNull");
     {
         QVariantList valuelist;
         valuelist << QVariant( 1 ) << QVariant( QString("Two") ) << QVariant( 3.45 );
         QVariant var(valuelist);
-        QTest::newRow( "list_valid" ) << var << false;
+        BOBUIest::newRow( "list_valid" ) << var << false;
     }
 
-    QTest::newRow( "invalid" ) << QVariant() << true;
-    QTest::newRow( "bitarray_invalid" ) << QVariant(QMetaType::fromType<QBitArray>()) << true;
-    QTest::newRow( "bitarray_empty" ) << QVariant( QBitArray() ) << false;
+    BOBUIest::newRow( "invalid" ) << QVariant() << true;
+    BOBUIest::newRow( "bitarray_invalid" ) << QVariant(QMetaType::fromType<QBitArray>()) << true;
+    BOBUIest::newRow( "bitarray_empty" ) << QVariant( QBitArray() ) << false;
     QBitArray bitarray( 3 );
     bitarray[0] = 0;
     bitarray[1] = 1;
     bitarray[2] = 0;
-    QTest::newRow( "bitarray_valid" ) << QVariant( bitarray ) << false;
-    QTest::newRow( "bytearray_invalid" ) << QVariant(QMetaType::fromType<QByteArray>()) << true;
-    QTest::newRow( "bytearray_empty" ) << QVariant( QByteArray() ) << false;
-    QTest::newRow( "int_invalid") << QVariant(QMetaType::fromType<int>()) << true;
+    BOBUIest::newRow( "bitarray_valid" ) << QVariant( bitarray ) << false;
+    BOBUIest::newRow( "bytearray_invalid" ) << QVariant(QMetaType::fromType<QByteArray>()) << true;
+    BOBUIest::newRow( "bytearray_empty" ) << QVariant( QByteArray() ) << false;
+    BOBUIest::newRow( "int_invalid") << QVariant(QMetaType::fromType<int>()) << true;
     QByteArray bytearray(5, ' ');
     bytearray[0] = 'T';
     bytearray[1] = 'e';
     bytearray[2] = 's';
     bytearray[3] = 't';
     bytearray[4] = '\0';
-    QTest::newRow( "bytearray_valid" ) << QVariant( bytearray ) << false;
-    QTest::newRow( "date_invalid" ) << QVariant(QMetaType::fromType<QDate>()) << true;
-    QTest::newRow( "date_empty" ) << QVariant( QDate() ) << false;
-    QTest::newRow( "date_valid" ) << QVariant( QDate( 2002, 07, 06 ) ) << false;
-    QTest::newRow( "datetime_invalid" ) << QVariant(QMetaType::fromType<QDateTime>()) << true;
-    QTest::newRow( "datetime_empty" ) << QVariant( QDateTime() ) << false;
-    QTest::newRow( "datetime_valid" ) << QVariant( QDateTime( QDate( 2002, 07, 06 ), QTime( 14, 0, 0 ) ) ) << false;
-    QTest::newRow( "double_valid" ) << QVariant( 123.456 ) << false;
-    QTest::newRow( "float_valid" ) << QVariant( 123.456f ) << false;
-    QTest::newRow( "int_valid" ) << QVariant( -123 ) << false;
+    BOBUIest::newRow( "bytearray_valid" ) << QVariant( bytearray ) << false;
+    BOBUIest::newRow( "date_invalid" ) << QVariant(QMetaType::fromType<QDate>()) << true;
+    BOBUIest::newRow( "date_empty" ) << QVariant( QDate() ) << false;
+    BOBUIest::newRow( "date_valid" ) << QVariant( QDate( 2002, 07, 06 ) ) << false;
+    BOBUIest::newRow( "datetime_invalid" ) << QVariant(QMetaType::fromType<QDateTime>()) << true;
+    BOBUIest::newRow( "datetime_empty" ) << QVariant( QDateTime() ) << false;
+    BOBUIest::newRow( "datetime_valid" ) << QVariant( QDateTime( QDate( 2002, 07, 06 ), BOBUIime( 14, 0, 0 ) ) ) << false;
+    BOBUIest::newRow( "double_valid" ) << QVariant( 123.456 ) << false;
+    BOBUIest::newRow( "float_valid" ) << QVariant( 123.456f ) << false;
+    BOBUIest::newRow( "int_valid" ) << QVariant( -123 ) << false;
     QVariantMap vMap;
     vMap.insert( "int", QVariant( 1 ) );
     vMap.insert( "string", QVariant( QString("Two") ) );
     vMap.insert( "double", QVariant( 3.45 ) );
     vMap.insert( "float", QVariant( 3.45f ) );
-    QTest::newRow( "map_valid" ) << QVariant( vMap ) << false;
-    QTest::newRow( "point_invalid" ) << QVariant(QMetaType::fromType<QPoint>()) << true;
-    QTest::newRow( "point_empty" ) << QVariant::fromValue( QPoint() ) << false;
-    QTest::newRow( "point_valid" ) << QVariant::fromValue( QPoint( 10, 10 ) ) << false;
-    QTest::newRow( "rect_invalid" ) << QVariant(QMetaType::fromType<QRect>()) << true;
-    QTest::newRow( "rect_empty" ) << QVariant( QRect() ) << false;
-    QTest::newRow( "rect_valid" ) << QVariant( QRect( 10, 10, 20, 20 ) ) << false;
-    QTest::newRow( "size_invalid" ) << QVariant(QMetaType::fromType<QSize>()) << true;
-    QTest::newRow( "size_empty" ) << QVariant( QSize( 0, 0 ) ) << false;
-    QTest::newRow( "size_valid" ) << QVariant( QSize( 10, 10 ) ) << false;
-    QTest::newRow( "string_invalid" ) << QVariant(QMetaType::fromType<QString>()) << true;
-    QTest::newRow( "string_empty" ) << QVariant( QString() ) << false;
-    QTest::newRow( "string_valid" ) << QVariant( QString( "Test" ) ) << false;
+    BOBUIest::newRow( "map_valid" ) << QVariant( vMap ) << false;
+    BOBUIest::newRow( "point_invalid" ) << QVariant(QMetaType::fromType<QPoint>()) << true;
+    BOBUIest::newRow( "point_empty" ) << QVariant::fromValue( QPoint() ) << false;
+    BOBUIest::newRow( "point_valid" ) << QVariant::fromValue( QPoint( 10, 10 ) ) << false;
+    BOBUIest::newRow( "rect_invalid" ) << QVariant(QMetaType::fromType<QRect>()) << true;
+    BOBUIest::newRow( "rect_empty" ) << QVariant( QRect() ) << false;
+    BOBUIest::newRow( "rect_valid" ) << QVariant( QRect( 10, 10, 20, 20 ) ) << false;
+    BOBUIest::newRow( "size_invalid" ) << QVariant(QMetaType::fromType<QSize>()) << true;
+    BOBUIest::newRow( "size_empty" ) << QVariant( QSize( 0, 0 ) ) << false;
+    BOBUIest::newRow( "size_valid" ) << QVariant( QSize( 10, 10 ) ) << false;
+    BOBUIest::newRow( "string_invalid" ) << QVariant(QMetaType::fromType<QString>()) << true;
+    BOBUIest::newRow( "string_empty" ) << QVariant( QString() ) << false;
+    BOBUIest::newRow( "string_valid" ) << QVariant( QString( "Test" ) ) << false;
     QStringList stringlist;
     stringlist << "One" << "Two" << "Three";
-    QTest::newRow( "stringlist_valid" ) << QVariant( stringlist ) << false;
-    QTest::newRow( "time_invalid" ) << QVariant(QMetaType::fromType<QTime>()) << true;
-    QTest::newRow( "time_empty" ) << QVariant( QTime() ) << false;
-    QTest::newRow( "time_valid" ) << QVariant( QTime( 14, 0, 0 ) ) << false;
-    QTest::newRow( "uint_valid" ) << QVariant( (uint)123 ) << false;
-    QTest::newRow( "qchar" ) << QVariant(QChar('a')) << false;
-    QTest::newRow( "qchar_null" ) << QVariant(QChar(0)) << false;
-    QTest::newRow( "regularexpression" ) << QVariant(QRegularExpression("abc.*def")) << false;
-    QTest::newRow( "regularexpression_empty" ) << QVariant(QRegularExpression()) << false;
+    BOBUIest::newRow( "stringlist_valid" ) << QVariant( stringlist ) << false;
+    BOBUIest::newRow( "time_invalid" ) << QVariant(QMetaType::fromType<BOBUIime>()) << true;
+    BOBUIest::newRow( "time_empty" ) << QVariant( BOBUIime() ) << false;
+    BOBUIest::newRow( "time_valid" ) << QVariant( BOBUIime( 14, 0, 0 ) ) << false;
+    BOBUIest::newRow( "uint_valid" ) << QVariant( (uint)123 ) << false;
+    BOBUIest::newRow( "qchar" ) << QVariant(QChar('a')) << false;
+    BOBUIest::newRow( "qchar_null" ) << QVariant(QChar(0)) << false;
+    BOBUIest::newRow( "regularexpression" ) << QVariant(QRegularExpression("abc.*def")) << false;
+    BOBUIest::newRow( "regularexpression_empty" ) << QVariant(QRegularExpression()) << false;
 
     // types known to QMetaType, but not part of QVariant::Type
-    QTest::newRow("QMetaType::Long invalid") << QVariant(QMetaType::fromType<long>(), nullptr) << true;
+    BOBUIest::newRow("QMetaType::Long invalid") << QVariant(QMetaType::fromType<long>(), nullptr) << true;
     long longInt = -1l;
-    QTest::newRow("QMetaType::Long") << QVariant(QMetaType::fromType<long>(), &longInt) << false;
-    QTest::newRow("QMetaType::Short invalid") << QVariant(QMetaType::fromType<short>(), nullptr) << true;
+    BOBUIest::newRow("QMetaType::Long") << QVariant(QMetaType::fromType<long>(), &longInt) << false;
+    BOBUIest::newRow("QMetaType::Short invalid") << QVariant(QMetaType::fromType<short>(), nullptr) << true;
     short shortInt = 1;
-    QTest::newRow("QMetaType::Short") << QVariant(QMetaType::fromType<short>(), &shortInt) << false;
-    QTest::newRow("QMetaType::Char invalid") << QVariant(QMetaType::fromType<QChar>(), nullptr) << true;
+    BOBUIest::newRow("QMetaType::Short") << QVariant(QMetaType::fromType<short>(), &shortInt) << false;
+    BOBUIest::newRow("QMetaType::Char invalid") << QVariant(QMetaType::fromType<QChar>(), nullptr) << true;
     char ch = 'c';
-    QTest::newRow("QMetaType::Char") << QVariant(QMetaType::fromType<char>(), &ch) << false;
-    QTest::newRow("QMetaType::ULong invalid") << QVariant(QMetaType::fromType<ulong>(), nullptr) << true;
+    BOBUIest::newRow("QMetaType::Char") << QVariant(QMetaType::fromType<char>(), &ch) << false;
+    BOBUIest::newRow("QMetaType::ULong invalid") << QVariant(QMetaType::fromType<ulong>(), nullptr) << true;
     ulong ulongInt = 1ul;
-    QTest::newRow("QMetaType::ULong") << QVariant(QMetaType::fromType<ulong>(), &ulongInt) << false;
-    QTest::newRow("QMetaType::UShort invalid") << QVariant(QMetaType::fromType<ushort>(), nullptr) << true;
+    BOBUIest::newRow("QMetaType::ULong") << QVariant(QMetaType::fromType<ulong>(), &ulongInt) << false;
+    BOBUIest::newRow("QMetaType::UShort invalid") << QVariant(QMetaType::fromType<ushort>(), nullptr) << true;
     ushort ushortInt = 1u;
-    QTest::newRow("QMetaType::UShort") << QVariant(QMetaType::fromType<ushort>(), &ushortInt) << false;
-    QTest::newRow("QMetaType::UChar invalid") << QVariant(QMetaType::fromType<uchar>(), nullptr) << true;
+    BOBUIest::newRow("QMetaType::UShort") << QVariant(QMetaType::fromType<ushort>(), &ushortInt) << false;
+    BOBUIest::newRow("QMetaType::UChar invalid") << QVariant(QMetaType::fromType<uchar>(), nullptr) << true;
     uchar uch = 0xf0;
-    QTest::newRow("QMetaType::UChar") << QVariant(QMetaType::fromType<uchar>(), &uch) << false;
-    QTest::newRow("QMetaType::Float invalid") << QVariant(QMetaType::fromType<float>(), nullptr) << true;
+    BOBUIest::newRow("QMetaType::UChar") << QVariant(QMetaType::fromType<uchar>(), &uch) << false;
+    BOBUIest::newRow("QMetaType::Float invalid") << QVariant(QMetaType::fromType<float>(), nullptr) << true;
     float f = 1.234f;
-    QTest::newRow("QMetaType::Float") << QVariant(QMetaType::fromType<float>(), &f) << false;
+    BOBUIest::newRow("QMetaType::Float") << QVariant(QMetaType::fromType<float>(), &f) << false;
     CustomStreamableClass custom = {123};
-    QTest::newRow("Custom type") << QVariant::fromValue(custom) << false;
+    BOBUIest::newRow("Custom type") << QVariant::fromValue(custom) << false;
 }
 
 void tst_QVariant::writeToReadFromDataStream()
@@ -1732,12 +1732,12 @@ void tst_QVariant::writeToReadFromOldDataStream()
     QByteArray data;
 
     QDataStream writeStream(&data, QIODevice::WriteOnly);
-    writeStream.setVersion(QDataStream::Qt_2_1);
+    writeStream.setVersion(QDataStream::BobUI_2_1);
     writeStream << writeVariant;
 
     QVariant readVariant;
     QDataStream readStream(&data, QIODevice::ReadOnly);
-    readStream.setVersion(QDataStream::Qt_2_1);
+    readStream.setVersion(QDataStream::BobUI_2_1);
     readStream >> readVariant;
 
     QCOMPARE(writeVariant.userType(), readVariant.userType());
@@ -1749,7 +1749,7 @@ void tst_QVariant::checkDataStream()
     const int typeId = QMetaType::LastCoreType + 1;
     QVERIFY(!QMetaType::isRegistered(typeId));
 
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
     QByteArray settingsHex("000000");
     settingsHex.append(QByteArray::number(typeId, 16));
     settingsHex.append("ffffffffff");
@@ -1767,31 +1767,31 @@ void tst_QVariant::checkDataStream()
 
 void tst_QVariant::operator_eq_eq_data()
 {
-    QTest::addColumn<QVariant>("left");
-    QTest::addColumn<QVariant>("right");
-    QTest::addColumn<bool>("equal"); // left == right ?
+    BOBUIest::addColumn<QVariant>("left");
+    BOBUIest::addColumn<QVariant>("right");
+    BOBUIest::addColumn<bool>("equal"); // left == right ?
 
     QVariant inv;
     QVariant i0( int(0) );
     QVariant i1( int(1) );
     // Invalid
-    QTest::newRow( "invinv" ) << inv << inv << true;
+    BOBUIest::newRow( "invinv" ) << inv << inv << true;
     // Int
-    QTest::newRow( "int1int1" ) << i1 << i1 << true;
-    QTest::newRow( "int1int0" ) << i1 << i0 << false;
-    QTest::newRow( "nullint" ) << i0 << QVariant(QMetaType::fromType<int>()) << true;
+    BOBUIest::newRow( "int1int1" ) << i1 << i1 << true;
+    BOBUIest::newRow( "int1int0" ) << i1 << i0 << false;
+    BOBUIest::newRow( "nullint" ) << i0 << QVariant(QMetaType::fromType<int>()) << true;
 
     // LongLong and ULongLong
     QVariant ll1( (qlonglong)1 );
     QVariant lln2( (qlonglong)-2 );
     QVariant ull1( (qulonglong)1 );
     QVariant ull3( (qulonglong)3 );
-    QTest::newRow( "ll1ll1" ) << ll1 << ll1 << true;
-    QTest::newRow( "ll1lln2" ) << ll1 << lln2 << false;
-    QTest::newRow( "ll1ull1" ) << ull1 << ull1 << true;
-    QTest::newRow( "ll1i1" ) << ull1 << i1 << true;
-    QTest::newRow( "ull1ull1" ) << ull1 << ull1 << true;
-    QTest::newRow( "ull1i1" ) << ull1 << ull1 << true;
+    BOBUIest::newRow( "ll1ll1" ) << ll1 << ll1 << true;
+    BOBUIest::newRow( "ll1lln2" ) << ll1 << lln2 << false;
+    BOBUIest::newRow( "ll1ull1" ) << ull1 << ull1 << true;
+    BOBUIest::newRow( "ll1i1" ) << ull1 << i1 << true;
+    BOBUIest::newRow( "ull1ull1" ) << ull1 << ull1 << true;
+    BOBUIest::newRow( "ull1i1" ) << ull1 << ull1 << true;
 
     QVariant mInt(-42);
     QVariant mIntString(QByteArray("-42"));
@@ -1806,7 +1806,7 @@ void tst_QVariant::operator_eq_eq_data()
     QVariant mUIntQString(QString("42"));
 
     QVariant mDouble(42.11);
-#ifdef QT_NO_DOUBLECONVERSION
+#ifdef BOBUI_NO_DOUBLECONVERSION
     // Without libdouble-conversion we don't get the shortest possible representation.
     QVariant mDoubleString(QByteArray("42.109999999999999"));
     QVariant mDoubleQString(QByteArray("42.109999999999999"));
@@ -1820,7 +1820,7 @@ void tst_QVariant::operator_eq_eq_data()
 
     // Float-to-double conversion produces insignificant extra bits.
     QVariant mFloat(42.11f);
-#ifdef QT_NO_DOUBLECONVERSION
+#ifdef BOBUI_NO_DOUBLECONVERSION
     // The trailing '2' is not significant, but snprintf doesn't know this.
     QVariant mFloatString(QByteArray("42.110000610351562"));
     QVariant mFloatQString(QString("42.110000610351562"));
@@ -1844,78 +1844,78 @@ void tst_QVariant::operator_eq_eq_data()
     QVariant mTextString(QByteArray("foobar"));
     QVariant mTextQString(QString("foobar"));
 
-    QTest::newRow( "double_int" ) << QVariant(42.0) << QVariant(42) << true;
-    QTest::newRow( "float_int" ) << QVariant(42.f) << QVariant(42) << true;
-    QTest::newRow( "mInt_mIntString" ) << mInt << mIntString << false;
-    QTest::newRow( "mIntString_mInt" ) << mIntString << mInt << false;
-    QTest::newRow( "mInt_mIntQString" ) << mInt << mIntQString << true;
-    QTest::newRow( "mIntQString_mInt" ) << mIntQString << mInt << true;
+    BOBUIest::newRow( "double_int" ) << QVariant(42.0) << QVariant(42) << true;
+    BOBUIest::newRow( "float_int" ) << QVariant(42.f) << QVariant(42) << true;
+    BOBUIest::newRow( "mInt_mIntString" ) << mInt << mIntString << false;
+    BOBUIest::newRow( "mIntString_mInt" ) << mIntString << mInt << false;
+    BOBUIest::newRow( "mInt_mIntQString" ) << mInt << mIntQString << true;
+    BOBUIest::newRow( "mIntQString_mInt" ) << mIntQString << mInt << true;
 
-    QTest::newRow( "mIntZero_mIntStringZero" ) << mIntZero << mIntStringZero << false;
-    QTest::newRow( "mIntStringZero_mIntZero" ) << mIntStringZero << mIntZero << false;
-    QTest::newRow( "mIntZero_mIntQStringZero" ) << mIntZero << mIntQStringZero << true;
-    QTest::newRow( "mIntQStringZero_mIntZero" ) << mIntQStringZero << mIntZero << true;
+    BOBUIest::newRow( "mIntZero_mIntStringZero" ) << mIntZero << mIntStringZero << false;
+    BOBUIest::newRow( "mIntStringZero_mIntZero" ) << mIntStringZero << mIntZero << false;
+    BOBUIest::newRow( "mIntZero_mIntQStringZero" ) << mIntZero << mIntQStringZero << true;
+    BOBUIest::newRow( "mIntQStringZero_mIntZero" ) << mIntQStringZero << mIntZero << true;
 
-    QTest::newRow( "mInt_mTextString" ) << mInt << mTextString << false;
-    QTest::newRow( "mTextString_mInt" ) << mTextString << mInt << false;
-    QTest::newRow( "mInt_mTextQString" ) << mInt << mTextQString << false;
-    QTest::newRow( "mTextQString_mInt" ) << mTextQString << mInt << false;
+    BOBUIest::newRow( "mInt_mTextString" ) << mInt << mTextString << false;
+    BOBUIest::newRow( "mTextString_mInt" ) << mTextString << mInt << false;
+    BOBUIest::newRow( "mInt_mTextQString" ) << mInt << mTextQString << false;
+    BOBUIest::newRow( "mTextQString_mInt" ) << mTextQString << mInt << false;
 
-    QTest::newRow( "mIntZero_mTextString" ) << mIntZero << mTextString << false;
-    QTest::newRow( "mTextString_mIntZero" ) << mTextString << mIntZero << false;
-    QTest::newRow( "mIntZero_mTextQString" ) << mIntZero << mTextQString << false;
-    QTest::newRow( "mTextQString_mIntZero" ) << mTextQString << mIntZero << false;
+    BOBUIest::newRow( "mIntZero_mTextString" ) << mIntZero << mTextString << false;
+    BOBUIest::newRow( "mTextString_mIntZero" ) << mTextString << mIntZero << false;
+    BOBUIest::newRow( "mIntZero_mTextQString" ) << mIntZero << mTextQString << false;
+    BOBUIest::newRow( "mTextQString_mIntZero" ) << mTextQString << mIntZero << false;
 
-    QTest::newRow( "mUInt_mUIntString" ) << mUInt << mUIntString << false;
-    QTest::newRow( "mUIntString_mUInt" ) << mUIntString << mUInt << false;
-    QTest::newRow( "mUInt_mUIntQString" ) << mUInt << mUIntQString << true;
-    QTest::newRow( "mUIntQString_mUInt" ) << mUIntQString << mUInt << true;
+    BOBUIest::newRow( "mUInt_mUIntString" ) << mUInt << mUIntString << false;
+    BOBUIest::newRow( "mUIntString_mUInt" ) << mUIntString << mUInt << false;
+    BOBUIest::newRow( "mUInt_mUIntQString" ) << mUInt << mUIntQString << true;
+    BOBUIest::newRow( "mUIntQString_mUInt" ) << mUIntQString << mUInt << true;
 
-    QTest::newRow( "mDouble_mDoubleString" ) << mDouble << mDoubleString << false;
-    QTest::newRow( "mDoubleString_mDouble" ) << mDoubleString << mDouble << false;
-    QTest::newRow( "mDouble_mDoubleQString" ) << mDouble << mDoubleQString << true;
-    QTest::newRow( "mDoubleQString_mDouble" ) << mDoubleQString << mDouble << true;
+    BOBUIest::newRow( "mDouble_mDoubleString" ) << mDouble << mDoubleString << false;
+    BOBUIest::newRow( "mDoubleString_mDouble" ) << mDoubleString << mDouble << false;
+    BOBUIest::newRow( "mDouble_mDoubleQString" ) << mDouble << mDoubleQString << true;
+    BOBUIest::newRow( "mDoubleQString_mDouble" ) << mDoubleQString << mDouble << true;
 
-    QTest::newRow( "mDouble_mTextString" ) << mDouble << mTextString << false;
-    QTest::newRow( "mTextString_mDouble" ) << mTextString << mDouble << false;
-    QTest::newRow( "mDouble_mTextQString" ) << mDouble << mTextQString << false;
-    QTest::newRow( "mTextQString_mDouble" ) << mTextQString << mDouble << false;
+    BOBUIest::newRow( "mDouble_mTextString" ) << mDouble << mTextString << false;
+    BOBUIest::newRow( "mTextString_mDouble" ) << mTextString << mDouble << false;
+    BOBUIest::newRow( "mDouble_mTextQString" ) << mDouble << mTextQString << false;
+    BOBUIest::newRow( "mTextQString_mDouble" ) << mTextQString << mDouble << false;
 
-    QTest::newRow( "mFloat_mFloatString" ) << mFloat << mFloatString << false;
-    QTest::newRow( "mFloatString_mFloat" ) << mFloatString << mFloat << false;
-    QTest::newRow( "mFloat_mFloatQString" ) << mFloat << mFloatQString << true;
-    QTest::newRow( "mFloatQString_mFloat" ) << mFloatQString << mFloat << true;
+    BOBUIest::newRow( "mFloat_mFloatString" ) << mFloat << mFloatString << false;
+    BOBUIest::newRow( "mFloatString_mFloat" ) << mFloatString << mFloat << false;
+    BOBUIest::newRow( "mFloat_mFloatQString" ) << mFloat << mFloatQString << true;
+    BOBUIest::newRow( "mFloatQString_mFloat" ) << mFloatQString << mFloat << true;
 
-    QTest::newRow( "mLongLong_mLongLongString" ) << mLongLong << mLongLongString << false;
-    QTest::newRow( "mLongLongString_mLongLong" ) << mLongLongString << mLongLong << false;
-    QTest::newRow( "mLongLong_mLongLongQString" ) << mLongLong << mLongLongQString << true;
-    QTest::newRow( "mLongLongQString_mLongLong" ) << mLongLongQString << mLongLong << true;
+    BOBUIest::newRow( "mLongLong_mLongLongString" ) << mLongLong << mLongLongString << false;
+    BOBUIest::newRow( "mLongLongString_mLongLong" ) << mLongLongString << mLongLong << false;
+    BOBUIest::newRow( "mLongLong_mLongLongQString" ) << mLongLong << mLongLongQString << true;
+    BOBUIest::newRow( "mLongLongQString_mLongLong" ) << mLongLongQString << mLongLong << true;
 
-    QTest::newRow( "mULongLong_mULongLongString" ) << mULongLong << mULongLongString << false;
-    QTest::newRow( "mULongLongString_mULongLong" ) << mULongLongString << mULongLong << false;
-    QTest::newRow( "mULongLong_mULongLongQString" ) << mULongLong << mULongLongQString << true;
-    QTest::newRow( "mULongLongQString_mULongLong" ) << mULongLongQString << mULongLong << true;
+    BOBUIest::newRow( "mULongLong_mULongLongString" ) << mULongLong << mULongLongString << false;
+    BOBUIest::newRow( "mULongLongString_mULongLong" ) << mULongLongString << mULongLong << false;
+    BOBUIest::newRow( "mULongLong_mULongLongQString" ) << mULongLong << mULongLongQString << true;
+    BOBUIest::newRow( "mULongLongQString_mULongLong" ) << mULongLongQString << mULongLong << true;
 
-    QTest::newRow( "mBool_mBoolString" ) << mBool << mBoolString << false;
-    QTest::newRow( "mBoolString_mBool" ) << mBoolString << mBool << false;
-    QTest::newRow( "mBool_mBoolQString" ) << mBool << mBoolQString << true;
-    QTest::newRow( "mBoolQString_mBool" ) << mBoolQString << mBool << true;
+    BOBUIest::newRow( "mBool_mBoolString" ) << mBool << mBoolString << false;
+    BOBUIest::newRow( "mBoolString_mBool" ) << mBoolString << mBool << false;
+    BOBUIest::newRow( "mBool_mBoolQString" ) << mBool << mBoolQString << true;
+    BOBUIest::newRow( "mBoolQString_mBool" ) << mBoolQString << mBool << true;
 
-    QTest::newRow("ba2qstring") << QVariant(QLatin1String("hallo")) << QVariant(QString("hallo")) << true;
-    QTest::newRow("qstring2ba") << QVariant(QString("hallo")) << QVariant(QLatin1String("hallo")) << true;
-    QTest::newRow("char_char") << QVariant(QChar('a')) << QVariant(QChar('a')) << true;
-    QTest::newRow("char_char2") << QVariant(QChar('a')) << QVariant(QChar('b')) << false;
+    BOBUIest::newRow("ba2qstring") << QVariant(QLatin1String("hallo")) << QVariant(QString("hallo")) << true;
+    BOBUIest::newRow("qstring2ba") << QVariant(QString("hallo")) << QVariant(QLatin1String("hallo")) << true;
+    BOBUIest::newRow("char_char") << QVariant(QChar('a')) << QVariant(QChar('a')) << true;
+    BOBUIest::newRow("char_char2") << QVariant(QChar('a')) << QVariant(QChar('b')) << false;
 
-    QTest::newRow("invalidConversion") << QVariant(QString("bubu")) << QVariant() << false;
-    QTest::newRow("invalidConversionR") << QVariant() << QVariant(QString("bubu")) << false;
+    BOBUIest::newRow("invalidConversion") << QVariant(QString("bubu")) << QVariant() << false;
+    BOBUIest::newRow("invalidConversionR") << QVariant() << QVariant(QString("bubu")) << false;
     // ### many other combinations missing
 
     {
         QUuid uuid(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        QTest::newRow("uuidstring") << QVariant(uuid) << QVariant(uuid.toString()) << false;
-        QTest::newRow("stringuuid") << QVariant(uuid.toString()) << QVariant(uuid) << false;
-        QTest::newRow("uuidbytearray") << QVariant(uuid) << QVariant(uuid.toByteArray()) << false;
-        QTest::newRow("bytearrayuuid") << QVariant(uuid.toByteArray()) << QVariant(uuid) << false;
+        BOBUIest::newRow("uuidstring") << QVariant(uuid) << QVariant(uuid.toString()) << false;
+        BOBUIest::newRow("stringuuid") << QVariant(uuid.toString()) << QVariant(uuid) << false;
+        BOBUIest::newRow("uuidbytearray") << QVariant(uuid) << QVariant(uuid.toByteArray()) << false;
+        BOBUIest::newRow("bytearrayuuid") << QVariant(uuid.toByteArray()) << QVariant(uuid) << false;
     }
 
     {
@@ -1925,7 +1925,7 @@ void tst_QVariant::operator_eq_eq_data()
         QMap<QString, QVariant> map2;
         map2.insert( "Y", 1 );
 
-        QTest::newRow("TwoItemsInEqual") << QVariant(map1) << QVariant(map2) << false;
+        BOBUIest::newRow("TwoItemsInEqual") << QVariant(map1) << QVariant(map2) << false;
 
     }
 
@@ -1936,7 +1936,7 @@ void tst_QVariant::operator_eq_eq_data()
         QMap<QString, QVariant> map2;
         map2.insert( "X", 1 );
 
-        QTest::newRow("TwoItemsEqual") << QVariant(map1) << QVariant(map2) << true;
+        BOBUIest::newRow("TwoItemsEqual") << QVariant(map1) << QVariant(map2) << true;
     }
 
     {
@@ -1945,7 +1945,7 @@ void tst_QVariant::operator_eq_eq_data()
 
         QMap<QString, QVariant> map2;
 
-        QTest::newRow("PopulatedEmptyMap") << QVariant(map1) << QVariant(map2) << false;
+        BOBUIest::newRow("PopulatedEmptyMap") << QVariant(map1) << QVariant(map2) << false;
     }
 
     {
@@ -1954,7 +1954,7 @@ void tst_QVariant::operator_eq_eq_data()
         QMap<QString, QVariant> map2;
         map2.insert( "X", 1 );
 
-        QTest::newRow("EmptyPopulatedMap") << QVariant(map1) << QVariant(map2) << false;
+        BOBUIest::newRow("EmptyPopulatedMap") << QVariant(map1) << QVariant(map2) << false;
     }
 
     {
@@ -1965,7 +1965,7 @@ void tst_QVariant::operator_eq_eq_data()
         QMap<QString, QVariant> map2;
         map2.insert( "X", 1 );
 
-        QTest::newRow("FirstLarger") << QVariant(map1) << QVariant(map2) << false;
+        BOBUIest::newRow("FirstLarger") << QVariant(map1) << QVariant(map2) << false;
     }
 
     {
@@ -1976,7 +1976,7 @@ void tst_QVariant::operator_eq_eq_data()
         map2.insert( "X", 1 );
         map2.insert( "Y", 1 );
 
-        QTest::newRow("SecondLarger") << QVariant(map1) << QVariant(map2) << false;
+        BOBUIest::newRow("SecondLarger") << QVariant(map1) << QVariant(map2) << false;
     }
 
     // same thing with hash
@@ -1987,7 +1987,7 @@ void tst_QVariant::operator_eq_eq_data()
         QHash<QString, QVariant> hash2;
         hash2.insert( "Y", 1 );
 
-        QTest::newRow("HashTwoItemsInEqual") << QVariant(hash1) << QVariant(hash2) << false;
+        BOBUIest::newRow("HashTwoItemsInEqual") << QVariant(hash1) << QVariant(hash2) << false;
 
     }
 
@@ -1998,7 +1998,7 @@ void tst_QVariant::operator_eq_eq_data()
         QHash<QString, QVariant> hash2;
         hash2.insert( "X", 1 );
 
-        QTest::newRow("HashTwoItemsEqual") << QVariant(hash1) << QVariant(hash2) << true;
+        BOBUIest::newRow("HashTwoItemsEqual") << QVariant(hash1) << QVariant(hash2) << true;
     }
 
     {
@@ -2007,7 +2007,7 @@ void tst_QVariant::operator_eq_eq_data()
 
         QHash<QString, QVariant> hash2;
 
-        QTest::newRow("HashPopulatedEmptyHash") << QVariant(hash1) << QVariant(hash2) << false;
+        BOBUIest::newRow("HashPopulatedEmptyHash") << QVariant(hash1) << QVariant(hash2) << false;
     }
 
     {
@@ -2016,7 +2016,7 @@ void tst_QVariant::operator_eq_eq_data()
         QHash<QString, QVariant> hash2;
         hash2.insert( "X", 1 );
 
-        QTest::newRow("EmptyPopulatedHash") << QVariant(hash1) << QVariant(hash2) << false;
+        BOBUIest::newRow("EmptyPopulatedHash") << QVariant(hash1) << QVariant(hash2) << false;
     }
 
     {
@@ -2027,7 +2027,7 @@ void tst_QVariant::operator_eq_eq_data()
         QHash<QString, QVariant> hash2;
         hash2.insert( "X", 1 );
 
-        QTest::newRow("HashFirstLarger") << QVariant(hash1) << QVariant(hash2) << false;
+        BOBUIest::newRow("HashFirstLarger") << QVariant(hash1) << QVariant(hash2) << false;
     }
 
     {
@@ -2038,7 +2038,7 @@ void tst_QVariant::operator_eq_eq_data()
         hash2.insert( "X", 1 );
         hash2.insert( "Y", 1 );
 
-        QTest::newRow("HashSecondLarger") << QVariant(hash1) << QVariant(hash2) << false;
+        BOBUIest::newRow("HashSecondLarger") << QVariant(hash1) << QVariant(hash2) << false;
     }
 }
 
@@ -2047,65 +2047,65 @@ void tst_QVariant::operator_eq_eq()
     QFETCH( QVariant, left );
     QFETCH( QVariant, right );
     QFETCH( bool, equal );
-    QT_TEST_EQUALITY_OPS(left, right, equal);
+    BOBUI_TEST_EQUALITY_OPS(left, right, equal);
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QVariant::typeName_data()
 {
-    QTest::addColumn<int>("type");
-    QTest::addColumn<QByteArray>("res");
-    QTest::newRow("0") << int(QVariant::Invalid) << QByteArray("");
-    QTest::newRow("1") << int(QVariant::Map) << QByteArray("QVariantMap");
-    QTest::newRow("2") << int(QVariant::List) << QByteArray("QVariantList");
-    QTest::newRow("3") << int(QVariant::String) << QByteArray("QString");
-    QTest::newRow("4") << int(QVariant::StringList) << QByteArray("QStringList");
-    QTest::newRow("5") << int(QVariant::Font) << QByteArray("QFont");
-    QTest::newRow("6") << int(QVariant::Pixmap) << QByteArray("QPixmap");
-    QTest::newRow("7") << int(QVariant::Brush) << QByteArray("QBrush");
-    QTest::newRow("8") << int(QVariant::Rect) << QByteArray("QRect");
-    QTest::newRow("9") << int(QVariant::Size) << QByteArray("QSize");
-    QTest::newRow("10") << int(QVariant::Color) << QByteArray("QColor");
-    QTest::newRow("11") << int(QVariant::Palette) << QByteArray("QPalette");
-    QTest::newRow("12") << int(QVariant::Point) << QByteArray("QPoint");
-    QTest::newRow("13") << int(QVariant::Image) << QByteArray("QImage");
-    QTest::newRow("14") << int(QVariant::Int) << QByteArray("int");
-    QTest::newRow("15") << int(QVariant::UInt) << QByteArray("uint");
-    QTest::newRow("16") << int(QVariant::Bool) << QByteArray("bool");
-    QTest::newRow("17") << int(QVariant::Double) << QByteArray("double");
-    QTest::newRow("18") << int(QMetaType::Float) << QByteArray("float");
-    QTest::newRow("19") << int(QVariant::Polygon) << QByteArray("QPolygon");
-    QTest::newRow("20") << int(QVariant::Region) << QByteArray("QRegion");
-    QTest::newRow("21") << int(QVariant::Bitmap) << QByteArray("QBitmap");
-    QTest::newRow("22") << int(QVariant::Cursor) << QByteArray("QCursor");
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::addColumn<QByteArray>("res");
+    BOBUIest::newRow("0") << int(QVariant::Invalid) << QByteArray("");
+    BOBUIest::newRow("1") << int(QVariant::Map) << QByteArray("QVariantMap");
+    BOBUIest::newRow("2") << int(QVariant::List) << QByteArray("QVariantList");
+    BOBUIest::newRow("3") << int(QVariant::String) << QByteArray("QString");
+    BOBUIest::newRow("4") << int(QVariant::StringList) << QByteArray("QStringList");
+    BOBUIest::newRow("5") << int(QVariant::Font) << QByteArray("QFont");
+    BOBUIest::newRow("6") << int(QVariant::Pixmap) << QByteArray("QPixmap");
+    BOBUIest::newRow("7") << int(QVariant::Brush) << QByteArray("QBrush");
+    BOBUIest::newRow("8") << int(QVariant::Rect) << QByteArray("QRect");
+    BOBUIest::newRow("9") << int(QVariant::Size) << QByteArray("QSize");
+    BOBUIest::newRow("10") << int(QVariant::Color) << QByteArray("QColor");
+    BOBUIest::newRow("11") << int(QVariant::Palette) << QByteArray("QPalette");
+    BOBUIest::newRow("12") << int(QVariant::Point) << QByteArray("QPoint");
+    BOBUIest::newRow("13") << int(QVariant::Image) << QByteArray("QImage");
+    BOBUIest::newRow("14") << int(QVariant::Int) << QByteArray("int");
+    BOBUIest::newRow("15") << int(QVariant::UInt) << QByteArray("uint");
+    BOBUIest::newRow("16") << int(QVariant::Bool) << QByteArray("bool");
+    BOBUIest::newRow("17") << int(QVariant::Double) << QByteArray("double");
+    BOBUIest::newRow("18") << int(QMetaType::Float) << QByteArray("float");
+    BOBUIest::newRow("19") << int(QVariant::Polygon) << QByteArray("QPolygon");
+    BOBUIest::newRow("20") << int(QVariant::Region) << QByteArray("QRegion");
+    BOBUIest::newRow("21") << int(QVariant::Bitmap) << QByteArray("QBitmap");
+    BOBUIest::newRow("22") << int(QVariant::Cursor) << QByteArray("QCursor");
     // The test below doesn't work as long as we don't link against widgets
-//    QTest::newRow("23") << int(QVariant::SizePolicy) << QByteArray("QSizePolicy");
-    QTest::newRow("24") << int(QVariant::Date) << QByteArray("QDate");
-    QTest::newRow("25") << int(QVariant::Time) << QByteArray("QTime");
-    QTest::newRow("26") << int(QVariant::DateTime) << QByteArray("QDateTime");
-    QTest::newRow("27") << int(QVariant::ByteArray) << QByteArray("QByteArray");
-    QTest::newRow("28") << int(QVariant::BitArray) << QByteArray("QBitArray");
-    QTest::newRow("29") << int(QVariant::KeySequence) << QByteArray("QKeySequence");
-    QTest::newRow("30") << int(QVariant::Pen) << QByteArray("QPen");
-    QTest::newRow("31") << int(QVariant::LongLong) << QByteArray("qlonglong");
-    QTest::newRow("32") << int(QVariant::ULongLong) << QByteArray("qulonglong");
-    QTest::newRow("33") << int(QVariant::Char) << QByteArray("QChar");
-    QTest::newRow("34") << int(QVariant::Url) << QByteArray("QUrl");
-    QTest::newRow("35") << int(QVariant::TextLength) << QByteArray("QTextLength");
-    QTest::newRow("36") << int(QVariant::TextFormat) << QByteArray("QTextFormat");
-    QTest::newRow("37") << int(QVariant::Locale) << QByteArray("QLocale");
-    QTest::newRow("38") << int(QVariant::LineF) << QByteArray("QLineF");
-    QTest::newRow("39") << int(QVariant::RectF) << QByteArray("QRectF");
-    QTest::newRow("40") << int(QVariant::PointF) << QByteArray("QPointF");
-    QTest::newRow("44") << int(QVariant::Transform) << QByteArray("QTransform");
-    QTest::newRow("45") << int(QVariant::Hash) << QByteArray("QVariantHash");
-    QTest::newRow("46") << int(QVariant::Matrix4x4) << QByteArray("QMatrix4x4");
-    QTest::newRow("47") << int(QVariant::Vector2D) << QByteArray("QVector2D");
-    QTest::newRow("48") << int(QVariant::Vector3D) << QByteArray("QVector3D");
-    QTest::newRow("49") << int(QVariant::Vector4D) << QByteArray("QVector4D");
-    QTest::newRow("50") << int(QVariant::Quaternion) << QByteArray("QQuaternion");
-    QTest::newRow("51") << int(QVariant::RegularExpression) << QByteArray("QRegularExpression");
+//    BOBUIest::newRow("23") << int(QVariant::SizePolicy) << QByteArray("QSizePolicy");
+    BOBUIest::newRow("24") << int(QVariant::Date) << QByteArray("QDate");
+    BOBUIest::newRow("25") << int(QVariant::Time) << QByteArray("BOBUIime");
+    BOBUIest::newRow("26") << int(QVariant::DateTime) << QByteArray("QDateTime");
+    BOBUIest::newRow("27") << int(QVariant::ByteArray) << QByteArray("QByteArray");
+    BOBUIest::newRow("28") << int(QVariant::BitArray) << QByteArray("QBitArray");
+    BOBUIest::newRow("29") << int(QVariant::KeySequence) << QByteArray("QKeySequence");
+    BOBUIest::newRow("30") << int(QVariant::Pen) << QByteArray("QPen");
+    BOBUIest::newRow("31") << int(QVariant::LongLong) << QByteArray("qlonglong");
+    BOBUIest::newRow("32") << int(QVariant::ULongLong) << QByteArray("qulonglong");
+    BOBUIest::newRow("33") << int(QVariant::Char) << QByteArray("QChar");
+    BOBUIest::newRow("34") << int(QVariant::Url) << QByteArray("QUrl");
+    BOBUIest::newRow("35") << int(QVariant::TextLength) << QByteArray("BOBUIextLength");
+    BOBUIest::newRow("36") << int(QVariant::TextFormat) << QByteArray("BOBUIextFormat");
+    BOBUIest::newRow("37") << int(QVariant::Locale) << QByteArray("QLocale");
+    BOBUIest::newRow("38") << int(QVariant::LineF) << QByteArray("QLineF");
+    BOBUIest::newRow("39") << int(QVariant::RectF) << QByteArray("QRectF");
+    BOBUIest::newRow("40") << int(QVariant::PointF) << QByteArray("QPointF");
+    BOBUIest::newRow("44") << int(QVariant::Transform) << QByteArray("BOBUIransform");
+    BOBUIest::newRow("45") << int(QVariant::Hash) << QByteArray("QVariantHash");
+    BOBUIest::newRow("46") << int(QVariant::Matrix4x4) << QByteArray("QMatrix4x4");
+    BOBUIest::newRow("47") << int(QVariant::Vector2D) << QByteArray("QVector2D");
+    BOBUIest::newRow("48") << int(QVariant::Vector3D) << QByteArray("QVector3D");
+    BOBUIest::newRow("49") << int(QVariant::Vector4D) << QByteArray("QVector4D");
+    BOBUIest::newRow("50") << int(QVariant::Quaternion) << QByteArray("QQuaternion");
+    BOBUIest::newRow("51") << int(QVariant::RegularExpression) << QByteArray("QRegularExpression");
 }
 
 void tst_QVariant::typeName()
@@ -2126,7 +2126,7 @@ void tst_QVariant::typeToName()
     int max = QVariant::LastGuiType;
     for (int t = 1; t <= max; ++t) {
         if (!QMetaType::isRegistered(t)) {
-            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(
+            BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(
                                      "^Trying to construct an instance of an invalid type"));
         }
         const char *n = QVariant::typeToName( (QVariant::Type)t );
@@ -2138,7 +2138,7 @@ void tst_QVariant::typeToName()
     // not documented but we return 0 if the type is out of range
     // by testing this we catch cases where QVariant is extended
     // but type_map is not updated accordingly
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(
                              "^Trying to construct an instance of an invalid type"));
     QCOMPARE(QVariant::typeToName(QVariant::Type(max + 1)), (const char *)nullptr);
     // invalid type names
@@ -2148,14 +2148,14 @@ void tst_QVariant::typeToName()
 
     QCOMPARE(QVariant::nameToType("UserType"), QVariant::Invalid);
 
-    // We don't support these old (Qt3) types anymore.
+    // We don't support these old (BobUI3) types anymore.
     QCOMPARE(QVariant::nameToType("QIconSet"), QVariant::Invalid);
     QCOMPARE(QVariant::nameToType("Q3CString"), QVariant::Invalid);
     QCOMPARE(QVariant::nameToType("Q_LLONG"), QVariant::Invalid);
     QCOMPARE(QVariant::nameToType("Q_ULLONG"), QVariant::Invalid);
 }
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 void tst_QVariant::streamInvalidVariant()
 {
@@ -2209,7 +2209,7 @@ struct MyType
     const char *text;
 };
 bool operator==(const MyType &a, const MyType &b) { return a.number == b.number && a.text == b.text; }
-static_assert(QTypeTraits::has_operator_equal_v<MyType>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<MyType>);
 
 Q_DECLARE_METATYPE(MyType)
 Q_DECLARE_METATYPE(MyType*)
@@ -2590,7 +2590,7 @@ void tst_QVariant::saveLoadCustomTypes()
 
 void tst_QVariant::url()
 {
-    QString str("http://qt-project.org");
+    QString str("http://bobui-project.org");
     QUrl url(str);
 
     QVariant v(url); //built with a QUrl
@@ -2677,32 +2677,32 @@ void tst_QVariant::cleanupTestCase()
 
 void tst_QVariant::qvariant_cast_QObject_data()
 {
-    QTest::addColumn<QVariant>("data");
-    QTest::addColumn<bool>("success");
-    QTest::addColumn<bool>("isNull");
+    BOBUIest::addColumn<QVariant>("data");
+    BOBUIest::addColumn<bool>("success");
+    BOBUIest::addColumn<bool>("isNull");
     QObject *obj = new QObject;
     obj->setObjectName(QString::fromLatin1("Hello"));
-    QTest::newRow("from QObject") << QVariant(QMetaType::fromType<QObject*>(), &obj) << true << false;
-    QTest::newRow("from QObject2") << QVariant::fromValue(obj) << true << false;
-    QTest::newRow("from String") << QVariant(QLatin1String("1, 2, 3")) << false << false;
-    QTest::newRow("from int") << QVariant((int) 123) << false << false;
+    BOBUIest::newRow("from QObject") << QVariant(QMetaType::fromType<QObject*>(), &obj) << true << false;
+    BOBUIest::newRow("from QObject2") << QVariant::fromValue(obj) << true << false;
+    BOBUIest::newRow("from String") << QVariant(QLatin1String("1, 2, 3")) << false << false;
+    BOBUIest::newRow("from int") << QVariant((int) 123) << false << false;
     CustomQObject *customObject = new CustomQObject(this);
     customObject->setObjectName(QString::fromLatin1("Hello"));
-    QTest::newRow("from Derived QObject") << QVariant::fromValue(customObject) << true << false;
-    QTest::newRow("from custom Object") << QVariant::fromValue(CustomNonQObject()) << false << false;
+    BOBUIest::newRow("from Derived QObject") << QVariant::fromValue(customObject) << true << false;
+    BOBUIest::newRow("from custom Object") << QVariant::fromValue(CustomNonQObject()) << false << false;
 
     // Deleted in cleanupTestCase.
     customNonQObjectPointer = new CustomNonQObject;
-    QTest::newRow("from custom ObjectStar") << QVariant::fromValue(customNonQObjectPointer) << false << false;
+    BOBUIest::newRow("from custom ObjectStar") << QVariant::fromValue(customNonQObjectPointer) << false << false;
 
     // Deleted in cleanupTestCase.
     objectPointerTestData.push_back(obj);
     objectPointerTestData.push_back(customObject);
 
-    QTest::newRow("null QObject") << QVariant::fromValue<QObject*>(0) << true << true;
-    QTest::newRow("null derived QObject") << QVariant::fromValue<CustomQObject*>(0) << true << true;
-    QTest::newRow("null custom object") << QVariant::fromValue<CustomNonQObject*>(0) << false << true;
-    QTest::newRow("zero int") << QVariant::fromValue<int>(0) << false << false;
+    BOBUIest::newRow("null QObject") << QVariant::fromValue<QObject*>(0) << true << true;
+    BOBUIest::newRow("null derived QObject") << QVariant::fromValue<CustomQObject*>(0) << true << true;
+    BOBUIest::newRow("null custom object") << QVariant::fromValue<CustomNonQObject*>(0) << false << true;
+    BOBUIest::newRow("zero int") << QVariant::fromValue<int>(0) << false << false;
 }
 
 void tst_QVariant::qvariant_cast_QObject()
@@ -2963,11 +2963,11 @@ void tst_QVariant::qvariant_cast_const()
     QCOMPARE(vConst.value<const int *>(), &i);
 }
 
-void tst_QVariant::qvariant_cast_QTransform()
+void tst_QVariant::qvariant_cast_BOBUIransform()
 {
-    QTransform t{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    BOBUIransform t{1, 2, 3, 4, 5, 6, 7, 8, 9};
     // this basically checks that GCC doesn't emit -Warray-bound
-    const auto t2 = qvariant_cast<QTransform>(QVariant::fromValue(t));
+    const auto t2 = qvariant_cast<BOBUIransform>(QVariant::fromValue(t));
     QCOMPARE(t, t2);
 }
 
@@ -3030,16 +3030,16 @@ void tst_QVariant::convertToQUint8() const
 
 void tst_QVariant::compareCompiles() const
 {
-    QTestPrivate::testEqualityOperatorsCompile<QVariant>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QVariant>();
 }
 
 void tst_QVariant::compareNumerics_data() const
 {
-    QTest::addColumn<QVariant>("v1");
-    QTest::addColumn<QVariant>("v2");
-    QTest::addColumn<QPartialOrdering>("result");
+    BOBUIest::addColumn<QVariant>("v1");
+    BOBUIest::addColumn<QVariant>("v2");
+    BOBUIest::addColumn<QPartialOrdering>("result");
 
-    QTest::addRow("invalid-invalid")
+    BOBUIest::addRow("invalid-invalid")
             << QVariant() << QVariant() << QPartialOrdering::Unordered;
 
     static const auto asString = [](const QVariant &v) {
@@ -3065,9 +3065,9 @@ void tst_QVariant::compareNumerics_data() const
 
     auto addCompareToInvalid = [](auto value) {
         QVariant v = QVariant::fromValue(value);
-        QTest::addRow("invalid-%s(%s)", v.typeName(), qPrintable(asString(v)))
+        BOBUIest::addRow("invalid-%s(%s)", v.typeName(), qPrintable(asString(v)))
                 << QVariant() << v << QPartialOrdering::Unordered;
-        QTest::addRow("%s(%s)-invalid", v.typeName(), qPrintable(asString(v)))
+        BOBUIest::addRow("%s(%s)-invalid", v.typeName(), qPrintable(asString(v)))
                 << v << QVariant() << QPartialOrdering::Unordered;
     };
     addCompareToInvalid(false);
@@ -3088,14 +3088,14 @@ void tst_QVariant::compareNumerics_data() const
     addCompareToInvalid(0.0);
     addCompareToInvalid(QCborSimpleType{});
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wsign-compare")
-QT_WARNING_DISABLE_GCC("-Wsign-compare")
-QT_WARNING_DISABLE_MSVC(4018)   // '<': signed/unsigned mismatch
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wsign-compare")
+BOBUI_WARNING_DISABLE_GCC("-Wsign-compare")
+BOBUI_WARNING_DISABLE_MSVC(4018)   // '<': signed/unsigned mismatch
     static const auto addComparePairWithResult = [](auto value1, auto value2, QPartialOrdering order) {
         QVariant v1 = QVariant::fromValue(value1);
         QVariant v2 = QVariant::fromValue(value2);
-        QTest::addRow("%s(%s)-%s(%s)", v1.typeName(), qPrintable(asString(v1)),
+        BOBUIest::addRow("%s(%s)-%s(%s)", v1.typeName(), qPrintable(asString(v1)),
                       v2.typeName(), qPrintable(asString(v2)))
                 << v1 << v2 << order;
     };
@@ -3110,7 +3110,7 @@ QT_WARNING_DISABLE_MSVC(4018)   // '<': signed/unsigned mismatch
             order = QPartialOrdering::Greater;
         addComparePairWithResult(value1, value2, order);
     };
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
     // homogeneous first
     static const auto addList = [](auto list) {
@@ -3149,7 +3149,7 @@ QT_WARNING_POP
     addList(std::array{ EnumTest_Enum0{}, EnumTest_Enum0_value, EnumTest_Enum0_negValue });
     addList(std::array{ EnumTest_Enum1{}, EnumTest_Enum1_value, EnumTest_Enum1_bigValue });
     addList(std::array{ EnumTest_Enum7{}, EnumTest_Enum7::EnumTest_Enum7_value, EnumTest_Enum7::ensureSignedEnum7 });
-    addList(std::array{ Qt::AlignRight|Qt::AlignHCenter, Qt::AlignCenter|Qt::AlignVCenter });
+    addList(std::array{ BobUI::AlignRight|BobUI::AlignHCenter, BobUI::AlignCenter|BobUI::AlignVCenter });
 
     // heterogeneous
     addComparePair(char(0), qint8(-127));
@@ -3298,7 +3298,7 @@ void tst_QVariant::compareNumerics() const
     QCOMPARE(QVariant::compare(v1, v2), result);
 
     QEXPECT_FAIL("invalid-invalid", "needs fixing", Abort);
-    QT_TEST_EQUALITY_OPS(v1, v2, is_eq(result));
+    BOBUI_TEST_EQUALITY_OPS(v1, v2, is_eq(result));
 }
 
 void tst_QVariant::comparePointers() const
@@ -3309,13 +3309,13 @@ void tst_QVariant::comparePointers() const
     const QVariant nonObjV1 = QVariant::fromValue<const void*>(&arr[0]);
     const QVariant nonObjV2 = QVariant::fromValue<const void*>(&arr[1]);
 
-    Qt::partial_ordering expectedOrdering = Qt::partial_ordering::equivalent;
+    BobUI::partial_ordering expectedOrdering = BobUI::partial_ordering::equivalent;
     QCOMPARE(QVariant::compare(nonObjV1, nonObjV1), expectedOrdering);
-    QT_TEST_EQUALITY_OPS(nonObjV1, nonObjV1, is_eq(expectedOrdering));
+    BOBUI_TEST_EQUALITY_OPS(nonObjV1, nonObjV1, is_eq(expectedOrdering));
 
-    expectedOrdering = Qt::partial_ordering::less;
+    expectedOrdering = BobUI::partial_ordering::less;
     QCOMPARE(QVariant::compare(nonObjV1, nonObjV2), expectedOrdering);
-    QT_TEST_EQUALITY_OPS(nonObjV1, nonObjV2, is_eq(expectedOrdering));
+    BOBUI_TEST_EQUALITY_OPS(nonObjV1, nonObjV2, is_eq(expectedOrdering));
 
     class QObjectClass : public QObject
     {
@@ -3327,8 +3327,8 @@ void tst_QVariant::comparePointers() const
 
     const QVariant objV1 = QVariant::fromValue(&c1);
     const QVariant objV2 = QVariant::fromValue(&c2);
-    QT_TEST_EQUALITY_OPS(objV1, objV1, true);
-    QT_TEST_EQUALITY_OPS(objV1, objV2, false);
+    BOBUI_TEST_EQUALITY_OPS(objV1, objV1, true);
+    BOBUI_TEST_EQUALITY_OPS(objV1, objV2, false);
 }
 
 struct Data {};
@@ -3384,21 +3384,21 @@ void tst_QVariant::canConvertQStringList() const
 
 void tst_QVariant::canConvertQStringList_data() const
 {
-    QTest::addColumn<bool>("canConvert");
-    QTest::addColumn<QStringList>("input");
-    QTest::addColumn<QString>("result");
+    BOBUIest::addColumn<bool>("canConvert");
+    BOBUIest::addColumn<QStringList>("input");
+    BOBUIest::addColumn<QString>("result");
 
-    QTest::newRow("An empty list") << true << QStringList() << QString();
-    QTest::newRow("A single item") << true << QStringList(QLatin1String("foo")) << QString::fromLatin1("foo");
-    QTest::newRow("A single, but empty item") << true << QStringList(QString()) << QString();
+    BOBUIest::newRow("An empty list") << true << QStringList() << QString();
+    BOBUIest::newRow("A single item") << true << QStringList(QLatin1String("foo")) << QString::fromLatin1("foo");
+    BOBUIest::newRow("A single, but empty item") << true << QStringList(QString()) << QString();
 
     QStringList l;
     l << "a" << "b";
 
-    QTest::newRow("Two items") << true << l << QString();
+    BOBUIest::newRow("Two items") << true << l << QString();
 
     l << "c";
-    QTest::newRow("Three items") << true << l << QString();
+    BOBUIest::newRow("Three items") << true << l << QString();
 }
 
 template<typename T> void convertMetaType()
@@ -3411,7 +3411,7 @@ template<typename T> void convertMetaType()
 
 #define CONVERT_META_TYPE(Type) \
     convertMetaType<Type>(); \
-    if (QTest::currentTestFailed()) \
+    if (BOBUIest::currentTestFailed()) \
         QFAIL("convertMetaType<" #Type "> failed");
 
 void tst_QVariant::canConvertMetaTypeToInt() const
@@ -3434,7 +3434,7 @@ void tst_QVariant::canConvertMetaTypeToInt() const
 
 void tst_QVariant::variantToDateTimeWithoutWarnings() const
 {
-    QTest::failOnWarning(); // These calls should not produce any warnings.
+    BOBUIest::failOnWarning(); // These calls should not produce any warnings.
     {
         const QVariant variant(QLatin1String("An invalid QDateTime string"));
         const QDateTime dateTime(variant.toDateTime());
@@ -3471,7 +3471,7 @@ Q_DECLARE_METATYPE( MyClass )
 void tst_QVariant::loadUnknownUserType()
 {
     qRegisterMetaType<MyClass>("MyClass");
-    QTest::ignoreMessage(QtWarningMsg, "QVariant::load: unable to load type "
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QVariant::load: unable to load type "
                          + QByteArray::number(qMetaTypeId<MyClass>()) +".");
     char data[] = {0, QMetaType::User >> 16, char(QMetaType::User >> 8) , char(QMetaType::User), 0, 0, 0, 0, 8, 'M', 'y', 'C', 'l', 'a', 's', 's', 0};
 
@@ -3484,7 +3484,7 @@ void tst_QVariant::loadUnknownUserType()
 
 void tst_QVariant::loadBrokenUserType()
 {
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type"));
     char data[] = {0, 0, 0, 127, 0 };
 
     QByteArray ba(data, sizeof(data));
@@ -3504,7 +3504,7 @@ void tst_QVariant::invalidDate() const
     QVERIFY(!variant.convert(QMetaType::fromType<QDateTime>()));
 
     variant = foo;
-    QVERIFY(!variant.convert(QMetaType::fromType<QTime>()));
+    QVERIFY(!variant.convert(QMetaType::fromType<BOBUIime>()));
 
     variant = foo;
     QVERIFY(!variant.convert(QMetaType::fromType<int>()));
@@ -3535,43 +3535,43 @@ Q_DECLARE_METATYPE(WillCompare);
 
 void tst_QVariant::compareCustomTypes_data() const
 {
-    QTest::addColumn<QVariant>("v1");
-    QTest::addColumn<QVariant>("v2");
-    QTest::addColumn<Qt::partial_ordering>("expectedOrdering");
+    BOBUIest::addColumn<QVariant>("v1");
+    BOBUIest::addColumn<QVariant>("v2");
+    BOBUIest::addColumn<BobUI::partial_ordering>("expectedOrdering");
 
-    QTest::newRow("same_uncomparable")
+    BOBUIest::newRow("same_uncomparable")
             << QVariant::fromValue(WontCompare{0})
             << QVariant::fromValue(WontCompare{0})
-            << Qt::partial_ordering::unordered;
+            << BobUI::partial_ordering::unordered;
 
-    QTest::newRow("same_comparable")
+    BOBUIest::newRow("same_comparable")
             << QVariant::fromValue(WillCompare{0})
             << QVariant::fromValue(WillCompare{0})
-            << Qt::partial_ordering::equivalent;
+            << BobUI::partial_ordering::equivalent;
 
-    QTest::newRow("different_comparable")
+    BOBUIest::newRow("different_comparable")
             << QVariant::fromValue(WillCompare{1})
             << QVariant::fromValue(WillCompare{0})
-            << Qt::partial_ordering::greater;
+            << BobUI::partial_ordering::greater;
 
-    QTest::newRow("qdatetime_vs_comparable")
+    BOBUIest::newRow("qdatetime_vs_comparable")
             << QVariant::fromValue(QDateTime::currentDateTimeUtc())
             << QVariant::fromValue(WillCompare{0})
-            << Qt::partial_ordering::unordered;
+            << BobUI::partial_ordering::unordered;
 }
 
 void tst_QVariant::compareCustomTypes() const
 {
     QFETCH(const QVariant, v1);
     QFETCH(const QVariant, v2);
-    QFETCH(const Qt::partial_ordering, expectedOrdering);
+    QFETCH(const BobUI::partial_ordering, expectedOrdering);
 
     QCOMPARE(QVariant::compare(v1, v2), expectedOrdering);
-    QT_TEST_EQUALITY_OPS(v1, v2, is_eq(expectedOrdering));
+    BOBUI_TEST_EQUALITY_OPS(v1, v2, is_eq(expectedOrdering));
 }
 void tst_QVariant::timeToDateTime() const
 {
-    const QVariant val(QTime::currentTime());
+    const QVariant val(BOBUIime::currentTime());
     QVERIFY(!val.canConvert<QDateTime>());
     QVERIFY(!val.toDateTime().isValid());
 }
@@ -3655,51 +3655,51 @@ void tst_QVariant::convertBoolToByteArray() const
 
 void tst_QVariant::convertBoolToByteArray_data() const
 {
-    QTest::addColumn<QByteArray>("input");
-    QTest::addColumn<bool>("canConvert");
-    QTest::addColumn<bool>("value");
+    BOBUIest::addColumn<QByteArray>("input");
+    BOBUIest::addColumn<bool>("canConvert");
+    BOBUIest::addColumn<bool>("value");
 
-    QTest::newRow("false")
+    BOBUIest::newRow("false")
         << QByteArray("false")
         << true
         << false;
 
-    QTest::newRow("FALSE")
+    BOBUIest::newRow("FALSE")
         << QByteArray("FALSE")
         << true
         << false;
 
-    QTest::newRow("falSE")
+    BOBUIest::newRow("falSE")
         << QByteArray("FALSE")
         << true
         << false;
 
-    QTest::newRow("")
+    BOBUIest::newRow("")
         << QByteArray("")
         << true
         << false;
 
-    QTest::newRow("null QByteArray")
+    BOBUIest::newRow("null QByteArray")
         << QByteArray()
         << true
         << false;
 
-    QTest::newRow("any-content")
+    BOBUIest::newRow("any-content")
         << QByteArray("any-content")
         << true
         << true;
 
-    QTest::newRow("true")
+    BOBUIest::newRow("true")
         << QByteArray("true")
         << true
         << true;
 
-    QTest::newRow("TRUE")
+    BOBUIest::newRow("TRUE")
         << QByteArray("TRUE")
         << true
         << true;
 
-    QTest::newRow("trUE")
+    BOBUIest::newRow("trUE")
         << QByteArray("trUE")
         << true
         << true;
@@ -3720,14 +3720,14 @@ void tst_QVariant::convertByteArrayToBool() const
 
 void tst_QVariant::convertByteArrayToBool_data() const
 {
-    QTest::addColumn<bool>("input");
-    QTest::addColumn<QByteArray>("output");
+    BOBUIest::addColumn<bool>("input");
+    BOBUIest::addColumn<QByteArray>("output");
 
-    QTest::newRow("false")
+    BOBUIest::newRow("false")
         << false
         << QByteArray("false");
 
-    QTest::newRow("true")
+    BOBUIest::newRow("true")
         << true
         << QByteArray("true");
 }
@@ -3868,10 +3868,10 @@ void tst_QVariant::toIntFromDouble() const
 
 void tst_QVariant::fpStringRoundtrip_data() const
 {
-    QTest::addColumn<QVariant>("number");
+    BOBUIest::addColumn<QVariant>("number");
 
-    QTest::newRow("float") << QVariant(1 + FLT_EPSILON);
-    QTest::newRow("double") << QVariant(1 + DBL_EPSILON);
+    BOBUIest::newRow("float") << QVariant(1 + FLT_EPSILON);
+    BOBUIest::newRow("double") << QVariant(1 + DBL_EPSILON);
 }
 
 void tst_QVariant::fpStringRoundtrip() const
@@ -3891,18 +3891,18 @@ void tst_QVariant::fpStringRoundtrip() const
 
 void tst_QVariant::numericalConvert_data()
 {
-    QTest::addColumn<QVariant>("v");
-    QTest::addColumn<bool>("isInteger");
-    QTest::newRow("float") << QVariant(float(5.3)) << false;
-    QTest::newRow("double") << QVariant(double(5.3)) << false;
-    QTest::newRow("qreal") << QVariant(qreal(5.3)) << false;
-    QTest::newRow("int") << QVariant(int(5)) << true;
-    QTest::newRow("uint") << QVariant(uint(5)) << true;
-    QTest::newRow("short") << QVariant(short(5)) << true;
-    QTest::newRow("longlong") << QVariant(quint64(5)) << true;
-    QTest::newRow("long") << QVariant::fromValue(long(5)) << true;
-    QTest::newRow("stringint") << QVariant(QString::fromLatin1("5")) << true;
-    QTest::newRow("string") << QVariant(QString::fromLatin1("5.30000019")) << false;
+    BOBUIest::addColumn<QVariant>("v");
+    BOBUIest::addColumn<bool>("isInteger");
+    BOBUIest::newRow("float") << QVariant(float(5.3)) << false;
+    BOBUIest::newRow("double") << QVariant(double(5.3)) << false;
+    BOBUIest::newRow("qreal") << QVariant(qreal(5.3)) << false;
+    BOBUIest::newRow("int") << QVariant(int(5)) << true;
+    BOBUIest::newRow("uint") << QVariant(uint(5)) << true;
+    BOBUIest::newRow("short") << QVariant(short(5)) << true;
+    BOBUIest::newRow("longlong") << QVariant(quint64(5)) << true;
+    BOBUIest::newRow("long") << QVariant::fromValue(long(5)) << true;
+    BOBUIest::newRow("stringint") << QVariant(QString::fromLatin1("5")) << true;
+    BOBUIest::newRow("string") << QVariant(QString::fromLatin1("5.30000019")) << false;
 }
 
 void tst_QVariant::numericalConvert()
@@ -3946,7 +3946,7 @@ template<class T> void playWithVariant(const T &orig, bool isNull, const QString
 
     {
         QVariant v2 = v;
-        if (QTypeInfo<T>::isRelocatable) {
+        if (BOBUIypeInfo<T>::isRelocatable) {
             // Type is movable so standard comparison algorithm in QVariant should work
             // In a custom type QVariant is not aware of ==operator so it won't be called,
             // which may cause problems especially visible when using a not-movable type
@@ -3963,7 +3963,7 @@ template<class T> void playWithVariant(const T &orig, bool isNull, const QString
         v = QVariant();
         QCOMPARE(v3, v);
         v = v2;
-        if (QTypeInfo<T>::isRelocatable) {
+        if (BOBUIypeInfo<T>::isRelocatable) {
             // Type is movable so standard comparison algorithm in QVariant should work
             // In a custom type QVariant is not aware of ==operator so it won't be called,
             // which may cause problems especially visible when using a not-movable type
@@ -3994,7 +3994,7 @@ template<class T> void playWithVariant(const T &orig, bool isNull, const QString
 
 #define PLAY_WITH_VARIANT(Orig, IsNull, ToString, ToDouble, ToBool) \
     playWithVariant(Orig, IsNull, ToString, ToDouble, ToBool);\
-    if (QTest::currentTestFailed())\
+    if (BOBUIest::currentTestFailed())\
         QFAIL("playWithVariant failed");
 
 struct MyPrimitive
@@ -4006,9 +4006,9 @@ struct MyPrimitive
     }
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(MyPrimitive, Q_PRIMITIVE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 struct MyData
 {
@@ -4084,10 +4084,10 @@ struct MyShared : QSharedData {
     MyMovable movable;
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(MyMovable, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(RelocatableInAppType, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_METATYPE(MyPrimitive)
 Q_DECLARE_METATYPE(MyData)
@@ -4180,7 +4180,7 @@ void tst_QVariant::moreCustomTypes()
     QCOMPARE(MyNotMovable::count, 0);
 
     {
-#ifdef QT_NO_DOUBLECONVERSION
+#ifdef BOBUI_NO_DOUBLECONVERSION
         // snprintf cannot do "shortest" conversion and always adds noise.
         PLAY_WITH_VARIANT(12.12, false, "12.119999999999999", 12.12, true);
 #else
@@ -4430,57 +4430,57 @@ void tst_QVariant::forwardDeclare()
     QCOMPARE(qvariant_cast<Forward*>(v), f);
 }
 
-void tst_QVariant::loadQt5Stream_data()
+void tst_QVariant::loadBobUI5Stream_data()
 {
-    dataStream_data(QDataStream::Qt_5_0);
+    dataStream_data(QDataStream::BobUI_5_0);
 }
 
-void tst_QVariant::loadQt5Stream()
+void tst_QVariant::loadBobUI5Stream()
 {
-    loadQVariantFromDataStream(QDataStream::Qt_5_0);
+    loadQVariantFromDataStream(QDataStream::BobUI_5_0);
 }
 
-void tst_QVariant::saveQt5Stream_data()
+void tst_QVariant::saveBobUI5Stream_data()
 {
-    dataStream_data(QDataStream::Qt_5_0);
+    dataStream_data(QDataStream::BobUI_5_0);
 }
 
-void tst_QVariant::saveQt5Stream()
+void tst_QVariant::saveBobUI5Stream()
 {
-    saveQVariantFromDataStream(QDataStream::Qt_5_0);
+    saveQVariantFromDataStream(QDataStream::BobUI_5_0);
 }
 
-void tst_QVariant::loadQt4Stream_data()
+void tst_QVariant::loadBobUI4Stream_data()
 {
-    dataStream_data(QDataStream::Qt_4_9);
+    dataStream_data(QDataStream::BobUI_4_9);
 }
 
-void tst_QVariant::loadQt4Stream()
+void tst_QVariant::loadBobUI4Stream()
 {
-    loadQVariantFromDataStream(QDataStream::Qt_4_9);
+    loadQVariantFromDataStream(QDataStream::BobUI_4_9);
 }
 
-void tst_QVariant::saveQt4Stream_data()
+void tst_QVariant::saveBobUI4Stream_data()
 {
-    dataStream_data(QDataStream::Qt_4_9);
+    dataStream_data(QDataStream::BobUI_4_9);
 }
 
-void tst_QVariant::saveQt4Stream()
+void tst_QVariant::saveBobUI4Stream()
 {
-    saveQVariantFromDataStream(QDataStream::Qt_4_9);
+    saveQVariantFromDataStream(QDataStream::BobUI_4_9);
 }
 
 void tst_QVariant::dataStream_data(QDataStream::Version version)
 {
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("fileName");
 
     QString path;
     switch (version) {
-    case QDataStream::Qt_4_9:
-        path = QString::fromLatin1("qt4.9");
+    case QDataStream::BobUI_4_9:
+        path = QString::fromLatin1("bobui4.9");
         break;
-    case QDataStream::Qt_5_0:
-        path = QString::fromLatin1("qt5.0");
+    case QDataStream::BobUI_5_0:
+        path = QString::fromLatin1("bobui5.0");
         break;
     default:
         Q_UNIMPLEMENTED();
@@ -4491,7 +4491,7 @@ void tst_QVariant::dataStream_data(QDataStream::Version version)
     uint i = 0;
     const auto entries = dir.entryInfoList(QStringList{u"*.bin"_s});
     for (const QFileInfo &fileInfo : entries) {
-        QTest::newRow((path + fileInfo.fileName()).toLatin1()) << fileInfo.filePath();
+        BOBUIest::newRow((path + fileInfo.fileName()).toLatin1()) << fileInfo.filePath();
         i += 1;
     }
     QVERIFY(i > 10);
@@ -4560,22 +4560,22 @@ void tst_QVariant::saveQVariantFromDataStream(QDataStream::Version version)
 
 void tst_QVariant::debugStream_data()
 {
-    QTest::addColumn<QVariant>("variant");
-    QTest::addColumn<int>("typeId");
+    BOBUIest::addColumn<QVariant>("variant");
+    BOBUIest::addColumn<int>("typeId");
     for (int id = 0; id < QMetaType::LastCoreType + 1; ++id) {
         if (id && !QMetaType::isRegistered(id)) {
-            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(
+            BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(
                                      "^Trying to construct an instance of an invalid type"));
         }
         const char *tagName = QMetaType(id).name();
         if (tagName && id != QMetaType::Void)
-            QTest::newRow(tagName) << QVariant(QMetaType(id)) << id;
+            BOBUIest::newRow(tagName) << QVariant(QMetaType(id)) << id;
     }
-    QTest::newRow("QBitArray(111)") << QVariant(QBitArray(3, true)) << qMetaTypeId<QBitArray>();
-    QTest::newRow("CustomStreamableClass") << QVariant(QMetaType::fromType<CustomStreamableClass>(), 0) << qMetaTypeId<CustomStreamableClass>();
-    QTest::newRow("MyClass") << QVariant(QMetaType::fromType<MyClass>(), 0) << qMetaTypeId<MyClass>();
-    QTest::newRow("InvalidVariant") << QVariant() << int(QMetaType::UnknownType);
-    QTest::newRow("CustomQObject") << QVariant::fromValue(this) << qMetaTypeId<tst_QVariant*>();
+    BOBUIest::newRow("QBitArray(111)") << QVariant(QBitArray(3, true)) << qMetaTypeId<QBitArray>();
+    BOBUIest::newRow("CustomStreamableClass") << QVariant(QMetaType::fromType<CustomStreamableClass>(), 0) << qMetaTypeId<CustomStreamableClass>();
+    BOBUIest::newRow("MyClass") << QVariant(QMetaType::fromType<MyClass>(), 0) << qMetaTypeId<MyClass>();
+    BOBUIest::newRow("InvalidVariant") << QVariant() << int(QMetaType::UnknownType);
+    BOBUIest::newRow("CustomQObject") << QVariant::fromValue(this) << qMetaTypeId<tst_QVariant*>();
 }
 
 void tst_QVariant::debugStream()
@@ -4588,22 +4588,22 @@ void tst_QVariant::debugStream()
     QVERIFY(msgHandler.testPassed());
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 struct MessageHandlerType : public MessageHandler
 {
     MessageHandlerType(const int typeId)
         : MessageHandler(typeId, handler)
     {}
-    static void handler(QtMsgType, const QMessageLogContext &, const QString &msg)
+    static void handler(BobUIMsgType, const QMessageLogContext &, const QString &msg)
     {
         // Format itself is not important, but basic data as a type name should be included in the output
         ok = msg.startsWith("QVariant::");
         QVERIFY2(ok, (QString::fromLatin1("Message is not started correctly: '") + msg + '\'').toLatin1().constData());
-QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
         ok &= (currentId == QMetaType::UnknownType
                 ? msg.contains("Invalid")
                 : msg.contains(QMetaType::typeName(currentId)));
-QT_WARNING_POP
+BOBUI_WARNING_POP
         QVERIFY2(ok, (QString::fromLatin1("Message doesn't contain type name: '") + msg + '\'').toLatin1().constData());
     }
 };
@@ -4619,10 +4619,10 @@ void tst_QVariant::debugStreamType()
     QFETCH(int, typeId);
 
     MessageHandlerType msgHandler(typeId);
-    QT_IGNORE_DEPRECATIONS(qDebug() << QVariant::Type(typeId);)
+    BOBUI_IGNORE_DEPRECATIONS(qDebug() << QVariant::Type(typeId);)
     QVERIFY(msgHandler.testPassed());
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 void tst_QVariant::implicitConstruction()
 {
@@ -4674,9 +4674,9 @@ void tst_QVariant::implicitConstruction()
 
 void tst_QVariant::saveInvalid_data()
 {
-    QTest::addColumn<unsigned>("version");
-    for (unsigned version = QDataStream::Qt_5_0; version > QDataStream::Qt_1_0; --version)
-        QTest::newRow(QString::number(version).toUtf8()) << version;
+    BOBUIest::addColumn<unsigned>("version");
+    for (unsigned version = QDataStream::BobUI_5_0; version > QDataStream::BobUI_1_0; --version)
+        BOBUIest::newRow(QString::number(version).toUtf8()) << version;
 }
 
 void tst_QVariant::saveInvalid()
@@ -4699,8 +4699,8 @@ void tst_QVariant::saveNewBuiltinWithOldStream()
 {
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_3_1);
-    stream << QVariant::fromValue<QJsonValue>(123); // QJsonValue class was introduced in Qt5
+    stream.setVersion(QDataStream::BobUI_3_1);
+    stream << QVariant::fromValue<QJsonValue>(123); // QJsonValue class was introduced in BobUI5
     QCOMPARE(stream.status(), QDataStream::Ok);
     QVERIFY(data.size() >= 4);
     QCOMPARE(int(data.constData()[0]), 0);
@@ -4719,7 +4719,7 @@ void tst_QVariant::relocatabilityChange_data()
 #else
 #  define SKIP    QSKIP
 #endif
-#if !QT_CONFIG(library) || !defined(QT_SHARED)
+#if !BOBUI_CONFIG(library) || !defined(BOBUI_SHARED)
     QSKIP("Test needs to be able to load a plugin.");
 #else
     QLibrary lib(QCoreApplication::applicationDirPath() + "/tst_qvariant_relocatabilitychange");
@@ -4730,9 +4730,9 @@ void tst_QVariant::relocatabilityChange_data()
     if (!pluginCreateVariant)
         SKIP("Could not find entry point in plugin");
 
-    QTest::addColumn<bool>("pluginIsRelocatable");
-    QTest::newRow("becomes-relocatable") << false;
-    QTest::newRow("becomes-non-relocatable") << true;
+    BOBUIest::addColumn<bool>("pluginIsRelocatable");
+    BOBUIest::newRow("becomes-relocatable") << false;
+    BOBUIest::newRow("becomes-non-relocatable") << true;
 
     // we invoke the plugin early to ensure it gets to register the metatype
     // (shouldn't make a difference, but let's be consistent)
@@ -5034,7 +5034,7 @@ static void testMetaSequenceIteration()
 {
     QFETCH(bool, hasSizeAccessor);
     QFETCH(bool, hasIndexedAccessors);
-    QTest::failOnWarning();
+    BOBUIest::failOnWarning();
 
     int numSeen = 0;
     Container sequence;
@@ -5233,9 +5233,9 @@ static void testMetaAssociationIteration()
     QCOMPARE(f, iter.constEnd());
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && QT_DEPRECATED_SINCE(6, 15)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && BOBUI_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 template<typename Iterator>
 void sortIterable(QSequentialIterable *iterable)
@@ -5253,11 +5253,11 @@ static void testSequentialIteration()
     const auto ignoreSizeWarning = [hasSizeAccessor]() {
         if (hasSizeAccessor)
             return;
-        QTest::ignoreMessage(
-                    QtWarningMsg,
+        BOBUIest::ignoreMessage(
+                    BobUIWarningMsg,
                     "size() called on an iterable without native size accessor. This is slow");
     };
-    QTest::failOnWarning();
+    BOBUIest::failOnWarning();
 
     int numSeen = 0;
     Container sequence;
@@ -5455,45 +5455,45 @@ static void testAssociativeIteration()
 template<typename T>
 static void addRowSequential(const char *name, bool hasSizeAccessor, bool hasIndexedAccessor)
 {
-    QTest::newRow(name)
+    BOBUIest::newRow(name)
             << &testMetaSequenceIteration<T> << hasSizeAccessor << hasIndexedAccessor;
-    QTest::addRow("%s_old", name)
+    BOBUIest::addRow("%s_old", name)
             << &testSequentialIteration<T> << hasSizeAccessor << hasIndexedAccessor;
 }
 
 template<typename C>
 static void addRowAssociative(const char *name)
 {
-    QTest::newRow(name)
+    BOBUIest::newRow(name)
             << &testMetaAssociationIteration<C>;
-    QTest::addRow("%s_old", name)
+    BOBUIest::addRow("%s_old", name)
             << &testAssociativeIteration<C>;
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #else
 
 template<typename T>
 static void addRowSequential(const char *name, bool hasSizeAccessor, bool hasIndexedAccessor)
 {
-    QTest::newRow(name)
+    BOBUIest::newRow(name)
             << &testMetaSequenceIteration<T> << hasSizeAccessor << hasIndexedAccessor;
 }
 
 template<typename C>
 static void addRowAssociative(const char *name)
 {
-    QTest::newRow(name)
+    BOBUIest::newRow(name)
             << &testMetaAssociationIteration<C>;
 }
 
-#endif // QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && QT_DEPRECATED_SINCE(6, 15)
+#endif // BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && BOBUI_DEPRECATED_SINCE(6, 15)
 
 void tst_QVariant::iterateSequentialContainerElements_data()
 {
-    QTest::addColumn<QFunctionPointer>("testFunction");
-    QTest::addColumn<bool>("hasSizeAccessor");
-    QTest::addColumn<bool>("hasIndexedAccessors");
+    BOBUIest::addColumn<QFunctionPointer>("testFunction");
+    BOBUIest::addColumn<bool>("hasSizeAccessor");
+    BOBUIest::addColumn<bool>("hasIndexedAccessors");
 #define ADD(T) addRowSequential<T>(#T, true, true)
     ADD(QQueue<int>);
     ADD(QQueue<QVariant>);
@@ -5531,7 +5531,7 @@ void tst_QVariant::iterateSequentialContainerElements_data()
 
 void tst_QVariant::iterateAssociativeContainerElements_data()
 {
-    QTest::addColumn<QFunctionPointer>("testFunction");
+    BOBUIest::addColumn<QFunctionPointer>("testFunction");
 #define ADD(C, K, V) addRowAssociative<C<K, V>>(#C "<" #K "," #V ">");
     ADD(QHash, int, bool);
     ADD(QHash, int, int);
@@ -5616,7 +5616,7 @@ void tst_QVariant::emptyContainerInterface()
     // An empty container interface should implicitly be of invalid size
     // and its begin and end iterators should be equal.
 
-    const QtMetaContainerPrivate::QMetaContainerInterface emptyContainerInterface {};
+    const BobUIMetaContainerPrivate::QMetaContainerInterface emptyContainerInterface {};
     QIterable emptyIterable(QMetaContainer(&emptyContainerInterface), nullptr);
 
     QCOMPARE(emptyIterable.size(), -1);
@@ -5712,8 +5712,8 @@ template <typename Pair> static void testVariantPairElements()
 
 void tst_QVariant::pairElements_data()
 {
-    QTest::addColumn<QFunctionPointer>("testFunction");
-    QTest::addColumn<std::function<void(void *)>>("makeValue");
+    BOBUIest::addColumn<QFunctionPointer>("testFunction");
+    BOBUIest::addColumn<std::function<void(void *)>>("makeValue");
 
     static auto makeString = [](auto &&value) -> QString {
         using T = std::decay_t<decltype(value)>;
@@ -5731,7 +5731,7 @@ void tst_QVariant::pairElements_data()
             *static_cast<Pair *>(pair) = Pair{first, second};
         };
 
-        QTest::addRow("%s", qPrintable(makeString(first) + u',' + makeString(second)))
+        BOBUIest::addRow("%s", qPrintable(makeString(first) + u',' + makeString(second)))
                 << &testVariantPairElements<Pair> << makeValue;
     };
 
@@ -5861,9 +5861,9 @@ template <auto value> static void testVariantEnum()
 
 void tst_QVariant::enums_data()
 {
-    QTest::addColumn<QFunctionPointer>("testFunction");
+    BOBUIest::addColumn<QFunctionPointer>("testFunction");
 
-#define ADD(V)      QTest::newRow(#V) << &testVariantEnum<V>
+#define ADD(V)      BOBUIest::newRow(#V) << &testVariantEnum<V>
     ADD(EnumTest_Enum0_value);
     ADD(EnumTest_Enum0_negValue);
     ADD(EnumTest_Enum1_value);
@@ -5903,11 +5903,11 @@ template <typename Enum, auto Value> static void testVariantMetaEnum()
 
 void tst_QVariant::metaEnums_data()
 {
-    QTest::addColumn<QFunctionPointer>("testFunction");
-    QTest::addColumn<QString>("string");
+    BOBUIest::addColumn<QFunctionPointer>("testFunction");
+    BOBUIest::addColumn<QString>("string");
 
 #define METAENUMS_TEST(Value) \
-    QTest::newRow(#Value) << &testVariantMetaEnum<decltype(Value), Value> << #Value;
+    BOBUIest::newRow(#Value) << &testVariantMetaEnum<decltype(Value), Value> << #Value;
 
     METAENUMS_TEST(MetaEnumTest_Enum0_value);
     METAENUMS_TEST(MetaEnumTest_Enum1_value);
@@ -5920,15 +5920,15 @@ void tst_QVariant::metaEnums_data()
     METAENUMS_TEST(MetaEnumTest_Enum5_value);
     METAENUMS_TEST(MetaEnumTest_Enum6_value);
     METAENUMS_TEST(MetaEnumTest_Enum8_value);
-    { using namespace Qt; METAENUMS_TEST(RichText); }
+    { using namespace BobUI; METAENUMS_TEST(RichText); }
 #undef METAENUMS_TEST
 
-    QTest::newRow("AlignBottom")
-            << &testVariantMetaEnum<Qt::Alignment, Qt::AlignBottom> << "AlignBottom";
+    BOBUIest::newRow("AlignBottom")
+            << &testVariantMetaEnum<BobUI::Alignment, BobUI::AlignBottom> << "AlignBottom";
 
-    constexpr auto AlignHCenterBottom = Qt::AlignmentFlag((Qt::AlignHCenter | Qt::AlignBottom).toInt());
-    QTest::newRow("AlignHCenter|AlignBottom")
-            << &testVariantMetaEnum<Qt::Alignment, AlignHCenterBottom> << "AlignHCenter|AlignBottom";
+    constexpr auto AlignHCenterBottom = BobUI::AlignmentFlag((BobUI::AlignHCenter | BobUI::AlignBottom).toInt());
+    BOBUIest::newRow("AlignHCenter|AlignBottom")
+            << &testVariantMetaEnum<BobUI::Alignment, AlignHCenterBottom> << "AlignHCenter|AlignBottom";
 }
 
 void tst_QVariant::nullConvert()
@@ -5961,7 +5961,7 @@ void tst_QVariant::accessSequentialContainerKey()
         nameResult += iit.key().toString();
     }
     } // Destroy mapping
-    // Regression test for QTBUG-52246 - no memory corruption/double deletion
+    // Regression test for BOBUIBUG-52246 - no memory corruption/double deletion
     // of the string key.
 
     QCOMPARE(nameResult, QStringLiteral("Seven"));
@@ -5971,19 +5971,19 @@ void tst_QVariant::shouldDeleteVariantDataWorksForSequential()
 {
     QCOMPARE(instanceCount, 0);
     {
-        QtMetaContainerPrivate::QMetaSequenceInterface metaSequence {};
-        metaSequence.iteratorCapabilities = QtMetaContainerPrivate::RandomAccessCapability
-                | QtMetaContainerPrivate::BiDirectionalCapability
-                | QtMetaContainerPrivate::ForwardCapability
-                | QtMetaContainerPrivate::InputCapability;
+        BobUIMetaContainerPrivate::QMetaSequenceInterface metaSequence {};
+        metaSequence.iteratorCapabilities = BobUIMetaContainerPrivate::RandomAccessCapability
+                | BobUIMetaContainerPrivate::BiDirectionalCapability
+                | BobUIMetaContainerPrivate::ForwardCapability
+                | BobUIMetaContainerPrivate::InputCapability;
 
         metaSequence.sizeFn = [](const void *) { return qsizetype(1); };
         metaSequence.createConstIteratorFn =
-                [](const void *, QtMetaContainerPrivate::QMetaSequenceInterface::Position) -> void* {
+                [](const void *, BobUIMetaContainerPrivate::QMetaSequenceInterface::Position) -> void* {
             return nullptr;
         };
         metaSequence.addValueFn = [](void *, const void *,
-                QtMetaContainerPrivate::QMetaSequenceInterface::Position) {};
+                BobUIMetaContainerPrivate::QMetaSequenceInterface::Position) {};
         metaSequence.advanceConstIteratorFn = [](void *, qsizetype) {};
         metaSequence.destroyConstIteratorFn = [](const void *){};
         metaSequence.compareConstIteratorFn = [](const void *, const void *) {
@@ -6001,7 +6001,7 @@ void tst_QVariant::shouldDeleteVariantDataWorksForSequential()
             MyType mytype {2, "zwei"};
             *static_cast<MyType *>(dataPtr) = mytype;
         };
-        metaSequence.valueMetaType = QtPrivate::qMetaTypeInterfaceForType<MyType>();
+        metaSequence.valueMetaType = BobUIPrivate::qMetaTypeInterfaceForType<MyType>();
 
         QMetaSequence::Iterable iterable(QMetaSequence(&metaSequence), nullptr);
         QVariant value1 = iterable.at(0);
@@ -6018,13 +6018,13 @@ void tst_QVariant::shouldDeleteVariantDataWorksForAssociative()
 {
     QCOMPARE(instanceCount, 0);
     {
-        QtMetaContainerPrivate::QMetaAssociationInterface iterator {};
+        BobUIMetaContainerPrivate::QMetaAssociationInterface iterator {};
 
         iterator.sizeFn = [](const void *) -> qsizetype {return 1;};
-        iterator.mappedMetaType = QtPrivate::qMetaTypeInterfaceForType<MyType>();
-        iterator.keyMetaType = QtPrivate::qMetaTypeInterfaceForType<MyType>();
+        iterator.mappedMetaType = BobUIPrivate::qMetaTypeInterfaceForType<MyType>();
+        iterator.keyMetaType = BobUIPrivate::qMetaTypeInterfaceForType<MyType>();
         iterator.createConstIteratorFn = [](
-                const void *, QtMetaContainerPrivate::QMetaContainerInterface::Position) -> void * {
+                const void *, BobUIMetaContainerPrivate::QMetaContainerInterface::Position) -> void * {
             return new int(21);
         };
         iterator.advanceConstIteratorFn = [](void *, qsizetype) {};
@@ -6157,18 +6157,18 @@ void tst_QVariant::fromStdVariant()
 #undef CHECK_EQUAL
 }
 
-void tst_QVariant::qt4UuidDataStream()
+void tst_QVariant::bobui4UuidDataStream()
 {
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_4_8);
+    stream.setVersion(QDataStream::BobUI_4_8);
     QUuid source(0x12345678,0x1234,0x1234,0x12,0x23,0x34,0x45,0x56,0x67,0x78,0x89);
     stream << QVariant::fromValue(source);
-    const QByteArray qt4Data = QByteArray::fromHex("0000007f000000000651557569640012345678123412341223344556677889");
-    QCOMPARE(data, qt4Data);
+    const QByteArray bobui4Data = QByteArray::fromHex("0000007f000000000651557569640012345678123412341223344556677889");
+    QCOMPARE(data, bobui4Data);
 
     QDataStream input(&data, QIODevice::ReadOnly);
-    input.setVersion(QDataStream::Qt_4_8);
+    input.setVersion(QDataStream::BobUI_4_8);
     QVariant result;
     input >> result;
     QCOMPARE(result.value<QUuid>(), source);
@@ -6176,7 +6176,7 @@ void tst_QVariant::qt4UuidDataStream()
 
 void tst_QVariant::sequentialIterableEndianessSanityCheck()
 {
-    namespace QMTP = QtMetaContainerPrivate;
+    namespace QMTP = BobUIMetaContainerPrivate;
     QMTP::IteratorCapabilities oldIteratorCaps
             = QMTP::InputCapability | QMTP::ForwardCapability
             | QMTP::BiDirectionalCapability | QMTP::RandomAccessCapability;
@@ -6228,7 +6228,7 @@ void tst_QVariant::sequentialIterableAppend()
 
 void tst_QVariant::preferDirectConversionOverInterfaces()
 {
-    using namespace QtMetaTypePrivate;
+    using namespace BobUIMetaTypePrivate;
     static bool calledCorrectConverter = false;
     calledCorrectConverter = false;
 
@@ -6289,8 +6289,8 @@ void tst_QVariant::mutableView()
     });
     QVERIFY(success);
 
-    QTest::ignoreMessage(
-                QtWarningMsg,
+    BOBUIest::ignoreMessage(
+                BobUIWarningMsg,
                 "Mutable view on type already registered from type MyType to type MyTypeView");
     const bool shouldFail = QMetaType::registerMutableView<MyType, MyTypeView>([&](MyType &) {
         return MyTypeView { nullptr };
@@ -6338,10 +6338,10 @@ void tst_QVariant::canViewAndView_ReturnFalseAndDefault_WhenConvertingBetweenPoi
             #typeName);
 
     // Add tests for static primitive types
-    QT_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(ADD_TEST_IMPL)
+    BOBUI_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(ADD_TEST_IMPL)
 
     // Add tests for static core types
-    QT_FOR_EACH_STATIC_CORE_CLASS(ADD_TEST_IMPL)
+    BOBUI_FOR_EACH_STATIC_CORE_CLASS(ADD_TEST_IMPL)
 #undef ADD_TEST_IMPL
 }
 
@@ -6411,24 +6411,24 @@ void tst_QVariant::equalsWithoutMetaObject()
     calledOnce = true;
 
     using T = NoMetaObject*;
-    QtPrivate::QMetaTypeInterface d = {
+    BobUIPrivate::QMetaTypeInterface d = {
         /*.revision=*/ 0,
         /*.alignment=*/ alignof(T),
         /*.size=*/ sizeof(T),
-        /*.flags=*/ QtPrivate::QMetaTypeForType<T>::flags(),
+        /*.flags=*/ BobUIPrivate::QMetaTypeForType<T>::flags(),
         /*.typeId=*/ 0,
         /*.metaObject=*/ nullptr, // on purpose.
         /*.name=*/ "NoMetaObject*",
-        /*.defaultCtr=*/ [](const QtPrivate::QMetaTypeInterface *, void *addr) {
+        /*.defaultCtr=*/ [](const BobUIPrivate::QMetaTypeInterface *, void *addr) {
             new (addr) T();
         },
-        /*.copyCtr=*/ [](const QtPrivate::QMetaTypeInterface *, void *addr, const void *other) {
+        /*.copyCtr=*/ [](const BobUIPrivate::QMetaTypeInterface *, void *addr, const void *other) {
             new (addr) T(*reinterpret_cast<const T *>(other));
         },
-        /*.moveCtr=*/ [](const QtPrivate::QMetaTypeInterface *, void *addr, void *other) {
+        /*.moveCtr=*/ [](const BobUIPrivate::QMetaTypeInterface *, void *addr, void *other) {
             new (addr) T(std::move(*reinterpret_cast<T *>(other)));
         },
-        /*.dtor=*/ [](const QtPrivate::QMetaTypeInterface *, void *addr) {
+        /*.dtor=*/ [](const BobUIPrivate::QMetaTypeInterface *, void *addr) {
             reinterpret_cast<T *>(addr)->~T();
         },
         /*.equals*/ nullptr,
@@ -6461,7 +6461,7 @@ struct NonDefaultConstructible
    { return l.i == r.i; }
 };
 
-template <> char *QTest::toString<NonDefaultConstructible>(const NonDefaultConstructible &ndc)
+template <> char *BOBUIest::toString<NonDefaultConstructible>(const NonDefaultConstructible &ndc)
 {
     return qstrdup('{' + QByteArray::number(ndc.i) + '}');
 }
@@ -6484,9 +6484,9 @@ struct NotCopyable
 
 void tst_QVariant::constructFromIncompatibleMetaType_data()
 {
-    QTest::addColumn<QMetaType>("type");
+    BOBUIest::addColumn<QMetaType>("type");
     auto addRow = [](QMetaType meta) {
-        QTest::newRow(meta.name()) << meta;
+        BOBUIest::newRow(meta.name()) << meta;
     };
     addRow(QMetaType::fromType<void>());
     addRow(QMetaType::fromType<NonDefaultConstructible>());
@@ -6501,12 +6501,12 @@ void tst_QVariant::constructFromIncompatibleMetaType()
    const auto anticipate = [type]() {
        // In that case, we run into a different condition (size == 0), and do not warn
        if (type == QMetaType::fromType<NonDefaultConstructible>()) {
-           QTest::ignoreMessage(QtWarningMsg,
+           BOBUIest::ignoreMessage(BobUIWarningMsg,
                                 "QVariant: Cannot create type 'NonDefaultConstructible' without a "
                                 "default constructor");
        } else if (type != QMetaType::fromType<void>()) {
-           QTest::ignoreMessage(
-               QtWarningMsg,
+           BOBUIest::ignoreMessage(
+               BobUIWarningMsg,
                "QVariant: Provided metatype for '" + QByteArray(type.name()) +
                "' does not support destruction and copy construction");
        }
@@ -6523,7 +6523,7 @@ void tst_QVariant::constructFromIncompatibleMetaType()
    QVERIFY(!QVariant(regular).convert(type));
 }
 
-void tst_QVariant::constructFromQtLT65MetaType()
+void tst_QVariant::constructFromBobUILT65MetaType()
 {
     static bool calledOnce = false;
     if (calledOnce)
@@ -6531,9 +6531,9 @@ void tst_QVariant::constructFromQtLT65MetaType()
     calledOnce = true;
 
 
-   auto qsizeIface = QtPrivate::qMetaTypeInterfaceForType<QSize>();
+   auto qsizeIface = BobUIPrivate::qMetaTypeInterfaceForType<QSize>();
 
-   QtPrivate::QMetaTypeInterface qsize64Iface = {
+   BobUIPrivate::QMetaTypeInterface qsize64Iface = {
        /*revision*/0,
        8,
        8,
@@ -6697,7 +6697,7 @@ void tst_QVariant::getIf_NonDefaultConstructible()
 
 void tst_QVariant::getIfSpecial()
 {
-    QVariant v{QString{}}; // used to be a null QVariant in Qt 5
+    QVariant v{QString{}}; // used to be a null QVariant in BobUI 5
     QCOMPARE_NE(get_if<QString>(&v), nullptr); // not anymore...
 }
 
@@ -6726,7 +6726,7 @@ private:
     QVariant *m_content = nullptr;
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 template<>
 QVariant::ConstReference<QVariantWrapper>::operator QVariant() const
         noexcept(QVariantWrapper::CanNoexceptConvertToQVariant)
@@ -6741,7 +6741,7 @@ QVariant::Reference<QVariantWrapper> &QVariant::Reference<QVariantWrapper>::oper
     m_referred.setContent(content);
     return *this;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void tst_QVariant::reference()
 {
@@ -6836,7 +6836,7 @@ private:
     static inline Op lastOperation = None;
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 template<>
 QVariant::ConstReference<SMFTracker>::operator QVariant() const noexcept
 {
@@ -6849,7 +6849,7 @@ QVariant::Reference<SMFTracker> &QVariant::Reference<SMFTracker>::operator=(
 {
     return *this;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 template<template<typename Indirect> class PointerOrReference>
 void testCopyConstruction()
@@ -6959,11 +6959,11 @@ enum class PointerOrReference {
 
 void tst_QVariant::pointerAndReferenceSpecialMemberFunctions_data()
 {
-    QTest::addColumn<PointerOrReference>("mode");
-    QTest::addRow("Reference") << PointerOrReference::Reference;
-    QTest::addRow("ConstReference") << PointerOrReference::ConstReference;
-    QTest::addRow("Pointer") << PointerOrReference::Pointer;
-    QTest::addRow("ConstPointer") << PointerOrReference::ConstPointer;
+    BOBUIest::addColumn<PointerOrReference>("mode");
+    BOBUIest::addRow("Reference") << PointerOrReference::Reference;
+    BOBUIest::addRow("ConstReference") << PointerOrReference::ConstReference;
+    BOBUIest::addRow("Pointer") << PointerOrReference::Pointer;
+    BOBUIest::addRow("ConstPointer") << PointerOrReference::ConstPointer;
 }
 
 void tst_QVariant::pointerAndReferenceSpecialMemberFunctions()
@@ -7005,7 +7005,7 @@ void tst_QVariant::pointerAndReferenceSpecialMemberFunctions()
 template <typename T>
 T mutate(const T &t) { return t + t; }
 template <>
-QTransform mutate(const QTransform &t)
+BOBUIransform mutate(const BOBUIransform &t)
 {
     return t * 2;
 }
@@ -7178,5 +7178,5 @@ void tst_QVariant::get_impl(T t) const
     }
 }
 
-QTEST_MAIN(tst_QVariant)
+BOBUIEST_MAIN(tst_QVariant)
 #include "tst_qvariant.moc"

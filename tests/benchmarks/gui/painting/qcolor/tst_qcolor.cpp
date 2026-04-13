@@ -1,7 +1,7 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 #include <QColor>
 
@@ -69,6 +69,6 @@ void tst_QColor::toHsv()
     }
 }
 
-QTEST_MAIN(tst_QColor)
+BOBUIEST_MAIN(tst_QColor)
 
 #include "tst_qcolor.moc"

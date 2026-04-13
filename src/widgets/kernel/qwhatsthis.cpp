@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwhatsthis.h"
 #include "qpointer.h"
@@ -11,20 +11,20 @@
 #include "qpixmap.h"
 #include "qscreen.h"
 #include "qpainter.h"
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 #include "qaction.h"
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 #include "qcursor.h"
 #include "qbitmap.h"
-#include "qtextdocument.h"
+#include "bobuiextdocument.h"
 #include <qpa/qplatformtheme.h>
-#include "private/qtextdocumentlayout_p.h"
+#include "private/bobuiextdocumentlayout_p.h"
 #include "qdebug.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWhatsThis
@@ -32,13 +32,13 @@ QT_BEGIN_NAMESPACE
     widget, i.e. answering the question "What's This?".
 
     \ingroup helpsystem
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     "What's This?" help is part of an application's online help
     system, and provides users with information about the
     functionality and usage of a particular widget. "What's This?"
     help texts are typically longer and more detailed than
-    \l{QToolTip}{tooltips}, but generally provide less information
+    \l{BOBUIoolTip}{tooltips}, but generally provide less information
     than that supplied by separate help windows.
 
     QWhatsThis provides a single window with an explanatory text that
@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
     stylesheet, making it possible to embed images in the displayed
     text. To be as fast as possible, the default stylesheet uses a
     simple method to determine whether the text can be rendered as
-    plain text. See Qt::mightBeRichText() for details.
+    plain text. See BobUI::mightBeRichText() for details.
 
     \snippet whatsthis/whatsthis.cpp 0
 
@@ -80,7 +80,7 @@ QT_BEGIN_NAMESPACE
     return to normal mode with leaveWhatsThisMode().
 
     If you want to control the "What's This?" behavior of a widget
-    manually see Qt::WA_CustomWhatsThis.
+    manually see BobUI::WA_CustomWhatsThis.
 
     It is also possible to show different help texts for different
     regions of a widget, by using a QHelpEvent of type
@@ -94,7 +94,7 @@ QT_BEGIN_NAMESPACE
     true), the help window remains visible. Call
     QWhatsThis::hideText() to hide it explicitly.
 
-    \sa QToolTip
+    \sa BOBUIoolTip
 */
 
 class QWhatsThat : public QWidget
@@ -118,7 +118,7 @@ private:
     QPointer<QWidget>widget;
     bool pressed;
     QString text;
-    QTextDocument* doc;
+    BOBUIextDocument* doc;
     QString anchor;
 };
 
@@ -137,28 +137,28 @@ static inline bool dropShadow()
 }
 
 QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor)
-    : QWidget(parent, Qt::Popup),
+    : QWidget(parent, BobUI::Popup),
       widget(showTextFor), pressed(false), text(txt)
 {
     delete instance;
     instance = this;
-    setAttribute(Qt::WA_DeleteOnClose, true);
-    setAttribute(Qt::WA_NoSystemBackground, true);
+    setAttribute(BobUI::WA_DeleteOnClose, true);
+    setAttribute(BobUI::WA_NoSystemBackground, true);
     if (parent)
         setPalette(parent->palette());
     setMouseTracking(true);
-    setFocusPolicy(Qt::StrongFocus);
-#ifndef QT_NO_CURSOR
-    setCursor(Qt::ArrowCursor);
+    setFocusPolicy(BobUI::StrongFocus);
+#ifndef BOBUI_NO_CURSOR
+    setCursor(BobUI::ArrowCursor);
 #endif
     QRect r;
     doc = nullptr;
     ensurePolished(); // Ensures style sheet font before size calc
-    if (Qt::mightBeRichText(text)) {
-        doc = new QTextDocument();
+    if (BobUI::mightBeRichText(text)) {
+        doc = new BOBUIextDocument();
         doc->setUndoRedoEnabled(false);
         doc->setDefaultFont(QApplication::font(this));
-#ifdef QT_NO_TEXTHTMLPARSER
+#ifdef BOBUI_NO_TEXTHTMLPARSER
         doc->setPlainText(text);
 #else
         doc->setHtml(text);
@@ -178,8 +178,8 @@ QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor
             sw = 300;
 
         r = fontMetrics().boundingRect(0, 0, sw, 1000,
-                                        Qt::AlignLeft | Qt::AlignTop
-                                        | Qt::TextWordWrap | Qt::TextExpandTabs,
+                                        BobUI::AlignLeft | BobUI::AlignTop
+                                        | BobUI::TextWordWrap | BobUI::TextExpandTabs,
                                         text);
     }
     shadowWidth = dropShadow() ? 0 : 6;
@@ -196,7 +196,7 @@ QWhatsThat::~QWhatsThat()
 void QWhatsThat::mousePressEvent(QMouseEvent* e)
 {
     pressed = true;
-    if (e->button() == Qt::LeftButton && rect().contains(e->position().toPoint())) {
+    if (e->button() == BobUI::LeftButton && rect().contains(e->position().toPoint())) {
         if (doc)
             anchor = doc->documentLayout()->anchorAt(e->position().toPoint() -  QPoint(hMargin, vMargin));
         return;
@@ -208,7 +208,7 @@ void QWhatsThat::mouseReleaseEvent(QMouseEvent* e)
 {
     if (!pressed)
         return;
-    if (widget && e->button() == Qt::LeftButton && doc && rect().contains(e->position().toPoint())) {
+    if (widget && e->button() == BobUI::LeftButton && doc && rect().contains(e->position().toPoint())) {
         QString a = doc->documentLayout()->anchorAt(e->position().toPoint() -  QPoint(hMargin, vMargin));
         QString href;
         if (anchor == a)
@@ -225,16 +225,16 @@ void QWhatsThat::mouseReleaseEvent(QMouseEvent* e)
 
 void QWhatsThat::mouseMoveEvent(QMouseEvent* e)
 {
-#ifdef QT_NO_CURSOR
+#ifdef BOBUI_NO_CURSOR
     Q_UNUSED(e);
 #else
     if (!doc)
         return;
     QString a = doc->documentLayout()->anchorAt(e->position().toPoint() -  QPoint(hMargin, vMargin));
     if (!a.isEmpty())
-        setCursor(Qt::PointingHandCursor);
+        setCursor(BobUI::PointingHandCursor);
     else
-        setCursor(Qt::ArrowCursor);
+        setCursor(BobUI::ArrowCursor);
 #endif
 }
 
@@ -287,7 +287,7 @@ void QWhatsThat::paintEvent(QPaintEvent*)
     }
     else
     {
-        p.drawText(r, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap | Qt::TextExpandTabs, text);
+        p.drawText(r, BobUI::AlignLeft | BobUI::AlignTop | BobUI::TextWordWrap | BobUI::TextExpandTabs, text);
     }
 }
 
@@ -320,9 +320,9 @@ class QWhatsThisPrivate : public QObject
     ~QWhatsThisPrivate();
     static QWhatsThisPrivate *instance;
     bool eventFilter(QObject *, QEvent *) override;
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     QPointer<QAction> action;
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
     static void say(QWidget *, const QString &, int x = 0, int y = 0);
     static void notifyToplevels(QEvent *e);
     bool leaveOnMouseRelease;
@@ -347,16 +347,16 @@ QWhatsThisPrivate::QWhatsThisPrivate()
     if (QWidget *w = QApplication::widgetAt(pos)) {
         QHelpEvent e(QEvent::QueryWhatsThis, w->mapFromGlobal(pos), pos);
         const bool sentEvent = QCoreApplication::sendEvent(w, &e);
-#ifdef QT_NO_CURSOR
+#ifdef BOBUI_NO_CURSOR
         Q_UNUSED(sentEvent);
 #else
         QGuiApplication::setOverrideCursor((!sentEvent || !e.isAccepted())?
-                                        Qt::ForbiddenCursor:Qt::WhatsThisCursor);
+                                        BobUI::ForbiddenCursor:BobUI::WhatsThisCursor);
     } else {
-        QGuiApplication::setOverrideCursor(Qt::WhatsThisCursor);
+        QGuiApplication::setOverrideCursor(BobUI::WhatsThisCursor);
 #endif
     }
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessibleEvent event(this, QAccessible::ContextHelpStart);
     QAccessible::updateAccessibility(&event);
 #endif
@@ -364,14 +364,14 @@ QWhatsThisPrivate::QWhatsThisPrivate()
 
 QWhatsThisPrivate::~QWhatsThisPrivate()
 {
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     if (action)
         action->setChecked(false);
-#endif // QT_CONFIG(action)
-#ifndef QT_NO_CURSOR
+#endif // BOBUI_CONFIG(action)
+#ifndef BOBUI_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessibleEvent event(this, QAccessible::ContextHelpEnd);
     QAccessible::updateAccessibility(&event);
 #endif
@@ -383,12 +383,12 @@ bool QWhatsThisPrivate::eventFilter(QObject *o, QEvent *e)
     if (!o->isWidgetType())
         return false;
     QWidget * w = static_cast<QWidget *>(o);
-    bool customWhatsThis = w->testAttribute(Qt::WA_CustomWhatsThis);
+    bool customWhatsThis = w->testAttribute(BobUI::WA_CustomWhatsThis);
     switch (e->type()) {
     case QEvent::MouseButtonPress:
     {
         QMouseEvent *me = static_cast<QMouseEvent*>(e);
-        if (me->button() == Qt::RightButton || customWhatsThis)
+        if (me->button() == BobUI::RightButton || customWhatsThis)
             return false;
         QHelpEvent e(QEvent::WhatsThis, me->position().toPoint(), me->globalPosition().toPoint());
         if (!QCoreApplication::sendEvent(w, &e) || !e.isAccepted())
@@ -401,11 +401,11 @@ bool QWhatsThisPrivate::eventFilter(QObject *o, QEvent *e)
         QMouseEvent *me = static_cast<QMouseEvent*>(e);
         QHelpEvent e(QEvent::QueryWhatsThis, me->position().toPoint(), me->globalPosition().toPoint());
         const bool sentEvent = QCoreApplication::sendEvent(w, &e);
-#ifdef QT_NO_CURSOR
+#ifdef BOBUI_NO_CURSOR
         Q_UNUSED(sentEvent);
 #else
         QGuiApplication::changeOverrideCursor((!sentEvent || !e.isAccepted())?
-                                              Qt::ForbiddenCursor:Qt::WhatsThisCursor);
+                                              BobUI::ForbiddenCursor:BobUI::WhatsThisCursor);
 #endif
         Q_FALLTHROUGH();
     }
@@ -413,13 +413,13 @@ bool QWhatsThisPrivate::eventFilter(QObject *o, QEvent *e)
     case QEvent::MouseButtonDblClick:
         if (leaveOnMouseRelease && e->type() == QEvent::MouseButtonRelease)
             QWhatsThis::leaveWhatsThisMode();
-        if (static_cast<QMouseEvent*>(e)->button() == Qt::RightButton || customWhatsThis)
+        if (static_cast<QMouseEvent*>(e)->button() == BobUI::RightButton || customWhatsThis)
             return false; // ignore RMB release
         break;
     case QEvent::KeyPress:
     {
         QKeyEvent *kev = static_cast<QKeyEvent *>(e);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         if (kev->matches(QKeySequence::Cancel)) {
             QWhatsThis::leaveWhatsThisMode();
             return true;
@@ -427,13 +427,13 @@ bool QWhatsThisPrivate::eventFilter(QObject *o, QEvent *e)
 #endif
           if (customWhatsThis) {
             return false;
-        } else if (kev->key() == Qt::Key_Menu ||
-                    (kev->key() == Qt::Key_F10 &&
-                      kev->modifiers() == Qt::ShiftModifier)) {
+        } else if (kev->key() == BobUI::Key_Menu ||
+                    (kev->key() == BobUI::Key_F10 &&
+                      kev->modifiers() == BobUI::ShiftModifier)) {
             // we don't react to these keys, they are used for context menus
             return false;
-        } else if (kev->key() != Qt::Key_Shift && kev->key() != Qt::Key_Alt // not a modifier key
-                   && kev->key() != Qt::Key_Control && kev->key() != Qt::Key_Meta) {
+        } else if (kev->key() != BobUI::Key_Shift && kev->key() != BobUI::Key_Alt // not a modifier key
+                   && kev->key() != BobUI::Key_Control && kev->key() != BobUI::Key_Meta) {
             QWhatsThis::leaveWhatsThisMode();
         }
     } break;
@@ -443,7 +443,7 @@ bool QWhatsThisPrivate::eventFilter(QObject *o, QEvent *e)
     return true;
 }
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 class QWhatsThisAction: public QAction
 {
     Q_OBJECT
@@ -457,14 +457,14 @@ private slots:
 
 QWhatsThisAction::QWhatsThisAction(QObject *parent) : QAction(tr("What's This?"), parent)
 {
-#ifndef QT_NO_IMAGEFORMAT_XPM
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
     QPixmap p(button_image);
     setIcon(p);
 #endif
     setCheckable(true);
     connect(this, &QWhatsThisAction::triggered, this, &QWhatsThisAction::actionTriggered);
-#ifndef QT_NO_SHORTCUT
-    setShortcut(Qt::ShiftModifier | Qt::Key_F1);
+#ifndef BOBUI_NO_SHORTCUT
+    setShortcut(BobUI::ShiftModifier | BobUI::Key_F1);
 #endif
 }
 
@@ -475,7 +475,7 @@ void QWhatsThisAction::actionTriggered()
         QWhatsThisPrivate::instance->action = this;
     }
 }
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 
 /*!
     This function switches the user interface into "What's This?"
@@ -484,7 +484,7 @@ void QWhatsThisAction::actionTriggered()
     programmatically by calling leaveWhatsThisMode().
 
     When entering "What's This?" mode, a QEvent of type
-    Qt::EnterWhatsThisMode is sent to all toplevel widgets.
+    BobUI::EnterWhatsThisMode is sent to all toplevel widgets.
 
     \sa inWhatsThisMode(), leaveWhatsThisMode()
 */
@@ -513,7 +513,7 @@ bool QWhatsThis::inWhatsThisMode()
     switches back to normal mode; otherwise it does nothing.
 
     When leaving "What's This?" mode, a QEvent of type
-    Qt::LeaveWhatsThisMode is sent to all toplevel widgets.
+    BobUI::LeaveWhatsThisMode is sent to all toplevel widgets.
 
     \sa enterWhatsThisMode(), inWhatsThisMode()
 */
@@ -618,13 +618,13 @@ void QWhatsThis::hideText()
     The returned QAction provides a convenient way to let users enter
     "What's This?" mode.
 */
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 QAction *QWhatsThis::createAction(QObject *parent)
 {
     return new QWhatsThisAction(parent);
 }
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qwhatsthis.moc"

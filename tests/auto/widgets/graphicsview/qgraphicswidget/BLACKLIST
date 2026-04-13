@@ -1,7 +1,7 @@
 [initStyleOption]
 android
-b2qt
-# QTBUG-100930
+b2bobui
+# BOBUIBUG-100930
 [updateFocusChainWhenChildDie]
-b2qt
+b2bobui
 qnx

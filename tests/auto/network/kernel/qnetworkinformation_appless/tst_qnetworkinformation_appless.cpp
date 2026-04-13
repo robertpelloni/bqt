@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qcoreapplication.h>
-#include <QtNetwork/qnetworkinformation.h>
-#include <QtTest/qtest.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUINetwork/qnetworkinformation.h>
+#include <BobUITest/bobuiest.h>
 #include <QOperatingSystemVersion>
 
 class tst_QNetworkInformation_appless : public QObject
@@ -15,12 +15,12 @@ private slots:
 
 void tst_QNetworkInformation_appless::reinit()
 {
-    #if QT_CONFIG(cpp_winrt)
+    #if BOBUI_CONFIG(cpp_winrt)
         if (QOperatingSystemVersion::current() >=
             QOperatingSystemVersion(QOperatingSystemVersion::Windows11_24H2) &&
             QOperatingSystemVersion::current() <
             QOperatingSystemVersion(QOperatingSystemVersion::Windows, 10, 0, 26300)) {
-                QSKIP("This test crashes on Windows 11 24H2. QTBUG-135599");
+                QSKIP("This test crashes on Windows 11 24H2. BOBUIBUG-135599");
         }
     #endif
 
@@ -48,5 +48,5 @@ void tst_QNetworkInformation_appless::reinit()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QNetworkInformation_appless);
+BOBUIEST_APPLESS_MAIN(tst_QNetworkInformation_appless);
 #include "tst_qnetworkinformation_appless.moc"

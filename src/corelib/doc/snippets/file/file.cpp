@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QFile>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 static void process_line(const QByteArray &)
 {
@@ -33,7 +33,7 @@ static void readTextStream_snippet()
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
-    QTextStream in(&file);
+    BOBUIextStream in(&file);
     while (!in.atEnd()) {
         QString line = in.readLine();
         process_line(line);
@@ -48,7 +48,7 @@ static void writeTextStream_snippet()
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
 
-    QTextStream out(&file);
+    BOBUIextStream out(&file);
     out << "The magic number is: " << 49 << "\n";
 //! [2]
 }
@@ -70,7 +70,7 @@ static void readRegularEmptyFile_snippet()
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
-    QTextStream in(&file);
+    BOBUIextStream in(&file);
     QString line = in.readLine();
     while (!line.isNull()) {
         process_line(line);

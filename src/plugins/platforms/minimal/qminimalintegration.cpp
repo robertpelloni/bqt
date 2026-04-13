@@ -1,48 +1,48 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qminimalintegration.h"
 #include "qminimalbackingstore.h"
 
-#include <QtGui/private/qpixmap_raster_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qpixmap_raster_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformfontdatabase.h>
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qplatformwindow.h>
 #include <qpa/qwindowsysteminterface.h>
 
 #if defined(Q_OS_WIN)
-#  include <QtGui/private/qwindowsdirectwritefontdatabase_p.h>
-#  if QT_CONFIG(freetype)
-#    include <QtGui/private/qwindowsfontdatabase_ft_p.h>
+#  include <BobUIGui/private/qwindowsdirectwritefontdatabase_p.h>
+#  if BOBUI_CONFIG(freetype)
+#    include <BobUIGui/private/qwindowsfontdatabase_ft_p.h>
 #  endif
 #elif defined(Q_OS_DARWIN)
-#  include <QtGui/private/qcoretextfontdatabase_p.h>
+#  include <BobUIGui/private/qcoretextfontdatabase_p.h>
 #endif
 
-#if QT_CONFIG(fontconfig)
-#  include <QtGui/private/qgenericunixfontdatabase_p.h>
+#if BOBUI_CONFIG(fontconfig)
+#  include <BobUIGui/private/qgenericunixfontdatabase_p.h>
 #endif
 
-#if QT_CONFIG(freetype)
-#include <QtGui/private/qfontengine_ft_p.h>
-#include <QtGui/private/qfreetypefontdatabase_p.h>
+#if BOBUI_CONFIG(freetype)
+#include <BobUIGui/private/qfontengine_ft_p.h>
+#include <BobUIGui/private/qfreetypefontdatabase_p.h>
 #endif
 
 #if !defined(Q_OS_WIN)
-#include <QtGui/private/qgenericunixeventdispatcher_p.h>
+#include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
 #else
-#include <QtCore/private/qeventdispatcher_win_p.h>
+#include <BobUICore/private/qeventdispatcher_win_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QCoreTextFontEngine;
 
-static const char debugBackingStoreEnvironmentVariable[] = "QT_DEBUG_BACKINGSTORE";
+static const char debugBackingStoreEnvironmentVariable[] = "BOBUI_DEBUG_BACKINGSTORE";
 
 static inline unsigned parseOptions(const QStringList &paramList)
 {
@@ -106,7 +106,7 @@ QPlatformFontDatabase *QMinimalIntegration::fontDatabase() const
     if (!m_fontDatabase && (m_options & EnableFonts)) {
 #if defined(Q_OS_WIN)
         if (m_options & FreeTypeFontDatabase) {
-#  if QT_CONFIG(freetype)
+#  if BOBUI_CONFIG(freetype)
             m_fontDatabase = new QWindowsFontDatabaseFT;
 #  endif // freetype
         } else {
@@ -115,7 +115,7 @@ QPlatformFontDatabase *QMinimalIntegration::fontDatabase() const
 #elif defined(Q_OS_DARWIN)
         if (!(m_options & FontconfigDatabase)) {
             if (m_options & FreeTypeFontDatabase) {
-#  if QT_CONFIG(freetype)
+#  if BOBUI_CONFIG(freetype)
                 m_fontDatabase = new QCoreTextFontDatabaseEngineFactory<QFontEngineFT>;
 #  endif // freetype
             } else {
@@ -125,7 +125,7 @@ QPlatformFontDatabase *QMinimalIntegration::fontDatabase() const
 #endif
 
         if (!m_fontDatabase) {
-#if QT_CONFIG(fontconfig)
+#if BOBUI_CONFIG(fontconfig)
             m_fontDatabase = new QGenericUnixFontDatabase;
 #else
             m_fontDatabase = QPlatformIntegration::fontDatabase();
@@ -171,4 +171,4 @@ QMinimalIntegration *QMinimalIntegration::instance()
     return static_cast<QMinimalIntegration *>(QGuiApplicationPrivate::platformIntegration());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

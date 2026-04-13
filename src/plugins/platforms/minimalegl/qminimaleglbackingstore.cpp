@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qminimaleglbackingstore.h"
 
-#include <QtGui/QOpenGLContext>
-#include <QtOpenGL/QOpenGLPaintDevice>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIOpenGL/QOpenGLPaintDevice>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QMinimalEglBackingStore::QMinimalEglBackingStore(QWindow *window)
     : QPlatformBackingStore(window)
@@ -57,4 +57,4 @@ void QMinimalEglBackingStore::resize(const QSize &size, const QRegion &staticCon
     Q_UNUSED(staticContents);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

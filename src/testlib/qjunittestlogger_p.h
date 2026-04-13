@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QJUNITTESTLOGGER_P_H
 #define QJUNITTESTLOGGER_P_H
@@ -8,25 +8,25 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtTest/qttestglobal.h>
+#include <BobUITest/bobuitestglobal.h>
 
-#include <QtTest/private/qabstracttestlogger_p.h>
-#include <QtTest/private/qtestelementattribute_p.h>
-#include <QtCore/qmutex.h>
+#include <BobUITest/private/qabstracttestlogger_p.h>
+#include <BobUITest/private/bobuiestelementattribute_p.h>
+#include <BobUICore/qmutex.h>
 
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTestJUnitStreamer;
-class QTestElement;
+class BOBUIestJUnitStreamer;
+class BOBUIestElement;
 
 class QJUnitTestLogger : public QAbstractTestLogger
 {
@@ -40,7 +40,7 @@ class QJUnitTestLogger : public QAbstractTestLogger
         void enterTestFunction(const char *function) override;
         void leaveTestFunction() override;
 
-        void enterTestData(QTestData *) override;
+        void enterTestData(BOBUIestData *) override;
 
         void addIncident(IncidentTypes type, const char *description,
                      const char *file = nullptr, int line = 0) override;
@@ -53,15 +53,15 @@ class QJUnitTestLogger : public QAbstractTestLogger
         void enterTestCase(const char *name);
         void leaveTestCase();
 
-        void addFailure(QTest::LogElementType elementType,
+        void addFailure(BOBUIest::LogElementType elementType,
             const char *failureType, const QString &failureDescription);
 
-        QTestElement *currentTestSuite = nullptr;
-        std::vector<QTestElement*> listOfTestcases;
-        QTestElement *currentTestCase = nullptr;
-        QTestElement *systemOutputElement = nullptr;
-        QTestElement *systemErrorElement = nullptr;
-        QTestJUnitStreamer *logFormatter = nullptr;
+        BOBUIestElement *currentTestSuite = nullptr;
+        std::vector<BOBUIestElement*> listOfTestcases;
+        BOBUIestElement *currentTestCase = nullptr;
+        BOBUIestElement *systemOutputElement = nullptr;
+        BOBUIestElement *systemErrorElement = nullptr;
+        BOBUIestJUnitStreamer *logFormatter = nullptr;
         // protects currentTestCase, systemOutputElement and systemErrorElement
         // in case of qDebug()/qWarning() etc. from threads
         QMutex mutex;
@@ -71,6 +71,6 @@ class QJUnitTestLogger : public QAbstractTestLogger
         int errorCounter = 0;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QJUNITTESTLOGGER_P_H

@@ -1,5 +1,5 @@
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QBBSCREEN_H
 #define QBBSCREEN_H
@@ -8,8 +8,8 @@
 
 #include "qqnxwindow.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QScopedPointer>
+#include <BobUICore/QObject>
+#include <BobUICore/QScopedPointer>
 
 #include <screen/screen.h>
 
@@ -28,7 +28,7 @@ const int SCREEN_PROPERTY_SCAN = SCREEN_PROPERTY_KEY_SCAN;
 const int SCREEN_PROPERTY_SYM = SCREEN_PROPERTY_KEY_SYM;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaScreen);
 Q_DECLARE_LOGGING_CATEGORY(lcQpaScreenEvents);
@@ -53,8 +53,8 @@ public:
 
     qreal refreshRate() const override;
 
-    Qt::ScreenOrientation nativeOrientation() const override;
-    Qt::ScreenOrientation orientation() const override;
+    BobUI::ScreenOrientation nativeOrientation() const override;
+    BobUI::ScreenOrientation orientation() const override;
 
     QWindow *topLevelAt(const QPoint &point) const override;
 
@@ -93,7 +93,7 @@ public Q_SLOTS:
     void setRotation(int rotation);
     void newWindowCreated(void *window);
     void windowClosed(void *window);
-    void windowGroupStateChanged(const QByteArray &id, Qt::WindowState state);
+    void windowGroupStateChanged(const QByteArray &id, BobUI::WindowState state);
     void activateWindowGroup(const QByteArray &id);
     void deactivateWindowGroup(const QByteArray &id);
 
@@ -119,7 +119,7 @@ private:
     QString m_name;
     QSize m_initialPhysicalSize;
     QSize m_currentPhysicalSize;
-    Qt::ScreenOrientation m_nativeOrientation;
+    BobUI::ScreenOrientation m_nativeOrientation;
     QRect m_initialGeometry;
     QRect m_currentGeometry;
 
@@ -131,6 +131,6 @@ private:
     QPlatformCursor *m_cursor;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBBSCREEN_H

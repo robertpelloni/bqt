@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIZARD_H
 #define QWIZARD_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qdialog.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qdialog.h>
 
-QT_REQUIRE_CONFIG(wizard);
+BOBUI_REQUIRE_CONFIG(wizard);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractButton;
 class QWizardPage;
@@ -21,8 +21,8 @@ class Q_WIDGETS_EXPORT QWizard : public QDialog
     Q_OBJECT
     Q_PROPERTY(WizardStyle wizardStyle READ wizardStyle WRITE setWizardStyle)
     Q_PROPERTY(WizardOptions options READ options WRITE setOptions)
-    Q_PROPERTY(Qt::TextFormat titleFormat READ titleFormat WRITE setTitleFormat)
-    Q_PROPERTY(Qt::TextFormat subTitleFormat READ subTitleFormat WRITE setSubTitleFormat)
+    Q_PROPERTY(BobUI::TextFormat titleFormat READ titleFormat WRITE setTitleFormat)
+    Q_PROPERTY(BobUI::TextFormat subTitleFormat READ subTitleFormat WRITE setSubTitleFormat)
     Q_PROPERTY(int startId READ startId WRITE setStartId)
     Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentIdChanged)
 
@@ -92,7 +92,7 @@ public:
     Q_DECLARE_FLAGS(WizardOptions, WizardOption)
     Q_FLAG(WizardOptions)
 
-    explicit QWizard(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+    explicit QWizard(QWidget *parent = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags());
     ~QWizard();
 
     int addPage(QWizardPage *page);
@@ -127,10 +127,10 @@ public:
     void setButton(WizardButton which, QAbstractButton *button);
     QAbstractButton *button(WizardButton which) const;
 
-    void setTitleFormat(Qt::TextFormat format);
-    Qt::TextFormat titleFormat() const;
-    void setSubTitleFormat(Qt::TextFormat format);
-    Qt::TextFormat subTitleFormat() const;
+    void setTitleFormat(BobUI::TextFormat format);
+    BobUI::TextFormat titleFormat() const;
+    void setSubTitleFormat(BobUI::TextFormat format);
+    BobUI::TextFormat subTitleFormat() const;
     void setPixmap(WizardPixmap which, const QPixmap &pixmap);
     QPixmap pixmap(WizardPixmap which) const;
 
@@ -230,6 +230,6 @@ private:
     friend class QWizardPrivate;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWIZARD_H

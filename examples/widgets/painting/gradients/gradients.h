@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef GRADIENTS_H
 #define GRADIENTS_H
 
 #include "arthurwidgets.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QRadioButton;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class HoverPoints;
 
@@ -92,9 +92,9 @@ public slots:
     void setRepeatSpread() { m_spread = QGradient::RepeatSpread; update(); }
     void setReflectSpread() { m_spread = QGradient::ReflectSpread; update(); }
 
-    void setLinearGradient() { m_gradientType = Qt::LinearGradientPattern; update(); }
-    void setRadialGradient() { m_gradientType = Qt::RadialGradientPattern; update(); }
-    void setConicalGradient() { m_gradientType = Qt::ConicalGradientPattern; update(); }
+    void setLinearGradient() { m_gradientType = BobUI::LinearGradientPattern; update(); }
+    void setRadialGradient() { m_gradientType = BobUI::RadialGradientPattern; update(); }
+    void setConicalGradient() { m_gradientType = BobUI::ConicalGradientPattern; update(); }
 
 
 private:
@@ -102,7 +102,7 @@ private:
     HoverPoints *m_hoverPoints;
 
     QGradient::Spread m_spread;
-    Qt::BrushStyle m_gradientType;
+    BobUI::BrushStyle m_gradientType;
 };
 
 class GradientWidget : public QWidget

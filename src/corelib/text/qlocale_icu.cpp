@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qglobal.h"
 #include "qdebug.h"
@@ -10,23 +10,23 @@
 #include "unicode/uloc.h"
 #include "unicode/ustring.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static_assert(std::is_same_v<UChar, char16_t>,
               "Hmm... in C++ mode, ICU's UChar ought to be char16_t");
 
-namespace QtIcuPrivate {
+namespace BobUIIcuPrivate {
 
 enum class IcuCaseConversion : bool { Upper, Lower };
 
-static bool qt_u_strToCase(const QString &str, QString *out, const char *localeID,
+static bool bobui_u_strToCase(const QString &str, QString *out, const char *localeID,
                            IcuCaseConversion conv)
 {
     Q_ASSERT(out);
 
     int32_t size = str.size();
     size += size >> 2; // add 25% for possible expansions
-    QString result(size, Qt::Uninitialized);
+    QString result(size, BobUI::Uninitialized);
 
     UErrorCode status = U_ZERO_ERROR;
 
@@ -72,24 +72,24 @@ static bool qt_u_strToCase(const QString &str, QString *out, const char *localeI
     return true;
 }
 
-} // namespace QtIcuPrivate
+} // namespace BobUIIcuPrivate
 
 QString QLocalePrivate::toUpper(const QString &str, bool *ok) const
 {
     Q_ASSERT(ok);
-    using namespace QtIcuPrivate;
+    using namespace BobUIIcuPrivate;
     QString out;
-    *ok = qt_u_strToCase(str, &out, bcp47Name('_'), IcuCaseConversion::Upper);
+    *ok = bobui_u_strToCase(str, &out, bcp47Name('_'), IcuCaseConversion::Upper);
     return out;
 }
 
 QString QLocalePrivate::toLower(const QString &str, bool *ok) const
 {
     Q_ASSERT(ok);
-    using namespace QtIcuPrivate;
+    using namespace BobUIIcuPrivate;
     QString out;
-    *ok = qt_u_strToCase(str, &out, bcp47Name('_'), IcuCaseConversion::Lower);
+    *ok = bobui_u_strToCase(str, &out, bcp47Name('_'), IcuCaseConversion::Lower);
     return out;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

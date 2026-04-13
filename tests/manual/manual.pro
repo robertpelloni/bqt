@@ -1,5 +1,5 @@
 TEMPLATE=subdirs
-QT_FOR_CONFIG += network-private gui-private
+BOBUI_FOR_CONFIG += network-private gui-private
 
 SUBDIRS = \
 filetest \
@@ -27,12 +27,12 @@ qscreen \
 qscreen_xrandr \
 qssloptions \
 qsysinfo \
-qtabletevent \
-qtexteditlist \
-qtexttableborders \
-qtbug-8933 \
-qtbug-52641 \
-qtouchevent \
+bobuiabletevent \
+bobuiexteditlist \
+bobuiexttableborders \
+bobuibug-8933 \
+bobuibug-52641 \
+bobuiouchevent \
 touch \
 qwidget_zorder \
 repaint \
@@ -48,18 +48,18 @@ shortcuts \
 dialogs \
 windowtransparency \
 unc \
-qtabbar \
+bobuiabbar \
 rhi
 
-!qtConfig(openssl): SUBDIRS -= qssloptions
+!bobuiConfig(openssl): SUBDIRS -= qssloptions
 
-qtConfig(opengl) {
+bobuiConfig(opengl) {
     SUBDIRS += qopengltextureblitter
-    qtConfig(egl): SUBDIRS += qopenglcontext
+    bobuiConfig(egl): SUBDIRS += qopenglcontext
 }
 
 win32: SUBDIRS -= network_remote_stresstest network_stresstest
 
-qtConfig(vulkan): SUBDIRS += qvulkaninstance
+bobuiConfig(vulkan): SUBDIRS += qvulkaninstance
 
-qtConfig(xcb): SUBDIRS += xembed
+bobuiConfig(xcb): SUBDIRS += xembed

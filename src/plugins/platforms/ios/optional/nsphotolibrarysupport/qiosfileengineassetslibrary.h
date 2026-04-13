@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSFILEENGINEASSETSLIBRARY_H
 #define QIOSFILEENGINEASSETSLIBRARY_H
 
-#include <QtCore/private/qabstractfileengine_p.h>
+#include <BobUICore/private/qabstractfileengine_p.h>
 
 Q_FORWARD_DECLARE_OBJC_CLASS(ALAsset);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIOSAssetData;
 
@@ -29,7 +29,7 @@ public:
     QString fileName(FileName file) const override;
     void setFileName(const QString &file) override;
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
     IteratorUniquePtr beginEntryList(const QString &path, QDirListing::IteratorFlags filters,
                                      const QStringList &filterNames) override;
 #endif
@@ -45,7 +45,7 @@ private:
     ALAsset *loadAsset() const;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIOSFILEENGINEASSETSLIBRARY_H
 

@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example itemviews/frozencolumn
     \title Frozen Column Example
     \examplecategory {User Interface Components}
     \ingroup examples-itemviews
-    \brief This example demonstrates how to freeze a column within a QTableView.
+    \brief This example demonstrates how to freeze a column within a BOBUIableView.
 
     \image frozencolumn-example.png
            {Application showing a frozen column in a table}
 
-    We use Qt's model/view framework to implement a table with its first
+    We use BobUI's model/view framework to implement a table with its first
     column frozen. This technique can be applied to several columns or rows,
     as long as they are on the edge of the table.
 
     The model/view framework allows for one model to be displayed in different
     ways using multiple views. For this example, we use two views on the same
-    model - two \l {QTableView}{table views} sharing one model. The frozen
+    model - two \l {BOBUIableView}{table views} sharing one model. The frozen
     column is a child of the main tableview, and we provide the desired visual
     effect using an overlay technique which will be described step by step in
     the coming sections.
@@ -32,11 +32,11 @@
     the shared model for both table views. Two slots are added to help keep the
     section sizes in sync, as well as a function to readjust the frozen
     column's geometry. In addition, we reimplement two functions:
-    \l{QAbstractItemView::}{resizeEvent()} and \l{QTableView::}{moveCursor()}.
+    \l{QAbstractItemView::}{resizeEvent()} and \l{BOBUIableView::}{moveCursor()}.
 
     \snippet itemviews/frozencolumn/freezetablewidget.h Widget definition
 
-    \note QAbstractItemView is \l{QTableView}'s ancestor.
+    \note QAbstractItemView is \l{BOBUIableView}'s ancestor.
 
 
     \section1 FreezeTableWidget Class Implementation
@@ -58,7 +58,7 @@
     means that this table view, \c frozenTableView, has to have the same model
     as the main table view. However, the difference here is: \c frozenTableView's
     only visible column is its first column; we hide the others using
-    \l{QTableView::}{setColumnHidden()}
+    \l{BOBUIableView::}{setColumnHidden()}
 
     \snippet itemviews/frozencolumn/freezetablewidget.cpp init part1
 
@@ -86,7 +86,7 @@
     the widget accordingly by invoking \c updateFrozenTableGeometry(). This
     function is further explained below.
 
-    In our reimplementation of QTableView::resizeEvent(), we call
+    In our reimplementation of BOBUIableView::resizeEvent(), we call
     \c updateFrozenTableGeometry() after invoking the base class
     implementation.
 
@@ -94,7 +94,7 @@
 
     When navigating around the table with the keyboard, we need to ensure that
     the current selection does not disappear behind the frozen column. To
-    synchronize this, we reimplement QTableView::moveCursor() and adjust the
+    synchronize this, we reimplement BOBUIableView::moveCursor() and adjust the
     scrollbar positions if needed, after calling the base class implementation.
 
     \snippet itemviews/frozencolumn/freezetablewidget.cpp navigate

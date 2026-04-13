@@ -1,26 +1,26 @@
 // Copyright (C) 2013 Imagination Technologies Limited, www.imgtec.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <private/qdrawhelper_p.h>
 #include <private/qdrawhelper_mips_dsp_p.h>
 #include <private/qpaintengine_raster_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-void qt_memfill32(quint32 *dest, quint32 color, qsizetype count)
+void bobui_memfill32(quint32 *dest, quint32 color, qsizetype count)
 {
-    qt_memfill32_asm_mips_dsp(dest, color, count);
+    bobui_memfill32_asm_mips_dsp(dest, color, count);
 }
 
-void qt_blend_argb32_on_argb32_mips_dsp(uchar *destPixels, int dbpl,
+void bobui_blend_argb32_on_argb32_mips_dsp(uchar *destPixels, int dbpl,
                                       const uchar *srcPixels, int sbpl,
                                       int w, int h,
                                       int const_alpha)
 
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     fprintf(stdout,
-            "qt_blend_argb32_on_argb32: dst=(%p, %d), src=(%p, %d), dim=(%d, %d) alpha=%d\n",
+            "bobui_blend_argb32_on_argb32: dst=(%p, %d), src=(%p, %d), dim=(%d, %d) alpha=%d\n",
             destPixels, dbpl, srcPixels, sbpl, w, h, const_alpha);
     fflush(stdout);
 #endif
@@ -29,7 +29,7 @@ void qt_blend_argb32_on_argb32_mips_dsp(uchar *destPixels, int dbpl,
     uint *dst = (uint *) destPixels;
     if (const_alpha == 256) {
         for (int y=0; y<h; ++y) {
-            qt_blend_argb32_on_argb32_const_alpha_256_mips_dsp_asm(dst, src, w);
+            bobui_blend_argb32_on_argb32_const_alpha_256_mips_dsp_asm(dst, src, w);
             dst = (quint32 *)(((uchar *) dst) + dbpl);
             src = (const quint32 *)(((const uchar *) src) + sbpl);
         }
@@ -43,27 +43,27 @@ void qt_blend_argb32_on_argb32_mips_dsp(uchar *destPixels, int dbpl,
                 dst++;
                 src++;
             }
-            qt_blend_argb32_on_argb32_mips_dsp_asm_x2(dst, src, h, const_alpha);
+            bobui_blend_argb32_on_argb32_mips_dsp_asm_x2(dst, src, h, const_alpha);
             dst = (quint32 *)(((uchar *) dst) + dbpl);
             src = (const quint32 *)(((const uchar *) src) + sbpl);
         }
     }
 }
 
-void qt_blend_rgb32_on_rgb32_mips_dsp(uchar *destPixels, int dbpl,
+void bobui_blend_rgb32_on_rgb32_mips_dsp(uchar *destPixels, int dbpl,
                                     const uchar *srcPixels, int sbpl,
                                     int w, int h,
                                     int const_alpha)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     fprintf(stdout,
-            "qt_blend_rgb32_on_rgb32: dst=(%p, %d), src=(%p, %d), dim=(%d, %d) alpha=%d\n",
+            "bobui_blend_rgb32_on_rgb32: dst=(%p, %d), src=(%p, %d), dim=(%d, %d) alpha=%d\n",
             destPixels, dbpl, srcPixels, sbpl, w, h, const_alpha);
     fflush(stdout);
 #endif
 
     if (const_alpha != 256) {
-        qt_blend_argb32_on_argb32_mips_dsp(destPixels, dbpl, srcPixels, sbpl, w, h, const_alpha);
+        bobui_blend_argb32_on_argb32_mips_dsp(destPixels, dbpl, srcPixels, sbpl, w, h, const_alpha);
         return;
     }
 
@@ -78,7 +78,7 @@ void qt_blend_rgb32_on_rgb32_mips_dsp(uchar *destPixels, int dbpl,
 }
 
 #if defined(__MIPS_DSPR2__)
-void qt_blend_rgb16_on_rgb16_mips_dspr2(uchar *destPixels, int dbpl,
+void bobui_blend_rgb16_on_rgb16_mips_dspr2(uchar *destPixels, int dbpl,
                                         const uchar *srcPixels, int sbpl,
                                         int w, int h,
                                         int const_alpha)
@@ -88,7 +88,7 @@ void qt_blend_rgb16_on_rgb16_mips_dspr2(uchar *destPixels, int dbpl,
             const quint16 *src = (const quint16*) srcPixels;
             quint16 *dst = (quint16*) destPixels;
             for (int y = 0; y < h; ++y) {
-                qt_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm(dst, src, w);
+                bobui_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm(dst, src, w);
                 dst = (quint16*) (((uchar*) dst) + dbpl);
                 src = (quint16*) (((uchar*) src) + sbpl);
             }
@@ -106,14 +106,14 @@ void qt_blend_rgb16_on_rgb16_mips_dspr2(uchar *destPixels, int dbpl,
         const quint16 *src = (const quint16*) srcPixels;
         quint16 *dst = (quint16*) destPixels;
         for (int y = 0; y < h; ++y) {
-            qt_blend_rgb16_on_rgb16_mips_dspr2_asm(dst, src, w, const_alpha);
+            bobui_blend_rgb16_on_rgb16_mips_dspr2_asm(dst, src, w, const_alpha);
             dst = (quint16*) (((uchar*) dst) + dbpl);
             src = (quint16*) (((uchar*) src) + sbpl);
         }
     }
 }
 #else
-void qt_blend_rgb16_on_rgb16_mips_dsp(uchar *destPixels, int dbpl,
+void bobui_blend_rgb16_on_rgb16_mips_dsp(uchar *destPixels, int dbpl,
                                       const uchar *srcPixels, int sbpl,
                                       int w, int h,
                                       int const_alpha)
@@ -123,7 +123,7 @@ void qt_blend_rgb16_on_rgb16_mips_dsp(uchar *destPixels, int dbpl,
             const quint16 *src = (const quint16*) srcPixels;
             quint16 *dst = (quint16*) destPixels;
             for (int y = 0; y < h; ++y) {
-                qt_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm(dst, src, w);
+                bobui_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm(dst, src, w);
                 dst = (quint16*) (((uchar*) dst) + dbpl);
                 src = (quint16*) (((uchar*) src) + sbpl);
             }
@@ -141,7 +141,7 @@ void qt_blend_rgb16_on_rgb16_mips_dsp(uchar *destPixels, int dbpl,
         const quint16 *src = (const quint16*) srcPixels;
         quint16 *dst = (quint16*) destPixels;
         for (int y = 0; y < h; ++y) {
-            qt_blend_rgb16_on_rgb16_mips_dsp_asm(dst, src, w, const_alpha);
+            bobui_blend_rgb16_on_rgb16_mips_dsp_asm(dst, src, w, const_alpha);
             dst = (quint16*) (((uchar*) dst) + dbpl);
             src = (quint16*) (((uchar*) src) + sbpl);
         }
@@ -165,7 +165,7 @@ void comp_func_Source_mips_dsp(uint *dest, const uint *src, int length, uint con
     }
 }
 
-uint * QT_FASTCALL qt_destFetchARGB32_mips_dsp(uint *buffer,
+uint * BOBUI_FASTCALL bobui_destFetchARGB32_mips_dsp(uint *buffer,
                                           QRasterBuffer *rasterBuffer,
                                           int x, int y, int length)
 {
@@ -174,14 +174,14 @@ uint * QT_FASTCALL qt_destFetchARGB32_mips_dsp(uint *buffer,
     return buffer;
 }
 
-void QT_FASTCALL qt_destStoreARGB32_mips_dsp(QRasterBuffer *rasterBuffer, int x, int y,
+void BOBUI_FASTCALL bobui_destStoreARGB32_mips_dsp(QRasterBuffer *rasterBuffer, int x, int y,
                                              const uint *buffer, int length)
 {
     uint *data = (uint *)rasterBuffer->scanLine(y) + x;
-    qt_destStoreARGB32_asm_mips_dsp(data, buffer, length);
+    bobui_destStoreARGB32_asm_mips_dsp(data, buffer, length);
 }
 
-void QT_FASTCALL comp_func_solid_SourceOver_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_SourceOver_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
 {
     if (const_alpha != 255)
         color = BYTE_MUL(color, const_alpha);
@@ -193,7 +193,7 @@ void QT_FASTCALL comp_func_solid_SourceOver_mips_dsp(uint *dest, int length, uin
     comp_func_solid_Source_dsp_asm_x2(dest, length, color, qAlpha(~color));
 }
 
-void QT_FASTCALL comp_func_solid_DestinationOver_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_DestinationOver_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
 {
     if (const_alpha != 255)
         color = BYTE_MUL(color, const_alpha);
@@ -206,7 +206,7 @@ void QT_FASTCALL comp_func_solid_DestinationOver_mips_dsp(uint *dest, int length
     comp_func_solid_DestinationOver_dsp_asm_x2(dest, length, color);
 }
 
-void QT_FASTCALL comp_func_DestinationOver_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_DestinationOver_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -224,7 +224,7 @@ void QT_FASTCALL comp_func_DestinationOver_mips_dsp(uint *dest, const uint *src,
     comp_func_DestinationOver_dsp_asm_x2(dest, src, length, const_alpha);
 }
 
-void QT_FASTCALL comp_func_solid_SourceIn_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_SourceIn_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -241,7 +241,7 @@ void QT_FASTCALL comp_func_solid_SourceIn_mips_dsp(uint *dest, int length, uint 
     comp_func_solid_SourceIn_dsp_asm_x2(dest, length, color, const_alpha);
 }
 
-void QT_FASTCALL comp_func_SourceIn_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_SourceIn_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -259,7 +259,7 @@ void QT_FASTCALL comp_func_SourceIn_mips_dsp(uint *dest, const uint *src, int le
     comp_func_SourceIn_dsp_asm_x2(dest, src, length, const_alpha);
 }
 
-void QT_FASTCALL comp_func_solid_DestinationIn_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_DestinationIn_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
 {
     uint a = qAlpha(color);
     if (const_alpha != 255) {
@@ -273,7 +273,7 @@ void QT_FASTCALL comp_func_solid_DestinationIn_mips_dsp(uint *dest, int length, 
     comp_func_solid_DestinationIn_dsp_asm_x2(dest, length, a);
 }
 
-void QT_FASTCALL comp_func_DestinationIn_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_DestinationIn_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -290,7 +290,7 @@ void QT_FASTCALL comp_func_DestinationIn_mips_dsp(uint *dest, const uint *src, i
     comp_func_DestinationIn_dsp_asm_x2(dest, src, length, const_alpha);
 }
 
-void QT_FASTCALL comp_func_solid_DestinationOut_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_DestinationOut_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
 {
     uint a = qAlpha(~color);
     if (const_alpha != 255) {
@@ -304,7 +304,7 @@ void QT_FASTCALL comp_func_solid_DestinationOut_mips_dsp(uint *dest, int length,
     comp_func_solid_DestinationIn_dsp_asm_x2(dest, length, a);
 }
 
-void QT_FASTCALL comp_func_DestinationOut_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_DestinationOut_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -321,7 +321,7 @@ void QT_FASTCALL comp_func_DestinationOut_mips_dsp(uint *dest, const uint *src, 
     comp_func_DestinationOut_dsp_asm_x2(dest, src, length, const_alpha);
 }
 
-void QT_FASTCALL comp_func_solid_SourceAtop_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_SourceAtop_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
 {
     if (const_alpha != 255) {
         color = BYTE_MUL(color, const_alpha);
@@ -335,7 +335,7 @@ void QT_FASTCALL comp_func_solid_SourceAtop_mips_dsp(uint *dest, int length, uin
     comp_func_solid_SourceAtop_dsp_asm_x2(dest, length, color, sia);
 }
 
-void QT_FASTCALL comp_func_SourceAtop_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_SourceAtop_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -355,7 +355,7 @@ void QT_FASTCALL comp_func_SourceAtop_mips_dsp(uint *dest, const uint *src, int 
 }
 
 
-void QT_FASTCALL comp_func_solid_DestinationAtop_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_DestinationAtop_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
 {
     uint a = qAlpha(color);
     if (const_alpha != 255) {
@@ -371,7 +371,7 @@ void QT_FASTCALL comp_func_solid_DestinationAtop_mips_dsp(uint *dest, int length
     comp_func_solid_DestinationAtop_dsp_asm_x2(dest, length, color, a);
 }
 
-void QT_FASTCALL comp_func_DestinationAtop_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_DestinationAtop_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -392,7 +392,7 @@ void QT_FASTCALL comp_func_DestinationAtop_mips_dsp(uint *dest, const uint *src,
     comp_func_DestinationAtop_dsp_asm_x2(dest, src, length, const_alpha);
 }
 
-void QT_FASTCALL comp_func_solid_XOR_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_XOR_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
 {
     if (const_alpha != 255)
         color = BYTE_MUL(color, const_alpha);
@@ -407,7 +407,7 @@ void QT_FASTCALL comp_func_solid_XOR_mips_dsp(uint *dest, int length, uint color
     comp_func_solid_XOR_dsp_asm_x2(dest, length, color, sia);
 }
 
-void QT_FASTCALL comp_func_XOR_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_XOR_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -426,7 +426,7 @@ void QT_FASTCALL comp_func_XOR_mips_dsp(uint *dest, const uint *src, int length,
     comp_func_XOR_dsp_asm_x2(dest, src, length, const_alpha);
 }
 
-void QT_FASTCALL comp_func_solid_SourceOut_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_SourceOut_mips_dsp(uint *dest, int length, uint color, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -443,7 +443,7 @@ void QT_FASTCALL comp_func_solid_SourceOut_mips_dsp(uint *dest, int length, uint
     comp_func_solid_SourceOut_dsp_asm_x2(dest, length, color, const_alpha);
 }
 
-void QT_FASTCALL comp_func_SourceOut_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_SourceOut_mips_dsp(uint *dest, const uint *src, int length, uint const_alpha)
 {
     if (length%2 > 0) {
         if (const_alpha == 255) {
@@ -461,7 +461,7 @@ void QT_FASTCALL comp_func_SourceOut_mips_dsp(uint *dest, const uint *src, int l
     comp_func_SourceOut_dsp_asm_x2(dest, src, length, const_alpha);
 }
 
-const uint * QT_FASTCALL qt_fetchUntransformed_888_mips_dsp (uint *buffer, const Operator *, const QSpanData *data,
+const uint * BOBUI_FASTCALL bobui_fetchUntransformed_888_mips_dsp (uint *buffer, const Operator *, const QSpanData *data,
                                              int y, int x, int length)
 {
     const uchar *line = data->texture.scanLine(y) + x * 3;
@@ -469,7 +469,7 @@ const uint * QT_FASTCALL qt_fetchUntransformed_888_mips_dsp (uint *buffer, const
     return buffer;
 }
 
-const uint * QT_FASTCALL qt_fetchUntransformed_444_mips_dsp (uint *buffer, const Operator *, const QSpanData *data,
+const uint * BOBUI_FASTCALL bobui_fetchUntransformed_444_mips_dsp (uint *buffer, const Operator *, const QSpanData *data,
                                              int y, int x, int length)
 {
     const uchar *line = data->texture.scanLine(y) + x * 2;
@@ -477,7 +477,7 @@ const uint * QT_FASTCALL qt_fetchUntransformed_444_mips_dsp (uint *buffer, const
     return buffer;
 }
 
-const uint * QT_FASTCALL qt_fetchUntransformed_argb8565_premultiplied_mips_dsp (uint *buffer, const Operator *, const QSpanData *data,
+const uint * BOBUI_FASTCALL bobui_fetchUntransformed_argb8565_premultiplied_mips_dsp (uint *buffer, const Operator *, const QSpanData *data,
                                              int y, int x, int length)
 {
     const uchar *line = data->texture.scanLine(y) + x * 3;
@@ -488,7 +488,7 @@ const uint * QT_FASTCALL qt_fetchUntransformed_argb8565_premultiplied_mips_dsp (
 #if defined(__MIPS_DSPR2__)
 extern "C" void  qConvertRgb16To32_asm_mips_dspr2(quint32 *dest, const quint16 *src, int length);
 
-const uint *QT_FASTCALL qt_fetchUntransformedRGB16_mips_dspr2(uint *buffer, const Operator *,
+const uint *BOBUI_FASTCALL bobui_fetchUntransformedRGB16_mips_dspr2(uint *buffer, const Operator *,
                                                               const QSpanData *data, int y, int x,
                                                               int length)
 {
@@ -498,4 +498,4 @@ const uint *QT_FASTCALL qt_fetchUntransformedRGB16_mips_dspr2(uint *buffer, cons
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

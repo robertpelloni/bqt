@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef CALENDARBACKEND_H
 #define CALENDARBACKEND_H
@@ -7,7 +7,7 @@
 #include "private/qromancalendar_p.h"
 #include "qdatetime.h"
 
-#include <QtCore/private/qcalendarbackend_p.h>
+#include <BobUICore/private/qcalendarbackend_p.h>
 //![0]
 class JulianGregorianCalendar : public QRomanCalendar
 {

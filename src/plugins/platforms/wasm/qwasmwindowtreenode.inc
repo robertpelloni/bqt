@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMWINDOWTREENODE_INC
 #define QWASMWINDOWTREENODE_INC
@@ -47,7 +47,7 @@ void QWasmWindowTreeNode<Window>::onSubtreeChanged(QWasmWindowTreeNodeChangeType
         && m_childStack.topWindow()->window()) {
 
         const auto flags = m_childStack.topWindow()->window()->flags();
-        const bool notToolOrPopup = ((flags & Qt::ToolTip) != Qt::ToolTip) && ((flags & Qt::Popup) != Qt::Popup);
+        const bool notToolOrPopup = ((flags & BobUI::ToolTip) != BobUI::ToolTip) && ((flags & BobUI::Popup) != BobUI::Popup);
         const QVariant showWithoutActivating = m_childStack.topWindow()->window()->property("_q_showWithoutActivating");
         if (!showWithoutActivating.isValid() || !showWithoutActivating.toBool()) {
             if (notToolOrPopup)

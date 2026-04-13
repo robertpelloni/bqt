@@ -1,9 +1,9 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include <qcoreapplication.h>
 #endif
 #include <qdebug.h>
@@ -12,43 +12,43 @@
 #include "private/qstringconverter_p.h"
 #include "private/qcborvalue_p.h"
 #include "private/qnumeric_p.h"
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
 static const int nestingLimit = 1024;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtMiscUtils;
+using namespace BobUIMiscUtils;
 
 // error strings for the JSON parser
-#define JSONERR_OK          QT_TRANSLATE_NOOP("QJsonParseError", "no error occurred")
-#define JSONERR_UNTERM_OBJ  QT_TRANSLATE_NOOP("QJsonParseError", "unterminated object")
-#define JSONERR_MISS_NSEP   QT_TRANSLATE_NOOP("QJsonParseError", "missing name separator")
-#define JSONERR_UNTERM_AR   QT_TRANSLATE_NOOP("QJsonParseError", "unterminated array")
-#define JSONERR_MISS_VSEP   QT_TRANSLATE_NOOP("QJsonParseError", "missing value separator")
-#define JSONERR_ILLEGAL_VAL QT_TRANSLATE_NOOP("QJsonParseError", "illegal value")
-#define JSONERR_END_OF_NUM  QT_TRANSLATE_NOOP("QJsonParseError", "invalid termination by number")
-#define JSONERR_ILLEGAL_NUM QT_TRANSLATE_NOOP("QJsonParseError", "illegal number")
-#define JSONERR_STR_ESC_SEQ QT_TRANSLATE_NOOP("QJsonParseError", "invalid escape sequence")
-#define JSONERR_STR_UTF8    QT_TRANSLATE_NOOP("QJsonParseError", "invalid UTF8 string")
-#define JSONERR_UTERM_STR   QT_TRANSLATE_NOOP("QJsonParseError", "unterminated string")
-#define JSONERR_MISS_OBJ    QT_TRANSLATE_NOOP("QJsonParseError", "object is missing after a comma")
-#define JSONERR_DEEP_NEST   QT_TRANSLATE_NOOP("QJsonParseError", "too deeply nested document")
-#define JSONERR_DOC_LARGE   QT_TRANSLATE_NOOP("QJsonParseError", "too large document")
-#define JSONERR_GARBAGEEND  QT_TRANSLATE_NOOP("QJsonParseError", "garbage at the end of the document")
+#define JSONERR_OK          BOBUI_TRANSLATE_NOOP("QJsonParseError", "no error occurred")
+#define JSONERR_UNTERM_OBJ  BOBUI_TRANSLATE_NOOP("QJsonParseError", "unterminated object")
+#define JSONERR_MISS_NSEP   BOBUI_TRANSLATE_NOOP("QJsonParseError", "missing name separator")
+#define JSONERR_UNTERM_AR   BOBUI_TRANSLATE_NOOP("QJsonParseError", "unterminated array")
+#define JSONERR_MISS_VSEP   BOBUI_TRANSLATE_NOOP("QJsonParseError", "missing value separator")
+#define JSONERR_ILLEGAL_VAL BOBUI_TRANSLATE_NOOP("QJsonParseError", "illegal value")
+#define JSONERR_END_OF_NUM  BOBUI_TRANSLATE_NOOP("QJsonParseError", "invalid termination by number")
+#define JSONERR_ILLEGAL_NUM BOBUI_TRANSLATE_NOOP("QJsonParseError", "illegal number")
+#define JSONERR_STR_ESC_SEQ BOBUI_TRANSLATE_NOOP("QJsonParseError", "invalid escape sequence")
+#define JSONERR_STR_UTF8    BOBUI_TRANSLATE_NOOP("QJsonParseError", "invalid UTF8 string")
+#define JSONERR_UTERM_STR   BOBUI_TRANSLATE_NOOP("QJsonParseError", "unterminated string")
+#define JSONERR_MISS_OBJ    BOBUI_TRANSLATE_NOOP("QJsonParseError", "object is missing after a comma")
+#define JSONERR_DEEP_NEST   BOBUI_TRANSLATE_NOOP("QJsonParseError", "too deeply nested document")
+#define JSONERR_DOC_LARGE   BOBUI_TRANSLATE_NOOP("QJsonParseError", "too large document")
+#define JSONERR_GARBAGEEND  BOBUI_TRANSLATE_NOOP("QJsonParseError", "garbage at the end of the document")
 
 /*!
     \class QJsonParseError
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup json
     \ingroup shared
-    \ingroup qtserialization
+    \ingroup bobuiserialization
     \reentrant
     \since 5.0
 
     \brief The QJsonParseError class is used to report errors during JSON parsing.
 
-    \sa {JSON Support in Qt}, {Saving and Loading a Game}
+    \sa {JSON Support in BobUI}, {Saving and Loading a Game}
 */
 
 /*!
@@ -147,7 +147,7 @@ QString QJsonParseError::errorString() const
         sz = JSONERR_GARBAGEEND;
         break;
     }
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     return QCoreApplication::translate("QJsonParseError", sz);
 #else
     return QLatin1StringView(sz);
@@ -372,11 +372,11 @@ static void sortContainer(QCborContainerPrivate *container)
         const auto &aKey = a.key();
         const auto &bKey = b.key();
 
-        Q_ASSERT(aKey.flags & QtCbor::Element::HasByteData);
-        Q_ASSERT(bKey.flags & QtCbor::Element::HasByteData);
+        Q_ASSERT(aKey.flags & BobUICbor::Element::HasByteData);
+        Q_ASSERT(bKey.flags & BobUICbor::Element::HasByteData);
 
-        const QtCbor::ByteData *aData = container->byteData(aKey);
-        const QtCbor::ByteData *bData = container->byteData(bKey);
+        const BobUICbor::ByteData *aData = container->byteData(aKey);
+        const BobUICbor::ByteData *bData = container->byteData(bKey);
 
         if (!aData)
             return bData ? -1 : 0;
@@ -386,33 +386,33 @@ static void sortContainer(QCborContainerPrivate *container)
         // US-ASCII (StringIsAscii flag) is just a special case of UTF-8
         // string, so we can safely ignore the flag.
 
-        if (aKey.flags & QtCbor::Element::StringIsUtf16) {
-            if (bKey.flags & QtCbor::Element::StringIsUtf16)
-                return QtPrivate::compareStrings(aData->asStringView(), bData->asStringView());
+        if (aKey.flags & BobUICbor::Element::StringIsUtf16) {
+            if (bKey.flags & BobUICbor::Element::StringIsUtf16)
+                return BobUIPrivate::compareStrings(aData->asStringView(), bData->asStringView());
 
             return -QCborContainerPrivate::compareUtf8(bData, aData->asStringView());
         } else {
-            if (bKey.flags & QtCbor::Element::StringIsUtf16)
+            if (bKey.flags & BobUICbor::Element::StringIsUtf16)
                 return QCborContainerPrivate::compareUtf8(aData, bData->asStringView());
 
-            return QtPrivate::compareStrings(aData->asUtf8StringView(), bData->asUtf8StringView());
+            return BobUIPrivate::compareStrings(aData->asUtf8StringView(), bData->asUtf8StringView());
         }
     };
 
     // The elements' containers are owned by the outer container, not by the elements themselves.
     auto move = [](Forward::reference target, Forward::reference source)
     {
-        QtCbor::Element &targetValue = target.value();
+        BobUICbor::Element &targetValue = target.value();
 
         // If the target has a container, deref it before overwriting, so that we don't leak.
-        if (targetValue.flags & QtCbor::Element::IsContainer)
+        if (targetValue.flags & BobUICbor::Element::IsContainer)
             targetValue.container->deref();
 
         // Do not move, so that we can clear the value afterwards.
         target = source;
 
         // Clear the source value, so that we don't store the same container twice.
-        source.value() = QtCbor::Element();
+        source.value() = BobUICbor::Element();
     };
 
     std::stable_sort(
@@ -868,8 +868,8 @@ bool Parser::parseString()
     }
 
     container->appendByteData(reinterpret_cast<const char *>(ucs4.constData()), ucs4.size() * 2,
-                              QCborValue::String, QtCbor::Element::StringIsUtf16);
+                              QCborValue::String, BobUICbor::Element::StringIsUtf16);
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "starrating.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include <cmath>
 
 constexpr int PaintingScaleFactor = 20;
@@ -38,7 +38,7 @@ void StarRating::paint(QPainter *painter, const QRect &rect,
     painter->save();
 
     painter->setRenderHint(QPainter::Antialiasing, true);
-    painter->setPen(Qt::NoPen);
+    painter->setPen(BobUI::NoPen);
     painter->setBrush(mode == EditMode::Editable ?
                           palette.highlight() :
                           palette.windowText());
@@ -49,9 +49,9 @@ void StarRating::paint(QPainter *painter, const QRect &rect,
 
     for (int i = 0; i < myMaxStarCount; ++i) {
         if (i < myStarCount)
-            painter->drawPolygon(starPolygon, Qt::WindingFill);
+            painter->drawPolygon(starPolygon, BobUI::WindingFill);
         else if (mode == EditMode::Editable)
-            painter->drawPolygon(diamondPolygon, Qt::WindingFill);
+            painter->drawPolygon(diamondPolygon, BobUI::WindingFill);
         painter->translate(1.0, 0.0);
     }
 

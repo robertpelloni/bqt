@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
 #include "qcocoamimetypes.h"
-#include <QtGui/qutimimeconverter.h>
+#include <BobUIGui/qutimimeconverter.h>
 #include "qcocoahelpers.h"
-#include <QtGui/private/qcoregraphics_p.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QMacMimeTraditionalMacPlainText : public QUtiMimeConverter {
 public:
@@ -73,4 +73,4 @@ void QCocoaMimeTypes::initializeMimeTypes()
     new QMacMimeTraditionalMacPlainText;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

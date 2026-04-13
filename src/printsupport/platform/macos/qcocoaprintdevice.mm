@@ -1,25 +1,25 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <ApplicationServices/ApplicationServices.h>
 
 #include "qcocoaprintdevice_p.h"
 
-#if QT_CONFIG(mimetype)
-#include <QtCore/qmimedatabase.h>
+#if BOBUI_CONFIG(mimetype)
+#include <BobUICore/qmimedatabase.h>
 #endif
 #include <qdebug.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 // The CUPS PPD APIs were deprecated in CUPS 1.6/macOS 10.8, but
 // the replacement APIs are unfortunately not sufficient. See:
-// https://bugreports.qt.io/browse/QTBUG-56545
+// https://bugreports.bobui.io/browse/BOBUIBUG-56545
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
@@ -385,7 +385,7 @@ QPrint::ColorMode QCocoaPrintDevice::defaultColorMode() const
     return QPrint::GrayScale;
 }
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 void QCocoaPrintDevice::loadMimeTypes() const
 {
     // TODO Check how settings affect returned list
@@ -455,6 +455,6 @@ PMPaper QCocoaPrintDevice::macPaper(const QPageSize &pageSize) const
 
 #pragma clang diagnostic pop
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

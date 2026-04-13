@@ -788,5 +788,5 @@ bool QOpenGLExtension_QCOM_tiled_rendering::initializeOpenGLFunctions()
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

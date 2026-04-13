@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLWINDOW_H
 #define QOPENGLWINDOW_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#include <QtGui/QPaintDeviceWindow>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QImage>
+#include <BobUIGui/QPaintDeviceWindow>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QImage>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLWindowPrivate;
 
@@ -64,8 +64,8 @@ private:
     Q_DISABLE_COPY(QOpenGLWindow)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif

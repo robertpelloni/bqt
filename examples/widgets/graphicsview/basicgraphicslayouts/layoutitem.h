@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef LAYOUTITEM_H
 #define LAYOUTITEM_H
@@ -16,7 +16,7 @@ public:
 
     // Inherited from QGraphicsLayoutItem
     void setGeometry(const QRectF &geom) override;
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
 
     // Inherited from QGraphicsItem
     QRectF boundingRect() const override;

@@ -1,41 +1,41 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglwidget.h"
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOffscreenSurface>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QWindow>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QScreen>
-#include <QtGui/qpa/qplatformwindow.h>
-#include <QtGui/qpa/qplatformintegration.h>
-#include <QtOpenGL/QOpenGLFramebufferObject>
-#include <QtOpenGL/QOpenGLPaintDevice>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOffscreenSurface>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/qpa/qplatformwindow.h>
+#include <BobUIGui/qpa/qplatformintegration.h>
+#include <BobUIOpenGL/QOpenGLFramebufferObject>
+#include <BobUIOpenGL/QOpenGLPaintDevice>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qopenglextensions_p.h>
-#include <QtGui/private/qfont_p.h>
-#include <QtGui/private/qopenglcontext_p.h>
-#include <QtOpenGL/private/qopenglframebufferobject_p.h>
-#include <QtOpenGL/private/qopenglpaintdevice_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qopenglextensions_p.h>
+#include <BobUIGui/private/qfont_p.h>
+#include <BobUIGui/private/qopenglcontext_p.h>
+#include <BobUIOpenGL/private/qopenglframebufferobject_p.h>
+#include <BobUIOpenGL/private/qopenglpaintdevice_p.h>
 
-#include <QtWidgets/private/qwidget_p.h>
-#include <QtWidgets/private/qwidgetrepaintmanager_p.h>
+#include <BobUIWidgets/private/qwidget_p.h>
+#include <BobUIWidgets/private/qwidgetrepaintmanager_p.h>
 
 #include <rhi/qrhi.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
   \class QOpenGLWidget
-  \inmodule QtOpenGLWidgets
+  \inmodule BobUIOpenGLWidgets
   \since 5.4
 
   \brief The QOpenGLWidget class is a widget for rendering OpenGL graphics.
 
   QOpenGLWidget provides functionality for displaying OpenGL graphics
-  integrated into a Qt application. It is very simple to use: Make
+  integrated into a BobUI application. It is very simple to use: Make
   your class inherit from it and use the subclass like any other
   QWidget, except that you have the choice between using QPainter and
   standard OpenGL rendering commands.
@@ -139,7 +139,7 @@ QT_BEGIN_NAMESPACE
   the functions directly. Instead, prefer using QOpenGLFunctions (when making
   portable applications) or the versioned variants (for example,
   QOpenGLFunctions_3_2_Core and similar, when targeting modern, desktop-only
-  OpenGL). This way the application will work correctly in all Qt build
+  OpenGL). This way the application will work correctly in all BobUI build
   configurations, including the ones that perform dynamic OpenGL implementation
   loading which means applications are not directly linking to an GL
   implementation and thus direct function calls are not feasible.
@@ -152,11 +152,11 @@ QT_BEGIN_NAMESPACE
   QOpenGLFunctions::initializeOpenGLFunctions() in initializeGL().
 
   As for the OpenGL headers, note that in most cases there will be no need to
-  directly include any headers like GL.h. The OpenGL-related Qt headers will
+  directly include any headers like GL.h. The OpenGL-related BobUI headers will
   include qopengl.h which will in turn include an appropriate header for the
   system. This might be an OpenGL ES 3.x or 2.0 header, the highest version that
   is available, or a system-provided gl.h. In addition, a copy of the extension
-  headers (called glext.h on some systems) is provided as part of Qt both for
+  headers (called glext.h on some systems) is provided as part of BobUI both for
   OpenGL and OpenGL ES. These will get included automatically on platforms where
   feasible. This means that constants and function pointer typedefs from ARB,
   EXT, OES extensions are automatically available.
@@ -250,7 +250,7 @@ QT_BEGIN_NAMESPACE
   share" context.
 
   To set up sharing between QOpenGLWidget instances belonging to different
-  windows, set the Qt::AA_ShareOpenGLContexts application attribute before
+  windows, set the BobUI::AA_ShareOpenGLContexts application attribute before
   instantiating QApplication. This will trigger sharing between all
   QOpenGLWidget instances without any further steps.
 
@@ -275,7 +275,7 @@ QT_BEGIN_NAMESPACE
   OpenGL resources before initializeGL() is called. For example, attempting to
   compile shaders, initialize vertex buffer objects or upload texture data will
   fail when done in a subclass's constructor. These operations must be deferred
-  to initializeGL(). Some of Qt's OpenGL helper classes, like QOpenGLBuffer or
+  to initializeGL(). Some of BobUI's OpenGL helper classes, like QOpenGLBuffer or
   QOpenGLVertexArrayObject, have a matching deferred behavior: they can be
   instantiated without a context, but all initialization is deferred until a
   create(), or similar, call. This means that they can be used as normal
@@ -320,7 +320,7 @@ QT_BEGIN_NAMESPACE
 
   \snippet code/doc_gui_widgets_qopenglwidget.cpp 5
 
-  \note When Qt::AA_ShareOpenGLContexts is set, the widget's context never
+  \note When BobUI::AA_ShareOpenGLContexts is set, the widget's context never
   changes, not even when reparenting because the widget's associated texture is
   going to be accessible also from the new top-level's context. Therefore,
   acting on the aboutToBeDestroyed() signal of the context is not mandatory
@@ -330,7 +330,7 @@ QT_BEGIN_NAMESPACE
   each QOpenGLWidget's associated context is destroyed together with the
   QOpenGLWidget, the sharable resources in that context, like textures, will
   stay valid until the top-level window, in which the QOpenGLWidget lived, is
-  destroyed. Additionally, settings like Qt::AA_ShareOpenGLContexts and some Qt
+  destroyed. Additionally, settings like BobUI::AA_ShareOpenGLContexts and some BobUI
   modules may trigger an even wider scope for sharing contexts, potentially
   leading to keeping the resources in question alive for the entire lifetime of
   the application. Therefore the safest and most robust is always to perform
@@ -347,7 +347,7 @@ QT_BEGIN_NAMESPACE
   QOpenGLWidget, will function as expected.
 
   When absolutely necessary, this limitation can be overcome by setting the
-  Qt::WA_AlwaysStackOnTop attribute on the QOpenGLWidget. Be aware however that
+  BobUI::WA_AlwaysStackOnTop attribute on the QOpenGLWidget. Be aware however that
   this breaks stacking order, for example it will not be possible to have other
   widgets on top of the QOpenGLWidget, so it should only be used in situations
   where a semi-transparent QOpenGLWidget with other widgets visible underneath
@@ -355,10 +355,10 @@ QT_BEGIN_NAMESPACE
 
   Note that this does not apply when there are no other widgets underneath and
   the intention is to have a semi-transparent window. In that case the
-  traditional approach of setting Qt::WA_TranslucentBackground
+  traditional approach of setting BobUI::WA_TranslucentBackground
   on the top-level window is sufficient. Note that if the transparent areas are
-  only desired in the QOpenGLWidget, then Qt::WA_NoSystemBackground will need
-  to be turned back to \c false after enabling Qt::WA_TranslucentBackground.
+  only desired in the QOpenGLWidget, then BobUI::WA_NoSystemBackground will need
+  to be turned back to \c false after enabling BobUI::WA_TranslucentBackground.
   Additionally, requesting an alpha channel for the QOpenGLWidget's context via
   setFormat() may be necessary too, depending on the system.
 
@@ -368,8 +368,8 @@ QT_BEGIN_NAMESPACE
   mode the content is lost and paintGL() implementations are expected to redraw
   everything in the view.
 
-  Before Qt 5.5 the default behavior of QOpenGLWidget was to preserve the
-  rendered contents between paintGL() calls. Since Qt 5.5 the default behavior
+  Before BobUI 5.5 the default behavior of QOpenGLWidget was to preserve the
+  rendered contents between paintGL() calls. Since BobUI 5.5 the default behavior
   is non-preserved because this provides better performance and the majority of
   applications have no need for the previous content. This also resembles the
   semantics of an OpenGL-based QWindow and matches the default behavior of
@@ -384,7 +384,7 @@ QT_BEGIN_NAMESPACE
   its kind within its window. This is because the window type changes from
   \l{QSurface::RasterSurface}{RasterSurface} to
   \l{QSurface::OpenGLSurface}{OpenGLSurface} and that has platform-specific
-  implications. This behavior is new in Qt 6.4.
+  implications. This behavior is new in BobUI 6.4.
 
   Once a QOpenGLWidget is added to a widget hierarchy, the contents of the
   top-level window is flushed via OpenGL-based rendering. Widgets other than
@@ -444,7 +444,7 @@ QT_BEGIN_NAMESPACE
   \e{OpenGL is a trademark of Silicon Graphics, Inc. in the United States and other
   countries.}
 
-  \sa QOpenGLFunctions, QOpenGLWindow, Qt::AA_ShareOpenGLContexts, UpdateBehavior
+  \sa QOpenGLFunctions, QOpenGLWindow, BobUI::AA_ShareOpenGLContexts, UpdateBehavior
 */
 
 /*!
@@ -1001,7 +1001,7 @@ void QOpenGLWidgetPrivate::invalidateFboBeforePainting()
             gl_stencil_attachment,
 #ifdef Q_OS_WASM
             // webgl does not allow separate depth and stencil attachments
-            // QTBUG-69913
+            // BOBUIBUG-69913
             gl_depth_stencil_attachment
 #endif
         };
@@ -1020,7 +1020,7 @@ void QOpenGLWidgetPrivate::invalidateFboAfterPainting()
             gl_stencil_attachment,
 #ifdef Q_OS_WASM
             // webgl does not allow separate depth and stencil attachments
-            // QTBUG-69913
+            // BOBUIBUG-69913
             gl_depth_stencil_attachment
 #endif
         };
@@ -1074,7 +1074,7 @@ QImage QOpenGLWidgetPrivate::grabFramebuffer(QOpenGLWidget::TargetBuffer targetB
     }
 
     const bool hasAlpha = q->format().hasAlpha();
-    QImage res = qt_gl_read_framebuffer(q->size() * q->devicePixelRatio(), hasAlpha, hasAlpha);
+    QImage res = bobui_gl_read_framebuffer(q->size() * q->devicePixelRatio(), hasAlpha, hasAlpha);
     res.setDevicePixelRatio(q->devicePixelRatio());
 
     // While we give no guarantees of what is going to be left bound, prefer the
@@ -1126,7 +1126,7 @@ void QOpenGLWidgetPrivate::resizeViewportFramebuffer()
 /*!
   Constructs a widget which is a child of \a parent, with widget flags set to \a f.
  */
-QOpenGLWidget::QOpenGLWidget(QWidget *parent, Qt::WindowFlags f)
+QOpenGLWidget::QOpenGLWidget(QWidget *parent, BobUI::WindowFlags f)
     : QWidget(*(new QOpenGLWidgetPrivate), parent, f)
 {
     Q_D(QOpenGLWidget);
@@ -1196,12 +1196,12 @@ QOpenGLWidget::UpdateBehavior QOpenGLWidget::updateBehavior() const
 
   \note Requesting an alpha buffer via this function will not lead to the
   desired results when the intention is to make other widgets beneath visible.
-  Instead, use Qt::WA_AlwaysStackOnTop to enable semi-transparent QOpenGLWidget
+  Instead, use BobUI::WA_AlwaysStackOnTop to enable semi-transparent QOpenGLWidget
   instances with other widgets visible underneath. Keep in mind however that
   this breaks the stacking order, so it will no longer be possible to have
   other widgets on top of the QOpenGLWidget.
 
-  \sa format(), Qt::WA_AlwaysStackOnTop, QSurfaceFormat::setDefaultFormat()
+  \sa format(), BobUI::WA_AlwaysStackOnTop, QSurfaceFormat::setDefaultFormat()
  */
 void QOpenGLWidget::setFormat(const QSurfaceFormat &format)
 {
@@ -1594,8 +1594,8 @@ int QOpenGLWidget::metric(QPaintDevice::PaintDeviceMetric metric) const
     auto window = d->windowHandle(QWidgetPrivate::WindowHandleMode::TopLevel);
     QScreen *screen = window ? window->screen() : QGuiApplication::primaryScreen();
 
-    const float dpmx = qt_defaultDpiX() * 100. / 2.54;
-    const float dpmy = qt_defaultDpiY() * 100. / 2.54;
+    const float dpmx = bobui_defaultDpiX() * 100. / 2.54;
+    const float dpmy = bobui_defaultDpiY() * 100. / 2.54;
 
     switch (metric) {
     case PdmWidth:
@@ -1705,7 +1705,7 @@ bool QOpenGLWidget::event(QEvent *e)
         d->resetRhiDependentResources();
         break;
     case QEvent::WindowChangeInternal:
-        if (QCoreApplication::testAttribute(Qt::AA_ShareOpenGLContexts))
+        if (QCoreApplication::testAttribute(BobUI::AA_ShareOpenGLContexts))
             break;
         if (d->initialized)
             d->reset();
@@ -1716,7 +1716,7 @@ bool QOpenGLWidget::event(QEvent *e)
         if (d->initialized && !d->wrapperTextures[d->currentTargetBuffer] && window()->windowHandle()) {
             // Special case: did grabFramebuffer() for a hidden widget that then became visible.
             // Recreate all resources since the context now needs to share with the TLW's.
-            if (!QCoreApplication::testAttribute(Qt::AA_ShareOpenGLContexts))
+            if (!QCoreApplication::testAttribute(BobUI::AA_ShareOpenGLContexts))
                 d->reset();
         }
         if (d->rhi()) {
@@ -1724,7 +1724,7 @@ bool QOpenGLWidget::event(QEvent *e)
                 d->initialize();
                 if (d->initialized) {
                     d->recreateFbos();
-                    // QTBUG-89812: generate a paint event, like resize would do,
+                    // BOBUIBUG-89812: generate a paint event, like resize would do,
                     // otherwise a QOpenGLWidget in a QDockWidget may not show the
                     // content upon (un)docking.
                     d->sendPaintEvent(QRect(QPoint(0, 0), size()));
@@ -1742,6 +1742,6 @@ bool QOpenGLWidget::event(QEvent *e)
     return QWidget::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopenglwidget.cpp"

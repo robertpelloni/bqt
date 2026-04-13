@@ -1,27 +1,27 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandtextinputv3_p.h"
 
 #include "qwaylandwindow_p.h"
 #include "qwaylandinputmethodeventbuilder_p.h"
 
-#include <QtCore/qloggingcategory.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
-#include <QtGui/qevent.h>
-#include <QtGui/qwindow.h>
-#include <QTextCharFormat>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qwindow.h>
+#include <BOBUIextCharFormat>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qLcQpaWaylandTextInput, "qt.qpa.wayland.textinput")
+Q_LOGGING_CATEGORY(qLcQpaWaylandTextInput, "bobui.qpa.wayland.textinput")
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandTextInputv3::QWaylandTextInputv3(QWaylandDisplay *display,
                                          struct ::zwp_text_input_v3 *text_input)
-    : QtWayland::zwp_text_input_v3(text_input)
+    : BobUIWayland::zwp_text_input_v3(text_input)
 {
     Q_UNUSED(display)
 }
@@ -32,12 +32,12 @@ QWaylandTextInputv3::~QWaylandTextInputv3()
 }
 
 namespace {
-const Qt::InputMethodQueries supportedQueries3 = Qt::ImEnabled |
-                                                Qt::ImSurroundingText |
-                                                Qt::ImCursorPosition |
-                                                Qt::ImAnchorPosition |
-                                                Qt::ImHints |
-                                                Qt::ImCursorRectangle;
+const BobUI::InputMethodQueries supportedQueries3 = BobUI::ImEnabled |
+                                                BobUI::ImSurroundingText |
+                                                BobUI::ImCursorPosition |
+                                                BobUI::ImAnchorPosition |
+                                                BobUI::ImHints |
+                                                BobUI::ImCursorRectangle;
 }
 
 void QWaylandTextInputv3::enableSurface(::wl_surface *)
@@ -183,9 +183,9 @@ void QWaylandTextInputv3::zwp_text_input_v3_done(uint32_t serial)
         }
 
         // only use single underline style for now
-        QTextCharFormat format;
+        BOBUIextCharFormat format;
         format.setFontUnderline(true);
-        format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+        format.setUnderlineStyle(BOBUIextCharFormat::SingleUnderline);
         QInputMethodEvent::Attribute attribute2(QInputMethodEvent::TextFormat,
                                                 0,
                                                 m_pendingPreeditString.text.length(), format);
@@ -239,10 +239,10 @@ void QWaylandTextInputv3::commit()
     m_currentSerial = (m_currentSerial < UINT_MAX) ? m_currentSerial + 1U: 0U;
 
     qCDebug(qLcQpaWaylandTextInput) << Q_FUNC_INFO << "with serial" << m_currentSerial;
-    QtWayland::zwp_text_input_v3::commit();
+    BobUIWayland::zwp_text_input_v3::commit();
 }
 
-void QWaylandTextInputv3::updateState(Qt::InputMethodQueries queries, uint32_t flags)
+void QWaylandTextInputv3::updateState(BobUI::InputMethodQueries queries, uint32_t flags)
 {
     qCDebug(qLcQpaWaylandTextInput) << Q_FUNC_INFO << queries << flags;
 
@@ -263,13 +263,13 @@ void QWaylandTextInputv3::updateState(Qt::InputMethodQueries queries, uint32_t f
     QInputMethodQueryEvent event(queries);
     QCoreApplication::sendEvent(QGuiApplication::focusObject(), &event);
 
-    // For some reason, a query for Qt::ImSurroundingText gives an empty string even though it is not.
-    if (!(queries & Qt::ImSurroundingText) && event.value(Qt::ImSurroundingText).toString().isEmpty()) {
+    // For some reason, a query for BobUI::ImSurroundingText gives an empty string even though it is not.
+    if (!(queries & BobUI::ImSurroundingText) && event.value(BobUI::ImSurroundingText).toString().isEmpty()) {
         return;
     }
 
-    if (queries & Qt::ImCursorRectangle) {
-        const QRect &cRect = event.value(Qt::ImCursorRectangle).toRect();
+    if (queries & BobUI::ImCursorRectangle) {
+        const QRect &cRect = event.value(BobUI::ImCursorRectangle).toRect();
         const QRect &windowRect = QGuiApplication::inputMethod()->inputItemTransform().mapRect(cRect);
         const QRect &nativeRect = QHighDpi::toNativePixels(windowRect, QGuiApplication::focusWindow());
         const QMargins margins = window->clientSideMargins();
@@ -281,10 +281,10 @@ void QWaylandTextInputv3::updateState(Qt::InputMethodQueries queries, uint32_t f
         }
     }
 
-    if ((queries & Qt::ImSurroundingText) || (queries & Qt::ImCursorPosition) || (queries & Qt::ImAnchorPosition)) {
-        QString text = event.value(Qt::ImSurroundingText).toString();
-        int cursor = event.value(Qt::ImCursorPosition).toInt();
-        int anchor = event.value(Qt::ImAnchorPosition).toInt();
+    if ((queries & BobUI::ImSurroundingText) || (queries & BobUI::ImCursorPosition) || (queries & BobUI::ImAnchorPosition)) {
+        QString text = event.value(BobUI::ImSurroundingText).toString();
+        int cursor = event.value(BobUI::ImCursorPosition).toInt();
+        int anchor = event.value(BobUI::ImAnchorPosition).toInt();
 
         qCDebug(qLcQpaWaylandTextInput) << "Original surrounding_text from InputMethodQuery: " << text << cursor << anchor;
 
@@ -362,8 +362,8 @@ void QWaylandTextInputv3::updateState(Qt::InputMethodQueries queries, uint32_t f
         }
     }
 
-    if (queries & Qt::ImHints) {
-        QWaylandInputMethodContentType contentType = QWaylandInputMethodContentType::convertV3(static_cast<Qt::InputMethodHints>(event.value(Qt::ImHints).toInt()));
+    if (queries & BobUI::ImHints) {
+        QWaylandInputMethodContentType contentType = QWaylandInputMethodContentType::convertV3(static_cast<BobUI::InputMethodHints>(event.value(BobUI::ImHints).toInt()));
         qCDebug(qLcQpaWaylandTextInput) << m_contentHint << contentType.hint;
         qCDebug(qLcQpaWaylandTextInput) << m_contentPurpose << contentType.purpose;
 
@@ -402,11 +402,11 @@ QLocale QWaylandTextInputv3::locale() const
     return QLocale();
 }
 
-Qt::LayoutDirection QWaylandTextInputv3::inputDirection() const
+BobUI::LayoutDirection QWaylandTextInputv3::inputDirection() const
 {
-    return Qt::LeftToRight;
+    return BobUI::LeftToRight;
 }
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

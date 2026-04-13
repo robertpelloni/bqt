@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qevdevmousemanager_p.h"
 
-#include <QtInputSupport/private/qevdevutil_p.h>
+#include <BobUIInputSupport/private/qevdevutil_p.h>
 
 #include <QStringList>
 #include <QGuiApplication>
 #include <QScreen>
 #include <QLoggingCategory>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtDeviceDiscoverySupport/private/qdevicediscovery_p.h>
+#include <BobUIDeviceDiscoverySupport/private/qdevicediscovery_p.h>
 #include <private/qguiapplication_p.h>
 #include <private/qinputdevicemanager_p_p.h>
 #include <private/qhighdpiscaling_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QEvdevMouseManager::QEvdevMouseManager(const QString &key, const QString &specification, QObject *parent)
     : QObject(parent), m_x(0), m_y(0), m_xoffset(0), m_yoffset(0)
 {
     Q_UNUSED(key);
 
-    QString spec = qEnvironmentVariable("QT_QPA_EVDEV_MOUSE_PARAMETERS");
+    QString spec = qEnvironmentVariable("BOBUI_QPA_EVDEV_MOUSE_PARAMETERS");
 
     if (spec.isEmpty())
         spec = specification;
@@ -87,8 +87,8 @@ void QEvdevMouseManager::clampPosition()
         m_y = g.bottom() - m_yoffset;
 }
 
-void QEvdevMouseManager::handleMouseEvent(int x, int y, bool abs, Qt::MouseButtons buttons,
-                                          Qt::MouseButton button, QEvent::Type type)
+void QEvdevMouseManager::handleMouseEvent(int x, int y, bool abs, BobUI::MouseButtons buttons,
+                                          BobUI::MouseButton button, QEvent::Type type)
 {
     // update current absolute coordinates
     if (!abs) {
@@ -143,4 +143,4 @@ void QEvdevMouseManager::updateDeviceCount()
         QInputDeviceManager::DeviceTypePointer, m_mice.count());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

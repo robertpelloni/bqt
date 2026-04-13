@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsdevice_p.h"
 #include "qeglfskmsscreen_p.h"
 #include "private/qeglfsintegration_p.h"
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSKmsDevice::QEglFSKmsDevice(QKmsScreenConfig *screenConfig, const QString &path)
     : QKmsDevice(screenConfig, path)
@@ -60,4 +60,4 @@ void QEglFSKmsDevice::updateScreenOutput(QPlatformScreen *screen, const QKmsOutp
                                                            s->availableGeometry());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

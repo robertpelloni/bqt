@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVDEVMOUSEMANAGER_P_H
 #define QEVDEVMOUSEMANAGER_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -17,14 +17,14 @@
 
 #include "qevdevmousehandler_p.h"
 
-#include <QtInputSupport/private/devicehandlerlist_p.h>
+#include <BobUIInputSupport/private/devicehandlerlist_p.h>
 
 #include <QObject>
 #include <QHash>
 #include <QSocketNotifier>
 #include <QPoint>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDeviceDiscovery;
 
@@ -34,8 +34,8 @@ public:
     QEvdevMouseManager(const QString &key, const QString &specification, QObject *parent = nullptr);
     ~QEvdevMouseManager();
 
-    void handleMouseEvent(int x, int y, bool abs, Qt::MouseButtons buttons,
-                          Qt::MouseButton button, QEvent::Type type);
+    void handleMouseEvent(int x, int y, bool abs, BobUI::MouseButtons buttons,
+                          BobUI::MouseButton button, QEvent::Type type);
     void handleWheelEvent(QPoint delta);
 
     void addMouse(const QString &deviceNode = QString());
@@ -46,13 +46,13 @@ private:
     void updateDeviceCount();
 
     QString m_spec;
-    QtInputSupport::DeviceHandlerList<QEvdevMouseHandler> m_mice;
+    BobUIInputSupport::DeviceHandlerList<QEvdevMouseHandler> m_mice;
     int m_x;
     int m_y;
     int m_xoffset;
     int m_yoffset;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVDEVMOUSEMANAGER_P_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCURSOR_P_H
 #define QCURSOR_P_H
@@ -8,33 +8,33 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of a number of Qt sources files.  This header file may change from
+// This file is not part of the BobUI API.  It exists for the convenience
+// of a number of BobUI sources files.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtCore/qatomic.h"
-#include "QtCore/qnamespace.h"
-#include "QtGui/qpixmap.h"
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUICore/qatomic.h"
+#include "BobUICore/qnamespace.h"
+#include "BobUIGui/qpixmap.h"
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QBitmap;
 class QCursorData {
 public:
-    QCursorData(Qt::CursorShape s = Qt::ArrowCursor);
+    QCursorData(BobUI::CursorShape s = BobUI::ArrowCursor);
     ~QCursorData();
 
     static void initialize();
     static void cleanup();
 
     QAtomicInt ref;
-    Qt::CursorShape cshape;
+    BobUI::CursorShape cshape;
     QBitmap  *bm, *bmm;
     QPixmap pixmap;
     short     hx, hy;
@@ -44,8 +44,8 @@ public:
                                   qreal devicePixelRatio);
 };
 
-extern QCursorData *qt_cursorTable[Qt::LastCursor + 1]; // qcursor.cpp
+extern QCursorData *bobui_cursorTable[BobUI::LastCursor + 1]; // qcursor.cpp
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCURSOR_P_H

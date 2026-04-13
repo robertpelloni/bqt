@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include <QDebug>
 #include <QDirIterator>
 #include <QDirListing>
@@ -7,7 +7,7 @@
 #include <qplatformdefs.h>
 
 #ifdef Q_OS_WIN
-#   include <qt_windows.h>
+#   include <bobui_windows.h>
 #else
 #   include <sys/stat.h>
 #   include <sys/types.h>
@@ -16,15 +16,15 @@
 #   include <string.h>
 #endif
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 #include "qfilesystemiterator.h"
 
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
 #include <filesystem>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 constexpr bool forceStat = false;
 
@@ -57,19 +57,19 @@ private slots:
 void tst_QDirIterator::data()
 {
     const char hereRelative[] = "tests/benchmarks/corelib/io/qdiriterator";
-    QByteArray dir(QT_TESTCASE_SOURCEDIR);
+    QByteArray dir(BOBUI_TESTCASE_SOURCEDIR);
     // qDebug("Source dir: %s", dir.constData());
     dir.chop(sizeof(hereRelative)); // Counts the '\0', making up for the omitted leading '/'
     // qDebug("Root dir: %s", dir.constData());
 
-    QTest::addColumn<QByteArray>("dirpath");
+    BOBUIest::addColumn<QByteArray>("dirpath");
     const QByteArray ba = dir + "/src/corelib";
 
     if (!QFileInfo(QString::fromLocal8Bit(ba)).isDir())
-        QSKIP("Missing Qt directory");
+        QSKIP("Missing BobUI directory");
 
-    QTest::newRow("corelib") << ba;
-    QTest::newRow("corelib/io") << (ba + "/io");
+    BOBUIest::newRow("corelib") << ba;
+    BOBUIest::newRow("corelib/io") << (ba + "/io");
 }
 
 #ifdef Q_OS_WIN
@@ -137,12 +137,12 @@ static int posix_helper(const char *dirpath)
 #if defined(_DIRENT_HAVE_D_TYPE) || defined(Q_OS_BSD4)
         isDir = entry->d_type == DT_DIR;
         if (forceStat) {
-            QT_STATBUF st;
-            QT_LSTAT(ba.constData(), &st);
+            BOBUI_STATBUF st;
+            BOBUI_LSTAT(ba.constData(), &st);
         }
 #else // d_type not available >>> must stat() to see if it's a dir
-        QT_STATBUF st;
-        QT_LSTAT(ba.constData(), &st);
+        BOBUI_STATBUF st;
+        BOBUI_LSTAT(ba.constData(), &st);
         isDir = S_ISDIR(st.st_mode);
 #endif
 
@@ -258,7 +258,7 @@ void tst_QDirIterator::fsiterator()
 
 void tst_QDirIterator::stdRecursiveDirectoryIterator()
 {
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
     QFETCH(QByteArray, dirpath);
 
     int count = 0;
@@ -284,6 +284,6 @@ void tst_QDirIterator::stdRecursiveDirectoryIterator()
 #endif
 }
 
-QTEST_MAIN(tst_QDirIterator)
+BOBUIEST_MAIN(tst_QDirIterator)
 
 #include "tst_bench_qdiriterator.moc"

@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QScopedPointer
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QScopedPointer class stores a pointer to a dynamically allocated object, and deletes it upon destruction.
     \since 4.6
     \reentrant
@@ -246,7 +246,7 @@
 
 /*!
   \class QScopedArrayPointer
-  \inmodule QtCore
+  \inmodule BobUICore
 
   \brief The QScopedArrayPointer class stores a pointer to a
   dynamically allocated array of objects, and deletes it upon
@@ -294,7 +294,7 @@
 
     If the contained pointer is \nullptr, behavior is undefined.
 
-    \note In Qt versions prior to 6.5, \a i was of type \c{int}, not
+    \note In BobUI versions prior to 6.5, \a i was of type \c{int}, not
     \c{qsizetype}, possibly causing truncation on 64-bit platforms.
 
     \sa isNull()
@@ -308,7 +308,7 @@
 
     If the contained pointer is \nullptr behavior is undefined.
 
-    \note In Qt versions prior to 6.5, \a i was of type \c{int}, not
+    \note In BobUI versions prior to 6.5, \a i was of type \c{int}, not
     \c{qsizetype}, possibly causing truncation on 64-bit platforms.
 
     \sa isNull()

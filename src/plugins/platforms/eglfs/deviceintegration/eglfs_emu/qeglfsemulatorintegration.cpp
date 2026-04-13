@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsemulatorintegration.h"
 #include "qeglfsemulatorscreen.h"
 #include "private/qeglfsintegration_p.h"
 
 #include <private/qguiapplication_p.h>
-#include <QtGui/private/qeglconvenience_p.h>
-#include <QtGui/private/qeglplatformcontext_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglplatformcontext_p.h>
 
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonArray>
-#include <QtCore/QJsonParseError>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QJsonArray>
+#include <BobUICore/QJsonParseError>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSEmulatorIntegration::QEglFSEmulatorIntegration()
 {
-    // The Qt Emulator provides the ability to render to multiple displays
+    // The BobUI Emulator provides the ability to render to multiple displays
     // In addition to the usual EGL and OpenGLESv2 API's, there are also a
     // few additional API's that enable the client (this plugin) to query
     // the available screens and their properties, as well as the ability
@@ -97,4 +97,4 @@ EGLNativeWindowType QEglFSEmulatorIntegration::createNativeWindow(QPlatformWindo
     return EGLNativeWindowType(qintptr(1 + uniqueWindowId.fetchAndAddRelaxed(1)));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

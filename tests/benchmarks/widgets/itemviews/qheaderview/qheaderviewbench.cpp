@@ -1,8 +1,8 @@
 // Copyright (C) 2012 Thorbjørn Lund Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtWidgets/QtWidgets>
+#include <BOBUIest>
+#include <BobUIWidgets/BobUIWidgets>
 
 class BenchQHeaderView : public QObject
 {
@@ -11,7 +11,7 @@ public:
     BenchQHeaderView() : QObject() {m_tv = 0; m_hv = 0; m_model = 0;}
 
 protected:
-    QTableView *m_tv;
+    BOBUIableView *m_tv;
     QHeaderView *m_hv;
     QStandardItemModel *m_model;
     QStandardItemModel m_normalmodel;
@@ -53,14 +53,14 @@ private slots:
 
 void BenchQHeaderView::setupTestData()
 {
-    QTest::addColumn<bool>("worst_case");
-    QTest::newRow("Less relevant best case") << false;
-    QTest::newRow("__* More important worst case *__") << true;
+    BOBUIest::addColumn<bool>("worst_case");
+    BOBUIest::newRow("Less relevant best case") << false;
+    BOBUIest::newRow("__* More important worst case *__") << true;
 }
 
 void BenchQHeaderView::initTestCase()
 {
-    m_tv = new QTableView();
+    m_tv = new BOBUIableView();
     m_hv = m_tv->verticalHeader();
     m_model = &m_normalmodel;
     m_tv->setModel(m_model);
@@ -86,7 +86,7 @@ void BenchQHeaderView::init()
     m_worst_case = worst_case;
     m_model->clear();
     if (worst_case) {
-        for (int  u = 0; u <= m_rowcount; ++u) // ensures fragment in Qt 4.x
+        for (int  u = 0; u <= m_rowcount; ++u) // ensures fragment in BobUI 4.x
             m_model->setRowCount(u);
         m_model->setColumnCount(m_colcount);
         m_hv->swapSections(0, m_rowcount - 1);
@@ -222,5 +222,5 @@ void BenchQHeaderView::truncBench()
     }
 }
 
-QTEST_MAIN(BenchQHeaderView)
+BOBUIEST_MAIN(BenchQHeaderView)
 #include "qheaderviewbench.moc"

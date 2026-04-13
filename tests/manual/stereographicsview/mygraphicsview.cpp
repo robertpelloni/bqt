@@ -1,14 +1,14 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mygraphicsview.h"
 
 #include <QResizeEvent>
 #include <QFileDialog>
 
-#include <QtGui/qquaternion.h>
+#include <BobUIGui/qquaternion.h>
 
-Q_OPENGL_EXPORT QImage qt_gl_read_framebuffer(const QSize &size, bool alpha_format, bool include_alpha);
+Q_OPENGL_EXPORT QImage bobui_gl_read_framebuffer(const QSize &size, bool alpha_format, bool include_alpha);
 
 MyGraphicsView::MyGraphicsView(QWidget *parent) :
     QGraphicsView(parent),
@@ -31,7 +31,7 @@ void MyGraphicsView::saveImage(QOpenGLWidget::TargetBuffer targetBuffer)
     w->makeCurrent(targetBuffer);
     draw(targetBuffer);
 
-    QImage img = qt_gl_read_framebuffer(w->size() * w->devicePixelRatio(), true, true);
+    QImage img = bobui_gl_read_framebuffer(w->size() * w->devicePixelRatio(), true, true);
 
     if (img.isNull()) {
         qFatal("Failed to grab framebuffer");

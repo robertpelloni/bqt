@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 /*
   window.cpp
 
-  A minimal subclass of QTableView with slots to allow the selection model
+  A minimal subclass of BOBUIableView with slots to allow the selection model
   to be monitored.
 */
 
@@ -12,7 +12,7 @@
 #include <QItemSelection>
 #include <QItemSelectionModel>
 #include <QStatusBar>
-#include <QTableView>
+#include <BOBUIableView>
 
 #include "../include/mainwindow.h"
 #include "../common-table-model/model.h"
@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     model = new TableModel(8, 4, this);
 
-    table = new QTableView(this);
+    table = new BOBUIableView(this);
     table->setModel(model);
 
     selectionModel = table->selectionModel();

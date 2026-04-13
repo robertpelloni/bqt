@@ -1,14 +1,14 @@
 // Copyright (C) 2022 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QPushButton;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

@@ -5,11 +5,11 @@ SOURCES   = main.cpp \
             block.cpp \
             renderthread.cpp \
             window.cpp
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/corelib/threads/queuedcustomtype
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/corelib/threads/queuedcustomtype
 INSTALLS += target
 
 

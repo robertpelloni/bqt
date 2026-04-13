@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEGLFSOPENWFDINTEGRATION_H
 #define QEGLFSOPENWFDINTEGRATION_H
@@ -9,7 +9,7 @@
 #include "wfd.h"
 #include "wfdext2.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEglFSOpenWFDIntegration : public QEglFSDeviceIntegration
 {
@@ -30,6 +30,6 @@ private:
     WFDPipeline mPipeline;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

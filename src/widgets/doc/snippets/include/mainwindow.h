@@ -1,28 +1,28 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWidget;
 class QAction;
 
-class QTableWidget;
+class BOBUIableWidget;
 class QListWidget;
-class QTreeWidget;
+class BOBUIreeWidget;
 class QDockWidget;
 
-class QTableView;
+class BOBUIableView;
 class QListView;
 
-class QTextBrowser;
+class BOBUIextBrowser;
 
 class QListWidgetItem;
-class QTreeWidgetItem;
+class BOBUIreeWidgetItem;
 
 class QAbstractItemModel;
 class QItemSelectionModel;
@@ -42,7 +42,7 @@ public:
     void setupTreeItems();
 
     void updateText(QListWidgetItem *item);
-    void updateMenus(QTreeWidgetItem *current);
+    void updateMenus(BOBUIreeWidgetItem *current);
     void updateSortItems();
     void updateSelection(const QItemSelection &selected,
                          const QItemSelection &deselected);
@@ -73,7 +73,7 @@ private:
     void clearSelection();
     void selectAll();
 
-    QTextBrowser *textBrowser;
+    BOBUIextBrowser *textBrowser;
     QListWidget *headingList;
     QDockWidget *contentsWindow;
 
@@ -85,20 +85,20 @@ private:
     QAction *findItemsAction;
 
     //! [0]
-    QTableWidget *tableWidget;
+    BOBUIableWidget *tableWidget;
     //! [0]
 
-    QTreeWidget *treeWidget;
+    BOBUIreeWidget *treeWidget;
     QListWidget *listWidget;
 
     QAbstractItemModel *model;
     QItemSelectionModel *selectionModel;
 
-    QTableView *table;
+    BOBUIableView *table;
     QListView *listView;
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDNATIVEINTERFACE_P_H
 #define QWAYLANDNATIVEINTERFACE_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,16 +18,16 @@
 #include <QVariantMap>
 #include <qpa/qplatformnativeinterface.h>
 
-#include <QtWaylandClient/qtwaylandclientglobal.h>
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/qhash.h>
-#include <QtGui/qguiapplication_platform.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/qhash.h>
+#include <BobUIGui/qguiapplication_platform.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMargins;
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandIntegration;
 class QWaylandScreen;
@@ -42,7 +42,7 @@ public:
                                   QWindow *window) override;
     void *nativeResourceForScreen(const QByteArray &resourceString,
                                   QScreen *screen) override;
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     void *nativeResourceForContext(const QByteArray &resource, QOpenGLContext *context) override;
 #endif
     NativeResourceForWindowFunction nativeResourceFunctionForWindow(const QByteArray &resource) override;
@@ -62,7 +62,7 @@ public:
     wl_touch *touch() const override;
     uint lastInputSerial() const override;
     wl_seat *lastInputSeat() const override;
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     struct xkb_context *xkbContext() const override;
 #endif
 
@@ -75,6 +75,6 @@ private:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDNATIVEINTERFACE_P_H

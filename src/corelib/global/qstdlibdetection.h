@@ -1,20 +1,20 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #if 0
-#pragma qt_class(QtStdLibDetection)
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_class(BobUIStdLibDetection)
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
 #ifndef QSTDLIBDETECTION_H
 #define QSTDLIBDETECTION_H
 
-#include <QtCore/qtconfiginclude.h>
+#include <BobUICore/bobuiconfiginclude.h>
 
 #ifdef __cplusplus
 
-/* If <version> exists, qtconfiginclude.h will have included it. */
+/* If <version> exists, bobuiconfiginclude.h will have included it. */
 /* If not, we need to include _something_, and <utility> is included by qcompilerdetection.h, too */
 #if !__has_include(<version>)
 #  include <utility>
@@ -52,7 +52,7 @@
 #elif defined(_RWSTD_VER) /* RogueWave, at least as contributed to Apache stdcxx, cf. rw/_config.h */
 #  define Q_STL_ROGUEWAVE
 #else
-#  error Unknown std library implementation, please file a report at bugreports.qt.io.
+#  error Unknown std library implementation, please file a report at bugreports.bobui.io.
 #endif
 
 #endif // __cplusplus

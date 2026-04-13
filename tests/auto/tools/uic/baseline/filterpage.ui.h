@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'filterpage.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,19 +9,19 @@
 #ifndef FILTERPAGE_H
 #define FILTERPAGE_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIreeWidget>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_FilterPage
 {
@@ -31,7 +31,7 @@ public:
     QLineEdit *filterLineEdit;
     QGroupBox *groupBox;
     QGridLayout *gridLayout1;
-    QTreeWidget *customFilterWidget;
+    BOBUIreeWidget *customFilterWidget;
     QPushButton *addButton;
     QPushButton *removeButton;
     QSpacerItem *spacerItem;
@@ -60,7 +60,7 @@ public:
         groupBox->setObjectName("groupBox");
         gridLayout1 = new QGridLayout(groupBox);
         gridLayout1->setObjectName("gridLayout1");
-        customFilterWidget = new QTreeWidget(groupBox);
+        customFilterWidget = new BOBUIreeWidget(groupBox);
         customFilterWidget->setObjectName("customFilterWidget");
         customFilterWidget->setColumnCount(2);
 
@@ -106,9 +106,9 @@ public:
         FilterPage->setWindowTitle(QCoreApplication::translate("FilterPage", "Form", nullptr));
         label->setText(QCoreApplication::translate("FilterPage", "Filter attributes for current documentation (comma separated list):", nullptr));
         groupBox->setTitle(QCoreApplication::translate("FilterPage", "Custom Filters", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem = customFilterWidget->headerItem();
-        ___qtreewidgetitem->setText(1, QCoreApplication::translate("FilterPage", "2", nullptr));
-        ___qtreewidgetitem->setText(0, QCoreApplication::translate("FilterPage", "1", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem = customFilterWidget->headerItem();
+        ___bobuireewidgetitem->setText(1, QCoreApplication::translate("FilterPage", "2", nullptr));
+        ___bobuireewidgetitem->setText(0, QCoreApplication::translate("FilterPage", "1", nullptr));
         addButton->setText(QCoreApplication::translate("FilterPage", "Add", nullptr));
         removeButton->setText(QCoreApplication::translate("FilterPage", "Remove", nullptr));
     } // retranslateUi
@@ -119,6 +119,6 @@ namespace Ui {
     class FilterPage: public Ui_FilterPage {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // FILTERPAGE_H

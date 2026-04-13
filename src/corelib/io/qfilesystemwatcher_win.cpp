@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfilesystemwatcher.h"
 #include "qfilesystemwatcher_win_p.h"
@@ -12,23 +12,23 @@
 #include <qscopeguard.h>
 #include <qdatetime.h>
 #include <qdir.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <private/qlocking_p.h>
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
 #  include <qabstractnativeeventfilter.h>
 #  include <qcoreapplication.h>
 #  include <qdir.h>
 #  include <private/qeventdispatcher_win_p.h>
-#  include <private/qthread_p.h>
+#  include <private/bobuihread_p.h>
 #  include <dbt.h>
 #  include <algorithm>
 #  include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // #define WINQFSW_DEBUG
 #ifdef WINQFSW_DEBUG
@@ -37,7 +37,7 @@ using namespace Qt::StringLiterals;
 #  define DEBUG if (false) qDebug
 #endif
 
-static Qt::HANDLE createChangeNotification(const QString &path, uint flags)
+static BobUI::HANDLE createChangeNotification(const QString &path, uint flags)
 {
     // Volume and folder paths need a trailing slash for proper notification
     // (e.g. "c:" -> "c:/").
@@ -46,7 +46,7 @@ static Qt::HANDLE createChangeNotification(const QString &path, uint flags)
         nativePath.append(u'\\');
     const HANDLE result = FindFirstChangeNotification(reinterpret_cast<const wchar_t *>(nativePath.utf16()),
                                                       FALSE, flags);
-    DEBUG() << __FUNCTION__ << nativePath << Qt::hex << Qt::showbase << flags << "returns" << result;
+    DEBUG() << __FUNCTION__ << nativePath << BobUI::hex << BobUI::showbase << flags << "returns" << result;
     return result;
 }
 
@@ -272,7 +272,7 @@ void QWindowsRemovableDriveListener::addPath(const QString &p)
     notify.dbch_size = sizeof(notify);
     notify.dbch_devicetype = DBT_DEVTYP_HANDLE;
     notify.dbch_handle = volumeHandle;
-    QThreadData *currentData = QThreadData::current();
+    BOBUIhreadData *currentData = BOBUIhreadData::current();
     QEventDispatcherWin32 *winEventDispatcher = static_cast<QEventDispatcherWin32 *>(currentData->ensureEventDispatcher());
     re.devNotify = RegisterDeviceNotification(winEventDispatcher->internalHwnd(),
                                               &notify, DEVICE_NOTIFY_WINDOW_HANDLE);
@@ -374,16 +374,16 @@ QStringList QWindowsFileSystemWatcherEngine::addPaths(const QStringList &paths,
         end = threads.constEnd();
         for(jt = threads.constBegin(); jt != end; ++jt) {
             thread = *jt;
-            const auto locker = qt_scoped_lock(thread->mutex);
+            const auto locker = bobui_scoped_lock(thread->mutex);
 
             const auto hit = thread->handleForDir.find(QFileSystemWatcherPathKey(absolutePath));
             if (hit != thread->handleForDir.end() && hit.value().flags < flags) {
                 // Requesting to add a file whose directory has been added previously.
                 // Recreate the notification handle to add the missing notification attributes
                 // for files (FILE_NOTIFY_CHANGE_ATTRIBUTES...)
-                DEBUG() << "recreating" << absolutePath << Qt::hex << Qt::showbase << hit.value().flags
+                DEBUG() << "recreating" << absolutePath << BobUI::hex << BobUI::showbase << hit.value().flags
                     << "->" << flags;
-                const Qt::HANDLE fileHandle = createChangeNotification(absolutePath, flags);
+                const BobUI::HANDLE fileHandle = createChangeNotification(absolutePath, flags);
                 if (fileHandle != INVALID_HANDLE_VALUE) {
                     const int index = thread->handles.indexOf(hit.value().handle);
                     const auto pit = thread->pathInfoForHandle.find(hit.value().handle);
@@ -430,7 +430,7 @@ QStringList QWindowsFileSystemWatcherEngine::addPaths(const QStringList &paths,
             // now look for a thread to insert
             bool found = false;
             for (QWindowsFileSystemWatcherEngineThread *thread : std::as_const(threads)) {
-                const auto locker = qt_scoped_lock(thread->mutex);
+                const auto locker = bobui_scoped_lock(thread->mutex);
                 if (thread->handles.count() < MAXIMUM_WAIT_OBJECTS) {
                     DEBUG() << "Added handle" << handle.handle << "for" << absolutePath << "to watch" << fileInfo.absoluteFilePath()
                             << "to existing thread " << thread;
@@ -501,7 +501,7 @@ QStringList QWindowsFileSystemWatcherEngine::removePaths(const QStringList &path
             if (*jt == 0)
                 continue;
 
-            auto locker = qt_unique_lock(thread->mutex);
+            auto locker = bobui_unique_lock(thread->mutex);
 
             QWindowsFileSystemWatcherEngine::Handle handle = thread->handleForDir.value(QFileSystemWatcherPathKey(absolutePath));
             if (handle.handle == INVALID_HANDLE_VALUE) {
@@ -599,7 +599,7 @@ static QString msgFindNextFailed(const QWindowsFileSystemWatcherEngineThread::Pa
 
 void QWindowsFileSystemWatcherEngineThread::run()
 {
-    auto locker = qt_unique_lock(mutex);
+    auto locker = bobui_unique_lock(mutex);
     forever {
         QList<HANDLE> handlesCopy = handles;
         locker.unlock();
@@ -647,7 +647,7 @@ void QWindowsFileSystemWatcherEngineThread::run()
                         QFileInfo fileInfo(it.value().path);
                         DEBUG() << "checking" << it.key();
 
-                        // i'm not completely sure the fileInfo.exist() check will ever work... see QTBUG-2331
+                        // i'm not completely sure the fileInfo.exist() check will ever work... see BOBUIBUG-2331
                         // ..however, I'm not completely sure enough to remove it.
                         if (fakeRemove || !fileInfo.exists()) {
                             DEBUG() << it.key() << "removed!";
@@ -706,7 +706,7 @@ void QWindowsFileSystemWatcherEngineThread::wakeup()
     SetEvent(handles.at(0));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #  include "qfilesystemwatcher_win.moc"
 #  include "moc_qfilesystemwatcher_win_p.cpp"

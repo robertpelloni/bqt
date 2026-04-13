@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qaccessible.h"
 
@@ -8,26 +8,26 @@
 #include "qaccessibleplugin.h"
 #include "qaccessibleobject.h"
 #include "qaccessiblebridge.h"
-#include <QtCore/qtextboundaryfinder.h>
-#include <QtGui/qclipboard.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qtextcursor.h>
+#include <BobUICore/bobuiextboundaryfinder.h>
+#include <BobUIGui/qclipboard.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/bobuiextcursor.h>
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformaccessibility.h>
 #include <qpa/qplatformintegration.h>
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/private/qmetaobject_p.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/private/qmetaobject_p.h>
+#include <BobUICore/qhash.h>
 #include <private/qfactoryloader_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
+Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "bobui.accessibility.core");
 
 /*!
     \class QAccessible
@@ -35,7 +35,7 @@ Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
     related to accessibility.
 
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This class is part of \l {Accessibility for QWidget Applications}.
 
@@ -54,7 +54,7 @@ Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
     \li  \e{AT Clients} request information about the objects in the server.
         The QAccessibleInterface class is the core interface, and encapsulates
         this information in a pure virtual API. Implementations of the interface
-        are provided by Qt through the queryAccessibleInterface() API.
+        are provided by BobUI through the queryAccessibleInterface() API.
     \endlist
 
     The communication between servers and clients is initialized by
@@ -62,7 +62,7 @@ Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
     to replace or extend the default behavior of the static functions
     in QAccessible.
 
-    Qt supports Microsoft Active Accessibility (MSAA), \macos
+    BobUI supports Microsoft Active Accessibility (MSAA), \macos
     Accessibility, and the Unix/X11 AT-SPI standard. Other backends
     can be supported using QAccessibleBridge.
 
@@ -73,26 +73,26 @@ Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
     \li org.a11y.Status.ScreenReaderEnabled DBus property is true
     \endlist
     An alternative to setting the DBus AT-SPI properties is to set
-    the QT_LINUX_ACCESSIBILITY_ALWAYS_ON environment variable.
+    the BOBUI_LINUX_ACCESSIBILITY_ALWAYS_ON environment variable.
 
-    In addition to QAccessible's static functions, Qt offers one
+    In addition to QAccessible's static functions, BobUI offers one
     generic interface, QAccessibleInterface, that can be used to wrap
     all widgets and objects (e.g., QPushButton). This single
     interface provides all the metadata necessary for the assistive
-    technologies. Qt provides implementations of this interface for
+    technologies. BobUI provides implementations of this interface for
     its built-in widgets as plugins.
 
     When you develop custom widgets, you can create custom subclasses
     of QAccessibleInterface and distribute them as plugins (using
     QAccessiblePlugin) or compile them into the application.
-    Likewise, Qt's predefined accessibility support can be built as
-    plugin (the default) or directly into the Qt library. The main
+    Likewise, BobUI's predefined accessibility support can be built as
+    plugin (the default) or directly into the BobUI library. The main
     advantage of using plugins is that the accessibility classes are
     only loaded into memory if they are actually used; they don't
     slow down the common case where no assistive technology is being
     used.
 
-    Qt also includes two convenience classes, QAccessibleObject and
+    BobUI also includes two convenience classes, QAccessibleObject and
     QAccessibleWidget, that inherit from QAccessibleInterface and
     provide the lowest common denominator of metadata (e.g., widget
     geometry, window title, basic help text). You can use them as
@@ -106,7 +106,7 @@ Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
 /*!
     \class QAccessible::State
 
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This structure defines bit flags that indicate
     the state of an accessible object. The values are:
@@ -210,9 +210,9 @@ Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
     \value [since 6.8] IdentifierChanged    The identifier of an object has changed.
     \value LocationChanged                  An object's location on the screen has changed.
     \value MenuCommand                      A menu item is triggered.
-    \value MenuEnd                          A menu has been closed (Qt uses PopupMenuEnd for all
+    \value MenuEnd                          A menu has been closed (BobUI uses PopupMenuEnd for all
                                             menus).
-    \value MenuStart                        A menu has been opened on the menubar (Qt uses
+    \value MenuStart                        A menu has been opened on the menubar (BobUI uses
                                             PopupMenuStart for all menus).
     \value NameChanged                      The QAccessible::Name property of an object has changed.
     \value ObjectAttributeChanged
@@ -223,7 +223,7 @@ Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
                                             this event. It is not sent when an object is hidden as
                                             it is being obscured by others.
     \value ObjectReorder                    A layout or item view  has added, removed, or moved an
-                                            object (Qt does not use this event).
+                                            object (BobUI does not use this event).
     \value ObjectShow                       An object is displayed; for example, with
                                             QWidget::show().
     \value PageChanged
@@ -458,7 +458,7 @@ Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
                                 differs from the application's default locale, e.g. for documents
                                 or paragraphs within a document that use a language that differs
                                 from the application's user interface language.
-    \value [since 6.11] Orientation value type: \a Qt::Orientation
+    \value [since 6.11] Orientation value type: \a BobUI::Orientation
                                 Orientation of the element. This attribute conceptually matches
                                 the "aria-orientation" property in ARIA.
 
@@ -513,7 +513,7 @@ Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCore, "qt.accessibility.core");
     \sa QAccessibleInterface::interface_cast(), QAccessibleTextInterface, QAccessibleValueInterface, QAccessibleActionInterface, QAccessibleTableInterface, QAccessibleTableCellInterface, QAccessibleSelectionInterface, QAccessibleAttributesInterface
 */
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 /*!
     Destroys the QAccessibleInterface.
@@ -763,7 +763,7 @@ QAccessibleInterface *QAccessible::queryAccessibleInterface(QObject *object)
      Button_QMLTYPE_125, etc.). Those dynamic metaobjects shouldn't have an
      accessible interface in any case. Instead, we start the whole checking
      with the first non-dynamic meta-object. To avoid potential regressions
-     in other areas of Qt that also use dynamic metaobjects, we only do this
+     in other areas of BobUI that also use dynamic metaobjects, we only do this
      for objects that are QML-related (approximated by checking whether they
      have ddata set).
     */
@@ -906,7 +906,7 @@ void QAccessible::setActive(bool active)
   to \a object.  All other accessible objects are reachable using object
   navigation from the root object.
 
-  Normally, it isn't necessary to call this function, because Qt sets
+  Normally, it isn't necessary to call this function, because BobUI sets
   the QApplication object as the root object immediately before the
   event loop is entered in QApplication::exec().
 
@@ -971,50 +971,50 @@ void QAccessible::updateAccessibility(QAccessibleEvent *event)
         pfAccessibility->notifyAccessibilityUpdate(event);
 }
 
-static std::pair<int, int> qAccessibleTextBoundaryHelperHelper(QTextCursor &cursor,
-                                                               QTextCursor::MoveOperation start,
-                                                               QTextCursor::MoveOperation end)
+static std::pair<int, int> qAccessibleTextBoundaryHelperHelper(BOBUIextCursor &cursor,
+                                                               BOBUIextCursor::MoveOperation start,
+                                                               BOBUIextCursor::MoveOperation end)
 {
     std::pair<int, int> result;
-    cursor.movePosition(start, QTextCursor::MoveAnchor);
+    cursor.movePosition(start, BOBUIextCursor::MoveAnchor);
     result.first = cursor.position();
-    cursor.movePosition(end, QTextCursor::KeepAnchor);
+    cursor.movePosition(end, BOBUIextCursor::KeepAnchor);
     result.second = cursor.position();
     return result;
 }
 
 /*!
     \internal
-    \brief qAccessibleTextBoundaryHelper is a helper function to find the accessible text boundaries for QTextCursor based documents.
+    \brief qAccessibleTextBoundaryHelper is a helper function to find the accessible text boundaries for BOBUIextCursor based documents.
     \param documentCursor a valid cursor bound to the document (not null). It needs to ba at the position to look for the boundary
     \param boundaryType the type of boundary to find
     \return the boundaries as pair
 */
-std::pair< int, int > QAccessible::qAccessibleTextBoundaryHelper(const QTextCursor &offsetCursor, TextBoundaryType boundaryType)
+std::pair< int, int > QAccessible::qAccessibleTextBoundaryHelper(const BOBUIextCursor &offsetCursor, TextBoundaryType boundaryType)
 {
     Q_ASSERT(!offsetCursor.isNull());
 
-    QTextCursor cursor = offsetCursor;
+    BOBUIextCursor cursor = offsetCursor;
     switch (boundaryType) {
     case CharBoundary:
-        return qAccessibleTextBoundaryHelperHelper(cursor, QTextCursor::NoMove,
-                                                   QTextCursor::NextCharacter);
+        return qAccessibleTextBoundaryHelperHelper(cursor, BOBUIextCursor::NoMove,
+                                                   BOBUIextCursor::NextCharacter);
     case WordBoundary:
-        return qAccessibleTextBoundaryHelperHelper(cursor, QTextCursor::StartOfWord,
-                                                   QTextCursor::EndOfWord);
+        return qAccessibleTextBoundaryHelperHelper(cursor, BOBUIextCursor::StartOfWord,
+                                                   BOBUIextCursor::EndOfWord);
     case SentenceBoundary: {
         // QCursor does not provide functionality to move to next sentence.
         // We therefore find the current block, then go through the block using
-        // QTextBoundaryFinder and find the sentence the \offset represents
+        // BOBUIextBoundaryFinder and find the sentence the \offset represents
         std::pair<int, int> result = qAccessibleTextBoundaryHelperHelper(
-                cursor, QTextCursor::StartOfBlock, QTextCursor::EndOfBlock);
+                cursor, BOBUIextCursor::StartOfBlock, BOBUIextCursor::EndOfBlock);
         QString blockText = cursor.selectedText();
         const int offsetWithinBlockText = offsetCursor.position() - result.first;
-        QTextBoundaryFinder sentenceFinder(QTextBoundaryFinder::Sentence, blockText);
+        BOBUIextBoundaryFinder sentenceFinder(BOBUIextBoundaryFinder::Sentence, blockText);
         sentenceFinder.setPosition(offsetWithinBlockText);
         int prevBoundary = offsetWithinBlockText;
         int nextBoundary = offsetWithinBlockText;
-        if (!(sentenceFinder.boundaryReasons() & QTextBoundaryFinder::StartOfItem))
+        if (!(sentenceFinder.boundaryReasons() & BOBUIextBoundaryFinder::StartOfItem))
             prevBoundary = sentenceFinder.toPreviousBoundary();
         nextBoundary = sentenceFinder.toNextBoundary();
         if (nextBoundary != -1)
@@ -1024,13 +1024,13 @@ std::pair< int, int > QAccessible::qAccessibleTextBoundaryHelper(const QTextCurs
         return result;
     }
     case LineBoundary:
-        return qAccessibleTextBoundaryHelperHelper(cursor, QTextCursor::StartOfLine,
-                                                   QTextCursor::EndOfLine);
+        return qAccessibleTextBoundaryHelperHelper(cursor, BOBUIextCursor::StartOfLine,
+                                                   BOBUIextCursor::EndOfLine);
     case ParagraphBoundary:
-        return qAccessibleTextBoundaryHelperHelper(cursor, QTextCursor::StartOfBlock,
-                                                   QTextCursor::EndOfBlock);
+        return qAccessibleTextBoundaryHelperHelper(cursor, BOBUIextCursor::StartOfBlock,
+                                                   BOBUIextCursor::EndOfBlock);
     case NoBoundary:
-        return qAccessibleTextBoundaryHelperHelper(cursor, QTextCursor::Start, QTextCursor::End);
+        return qAccessibleTextBoundaryHelperHelper(cursor, BOBUIextCursor::Start, BOBUIextCursor::End);
     }
 
     Q_UNREACHABLE_RETURN({});
@@ -1042,7 +1042,7 @@ std::pair< int, int > QAccessible::qAccessibleTextBoundaryHelper(const QTextCurs
     about accessible objects.
 
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This class is part of \l {Accessibility for QWidget Applications}.
 
@@ -1391,7 +1391,7 @@ QColor QAccessibleInterface::backgroundColor() const
 /*!
     \class QAccessibleEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleEvent class is the base class for accessibility notifications.
 
@@ -1480,7 +1480,7 @@ void QAccessibleEvent::setChild(int chld)
 /*!
     \class QAccessibleValueChangeEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleValueChangeEvent describes a change in value for an accessible object.
 
@@ -1520,7 +1520,7 @@ QAccessibleValueChangeEvent::~QAccessibleValueChangeEvent()
 /*!
     \class QAccessibleStateChangeEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleStateChangeEvent notfies the accessibility framework
     that the state of an object has changed.
@@ -1563,7 +1563,7 @@ QAccessibleStateChangeEvent::~QAccessibleStateChangeEvent()
 /*!
     \class QAccessibleTableModelChangeEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleTableModelChangeEvent signifies a change in a table, list, or tree where cells
     are added or removed.
@@ -1641,7 +1641,7 @@ QAccessibleTableModelChangeEvent::~QAccessibleTableModelChangeEvent()
 /*!
     \class QAccessibleTextCursorEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleTextCursorEvent class notifies of cursor movements.
 
@@ -1678,7 +1678,7 @@ QAccessibleTextCursorEvent::~QAccessibleTextCursorEvent()
 /*!
     \class QAccessibleTextInsertEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleTextInsertEvent class notifies of text being inserted.
 
@@ -1711,7 +1711,7 @@ QAccessibleTextInsertEvent::~QAccessibleTextInsertEvent()
 /*!
     \class QAccessibleTextRemoveEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleTextRemoveEvent class notifies of text being deleted.
 
@@ -1777,7 +1777,7 @@ QAccessibleTextRemoveEvent::~QAccessibleTextRemoveEvent()
 /*!
     \class QAccessibleTextUpdateEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleTextUpdateEvent class notifies about text changes.
     This is for accessibles that support editable text such as line edits.
@@ -1814,7 +1814,7 @@ QAccessibleTextUpdateEvent::~QAccessibleTextUpdateEvent()
 /*!
     \class QAccessibleTextSelectionEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief QAccessibleTextSelectionEvent signals a change in the text selection of an object.
 
@@ -1848,7 +1848,7 @@ QAccessibleTextSelectionEvent::~QAccessibleTextSelectionEvent()
     \since 6.8
     \class QAccessibleAnnouncementEvent
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleAnnouncementEvent is used to request the announcement
     of a given message by assistive technologies.
@@ -1982,7 +1982,7 @@ const char *qAccessibleEventString(QAccessible::Event event)
     return QAccessible::staticMetaObject.enumerator(eventEnum).valueToKey(event);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*! \internal */
 Q_GUI_EXPORT QDebug operator<<(QDebug d, const QAccessibleInterface *iface)
 {
@@ -1991,7 +1991,7 @@ Q_GUI_EXPORT QDebug operator<<(QDebug d, const QAccessibleInterface *iface)
         return d << "QAccessibleInterface(0x0)";
 
     d.nospace();
-    d << "QAccessibleInterface(" << Qt::hex << (const void *) iface << Qt::dec;
+    d << "QAccessibleInterface(" << BobUI::hex << (const void *) iface << BobUI::dec;
     if (iface->isValid()) {
         d << " name=" << iface->text(QAccessible::Name) << ' ';
         d << "role=" << qAccessibleRoleString(iface->role()) << ' ';
@@ -2030,7 +2030,7 @@ QDebug operator<<(QDebug d, const QAccessibleEvent &ev)
     QDebugStateSaver saver(d);
     d.nospace() << "QAccessibleEvent(";
     if (ev.object()) {
-        d.nospace() << "object=" << Qt::hex << ev.object() << Qt::dec;
+        d.nospace() << "object=" << BobUI::hex << ev.object() << BobUI::dec;
         d.nospace() << "child=" << ev.child();
     } else {
         d.nospace() << "no object, uniqueId=" << ev.uniqueId();
@@ -2083,11 +2083,11 @@ QDebug operator<<(QDebug d, const QAccessibleEvent &ev)
     d << ')';
     return d;
 }
-#endif // QT_NO_DEBUGSTREAM
+#endif // BOBUI_NO_DEBUGSTREAM
 
 /*!
     \class QAccessibleTextInterface
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup accessibility
 
@@ -2239,20 +2239,20 @@ QString QAccessibleTextInterface::textBeforeOffset(int offset, QAccessible::Text
         return QString();
 
     // type initialized just to silence a compiler warning [-Werror=maybe-uninitialized]
-    QTextBoundaryFinder::BoundaryType type = QTextBoundaryFinder::Grapheme;
+    BOBUIextBoundaryFinder::BoundaryType type = BOBUIextBoundaryFinder::Grapheme;
     switch (boundaryType) {
     case QAccessible::CharBoundary:
-        type = QTextBoundaryFinder::Grapheme;
+        type = BOBUIextBoundaryFinder::Grapheme;
         break;
     case QAccessible::WordBoundary:
-        type = QTextBoundaryFinder::Word;
+        type = BOBUIextBoundaryFinder::Word;
         break;
     case QAccessible::SentenceBoundary:
-        type = QTextBoundaryFinder::Sentence;
+        type = BOBUIextBoundaryFinder::Sentence;
         break;
     case QAccessible::LineBoundary:
     case QAccessible::ParagraphBoundary:
-        // Lines can not use QTextBoundaryFinder since Line there means any potential line-break.
+        // Lines can not use BOBUIextBoundaryFinder since Line there means any potential line-break.
         return textLineBoundary(-1, txt, offset, startOffset, endOffset);
     case QAccessible::NoBoundary:
         // return empty, this function currently only supports single lines, so there can be no line before
@@ -2261,20 +2261,20 @@ QString QAccessibleTextInterface::textBeforeOffset(int offset, QAccessible::Text
         Q_UNREACHABLE();
     }
 
-    // keep behavior in sync with QTextCursor::movePosition()!
+    // keep behavior in sync with BOBUIextCursor::movePosition()!
 
-    QTextBoundaryFinder boundary(type, txt);
+    BOBUIextBoundaryFinder boundary(type, txt);
     boundary.setPosition(offset);
 
     do {
-        if ((boundary.boundaryReasons() & (QTextBoundaryFinder::StartOfItem | QTextBoundaryFinder::EndOfItem)))
+        if ((boundary.boundaryReasons() & (BOBUIextBoundaryFinder::StartOfItem | BOBUIextBoundaryFinder::EndOfItem)))
             break;
     } while (boundary.toPreviousBoundary() > 0);
     Q_ASSERT(boundary.position() >= 0);
     const int endPos = boundary.position();
 
     while (boundary.toPreviousBoundary() > 0) {
-        if ((boundary.boundaryReasons() & (QTextBoundaryFinder::StartOfItem | QTextBoundaryFinder::EndOfItem)))
+        if ((boundary.boundaryReasons() & (BOBUIextBoundaryFinder::StartOfItem | BOBUIextBoundaryFinder::EndOfItem)))
             break;
     }
     if (boundary.position() < 0)
@@ -2316,20 +2316,20 @@ QString QAccessibleTextInterface::textAfterOffset(int offset, QAccessible::TextB
         return QString();
 
     // type initialized just to silence a compiler warning [-Werror=maybe-uninitialized]
-    QTextBoundaryFinder::BoundaryType type = QTextBoundaryFinder::Grapheme;
+    BOBUIextBoundaryFinder::BoundaryType type = BOBUIextBoundaryFinder::Grapheme;
     switch (boundaryType) {
     case QAccessible::CharBoundary:
-        type = QTextBoundaryFinder::Grapheme;
+        type = BOBUIextBoundaryFinder::Grapheme;
         break;
     case QAccessible::WordBoundary:
-        type = QTextBoundaryFinder::Word;
+        type = BOBUIextBoundaryFinder::Word;
         break;
     case QAccessible::SentenceBoundary:
-        type = QTextBoundaryFinder::Sentence;
+        type = BOBUIextBoundaryFinder::Sentence;
         break;
     case QAccessible::LineBoundary:
     case QAccessible::ParagraphBoundary:
-        // Lines can not use QTextBoundaryFinder since Line there means any potential line-break.
+        // Lines can not use BOBUIextBoundaryFinder since Line there means any potential line-break.
         return textLineBoundary(1, txt, offset, startOffset, endOffset);
     case QAccessible::NoBoundary:
         // return empty, this function currently only supports single lines, so there can be no line after
@@ -2338,14 +2338,14 @@ QString QAccessibleTextInterface::textAfterOffset(int offset, QAccessible::TextB
         Q_UNREACHABLE();
     }
 
-    // keep behavior in sync with QTextCursor::movePosition()!
+    // keep behavior in sync with BOBUIextCursor::movePosition()!
 
-    QTextBoundaryFinder boundary(type, txt);
+    BOBUIextBoundaryFinder boundary(type, txt);
     boundary.setPosition(offset);
 
     while (true) {
         int toNext = boundary.toNextBoundary();
-        if ((boundary.boundaryReasons() & (QTextBoundaryFinder::StartOfItem | QTextBoundaryFinder::EndOfItem)))
+        if ((boundary.boundaryReasons() & (BOBUIextBoundaryFinder::StartOfItem | BOBUIextBoundaryFinder::EndOfItem)))
             break;
         if (toNext < 0 || toNext >= txt.size())
             break; // not found, the boundary might not exist
@@ -2355,7 +2355,7 @@ QString QAccessibleTextInterface::textAfterOffset(int offset, QAccessible::TextB
 
     while (true) {
         int toNext = boundary.toNextBoundary();
-        if ((boundary.boundaryReasons() & (QTextBoundaryFinder::StartOfItem | QTextBoundaryFinder::EndOfItem)))
+        if ((boundary.boundaryReasons() & (BOBUIextBoundaryFinder::StartOfItem | BOBUIextBoundaryFinder::EndOfItem)))
             break;
         if (toNext < 0 || toNext >= txt.size())
             break; // not found, the boundary might not exist
@@ -2404,20 +2404,20 @@ QString QAccessibleTextInterface::textAtOffset(int offset, QAccessible::TextBoun
         return QString();
 
     // type initialized just to silence a compiler warning [-Werror=maybe-uninitialized]
-    QTextBoundaryFinder::BoundaryType type = QTextBoundaryFinder::Grapheme;
+    BOBUIextBoundaryFinder::BoundaryType type = BOBUIextBoundaryFinder::Grapheme;
     switch (boundaryType) {
     case QAccessible::CharBoundary:
-        type = QTextBoundaryFinder::Grapheme;
+        type = BOBUIextBoundaryFinder::Grapheme;
         break;
     case QAccessible::WordBoundary:
-        type = QTextBoundaryFinder::Word;
+        type = BOBUIextBoundaryFinder::Word;
         break;
     case QAccessible::SentenceBoundary:
-        type = QTextBoundaryFinder::Sentence;
+        type = BOBUIextBoundaryFinder::Sentence;
         break;
     case QAccessible::LineBoundary:
     case QAccessible::ParagraphBoundary:
-        // Lines can not use QTextBoundaryFinder since Line there means any potential line-break.
+        // Lines can not use BOBUIextBoundaryFinder since Line there means any potential line-break.
         return textLineBoundary(0, txt, offset, startOffset, endOffset);
     case QAccessible::NoBoundary:
         *startOffset = 0;
@@ -2427,20 +2427,20 @@ QString QAccessibleTextInterface::textAtOffset(int offset, QAccessible::TextBoun
         Q_UNREACHABLE();
     }
 
-    // keep behavior in sync with QTextCursor::movePosition()!
+    // keep behavior in sync with BOBUIextCursor::movePosition()!
 
-    QTextBoundaryFinder boundary(type, txt);
+    BOBUIextBoundaryFinder boundary(type, txt);
     boundary.setPosition(offset);
 
     do {
-        if ((boundary.boundaryReasons() & (QTextBoundaryFinder::StartOfItem | QTextBoundaryFinder::EndOfItem)))
+        if ((boundary.boundaryReasons() & (BOBUIextBoundaryFinder::StartOfItem | BOBUIextBoundaryFinder::EndOfItem)))
             break;
     } while (boundary.toPreviousBoundary() > 0);
     Q_ASSERT(boundary.position() >= 0);
     const int startPos = boundary.position();
 
     while (boundary.toNextBoundary() < txt.size()) {
-        if ((boundary.boundaryReasons() & (QTextBoundaryFinder::StartOfItem | QTextBoundaryFinder::EndOfItem)))
+        if ((boundary.boundaryReasons() & (BOBUIextBoundaryFinder::StartOfItem | BOBUIextBoundaryFinder::EndOfItem)))
             break;
         if (boundary.position() == -1)
             return QString();
@@ -2488,7 +2488,7 @@ QString QAccessibleTextInterface::textAtOffset(int offset, QAccessible::TextBoun
 /*!
     \class QAccessibleEditableTextInterface
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAccessibleEditableTextInterface class implements support for objects with editable text.
 
@@ -2527,7 +2527,7 @@ QAccessibleEditableTextInterface::~QAccessibleEditableTextInterface()
 
 /*!
     \class QAccessibleValueInterface
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup accessibility
 
     \brief The QAccessibleValueInterface class implements support for objects that manipulate a value.
@@ -2596,7 +2596,7 @@ QAccessibleValueInterface::~QAccessibleValueInterface()
 
 /*!
     \class QAccessibleImageInterface
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup accessibility
     \internal
     \preliminary
@@ -2616,7 +2616,7 @@ QAccessibleImageInterface::~QAccessibleImageInterface()
 
 /*!
     \class QAccessibleTableCellInterface
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup accessibility
 
     \brief The QAccessibleTableCellInterface class implements support for
@@ -2684,7 +2684,7 @@ QAccessibleTableCellInterface::~QAccessibleTableCellInterface()
 
 /*!
     \class QAccessibleTableInterface
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup accessibility
 
     \brief The QAccessibleTableInterface class implements support for
@@ -2831,7 +2831,7 @@ QAccessibleTableInterface::~QAccessibleTableInterface()
 
 /*!
     \class QAccessibleActionInterface
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup accessibility
 
     \brief The QAccessibleActionInterface class implements support for
@@ -2944,18 +2944,18 @@ QAccessibleActionInterface::~QAccessibleActionInterface()
 struct QAccessibleActionStrings
 {
     QAccessibleActionStrings() :
-        pressAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Press"))),
-        increaseAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Increase"))),
-        decreaseAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Decrease"))),
-        showMenuAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "ShowMenu"))),
-        setFocusAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "SetFocus"))),
-        toggleAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Toggle"))),
-        scrollLeftAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Scroll Left"))),
-        scrollRightAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Scroll Right"))),
-        scrollUpAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Scroll Up"))),
-        scrollDownAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Scroll Down"))),
-        previousPageAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Previous Page"))),
-        nextPageAction(QStringLiteral(QT_TRANSLATE_NOOP("QAccessibleActionInterface", "Next Page")))
+        pressAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Press"))),
+        increaseAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Increase"))),
+        decreaseAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Decrease"))),
+        showMenuAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "ShowMenu"))),
+        setFocusAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "SetFocus"))),
+        toggleAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Toggle"))),
+        scrollLeftAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Scroll Left"))),
+        scrollRightAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Scroll Right"))),
+        scrollUpAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Scroll Up"))),
+        scrollDownAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Scroll Down"))),
+        previousPageAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Previous Page"))),
+        nextPageAction(QStringLiteral(BOBUI_TRANSLATE_NOOP("QAccessibleActionInterface", "Next Page")))
     {}
 
     const QString pressAction;
@@ -3127,7 +3127,7 @@ QString QAccessibleActionInterface::nextPageAction()
 /*!
     \since 6.5
     \class QAccessibleSelectionInterface
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup accessibility
 
     \brief The QAccessibleSelectionInterface class implements support for
@@ -3233,7 +3233,7 @@ bool QAccessibleSelectionInterface::isSelected(QAccessibleInterface *childItem) 
 /*!
     \since 6.8
     \class QAccessibleAttributesInterface
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup accessibility
 
  \brief The QAccessibleAttributesInterface class implements support for
@@ -3325,8 +3325,8 @@ QAccessibleHyperlinkInterface::~QAccessibleHyperlinkInterface()
 
 }
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qaccessible_base.cpp"

@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTENGINE_H
 #define QPRINTENGINE_H
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#include <QtCore/qvariant.h>
-#include <QtPrintSupport/qprinter.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#include <BobUICore/qvariant.h>
+#include <BobUIPrintSupport/qprinter.h>
 
 // ### move to qmargins.h
 Q_DECLARE_METATYPE(QMarginsF)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 class Q_PRINTSUPPORT_EXPORT QPrintEngine
 {
@@ -72,8 +72,8 @@ public:
     virtual QPrinter::PrinterState printerState() const = 0;
 };
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINTENGINE_H

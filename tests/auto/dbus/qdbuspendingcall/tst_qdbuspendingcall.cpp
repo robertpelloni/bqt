@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QObject>
 #include <QVariant>
 #include <QList>
-#include <QThread>
+#include <BOBUIhread>
 #include <QDBusAbstractAdaptor>
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QDBusPendingCallWatcher>
 #include <QDBusInterface>
 
-#define TEST_INTERFACE_NAME "org.qtproject.QtDBus.MyObject"
+#define TEST_INTERFACE_NAME "org.bobuiproject.BobUIDBus.MyObject"
 
 class MyObject : public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.QtDBus.MyObject")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.BobUIDBus.MyObject")
 
 public:
     MyObject(QObject* parent =0)
@@ -92,8 +92,8 @@ void tst_QDBusPendingCall::finished(QDBusPendingCallWatcher *call)
     slotCalled = FinishCalled;
     ++callCount;
     watchArgument = call;
-    if (QThread::currentThread() == thread())
-        QTestEventLoop::instance().exitLoop();
+    if (BOBUIhread::currentThread() == thread())
+        BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QDBusPendingCall::callback(const QStringList &list)
@@ -101,7 +101,7 @@ void tst_QDBusPendingCall::callback(const QStringList &list)
     slotCalled = CallbackCalled;
     ++callCount;
     callbackArgument = list;
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QDBusPendingCall::errorCallback(const QDBusError &error)
@@ -109,7 +109,7 @@ void tst_QDBusPendingCall::errorCallback(const QDBusError &error)
     slotCalled = ErrorCallbackCalled;
     ++callCount;
     errorArgument = error;
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QDBusPendingCall::makeCall()
@@ -188,8 +188,8 @@ void tst_QDBusPendingCall::callWithCallback_localLoop()
 
     // May be called synchronously or asynchronously...
     if (callbackArgument != (QStringList() << QString::fromLatin1("foo"))) {
-        QTestEventLoop::instance().enterLoop(2);
-        QVERIFY(!QTestEventLoop::instance().timeout());
+        BOBUIestEventLoop::instance().enterLoop(2);
+        QVERIFY(!BOBUIestEventLoop::instance().timeout());
     }
 
     QCOMPARE(callbackArgument, QStringList() << QString::fromLatin1("foo"));
@@ -211,8 +211,8 @@ void tst_QDBusPendingCall::callWithCallback_localLoop_errorReply()
 
     // May be called synchronously or asynchronously...
     if (errorArgument.name() != "dbuspendingcall_error") {
-        QTestEventLoop::instance().enterLoop(2);
-        QVERIFY(!QTestEventLoop::instance().timeout());
+        BOBUIestEventLoop::instance().enterLoop(2);
+        QVERIFY(!BOBUIestEventLoop::instance().timeout());
     }
 
     QCOMPARE(errorArgument.name(), QString::fromLatin1("dbuspendingcall_error"));
@@ -229,8 +229,8 @@ void tst_QDBusPendingCall::watcher()
     connect(&watch, SIGNAL(finished(QDBusPendingCallWatcher*)),
             SLOT(finished(QDBusPendingCallWatcher*)));
 
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QVERIFY(ac.isFinished());
     QVERIFY(!ac.isError());
@@ -255,8 +255,8 @@ void tst_QDBusPendingCall::watcher_error()
     connect(&watch, SIGNAL(finished(QDBusPendingCallWatcher*)),
             SLOT(finished(QDBusPendingCallWatcher*)));
 
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QVERIFY(ac.isFinished());
     QVERIFY(ac.isError());
@@ -300,7 +300,7 @@ void tst_QDBusPendingCall::watcher_waitForFinished_threaded()
     watchArgument = 0;
     slotCalled = 0;
 
-    class WorkerThread: public QThread {
+    class WorkerThread: public BOBUIhread {
     public:
         tst_QDBusPendingCall *tst;
         WorkerThread(tst_QDBusPendingCall *tst) : tst(tst) {}
@@ -313,9 +313,9 @@ void tst_QDBusPendingCall::watcher_waitForFinished_threaded()
 
             QDBusPendingCallWatcher watch(ac);
             tst->connect(&watch, SIGNAL(finished(QDBusPendingCallWatcher*)),
-                         SLOT(finished(QDBusPendingCallWatcher*)), Qt::DirectConnection);
+                         SLOT(finished(QDBusPendingCallWatcher*)), BobUI::DirectConnection);
 
-            QTest::qSleep(100);  // don't process events in this thread
+            BOBUIest::qSleep(100);  // don't process events in this thread
 
 //            QVERIFY(!ac.isFinished());
 //            QVERIFY(!ac.isError());
@@ -337,11 +337,11 @@ void tst_QDBusPendingCall::watcher_waitForFinished_threaded()
             QVERIFY(args2.at(0).toStringList().contains(tst->conn.baseService()));
         }
     } thread(this);
-    QTestEventLoop::instance().connect(&thread, SIGNAL(finished()), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(&thread, SIGNAL(finished()), SLOT(exitLoop()));
     thread.start();
-    QTestEventLoop::instance().enterLoop(10);
+    BOBUIestEventLoop::instance().enterLoop(10);
     QVERIFY(thread.wait(3000));
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 }
 
 void tst_QDBusPendingCall::watcher_waitForFinished_alreadyFinished()
@@ -389,10 +389,10 @@ void tst_QDBusPendingCall::watcher_waitForFinished_alreadyFinished_eventLoop()
     connect(&watch, SIGNAL(finished(QDBusPendingCallWatcher*)),
             SLOT(finished(QDBusPendingCallWatcher*)));
     connect(&watch, SIGNAL(finished(QDBusPendingCallWatcher*)),
-            &QTestEventLoop::instance(), SLOT(exitLoop()));
+            &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QVERIFY(ac.isFinished());
     QVERIFY(!ac.isError());
@@ -451,5 +451,5 @@ void tst_QDBusPendingCall::callInsideWaitForFinished()
     QVERIFY(args2.at(0).toStringList().contains(conn.baseService()));
 }
 
-QTEST_MAIN(tst_QDBusPendingCall)
+BOBUIEST_MAIN(tst_QDBusPendingCall)
 #include "tst_qdbuspendingcall.moc"

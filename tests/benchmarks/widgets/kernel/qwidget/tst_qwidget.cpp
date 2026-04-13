@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
+#include <bobuiest.h>
 
-#include <QtWidgets/QLayout>
-#include <QtGui/QPainter>
+#include <BobUIWidgets/QLayout>
+#include <BobUIGui/QPainter>
 
 static void processEvents()
 {
@@ -42,7 +42,7 @@ public:
         }
         setLayout(layout);
         adjustSize();
-        QTest::qWait(250);
+        BOBUIest::qWait(250);
         processEvents();
     }
 
@@ -50,7 +50,7 @@ public:
     {
         if (opaqueChildren != enable) {
             for (QWidget *w : std::as_const(children))
-                w->setAttribute(Qt::WA_OpaquePaintEvent, enable);
+                w->setAttribute(BobUI::WA_OpaquePaintEvent, enable);
             opaqueChildren = enable;
             processEvents();
         }
@@ -58,13 +58,13 @@ public:
 
     void paintEvent(QPaintEvent *) override
     {
-        static int color = Qt::black;
+        static int color = BobUI::black;
 
         QPainter painter(this);
-        painter.fillRect(rect(), Qt::GlobalColor(color));
+        painter.fillRect(rect(), BobUI::GlobalColor(color));
 
-        if (++color > Qt::darkYellow)
-            color = Qt::black;
+        if (++color > BobUI::darkYellow)
+            color = BobUI::black;
     }
 
     QRegion updateRegion;
@@ -97,8 +97,8 @@ private:
 void tst_QWidget::initTestCase()
 {
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
-    QTest::qWait(300);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
+    BOBUIest::qWait(300);
     processEvents();
 }
 
@@ -111,23 +111,23 @@ void tst_QWidget::init()
 
 void tst_QWidget::update_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("numUpdates");
-    QTest::addColumn<bool>("opaque");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("numUpdates");
+    BOBUIest::addColumn<bool>("opaque");
 
-    QTest::newRow("10x10x1 transparent")   << 10 << 10 << 1   << false;
-    QTest::newRow("10x10x10 transparent")  << 10 << 10 << 10  << false;
-    QTest::newRow("10x10x100 transparent") << 10 << 10 << 100 << false;
-    QTest::newRow("10x10x1 opaque")        << 10 << 10 << 1   << true;
-    QTest::newRow("10x10x10 opaque")       << 10 << 10 << 10  << true;
-    QTest::newRow("10x10x100 opaque")      << 10 << 10 << 100 << true;
-    QTest::newRow("25x25x1 transparent ")  << 25 << 25 << 1   << false;
-    QTest::newRow("25x25x10 transparent")  << 25 << 25 << 10  << false;
-    QTest::newRow("25x25x100 transparent") << 25 << 25 << 100 << false;
-    QTest::newRow("25x25x1 opaque")        << 25 << 25 << 1   << true;
-    QTest::newRow("25x25x10 opaque")       << 25 << 25 << 10  << true;
-    QTest::newRow("25x25x100 opaque")      << 25 << 25 << 100 << true;
+    BOBUIest::newRow("10x10x1 transparent")   << 10 << 10 << 1   << false;
+    BOBUIest::newRow("10x10x10 transparent")  << 10 << 10 << 10  << false;
+    BOBUIest::newRow("10x10x100 transparent") << 10 << 10 << 100 << false;
+    BOBUIest::newRow("10x10x1 opaque")        << 10 << 10 << 1   << true;
+    BOBUIest::newRow("10x10x10 opaque")       << 10 << 10 << 10  << true;
+    BOBUIest::newRow("10x10x100 opaque")      << 10 << 10 << 100 << true;
+    BOBUIest::newRow("25x25x1 transparent ")  << 25 << 25 << 1   << false;
+    BOBUIest::newRow("25x25x10 transparent")  << 25 << 25 << 10  << false;
+    BOBUIest::newRow("25x25x100 transparent") << 25 << 25 << 100 << false;
+    BOBUIest::newRow("25x25x1 opaque")        << 25 << 25 << 1   << true;
+    BOBUIest::newRow("25x25x10 opaque")       << 25 << 25 << 10  << true;
+    BOBUIest::newRow("25x25x100 opaque")      << 25 << 25 << 100 << true;
 }
 
 void tst_QWidget::update()
@@ -213,6 +213,6 @@ void tst_QWidget::updateComplex()
     }
 }
 
-QTEST_MAIN(tst_QWidget)
+BOBUIEST_MAIN(tst_QWidget)
 
 #include "tst_qwidget.moc"

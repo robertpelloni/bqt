@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qscreen.h"
 #include "qscreen_p.h"
@@ -8,17 +8,17 @@
 #include <qpa/qplatformscreen.h>
 #include <qpa/qplatformscreen_p.h>
 
-#include <QtCore/QDebug>
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/QDebug>
+#include <BobUICore/private/qobject_p.h>
 #include "qhighdpiscaling_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QScreen
     \since 5.0
     \brief The QScreen class is used to query screen properties.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     A note on logical vs physical dots per inch: physical DPI is based on the
     actual physical pixel sizes when available, and is useful for print preview
@@ -40,7 +40,7 @@ QT_BEGIN_NAMESPACE
     \sa QGuiApplication::primaryScreen()
     \sa QGuiApplication::screens()
 
-    \inmodule QtGui
+    \inmodule BobUIGui
 */
 
 QScreen::QScreen(QPlatformScreen *platformScreen)
@@ -85,7 +85,7 @@ QScreen::~QScreen()
 /*!
   Get the platform screen handle.
 
-  \sa {Qt Platform Abstraction}{Qt Platform Abstraction (QPA)}
+  \sa {BobUI Platform Abstraction}{BobUI Platform Abstraction (QPA)}
 */
 QPlatformScreen *QScreen::handle() const
 {
@@ -456,14 +456,14 @@ QRect QScreen::availableVirtualGeometry() const
     window system perspective.
 
     Most mobile devices and tablet computers contain accelerometer sensors.
-    The Qt Sensors module provides the ability to read this sensor directly.
+    The BobUI Sensors module provides the ability to read this sensor directly.
     However, the windowing system may rotate the entire screen automatically
     based on how it is being held; in that case, this \c orientation property
     will change.
 
     \sa primaryOrientation(), QWindow::contentOrientation()
 */
-Qt::ScreenOrientation QScreen::orientation() const
+BobUI::ScreenOrientation QScreen::orientation() const
 {
     Q_D(const QScreen);
     return d->orientation;
@@ -488,16 +488,16 @@ qreal QScreen::refreshRate() const
     \property QScreen::primaryOrientation
     \brief the primary screen orientation
 
-    The primary screen orientation is Qt::LandscapeOrientation
+    The primary screen orientation is BobUI::LandscapeOrientation
     if the screen geometry's width is greater than or equal to its
-    height, or Qt::PortraitOrientation otherwise. This property might
+    height, or BobUI::PortraitOrientation otherwise. This property might
     change when the screen orientation was changed (i.e. when the
     display is rotated).
     The behavior is however platform dependent and can often be specified in
     an application manifest file.
 
 */
-Qt::ScreenOrientation QScreen::primaryOrientation() const
+BobUI::ScreenOrientation QScreen::primaryOrientation() const
 {
     Q_D(const QScreen);
     return d->primaryOrientation;
@@ -509,12 +509,12 @@ Qt::ScreenOrientation QScreen::primaryOrientation() const
     \since 5.2
 
     The native orientation of the screen is the orientation where the logo
-    sticker of the device appears the right way up, or Qt::PrimaryOrientation
+    sticker of the device appears the right way up, or BobUI::PrimaryOrientation
     if the platform does not support this functionality.
 
     The native orientation is a property of the hardware, and does not change.
 */
-Qt::ScreenOrientation QScreen::nativeOrientation() const
+BobUI::ScreenOrientation QScreen::nativeOrientation() const
 {
     Q_D(const QScreen);
     return d->platformScreen->nativeOrientation();
@@ -526,14 +526,14 @@ Qt::ScreenOrientation QScreen::nativeOrientation() const
 
     The result will be 0, 90, 180, or 270.
 
-    Qt::PrimaryOrientation is interpreted as the screen's primaryOrientation().
+    BobUI::PrimaryOrientation is interpreted as the screen's primaryOrientation().
 */
-int QScreen::angleBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b) const
+int QScreen::angleBetween(BobUI::ScreenOrientation a, BobUI::ScreenOrientation b) const
 {
-    if (a == Qt::PrimaryOrientation)
+    if (a == BobUI::PrimaryOrientation)
         a = primaryOrientation();
 
-    if (b == Qt::PrimaryOrientation)
+    if (b == BobUI::PrimaryOrientation)
         b = primaryOrientation();
 
     return QPlatformScreen::angleBetween(a, b);
@@ -544,19 +544,19 @@ int QScreen::angleBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b) cons
     defined by orientation \a a into the coordinate system defined by orientation
     \a b and target dimensions \a target.
 
-    Example, \a a is Qt::Landscape, \a b is Qt::Portrait, and \a target is QRect(0, 0, w, h)
+    Example, \a a is BobUI::Landscape, \a b is BobUI::Portrait, and \a target is QRect(0, 0, w, h)
     the resulting transform will be such that the point QPoint(0, 0) is mapped to QPoint(0, w),
     and QPoint(h, w) is mapped to QPoint(0, h). Thus, the landscape coordinate system QRect(0, 0, h, w)
     is mapped (with a 90 degree rotation) into the portrait coordinate system QRect(0, 0, w, h).
 
-    Qt::PrimaryOrientation is interpreted as the screen's primaryOrientation().
+    BobUI::PrimaryOrientation is interpreted as the screen's primaryOrientation().
 */
-QTransform QScreen::transformBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b, const QRect &target) const
+BOBUIransform QScreen::transformBetween(BobUI::ScreenOrientation a, BobUI::ScreenOrientation b, const QRect &target) const
 {
-    if (a == Qt::PrimaryOrientation)
+    if (a == BobUI::PrimaryOrientation)
         a = primaryOrientation();
 
-    if (b == Qt::PrimaryOrientation)
+    if (b == BobUI::PrimaryOrientation)
         b = primaryOrientation();
 
     return QPlatformScreen::transformBetween(a, b, target);
@@ -566,17 +566,17 @@ QTransform QScreen::transformBetween(Qt::ScreenOrientation a, Qt::ScreenOrientat
     Maps the rect between two screen orientations.
 
     This will flip the x and y dimensions of the rectangle \a{rect} if the orientation \a{a} is
-    Qt::PortraitOrientation or Qt::InvertedPortraitOrientation and orientation \a{b} is
-    Qt::LandscapeOrientation or Qt::InvertedLandscapeOrientation, or vice versa.
+    BobUI::PortraitOrientation or BobUI::InvertedPortraitOrientation and orientation \a{b} is
+    BobUI::LandscapeOrientation or BobUI::InvertedLandscapeOrientation, or vice versa.
 
-    Qt::PrimaryOrientation is interpreted as the screen's primaryOrientation().
+    BobUI::PrimaryOrientation is interpreted as the screen's primaryOrientation().
 */
-QRect QScreen::mapBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b, const QRect &rect) const
+QRect QScreen::mapBetween(BobUI::ScreenOrientation a, BobUI::ScreenOrientation b, const QRect &rect) const
 {
-    if (a == Qt::PrimaryOrientation)
+    if (a == BobUI::PrimaryOrientation)
         a = primaryOrientation();
 
-    if (b == Qt::PrimaryOrientation)
+    if (b == BobUI::PrimaryOrientation)
         b = primaryOrientation();
 
     return QPlatformScreen::mapBetween(a, b, rect);
@@ -586,28 +586,28 @@ QRect QScreen::mapBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b, cons
     Convenience function that returns \c true if \a o is either portrait or inverted portrait;
     otherwise returns \c false.
 
-    Qt::PrimaryOrientation is interpreted as the screen's primaryOrientation().
+    BobUI::PrimaryOrientation is interpreted as the screen's primaryOrientation().
 */
-bool QScreen::isPortrait(Qt::ScreenOrientation o) const
+bool QScreen::isPortrait(BobUI::ScreenOrientation o) const
 {
-    return o == Qt::PortraitOrientation || o == Qt::InvertedPortraitOrientation
-        || (o == Qt::PrimaryOrientation && primaryOrientation() == Qt::PortraitOrientation);
+    return o == BobUI::PortraitOrientation || o == BobUI::InvertedPortraitOrientation
+        || (o == BobUI::PrimaryOrientation && primaryOrientation() == BobUI::PortraitOrientation);
 }
 
 /*!
     Convenience function that returns \c true if \a o is either landscape or inverted landscape;
     otherwise returns \c false.
 
-    Qt::PrimaryOrientation is interpreted as the screen's primaryOrientation().
+    BobUI::PrimaryOrientation is interpreted as the screen's primaryOrientation().
 */
-bool QScreen::isLandscape(Qt::ScreenOrientation o) const
+bool QScreen::isLandscape(BobUI::ScreenOrientation o) const
 {
-    return o == Qt::LandscapeOrientation || o == Qt::InvertedLandscapeOrientation
-        || (o == Qt::PrimaryOrientation && primaryOrientation() == Qt::LandscapeOrientation);
+    return o == BobUI::LandscapeOrientation || o == BobUI::InvertedLandscapeOrientation
+        || (o == BobUI::PrimaryOrientation && primaryOrientation() == BobUI::LandscapeOrientation);
 }
 
 /*!
-    \fn void QScreen::orientationChanged(Qt::ScreenOrientation orientation)
+    \fn void QScreen::orientationChanged(BobUI::ScreenOrientation orientation)
 
     This signal is emitted when the orientation of the screen
     changes with \a orientation as an argument.
@@ -616,7 +616,7 @@ bool QScreen::isLandscape(Qt::ScreenOrientation o) const
 */
 
 /*!
-    \fn void QScreen::primaryOrientationChanged(Qt::ScreenOrientation orientation)
+    \fn void QScreen::primaryOrientationChanged(BobUI::ScreenOrientation orientation)
 
     This signal is emitted when the primary orientation of the screen
     changes with \a orientation as an argument.
@@ -626,7 +626,7 @@ bool QScreen::isLandscape(Qt::ScreenOrientation o) const
 
 void QScreenPrivate::updatePrimaryOrientation()
 {
-    primaryOrientation = geometry.width() >= geometry.height() ? Qt::LandscapeOrientation : Qt::PortraitOrientation;
+    primaryOrientation = geometry.width() >= geometry.height() ? BobUI::LandscapeOrientation : BobUI::PortraitOrientation;
 }
 
 /*!
@@ -687,7 +687,7 @@ QScreen *QScreen::virtualSiblingAt(QPoint point)
     pixmap will be undefined and uninitialized.
 
     On Windows Vista and above grabbing a layered window, which is
-    created by setting the Qt::WA_TranslucentBackground attribute, will
+    created by setting the BobUI::WA_TranslucentBackground attribute, will
     not work. Instead grabbing the desktop widget should work.
 
     \warning In general, grabbing an area outside the screen is not
@@ -739,38 +739,38 @@ void *QScreen::resolveInterface(const char *name, int revision) const
     Q_UNUSED(name);
     Q_UNUSED(revision);
 
-#if QT_CONFIG(xcb)
-    QT_NATIVE_INTERFACE_RETURN_IF(QXcbScreen, platformScreen);
+#if BOBUI_CONFIG(xcb)
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QXcbScreen, platformScreen);
 #endif
 
-#if QT_CONFIG(vsp2)
-    QT_NATIVE_INTERFACE_RETURN_IF(QVsp2Screen, platformScreen);
+#if BOBUI_CONFIG(vsp2)
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QVsp2Screen, platformScreen);
 #endif
 
 #if defined(Q_OS_WEBOS)
-    QT_NATIVE_INTERFACE_RETURN_IF(QWebOSScreen, platformScreen);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QWebOSScreen, platformScreen);
 #endif
 
 #if defined(Q_OS_WIN32)
-    QT_NATIVE_INTERFACE_RETURN_IF(QWindowsScreen, platformScreen);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QWindowsScreen, platformScreen);
 #endif
 
 #if defined(Q_OS_ANDROID)
-    QT_NATIVE_INTERFACE_RETURN_IF(QAndroidScreen, platformScreen);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QAndroidScreen, platformScreen);
 #endif
 
-#if QT_CONFIG(wayland)
-    QT_NATIVE_INTERFACE_RETURN_IF(QWaylandScreen, platformScreen);
+#if BOBUI_CONFIG(wayland)
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QWaylandScreen, platformScreen);
 #endif
 
 #if defined(Q_OS_MACOS)
-    QT_NATIVE_INTERFACE_RETURN_IF(QCocoaScreen, platformScreen);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QCocoaScreen, platformScreen);
 #endif
 
     return nullptr;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QScreen *screen)
 {
     const QDebugStateSaver saver(debug);
@@ -796,7 +796,7 @@ Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QScreen *screen)
     debug << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 QScreenPrivate::UpdateEmitter::UpdateEmitter(QScreen *screen)
 {
@@ -852,6 +852,6 @@ QScreenPrivate::UpdateEmitter::~UpdateEmitter()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qscreen.cpp"

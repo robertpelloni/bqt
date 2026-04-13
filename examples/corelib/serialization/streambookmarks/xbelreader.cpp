@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "xbelreader.h"
 
 #include <QStyle>
-#include <QTreeWidget>
+#include <BOBUIreeWidget>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [0]
-XbelReader::XbelReader(QTreeWidget *treeWidget) : treeWidget(treeWidget)
+XbelReader::XbelReader(BOBUIreeWidget *treeWidget) : treeWidget(treeWidget)
 {
     QStyle *style = treeWidget->style();
 
@@ -65,12 +65,12 @@ void XbelReader::readXBEL()
 //! [3]
 
 //! [4]
-void XbelReader::readBookmark(QTreeWidgetItem *item)
+void XbelReader::readBookmark(BOBUIreeWidgetItem *item)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == "bookmark"_L1);
 
-    QTreeWidgetItem *bookmark = createChildItem(item);
-    bookmark->setFlags(bookmark->flags() | Qt::ItemIsEditable);
+    BOBUIreeWidgetItem *bookmark = createChildItem(item);
+    bookmark->setFlags(bookmark->flags() | BobUI::ItemIsEditable);
     bookmark->setIcon(0, bookmarkIcon);
     bookmark->setText(0, QObject::tr("Unknown title"));
     bookmark->setText(1, xml.attributes().value("href"_L1).toString());
@@ -85,7 +85,7 @@ void XbelReader::readBookmark(QTreeWidgetItem *item)
 //! [4]
 
 //! [5]
-void XbelReader::readTitle(QTreeWidgetItem *item)
+void XbelReader::readTitle(BOBUIreeWidgetItem *item)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == "title"_L1);
     item->setText(0, xml.readElementText());
@@ -93,25 +93,25 @@ void XbelReader::readTitle(QTreeWidgetItem *item)
 //! [5]
 
 //! [6]
-void XbelReader::readSeparator(QTreeWidgetItem *item)
+void XbelReader::readSeparator(BOBUIreeWidgetItem *item)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == "separator"_L1);
     constexpr char16_t midDot = u'\xB7';
     static const QString dots(30, midDot);
 
-    QTreeWidgetItem *separator = createChildItem(item);
-    separator->setFlags(item ? item->flags() & ~Qt::ItemIsSelectable : Qt::ItemFlags{});
+    BOBUIreeWidgetItem *separator = createChildItem(item);
+    separator->setFlags(item ? item->flags() & ~BobUI::ItemIsSelectable : BobUI::ItemFlags{});
     separator->setText(0, dots);
     xml.skipCurrentElement();
 }
 //! [6]
 
 //! [7]
-void XbelReader::readFolder(QTreeWidgetItem *item)
+void XbelReader::readFolder(BOBUIreeWidgetItem *item)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == "folder"_L1);
 
-    QTreeWidgetItem *folder = createChildItem(item);
+    BOBUIreeWidgetItem *folder = createChildItem(item);
     bool folded = xml.attributes().value("folded"_L1) != "no"_L1;
     folder->setExpanded(!folded);
 
@@ -131,10 +131,10 @@ void XbelReader::readFolder(QTreeWidgetItem *item)
 //! [7]
 
 //! [8]
-QTreeWidgetItem *XbelReader::createChildItem(QTreeWidgetItem *item)
+BOBUIreeWidgetItem *XbelReader::createChildItem(BOBUIreeWidgetItem *item)
 {
-    QTreeWidgetItem *childItem = item ? new QTreeWidgetItem(item) : new QTreeWidgetItem(treeWidget);
-    childItem->setData(0, Qt::UserRole, xml.name().toString());
+    BOBUIreeWidgetItem *childItem = item ? new BOBUIreeWidgetItem(item) : new BOBUIreeWidgetItem(treeWidget);
+    childItem->setData(0, BobUI::UserRole, xml.name().toString());
     return childItem;
 }
 //! [8]

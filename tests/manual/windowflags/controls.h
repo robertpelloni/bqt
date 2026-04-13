@@ -1,31 +1,31 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
 #include <QGroupBox>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QCheckBox;
 class QRadioButton;
 class QButtonGroup;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 enum { ControlLayoutMargin = 4 };
 
-// Control for the hint part of Qt::WindowFlags
+// Control for the hint part of BobUI::WindowFlags
 class HintControl : public QGroupBox
 {
     Q_OBJECT
 public:
     explicit HintControl(QWidget *parent= 0);
 
-    Qt::WindowFlags hints() const;
-    void setHints(Qt::WindowFlags hints);
+    BobUI::WindowFlags hints() const;
+    void setHints(BobUI::WindowFlags hints);
 
 signals:
-    void changed(Qt::WindowFlags);
+    void changed(BobUI::WindowFlags);
 
 private slots:
     void slotCheckBoxChanged();
@@ -51,14 +51,14 @@ private:
     QCheckBox *noTitleBarBackgroundCheckBox;
 };
 
-// Control for the Qt::WindowState enum, optional with a "visible" QCheckbox
+// Control for the BobUI::WindowState enum, optional with a "visible" QCheckbox
 class WindowStateControl : public QWidget {
     Q_OBJECT
 public:
     explicit WindowStateControl(QWidget *parent= 0);
 
-    Qt::WindowStates state() const;
-    void setState(Qt::WindowStates s);
+    BobUI::WindowStates state() const;
+    void setState(BobUI::WindowStates s);
 
 signals:
     void stateChanged(int);
@@ -71,7 +71,7 @@ private:
     QCheckBox *fullscreenButton;
 };
 
-// Control for the Qt::WindowStates flags (normal, maximized, fullscreen exclusively
+// Control for the BobUI::WindowStates flags (normal, maximized, fullscreen exclusively
 // combined with minimized and optionally, with a "visible" QCheckbox)
 class WindowStatesControl : public QGroupBox
 {
@@ -79,8 +79,8 @@ class WindowStatesControl : public QGroupBox
 public:
     explicit WindowStatesControl(QWidget *parent= 0);
 
-    Qt::WindowStates states() const;
-    void setStates(Qt::WindowStates s);
+    BobUI::WindowStates states() const;
+    void setStates(BobUI::WindowStates s);
 
     bool visibleValue() const;
     void setVisibleValue(bool);
@@ -96,18 +96,18 @@ private:
     WindowStateControl *stateControl;
 };
 
-// Control for the type part of Qt::WindowFlags
+// Control for the type part of BobUI::WindowFlags
 class TypeControl : public QGroupBox
 {
     Q_OBJECT
 public:
     explicit TypeControl(QWidget *parent= 0);
 
-    Qt::WindowFlags type() const;
-    void setType(Qt::WindowFlags);
+    BobUI::WindowFlags type() const;
+    void setType(BobUI::WindowFlags);
 
 signals:
-    void changed(Qt::WindowFlags);
+    void changed(BobUI::WindowFlags);
 
 private slots:
     void slotChanged();

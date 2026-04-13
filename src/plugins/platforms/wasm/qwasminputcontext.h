@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMINPUTCONTEXT_H
 #define QWASMINPUTCONTEXT_H
@@ -7,13 +7,13 @@
 
 #include <qpa/qplatforminputcontext.h>
 #include <private/qstdweb_p.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qloggingcategory.h>
 
 #include <emscripten/bind.h>
 #include <emscripten/html5.h>
 #include <emscripten/emscripten.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcQpaWasmInputContext)
 
@@ -25,7 +25,7 @@ public:
     explicit QWasmInputContext();
     ~QWasmInputContext() override;
 
-    void update(Qt::InputMethodQueries) override;
+    void update(BobUI::InputMethodQueries) override;
 
     void showInputPanel() override;
     void hideInputPanel() override;
@@ -67,6 +67,6 @@ private:
     QPair<int, int> rangesPair;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWASMINPUTCONTEXT_H

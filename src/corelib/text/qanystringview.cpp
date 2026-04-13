@@ -1,16 +1,16 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trivial-impl-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trivial-impl-only
 
 #include "qanystringview.h"
 #include "qdebug.h"
-#include "qttypetraits.h"
+#include "bobuitypetraits.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QAnyStringView
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \brief The QAnyStringView class provides a unified view on Latin-1, UTF-8,
            or UTF-16 strings with a read-only subset of the QString API.
@@ -94,10 +94,10 @@ QT_BEGIN_NAMESPACE
     passed to the function, such as \c{u8"Hello World"}, a \c char8_t
     string literal.
 
-    Like elsewhere in Qt, QAnyStringView assumes \c char data is encoded
+    Like elsewhere in BobUI, QAnyStringView assumes \c char data is encoded
     in UTF-8, unless it is presented as a QLatin1StringView.
 
-    Since Qt 6.4, however, UTF-8 string literals that are pure US-ASCII are
+    Since BobUI 6.4, however, UTF-8 string literals that are pure US-ASCII are
     automatically stored as Latin-1. This is a compile-time check with no
     runtime overhead. The feature requires compiling in C++20, or with a recent
     GCC.
@@ -355,8 +355,8 @@ QT_BEGIN_NAMESPACE
 */
 
 // confirm we don't make an accidental copy constructor:
-static_assert(QtPrivate::IsContainerCompatibleWithQStringView<QAnyStringView>::value == false);
-static_assert(QtPrivate::IsContainerCompatibleWithQUtf8StringView<QAnyStringView>::value == false);
+static_assert(BobUIPrivate::IsContainerCompatibleWithQStringView<QAnyStringView>::value == false);
+static_assert(BobUIPrivate::IsContainerCompatibleWithQUtf8StringView<QAnyStringView>::value == false);
 
 /*!
     \fn template <typename Char, size_t Size> static QAnyStringView fromArray(const Char (&string)[Size]) noexcept
@@ -412,7 +412,7 @@ static_assert(QtPrivate::IsContainerCompatibleWithQUtf8StringView<QAnyStringView
 
     Returns whether this string view is empty - that is, whether \c{size() == 0}.
 
-    This function is provided for compatibility with other Qt containers.
+    This function is provided for compatibility with other BobUI containers.
 
     \sa empty(), isNull(), size()
 */
@@ -422,7 +422,7 @@ static_assert(QtPrivate::IsContainerCompatibleWithQUtf8StringView<QAnyStringView
 
     Returns whether this string view is null - that is, whether \c{data() == nullptr}.
 
-    This functions is provided for compatibility with other Qt containers.
+    This functions is provided for compatibility with other BobUI containers.
 
     \sa empty(), isEmpty(), size()
 */
@@ -452,7 +452,7 @@ static_assert(QtPrivate::IsContainerCompatibleWithQUtf8StringView<QAnyStringView
 
     Same as size().
 
-    This function is provided for compatibility with other Qt containers.
+    This function is provided for compatibility with other BobUI containers.
 
     \sa size()
 */
@@ -715,13 +715,13 @@ static_assert(QtPrivate::IsContainerCompatibleWithQUtf8StringView<QAnyStringView
 */
 
 /*!
-    \fn QAnyStringView::compare(QAnyStringView lhs, QAnyStringView rhs, Qt::CaseSensitivity cs)
+    \fn QAnyStringView::compare(QAnyStringView lhs, QAnyStringView rhs, BobUI::CaseSensitivity cs)
 
     Compares the string view \a lhs with the string view \a rhs and returns a
     negative integer if \a lhs is less than \a rhs, a positive integer if it is
     greater than \a rhs, and zero if they are equal.
 
-    If \a cs is Qt::CaseSensitive (the default), the comparison is case sensitive;
+    If \a cs is BobUI::CaseSensitive (the default), the comparison is case sensitive;
     otherwise the comparison is case-insensitive.
 
     \sa operator==(), operator<(), operator>()
@@ -798,7 +798,7 @@ QDebug operator<<(QDebug d, QAnyStringView s)
             } else if constexpr (std::is_same_v<View, QStringView>) {
                 return S{"u", ""};
             } else {
-                static_assert(QtPrivate::type_dependent_false<View>());
+                static_assert(BobUIPrivate::type_dependent_false<View>());
             }
         });
     const QDebugStateSaver saver(d);
@@ -839,4 +839,4 @@ QDebug operator<<(QDebug d, QAnyStringView s)
     type) \c wchar_t.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,28 +1,28 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_bench_qimagereader Binary:
 #####################################################################
 
-qt_internal_add_benchmark(tst_bench_qimagereader
+bobui_internal_add_benchmark(tst_bench_qimagereader
     SOURCES
         tst_bench_qimagereader.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::Test
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::Test
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_bench_qimagereader CONDITION QT_FEATURE_gif
+bobui_internal_extend_target(tst_bench_qimagereader CONDITION BOBUI_FEATURE_gif
     DEFINES
-        QTEST_HAVE_GIF
+        BOBUIEST_HAVE_GIF
 )
 
-qt_internal_extend_target(tst_bench_qimagereader CONDITION QT_FEATURE_jpeg
+bobui_internal_extend_target(tst_bench_qimagereader CONDITION BOBUI_FEATURE_jpeg
     DEFINES
-        QTEST_HAVE_JPEG
+        BOBUIEST_HAVE_JPEG
 )

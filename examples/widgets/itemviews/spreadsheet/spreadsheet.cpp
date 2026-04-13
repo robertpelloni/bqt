@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "spreadsheet.h"
 #include "spreadsheetdelegate.h"
 #include "spreadsheetitem.h"
 #include "printview.h"
 
-#include <QtWidgets>
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport>
+#include <BobUIWidgets>
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#include <BobUIPrintSupport>
 #endif
 
 SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     : QMainWindow(parent),
-      toolBar(new QToolBar(this)),
+      toolBar(new BOBUIoolBar(this)),
       cellLabel(new QLabel(toolBar)),
-      table(new QTableWidget(rows, cols, this)),
+      table(new BOBUIableWidget(rows, cols, this)),
       formulaInput(new QLineEdit(this))
 {
     addToolBar(toolBar);
@@ -25,10 +25,10 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     toolBar->addWidget(cellLabel);
     toolBar->addWidget(formulaInput);
 
-    table->setSizeAdjustPolicy(QTableWidget::AdjustToContents);
+    table->setSizeAdjustPolicy(BOBUIableWidget::AdjustToContents);
     for (int c = 0; c < cols; ++c) {
         QString character(QChar('A' + c));
-        table->setHorizontalHeaderItem(c, new QTableWidgetItem(character));
+        table->setHorizontalHeaderItem(c, new BOBUIableWidgetItem(character));
     }
 
     table->setItemPrototype(table->item(rows - 1, cols - 1));
@@ -42,17 +42,17 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     setCentralWidget(table);
 
     statusBar();
-    connect(table, &QTableWidget::currentItemChanged,
+    connect(table, &BOBUIableWidget::currentItemChanged,
             this, &SpreadSheet::updateStatus);
-    connect(table, &QTableWidget::currentItemChanged,
+    connect(table, &BOBUIableWidget::currentItemChanged,
             this, &SpreadSheet::updateColor);
-    connect(table, &QTableWidget::currentItemChanged,
+    connect(table, &BOBUIableWidget::currentItemChanged,
             this, &SpreadSheet::updateLineEdit);
-    connect(table, &QTableWidget::itemChanged,
+    connect(table, &BOBUIableWidget::itemChanged,
             this, &SpreadSheet::updateStatus);
     connect(formulaInput, &QLineEdit::returnPressed,
             this, &SpreadSheet::returnPressed);
-    connect(table, &QTableWidget::itemChanged,
+    connect(table, &BOBUIableWidget::itemChanged,
             this, &SpreadSheet::updateLineEdit);
 
     setWindowTitle(tr("Spreadsheet"));
@@ -64,30 +64,30 @@ void SpreadSheet::createActions()
     connect(cell_sumAction, &QAction::triggered, this, &SpreadSheet::actionSum);
 
     cell_addAction = new QAction(tr("&Add"), this);
-    cell_addAction->setShortcut(Qt::CTRL | Qt::Key_Plus);
+    cell_addAction->setShortcut(BobUI::CTRL | BobUI::Key_Plus);
     connect(cell_addAction, &QAction::triggered, this, &SpreadSheet::actionAdd);
 
     cell_subAction = new QAction(tr("&Subtract"), this);
-    cell_subAction->setShortcut(Qt::CTRL | Qt::Key_Minus);
+    cell_subAction->setShortcut(BobUI::CTRL | BobUI::Key_Minus);
     connect(cell_subAction, &QAction::triggered, this, &SpreadSheet::actionSubtract);
 
     cell_mulAction = new QAction(tr("&Multiply"), this);
-    cell_mulAction->setShortcut(Qt::CTRL | Qt::Key_multiply);
+    cell_mulAction->setShortcut(BobUI::CTRL | BobUI::Key_multiply);
     connect(cell_mulAction, &QAction::triggered, this, &SpreadSheet::actionMultiply);
 
     cell_divAction = new QAction(tr("&Divide"), this);
-    cell_divAction->setShortcut(Qt::CTRL | Qt::Key_division);
+    cell_divAction->setShortcut(BobUI::CTRL | BobUI::Key_division);
     connect(cell_divAction, &QAction::triggered, this, &SpreadSheet::actionDivide);
 
     fontAction = new QAction(tr("Font..."), this);
-    fontAction->setShortcut(Qt::CTRL | Qt::Key_F);
+    fontAction->setShortcut(BobUI::CTRL | BobUI::Key_F);
     connect(fontAction, &QAction::triggered, this, &SpreadSheet::selectFont);
 
     colorAction = new QAction(QPixmap(16, 16), tr("Background &Color..."), this);
     connect(colorAction, &QAction::triggered, this, &SpreadSheet::selectColor);
 
     clearAction = new QAction(tr("Clear"), this);
-    clearAction->setShortcut(Qt::Key_Delete);
+    clearAction->setShortcut(BobUI::Key_Delete);
     connect(clearAction, &QAction::triggered, this, &SpreadSheet::clear);
 
     aboutSpreadSheet = new QAction(tr("About Spreadsheet"), this);
@@ -130,15 +130,15 @@ void SpreadSheet::setupMenuBar()
     aboutMenu->addAction(aboutSpreadSheet);
 }
 
-void SpreadSheet::updateStatus(QTableWidgetItem *item)
+void SpreadSheet::updateStatus(BOBUIableWidgetItem *item)
 {
     if (item && item == table->currentItem()) {
-        statusBar()->showMessage(item->data(Qt::StatusTipRole).toString(), 1000);
+        statusBar()->showMessage(item->data(BobUI::StatusTipRole).toString(), 1000);
         cellLabel->setText(tr("Cell: (%1)").arg(encode_pos(table->row(item), table->column(item))));
     }
 }
 
-void SpreadSheet::updateColor(QTableWidgetItem *item)
+void SpreadSheet::updateColor(BOBUIableWidgetItem *item)
 {
     QPixmap pix(16, 16);
     QColor col;
@@ -164,12 +164,12 @@ void SpreadSheet::updateColor(QTableWidgetItem *item)
     colorAction->setIcon(pix);
 }
 
-void SpreadSheet::updateLineEdit(QTableWidgetItem *item)
+void SpreadSheet::updateLineEdit(BOBUIableWidgetItem *item)
 {
     if (item != table->currentItem())
         return;
     if (item)
-        formulaInput->setText(item->data(Qt::EditRole).toString());
+        formulaInput->setText(item->data(BobUI::EditRole).toString());
     else
         formulaInput->clear();
 }
@@ -179,27 +179,27 @@ void SpreadSheet::returnPressed()
     QString text = formulaInput->text();
     int row = table->currentRow();
     int col = table->currentColumn();
-    QTableWidgetItem *item = table->item(row, col);
+    BOBUIableWidgetItem *item = table->item(row, col);
     if (!item)
         table->setItem(row, col, new SpreadSheetItem(text));
     else
-        item->setData(Qt::EditRole, text);
+        item->setData(BobUI::EditRole, text);
     table->viewport()->update();
 }
 
 void SpreadSheet::selectColor()
 {
-    QTableWidgetItem *item = table->currentItem();
+    BOBUIableWidgetItem *item = table->currentItem();
     QColor col = item ? item->background().color() : table->palette().base().color();
     col = QColorDialog::getColor(col, this);
     if (!col.isValid())
         return;
 
-    const QList<QTableWidgetItem *> selected = table->selectedItems();
+    const QList<BOBUIableWidgetItem *> selected = table->selectedItems();
     if (selected.isEmpty())
         return;
 
-    for (QTableWidgetItem *i : selected) {
+    for (BOBUIableWidgetItem *i : selected) {
         if (i)
             i->setBackground(col);
     }
@@ -209,7 +209,7 @@ void SpreadSheet::selectColor()
 
 void SpreadSheet::selectFont()
 {
-    const QList<QTableWidgetItem *> selected = table->selectedItems();
+    const QList<BOBUIableWidgetItem *> selected = table->selectedItems();
     if (selected.isEmpty())
         return;
 
@@ -218,7 +218,7 @@ void SpreadSheet::selectFont()
 
     if (!ok)
         return;
-    for (QTableWidgetItem *i : selected) {
+    for (BOBUIableWidgetItem *i : selected) {
         if (i)
             i->setFont(fnt);
     }
@@ -255,7 +255,7 @@ bool SpreadSheet::runInputDialog(const QString &title,
     cell1ColInput.setCurrentIndex(c1Col);
 
     QLabel operatorLabel(opText, &group);
-    operatorLabel.setAlignment(Qt::AlignHCenter);
+    operatorLabel.setAlignment(BobUI::AlignHCenter);
 
     QLabel cell2Label(c2Text, &group);
     QComboBox cell2RowInput(&group);
@@ -268,7 +268,7 @@ bool SpreadSheet::runInputDialog(const QString &title,
     cell2ColInput.setCurrentIndex(c2Col);
 
     QLabel equalsLabel("=", &group);
-    equalsLabel.setAlignment(Qt::AlignHCenter);
+    equalsLabel.setAlignment(BobUI::AlignHCenter);
 
     QLabel outLabel(outText, &group);
     QComboBox outRowInput(&group);
@@ -347,18 +347,18 @@ void SpreadSheet::actionSum()
     int col_last = 0;
     int col_cur = 0;
 
-    const QList<QTableWidgetItem *> selected = table->selectedItems();
+    const QList<BOBUIableWidgetItem *> selected = table->selectedItems();
 
     if (!selected.isEmpty()) {
-        QTableWidgetItem *first = selected.first();
-        QTableWidgetItem *last = selected.last();
+        BOBUIableWidgetItem *first = selected.first();
+        BOBUIableWidgetItem *last = selected.last();
         row_first = table->row(first);
         row_last = table->row(last);
         col_first = table->column(first);
         col_last = table->column(last);
     }
 
-    const QTableWidgetItem *current = table->currentItem();
+    const BOBUIableWidgetItem *current = table->currentItem();
 
     if (current) {
         row_cur = table->row(current);
@@ -385,7 +385,7 @@ void SpreadSheet::actionMath_helper(const QString &title, const QString &op)
     QString cell2 = "C2";
     QString out = "C3";
 
-    const QTableWidgetItem *current = table->currentItem();
+    const BOBUIableWidgetItem *current = table->currentItem();
     if (current)
         out = encode_pos(table->currentRow(), table->currentColumn());
 
@@ -418,8 +418,8 @@ void SpreadSheet::actionDivide()
 
 void SpreadSheet::clear()
 {
-    const QList<QTableWidgetItem *> selectedItems = table->selectedItems();
-    for (QTableWidgetItem *i : selectedItems)
+    const QList<BOBUIableWidgetItem *> selectedItems = table->selectedItems();
+    for (BOBUIableWidgetItem *i : selectedItems)
         i->setText(QString());
 }
 
@@ -435,12 +435,12 @@ void SpreadSheet::setupContextMenu()
     addAction(fontAction);
     addAction(secondSeparator);
     addAction(clearAction);
-    setContextMenuPolicy(Qt::ActionsContextMenu);
+    setContextMenuPolicy(BobUI::ActionsContextMenu);
 }
 
 void SpreadSheet::setupContents()
 {
-    QBrush titleBackground(Qt::lightGray);
+    QBrush titleBackground(BobUI::lightGray);
     QFont titleFont = table->font();
     titleFont.setBold(true);
 
@@ -497,7 +497,7 @@ void SpreadSheet::setupContents()
     table->setItem(8, 2, new SpreadSheetItem("1240"));
 
     table->setItem(9, 2, new SpreadSheetItem());
-    table->item(9, 2)->setBackground(Qt::lightGray);
+    table->item(9, 2)->setBackground(BobUI::lightGray);
 
     // column 3
     table->setItem(0, 3, new SpreadSheetItem("Currency"));
@@ -515,7 +515,7 @@ void SpreadSheet::setupContents()
     table->setItem(8, 3, new SpreadSheetItem("USD"));
 
     table->setItem(9, 3, new SpreadSheetItem());
-    table->item(9, 3)->setBackground(Qt::lightGray);
+    table->item(9, 3)->setBackground(BobUI::lightGray);
 
     // column 4
     table->setItem(0, 4, new SpreadSheetItem("Ex. Rate"));
@@ -556,7 +556,7 @@ void SpreadSheet::setupContents()
 
 const char *htmlText =
 "<HTML>"
-"<p><b>This demo shows use of <c>QTableWidget</c> with custom handling for"
+"<p><b>This demo shows use of <c>BOBUIableWidget</c> with custom handling for"
 " individual cells.</b></p>"
 "<p>Using a customized table item we make it possible to have dynamic"
 " output in different cells. The content that is implemented for this"
@@ -593,7 +593,7 @@ QString encode_pos(int row, int col)
 
 void SpreadSheet::print()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printpreviewdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printpreviewdialog)
     QPrinter printer(QPrinter::ScreenResolution);
     QPrintPreviewDialog dlg(&printer);
     PrintView view;

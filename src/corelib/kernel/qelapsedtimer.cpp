@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qelapsedtimer.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QElapsedTimer
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QElapsedTimer class provides a fast way to calculate elapsed times.
     \since 4.7
 
@@ -17,10 +17,10 @@ QT_BEGIN_NAMESPACE
     \compares strong
 
     The QElapsedTimer class is usually used to quickly calculate how much
-    time has elapsed between two events. Its API is similar to that of QTime,
+    time has elapsed between two events. Its API is similar to that of BOBUIime,
     so code that was using that can be ported quickly to the new class.
 
-    However, unlike QTime, QElapsedTimer tries to use monotonic clocks if
+    However, unlike BOBUIime, QElapsedTimer tries to use monotonic clocks if
     possible. This means it's not possible to convert QElapsedTimer objects
     to a human-readable time.
 
@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
     QElapsedTimer will use the platform's monotonic reference clock in all
     platforms that support it (see QElapsedTimer::isMonotonic()). This has
     the added benefit that QElapsedTimer is immune to time adjustments, such
-    as the user correcting the time. Also unlike QTime, QElapsedTimer is
+    as the user correcting the time. Also unlike BOBUIime, QElapsedTimer is
     immune to changes in the timezone settings, such as daylight-saving
     periods.
 
@@ -77,7 +77,7 @@ QT_BEGIN_NAMESPACE
     that the clock used is the same as QElapsedTimer (see
     QElapsedTimer::clockType()).
 
-    \sa QTime, QChronoTimer, QDeadlineTimer
+    \sa BOBUIime, QChronoTimer, QDeadlineTimer
 */
 
 /*!
@@ -87,7 +87,7 @@ QT_BEGIN_NAMESPACE
 
     QElapsedTimer will always use the same clock type in a particular
     machine, so this value will not change during the lifetime of a program.
-    It is provided so that QElapsedTimer can be used with other non-Qt
+    It is provided so that QElapsedTimer can be used with other non-BobUI
     implementations, to guarantee that the same reference clock is being
     used.
 
@@ -171,7 +171,7 @@ QT_BEGIN_NAMESPACE
 
     Returns the clock type that this QElapsedTimer implementation uses.
 
-    Since Qt 6.6, QElapsedTimer uses \c{std::chrono::steady_clock}, so the
+    Since BobUI 6.6, QElapsedTimer uses \c{std::chrono::steady_clock}, so the
     clock type is always \l MonotonicClock.
 
     \sa isMonotonic()
@@ -190,7 +190,7 @@ QElapsedTimer::ClockType QElapsedTimer::clockType() noexcept
     information on the different clock types to understand which ones are
     monotonic.
 
-    Since Qt 6.6, QElapsedTimer uses \c{std::chrono::steady_clock}, so this
+    Since BobUI 6.6, QElapsedTimer uses \c{std::chrono::steady_clock}, so this
     function now always returns true.
 
     \sa clockType(), QElapsedTimer::ClockType
@@ -231,7 +231,7 @@ void QElapsedTimer::start() noexcept
     // means it will work until the first steady_clock using picoseconds.
     TimePoint now = std::chrono::steady_clock::now();
     t1 = now.time_since_epoch().count();
-    QT6_ONLY(t2 = 0);
+    BOBUI6_ONLY(t2 = 0);
 }
 
 /*!
@@ -435,4 +435,4 @@ bool operator<(const QElapsedTimer &lhs, const QElapsedTimer &rhs) noexcept
     return lhs.t1 < rhs.t1;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

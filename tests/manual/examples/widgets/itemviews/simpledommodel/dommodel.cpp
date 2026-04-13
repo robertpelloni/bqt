@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "dommodel.h"
 #include "domitem.h"
 
-#include <QtXml>
+#include <BobUIXml>
 
 //! [0]
 DomModel::DomModel(const QDomDocument &document, QObject *parent)
@@ -36,7 +36,7 @@ QVariant DomModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role != Qt::DisplayRole)
+    if (role != BobUI::DisplayRole)
         return QVariant();
 
     const DomItem *item = static_cast<DomItem*>(index.internalPointer());
@@ -68,20 +68,20 @@ QVariant DomModel::data(const QModelIndex &index, int role) const
 //! [4]
 
 //! [5]
-Qt::ItemFlags DomModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags DomModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return Qt::NoItemFlags;
+        return BobUI::NoItemFlags;
 
     return QAbstractItemModel::flags(index);
 }
 //! [5]
 
 //! [6]
-QVariant DomModel::headerData(int section, Qt::Orientation orientation,
+QVariant DomModel::headerData(int section, BobUI::Orientation orientation,
                               int role) const
 {
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+    if (orientation == BobUI::Horizontal && role == BobUI::DisplayRole) {
         switch (section) {
             case 0:
                 return tr("Name");

@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKINTERFACE_UNIX_P_H
 #define QNETWORKINTERFACE_UNIX_P_H
@@ -10,7 +10,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -20,7 +20,7 @@
 #include "qnetworkinterface_p.h"
 #include "private/qnet_unix_p.h"
 
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 
 #define IP_MULTICAST    // make AIX happy and define IFF_MULTICAST
 
@@ -33,7 +33,7 @@
 #  include <sys/sockio.h>
 #  define IFF_RUNNING 0x0001
 #endif
-#if QT_CONFIG(linux_netlink)
+#if BOBUI_CONFIG(linux_netlink)
 // Same as net/if.h but contains other things we need in
 // qnetworkinterface_linux.cpp.
 #  include <linux/if.h>
@@ -41,7 +41,7 @@
 #  include <net/if.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QNetworkInterface::InterfaceFlags convertFlags(uint rawFlags)
 {
@@ -60,8 +60,8 @@ static QNetworkInterface::InterfaceFlags convertFlags(uint rawFlags)
     return flags;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
 #endif // QNETWORKINTERFACE_UNIX_P_H

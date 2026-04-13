@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef CALENDAR_H
 #define CALENDAR_H
@@ -39,7 +39,7 @@ private slots:
     void reformatCalendarPage();
 
 private:
-    bool isWeekendDay(Qt::DayOfWeek);
+    bool isWeekendDay(BobUI::DayOfWeek);
     void createPreviewGroupBox();
     void createGeneralOptionsGroupBox();
     void createDatesGroupBox();

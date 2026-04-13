@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'tabbedbrowser.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,36 +16,36 @@
 #ifndef TABBEDBROWSER_H
 #define TABBEDBROWSER_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QIcon>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QIcon>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIabWidget>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_TabbedBrowser
 {
 public:
     QVBoxLayout *vboxLayout;
-    QTabWidget *tab;
+    BOBUIabWidget *tab;
     QWidget *frontpage;
     QGridLayout *gridLayout;
     QFrame *frameFind;
     QHBoxLayout *hboxLayout;
-    QToolButton *toolClose;
+    BOBUIoolButton *toolClose;
     QLineEdit *editFind;
-    QToolButton *toolPrevious;
-    QToolButton *toolNext;
+    BOBUIoolButton *toolPrevious;
+    BOBUIoolButton *toolNext;
     QCheckBox *checkCase;
     QCheckBox *checkWholeWords;
     QLabel *labelWrapped;
@@ -60,7 +60,7 @@ public:
         vboxLayout->setSpacing(0);
         vboxLayout->setContentsMargins(0, 0, 0, 0);
         vboxLayout->setObjectName("vboxLayout");
-        tab = new QTabWidget(TabbedBrowser);
+        tab = new BOBUIabWidget(TabbedBrowser);
         tab->setObjectName("tab");
         frontpage = new QWidget();
         frontpage->setObjectName("frontpage");
@@ -84,10 +84,10 @@ public:
 #endif
         hboxLayout->setContentsMargins(0, 0, 0, 0);
         hboxLayout->setObjectName("hboxLayout");
-        toolClose = new QToolButton(frameFind);
+        toolClose = new BOBUIoolButton(frameFind);
         toolClose->setObjectName("toolClose");
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/qt-project.org/assistant/images/close.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        icon.addFile(QString::fromUtf8(":/bobui-project.org/assistant/images/close.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         toolClose->setIcon(icon);
         toolClose->setAutoRaise(true);
 
@@ -104,25 +104,25 @@ public:
 
         hboxLayout->addWidget(editFind);
 
-        toolPrevious = new QToolButton(frameFind);
+        toolPrevious = new BOBUIoolButton(frameFind);
         toolPrevious->setObjectName("toolPrevious");
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/qt-project.org/assistant/images/win/previous.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        icon1.addFile(QString::fromUtf8(":/bobui-project.org/assistant/images/win/previous.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         toolPrevious->setIcon(icon1);
-        toolPrevious->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextBesideIcon);
+        toolPrevious->setToolButtonStyle(BobUI::ToolButtonStyle::ToolButtonTextBesideIcon);
         toolPrevious->setAutoRaise(true);
 
         hboxLayout->addWidget(toolPrevious);
 
-        toolNext = new QToolButton(frameFind);
+        toolNext = new BOBUIoolButton(frameFind);
         toolNext->setObjectName("toolNext");
         toolNext->setMinimumSize(QSize(0, 0));
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/qt-project.org/assistant/images/win/next.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        icon2.addFile(QString::fromUtf8(":/bobui-project.org/assistant/images/win/next.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         toolNext->setIcon(icon2);
-        toolNext->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextBesideIcon);
+        toolNext->setToolButtonStyle(BobUI::ToolButtonStyle::ToolButtonTextBesideIcon);
         toolNext->setAutoRaise(true);
-        toolNext->setArrowType(Qt::ArrowType::NoArrow);
+        toolNext->setArrowType(BobUI::ArrowType::NoArrow);
 
         hboxLayout->addWidget(toolNext);
 
@@ -140,9 +140,9 @@ public:
         labelWrapped->setObjectName("labelWrapped");
         labelWrapped->setMinimumSize(QSize(0, 20));
         labelWrapped->setMaximumSize(QSize(105, 20));
-        labelWrapped->setTextFormat(Qt::TextFormat::RichText);
+        labelWrapped->setTextFormat(BobUI::TextFormat::RichText);
         labelWrapped->setScaledContents(true);
-        labelWrapped->setAlignment(Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter);
+        labelWrapped->setAlignment(BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignVCenter);
 
         hboxLayout->addWidget(labelWrapped);
 
@@ -168,7 +168,7 @@ public:
         toolNext->setText(QCoreApplication::translate("TabbedBrowser", "Next", nullptr));
         checkCase->setText(QCoreApplication::translate("TabbedBrowser", "Case Sensitive", nullptr));
         checkWholeWords->setText(QCoreApplication::translate("TabbedBrowser", "Whole words", nullptr));
-        labelWrapped->setText(QCoreApplication::translate("TabbedBrowser", "<img src=\":/qt-project.org/assistant/images/wrap.png\">&nbsp;Search wrapped", nullptr));
+        labelWrapped->setText(QCoreApplication::translate("TabbedBrowser", "<img src=\":/bobui-project.org/assistant/images/wrap.png\">&nbsp;Search wrapped", nullptr));
     } // retranslateUi
 
 };
@@ -177,6 +177,6 @@ namespace Ui {
     class TabbedBrowser: public Ui_TabbedBrowser {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // TABBEDBROWSER_H

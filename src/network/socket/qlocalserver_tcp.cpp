@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlocalserver.h"
 #include "qlocalserver_p.h"
@@ -11,9 +11,9 @@
 #include <qsettings.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 void QLocalServerPrivate::init()
 {
@@ -34,7 +34,7 @@ bool QLocalServerPrivate::listen(const QString &requestedServerName)
     else
         fullServerName = prefix + requestedServerName;
 
-    QSettings settings("QtProject"_L1, "Qt"_L1);
+    QSettings settings("BobUIProject"_L1, "BobUI"_L1);
     if (settings.contains(fullServerName)) {
         qWarning("QLocalServer::listen: server name is already in use.");
         tcpServer.close();
@@ -52,7 +52,7 @@ bool QLocalServerPrivate::listen(qintptr socketDescriptor)
 
 void QLocalServerPrivate::closeServer()
 {
-    QSettings settings("QtProject"_L1, "Qt"_L1);
+    QSettings settings("BobUIProject"_L1, "BobUI"_L1);
     if (fullServerName == "QLocalServer"_L1)
         settings.setValue(fullServerName, QVariant());
     else
@@ -71,7 +71,7 @@ void QLocalServerPrivate::waitForNewConnection(int msec, bool *timedOut)
 void QLocalServerPrivate::_q_onNewConnection()
 {
     Q_Q(QLocalServer);
-    QTcpSocket* tcpSocket = tcpServer.nextPendingConnection();
+    BOBUIcpSocket* tcpSocket = tcpServer.nextPendingConnection();
     if (!tcpSocket) {
         qWarning("QLocalServer: no pending connection");
         return;
@@ -91,11 +91,11 @@ bool QLocalServerPrivate::removeServer(const QString &name)
     else
         serverName = prefix + name;
 
-    QSettings settings("QtProject"_L1, "Qt"_L1);
+    QSettings settings("BobUIProject"_L1, "BobUI"_L1);
     if (settings.contains(serverName))
         settings.remove(serverName);
 
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

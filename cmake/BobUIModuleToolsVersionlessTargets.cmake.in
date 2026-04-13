@@ -1,0 +1,26 @@
+# Copyright (C) 2024 The BobUI Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+foreach(__bobui_tool @tool_targets_non_prefixed@)
+    if(NOT TARGET BobUI::${__bobui_tool} AND TARGET BobUI6::${__bobui_tool})
+        add_executable(BobUI::${__bobui_tool} IMPORTED GLOBAL)
+
+        # Check all the usual imported location properties to find one that contains a path.
+        foreach(__bobui_imported_location_config
+                IMPORTED_LOCATION
+                IMPORTED_LOCATION_RELEASE
+                IMPORTED_LOCATION_RELWITHDEBINFO
+                IMPORTED_LOCATION_MINSIZEREL
+                IMPORTED_LOCATION_DEBUG)
+
+            get_target_property(__bobui_imported_location
+                                BobUI6::${__bobui_tool} ${__bobui_imported_location_config})
+            if(__bobui_imported_location AND EXISTS "${__bobui_imported_location}")
+                break()
+            endif()
+        endforeach()
+
+        set_target_properties(BobUI::${__bobui_tool}
+                              PROPERTIES IMPORTED_LOCATION "${__bobui_imported_location}")
+    endif()
+endforeach()

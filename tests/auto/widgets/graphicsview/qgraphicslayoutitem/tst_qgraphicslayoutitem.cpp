@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qgraphicslayoutitem.h>
 #include <float.h>
 #include <limits.h>
@@ -50,7 +50,7 @@ public:
     void setGeometry(QRectF const&) override {}
 
     // QGraphicsLayoutItem::sizeHint is a pure virtual function
-    QSizeF sizeHint(Qt::SizeHint, QSizeF const& = QSizeF()) const override
+    QSizeF sizeHint(BobUI::SizeHint, QSizeF const& = QSizeF()) const override
         { return QSizeF(); }
 
     void updateGeometry() override
@@ -63,7 +63,7 @@ void tst_QGraphicsLayoutItem::qgraphicslayoutitem()
 {
     SubQGraphicsLayoutItem layoutItem;
     layoutItem.contentsRect();
-    layoutItem.effectiveSizeHint(Qt::MinimumSize);
+    layoutItem.effectiveSizeHint(BobUI::MinimumSize);
     layoutItem.geometry();
     QCOMPARE(layoutItem.isLayout(), false);
     layoutItem.maximumSize();
@@ -71,7 +71,7 @@ void tst_QGraphicsLayoutItem::qgraphicslayoutitem()
     QCOMPARE(layoutItem.parentLayoutItem(), nullptr);
     layoutItem.preferredSize();
     layoutItem.sizePolicy();
-    layoutItem.sizeHint(Qt::MinimumSize);
+    layoutItem.sizeHint(BobUI::MinimumSize);
 }
 
 // QRectF contentsRect() const public
@@ -81,19 +81,19 @@ void tst_QGraphicsLayoutItem::contentsRect()
     QRectF f = layoutItem.contentsRect();
     QCOMPARE(f, QRectF(QPoint(), QSizeF(0, 0)));
 }
-Q_DECLARE_METATYPE(Qt::SizeHint)
+Q_DECLARE_METATYPE(BobUI::SizeHint)
 void tst_QGraphicsLayoutItem::effectiveSizeHint_data()
 {
-    QTest::addColumn<Qt::SizeHint>("sizeHint");
-    QTest::addColumn<QSizeF>("constraint");
+    BOBUIest::addColumn<BobUI::SizeHint>("sizeHint");
+    BOBUIest::addColumn<QSizeF>("constraint");
     for (int i = 0; i < 15; ++i) {
-        QTestData &data = QTest::newRow(QByteArray::number(i).constData());
+        BOBUIestData &data = BOBUIest::newRow(QByteArray::number(i).constData());
         switch(i % 5) {
-        case 0: data << Qt::MinimumSize; break;
-        case 1: data << Qt::PreferredSize; break;
-        case 2: data << Qt::MaximumSize; break;
-        case 3: data << Qt::MinimumDescent; break;
-        case 4: data << Qt::NSizeHints; break;
+        case 0: data << BobUI::MinimumSize; break;
+        case 1: data << BobUI::PreferredSize; break;
+        case 2: data << BobUI::MaximumSize; break;
+        case 3: data << BobUI::MinimumDescent; break;
+        case 4: data << BobUI::NSizeHints; break;
         }
         switch(i % 3) {
         case 0: data << QSizeF(-1, -1); break;
@@ -103,10 +103,10 @@ void tst_QGraphicsLayoutItem::effectiveSizeHint_data()
     }
 }
 
-// QSizeF effectiveSizeHint(Qt::SizeHint which, QSizeF const& constraint = QSize()) const public
+// QSizeF effectiveSizeHint(BobUI::SizeHint which, QSizeF const& constraint = QSize()) const public
 void tst_QGraphicsLayoutItem::effectiveSizeHint()
 {
-    QFETCH(Qt::SizeHint, sizeHint);
+    QFETCH(BobUI::SizeHint, sizeHint);
     QFETCH(QSizeF, constraint);
     SubQGraphicsLayoutItem layoutItem;
     QSizeF r = layoutItem.effectiveSizeHint(sizeHint, constraint);
@@ -133,9 +133,9 @@ void tst_QGraphicsLayoutItem::getContentsMargins()
 
 void tst_QGraphicsLayoutItem::isLayout_data()
 {
-    QTest::addColumn<bool>("isLayout");
-    QTest::newRow("no") << false;
-    QTest::newRow("yes") << true;
+    BOBUIest::addColumn<bool>("isLayout");
+    BOBUIest::newRow("no") << false;
+    BOBUIest::newRow("yes") << true;
 }
 
 // bool isLayout() const public
@@ -151,7 +151,7 @@ void tst_QGraphicsLayoutItem::maximumSize()
 {
     SubQGraphicsLayoutItem layoutItem;
     QCOMPARE(layoutItem.maximumSize(), QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
-    // layoutItem.effectiveSizeHint(Qt::MaximumSize);
+    // layoutItem.effectiveSizeHint(BobUI::MaximumSize);
 }
 
 // QSizeF minimumSize() const public
@@ -159,14 +159,14 @@ void tst_QGraphicsLayoutItem::minimumSize()
 {
     SubQGraphicsLayoutItem layoutItem;
     QCOMPARE(layoutItem.minimumSize(), QSizeF(0, 0));
-    // layoutItem.effectiveSizeHint(Qt::MinimumSize);
+    // layoutItem.effectiveSizeHint(BobUI::MinimumSize);
 }
 
 void tst_QGraphicsLayoutItem::parentLayoutItem_data()
 {
-    QTest::addColumn<bool>("parent");
-    QTest::newRow("no") << false;
-    QTest::newRow("yes") << true;
+    BOBUIest::addColumn<bool>("parent");
+    BOBUIest::newRow("no") << false;
+    BOBUIest::newRow("yes") << true;
 }
 
 // QGraphicsLayoutItem* parentLayoutItem() const public
@@ -183,16 +183,16 @@ void tst_QGraphicsLayoutItem::preferredSize()
 {
     SubQGraphicsLayoutItem layoutItem;
     QCOMPARE(layoutItem.preferredSize(), QSizeF(0, 0));
-    // layoutItem.effectiveSizeHint(Qt::PreferredSize));
+    // layoutItem.effectiveSizeHint(BobUI::PreferredSize));
 }
 
 void tst_QGraphicsLayoutItem::setMaximumSize_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<QSizeF>("outputSize");
-    QTest::newRow("-1") << QSizeF(-1, -1) << QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-    QTest::newRow("0") << QSizeF(0, 0) << QSizeF(0, 0);
-    QTest::newRow("10") << QSizeF(10, 10) << QSizeF(10, 10);
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<QSizeF>("outputSize");
+    BOBUIest::newRow("-1") << QSizeF(-1, -1) << QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    BOBUIest::newRow("0") << QSizeF(0, 0) << QSizeF(0, 0);
+    BOBUIest::newRow("10") << QSizeF(10, 10) << QSizeF(10, 10);
 }
 
 // void setMaximumSize(QSizeF const& size) public
@@ -219,10 +219,10 @@ void tst_QGraphicsLayoutItem::setMaximumSize()
 
 void tst_QGraphicsLayoutItem::setMinimumSize_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::newRow("-1") << QSizeF(-1, -1);
-    QTest::newRow("0") << QSizeF(0, 0);
-    QTest::newRow("10") << QSizeF(10, 10);
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::newRow("-1") << QSizeF(-1, -1);
+    BOBUIest::newRow("0") << QSizeF(0, 0);
+    BOBUIest::newRow("10") << QSizeF(10, 10);
 }
 
 // void setMinimumSize(QSizeF const& size) public
@@ -251,10 +251,10 @@ void tst_QGraphicsLayoutItem::setMinimumSize()
 
 void tst_QGraphicsLayoutItem::setPreferredSize_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::newRow("-1") << QSizeF(-1, -1);
-    QTest::newRow("0") << QSizeF(0, 0);
-    QTest::newRow("10") << QSizeF(10, 10);
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::newRow("-1") << QSizeF(-1, -1);
+    BOBUIest::newRow("0") << QSizeF(0, 0);
+    BOBUIest::newRow("10") << QSizeF(10, 10);
 }
 
 // void setPreferredSize(QSizeF const& size) public
@@ -284,9 +284,9 @@ void tst_QGraphicsLayoutItem::setPreferredSize2()
 
 void tst_QGraphicsLayoutItem::setSizePolicy_data()
 {
-    QTest::addColumn<QSizePolicy>("policy");
-    QTest::newRow("default") << QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed, QSizePolicy::DefaultType);
-    QTest::newRow("rand") << QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    BOBUIest::addColumn<QSizePolicy>("policy");
+    BOBUIest::newRow("default") << QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed, QSizePolicy::DefaultType);
+    BOBUIest::newRow("rand") << QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
 }
 
 // void setSizePolicy(QSizePolicy const& policy) public
@@ -302,6 +302,6 @@ void tst_QGraphicsLayoutItem::setSizePolicy()
     QCOMPARE(layoutItem.updateGeometryCalled, (defaultPolicy == policy) ? 0 : 1);
 }
 
-QTEST_MAIN(tst_QGraphicsLayoutItem)
+BOBUIEST_MAIN(tst_QGraphicsLayoutItem)
 #include "tst_qgraphicslayoutitem.moc"
 

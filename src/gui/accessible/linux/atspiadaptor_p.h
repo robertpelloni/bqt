@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #ifndef ATSPIADAPTOR_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,17 +18,17 @@
 
 #include <atspi/atspi.h>
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtDBus/qdbusvirtualobject.h>
-#include <QtGui/qaccessible.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIDBus/qdbusvirtualobject.h>
+#include <BobUIGui/qaccessible.h>
 
 #include "dbusconnection_p.h"
 #include "qspi_struct_marshallers_p.h"
 #include "qspimatchrulematcher_p.h"
 
-QT_REQUIRE_CONFIG(accessibility);
+BOBUI_REQUIRE_CONFIG(accessibility);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAccessibleInterface;
 class QSpiApplicationAdaptor;
@@ -206,6 +206,6 @@ private:
     uint sendWindow_unshade : 1;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

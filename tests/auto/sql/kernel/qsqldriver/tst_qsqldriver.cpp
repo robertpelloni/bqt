@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtSql/QtSql>
+#include <BOBUIest>
+#include <BobUISql/BobUISql>
 
 #include "../qsqldatabase/tst_databases.h"
 
@@ -28,7 +28,7 @@ private slots:
     void record();
     void primaryIndex();
     void formatValue();
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     void formatDateTimeValue();
 #endif
 };
@@ -51,7 +51,7 @@ void tst_QSqlDriver::initTestCase_data()
 {
     QVERIFY(dbs.open());
     if (dbs.fillTestTable() == 0)
-        QSKIP("No database drivers are available in this Qt configuration");
+        QSKIP("No database drivers are available in this BobUI configuration");
 }
 
 void tst_QSqlDriver::recreateTestTables(QSqlDatabase db)
@@ -130,7 +130,7 @@ void tst_QSqlDriver::record()
     QCOMPARE(rec.count(), fields.size());
 
     QSqlDriver::DbmsType dbType = tst_Databases::getDatabaseType(db);
-    // QTBUG-1363: QSqlField::length() always return -1 when using QODBC driver and QSqlDatabase::record()
+    // BOBUIBUG-1363: QSqlField::length() always return -1 when using QODBC driver and QSqlDatabase::record()
     if (dbType == QSqlDriver::MSSqlServer && db.driverName().startsWith("QODBC"))
         QCOMPARE(rec.field(1).length(), 20);
 
@@ -229,7 +229,7 @@ void tst_QSqlDriver::primaryIndex()
     else
         QCOMPARE(index.count(), 0);
 
-    // Test getting a primary index for a table with a clob in it - QTBUG-64427
+    // Test getting a primary index for a table with a clob in it - BOBUIBUG-64427
     if (dbType == QSqlDriver::Oracle) {
         TableScope ts(db, "clobTable", __FILE__);
         QSqlQuery qry(db);
@@ -259,7 +259,7 @@ void tst_QSqlDriver::formatValue()
     QCOMPARE(db.driver()->formatValue(rec.field("more_data")), QString("1.234567"));
 }
 
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 void tst_QSqlDriver::formatDateTimeValue()
 {
     QFETCH_GLOBAL(QString, dbName);
@@ -271,8 +271,8 @@ void tst_QSqlDriver::formatDateTimeValue()
     QString query = "CREATE TABLE " + tablename + " (id int, dt " + tst_Databases::dateTimeTypeName(db) + ")";
     QVERIFY_SQL(qry, exec(query));
     // some databases don't store milliseconds, so use a hard-coded date without milliseconds
-    const QDateTime dtUtc(QDate(2025, 03, 29), QTime(00, 33, 00), QTimeZone::utc());
-    const QDateTime dt1(dtUtc.toTimeZone(QTimeZone(3600)));
+    const QDateTime dtUtc(QDate(2025, 03, 29), BOBUIime(00, 33, 00), BOBUIimeZone::utc());
+    const QDateTime dt1(dtUtc.toTimeZone(BOBUIimeZone(3600)));
     QCOMPARE(dtUtc.toMSecsSinceEpoch(), dt1.toMSecsSinceEpoch());
 
     QSqlField fieldDt1("datetime", QMetaType(QMetaType::QDateTime), QString());
@@ -298,5 +298,5 @@ void tst_QSqlDriver::formatDateTimeValue()
 }
 #endif
 
-QTEST_MAIN(tst_QSqlDriver)
+BOBUIEST_MAIN(tst_QSqlDriver)
 #include "tst_qsqldriver.moc"

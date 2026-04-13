@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDRAG_H
 #define QDRAG_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobject.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobject.h>
 
-QT_REQUIRE_CONFIG(draganddrop);
+BOBUI_REQUIRE_CONFIG(draganddrop);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 class QDragPrivate;
@@ -38,19 +38,19 @@ public:
     QObject *source() const;
     QObject *target() const;
 
-    Qt::DropAction exec(Qt::DropActions supportedActions = Qt::MoveAction);
-    Qt::DropAction exec(Qt::DropActions supportedActions, Qt::DropAction defaultAction);
+    BobUI::DropAction exec(BobUI::DropActions supportedActions = BobUI::MoveAction);
+    BobUI::DropAction exec(BobUI::DropActions supportedActions, BobUI::DropAction defaultAction);
 
-    void setDragCursor(const QPixmap &cursor, Qt::DropAction action);
-    QPixmap dragCursor(Qt::DropAction action) const;
+    void setDragCursor(const QPixmap &cursor, BobUI::DropAction action);
+    QPixmap dragCursor(BobUI::DropAction action) const;
 
-    Qt::DropActions supportedActions() const;
-    Qt::DropAction defaultAction() const;
+    BobUI::DropActions supportedActions() const;
+    BobUI::DropAction defaultAction() const;
 
     static void cancel();
 
 Q_SIGNALS:
-    void actionChanged(Qt::DropAction action);
+    void actionChanged(BobUI::DropAction action);
     void targetChanged(QObject *newTarget);
 
 private:
@@ -58,6 +58,6 @@ private:
     Q_DISABLE_COPY(QDrag)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDRAG_H

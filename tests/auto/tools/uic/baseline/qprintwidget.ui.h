@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'qprintwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,20 +9,20 @@
 #ifndef QPRINTWIDGET_H
 #define QPRINTWIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_QPrintWidget
 {
@@ -41,7 +41,7 @@ public:
     QLabel *lOutput;
     QHBoxLayout *horizontalLayout;
     QLineEdit *filename;
-    QToolButton *fileBrowser;
+    BOBUIoolButton *fileBrowser;
 
     void setupUi(QWidget *QPrintWidget)
     {
@@ -117,7 +117,7 @@ public:
 
         horizontalLayout->addWidget(filename);
 
-        fileBrowser = new QToolButton(printerGroup);
+        fileBrowser = new BOBUIoolButton(printerGroup);
         fileBrowser->setObjectName("fileBrowser");
 
         horizontalLayout->addWidget(fileBrowser);
@@ -128,10 +128,10 @@ public:
 
         horizontalLayout_2->addWidget(printerGroup);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(printers);
         lOutput->setBuddy(filename);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(QPrintWidget);
 
@@ -157,6 +157,6 @@ namespace Ui {
     class QPrintWidget: public Ui_QPrintWidget {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINTWIDGET_H

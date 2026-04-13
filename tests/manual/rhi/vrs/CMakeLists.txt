@@ -1,40 +1,40 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(vrs LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_manual_test(vrs
+bobui_internal_add_manual_test(vrs
     GUI
     SOURCES
         vrs.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 set_source_files_properties("../shared/texture.vert.qsb"
-    PROPERTIES QT_RESOURCE_ALIAS "texture.vert.qsb"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "texture.vert.qsb"
 )
 set_source_files_properties("../shared/texture.frag.qsb"
-    PROPERTIES QT_RESOURCE_ALIAS "texture.frag.qsb"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "texture.frag.qsb"
 )
-set_source_files_properties("../shared/qt256.png"
-    PROPERTIES QT_RESOURCE_ALIAS "qt256.png"
+set_source_files_properties("../shared/bobui256.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "bobui256.png"
 )
-qt_internal_add_resource(vrs "vrs"
+bobui_internal_add_resource(vrs "vrs"
     PREFIX
         "/"
     FILES
         "../shared/texture.vert.qsb"
         "../shared/texture.frag.qsb"
-        "../shared/qt256.png"
+        "../shared/bobui256.png"
 )
 
-qt_internal_extend_target(vrs CONDITION QT_FEATURE_metal
+bobui_internal_extend_target(vrs CONDITION BOBUI_FEATURE_metal
     SOURCES
         vrs_metaltest.mm
 )

@@ -1,20 +1,20 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCALENDARWIDGET_H
 #define QCALENDARWIDGET_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
-#include <QtCore/qdatetime.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
+#include <BobUICore/qdatetime.h>
 
-QT_REQUIRE_CONFIG(calendarwidget);
+BOBUI_REQUIRE_CONFIG(calendarwidget);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDate;
-class QTextCharFormat;
+class BOBUIextCharFormat;
 class QCalendarWidgetPrivate;
 
 class Q_WIDGETS_EXPORT QCalendarWidget : public QWidget
@@ -23,7 +23,7 @@ class Q_WIDGETS_EXPORT QCalendarWidget : public QWidget
     Q_PROPERTY(QDate selectedDate READ selectedDate WRITE setSelectedDate)
     Q_PROPERTY(QDate minimumDate READ minimumDate WRITE setMinimumDate RESET clearMinimumDate)
     Q_PROPERTY(QDate maximumDate READ maximumDate WRITE setMaximumDate RESET clearMaximumDate)
-    Q_PROPERTY(Qt::DayOfWeek firstDayOfWeek READ firstDayOfWeek WRITE setFirstDayOfWeek)
+    Q_PROPERTY(BobUI::DayOfWeek firstDayOfWeek READ firstDayOfWeek WRITE setFirstDayOfWeek)
     Q_PROPERTY(bool gridVisible READ isGridVisible WRITE setGridVisible)
     Q_PROPERTY(SelectionMode selectionMode READ selectionMode WRITE setSelectionMode)
     Q_PROPERTY(HorizontalHeaderFormat horizontalHeaderFormat READ horizontalHeaderFormat
@@ -74,8 +74,8 @@ public:
     void setMaximumDate(QDate date);
     void clearMaximumDate();
 
-    Qt::DayOfWeek firstDayOfWeek() const;
-    void setFirstDayOfWeek(Qt::DayOfWeek dayOfWeek);
+    BobUI::DayOfWeek firstDayOfWeek() const;
+    void setFirstDayOfWeek(BobUI::DayOfWeek dayOfWeek);
 
     bool isNavigationBarVisible() const;
     bool isGridVisible() const;
@@ -92,15 +92,15 @@ public:
     VerticalHeaderFormat verticalHeaderFormat() const;
     void setVerticalHeaderFormat(VerticalHeaderFormat format);
 
-    QTextCharFormat headerTextFormat() const;
-    void setHeaderTextFormat(const QTextCharFormat &format);
+    BOBUIextCharFormat headerTextFormat() const;
+    void setHeaderTextFormat(const BOBUIextCharFormat &format);
 
-    QTextCharFormat weekdayTextFormat(Qt::DayOfWeek dayOfWeek) const;
-    void setWeekdayTextFormat(Qt::DayOfWeek dayOfWeek, const QTextCharFormat &format);
+    BOBUIextCharFormat weekdayTextFormat(BobUI::DayOfWeek dayOfWeek) const;
+    void setWeekdayTextFormat(BobUI::DayOfWeek dayOfWeek, const BOBUIextCharFormat &format);
 
-    QMap<QDate, QTextCharFormat> dateTextFormat() const;
-    QTextCharFormat dateTextFormat(QDate date) const;
-    void setDateTextFormat(QDate date, const QTextCharFormat &format);
+    QMap<QDate, BOBUIextCharFormat> dateTextFormat() const;
+    BOBUIextCharFormat dateTextFormat(QDate date) const;
+    void setDateTextFormat(QDate date, const BOBUIextCharFormat &format);
 
     bool isDateEditEnabled() const;
     void setDateEditEnabled(bool enable);
@@ -154,6 +154,6 @@ private:
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCALENDARWIDGET_H

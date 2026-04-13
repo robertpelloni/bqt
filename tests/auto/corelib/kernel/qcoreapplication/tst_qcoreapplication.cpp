@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_qcoreapplication.h"
 
-#include <QtCore/QtCore>
-#include <QTest>
+#include <BobUICore/BobUICore>
+#include <BOBUIest>
 
 #include <private/qabstracteventdispatcher_p.h> // for qGlobalPostedEventsCount()
 #include <private/qcoreapplication_p.h>
 #include <private/qcoreevent_p.h>
 #include <private/qeventloop_p.h>
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 
 #ifdef Q_OS_WIN
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #endif
 
-Q_LOGGING_CATEGORY(lcTests, "qt.tests." QT_STRINGIFY(tst_QCoreApplication))
+Q_LOGGING_CATEGORY(lcTests, "bobui.tests." BOBUI_STRINGIFY(tst_QCoreApplication))
 
 typedef QCoreApplication TestApplication;
 
@@ -47,7 +47,7 @@ public:
         if (event->type() != QEvent::Type(QEvent::User + 1))
             return QObject::event(event);
         recordedEvents.append(event->type());
-        QThread::currentThread()->quit();
+        BOBUIhread::currentThread()->quit();
         QCoreApplication::quit();
         moveToThread(0);
         return true;
@@ -58,10 +58,10 @@ class Thread : public QDaemonThread
 {
     void run() override
     {
-        QThreadData *data = QThreadData::current();
+        BOBUIhreadData *data = BOBUIhreadData::current();
         QVERIFY(!data->requiresCoreApplication);        // daemon thread
         data->requiresCoreApplication = requiresCoreApplication;
-        QThread::run();
+        BOBUIhread::run();
     }
 
 public:
@@ -72,7 +72,7 @@ public:
 void tst_QCoreApplication::sendEventsOnProcessEvents()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     EventSpy spy;
@@ -94,7 +94,7 @@ void tst_QCoreApplication::getSetCheck()
     // Test the property
     {
         int argc = 1;
-        char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+        char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
         TestApplication app(argc, argv);
         QCOMPARE(app.property("applicationVersion").toString(), v);
     }
@@ -105,7 +105,7 @@ void tst_QCoreApplication::getSetCheck()
 
 void tst_QCoreApplication::qAppName()
 {
-#ifdef QT_QGUIAPPLICATIONTEST
+#ifdef BOBUI_QGUIAPPLICATIONTEST
     const char* appName = "tst_qguiapplication";
 #else
     const char* appName = "tst_qcoreapplication";
@@ -122,7 +122,7 @@ void tst_QCoreApplication::qAppName()
     // global statics often rely on this.
     QCOMPARE(QCoreApplication::applicationName(), QString::fromLatin1(appName));
 
-    // Setting the appname before creating the application should work (QTBUG-45283)
+    // Setting the appname before creating the application should work (BOBUIBUG-45283)
     const QString wantedAppName("my app name");
     {
         int argc = 1;
@@ -178,7 +178,7 @@ void tst_QCoreApplication::argc()
 {
     {
         int argc = 1;
-        char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+        char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
         TestApplication app(argc, argv);
         QCOMPARE(argc, 1);
         QCOMPARE(app.arguments().size(), 1);
@@ -186,7 +186,7 @@ void tst_QCoreApplication::argc()
 
     {
         int argc = 4;
-        char *argv[] = { const_cast<char*>(QTest::currentAppName()),
+        char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()),
                          const_cast<char*>("arg1"),
                          const_cast<char*>("arg2"),
                          const_cast<char*>("arg3") };
@@ -205,7 +205,7 @@ void tst_QCoreApplication::argc()
 
     {
         int argc = 2;
-        char *argv[] = { const_cast<char*>(QTest::currentAppName()),
+        char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()),
                          const_cast<char*>("-qmljsdebugger=port:3768,block") };
         TestApplication app(argc, argv);
         QCOMPARE(argc, 1);
@@ -213,9 +213,9 @@ void tst_QCoreApplication::argc()
     }
 }
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 static char argv0name[] =
-#ifdef QT_GUI_LIB
+#ifdef BOBUI_GUI_LIB
         "tst_qguiapplication"
 #else
         "tst_qcoreapplication"
@@ -229,9 +229,9 @@ static bool isPathListIncluded(const QStringList &l, const QStringList &r)
     if (size > l.size())
         return false;
 #if defined (Q_OS_WIN)
-    Qt::CaseSensitivity cs = Qt::CaseInsensitive;
+    BobUI::CaseSensitivity cs = BobUI::CaseInsensitive;
 #else
-    Qt::CaseSensitivity cs = Qt::CaseSensitive;
+    BobUI::CaseSensitivity cs = BobUI::CaseSensitive;
 #endif
     int i = 0, j = 0;
     for ( ; i < l.size() && j < r.size(); ++i) {
@@ -277,7 +277,7 @@ void tst_QCoreApplication::libraryPaths()
 
         QStringList expected;
 #ifndef Q_OS_ANDROID
-        //Android doesn't use plugins dir at runtime, see QTBUG-141732
+        //Android doesn't use plugins dir at runtime, see BOBUIBUG-141732
         expected << QLibraryInfo::path(QLibraryInfo::PluginsPath);
 #endif
         expected << QDir(QCoreApplication::applicationDirPath()).canonicalPath();
@@ -285,7 +285,7 @@ void tst_QCoreApplication::libraryPaths()
         expected.sort();
 
 #if defined(Q_OS_VXWORKS)
-        QEXPECT_FAIL("", "QTBUG-130736: Actual paths on VxWorks differ from expected", Abort);
+        QEXPECT_FAIL("", "BOBUIBUG-130736: Actual paths on VxWorks differ from expected", Abort);
 #endif
         QVERIFY2(isPathListIncluded(actual, expected),
                  qPrintable("actual:\n - " + actual.join("\n - ") +
@@ -351,22 +351,22 @@ void tst_QCoreApplication::libraryPaths()
     }
 }
 
-void tst_QCoreApplication::libraryPaths_qt_plugin_path()
+void tst_QCoreApplication::libraryPaths_bobui_plugin_path()
 {
     int argc = 1;
 
     QCoreApplication app(argc, &argv0);
     QString appDirPath = QCoreApplication::applicationDirPath();
 
-    // Our hook into libraryPaths() initialization: Set the QT_PLUGIN_PATH environment variable
+    // Our hook into libraryPaths() initialization: Set the BOBUI_PLUGIN_PATH environment variable
     QString installPathPluginsDeCanon = appDirPath + QString::fromLatin1("/tmp/..");
     QByteArray ascii = QFile::encodeName(installPathPluginsDeCanon);
-    qputenv("QT_PLUGIN_PATH", ascii);
+    qputenv("BOBUI_PLUGIN_PATH", ascii);
 
     QVERIFY(!QCoreApplication::libraryPaths().contains(appDirPath + QString::fromLatin1("/tmp/..")));
 }
 
-void tst_QCoreApplication::libraryPaths_qt_plugin_path_2()
+void tst_QCoreApplication::libraryPaths_bobui_plugin_path_2()
 {
 #ifdef Q_OS_UNIX
     QByteArray validPath = QDir("/tmp").canonicalPath().toLatin1();
@@ -379,8 +379,8 @@ void tst_QCoreApplication::libraryPaths_qt_plugin_path_2()
 #endif
 
     {
-        // Our hook into libraryPaths() initialization: Set the QT_PLUGIN_PATH environment variable
-        qputenv("QT_PLUGIN_PATH", pluginPath);
+        // Our hook into libraryPaths() initialization: Set the BOBUI_PLUGIN_PATH environment variable
+        qputenv("BOBUI_PLUGIN_PATH", pluginPath);
 
         int argc = 1;
 
@@ -390,14 +390,14 @@ void tst_QCoreApplication::libraryPaths_qt_plugin_path_2()
         QStringList expected =
             QStringList()
 #ifndef Q_OS_ANDROID
-            //Android doesn't use plugins dir at runtime, see QTBUG-141732
+            //Android doesn't use plugins dir at runtime, see BOBUIBUG-141732
             << QLibraryInfo::path(QLibraryInfo::PluginsPath)
 #endif
             << QDir(QCoreApplication::applicationDirPath()).canonicalPath()
             << QDir(QDir::fromNativeSeparators(QString::fromLatin1(validPath))).canonicalPath();
 
 #if defined(Q_OS_VXWORKS)
-        QEXPECT_FAIL("", "QTBUG-130736: Actual paths on VxWorks differ from expected", Abort);
+        QEXPECT_FAIL("", "BOBUIBUG-130736: Actual paths on VxWorks differ from expected", Abort);
 #endif
         QVERIFY2(isPathListIncluded(QCoreApplication::libraryPaths(), expected),
                  qPrintable("actual:\n - " + QCoreApplication::libraryPaths().join("\n - ") +
@@ -411,13 +411,13 @@ void tst_QCoreApplication::libraryPaths_qt_plugin_path_2()
 
         // library paths are initialized by the QCoreApplication, setting
         // the environment variable here doesn't work
-        qputenv("QT_PLUGIN_PATH", pluginPath);
+        qputenv("BOBUI_PLUGIN_PATH", pluginPath);
 
         // library path list should contain the default
         QStringList expected =
             QStringList()
 #ifndef Q_OS_ANDROID
-            //Android doesn't use plugins dir at runtime, see QTBUG-141732
+            //Android doesn't use plugins dir at runtime, see BOBUIBUG-141732
             << QLibraryInfo::path(QLibraryInfo::PluginsPath)
 #endif
             << QDir(QCoreApplication::applicationDirPath()).canonicalPath();
@@ -427,7 +427,7 @@ void tst_QCoreApplication::libraryPaths_qt_plugin_path_2()
                            + QCoreApplication::libraryPaths().join("\n - ") +
                            "\nexpected:\n - " + expected.join("\n - ")));
 
-        qputenv("QT_PLUGIN_PATH", nullptr);
+        qputenv("BOBUI_PLUGIN_PATH", nullptr);
     }
 }
 #endif
@@ -457,7 +457,7 @@ public:
 void tst_QCoreApplication::postEvent()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     EventSpy spy;
@@ -542,7 +542,7 @@ void tst_QCoreApplication::postEvent()
 void tst_QCoreApplication::removePostedEvents()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     EventSpy spy;
@@ -615,14 +615,14 @@ void tst_QCoreApplication::removePostedEvents()
     expected.clear();
 }
 
-#if QT_CONFIG(thread)
-class DeliverInDefinedOrderThread : public QThread
+#if BOBUI_CONFIG(thread)
+class DeliverInDefinedOrderThread : public BOBUIhread
 {
     Q_OBJECT
 
 public:
     DeliverInDefinedOrderThread()
-        : QThread()
+        : BOBUIhread()
     { }
 
 signals:
@@ -645,7 +645,7 @@ class DeliverInDefinedOrderObject : public QObject
 {
     Q_OBJECT
 
-    QPointer<QThread> thread;
+    QPointer<BOBUIhread> thread;
     int count;
     int startCount;
     int loopLevel;
@@ -721,7 +721,7 @@ public:
 void tst_QCoreApplication::deliverInDefinedOrder()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     DeliverInDefinedOrderObject obj(&app);
@@ -732,14 +732,14 @@ void tst_QCoreApplication::deliverInDefinedOrder()
     QObject::connect(&obj, SIGNAL(done()), &app, SLOT(quit()));
     app.exec();
 }
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
 
 void tst_QCoreApplication::applicationPid()
 {
     QVERIFY(QCoreApplication::applicationPid() > 0);
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 class GlobalPostedEventsCountObject : public QObject
 {
     Q_OBJECT
@@ -758,7 +758,7 @@ public:
 void tst_QCoreApplication::globalPostedEventsCount()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     QCoreApplication::sendPostedEvents();
@@ -778,7 +778,7 @@ void tst_QCoreApplication::globalPostedEventsCount()
     const QList<qsizetype> expected = {4, 3, 2, 1, 0};
     QCOMPARE(x.globalPostedEventsCount, expected);
 }
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 
 class ProcessEventsAlwaysSendsPostedEventsObject : public QObject
 {
@@ -800,7 +800,7 @@ public:
 void tst_QCoreApplication::processEventsAlwaysSendsPostedEvents()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     ProcessEventsAlwaysSendsPostedEventsObject object;
@@ -819,7 +819,7 @@ void tst_QCoreApplication::processEventsAlwaysSendsPostedEvents()
 void tst_QCoreApplication::sendPostedEventsInNativeLoop()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     bool signalReceived = false;
@@ -827,7 +827,7 @@ void tst_QCoreApplication::sendPostedEventsInNativeLoop()
     // Post a message to the queue
     QMetaObject::invokeMethod(this, [&signalReceived]() {
         signalReceived = true;
-    }, Qt::QueuedConnection);
+    }, BobUI::QueuedConnection);
 
     QElapsedTimer elapsedTimer;
     elapsedTimer.start();
@@ -839,7 +839,7 @@ void tst_QCoreApplication::sendPostedEventsInNativeLoop()
             break;
 
         if (!::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-            QThread::msleep(100);
+            BOBUIhread::msleep(100);
             continue;
         }
 
@@ -873,14 +873,14 @@ void tst_QCoreApplication::quit()
 
     {
         int argc = 1;
-        char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+        char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
         TestApplication app(argc, argv);
 
         EventSpy spy;
         app.installEventFilter(&spy);
 
         {
-            QTimer::singleShot(0, &app, SLOT(quit()));
+            BOBUIimer::singleShot(0, &app, SLOT(quit()));
             app.exec();
             QVERIFY(spy.recordedEvents.contains(QEvent::Quit));
         }
@@ -888,7 +888,7 @@ void tst_QCoreApplication::quit()
         spy.recordedEvents.clear();
 
         {
-            QTimer::singleShot(0, qApp, SLOT(quit()));
+            BOBUIimer::singleShot(0, qApp, SLOT(quit()));
             app.exec();
             QVERIFY(spy.recordedEvents.contains(QEvent::Quit));
         }
@@ -896,7 +896,7 @@ void tst_QCoreApplication::quit()
         spy.recordedEvents.clear();
 
         {
-            QTimer::singleShot(0, [&]{ TestApplication::quit(); });
+            BOBUIimer::singleShot(0, [&]{ TestApplication::quit(); });
             app.exec();
             QVERIFY(spy.recordedEvents.contains(QEvent::Quit));
         }
@@ -907,8 +907,8 @@ void tst_QCoreApplication::quit()
             QuitBlocker quitBlocker;
             app.installEventFilter(&quitBlocker);
 
-            QTimer::singleShot(0, [&]{ TestApplication::quit(); });
-            QTimer::singleShot(200, [&]{ TestApplication::exit(); });
+            BOBUIimer::singleShot(0, [&]{ TestApplication::quit(); });
+            BOBUIimer::singleShot(200, [&]{ TestApplication::exit(); });
             app.exec();
             QVERIFY(!spy.recordedEvents.contains(QEvent::Quit));
         }
@@ -920,42 +920,42 @@ void tst_QCoreApplication::quit()
 void tst_QCoreApplication::reexec()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     // exec once
-    QMetaObject::invokeMethod(&app, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&app, "quit", BobUI::QueuedConnection);
     QCOMPARE(app.exec(), 0);
 
     // and again
-    QMetaObject::invokeMethod(&app, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&app, "quit", BobUI::QueuedConnection);
     QCOMPARE(app.exec(), 0);
 }
 
 void tst_QCoreApplication::execAfterExit()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     app.exit(1);
-    QMetaObject::invokeMethod(&app, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&app, "quit", BobUI::QueuedConnection);
     QCOMPARE(app.exec(), 0);
 }
 
 void tst_QCoreApplication::eventLoopExecAfterExit()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     // exec once and exit
-    QMetaObject::invokeMethod(&app, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&app, "quit", BobUI::QueuedConnection);
     QCOMPARE(app.exec(), 0);
 
     // and again, but this time using a QEventLoop
     QEventLoop loop;
-    QMetaObject::invokeMethod(&loop, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&loop, "quit", BobUI::QueuedConnection);
     QCOMPARE(loop.exec(), 0);
 }
 
@@ -970,7 +970,7 @@ public:
     }
     void registerSocketNotifier(QSocketNotifier *) override {}
     void unregisterSocketNotifier(QSocketNotifier *) override {}
-    void registerTimer(int , qint64 , Qt::TimerType, QObject *) override {}
+    void registerTimer(int , qint64 , BobUI::TimerType, QObject *) override {}
     bool unregisterTimer(int ) override { return false; }
     bool unregisterTimers(QObject *) override { return false; }
     QList<TimerInfo> registeredTimers(QObject *) const override { return QList<TimerInfo>(); }
@@ -1000,11 +1000,11 @@ void tst_QCoreApplication::customEventDispatcher()
     QVERIFY(!weak_ed.isNull());
     {
         int argc = 1;
-        char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+        char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
         TestApplication app(argc, argv);
         // instantiating app should not overwrite the ED
         QCOMPARE(QCoreApplication::eventDispatcher(), ed);
-        QMetaObject::invokeMethod(&app, "quit", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(&app, "quit", BobUI::QueuedConnection);
         app.exec();
         // the custom ED has really been used?
         QVERIFY(ed->visited);
@@ -1021,13 +1021,13 @@ public:
     explicit JobObject(QEventLoop *loop, QObject *parent = nullptr)
         : QObject(parent), locker(loop)
     {
-        QTimer::singleShot(1000, this, SLOT(timeout()));
+        BOBUIimer::singleShot(1000, this, SLOT(timeout()));
     }
 
     explicit JobObject(QObject *parent = nullptr)
         : QObject(parent)
     {
-        QTimer::singleShot(1000, this, SLOT(timeout()));
+        BOBUIimer::singleShot(1000, this, SLOT(timeout()));
     }
 
 public slots:
@@ -1057,7 +1057,7 @@ public:
     QuitTester(QObject *parent = nullptr)
       : QObject(parent)
     {
-        QTimer::singleShot(0, this, SLOT(doTest()));
+        BOBUIimer::singleShot(0, this, SLOT(doTest()));
     }
 
 private slots:
@@ -1115,7 +1115,7 @@ private slots:
 void tst_QCoreApplication::testQuitLock()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     QuitTester tester;
@@ -1123,7 +1123,7 @@ void tst_QCoreApplication::testQuitLock()
 }
 
 
-void tst_QCoreApplication::QTBUG31606_QEventDestructorDeadLock()
+void tst_QCoreApplication::BOBUIBUG31606_QEventDestructorDeadLock()
 {
     class MyEvent : public QEvent
     { public:
@@ -1134,7 +1134,7 @@ void tst_QCoreApplication::QTBUG31606_QEventDestructorDeadLock()
     };
 
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     EventSpy spy;
@@ -1152,14 +1152,14 @@ void tst_QCoreApplication::QTBUG31606_QEventDestructorDeadLock()
 void tst_QCoreApplication::applicationEventFilters_mainThread()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     EventSpy spy;
     app.installEventFilter(&spy);
 
     QCoreApplication::postEvent(&app,  new QEvent(QEvent::Type(QEvent::User + 1)));
-    QTimer::singleShot(10, &app, SLOT(quit()));
+    BOBUIimer::singleShot(10, &app, SLOT(quit()));
     app.exec();
     QVERIFY(spy.recordedEvents.contains(QEvent::User + 1));
 }
@@ -1167,9 +1167,9 @@ void tst_QCoreApplication::applicationEventFilters_mainThread()
 void tst_QCoreApplication::applicationEventFilters_auxThread()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
-    QThread thread;
+    BOBUIhread thread;
     ThreadedEventReceiver receiver;
     receiver.moveToThread(&thread);
 
@@ -1178,7 +1178,7 @@ void tst_QCoreApplication::applicationEventFilters_auxThread()
 
     // this is very similar to sendEventsOnProcessEvents
     QCoreApplication::postEvent(&receiver,  new QEvent(QEvent::Type(QEvent::User + 1)));
-    QTimer::singleShot(1000, &app, SLOT(quit()));
+    BOBUIimer::singleShot(1000, &app, SLOT(quit()));
     thread.start();
     app.exec();
     QVERIFY(thread.wait(1000));
@@ -1188,15 +1188,15 @@ void tst_QCoreApplication::applicationEventFilters_auxThread()
 
 void tst_QCoreApplication::threadedEventDelivery_data()
 {
-    QTest::addColumn<bool>("requiresCoreApplication");
-    QTest::addColumn<bool>("createCoreApplication");
-    QTest::addColumn<bool>("eventsReceived");
+    BOBUIest::addColumn<bool>("requiresCoreApplication");
+    BOBUIest::addColumn<bool>("createCoreApplication");
+    BOBUIest::addColumn<bool>("eventsReceived");
 
     // invalid combination:
-    //QTest::newRow("default-without-coreapp") << true << false << false;
-    QTest::newRow("default") << true << true << true;
-    QTest::newRow("independent-without-coreapp") << false << false << true;
-    QTest::newRow("independent-with-coreapp") << false << true << true;
+    //BOBUIest::newRow("default-without-coreapp") << true << false << false;
+    BOBUIest::newRow("default") << true << true << true;
+    BOBUIest::newRow("independent-without-coreapp") << false << false << true;
+    BOBUIest::newRow("independent-with-coreapp") << false << true << true;
 }
 
 // posts the event before the QCoreApplication is destroyed, starts thread after
@@ -1207,7 +1207,7 @@ void tst_QCoreApplication::threadedEventDelivery()
     QFETCH(bool, eventsReceived);
 
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     QScopedPointer<TestApplication> app(createCoreApplication ? new TestApplication(argc, argv) : 0);
 
     Thread thread;
@@ -1227,7 +1227,7 @@ void tst_QCoreApplication::testTrWithPercantegeAtTheEnd()
     QCoreApplication::translate("testcontext", "this will crash%", "testdisamb", 3);
 }
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 void tst_QCoreApplication::addRemoveLibPaths()
 {
     QStringList paths = QCoreApplication::libraryPaths();
@@ -1242,7 +1242,7 @@ void tst_QCoreApplication::addRemoveLibPaths()
     QVERIFY(!QCoreApplication::libraryPaths().contains(paths[0]));
 
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
 
     // If libraryPaths only contains currentDir, neither will be in libraryPaths now.
@@ -1272,18 +1272,18 @@ void tst_QCoreApplication::theMainThread()
     QVERIFY(theMainThreadIsSet()); // we have at LEAST one QObject alive: tst_QCoreApplication
 
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     TestApplication app(argc, argv);
     QVERIFY(QCoreApplicationPrivate::theMainThreadId.loadRelaxed());
-    QVERIFY(QThread::isMainThread());
+    QVERIFY(BOBUIhread::isMainThread());
     QCOMPARE(app.thread(), thread());
-    QCOMPARE(app.thread(), QThread::currentThread());
+    QCOMPARE(app.thread(), BOBUIhread::currentThread());
 }
 
 static void createQObjectOnDestruction()
 {
     // Make sure that we can create a QObject (and thus have an associated
-    // QThread) after the last QObject has been destroyed (especially after
+    // BOBUIhread) after the last QObject has been destroyed (especially after
     // QCoreApplication has).
 
     // Before the fixes, this would cause a dangling pointer dereference. If
@@ -1317,29 +1317,29 @@ void tst_QCoreApplication::testDeleteLaterFromBeforeOutermostEventLoop()
     QCoreApplication::processEvents();
 
     QEventLoop loop;
-    QTimer::singleShot(0, &loop, &QEventLoop::quit);
+    BOBUIimer::singleShot(0, &loop, &QEventLoop::quit);
     loop.exec();
     QVERIFY(!spyPointer);
 }
 
 void tst_QCoreApplication::setIndividualAttributes_data()
 {
-    QTest::addColumn<Qt::ApplicationAttribute>("attribute");
+    BOBUIest::addColumn<BobUI::ApplicationAttribute>("attribute");
 
-    const QMetaEnum &metaEnum = Qt::staticMetaObject.enumerator(Qt::staticMetaObject.indexOfEnumerator("ApplicationAttribute"));
+    const QMetaEnum &metaEnum = BobUI::staticMetaObject.enumerator(BobUI::staticMetaObject.indexOfEnumerator("ApplicationAttribute"));
     // - 1 to avoid AA_AttributeCount.
     for (int i = 0; i < metaEnum.keyCount(); ++i) {
-        const auto attribute = static_cast<Qt::ApplicationAttribute>(metaEnum.value(i));
-        if (attribute == Qt::AA_AttributeCount)
+        const auto attribute = static_cast<BobUI::ApplicationAttribute>(metaEnum.value(i));
+        if (attribute == BobUI::AA_AttributeCount)
             continue;
 
-        QTest::addRow("%s", metaEnum.key(i)) << attribute;
+        BOBUIest::addRow("%s", metaEnum.key(i)) << attribute;
     }
 }
 
 void tst_QCoreApplication::setIndividualAttributes()
 {
-    QFETCH(Qt::ApplicationAttribute, attribute);
+    QFETCH(BobUI::ApplicationAttribute, attribute);
 
     const auto originalValue = QCoreApplication::testAttribute(attribute);
     auto cleanup = qScopeGuard([=]() {
@@ -1355,26 +1355,26 @@ void tst_QCoreApplication::setIndividualAttributes()
 
 void tst_QCoreApplication::setMultipleAttributes()
 {
-    const auto originalDontUseNativeMenuWindowsValue = QCoreApplication::testAttribute(Qt::AA_DontUseNativeMenuWindows);
-    const auto originalDisableSessionManagerValue = QCoreApplication::testAttribute(Qt::AA_DisableSessionManager);
+    const auto originalDontUseNativeMenuWindowsValue = QCoreApplication::testAttribute(BobUI::AA_DontUseNativeMenuWindows);
+    const auto originalDisableSessionManagerValue = QCoreApplication::testAttribute(BobUI::AA_DisableSessionManager);
     auto cleanup = qScopeGuard([=]() {
-        QCoreApplication::setAttribute(Qt::AA_DontUseNativeMenuWindows, originalDontUseNativeMenuWindowsValue);
-        QCoreApplication::setAttribute(Qt::AA_DisableSessionManager, originalDisableSessionManagerValue);
+        QCoreApplication::setAttribute(BobUI::AA_DontUseNativeMenuWindows, originalDontUseNativeMenuWindowsValue);
+        QCoreApplication::setAttribute(BobUI::AA_DisableSessionManager, originalDisableSessionManagerValue);
     });
 
-    QCoreApplication::setAttribute(Qt::AA_DontUseNativeMenuWindows, true);
-    QCoreApplication::setAttribute(Qt::AA_DisableSessionManager, true);
-    QVERIFY(QCoreApplication::testAttribute(Qt::AA_DontUseNativeMenuWindows));
-    QVERIFY(QCoreApplication::testAttribute(Qt::AA_DisableSessionManager));
+    QCoreApplication::setAttribute(BobUI::AA_DontUseNativeMenuWindows, true);
+    QCoreApplication::setAttribute(BobUI::AA_DisableSessionManager, true);
+    QVERIFY(QCoreApplication::testAttribute(BobUI::AA_DontUseNativeMenuWindows));
+    QVERIFY(QCoreApplication::testAttribute(BobUI::AA_DisableSessionManager));
 
-    QCoreApplication::setAttribute(Qt::AA_DontUseNativeMenuWindows, false);
-    QCoreApplication::setAttribute(Qt::AA_DisableSessionManager, false);
-    QVERIFY(!QCoreApplication::testAttribute(Qt::AA_DontUseNativeMenuWindows));
-    QVERIFY(!QCoreApplication::testAttribute(Qt::AA_DisableSessionManager));
+    QCoreApplication::setAttribute(BobUI::AA_DontUseNativeMenuWindows, false);
+    QCoreApplication::setAttribute(BobUI::AA_DisableSessionManager, false);
+    QVERIFY(!QCoreApplication::testAttribute(BobUI::AA_DontUseNativeMenuWindows));
+    QVERIFY(!QCoreApplication::testAttribute(BobUI::AA_DisableSessionManager));
 }
 
-#ifndef QT_QGUIAPPLICATIONTEST
-QTEST_APPLESS_MAIN(tst_QCoreApplication)
+#ifndef BOBUI_QGUIAPPLICATIONTEST
+BOBUIEST_APPLESS_MAIN(tst_QCoreApplication)
 #endif
 
 #include "tst_qcoreapplication.moc"

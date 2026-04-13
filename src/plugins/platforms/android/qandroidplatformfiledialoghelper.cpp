@@ -1,23 +1,23 @@
 // Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB)
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qandroidplatformfiledialoghelper.h"
 
 #include <androidjnimain.h>
-#include <QtCore/QJniObject>
+#include <BobUICore/QJniObject>
 
 #include <QMimeDatabase>
 #include <QMimeType>
 #include <QRegularExpression>
 #include <QUrl>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QtAndroidFileDialogHelper {
+namespace BobUIAndroidFileDialogHelper {
 
 #define RESULT_OK -1
 #define REQUEST_CODE 1305 // Arbitrary
@@ -26,7 +26,7 @@ const char JniIntentClass[] = "android/content/Intent";
 
 QAndroidPlatformFileDialogHelper::QAndroidPlatformFileDialogHelper()
     : QPlatformFileDialogHelper(),
-      m_activity(QtAndroidPrivate::activity())
+      m_activity(BobUIAndroidPrivate::activity())
 {
 }
 
@@ -133,12 +133,12 @@ void QAndroidPlatformFileDialogHelper::setAllowMultipleSelections(bool allowMult
 QStringList nameFilterExtensions(const QString nameFilters)
 {
     QStringList ret;
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QRegularExpression re("(\\*\\.[a-z0-9 .]+)");
     QRegularExpressionMatchIterator i = re.globalMatch(nameFilters);
     while (i.hasNext())
         ret << i.next().captured(1).trimmed();
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
     ret.removeAll("*");
     return ret;
 }
@@ -167,7 +167,7 @@ void QAndroidPlatformFileDialogHelper::setMimeTypes()
                 JniIntentClass, "EXTRA_MIME_TYPES", "Ljava/lang/String;");
 
         const QJniObject mimeTypesArray = QJniObject::callStaticObjectMethod(
-                "org/qtproject/qt/android/QtNative",
+                "org/bobuiproject/bobui/android/BobUINative",
                 "getStringArray",
                 "(Ljava/lang/String;)[Ljava/lang/String;",
                 QJniObject::fromString(mimeTypes.join(",")).object());
@@ -186,7 +186,7 @@ QJniObject QAndroidPlatformFileDialogHelper::getFileDialogIntent(const QString &
                              ACTION_OPEN_DOCUMENT.object());
 }
 
-bool QAndroidPlatformFileDialogHelper::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QAndroidPlatformFileDialogHelper::show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
     Q_UNUSED(windowFlags);
     Q_UNUSED(windowModality);
@@ -226,7 +226,7 @@ bool QAndroidPlatformFileDialogHelper::show(Qt::WindowFlags windowFlags, Qt::Win
 
     setInitialDirectoryUri(m_directory.toString());
 
-    QtAndroidPrivate::registerActivityResultListener(this);
+    BobUIAndroidPrivate::registerActivityResultListener(this);
     m_activity.callMethod<void>("startActivityForResult", "(Landroid/content/Intent;I)V",
                               m_intent.object(), REQUEST_CODE);
     return true;
@@ -236,7 +236,7 @@ void QAndroidPlatformFileDialogHelper::hide()
 {
     if (m_eventLoop.isRunning())
         m_eventLoop.exit();
-    QtAndroidPrivate::unregisterActivityResultListener(this);
+    BobUIAndroidPrivate::unregisterActivityResultListener(this);
 }
 
 void QAndroidPlatformFileDialogHelper::setDirectory(const QUrl &directory)
@@ -250,4 +250,4 @@ void QAndroidPlatformFileDialogHelper::exec()
 }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

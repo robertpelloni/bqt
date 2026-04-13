@@ -55,7 +55,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QToolButton" name="toolButton">
+      <widget class="BOBUIoolButton" name="toolButton">
        <property name="minimumSize">
         <size>
          <width>25</width>
@@ -70,7 +70,7 @@
      <item>
       <widget class="Line" name="line">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>BobUI::Orientation::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -106,7 +106,7 @@
      <item>
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>BobUI::Orientation::Horizontal</enum>
        </property>
        <property name="standardButtons">
         <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
@@ -120,7 +120,7 @@
  <customwidgets>
   <customwidget>
    <class>BookmarkWidget</class>
-   <extends>QTreeWidget</extends>
+   <extends>BOBUIreeWidget</extends>
    <header>bookmarkwidget.h</header>
   </customwidget>
  </customwidgets>

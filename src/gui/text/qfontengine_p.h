@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFONTENGINE_P_H
 #define QFONTENGINE_P_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/qfontvariableaxis.h>
-#include "QtCore/qatomic.h"
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qhashfunctions.h>
-#include "private/qtextengine_p.h"
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/qfontvariableaxis.h>
+#include "BobUICore/qatomic.h"
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qhashfunctions.h>
+#include "private/bobuiextengine_p.h"
 #include "private/qfont_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPainterPath;
 class QFontEngineGlyphCache;
@@ -39,8 +39,8 @@ enum HB_Compat_Error {
     Err_Invalid_SubTable             = 0x1570
 };
 
-typedef void (*qt_destroy_func_t) (void *user_data);
-typedef bool (*qt_get_font_table_func_t) (void *user_data, uint tag, uchar *buffer, uint *length);
+typedef void (*bobui_destroy_func_t) (void *user_data);
+typedef bool (*bobui_get_font_table_func_t) (void *user_data, uint tag, uchar *buffer, uint *length);
 
 Q_DECLARE_LOGGING_CATEGORY(lcColrv1)
 
@@ -172,13 +172,13 @@ public:
     virtual void doKerning(QGlyphLayout *, ShaperFlags) const;
 
     virtual void addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
-                                 QPainterPath *path, QTextItem::RenderFlags flags);
+                                 QPainterPath *path, BOBUIextItem::RenderFlags flags);
 
-    void getGlyphPositions(const QGlyphLayout &glyphs, const QTransform &matrix, QTextItem::RenderFlags flags,
+    void getGlyphPositions(const QGlyphLayout &glyphs, const BOBUIransform &matrix, BOBUIextItem::RenderFlags flags,
                            QVarLengthArray<glyph_t> &glyphs_out, QVarLengthArray<QFixedPoint> &positions);
 
-    virtual void addOutlineToPath(qreal, qreal, const QGlyphLayout &, QPainterPath *, QTextItem::RenderFlags flags);
-    void addBitmapFontToPath(qreal x, qreal y, const QGlyphLayout &, QPainterPath *, QTextItem::RenderFlags);
+    virtual void addOutlineToPath(qreal, qreal, const QGlyphLayout &, QPainterPath *, BOBUIextItem::RenderFlags flags);
+    void addBitmapFontToPath(qreal x, qreal y, const QGlyphLayout &, QPainterPath *, BOBUIextItem::RenderFlags);
     /**
      * Create a qimage with the alpha values for the glyph.
      * Returns an image indexed_8 with index values ranging from 0=fully transparent to 255=opaque
@@ -186,15 +186,15 @@ public:
     // ### Refactor this into a smaller and more flexible API.
     virtual QImage alphaMapForGlyph(glyph_t);
     virtual QImage alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition);
-    virtual QImage alphaMapForGlyph(glyph_t, const QTransform &t);
-    virtual QImage alphaMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const QTransform &t);
-    virtual QImage alphaRGBMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const QTransform &t);
-    virtual QImage bitmapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const QTransform &t, const QColor &color = QColor());
+    virtual QImage alphaMapForGlyph(glyph_t, const BOBUIransform &t);
+    virtual QImage alphaMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const BOBUIransform &t);
+    virtual QImage alphaRGBMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const BOBUIransform &t);
+    virtual QImage bitmapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const BOBUIransform &t, const QColor &color = QColor());
     QImage renderedPathForGlyph(glyph_t glyph, const QColor &color);
-    virtual Glyph *glyphData(glyph_t glyph, const QFixedPoint &subPixelPosition, GlyphFormat neededFormat, const QTransform &t);
+    virtual Glyph *glyphData(glyph_t glyph, const QFixedPoint &subPixelPosition, GlyphFormat neededFormat, const BOBUIransform &t);
     virtual bool hasInternalCaching() const { return false; }
 
-    virtual glyph_metrics_t alphaMapBoundingBox(glyph_t glyph, const QFixedPoint &/*subPixelPosition*/, const QTransform &matrix, GlyphFormat /*format*/)
+    virtual glyph_metrics_t alphaMapBoundingBox(glyph_t glyph, const QFixedPoint &/*subPixelPosition*/, const BOBUIransform &matrix, GlyphFormat /*format*/)
     {
         return boundingBox(glyph, matrix);
     }
@@ -203,7 +203,7 @@ public:
 
     virtual glyph_metrics_t boundingBox(const QGlyphLayout &glyphs);
     virtual glyph_metrics_t boundingBox(glyph_t glyph) = 0;
-    virtual glyph_metrics_t boundingBox(glyph_t glyph, const QTransform &matrix);
+    virtual glyph_metrics_t boundingBox(glyph_t glyph, const BOBUIransform &matrix);
     glyph_metrics_t tightBoundingBox(const QGlyphLayout &glyphs);
 
     virtual QFixed ascent() const;
@@ -225,14 +225,14 @@ public:
     inline bool canRender(uint ucs4) const { return glyphIndex(ucs4) != 0; }
     virtual bool canRender(const QChar *str, int len) const;
 
-    virtual bool supportsTransformation(const QTransform &transform) const;
+    virtual bool supportsTransformation(const BOBUIransform &transform) const;
 
     virtual int glyphCount() const;
     virtual int glyphMargin(GlyphFormat format) { return format == Format_A32 ? 2 : 0; }
 
     virtual QFontEngine *cloneWithSize(qreal /*pixelSize*/) const { return nullptr; }
 
-    virtual Qt::HANDLE handle() const;
+    virtual BobUI::HANDLE handle() const;
 
     virtual QList<QFontVariableAxis> variableAxes() const;
 
@@ -253,7 +253,7 @@ public:
 
     void clearGlyphCache(const void *key);
     void setGlyphCache(const void *key, QFontEngineGlyphCache *data);
-    QFontEngineGlyphCache *glyphCache(const void *key, GlyphFormat format, const QTransform &transform, const QColor &color = QColor()) const;
+    QFontEngineGlyphCache *glyphCache(const void *key, GlyphFormat format, const BOBUIransform &transform, const QColor &color = QColor()) const;
 
     static const uchar *getCMap(const uchar *table, uint tableSize, bool *isSymbolFont, int *cmapSize);
     static quint32 getTrueTypeGlyphIndex(const uchar *cmap, int cmapSize, uint unicode);
@@ -290,17 +290,17 @@ public:
 
     class Holder { // replace by std::unique_ptr once available
         void *ptr;
-        qt_destroy_func_t destroy_func;
+        bobui_destroy_func_t destroy_func;
     public:
         Holder() : ptr(nullptr), destroy_func(nullptr) {}
-        explicit Holder(void *p, qt_destroy_func_t d) : ptr(p), destroy_func(d) {}
+        explicit Holder(void *p, bobui_destroy_func_t d) : ptr(p), destroy_func(d) {}
         ~Holder() { if (ptr && destroy_func) destroy_func(ptr); }
         Holder(Holder &&other) noexcept
             : ptr(std::exchange(other.ptr, nullptr)),
               destroy_func(std::exchange(other.destroy_func, nullptr))
         {
         }
-        QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(Holder)
+        BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(Holder)
 
         void swap(Holder &other) noexcept
         {
@@ -316,7 +316,7 @@ public:
             return result;
         }
         void reset() noexcept { Holder().swap(*this); }
-        qt_destroy_func_t get_deleter() const noexcept { return destroy_func; }
+        bobui_destroy_func_t get_deleter() const noexcept { return destroy_func; }
 
         bool operator!() const noexcept { return !ptr; }
     };
@@ -326,7 +326,7 @@ public:
 
     struct FaceData {
         void *user_data;
-        qt_get_font_table_func_t get_font_table;
+        bobui_get_font_table_func_t get_font_table;
     } faceData;
 
     uint cache_cost; // amount of mem used in bytes by the font
@@ -418,8 +418,8 @@ public:
     virtual int stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, ShaperFlags flags) const override;
     virtual void recalcAdvances(QGlyphLayout *, ShaperFlags) const override;
 
-    void draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &si);
-    virtual void addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs, QPainterPath *path, QTextItem::RenderFlags flags) override;
+    void draw(QPaintEngine *p, qreal x, qreal y, const BOBUIextItemInt &si);
+    virtual void addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs, QPainterPath *path, BOBUIextItem::RenderFlags flags) override;
 
     virtual glyph_metrics_t boundingBox(const QGlyphLayout &glyphs) override;
     virtual glyph_metrics_t boundingBox(glyph_t glyph) override;
@@ -462,7 +462,7 @@ public:
 
     virtual void recalcAdvances(QGlyphLayout *, ShaperFlags) const override;
     virtual void doKerning(QGlyphLayout *, ShaperFlags) const override;
-    virtual void addOutlineToPath(qreal, qreal, const QGlyphLayout &, QPainterPath *, QTextItem::RenderFlags flags) override;
+    virtual void addOutlineToPath(qreal, qreal, const QGlyphLayout &, QPainterPath *, BOBUIextItem::RenderFlags flags) override;
     virtual void getGlyphBearings(glyph_t glyph, qreal *leftBearing = nullptr, qreal *rightBearing = nullptr) override;
 
     virtual QFixed emSquareSize() const override;
@@ -474,9 +474,9 @@ public:
     virtual QFixed averageCharWidth() const override;
     virtual QImage alphaMapForGlyph(glyph_t) override;
     virtual QImage alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition) override;
-    virtual QImage alphaMapForGlyph(glyph_t, const QTransform &t) override;
-    virtual QImage alphaMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const QTransform &t) override;
-    virtual QImage alphaRGBMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const QTransform &t) override;
+    virtual QImage alphaMapForGlyph(glyph_t, const BOBUIransform &t) override;
+    virtual QImage alphaMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const BOBUIransform &t) override;
+    virtual QImage alphaRGBMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const BOBUIransform &t) override;
 
     virtual QFixed lineThickness() const override;
     virtual QFixed underlinePosition() const override;
@@ -516,13 +516,13 @@ private:
     bool m_fallbackFamiliesQueried;
 };
 
-class QTestFontEngine : public QFontEngineBox
+class BOBUIestFontEngine : public QFontEngineBox
 {
 public:
-    QTestFontEngine(int size);
+    BOBUIestFontEngine(int size);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 
 

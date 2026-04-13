@@ -1,19 +1,19 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QFile>
 #include <QFileDialog>
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QMessageBox>
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printer)
-#if QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printer)
+#if BOBUI_CONFIG(printdialog)
 #include <QPrintDialog>
-#endif // QT_CONFIG(printdialog)
+#endif // BOBUI_CONFIG(printdialog)
 #include <QPrinter>
-#endif // QT_CONFIG(printer)
-#endif // QT_PRINTSUPPORT_LIB
+#endif // BOBUI_CONFIG(printer)
+#endif // BOBUI_PRINTSUPPORT_LIB
 #include <QFont>
 #include <QFontDialog>
 
@@ -32,16 +32,16 @@ Notepad::Notepad(QWidget *parent) :
     connect(ui->actionSave_as, &QAction::triggered, this, &Notepad::saveAs);
     connect(ui->actionPrint, &QAction::triggered, this, &Notepad::print);
     connect(ui->actionExit, &QAction::triggered, this, &QWidget::close);
-#if QT_CONFIG(clipboard)
-    connect(ui->textEdit, &QTextEdit::copyAvailable, ui->actionCopy, &QAction::setEnabled);
-    connect(ui->actionCopy, &QAction::triggered, ui->textEdit, &QTextEdit::copy);
-    connect(ui->actionCut, &QAction::triggered, ui->textEdit, &QTextEdit::cut);
-    connect(ui->actionPaste, &QAction::triggered, ui->textEdit, &QTextEdit::paste);
+#if BOBUI_CONFIG(clipboard)
+    connect(ui->textEdit, &BOBUIextEdit::copyAvailable, ui->actionCopy, &QAction::setEnabled);
+    connect(ui->actionCopy, &QAction::triggered, ui->textEdit, &BOBUIextEdit::copy);
+    connect(ui->actionCut, &QAction::triggered, ui->textEdit, &BOBUIextEdit::cut);
+    connect(ui->actionPaste, &QAction::triggered, ui->textEdit, &BOBUIextEdit::paste);
 #endif
-    connect(ui->textEdit, &QTextEdit::undoAvailable, ui->actionUndo, &QAction::setEnabled);
-    connect(ui->actionUndo, &QAction::triggered, ui->textEdit, &QTextEdit::undo);
-    connect(ui->textEdit, &QTextEdit::redoAvailable, ui->actionRedo, &QAction::setEnabled);
-    connect(ui->actionRedo, &QAction::triggered, ui->textEdit, &QTextEdit::redo);
+    connect(ui->textEdit, &BOBUIextEdit::undoAvailable, ui->actionUndo, &QAction::setEnabled);
+    connect(ui->actionUndo, &QAction::triggered, ui->textEdit, &BOBUIextEdit::undo);
+    connect(ui->textEdit, &BOBUIextEdit::redoAvailable, ui->actionRedo, &QAction::setEnabled);
+    connect(ui->actionRedo, &QAction::triggered, ui->textEdit, &BOBUIextEdit::redo);
 
     connect(ui->actionFont, &QAction::triggered, this, &Notepad::selectFont);
     connect(ui->actionBold, &QAction::triggered, this, &Notepad::setFontBold);
@@ -50,11 +50,11 @@ Notepad::Notepad(QWidget *parent) :
     connect(ui->actionAbout, &QAction::triggered, this, &Notepad::about);
 
 // Disable menu actions for unavailable features
-#if !defined(QT_PRINTSUPPORT_LIB) || !QT_CONFIG(printer)
+#if !defined(BOBUI_PRINTSUPPORT_LIB) || !BOBUI_CONFIG(printer)
     ui->actionPrint->setEnabled(false);
 #endif
 
-#if !QT_CONFIG(clipboard)
+#if !BOBUI_CONFIG(clipboard)
     ui->actionCut->setEnabled(false);
     ui->actionCopy->setEnabled(false);
     ui->actionPaste->setEnabled(false);
@@ -84,7 +84,7 @@ void Notepad::open()
         return;
     }
     setWindowTitle(fileName);
-    QTextStream in(&file);
+    BOBUIextStream in(&file);
     QString text = in.readAll();
     ui->textEdit->setText(text);
     file.close();
@@ -108,7 +108,7 @@ void Notepad::save()
         return;
     }
     setWindowTitle(fileName);
-    QTextStream out(&file);
+    BOBUIextStream out(&file);
     QString text = ui->textEdit->toPlainText();
     out << text;
     file.close();
@@ -127,7 +127,7 @@ void Notepad::saveAs()
     }
     currentFile = fileName;
     setWindowTitle(fileName);
-    QTextStream out(&file);
+    BOBUIextStream out(&file);
     QString text = ui->textEdit->toPlainText();
     out << text;
     file.close();
@@ -135,15 +135,15 @@ void Notepad::saveAs()
 
 void Notepad::print()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printer)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printer)
     QPrinter printDev;
-#if QT_CONFIG(printdialog)
+#if BOBUI_CONFIG(printdialog)
     QPrintDialog dialog(&printDev, this);
     if (dialog.exec() == QDialog::Rejected)
         return;
-#endif // QT_CONFIG(printdialog)
+#endif // BOBUI_CONFIG(printdialog)
     ui->textEdit->print(&printDev);
-#endif // QT_CONFIG(printer)
+#endif // BOBUI_CONFIG(printer)
 }
 
 void Notepad::selectFont()
@@ -174,5 +174,5 @@ void Notepad::about()
 {
     QMessageBox::about(this, tr("About Notepad"),
                        tr("The <b>Notepad</b> example demonstrates how to code a basic "
-                          "text editor using QtWidgets"));
+                          "text editor using BobUIWidgets"));
 }

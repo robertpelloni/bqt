@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsql_mysql_p.h"
 
@@ -18,9 +18,9 @@
 #include <qsqlquery.h>
 #include <qsqlrecord.h>
 #include <qstringlist.h>
-#include <qtimezone.h>
-#include <QtSql/private/qsqldriver_p.h>
-#include <QtSql/private/qsqlresult_p.h>
+#include <bobuiimezone.h>
+#include <BobUISql/private/qsqldriver_p.h>
+#include <BobUISql/private/qsqlresult_p.h>
 
 #ifdef Q_OS_WIN32
 // comment the next line out if you want to use MySQL/embedded on Win32 systems.
@@ -44,7 +44,7 @@ using my_bool = decltype(mysql_stmt_bind_result(nullptr, nullptr));
 // this is a copy of the old MYSQL_TIME before an additional integer was added in
 // 8.0.27.0. This kills the sanity check during retrieving this struct from mysql
 // when another libmysql version is used during runtime than during compile time
-struct QT_MYSQL_TIME
+struct BOBUI_MYSQL_TIME
 {
     unsigned int year, month, day, hour, minute, second;
     unsigned long second_part; /**< microseconds */
@@ -52,11 +52,11 @@ struct QT_MYSQL_TIME
     enum enum_mysql_timestamp_type time_type;
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcMysql, "qt.sql.mysql")
+Q_STATIC_LOGGING_CATEGORY(lcMysql, "bobui.sql.mysql")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QMYSQLDriverPrivate : public QSqlDriverPrivate
 {
@@ -72,31 +72,31 @@ public:
 
 static inline QVariant qDateFromString(const QString &val)
 {
-#if !QT_CONFIG(datestring)
+#if !BOBUI_CONFIG(datestring)
     Q_UNUSED(val);
     return QVariant(val);
 #else
     if (val.isEmpty())
         return QVariant(QDate());
-    return QVariant(QDate::fromString(val, Qt::ISODate));
+    return QVariant(QDate::fromString(val, BobUI::ISODate));
 #endif
 }
 
 static inline QVariant qTimeFromString(const QString &val)
 {
-#if !QT_CONFIG(datestring)
+#if !BOBUI_CONFIG(datestring)
     Q_UNUSED(val);
     return QVariant(val);
 #else
     if (val.isEmpty())
-        return QVariant(QTime());
-    return QVariant(QTime::fromString(val, Qt::ISODate));
+        return QVariant(BOBUIime());
+    return QVariant(BOBUIime::fromString(val, BobUI::ISODate));
 #endif
 }
 
 static inline QVariant qDateTimeFromString(QString &val)
 {
-#if !QT_CONFIG(datestring)
+#if !BOBUI_CONFIG(datestring)
     Q_UNUSED(val);
     return QVariant(val);
 #else
@@ -111,7 +111,7 @@ static inline QVariant qDateTimeFromString(QString &val)
 
     if (!val.endsWith(u'Z'))
         val.append(u'Z');       // make UTC
-    return QVariant(QDateTime::fromString(val, Qt::ISODate));
+    return QVariant(QDateTime::fromString(val, BobUI::ISODate));
 #endif
 }
 
@@ -253,7 +253,7 @@ static QMetaType qDecodeMYSQLType(enum_field_types mysqltype, uint flags)
         break;
     case MYSQL_TYPE_TIME:
         // A time field can be within the range '-838:59:59' to '838:59:59' so
-        // use QString instead of QTime since QTime is limited to 24 hour clock
+        // use QString instead of BOBUIime since BOBUIime is limited to 24 hour clock
         type = QMetaType::QString;
         break;
     case MYSQL_TYPE_DATETIME:
@@ -313,7 +313,7 @@ static bool qIsBlob(enum_field_types t)
 
 static bool qIsTimeOrDate(enum_field_types t)
 {
-    // *not* MYSQL_TYPE_TIME because its range is bigger than QTime
+    // *not* MYSQL_TYPE_TIME because its range is bigger than BOBUIime
     // (see above)
     return t == MYSQL_TYPE_DATE || t == MYSQL_TYPE_DATETIME || t == MYSQL_TYPE_TIMESTAMP;
 }
@@ -375,7 +375,7 @@ bool QMYSQLResultPrivate::bindInValues()
             bind->buffer_length = f.bufLength = 0;
             hasBlobs = true;
         } else if (qIsTimeOrDate(fieldInfo->type)) {
-            bind->buffer_length = f.bufLength = sizeof(QT_MYSQL_TIME);
+            bind->buffer_length = f.bufLength = sizeof(BOBUI_MYSQL_TIME);
         } else if (qIsInteger(f.type.id())) {
             bind->buffer_length = f.bufLength = 8;
         } else {
@@ -582,22 +582,22 @@ QVariant QMYSQLResult::data(int field)
             return QVariant::fromValue(qDecodeBitfield(f, f.outField));
         } else if (qIsInteger(f.type.id())) {
             QVariant variant(f.type, f.outField);
-            // we never want to return char variants here, see QTBUG-53397
+            // we never want to return char variants here, see BOBUIBUG-53397
             if (f.type.id() == QMetaType::UChar)
                 return variant.toUInt();
             else if (f.type.id() == QMetaType::Char)
                 return variant.toInt();
             return variant;
-        } else if (qIsTimeOrDate(f.myField->type) && f.bufLength >= sizeof(QT_MYSQL_TIME)) {
-            auto t = reinterpret_cast<const QT_MYSQL_TIME *>(f.outField);
+        } else if (qIsTimeOrDate(f.myField->type) && f.bufLength >= sizeof(BOBUI_MYSQL_TIME)) {
+            auto t = reinterpret_cast<const BOBUI_MYSQL_TIME *>(f.outField);
             QDate date;
-            QTime time;
-            if (f.type.id() != QMetaType::QTime)
+            BOBUIime time;
+            if (f.type.id() != QMetaType::BOBUIime)
                 date = QDate(t->year, t->month, t->day);
             if (f.type.id() != QMetaType::QDate)
-                time = QTime(t->hour, t->minute, t->second, t->second_part / 1000);
+                time = BOBUIime(t->hour, t->minute, t->second, t->second_part / 1000);
             if (f.type.id() == QMetaType::QDateTime)
-                return QDateTime(date, time, QTimeZone::UTC);
+                return QDateTime(date, time, BOBUIimeZone::UTC);
             else if (f.type.id() == QMetaType::QDate)
                 return date;
             else
@@ -660,7 +660,7 @@ QVariant QMYSQLResult::data(int field)
     }
     case QMetaType::QDate:
         return qDateFromString(val);
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
         return qTimeFromString(val);
     case QMetaType::QDateTime:
         return qDateTimeFromString(val);
@@ -906,7 +906,7 @@ bool QMYSQLResult::exec()
         return false;
 
     int r = 0;
-    QList<QT_MYSQL_TIME *> timeVector;
+    QList<BOBUI_MYSQL_TIME *> timeVector;
     QList<QByteArray> stringVector;
     QList<my_bool> nullVector;
 
@@ -940,17 +940,17 @@ bool QMYSQLResult::exec()
                     currBind->buffer_length = val.toByteArray().size();
                     break;
 
-                case QMetaType::QTime:
+                case QMetaType::BOBUIime:
                 case QMetaType::QDate:
                 case QMetaType::QDateTime: {
-                    auto myTime = new QT_MYSQL_TIME{};
+                    auto myTime = new BOBUI_MYSQL_TIME{};
                     timeVector.append(myTime);
                     currBind->buffer = myTime;
 
                     QDate date;
-                    QTime time;
+                    BOBUIime time;
                     int type = val.userType();
-                    if (type == QMetaType::QTime) {
+                    if (type == QMetaType::BOBUIime) {
                         time = val.toTime();
                         currBind->buffer_type = MYSQL_TYPE_TIME;
                         myTime->time_type = MYSQL_TIMESTAMP_TIME;
@@ -966,7 +966,7 @@ bool QMYSQLResult::exec()
                         myTime->time_type = MYSQL_TIMESTAMP_DATETIME;
                     }
 
-                    if (type == QMetaType::QTime || type == QMetaType::QDateTime) {
+                    if (type == QMetaType::BOBUIime || type == QMetaType::QDateTime) {
                         myTime->hour = time.hour();
                         myTime->minute = time.minute();
                         myTime->second = time.second();
@@ -977,7 +977,7 @@ bool QMYSQLResult::exec()
                         myTime->month = date.month();
                         myTime->day = date.day();
                     }
-                    currBind->buffer_length = sizeof(QT_MYSQL_TIME);
+                    currBind->buffer_length = sizeof(BOBUI_MYSQL_TIME);
                     currBind->length = 0;
                     break; }
                 case QMetaType::UInt:
@@ -1338,7 +1338,7 @@ bool QMYSQLDriver::open(const QString &db,
        stored procedure call will fail.
     */
     unsigned int optionFlags = CLIENT_MULTI_STATEMENTS;
-    const QList<QStringView> opts(QStringView(connOpts).split(u';', Qt::SkipEmptyParts));
+    const QList<QStringView> opts(QStringView(connOpts).split(u';', BobUI::SkipEmptyParts));
     QString unixSocket;
 
     // extract the real options from the string
@@ -1427,7 +1427,7 @@ bool QMYSQLDriver::open(const QString &db,
     if (d->preparedQuerysEnabled)
         setUtcTimeZone(d->mysql);
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     mysql_thread_init();
 #endif
 
@@ -1440,7 +1440,7 @@ void QMYSQLDriver::close()
 {
     Q_D(QMYSQLDriver);
     if (isOpen()) {
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
         mysql_thread_end();
 #endif
         mysql_close(d->mysql);
@@ -1624,9 +1624,9 @@ QString QMYSQLDriver::formatValue(const QSqlField &field, bool trimStrings) cons
                 // it's because the MySQL server is too old for prepared queries
                 // in the first place, so it won't understand timezones either.
                 r = u'\'' +
-                        dt.date().toString(Qt::ISODate) +
+                        dt.date().toString(BobUI::ISODate) +
                         u'T' +
-                        dt.time().toString(Qt::ISODateWithMs) +
+                        dt.time().toString(BobUI::ISODateWithMs) +
                         u'\'';
             }
             break;
@@ -1655,6 +1655,6 @@ bool QMYSQLDriver::isIdentifierEscaped(const QString &identifier, IdentifierType
         && identifier.endsWith(u'`'); //right delimited
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsql_mysql_p.cpp"

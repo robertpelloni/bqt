@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'trpreviewtool.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,20 +16,20 @@
 #ifndef TRPREVIEWTOOL_H
 #define TRPREVIEWTOOL_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDockWidget>
-#include <QtWidgets/QListView>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QAction>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDockWidget>
+#include <BobUIWidgets/QListView>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QMenu>
+#include <BobUIWidgets/QMenuBar>
+#include <BobUIWidgets/QStatusBar>
+#include <BobUIWidgets/BOBUIoolBar>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_TrPreviewToolClass
 {
@@ -39,14 +39,14 @@ public:
     QAction *actionReloadTranslations;
     QAction *actionClose;
     QAction *actionAbout;
-    QAction *actionAbout_Qt;
+    QAction *actionAbout_BobUI;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuView;
     QMenu *menuViewViews;
     QMenu *menuHelp;
     QMenu *menuFile;
-    QToolBar *mainToolBar;
+    BOBUIoolBar *mainToolBar;
     QStatusBar *statusBar;
     QDockWidget *dwForms;
     QWidget *dockWidgetContents;
@@ -77,8 +77,8 @@ public:
         actionClose->setObjectName("actionClose");
         actionAbout = new QAction(TrPreviewToolClass);
         actionAbout->setObjectName("actionAbout");
-        actionAbout_Qt = new QAction(TrPreviewToolClass);
-        actionAbout_Qt->setObjectName("actionAbout_Qt");
+        actionAbout_BobUI = new QAction(TrPreviewToolClass);
+        actionAbout_BobUI->setObjectName("actionAbout_BobUI");
         centralWidget = new QWidget(TrPreviewToolClass);
         centralWidget->setObjectName("centralWidget");
         TrPreviewToolClass->setCentralWidget(centralWidget);
@@ -94,10 +94,10 @@ public:
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName("menuFile");
         TrPreviewToolClass->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(TrPreviewToolClass);
+        mainToolBar = new BOBUIoolBar(TrPreviewToolClass);
         mainToolBar->setObjectName("mainToolBar");
-        mainToolBar->setOrientation(Qt::Orientation::Horizontal);
-        TrPreviewToolClass->addToolBar(Qt::ToolBarArea::TopToolBarArea, mainToolBar);
+        mainToolBar->setOrientation(BobUI::Orientation::Horizontal);
+        TrPreviewToolClass->addToolBar(BobUI::ToolBarArea::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(TrPreviewToolClass);
         statusBar->setObjectName("statusBar");
         TrPreviewToolClass->setStatusBar(statusBar);
@@ -118,14 +118,14 @@ public:
         vboxLayout->addWidget(viewForms);
 
         dwForms->setWidget(dockWidgetContents);
-        TrPreviewToolClass->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, dwForms);
+        TrPreviewToolClass->addDockWidget(BobUI::DockWidgetArea::LeftDockWidgetArea, dwForms);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuView->menuAction());
         menuBar->addAction(menuHelp->menuAction());
         menuView->addAction(menuViewViews->menuAction());
         menuHelp->addAction(actionAbout);
-        menuHelp->addAction(actionAbout_Qt);
+        menuHelp->addAction(actionAbout_BobUI);
         menuFile->addAction(actionOpenForm);
         menuFile->addAction(actionLoadTranslation);
         menuFile->addAction(actionReloadTranslations);
@@ -142,16 +142,16 @@ public:
 
     void retranslateUi(QMainWindow *TrPreviewToolClass)
     {
-        TrPreviewToolClass->setWindowTitle(QCoreApplication::translate("TrPreviewToolClass", "Qt Translation Preview Tool", nullptr));
+        TrPreviewToolClass->setWindowTitle(QCoreApplication::translate("TrPreviewToolClass", "BobUI Translation Preview Tool", nullptr));
         actionOpenForm->setText(QCoreApplication::translate("TrPreviewToolClass", "&Open Form...", nullptr));
         actionLoadTranslation->setText(QCoreApplication::translate("TrPreviewToolClass", "&Load Translation...", nullptr));
         actionReloadTranslations->setText(QCoreApplication::translate("TrPreviewToolClass", "&Reload Translations", nullptr));
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         actionReloadTranslations->setShortcut(QCoreApplication::translate("TrPreviewToolClass", "F5", nullptr));
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
         actionClose->setText(QCoreApplication::translate("TrPreviewToolClass", "&Close", nullptr));
         actionAbout->setText(QCoreApplication::translate("TrPreviewToolClass", "About", nullptr));
-        actionAbout_Qt->setText(QCoreApplication::translate("TrPreviewToolClass", "About Qt", nullptr));
+        actionAbout_BobUI->setText(QCoreApplication::translate("TrPreviewToolClass", "About BobUI", nullptr));
         menuView->setTitle(QCoreApplication::translate("TrPreviewToolClass", "&View", nullptr));
         menuViewViews->setTitle(QCoreApplication::translate("TrPreviewToolClass", "&Views", nullptr));
         menuHelp->setTitle(QCoreApplication::translate("TrPreviewToolClass", "&Help", nullptr));
@@ -165,6 +165,6 @@ namespace Ui {
     class TrPreviewToolClass: public Ui_TrPreviewToolClass {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // TRPREVIEWTOOL_H

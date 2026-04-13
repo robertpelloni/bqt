@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSVULKANINSTANCE_H
 #define QWINDOWSVULKANINSTANCE_H
@@ -10,10 +10,10 @@
 
 #define VK_USE_PLATFORM_WIN32_KHR
 
-#include <QtGui/private/qbasicvulkanplatforminstance_p.h>
-#include <QtCore/qlibrary.h>
+#include <BobUIGui/private/qbasicvulkanplatforminstance_p.h>
+#include <BobUICore/qlibrary.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsVulkanInstance : public QBasicPlatformVulkanInstance
 {
@@ -32,6 +32,6 @@ private:
     PFN_vkCreateWin32SurfaceKHR m_createSurface;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSVULKANINSTANCE_H

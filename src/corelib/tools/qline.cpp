@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qline.h"
 
@@ -9,11 +9,11 @@
 #include "qmath.h"
 #include <private/qnumeric_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QLine
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup painting
     \compares equality
     \compareswith equality QLineF
@@ -242,7 +242,7 @@ QT_BEGIN_NAMESPACE
 
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QLine &p)
 {
     QDebugStateSaver saver(dbg);
@@ -251,14 +251,14 @@ QDebug operator<<(QDebug dbg, const QLine &p)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \relates QLine
 
     Writes the given \a line to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &stream, const QLine &line)
@@ -273,7 +273,7 @@ QDataStream &operator<<(QDataStream &stream, const QLine &line)
     Reads a line from the given \a stream into the given \a line and
     returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &stream, QLine &line)
@@ -286,11 +286,11 @@ QDataStream &operator>>(QDataStream &stream, QLine &line)
     return stream;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*!
     \class QLineF
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup painting
     \compares equality
     \compareswith equality QLine
@@ -633,7 +633,7 @@ QLineF QLineF::unitVector() const
     const qreal len = qHypot(x, y);
     QLineF f(p1(), QPointF(pt1.x() + x / len, pt1.y() + y / len));
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qAbs(f.length() - 1) >= 0.001)
         qWarning("QLine::unitVector: New line does not have unit length");
 #endif
@@ -660,7 +660,7 @@ QLineF::IntersectionType QLineF::intersects(const QLineF &l, QPointF *intersecti
     const QPointF c = pt1 - l.pt1;
 
     const qreal denominator = a.y() * b.x() - a.x() * b.y();
-    if (denominator == 0 || !qt_is_finite(denominator))
+    if (denominator == 0 || !bobui_is_finite(denominator))
         return NoIntersection;
 
     const qreal reciprocal = 1 / denominator;
@@ -808,7 +808,7 @@ qreal QLineF::angleTo(const QLineF &l) const
     equal to its end point; otherwise returns \c false.
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QLineF &p)
 {
     QDebugStateSaver saver(dbg);
@@ -817,14 +817,14 @@ QDebug operator<<(QDebug dbg, const QLineF &p)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \relates QLineF
 
     Writes the given \a line to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &stream, const QLineF &line)
@@ -839,7 +839,7 @@ QDataStream &operator<<(QDataStream &stream, const QLineF &line)
     Reads a line from the given \a stream into the given \a line and
     returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &stream, QLineF &line)
@@ -852,6 +852,6 @@ QDataStream &operator>>(QDataStream &stream, QLineF &line)
     return stream;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

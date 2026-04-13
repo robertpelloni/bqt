@@ -1,21 +1,21 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroideventdispatcher.h"
 #include "androidjnimain.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QAndroidEventDispatcher::QAndroidEventDispatcher(QObject *parent) :
     QUnixEventDispatcherQPA(parent)
 {
-    if (QtAndroid::blockEventLoopsWhenSuspended())
+    if (BobUIAndroid::blockEventLoopsWhenSuspended())
         QAndroidEventDispatcherStopper::instance()->addEventDispatcher(this);
 }
 
 QAndroidEventDispatcher::~QAndroidEventDispatcher()
 {
-    if (QtAndroid::blockEventLoopsWhenSuspended())
+    if (BobUIAndroid::blockEventLoopsWhenSuspended())
         QAndroidEventDispatcherStopper::instance()->removeEventDispatcher(this);
 }
 
@@ -54,7 +54,7 @@ bool QAndroidEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags
         flags |= QEventLoop::ExcludeSocketNotifiers | QEventLoop::X11ExcludeTimers;
 
     {
-        QtAndroidPrivate::AndroidDeadlockProtector protector(
+        BobUIAndroidPrivate::AndroidDeadlockProtector protector(
             u"QAndroidEventDispatcher::processEvents()"_s);
         if (m_stopRequest.testAndSetAcquire(StopRequest, Stopping) && protector.acquire()) {
             m_semaphore.acquire();

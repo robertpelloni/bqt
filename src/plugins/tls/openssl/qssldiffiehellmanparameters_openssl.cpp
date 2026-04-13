@@ -1,22 +1,22 @@
 // Copyright (C) 2015 Mikkel Krautz <mikkel@krautz.dk>
 // Copyright (C) 2016 Richard J. Moore <rich@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:cryptography
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:cryptography
 
 #include "qsslsocket_openssl_symbols_p.h"
-#include "qtlsbackend_openssl_p.h"
+#include "bobuilsbackend_openssl_p.h"
 
-#include <QtNetwork/private/qsslsocket_p.h>
+#include <BobUINetwork/private/qsslsocket_p.h>
 
-#include <QtCore/qscopeguard.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qiodevice.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qdebug.h>
 
 #include <openssl/bn.h>
 #include <openssl/dh.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef OPENSSL_NO_DEPRECATED_3_0
 
@@ -71,7 +71,7 @@ bool isSafeDH(DH *dh)
 
 #endif
 
-int QTlsBackendOpenSSL::dhParametersFromDer(const QByteArray &der, QByteArray *derData) const
+int BOBUIlsBackendOpenSSL::dhParametersFromDer(const QByteArray &der, QByteArray *derData) const
 {
 #ifndef OPENSSL_NO_DEPRECATED_3_0
     Q_ASSERT(derData);
@@ -105,7 +105,7 @@ int QTlsBackendOpenSSL::dhParametersFromDer(const QByteArray &der, QByteArray *d
     return DHParams::NoError;
 }
 
-int QTlsBackendOpenSSL::dhParametersFromPem(const QByteArray &pem, QByteArray *data) const
+int BOBUIlsBackendOpenSSL::dhParametersFromPem(const QByteArray &pem, QByteArray *data) const
 {
 #ifndef OPENSSL_NO_DEPRECATED_3_0
     Q_ASSERT(data);
@@ -157,4 +157,4 @@ int QTlsBackendOpenSSL::dhParametersFromPem(const QByteArray &pem, QByteArray *d
     return DHParams::NoError;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

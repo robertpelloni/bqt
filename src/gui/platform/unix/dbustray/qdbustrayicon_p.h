@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSTRAYICON_H
 #define QDBUSTRAYICON_H
@@ -9,24 +9,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 
-QT_REQUIRE_CONFIG(systemtrayicon);
+BOBUI_REQUIRE_CONFIG(systemtrayicon);
 
 #include <QIcon>
-#include <QTemporaryFile>
-#include <QTimer>
-#include "QtGui/qpa/qplatformsystemtrayicon.h"
+#include <BOBUIemporaryFile>
+#include <BOBUIimer>
+#include "BobUIGui/qpa/qplatformsystemtrayicon.h"
 #include "private/qdbusmenuconnection_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStatusNotifierItemAdaptor;
 class QDBusMenuAdaptor;
@@ -102,7 +102,7 @@ private Q_SLOTS:
 
 private:
     void setStatus(const QString &status);
-    QTemporaryFile *tempIcon(const QIcon &icon);
+    BOBUIemporaryFile *tempIcon(const QIcon &icon);
 
 private:
     QDBusMenuConnection* m_dbusConnection;
@@ -118,15 +118,15 @@ private:
     QString m_messageTitle;
     QString m_message;
     QIcon m_icon;
-    QTemporaryFile *m_tempIcon;
+    BOBUIemporaryFile *m_tempIcon;
     QString m_iconName;
     QIcon m_attentionIcon;
-    QTemporaryFile *m_tempAttentionIcon;
+    BOBUIemporaryFile *m_tempAttentionIcon;
     QString m_attentionIconName;
-    QTimer m_attentionTimer;
+    BOBUIimer m_attentionTimer;
     bool m_registered;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDBUSTRAYICON_H

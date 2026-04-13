@@ -1,8 +1,8 @@
-Here is a list of (major) changes in Qt from 0.93 to 0.95.
+Here is a list of (major) changes in BobUI from 0.93 to 0.95.
 
 Bug-fixes, optimizations and much improved documentation, of course.
 
-There are few changes in the API (Qt header files).
+There are few changes in the API (BobUI header files).
 
 
 QPixmap:
@@ -36,7 +36,7 @@ QWidget:
   isActive() was never used and is now obsolete.
 
 
-QTextStream:
+BOBUIextStream:
 ------------
   eos() renamed to eof() for iostream compatibility.
   operator>> for double, float, char*, QString are implemented

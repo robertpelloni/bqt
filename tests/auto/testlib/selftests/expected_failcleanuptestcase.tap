@@ -10,8 +10,8 @@ not ok 3 - cleanupTestCase()
   found: false (false)
   expected: true (false)
   actual: false (false)
-  at: tst_FailCleanupTestCase::cleanupTestCase() (qtbase/tests/auto/testlib/selftests/failcleanuptestcase/tst_failcleanuptestcase.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/failcleanuptestcase/tst_failcleanuptestcase.cpp
+  at: tst_FailCleanupTestCase::cleanupTestCase() (bobuibase/tests/auto/testlib/selftests/failcleanuptestcase/tst_failcleanuptestcase.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/failcleanuptestcase/tst_failcleanuptestcase.cpp
   line: 0
   ...
 1..3

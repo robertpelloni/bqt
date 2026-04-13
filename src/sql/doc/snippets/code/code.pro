@@ -1,3 +1,3 @@
 #! [qmake_use]
-QT += sql
+BOBUI += sql
 #! [qmake_use]

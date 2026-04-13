@@ -1,5 +1,5 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QHAIKUWINDOW_H
 #define QHAIKUWINDOW_H
@@ -8,7 +8,7 @@
 
 #include <Window.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class HaikuWindowProxy : public QObject, public BWindow
 {
@@ -24,7 +24,7 @@ public:
     void Zoom(BPoint pos, float width, float height) override;
     bool QuitRequested() override;
 
-    void zoomByQt();
+    void zoomByBobUI();
 
 Q_SIGNALS:
     void moved(const QPoint &pos);
@@ -35,7 +35,7 @@ Q_SIGNALS:
     void quitRequested();
 
 private:
-    bool m_qtCalledZoom;
+    bool m_bobuiCalledZoom;
     bool m_zoomInProgress;
 };
 
@@ -58,8 +58,8 @@ public:
     BWindow* nativeHandle() const;
 
     void requestActivateWindow() override;
-    void setWindowState(Qt::WindowStates state) override;
-    void setWindowFlags(Qt::WindowFlags flags) override;
+    void setWindowState(BobUI::WindowStates state) override;
+    void setWindowFlags(BobUI::WindowFlags flags) override;
 
     void setWindowTitle(const QString &title) override;
 
@@ -76,17 +76,17 @@ private Q_SLOTS:
     void haikuWindowZoomed();
     void haikuWindowQuitRequested();
 
-    void haikuMouseEvent(const QPoint &localPosition, const QPoint &globalPosition, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Qt::MouseEventSource source);
-    void haikuWheelEvent(const QPoint &localPosition, const QPoint &globalPosition, int delta, Qt::Orientation orientation, Qt::KeyboardModifiers modifiers);
-    void haikuKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text);
+    void haikuMouseEvent(const QPoint &localPosition, const QPoint &globalPosition, BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, BobUI::MouseEventSource source);
+    void haikuWheelEvent(const QPoint &localPosition, const QPoint &globalPosition, int delta, BobUI::Orientation orientation, BobUI::KeyboardModifiers modifiers);
+    void haikuKeyEvent(QEvent::Type type, int key, BobUI::KeyboardModifiers modifiers, const QString &text);
     void haikuEnteredView();
     void haikuExitedView();
     void haikuDrawRequest(const QRect &rect);
 
 private:
-    Qt::WindowStates m_windowState;
+    BobUI::WindowStates m_windowState;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

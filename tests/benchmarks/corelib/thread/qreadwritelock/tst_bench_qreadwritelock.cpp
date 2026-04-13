@@ -1,15 +1,15 @@
 // Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QtCore>
-#include <QTest>
+#include <BobUICore/BobUICore>
+#include <BOBUIest>
 #include <mutex>
 #if __has_include(<shared_mutex>)
 #include <shared_mutex>
 #endif
 #include <vector>
 
-// Wrapers that take pointers instead of reference to have the same interface as Qt
+// Wrapers that take pointers instead of reference to have the same interface as BobUI
 template <typename T>
 struct LockerWrapper : T
 {
@@ -71,7 +71,7 @@ public:
     tst_QReadWriteLock()
     {
         // at least 2 threads, even on single cpu/core machines
-        threadCount = qMax(2, QThread::idealThreadCount());
+        threadCount = qMax(2, BOBUIhread::idealThreadCount());
         qDebug("thread count: %d", threadCount);
     }
 
@@ -115,38 +115,38 @@ void testUncontended()
 
 void tst_QReadWriteLock::uncontended_data()
 {
-    QTest::addColumn<FunctionPtrHolder>("holder");
+    BOBUIest::addColumn<FunctionPtrHolder>("holder");
 
-    QTest::newRow("nothing") << FunctionPtrHolder(testUncontended<int, FakeLock>);
-    QTest::newRow("QMutex") << FunctionPtrHolder(testUncontended<QMutex, QMutexLocker<QMutex>>);
-    QTest::newRow("QReadWriteLock, read")
+    BOBUIest::newRow("nothing") << FunctionPtrHolder(testUncontended<int, FakeLock>);
+    BOBUIest::newRow("QMutex") << FunctionPtrHolder(testUncontended<QMutex, QMutexLocker<QMutex>>);
+    BOBUIest::newRow("QReadWriteLock, read")
         << FunctionPtrHolder(testUncontended<QReadWriteLock, QReadLocker>);
-    QTest::newRow("QReadWriteLock, write")
+    BOBUIest::newRow("QReadWriteLock, write")
         << FunctionPtrHolder(testUncontended<QReadWriteLock, QWriteLocker>);
 #define ROW(n) \
-    QTest::addRow("QReadWriteLock, %s, recursive: %d", "read", n) \
+    BOBUIest::addRow("QReadWriteLock, %s, recursive: %d", "read", n) \
         << FunctionPtrHolder(testUncontended<QRecursiveReadWriteLock, QRecursiveReadLocker<n>>); \
-    QTest::addRow("QReadWriteLock, %s, recursive: %d", "write", n) \
+    BOBUIest::addRow("QReadWriteLock, %s, recursive: %d", "write", n) \
         << FunctionPtrHolder(testUncontended<QRecursiveReadWriteLock, QRecursiveWriteLocker<n>>)
     ROW(1);
     ROW(2);
     ROW(32);
 #undef ROW
-    QTest::newRow("std::mutex") << FunctionPtrHolder(
+    BOBUIest::newRow("std::mutex") << FunctionPtrHolder(
         testUncontended<std::mutex, LockerWrapper<std::unique_lock<std::mutex>>>);
 #ifdef __cpp_lib_shared_mutex
-    QTest::newRow("std::shared_mutex, read") << FunctionPtrHolder(
+    BOBUIest::newRow("std::shared_mutex, read") << FunctionPtrHolder(
         testUncontended<std::shared_mutex,
                         LockerWrapper<std::shared_lock<std::shared_mutex>>>);
-    QTest::newRow("std::shared_mutex, write") << FunctionPtrHolder(
+    BOBUIest::newRow("std::shared_mutex, write") << FunctionPtrHolder(
         testUncontended<std::shared_mutex,
                         LockerWrapper<std::unique_lock<std::shared_mutex>>>);
 #endif
 #if defined __cpp_lib_shared_timed_mutex
-    QTest::newRow("std::shared_timed_mutex, read") << FunctionPtrHolder(
+    BOBUIest::newRow("std::shared_timed_mutex, read") << FunctionPtrHolder(
         testUncontended<std::shared_timed_mutex,
                         LockerWrapper<std::shared_lock<std::shared_timed_mutex>>>);
-    QTest::newRow("std::shared_timed_mutex, write") << FunctionPtrHolder(
+    BOBUIest::newRow("std::shared_timed_mutex, write") << FunctionPtrHolder(
         testUncontended<std::shared_timed_mutex,
                         LockerWrapper<std::unique_lock<std::shared_timed_mutex>>>);
 #endif
@@ -163,7 +163,7 @@ static QHash<QString, QString> global_hash;
 template <typename Mutex, typename Locker>
 void testReadOnly()
 {
-    struct Thread : QThread
+    struct Thread : BOBUIhread
     {
         Mutex *lock;
         void run() override
@@ -194,27 +194,27 @@ void testReadOnly()
 
 void tst_QReadWriteLock::readOnly_data()
 {
-    QTest::addColumn<FunctionPtrHolder>("holder");
+    BOBUIest::addColumn<FunctionPtrHolder>("holder");
 
-    QTest::newRow("nothing") << FunctionPtrHolder(testReadOnly<int, FakeLock>);
-    QTest::newRow("QMutex") << FunctionPtrHolder(testReadOnly<QMutex, QMutexLocker<QMutex>>);
-    QTest::newRow("QReadWriteLock") << FunctionPtrHolder(testReadOnly<QReadWriteLock, QReadLocker>);
+    BOBUIest::newRow("nothing") << FunctionPtrHolder(testReadOnly<int, FakeLock>);
+    BOBUIest::newRow("QMutex") << FunctionPtrHolder(testReadOnly<QMutex, QMutexLocker<QMutex>>);
+    BOBUIest::newRow("QReadWriteLock") << FunctionPtrHolder(testReadOnly<QReadWriteLock, QReadLocker>);
 #define ROW(n) \
-    QTest::addRow("QReadWriteLock, recursive: %d", n) \
+    BOBUIest::addRow("QReadWriteLock, recursive: %d", n) \
         << FunctionPtrHolder(testReadOnly<QRecursiveReadWriteLock, QRecursiveReadLocker<n>>)
     ROW(1);
     ROW(2);
     ROW(32);
 #undef ROW
-    QTest::newRow("std::mutex") << FunctionPtrHolder(
+    BOBUIest::newRow("std::mutex") << FunctionPtrHolder(
         testReadOnly<std::mutex, LockerWrapper<std::unique_lock<std::mutex>>>);
 #ifdef __cpp_lib_shared_mutex
-    QTest::newRow("std::shared_mutex") << FunctionPtrHolder(
+    BOBUIest::newRow("std::shared_mutex") << FunctionPtrHolder(
         testReadOnly<std::shared_mutex,
                      LockerWrapper<std::shared_lock<std::shared_mutex>>>);
 #endif
 #if defined __cpp_lib_shared_timed_mutex
-    QTest::newRow("std::shared_timed_mutex") << FunctionPtrHolder(
+    BOBUIest::newRow("std::shared_timed_mutex") << FunctionPtrHolder(
         testReadOnly<std::shared_timed_mutex,
                      LockerWrapper<std::shared_lock<std::shared_timed_mutex>>>);
 #endif
@@ -231,7 +231,7 @@ static QString global_string;
 template <typename Mutex, typename Locker>
 void testWriteOnly()
 {
-    struct Thread : QThread
+    struct Thread : BOBUIhread
     {
         Mutex *lock;
         void run() override
@@ -262,27 +262,27 @@ void testWriteOnly()
 
 void tst_QReadWriteLock::writeOnly_data()
 {
-    QTest::addColumn<FunctionPtrHolder>("holder");
+    BOBUIest::addColumn<FunctionPtrHolder>("holder");
 
-    // QTest::newRow("nothing") << FunctionPtrHolder(testWriteOnly<int, FakeLock>);
-    QTest::newRow("QMutex") << FunctionPtrHolder(testWriteOnly<QMutex, QMutexLocker<QMutex>>);
-    QTest::newRow("QReadWriteLock") << FunctionPtrHolder(testWriteOnly<QReadWriteLock, QWriteLocker>);
+    // BOBUIest::newRow("nothing") << FunctionPtrHolder(testWriteOnly<int, FakeLock>);
+    BOBUIest::newRow("QMutex") << FunctionPtrHolder(testWriteOnly<QMutex, QMutexLocker<QMutex>>);
+    BOBUIest::newRow("QReadWriteLock") << FunctionPtrHolder(testWriteOnly<QReadWriteLock, QWriteLocker>);
 #define ROW(n) \
-    QTest::addRow("QReadWriteLock, recursive: %d", n) \
+    BOBUIest::addRow("QReadWriteLock, recursive: %d", n) \
         << FunctionPtrHolder(testWriteOnly<QRecursiveReadWriteLock, QRecursiveWriteLocker<n>>)
     ROW(1);
     ROW(2);
     ROW(32);
 #undef ROW
-    QTest::newRow("std::mutex") << FunctionPtrHolder(
+    BOBUIest::newRow("std::mutex") << FunctionPtrHolder(
         testWriteOnly<std::mutex, LockerWrapper<std::unique_lock<std::mutex>>>);
 #ifdef __cpp_lib_shared_mutex
-    QTest::newRow("std::shared_mutex") << FunctionPtrHolder(
+    BOBUIest::newRow("std::shared_mutex") << FunctionPtrHolder(
         testWriteOnly<std::shared_mutex,
                      LockerWrapper<std::unique_lock<std::shared_mutex>>>);
 #endif
 #if defined __cpp_lib_shared_timed_mutex
-    QTest::newRow("std::shared_timed_mutex") << FunctionPtrHolder(
+    BOBUIest::newRow("std::shared_timed_mutex") << FunctionPtrHolder(
         testWriteOnly<std::shared_timed_mutex,
                      LockerWrapper<std::unique_lock<std::shared_timed_mutex>>>);
 #endif
@@ -294,5 +294,5 @@ void tst_QReadWriteLock::writeOnly()
     holder.value();
 }
 
-QTEST_MAIN(tst_QReadWriteLock)
+BOBUIEST_MAIN(tst_QReadWriteLock)
 #include "tst_bench_qreadwritelock.moc"

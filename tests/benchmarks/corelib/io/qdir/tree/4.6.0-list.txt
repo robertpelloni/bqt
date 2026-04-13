@@ -1077,7 +1077,7 @@
 2 tests/
 0 linebreaking/
 0 .gitignore
- harfbuzz-qt.cpp
+ harfbuzz-bobui.cpp
  main.cpp
  Makefile.am
 2 Makefile.am
@@ -1538,9 +1538,9 @@
  Platform.h
  PossiblyNull.h
  PtrAndFlags.h
- qt/
-0 MainThreadQt.cpp
- ThreadingQt.cpp
+ bobui/
+0 MainThreadBobUI.cpp
+ ThreadingBobUI.cpp
 2 RandomNumber.cpp
  RandomNumber.h
  RandomNumberSeed.h
@@ -1577,8 +1577,8 @@
 2 icu/
 0 CollatorICU.cpp
  UnicodeIcu.h
-2 qt4/
-0 UnicodeQt4.h
+2 bobui4/
+0 UnicodeBobUI4.h
 2 Unicode.h
  UTF8.cpp
  UTF8.h
@@ -2476,7 +2476,7 @@
  phonon/volumeslider.cpp
  phonon/volumeslider.h
  phonon/volumeslider_p.h
- qt7/
+ bobui7/
 0 audioconnection.h
  audioconnection.mm
  audiodevice.h
@@ -3029,9 +3029,9 @@
  Platform.h
  PossiblyNull.h
  PtrAndFlags.h
- qt/
-0 MainThreadQt.cpp
- ThreadingQt.cpp
+ bobui/
+0 MainThreadBobUI.cpp
+ ThreadingBobUI.cpp
 2 RandomNumber.cpp
  RandomNumber.h
  RandomNumberSeed.h
@@ -3068,8 +3068,8 @@
 2 icu/
 0 CollatorICU.cpp
  UnicodeIcu.h
-2 qt4/
-0 UnicodeQt4.h
+2 bobui4/
+0 UnicodeBobUI4.h
 2 Unicode.h
  UTF8.cpp
  UTF8.h
@@ -3132,8 +3132,8 @@
  AccessibilityTableRow.h
  AXObjectCache.cpp
  AXObjectCache.h
- qt/
-0 AccessibilityObjectQt.cpp
+ bobui/
+0 AccessibilityObjectBobUI.cpp
 3 bindings/
 0 js/
 0 CachedScriptSourceProvider.h
@@ -3344,7 +3344,7 @@
  ScriptController.h
  ScriptControllerHaiku.cpp
  ScriptControllerMac.mm
- ScriptControllerQt.cpp
+ ScriptControllerBobUI.cpp
  ScriptControllerWin.cpp
  ScriptControllerWx.cpp
  ScriptEventListener.cpp
@@ -3412,13 +3412,13 @@
  npruntime_impl.h
  npruntime_internal.h
  npruntime_priv.h
- qt/
-0 qt_class.cpp
- qt_class.h
- qt_instance.cpp
- qt_instance.h
- qt_runtime.cpp
- qt_runtime.h
+ bobui/
+0 bobui_class.cpp
+ bobui_class.h
+ bobui_instance.cpp
+ bobui_instance.h
+ bobui_runtime.cpp
+ bobui_runtime.h
 2 runtime_array.cpp
  runtime_array.h
  runtime.cpp
@@ -3434,7 +3434,7 @@
  testC.js
  test.js
  testM.js
- testqtbindings.cpp
+ testbobuibindings.cpp
 2 ChangeLog
 0 -2002-12-03
  -2003-10-25
@@ -3574,7 +3574,7 @@
  mathml.css
  mediaControlsChromium.css
  mediaControls.css
- mediaControlsQt.css
+ mediaControlsBobUI.css
  mediaControlsQuickTime.css
  Media.cpp
  MediaFeatureNames.cpp
@@ -3846,7 +3846,7 @@
  Tokenizer.h
  TransformSource.h
  TransformSourceLibxslt.cpp
- TransformSourceQt.cpp
+ TransformSourceBobUI.cpp
  Traversal.cpp
  Traversal.h
  TreeWalker.cpp
@@ -3869,7 +3869,7 @@
  XMLTokenizer.cpp
  XMLTokenizer.h
  XMLTokenizerLibxml2.cpp
- XMLTokenizerQt.cpp
+ XMLTokenizerBobUI.cpp
  XMLTokenizerScope.cpp
  XMLTokenizerScope.h
 2 editing/
@@ -3935,8 +3935,8 @@
  ModifySelectionListLevel.h
  MoveSelectionCommand.cpp
  MoveSelectionCommand.h
- qt/
-0 EditorQt.cpp
+ bobui/
+0 EditorBobUI.cpp
 2 RemoveCSSPropertyCommand.cpp
  RemoveCSSPropertyCommand.h
  RemoveFormatCommand.cpp
@@ -4857,8 +4857,8 @@
  HistoryItem.h
  PageCache.cpp
  PageCache.h
- qt/
-0 HistoryItemQt.cpp
+ bobui/
+0 HistoryItemBobUI.cpp
 3 html/
 0 canvas/
 0 CanvasActiveInfo.h
@@ -5716,10 +5716,10 @@
  PositionOptions.h
  PrintContext.cpp
  PrintContext.h
- qt/
-0 DragControllerQt.cpp
- EventHandlerQt.cpp
- FrameQt.cpp
+ bobui/
+0 DragControllerBobUI.cpp
+ EventHandlerBobUI.cpp
+ FrameBobUI.cpp
 2 Screen.cpp
  Screen.h
  Screen.idl
@@ -5903,38 +5903,38 @@
  Pattern.h
  Pen.cpp
  Pen.h
- qt/
-0 ColorQt.cpp
- FloatPointQt.cpp
- FloatRectQt.cpp
- FontCacheQt.cpp
+ bobui/
+0 ColorBobUI.cpp
+ FloatPointBobUI.cpp
+ FloatRectBobUI.cpp
+ FontCacheBobUI.cpp
  FontCustomPlatformData.cpp
  FontCustomPlatformData.h
- FontFallbackListQt.cpp
+ FontFallbackListBobUI.cpp
  FontPlatformData.h
- FontPlatformDataQt.cpp
- FontQt43.cpp
- FontQt.cpp
- GlyphPageTreeNodeQt.cpp
- GradientQt.cpp
- GraphicsContextQt.cpp
- IconQt.cpp
+ FontPlatformDataBobUI.cpp
+ FontBobUI43.cpp
+ FontBobUI.cpp
+ GlyphPageTreeNodeBobUI.cpp
+ GradientBobUI.cpp
+ GraphicsContextBobUI.cpp
+ IconBobUI.cpp
  ImageBufferData.h
- ImageBufferQt.cpp
- ImageDecoderQt.cpp
- ImageDecoderQt.h
- ImageQt.cpp
- IntPointQt.cpp
- IntRectQt.cpp
- IntSizeQt.cpp
+ ImageBufferBobUI.cpp
+ ImageDecoderBobUI.cpp
+ ImageDecoderBobUI.h
+ ImageBobUI.cpp
+ IntPointBobUI.cpp
+ IntRectBobUI.cpp
+ IntSizeBobUI.cpp
  MediaPlayerPrivatePhonon.cpp
  MediaPlayerPrivatePhonon.h
- PathQt.cpp
- PatternQt.cpp
- SimpleFontDataQt.cpp
- StillImageQt.cpp
- StillImageQt.h
- TransformationMatrixQt.cpp
+ PathBobUI.cpp
+ PatternBobUI.cpp
+ SimpleFontDataBobUI.cpp
+ StillImageBobUI.cpp
+ StillImageBobUI.h
+ TransformationMatrixBobUI.cpp
 2 SegmentedFontData.cpp
  SegmentedFontData.h
  SimpleFontData.cpp
@@ -5974,8 +5974,8 @@
 0 ImageDecoderCairo.cpp
 2 ImageDecoder.cpp
  ImageDecoder.h
- qt/
-0 RGBA32BufferQt.cpp
+ bobui/
+0 RGBA32BufferBobUI.cpp
 2 wx/
 0 ImageDecoderWx.cpp
 3 KeyboardCodes.h
@@ -6083,16 +6083,16 @@
  ProtectionSpace.cpp
  ProtectionSpace.h
  ProtectionSpaceHash.h
- qt/
+ bobui/
 0 AuthenticationChallenge.h
  DnsPrefetchHelper.cpp
  DnsPrefetchHelper.h
  QNetworkReplyHandler.cpp
  QNetworkReplyHandler.h
  ResourceError.h
- ResourceHandleQt.cpp
+ ResourceHandleBobUI.cpp
  ResourceRequest.h
- ResourceRequestQt.cpp
+ ResourceRequestBobUI.cpp
  ResourceResponse.h
  SocketStreamError.h
  SocketStreamHandle.h
@@ -6125,44 +6125,44 @@
  posix/
 0 FileSystemPOSIX.cpp
 2 PurgeableBuffer.h
- qt/
-0 ClipboardQt.cpp
- ClipboardQt.h
- ContextMenuItemQt.cpp
- ContextMenuQt.cpp
- CookieJarQt.cpp
- CursorQt.cpp
- DragDataQt.cpp
- DragImageQt.cpp
- EventLoopQt.cpp
- FileChooserQt.cpp
- FileSystemQt.cpp
- KURLQt.cpp
+ bobui/
+0 ClipboardBobUI.cpp
+ ClipboardBobUI.h
+ ContextMenuItemBobUI.cpp
+ ContextMenuBobUI.cpp
+ CookieJarBobUI.cpp
+ CursorBobUI.cpp
+ DragDataBobUI.cpp
+ DragImageBobUI.cpp
+ EventLoopBobUI.cpp
+ FileChooserBobUI.cpp
+ FileSystemBobUI.cpp
+ KURLBobUI.cpp
  Localizations.cpp
- LoggingQt.cpp
- MIMETypeRegistryQt.cpp
- PasteboardQt.cpp
- PlatformKeyboardEventQt.cpp
- PlatformMouseEventQt.cpp
- PlatformScreenQt.cpp
- PopupMenuQt.cpp
+ LoggingBobUI.cpp
+ MIMETypeRegistryBobUI.cpp
+ PasteboardBobUI.cpp
+ PlatformKeyboardEventBobUI.cpp
+ PlatformMouseEventBobUI.cpp
+ PlatformScreenBobUI.cpp
+ PopupMenuBobUI.cpp
  QWebPageClient.h
  QWebPopup.cpp
  QWebPopup.h
- RenderThemeQt.cpp
- RenderThemeQt.h
- ScreenQt.cpp
- ScrollbarQt.cpp
- ScrollbarThemeQt.cpp
- ScrollbarThemeQt.h
- ScrollViewQt.cpp
- SearchPopupMenuQt.cpp
- SharedBufferQt.cpp
- SharedTimerQt.cpp
- SoundQt.cpp
+ RenderThemeBobUI.cpp
+ RenderThemeBobUI.h
+ ScreenBobUI.cpp
+ ScrollbarBobUI.cpp
+ ScrollbarThemeBobUI.cpp
+ ScrollbarThemeBobUI.h
+ ScrollViewBobUI.cpp
+ SearchPopupMenuBobUI.cpp
+ SharedBufferBobUI.cpp
+ SharedTimerBobUI.cpp
+ SoundBobUI.cpp
  TemporaryLinkStubs.cpp
- WheelEventQt.cpp
- WidgetQt.cpp
+ WheelEventBobUI.cpp
+ WidgetBobUI.cpp
 2 RunLoopTimer.h
  ScrollbarClient.h
  Scrollbar.cpp
@@ -6227,12 +6227,12 @@
  TextCodecMac.h
 2 ParserUtilities.h
  PlatformString.h
- qt/
-0 StringQt.cpp
+ bobui/
+0 StringBobUI.cpp
  TextBoundaries.cpp
- TextBreakIteratorQt.cpp
- TextCodecQt.cpp
- TextCodecQt.h
+ TextBreakIteratorBobUI.cpp
+ TextCodecBobUI.cpp
+ TextCodecBobUI.h
 2 RegularExpression.cpp
  RegularExpression.h
  SegmentedString.cpp
@@ -6330,12 +6330,12 @@
  PluginView.cpp
  PluginView.h
  PluginViewNone.cpp
- qt/
-0 PluginContainerQt.cpp
- PluginContainerQt.h
- PluginDataQt.cpp
- PluginPackageQt.cpp
- PluginViewQt.cpp
+ bobui/
+0 PluginContainerBobUI.cpp
+ PluginContainerBobUI.h
+ PluginDataBobUI.cpp
+ PluginPackageBobUI.cpp
+ PluginViewBobUI.cpp
 2 symbian/
 0 npinterface.h
  PluginContainerSymbian.cpp
@@ -7429,14 +7429,14 @@
  XSLImportRule.h
  XSLStyleSheet.h
  XSLStyleSheetLibxslt.cpp
- XSLStyleSheetQt.cpp
+ XSLStyleSheetBobUI.cpp
  XSLTExtensions.cpp
  XSLTExtensions.h
  XSLTProcessor.cpp
  XSLTProcessor.h
  XSLTProcessor.idl
  XSLTProcessorLibxslt.cpp
- XSLTProcessorQt.cpp
+ XSLTProcessorBobUI.cpp
  XSLTUnicodeSort.cpp
  XSLTUnicodeSort.h
 3 WebKit/
@@ -7449,7 +7449,7 @@
 0 WebWorkersPrivate.h
  WebWorkersPrivate.mm
 4 WebKit.pri
- WebKit/qt/
+ WebKit/bobui/
 0 Api/
 0 headers.pri
  qgraphicswebview.cpp
@@ -7490,13 +7490,13 @@
 2 ChangeLog
  docs/
 0 docs.pri
- qtwebkit.qdoc
+ bobuiwebkit.qdoc
 0 conf
 2 qwebview-diagram.png
  webkitsnippets/
-0 qtwebkit_build_snippet.qdoc
- qtwebkit_qwebinspector_snippet.cpp
- qtwebkit_qwebview_snippet.cpp
+0 bobuiwebkit_build_snippet.qdoc
+ bobuiwebkit_qwebinspector_snippet.cpp
+ bobuiwebkit_qwebview_snippet.cpp
  simple/
 0 main.cpp
  simple.pro
@@ -7574,20 +7574,20 @@
 2 tests.pro
  util.h
 2 WebCoreSupport/
-0 ChromeClientQt.cpp
- ChromeClientQt.h
- ContextMenuClientQt.cpp
- ContextMenuClientQt.h
- DragClientQt.cpp
- DragClientQt.h
- EditCommandQt.cpp
- EditCommandQt.h
- EditorClientQt.cpp
- EditorClientQt.h
- FrameLoaderClientQt.cpp
- FrameLoaderClientQt.h
- InspectorClientQt.cpp
- InspectorClientQt.h
+0 ChromeClientBobUI.cpp
+ ChromeClientBobUI.h
+ ContextMenuClientBobUI.cpp
+ ContextMenuClientBobUI.h
+ DragClientBobUI.cpp
+ DragClientBobUI.h
+ EditCommandBobUI.cpp
+ EditCommandBobUI.h
+ EditorClientBobUI.cpp
+ EditorClientBobUI.h
+ FrameLoaderClientBobUI.cpp
+ FrameLoaderClientBobUI.h
+ InspectorClientBobUI.cpp
+ InspectorClientBobUI.h
 2 WebKit_pch.h
 2 WebKit/scripts/
 0 generate-webkitversion.pl
@@ -7661,8 +7661,8 @@
  zlib.h
  zutil.c
  zutil.h
-3 activeqt/
-0 activeqt.pro
+3 activebobui/
+0 activebobui.pro
  container/
 0 container.pro
  qaxbase.cpp
@@ -7819,31 +7819,31 @@
  qfuturewatcher_p.h
  qrunnable.cpp
  qrunnable.h
- qtconcurrentcompilertest.h
- qtconcurrentexception.cpp
- qtconcurrentexception.h
- qtconcurrentfilter.cpp
- qtconcurrentfilter.h
- qtconcurrentfilterkernel.h
- qtconcurrentfunctionwrappers.h
- qtconcurrentiteratekernel.cpp
- qtconcurrentiteratekernel.h
- qtconcurrentmap.cpp
- qtconcurrentmap.h
- qtconcurrentmapkernel.h
- qtconcurrentmedian.h
- qtconcurrentreducekernel.h
- qtconcurrentresultstore.cpp
- qtconcurrentresultstore.h
- qtconcurrentrunbase.h
- qtconcurrentrun.cpp
- qtconcurrentrun.h
- qtconcurrentstoredfunctioncall.h
- qtconcurrentthreadengine.cpp
- qtconcurrentthreadengine.h
- qthreadpool.cpp
- qthreadpool.h
- qthreadpool_p.h
+ bobuiconcurrentcompilertest.h
+ bobuiconcurrentexception.cpp
+ bobuiconcurrentexception.h
+ bobuiconcurrentfilter.cpp
+ bobuiconcurrentfilter.h
+ bobuiconcurrentfilterkernel.h
+ bobuiconcurrentfunctionwrappers.h
+ bobuiconcurrentiteratekernel.cpp
+ bobuiconcurrentiteratekernel.h
+ bobuiconcurrentmap.cpp
+ bobuiconcurrentmap.h
+ bobuiconcurrentmapkernel.h
+ bobuiconcurrentmedian.h
+ bobuiconcurrentreducekernel.h
+ bobuiconcurrentresultstore.cpp
+ bobuiconcurrentresultstore.h
+ bobuiconcurrentrunbase.h
+ bobuiconcurrentrun.cpp
+ bobuiconcurrentrun.h
+ bobuiconcurrentstoredfunctioncall.h
+ bobuiconcurrentthreadengine.cpp
+ bobuiconcurrentthreadengine.h
+ bobuihreadpool.cpp
+ bobuihreadpool.h
+ bobuihreadpool_p.h
 2 corelib.pro
  eval.pri
  global/
@@ -7867,8 +7867,8 @@
  qnumeric.cpp
  qnumeric.h
  qnumeric_p.h
- qt_pch.h
- qt_windows.h
+ bobui_pch.h
+ bobui_windows.h
 2 io/
 0 io.pri
  qabstractfileengine.cpp
@@ -7936,10 +7936,10 @@
  qsettings_mac.cpp
  qsettings_p.h
  qsettings_win.cpp
- qtemporaryfile.cpp
- qtemporaryfile.h
- qtextstream.cpp
- qtextstream.h
+ bobuiemporaryfile.cpp
+ bobuiemporaryfile.h
+ bobuiextstream.cpp
+ bobuiextstream.h
  qurl.cpp
  qurl.h
  qwindowspipewriter.cpp
@@ -8019,12 +8019,12 @@
  qsystemsemaphore_symbian.cpp
  qsystemsemaphore_unix.cpp
  qsystemsemaphore_win.cpp
- qtcore_eval.cpp
- qtimer.cpp
- qtimer.h
- qtranslator.cpp
- qtranslator.h
- qtranslator_p.h
+ bobuicore_eval.cpp
+ bobuiimer.cpp
+ bobuiimer.h
+ bobuiranslator.cpp
+ bobuiranslator.h
+ bobuiranslator_p.h
  qvariant.cpp
  qvariant.h
  qvariant_p.h
@@ -8046,7 +8046,7 @@
  qplugin.qdoc
  quuid.cpp
  quuid.h
-2 QtCore.dynlist
+2 BobUICore.dynlist
  statemachine/
 0 qabstractstate.cpp
  qabstractstate.h
@@ -8090,13 +8090,13 @@
  qreadwritelock_p.h
  qsemaphore.cpp
  qsemaphore.h
- qthread.cpp
- qthread.h
- qthread_p.h
- qthreadstorage.cpp
- qthreadstorage.h
- qthread_unix.cpp
- qthread_win.cpp
+ bobuihread.cpp
+ bobuihread.h
+ bobuihread_p.h
+ bobuihreadstorage.cpp
+ bobuihreadstorage.h
+ bobuihread_unix.cpp
+ bobuihread_win.cpp
  qwaitcondition.h
  qwaitcondition.qdoc
  qwaitcondition_unix.cpp
@@ -8179,11 +8179,11 @@
  qstringlist.h
  qstringmatcher.cpp
  qstringmatcher.h
- qtextboundaryfinder.cpp
- qtextboundaryfinder.h
- qtimeline.cpp
- qtimeline.h
- qtools_p.h
+ bobuiextboundaryfinder.cpp
+ bobuiextboundaryfinder.h
+ bobuiimeline.cpp
+ bobuiimeline.h
+ bobuiools_p.h
  qunicodetables.cpp
  qunicodetables_p.h
  qvarlengtharray.h
@@ -8311,7 +8311,7 @@
  page-setup-32.png
  print-24.png
  print-32.png
- qtlogo-64.png
+ bobuilogo-64.png
  status-color.png
  status-gray-scale.png
  view-page-multi-24.png
@@ -8482,10 +8482,10 @@
  qscreenvfb_qws.h
  qsoundqss_qws.cpp
  qsoundqss_qws.h
- qtransportauthdefs_qws.h
- qtransportauth_qws.cpp
- qtransportauth_qws.h
- qtransportauth_qws_p.h
+ bobuiransportauthdefs_qws.h
+ bobuiransportauth_qws.cpp
+ bobuiransportauth_qws.h
+ bobuiransportauth_qws_p.h
  qunixsocket.cpp
  qunixsocket_p.h
  qunixsocketserver.cpp
@@ -8710,21 +8710,21 @@
  qstringlistmodel.h
  qstyleditemdelegate.cpp
  qstyleditemdelegate.h
- qtableview.cpp
- qtableview.h
- qtableview_p.h
- qtablewidget.cpp
- qtablewidget.h
- qtablewidget_p.h
- qtreeview.cpp
- qtreeview.h
- qtreeview_p.h
- qtreewidget.cpp
- qtreewidget.h
- qtreewidgetitemiterator.cpp
- qtreewidgetitemiterator.h
- qtreewidgetitemiterator_p.h
- qtreewidget_p.h
+ bobuiableview.cpp
+ bobuiableview.h
+ bobuiableview_p.h
+ bobuiablewidget.cpp
+ bobuiablewidget.h
+ bobuiablewidget_p.h
+ bobuireeview.cpp
+ bobuireeview.h
+ bobuireeview_p.h
+ bobuireewidget.cpp
+ bobuireewidget.h
+ bobuireewidgetitemiterator.cpp
+ bobuireewidgetitemiterator.h
+ bobuireewidgetitemiterator_p.h
+ bobuireewidget_p.h
  qwidgetitemdata_p.h
 2 kernel/
 0 kernel.pri
@@ -8883,15 +8883,15 @@
  qstackedlayout.h
  qstandardgestures.cpp
  qstandardgestures_p.h
- qt_cocoa_helpers_mac.mm
- qt_cocoa_helpers_mac_p.h
- qt_gui_pch.h
- qt_mac.cpp
- qt_mac_p.h
- qtooltip.cpp
- qtooltip.h
- qt_s60_p.h
- qt_x11_p.h
+ bobui_cocoa_helpers_mac.mm
+ bobui_cocoa_helpers_mac_p.h
+ bobui_gui_pch.h
+ bobui_mac.cpp
+ bobui_mac_p.h
+ bobuiooltip.cpp
+ bobuiooltip.h
+ bobui_s60_p.h
+ bobui_x11_p.h
  qwhatsthis.cpp
  qwhatsthis.h
  qwidgetaction.cpp
@@ -8927,7 +8927,7 @@
  spincursor.png
  waitcursor.png
 2 macresources.qrc
- qt_menu.nib/
+ bobui_menu.nib/
 0 classes.nib
  info.nib
  keyedobjects.nib
@@ -9093,12 +9093,12 @@
  qstroker_p.h
  qstylepainter.cpp
  qstylepainter.h
- qtessellator.cpp
- qtessellator_p.h
- qtextureglyphcache.cpp
- qtextureglyphcache_p.h
- qtransform.cpp
- qtransform.h
+ bobuiessellator.cpp
+ bobuiessellator_p.h
+ bobuiextureglyphcache.cpp
+ bobuiextureglyphcache_p.h
+ bobuiransform.cpp
+ bobuiransform.h
  qvectorpath_p.h
  qwindowsurface.cpp
  qwindowsurface_mac.cpp
@@ -9113,7 +9113,7 @@
  qwindowsurface_x11.cpp
  qwindowsurface_x11_p.h
  qwmatrix.h
-2 QtGui.dynlist
+2 BobUIGui.dynlist
  s60framework/
 0 qs60mainapplication.cpp
  qs60mainapplication.h
@@ -9420,47 +9420,47 @@
  qpfutil.cpp
  qsyntaxhighlighter.cpp
  qsyntaxhighlighter.h
- qtextcontrol.cpp
- qtextcontrol_p.h
- qtextcontrol_p_p.h
- qtextcursor.cpp
- qtextcursor.h
- qtextcursor_p.h
- qtextdocument.cpp
- qtextdocumentfragment.cpp
- qtextdocumentfragment.h
- qtextdocumentfragment_p.h
- qtextdocument.h
- qtextdocumentlayout.cpp
- qtextdocumentlayout_p.h
- qtextdocument_p.cpp
- qtextdocument_p.h
- qtextdocumentwriter.cpp
- qtextdocumentwriter.h
- qtextengine.cpp
- qtextengine_mac.cpp
- qtextengine_p.h
- qtextformat.cpp
- qtextformat.h
- qtextformat_p.h
- qtexthtmlparser.cpp
- qtexthtmlparser_p.h
- qtextimagehandler.cpp
- qtextimagehandler_p.h
- qtextlayout.cpp
- qtextlayout.h
- qtextlist.cpp
- qtextlist.h
- qtextobject.cpp
- qtextobject.h
- qtextobject_p.h
- qtextodfwriter.cpp
- qtextodfwriter_p.h
- qtextoption.cpp
- qtextoption.h
- qtexttable.cpp
- qtexttable.h
- qtexttable_p.h
+ bobuiextcontrol.cpp
+ bobuiextcontrol_p.h
+ bobuiextcontrol_p_p.h
+ bobuiextcursor.cpp
+ bobuiextcursor.h
+ bobuiextcursor_p.h
+ bobuiextdocument.cpp
+ bobuiextdocumentfragment.cpp
+ bobuiextdocumentfragment.h
+ bobuiextdocumentfragment_p.h
+ bobuiextdocument.h
+ bobuiextdocumentlayout.cpp
+ bobuiextdocumentlayout_p.h
+ bobuiextdocument_p.cpp
+ bobuiextdocument_p.h
+ bobuiextdocumentwriter.cpp
+ bobuiextdocumentwriter.h
+ bobuiextengine.cpp
+ bobuiextengine_mac.cpp
+ bobuiextengine_p.h
+ bobuiextformat.cpp
+ bobuiextformat.h
+ bobuiextformat_p.h
+ bobuiexthtmlparser.cpp
+ bobuiexthtmlparser_p.h
+ bobuiextimagehandler.cpp
+ bobuiextimagehandler_p.h
+ bobuiextlayout.cpp
+ bobuiextlayout.h
+ bobuiextlist.cpp
+ bobuiextlist.h
+ bobuiextobject.cpp
+ bobuiextobject.h
+ bobuiextobject_p.h
+ bobuiextodfwriter.cpp
+ bobuiextodfwriter_p.h
+ bobuiextoption.cpp
+ bobuiextoption.h
+ bobuiexttable.cpp
+ bobuiexttable.h
+ bobuiexttable_p.h
  qzip.cpp
  qzipreader_p.h
  qzipwriter_p.h
@@ -9616,31 +9616,31 @@
  qstackedwidget.h
  qstatusbar.cpp
  qstatusbar.h
- qtabbar.cpp
- qtabbar.h
- qtabbar_p.h
- qtabwidget.cpp
- qtabwidget.h
- qtextbrowser.cpp
- qtextbrowser.h
- qtextedit.cpp
- qtextedit.h
- qtextedit_p.h
- qtoolbararealayout.cpp
- qtoolbararealayout_p.h
- qtoolbar.cpp
- qtoolbarextension.cpp
- qtoolbarextension_p.h
- qtoolbar.h
- qtoolbarlayout.cpp
- qtoolbarlayout_p.h
- qtoolbar_p.h
- qtoolbarseparator.cpp
- qtoolbarseparator_p.h
- qtoolbox.cpp
- qtoolbox.h
- qtoolbutton.cpp
- qtoolbutton.h
+ bobuiabbar.cpp
+ bobuiabbar.h
+ bobuiabbar_p.h
+ bobuiabwidget.cpp
+ bobuiabwidget.h
+ bobuiextbrowser.cpp
+ bobuiextbrowser.h
+ bobuiextedit.cpp
+ bobuiextedit.h
+ bobuiextedit_p.h
+ bobuioolbararealayout.cpp
+ bobuioolbararealayout_p.h
+ bobuioolbar.cpp
+ bobuioolbarextension.cpp
+ bobuioolbarextension_p.h
+ bobuioolbar.h
+ bobuioolbarlayout.cpp
+ bobuioolbarlayout_p.h
+ bobuioolbar_p.h
+ bobuioolbarseparator.cpp
+ bobuioolbarseparator_p.h
+ bobuioolbox.cpp
+ bobuioolbox.h
+ bobuioolbutton.cpp
+ bobuioolbutton.h
  qvalidator.cpp
  qvalidator.h
  qwidgetanimator.cpp
@@ -9819,11 +9819,11 @@
  qnet_unix_p.h
  qsocks5socketengine.cpp
  qsocks5socketengine_p.h
- qtcpserver.cpp
- qtcpserver.h
- qtcpsocket.cpp
- qtcpsocket.h
- qtcpsocket_p.h
+ bobuicpserver.cpp
+ bobuicpserver.h
+ bobuicpsocket.cpp
+ bobuicpsocket.h
+ bobuicpsocket_p.h
  qudpsocket.cpp
  qudpsocket.h
  socket.pri
@@ -9851,7 +9851,7 @@
  qsslsocket_openssl_symbols.cpp
  qsslsocket_openssl_symbols_p.h
  qsslsocket_p.h
- qt-ca-bundle.crt
+ bobui-ca-bundle.crt
  ssl.pri
 3 opengl/
 0 gl2paintengineex/
@@ -9866,8 +9866,8 @@
  qglgradientcache_p.h
  qpaintengineex_opengl2.cpp
  qpaintengineex_opengl2_p.h
- qtriangulatingstroker.cpp
- qtriangulatingstroker_p.h
+ bobuiriangulatingstroker.cpp
+ bobuiriangulatingstroker_p.h
 2 opengl.pro
  qgl_cl_p.h
  qglcolormap.cpp
@@ -10123,8 +10123,8 @@
  svg.pro
 2 tiff/
 0 main.cpp
- qtiffhandler.cpp
- qtiffhandler.h
+ bobuiiffhandler.cpp
+ bobuiiffhandler.h
  tiff.pro
 3 inputmethods/
 0 imsw-multi/
@@ -10158,8 +10158,8 @@
 2 mmf/
 0 mmf.pro
 2 phonon.pro
- qt7/
-0 qt7.pro
+ bobui7/
+0 bobui7.pro
 2 waveout/
 0 waveout.pro
 3 plugins.pro
@@ -10172,9 +10172,9 @@
 2 5_0/
 0 5_0.pro
 2 bwins/
-0 qts60pluginu.def
+0 bobuis60pluginu.def
 2 eabi/
-0 qts60pluginu.def
+0 bobuis60pluginu.def
 2 s60pluginbase.pri
  s60.pro
  src/
@@ -10185,10 +10185,10 @@
  qlocale_3_1.cpp
  qlocale_3_2.cpp
 3 script/
-0 qtdbus/
+0 bobuidbus/
 0 main.cpp
  main.h
- qtdbus.pro
+ bobuidbus.pro
 2 script.pro
 2 sqldrivers/
 0 db2/
@@ -10233,7 +10233,7 @@
  README
  tds.pro
 4 qbase.pri
- qt3support/
+ bobui3support/
 0 canvas/
 0 canvas.pri
  q3canvas.cpp
@@ -10308,7 +10308,7 @@
  q3process_unix.cpp
  q3process_win.cpp
  qiconset.h
- qt_compat_pch.h
+ bobui_compat_pch.h
 2 painting/
 0 painting.pri
  q3paintdevicemetrics.cpp
@@ -10321,7 +10321,7 @@
  q3picture.h
  q3pointarray.cpp
  q3pointarray.h
-2 qt3support.pro
+2 bobui3support.pro
  sql/
 0 q3databrowser.cpp
  q3databrowser.h
@@ -10484,46 +10484,46 @@
  q3widgetstack.cpp
  q3widgetstack.h
  widgets.pri
-3 qt_install.pri
- qt_targets.pri
+3 bobui_install.pri
+ bobui_targets.pri
  s60installs/
 0 bwins/
 0 phononu.def
- QtCoreu.def
- QtGuiu.def
- QtMultimediau.def
- QtNetworku.def
- QtScriptu.def
- QtSqlu.def
- QtSvgu.def
- QtTestu.def
- QtWebKitu.def
- QtXmlPatternsu.def
- QtXmlu.def
+ BobUICoreu.def
+ BobUIGuiu.def
+ BobUIMultimediau.def
+ BobUINetworku.def
+ BobUIScriptu.def
+ BobUISqlu.def
+ BobUISvgu.def
+ BobUITestu.def
+ BobUIWebKitu.def
+ BobUIXmlPatternsu.def
+ BobUIXmlu.def
 2 eabi/
 0 phononu.def
- QtCoreu.def
- QtGuiu.def
- QtMultimediau.def
- QtNetworku.def
- QtOpenVGu.def
- QtScriptu.def
- QtSqlu.def
- QtSvgu.def
- QtTestu.def
- QtWebKitu.def
- QtXmlPatternsu.def
- QtXmlu.def
+ BobUICoreu.def
+ BobUIGuiu.def
+ BobUIMultimediau.def
+ BobUINetworku.def
+ BobUIOpenVGu.def
+ BobUIScriptu.def
+ BobUISqlu.def
+ BobUISvgu.def
+ BobUITestu.def
+ BobUIWebKitu.def
+ BobUIXmlPatternsu.def
+ BobUIXmlu.def
 2 .gitignore
- qtdemoapps.iby
- qt.iby
- qt.svg
+ bobuidemoapps.iby
+ bobui.iby
+ bobui.svg
  s60installs.pro
  selfsigned.cer
  selfsigned.key
 2 s60main/
-0 qts60main.cpp
- qts60main_mcrt0.cpp
+0 bobuis60main.cpp
+ bobuis60main_mcrt0.cpp
  s60main.pro
 2 script/
 0 api/
@@ -10925,47 +10925,47 @@
  qsignaldumper_p.h
  qsignalspy.h
  qsignalspy.qdoc
- qtestaccessible.h
- qtestassert.h
- qtestbasicstreamer.cpp
- qtestbasicstreamer.h
- qtestcase.cpp
- qtestcase.h
- qtestcoreelement.h
- qtestcorelist.h
- qtestdata.cpp
- qtestdata.h
- qtestelementattribute.cpp
- qtestelementattribute.h
- qtestelement.cpp
- qtestelement.h
- qtestevent.h
- qtesteventloop.h
- qtestevent.qdoc
- qtestfilelogger.cpp
- qtestfilelogger.h
- qtest_global.h
- qtest_gui.h
- qtest.h
- qtestkeyboard.h
- qtestlightxmlstreamer.cpp
- qtestlightxmlstreamer.h
- qtestlog.cpp
- qtestlogger.cpp
- qtestlogger_p.h
- qtestlog_p.h
- qtestmouse.h
- qtestresult.cpp
- qtestresult_p.h
- qtestspontaneevent.h
- qtestsystem.h
- qtesttable.cpp
- qtesttable_p.h
- qtesttouch.h
- qtestxmlstreamer.cpp
- qtestxmlstreamer.h
- qtestxunitstreamer.cpp
- qtestxunitstreamer.h
+ bobuiestaccessible.h
+ bobuiestassert.h
+ bobuiestbasicstreamer.cpp
+ bobuiestbasicstreamer.h
+ bobuiestcase.cpp
+ bobuiestcase.h
+ bobuiestcoreelement.h
+ bobuiestcorelist.h
+ bobuiestdata.cpp
+ bobuiestdata.h
+ bobuiestelementattribute.cpp
+ bobuiestelementattribute.h
+ bobuiestelement.cpp
+ bobuiestelement.h
+ bobuiestevent.h
+ bobuiesteventloop.h
+ bobuiestevent.qdoc
+ bobuiestfilelogger.cpp
+ bobuiestfilelogger.h
+ bobuiest_global.h
+ bobuiest_gui.h
+ bobuiest.h
+ bobuiestkeyboard.h
+ bobuiestlightxmlstreamer.cpp
+ bobuiestlightxmlstreamer.h
+ bobuiestlog.cpp
+ bobuiestlogger.cpp
+ bobuiestlogger_p.h
+ bobuiestlog_p.h
+ bobuiestmouse.h
+ bobuiestresult.cpp
+ bobuiestresult_p.h
+ bobuiestspontaneevent.h
+ bobuiestsystem.h
+ bobuiesttable.cpp
+ bobuiesttable_p.h
+ bobuiesttouch.h
+ bobuiestxmlstreamer.cpp
+ bobuiestxmlstreamer.h
+ bobuiestxunitstreamer.cpp
+ bobuiestxunitstreamer.h
  qxmltestlogger.cpp
  qxmltestlogger_p.h
  testlib.pro
@@ -11021,8 +11021,8 @@
  object.cpp
  parser.cpp
  parser.h
- qt3to4.cpp
- qt3to4.h
+ bobui3to4.cpp
+ bobui3to4.h
  subclassing.cpp
  ui3reader.cpp
  ui3reader.h
@@ -11068,7 +11068,7 @@
  uic/validator.cpp
  uic/validator.h
 2 winmain/
-0 qtmain_win.cpp
+0 bobuimain_win.cpp
  winmain.pro
 2 xml/
 0 dom/
@@ -11410,23 +11410,23 @@
  qstaticbaseuristore_p.h
  qstaticcompatibilitystore.cpp
  qstaticcompatibilitystore_p.h
- qtemplate.cpp
- qtemplateinvoker.cpp
- qtemplateinvoker_p.h
- qtemplatemode.cpp
- qtemplatemode_p.h
- qtemplateparameterreference.cpp
- qtemplateparameterreference_p.h
- qtemplatepattern_p.h
- qtemplate_p.h
- qtextnodeconstructor.cpp
- qtextnodeconstructor_p.h
- qtreatas.cpp
- qtreatas_p.h
- qtriplecontainer.cpp
- qtriplecontainer_p.h
- qtruthpredicate.cpp
- qtruthpredicate_p.h
+ bobuiemplate.cpp
+ bobuiemplateinvoker.cpp
+ bobuiemplateinvoker_p.h
+ bobuiemplatemode.cpp
+ bobuiemplatemode_p.h
+ bobuiemplateparameterreference.cpp
+ bobuiemplateparameterreference_p.h
+ bobuiemplatepattern_p.h
+ bobuiemplate_p.h
+ bobuiextnodeconstructor.cpp
+ bobuiextnodeconstructor_p.h
+ bobuireatas.cpp
+ bobuireatas_p.h
+ bobuiriplecontainer.cpp
+ bobuiriplecontainer_p.h
+ bobuiruthpredicate.cpp
+ bobuiruthpredicate_p.h
  qunaryexpression.cpp
  qunaryexpression_p.h
  qunlimitedcontainer.cpp
@@ -11527,12 +11527,12 @@
  qsubstringfns_p.h
  qsystempropertyfn.cpp
  qsystempropertyfn_p.h
- qtimezonefns.cpp
- qtimezonefns_p.h
- qtracefn.cpp
- qtracefn_p.h
- qtypeavailablefn.cpp
- qtypeavailablefn_p.h
+ bobuiimezonefns.cpp
+ bobuiimezonefns_p.h
+ bobuiracefn.cpp
+ bobuiracefn_p.h
+ bobuiypeavailablefn.cpp
+ bobuiypeavailablefn_p.h
  qunparsedentitypublicidfn.cpp
  qunparsedentitypublicidfn_p.h
  qunparsedentityurifn.cpp
@@ -11574,8 +11574,8 @@
  qsingletoniterator_p.h
  qsubsequenceiterator.cpp
  qsubsequenceiterator_p.h
- qtocodepointsiterator.cpp
- qtocodepointsiterator_p.h
+ bobuiocodepointsiterator.cpp
+ bobuiocodepointsiterator_p.h
  qunioniterator.cpp
  qunioniterator_p.h
 2 janitors/
@@ -11606,12 +11606,12 @@
  qparsercontext_p.h
  qquerytransformparser.cpp
  qquerytransformparser_p.h
- qtokenizer_p.h
- qtokenlookup.cpp
- qtokenrevealer.cpp
- qtokenrevealer_p.h
- qtokensource.cpp
- qtokensource_p.h
+ bobuiokenizer_p.h
+ bobuiokenlookup.cpp
+ bobuiokenrevealer.cpp
+ bobuiokenrevealer_p.h
+ bobuiokensource.cpp
+ bobuiokensource_p.h
  querytransformparser.ypp
  qxquerytokenizer.cpp
  qxquerytokenizer_p.h
@@ -11628,10 +11628,10 @@
  qdocumentprojector.cpp
  qdocumentprojector_p.h
  qprojectedexpression_p.h
-2 qtokenautomaton/
+2 bobuiokenautomaton/
 0 exampleFile.xml
  qautomaton2cpp.xsl
- qtokenautomaton.xsd
+ bobuiokenautomaton.xsd
  README
 2 query.pri
  schema/
@@ -11864,8 +11864,8 @@
  qschematype_p.h
  qsequencetype.cpp
  qsequencetype_p.h
- qtypechecker.cpp
- qtypechecker_p.h
+ bobuiypechecker.cpp
+ bobuiypechecker_p.h
  quntyped.cpp
  quntyped_p.h
  qxsltnodetest.cpp

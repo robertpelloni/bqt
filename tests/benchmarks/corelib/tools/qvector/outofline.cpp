@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QList>
 #include "qrawvector.h"
@@ -55,7 +55,7 @@ QVectorData *QVectorData::allocate(int size, int alignment)
     return static_cast<QVectorData *>(alignment > alignmentThreshold() ? qMallocAligned(size, alignment) : ::malloc(size));
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QVectorData *QVectorData::reallocate(QVectorData *x, int newsize, int oldsize, int alignment)
 {
@@ -77,4 +77,4 @@ int QVectorData::grow(int sizeOfHeader, int size, int sizeOfT)
     return qCalculateGrowingBlockSize(size, sizeOfT, sizeOfHeader).elementCount;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

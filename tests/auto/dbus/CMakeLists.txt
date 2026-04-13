@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 add_subdirectory(qdbusconnection_delayed)
@@ -19,14 +19,14 @@ add_subdirectory(qdbusreply)
 add_subdirectory(qdbusservicewatcher)
 add_subdirectory(qdbustype)
 add_subdirectory(qdbusthreading)
-if(QT_FEATURE_process)
+if(BOBUI_FEATURE_process)
     add_subdirectory(qdbusabstractadaptor)
     add_subdirectory(qdbusabstractinterface)
     add_subdirectory(qdbusinterface)
 endif()
-if(QT_FEATURE_private_tests AND QT_FEATURE_process)
+if(BOBUI_FEATURE_private_tests AND BOBUI_FEATURE_process)
     add_subdirectory(qdbusmarshall)
 endif()
-if(TARGET Qt::Xml)
+if(TARGET BobUI::Xml)
     add_subdirectory(qdbusxmlparser)
 endif()

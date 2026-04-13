@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDPRIMARYSELECTIONV1_P_H
 #define QWAYLANDPRIMARYSELECTIONV1_P_H
@@ -8,32 +8,32 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandClient/private/qwayland-wp-primary-selection-unstable-v1.h>
+#include <BobUIWaylandClient/private/qwayland-wp-primary-selection-unstable-v1.h>
 
-#include <QtWaylandClient/private/qtwaylandclientglobal_p.h>
-#include <QtWaylandClient/private/qwaylanddataoffer_p.h>
+#include <BobUIWaylandClient/private/bobuiwaylandclientglobal_p.h>
+#include <BobUIWaylandClient/private/qwaylanddataoffer_p.h>
 
-#include <QtCore/QObject>
+#include <BobUICore/QObject>
 
-QT_REQUIRE_CONFIG(wayland_client_primary_selection);
+BOBUI_REQUIRE_CONFIG(wayland_client_primary_selection);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandInputDevice;
 class QWaylandPrimarySelectionDeviceV1;
 
-class QWaylandPrimarySelectionDeviceManagerV1 : public QtWayland::zwp_primary_selection_device_manager_v1
+class QWaylandPrimarySelectionDeviceManagerV1 : public BobUIWayland::zwp_primary_selection_device_manager_v1
 {
 public:
     explicit QWaylandPrimarySelectionDeviceManagerV1(QWaylandDisplay *display, uint id, uint version);
@@ -45,7 +45,7 @@ private:
     QWaylandDisplay *m_display = nullptr;
 };
 
-class QWaylandPrimarySelectionOfferV1 : public QtWayland::zwp_primary_selection_offer_v1, public QWaylandAbstractDataOffer
+class QWaylandPrimarySelectionOfferV1 : public BobUIWayland::zwp_primary_selection_offer_v1, public QWaylandAbstractDataOffer
 {
 public:
     explicit QWaylandPrimarySelectionOfferV1(QWaylandDisplay *display, ::zwp_primary_selection_offer_v1 *offer);
@@ -61,7 +61,7 @@ private:
     QScopedPointer<QWaylandMimeData> m_mimeData;
 };
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandPrimarySelectionSourceV1 : public QObject, public QtWayland::zwp_primary_selection_source_v1
+class Q_WAYLANDCLIENT_EXPORT QWaylandPrimarySelectionSourceV1 : public QObject, public BobUIWayland::zwp_primary_selection_source_v1
 {
     Q_OBJECT
 public:
@@ -81,7 +81,7 @@ private:
     QMimeData *m_mimeData = nullptr;
 };
 
-class QWaylandPrimarySelectionDeviceV1 : public QObject, public QtWayland::zwp_primary_selection_device_v1
+class QWaylandPrimarySelectionDeviceV1 : public QObject, public BobUIWayland::zwp_primary_selection_device_v1
 {
     Q_OBJECT
     QWaylandPrimarySelectionDeviceV1(QWaylandPrimarySelectionDeviceManagerV1 *manager, QWaylandInputDevice *seat);
@@ -105,8 +105,8 @@ private:
     friend class QWaylandPrimarySelectionDeviceManagerV1;
 };
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDPRIMARYSELECTIONV1_P_H

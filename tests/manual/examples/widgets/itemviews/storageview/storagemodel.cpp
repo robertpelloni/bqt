@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Ivan Komissarov
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "storagemodel.h"
 
@@ -32,15 +32,15 @@ int StorageModel::rowCount(const QModelIndex &parent) const
     return m_volumes.count();
 }
 
-Qt::ItemFlags StorageModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags StorageModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags result = QAbstractTableModel::flags(index);
+    BobUI::ItemFlags result = QAbstractTableModel::flags(index);
     switch (index.column()) {
     case ColumnAvailable:
     case ColumnIsReady:
     case ColumnIsReadOnly:
     case ColumnIsValid:
-        result |= Qt::ItemIsUserCheckable;
+        result |= BobUI::ItemIsUserCheckable;
         break;
     default:
         break;
@@ -53,7 +53,7 @@ QVariant StorageModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role == Qt::DisplayRole) {
+    if (role == BobUI::DisplayRole) {
         const QStorageInfo &volume = m_volumes.at(index.row());
         switch (index.column()) {
         case ColumnRootPath:
@@ -73,7 +73,7 @@ QVariant StorageModel::data(const QModelIndex &index, int role) const
         default:
             break;
         }
-    } else if (role == Qt::CheckStateRole) {
+    } else if (role == BobUI::CheckStateRole) {
         const QStorageInfo &volume = m_volumes.at(index.row());
         switch (index.column()) {
         case ColumnIsReady:
@@ -85,17 +85,17 @@ QVariant StorageModel::data(const QModelIndex &index, int role) const
         default:
             break;
         }
-    } else if (role == Qt::TextAlignmentRole) {
+    } else if (role == BobUI::TextAlignmentRole) {
         switch (index.column()) {
         case ColumnTotal:
         case ColumnFree:
         case ColumnAvailable:
-            return Qt::AlignTrailing;
+            return BobUI::AlignTrailing;
         default:
             break;
         }
-        return Qt::AlignLeading;
-    } else if (role == Qt::ToolTipRole) {
+        return BobUI::AlignLeading;
+    } else if (role == BobUI::ToolTipRole) {
         QLocale locale;
         const QStorageInfo &volume = m_volumes.at(index.row());
         return tr("Root path : %1\n"
@@ -127,12 +127,12 @@ QVariant StorageModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QVariant StorageModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant StorageModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal)
+    if (orientation != BobUI::Horizontal)
         return QVariant();
 
-    if (role != Qt::DisplayRole)
+    if (role != BobUI::DisplayRole)
         return QVariant();
 
     switch (section) {

@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #define _CRT_SECURE_NO_WARNINGS 1
 
-#include <QTest>
+#include <BOBUIest>
 #include <QScopedValueRollback>
 #include <qplatformdefs.h>
 
@@ -18,37 +18,37 @@
 #include <QStorageInfo>
 #include <QScopeGuard>
 #include <QStandardPaths>
-#include <QTemporaryDir>
-#include <QTemporaryFile>
+#include <BOBUIemporaryDir>
+#include <BOBUIemporaryFile>
 
 #include <private/qabstractfileengine_p.h>
 #include <private/qfsfileengine_p.h>
 #include <private/qfilesystemengine_p.h>
 
 #ifdef Q_OS_WIN
-#include <QtCore/private/qfunctions_win_p.h>
+#include <BobUICore/private/qfunctions_win_p.h>
 #endif
 
 #ifdef Q_OS_ANDROID
-#include <QtCore/private/qjnihelpers_p.h>
+#include <BobUICore/private/qjnihelpers_p.h>
 #endif
 
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
 #ifdef Q_OS_WIN
-QT_BEGIN_NAMESPACE
-extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+extern Q_CORE_EXPORT int bobui_ntfs_permission_lookup;
+BOBUI_END_NAMESPACE
 #endif
 
-#if !defined(QT_NO_NETWORK)
+#if !defined(BOBUI_NO_NETWORK)
 #include <QHostInfo>
 #endif
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 # include <QProcess>
 #endif
 #ifdef Q_OS_WIN
-# include <qt_windows.h>
+# include <bobui_windows.h>
 #else
 # include <sys/types.h>
 # include <unistd.h>
@@ -66,8 +66,8 @@ QT_END_NAMESPACE
 #elif defined(Q_OS_VXWORKS)
 # include <fcntl.h>
 #if defined(_WRS_KERNEL)
-#undef QT_OPEN
-#define QT_OPEN(path, oflag) ::open(path, oflag, 0)
+#undef BOBUI_OPEN
+#define BOBUI_OPEN(path, oflag) ::open(path, oflag, 0)
 #endif
 #endif
 
@@ -100,11 +100,11 @@ QT_END_NAMESPACE
 #define STDERR_FILENO 2
 #endif
 
-#ifndef QT_OPEN_BINARY
-#define QT_OPEN_BINARY 0
+#ifndef BOBUI_OPEN_BINARY
+#define BOBUI_OPEN_BINARY 0
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECLARE_METATYPE(QFile::FileError)
 
@@ -179,7 +179,7 @@ private slots:
 #ifdef Q_OS_WIN
     void permissionsNtfs_data();
     void permissionsNtfs();
-#if QT_DEPRECATED_SINCE(6,6)
+#if BOBUI_DEPRECATED_SINCE(6,6)
     void deprecatedNtfsPermissionCheck();
 #endif
 #endif
@@ -222,7 +222,7 @@ private slots:
     void longFileName_data();
     void longFileName();
     void fileEngineHandler();
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void useQFileInAFileHandler();
 #endif
     void getCharFF();
@@ -308,7 +308,7 @@ private slots:
 
 private:
 #ifdef BUILTIN_TESTDATA
-    QSharedPointer<QTemporaryDir> m_dataDir;
+    QSharedPointer<BOBUIemporaryDir> m_dataDir;
 #endif
     enum FileType {
         OpenQFile,
@@ -319,15 +319,15 @@ private:
 
     bool openFd(QFile &file, QIODevice::OpenMode mode, QFile::FileHandleFlags handleFlags)
     {
-        int fdMode = QT_OPEN_LARGEFILE | QT_OPEN_BINARY;
+        int fdMode = BOBUI_OPEN_LARGEFILE | BOBUI_OPEN_BINARY;
 
         // File will be truncated if in Write mode.
         if (mode & QIODevice::WriteOnly)
-            fdMode |= QT_OPEN_WRONLY | QT_OPEN_TRUNC;
+            fdMode |= BOBUI_OPEN_WRONLY | BOBUI_OPEN_TRUNC;
         if (mode & QIODevice::ReadOnly)
-            fdMode |= QT_OPEN_RDONLY;
+            fdMode |= BOBUI_OPEN_RDONLY;
 
-        fd_ = QT_OPEN(qPrintable(file.fileName()), fdMode);
+        fd_ = BOBUI_OPEN(qPrintable(file.fileName()), fdMode);
 
         return (-1 != fd_) && file.open(fd_, mode, handleFlags);
     }
@@ -342,7 +342,7 @@ private:
         else if (mode & QIODevice::ReadOnly)
             streamMode = "rb";
 
-        stream_ = QT_FOPEN(qPrintable(file.fileName()), streamMode);
+        stream_ = BOBUI_FOPEN(qPrintable(file.fileName()), streamMode);
 
         return stream_ && file.open(stream_, mode, handleFlags);
     }
@@ -381,7 +381,7 @@ private:
         file.close();
 
         if (-1 != fd_)
-            QT_CLOSE(fd_);
+            BOBUI_CLOSE(fd_);
         if (stream_)
             ::fclose(stream_);
 
@@ -393,7 +393,7 @@ private:
     bool uncServerAvailable = false;
     FILE *stream_;
 
-    QTemporaryDir m_temporaryDir;
+    BOBUIemporaryDir m_temporaryDir;
     const QString m_oldDir;
     QString m_stdinProcess;
     QString m_testSourceFile;
@@ -419,7 +419,7 @@ void tst_QFile::init()
 void tst_QFile::cleanup()
 {
     if (-1 != fd_)
-        QT_CLOSE(fd_);
+        BOBUI_CLOSE(fd_);
     fd_ = -1;
     if (stream_)
         ::fclose(stream_);
@@ -478,7 +478,7 @@ static QByteArray msgFileDoesNotExist(const QString &name)
 void tst_QFile::initTestCase()
 {
     QVERIFY2(m_temporaryDir.isValid(), qPrintable(m_temporaryDir.errorString()));
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #if defined(Q_OS_ANDROID)
     m_stdinProcess = QCoreApplication::applicationDirPath() + QLatin1String("/libstdinprocess_helper.so");
 #elif defined(Q_OS_WIN)
@@ -537,8 +537,8 @@ void tst_QFile::initTestCase()
 
 #ifdef Q_OS_WIN
     // "When used with directories, _access determines only whether the specified directory exists"
-    if (_waccess(qUtf16Printable("//" + QTest::uncServerName() + "/TESTSHAREWRITABLE"), 0) == 0
-            && _waccess(qUtf16Printable("//" + QTest::uncServerName() + "/testshare"), 0) == 0)
+    if (_waccess(qUtf16Printable("//" + BOBUIest::uncServerName() + "/TESTSHAREWRITABLE"), 0) == 0
+            && _waccess(qUtf16Printable("//" + BOBUIest::uncServerName() + "/testshare"), 0) == 0)
         uncServerAvailable = true;
 #endif
 }
@@ -584,59 +584,59 @@ void tst_QFile::exists()
     QVERIFY(!file.exists());
 
 #if defined(Q_OS_WIN)
-    const QString uncPath = "//" + QTest::uncServerName() + "/testshare/readme.txt";
+    const QString uncPath = "//" + BOBUIest::uncServerName() + "/testshare/readme.txt";
     QFile unc(uncPath);
     if (uncServerAvailable)
         QVERIFY2(unc.exists(), msgFileDoesNotExist(uncPath).constData());
 #endif
 
-    QTest::ignoreMessage(QtWarningMsg, "Broken filename passed to function");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Broken filename passed to function");
     QVERIFY(!QFile::exists(QDir::currentPath() + QLatin1Char('/') +
                            QChar(QChar::Null) + QLatin1String("x/y")));
 }
 
 void tst_QFile::open_data()
 {
-    QTest::addColumn<QString>("filename");
-    QTest::addColumn<int>("mode");
-    QTest::addColumn<bool>("ok");
-    QTest::addColumn<QFile::FileError>("status");
+    BOBUIest::addColumn<QString>("filename");
+    BOBUIest::addColumn<int>("mode");
+    BOBUIest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QFile::FileError>("status");
 
-    QTest::newRow( "exist_readOnly"  )
+    BOBUIest::newRow( "exist_readOnly"  )
         << m_testFile << int(QIODevice::ReadOnly)
         << true << QFile::NoError;
 
-    QTest::newRow( "exist_writeOnly" )
+    BOBUIest::newRow( "exist_writeOnly" )
         << QString::fromLatin1(readOnlyFile)
         << int(QIODevice::WriteOnly)
         << false
         << QFile::OpenError;
 
-    QTest::newRow( "exist_append"    )
+    BOBUIest::newRow( "exist_append"    )
         << QString::fromLatin1(readOnlyFile) << int(QIODevice::Append)
         << false << QFile::OpenError;
 
-    QTest::newRow( "nonexist_readOnly"  )
+    BOBUIest::newRow( "nonexist_readOnly"  )
         << QString("nonExist.txt") << int(QIODevice::ReadOnly)
         << false << QFile::OpenError;
 
-    QTest::newRow("emptyfile")
+    BOBUIest::newRow("emptyfile")
         << QString("")
         << int(QIODevice::ReadOnly)
         << false
         << QFile::OpenError;
 
-    QTest::newRow("nullfile") << QString() << int(QIODevice::ReadOnly) << false
+    BOBUIest::newRow("nullfile") << QString() << int(QIODevice::ReadOnly) << false
         << QFile::OpenError;
 
-    QTest::newRow("two-dots") << m_twoDotsFile << int(QIODevice::ReadOnly) << true
+    BOBUIest::newRow("two-dots") << m_twoDotsFile << int(QIODevice::ReadOnly) << true
         << QFile::NoError;
 
-    QTest::newRow("readonlyfile") << QString::fromLatin1(readOnlyFile) << int(QIODevice::WriteOnly)
+    BOBUIest::newRow("readonlyfile") << QString::fromLatin1(readOnlyFile) << int(QIODevice::WriteOnly)
                                   << false << QFile::OpenError;
-    QTest::newRow("noreadfile") << QString::fromLatin1(noReadFile) << int(QIODevice::ReadOnly)
+    BOBUIest::newRow("noreadfile") << QString::fromLatin1(noReadFile) << int(QIODevice::ReadOnly)
                                 << false << QFile::OpenError;
-    QTest::newRow("resource_file") << QString::fromLatin1(":/does/not/exist")
+    BOBUIest::newRow("resource_file") << QString::fromLatin1(":/does/not/exist")
                                    << int(QIODevice::ReadOnly)
                                    << false
                                    << QFile::OpenError;
@@ -645,13 +645,13 @@ void tst_QFile::open_data()
     HANDLE hTest = CreateFile(_T("\\\\.\\PhysicalDrive0"), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
     if (hTest != INVALID_HANDLE_VALUE) {
         CloseHandle(hTest);
-        QTest::newRow("//./PhysicalDrive0") << QString("//./PhysicalDrive0") << int(QIODevice::ReadOnly)
+        BOBUIest::newRow("//./PhysicalDrive0") << QString("//./PhysicalDrive0") << int(QIODevice::ReadOnly)
                                             << true << QFile::NoError;
     } else {
-        QTest::newRow("//./PhysicalDrive0") << QString("//./PhysicalDrive0") << int(QIODevice::ReadOnly)
+        BOBUIest::newRow("//./PhysicalDrive0") << QString("//./PhysicalDrive0") << int(QIODevice::ReadOnly)
                                             << false << QFile::OpenError;
     }
-    QTest::newRow("uncFile") << "//" + QTest::uncServerName() + "/testshare/test.pri" << int(QIODevice::ReadOnly)
+    BOBUIest::newRow("uncFile") << "//" + BOBUIest::uncServerName() + "/testshare/test.pri" << int(QIODevice::ReadOnly)
                              << uncServerAvailable << QFile::NoError;
 #endif
 }
@@ -675,7 +675,7 @@ void tst_QFile::open()
     QEXPECT_FAIL("noreadfile", "Windows does not currently support non-readable files.", Abort);
 #endif
     if (filename.isEmpty())
-        QTest::ignoreMessage(QtWarningMsg, "QFSFileEngine::open: No file name specified");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QFSFileEngine::open: No file name specified");
 
     const QIODevice::OpenMode om(mode);
     const bool succeeded = f.open(om);
@@ -684,7 +684,7 @@ void tst_QFile::open()
     else
         QVERIFY(!succeeded);
 
-    QTEST( f.error(), "status" );
+    BOBUIEST( f.error(), "status" );
 }
 
 void tst_QFile::openUnbuffered()
@@ -719,14 +719,14 @@ void tst_QFile::openUnbuffered()
 
 void tst_QFile::size_data()
 {
-    QTest::addColumn<QString>("filename");
-    QTest::addColumn<qint64>("size");
+    BOBUIest::addColumn<QString>("filename");
+    BOBUIest::addColumn<qint64>("size");
 
-    QTest::newRow( "exist01" ) << m_testFile << (qint64)245;
+    BOBUIest::newRow( "exist01" ) << m_testFile << (qint64)245;
 #if defined(Q_OS_WIN)
     // Only test UNC on Windows.
     if (uncServerAvailable)
-        QTest::newRow("unc") << "//" + QString(QTest::uncServerName() + "/testshare/test.pri") << (qint64)34;
+        BOBUIest::newRow("unc") << "//" + QString(BOBUIest::uncServerName() + "/testshare/test.pri") << (qint64)34;
 #endif
 }
 
@@ -744,7 +744,7 @@ void tst_QFile::size()
     }
 
     {
-        StdioFileGuard stream(QT_FOPEN(filename.toLocal8Bit().constData(), "rb"));
+        StdioFileGuard stream(BOBUI_FOPEN(filename.toLocal8Bit().constData(), "rb"));
         QVERIFY( stream );
         QFile f;
         QVERIFY( f.open(stream, QIODevice::ReadOnly) );
@@ -756,14 +756,14 @@ void tst_QFile::size()
     {
         QFile f;
 
-        int fd = QT_OPEN(filename.toLocal8Bit().constData(), QT_OPEN_RDONLY);
+        int fd = BOBUI_OPEN(filename.toLocal8Bit().constData(), BOBUI_OPEN_RDONLY);
 
         QVERIFY( fd != -1 );
         QVERIFY( f.open(fd, QIODevice::ReadOnly) );
         QCOMPARE( f.size(), size );
 
         f.close();
-        QT_CLOSE(fd);
+        BOBUI_CLOSE(fd);
     }
 }
 
@@ -916,14 +916,14 @@ void tst_QFile::readLineNullInLine()
 
 void tst_QFile::readAll_data()
 {
-    QTest::addColumn<bool>("textMode");
-    QTest::addColumn<QString>("fileName");
-    QTest::newRow( "TextMode unixfile" ) <<  true << m_testFile;
-    QTest::newRow( "BinaryMode unixfile" ) <<  false << m_testFile;
-    QTest::newRow( "TextMode dosfile" ) <<  true << m_dosFile;
-    QTest::newRow( "BinaryMode dosfile" ) <<  false << m_dosFile;
-    QTest::newRow( "TextMode bigfile" ) <<  true << m_testSourceFile;
-    QTest::newRow( "BinaryMode  bigfile" ) <<  false << m_testSourceFile;
+    BOBUIest::addColumn<bool>("textMode");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::newRow( "TextMode unixfile" ) <<  true << m_testFile;
+    BOBUIest::newRow( "BinaryMode unixfile" ) <<  false << m_testFile;
+    BOBUIest::newRow( "TextMode dosfile" ) <<  true << m_dosFile;
+    BOBUIest::newRow( "BinaryMode dosfile" ) <<  false << m_dosFile;
+    BOBUIest::newRow( "TextMode bigfile" ) <<  true << m_testSourceFile;
+    BOBUIest::newRow( "BinaryMode  bigfile" ) <<  false << m_testSourceFile;
     QVERIFY(QFile(m_testSourceFile).size() > 64*1024);
 }
 
@@ -983,7 +983,7 @@ void tst_QFile::readAllBuffer()
     QFile::remove(fileName);
 }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 class StdinReaderProcessGuard { // Ensure the stdin reader process is stopped on destruction.
     Q_DISABLE_COPY(StdinReaderProcessGuard)
 
@@ -1007,15 +1007,15 @@ public:
 private:
     QProcess *m_process;
 };
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
 void tst_QFile::readAllStdin()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
 #if defined(Q_OS_ANDROID)
-    QSKIP("This test crashes when doing nanosleep. See QTBUG-69034.");
+    QSKIP("This test crashes when doing nanosleep. See BOBUIBUG-69034.");
 #endif
     QByteArray lotsOfData(1024, '@'); // 10 megs
 
@@ -1036,11 +1036,11 @@ void tst_QFile::readAllStdin()
 
 void tst_QFile::readLineStdin()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
 #if defined(Q_OS_ANDROID)
-    QSKIP("This test crashes when doing nanosleep. See QTBUG-69034.");
+    QSKIP("This test crashes when doing nanosleep. See BOBUIBUG-69034.");
 #endif
     QByteArray lotsOfData(1024, '@'); // 10 megs
     for (int i = 0; i < lotsOfData.size(); ++i) {
@@ -1079,11 +1079,11 @@ void tst_QFile::readLineStdin()
 
 void tst_QFile::readLineStdin_lineByLine()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
 #if defined(Q_OS_ANDROID)
-    QSKIP("This test crashes when calling ::poll. See QTBUG-69034.");
+    QSKIP("This test crashes when calling ::poll. See BOBUIBUG-69034.");
 #endif
     for (int i = 0; i < 2; ++i) {
         QProcess process;
@@ -1239,24 +1239,24 @@ static inline QChar invalidDriveLetter()
 
 void tst_QFile::invalidFile_data()
 {
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("fileName");
 
 #if defined(Q_OS_WASM)
     QSKIP("No invalid files on wasm");
 #endif
 
 #if !defined(Q_OS_WIN)
-    QTest::newRow( "x11" ) << QString( "qwe//" );
+    BOBUIest::newRow( "x11" ) << QString( "qwe//" );
 #else
-    QTest::newRow( "colon2" ) << invalidDriveLetter() + QString::fromLatin1(":ail:invalid");
-    QTest::newRow( "colon3" ) << QString( ":failinvalid" );
-    QTest::newRow( "forwardslash" ) << QString( "fail/invalid" );
-    QTest::newRow( "asterisk" ) << QString( "fail*invalid" );
-    QTest::newRow( "questionmark" ) << QString( "fail?invalid" );
-    QTest::newRow( "quote" ) << QString( "fail\"invalid" );
-    QTest::newRow( "lt" ) << QString( "fail<invalid" );
-    QTest::newRow( "gt" ) << QString( "fail>invalid" );
-    QTest::newRow( "pipe" ) << QString( "fail|invalid" );
+    BOBUIest::newRow( "colon2" ) << invalidDriveLetter() + QString::fromLatin1(":ail:invalid");
+    BOBUIest::newRow( "colon3" ) << QString( ":failinvalid" );
+    BOBUIest::newRow( "forwardslash" ) << QString( "fail/invalid" );
+    BOBUIest::newRow( "asterisk" ) << QString( "fail*invalid" );
+    BOBUIest::newRow( "questionmark" ) << QString( "fail?invalid" );
+    BOBUIest::newRow( "quote" ) << QString( "fail\"invalid" );
+    BOBUIest::newRow( "lt" ) << QString( "fail<invalid" );
+    BOBUIest::newRow( "gt" ) << QString( "fail>invalid" );
+    BOBUIest::newRow( "pipe" ) << QString( "fail|invalid" );
 #endif
 }
 void tst_QFile::invalidFile()
@@ -1295,13 +1295,13 @@ void tst_QFile::createFileNewOnly()
 
 void tst_QFile::createFilePermissions_data()
 {
-    QTest::addColumn<QFile::Permissions>("permissions");
+    BOBUIest::addColumn<QFile::Permissions>("permissions");
 
     for (int u = 0; u < 8; ++u) {
         for (int g = 0; g < 8; ++g) {
             for (int o = 0; o < 8; ++o) {
                 auto permissions = QFileDevice::Permissions::fromInt((u << 12) | (g << 4) | o);
-                QTest::addRow("%04x", permissions.toInt()) << permissions;
+                BOBUIest::addRow("%04x", permissions.toInt()) << permissions;
             }
         }
     }
@@ -1396,29 +1396,29 @@ void tst_QFile::append()
 
 void tst_QFile::permissions_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<uint>("perms");
-    QTest::addColumn<bool>("expected");
-    QTest::addColumn<bool>("create");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<uint>("perms");
+    BOBUIest::addColumn<bool>("expected");
+    BOBUIest::addColumn<bool>("create");
 
 #ifndef Q_OS_WASM
     // Application path is empty on wasm
 #ifdef Q_OS_ANDROID
     // Android in-APK application path doesn't report exec permission
-    if (!QtAndroidPrivate::isUncompressedNativeLibs())
+    if (!BobUIAndroidPrivate::isUncompressedNativeLibs())
 #endif
-    QTest::newRow("data0") << QCoreApplication::instance()->applicationFilePath() << uint(QFile::ExeUser) << true << false;
+    BOBUIest::newRow("data0") << QCoreApplication::instance()->applicationFilePath() << uint(QFile::ExeUser) << true << false;
 #endif
-    QTest::newRow("data1") << m_testSourceFile << uint(QFile::ReadUser) << true << false;
-    QTest::newRow("readonly") << QString::fromLatin1("readonlyfile") << uint(QFile::WriteUser) << false << false;
-    QTest::newRow("longfile") << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
+    BOBUIest::newRow("data1") << m_testSourceFile << uint(QFile::ReadUser) << true << false;
+    BOBUIest::newRow("readonly") << QString::fromLatin1("readonlyfile") << uint(QFile::WriteUser) << false << false;
+    BOBUIest::newRow("longfile") << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
                                                     "longFileNamelongFileNamelongFileNamelongFileName"
                                                     "longFileNamelongFileNamelongFileNamelongFileName"
                                                     "longFileNamelongFileNamelongFileNamelongFileName"
                                                     "longFileNamelongFileNamelongFileNamelongFileName.txt") << uint(QFile::ReadUser) << true << true;
-    QTest::newRow("resource1") << ":/tst_qfile/resources/file1.ext1" << uint(QFile::ReadUser) << true << false;
-    QTest::newRow("resource2") << ":/tst_qfile/resources/file1.ext1" << uint(QFile::WriteUser) << false << false;
-    QTest::newRow("resource3") << ":/tst_qfile/resources/file1.ext1" << uint(QFile::ExeUser) << false << false;
+    BOBUIest::newRow("resource1") << ":/tst_qfile/resources/file1.ext1" << uint(QFile::ReadUser) << true << false;
+    BOBUIest::newRow("resource2") << ":/tst_qfile/resources/file1.ext1" << uint(QFile::WriteUser) << false << false;
+    BOBUIest::newRow("resource3") << ":/tst_qfile/resources/file1.ext1" << uint(QFile::ExeUser) << false << false;
 }
 
 void tst_QFile::permissions()
@@ -1444,10 +1444,10 @@ void tst_QFile::permissions()
 
 #if defined(Q_OS_WIN)
     if (qAreNtfsPermissionChecksEnabled())
-        QEXPECT_FAIL("readonly", "QTBUG-25630", Abort);
+        QEXPECT_FAIL("readonly", "BOBUIBUG-25630", Abort);
 #endif
 #ifdef Q_OS_UNIX
-    if (strcmp(QTest::currentDataTag(), "readonly") == 0) {
+    if (strcmp(BOBUIest::currentDataTag(), "readonly") == 0) {
         // in case accidentally run as root
         if (::getuid() == 0)
             QSKIP("Running this test as root doesn't make sense");
@@ -1469,29 +1469,29 @@ void tst_QFile::permissionsNtfs()
     permissions();
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-#if QT_DEPRECATED_SINCE(6,6)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6,6)
 void tst_QFile::deprecatedNtfsPermissionCheck()
 {
-    QScopedValueRollback<int> guard(qt_ntfs_permission_lookup);
+    QScopedValueRollback<int> guard(bobui_ntfs_permission_lookup);
 
     QCOMPARE(qAreNtfsPermissionChecksEnabled(), false);
-    qt_ntfs_permission_lookup++;
+    bobui_ntfs_permission_lookup++;
     QCOMPARE(qAreNtfsPermissionChecksEnabled(), true);
-    qt_ntfs_permission_lookup--;
+    bobui_ntfs_permission_lookup--;
     QCOMPARE(qAreNtfsPermissionChecksEnabled(), false);
 }
 #endif
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 #endif
 
 void tst_QFile::setPermissions_data()
 {
-    QTest::addColumn<bool>("opened");
-    QTest::newRow("closed") << false;       // chmod()
-    QTest::newRow("opened") << true;        // fchmod()
+    BOBUIest::addColumn<bool>("opened");
+    BOBUIest::newRow("closed") << false;       // chmod()
+    BOBUIest::newRow("opened") << true;        // fchmod()
 }
 
 void tst_QFile::setPermissions()
@@ -1572,7 +1572,7 @@ void tst_QFile::copyRemovesTemporaryFile() const
     const QString newName(QLatin1String("copyRemovesTemporaryFile"));
     QVERIFY(QFile::copy(m_forCopyingFile, newName));
 
-    QVERIFY(!QFile::exists(QStringLiteral("qt_temp.XXXXXX")));
+    QVERIFY(!QFile::exists(QStringLiteral("bobui_temp.XXXXXX")));
 }
 
 void tst_QFile::copyShouldntOverwrite()
@@ -1729,17 +1729,17 @@ void tst_QFile::readBrokenLink()
 
 void tst_QFile::readTextFile_data()
 {
-    QTest::addColumn<QByteArray>("in");
-    QTest::addColumn<QByteArray>("out");
+    BOBUIest::addColumn<QByteArray>("in");
+    BOBUIest::addColumn<QByteArray>("out");
 
-    QTest::newRow("empty") << QByteArray() << QByteArray();
-    QTest::newRow("a") << QByteArray("a") << QByteArray("a");
-    QTest::newRow("a\\rb") << QByteArray("a\rb") << QByteArray("ab");
-    QTest::newRow("\\n") << QByteArray("\n") << QByteArray("\n");
-    QTest::newRow("\\r\\n") << QByteArray("\r\n") << QByteArray("\n");
-    QTest::newRow("\\r") << QByteArray("\r") << QByteArray();
-    QTest::newRow("twolines") << QByteArray("Hello\r\nWorld\r\n") << QByteArray("Hello\nWorld\n");
-    QTest::newRow("twolines no endline") << QByteArray("Hello\r\nWorld") << QByteArray("Hello\nWorld");
+    BOBUIest::newRow("empty") << QByteArray() << QByteArray();
+    BOBUIest::newRow("a") << QByteArray("a") << QByteArray("a");
+    BOBUIest::newRow("a\\rb") << QByteArray("a\rb") << QByteArray("ab");
+    BOBUIest::newRow("\\n") << QByteArray("\n") << QByteArray("\n");
+    BOBUIest::newRow("\\r\\n") << QByteArray("\r\n") << QByteArray("\n");
+    BOBUIest::newRow("\\r") << QByteArray("\r") << QByteArray();
+    BOBUIest::newRow("twolines") << QByteArray("Hello\r\nWorld\r\n") << QByteArray("Hello\nWorld\n");
+    BOBUIest::newRow("twolines no endline") << QByteArray("Hello\r\nWorld") << QByteArray("Hello\nWorld");
 }
 
 void tst_QFile::readTextFile()
@@ -1777,19 +1777,19 @@ void tst_QFile::readTextFile2()
 
 void tst_QFile::writeTextFile_data()
 {
-    QTest::addColumn<QByteArray>("in");
+    BOBUIest::addColumn<QByteArray>("in");
 
-    QTest::newRow("empty") << QByteArray();
-    QTest::newRow("a") << QByteArray("a");
-    QTest::newRow("a\\rb") << QByteArray("a\rb");
-    QTest::newRow("\\n") << QByteArray("\n");
-    QTest::newRow("\\r\\n") << QByteArray("\r\n");
-    QTest::newRow("\\r") << QByteArray("\r");
-    QTest::newRow("twolines crlf") << QByteArray("Hello\r\nWorld\r\n");
-    QTest::newRow("twolines crlf no endline") << QByteArray("Hello\r\nWorld");
-    QTest::newRow("twolines lf") << QByteArray("Hello\nWorld\n");
-    QTest::newRow("twolines lf no endline") << QByteArray("Hello\nWorld");
-    QTest::newRow("mixed") << QByteArray("this\nis\r\na\nmixed\r\nfile\n");
+    BOBUIest::newRow("empty") << QByteArray();
+    BOBUIest::newRow("a") << QByteArray("a");
+    BOBUIest::newRow("a\\rb") << QByteArray("a\rb");
+    BOBUIest::newRow("\\n") << QByteArray("\n");
+    BOBUIest::newRow("\\r\\n") << QByteArray("\r\n");
+    BOBUIest::newRow("\\r") << QByteArray("\r");
+    BOBUIest::newRow("twolines crlf") << QByteArray("Hello\r\nWorld\r\n");
+    BOBUIest::newRow("twolines crlf no endline") << QByteArray("Hello\r\nWorld");
+    BOBUIest::newRow("twolines lf") << QByteArray("Hello\nWorld\n");
+    BOBUIest::newRow("twolines lf no endline") << QByteArray("Hello\nWorld");
+    BOBUIest::newRow("mixed") << QByteArray("this\nis\r\na\nmixed\r\nfile\n");
 }
 
 void tst_QFile::writeTextFile()
@@ -1811,7 +1811,7 @@ void tst_QFile::writeTextFile()
 }
 
 #if defined(Q_OS_WIN)
-// Helper for executing QFile::open() with warning in QTRY_VERIFY(), which evaluates the condition
+// Helper for executing QFile::open() with warning in BOBUIRY_VERIFY(), which evaluates the condition
 // multiple times
 static bool qFileOpen(QFile &file, QIODevice::OpenMode ioFlags)
 {
@@ -1821,7 +1821,7 @@ static bool qFileOpen(QFile &file, QIODevice::OpenMode ioFlags)
     return result;
 }
 
-// Helper for executing fopen() with warning in QTRY_VERIFY(), which evaluates the condition
+// Helper for executing fopen() with warning in BOBUIRY_VERIFY(), which evaluates the condition
 // multiple times
 static bool fOpen(const QByteArray &fileName, const char *mode, FILE **file)
 {
@@ -1839,9 +1839,9 @@ void tst_QFile::largeUncFileSupport()
     // clients accessing the file at the same time is a sharing violation. This test already
     // attempted to deal with the problem with retries, but that has led to the test timing out,
     // not eventually succeeding. Due to the timeouts blacklisting the test wouldn't help.
-    // See https://bugreports.qt.io/browse/QTQAINFRA-1727 which will be resolved by the new
+    // See https://bugreports.bobui.io/browse/BOBUIQAINFRA-1727 which will be resolved by the new
     // test server architecture where the server is no longer shared.
-    QSKIP("Multiple instances of running this test at the same time fail due to QTQAINFRA-1727");
+    QSKIP("Multiple instances of running this test at the same time fail due to BOBUIQAINFRA-1727");
 
     if (!uncServerAvailable)
         QSKIP("UNC server not available");
@@ -1849,7 +1849,7 @@ void tst_QFile::largeUncFileSupport()
     qint64 size = Q_INT64_C(8589934592);
     qint64 dataOffset = Q_INT64_C(8589914592);
     QByteArray knownData("LargeFile content at offset 8589914592");
-    QString largeFile("//" + QTest::uncServerName() + "/testsharelargefile/file.bin");
+    QString largeFile("//" + BOBUIest::uncServerName() + "/testsharelargefile/file.bin");
     const QByteArray largeFileEncoded = QFile::encodeName(largeFile);
 
     {
@@ -1859,7 +1859,7 @@ void tst_QFile::largeUncFileSupport()
 
         QCOMPARE(file.size(), size);
         // Retry in case of sharing violation
-        QTRY_VERIFY2(qFileOpen(file, QIODevice::ReadOnly), msgOpenFailed(file).constData());
+        BOBUIRY_VERIFY2(qFileOpen(file, QIODevice::ReadOnly), msgOpenFailed(file).constData());
         QCOMPARE(file.size(), size);
         QVERIFY(file.seek(dataOffset));
         QCOMPARE(file.read(knownData.size()), knownData);
@@ -1868,7 +1868,7 @@ void tst_QFile::largeUncFileSupport()
         // 2) stdlib file handling.
         FILE *fhF = nullptr;
         // Retry in case of sharing violation
-        QTRY_VERIFY(fOpen(largeFileEncoded, "rb", &fhF));
+        BOBUIRY_VERIFY(fOpen(largeFileEncoded, "rb", &fhF));
         StdioFileGuard fh(fhF);
         QFile file;
         QVERIFY(file.open(fh, QIODevice::ReadOnly));
@@ -1880,9 +1880,9 @@ void tst_QFile::largeUncFileSupport()
         // 3) stdio file handling.
         FILE *fhF = nullptr;
         // Retry in case of sharing violation
-        QTRY_VERIFY(fOpen(largeFileEncoded, "rb", &fhF));
+        BOBUIRY_VERIFY(fOpen(largeFileEncoded, "rb", &fhF));
         StdioFileGuard fh(fhF);
-        int fd = int(QT_FILENO(fh));
+        int fd = int(BOBUI_FILENO(fh));
         QFile file;
         QVERIFY(file.open(fd, QIODevice::ReadOnly));
         QCOMPARE(file.size(), size);
@@ -1948,12 +1948,12 @@ void tst_QFile::bufferedRead()
 #ifdef Q_OS_UNIX
 void tst_QFile::isSequential_data()
 {
-    QTest::addColumn<QString>("deviceName");
-    QTest::addColumn<bool>("acceptFailOpen");
+    BOBUIest::addColumn<QString>("deviceName");
+    BOBUIest::addColumn<bool>("acceptFailOpen");
 
-    QTest::newRow("/dev/null") << QString("/dev/null") << false;
-    QTest::newRow("/dev/tty")  << QString("/dev/tty")  << true;
-    QTest::newRow("/dev/zero") << QString("/dev/zero") << false;
+    BOBUIest::newRow("/dev/null") << QString("/dev/null") << false;
+    BOBUIest::newRow("/dev/tty")  << QString("/dev/tty")  << true;
+    BOBUIest::newRow("/dev/zero") << QString("/dev/zero") << false;
 }
 
 void tst_QFile::isSequential()
@@ -1971,22 +1971,22 @@ void tst_QFile::isSequential()
 
 void tst_QFile::decodeName_data()
 {
-    QTest::addColumn<QByteArray>("bytearray");
-    QTest::addColumn<QString>("qstring");
+    BOBUIest::addColumn<QByteArray>("bytearray");
+    BOBUIest::addColumn<QString>("qstring");
 
-    QTest::newRow("null") << QByteArray() << QString();
-    QTest::newRow("simple") << "/path/to/file"_ba << u"/path/to/file"_s;
+    BOBUIest::newRow("null") << QByteArray() << QString();
+    BOBUIest::newRow("simple") << "/path/to/file"_ba << u"/path/to/file"_s;
 
 #ifndef Q_OS_WIN
 #  ifdef Q_OS_DARWIN
     // Mac always expects filenames in UTF-8... and decomposed...
-    QTest::newRow("filé") << "/path/to/file\xCC\x81"_ba << u"/path/to/filé"_s;
+    BOBUIest::newRow("filé") << "/path/to/file\xCC\x81"_ba << u"/path/to/filé"_s;
 #  else
-    QTest::newRow("filé") << "/path/to/fil\xC3\xA9"_ba << u"/path/to/filé"_s;
+    BOBUIest::newRow("filé") << "/path/to/fil\xC3\xA9"_ba << u"/path/to/filé"_s;
 #  endif
-    QTest::newRow("fraction-slash")
+    BOBUIest::newRow("fraction-slash")
             << "/path\342\201\204to\342\201\204file"_ba << u"/path⁄to⁄file"_s;
-    QTest::newRow("fraction-slash-u16") << "/path\u2044to\u2044file"_ba << u"/path⁄to⁄file"_s;
+    BOBUIest::newRow("fraction-slash-u16") << "/path\u2044to\u2044file"_ba << u"/path⁄to⁄file"_s;
 #endif // !Q_OS_WIN
 }
 
@@ -2256,9 +2256,9 @@ void tst_QFile::largeFileSupport()
 
 void tst_QFile::i18nFileName_data()
 {
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("fileName");
 
-    QTest::newRow( "01" ) << QString::fromUtf8("xxxxxxx.txt");
+    BOBUIest::newRow( "01" ) << QString::fromUtf8("xxxxxxx.txt");
 }
 
 void tst_QFile::i18nFileName()
@@ -2283,26 +2283,26 @@ void tst_QFile::i18nFileName()
 
 void tst_QFile::longFileName_data()
 {
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("fileName");
 
-    QTest::newRow( "16 chars" ) << QString::fromLatin1("longFileName.txt");
-    QTest::newRow( "52 chars" ) << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName.txt");
-    QTest::newRow( "148 chars" ) << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
+    BOBUIest::newRow( "16 chars" ) << QString::fromLatin1("longFileName.txt");
+    BOBUIest::newRow( "52 chars" ) << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName.txt");
+    BOBUIest::newRow( "148 chars" ) << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName.txt");
 #ifndef Q_OS_VXWORKS
-    QTest::newRow( "244 chars" ) << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
+    BOBUIest::newRow( "244 chars" ) << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName.txt");
-    QTest::newRow( "244 chars to absolutepath" ) << QFileInfo(QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
+    BOBUIest::newRow( "244 chars to absolutepath" ) << QFileInfo(QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName.txt")).absoluteFilePath();
   /* needs to be put on a windows 2000 > test machine
-  QTest::newRow( "244 chars on UNC" ) <<  QString::fromLatin1("//arsia/D/troll/tmp/longFileNamelongFileNamelongFileNamelongFileName"
+  BOBUIest::newRow( "244 chars on UNC" ) <<  QString::fromLatin1("//arsia/D/troll/tmp/longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
@@ -2346,7 +2346,7 @@ void tst_QFile::longFileName()
     QVERIFY2(QFile::exists(newName), msgFileDoesNotExist(newName).constData());
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 class MyEngine : public QAbstractFileEngine
 {
 public:
@@ -2391,7 +2391,7 @@ void tst_QFile::fileEngineHandler()
     QFile file("ole.bull");
     QCOMPARE(file.size(), qint64(0));
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     // Instantiating our handler will enable the new engine.
     MyHandler handler;
     file.setFileName("ole.bull");
@@ -2404,7 +2404,7 @@ void tst_QFile::fileEngineHandler()
 #endif
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 class MyRecursiveHandler : public QAbstractFileEngineHandler
 {
     Q_DISABLE_COPY_MOVE(MyRecursiveHandler)
@@ -2428,12 +2428,12 @@ public:
     }
 
 #ifdef BUILTIN_TESTDATA
-    QSharedPointer<QTemporaryDir> m_dataDir;
+    QSharedPointer<BOBUIemporaryDir> m_dataDir;
 #endif
 };
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QFile::useQFileInAFileHandler()
 {
     // This test should not dead-lock
@@ -2598,20 +2598,20 @@ void tst_QFile::fullDisk()
 
 void tst_QFile::writeLargeDataBlock_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<int>("type");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("type");
 
-    QTest::newRow("localfile-QFile")  << "./largeblockfile.txt" << (int)OpenQFile;
-    QTest::newRow("localfile-Fd")     << "./largeblockfile.txt" << (int)OpenFd;
-    QTest::newRow("localfile-Stream") << "./largeblockfile.txt" << (int)OpenStream;
+    BOBUIest::newRow("localfile-QFile")  << "./largeblockfile.txt" << (int)OpenQFile;
+    BOBUIest::newRow("localfile-Fd")     << "./largeblockfile.txt" << (int)OpenFd;
+    BOBUIest::newRow("localfile-Stream") << "./largeblockfile.txt" << (int)OpenStream;
 
-#if defined(Q_OS_WIN) && !defined(QT_NO_NETWORK)
+#if defined(Q_OS_WIN) && !defined(BOBUI_NO_NETWORK)
     // Some semi-randomness to avoid collisions.
     if (uncServerAvailable)
-        QTest::newRow("unc file")
-                << QString("//" + QTest::uncServerName() + "/TESTSHAREWRITABLE/largefile-%1-%2.txt")
+        BOBUIest::newRow("unc file")
+                << QString("//" + BOBUIest::uncServerName() + "/TESTSHAREWRITABLE/largefile-%1-%2.txt")
                    .arg(QHostInfo::localHostName())
-                   .arg(QTime::currentTime().msec()) << (int)OpenQFile;
+                   .arg(BOBUIime::currentTime().msec()) << (int)OpenQFile;
 #endif
 }
 
@@ -2652,7 +2652,7 @@ void tst_QFile::writeLargeDataBlock()
             qWarning() << qPrintable(QString("Error writing a large data block to [%1]: %2")
                 .arg(fileName)
                 .arg(file.errorString()));
-            QEXPECT_FAIL("unc file", "QTBUG-26906 writing", Abort);
+            QEXPECT_FAIL("unc file", "BOBUIBUG-26906 writing", Abort);
         }
 #endif
         QCOMPARE( fileWriteOriginalData, originalDataSize );
@@ -2675,7 +2675,7 @@ void tst_QFile::writeLargeDataBlock()
             qWarning() << qPrintable(QString("Error reading a large data block from [%1]: %2")
                 .arg(fileName)
                 .arg(file.errorString()));
-            QEXPECT_FAIL("unc file", "QTBUG-26906 reading", Abort);
+            QEXPECT_FAIL("unc file", "BOBUIBUG-26906 reading", Abort);
         }
 #endif
         closeFile(file);
@@ -2689,7 +2689,7 @@ void tst_QFile::readFromWriteOnlyFile()
     QFile file("writeonlyfile");
     QVERIFY2(file.open(QFile::WriteOnly), msgOpenFailed(file).constData());
     char c;
-    QTest::ignoreMessage(QtWarningMsg, "QIODevice::read (QFile, \"writeonlyfile\"): WriteOnly device");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QIODevice::read (QFile, \"writeonlyfile\"): WriteOnly device");
     QCOMPARE(file.read(&c, 1), qint64(-1));
 }
 
@@ -2698,7 +2698,7 @@ void tst_QFile::writeToReadOnlyFile()
     QFile file("readonlyfile");
     QVERIFY2(file.open(QFile::ReadOnly), msgOpenFailed(file).constData());
     char c = 0;
-    QTest::ignoreMessage(QtWarningMsg, "QIODevice::write (QFile, \"readonlyfile\"): ReadOnly device");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QIODevice::write (QFile, \"readonlyfile\"): ReadOnly device");
     QCOMPARE(file.write(&c, 1), qint64(-1));
 }
 
@@ -2706,9 +2706,9 @@ void tst_QFile::writeToReadOnlyFile()
 // This platform have 0-sized virtual files
 void tst_QFile::virtualFile_data()
 {
-    QTest::addColumn<QIODevice::OpenMode>("mode");
-    QTest::newRow("buffered") << QIODevice::OpenMode();
-    QTest::newRow("unbuffered") << QIODevice::OpenMode(QIODevice::Unbuffered);
+    BOBUIest::addColumn<QIODevice::OpenMode>("mode");
+    BOBUIest::newRow("buffered") << QIODevice::OpenMode();
+    BOBUIest::newRow("unbuffered") << QIODevice::OpenMode(QIODevice::Unbuffered);
 }
 
 void tst_QFile::virtualFile()
@@ -2730,7 +2730,7 @@ void tst_QFile::virtualFile()
         eventfd_read(efd, &val);
         _exit(0);
     }
-    QVERIFY2(pid > 0, "fork failed: " + qt_error_string().toLocal8Bit());
+    QVERIFY2(pid > 0, "fork failed: " + bobui_error_string().toLocal8Bit());
     auto waitForChild = qScopeGuard([=] {
         eventfd_write(efd, 1);
         close(efd);
@@ -2770,15 +2770,15 @@ void tst_QFile::virtualFile()
         lines += std::move(data);
     }
 
-    if (!QT_CONFIG(static) && !QTestPrivate::isRunningArmOnX86()
+    if (!BOBUI_CONFIG(static) && !BOBUIestPrivate::isRunningArmOnX86()
 #ifdef Q_OS_ANDROID
             // With uncompressed libs, only the app's APK path is shown and no library names.
-            && !QtAndroidPrivate::isUncompressedNativeLibs()
+            && !BobUIAndroidPrivate::isUncompressedNativeLibs()
 #endif
             ) {
-        // we must be able to find QtCore and QtTest somewhere
-        static const char corelib[] = "libQt" QT_STRINGIFY(QT_VERSION_MAJOR) "Core";
-        static const char testlib[] = "libQt" QT_STRINGIFY(QT_VERSION_MAJOR) "Test";
+        // we must be able to find BobUICore and BobUITest somewhere
+        static const char corelib[] = "libBobUI" BOBUI_STRINGIFY(BOBUI_VERSION_MAJOR) "Core";
+        static const char testlib[] = "libBobUI" BOBUI_STRINGIFY(BOBUI_VERSION_MAJOR) "Test";
         auto contains = [&](QByteArrayView text, quintptr ptr = 0) {
             // this is not the same a QList::contains()
             return std::any_of(lines.constBegin(), lines.constEnd(), [=](QByteArrayView entry) {
@@ -2818,19 +2818,19 @@ static void unixPipe_helper(int pipes[2])
 {
     // start a thread and wait for it to write a first byte
     static constexpr int Timeout = 1000;
-    QScopedPointer<QThread> thr(QThread::create([fd = pipes[1]]() {
+    QScopedPointer<BOBUIhread> thr(BOBUIhread::create([fd = pipes[1]]() {
         char c = 1;
-        qt_safe_write(fd, &c, 1);
-        QTest::qSleep(Timeout);
+        bobui_safe_write(fd, &c, 1);
+        BOBUIest::qSleep(Timeout);
         c = 2;
-        qt_safe_write(fd, &c, 1);
+        bobui_safe_write(fd, &c, 1);
     }));
 
     thr->start();
 
     // synchronize with the thread having started
     char c = 0;
-    QVERIFY2(qt_safe_read(pipes[0], &c, 1) == 1, qPrintable(qt_error_string()));
+    QVERIFY2(bobui_safe_read(pipes[0], &c, 1) == 1, qPrintable(bobui_error_string()));
     QCOMPARE(c, '\1');
 
     QFETCH(bool, useStdio);
@@ -2853,19 +2853,19 @@ static void unixPipe_helper(int pipes[2])
 
 void tst_QFile::unixPipe_data()
 {
-    QTest::addColumn<bool>("useStdio");
-    QTest::newRow("no-stdio") << false;
-    QTest::newRow("with-stdio") << true;
+    BOBUIest::addColumn<bool>("useStdio");
+    BOBUIest::newRow("no-stdio") << false;
+    BOBUIest::newRow("with-stdio") << true;
 }
 
 void tst_QFile::unixPipe()
 {
     int pipes[2] = { -1, -1 };
-    QVERIFY2(pipe(pipes) == 0, qPrintable(qt_error_string()));
+    QVERIFY2(pipe(pipes) == 0, qPrintable(bobui_error_string()));
     unixPipe_helper(pipes);
     if (pipes[0] != -1)
-        qt_safe_close(pipes[0]);
-    qt_safe_close(pipes[1]);
+        bobui_safe_close(pipes[0]);
+    bobui_safe_close(pipes[1]);
 }
 
 void tst_QFile::unixFifo()
@@ -2894,12 +2894,12 @@ void tst_QFile::unixFifo()
     auto removeFifo = qScopeGuard([&fifopath] { unlink(fifopath); });
 
     // with a FIFO, the two open() system calls synchronize
-    QScopedPointer<QThread> thr(QThread::create([&fifopath]() {
-        int fd = qt_safe_open(fifopath, O_WRONLY);
-        QTest::qSleep(500);
+    QScopedPointer<BOBUIhread> thr(BOBUIhread::create([&fifopath]() {
+        int fd = bobui_safe_open(fifopath, O_WRONLY);
+        BOBUIest::qSleep(500);
         char c = 2;
-        qt_safe_write(fd, &c, 1);
-        qt_safe_close(fd);
+        bobui_safe_write(fd, &c, 1);
+        bobui_safe_close(fd);
     }));
     thr->start();
 
@@ -2925,11 +2925,11 @@ void tst_QFile::socketPair()
     QSKIP("socketpair is not available on Vxworks");
 #else
     int pipes[2] = { -1, -1 };
-    QVERIFY2(socketpair(AF_UNIX, SOCK_STREAM, 0, pipes) == 0, qPrintable(qt_error_string()));
+    QVERIFY2(socketpair(AF_UNIX, SOCK_STREAM, 0, pipes) == 0, qPrintable(bobui_error_string()));
     unixPipe_helper(pipes);
     if (pipes[0] != -1)
-        qt_safe_close(pipes[0]);
-    qt_safe_close(pipes[1]);
+        bobui_safe_close(pipes[0]);
+    bobui_safe_close(pipes[1]);
 #endif
 }
 #endif /* UNIX && !WASM; */
@@ -2966,20 +2966,20 @@ static const char renameSourceFile[] = "renamefile";
 
 void tst_QFile::rename_data()
 {
-    QTest::addColumn<QString>("source");
-    QTest::addColumn<QString>("destination");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QString>("source");
+    BOBUIest::addColumn<QString>("destination");
+    BOBUIest::addColumn<bool>("result");
 
-    QTest::newRow("a -> b") << QString("a") << QString("b") << false;
-    QTest::newRow("a -> .") << QString("a") << QString(".") << false;
-    QTest::newRow("renamefile -> renamefile") << QString::fromLatin1(renameSourceFile) << QString::fromLatin1(renameSourceFile) << false;
-    QTest::newRow("renamefile -> noreadfile") << QString::fromLatin1(renameSourceFile) << QString::fromLatin1(noReadFile) << false;
+    BOBUIest::newRow("a -> b") << QString("a") << QString("b") << false;
+    BOBUIest::newRow("a -> .") << QString("a") << QString(".") << false;
+    BOBUIest::newRow("renamefile -> renamefile") << QString::fromLatin1(renameSourceFile) << QString::fromLatin1(renameSourceFile) << false;
+    BOBUIest::newRow("renamefile -> noreadfile") << QString::fromLatin1(renameSourceFile) << QString::fromLatin1(noReadFile) << false;
 #if defined(Q_OS_UNIX)
-    QTest::newRow("renamefile -> /etc/renamefile") << QString::fromLatin1(renameSourceFile) << QString("/etc/renamefile") << false;
+    BOBUIest::newRow("renamefile -> /etc/renamefile") << QString::fromLatin1(renameSourceFile) << QString("/etc/renamefile") << false;
 #endif
-    QTest::newRow("renamefile -> renamedfile") << QString::fromLatin1(renameSourceFile) << QString("renamedfile") << true;
-    QTest::newRow("renamefile -> ..") << QString::fromLatin1(renameSourceFile) << QString("..") << false;
-    QTest::newRow("renamefile -> rEnAmEfIlE") << QString::fromLatin1(renameSourceFile) << QStringLiteral("rEnAmEfIlE") << true;
+    BOBUIest::newRow("renamefile -> renamedfile") << QString::fromLatin1(renameSourceFile) << QString("renamedfile") << true;
+    BOBUIest::newRow("renamefile -> ..") << QString::fromLatin1(renameSourceFile) << QString("..") << false;
+    BOBUIest::newRow("renamefile -> rEnAmEfIlE") << QString::fromLatin1(renameSourceFile) << QStringLiteral("rEnAmEfIlE") << true;
 }
 
 void tst_QFile::rename()
@@ -2988,10 +2988,10 @@ void tst_QFile::rename()
     QFETCH(QString, destination);
     QFETCH(bool, result);
 
-    const QByteArray content = QByteArrayLiteral("testdatacontent") + QTime::currentTime().toString().toLatin1();
+    const QByteArray content = QByteArrayLiteral("testdatacontent") + BOBUIime::currentTime().toString().toLatin1();
 
 #if defined(Q_OS_UNIX)
-    if (strcmp(QTest::currentDataTag(), "renamefile -> /etc/renamefile") == 0) {
+    if (strcmp(BOBUIest::currentDataTag(), "renamefile -> /etc/renamefile") == 0) {
 #if !defined(Q_OS_VXWORKS)
         if (::getuid() == 0)
 #endif
@@ -3012,7 +3012,7 @@ void tst_QFile::rename()
         QCOMPARE(file.error(), QFile::NoError);
         // This will report the source file still existing for a rename changing the case
         // on Windows, Mac.
-        if (sourceFileName.compare(destination, Qt::CaseInsensitive))
+        if (sourceFileName.compare(destination, BobUI::CaseInsensitive))
             QVERIFY(!sourceFile.exists());
         QFile destinationFile(destination);
         QVERIFY2(destinationFile.open(QFile::ReadOnly | QFile::Text), qPrintable(destinationFile.errorString()));
@@ -3073,7 +3073,7 @@ void tst_QFile::renameFallback()
     QVERIFY(!file.rename("file-rename-destination.txt"));
 #ifdef Q_OS_WIN
     // wait for the file to disappear
-    QTRY_VERIFY_WITH_TIMEOUT(!QFile::exists("file-rename-destination.txt"),
+    BOBUIRY_VERIFY_WITH_TIMEOUT(!QFile::exists("file-rename-destination.txt"),
                              std::chrono::seconds(1));
 #endif
     QVERIFY(!QFile::exists("file-rename-destination.txt"));
@@ -3157,7 +3157,7 @@ void tst_QFile::miscWithUncPathAsCurrentDir()
         QSKIP("UNC server not available");
 
     QString current = QDir::currentPath();
-    const QString path = QLatin1String("//") + QTest::uncServerName()
+    const QString path = QLatin1String("//") + BOBUIest::uncServerName()
         + QLatin1String("/testshare");
     QVERIFY2(QDir::setCurrent(path), qPrintable(QDir::toNativeSeparators(path)));
     QFile file("test.pri");
@@ -3186,7 +3186,7 @@ void tst_QFile::handle()
     QCOMPARE(int(file.handle()), fd);
     char c = '\0';
     {
-        const auto readResult = QT_READ(int(file.handle()), &c, 1);
+        const auto readResult = BOBUI_READ(int(file.handle()), &c, 1);
         decltype(readResult) expected = 1;
         QCOMPARE(readResult, expected);
     }
@@ -3204,9 +3204,9 @@ void tst_QFile::handle()
     QVERIFY(file.getChar(&c));
     QCOMPARE(c, '/');
 #ifdef Q_OS_UNIX
-    QCOMPARE(QT_READ(fd, &c, 1), ssize_t(1));
+    QCOMPARE(BOBUI_READ(fd, &c, 1), ssize_t(1));
 #else
-    QCOMPARE(QT_READ(fd, &c, 1), 1);
+    QCOMPARE(BOBUI_READ(fd, &c, 1), 1);
 #endif
 
     QCOMPARE(c, '/');
@@ -3216,17 +3216,17 @@ void tst_QFile::handle()
     StdioFileGuard fp(fopen(qPrintable(m_testSourceFile), "r"));
     QVERIFY(fp);
     QVERIFY(file2.open(fp, QIODevice::ReadOnly));
-    QCOMPARE(int(file2.handle()), int(QT_FILENO(fp)));
-    QCOMPARE(int(file2.handle()), int(QT_FILENO(fp)));
+    QCOMPARE(int(file2.handle()), int(BOBUI_FILENO(fp)));
+    QCOMPARE(int(file2.handle()), int(BOBUI_FILENO(fp)));
     fp.close();
 
     //test round trip of adopted posix file handle
 #ifdef Q_OS_UNIX
     QFile file3;
-    fd = QT_OPEN(qPrintable(m_testSourceFile), QT_OPEN_RDONLY);
+    fd = BOBUI_OPEN(qPrintable(m_testSourceFile), BOBUI_OPEN_RDONLY);
     QVERIFY(file3.open(fd, QIODevice::ReadOnly));
     QCOMPARE(int(file3.handle()), fd);
-    QT_CLOSE(fd);
+    BOBUI_CLOSE(fd);
 #endif
 }
 
@@ -3239,7 +3239,7 @@ void tst_QFile::nativeHandleLeaks()
 #endif
 
     {
-        QFile file("qt_file.tmp");
+        QFile file("bobui_file.tmp");
         QVERIFY2(file.open(QIODevice::ReadWrite), msgOpenFailed(file).constData());
 
         fd1 = file.handle();
@@ -3247,14 +3247,14 @@ void tst_QFile::nativeHandleLeaks()
     }
 
 #ifdef Q_OS_WIN
-    handle1 = ::CreateFileA("qt_file.tmp", GENERIC_READ, 0, NULL,
+    handle1 = ::CreateFileA("bobui_file.tmp", GENERIC_READ, 0, NULL,
             OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     QVERIFY( INVALID_HANDLE_VALUE != handle1 );
     QVERIFY( ::CloseHandle(handle1) );
 #endif
 
     {
-        QFile file("qt_file.tmp");
+        QFile file("bobui_file.tmp");
         QVERIFY2(file.open(QIODevice::ReadOnly), msgOpenFailed(file).constData());
 
         fd2 = file.handle();
@@ -3262,7 +3262,7 @@ void tst_QFile::nativeHandleLeaks()
     }
 
 #ifdef Q_OS_WIN
-    handle2 = ::CreateFileA("qt_file.tmp", GENERIC_READ, 0, NULL,
+    handle2 = ::CreateFileA("bobui_file.tmp", GENERIC_READ, 0, NULL,
             OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     QVERIFY( INVALID_HANDLE_VALUE != handle2 );
     QVERIFY( ::CloseHandle(handle2) );
@@ -3273,15 +3273,15 @@ void tst_QFile::nativeHandleLeaks()
 
 void tst_QFile::readEof_data()
 {
-    QTest::addColumn<QString>("filename");
-    QTest::addColumn<int>("imode");
+    BOBUIest::addColumn<QString>("filename");
+    BOBUIest::addColumn<int>("imode");
 
-    QTest::newRow("buffered") << m_testFile << 0;
-    QTest::newRow("unbuffered") << m_testFile << int(QIODevice::Unbuffered);
+    BOBUIest::newRow("buffered") << m_testFile << 0;
+    BOBUIest::newRow("unbuffered") << m_testFile << int(QIODevice::Unbuffered);
 
 #if defined(Q_OS_UNIX)
-    QTest::newRow("sequential,buffered") << "/dev/null" << 0;
-    QTest::newRow("sequential,unbuffered") << "/dev/null" << int(QIODevice::Unbuffered);
+    BOBUIest::newRow("sequential,buffered") << "/dev/null" << 0;
+    BOBUIest::newRow("sequential,unbuffered") << "/dev/null" << int(QIODevice::Unbuffered);
 #endif
 }
 
@@ -3407,7 +3407,7 @@ void tst_QFile::posAfterFailedStat()
     QVERIFY(!file.exists());
     QVERIFY2(file.open(QIODevice::Append), msgOpenFailed(file).constData());
     QVERIFY(file.exists());
-    file.write("qt430", 5);
+    file.write("bobui430", 5);
     QVERIFY(!file.isSequential());
     QCOMPARE(file.pos(), qint64(5));
     file.remove();
@@ -3417,19 +3417,19 @@ void tst_QFile::posAfterFailedStat()
 
 void tst_QFile::map_data()
 {
-    QTest::addColumn<int>("fileSize");
-    QTest::addColumn<int>("offset");
-    QTest::addColumn<int>("size");
-    QTest::addColumn<QFile::FileError>("error");
+    BOBUIest::addColumn<int>("fileSize");
+    BOBUIest::addColumn<int>("offset");
+    BOBUIest::addColumn<int>("size");
+    BOBUIest::addColumn<QFile::FileError>("error");
 
-    QTest::newRow("zero")         << FILESIZE << 0     << FILESIZE         << QFile::NoError;
-    QTest::newRow("small, but 0") << FILESIZE << 30    << FILESIZE - 30    << QFile::NoError;
-    QTest::newRow("a page")       << FILESIZE << 4096  << FILESIZE - 4096  << QFile::NoError;
-    QTest::newRow("+page")        << FILESIZE << 5000  << FILESIZE - 5000  << QFile::NoError;
-    QTest::newRow("++page")       << FILESIZE << 65576 << FILESIZE - 65576 << QFile::NoError;
-    QTest::newRow("bad size")     << FILESIZE << 0     << -1               << QFile::ResourceError;
-    QTest::newRow("bad offset")   << FILESIZE << -1    << 1                << QFile::UnspecifiedError;
-    QTest::newRow("zerozero")     << FILESIZE << 0     << 0                << QFile::UnspecifiedError;
+    BOBUIest::newRow("zero")         << FILESIZE << 0     << FILESIZE         << QFile::NoError;
+    BOBUIest::newRow("small, but 0") << FILESIZE << 30    << FILESIZE - 30    << QFile::NoError;
+    BOBUIest::newRow("a page")       << FILESIZE << 4096  << FILESIZE - 4096  << QFile::NoError;
+    BOBUIest::newRow("+page")        << FILESIZE << 5000  << FILESIZE - 5000  << QFile::NoError;
+    BOBUIest::newRow("++page")       << FILESIZE << 65576 << FILESIZE - 65576 << QFile::NoError;
+    BOBUIest::newRow("bad size")     << FILESIZE << 0     << -1               << QFile::ResourceError;
+    BOBUIest::newRow("bad offset")   << FILESIZE << -1    << 1                << QFile::UnspecifiedError;
+    BOBUIest::newRow("zerozero")     << FILESIZE << 0     << 0                << QFile::UnspecifiedError;
 }
 
 void tst_QFile::map()
@@ -3529,10 +3529,10 @@ void tst_QFile::map()
 
 void tst_QFile::mapResource_data()
 {
-    QTest::addColumn<int>("offset");
-    QTest::addColumn<int>("size");
-    QTest::addColumn<QFile::FileError>("error");
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("offset");
+    BOBUIest::addColumn<int>("size");
+    BOBUIest::addColumn<QFile::FileError>("error");
+    BOBUIest::addColumn<QString>("fileName");
 
     QString validFile = ":/tst_qfile/resources/file1.ext1";
     QString invalidFile = ":/tst_qfile/resources/filefoo.ext1";
@@ -3541,13 +3541,13 @@ void tst_QFile::mapResource_data()
     for (int i = 0; i < 2; ++i) {
         QString file = (i == 0) ? validFile : invalidFile;
         const char *mode = i == 0 ? modes + 2 : modes;
-        QTest::addRow("0, 0 (%s)", mode) << 0 << 0 << QFile::UnspecifiedError << file;
-        QTest::addRow("0, BIG (%s)", mode) << 0 << 4096 << QFile::UnspecifiedError << file;
-        QTest::addRow("-1, 0 (%s)", mode) << -1 << 0 << QFile::UnspecifiedError << file;
-        QTest::addRow("0, -1 (%s)", mode) << 0 << -1 << QFile::UnspecifiedError << file;
+        BOBUIest::addRow("0, 0 (%s)", mode) << 0 << 0 << QFile::UnspecifiedError << file;
+        BOBUIest::addRow("0, BIG (%s)", mode) << 0 << 4096 << QFile::UnspecifiedError << file;
+        BOBUIest::addRow("-1, 0 (%s)", mode) << -1 << 0 << QFile::UnspecifiedError << file;
+        BOBUIest::addRow("0, -1 (%s)", mode) << 0 << -1 << QFile::UnspecifiedError << file;
     }
 
-    QTest::newRow("0, 1") << 0 << 1 << QFile::NoError << validFile;
+    BOBUIest::newRow("0, 1") << 0 << 1 << QFile::NoError << validFile;
 }
 
 void tst_QFile::mapResource()
@@ -3568,16 +3568,16 @@ void tst_QFile::mapResource()
 
 void tst_QFile::mapOpenMode_data()
 {
-    QTest::addColumn<int>("openMode");
-    QTest::addColumn<int>("flags");
+    BOBUIest::addColumn<int>("openMode");
+    BOBUIest::addColumn<int>("flags");
 
-    QTest::newRow("ReadOnly") << int(QIODevice::ReadOnly) << int(QFileDevice::NoOptions);
-    //QTest::newRow("WriteOnly") << int(QIODevice::WriteOnly); // this doesn't make sense
-    QTest::newRow("ReadWrite") << int(QIODevice::ReadWrite) << int(QFileDevice::NoOptions);
-    QTest::newRow("ReadOnly,Unbuffered") << int(QIODevice::ReadOnly | QIODevice::Unbuffered) << int(QFileDevice::NoOptions);
-    QTest::newRow("ReadWrite,Unbuffered") << int(QIODevice::ReadWrite | QIODevice::Unbuffered) << int(QFileDevice::NoOptions);
-    QTest::newRow("ReadOnly + MapPrivate") << int(QIODevice::ReadOnly) << int(QFileDevice::MapPrivateOption);
-    QTest::newRow("ReadWrite + MapPrivate") << int(QIODevice::ReadWrite) << int(QFileDevice::MapPrivateOption);
+    BOBUIest::newRow("ReadOnly") << int(QIODevice::ReadOnly) << int(QFileDevice::NoOptions);
+    //BOBUIest::newRow("WriteOnly") << int(QIODevice::WriteOnly); // this doesn't make sense
+    BOBUIest::newRow("ReadWrite") << int(QIODevice::ReadWrite) << int(QFileDevice::NoOptions);
+    BOBUIest::newRow("ReadOnly,Unbuffered") << int(QIODevice::ReadOnly | QIODevice::Unbuffered) << int(QFileDevice::NoOptions);
+    BOBUIest::newRow("ReadWrite,Unbuffered") << int(QIODevice::ReadWrite | QIODevice::Unbuffered) << int(QFileDevice::NoOptions);
+    BOBUIest::newRow("ReadOnly + MapPrivate") << int(QIODevice::ReadOnly) << int(QFileDevice::MapPrivateOption);
+    BOBUIest::newRow("ReadWrite + MapPrivate") << int(QIODevice::ReadWrite) << int(QFileDevice::MapPrivateOption);
 }
 
 void tst_QFile::mapOpenMode()
@@ -3627,9 +3627,9 @@ void tst_QFile::mapOpenMode()
 
 void tst_QFile::mapWrittenFile_data()
 {
-    QTest::addColumn<int>("mode");
-    QTest::newRow("buffered") << 0;
-    QTest::newRow("unbuffered") << int(QIODevice::Unbuffered);
+    BOBUIest::addColumn<int>("mode");
+    BOBUIest::newRow("buffered") << 0;
+    BOBUIest::newRow("unbuffered") << int(QIODevice::Unbuffered);
 }
 
 void tst_QFile::mapWrittenFile()
@@ -3672,7 +3672,7 @@ void tst_QFile::openDirectory()
     QVERIFY(!f1.open(QIODevice::ReadOnly|QIODevice::Unbuffered));
     f1.close();
 #if defined(Q_OS_VXWORKS)
-    QEXPECT_FAIL("", "QTBUG-130074: On VxWorks directories are always openable in a write mode", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-130074: On VxWorks directories are always openable in a write mode", Abort);
 #endif
     QVERIFY(!f1.open(QIODevice::ReadWrite));
     f1.close();
@@ -3684,8 +3684,8 @@ void tst_QFile::openDirectory()
 
 static qint64 streamExpectedSize(int fd)
 {
-    QT_STATBUF sb;
-    if (QT_FSTAT(fd, &sb) != -1)
+    BOBUI_STATBUF sb;
+    if (BOBUI_FSTAT(fd, &sb) != -1)
         return sb.st_size;
     qErrnoWarning("Could not fstat fd %d", fd);
     return 0;
@@ -3693,11 +3693,11 @@ static qint64 streamExpectedSize(int fd)
 
 static qint64 streamCurrentPosition(int fd)
 {
-    QT_STATBUF sb;
-    if (QT_FSTAT(fd, &sb) != -1) {
-        QT_OFF_T pos = -1;
-        if ((sb.st_mode & QT_STAT_MASK) == QT_STAT_REG)
-            pos = QT_LSEEK(fd, 0, SEEK_CUR);
+    BOBUI_STATBUF sb;
+    if (BOBUI_FSTAT(fd, &sb) != -1) {
+        BOBUI_OFF_T pos = -1;
+        if ((sb.st_mode & BOBUI_STAT_MASK) == BOBUI_STAT_REG)
+            pos = BOBUI_LSEEK(fd, 0, SEEK_CUR);
         if (pos != -1)
             return pos;
         // failure to lseek() is not a problem
@@ -3709,23 +3709,23 @@ static qint64 streamCurrentPosition(int fd)
 
 static qint64 streamCurrentPosition(FILE *f)
 {
-    QT_STATBUF sb;
-    if (QT_FSTAT(QT_FILENO(f), &sb) != -1) {
-        QT_OFF_T pos = -1;
-        if ((sb.st_mode & QT_STAT_MASK) == QT_STAT_REG)
-            pos = QT_FTELL(f);
+    BOBUI_STATBUF sb;
+    if (BOBUI_FSTAT(BOBUI_FILENO(f), &sb) != -1) {
+        BOBUI_OFF_T pos = -1;
+        if ((sb.st_mode & BOBUI_STAT_MASK) == BOBUI_STAT_REG)
+            pos = BOBUI_FTELL(f);
         if (pos != -1)
             return pos;
         // failure to ftell() is not a problem
     } else {
-        qErrnoWarning("Could not fstat fd %d", QT_FILENO(f));
+        qErrnoWarning("Could not fstat fd %d", BOBUI_FILENO(f));
     }
     return 0;
 }
 
 class MessageHandler {
 public:
-    MessageHandler(QtMessageHandler messageHandler = handler)
+    MessageHandler(BobUIMessageHandler messageHandler = handler)
     {
         ok = true;
         oldMessageHandler = qInstallMessageHandler(messageHandler);
@@ -3741,7 +3741,7 @@ public:
         return ok;
     }
 protected:
-    static void handler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+    static void handler(BobUIMsgType type, const QMessageLogContext &context, const QString &msg)
     {
         if (msg == QString::fromLatin1("QIODevice::seek: Cannot call seek on a sequential device"))
             ok = false;
@@ -3750,12 +3750,12 @@ protected:
             oldMessageHandler(type, context, msg);
     }
 
-    static QtMessageHandler oldMessageHandler;
+    static BobUIMessageHandler oldMessageHandler;
     static bool ok;
 };
 
 bool MessageHandler::ok = true;
-QtMessageHandler MessageHandler::oldMessageHandler = 0;
+BobUIMessageHandler MessageHandler::oldMessageHandler = 0;
 
 void tst_QFile::openStandardStreamsFileDescriptors()
 {
@@ -3797,21 +3797,21 @@ void tst_QFile::openStandardStreamsBufferedStreams()
         QFile in;
         QVERIFY(in.open(stdin, QIODevice::ReadOnly));
         QCOMPARE( in.pos(), streamCurrentPosition(stdin) );
-        QCOMPARE( in.size(), streamExpectedSize(QT_FILENO(stdin)) );
+        QCOMPARE( in.size(), streamExpectedSize(BOBUI_FILENO(stdin)) );
     }
 
     {
         QFile out;
         QVERIFY(out.open(stdout, QIODevice::WriteOnly));
         QCOMPARE( out.pos(), streamCurrentPosition(stdout) );
-        QCOMPARE( out.size(), streamExpectedSize(QT_FILENO(stdout)) );
+        QCOMPARE( out.size(), streamExpectedSize(BOBUI_FILENO(stdout)) );
     }
 
     {
         QFile err;
         QVERIFY(err.open(stderr, QIODevice::WriteOnly));
         QCOMPARE( err.pos(), streamCurrentPosition(stderr) );
-        QCOMPARE( err.size(), streamExpectedSize(QT_FILENO(stderr)) );
+        QCOMPARE( err.size(), streamExpectedSize(BOBUI_FILENO(stderr)) );
     }
 
     QVERIFY(msgHandler.testPassed());
@@ -3830,11 +3830,11 @@ void tst_QFile::writeNothing()
 
 void tst_QFile::resize_data()
 {
-    QTest::addColumn<int>("filetype");
+    BOBUIest::addColumn<int>("filetype");
 
-    QTest::newRow("native") << int(OpenQFile);
-    QTest::newRow("fileno") << int(OpenFd);
-    QTest::newRow("stream") << int(OpenStream);
+    BOBUIest::newRow("native") << int(OpenQFile);
+    BOBUIest::newRow("fileno") << int(OpenFd);
+    BOBUIest::newRow("stream") << int(OpenStream);
 }
 
 void tst_QFile::resize()
@@ -3935,7 +3935,7 @@ void tst_QFile::autocloseHandle()
         Q_UNUSED(a);
         //file is closed, read should fail
         char buf;
-        QCOMPARE((int)QT_READ(fd, &buf, 1), -1);
+        QCOMPARE((int)BOBUI_READ(fd, &buf, 1), -1);
         QVERIFY(errno == EBADF);
     }
 
@@ -3947,15 +3947,15 @@ void tst_QFile::autocloseHandle()
         QCOMPARE(file.handle(), -1);
         //file is not closed, read should succeed
         char buf;
-        QCOMPARE((int)QT_READ(fd_, &buf, 1), 1);
-        QT_CLOSE(fd_);
+        QCOMPARE((int)BOBUI_READ(fd_, &buf, 1), 1);
+        BOBUI_CLOSE(fd_);
         fd_ = -1;
     }
 
     {
         QFile file("readonlyfile");
         QVERIFY(openFile(file, QIODevice::ReadOnly, OpenStream, QFile::AutoCloseHandle));
-        int fd = QT_FILENO(stream_);
+        int fd = BOBUI_FILENO(stream_);
         QCOMPARE(file.handle(), fd);
         file.close();
         stream_ = 0;
@@ -3964,13 +3964,13 @@ void tst_QFile::autocloseHandle()
         Q_UNUSED(a);
         //file is closed, read should fail
         char buf;
-        QCOMPARE((int)QT_READ(fd, &buf, 1), -1); //not using fread because the FILE* was freed by fclose
+        QCOMPARE((int)BOBUI_READ(fd, &buf, 1), -1); //not using fread because the FILE* was freed by fclose
     }
 
     {
         QFile file("readonlyfile");
         QVERIFY(openFile(file, QIODevice::ReadOnly, OpenStream, QFile::DontCloseHandle));
-        QCOMPARE(file.handle(), int(QT_FILENO(stream_)));
+        QCOMPARE(file.handle(), int(BOBUI_FILENO(stream_)));
         file.close();
         QCOMPARE(file.handle(), -1);
         //file is not closed, read should succeed
@@ -3983,7 +3983,7 @@ void tst_QFile::autocloseHandle()
 
 void tst_QFile::reuseQFile()
 {
-    // QTemporaryDir is current dir, no need to remove these files
+    // BOBUIemporaryDir is current dir, no need to remove these files
     const QString filename1("filegt16k");
     const QString filename2("file16k");
 
@@ -4068,56 +4068,56 @@ void tst_QFile::supportsMoveToTrash()
 
 void tst_QFile::moveToTrash_data()
 {
-    QTest::addColumn<QString>("source");
-    QTest::addColumn<bool>("create");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QString>("source");
+    BOBUIest::addColumn<bool>("create");
+    BOBUIest::addColumn<bool>("result");
 
     // success cases
     {
-        QTemporaryFile temp(QDir::tempPath() + "/tst_qfile-moveToTrash-XXXXXX");
+        BOBUIemporaryFile temp(QDir::tempPath() + "/tst_qfile-moveToTrash-XXXXXX");
         if (!temp.open())
             QSKIP("Failed to create temporary file!");
-        QTest::newRow("temporary file") << temp.fileName() << true << true;
+        BOBUIest::newRow("temporary file") << temp.fileName() << true << true;
 #if defined(Q_OS_UNIX) && !defined(Q_OS_WASM)
         if (QDir::tempPath() == "/tmp")
-            QTest::newRow("var-temporary file") << "/var" + temp.fileName() << true << true;
+            BOBUIest::newRow("var-temporary file") << "/var" + temp.fileName() << true << true;
 #endif
     }
     {
-        QTemporaryDir tempDir(QDir::tempPath() + "/tst_qfile-moveToTrash-XXXXXX");
+        BOBUIemporaryDir tempDir(QDir::tempPath() + "/tst_qfile-moveToTrash-XXXXXX");
         if (!tempDir.isValid())
             QSKIP("Failed to create temporary directory!");
         tempDir.setAutoRemove(false);
-        QTest::newRow("temporary dir")
+        BOBUIest::newRow("temporary dir")
             << tempDir.path() + QLatin1Char('/')
             << true << true;
 #if defined(Q_OS_UNIX) && !defined(Q_OS_WASM)
         if (QDir::tempPath() == "/tmp")
-            QTest::newRow("var-temporary dir") << "/var" + tempDir.path() << true << true;
+            BOBUIest::newRow("var-temporary dir") << "/var" + tempDir.path() << true << true;
 #endif
     }
     {
-        QTemporaryDir homeDir(QDir::homePath() + QLatin1String("/tst_qfile.moveToTrash-XXXXXX"));
+        BOBUIemporaryDir homeDir(QDir::homePath() + QLatin1String("/tst_qfile.moveToTrash-XXXXXX"));
         if (!homeDir.isValid())
             QSKIP("Failed to create temporary directory in $HOME!");
-        QTemporaryFile homeFile(homeDir.path()
+        BOBUIemporaryFile homeFile(homeDir.path()
                               + QLatin1String("/tst_qfile-moveToTrash-XXXXX"));
         if (!homeFile.open())
             QSKIP("Failed to create temporary file in $HOME");
         homeDir.setAutoRemove(false);
-        QTest::newRow("home file")
+        BOBUIest::newRow("home file")
             << homeFile.fileName()
             << true << true;
 
-        QTest::newRow("home dir")
+        BOBUIest::newRow("home dir")
             << homeDir.path() + QLatin1Char('/')
             << true << true;
     }
-    QTest::newRow("relative") << QStringLiteral("tst_qfile-moveToTrash.tmp") << true << true;
+    BOBUIest::newRow("relative") << QStringLiteral("tst_qfile-moveToTrash.tmp") << true << true;
 
     // failure cases
-    QTest::newRow("root") << QDir::rootPath() << false << false;
-    QTest::newRow("no-such-file") << QString::fromLatin1("no/such/file") << false << false;
+    BOBUIest::newRow("root") << QDir::rootPath() << false << false;
+    BOBUIest::newRow("no-such-file") << QString::fromLatin1("no/such/file") << false << false;
 }
 
 void tst_QFile::moveToTrash()
@@ -4228,7 +4228,7 @@ void tst_QFile::moveToTrashDuplicateName()
         QSKIP("This platform doesn't implement a trash bin");
 
     QString origFileName = []() {
-        QTemporaryFile temp(QDir::homePath() + "/tst_qfile.moveToTrashOpenFile.XXXXXX");
+        BOBUIemporaryFile temp(QDir::homePath() + "/tst_qfile.moveToTrashOpenFile.XXXXXX");
         temp.setAutoRemove(false);
         if (!temp.open())
             qWarning("Failed to create temporary file: %ls", qUtf16Printable(temp.errorString()));
@@ -4259,17 +4259,17 @@ void tst_QFile::moveToTrashDuplicateName()
 
 void tst_QFile::moveToTrashOpenFile_data()
 {
-    QTest::addColumn<bool>("useStatic");
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<bool>("useStatic");
+    BOBUIest::addColumn<bool>("success");
 
     // QFile::moveToTrash() non-static member closes the file before trashing,
     // so this must always succeed.
-    QTest::newRow("member") << false << true;
+    BOBUIest::newRow("member") << false << true;
 
     // QFile::moveToTrash() static member cannot close the file because it
     // operates on another QFile, so this operation will fail on OSes that do
     // not permit deleting open files.
-    QTest::newRow("static") << true
+    BOBUIest::newRow("static") << true
 #ifdef Q_OS_WIN
                             << false;
 #else
@@ -4295,7 +4295,7 @@ void tst_QFile::moveToTrashOpenFile()
     });
 
     origFileName = []() {
-        QTemporaryFile temp(QDir::homePath() + "/tst_qfile.moveToTrashOpenFile.XXXXXX");
+        BOBUIemporaryFile temp(QDir::homePath() + "/tst_qfile.moveToTrashOpenFile.XXXXXX");
         temp.setAutoRemove(false);
         if (!temp.open())
             qWarning("Failed to create temporary file: %ls", qUtf16Printable(temp.errorString()));
@@ -4342,7 +4342,7 @@ void tst_QFile::moveToTrashSymlinkToFile()
     if (!QFile::supportsMoveToTrash())
         QSKIP("This platform doesn't implement a trash bin");
 
-    QTemporaryFile temp(QDir::homePath() + "/tst_qfile.moveToTrashSymlinkFile.XXXXXX");
+    BOBUIemporaryFile temp(QDir::homePath() + "/tst_qfile.moveToTrashSymlinkFile.XXXXXX");
     QVERIFY2(temp.open(), "Failed to create temporary file: " + temp.errorString().toLocal8Bit());
 
     // Create the symlink
@@ -4371,9 +4371,9 @@ void tst_QFile::moveToTrashSymlinkToFile()
 
 void tst_QFile::moveToTrashSymlinkToDirectory_data()
 {
-    QTest::addColumn<bool>("appendSlash");
-    QTest::newRow("without-slash") << false;
-    QTest::newRow("with-slash") << true;
+    BOBUIest::addColumn<bool>("appendSlash");
+    BOBUIest::newRow("without-slash") << false;
+    BOBUIest::newRow("with-slash") << true;
 }
 
 void tst_QFile::moveToTrashSymlinkToDirectory()
@@ -4382,7 +4382,7 @@ void tst_QFile::moveToTrashSymlinkToDirectory()
         QSKIP("This platform doesn't implement a trash bin");
 
     QFETCH(bool, appendSlash);
-    QTemporaryDir temp(QDir::homePath() + "/tst_qfile.moveToTrashSymlinkDir.XXXXXX");
+    BOBUIemporaryDir temp(QDir::homePath() + "/tst_qfile.moveToTrashSymlinkDir.XXXXXX");
     QVERIFY2(temp.isValid(), "Failed to create temporary dir: " + temp.errorString().toLocal8Bit());
 
     // Create the symlink
@@ -4422,7 +4422,7 @@ void tst_QFile::moveToTrashXdgHomeTrashIsSymlink()
         QFAIL("Constructor should have enabled test mode");
 
     QString xdgDataHome = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    Q_ASSERT(xdgDataHome.contains("qttest/"));
+    Q_ASSERT(xdgDataHome.contains("bobuitest/"));
     QString xdgHomeTrash = xdgDataHome + "/Trash"_L1;
     QString tempPattern = xdgDataHome + "/tst_qfile_moveToTrashXdgHomeTrashIsSymlink.XXXXXX";
     auto removeTrashAsSymlink = [&xdgHomeTrash] {
@@ -4430,7 +4430,7 @@ void tst_QFile::moveToTrashXdgHomeTrashIsSymlink()
     };
 
     // create a file for us to trash
-    QTemporaryFile fileToTrash(tempPattern);
+    BOBUIemporaryFile fileToTrash(tempPattern);
     QVERIFY2(fileToTrash.open(), qPrintable(fileToTrash.errorString()));
 
     // obliterate the test-mode home trash and create a symlink in its place
@@ -4439,7 +4439,7 @@ void tst_QFile::moveToTrashXdgHomeTrashIsSymlink()
     else
         QDir(xdgHomeTrash).removeRecursively();
 
-    QTemporaryDir otherTrash(tempPattern);
+    BOBUIemporaryDir otherTrash(tempPattern);
     QVERIFY2(otherTrash.isValid(), qPrintable(otherTrash.errorString()));
     if (QFile src(otherTrash.path()); true)
         QVERIFY2(src.link(xdgHomeTrash), qPrintable(src.errorString()));
@@ -4517,7 +4517,7 @@ void tst_QFile::moveToTrashXdgSafety()
         return ok;
     };
 
-    QTest::ignoreMessage(QtCriticalMsg,
+    BOBUIest::ignoreMessage(BobUICriticalMsg,
                          "Warning: '" + QFile::encodeName(genericTrashDir.absolutePath())
                          + "' is a symlink to '" + QFile::encodeName(m_temporaryDir.path())
                          + "/emptydir'");
@@ -4526,7 +4526,7 @@ void tst_QFile::moveToTrashXdgSafety()
 
     QFile::remove(genericTrashDir.path());
     genericTrashDir.mkdir(genericTrashDir.path(), QFile::ExeOwner | QFile::ReadOwner);
-    QTest::ignoreMessage(QtCriticalMsg, "Warning: '" + QFile::encodeName(genericTrashDir.absolutePath())
+    BOBUIest::ignoreMessage(BobUICriticalMsg, "Warning: '" + QFile::encodeName(genericTrashDir.absolutePath())
                          + "' doesn't have sticky bit set!");
     QVERIFY(tryTrashing());
     QVERIFY(genericTrashDir.entryList(QDir::NoDotAndDotDot).isEmpty());
@@ -4548,7 +4548,7 @@ void tst_QFile::moveToTrashXdgSafety()
 
 void tst_QFile::stdfilesystem()
 {
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
     namespace fs = std::filesystem;
     auto toFSPath = [](const QFile &file) { return fs::path(file.fileName().toStdU16String()); };
     fs::path path { "./path" };
@@ -4613,5 +4613,5 @@ void tst_QFile::stdfilesystem()
 #endif
 }
 
-QTEST_MAIN(tst_QFile)
+BOBUIEST_MAIN(tst_QFile)
 #include "tst_qfile.moc"

@@ -1,34 +1,34 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVENT_H
 #define QEVENT_H
 
 #if 0
-#pragma qt_class(QtEvents)
+#pragma bobui_class(BobUIEvents)
 #endif
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#include <QtCore/qcoreevent.h>
-#include <QtCore/qiodevice.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qvariant.h>
-#include <QtGui/qeventpoint.h>
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/qregion.h>
-#include <QtGui/qwindowdefs.h>
+#include <BobUICore/qcoreevent.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qvariant.h>
+#include <BobUIGui/qeventpoint.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/qregion.h>
+#include <BobUIGui/qwindowdefs.h>
 
-#if QT_CONFIG(shortcut)
-#  include <QtGui/qkeysequence.h>
+#if BOBUI_CONFIG(shortcut)
+#  include <BobUIGui/qkeysequence.h>
 #endif
 
 class tst_QEvent;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFile;
 class QAction;
@@ -36,12 +36,12 @@ class QMouseEvent;
 template <typename T> class QPointer;
 class QPointerEvent;
 class QScreen;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 class QShortcut;
 #endif
-class QTabletEvent;
-class QTouchEvent;
-#if QT_CONFIG(gestures)
+class BOBUIabletEvent;
+class BOBUIouchEvent;
+#if BOBUI_CONFIG(gestures)
 class QGesture;
 #endif
 
@@ -49,22 +49,22 @@ class Q_GUI_EXPORT QInputEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QInputEvent)
 public:
-    explicit QInputEvent(Type type, const QInputDevice *m_dev, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    explicit QInputEvent(Type type, const QInputDevice *m_dev, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
 
     const QInputDevice *device() const { return m_dev; }
     QInputDevice::DeviceType deviceType() const { return m_dev ? m_dev->type() : QInputDevice::DeviceType::Unknown; }
-    inline Qt::KeyboardModifiers modifiers() const { return m_modState; }
-    inline void setModifiers(Qt::KeyboardModifiers modifiers) { m_modState = modifiers; }
+    inline BobUI::KeyboardModifiers modifiers() const { return m_modState; }
+    inline void setModifiers(BobUI::KeyboardModifiers modifiers) { m_modState = modifiers; }
     inline quint64 timestamp() const { return m_timeStamp; }
     virtual void setTimestamp(quint64 timestamp) { m_timeStamp = timestamp; }
 
 protected:
-    QInputEvent(Type type, PointerEventTag, const QInputDevice *dev, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
-    QInputEvent(Type type, SinglePointEventTag, const QInputDevice *dev, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    QInputEvent(Type type, PointerEventTag, const QInputDevice *dev, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
+    QInputEvent(Type type, SinglePointEventTag, const QInputDevice *dev, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
 
     const QInputDevice *m_dev = nullptr;
     quint64 m_timeStamp = 0;
-    Qt::KeyboardModifiers m_modState = Qt::NoModifier;
+    BobUI::KeyboardModifiers m_modState = BobUI::NoModifier;
     // fill up to the closest 8-byte aligned size: 48
     quint32 m_reserved = 0;
 };
@@ -75,7 +75,7 @@ class Q_GUI_EXPORT QPointerEvent : public QInputEvent
     Q_DECL_EVENT_COMMON(QPointerEvent)
 public:
     explicit QPointerEvent(Type type, const QPointingDevice *dev,
-                           Qt::KeyboardModifiers modifiers = Qt::NoModifier, const QList<QEventPoint> &points = {});
+                           BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, const QList<QEventPoint> &points = {});
 
     const QPointingDevice *pointingDevice() const;
     QPointingDevice::PointerType pointerType() const {
@@ -100,7 +100,7 @@ public:
     bool removePassiveGrabber(const QEventPoint &point, QObject *grabber);
 
 protected:
-    QPointerEvent(Type type, SinglePointEventTag, const QInputDevice *dev, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    QPointerEvent(Type type, SinglePointEventTag, const QInputDevice *dev, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
 
     QList<QEventPoint> m_points;
 };
@@ -113,8 +113,8 @@ class Q_GUI_EXPORT QSinglePointEvent : public QPointerEvent
 
     Q_DECL_EVENT_COMMON(QSinglePointEvent)
 public:
-    inline Qt::MouseButton button() const { return m_button; }
-    inline Qt::MouseButtons buttons() const { return m_mouseState; }
+    inline BobUI::MouseButton button() const { return m_button; }
+    inline BobUI::MouseButtons buttons() const { return m_mouseState; }
 
     inline QPointF position() const
     { Q_ASSERT(!m_points.isEmpty()); return m_points.first().position(); }
@@ -136,17 +136,17 @@ protected:
     friend class ::tst_QEvent;
     friend class QMutableSinglePointEvent;
     QSinglePointEvent(Type type, const QPointingDevice *dev, const QEventPoint &point,
-                      Qt::MouseButton button, Qt::MouseButtons buttons,
-                      Qt::KeyboardModifiers modifiers, Qt::MouseEventSource source);
+                      BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                      BobUI::KeyboardModifiers modifiers, BobUI::MouseEventSource source);
     QSinglePointEvent(Type type, const QPointingDevice *dev, const QPointF &localPos,
                       const QPointF &scenePos, const QPointF &globalPos,
-                      Qt::MouseButton button, Qt::MouseButtons buttons,
-                      Qt::KeyboardModifiers modifiers,
-                      Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
+                      BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                      BobUI::KeyboardModifiers modifiers,
+                      BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized);
 
-    Qt::MouseButton m_button = Qt::NoButton;
-    Qt::MouseButtons m_mouseState = Qt::NoButton;
-    Qt::MouseEventSource m_source;
+    BobUI::MouseButton m_button = BobUI::NoButton;
+    BobUI::MouseButtons m_mouseState = BobUI::NoButton;
+    BobUI::MouseEventSource m_source;
     /*
         Fill up to the next 8-byte aligned size: 88
         We have 32bits left, use some for QSinglePointEvent subclasses so that
@@ -169,78 +169,78 @@ public:
     QEnterEvent(const QPointF &localPos, const QPointF &scenePos, const QPointF &globalPos,
                 const QPointingDevice *device = QPointingDevice::primaryPointingDevice());
 
-#if QT_DEPRECATED_SINCE(6, 0)
-#ifndef QT_NO_INTEGER_EVENT_COORDINATES
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+#ifndef BOBUI_NO_INTEGER_EVENT_COORDINATES
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline QPoint pos() const { return position().toPoint(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     inline QPoint globalPos() const { return globalPosition().toPoint(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline int x() const { return qRound(position().x()); }
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline int y() const { return qRound(position().y()); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     inline int globalX() const { return qRound(globalPosition().x()); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     inline int globalY() const { return qRound(globalPosition().y()); }
 #endif
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     QPointF localPos() const { return position(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use scenePosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use scenePosition()")
     QPointF windowPos() const { return scenePosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     QPointF screenPos() const { return globalPosition(); }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 };
 
 class Q_GUI_EXPORT QMouseEvent : public QSinglePointEvent
 {
     Q_DECL_EVENT_COMMON(QMouseEvent)
 public:
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_DEPRECATED_VERSION_X_6_4("Use another constructor")
-    QMouseEvent(Type type, const QPointF &localPos, Qt::MouseButton button,
-                Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers,
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_DEPRECATED_VERSION_X_6_4("Use another constructor")
+    QMouseEvent(Type type, const QPointF &localPos, BobUI::MouseButton button,
+                BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers,
                 const QPointingDevice *device = QPointingDevice::primaryPointingDevice());
 #endif
     QMouseEvent(Type type, const QPointF &localPos, const QPointF &globalPos,
-                Qt::MouseButton button, Qt::MouseButtons buttons,
-                Qt::KeyboardModifiers modifiers,
+                BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                BobUI::KeyboardModifiers modifiers,
                 const QPointingDevice *device = QPointingDevice::primaryPointingDevice());
     QMouseEvent(Type type, const QPointF &localPos, const QPointF &scenePos, const QPointF &globalPos,
-                Qt::MouseButton button, Qt::MouseButtons buttons,
-                Qt::KeyboardModifiers modifiers,
+                BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                BobUI::KeyboardModifiers modifiers,
                 const QPointingDevice *device = QPointingDevice::primaryPointingDevice());
     QMouseEvent(Type type, const QPointF &localPos, const QPointF &scenePos, const QPointF &globalPos,
-                Qt::MouseButton button, Qt::MouseButtons buttons,
-                Qt::KeyboardModifiers modifiers, Qt::MouseEventSource source,
+                BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                BobUI::KeyboardModifiers modifiers, BobUI::MouseEventSource source,
                 const QPointingDevice *device = QPointingDevice::primaryPointingDevice());
 
-#ifndef QT_NO_INTEGER_EVENT_COORDINATES
+#ifndef BOBUI_NO_INTEGER_EVENT_COORDINATES
     inline QPoint pos() const { return position().toPoint(); }
 #endif
-#if QT_DEPRECATED_SINCE(6, 0)
-#ifndef QT_NO_INTEGER_EVENT_COORDINATES
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+#ifndef BOBUI_NO_INTEGER_EVENT_COORDINATES
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     inline QPoint globalPos() const { return globalPosition().toPoint(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline int x() const { return qRound(position().x()); }
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline int y() const { return qRound(position().y()); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     inline int globalX() const { return qRound(globalPosition().x()); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     inline int globalY() const { return qRound(globalPosition().y()); }
-#endif // QT_NO_INTEGER_EVENT_COORDINATES
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+#endif // BOBUI_NO_INTEGER_EVENT_COORDINATES
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     QPointF localPos() const { return position(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use scenePosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use scenePosition()")
     QPointF windowPos() const { return scenePosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     QPointF screenPos() const { return globalPosition(); }
-#endif // QT_DEPRECATED_SINCE(6, 0)
-    Qt::MouseEventSource source() const;
-    Qt::MouseEventFlags flags() const;
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
+    BobUI::MouseEventSource source() const;
+    BobUI::MouseEventFlags flags() const;
 };
 
 class Q_GUI_EXPORT QHoverEvent : public QSinglePointEvent
@@ -248,24 +248,24 @@ class Q_GUI_EXPORT QHoverEvent : public QSinglePointEvent
     Q_DECL_EVENT_COMMON(QHoverEvent)
 public:
     QHoverEvent(Type type, const QPointF &scenePos, const QPointF &globalPos, const QPointF &oldPos,
-                Qt::KeyboardModifiers modifiers = Qt::NoModifier,
+                BobUI::KeyboardModifiers modifiers = BobUI::NoModifier,
                 const QPointingDevice *device = QPointingDevice::primaryPointingDevice());
-#if QT_DEPRECATED_SINCE(6, 3)
-    QT_DEPRECATED_VERSION_X_6_3("Use the other constructor")
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+    BOBUI_DEPRECATED_VERSION_X_6_3("Use the other constructor")
     QHoverEvent(Type type, const QPointF &pos, const QPointF &oldPos,
-                Qt::KeyboardModifiers modifiers = Qt::NoModifier,
+                BobUI::KeyboardModifiers modifiers = BobUI::NoModifier,
                 const QPointingDevice *device = QPointingDevice::primaryPointingDevice());
 #endif
 
-#if QT_DEPRECATED_SINCE(6, 0)
-#ifndef QT_NO_INTEGER_EVENT_COORDINATES
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+#ifndef BOBUI_NO_INTEGER_EVENT_COORDINATES
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline QPoint pos() const { return position().toPoint(); }
 #endif
 
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline QPointF posF() const { return position(); }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
     bool isUpdateEvent() const override  { return true; }
 
@@ -277,14 +277,14 @@ protected:
     QPointF m_oldPos; // TODO remove?
 };
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 class Q_GUI_EXPORT QWheelEvent : public QSinglePointEvent
 {
     Q_GADGET
     Q_PROPERTY(const QPointingDevice *device READ pointingDevice)
     Q_PROPERTY(QPoint pixelDelta READ pixelDelta)
     Q_PROPERTY(QPoint angleDelta READ angleDelta)
-    Q_PROPERTY(Qt::ScrollPhase phase READ phase)
+    Q_PROPERTY(BobUI::ScrollPhase phase READ phase)
     Q_PROPERTY(bool inverted READ inverted)
 
     Q_DECL_EVENT_COMMON(QWheelEvent)
@@ -292,14 +292,14 @@ public:
     enum { DefaultDeltasPerStep = 120 };
 
     QWheelEvent(const QPointF &pos, const QPointF &globalPos, QPoint pixelDelta, QPoint angleDelta,
-                Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Qt::ScrollPhase phase,
-                bool inverted, Qt::MouseEventSource source = Qt::MouseEventNotSynthesized,
+                BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, BobUI::ScrollPhase phase,
+                bool inverted, BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized,
                 const QPointingDevice *device = QPointingDevice::primaryPointingDevice());
 
     inline QPoint pixelDelta() const { return m_pixelDelta; }
     inline QPoint angleDelta() const { return m_angleDelta; }
 
-    inline Qt::ScrollPhase phase() const { return Qt::ScrollPhase(m_phase); }
+    inline BobUI::ScrollPhase phase() const { return BobUI::ScrollPhase(m_phase); }
     inline bool inverted() const { return m_invertedScrolling; }
     inline bool isInverted() const { return m_invertedScrolling; }
     inline bool hasPixelDelta() const { return !m_pixelDelta.isNull(); }
@@ -307,7 +307,7 @@ public:
     bool isBeginEvent() const override;
     bool isUpdateEvent() const override;
     bool isEndEvent() const override;
-    Qt::MouseEventSource source() const { return Qt::MouseEventSource(m_source); }
+    BobUI::MouseEventSource source() const { return BobUI::MouseEventSource(m_source); }
 
 protected:
     QPoint m_pixelDelta;
@@ -315,41 +315,41 @@ protected:
 };
 #endif
 
-#if QT_CONFIG(tabletevent)
-class Q_GUI_EXPORT QTabletEvent : public QSinglePointEvent
+#if BOBUI_CONFIG(tabletevent)
+class Q_GUI_EXPORT BOBUIabletEvent : public QSinglePointEvent
 {
-    Q_DECL_EVENT_COMMON(QTabletEvent)
+    Q_DECL_EVENT_COMMON(BOBUIabletEvent)
 public:
-    QTabletEvent(Type t, const QPointingDevice *device,
+    BOBUIabletEvent(Type t, const QPointingDevice *device,
                  const QPointF &pos, const QPointF &globalPos,
                  qreal pressure, float xTilt, float yTilt,
                  float tangentialPressure, qreal rotation, float z,
-                 Qt::KeyboardModifiers keyState,
-                 Qt::MouseButton button, Qt::MouseButtons buttons);
+                 BobUI::KeyboardModifiers keyState,
+                 BobUI::MouseButton button, BobUI::MouseButtons buttons);
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline QPoint pos() const { return position().toPoint(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     inline QPoint globalPos() const { return globalPosition().toPoint(); }
 
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline const QPointF posF() const { return position(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     inline const QPointF globalPosF() const { return globalPosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use position().x()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position().x()")
     inline int x() const { return qRound(position().x()); }
-    QT_DEPRECATED_VERSION_X_6_0("Use position().y()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position().y()")
     inline int y() const { return qRound(position().y()); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition().x()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition().x()")
     inline int globalX() const { return qRound(globalPosition().x()); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition().y()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition().y()")
     inline int globalY() const { return qRound(globalPosition().y()); }
-    QT_DEPRECATED_VERSION_X_6_0("use globalPosition().x()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("use globalPosition().x()")
     inline qreal hiResGlobalX() const { return globalPosition().x(); }
-    QT_DEPRECATED_VERSION_X_6_0("use globalPosition().y()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("use globalPosition().y()")
     inline qreal hiResGlobalY() const { return globalPosition().y(); }
-    QT_DEPRECATED_VERSION_X_6_0("use pointingDevice().uniqueId()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("use pointingDevice().uniqueId()")
     inline qint64 uniqueId() const { return pointingDevice() ? pointingDevice()->uniqueId().numericId() : -1; }
 #endif
     inline qreal pressure() const { Q_ASSERT(!points().isEmpty()); return points().first().pressure(); }
@@ -365,81 +365,81 @@ protected:
     float m_yTilt;
     float m_z;
 };
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
 
-#if QT_CONFIG(gestures)
+#if BOBUI_CONFIG(gestures)
 class Q_GUI_EXPORT QNativeGestureEvent : public QSinglePointEvent
 {
     Q_DECL_EVENT_COMMON(QNativeGestureEvent)
 public:
-#if QT_DEPRECATED_SINCE(6, 2)
-    QT_DEPRECATED_VERSION_X_6_2("Use the other constructor")
-    QNativeGestureEvent(Qt::NativeGestureType type, const QPointingDevice *dev, const QPointF &localPos, const QPointF &scenePos,
+#if BOBUI_DEPRECATED_SINCE(6, 2)
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the other constructor")
+    QNativeGestureEvent(BobUI::NativeGestureType type, const QPointingDevice *dev, const QPointF &localPos, const QPointF &scenePos,
                         const QPointF &globalPos, qreal value, quint64 sequenceId, quint64 intArgument);
 #endif
-    QNativeGestureEvent(Qt::NativeGestureType type, const QPointingDevice *dev, int fingerCount,
+    QNativeGestureEvent(BobUI::NativeGestureType type, const QPointingDevice *dev, int fingerCount,
                         const QPointF &localPos, const QPointF &scenePos, const QPointF &globalPos,
                         qreal value, const QPointF &delta, quint64 sequenceId = UINT64_MAX);
 
-    Qt::NativeGestureType gestureType() const { return m_gestureType; }
+    BobUI::NativeGestureType gestureType() const { return m_gestureType; }
     int fingerCount() const { return m_fingerCount; }
     qreal value() const { return m_realValue; }
     QPointF delta() const {
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
         return m_delta.toPointF();
 #else
         return m_delta;
 #endif
     }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-#ifndef QT_NO_INTEGER_EVENT_COORDINATES
-    QT_DEPRECATED_VERSION_X_6_0("Use position().toPoint()")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+#ifndef BOBUI_NO_INTEGER_EVENT_COORDINATES
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position().toPoint()")
     inline const QPoint pos() const { return position().toPoint(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition().toPoint()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition().toPoint()")
     inline const QPoint globalPos() const { return globalPosition().toPoint(); }
 #endif
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     QPointF localPos() const { return position(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use scenePosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use scenePosition()")
     QPointF windowPos() const { return scenePosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     QPointF screenPos() const { return globalPosition(); }
 #endif
 
 protected:
     quint64 m_sequenceId;
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     QVector2D m_delta;
 #else
     QPointF m_delta;
 #endif
     qreal m_realValue;
-    Qt::NativeGestureType m_gestureType;
+    BobUI::NativeGestureType m_gestureType;
     quint32 m_fingerCount : 4;
     quint32 m_reserved : 28;
 };
-#endif // QT_CONFIG(gestures)
+#endif // BOBUI_CONFIG(gestures)
 
 class Q_GUI_EXPORT QKeyEvent : public QInputEvent
 {
     Q_DECL_EVENT_COMMON(QKeyEvent)
 public:
-    QKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers, const QString& text = QString(),
+    QKeyEvent(Type type, int key, BobUI::KeyboardModifiers modifiers, const QString& text = QString(),
               bool autorep = false, quint16 count = 1);
-    QKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers,
+    QKeyEvent(Type type, int key, BobUI::KeyboardModifiers modifiers,
               quint32 nativeScanCode, quint32 nativeVirtualKey, quint32 nativeModifiers,
               const QString &text = QString(), bool autorep = false, quint16 count = 1,
               const QInputDevice *device = QInputDevice::primaryKeyboard());
 
     int key() const { return m_key; }
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     bool matches(QKeySequence::StandardKey key) const;
 #endif
-    Qt::KeyboardModifiers modifiers() const;
+    BobUI::KeyboardModifiers modifiers() const;
     QKeyCombination keyCombination() const
     {
-        return QKeyCombination(modifiers(), Qt::Key(m_key));
+        return QKeyCombination(modifiers(), BobUI::Key(m_key));
     }
     inline QString text() const { return m_text; }
     inline bool isAutoRepeat() const { return m_autoRepeat; }
@@ -449,12 +449,12 @@ public:
     inline quint32 nativeVirtualKey() const { return m_virtualKey; }
     inline quint32 nativeModifiers() const { return m_nativeModifiers; }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     friend inline bool operator==(QKeyEvent *e, QKeySequence::StandardKey key)
     { return (e ? e->matches(key) : false); }
     friend inline bool operator==(QKeySequence::StandardKey key, QKeyEvent *e)
     { return (e ? e->matches(key) : false); }
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 protected:
     QString m_text;
@@ -471,15 +471,15 @@ class Q_GUI_EXPORT QFocusEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QFocusEvent)
 public:
-    explicit QFocusEvent(Type type, Qt::FocusReason reason=Qt::OtherFocusReason);
+    explicit QFocusEvent(Type type, BobUI::FocusReason reason=BobUI::OtherFocusReason);
 
     inline bool gotFocus() const { return type() == FocusIn; }
     inline bool lostFocus() const { return type() == FocusOut; }
 
-    Qt::FocusReason reason() const;
+    BobUI::FocusReason reason() const;
 
 private:
-    Qt::FocusReason m_reason;
+    BobUI::FocusReason m_reason;
 };
 
 
@@ -519,8 +519,8 @@ class Q_GUI_EXPORT QExposeEvent : public QEvent
 public:
     explicit QExposeEvent(const QRegion &m_region);
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Handle QPaintEvent instead")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Handle QPaintEvent instead")
     inline const QRegion &region() const { return m_region; }
 #endif
 
@@ -592,7 +592,7 @@ public:
     QHideEvent();
 };
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 class Q_GUI_EXPORT QContextMenuEvent : public QInputEvent
 {
     Q_DECL_EVENT_COMMON(QContextMenuEvent)
@@ -600,9 +600,9 @@ public:
     enum Reason { Mouse, Keyboard, Other };
 
     QContextMenuEvent(Reason reason, const QPoint &pos, const QPoint &globalPos,
-                      Qt::KeyboardModifiers modifiers = Qt::NoModifier);
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_DEPRECATED_VERSION_X_6_4("Use the other constructor")
+                      BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_DEPRECATED_VERSION_X_6_4("Use the other constructor")
     QContextMenuEvent(Reason reason, const QPoint &pos);
 #endif
 
@@ -621,9 +621,9 @@ protected:
     QPoint m_globalPos;
     uint m_reason : 8;
 };
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
-#ifndef QT_NO_INPUTMETHOD
+#ifndef BOBUI_NO_INPUTMETHOD
 class Q_GUI_EXPORT QInputMethodEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QInputMethodEvent)
@@ -683,26 +683,26 @@ class Q_GUI_EXPORT QInputMethodQueryEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QInputMethodQueryEvent)
 public:
-    explicit QInputMethodQueryEvent(Qt::InputMethodQueries queries);
+    explicit QInputMethodQueryEvent(BobUI::InputMethodQueries queries);
 
-    Qt::InputMethodQueries queries() const { return m_queries; }
+    BobUI::InputMethodQueries queries() const { return m_queries; }
 
-    void setValue(Qt::InputMethodQuery query, const QVariant &value);
-    QVariant value(Qt::InputMethodQuery query) const;
+    void setValue(BobUI::InputMethodQuery query, const QVariant &value);
+    QVariant value(BobUI::InputMethodQuery query) const;
 private:
-    Qt::InputMethodQueries m_queries;
+    BobUI::InputMethodQueries m_queries;
     struct QueryPair {
-        Qt::InputMethodQuery query;
+        BobUI::InputMethodQuery query;
         QVariant value;
     };
-    friend QTypeInfo<QueryPair>;
+    friend BOBUIypeInfo<QueryPair>;
     QList<QueryPair> m_values;
 };
 Q_DECLARE_TYPEINFO(QInputMethodQueryEvent::QueryPair, Q_RELOCATABLE_TYPE);
 
-#endif // QT_NO_INPUTMETHOD
+#endif // BOBUI_NO_INPUTMETHOD
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 
 class QMimeData;
 
@@ -710,30 +710,30 @@ class Q_GUI_EXPORT QDropEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QDropEvent)
 public:
-    QDropEvent(const QPointF& pos, Qt::DropActions actions, const QMimeData *data,
-               Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Type type = Drop);
+    QDropEvent(const QPointF& pos, BobUI::DropActions actions, const QMimeData *data,
+               BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, Type type = Drop);
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use position().toPoint()")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position().toPoint()")
     inline QPoint pos() const { return position().toPoint(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     inline QPointF posF() const { return position(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use buttons()")
-    inline Qt::MouseButtons mouseButtons() const { return buttons(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use modifiers()")
-    inline Qt::KeyboardModifiers keyboardModifiers() const { return modifiers(); }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use buttons()")
+    inline BobUI::MouseButtons mouseButtons() const { return buttons(); }
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use modifiers()")
+    inline BobUI::KeyboardModifiers keyboardModifiers() const { return modifiers(); }
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
     QPointF position() const { return m_pos; }
-    inline Qt::MouseButtons buttons() const { return m_mouseState; }
-    inline Qt::KeyboardModifiers modifiers() const { return m_modState; }
+    inline BobUI::MouseButtons buttons() const { return m_mouseState; }
+    inline BobUI::KeyboardModifiers modifiers() const { return m_modState; }
 
-    inline Qt::DropActions possibleActions() const { return m_actions; }
-    inline Qt::DropAction proposedAction() const { return m_defaultAction; }
+    inline BobUI::DropActions possibleActions() const { return m_actions; }
+    inline BobUI::DropAction proposedAction() const { return m_defaultAction; }
     inline void acceptProposedAction() { m_dropAction = m_defaultAction; accept(); }
 
-    inline Qt::DropAction dropAction() const { return m_dropAction; }
-    void setDropAction(Qt::DropAction action);
+    inline BobUI::DropAction dropAction() const { return m_dropAction; }
+    void setDropAction(BobUI::DropAction action);
 
     QObject* source() const;
     inline const QMimeData *mimeData() const { return m_data; }
@@ -741,11 +741,11 @@ public:
 protected:
     friend class QApplication;
     QPointF m_pos;
-    Qt::MouseButtons m_mouseState;
-    Qt::KeyboardModifiers m_modState;
-    Qt::DropActions m_actions;
-    Qt::DropAction m_dropAction;
-    Qt::DropAction m_defaultAction;
+    BobUI::MouseButtons m_mouseState;
+    BobUI::KeyboardModifiers m_modState;
+    BobUI::DropActions m_actions;
+    BobUI::DropAction m_dropAction;
+    BobUI::DropAction m_defaultAction;
     const QMimeData *m_data;
 };
 
@@ -754,8 +754,8 @@ class Q_GUI_EXPORT QDragMoveEvent : public QDropEvent
 {
     Q_DECL_EVENT_COMMON(QDragMoveEvent)
 public:
-    QDragMoveEvent(const QPoint &pos, Qt::DropActions actions, const QMimeData *data,
-                   Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Type type = DragMove);
+    QDragMoveEvent(const QPoint &pos, BobUI::DropActions actions, const QMimeData *data,
+                   BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, Type type = DragMove);
 
     inline QRect answerRect() const { return m_rect; }
 
@@ -774,8 +774,8 @@ class Q_GUI_EXPORT QDragEnterEvent : public QDragMoveEvent
 {
     Q_DECL_EVENT_COMMON(QDragEnterEvent)
 public:
-    QDragEnterEvent(const QPoint &pos, Qt::DropActions actions, const QMimeData *data,
-                    Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
+    QDragEnterEvent(const QPoint &pos, BobUI::DropActions actions, const QMimeData *data,
+                    BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers);
 };
 
 
@@ -785,7 +785,7 @@ class Q_GUI_EXPORT QDragLeaveEvent : public QEvent
 public:
     QDragLeaveEvent();
 };
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 
 class Q_GUI_EXPORT QHelpEvent : public QEvent
@@ -807,7 +807,7 @@ private:
     QPoint m_globalPos;
 };
 
-#ifndef QT_NO_STATUSTIP
+#ifndef BOBUI_NO_STATUSTIP
 class Q_GUI_EXPORT QStatusTipEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QStatusTipEvent)
@@ -820,7 +820,7 @@ private:
 };
 #endif
 
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 class Q_GUI_EXPORT QWhatsThisClickedEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QWhatsThisClickedEvent)
@@ -833,7 +833,7 @@ private:
 };
 #endif
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 class Q_GUI_EXPORT QActionEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QActionEvent)
@@ -846,7 +846,7 @@ private:
     QAction *m_action;
     QAction *m_before;
 };
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 
 class Q_GUI_EXPORT QFileOpenEvent : public QEvent
 {
@@ -857,8 +857,8 @@ public:
 
     inline QString file() const { return m_file; }
     QUrl url() const { return m_url; }
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("Interpret the string returned by file()")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("Interpret the string returned by file()")
     bool openFile(QFile &file, QIODevice::OpenMode flags) const;
 #endif
 private:
@@ -866,12 +866,12 @@ private:
     QUrl m_url;
 };
 
-#ifndef QT_NO_TOOLBAR
-class Q_GUI_EXPORT QToolBarChangeEvent : public QEvent
+#ifndef BOBUI_NO_TOOLBAR
+class Q_GUI_EXPORT BOBUIoolBarChangeEvent : public QEvent
 {
-    Q_DECL_EVENT_COMMON(QToolBarChangeEvent)
+    Q_DECL_EVENT_COMMON(BOBUIoolBarChangeEvent)
 public:
-    explicit QToolBarChangeEvent(bool t);
+    explicit BOBUIoolBarChangeEvent(bool t);
 
     inline bool toggle() const { return m_toggle; }
 private:
@@ -879,7 +879,7 @@ private:
 };
 #endif
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 class Q_GUI_EXPORT QShortcutEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QShortcutEvent)
@@ -903,44 +903,44 @@ class Q_GUI_EXPORT QWindowStateChangeEvent: public QEvent
 {
     Q_DECL_EVENT_COMMON(QWindowStateChangeEvent)
 public:
-    explicit QWindowStateChangeEvent(Qt::WindowStates oldState, bool isOverride = false);
+    explicit QWindowStateChangeEvent(BobUI::WindowStates oldState, bool isOverride = false);
 
-    inline Qt::WindowStates oldState() const { return m_oldStates; }
+    inline BobUI::WindowStates oldState() const { return m_oldStates; }
     bool isOverride() const;
 
 private:
-    Qt::WindowStates m_oldStates;
+    BobUI::WindowStates m_oldStates;
     bool m_override;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
-// ### Qt 7: move this to Qt Core and add a hook to allow GUI events to be printed: QTBUG-127680
+#ifndef BOBUI_NO_DEBUG_STREAM
+// ### BobUI 7: move this to BobUI Core and add a hook to allow GUI events to be printed: BOBUIBUG-127680
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QEvent *);
 #endif
 
-class Q_GUI_EXPORT QTouchEvent : public QPointerEvent
+class Q_GUI_EXPORT BOBUIouchEvent : public QPointerEvent
 {
-    Q_DECL_EVENT_COMMON(QTouchEvent)
+    Q_DECL_EVENT_COMMON(BOBUIouchEvent)
 public:
     using TouchPoint = QEventPoint; // source compat
 
-    explicit QTouchEvent(QEvent::Type eventType,
+    explicit BOBUIouchEvent(QEvent::Type eventType,
                          const QPointingDevice *device = nullptr,
-                         Qt::KeyboardModifiers modifiers = Qt::NoModifier,
+                         BobUI::KeyboardModifiers modifiers = BobUI::NoModifier,
                          const QList<QEventPoint> &touchPoints = {});
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use another constructor")
-    explicit QTouchEvent(QEvent::Type eventType,
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use another constructor")
+    explicit BOBUIouchEvent(QEvent::Type eventType,
                          const QPointingDevice *device,
-                         Qt::KeyboardModifiers modifiers,
+                         BobUI::KeyboardModifiers modifiers,
                          QEventPoint::States touchPointStates,
                          const QList<QEventPoint> &touchPoints = {});
 #endif
 
     inline QObject *target() const { return m_target; }
     inline QEventPoint::States touchPointStates() const { return m_touchPointStates; }
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use points()")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use points()")
     const QList<QEventPoint> &touchPoints() const { return points(); }
 #endif
     bool isBeginEvent() const override;
@@ -1005,26 +1005,26 @@ class Q_GUI_EXPORT QScreenOrientationChangeEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QScreenOrientationChangeEvent)
 public:
-    QScreenOrientationChangeEvent(QScreen *screen, Qt::ScreenOrientation orientation);
+    QScreenOrientationChangeEvent(QScreen *screen, BobUI::ScreenOrientation orientation);
 
     QScreen *screen() const { return m_screen; }
-    Qt::ScreenOrientation orientation() const { return m_orientation; }
+    BobUI::ScreenOrientation orientation() const { return m_orientation; }
 
 private:
     QScreen *m_screen;
-    Qt::ScreenOrientation m_orientation;
+    BobUI::ScreenOrientation m_orientation;
 };
 
 class Q_GUI_EXPORT QApplicationStateChangeEvent : public QEvent
 {
     Q_DECL_EVENT_COMMON(QApplicationStateChangeEvent)
 public:
-    explicit QApplicationStateChangeEvent(Qt::ApplicationState state);
+    explicit QApplicationStateChangeEvent(BobUI::ApplicationState state);
 
-    Qt::ApplicationState applicationState() const { return m_applicationState; }
+    BobUI::ApplicationState applicationState() const { return m_applicationState; }
 
 private:
-    Qt::ApplicationState m_applicationState;
+    BobUI::ApplicationState m_applicationState;
 };
 
 class Q_GUI_EXPORT QChildWindowEvent : public QEvent
@@ -1038,6 +1038,6 @@ private:
     QWindow *c;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVENT_H

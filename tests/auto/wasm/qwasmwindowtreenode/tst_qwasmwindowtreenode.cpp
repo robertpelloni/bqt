@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../../../../src/plugins/platforms/wasm/qwasmwindowtreenode.h"
-#include <QtGui/QWindow>
-#include <QTest>
+#include <BobUIGui/QWindow>
+#include <BOBUIest>
 #include <emscripten/val.h>
 
 class TestQWindow
@@ -70,7 +70,7 @@ public:
     void requestActivateWindow() { ; }
     void setZOrder(int) { ; }
     bool isModal() const { return false; }
-    Qt::WindowFlags windowFlags() const { return Qt::WindowFlags(); }
+    BobUI::WindowFlags windowFlags() const { return BobUI::WindowFlags(); }
 
 protected:
     void onSubtreeChanged(QWasmWindowTreeNodeChangeType changeType, QWasmWindowTreeNode<TestWindowTreeNode> *parent,
@@ -270,5 +270,5 @@ void tst_QWasmWindowTreeNode::settingChildWindowZOrder()
     }
 }
 
-QTEST_MAIN(tst_QWasmWindowTreeNode)
+BOBUIEST_MAIN(tst_QWasmWindowTreeNode)
 #include "tst_qwasmwindowtreenode.moc"

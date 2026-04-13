@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <protocol name="shm_emulation_server_buffer">
     <copyright>
- Copyright (C) 2017 The Qt Company Ltd.
- SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+ Copyright (C) 2017 The BobUI Company Ltd.
+ SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
     </copyright>
-  <interface name="qt_shm_emulation_server_buffer" version="1">
+  <interface name="bobui_shm_emulation_server_buffer" version="1">
     <description summary="shm-based server buffer for testing on desktop">
-      This is software-based implementation of the qt_server_buffer extension.
+      This is software-based implementation of the bobui_server_buffer extension.
       It is intended for testing and debugging purposes only.
     </description>
   <enum name="format">
@@ -18,7 +18,7 @@
         Informs the client about a newly created server buffer.
         The "key" argument contains a QSharedMemory key.
       </description>
-      <arg name="id" type="new_id" interface="qt_server_buffer"/>
+      <arg name="id" type="new_id" interface="bobui_server_buffer"/>
       <arg name="key" type="string"/>
       <arg name="width" type="int"/>
       <arg name="height" type="int"/>

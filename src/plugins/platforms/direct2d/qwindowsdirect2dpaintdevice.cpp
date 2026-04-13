@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsdirect2dpaintdevice.h"
 #include "qwindowsdirect2dpaintengine.h"
@@ -10,7 +10,7 @@
 
 #include "qwindowswindow.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsDirect2DPaintDevicePrivate
 {
@@ -67,8 +67,8 @@ int QWindowsDirect2DPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) 
     case QPaintDevice::PdmDpiX:
     case QPaintDevice::PdmPhysicalDpiX:
     {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED // See QTBUG-94043
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED // See BOBUIBUG-94043
         FLOAT x, y;
         QWindowsDirect2DContext::instance()->d2dFactory()->GetDesktopDpi(&x, &y);
         return qRound(x);
@@ -79,7 +79,7 @@ QT_WARNING_DISABLE_DEPRECATED // See QTBUG-94043
         FLOAT x, y;
         QWindowsDirect2DContext::instance()->d2dFactory()->GetDesktopDpi(&x, &y);
         return qRound(y);
-QT_WARNING_POP
+BOBUI_WARNING_POP
     }
     case QPaintDevice::PdmDevicePixelRatio:
         return 1;
@@ -95,4 +95,4 @@ QT_WARNING_POP
     return -1;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

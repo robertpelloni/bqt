@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "private/qstroker_p.h"
 #include "private/qbezier_p.h"
 #include "qline.h"
-#include "qtransform.h"
+#include "bobuiransform.h"
 #include <qmath.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // #define QPP_STROKE_DEBUG
 
@@ -92,8 +92,8 @@ public:
 
         if (m_curve_index >= 0) {
             QStrokerOps::Element e = { QPainterPath::LineToElement,
-                                       qt_real_to_fixed(m_curve.at(m_curve_index).x()),
-                                       qt_real_to_fixed(m_curve.at(m_curve_index).y())
+                                       bobui_real_to_fixed(m_curve.at(m_curve_index).x()),
+                                       bobui_real_to_fixed(m_curve.at(m_curve_index).y())
                                        };
             ++m_curve_index;
             if (m_curve_index >= m_curve.size())
@@ -106,14 +106,14 @@ public:
             Q_ASSERT(m_pos > 0);
             Q_ASSERT(m_pos < m_path->size());
 
-            m_curve = QBezier::fromPoints(QPointF(qt_fixed_to_real(m_path->at(m_pos-1).x),
-                                                  qt_fixed_to_real(m_path->at(m_pos-1).y)),
-                                          QPointF(qt_fixed_to_real(e.x),
-                                                  qt_fixed_to_real(e.y)),
-                                          QPointF(qt_fixed_to_real(m_path->at(m_pos+1).x),
-                                                  qt_fixed_to_real(m_path->at(m_pos+1).y)),
-                                          QPointF(qt_fixed_to_real(m_path->at(m_pos+2).x),
-                                                  qt_fixed_to_real(m_path->at(m_pos+2).y))).toPolygon(m_curve_threshold);
+            m_curve = QBezier::fromPoints(QPointF(bobui_fixed_to_real(m_path->at(m_pos-1).x),
+                                                  bobui_fixed_to_real(m_path->at(m_pos-1).y)),
+                                          QPointF(bobui_fixed_to_real(e.x),
+                                                  bobui_fixed_to_real(e.y)),
+                                          QPointF(bobui_fixed_to_real(m_path->at(m_pos+1).x),
+                                                  bobui_fixed_to_real(m_path->at(m_pos+1).y)),
+                                          QPointF(bobui_fixed_to_real(m_path->at(m_pos+2).x),
+                                                  bobui_fixed_to_real(m_path->at(m_pos+2).y))).toPolygon(m_curve_threshold);
             m_curve_index = 1;
             e.type = QPainterPath::LineToElement;
             e.x = m_curve.at(0).x();
@@ -133,7 +133,7 @@ private:
     qreal m_curve_threshold;
 };
 
-template <class Iterator> bool qt_stroke_side(Iterator *it, QStroker *stroker,
+template <class Iterator> bool bobui_stroke_side(Iterator *it, QStroker *stroker,
                                               bool capFirst, QLineF *startTangent);
 
 /*******************************************************************************
@@ -147,13 +147,13 @@ static inline qreal adapted_angle_on_x(const QLineF &line)
 
 /*!
     \class QStrokerOps
-    \inmodule QtGui
+    \inmodule BobUIGui
     \internal
 */
 QStrokerOps::QStrokerOps()
     : m_elements(0)
-    , m_curveThreshold(qt_real_to_fixed(0.25))
-    , m_dashThreshold(qt_real_to_fixed(0.25))
+    , m_curveThreshold(bobui_real_to_fixed(0.25))
+    , m_dashThreshold(bobui_real_to_fixed(0.25))
     , m_customData(nullptr)
     , m_moveTo(nullptr)
     , m_lineTo(nullptr)
@@ -202,12 +202,12 @@ void QStrokerOps::end()
 
     \sa begin()
 */
-void QStrokerOps::strokePath(const QPainterPath &path, void *customData, const QTransform &matrix)
+void QStrokerOps::strokePath(const QPainterPath &path, void *customData, const BOBUIransform &matrix)
 {
     if (path.isEmpty())
         return;
 
-    setCurveThresholdFromTransform(QTransform());
+    setCurveThresholdFromTransform(BOBUIransform());
     begin(customData);
     int count = path.elementCount();
     if (matrix.isIdentity()) {
@@ -215,18 +215,18 @@ void QStrokerOps::strokePath(const QPainterPath &path, void *customData, const Q
             const QPainterPath::Element &e = path.elementAt(i);
             switch (e.type) {
             case QPainterPath::MoveToElement:
-                moveTo(qt_real_to_fixed(e.x), qt_real_to_fixed(e.y));
+                moveTo(bobui_real_to_fixed(e.x), bobui_real_to_fixed(e.y));
                 break;
             case QPainterPath::LineToElement:
-                lineTo(qt_real_to_fixed(e.x), qt_real_to_fixed(e.y));
+                lineTo(bobui_real_to_fixed(e.x), bobui_real_to_fixed(e.y));
                 break;
             case QPainterPath::CurveToElement:
                 {
                     const QPainterPath::Element &cp2 = path.elementAt(++i);
                     const QPainterPath::Element &ep = path.elementAt(++i);
-                    cubicTo(qt_real_to_fixed(e.x), qt_real_to_fixed(e.y),
-                            qt_real_to_fixed(cp2.x), qt_real_to_fixed(cp2.y),
-                            qt_real_to_fixed(ep.x), qt_real_to_fixed(ep.y));
+                    cubicTo(bobui_real_to_fixed(e.x), bobui_real_to_fixed(e.y),
+                            bobui_real_to_fixed(cp2.x), bobui_real_to_fixed(cp2.y),
+                            bobui_real_to_fixed(ep.x), bobui_real_to_fixed(ep.y));
                 }
                 break;
             default:
@@ -239,18 +239,18 @@ void QStrokerOps::strokePath(const QPainterPath &path, void *customData, const Q
             QPointF pt = QPointF(e.x, e.y) * matrix;
             switch (e.type) {
             case QPainterPath::MoveToElement:
-                moveTo(qt_real_to_fixed(pt.x()), qt_real_to_fixed(pt.y()));
+                moveTo(bobui_real_to_fixed(pt.x()), bobui_real_to_fixed(pt.y()));
                 break;
             case QPainterPath::LineToElement:
-                lineTo(qt_real_to_fixed(pt.x()), qt_real_to_fixed(pt.y()));
+                lineTo(bobui_real_to_fixed(pt.x()), bobui_real_to_fixed(pt.y()));
                 break;
             case QPainterPath::CurveToElement:
                 {
                     QPointF cp2 = ((QPointF) path.elementAt(++i)) * matrix;
                     QPointF ep = ((QPointF) path.elementAt(++i)) * matrix;
-                    cubicTo(qt_real_to_fixed(pt.x()), qt_real_to_fixed(pt.y()),
-                            qt_real_to_fixed(cp2.x()), qt_real_to_fixed(cp2.y()),
-                            qt_real_to_fixed(ep.x()), qt_real_to_fixed(ep.y()));
+                    cubicTo(bobui_real_to_fixed(pt.x()), bobui_real_to_fixed(pt.y()),
+                            bobui_real_to_fixed(cp2.x()), bobui_real_to_fixed(cp2.y()),
+                            bobui_real_to_fixed(ep.x()), bobui_real_to_fixed(ep.y()));
                 }
                 break;
             default:
@@ -274,29 +274,29 @@ void QStrokerOps::strokePath(const QPainterPath &path, void *customData, const Q
 */
 
 void QStrokerOps::strokePolygon(const QPointF *points, int pointCount, bool implicit_close,
-                                void *data, const QTransform &matrix)
+                                void *data, const BOBUIransform &matrix)
 {
     if (!pointCount)
         return;
 
-    setCurveThresholdFromTransform(QTransform());
+    setCurveThresholdFromTransform(BOBUIransform());
     begin(data);
     if (matrix.isIdentity()) {
-        moveTo(qt_real_to_fixed(points[0].x()), qt_real_to_fixed(points[0].y()));
+        moveTo(bobui_real_to_fixed(points[0].x()), bobui_real_to_fixed(points[0].y()));
         for (int i=1; i<pointCount; ++i)
-            lineTo(qt_real_to_fixed(points[i].x()),
-                   qt_real_to_fixed(points[i].y()));
+            lineTo(bobui_real_to_fixed(points[i].x()),
+                   bobui_real_to_fixed(points[i].y()));
         if (implicit_close)
-            lineTo(qt_real_to_fixed(points[0].x()), qt_real_to_fixed(points[0].y()));
+            lineTo(bobui_real_to_fixed(points[0].x()), bobui_real_to_fixed(points[0].y()));
     } else {
         QPointF start = points[0] * matrix;
-        moveTo(qt_real_to_fixed(start.x()), qt_real_to_fixed(start.y()));
+        moveTo(bobui_real_to_fixed(start.x()), bobui_real_to_fixed(start.y()));
         for (int i=1; i<pointCount; ++i) {
             QPointF pt = points[i] * matrix;
-            lineTo(qt_real_to_fixed(pt.x()), qt_real_to_fixed(pt.y()));
+            lineTo(bobui_real_to_fixed(pt.x()), bobui_real_to_fixed(pt.y()));
         }
         if (implicit_close)
-            lineTo(qt_real_to_fixed(start.x()), qt_real_to_fixed(start.y()));
+            lineTo(bobui_real_to_fixed(start.x()), bobui_real_to_fixed(start.y()));
     }
     end();
 }
@@ -306,11 +306,11 @@ void QStrokerOps::strokePolygon(const QPointF *points, int pointCount, bool impl
     rect. The \a matrix is used to transform the coordinates before
     they enter the stroker.
 */
-void QStrokerOps::strokeEllipse(const QRectF &rect, void *data, const QTransform &matrix)
+void QStrokerOps::strokeEllipse(const QRectF &rect, void *data, const BOBUIransform &matrix)
 {
     int count = 0;
     QPointF pts[12];
-    QPointF start = qt_curves_for_arc(rect, 0, -360, pts, &count);
+    QPointF start = bobui_curves_for_arc(rect, 0, -360, pts, &count);
     Q_ASSERT(count == 12); // a perfect circle..
 
     if (!matrix.isIdentity()) {
@@ -320,13 +320,13 @@ void QStrokerOps::strokeEllipse(const QRectF &rect, void *data, const QTransform
         }
     }
 
-    setCurveThresholdFromTransform(QTransform());
+    setCurveThresholdFromTransform(BOBUIransform());
     begin(data);
-    moveTo(qt_real_to_fixed(start.x()), qt_real_to_fixed(start.y()));
+    moveTo(bobui_real_to_fixed(start.x()), bobui_real_to_fixed(start.y()));
     for (int i=0; i<12; i+=3) {
-        cubicTo(qt_real_to_fixed(pts[i].x()), qt_real_to_fixed(pts[i].y()),
-                qt_real_to_fixed(pts[i+1].x()), qt_real_to_fixed(pts[i+1].y()),
-                qt_real_to_fixed(pts[i+2].x()), qt_real_to_fixed(pts[i+2].y()));
+        cubicTo(bobui_real_to_fixed(pts[i].x()), bobui_real_to_fixed(pts[i].y()),
+                bobui_real_to_fixed(pts[i+1].x()), bobui_real_to_fixed(pts[i+1].y()),
+                bobui_real_to_fixed(pts[i+2].x()), bobui_real_to_fixed(pts[i+2].y()));
     }
     end();
 }
@@ -338,41 +338,41 @@ QStroker::QStroker()
       m_back2X(0), m_back2Y(0),
       m_forceOpen(false)
 {
-    m_strokeWidth = qt_real_to_fixed(1);
-    m_miterLimit = qt_real_to_fixed(2);
+    m_strokeWidth = bobui_real_to_fixed(1);
+    m_miterLimit = bobui_real_to_fixed(2);
 }
 
 QStroker::~QStroker()
 {
 }
 
-Qt::PenCapStyle QStroker::capForJoinMode(LineJoinMode mode)
+BobUI::PenCapStyle QStroker::capForJoinMode(LineJoinMode mode)
 {
-    if (mode == FlatJoin) return Qt::FlatCap;
-    else if (mode == SquareJoin) return Qt::SquareCap;
-    else return Qt::RoundCap;
+    if (mode == FlatJoin) return BobUI::FlatCap;
+    else if (mode == SquareJoin) return BobUI::SquareCap;
+    else return BobUI::RoundCap;
 }
 
-QStroker::LineJoinMode QStroker::joinModeForCap(Qt::PenCapStyle style)
+QStroker::LineJoinMode QStroker::joinModeForCap(BobUI::PenCapStyle style)
 {
-    if (style == Qt::FlatCap) return FlatJoin;
-    else if (style == Qt::SquareCap) return SquareJoin;
+    if (style == BobUI::FlatCap) return FlatJoin;
+    else if (style == BobUI::SquareCap) return SquareJoin;
     else return RoundCap;
 }
 
-Qt::PenJoinStyle QStroker::joinForJoinMode(LineJoinMode mode)
+BobUI::PenJoinStyle QStroker::joinForJoinMode(LineJoinMode mode)
 {
-    if (mode == FlatJoin) return Qt::BevelJoin;
-    else if (mode == MiterJoin) return Qt::MiterJoin;
-    else if (mode == SvgMiterJoin) return Qt::SvgMiterJoin;
-    else return Qt::RoundJoin;
+    if (mode == FlatJoin) return BobUI::BevelJoin;
+    else if (mode == MiterJoin) return BobUI::MiterJoin;
+    else if (mode == SvgMiterJoin) return BobUI::SvgMiterJoin;
+    else return BobUI::RoundJoin;
 }
 
-QStroker::LineJoinMode QStroker::joinModeForJoin(Qt::PenJoinStyle joinStyle)
+QStroker::LineJoinMode QStroker::joinModeForJoin(BobUI::PenJoinStyle joinStyle)
 {
-    if (joinStyle == Qt::BevelJoin) return FlatJoin;
-    else if (joinStyle == Qt::MiterJoin) return MiterJoin;
-    else if (joinStyle == Qt::SvgMiterJoin) return SvgMiterJoin;
+    if (joinStyle == BobUI::BevelJoin) return FlatJoin;
+    else if (joinStyle == BobUI::MiterJoin) return MiterJoin;
+    else if (joinStyle == BobUI::SvgMiterJoin) return SvgMiterJoin;
     else return RoundJoin;
 }
 
@@ -393,8 +393,8 @@ void QStroker::processCurrentSubpath()
 
     QLineF fwStartTangent, bwStartTangent;
 
-    bool fwclosed = qt_stroke_side(&fwit, this, false, &fwStartTangent);
-    bool bwclosed = qt_stroke_side(&bwit, this, !fwclosed, &bwStartTangent);
+    bool fwclosed = bobui_stroke_side(&fwit, this, false, &fwStartTangent);
+    bool bwclosed = bobui_stroke_side(&bwit, this, !fwclosed, &bwStartTangent);
 
     if (!bwclosed && !fwStartTangent.isNull())
         joinPoints(m_elements.at(0).x, m_elements.at(0).y, fwStartTangent, m_capStyle);
@@ -408,8 +408,8 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
 {
 #ifdef QPP_STROKE_DEBUG
     printf(" -----> joinPoints: around=(%.0f, %.0f), next_p1=(%.0f, %.f) next_p2=(%.0f, %.f)\n",
-           qt_fixed_to_real(focal_x),
-           qt_fixed_to_real(focal_y),
+           bobui_fixed_to_real(focal_x),
+           bobui_fixed_to_real(focal_y),
            nextLine.x1(), nextLine.y1(), nextLine.x2(), nextLine.y2());
 #endif
     // points connected already, don't join
@@ -418,13 +418,13 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
     if (qFuzzyCompare(m_back1X, nextLine.x1()) && qFuzzyCompare(m_back1Y, nextLine.y1()))
         return;
 #else
-    if (m_back1X == qt_real_to_fixed(nextLine.x1())
-        && m_back1Y == qt_real_to_fixed(nextLine.y1())) {
+    if (m_back1X == bobui_real_to_fixed(nextLine.x1())
+        && m_back1Y == bobui_real_to_fixed(nextLine.y1())) {
         return;
     }
 #endif
-    QLineF prevLine(qt_fixed_to_real(m_back2X), qt_fixed_to_real(m_back2Y),
-                    qt_fixed_to_real(m_back1X), qt_fixed_to_real(m_back1Y));
+    QLineF prevLine(bobui_fixed_to_real(m_back2X), bobui_fixed_to_real(m_back2Y),
+                    bobui_fixed_to_real(m_back1X), bobui_fixed_to_real(m_back1Y));
     QPointF isect;
     QLineF::IntersectionType type = prevLine.intersects(nextLine, &isect);
 
@@ -433,26 +433,26 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
         qreal angle = shortCut.angleTo(prevLine);
         if (type == QLineF::BoundedIntersection || (angle > 90 && !qFuzzyCompare(angle, (qreal)90))) {
             emitLineTo(focal_x, focal_y);
-            emitLineTo(qt_real_to_fixed(nextLine.x1()), qt_real_to_fixed(nextLine.y1()));
+            emitLineTo(bobui_real_to_fixed(nextLine.x1()), bobui_real_to_fixed(nextLine.y1()));
             return;
         }
-        emitLineTo(qt_real_to_fixed(nextLine.x1()),
-                   qt_real_to_fixed(nextLine.y1()));
+        emitLineTo(bobui_real_to_fixed(nextLine.x1()),
+                   bobui_real_to_fixed(nextLine.y1()));
 
     } else {
         if (join == MiterJoin) {
-            qreal appliedMiterLimit = qt_fixed_to_real(m_strokeWidth * m_miterLimit);
+            qreal appliedMiterLimit = bobui_fixed_to_real(m_strokeWidth * m_miterLimit);
 
             // If we are on the inside, do the short cut...
             QLineF shortCut(prevLine.p2(), nextLine.p1());
             qreal angle = shortCut.angleTo(prevLine);
             if (type == QLineF::BoundedIntersection || (angle > 90 && !qFuzzyCompare(angle, (qreal)90))) {
                 emitLineTo(focal_x, focal_y);
-                emitLineTo(qt_real_to_fixed(nextLine.x1()), qt_real_to_fixed(nextLine.y1()));
+                emitLineTo(bobui_real_to_fixed(nextLine.x1()), bobui_real_to_fixed(nextLine.y1()));
                 return;
             }
-            QLineF miterLine(QPointF(qt_fixed_to_real(m_back1X),
-                                     qt_fixed_to_real(m_back1Y)), isect);
+            QLineF miterLine(QPointF(bobui_fixed_to_real(m_back1X),
+                                     bobui_fixed_to_real(m_back1Y)), isect);
             if (type == QLineF::NoIntersection || miterLine.length() > appliedMiterLimit) {
                 QLineF l1(prevLine);
                 l1.setLength(appliedMiterLimit);
@@ -462,12 +462,12 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
                 l2.setLength(appliedMiterLimit);
                 l2.translate(-l2.dx(), -l2.dy());
 
-                emitLineTo(qt_real_to_fixed(l1.x2()), qt_real_to_fixed(l1.y2()));
-                emitLineTo(qt_real_to_fixed(l2.x1()), qt_real_to_fixed(l2.y1()));
-                emitLineTo(qt_real_to_fixed(nextLine.x1()), qt_real_to_fixed(nextLine.y1()));
+                emitLineTo(bobui_real_to_fixed(l1.x2()), bobui_real_to_fixed(l1.y2()));
+                emitLineTo(bobui_real_to_fixed(l2.x1()), bobui_real_to_fixed(l2.y1()));
+                emitLineTo(bobui_real_to_fixed(nextLine.x1()), bobui_real_to_fixed(nextLine.y1()));
             } else {
-                emitLineTo(qt_real_to_fixed(isect.x()), qt_real_to_fixed(isect.y()));
-                emitLineTo(qt_real_to_fixed(nextLine.x1()), qt_real_to_fixed(nextLine.y1()));
+                emitLineTo(bobui_real_to_fixed(isect.x()), bobui_real_to_fixed(isect.y()));
+                emitLineTo(bobui_real_to_fixed(nextLine.x1()), bobui_real_to_fixed(nextLine.y1()));
             }
 
         } else if (join == SquareJoin) {
@@ -479,13 +479,13 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
                 l1 = QLineF(prevLine.p2(), prevLine.p1());
             else
                 l1.translate(l1.dx(), l1.dy());
-            l1.setLength(qt_fixed_to_real(offset));
+            l1.setLength(bobui_fixed_to_real(offset));
             QLineF l2(nextLine.p2(), nextLine.p1());
             l2.translate(l2.dx(), l2.dy());
-            l2.setLength(qt_fixed_to_real(offset));
-            emitLineTo(qt_real_to_fixed(l1.x2()), qt_real_to_fixed(l1.y2()));
-            emitLineTo(qt_real_to_fixed(l2.x2()), qt_real_to_fixed(l2.y2()));
-            emitLineTo(qt_real_to_fixed(l2.x1()), qt_real_to_fixed(l2.y1()));
+            l2.setLength(bobui_fixed_to_real(offset));
+            emitLineTo(bobui_real_to_fixed(l1.x2()), bobui_real_to_fixed(l1.y2()));
+            emitLineTo(bobui_real_to_fixed(l2.x2()), bobui_real_to_fixed(l2.y2()));
+            emitLineTo(bobui_real_to_fixed(l2.x1()), bobui_real_to_fixed(l2.y1()));
 
         } else if (join == RoundJoin) {
             qfixed offset = m_strokeWidth / 2;
@@ -494,7 +494,7 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
             qreal angle = shortCut.angleTo(prevLine);
             if ((type == QLineF::BoundedIntersection || (angle > qreal(90.01))) && nextLine.length() > offset) {
                 emitLineTo(focal_x, focal_y);
-                emitLineTo(qt_real_to_fixed(nextLine.x1()), qt_real_to_fixed(nextLine.y1()));
+                emitLineTo(bobui_real_to_fixed(nextLine.x1()), bobui_real_to_fixed(nextLine.y1()));
                 return;
             }
             qreal l1_on_x = adapted_angle_on_x(prevLine);
@@ -506,28 +506,28 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
             QPointF curves[15];
 
             QPointF curve_start =
-                qt_curves_for_arc(QRectF(qt_fixed_to_real(focal_x - offset),
-                                         qt_fixed_to_real(focal_y - offset),
-                                         qt_fixed_to_real(offset * 2),
-                                         qt_fixed_to_real(offset * 2)),
+                bobui_curves_for_arc(QRectF(bobui_fixed_to_real(focal_x - offset),
+                                         bobui_fixed_to_real(focal_y - offset),
+                                         bobui_fixed_to_real(offset * 2),
+                                         bobui_fixed_to_real(offset * 2)),
                                   l1_on_x + 90, -sweepLength,
                                   curves, &point_count);
 
 //             // line to the beginning of the arc segment, (should not be needed).
-//             emitLineTo(qt_real_to_fixed(curve_start.x()), qt_real_to_fixed(curve_start.y()));
+//             emitLineTo(bobui_real_to_fixed(curve_start.x()), bobui_real_to_fixed(curve_start.y()));
             Q_UNUSED(curve_start);
 
             for (int i=0; i<point_count; i+=3) {
-                emitCubicTo(qt_real_to_fixed(curves[i].x()),
-                            qt_real_to_fixed(curves[i].y()),
-                            qt_real_to_fixed(curves[i+1].x()),
-                            qt_real_to_fixed(curves[i+1].y()),
-                            qt_real_to_fixed(curves[i+2].x()),
-                            qt_real_to_fixed(curves[i+2].y()));
+                emitCubicTo(bobui_real_to_fixed(curves[i].x()),
+                            bobui_real_to_fixed(curves[i].y()),
+                            bobui_real_to_fixed(curves[i+1].x()),
+                            bobui_real_to_fixed(curves[i+1].y()),
+                            bobui_real_to_fixed(curves[i+2].x()),
+                            bobui_real_to_fixed(curves[i+2].y()));
             }
 
             // line to the end of the arc segment, (should also not be needed).
-            emitLineTo(qt_real_to_fixed(nextLine.x1()), qt_real_to_fixed(nextLine.y1()));
+            emitLineTo(bobui_real_to_fixed(nextLine.x1()), bobui_real_to_fixed(nextLine.y1()));
 
         // Same as round join except we know its 180 degrees. Can also optimize this
         // later based on the addEllipse logic
@@ -541,20 +541,20 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
                 l1 = QLineF(prevLine.p2(), prevLine.p1());
             else
                 l1.translate(l1.dx(), l1.dy());
-            l1.setLength(QT_PATH_KAPPA * offset);
+            l1.setLength(BOBUI_PATH_KAPPA * offset);
 
             // second control line, find through normal between prevLine and focal.
-            QLineF l2(qt_fixed_to_real(focal_x), qt_fixed_to_real(focal_y),
+            QLineF l2(bobui_fixed_to_real(focal_x), bobui_fixed_to_real(focal_y),
                       prevLine.x2(), prevLine.y2());
             l2.translate(-l2.dy(), l2.dx());
-            l2.setLength(QT_PATH_KAPPA * offset);
+            l2.setLength(BOBUI_PATH_KAPPA * offset);
 
-            emitCubicTo(qt_real_to_fixed(l1.x2()),
-                        qt_real_to_fixed(l1.y2()),
-                        qt_real_to_fixed(l2.x2()),
-                        qt_real_to_fixed(l2.y2()),
-                        qt_real_to_fixed(l2.x1()),
-                        qt_real_to_fixed(l2.y1()));
+            emitCubicTo(bobui_real_to_fixed(l1.x2()),
+                        bobui_real_to_fixed(l1.y2()),
+                        bobui_real_to_fixed(l2.x2()),
+                        bobui_real_to_fixed(l2.y2()),
+                        bobui_real_to_fixed(l2.x1()),
+                        bobui_real_to_fixed(l2.y1()));
 
             // move so that it matches
             l2 = QLineF(l2.x1(), l2.y1(), l2.x1()-l2.dx(), l2.y1()-l2.dy());
@@ -562,28 +562,28 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
             // last line is parallel to l1 so just shift it down.
             l1.translate(nextLine.x1() - l1.x1(), nextLine.y1() - l1.y1());
 
-            emitCubicTo(qt_real_to_fixed(l2.x2()),
-                        qt_real_to_fixed(l2.y2()),
-                        qt_real_to_fixed(l1.x2()),
-                        qt_real_to_fixed(l1.y2()),
-                        qt_real_to_fixed(l1.x1()),
-                        qt_real_to_fixed(l1.y1()));
+            emitCubicTo(bobui_real_to_fixed(l2.x2()),
+                        bobui_real_to_fixed(l2.y2()),
+                        bobui_real_to_fixed(l1.x2()),
+                        bobui_real_to_fixed(l1.y2()),
+                        bobui_real_to_fixed(l1.x1()),
+                        bobui_real_to_fixed(l1.y1()));
         } else if (join == SvgMiterJoin) {
             QLineF shortCut(prevLine.p2(), nextLine.p1());
             qreal angle = shortCut.angleTo(prevLine);
             if (type == QLineF::BoundedIntersection || (angle > 90 && !qFuzzyCompare(angle, (qreal)90))) {
                 emitLineTo(focal_x, focal_y);
-                emitLineTo(qt_real_to_fixed(nextLine.x1()), qt_real_to_fixed(nextLine.y1()));
+                emitLineTo(bobui_real_to_fixed(nextLine.x1()), bobui_real_to_fixed(nextLine.y1()));
                 return;
             }
-            QLineF miterLine(QPointF(qt_fixed_to_real(focal_x),
-                                     qt_fixed_to_real(focal_y)), isect);
-            if (type == QLineF::NoIntersection || miterLine.length() > qt_fixed_to_real(m_strokeWidth * m_miterLimit) / 2) {
-                emitLineTo(qt_real_to_fixed(nextLine.x1()),
-                           qt_real_to_fixed(nextLine.y1()));
+            QLineF miterLine(QPointF(bobui_fixed_to_real(focal_x),
+                                     bobui_fixed_to_real(focal_y)), isect);
+            if (type == QLineF::NoIntersection || miterLine.length() > bobui_fixed_to_real(m_strokeWidth * m_miterLimit) / 2) {
+                emitLineTo(bobui_real_to_fixed(nextLine.x1()),
+                           bobui_real_to_fixed(nextLine.y1()));
             } else {
-                emitLineTo(qt_real_to_fixed(isect.x()), qt_real_to_fixed(isect.y()));
-                emitLineTo(qt_real_to_fixed(nextLine.x1()), qt_real_to_fixed(nextLine.y1()));
+                emitLineTo(bobui_real_to_fixed(isect.x()), bobui_real_to_fixed(isect.y()));
+                emitLineTo(bobui_real_to_fixed(nextLine.x1()), bobui_real_to_fixed(nextLine.y1()));
             }
         } else {
             Q_ASSERT(!"QStroker::joinPoints(), bad join style...");
@@ -599,7 +599,7 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
    connect the first segment, other segments will be joined using joinPoints.
    This is to put capping in order...
 */
-template <class Iterator> bool qt_stroke_side(Iterator *it,
+template <class Iterator> bool bobui_stroke_side(Iterator *it,
                                               QStroker *stroker,
                                               bool capFirst,
                                               QLineF *startTangent)
@@ -616,8 +616,8 @@ template <class Iterator> bool qt_stroke_side(Iterator *it,
 
 #ifdef QPP_STROKE_DEBUG
     qDebug(" -> (side) [%.2f, %.2f], startPos=%d",
-           qt_fixed_to_real(start.x),
-           qt_fixed_to_real(start.y));
+           bobui_fixed_to_real(start.x),
+           bobui_fixed_to_real(start.y));
 #endif
 
     qfixed2d prev = start;
@@ -634,8 +634,8 @@ template <class Iterator> bool qt_stroke_side(Iterator *it,
 #ifdef QPP_STROKE_DEBUG
             qDebug("\n ---> (side) lineto [%.2f, %.2f]", e.x, e.y);
 #endif
-            QLineF line(qt_fixed_to_real(prev.x), qt_fixed_to_real(prev.y),
-                        qt_fixed_to_real(e.x), qt_fixed_to_real(e.y));
+            QLineF line(bobui_fixed_to_real(prev.x), bobui_fixed_to_real(prev.y),
+                        bobui_fixed_to_real(e.x), bobui_fixed_to_real(e.y));
             if (line.p1() != line.p2()) {
                 QLineF normal = line.normalVector();
                 normal.setLength(offset);
@@ -646,7 +646,7 @@ template <class Iterator> bool qt_stroke_side(Iterator *it,
                     if (capFirst)
                         stroker->joinPoints(prev.x, prev.y, line, stroker->capStyleMode());
                     else
-                        stroker->emitMoveTo(qt_real_to_fixed(line.x1()), qt_real_to_fixed(line.y1()));
+                        stroker->emitMoveTo(bobui_real_to_fixed(line.x1()), bobui_real_to_fixed(line.y1()));
                     *startTangent = line;
                     first = false;
                 } else {
@@ -654,8 +654,8 @@ template <class Iterator> bool qt_stroke_side(Iterator *it,
                 }
 
                 // Add the stroke for this line.
-                stroker->emitLineTo(qt_real_to_fixed(line.x2()),
-                                    qt_real_to_fixed(line.y2()));
+                stroker->emitLineTo(bobui_real_to_fixed(line.x2()),
+                                    bobui_real_to_fixed(line.y2()));
                 prev = e;
             }
 
@@ -666,15 +666,15 @@ template <class Iterator> bool qt_stroke_side(Iterator *it,
 
 #ifdef QPP_STROKE_DEBUG
             qDebug("\n ---> (side) cubicTo [%.2f, %.2f]",
-                   qt_fixed_to_real(ep.x),
-                   qt_fixed_to_real(ep.y));
+                   bobui_fixed_to_real(ep.x),
+                   bobui_fixed_to_real(ep.y));
 #endif
 
             QBezier bezier =
-                QBezier::fromPoints(QPointF(qt_fixed_to_real(prev.x), qt_fixed_to_real(prev.y)),
-                                    QPointF(qt_fixed_to_real(e.x), qt_fixed_to_real(e.y)),
-                                    QPointF(qt_fixed_to_real(cp2.x), qt_fixed_to_real(cp2.y)),
-                                    QPointF(qt_fixed_to_real(ep.x), qt_fixed_to_real(ep.y)));
+                QBezier::fromPoints(QPointF(bobui_fixed_to_real(prev.x), bobui_fixed_to_real(prev.y)),
+                                    QPointF(bobui_fixed_to_real(e.x), bobui_fixed_to_real(e.y)),
+                                    QPointF(bobui_fixed_to_real(cp2.x), bobui_fixed_to_real(cp2.y)),
+                                    QPointF(bobui_fixed_to_real(ep.x), bobui_fixed_to_real(ep.y)));
             int count = bezier.shifted(offsetCurves,
                                        MAX_OFFSET,
                                        offset,
@@ -691,8 +691,8 @@ template <class Iterator> bool qt_stroke_side(Iterator *it,
                                             tangent,
                                             stroker->capStyleMode());
                     } else {
-                        stroker->emitMoveTo(qt_real_to_fixed(pt.x()),
-                                            qt_real_to_fixed(pt.y()));
+                        stroker->emitMoveTo(bobui_real_to_fixed(pt.x()),
+                                            bobui_real_to_fixed(pt.y()));
                     }
                     *startTangent = tangent;
                     first = false;
@@ -707,9 +707,9 @@ template <class Iterator> bool qt_stroke_side(Iterator *it,
                     QPointF cp1 = offsetCurves[i].pt2();
                     QPointF cp2 = offsetCurves[i].pt3();
                     QPointF ep = offsetCurves[i].pt4();
-                    stroker->emitCubicTo(qt_real_to_fixed(cp1.x()), qt_real_to_fixed(cp1.y()),
-                                         qt_real_to_fixed(cp2.x()), qt_real_to_fixed(cp2.y()),
-                                         qt_real_to_fixed(ep.x()), qt_real_to_fixed(ep.y()));
+                    stroker->emitCubicTo(bobui_real_to_fixed(cp1.x()), bobui_real_to_fixed(cp1.y()),
+                                         bobui_real_to_fixed(cp2.x()), bobui_real_to_fixed(cp2.y()),
+                                         bobui_real_to_fixed(ep.x()), bobui_real_to_fixed(ep.y()));
                 }
             }
 
@@ -759,7 +759,7 @@ template <class Iterator> bool qt_stroke_side(Iterator *it,
     etc...
 */
 
-qreal qt_t_for_arc_angle(qreal angle)
+qreal bobui_t_for_arc_angle(qreal angle)
 {
     if (qFuzzyIsNull(angle))
         return 0;
@@ -775,19 +775,19 @@ qreal qt_t_for_arc_angle(qreal angle)
     qreal tc = angle / 90;
     // do some iterations of newton's method to approximate cosAngle
     // finds the zero of the function b.pointAt(tc).x() - cosAngle
-    tc -= ((((2-3*QT_PATH_KAPPA) * tc + 3*(QT_PATH_KAPPA-1)) * tc) * tc + 1 - cosAngle) // value
-         / (((6-9*QT_PATH_KAPPA) * tc + 6*(QT_PATH_KAPPA-1)) * tc); // derivative
-    tc -= ((((2-3*QT_PATH_KAPPA) * tc + 3*(QT_PATH_KAPPA-1)) * tc) * tc + 1 - cosAngle) // value
-         / (((6-9*QT_PATH_KAPPA) * tc + 6*(QT_PATH_KAPPA-1)) * tc); // derivative
+    tc -= ((((2-3*BOBUI_PATH_KAPPA) * tc + 3*(BOBUI_PATH_KAPPA-1)) * tc) * tc + 1 - cosAngle) // value
+         / (((6-9*BOBUI_PATH_KAPPA) * tc + 6*(BOBUI_PATH_KAPPA-1)) * tc); // derivative
+    tc -= ((((2-3*BOBUI_PATH_KAPPA) * tc + 3*(BOBUI_PATH_KAPPA-1)) * tc) * tc + 1 - cosAngle) // value
+         / (((6-9*BOBUI_PATH_KAPPA) * tc + 6*(BOBUI_PATH_KAPPA-1)) * tc); // derivative
 
     // initial guess
     qreal ts = tc;
     // do some iterations of newton's method to approximate sinAngle
     // finds the zero of the function b.pointAt(tc).y() - sinAngle
-    ts -= ((((3*QT_PATH_KAPPA-2) * ts -  6*QT_PATH_KAPPA + 3) * ts + 3*QT_PATH_KAPPA) * ts - sinAngle)
-         / (((9*QT_PATH_KAPPA-6) * ts + 12*QT_PATH_KAPPA - 6) * ts + 3*QT_PATH_KAPPA);
-    ts -= ((((3*QT_PATH_KAPPA-2) * ts -  6*QT_PATH_KAPPA + 3) * ts + 3*QT_PATH_KAPPA) * ts - sinAngle)
-         / (((9*QT_PATH_KAPPA-6) * ts + 12*QT_PATH_KAPPA - 6) * ts + 3*QT_PATH_KAPPA);
+    ts -= ((((3*BOBUI_PATH_KAPPA-2) * ts -  6*BOBUI_PATH_KAPPA + 3) * ts + 3*BOBUI_PATH_KAPPA) * ts - sinAngle)
+         / (((9*BOBUI_PATH_KAPPA-6) * ts + 12*BOBUI_PATH_KAPPA - 6) * ts + 3*BOBUI_PATH_KAPPA);
+    ts -= ((((3*BOBUI_PATH_KAPPA-2) * ts -  6*BOBUI_PATH_KAPPA + 3) * ts + 3*BOBUI_PATH_KAPPA) * ts - sinAngle)
+         / (((9*BOBUI_PATH_KAPPA-6) * ts + 12*BOBUI_PATH_KAPPA - 6) * ts + 3*BOBUI_PATH_KAPPA);
 
     // use the average of the t that best approximates cosAngle
     // and the t that best approximates sinAngle
@@ -797,14 +797,14 @@ qreal qt_t_for_arc_angle(qreal angle)
     printf("angle: %f, t: %f\n", angle, t);
     qreal a, b, c, d;
     bezierCoefficients(t, a, b, c, d);
-    printf("cosAngle: %.10f, value: %.10f\n", cosAngle, a + b + c * QT_PATH_KAPPA);
-    printf("sinAngle: %.10f, value: %.10f\n", sinAngle, b * QT_PATH_KAPPA + c + d);
+    printf("cosAngle: %.10f, value: %.10f\n", cosAngle, a + b + c * BOBUI_PATH_KAPPA);
+    printf("sinAngle: %.10f, value: %.10f\n", sinAngle, b * BOBUI_PATH_KAPPA + c + d);
 #endif
 
     return t;
 }
 
-Q_GUI_EXPORT void qt_find_ellipse_coords(const QRectF &r, qreal angle, qreal length,
+Q_GUI_EXPORT void bobui_find_ellipse_coords(const QRectF &r, qreal angle, qreal length,
                             QPointF* startPoint, QPointF *endPoint);
 
 /*!
@@ -819,15 +819,15 @@ Q_GUI_EXPORT void qt_find_ellipse_coords(const QRectF &r, qreal angle, qreal len
     of cubicTo elements up to a maximum of \a point_count. There are of course
     3 points pr curve.
 */
-QPointF qt_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLength,
+QPointF bobui_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLength,
                        QPointF *curves, int *point_count)
 {
     Q_ASSERT(point_count);
     Q_ASSERT(curves);
 
     *point_count = 0;
-    if (qt_is_nan(rect.x()) || qt_is_nan(rect.y()) || qt_is_nan(rect.width()) || qt_is_nan(rect.height())
-        || qt_is_nan(startAngle) || qt_is_nan(sweepLength)) {
+    if (bobui_is_nan(rect.x()) || bobui_is_nan(rect.y()) || bobui_is_nan(rect.width()) || bobui_is_nan(rect.height())
+        || bobui_is_nan(startAngle) || bobui_is_nan(sweepLength)) {
         qWarning("QPainterPath::arcTo: Adding arc where a parameter is NaN, results are undefined");
         return QPointF();
     }
@@ -841,11 +841,11 @@ QPointF qt_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLengt
 
     qreal w = rect.width();
     qreal w2 = rect.width() / 2;
-    qreal w2k = w2 * QT_PATH_KAPPA;
+    qreal w2k = w2 * BOBUI_PATH_KAPPA;
 
     qreal h = rect.height();
     qreal h2 = rect.height() / 2;
-    qreal h2k = h2 * QT_PATH_KAPPA;
+    qreal h2k = h2 * BOBUI_PATH_KAPPA;
 
     QPointF points[16] =
     {
@@ -913,8 +913,8 @@ QPointF qt_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLengt
         endSegment -= delta;
     }
 
-    startT = qt_t_for_arc_angle(startT * 90);
-    endT = qt_t_for_arc_angle(endT * 90);
+    startT = bobui_t_for_arc_angle(startT * 90);
+    endT = bobui_t_for_arc_angle(endT * 90);
 
     const bool splitAtStart = !qFuzzyIsNull(startT);
     const bool splitAtEnd = !qFuzzyIsNull(endT - qreal(1));
@@ -929,7 +929,7 @@ QPointF qt_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLengt
     }
 
     QPointF startPoint, endPoint;
-    qt_find_ellipse_coords(rect, startAngle, sweepLength, &startPoint, &endPoint);
+    bobui_find_ellipse_coords(rect, startAngle, sweepLength, &startPoint, &endPoint);
 
     for (int i = startSegment; i != end; i += delta) {
         const int quadrant = 3 - ((i % 4) + 4) % 4;
@@ -998,7 +998,7 @@ QDashStroker::~QDashStroker()
 {
 }
 
-QList<qfixed> QDashStroker::patternForStyle(Qt::PenStyle style)
+QList<qfixed> QDashStroker::patternForStyle(BobUI::PenStyle style)
 {
     const qfixed space = 2;
     const qfixed dot = 1;
@@ -1007,16 +1007,16 @@ QList<qfixed> QDashStroker::patternForStyle(Qt::PenStyle style)
     QList<qfixed> pattern;
 
     switch (style) {
-    case Qt::DashLine:
+    case BobUI::DashLine:
         pattern << dash << space;
         break;
-    case Qt::DotLine:
+    case BobUI::DotLine:
         pattern << dot << space;
         break;
-    case Qt::DashDotLine:
+    case BobUI::DashDotLine:
         pattern << dash << space << dot << space;
         break;
-    case Qt::DashDotDotLine:
+    case BobUI::DashDotDotLine:
         pattern << dash << space << dot << space << dot << space;
         break;
     default:
@@ -1128,11 +1128,11 @@ void QDashStroker::processCurrentSubpath()
     qfixed2d line_to_pos;
 
     // Pad to avoid clipping the borders of thick pens.
-    qfixed padding = qt_real_to_fixed(qMax(m_stroke_width, m_miter_limit) * longestLength);
-    qfixed2d clip_tl = { qt_real_to_fixed(m_clip_rect.left()) - padding,
-                         qt_real_to_fixed(m_clip_rect.top()) - padding };
-    qfixed2d clip_br = { qt_real_to_fixed(m_clip_rect.right()) + padding ,
-                         qt_real_to_fixed(m_clip_rect.bottom()) + padding };
+    qfixed padding = bobui_real_to_fixed(qMax(m_stroke_width, m_miter_limit) * longestLength);
+    qfixed2d clip_tl = { bobui_real_to_fixed(m_clip_rect.left()) - padding,
+                         bobui_real_to_fixed(m_clip_rect.top()) - padding };
+    qfixed2d clip_br = { bobui_real_to_fixed(m_clip_rect.right()) + padding ,
+                         bobui_real_to_fixed(m_clip_rect.bottom()) + padding };
 
     bool hasMoveTo = false;
     while (it.hasNext()) {
@@ -1141,10 +1141,10 @@ void QDashStroker::processCurrentSubpath()
             continue;
 
         Q_ASSERT(e.isLineTo());
-        cline = QLineF(qt_fixed_to_real(prev.x),
-                       qt_fixed_to_real(prev.y),
-                       qt_fixed_to_real(e.x),
-                       qt_fixed_to_real(e.y));
+        cline = QLineF(bobui_fixed_to_real(prev.x),
+                       bobui_fixed_to_real(prev.y),
+                       bobui_fixed_to_real(e.x),
+                       bobui_fixed_to_real(e.y));
         elen = cline.length();
 
         estop = estart + elen;
@@ -1216,8 +1216,8 @@ void QDashStroker::processCurrentSubpath()
             }
 
             if (evenDash) {
-                line_to_pos.x = qt_real_to_fixed(p2.x());
-                line_to_pos.y = qt_real_to_fixed(p2.y());
+                line_to_pos.x = bobui_real_to_fixed(p2.x());
+                line_to_pos.y = bobui_real_to_fixed(p2.y());
 
                 if (!clipping
                     || lineRectIntersectsRect(move_to_pos, line_to_pos, clip_tl, clip_br))
@@ -1237,8 +1237,8 @@ void QDashStroker::processCurrentSubpath()
                 }
                 move_to_pos = line_to_pos;
             } else {
-                move_to_pos.x = qt_real_to_fixed(p2.x());
-                move_to_pos.y = qt_real_to_fixed(p2.y());
+                move_to_pos.x = bobui_real_to_fixed(p2.x());
+                move_to_pos.y = bobui_real_to_fixed(p2.y());
             }
         }
 
@@ -1249,4 +1249,4 @@ void QDashStroker::processCurrentSubpath()
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

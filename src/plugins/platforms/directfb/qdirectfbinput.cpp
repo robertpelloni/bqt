@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdirectfbinput.h"
 #include "qdirectfbconvenience.h"
 
-#include <QThread>
+#include <BOBUIhread>
 #include <QDebug>
 #include <qpa/qwindowsysteminterface.h>
 #include <QMouseEvent>
@@ -13,7 +13,7 @@
 
 #include <directfb.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QDirectFbInput::QDirectFbInput(IDirectFB *dfb, IDirectFBDisplayLayer *dfbLayer)
     : m_dfbInterface(dfb)
@@ -118,7 +118,7 @@ void QDirectFbInput::handleMouseEvents(const DFBEvent &event)
 {
     QPoint p(event.window.x, event.window.y);
     QPoint globalPos(event.window.cx, event.window.cy);
-    Qt::MouseButtons buttons = QDirectFbConvenience::mouseButtons(event.window.buttons);
+    BobUI::MouseButtons buttons = QDirectFbConvenience::mouseButtons(event.window.buttons);
 
     QDirectFBPointer<IDirectFBDisplayLayer> layer(QDirectFbConvenience::dfbDisplayLayer());
     QDirectFBPointer<IDirectFBWindow> window;
@@ -127,7 +127,7 @@ void QDirectFbInput::handleMouseEvents(const DFBEvent &event)
     long timestamp = (event.window.timestamp.tv_sec*1000) + (event.window.timestamp.tv_usec/1000);
 
     QWindow *tlw = m_tlwMap.value(event.window.window_id);
-    QWindowSystemInterface::handleMouseEvent(tlw, timestamp, p, globalPos, buttons, Qt::NoButton, QEvent::None);
+    QWindowSystemInterface::handleMouseEvent(tlw, timestamp, p, globalPos, buttons, BobUI::NoButton, QEvent::None);
 }
 
 void QDirectFbInput::handleWheelEvent(const DFBEvent &event)
@@ -147,8 +147,8 @@ void QDirectFbInput::handleWheelEvent(const DFBEvent &event)
 void QDirectFbInput::handleKeyEvents(const DFBEvent &event)
 {
     QEvent::Type type = QDirectFbConvenience::eventType(event.window.type);
-    Qt::Key key = QDirectFbConvenience::keyMap()->value(event.window.key_symbol);
-    Qt::KeyboardModifiers modifiers = QDirectFbConvenience::keyboardModifiers(event.window.modifiers);
+    BobUI::Key key = QDirectFbConvenience::keyMap()->value(event.window.key_symbol);
+    BobUI::KeyboardModifiers modifiers = QDirectFbConvenience::keyboardModifiers(event.window.modifiers);
 
     long timestamp = (event.window.timestamp.tv_sec*1000) + (event.window.timestamp.tv_usec/1000);
 
@@ -177,7 +177,7 @@ void QDirectFbInput::handleEnterLeaveEvents(const DFBEvent &event)
 void QDirectFbInput::handleGotFocusEvent(const DFBEvent &event)
 {
     QWindow *tlw = m_tlwMap.value(event.window.window_id);
-    QWindowSystemInterface::handleFocusWindowChanged(tlw, Qt::ActiveWindowFocusReason);
+    QWindowSystemInterface::handleFocusWindowChanged(tlw, BobUI::ActiveWindowFocusReason);
 }
 
 void QDirectFbInput::handleCloseEvent(const DFBEvent &event)
@@ -193,4 +193,4 @@ void QDirectFbInput::handleGeometryEvent(const DFBEvent &event)
     QWindowSystemInterface::handleGeometryChange(tlw, rect);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

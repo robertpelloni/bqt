@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtWaylandClient/private/qwaylandclientbufferintegrationplugin_p.h>
+#include <BobUIWaylandClient/private/qwaylandclientbufferintegrationplugin_p.h>
 #include "qwaylandbrcmeglintegration.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandBrcmEglClientBufferPlugin : public QWaylandClientBufferIntegrationPlugin
 {
@@ -25,6 +25,6 @@ QWaylandClientBufferIntegration *QWaylandBrcmEglClientBufferPlugin::create(const
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

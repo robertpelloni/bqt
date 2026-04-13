@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import BobUIQuick 2.15
+import BobUIQuick.Controls 2.15
+import BobUIQuick.Layouts 1.15
 import Omni.Language 1.0
 
 ApplicationWindow {
@@ -175,7 +175,7 @@ ApplicationWindow {
                                 text: modelData.role.toUpperCase()
                                 color: modelData.role === "user" ? "#fbbf24" : (modelData.role === "system" ? "#818cf8" : "#34d399")
                                 font.bold: true
-                                Layout.alignment: Qt.AlignTop
+                                Layout.alignment: BobUI.AlignTop
                                 Layout.preferredWidth: 80
                             }
 
@@ -211,7 +211,7 @@ ApplicationWindow {
                             text: "ASSISTANT"
                             color: "#34d399"
                             font.bold: true
-                            Layout.alignment: Qt.AlignTop
+                            Layout.alignment: BobUI.AlignTop
                             Layout.preferredWidth: 80
                         }
 

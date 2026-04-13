@@ -1,17 +1,17 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkproxy.h"
 
-#include <QtCore/qapplicationstatic.h>
-#include <QtCore/qcoreapplication_platform.h>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjniobject.h>
+#include <BobUICore/qapplicationstatic.h>
+#include <BobUICore/qcoreapplication_platform.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjniobject.h>
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct ProxyInfoObject
 {
@@ -21,21 +21,21 @@ public:
 };
 
 using namespace QNativeInterface;
-using namespace QtJniTypes;
+using namespace BobUIJniTypes;
 
 Q_APPLICATION_STATIC(ProxyInfoObject, proxyInfoInstance)
 
-Q_DECLARE_JNI_CLASS(QtNetwork, "org/qtproject/qt/android/network/QtNetwork")
+Q_DECLARE_JNI_CLASS(BobUINetwork, "org/bobuiproject/bobui/android/network/BobUINetwork")
 Q_DECLARE_JNI_CLASS(ProxyInfo, "android/net/ProxyInfo")
 
 ProxyInfoObject::ProxyInfoObject()
 {
-    QtNetwork::callStaticMethod<void>("registerReceiver", QAndroidApplication::context());
+    BobUINetwork::callStaticMethod<void>("registerReceiver", QAndroidApplication::context());
 }
 
 ProxyInfoObject::~ProxyInfoObject()
 {
-    QtNetwork::callStaticMethod<void>("unregisterReceiver", QAndroidApplication::context());
+    BobUINetwork::callStaticMethod<void>("unregisterReceiver", QAndroidApplication::context());
 }
 
 QList<QNetworkProxy> QNetworkProxyFactory::systemProxyForQuery(const QNetworkProxyQuery &query)
@@ -44,7 +44,7 @@ QList<QNetworkProxy> QNetworkProxyFactory::systemProxyForQuery(const QNetworkPro
     if (!proxyInfoInstance)
         return proxyList;
 
-    QJniObject proxyInfo = QtNetwork::callStaticMethod<ProxyInfo>("getProxyInfo",
+    QJniObject proxyInfo = BobUINetwork::callStaticMethod<ProxyInfo>("getProxyInfo",
                                                                   QAndroidApplication::context());
     if (proxyInfo.isValid()) {
         const QJniArray exclusionList = proxyInfo.callMethod<String[]>("getExclusionList");
@@ -71,6 +71,6 @@ QList<QNetworkProxy> QNetworkProxyFactory::systemProxyForQuery(const QNetworkPro
     return proxyList;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

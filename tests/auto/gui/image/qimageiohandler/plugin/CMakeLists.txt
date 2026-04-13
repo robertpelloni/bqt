@@ -1,17 +1,17 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## TestImagePlugin:
 #####################################################################
 
-qt_add_plugin(TestImagePlugin
+bobui_add_plugin(TestImagePlugin
     STATIC
-    OUTPUT_NAME qtestimageplugin
+    OUTPUT_NAME bobuiestimageplugin
     PLUGIN_TYPE imageformats
     main.cpp
     ../pluginlog.h
 )
 
-qt_autogen_tools_initial_setup(TestImagePlugin)
-target_link_libraries(TestImagePlugin PRIVATE Qt::Core Qt::Gui)
+bobui_autogen_tools_initial_setup(TestImagePlugin)
+target_link_libraries(TestImagePlugin PRIVATE BobUI::Core BobUI::Gui)

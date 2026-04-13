@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSGRIDLAYOUT_H
 #define QGRAPHICSGRIDLAYOUT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qgraphicsitem.h>
-#include <QtWidgets/qgraphicslayout.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qgraphicsitem.h>
+#include <BobUIWidgets/qgraphicslayout.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsGridLayoutPrivate;
 
@@ -22,8 +22,8 @@ public:
     virtual ~QGraphicsGridLayout();
 
     void addItem(QGraphicsLayoutItem *item, int row, int column, int rowSpan, int columnSpan,
-                 Qt::Alignment alignment = Qt::Alignment());
-    inline void addItem(QGraphicsLayoutItem *item, int row, int column, Qt::Alignment alignment = Qt::Alignment());
+                 BobUI::Alignment alignment = BobUI::Alignment());
+    inline void addItem(QGraphicsLayoutItem *item, int row, int column, BobUI::Alignment alignment = BobUI::Alignment());
 
     void setHorizontalSpacing(qreal spacing);
     qreal horizontalSpacing() const;
@@ -57,13 +57,13 @@ public:
     qreal columnMaximumWidth(int column) const;
     void setColumnFixedWidth(int column, qreal width);
 
-    void setRowAlignment(int row, Qt::Alignment alignment);
-    Qt::Alignment rowAlignment(int row) const;
-    void setColumnAlignment(int column, Qt::Alignment alignment);
-    Qt::Alignment columnAlignment(int column) const;
+    void setRowAlignment(int row, BobUI::Alignment alignment);
+    BobUI::Alignment rowAlignment(int row) const;
+    void setColumnAlignment(int column, BobUI::Alignment alignment);
+    BobUI::Alignment columnAlignment(int column) const;
 
-    void setAlignment(QGraphicsLayoutItem *item, Qt::Alignment alignment);
-    Qt::Alignment alignment(QGraphicsLayoutItem *item) const;
+    void setAlignment(QGraphicsLayoutItem *item, BobUI::Alignment alignment);
+    BobUI::Alignment alignment(QGraphicsLayoutItem *item) const;
 
     int rowCount() const;
     int columnCount() const;
@@ -80,7 +80,7 @@ public:
 
     // inherited from QGraphicsLayoutItem
     void setGeometry(const QRectF &rect) override;
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
 
     // ####
     //QRect cellRect(int row, int column, int rowSpan = 1, int columnSpan = 1) const;
@@ -91,9 +91,9 @@ private:
     Q_DECLARE_PRIVATE(QGraphicsGridLayout)
 };
 
-inline void QGraphicsGridLayout::addItem(QGraphicsLayoutItem *aitem, int arow, int acolumn, Qt::Alignment aalignment)
+inline void QGraphicsGridLayout::addItem(QGraphicsLayoutItem *aitem, int arow, int acolumn, BobUI::Alignment aalignment)
 { addItem(aitem, arow, acolumn, 1, 1, aalignment); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

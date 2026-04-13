@@ -1,5 +1,5 @@
 // Copyright (C) 2014 by Southwest Research Institute (R)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 
 #include <QByteArrayList>

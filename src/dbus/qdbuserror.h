@@ -1,15 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSERROR_H
 #define QDBUSERROR_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
+<<<<<<< HEAD
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qstring.h>
+=======
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qstring.h>
+>>>>>>> origin/dev
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 struct DBusError;
 
@@ -60,7 +65,7 @@ public:
     Q_ENUM(ErrorType)
 
     QDBusError();
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     explicit QDBusError(const DBusError *error);
     Q_IMPLICIT QDBusError(const QDBusMessage& msg);
 #endif
@@ -71,7 +76,7 @@ public:
     {}
     QDBusError &operator=(QDBusError &&other) noexcept { swap(other); return *this; }
     QDBusError &operator=(const QDBusError &other);
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     QDBusError &operator=(const QDBusMessage &msg);
 #endif
 
@@ -99,16 +104,20 @@ private:
 };
 Q_DECLARE_SHARED(QDBusError)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_DBUS_EXPORT QDebug operator<<(QDebug, const QDBusError &);
 #endif
 
 BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QDBusError, Q_DBUS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusError, Q_DBUS_EXPORT)
 #else
 BOBUI_BEGIN_NAMESPACE
 class Q_DBUS_EXPORT QDBusError {}; // dummy class for moc
 BOBUI_END_NAMESPACE
+<<<<<<< HEAD
 #endif // QT_NO_DBUS
+=======
+#endif // BOBUI_NO_DBUS
+>>>>>>> origin/dev
 #endif

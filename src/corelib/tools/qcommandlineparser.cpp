@@ -1,7 +1,7 @@
 // Copyright (C) 2013 Laszlo Papp <lpapp@kde.org>
 // Copyright (C) 2013 David Faure <faure@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcommandlineparser.h"
 
@@ -11,17 +11,17 @@
 #include <qvarlengtharray.h>
 #include <qlist.h>
 #include <qdebug.h>
-#if defined(Q_OS_WIN) && !defined(QT_BOOTSTRAPPED)
-#  include <qt_windows.h>
+#if defined(Q_OS_WIN) && !defined(BOBUI_BOOTSTRAPPED)
+#  include <bobui_windows.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-extern void Q_CORE_EXPORT qt_call_post_routines();
+extern void Q_CORE_EXPORT bobui_call_post_routines();
 
 typedef QHash<QString, qsizetype> NameHash_t;
 
@@ -39,12 +39,12 @@ public:
     bool parse(const QStringList &args);
     void checkParsed(const char *method);
     QStringList aliases(const QString &name) const;
-    QString helpText(bool includeQtOptions) const;
+    QString helpText(bool includeBobUIOptions) const;
     bool registerFoundOption(const QString &optionName);
     bool parseOptionValue(const QString &optionName, const QString &argument,
                           QStringList::const_iterator *argumentIterator,
                           QStringList::const_iterator argsEnd);
-    Q_NORETURN void showHelp(int exitCode, bool includeQtOptions);
+    Q_NORETURN void showHelp(int exitCode, bool includeBobUIOptions);
 
     //! Error text set when parse() returns false
     QString errorText;
@@ -109,7 +109,7 @@ QStringList QCommandLineParserPrivate::aliases(const QString &optionName) const
 /*!
     \since 5.2
     \class QCommandLineParser
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup tools
 
     \brief The QCommandLineParser class provides a means for handling the
@@ -162,10 +162,10 @@ QStringList QCommandLineParserPrivate::aliases(const QString &optionName) const
     by using addOptions():
     \snippet code/src_corelib_tools_qcommandlineparser_main.cpp cxx11
 
-    Known limitation: the parsing of Qt options inside QCoreApplication and subclasses
+    Known limitation: the parsing of BobUI options inside QCoreApplication and subclasses
     happens before QCommandLineParser exists, so it can't take it into account. This
-    means any option value that looks like a builtin Qt option will be treated by
-    QCoreApplication as a builtin Qt option. Example: \c{--profile -reverse} will
+    means any option value that looks like a builtin BobUI option will be treated by
+    QCoreApplication as a builtin BobUI option. Example: \c{--profile -reverse} will
     lead to QGuiApplication seeing the -reverse option set, and removing it from
     QCoreApplication::arguments() before QCommandLineParser defines the \c{profile}
     option and parses the command line.
@@ -177,7 +177,7 @@ QStringList QCommandLineParserPrivate::aliases(const QString &optionName) const
 
     It is then advisable to introduce a function to do the command line parsing
     which takes a struct or class receiving the option values returning an
-    object representing the result. The dnslookup example of the QtNetwork
+    object representing the result. The dnslookup example of the BobUINetwork
     module illustrates this:
 
     \snippet dnslookup.h 0
@@ -198,7 +198,7 @@ QStringList QCommandLineParserPrivate::aliases(const QString &optionName) const
 
     On Windows, QCommandLineParser uses message boxes to display usage information
     and errors if no console window can be obtained. These message boxes can be omitted by setting
-    the \c QT_COMMAND_LINE_PARSER_NO_GUI_MESSAGE_BOXES environment variable.
+    the \c BOBUI_COMMAND_LINE_PARSER_NO_GUI_MESSAGE_BOXES environment variable.
 
     For other platforms, it is recommended to display help texts and error messages
     using a QMessageBox. To preserve the formatting of the help text, rich text
@@ -267,7 +267,7 @@ QCommandLineParser::~QCommandLineParser()
     use this mode.
 
     \value ParseAsLongOptions \c{-abc} is interpreted as \c{--abc},
-    i.e. as the long option named \c{abc}. This is how Qt's own tools
+    i.e. as the long option named \c{abc}. This is how BobUI's own tools
     (uic, rcc...) have always been parsing arguments. This mode should be
     used for preserving compatibility in applications that were parsing
     arguments in such a way. There is an exception if the \c{a} option has the
@@ -395,7 +395,7 @@ QCommandLineOption QCommandLineParser::addVersionOption()
 
     The options specified for this command-line are described by \c{-h} or
     \c{--help}. On Windows, the alternative \c{-?} is also supported. The option
-    \c{--help-all} extends that to include generic Qt options, not defined by
+    \c{--help-all} extends that to include generic BobUI options, not defined by
     this command, in the output.
 
     These options are handled automatically by QCommandLineParser.
@@ -418,7 +418,7 @@ QCommandLineOption QCommandLineParser::addHelpOption()
                 << QStringLiteral("help"), tr("Displays help on commandline options."));
     addOption(opt);
     QCommandLineOption optHelpAll(QStringLiteral("help-all"),
-                                  tr("Displays help, including generic Qt options."));
+                                  tr("Displays help, including generic BobUI options."));
     addOption(optHelpAll);
     d->builtinHelpOption = true;
     return opt;
@@ -516,20 +516,20 @@ QString QCommandLineParser::errorText() const
     return QString();
 }
 
-#if defined(Q_OS_WIN) && !defined(QT_BOOTSTRAPPED)
+#if defined(Q_OS_WIN) && !defined(BOBUI_BOOTSTRAPPED)
 // Return whether to use a message box. Use handles if a console can be obtained
 // or we are run with redirected handles (for example, by QProcess).
 static inline bool displayMessageBox()
 {
     if (GetConsoleWindow()
-        || qEnvironmentVariableIsSet("QT_COMMAND_LINE_PARSER_NO_GUI_MESSAGE_BOXES"))
+        || qEnvironmentVariableIsSet("BOBUI_COMMAND_LINE_PARSER_NO_GUI_MESSAGE_BOXES"))
         return false;
     STARTUPINFO startupInfo;
     startupInfo.cb = sizeof(STARTUPINFO);
     GetStartupInfo(&startupInfo);
     return !(startupInfo.dwFlags & STARTF_USESTDHANDLES);
 }
-#endif // Q_OS_WIN && !QT_BOOTSTRAPPED
+#endif // Q_OS_WIN && !BOBUI_BOOTSTRAPPED
 
 /*!
     \enum QCommandLineParser::MessageType
@@ -554,7 +554,7 @@ static inline bool displayMessageBox()
     The \a message will usually be printed directly to \c{stdout} or \c{stderr} according
     to the given \a type, or the message may be shown in a message box under Windows when
     necessary, with an information icon or error icon according to the given \a type
-    (set the \c{QT_COMMAND_LINE_PARSER_NO_GUI_MESSAGE_BOXES} environment variable if
+    (set the \c{BOBUI_COMMAND_LINE_PARSER_NO_GUI_MESSAGE_BOXES} environment variable if
     you don't want the message box).
 
     It's the same message display method used by showHelp, showVersion and the builtin
@@ -565,7 +565,7 @@ static inline bool displayMessageBox()
 */
 [[noreturn]] void QCommandLineParser::showMessageAndExit(MessageType type, const QString &message, int exitCode)
 {
-#if defined(Q_OS_WIN) && !defined(QT_BOOTSTRAPPED)
+#if defined(Q_OS_WIN) && !defined(BOBUI_BOOTSTRAPPED)
     if (displayMessageBox()) {
         const UINT flags = MB_OK | MB_TOPMOST | MB_SETFOREGROUND
             | (type == MessageType::Information ? MB_ICONINFORMATION : MB_ICONERROR);
@@ -576,12 +576,12 @@ static inline bool displayMessageBox()
             title = QCoreApplication::applicationName();
         MessageBoxW(0, reinterpret_cast<const wchar_t *>(message.utf16()),
                     reinterpret_cast<const wchar_t *>(title.utf16()), flags);
-        qt_call_post_routines();
+        bobui_call_post_routines();
         ::exit(exitCode);
     }
-#endif // Q_OS_WIN && !QT_BOOTSTRAPPED
+#endif // Q_OS_WIN && !BOBUI_BOOTSTRAPPED
     fputs(qPrintable(message), type == MessageType::Information ? stdout : stderr);
-    qt_call_post_routines();
+    bobui_call_post_routines();
     ::exit(exitCode);
 }
 
@@ -1059,10 +1059,10 @@ Q_NORETURN void QCommandLineParser::showHelp(int exitCode)
     d->showHelp(exitCode, false);
 }
 
-Q_NORETURN void QCommandLineParserPrivate::showHelp(int exitCode, bool includeQtOptions)
+Q_NORETURN void QCommandLineParserPrivate::showHelp(int exitCode, bool includeBobUIOptions)
 {
     QCommandLineParser::showMessageAndExit(QCommandLineParser::MessageType::Information,
-                                           helpText(includeQtOptions),
+                                           helpText(includeBobUIOptions),
                                            exitCode);
 }
 
@@ -1139,7 +1139,7 @@ static QString wrapText(const QString &names, int optionNameMaxWidth, const QStr
     return text;
 }
 
-QString QCommandLineParserPrivate::helpText(bool includeQtOptions) const
+QString QCommandLineParserPrivate::helpText(bool includeBobUIOptions) const
 {
     const QLatin1Char nl('\n');
     QString text;
@@ -1148,8 +1148,8 @@ QString QCommandLineParserPrivate::helpText(bool includeQtOptions) const
     usage += qApp ? QStringView(QCoreApplication::arguments().constFirst())
                   : QStringView(u"<executable_name>");
     QList<QCommandLineOption> options = commandLineOptionList;
-    if (includeQtOptions && qApp)
-        qApp->d_func()->addQtOptions(&options);
+    if (includeBobUIOptions && qApp)
+        qApp->d_func()->addBobUIOptions(&options);
     if (!options.isEmpty())
         usage += u' ' + QCommandLineParser::tr("[options]");
     for (const PositionalArgumentDefinition &arg : positionalArgumentDefinitions)
@@ -1204,4 +1204,4 @@ QString QCommandLineParserPrivate::helpText(bool includeQtOptions) const
     return text;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

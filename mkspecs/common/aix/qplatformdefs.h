@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef Q_AIX_QPLATFORMDEFS_H
 #define Q_AIX_QPLATFORMDEFS_H
 
-// Get Qt defines/settings
+// Get BobUI defines/settings
 
 #include "qglobal.h"
 
@@ -42,38 +42,38 @@
 
 // Only AIX 4.3 and better support 64-bit
 
-#define QT_USE_XOPEN_LFS_EXTENSIONS
+#define BOBUI_USE_XOPEN_LFS_EXTENSIONS
 #include "../posix/qplatformdefs.h"
 
-#undef QT_SOCKLEN_T
+#undef BOBUI_SOCKLEN_T
 
 #ifdef _AIX43
 // AIX 4.3 and better
-#define QT_SOCKLEN_T            socklen_t
+#define BOBUI_SOCKLEN_T            socklen_t
 #elif _AIX42
 // AIX 4.2
-#define QT_SOCKLEN_T            size_t
+#define BOBUI_SOCKLEN_T            size_t
 #else
 // AIX 4.1
-#define QT_SOCKLEN_T            size_t
+#define BOBUI_SOCKLEN_T            size_t
 // override
-#define QT_SOCKOPTLEN_T         int
+#define BOBUI_SOCKOPTLEN_T         int
 #endif
 
-#ifdef QT_LARGEFILE_SUPPORT
-#undef QT_DIR
-#undef QT_OPENDIR
-#undef QT_CLOSEDIR
+#ifdef BOBUI_LARGEFILE_SUPPORT
+#undef BOBUI_DIR
+#undef BOBUI_OPENDIR
+#undef BOBUI_CLOSEDIR
 
-#define QT_DIR                  DIR64
-#define QT_OPENDIR              ::opendir64
-#define QT_CLOSEDIR             ::closedir64
+#define BOBUI_DIR                  DIR64
+#define BOBUI_OPENDIR              ::opendir64
+#define BOBUI_CLOSEDIR             ::closedir64
 #endif
 
 #if defined(_XOPEN_SOURCE) && (_XOPEN_SOURCE-0 >= 500)
 // AIX 4.3 and better
-#define QT_SNPRINTF             ::snprintf
-#define QT_VSNPRINTF            ::vsnprintf
+#define BOBUI_SNPRINTF             ::snprintf
+#define BOBUI_VSNPRINTF            ::vsnprintf
 #endif
 
 #endif // include guard

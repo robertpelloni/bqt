@@ -1,35 +1,35 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
-#ifndef QT_NO_ICON
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
+#ifndef BOBUI_NO_ICON
 #include <private/qiconloader_p.h>
 
 #include <private/qguiapplication_p.h>
 #include <private/qicon_p.h>
 
-#include <QtGui/QIconEnginePlugin>
-#include <QtGui/QPixmapCache>
+#include <BobUIGui/QIconEnginePlugin>
+#include <BobUIGui/QPixmapCache>
 #include <qpa/qplatformtheme.h>
-#include <QtGui/qfontdatabase.h>
-#include <QtGui/QPalette>
-#include <QtCore/qmath.h>
-#include <QtCore/QList>
-#include <QtCore/QDir>
-#include <QtCore/qloggingcategory.h>
-#if QT_CONFIG(settings)
-#include <QtCore/QSettings>
+#include <BobUIGui/qfontdatabase.h>
+#include <BobUIGui/QPalette>
+#include <BobUICore/qmath.h>
+#include <BobUICore/QList>
+#include <BobUICore/QDir>
+#include <BobUICore/qloggingcategory.h>
+#if BOBUI_CONFIG(settings)
+#include <BobUICore/QSettings>
 #endif
-#include <QtGui/QPainter>
+#include <BobUIGui/QPainter>
 
 #include <private/qhexstring_p.h>
 #include <private/qfactoryloader_p.h>
 #include <private/qfonticonengine_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcIconLoader, "qt.gui.icon.loader")
+Q_STATIC_LOGGING_CATEGORY(lcIconLoader, "bobui.gui.icon.loader")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_GLOBAL_STATIC(QIconLoader, iconLoaderInstance)
 
@@ -51,7 +51,7 @@ QIconLoader::QIconLoader() :
 
 static inline QString systemThemeName()
 {
-    if (QString override = qEnvironmentVariable("QT_QPA_SYSTEM_ICON_THEME"); !override.isEmpty())
+    if (QString override = qEnvironmentVariable("BOBUI_QPA_SYSTEM_ICON_THEME"); !override.isEmpty())
         return override;
     if (const QPlatformTheme *theme = QGuiApplicationPrivate::platformTheme()) {
         const QVariant themeHint = theme->themeHint(QPlatformTheme::SystemIconThemeName);
@@ -81,19 +81,19 @@ static inline QStringList systemFallbackSearchPaths()
     return QStringList();
 }
 
-extern QFactoryLoader *qt_iconEngineFactoryLoader(); // qicon.cpp
+extern QFactoryLoader *bobui_iconEngineFactoryLoader(); // qicon.cpp
 
 void QIconLoader::ensureInitialized()
 {
     if (!m_initialized) {
         if (!QGuiApplicationPrivate::platformTheme())
-            return; // it's too early: try again later (QTBUG-74252)
+            return; // it's too early: try again later (BOBUIBUG-74252)
         m_initialized = true;
         m_systemTheme = systemThemeName();
 
         if (m_systemTheme.isEmpty())
             m_systemTheme = systemFallbackThemeName();
-        if (qt_iconEngineFactoryLoader()->keyMap().key("svg"_L1, -1) != -1)
+        if (bobui_iconEngineFactoryLoader()->keyMap().key("svg"_L1, -1) != -1)
             m_supportsSvg = true;
 
         qCDebug(lcIconLoader) << "Initialized icon loader with system theme"
@@ -106,7 +106,7 @@ void QIconLoader::ensureInitialized()
     Gets an instance.
 
     \l QIcon::setFallbackThemeName() should be called before QGuiApplication is
-    created, to avoid a race condition (QTBUG-74252). When this function is
+    created, to avoid a race condition (BOBUIBUG-74252). When this function is
     called from there, ensureInitialized() does not succeed because there
     is no QPlatformTheme yet, so systemThemeName() is empty, and we don't want
     m_systemTheme to get initialized to the fallback theme instead of the normal one.
@@ -135,7 +135,7 @@ void QIconLoader::updateSystemTheme()
 
 void QIconLoader::invalidateKey()
 {
-    // Invalidating the key here will result in QThemeIconEngine
+    // Invalidating the key here will result in BOBUIhemeIconEngine
     // recreating the actual engine the next time the icon is used.
     // We don't need to clear the QIcon cache itself.
     m_themeKey++;
@@ -255,7 +255,7 @@ QIconCacheGtkReader::QIconCacheGtkReader(const QString &dirName)
     : m_isValid(false)
 {
     QFileInfo info(dirName + "/icon-theme.cache"_L1);
-    if (!info.exists() || info.lastModified(QTimeZone::UTC) < QFileInfo(dirName).lastModified(QTimeZone::UTC))
+    if (!info.exists() || info.lastModified(BOBUIimeZone::UTC) < QFileInfo(dirName).lastModified(BOBUIimeZone::UTC))
         return;
     m_file.setFileName(info.absoluteFilePath());
     if (!m_file.open(QFile::ReadOnly))
@@ -270,13 +270,13 @@ QIconCacheGtkReader::QIconCacheGtkReader(const QString &dirName)
     m_isValid = true;
 
     // Check that all the directories are older than the cache
-    const QDateTime lastModified = info.lastModified(QTimeZone::UTC);
+    const QDateTime lastModified = info.lastModified(BOBUIimeZone::UTC);
     quint32 dirListOffset = read32(8);
     quint32 dirListLen = read32(dirListOffset);
     for (uint i = 0; i < dirListLen; ++i) {
         quint32 offset = read32(dirListOffset + 4 + 4 * i);
         if (!m_isValid || offset >= m_size || lastModified < QFileInfo(dirName + u'/'
-                + QString::fromUtf8(reinterpret_cast<const char*>(m_data + offset))).lastModified(QTimeZone::UTC)) {
+                + QString::fromUtf8(reinterpret_cast<const char*>(m_data + offset))).lastModified(BOBUIimeZone::UTC)) {
             m_isValid = false;
             return;
         }
@@ -368,7 +368,7 @@ QIconTheme::QIconTheme(const QString &themeName)
             qCDebug(lcIconLoader) << "Probing theme file at" << themeIndex.fileName() << m_valid;
         }
     }
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     if (m_valid) {
         const QSettings indexReader(themeIndex.fileName(), QSettings::IniFormat);
         const QStringList keys = indexReader.allKeys();
@@ -445,7 +445,7 @@ QDebug operator<<(QDebug debug, const std::unique_ptr<QIconLoaderEngineEntry> &e
     return debug << "QIconLoaderEngineEntry(0x0)";
 }
 
-QThemeIconInfo QIconLoader::findIconHelper(const QString &themeName,
+BOBUIhemeIconInfo QIconLoader::findIconHelper(const QString &themeName,
                                            const QString &iconName,
                                            QStringList &visited,
                                            DashRule rule) const
@@ -453,7 +453,7 @@ QThemeIconInfo QIconLoader::findIconHelper(const QString &themeName,
     qCDebug(lcIconLoader) << "Finding icon" << iconName << "in theme" << themeName
                           << "skipping" << visited;
 
-    QThemeIconInfo info;
+    BOBUIhemeIconInfo info;
     Q_ASSERT(!themeName.isEmpty());
 
     // Used to protect against potential recursions
@@ -570,11 +570,11 @@ QThemeIconInfo QIconLoader::findIconHelper(const QString &themeName,
     return info;
 }
 
-QThemeIconInfo QIconLoader::lookupFallbackIcon(const QString &iconName) const
+BOBUIhemeIconInfo QIconLoader::lookupFallbackIcon(const QString &iconName) const
 {
     qCDebug(lcIconLoader) << "Looking up fallback icon" << iconName;
 
-    QThemeIconInfo info;
+    BOBUIhemeIconInfo info;
 
     const QString pngIconName = iconName + ".png"_L1;
     const QString xpmIconName = iconName + ".xpm"_L1;
@@ -610,12 +610,12 @@ QThemeIconInfo QIconLoader::lookupFallbackIcon(const QString &iconName) const
     return info;
 }
 
-QThemeIconInfo QIconLoader::loadIcon(const QString &name) const
+BOBUIhemeIconInfo QIconLoader::loadIcon(const QString &name) const
 {
     qCDebug(lcIconLoader) << "Loading icon" << name;
 
     m_iconName = name;
-    QThemeIconInfo iconInfo;
+    BOBUIhemeIconInfo iconInfo;
     QStringList visitedThemes;
     if (!themeName().isEmpty())
         iconInfo = findIconHelper(themeName(), name, visitedThemes, QIconLoader::FallBack);
@@ -630,7 +630,7 @@ QThemeIconInfo QIconLoader::loadIcon(const QString &name) const
     return iconInfo;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, QIconEngine *engine)
 {
     QDebugStateSaver saver(debug);
@@ -659,9 +659,9 @@ QIconEngine *QIconLoader::iconEngine(const QString &iconName) const
     if (!m_factory) {
         qCDebug(lcIconLoader) << "Finding a plugin for theme" << themeName();
         // try to find a plugin that supports the current theme
-        const int factoryIndex = qt_iconEngineFactoryLoader()->indexOf(themeName());
+        const int factoryIndex = bobui_iconEngineFactoryLoader()->indexOf(themeName());
         if (factoryIndex >= 0)
-            m_factory = qobject_cast<QIconEnginePlugin *>(qt_iconEngineFactoryLoader()->instance(factoryIndex));
+            m_factory = qobject_cast<QIconEnginePlugin *>(bobui_iconEngineFactoryLoader()->instance(factoryIndex));
     }
     if (m_factory && *m_factory)
         iconEngine.reset(m_factory.value()->create(iconName));
@@ -702,8 +702,8 @@ QIconEngine *QIconLoader::iconEngine(const QString &iconName) const
 
 /*!
     \internal
-    \class QThemeIconEngine
-    \inmodule QtGui
+    \class BOBUIhemeIconEngine
+    \inmodule BobUIGui
 
     \brief A named-based icon engine for providing theme icons.
 
@@ -715,43 +715,43 @@ QIconEngine *QIconLoader::iconEngine(const QString &iconName) const
     by QIconLoader::iconEngine().
 */
 
-QThemeIconEngine::QThemeIconEngine(const QString& iconName)
+BOBUIhemeIconEngine::BOBUIhemeIconEngine(const QString& iconName)
     : QProxyIconEngine()
     , m_iconName(iconName)
 {
 }
 
-QThemeIconEngine::QThemeIconEngine(const QThemeIconEngine &other)
+BOBUIhemeIconEngine::BOBUIhemeIconEngine(const BOBUIhemeIconEngine &other)
     : QProxyIconEngine()
     , m_iconName(other.m_iconName)
 {
 }
 
-QString QThemeIconEngine::key() const
+QString BOBUIhemeIconEngine::key() const
 {
     // Although we proxy the underlying engine, that's an implementation
     // detail, so from the point of view of QIcon, and in terms of
     // serialization, we are the one and only theme icon engine.
-    return u"QThemeIconEngine"_s;
+    return u"BOBUIhemeIconEngine"_s;
 }
 
-QIconEngine *QThemeIconEngine::clone() const
+QIconEngine *BOBUIhemeIconEngine::clone() const
 {
-    return new QThemeIconEngine(*this);
+    return new BOBUIhemeIconEngine(*this);
 }
 
-bool QThemeIconEngine::read(QDataStream &in) {
+bool BOBUIhemeIconEngine::read(QDataStream &in) {
     in >> m_iconName;
     return true;
 }
 
-bool QThemeIconEngine::write(QDataStream &out) const
+bool BOBUIhemeIconEngine::write(QDataStream &out) const
 {
     out << m_iconName;
     return true;
 }
 
-QIconEngine *QThemeIconEngine::proxiedEngine() const
+QIconEngine *BOBUIhemeIconEngine::proxiedEngine() const
 {
     const auto *iconLoader = QIconLoader::instance();
     auto mostRecentThemeKey = iconLoader->themeKey();
@@ -767,7 +767,7 @@ QIconEngine *QThemeIconEngine::proxiedEngine() const
 /*!
     \internal
     \class QIconLoaderEngine
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief An icon engine based on icon entries collected by QIconLoader.
 
@@ -859,7 +859,7 @@ static int directorySizeDelta(const QIconDirInfo &dir, int iconsize, int iconsca
     return INT_MAX;
 }
 
-QIconLoaderEngineEntry *QIconLoaderEngine::entryForSize(const QThemeIconInfo &info, const QSize &size, int scale)
+QIconLoaderEngineEntry *QIconLoaderEngine::entryForSize(const BOBUIhemeIconInfo &info, const QSize &size, int scale)
 {
     if (info.entries.empty())
         return nullptr;
@@ -937,7 +937,7 @@ QPixmap PixmapEntry::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State st
     // requested size, we downscale it to match.
     const auto actualSize = QPixmapIconEngine::adjustSize(size * scale, basePixmap.size());
     const auto calculatedDpr = QIconPrivate::pixmapDevicePixelRatio(scale, size, actualSize);
-    QString key = "$qt_theme_"_L1
+    QString key = "$bobui_theme_"_L1
                   % HexString<quint64>(basePixmap.cacheKey())
                   % HexString<quint8>(mode)
                   % HexString<quint64>(QGuiApplication::palette().cacheKey())
@@ -950,7 +950,7 @@ QPixmap PixmapEntry::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State st
         return cachedPixmap;
     } else {
         if (basePixmap.size() != actualSize)
-            cachedPixmap = basePixmap.scaled(actualSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            cachedPixmap = basePixmap.scaled(actualSize, BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
         else
             cachedPixmap = basePixmap;
         if (QGuiApplication *guiApp = qobject_cast<QGuiApplication *>(qApp))
@@ -1018,6 +1018,6 @@ QList<QSize> QIconLoaderEngine::availableSizes(QIcon::Mode mode, QIcon::State st
     return sizes;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif //QT_NO_ICON
+#endif //BOBUI_NO_ICON

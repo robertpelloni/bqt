@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qglobal.h>
 #include <qguiapplication.h>
@@ -23,7 +23,7 @@ QIOSMenu *QIOSMenu::m_currentMenu = nullptr;
 
 // -------------------------------------------------------------------------
 
-static NSString *const kSelectorPrefix = @"_qtMenuItem_";
+static NSString *const kSelectorPrefix = @"_bobuiMenuItem_";
 
 @interface QUIMenuController : UIResponder
 @end
@@ -258,7 +258,7 @@ void QIOSMenuItem::setRole(QPlatformMenuItem::MenuRole role)
     m_role = role;
 }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 void QIOSMenuItem::setShortcut(const QKeySequence &sequence)
 {
     m_shortcut = sequence;
@@ -438,7 +438,7 @@ void QIOSMenu::toggleShowUsingUIPickerView(bool show)
         Q_ASSERT(!focusObjectWithPickerView);
         focusObjectWithPickerView = qApp->focusWindow()->focusObject();
         focusObjectWithPickerView->installEventFilter(this);
-        qApp->inputMethod()->update(Qt::ImEnabled | Qt::ImPlatformData);
+        qApp->inputMethod()->update(BobUI::ImEnabled | BobUI::ImPlatformData);
     } else {
         Q_ASSERT(focusObjectWithPickerView);
         focusObjectWithPickerView->removeEventFilter(this);
@@ -449,7 +449,7 @@ void QIOSMenu::toggleShowUsingUIPickerView(bool show)
         [m_pickerView release];
         m_pickerView = nullptr;
 
-        qApp->inputMethod()->update(Qt::ImEnabled | Qt::ImPlatformData);
+        qApp->inputMethod()->update(BobUI::ImEnabled | BobUI::ImPlatformData);
     }
 }
 
@@ -457,16 +457,16 @@ bool QIOSMenu::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::InputMethodQuery) {
         QInputMethodQueryEvent *queryEvent = static_cast<QInputMethodQueryEvent *>(event);
-        if (queryEvent->queries() & Qt::ImPlatformData) {
+        if (queryEvent->queries() & BobUI::ImPlatformData) {
             // Let object fill inn default query results
             obj->event(queryEvent);
 
-            QVariantMap imPlatformData = queryEvent->value(Qt::ImPlatformData).toMap();
+            QVariantMap imPlatformData = queryEvent->value(BobUI::ImPlatformData).toMap();
             imPlatformData.insert(kImePlatformDataInputView, QVariant::fromValue(static_cast<void *>(m_pickerView)));
             imPlatformData.insert(kImePlatformDataInputAccessoryView, QVariant::fromValue(static_cast<void *>(m_pickerView.toolbar)));
             imPlatformData.insert(kImePlatformDataHideShortcutsBar, true);
-            queryEvent->setValue(Qt::ImPlatformData, imPlatformData);
-            queryEvent->setValue(Qt::ImEnabled, true);
+            queryEvent->setValue(BobUI::ImPlatformData, imPlatformData);
+            queryEvent->setValue(BobUI::ImEnabled, true);
 
             return true;
         }
@@ -492,11 +492,11 @@ QIOSMenuItemList QIOSMenu::filterFirstResponderActions(const QIOSMenuItemList &m
     // In case of QIOSTextResponder, edit actions will be converted to key events that ends up
     // triggering the shortcuts of the filtered menu items.
     QIOSMenuItemList filteredMenuItems;
-    UIResponder *responder = [UIResponder qt_currentFirstResponder];
+    UIResponder *responder = [UIResponder bobui_currentFirstResponder];
 
     for (int i = 0; i < menuItems.count(); ++i) {
         QIOSMenuItem *menuItem = menuItems.at(i);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         QKeySequence shortcut = menuItem->m_shortcut;
         if ((shortcut == QKeySequence::Cut && [responder canPerformAction:@selector(cut:) withSender:nil])
                 || (shortcut == QKeySequence::Copy && [responder canPerformAction:@selector(copy:) withSender:nil])

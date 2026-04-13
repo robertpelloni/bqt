@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsinternalmimedata.h"
 #include "qwindowscontext.h"
 #include "qwindowsmimeregistry.h"
-#include <QtCore/qdebug.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qvariant.h>
 
 /*!
     \class QWindowsInternalMimeDataBase

@@ -1,14 +1,14 @@
 // Copyright (C) 2014 Ivan Komissarov <ABBAPOH@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstorageinfo_p.h"
 
-#include <QtCore/qdir.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/private/wcharhelpers_win_p.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/private/wcharhelpers_win_p.h>
 
 #include "qfilesystementry_p.h"
 
@@ -17,9 +17,9 @@
 extern "C" NTSTATUS NTSYSCALLAPI NTAPI NtQueryVolumeInformationFile(HANDLE, PIO_STATUS_BLOCK, PVOID, ULONG,
     FS_INFORMATION_CLASS);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const int defaultBufferSize = MAX_PATH + 1;
 
@@ -180,7 +180,7 @@ bool QStorageInfoPrivate::queryStorageProperty()
     if (path.endsWith(u'\\'))
         path.chop(1);
 
-    HANDLE handle = CreateFile(qt_castToWchar(path),
+    HANDLE handle = CreateFile(bobui_castToWchar(path),
                                0, // no access to the drive
                                FILE_SHARE_READ | FILE_SHARE_WRITE,
                                nullptr,
@@ -229,7 +229,7 @@ void QStorageInfoPrivate::queryFileFsSectorSizeInformation()
         path.append(u'\\');
 
     UNICODE_STRING name;
-    ::RtlInitUnicodeString(&name, qt_castToWchar(path));
+    ::RtlInitUnicodeString(&name, bobui_castToWchar(path));
 
     InitializeObjectAttributes(&attrs, &name, 0, nullptr, nullptr);
 
@@ -258,4 +258,4 @@ void QStorageInfoPrivate::queryFileFsSectorSizeInformation()
         blockSize = ffssi.PhysicalBytesPerSectorForAtomicity;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import BobUIQuick 2.15
+import BobUIQuick.Controls 2.15
+import BobUIQuick.Layouts 1.15
 import Omni.Hardware 1.0
 
 ApplicationWindow {
@@ -100,19 +100,19 @@ ApplicationWindow {
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 2
-                            Label { text: modelData.id; color: "#94a3b8"; font.pixelSize: 10; Layout.alignment: Qt.AlignHCenter }
+                            Label { text: modelData.id; color: "#94a3b8"; font.pixelSize: 10; Layout.alignment: BobUI.AlignHCenter }
                             Label {
                                 text: modelData.direction
                                 color: "#f8fafc"
                                 font.pixelSize: 10
                                 font.bold: true
-                                Layout.alignment: Qt.AlignHCenter
+                                Layout.alignment: BobUI.AlignHCenter
                             }
                             Label {
                                 text: modelData.voltage.toFixed(1) + "v"
                                 color: "#cbd5e1"
                                 font.pixelSize: 9
-                                Layout.alignment: Qt.AlignHCenter
+                                Layout.alignment: BobUI.AlignHCenter
                                 visible: modelData.direction !== "GND"
                             }
                         }

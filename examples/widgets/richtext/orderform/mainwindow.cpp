@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
+#include <BobUIWidgets>
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printdialog)
 #include <QPrinter>
 #include <QPrintDialog>
 #endif
@@ -26,7 +26,7 @@ MainWindow::MainWindow()
     quitAction->setShortcuts(QKeySequence::Quit);
     menuBar()->addMenu(fileMenu);
 
-    letters = new QTabWidget;
+    letters = new BOBUIabWidget;
 
     connect(newAction, &QAction::triggered, this, &MainWindow::openDialog);
     connect(quitAction, &QAction::triggered, this, &MainWindow::close);
@@ -41,29 +41,29 @@ void MainWindow::createLetter(const QString &name, const QString &address,
                               QList<QPair<QString,int> > orderItems,
                               bool sendOffers)
 {
-    QTextEdit *editor = new QTextEdit;
+    BOBUIextEdit *editor = new BOBUIextEdit;
     int tabIndex = letters->addTab(editor, name);
     letters->setCurrentIndex(tabIndex);
 //! [1]
 
 //! [2]
-    QTextCursor cursor(editor->textCursor());
-    cursor.movePosition(QTextCursor::Start);
+    BOBUIextCursor cursor(editor->textCursor());
+    cursor.movePosition(BOBUIextCursor::Start);
 //! [2] //! [3]
-    QTextFrame *topFrame = cursor.currentFrame();
-    QTextFrameFormat topFrameFormat = topFrame->frameFormat();
+    BOBUIextFrame *topFrame = cursor.currentFrame();
+    BOBUIextFrameFormat topFrameFormat = topFrame->frameFormat();
     topFrameFormat.setPadding(16);
     topFrame->setFrameFormat(topFrameFormat);
 
-    QTextCharFormat textFormat;
-    QTextCharFormat boldFormat;
+    BOBUIextCharFormat textFormat;
+    BOBUIextCharFormat boldFormat;
     boldFormat.setFontWeight(QFont::Bold);
 
-    QTextFrameFormat referenceFrameFormat;
+    BOBUIextFrameFormat referenceFrameFormat;
     referenceFrameFormat.setBorder(1);
     referenceFrameFormat.setPadding(8);
-    referenceFrameFormat.setPosition(QTextFrameFormat::FloatRight);
-    referenceFrameFormat.setWidth(QTextLength(QTextLength::PercentageLength, 40));
+    referenceFrameFormat.setPosition(BOBUIextFrameFormat::FloatRight);
+    referenceFrameFormat.setWidth(BOBUIextLength(BOBUIextLength::PercentageLength, 40));
     cursor.insertFrame(referenceFrameFormat);
 
     cursor.insertText("A company", boldFormat);
@@ -93,8 +93,8 @@ void MainWindow::createLetter(const QString &name, const QString &address,
                       textFormat);
     cursor.insertBlock();
 
-    QTextFrameFormat bodyFrameFormat;
-    bodyFrameFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
+    BOBUIextFrameFormat bodyFrameFormat;
+    bodyFrameFormat.setWidth(BOBUIextLength(BOBUIextLength::PercentageLength, 100));
     cursor.insertFrame(bodyFrameFormat);
 //! [5]
 
@@ -107,11 +107,11 @@ void MainWindow::createLetter(const QString &name, const QString &address,
 //! [7]
 
 //! [8]
-    QTextTableFormat orderTableFormat;
-    orderTableFormat.setAlignment(Qt::AlignHCenter);
-    QTextTable *orderTable = cursor.insertTable(1, 2, orderTableFormat);
+    BOBUIextTableFormat orderTableFormat;
+    orderTableFormat.setAlignment(BobUI::AlignHCenter);
+    BOBUIextTable *orderTable = cursor.insertTable(1, 2, orderTableFormat);
 
-    QTextFrameFormat orderFrameFormat = cursor.currentFrame()->frameFormat();
+    BOBUIextFrameFormat orderFrameFormat = cursor.currentFrame()->frameFormat();
     orderFrameFormat.setBorder(1);
     cursor.currentFrame()->setFrameFormat(orderFrameFormat);
 //! [8]
@@ -147,7 +147,7 @@ void MainWindow::createLetter(const QString &name, const QString &address,
 //! [12]
 
 //! [13]
-    QTextTable *offersTable = cursor.insertTable(2, 2);
+    BOBUIextTable *offersTable = cursor.insertTable(2, 2);
 
     cursor = offersTable->cellAt(0, 1).firstCursorPosition();
     cursor.insertText(tr("I want to receive more information about your "
@@ -201,8 +201,8 @@ void MainWindow::openDialog()
 //! [17]
 void MainWindow::printFile()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
-    QTextEdit *editor = static_cast<QTextEdit*>(letters->currentWidget());
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
+    BOBUIextEdit *editor = static_cast<BOBUIextEdit*>(letters->currentWidget());
 //! [18]
     QPrinter printer;
 

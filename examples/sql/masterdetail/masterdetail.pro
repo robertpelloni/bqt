@@ -6,12 +6,12 @@ SOURCES   = dialog.cpp \
             main.cpp \
             mainwindow.cpp
 
-QT += sql widgets
-QT += xml widgets
-requires(qtConfig(tableview))
+BOBUI += sql widgets
+BOBUI += xml widgets
+requires(bobuiConfig(tableview))
 
 EXAMPLE_FILES = albumdetails.xml
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/sql/masterdetail
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/sql/masterdetail
 INSTALLS += target

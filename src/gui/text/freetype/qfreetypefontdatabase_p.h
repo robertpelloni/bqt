@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFREETYPEFONTDATABASE_H
 #define QFREETYPEFONTDATABASE_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,11 +16,11 @@
 //
 
 #include <qpa/qplatformfontdatabase.h>
-#include <QtCore/QByteArray>
-#include <QtCore/QString>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QString>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct FontFile
 {
@@ -55,6 +55,6 @@ public:
     static QStringList addTTFile(const QByteArray &fontData, const QByteArray &file, QFontDatabasePrivate::ApplicationFont *applicationFont = nullptr);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFREETYPEFONTDATABASE_H

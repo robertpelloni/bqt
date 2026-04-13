@@ -1,8 +1,8 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_FailFetchType: public QObject
 {
@@ -14,9 +14,9 @@ private slots:
 
 void tst_FailFetchType::fetch_data() const
 {
-    QTest::addColumn<bool>("value");
+    BOBUIest::addColumn<bool>("value");
 
-    QTest::newRow("bool") << true;
+    BOBUIest::newRow("bool") << true;
 }
 
 void tst_FailFetchType::fetch() const
@@ -25,6 +25,6 @@ void tst_FailFetchType::fetch() const
     QFAIL("ERROR: this function is NOT supposed to be run.");
 }
 
-QTEST_APPLESS_MAIN(tst_FailFetchType)
+BOBUIEST_APPLESS_MAIN(tst_FailFetchType)
 
 #include "tst_failfetchtype.moc"

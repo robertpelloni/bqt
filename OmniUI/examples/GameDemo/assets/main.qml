@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import BobUIQuick 2.15
 import OmniUI 1.0
 import OmniGame 1.0
 import OmniPhysics 1.0
@@ -30,12 +30,12 @@ ApplicationWindow {
     Timer {
         interval: 16; running: true; repeat: true
         onTriggered: {
-            if (Input.isPressed("Right")) player.velocity = Qt.vector2d(200, player.velocity.y);
+            if (Input.isPressed("Right")) player.velocity = BobUI.vector2d(200, player.velocity.y);
         }
     }
 
     Component.onCompleted: {
-        Input.mapKey(Qt.Key_Right, "Right");
-        Input.mapKey(Qt.Key_Space, "Jump");
+        Input.mapKey(BobUI.Key_Right, "Right");
+        Input.mapKey(BobUI.Key_Space, "Jump");
     }
 }

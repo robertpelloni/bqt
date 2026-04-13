@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef PEERWIRECLIENT_H
 #define PEERWIRECLIENT_H
@@ -7,12 +7,12 @@
 #include <QBasicTimer>
 #include <QBitArray>
 #include <QList>
-#include <QTcpSocket>
+#include <BOBUIcpSocket>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QHostAddress;
-class QTimerEvent;
-QT_END_NAMESPACE
+class BOBUIimerEvent;
+BOBUI_END_NAMESPACE
 class TorrentPeer;
 
 struct TorrentBlock
@@ -33,7 +33,7 @@ struct TorrentBlock
     qint32 length;
 };
 
-class PeerWireClient : public QTcpSocket
+class PeerWireClient : public BOBUIcpSocket
 {
     Q_OBJECT
 
@@ -76,13 +76,13 @@ public:
     qint64 uploadSpeed() const;
 
     bool canTransferMore() const;
-    qint64 bytesAvailable() const override { return incomingBuffer.size() + QTcpSocket::bytesAvailable(); }
+    qint64 bytesAvailable() const override { return incomingBuffer.size() + BOBUIcpSocket::bytesAvailable(); }
     qint64 socketBytesAvailable() const { return socket.bytesAvailable(); }
     qint64 socketBytesToWrite() const { return socket.bytesToWrite(); }
 
     void setReadBufferSize(qint64 size) override;
 
-    using QTcpSocket::connectToHost;
+    using BOBUIcpSocket::connectToHost;
     void connectToHost(const QString &address, quint16 port, OpenMode openMode = ReadWrite,
                        NetworkLayerProtocol protocol = AnyIPProtocol) override;
     void diconnectFromHost();
@@ -103,7 +103,7 @@ signals:
     void bytesReceived(qint64 size);
 
 protected:
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
 
     qint64 readData(char *data, qint64 maxlen) override;
     qint64 readLineData(char *data, qint64 maxlen) override;
@@ -165,7 +165,7 @@ private:
     QBitArray peerPieces;
     TorrentPeer *torrentPeer;
 
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(PeerWireClient::PeerWireState)

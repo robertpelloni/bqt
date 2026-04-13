@@ -1,18 +1,18 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmbackingstore.h"
 #include "qwasmwindow.h"
 #include "qwasmcompositor.h"
 #include "qwasmdom.h"
 
-#include <QtGui/qpainter.h>
-#include <QtGui/qbackingstore.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qbackingstore.h>
 
 #include <emscripten.h>
 #include <emscripten/wire.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QWasmBackingStore::QWasmBackingStore(QWasmCompositor *compositor, QWindow *window)
     : QPlatformBackingStore(window), m_compositor(compositor)
@@ -94,7 +94,7 @@ void QWasmBackingStore::beginPaint(const QRegion &region)
 
     if (m_image.hasAlphaChannel()) {
         painter.setCompositionMode(QPainter::CompositionMode_Source);
-        const QColor blank = Qt::transparent;
+        const QColor blank = BobUI::transparent;
         for (const QRect &rect : region)
             painter.fillRect(rect, blank);
     }
@@ -128,4 +128,4 @@ emscripten::val QWasmBackingStore::getUpdatedWebImage(QWasmWindow *window)
     return m_webImageDataArray;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

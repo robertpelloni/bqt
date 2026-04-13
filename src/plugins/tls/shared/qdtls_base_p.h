@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDTLS_BASE_P_H
 #define QDTLS_BASE_P_H
@@ -9,37 +9,37 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-QT_REQUIRE_CONFIG(dtls);
+BOBUI_REQUIRE_CONFIG(dtls);
 
-#include <QtNetwork/private/qtlsbackend_p.h>
+#include <BobUINetwork/private/bobuilsbackend_p.h>
 
-#include <QtNetwork/qsslconfiguration.h>
-#include <QtNetwork/qsslcipher.h>
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qssl.h>
+#include <BobUINetwork/qsslconfiguration.h>
+#include <BobUINetwork/qsslcipher.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qssl.h>
 
-#include <QtNetwork/qhostaddress.h>
+#include <BobUINetwork/qhostaddress.h>
 
-#include <QtCore/qcryptographichash.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qcryptographichash.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // This class exists to re-implement the shared error/cookie handling
 // for both QDtls and QDtlsClientVerifier classes. Use it if/when
 // you need it. Backend neutral.
-class QDtlsBasePrivate : virtual public QTlsPrivate::DtlsBase
+class QDtlsBasePrivate : virtual public BOBUIlsPrivate::DtlsBase
 {
 public:
     QDtlsBasePrivate(QSslSocket::SslMode m, const QByteArray &s) : mode(m), secret(s) {}
@@ -72,6 +72,6 @@ public:
     QCryptographicHash::Algorithm hashAlgorithm = QCryptographicHash::Sha256;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDTLS_BASE_P_H

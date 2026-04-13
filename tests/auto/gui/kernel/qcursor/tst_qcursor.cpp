@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 #include <qcursor.h>
 #include <qpixmap.h>
 #include <qbitmap.h>
@@ -29,15 +29,15 @@ private slots:
 void tst_QCursor::equality()
 {
     VERIFY_EQUAL(QCursor(), QCursor());
-    VERIFY_EQUAL(QCursor(Qt::CrossCursor), QCursor(Qt::CrossCursor));
-    VERIFY_DIFFERENT(QCursor(Qt::CrossCursor), QCursor());
+    VERIFY_EQUAL(QCursor(BobUI::CrossCursor), QCursor(BobUI::CrossCursor));
+    VERIFY_DIFFERENT(QCursor(BobUI::CrossCursor), QCursor());
 
     // Shape
-    QCursor shapeCursor(Qt::WaitCursor);
+    QCursor shapeCursor(BobUI::WaitCursor);
     VERIFY_EQUAL(shapeCursor, shapeCursor);
     QCursor shapeCursorCopy(shapeCursor);
     VERIFY_EQUAL(shapeCursor, shapeCursorCopy);
-    shapeCursorCopy.setShape(Qt::DragMoveCursor);
+    shapeCursorCopy.setShape(BobUI::DragMoveCursor);
     VERIFY_DIFFERENT(shapeCursor, shapeCursorCopy);
     shapeCursorCopy.setShape(shapeCursor.shape());
     VERIFY_EQUAL(shapeCursor, shapeCursorCopy);
@@ -69,11 +69,11 @@ void tst_QCursor::equality()
 
     // Empty pixmap
     for (int i = 0; i < 18; ++i)
-        QTest::ignoreMessage(QtWarningMsg, "QCursor: Cannot create bitmap cursor; invalid bitmap(s)");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QCursor: Cannot create bitmap cursor; invalid bitmap(s)");
 
     QPixmap emptyPixmap;
     QCursor emptyPixmapCursor(emptyPixmap);
-    QCOMPARE(emptyPixmapCursor.shape(), Qt::ArrowCursor);
+    QCOMPARE(emptyPixmapCursor.shape(), BobUI::ArrowCursor);
     VERIFY_EQUAL(emptyPixmapCursor, QCursor());
     VERIFY_EQUAL(emptyPixmapCursor, QCursor(emptyPixmap, 5, 5));
     VERIFY_DIFFERENT(emptyPixmapCursor, shapeCursor);
@@ -83,7 +83,7 @@ void tst_QCursor::equality()
     // Empty bitmap & mask
     QBitmap emptyBitmap;
     QCursor emptyBitmapCursor(emptyBitmap, emptyBitmap);
-    QCOMPARE(emptyBitmapCursor.shape(), Qt::ArrowCursor);
+    QCOMPARE(emptyBitmapCursor.shape(), BobUI::ArrowCursor);
     VERIFY_EQUAL(emptyBitmapCursor, QCursor());
     VERIFY_EQUAL(emptyBitmapCursor, QCursor(emptyBitmap, emptyBitmap, 5, 5));
     VERIFY_EQUAL(emptyBitmapCursor, QCursor(emptyBitmap, mask));
@@ -97,5 +97,5 @@ void tst_QCursor::equality()
 #undef VERIFY_EQUAL
 #undef VERIFY_DIFFERENT
 
-QTEST_MAIN(tst_QCursor)
+BOBUIEST_MAIN(tst_QCursor)
 #include "tst_qcursor.moc"

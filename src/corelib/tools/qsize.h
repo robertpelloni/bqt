@@ -1,25 +1,25 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSIZE_H
 #define QSIZE_H
 
-#include <QtCore/qcheckedint_impl.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qmargins.h>
+#include <BobUICore/qcheckedint_impl.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qmargins.h>
 
-#include <QtCore/q20type_traits.h>
-#include <QtCore/q23utility.h>
+#include <BobUICore/q20type_traits.h>
+#include <BobUICore/q23utility.h>
 
 #if defined(Q_OS_DARWIN) || defined(Q_QDOC)
 struct CGSize;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-// QT_ENABLE_P0846_SEMANTICS_FOR(get) // from qmargins.h
+// BOBUI_ENABLE_P0846_SEMANTICS_FOR(get) // from qmargins.h
 
 class QSizeF;
 
@@ -40,10 +40,10 @@ public:
     void transpose() noexcept;
     [[nodiscard]] constexpr inline QSize transposed() const noexcept;
 
-    inline void scale(int w, int h, Qt::AspectRatioMode mode) noexcept;
-    inline void scale(const QSize &s, Qt::AspectRatioMode mode) noexcept;
-    [[nodiscard]] QSize scaled(int w, int h, Qt::AspectRatioMode mode) const noexcept;
-    [[nodiscard]] QSize scaled(const QSize &s, Qt::AspectRatioMode mode) const noexcept;
+    inline void scale(int w, int h, BobUI::AspectRatioMode mode) noexcept;
+    inline void scale(const QSize &s, BobUI::AspectRatioMode mode) noexcept;
+    [[nodiscard]] QSize scaled(int w, int h, BobUI::AspectRatioMode mode) const noexcept;
+    [[nodiscard]] QSize scaled(const QSize &s, BobUI::AspectRatioMode mode) const noexcept;
 
     [[nodiscard]] constexpr inline QSize expandedTo(const QSize &) const noexcept;
     [[nodiscard]] constexpr inline QSize boundedTo(const QSize &) const noexcept;
@@ -70,13 +70,13 @@ private:
     friend inline constexpr QSize operator-(const QSize &s1, const QSize &s2) noexcept
     { return QSize(s1.wd - s2.wd, s1.ht - s2.ht); }
     friend inline constexpr QSize operator*(const QSize &s, qreal c) noexcept
-    { return QSize(QtPrivate::qSaturateRound(s.width() * c), QtPrivate::qSaturateRound(s.height() * c)); }
+    { return QSize(BobUIPrivate::qSaturateRound(s.width() * c), BobUIPrivate::qSaturateRound(s.height() * c)); }
     friend inline constexpr QSize operator*(qreal c, const QSize &s) noexcept
     { return s * c; }
     friend inline QSize operator/(const QSize &s, qreal c)
     {
         Q_ASSERT(!qFuzzyIsNull(c));
-        return QSize(QtPrivate::qSaturateRound(s.width() / c), QtPrivate::qSaturateRound(s.height() / c));
+        return QSize(BobUIPrivate::qSaturateRound(s.width() / c), BobUIPrivate::qSaturateRound(s.height() / c));
     }
     friend inline constexpr size_t qHash(const QSize &, size_t) noexcept;
 
@@ -88,7 +88,7 @@ public:
     [[nodiscard]] inline constexpr QSizeF toSizeF() const noexcept;
 
 private:
-    using Representation = QtPrivate::QCheckedIntegers::QCheckedInt<int>;
+    using Representation = BobUIPrivate::QCheckedIntegers::QCheckedInt<int>;
 
     constexpr QSize(Representation w, Representation h) noexcept
         : wd(w), ht(h)
@@ -115,7 +115,7 @@ Q_DECLARE_TYPEINFO(QSize, Q_RELOCATABLE_TYPE);
   QSize stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QSize &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QSize &);
 #endif
@@ -153,13 +153,13 @@ constexpr inline void QSize::setHeight(int h) noexcept
 constexpr inline QSize QSize::transposed() const noexcept
 { return QSize(ht, wd); }
 
-inline void QSize::scale(int w, int h, Qt::AspectRatioMode mode) noexcept
+inline void QSize::scale(int w, int h, BobUI::AspectRatioMode mode) noexcept
 { scale(QSize(w, h), mode); }
 
-inline void QSize::scale(const QSize &s, Qt::AspectRatioMode mode) noexcept
+inline void QSize::scale(const QSize &s, BobUI::AspectRatioMode mode) noexcept
 { *this = scaled(s, mode); }
 
-inline QSize QSize::scaled(int w, int h, Qt::AspectRatioMode mode) const noexcept
+inline QSize QSize::scaled(int w, int h, BobUI::AspectRatioMode mode) const noexcept
 { return scaled(QSize(w, h), mode); }
 
 constexpr inline int &QSize::rwidth() noexcept
@@ -184,8 +184,8 @@ constexpr inline QSize &QSize::operator-=(const QSize &s) noexcept
 
 constexpr inline QSize &QSize::operator*=(qreal c) noexcept
 {
-    wd.setValue(QtPrivate::qSaturateRound(width() * c));
-    ht.setValue(QtPrivate::qSaturateRound(height() * c));
+    wd.setValue(BobUIPrivate::qSaturateRound(width() * c));
+    ht.setValue(BobUIPrivate::qSaturateRound(height() * c));
     return *this;
 }
 
@@ -195,8 +195,8 @@ constexpr inline size_t qHash(const QSize &s, size_t seed = 0) noexcept
 inline QSize &QSize::operator/=(qreal c)
 {
     Q_ASSERT(!qFuzzyIsNull(c));
-    wd.setValue(QtPrivate::qSaturateRound(width() / c));
-    ht.setValue(QtPrivate::qSaturateRound(height() / c));
+    wd.setValue(BobUIPrivate::qSaturateRound(width() / c));
+    ht.setValue(BobUIPrivate::qSaturateRound(height() / c));
     return *this;
 }
 
@@ -210,7 +210,7 @@ constexpr inline QSize QSize::boundedTo(const QSize & otherSize) const noexcept
     return QSize(qMin(wd,otherSize.wd), qMin(ht,otherSize.ht));
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QSize &);
 #endif
 
@@ -233,10 +233,10 @@ public:
     void transpose() noexcept;
     [[nodiscard]] constexpr inline QSizeF transposed() const noexcept;
 
-    inline void scale(qreal w, qreal h, Qt::AspectRatioMode mode) noexcept;
-    inline void scale(const QSizeF &s, Qt::AspectRatioMode mode) noexcept;
-    [[nodiscard]] QSizeF scaled(qreal w, qreal h, Qt::AspectRatioMode mode) const noexcept;
-    [[nodiscard]] QSizeF scaled(const QSizeF &s, Qt::AspectRatioMode mode) const noexcept;
+    inline void scale(qreal w, qreal h, BobUI::AspectRatioMode mode) noexcept;
+    inline void scale(const QSizeF &s, BobUI::AspectRatioMode mode) noexcept;
+    [[nodiscard]] QSizeF scaled(qreal w, qreal h, BobUI::AspectRatioMode mode) const noexcept;
+    [[nodiscard]] QSizeF scaled(const QSizeF &s, BobUI::AspectRatioMode mode) const noexcept;
 
     [[nodiscard]] constexpr inline QSizeF expandedTo(const QSizeF &) const noexcept;
     [[nodiscard]] constexpr inline QSizeF boundedTo(const QSizeF &) const noexcept;
@@ -257,8 +257,8 @@ public:
 private:
     friend constexpr bool qFuzzyCompare(const QSizeF &s1, const QSizeF &s2) noexcept
     {
-        return QtPrivate::fuzzyCompare(s1.wd, s2.wd)
-            && QtPrivate::fuzzyCompare(s1.ht, s2.ht);
+        return BobUIPrivate::fuzzyCompare(s1.wd, s2.wd)
+            && BobUIPrivate::fuzzyCompare(s1.ht, s2.ht);
     }
     friend constexpr bool qFuzzyIsNull(const QSizeF &size) noexcept
     { return qFuzzyIsNull(size.wd) && qFuzzyIsNull(size.ht); }
@@ -310,7 +310,7 @@ Q_DECLARE_TYPEINFO(QSizeF, Q_RELOCATABLE_TYPE);
   QSizeF stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QSizeF &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QSizeF &);
 #endif
@@ -350,13 +350,13 @@ constexpr inline void QSizeF::setHeight(qreal h) noexcept
 constexpr inline QSizeF QSizeF::transposed() const noexcept
 { return QSizeF(ht, wd); }
 
-inline void QSizeF::scale(qreal w, qreal h, Qt::AspectRatioMode mode) noexcept
+inline void QSizeF::scale(qreal w, qreal h, BobUI::AspectRatioMode mode) noexcept
 { scale(QSizeF(w, h), mode); }
 
-inline void QSizeF::scale(const QSizeF &s, Qt::AspectRatioMode mode) noexcept
+inline void QSizeF::scale(const QSizeF &s, BobUI::AspectRatioMode mode) noexcept
 { *this = scaled(s, mode); }
 
-inline QSizeF QSizeF::scaled(qreal w, qreal h, Qt::AspectRatioMode mode) const noexcept
+inline QSizeF QSizeF::scaled(qreal w, qreal h, BobUI::AspectRatioMode mode) const noexcept
 { return scaled(QSizeF(w, h), mode); }
 
 constexpr inline qreal &QSizeF::rwidth() noexcept
@@ -406,16 +406,16 @@ constexpr inline QSizeF QSizeF::boundedTo(const QSizeF &otherSize) const noexcep
 
 constexpr inline QSize QSizeF::toSize() const noexcept
 {
-    return QSize(QtPrivate::qSaturateRound(wd), QtPrivate::qSaturateRound(ht));
+    return QSize(BobUIPrivate::qSaturateRound(wd), BobUIPrivate::qSaturateRound(ht));
 }
 
 constexpr QSizeF QSize::toSizeF() const noexcept { return *this; }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QSizeF &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 /*****************************************************************************
   QSize/QSizeF tuple protocol
@@ -423,18 +423,18 @@ QT_END_NAMESPACE
 
 namespace std {
     template <>
-    class tuple_size<QT_PREPEND_NAMESPACE(QSize)> : public integral_constant<size_t, 2> {};
+    class tuple_size<BOBUI_PREPEND_NAMESPACE(QSize)> : public integral_constant<size_t, 2> {};
     template <>
-    class tuple_element<0, QT_PREPEND_NAMESPACE(QSize)> { public: using type = int; };
+    class tuple_element<0, BOBUI_PREPEND_NAMESPACE(QSize)> { public: using type = int; };
     template <>
-    class tuple_element<1, QT_PREPEND_NAMESPACE(QSize)> { public: using type = int; };
+    class tuple_element<1, BOBUI_PREPEND_NAMESPACE(QSize)> { public: using type = int; };
 
     template <>
-    class tuple_size<QT_PREPEND_NAMESPACE(QSizeF)> : public integral_constant<size_t, 2> {};
+    class tuple_size<BOBUI_PREPEND_NAMESPACE(QSizeF)> : public integral_constant<size_t, 2> {};
     template <>
-    class tuple_element<0, QT_PREPEND_NAMESPACE(QSizeF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+    class tuple_element<0, BOBUI_PREPEND_NAMESPACE(QSizeF)> { public: using type = BOBUI_PREPEND_NAMESPACE(qreal); };
     template <>
-    class tuple_element<1, QT_PREPEND_NAMESPACE(QSizeF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+    class tuple_element<1, BOBUI_PREPEND_NAMESPACE(QSizeF)> { public: using type = BOBUI_PREPEND_NAMESPACE(qreal); };
 }
 
 #endif // QSIZE_H

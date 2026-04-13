@@ -1,17 +1,17 @@
 // Copyright (C) 2011 Richard J. Moore <rich@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSSLCERTIFICATEEXTENSION_H
 #define QSSLCERTIFICATEEXTENSION_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qvariant.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSslCertificateExtensionPrivate;
 
@@ -40,7 +40,7 @@ private:
 
 Q_DECLARE_SHARED(QSslCertificateExtension)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 
 #endif // QSSLCERTIFICATEEXTENSION_H

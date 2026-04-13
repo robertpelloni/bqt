@@ -1,5 +1,5 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qhaikurasterbackingstore.h"
 #include "qhaikurasterwindow.h"
@@ -7,7 +7,7 @@
 #include <Bitmap.h>
 #include <View.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QHaikuRasterBackingStore::QHaikuRasterBackingStore(QWindow *window)
     : QPlatformBackingStore(window)
@@ -59,4 +59,4 @@ void QHaikuRasterBackingStore::resize(const QSize &size, const QRegion &staticCo
     m_bufferSize = size;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,14 +1,14 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QEvent>
-#include <QtCore/QMutex>
-#include <QtCore/QObject>
-#include <QtCore/QTimer>
-#include <QtGui/private/qwasmlocalfileaccess_p.h>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QEvent>
+#include <BobUICore/QMutex>
+#include <BobUICore/QObject>
+#include <BobUICore/BOBUIimer>
+#include <BobUIGui/private/qwasmlocalfileaccess_p.h>
 
-#include <qtwasmtestlib.h>
+#include <bobuiwasmtestlib.h>
 #include <emscripten.h>
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
@@ -67,7 +67,7 @@ private:
                                 write.callsFake((stuff) => {
                                     if (file.content !== new TextDecoder().decode(stuff)) {
                                         const message = `Bad file content ${file.content} !== ${new TextDecoder().decode(stuff)}`;
-                                        Module.qtWasmFail(message);
+                                        Module.bobuiWasmFail(message);
                                         return Promise.reject(message);
                                     }
 
@@ -423,7 +423,7 @@ void FilesTest::rejectFile()
     auto* acceptFileCallback = Own(new MockCallback<char*, uint64_t, const std::string&>());
     acceptFileCallback->expectCallWith(equals<uint64_t>(std::string_view(testFileContent).size()), equals<const std::string&>("dontwant.dat"))
         .call([](uint64_t, const std::string) {
-            QTimer::singleShot(0, []() {
+            BOBUIimer::singleShot(0, []() {
                 // No calls to fileDataReadyCallback
                 QWASMSUCCESS();
             });
@@ -449,7 +449,7 @@ void FilesTest::saveFileWithFileDialog()
                 close.callsFake(() =>
                     new Promise(resolve => {
                         resolve();
-                        Module.qtWasmPass();
+                        Module.bobuiWasmPass();
                     }));
                 return close;
             })()
@@ -464,7 +464,7 @@ void FilesTest::saveFileWithFileDialog()
 int main(int argc, char **argv)
 {
     auto testObject = std::make_shared<FilesTest>();
-    QtWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
+    BobUIWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
     return 0;
 }
 

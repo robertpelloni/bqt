@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFONTDATABASE_P_H
 #define QFONTDATABASE_P_H
@@ -8,27 +8,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qcache.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qcache.h>
+#include <BobUICore/qloggingcategory.h>
 
-#include <QtGui/qfontdatabase.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUIGui/qfontdatabase.h>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcFontDb)
 Q_DECLARE_LOGGING_CATEGORY(lcFontMatch)
 
-struct QtFontDesc;
+struct BobUIFontDesc;
 
-struct QtFontFallbacksCacheKey
+struct BobUIFontFallbacksCacheKey
 {
     QString family;
     QFont::Style style;
@@ -36,7 +36,7 @@ struct QtFontFallbacksCacheKey
     int script;
 };
 
-inline bool operator==(const QtFontFallbacksCacheKey &lhs, const QtFontFallbacksCacheKey &rhs) noexcept
+inline bool operator==(const BobUIFontFallbacksCacheKey &lhs, const BobUIFontFallbacksCacheKey &rhs) noexcept
 {
     return lhs.script == rhs.script &&
             lhs.styleHint == rhs.styleHint &&
@@ -44,14 +44,14 @@ inline bool operator==(const QtFontFallbacksCacheKey &lhs, const QtFontFallbacks
             lhs.family == rhs.family;
 }
 
-inline bool operator!=(const QtFontFallbacksCacheKey &lhs, const QtFontFallbacksCacheKey &rhs) noexcept
+inline bool operator!=(const BobUIFontFallbacksCacheKey &lhs, const BobUIFontFallbacksCacheKey &rhs) noexcept
 {
     return !operator==(lhs, rhs);
 }
 
-inline size_t qHash(const QtFontFallbacksCacheKey &key, size_t seed = 0) noexcept
+inline size_t qHash(const BobUIFontFallbacksCacheKey &key, size_t seed = 0) noexcept
 {
-    QtPrivate::QHashCombineWithSeed hash(seed);
+    BobUIPrivate::QHashCombineWithSeed hash(seed);
     seed = hash(seed, key.family);
     seed = hash(seed, int(key.style));
     seed = hash(seed, int(key.styleHint));
@@ -59,13 +59,13 @@ inline size_t qHash(const QtFontFallbacksCacheKey &key, size_t seed = 0) noexcep
     return seed;
 }
 
-struct Q_GUI_EXPORT QtFontSize
+struct Q_GUI_EXPORT BobUIFontSize
 {
     void *handle;
     unsigned short pixelSize : 16;
 };
 
-struct Q_GUI_EXPORT QtFontStyle
+struct Q_GUI_EXPORT BobUIFontStyle
 {
     struct Key
     {
@@ -99,7 +99,7 @@ struct Q_GUI_EXPORT QtFontStyle
         }
     };
 
-    QtFontStyle(const Key &k)
+    BobUIFontStyle(const Key &k)
         : key(k)
         , bitmapScalable(false)
         , smoothScalable(false)
@@ -108,28 +108,28 @@ struct Q_GUI_EXPORT QtFontStyle
     {
     }
 
-    ~QtFontStyle();
+    ~BobUIFontStyle();
 
-    QtFontSize *pixelSize(unsigned short size, bool = false);
+    BobUIFontSize *pixelSize(unsigned short size, bool = false);
 
     Key key;
     bool bitmapScalable : 1;
     bool smoothScalable : 1;
     signed int count    : 30;
-    QtFontSize *pixelSizes;
+    BobUIFontSize *pixelSizes;
     QString styleName;
     bool antialiased;
 };
 
-struct Q_GUI_EXPORT QtFontFoundry
+struct Q_GUI_EXPORT BobUIFontFoundry
 {
-    QtFontFoundry(const QString &n)
+    BobUIFontFoundry(const QString &n)
         : name(n)
         , count(0)
         , styles(nullptr)
     {}
 
-    ~QtFontFoundry()
+    ~BobUIFontFoundry()
     {
         while (count--)
             delete styles[count];
@@ -138,7 +138,7 @@ struct Q_GUI_EXPORT QtFontFoundry
 
     QString name;
     int count;
-    QtFontStyle **styles;
+    BobUIFontStyle **styles;
 
     enum StyleRetrievalFlags : quint8 {
         NoRetrievalFlags = 0,
@@ -147,12 +147,12 @@ struct Q_GUI_EXPORT QtFontFoundry
         AllRetrievalFlags = 3,
     };
 
-    QtFontStyle *style(const QtFontStyle::Key &,
+    BobUIFontStyle *style(const BobUIFontStyle::Key &,
                        const QString & = QString(),
                        StyleRetrievalFlags flags = NoRetrievalFlags);
 };
 
-struct Q_GUI_EXPORT QtFontFamily
+struct Q_GUI_EXPORT BobUIFontFamily
 {
     enum WritingSystemStatus {
         Unknown         = 0,
@@ -161,7 +161,7 @@ struct Q_GUI_EXPORT QtFontFamily
         Unsupported     = UnsupportedFT
     };
 
-    QtFontFamily(const QString &n)
+    BobUIFontFamily(const QString &n)
         :
         populated(false),
         fixedPitch(false),
@@ -170,7 +170,7 @@ struct Q_GUI_EXPORT QtFontFamily
     {
         memset(writingSystems, 0, sizeof(writingSystems));
     }
-    ~QtFontFamily() {
+    ~BobUIFontFamily() {
         while (count--)
             delete foundries[count];
         free(foundries);
@@ -183,12 +183,12 @@ struct Q_GUI_EXPORT QtFontFamily
     QString name;
     QStringList aliases;
     int count;
-    QtFontFoundry **foundries;
+    BobUIFontFoundry **foundries;
 
     unsigned char writingSystems[QFontDatabase::WritingSystemsCount];
 
     bool matchesFamilyName(const QString &familyName) const;
-    QtFontFoundry *foundry(const QString &f, bool = false);
+    BobUIFontFoundry *foundry(const QString &f, bool = false);
 
     bool ensurePopulated();
 };
@@ -222,15 +222,15 @@ public:
         ScriptCount
     };
 
-    QtFontFamily *family(const QString &f, FamilyRequestFlags flags = EnsurePopulated);
+    BobUIFontFamily *family(const QString &f, FamilyRequestFlags flags = EnsurePopulated);
 
     int count;
-    QtFontFamily **families;
+    BobUIFontFamily **families;
     bool populated = false;
 
     QHash<ExtendedScript, QStringList> applicationFallbackFontFamiliesHash;
 
-    QCache<QtFontFallbacksCacheKey, QStringList> fallbacksCache;
+    QCache<BobUIFontFallbacksCacheKey, QStringList> fallbacksCache;
     struct ApplicationFont {
         QString fileName;
 
@@ -278,26 +278,26 @@ private:
                      const QFontDef &request,
                      const QString &family_name,
                      const QString &foundry_name,
-                     QtFontDesc *desc,
+                     BobUIFontDesc *desc,
                      const QList<int> &blacklistedFamilies,
                      unsigned int *resultingScore = nullptr);
 
     static unsigned int bestFoundry(int script, unsigned int score, int styleStrategy,
-                            const QtFontFamily *family, const QString &foundry_name,
-                            QtFontStyle::Key styleKey, int pixelSize, char pitch,
-                            QtFontDesc *desc, const QString &styleName = QString());
+                            const BobUIFontFamily *family, const QString &foundry_name,
+                            BobUIFontStyle::Key styleKey, int pixelSize, char pitch,
+                            BobUIFontDesc *desc, const QString &styleName = QString());
 
     static QFontEngine *loadSingleEngine(int script, const QFontDef &request,
-                            QtFontFamily *family, QtFontFoundry *foundry,
-                            QtFontStyle *style, QtFontSize *size);
+                            BobUIFontFamily *family, BobUIFontFoundry *foundry,
+                            BobUIFontStyle *style, BobUIFontSize *size);
 
     static QFontEngine *loadEngine(int script, const QFontDef &request,
-                            QtFontFamily *family, QtFontFoundry *foundry,
-                            QtFontStyle *style, QtFontSize *size);
+                            BobUIFontFamily *family, BobUIFontFoundry *foundry,
+                            BobUIFontStyle *style, BobUIFontSize *size);
 
 };
 Q_DECLARE_TYPEINFO(QFontDatabasePrivate::ApplicationFont, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFONTDATABASE_P_H

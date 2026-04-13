@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLINDEX_H
 #define QSQLINDEX_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtSql/qsqlrecord.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qstring.h>
+#include <BobUISql/bobuisqlglobal.h>
+#include <BobUISql/qsqlrecord.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qstring.h>
 
 // clazy:excludeall=qproperty-without-notify
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class Q_SQL_EXPORT QSqlIndex : public QSqlRecord
@@ -27,7 +27,7 @@ public:
     QSqlIndex(QSqlIndex &&other) noexcept = default;
     ~QSqlIndex();
     QSqlIndex &operator=(const QSqlIndex &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QSqlIndex)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QSqlIndex)
 
     void swap(QSqlIndex &other) noexcept {
         QSqlRecord::swap(other);
@@ -48,7 +48,7 @@ public:
     void setDescending(int i, bool desc);
 
 private:
-    // ### Qt7: move to d-ptr
+    // ### BobUI7: move to d-ptr
     QString cursor;
     QString nm;
     QList<bool> sorts;
@@ -56,6 +56,6 @@ private:
 
 Q_DECLARE_SHARED(QSqlIndex)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLINDEX_H

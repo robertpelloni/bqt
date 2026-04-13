@@ -1,16 +1,16 @@
-Qt 5.1 introduces many new features and improvements as well as bugfixes
+BobUI 5.1 introduces many new features and improvements as well as bugfixes
 over the 5.0.x series. For more details, refer to the online documentation
 included in this distribution. The documentation is also available online:
 
-  http://qt-project.org/doc/qt-5.1
+  http://bobui-project.org/doc/bobui-5.1
 
-The Qt version 5.1 series is binary compatible with the 5.0.x series.
+The BobUI version 5.1 series is binary compatible with the 5.0.x series.
 Applications compiled for 5.0 will continue to run with 5.1.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-  http://bugreports.qt-project.org/
+  http://bugreports.bobui-project.org/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -36,24 +36,24 @@ Third party components
 *                   Important Behavior Changes                             *
 ****************************************************************************
 
-- QtWidgets
+- BobUIWidgets
 
-  * [QTBUG-8836] QAbstractItemView now allows manual deselect in
+  * [BOBUIBUG-8836] QAbstractItemView now allows manual deselect in
     SingleSelection mode (with control modifier)
 
-- QtCore
+- BobUICore
 
-  * The serialization behavior for QDateTime has reverted to pre-Qt 5,
+  * The serialization behavior for QDateTime has reverted to pre-BobUI 5,
     due to the issue mentioned in section 4 here:
-    http://lists.qt-project.org/pipermail/development/2013-March/010559.html
+    http://lists.bobui-project.org/pipermail/development/2013-March/010559.html
 
-    This means that the QDataStream version will be 14 with Qt 5.1.
+    This means that the QDataStream version will be 14 with BobUI 5.1.
 
 ****************************************************************************
 *                          Library                                         *
 ****************************************************************************
 
-QtCore
+BobUICore
 ------
 
  - QRect:
@@ -65,7 +65,7 @@ QtCore
      multiplication and division for int/qreal and unary minus.
 
  - QMessageAuthenticationCode
-    * New class for hash-based message authentication code added to QtCore.
+    * New class for hash-based message authentication code added to BobUICore.
 
  - QRegularExpression
     * It's now possible to know the names of the named capturing groups
@@ -77,7 +77,7 @@ QtCore
 
  -
 
-QtGui
+BobUIGui
 -----
 
  - QOffscreenSurface
@@ -85,7 +85,7 @@ QtGui
       without needing to use a hidden QWindow.
 
 
-QtNetwork
+BobUINetwork
 ---------
 
  - QNetworkAccessManager / QNetworkReply:
@@ -100,13 +100,13 @@ QtNetwork
     * Allow QHostInfo::lookupHost() with no receiver to warm the DNS cache.
 
 
-QtSql
+BobUISql
 -----
-This changelog as released was missing QtSql changes.
-Please refer to changes-5.2.0 for QtSql 5.1.0 changes.
+This changelog as released was missing BobUISql changes.
+Please refer to changes-5.2.0 for BobUISql 5.1.0 changes.
 
 
-QtWidgets
+BobUIWidgets
 ---------
 
 - QGraphicsView:
@@ -121,23 +121,23 @@ QtWidgets
 *                      Platform Specific Changes                           *
 ****************************************************************************
 
-Qt for Linux/X11
+BobUI for Linux/X11
 ----------------
  -
 
-Qt for Windows
+BobUI for Windows
 --------------
  -
 
-Qt for Mac OS X
+BobUI for Mac OS X
 ---------------
  -
 
-Qt for Embedded Linux
+BobUI for Embedded Linux
 ---------------------
 
 
-Qt for Windows CE
+BobUI for Windows CE
 -----------------
 
 

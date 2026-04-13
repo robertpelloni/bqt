@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qqueue.h>
 
 class tst_QQueue : public QObject
@@ -16,11 +16,11 @@ private slots:
 
 void tst_QQueue::enqueue_dequeue_data()
 {
-    QTest::addColumn<int>("num_items");
+    BOBUIest::addColumn<int>("num_items");
 
-    QTest::newRow("1") << 11;
-    QTest::newRow("2") << 211;
-    QTest::newRow("3") << 1024 + 211;
+    BOBUIest::newRow("1") << 11;
+    BOBUIest::newRow("2") << 211;
+    BOBUIest::newRow("3") << 1024 + 211;
 }
 
 void tst_QQueue::enqueue_dequeue()
@@ -58,5 +58,5 @@ void tst_QQueue::enqueue_dequeue()
     delete[] values;
 }
 
-QTEST_APPLESS_MAIN(tst_QQueue)
+BOBUIEST_APPLESS_MAIN(tst_QQueue)
 #include "tst_qqueue.moc"

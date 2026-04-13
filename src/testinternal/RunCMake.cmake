@@ -1,1 +1,1 @@
-include(${CMAKE_CURRENT_LIST_DIR}/QtRunCMake.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/BobUIRunCMake.cmake)

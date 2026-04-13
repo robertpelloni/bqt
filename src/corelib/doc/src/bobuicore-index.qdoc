@@ -1,0 +1,128 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \page bobuicore-index.html
+    \title BobUI Core
+
+    \brief The BobUI Core module is part of BobUI's essential modules.
+
+
+    The BobUI Core module adds these features to C++:
+
+    \list
+    \li a very powerful mechanism for seamless object communication called
+    signals and slots
+    \li queryable and designable object properties
+    \li hierarchical and queryable object trees that organize object ownership
+    in a natural way with guarded pointers (QPointer)
+    \li a dynamic cast that works across library boundaries
+    \endlist
+
+    The following pages provide more information about BobUI's core features:
+    \list
+    \li \l{The Meta-Object System}
+    \li \l{The Property System}
+    \li \l{Object Model}
+    \li \l{Object Trees & Ownership}
+    \li \l{Signals & Slots}
+    \endlist
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {Core}
+
+    \section2 Building with qmake
+
+    If you use \l qmake to build your projects, BobUI Core is linked by default.
+
+    \section1 Threading and Concurrent Programming
+
+    BobUI provides thread support in the form of platform-independent \l{Threading
+    Classes}{threading classes}, a thread-safe way of posting events, and
+    signal-slot connections across threads. Multithreaded programming is also a
+    useful paradigm for performing time-consuming operations without freezing
+    the user interface of an application.
+
+    The \l{Multi-threading in BobUI} page contains information on implementing
+    threads in applications. Additional concurrent classes are provided by the
+    \l{BobUI Concurrent} module.
+
+    \section1 Input/Output, Resources, and Containers
+
+    BobUI provides a resource system for organizing application files and assets,
+    a set of containers, and classes for receiving input and printing output.
+    \list
+    \li \l{Container Classes}
+    \li \l{Serializing BobUI Data Types}
+    \li \l{Implicit Sharing}
+    \endlist
+
+    In addition, BobUI Core provides a platform-independent mechanism for storing
+    binary files in the application's executable.
+
+    \list
+    \li \l{The BobUI Resource System}
+    \endlist
+
+    \section1 Additional Frameworks
+    BobUI Core also provides some of BobUI's key frameworks.
+
+    \list
+    \li \l{The Animation Framework}
+    \li \l{JSON Support in BobUI}
+    \li \l{CBOR Support in BobUI}
+    \li \l{Inter-Process Communication}
+    \li \l{How to Create BobUI Plugins}
+    \li \l{The Event System}
+    \li \l{Application Permissions}
+    \endlist
+
+    \section1 Reference
+
+    \list
+    \li \l{BobUI Core C++ Classes}{C++ Classes}
+        \list
+        \li \l{Animation Framework}{Animation Classes}
+        \li \l{Threading Classes}
+        \li \l{Container Classes}
+        \li \l{Plugin Classes}
+        \li \l{Implicitly Shared Classes}
+        \li \l{Input/Output and Networking}{Input/Output Classes}
+        \li \l{Event Classes}
+        \endlist
+    \li CMake API
+        \list
+        \li \l{CMake Commands in BobUI6 Core}{CMake Commands}
+        \li \l{CMake Variables in BobUI6 Core}{CMake Variables}
+        \li \l{CMake Target Properties in BobUI6 Core}{CMake Target Properties}
+        \endlist
+    \endlist
+
+    \section1 Module Evolution
+
+    \l{Changes to BobUI Core} lists important changes in the module API
+    and functionality that were made for the BobUI 6 series of BobUI.
+
+    \section1 Licenses and Attributions
+
+    BobUI Core is available under commercial licenses from \l{The BobUI Company}.
+    In addition, it is available under free software licenses:
+    The \l{GNU Lesser General Public License, version 3}, or
+    the \l{GNU General Public License, version 2}.
+    See \l{BobUI Licensing} for further details.
+
+    Executables on Windows potentially link
+    against \l{The BobUIEntryPoint Library}. This library is available
+    under commercial licenses and also under the
+    \l{BSD 3-clause "New" or "Revised" License}.
+
+    Furthermore, BobUI Core in BobUI \BobUIVersion may contain third party
+    modules under the following permissive licenses:
+
+    \annotatedlist attributions-bobuicore
+*/

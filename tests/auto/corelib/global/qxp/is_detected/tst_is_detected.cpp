@@ -1,9 +1,9 @@
 // Copyright (C) 2025 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qxptype_traits.h>
+#include <BobUICore/qxptype_traits.h>
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_qxp_is_detected : public QObject
 {
@@ -101,6 +101,6 @@ static_assert(std::is_same_v<qxp::detected_t<Helper::HasInnerFooTypedefTest, B>,
 // static_assert(!qxp::is_detected_v<Helper::HasInnerFooTypedefTest, D>); // see above
 }
 
-QTEST_APPLESS_MAIN(tst_qxp_is_detected);
+BOBUIEST_APPLESS_MAIN(tst_qxp_is_detected);
 
 #include "tst_is_detected.moc"

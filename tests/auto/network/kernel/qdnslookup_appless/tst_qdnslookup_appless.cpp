@@ -1,10 +1,10 @@
 // Copyright (C) 2012 Jeremy Lainé <jeremy.laine@m4x.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtNetwork/QDnsLookup>
-#include <QTest>
-#include <QTestEventLoop>
+#include <BobUICore/QCoreApplication>
+#include <BobUINetwork/QDnsLookup>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 
 class tst_QDnsLookup_Appless : public QObject
 {
@@ -18,8 +18,8 @@ private slots:
 
 void tst_QDnsLookup_Appless::noApplication()
 {
-    QTest::ignoreMessage(QtWarningMsg, "QDnsLookup requires a QCoreApplication");
-    QDnsLookup dns(QDnsLookup::A, "a-single.test.qt-project.org");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QDnsLookup requires a QCoreApplication");
+    QDnsLookup dns(QDnsLookup::A, "a-single.test.bobui-project.org");
     dns.lookup();
 }
 
@@ -29,12 +29,12 @@ void tst_QDnsLookup_Appless::recreateApplication()
     char **argv = 0;
     for (int i = 0; i < 10; ++i) {
         QCoreApplication app(argc, argv);
-        QDnsLookup dns(QDnsLookup::A, "a-single.test.qt-project.org");
+        QDnsLookup dns(QDnsLookup::A, "a-single.test.bobui-project.org");
         dns.lookup();
         if (!dns.isFinished()) {
             QObject::connect(&dns, SIGNAL(finished()),
-                             &QTestEventLoop::instance(), SLOT(exitLoop()));
-            QTestEventLoop::instance().enterLoop(10);
+                             &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+            BOBUIestEventLoop::instance().enterLoop(10);
         }
         QVERIFY(dns.isFinished());
     }
@@ -51,5 +51,5 @@ void tst_QDnsLookup_Appless::destroyApplicationDuringLookup()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QDnsLookup_Appless)
+BOBUIEST_APPLESS_MAIN(tst_QDnsLookup_Appless)
 #include "tst_qdnslookup_appless.moc"

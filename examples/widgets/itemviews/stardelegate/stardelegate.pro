@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(tablewidget))
+BOBUI += widgets
+requires(bobuiConfig(tablewidget))
 
 HEADERS       = stardelegate.h \
                 stareditor.h \
@@ -10,5 +10,5 @@ SOURCES       = main.cpp \
                 starrating.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/stardelegate
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/stardelegate
 INSTALLS += target

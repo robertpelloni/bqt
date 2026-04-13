@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSURFACE_H
 #define QSURFACE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qnamespace.h>
-#include <QtGui/qsurfaceformat.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qsize.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUIGui/qsurfaceformat.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qsize.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPlatformSurface;
@@ -30,7 +30,7 @@ public:
     enum SurfaceType {
         RasterSurface,
         OpenGLSurface,
-#if QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 11)
+#if BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 11)
         RasterGLSurface Q_DECL_ENUMERATOR_DEPRECATED_X("Use RasterSurface instead"),
 #endif
         OpenVGSurface = 3,
@@ -60,8 +60,8 @@ protected:
     QSurfacePrivate *m_reserved;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QSurface*, QSurface_ptr, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QSurface*, QSurface_ptr, Q_GUI_EXPORT)
 
 #endif //QSURFACE_H

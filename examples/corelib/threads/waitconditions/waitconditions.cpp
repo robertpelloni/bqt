@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2022 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QCoreApplication>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QObject>
 #include <QRandomGenerator>
-#include <QThread>
+#include <BOBUIhread>
 #include <QWaitCondition>
 
 #include <stdio.h>
@@ -26,12 +26,12 @@ QWaitCondition bufferNotFull;
 //! [0]
 
 //! [1]
-class Producer : public QThread
+class Producer : public BOBUIhread
 //! [1] //! [2]
 {
 public:
     explicit Producer(QObject *parent = nullptr)
-        : QThread(parent)
+        : BOBUIhread(parent)
     {
     }
 
@@ -58,12 +58,12 @@ private:
 //! [2]
 
 //! [3]
-class Consumer : public QThread
+class Consumer : public BOBUIhread
 //! [3] //! [4]
 {
 public:
     explicit Consumer(QObject *parent = nullptr)
-        : QThread(parent)
+        : BOBUIhread(parent)
     {
     }
 

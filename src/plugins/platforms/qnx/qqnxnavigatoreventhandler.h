@@ -1,13 +1,13 @@
 // Copyright (C) 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXNAVIGATOREVENTHANDLER_H
 #define QQNXNAVIGATOREVENTHANDLER_H
 
 #include <QObject>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaQnxNavigatorEvents);
 
@@ -23,16 +23,16 @@ public:
     void handleExit();
     void handleWindowGroupActivated(const QByteArray &id);
     void handleWindowGroupDeactivated(const QByteArray &id);
-    void handleWindowGroupStateChanged(const QByteArray &id, Qt::WindowState state);
+    void handleWindowGroupStateChanged(const QByteArray &id, BobUI::WindowState state);
 
 Q_SIGNALS:
     void rotationChanged(int angle);
     void windowGroupActivated(const QByteArray &id);
     void windowGroupDeactivated(const QByteArray &id);
-    void windowGroupStateChanged(const QByteArray &id, Qt::WindowState state);
+    void windowGroupStateChanged(const QByteArray &id, BobUI::WindowState state);
     void swipeDown();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXNAVIGATOREVENTHANDLER_H

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 </comment>
  <class>FormWindowSettings</class>
  <widget class="QDialog" name="FormWindowSettings">
@@ -21,7 +21,7 @@
    <item row="6" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
+      <enum>BobUI::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
@@ -31,7 +31,7 @@
    <item row="5" column="0" colspan="2">
     <widget class="Line" name="line">
      <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
+      <enum>BobUI::Orientation::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -164,7 +164,7 @@
        <number>8</number>
       </property>
       <item>
-       <widget class="QTextEdit" name="includeHintsTextEdit"/>
+       <widget class="BOBUIextEdit" name="includeHintsTextEdit"/>
       </item>
      </layout>
     </widget>
@@ -203,7 +203,7 @@
    <item row="4" column="1">
     <spacer>
      <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
+      <enum>BobUI::Orientation::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>

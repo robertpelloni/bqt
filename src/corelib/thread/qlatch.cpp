@@ -1,19 +1,19 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlatch_p.h"
 
 #include "qatomicwait_p.h"
 #include "qfutex_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtFutex;
+using namespace BobUIFutex;
 
 #if defined(QATOMICWAIT_USE_FALLBACK)
 static constexpr bool ForcedFallbackAtomicWait = true;
-namespace atomicwait = QtFallbackAtomicWait;
+namespace atomicwait = BobUIFallbackAtomicWait;
 #else
 static constexpr bool ForcedFallbackAtomicWait = false;
 namespace atomicwait = q20;
@@ -55,11 +55,11 @@ namespace atomicwait = q20;
         QMetaObject::invokeMethod(object, [&]() {
             doSomething();
             latch.countDown();
-        }, Qt::QueuedConnection);
+        }, BobUI::QueuedConnection);
         latch.wait();
     \endcode
 
-    In fact, the above is exactly what Qt::BlockingQueued connection does.
+    In fact, the above is exactly what BobUI::BlockingQueued connection does.
 
     \section3 Synchronizing execution
 
@@ -226,4 +226,4 @@ void QLatch::wakeUp() noexcept
         atomicwait::atomic_notify_all(&counter._q_value);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

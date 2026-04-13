@@ -1,14 +1,14 @@
-# Copyright (C) 2023 The Qt Company Ltd.
+# Copyright (C) 2023 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_manual_test(fontloading
+bobui_internal_add_manual_test(fontloading
     GUI
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Core
+        BobUI::Gui
+        BobUI::Widgets
 )
 
 add_custom_command(

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qgraphicsgridlayout.h>
 #include <qgraphicswidget.h>
 #include <qgraphicsscene.h>
@@ -102,12 +102,12 @@ public:
     {
         Q_UNUSED(option);
         Q_UNUSED(widget);
-        painter->drawRoundedRect(rect(), 25, 25, Qt::RelativeSize);
+        painter->drawRoundedRect(rect(), 25, 25, BobUI::RelativeSize);
         painter->drawLine(rect().topLeft(), rect().bottomRight());
         painter->drawLine(rect().bottomLeft(), rect().topRight());
     }
 
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override
     {
         if (constraint.width() < 0 && constraint.height() < 0 && m_sizeHints[which].isValid()) {
             return m_sizeHints[which];
@@ -118,18 +118,18 @@ public:
         return QGraphicsWidget::sizeHint(which, constraint);
     }
 
-    void setSizeHint(Qt::SizeHint which, const QSizeF &size) {
+    void setSizeHint(BobUI::SizeHint which, const QSizeF &size) {
         m_sizeHints[which] = size;
         updateGeometry();
     }
 
-    void setConstraintFunction(QSizeF (*fnConstraint)(Qt::SizeHint, const QSizeF &)) {
+    void setConstraintFunction(QSizeF (*fnConstraint)(BobUI::SizeHint, const QSizeF &)) {
         m_fnConstraint = fnConstraint;
     }
 
     // Initializer {} is a workaround for gcc bug 68949
-    QSizeF m_sizeHints[Qt::NSizeHints] {};
-    QSizeF (*m_fnConstraint)(Qt::SizeHint, const QSizeF &);
+    QSizeF m_sizeHints[BobUI::NSizeHints] {};
+    QSizeF (*m_fnConstraint)(BobUI::SizeHint, const QSizeF &);
 
 };
 
@@ -175,36 +175,36 @@ struct ItemDesc
         return (*this);
     }
 
-    ItemDesc &sizeHint(Qt::SizeHint which, const QSizeF &sh) {
+    ItemDesc &sizeHint(BobUI::SizeHint which, const QSizeF &sh) {
         m_sizeHints[which] = sh;
         return (*this);
     }
 
     ItemDesc &preferredSizeHint(const QSizeF &sh) {
-        m_sizeHints[Qt::PreferredSize] = sh;
+        m_sizeHints[BobUI::PreferredSize] = sh;
         return (*this);
     }
 
     ItemDesc &minSize(const QSizeF &sz) {
-        m_sizes[Qt::MinimumSize] = sz;
+        m_sizes[BobUI::MinimumSize] = sz;
         return (*this);
     }
     ItemDesc &preferredSize(const QSizeF &sz) {
-        m_sizes[Qt::PreferredSize] = sz;
+        m_sizes[BobUI::PreferredSize] = sz;
         return (*this);
     }
     ItemDesc &maxSize(const QSizeF &sz) {
-        m_sizes[Qt::MaximumSize] = sz;
+        m_sizes[BobUI::MaximumSize] = sz;
         return (*this);
     }
 
-    ItemDesc &alignment(Qt::Alignment alignment) {
+    ItemDesc &alignment(BobUI::Alignment alignment) {
         m_align = alignment;
         return (*this);
     }
 
-    ItemDesc &dynamicConstraint(QSizeF (*fnConstraint)(Qt::SizeHint, const QSizeF &),
-                                Qt::Orientation orientation) {
+    ItemDesc &dynamicConstraint(QSizeF (*fnConstraint)(BobUI::SizeHint, const QSizeF &),
+                                BobUI::Orientation orientation) {
         m_fnConstraint = fnConstraint;
         m_constraintOrientation = orientation;
         return (*this);
@@ -213,22 +213,22 @@ struct ItemDesc
     void apply(QGraphicsGridLayout *layout, QGraphicsWidget *item) {
         QSizePolicy sp = m_sizePolicy;
         if (m_fnConstraint) {
-            sp.setHeightForWidth(m_constraintOrientation == Qt::Vertical);
-            sp.setWidthForHeight(m_constraintOrientation == Qt::Horizontal);
+            sp.setHeightForWidth(m_constraintOrientation == BobUI::Vertical);
+            sp.setWidthForHeight(m_constraintOrientation == BobUI::Horizontal);
         }
 
         item->setSizePolicy(sp);
-        for (int i = 0; i < Qt::NSizeHints; ++i) {
+        for (int i = 0; i < BobUI::NSizeHints; ++i) {
             if (!m_sizes[i].isValid())
                 continue;
-            switch ((Qt::SizeHint)i) {
-            case Qt::MinimumSize:
+            switch ((BobUI::SizeHint)i) {
+            case BobUI::MinimumSize:
                 item->setMinimumSize(m_sizes[i]);
                 break;
-            case Qt::PreferredSize:
+            case BobUI::PreferredSize:
                 item->setPreferredSize(m_sizes[i]);
                 break;
-            case Qt::MaximumSize:
+            case BobUI::MaximumSize:
                 item->setMaximumSize(m_sizes[i]);
                 break;
             default:
@@ -242,8 +242,8 @@ struct ItemDesc
     }
 
     void apply(QGraphicsGridLayout *layout, RectWidget *item) {
-        for (int i = 0; i < Qt::NSizeHints; ++i)
-            item->setSizeHint((Qt::SizeHint)i, m_sizeHints[i]);
+        for (int i = 0; i < BobUI::NSizeHints; ++i)
+            item->setSizeHint((BobUI::SizeHint)i, m_sizeHints[i]);
         item->setConstraintFunction(m_fnConstraint);
         apply(layout, static_cast<QGraphicsWidget*>(item));
     }
@@ -255,12 +255,12 @@ struct ItemDesc
     QSizePolicy m_sizePolicy{QSizePolicy::Preferred, QSizePolicy::Preferred};
 
     // Initializer {} is a workaround for gcc bug 68949
-    QSizeF m_sizeHints[Qt::NSizeHints] {};
-    QSizeF m_sizes[Qt::NSizeHints] {};
-    Qt::Alignment m_align;
+    QSizeF m_sizeHints[BobUI::NSizeHints] {};
+    QSizeF m_sizes[BobUI::NSizeHints] {};
+    BobUI::Alignment m_align;
 
-    Qt::Orientation m_constraintOrientation = Qt::Horizontal;
-    QSizeF (*m_fnConstraint)(Qt::SizeHint, const QSizeF &) = nullptr;
+    BobUI::Orientation m_constraintOrientation = BobUI::Horizontal;
+    QSizeF (*m_fnConstraint)(BobUI::SizeHint, const QSizeF &) = nullptr;
 };
 
 typedef QList<ItemDesc> ItemList;
@@ -275,9 +275,9 @@ void tst_QGraphicsGridLayout::qgraphicsgridlayout_data()
 void tst_QGraphicsGridLayout::qgraphicsgridlayout()
 {
     QGraphicsGridLayout layout;
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsGridLayout::addItem: invalid row span/column span: 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsGridLayout::addItem: invalid row span/column span: 0");
     layout.addItem(0, 0, 0, 0, 0);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsGridLayout::addItem: cannot add null item");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsGridLayout::addItem: cannot add null item");
     layout.addItem(0, 0, 0);
     layout.alignment(0);
     layout.columnAlignment(0);
@@ -289,11 +289,11 @@ void tst_QGraphicsGridLayout::qgraphicsgridlayout()
     layout.columnStretchFactor(0);
     layout.count();
     layout.horizontalSpacing();
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsGridLayout::itemAt: invalid row, column 0, 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsGridLayout::itemAt: invalid row, column 0, 0");
     layout.itemAt(0, 0);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsGridLayout::itemAt: invalid index 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsGridLayout::itemAt: invalid index 0");
     layout.itemAt(0);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsGridLayout::removeAt: invalid index 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsGridLayout::removeAt: invalid index 0");
     layout.removeAt(0);
     layout.rowAlignment(0);
     layout.rowCount();
@@ -302,8 +302,8 @@ void tst_QGraphicsGridLayout::qgraphicsgridlayout()
     layout.rowPreferredHeight(0);
     layout.rowSpacing(0);
     layout.rowStretchFactor(0);
-    layout.setAlignment(0, Qt::AlignRight);
-    layout.setColumnAlignment(0, Qt::AlignRight);
+    layout.setAlignment(0, BobUI::AlignRight);
+    layout.setColumnAlignment(0, BobUI::AlignRight);
     layout.setColumnFixedWidth(0, 0);
     layout.setColumnMaximumWidth(0, 0);
     layout.setColumnMinimumWidth(0, 0);
@@ -321,7 +321,7 @@ void tst_QGraphicsGridLayout::qgraphicsgridlayout()
     layout.setRowStretchFactor(0, 0);
     layout.setSpacing(0);
     layout.setVerticalSpacing(0);
-    layout.sizeHint(Qt::MinimumSize);
+    layout.sizeHint(BobUI::MinimumSize);
     layout.verticalSpacing();
 }
 
@@ -372,14 +372,14 @@ static void populateLayoutWithSpansAndHoles(QGraphicsGridLayout *gridLayout, boo
     gridLayout->addItem(item, 1, 1, 1, 2);
 }
 
-Q_DECLARE_METATYPE(Qt::Alignment)
+Q_DECLARE_METATYPE(BobUI::Alignment)
 void tst_QGraphicsGridLayout::addItem_data()
 {
-    QTest::addColumn<int>("row");
-    QTest::addColumn<int>("column");
-    QTest::addColumn<int>("rowSpan");
-    QTest::addColumn<int>("columnSpan");
-    QTest::addColumn<Qt::Alignment>("alignment");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<int>("column");
+    BOBUIest::addColumn<int>("rowSpan");
+    BOBUIest::addColumn<int>("columnSpan");
+    BOBUIest::addColumn<BobUI::Alignment>("alignment");
 
     for (int a = -1; a < 3; ++a) {
     for (int b = -1; b < 2; ++b) {
@@ -391,31 +391,31 @@ void tst_QGraphicsGridLayout::addItem_data()
         int columnSpan = d;
         const QByteArray name = '(' + QByteArray::number(a) + ',' + QByteArray::number(b)
             + ',' + QByteArray::number(c) + ',' + QByteArray::number(d);
-        Qt::Alignment alignment = Qt::AlignLeft;
-        QTest::newRow(name.constData()) << row << column << rowSpan << columnSpan << alignment;
+        BobUI::Alignment alignment = BobUI::AlignLeft;
+        BOBUIest::newRow(name.constData()) << row << column << rowSpan << columnSpan << alignment;
     }}}}
 }
 
-// public void addItem(QGraphicsLayoutItem* item, int row, int column, int rowSpan, int columnSpan, Qt::Alignment alignment = 0)
+// public void addItem(QGraphicsLayoutItem* item, int row, int column, int rowSpan, int columnSpan, BobUI::Alignment alignment = 0)
 void tst_QGraphicsGridLayout::addItem()
 {
     QFETCH(int, row);
     QFETCH(int, column);
     QFETCH(int, rowSpan);
     QFETCH(int, columnSpan);
-    QFETCH(Qt::Alignment, alignment);
+    QFETCH(BobUI::Alignment, alignment);
 
     QGraphicsGridLayout *layout = new QGraphicsGridLayout;
 
     QGraphicsWidget *wid = new QGraphicsWidget;
     if (row < 0 || column < 0) {
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsGridLayout::addItem: invalid row/column: -1");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsGridLayout::addItem: invalid row/column: -1");
     } else if (rowSpan < 1 || columnSpan < 1) {
         char buf[1024];
         std::snprintf(buf, sizeof(buf),
                       "QGraphicsGridLayout::addItem: invalid row span/column span: %d",
                       rowSpan < 1 ? rowSpan : columnSpan);
-        QTest::ignoreMessage(QtWarningMsg, buf);
+        BOBUIest::ignoreMessage(BobUIWarningMsg, buf);
     }
     layout->addItem(wid, row, column, rowSpan, columnSpan, alignment);
 
@@ -425,22 +425,22 @@ void tst_QGraphicsGridLayout::addItem()
 
 void tst_QGraphicsGridLayout::alignment_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 
-// public Qt::Alignment alignment(QGraphicsLayoutItem* item) const
+// public BobUI::Alignment alignment(QGraphicsLayoutItem* item) const
 void tst_QGraphicsGridLayout::alignment()
 {
 #ifdef Q_OS_MAC
-    QSKIP("Resizing a QGraphicsWidget to effectiveSizeHint(Qt::MaximumSize) is currently not supported on mac");
+    QSKIP("Resizing a QGraphicsWidget to effectiveSizeHint(BobUI::MaximumSize) is currently not supported on mac");
 #endif
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -450,7 +450,7 @@ void tst_QGraphicsGridLayout::alignment()
 
     view.show();
     widget->show();
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     QApplication::processEvents();
     // no alignment (the default)
     QCOMPARE(layout->itemAt(0, 0)->geometry().left(), 0.0);
@@ -474,16 +474,16 @@ void tst_QGraphicsGridLayout::alignment()
 
     // align first column left, second hcenter, third right
     layout->setColumnMinimumWidth(0, 100);
-    layout->setAlignment(layout->itemAt(0,0), Qt::AlignLeft);
-    layout->setAlignment(layout->itemAt(1,0), Qt::AlignLeft);
+    layout->setAlignment(layout->itemAt(0,0), BobUI::AlignLeft);
+    layout->setAlignment(layout->itemAt(1,0), BobUI::AlignLeft);
     layout->setColumnMinimumWidth(1, 100);
-    layout->setAlignment(layout->itemAt(0,1), Qt::AlignHCenter);
-    layout->setAlignment(layout->itemAt(1,1), Qt::AlignHCenter);
+    layout->setAlignment(layout->itemAt(0,1), BobUI::AlignHCenter);
+    layout->setAlignment(layout->itemAt(1,1), BobUI::AlignHCenter);
     layout->setColumnMinimumWidth(2, 100);
-    layout->setAlignment(layout->itemAt(0,2), Qt::AlignRight);
-    layout->setAlignment(layout->itemAt(1,2), Qt::AlignRight);
+    layout->setAlignment(layout->itemAt(0,2), BobUI::AlignRight);
+    layout->setAlignment(layout->itemAt(1,2), BobUI::AlignRight);
 
-    widget->resize(widget->effectiveSizeHint(Qt::MaximumSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::MaximumSize));
     QApplication::processEvents();
 
     QCOMPARE(layout->itemAt(0,0)->geometry(), QRectF(0,    0,  50,  50));
@@ -498,23 +498,23 @@ void tst_QGraphicsGridLayout::alignment()
 
 void tst_QGraphicsGridLayout::columnAlignment_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 
-// public void setColumnAlignment(int column, Qt::Alignment alignment)
-// public Qt::Alignment columnAlignment(int column) const
+// public void setColumnAlignment(int column, BobUI::Alignment alignment)
+// public BobUI::Alignment columnAlignment(int column) const
 void tst_QGraphicsGridLayout::columnAlignment()
 {
 #ifdef Q_OS_MAC
-    QSKIP("Resizing a QGraphicsWidget to effectiveSizeHint(Qt::MaximumSize) is currently not supported on mac");
+    QSKIP("Resizing a QGraphicsWidget to effectiveSizeHint(BobUI::MaximumSize) is currently not supported on mac");
 #endif
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -528,7 +528,7 @@ void tst_QGraphicsGridLayout::columnAlignment()
     layout->setColumnMinimumWidth(2, 100);
 
     view.resize(450,150);
-    widget->resize(widget->effectiveSizeHint(Qt::MaximumSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::MaximumSize));
     view.show();
     widget->show();
     QApplication::sendPostedEvents(0, 0);
@@ -537,14 +537,14 @@ void tst_QGraphicsGridLayout::columnAlignment()
     QCOMPARE(layout->columnAlignment(1), 0);
     QCOMPARE(layout->columnAlignment(2), 0);
 
-    layout->setColumnAlignment(0, Qt::AlignLeft);
-    layout->setColumnAlignment(1, Qt::AlignHCenter);
-    layout->setColumnAlignment(2, Qt::AlignRight);
+    layout->setColumnAlignment(0, BobUI::AlignLeft);
+    layout->setColumnAlignment(1, BobUI::AlignHCenter);
+    layout->setColumnAlignment(2, BobUI::AlignRight);
 
     // see if item alignment takes preference over columnAlignment
-    layout->setAlignment(layout->itemAt(1,0), Qt::AlignHCenter);
-    layout->setAlignment(layout->itemAt(1,1), Qt::AlignRight);
-    layout->setAlignment(layout->itemAt(1,2), Qt::AlignLeft);
+    layout->setAlignment(layout->itemAt(1,0), BobUI::AlignHCenter);
+    layout->setAlignment(layout->itemAt(1,1), BobUI::AlignRight);
+    layout->setAlignment(layout->itemAt(1,2), BobUI::AlignLeft);
 
     QApplication::sendPostedEvents(0, 0);  // process LayoutRequest
     /*
@@ -566,10 +566,10 @@ void tst_QGraphicsGridLayout::columnAlignment()
 
 void tst_QGraphicsGridLayout::columnCount_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 // public int columnCount() const
 void tst_QGraphicsGridLayout::columnCount()
@@ -577,7 +577,7 @@ void tst_QGraphicsGridLayout::columnCount()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -624,10 +624,10 @@ void tst_QGraphicsGridLayout::columnCount()
 
 void tst_QGraphicsGridLayout::columnMaximumWidth_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 // public qreal columnMaximumWidth(int column) const
 void tst_QGraphicsGridLayout::columnMaximumWidth()
@@ -635,7 +635,7 @@ void tst_QGraphicsGridLayout::columnMaximumWidth()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -659,7 +659,7 @@ void tst_QGraphicsGridLayout::columnMaximumWidth()
     QCOMPARE(layout->maximumSize(), QSizeF(20+50+60, 50+50));
     QCOMPARE(layout->maximumSize(), widget->maximumSize());
 
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     layout->activate();
 
     QCOMPARE(layout->itemAt(0,0)->geometry(), QRectF(0, 0, 20, 25));
@@ -669,8 +669,8 @@ void tst_QGraphicsGridLayout::columnMaximumWidth()
     QCOMPARE(layout->itemAt(0,2)->geometry(), QRectF(45, 0, 25, 25));
     QCOMPARE(layout->itemAt(1,2)->geometry(), QRectF(45, 25, 25, 25));
 
-    layout->setColumnAlignment(2, Qt::AlignCenter);
-    widget->resize(widget->effectiveSizeHint(Qt::MaximumSize));
+    layout->setColumnAlignment(2, BobUI::AlignCenter);
+    widget->resize(widget->effectiveSizeHint(BobUI::MaximumSize));
     layout->activate();
     QCOMPARE(layout->geometry(), QRectF(0,0,20+50+60, 50+50));
     QCOMPARE(layout->itemAt(0,0)->geometry(), QRectF(0, 0, 20, 50));
@@ -681,7 +681,7 @@ void tst_QGraphicsGridLayout::columnMaximumWidth()
     QCOMPARE(layout->itemAt(1,2)->geometry(), QRectF(75, 50, 50, 50));
 
     for (int i = 0; i < layout->count(); i++)
-        layout->setAlignment(layout->itemAt(i), Qt::AlignRight | Qt::AlignBottom);
+        layout->setAlignment(layout->itemAt(i), BobUI::AlignRight | BobUI::AlignBottom);
     layout->activate();
     QCOMPARE(layout->itemAt(0,0)->geometry(), QRectF(0, 0, 20, 50));
     QCOMPARE(layout->itemAt(1,0)->geometry(), QRectF(0, 50, 20, 50));
@@ -690,10 +690,10 @@ void tst_QGraphicsGridLayout::columnMaximumWidth()
     QCOMPARE(layout->itemAt(0,2)->geometry(), QRectF(80, 0, 50, 50));
     QCOMPARE(layout->itemAt(1,2)->geometry(), QRectF(80, 50, 50, 50));
     for (int i = 0; i < layout->count(); i++)
-        layout->setAlignment(layout->itemAt(i), Qt::AlignCenter);
+        layout->setAlignment(layout->itemAt(i), BobUI::AlignCenter);
 
     layout->setMaximumSize(layout->maximumSize() + QSizeF(60,60));
-    widget->resize(widget->effectiveSizeHint(Qt::MaximumSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::MaximumSize));
     layout->activate();
 
     QCOMPARE(layout->itemAt(0,0)->geometry(), QRectF(0, 15, 20, 50));
@@ -704,7 +704,7 @@ void tst_QGraphicsGridLayout::columnMaximumWidth()
     QCOMPARE(layout->itemAt(1,2)->geometry(), QRectF(20+60+50+5, 95, 50, 50));
 
     layout->setMaximumSize(layout->preferredSize() + QSizeF(20,20));
-    widget->resize(widget->effectiveSizeHint(Qt::MaximumSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::MaximumSize));
     layout->activate();
 
     QCOMPARE(layout->itemAt(0,0)->geometry(), QRectF(0, 0, 20, 35));
@@ -719,10 +719,10 @@ void tst_QGraphicsGridLayout::columnMaximumWidth()
 
 void tst_QGraphicsGridLayout::columnMinimumWidth_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 // public qreal columnMinimumWidth(int column) const
 void tst_QGraphicsGridLayout::columnMinimumWidth()
@@ -730,7 +730,7 @@ void tst_QGraphicsGridLayout::columnMinimumWidth()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -747,7 +747,7 @@ void tst_QGraphicsGridLayout::columnMinimumWidth()
 
     view.show();
     widget->show();
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     QApplication::processEvents();
 
     QCOMPARE(layout->itemAt(0,0)->geometry().width(), 25.0);
@@ -762,10 +762,10 @@ void tst_QGraphicsGridLayout::columnMinimumWidth()
 
 void tst_QGraphicsGridLayout::columnPreferredWidth_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 // public qreal columnPreferredWidth(int column) const
 void tst_QGraphicsGridLayout::columnPreferredWidth()
@@ -773,7 +773,7 @@ void tst_QGraphicsGridLayout::columnPreferredWidth()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -790,7 +790,7 @@ void tst_QGraphicsGridLayout::columnPreferredWidth()
 
     view.show();
     widget->show();
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     QApplication::processEvents();
 
     QCOMPARE(layout->itemAt(0,0)->geometry().width(), 25.0);
@@ -808,7 +808,7 @@ void tst_QGraphicsGridLayout::setColumnFixedWidth()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -821,7 +821,7 @@ void tst_QGraphicsGridLayout::setColumnFixedWidth()
 
     view.show();
     widget->show();
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     QApplication::processEvents();
 
     QCOMPARE(layout->itemAt(0,0)->geometry().width(), 20.0);
@@ -840,7 +840,7 @@ void tst_QGraphicsGridLayout::columnSpacing()
     {
         QGraphicsScene scene;
         QGraphicsView view(&scene);
-        QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+        QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
         QGraphicsGridLayout *layout = new QGraphicsGridLayout();
         scene.addItem(widget);
         widget->setLayout(layout);
@@ -852,7 +852,7 @@ void tst_QGraphicsGridLayout::columnSpacing()
         layout->setColumnSpacing(0, 20);
         view.show();
         widget->show();
-        widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+        widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
         QApplication::processEvents();
 
         QCOMPARE(layout->itemAt(0,0)->geometry().left(),   0.0);
@@ -913,7 +913,7 @@ void tst_QGraphicsGridLayout::columnStretchFactor()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -943,7 +943,7 @@ void tst_QGraphicsGridLayout::count()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -966,9 +966,9 @@ void tst_QGraphicsGridLayout::count()
 
 void tst_QGraphicsGridLayout::horizontalSpacing_data()
 {
-    QTest::addColumn<qreal>("horizontalSpacing");
-    QTest::newRow("zero") << qreal(0.0);
-    QTest::newRow("10") << qreal(10.0);
+    BOBUIest::addColumn<qreal>("horizontalSpacing");
+    BOBUIest::newRow("zero") << qreal(0.0);
+    BOBUIest::newRow("10") << qreal(10.0);
 }
 
 // public qreal horizontalSpacing() const
@@ -977,20 +977,20 @@ void tst_QGraphicsGridLayout::horizontalSpacing()
     QFETCH(qreal, horizontalSpacing);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
     populateLayout(layout, 3, 2);
     layout->setContentsMargins(0, 0, 0, 0);
-    qreal w = layout->sizeHint(Qt::PreferredSize, QSizeF()).width();
+    qreal w = layout->sizeHint(BobUI::PreferredSize, QSizeF()).width();
     qreal oldSpacing = layout->horizontalSpacing();
 
     // The remainder of this test is only applicable if the current style uses uniform layout spacing
     if (oldSpacing != -1) {
         layout->setHorizontalSpacing(horizontalSpacing);
         QApplication::processEvents();
-        qreal new_w = layout->sizeHint(Qt::PreferredSize, QSizeF()).width();
+        qreal new_w = layout->sizeHint(BobUI::PreferredSize, QSizeF()).width();
         QCOMPARE(new_w, w - (3-1)*(oldSpacing - horizontalSpacing));
     }
     delete widget;
@@ -1000,7 +1000,7 @@ void tst_QGraphicsGridLayout::contentsMargins()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     QGraphicsGridLayout *sublayout = new QGraphicsGridLayout();
     scene.addItem(widget);
@@ -1031,7 +1031,7 @@ void tst_QGraphicsGridLayout::itemAt()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1052,7 +1052,7 @@ void tst_QGraphicsGridLayout::itemAt()
             QVERIFY(layout->itemAt(i));
         } else {
             const QByteArray message = "QGraphicsGridLayout::itemAt: invalid index " + QByteArray::number(i);
-            QTest::ignoreMessage(QtWarningMsg, message.constData());
+            BOBUIest::ignoreMessage(BobUIWarningMsg, message.constData());
             QCOMPARE(layout->itemAt(i), nullptr);
         }
     }
@@ -1064,7 +1064,7 @@ void tst_QGraphicsGridLayout::removeAt()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1084,7 +1084,7 @@ void tst_QGraphicsGridLayout::removeAt()
     layout->removeAt(0);
     QCOMPARE(item0->parentLayoutItem(), nullptr);
     QCOMPARE(layout->count(), 0);
-    QTest::ignoreMessage(QtWarningMsg, QString::fromLatin1("QGraphicsGridLayout::removeAt: invalid index 0").toLatin1().constData());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QString::fromLatin1("QGraphicsGridLayout::removeAt: invalid index 0").toLatin1().constData());
     layout->removeAt(0);
     QCOMPARE(layout->count(), 0);
     delete widget;
@@ -1095,7 +1095,7 @@ void tst_QGraphicsGridLayout::removeItem()
     QGraphicsScene scene;
     QGraphicsView view(&scene);
 
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     scene.addItem(widget);
     QGraphicsGridLayout *l = new QGraphicsGridLayout();
     widget->setLayout(l);
@@ -1107,30 +1107,30 @@ void tst_QGraphicsGridLayout::removeItem()
     QCOMPARE(l->count(), 4);
 
     // Avoid crashing. Note that the warning message might change in the future.
-    QTest::ignoreMessage(QtWarningMsg, QString::fromLatin1("QGraphicsGridLayout::removeAt: invalid index -1").toLatin1().constData());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QString::fromLatin1("QGraphicsGridLayout::removeAt: invalid index -1").toLatin1().constData());
     l->removeItem(0);
     QCOMPARE(l->count(), 4);
 
-    QTest::ignoreMessage(QtWarningMsg, QString::fromLatin1("QGraphicsGridLayout::removeAt: invalid index -1").toLatin1().constData());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QString::fromLatin1("QGraphicsGridLayout::removeAt: invalid index -1").toLatin1().constData());
     l->removeItem(new QGraphicsWidget(widget));
     QCOMPARE(l->count(), 4);
 }
 
 void tst_QGraphicsGridLayout::rowAlignment_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 
-// public Qt::Alignment rowAlignment(int row) const
+// public BobUI::Alignment rowAlignment(int row) const
 void tst_QGraphicsGridLayout::rowAlignment()
 {
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1157,28 +1157,28 @@ void tst_QGraphicsGridLayout::rowAlignment()
     layout->setColumnMinimumWidth(0, 100.0);
     layout->setColumnMinimumWidth(1, 100.0);
 
-    layout->setRowAlignment(0, Qt::AlignBottom);
-    layout->setRowAlignment(1, Qt::AlignVCenter);
-    layout->setRowAlignment(2, Qt::AlignTop);
+    layout->setRowAlignment(0, BobUI::AlignBottom);
+    layout->setRowAlignment(1, BobUI::AlignVCenter);
+    layout->setRowAlignment(2, BobUI::AlignTop);
 
     // see if item alignment takes preference over rowAlignment
-    layout->setAlignment(layout->itemAt(0,0), Qt::AlignRight);
-    layout->setAlignment(layout->itemAt(1,0), Qt::AlignTop);
-    layout->setAlignment(layout->itemAt(2,0), Qt::AlignHCenter);
+    layout->setAlignment(layout->itemAt(0,0), BobUI::AlignRight);
+    layout->setAlignment(layout->itemAt(1,0), BobUI::AlignTop);
+    layout->setAlignment(layout->itemAt(2,0), BobUI::AlignHCenter);
 
     QApplication::sendPostedEvents(0, 0);   // process LayoutRequest
 
-    QCOMPARE(layout->alignment(layout->itemAt(0,0)), Qt::AlignRight);  //Qt::AlignRight | Qt::AlignBottom
+    QCOMPARE(layout->alignment(layout->itemAt(0,0)), BobUI::AlignRight);  //BobUI::AlignRight | BobUI::AlignBottom
     QCOMPARE(layout->itemAt(0,0)->geometry(), QRectF(50,  50,  50,  50));
-    QCOMPARE(layout->rowAlignment(0), Qt::AlignBottom);
+    QCOMPARE(layout->rowAlignment(0), BobUI::AlignBottom);
     QCOMPARE(layout->itemAt(0,1)->geometry(), QRectF(101, 50,  50,  50));
-    QCOMPARE(layout->alignment(layout->itemAt(1,0)), Qt::AlignTop);
+    QCOMPARE(layout->alignment(layout->itemAt(1,0)), BobUI::AlignTop);
     QCOMPARE(layout->itemAt(1,0)->geometry(), QRectF(0,  101,  50,  50));
-    QCOMPARE(layout->rowAlignment(1), Qt::AlignVCenter);
+    QCOMPARE(layout->rowAlignment(1), BobUI::AlignVCenter);
     QCOMPARE(layout->itemAt(1,1)->geometry(), QRectF(101, 126, 50,  50));
-    QCOMPARE(layout->alignment(layout->itemAt(2,0)), Qt::AlignHCenter);
+    QCOMPARE(layout->alignment(layout->itemAt(2,0)), BobUI::AlignHCenter);
     QCOMPARE(layout->itemAt(2,0)->geometry(), QRectF(25, 202,  50,  50));
-    QCOMPARE(layout->rowAlignment(2), Qt::AlignTop);
+    QCOMPARE(layout->rowAlignment(2), BobUI::AlignTop);
     QCOMPARE(layout->itemAt(2,1)->geometry(), QRectF(101,202,  50,  50));
 
     delete widget;
@@ -1186,10 +1186,10 @@ void tst_QGraphicsGridLayout::rowAlignment()
 
 void tst_QGraphicsGridLayout::rowCount_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 
 // public int rowCount() const
@@ -1199,7 +1199,7 @@ void tst_QGraphicsGridLayout::rowCount()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1223,10 +1223,10 @@ void tst_QGraphicsGridLayout::rowCount()
 
 void tst_QGraphicsGridLayout::rowMaximumHeight_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 
 // public qreal rowMaximumHeight(int row) const
@@ -1235,7 +1235,7 @@ void tst_QGraphicsGridLayout::rowMaximumHeight()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout;
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1252,7 +1252,7 @@ void tst_QGraphicsGridLayout::rowMaximumHeight()
 
     view.show();
     widget->show();
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     QApplication::processEvents();
 
     QCOMPARE(layout->itemAt(0,0)->geometry().height(), 20.0);
@@ -1265,10 +1265,10 @@ void tst_QGraphicsGridLayout::rowMaximumHeight()
 
 void tst_QGraphicsGridLayout::rowMinimumHeight_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 // public qreal rowMinimumHeight(int row) const
 void tst_QGraphicsGridLayout::rowMinimumHeight()
@@ -1276,7 +1276,7 @@ void tst_QGraphicsGridLayout::rowMinimumHeight()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1293,7 +1293,7 @@ void tst_QGraphicsGridLayout::rowMinimumHeight()
 
     view.show();
     widget->show();
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     QApplication::processEvents();
 
     QCOMPARE(layout->itemAt(0,0)->geometry().height(), 25.0);
@@ -1308,10 +1308,10 @@ void tst_QGraphicsGridLayout::rowMinimumHeight()
 
 void tst_QGraphicsGridLayout::rowPreferredHeight_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 // public qreal rowPreferredHeight(int row) const
 void tst_QGraphicsGridLayout::rowPreferredHeight()
@@ -1319,7 +1319,7 @@ void tst_QGraphicsGridLayout::rowPreferredHeight()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1336,10 +1336,10 @@ void tst_QGraphicsGridLayout::rowPreferredHeight()
 
     view.show();
     widget->show();
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     QApplication::processEvents();
 
-    // ### Jasmin: Should rowPreferredHeight have precedence over sizeHint(Qt::PreferredSize) ?
+    // ### Jasmin: Should rowPreferredHeight have precedence over sizeHint(BobUI::PreferredSize) ?
     QCOMPARE(layout->itemAt(0,0)->geometry().height(), 25.0);
     QCOMPARE(layout->itemAt(0,1)->geometry().height(), 25.0);
     QCOMPARE(layout->itemAt(1,0)->geometry().height(), 25.0);
@@ -1355,7 +1355,7 @@ void tst_QGraphicsGridLayout::setRowFixedHeight()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1368,7 +1368,7 @@ void tst_QGraphicsGridLayout::setRowFixedHeight()
 
     view.show();
     widget->show();
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     QApplication::processEvents();
 
     QCOMPARE(layout->itemAt(0,0)->geometry().height(), 20.0);
@@ -1386,7 +1386,7 @@ void tst_QGraphicsGridLayout::rowSpacing()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1398,7 +1398,7 @@ void tst_QGraphicsGridLayout::rowSpacing()
     layout->setColumnSpacing(0, 20);
     view.show();
     widget->show();
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     QApplication::processEvents();
 
     QCOMPARE(layout->itemAt(0,0)->geometry().left(),   0.0);
@@ -1414,10 +1414,10 @@ void tst_QGraphicsGridLayout::rowSpacing()
 
 void tst_QGraphicsGridLayout::rowStretchFactor_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 
 // public int rowStretchFactor(int row) const
@@ -1426,7 +1426,7 @@ void tst_QGraphicsGridLayout::rowStretchFactor()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1452,14 +1452,14 @@ void tst_QGraphicsGridLayout::rowStretchFactor()
 
 void tst_QGraphicsGridLayout::setColumnSpacing_data()
 {
-    QTest::addColumn<int>("column");
-    QTest::addColumn<qreal>("spacing");
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<int>("column");
+    BOBUIest::addColumn<qreal>("spacing");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("null") << 0 << qreal(0.0) << false;
-    QTest::newRow("10") << 0 << qreal(10.0) << false;
-    QTest::newRow("null, hasHeightForWidth") << 0 << qreal(0.0) << true;
-    QTest::newRow("10, hasHeightForWidth") << 0 << qreal(10.0) << true;
+    BOBUIest::newRow("null") << 0 << qreal(0.0) << false;
+    BOBUIest::newRow("10") << 0 << qreal(10.0) << false;
+    BOBUIest::newRow("null, hasHeightForWidth") << 0 << qreal(0.0) << true;
+    BOBUIest::newRow("10, hasHeightForWidth") << 0 << qreal(10.0) << true;
 }
 
 // public void setColumnSpacing(int column, qreal spacing)
@@ -1471,7 +1471,7 @@ void tst_QGraphicsGridLayout::setColumnSpacing()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1480,17 +1480,17 @@ void tst_QGraphicsGridLayout::setColumnSpacing()
     layout->setContentsMargins(0, 0, 0, 0);
     qreal oldSpacing = layout->columnSpacing(column);
     QCOMPARE(oldSpacing, 0.0);
-    qreal w = layout->sizeHint(Qt::PreferredSize, QSizeF()).width();
+    qreal w = layout->sizeHint(BobUI::PreferredSize, QSizeF()).width();
     layout->setColumnSpacing(column, spacing);
     QApplication::processEvents();
-    QCOMPARE(layout->sizeHint(Qt::PreferredSize, QSizeF()).width(), w + spacing);
+    QCOMPARE(layout->sizeHint(BobUI::PreferredSize, QSizeF()).width(), w + spacing);
 }
 
 void tst_QGraphicsGridLayout::setGeometry_data()
 {
-    QTest::addColumn<QRectF>("rect");
-    QTest::newRow("null") << QRectF();
-    QTest::newRow("normal") << QRectF(0,0, 50, 50);
+    BOBUIest::addColumn<QRectF>("rect");
+    BOBUIest::newRow("null") << QRectF();
+    BOBUIest::newRow("normal") << QRectF(0,0, 50, 50);
 }
 
 // public void setGeometry(QRectF const& rect)
@@ -1510,14 +1510,14 @@ void tst_QGraphicsGridLayout::setGeometry()
 
 void tst_QGraphicsGridLayout::setRowSpacing_data()
 {
-    QTest::addColumn<int>("row");
-    QTest::addColumn<qreal>("spacing");
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<qreal>("spacing");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("null") << 0 << qreal(0.0) << false;
-    QTest::newRow("10") << 0 << qreal(10.0) << false;
-    QTest::newRow("null, hasHeightForWidth") << 0 << qreal(0.0) << true;
-    QTest::newRow("10, hasHeightForWidth") << 0 << qreal(10.0) << true;
+    BOBUIest::newRow("null") << 0 << qreal(0.0) << false;
+    BOBUIest::newRow("10") << 0 << qreal(10.0) << false;
+    BOBUIest::newRow("null, hasHeightForWidth") << 0 << qreal(0.0) << true;
+    BOBUIest::newRow("10, hasHeightForWidth") << 0 << qreal(10.0) << true;
 }
 
 // public void setRowSpacing(int row, qreal spacing)
@@ -1529,7 +1529,7 @@ void tst_QGraphicsGridLayout::setRowSpacing()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1538,20 +1538,20 @@ void tst_QGraphicsGridLayout::setRowSpacing()
     layout->setContentsMargins(0, 0, 0, 0);
     qreal oldSpacing = layout->rowSpacing(row);
     QCOMPARE(oldSpacing, 0.0);
-    qreal h = layout->sizeHint(Qt::PreferredSize, QSizeF()).height();
+    qreal h = layout->sizeHint(BobUI::PreferredSize, QSizeF()).height();
     layout->setRowSpacing(row, spacing);
     QApplication::processEvents();
-    QCOMPARE(layout->sizeHint(Qt::PreferredSize, QSizeF()).height(), h + spacing);
+    QCOMPARE(layout->sizeHint(BobUI::PreferredSize, QSizeF()).height(), h + spacing);
 }
 
 void tst_QGraphicsGridLayout::setSpacing_data()
 {
-    QTest::addColumn<qreal>("spacing");
-    QTest::addColumn<bool>("hasHeightForWidth");
-    QTest::newRow("zero") << qreal(0.0) << false;
-    QTest::newRow("17") << qreal(17.0) << false;
-    QTest::newRow("zero, hasHeightForWidth") << qreal(0.0) << true;
-    QTest::newRow("17, hasHeightForWidth") << qreal(17.0) << true;
+    BOBUIest::addColumn<qreal>("spacing");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::newRow("zero") << qreal(0.0) << false;
+    BOBUIest::newRow("17") << qreal(17.0) << false;
+    BOBUIest::newRow("zero, hasHeightForWidth") << qreal(0.0) << true;
+    BOBUIest::newRow("17, hasHeightForWidth") << qreal(17.0) << true;
 }
 
 // public void setSpacing(qreal spacing)
@@ -1561,13 +1561,13 @@ void tst_QGraphicsGridLayout::setSpacing()
     QFETCH(bool, hasHeightForWidth);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
     populateLayout(layout, 3, 2, hasHeightForWidth);
     layout->setContentsMargins(0, 0, 0, 0);
-    QSizeF sh = layout->sizeHint(Qt::PreferredSize, QSizeF());
+    QSizeF sh = layout->sizeHint(BobUI::PreferredSize, QSizeF());
     qreal oldVSpacing = layout->verticalSpacing();
     qreal oldHSpacing = layout->horizontalSpacing();
 
@@ -1575,7 +1575,7 @@ void tst_QGraphicsGridLayout::setSpacing()
     if (oldVSpacing != -1) {
         layout->setSpacing(spacing);
         QApplication::processEvents();
-        QSizeF newSH = layout->sizeHint(Qt::PreferredSize, QSizeF());
+        QSizeF newSH = layout->sizeHint(BobUI::PreferredSize, QSizeF());
         QCOMPARE(newSH.height(), sh.height() - (2-1)*(oldVSpacing - spacing));
         QCOMPARE(newSH.width(), sh.width() - (3-1)*(oldHSpacing - spacing));
     }
@@ -1584,12 +1584,12 @@ void tst_QGraphicsGridLayout::setSpacing()
 
 void tst_QGraphicsGridLayout::sizeHint_data()
 {
-    QTest::addColumn<ItemList>("itemDescriptions");
-    QTest::addColumn<QSizeF>("expectedMinimumSizeHint");
-    QTest::addColumn<QSizeF>("expectedPreferredSizeHint");
-    QTest::addColumn<QSizeF>("expectedMaximumSizeHint");
+    BOBUIest::addColumn<ItemList>("itemDescriptions");
+    BOBUIest::addColumn<QSizeF>("expectedMinimumSizeHint");
+    BOBUIest::addColumn<QSizeF>("expectedPreferredSizeHint");
+    BOBUIest::addColumn<QSizeF>("expectedMaximumSizeHint");
 
-    QTest::newRow("rowSpan_larger_than_rows") << (ItemList()
+    BOBUIest::newRow("rowSpan_larger_than_rows") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(50,300))
                                         .maxSize(QSizeF(50,300))
@@ -1607,7 +1607,7 @@ void tst_QGraphicsGridLayout::sizeHint_data()
                             << QSizeF(100, 300)
                             << QSizeF(100, 2000);
 
-    QTest::newRow("rowSpan_smaller_than_rows") << (ItemList()
+    BOBUIest::newRow("rowSpan_smaller_than_rows") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(50, 0))
                                         .preferredSize(QSizeF(50, 50))
@@ -1626,7 +1626,7 @@ void tst_QGraphicsGridLayout::sizeHint_data()
                             << QSizeF(100, 100)
                             << QSizeF(100, 100);
 
-    QTest::newRow("colSpan_with_ignored_column") << (ItemList()
+    BOBUIest::newRow("colSpan_with_ignored_column") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(40,20))
                                         .maxSize(QSizeF(60,20))
@@ -1645,7 +1645,7 @@ void tst_QGraphicsGridLayout::sizeHint_data()
 
 }
 
-// public QSizeF sizeHint(Qt::SizeHint which, QSizeF const& constraint = QSizeF()) const
+// public QSizeF sizeHint(BobUI::SizeHint which, QSizeF const& constraint = QSizeF()) const
 void tst_QGraphicsGridLayout::sizeHint()
 {
     QFETCH(ItemList, itemDescriptions);
@@ -1655,7 +1655,7 @@ void tst_QGraphicsGridLayout::sizeHint()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout;
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1675,17 +1675,17 @@ void tst_QGraphicsGridLayout::sizeHint()
     widget->show();
     view.show();
     view.resize(400,300);
-    QCOMPARE(layout->sizeHint(Qt::MinimumSize), expectedMinimumSizeHint);
-    QCOMPARE(layout->sizeHint(Qt::PreferredSize), expectedPreferredSizeHint);
-    QCOMPARE(layout->sizeHint(Qt::MaximumSize), expectedMaximumSizeHint);
+    QCOMPARE(layout->sizeHint(BobUI::MinimumSize), expectedMinimumSizeHint);
+    QCOMPARE(layout->sizeHint(BobUI::PreferredSize), expectedPreferredSizeHint);
+    QCOMPARE(layout->sizeHint(BobUI::MaximumSize), expectedMaximumSizeHint);
 
 }
 
 void tst_QGraphicsGridLayout::verticalSpacing_data()
 {
-    QTest::addColumn<qreal>("verticalSpacing");
-    QTest::newRow("zero") << qreal(0.0);
-    QTest::newRow("17") << qreal(10.0);
+    BOBUIest::addColumn<qreal>("verticalSpacing");
+    BOBUIest::newRow("zero") << qreal(0.0);
+    BOBUIest::newRow("17") << qreal(10.0);
 }
 
 // public qreal verticalSpacing() const
@@ -1694,20 +1694,20 @@ void tst_QGraphicsGridLayout::verticalSpacing()
     QFETCH(qreal, verticalSpacing);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout();
     scene.addItem(widget);
     widget->setLayout(layout);
     populateLayout(layout, 3, 2);
     layout->setContentsMargins(0, 0, 0, 0);
-    qreal h = layout->sizeHint(Qt::PreferredSize, QSizeF()).height();
+    qreal h = layout->sizeHint(BobUI::PreferredSize, QSizeF()).height();
     qreal oldSpacing = layout->verticalSpacing();
 
     // The remainder of this test is only applicable if the current style uses uniform layout spacing
     if (oldSpacing != -1) {
         layout->setVerticalSpacing(verticalSpacing);
         QApplication::processEvents();
-        qreal new_h = layout->sizeHint(Qt::PreferredSize, QSizeF()).height();
+        qreal new_h = layout->sizeHint(BobUI::PreferredSize, QSizeF()).height();
         QCOMPARE(new_h, h - (2-1)*(oldSpacing - verticalSpacing));
     }
     delete widget;
@@ -1715,10 +1715,10 @@ void tst_QGraphicsGridLayout::verticalSpacing()
 
 void tst_QGraphicsGridLayout::layoutDirection_data()
 {
-    QTest::addColumn<bool>("hasHeightForWidth");
+    BOBUIest::addColumn<bool>("hasHeightForWidth");
 
-    QTest::newRow("") << false;
-    QTest::newRow("hasHeightForWidth") << true;
+    BOBUIest::newRow("") << false;
+    BOBUIest::newRow("hasHeightForWidth") << true;
 }
 
 void tst_QGraphicsGridLayout::layoutDirection()
@@ -1728,7 +1728,7 @@ void tst_QGraphicsGridLayout::layoutDirection()
     QGraphicsScene scene;
     QGraphicsView view(&scene);
 
-    QGraphicsWidget *window = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *window = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout;
     layout->setContentsMargins(1, 2, 3, 4);
     layout->setSpacing(6);
@@ -1753,8 +1753,8 @@ void tst_QGraphicsGridLayout::layoutDirection()
     w2->setSizePolicy(policy);
     w4->setSizePolicy(policy);
 
-    layout->setAlignment(w2, Qt::AlignRight);
-    layout->setAlignment(w3, Qt::AlignLeft);
+    layout->setAlignment(w2, BobUI::AlignRight);
+    layout->setAlignment(w3, BobUI::AlignLeft);
 
     scene.addItem(window);
     window->setLayout(layout);
@@ -1770,7 +1770,7 @@ void tst_QGraphicsGridLayout::layoutDirection()
     QCOMPARE(w4->geometry().left(), 37.0);
     QCOMPARE(w4->geometry().right(), 67.0);
 
-    window->setLayoutDirection(Qt::RightToLeft);
+    window->setLayoutDirection(BobUI::RightToLeft);
     QApplication::processEvents();
     QCOMPARE(w1->geometry().left(),  39.0);
     QCOMPARE(w1->geometry().right(), 69.0);
@@ -1802,7 +1802,7 @@ void tst_QGraphicsGridLayout::removeLayout()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QRectF r1 = textEdit->geometry();
     QRectF r2 = pushButton->geometry();
@@ -1815,11 +1815,11 @@ void tst_QGraphicsGridLayout::removeLayout()
 
 void tst_QGraphicsGridLayout::defaultStretchFactors_data()
 {
-    QTest::addColumn<ItemList>("itemDescriptions");
-    QTest::addColumn<QSizeF>("newSize");
-    QTest::addColumn<SizeList>("expectedSizes");
+    BOBUIest::addColumn<ItemList>("itemDescriptions");
+    BOBUIest::addColumn<QSizeF>("newSize");
+    BOBUIest::addColumn<SizeList>("expectedSizes");
 
-    QTest::newRow("usepreferredsize") << (ItemList()
+    BOBUIest::newRow("usepreferredsize") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -1839,7 +1839,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,10) << QSizeF(10,10) << QSizeF(10,10)
                             );
 
-    QTest::newRow("preferredsizeIsZero") << (ItemList()
+    BOBUIest::newRow("preferredsizeIsZero") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(0,10))
                                     << ItemDesc(0,1)
@@ -1851,7 +1851,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,10) << QSizeF(20,10)
                             );
 
-    QTest::newRow("ignoreitem01") << (ItemList()
+    BOBUIest::newRow("ignoreitem01") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -1872,7 +1872,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,10) << QSizeF(10,10) << QSizeF(10,10)
                             );
 
-    QTest::newRow("ignoreitem01_resize120x40") << (ItemList()
+    BOBUIest::newRow("ignoreitem01_resize120x40") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -1893,7 +1893,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(20,20) << QSizeF(40,20) << QSizeF(60,20)
                             );
 
-    QTest::newRow("ignoreitem11_resize120x40") << (ItemList()
+    BOBUIest::newRow("ignoreitem11_resize120x40") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -1914,7 +1914,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(20,40) << QSizeF(40,40) << QSizeF(60,40)
                             );
 
-    QTest::newRow("ignoreitem01_span01_resize70x60") << (ItemList()
+    BOBUIest::newRow("ignoreitem01_span01_resize70x60") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -1934,7 +1934,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(20,40) << QSizeF(40,40)
                             );
 
-    QTest::newRow("ignoreitem10_resize40x120") << (ItemList()
+    BOBUIest::newRow("ignoreitem10_resize40x120") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -1956,7 +1956,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(20,60) << QSizeF(20,60)
                             );
 
-    QTest::newRow("ignoreitem01_span02") << (ItemList()
+    BOBUIest::newRow("ignoreitem01_span02") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -1976,7 +1976,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,10) << QSizeF(10,10)
                             );
 
-    QTest::newRow("ignoreitem02_span02") << (ItemList()
+    BOBUIest::newRow("ignoreitem02_span02") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -1996,7 +1996,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,10) << QSizeF(10,10)
                             );
 
-    QTest::newRow("ignoreitem02_span00_span02") << (ItemList()
+    BOBUIest::newRow("ignoreitem02_span00_span02") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                         .rowSpan(2)
@@ -2015,7 +2015,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,10)
                             );
 
-    QTest::newRow("ignoreitem00_colspan00") << (ItemList()
+    BOBUIest::newRow("ignoreitem00_colspan00") << (ItemList()
                                     << ItemDesc(0,0)
                                         .sizePolicy(QSizePolicy::Ignored)
                                         .preferredSizeHint(QSizeF(10,20))
@@ -2035,7 +2035,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,10) << QSizeF(10,10)
                             );
 
-    QTest::newRow("ignoreitem01_colspan01") << (ItemList()
+    BOBUIest::newRow("ignoreitem01_colspan01") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -2055,7 +2055,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,10) << QSizeF(10,10)
                             );
 
-    QTest::newRow("ignorecolumn1_resize70x60") << (ItemList()
+    BOBUIest::newRow("ignorecolumn1_resize70x60") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -2077,7 +2077,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(20,40) << QSizeF(10,40) << QSizeF(40,40)
                             );
 
-    QTest::newRow("ignorerow0") << (ItemList()
+    BOBUIest::newRow("ignorerow0") << (ItemList()
                                     << ItemDesc(0,0)
                                         .sizePolicy(QSizePolicy::Ignored)
                                         .preferredSizeHint(QSizeF(10,10))
@@ -2100,7 +2100,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,10) << QSizeF(10,10) << QSizeF(10,10)
                             );
 
-    QTest::newRow("ignorerow1") << (ItemList()
+    BOBUIest::newRow("ignorerow1") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                     << ItemDesc(0,1)
@@ -2123,7 +2123,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors_data()
                                 << QSizeF(10,0) << QSizeF(10,0) << QSizeF(10,0)
                             );
 
-    QTest::newRow("ignorerow0_resize60x50") << (ItemList()
+    BOBUIest::newRow("ignorerow0_resize60x50") << (ItemList()
                                     << ItemDesc(0,0)
                                         .sizePolicy(QSizePolicy::Ignored)
                                         .preferredSizeHint(QSizeF(10,10))
@@ -2156,7 +2156,7 @@ void tst_QGraphicsGridLayout::defaultStretchFactors()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout;
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -2192,11 +2192,11 @@ typedef QList<QRectF> RectList;
 
 void tst_QGraphicsGridLayout::alignment2_data()
 {
-    QTest::addColumn<ItemList>("itemDescriptions");
-    QTest::addColumn<QSizeF>("newSize");
-    QTest::addColumn<RectList>("expectedGeometries");
+    BOBUIest::addColumn<ItemList>("itemDescriptions");
+    BOBUIest::addColumn<QSizeF>("newSize");
+    BOBUIest::addColumn<RectList>("expectedGeometries");
 
-    QTest::newRow("hor_sizepolicy_fixed") << (ItemList()
+    BOBUIest::newRow("hor_sizepolicy_fixed") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,20))
                                         .sizePolicyV(QSizePolicy::Fixed)
@@ -2209,49 +2209,49 @@ void tst_QGraphicsGridLayout::alignment2_data()
                                 << QRectF(0, 0, 10,20) << QRectF(10, 0, 10,10)
                             );
 
-    QTest::newRow("hor_sizepolicy_fixed_alignvcenter") << (ItemList()
+    BOBUIest::newRow("hor_sizepolicy_fixed_alignvcenter") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,20))
                                         .sizePolicyV(QSizePolicy::Fixed)
                                     << ItemDesc(0,1)
                                         .preferredSizeHint(QSizeF(10,10))
                                         .sizePolicyV(QSizePolicy::Fixed)
-                                        .alignment(Qt::AlignVCenter)
+                                        .alignment(BobUI::AlignVCenter)
                                 )
                             << QSizeF()
                             << (RectList()
                                 << QRectF(0, 0, 10,20) << QRectF(10, 5, 10,10)
                             );
 
-    QTest::newRow("hor_sizepolicy_fixed_aligntop") << (ItemList()
+    BOBUIest::newRow("hor_sizepolicy_fixed_aligntop") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,20))
                                         .sizePolicyV(QSizePolicy::Fixed)
                                     << ItemDesc(0,1)
                                         .preferredSizeHint(QSizeF(10,10))
                                         .sizePolicyV(QSizePolicy::Fixed)
-                                        .alignment(Qt::AlignTop)
+                                        .alignment(BobUI::AlignTop)
                                 )
                             << QSizeF()
                             << (RectList()
                                 << QRectF(0, 0, 10,20) << QRectF(10, 0, 10,10)
                             );
 
-    QTest::newRow("hor_sizepolicy_fixed_alignbottom") << (ItemList()
+    BOBUIest::newRow("hor_sizepolicy_fixed_alignbottom") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(10,20))
                                         .sizePolicyV(QSizePolicy::Fixed)
                                     << ItemDesc(0,1)
                                         .preferredSizeHint(QSizeF(10,10))
                                         .sizePolicyV(QSizePolicy::Fixed)
-                                        .alignment(Qt::AlignBottom)
+                                        .alignment(BobUI::AlignBottom)
                                 )
                             << QSizeF()
                             << (RectList()
                                 << QRectF(0, 0, 10,20) << QRectF(10, 10, 10,10)
                             );
 
-    QTest::newRow("ver_sizepolicy_fixed") << (ItemList()
+    BOBUIest::newRow("ver_sizepolicy_fixed") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(20,10))
                                         .sizePolicyH(QSizePolicy::Fixed)
@@ -2264,42 +2264,42 @@ void tst_QGraphicsGridLayout::alignment2_data()
                                 << QRectF(0, 0, 20,10) << QRectF(0, 10, 10,10)
                             );
 
-    QTest::newRow("ver_sizepolicy_fixed_alignhcenter") << (ItemList()
+    BOBUIest::newRow("ver_sizepolicy_fixed_alignhcenter") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(20,10))
                                         .sizePolicyH(QSizePolicy::Fixed)
                                     << ItemDesc(1,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                         .sizePolicyH(QSizePolicy::Fixed)
-                                        .alignment(Qt::AlignHCenter)
+                                        .alignment(BobUI::AlignHCenter)
                                 )
                             << QSizeF()
                             << (RectList()
                                 << QRectF(0, 0, 20,10) << QRectF(5, 10, 10,10)
                             );
 
-    QTest::newRow("ver_sizepolicy_fixed_alignleft") << (ItemList()
+    BOBUIest::newRow("ver_sizepolicy_fixed_alignleft") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(20,10))
                                         .sizePolicyH(QSizePolicy::Fixed)
                                     << ItemDesc(1,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                         .sizePolicyH(QSizePolicy::Fixed)
-                                        .alignment(Qt::AlignLeft)
+                                        .alignment(BobUI::AlignLeft)
                                 )
                             << QSizeF()
                             << (RectList()
                                 << QRectF(0, 0, 20,10) << QRectF(0, 10, 10,10)
                             );
 
-    QTest::newRow("ver_sizepolicy_fixed_alignright") << (ItemList()
+    BOBUIest::newRow("ver_sizepolicy_fixed_alignright") << (ItemList()
                                     << ItemDesc(0,0)
                                         .preferredSizeHint(QSizeF(20,10))
                                         .sizePolicyH(QSizePolicy::Fixed)
                                     << ItemDesc(1,0)
                                         .preferredSizeHint(QSizeF(10,10))
                                         .sizePolicyH(QSizePolicy::Fixed)
-                                        .alignment(Qt::AlignRight)
+                                        .alignment(BobUI::AlignRight)
                                 )
                             << QSizeF()
                             << (RectList()
@@ -2315,7 +2315,7 @@ void tst_QGraphicsGridLayout::alignment2()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout;
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -2347,7 +2347,7 @@ void tst_QGraphicsGridLayout::alignment2()
     delete widget;
 }
 
-static QSizeF hfw1(Qt::SizeHint, const QSizeF &constraint)
+static QSizeF hfw1(BobUI::SizeHint, const QSizeF &constraint)
 {
     QSizeF result(constraint);
     const qreal ch = constraint.height();
@@ -2360,7 +2360,7 @@ static QSizeF hfw1(Qt::SizeHint, const QSizeF &constraint)
     return result;
 }
 
-static QSizeF wfh1(Qt::SizeHint, const QSizeF &constraint)
+static QSizeF wfh1(BobUI::SizeHint, const QSizeF &constraint)
 {
     QSizeF result(constraint);
     const qreal ch = constraint.height();
@@ -2373,7 +2373,7 @@ static QSizeF wfh1(Qt::SizeHint, const QSizeF &constraint)
     return result;
 }
 
-static QSizeF wfh2(Qt::SizeHint, const QSizeF &constraint)
+static QSizeF wfh2(BobUI::SizeHint, const QSizeF &constraint)
 {
     QSizeF result(constraint);
     const qreal ch = constraint.height();
@@ -2385,7 +2385,7 @@ static QSizeF wfh2(Qt::SizeHint, const QSizeF &constraint)
     return result;
 }
 
-static QSizeF hfw3(Qt::SizeHint, const QSizeF &constraint)
+static QSizeF hfw3(BobUI::SizeHint, const QSizeF &constraint)
 {
     QSizeF result(constraint);
     const qreal ch = constraint.height();
@@ -2398,7 +2398,7 @@ static QSizeF hfw3(Qt::SizeHint, const QSizeF &constraint)
     return result;
 }
 
-static QSizeF hfw2(Qt::SizeHint /*which*/, const QSizeF &constraint)
+static QSizeF hfw2(BobUI::SizeHint /*which*/, const QSizeF &constraint)
 {
     return QSizeF(constraint.width(), constraint.width());
 }
@@ -2406,11 +2406,11 @@ static QSizeF hfw2(Qt::SizeHint /*which*/, const QSizeF &constraint)
 void tst_QGraphicsGridLayout::geometries_data()
 {
 
-    QTest::addColumn<ItemList>("itemDescriptions");
-    QTest::addColumn<QSizeF>("newSize");
-    QTest::addColumn<RectList>("expectedGeometries");
+    BOBUIest::addColumn<ItemList>("itemDescriptions");
+    BOBUIest::addColumn<QSizeF>("newSize");
+    BOBUIest::addColumn<RectList>("expectedGeometries");
 
-    QTest::newRow("combine_max_sizes") << (ItemList()
+    BOBUIest::newRow("combine_max_sizes") << (ItemList()
                                     << ItemDesc(0,0)
                                         .maxSize(QSizeF(50,10))
                                     << ItemDesc(1,0)
@@ -2421,7 +2421,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF(0, 0, 50,10) << QRectF(0, 10, 10,10)
                             );
 
-    QTest::newRow("combine_min_sizes") << (ItemList()
+    BOBUIest::newRow("combine_min_sizes") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(50,10))
                                     << ItemDesc(1,0)
@@ -2433,7 +2433,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                             );
 
     // change layout height and verify
-    QTest::newRow("hfw-100x401") << (ItemList()
+    BOBUIest::newRow("hfw-100x401") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2450,14 +2450,14 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .minSize(QSizeF(40,-1))
                                         .preferredSize(QSizeF(50,-1))
                                         .maxSize(QSizeF(500, -1))
-                                        .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(100, 401)
                             << (RectList()
                                 << QRectF(0, 0, 50,  1) << QRectF(50, 0, 50,  1)
                                 << QRectF(0, 1, 50,100) << QRectF(50, 1, 50,400)
                             );
-    QTest::newRow("hfw-h408") << (ItemList()
+    BOBUIest::newRow("hfw-h408") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2471,17 +2471,17 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,10))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(40,40))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50,400))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(500, 500))
-                                        .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(40,40))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50,400))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(500, 500))
+                                        .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(100, 408)
                             << (RectList()
                                 << QRectF(0, 0, 50,  8) << QRectF(50,  0, 50,  8)
                                 << QRectF(0, 8, 50,100) << QRectF(50,  8, 50,400)
                             );
-    QTest::newRow("hfw-h410") << (ItemList()
+    BOBUIest::newRow("hfw-h410") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2498,7 +2498,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .minSize(QSizeF(40,40))
                                         .preferredSize(QSizeF(50,400))
                                         .maxSize(QSizeF(500, 500))
-                                        .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(100, 410)
                             << (RectList()
@@ -2506,7 +2506,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF(0, 10, 50,100) << QRectF(50, 10, 50,400)
                             );
 
-    QTest::newRow("hfw-100x470") << (ItemList()
+    BOBUIest::newRow("hfw-100x470") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2520,10 +2520,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,10))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(40,40))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50,400))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(500,500))
-                                        .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(40,40))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50,400))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(500,500))
+                                        .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(100, 470)
                             << (RectList()
@@ -2532,7 +2532,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                             );
 
     // change layout width and verify
-    QTest::newRow("hfw-100x401") << (ItemList()
+    BOBUIest::newRow("hfw-100x401") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2549,7 +2549,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .minSize(QSizeF(-1,-1))
                                         .preferredSize(QSizeF(-1,-1))
                                         .maxSize(QSizeF(-1, -1))
-                                        .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(100, 401)
                             << (RectList()
@@ -2557,7 +2557,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF( 0, 1,  50, 100) << QRectF( 50,  1,  50, 400)
                             );
 
-    QTest::newRow("hfw-160x350") << (ItemList()
+    BOBUIest::newRow("hfw-160x350") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2571,10 +2571,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,10))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(40,40))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50,400))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(5000,5000))
-                                       .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(40,40))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50,400))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(5000,5000))
+                                       .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(160, 350)
                             << (RectList()
@@ -2582,7 +2582,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF( 0, 100,  80, 100) << QRectF( 80, 100,  80, 250)
                             );
 
-    QTest::newRow("hfw-160x300") << (ItemList()
+    BOBUIest::newRow("hfw-160x300") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2596,10 +2596,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,10))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(40,40))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50,400))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(5000, 5000))
-                                        .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(40,40))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50,400))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(5000, 5000))
+                                        .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(160, 300)
                             << (RectList()
@@ -2607,7 +2607,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF( 0,  50,  80, 100) << QRectF( 80,  50,  80, 250)
                             );
 
-    QTest::newRow("hfw-20x40") << (ItemList()
+    BOBUIest::newRow("hfw-20x40") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,10))
                                         .preferredSize(QSizeF(50,50))
@@ -2621,10 +2621,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,50))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(1, 1))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50, 50))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(100, 100))
-                                        .dynamicConstraint(hfw3, Qt::Vertical)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(1, 1))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50, 50))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(100, 100))
+                                        .dynamicConstraint(hfw3, BobUI::Vertical)
                                 )
                             << QSizeF(20, 40)
                             << (RectList()
@@ -2632,7 +2632,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF(0, 20, 10, 20) << QRectF(10, 20, 10, 10)
                             );
 
-    QTest::newRow("wfh-300x160") << (ItemList()
+    BOBUIest::newRow("wfh-300x160") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(10,50))
@@ -2646,10 +2646,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(10,50))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(10,10))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(400,50))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(5000, 5000))
-                                        .dynamicConstraint(wfh1, Qt::Horizontal)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(10,10))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(400,50))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(5000, 5000))
+                                        .dynamicConstraint(wfh1, BobUI::Horizontal)
                                 )
                             << QSizeF(300, 160)
                             << (RectList()
@@ -2657,7 +2657,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF( 0,  80,  50,  80) << QRectF( 50,  80, 250,  80)
                             );
 
-    QTest::newRow("wfh-40x20") << (ItemList()
+    BOBUIest::newRow("wfh-40x20") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,50))
@@ -2673,10 +2673,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,50))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(1,1))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50,50))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(100, 100))
-                                        .dynamicConstraint(wfh2, Qt::Horizontal)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(1,1))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50,50))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(100, 100))
+                                        .dynamicConstraint(wfh2, BobUI::Horizontal)
                                 )
                             << QSizeF(40, 20)
                             << (RectList()
@@ -2684,7 +2684,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF(0, 10, 20, 10) << QRectF(20, 10, 10, 10)
                             );
 
-    QTest::newRow("wfh-400x160") << (ItemList()
+    BOBUIest::newRow("wfh-400x160") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,50))
@@ -2698,10 +2698,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,50))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(1,1))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50,50))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(100, 100))
-                                        .dynamicConstraint(wfh2, Qt::Horizontal)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(1,1))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50,50))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(100, 100))
+                                        .dynamicConstraint(wfh2, BobUI::Horizontal)
                                 )
 
                             << QSizeF(400, 160)
@@ -2710,7 +2710,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF(0, 80, 100, 80) << QRectF(100, 80,  80, 80)
                             );
 
-    QTest::newRow("wfh-160x100") << (ItemList()
+    BOBUIest::newRow("wfh-160x100") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         // Note, preferred width must be 50 in order to match
@@ -2729,10 +2729,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(10,50))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(1,1))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(10,50))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(500, 500))
-                                        .dynamicConstraint(wfh2, Qt::Horizontal)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(1,1))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(10,50))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(500, 500))
+                                        .dynamicConstraint(wfh2, BobUI::Horizontal)
                                 )
                             << QSizeF(160, 100)
                             << (RectList()
@@ -2740,7 +2740,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF(0, 50,  80,  50) << QRectF( 80, 50,  50,  50)
                             );
 
-    QTest::newRow("hfw-h470") << (ItemList()
+    BOBUIest::newRow("hfw-h470") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2754,10 +2754,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,10))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(40,40))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50,400))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(500,500))
-                                        .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(40,40))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50,400))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(500,500))
+                                        .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(100, 470)
                             << (RectList()
@@ -2766,7 +2766,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                             );
 
     // change layout width and verify
-    QTest::newRow("hfw-w100") << (ItemList()
+    BOBUIest::newRow("hfw-w100") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2780,10 +2780,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,10))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(40,40))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50,400))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(5000,5000))
-                                        .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(40,40))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50,400))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(5000,5000))
+                                        .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(100, 401)
                             << (RectList()
@@ -2791,7 +2791,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF( 0, 1,  50, 100) << QRectF( 50,  1,  50, 400)
                             );
 
-    QTest::newRow("hfw-w160") << (ItemList()
+    BOBUIest::newRow("hfw-w160") << (ItemList()
                                      << ItemDesc(0,0)
                                          .minSize(QSizeF(1,1))
                                          .preferredSize(QSizeF(50,10))
@@ -2805,10 +2805,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                          .preferredSize(QSizeF(50,10))
                                          .maxSize(QSizeF(100, 100))
                                      << ItemDesc(1,1)
-                                         .sizeHint(Qt::MinimumSize, QSizeF(40,40))
-                                         .sizeHint(Qt::PreferredSize, QSizeF(50,400))
-                                         .sizeHint(Qt::MaximumSize, QSizeF(5000,5000))
-                                         .dynamicConstraint(hfw1, Qt::Vertical)
+                                         .sizeHint(BobUI::MinimumSize, QSizeF(40,40))
+                                         .sizeHint(BobUI::PreferredSize, QSizeF(50,400))
+                                         .sizeHint(BobUI::MaximumSize, QSizeF(5000,5000))
+                                         .dynamicConstraint(hfw1, BobUI::Vertical)
                                  )
                              << QSizeF(160, 350)
                              << (RectList()
@@ -2816,7 +2816,7 @@ void tst_QGraphicsGridLayout::geometries_data()
                                  << QRectF( 0, 100,  80, 100) << QRectF( 80, 100,  80, 250)
                              );
 
-    QTest::newRow("hfw-w500") << (ItemList()
+    BOBUIest::newRow("hfw-w500") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(1,1))
                                         .preferredSize(QSizeF(50,10))
@@ -2830,10 +2830,10 @@ void tst_QGraphicsGridLayout::geometries_data()
                                         .preferredSize(QSizeF(50,10))
                                         .maxSize(QSizeF(100, 100))
                                     << ItemDesc(1,1)
-                                        .sizeHint(Qt::MinimumSize, QSizeF(40,40))
-                                        .sizeHint(Qt::PreferredSize, QSizeF(50,400))
-                                        .sizeHint(Qt::MaximumSize, QSizeF(5000,5000))
-                                        .dynamicConstraint(hfw1, Qt::Vertical)
+                                        .sizeHint(BobUI::MinimumSize, QSizeF(40,40))
+                                        .sizeHint(BobUI::PreferredSize, QSizeF(50,400))
+                                        .sizeHint(BobUI::MaximumSize, QSizeF(5000,5000))
+                                        .dynamicConstraint(hfw1, BobUI::Vertical)
                                 )
                             << QSizeF(500, 200)
                             << (RectList()
@@ -2841,15 +2841,15 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF( 0, 100, 100, 100) << QRectF(100, 100, 400,  50)
                             );
 
-    QTest::newRow("hfw-alignment-defaults") << (ItemList()
+    BOBUIest::newRow("hfw-alignment-defaults") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(100, 100))
                                         .maxSize(QSizeF(100, 100))
-                                        .dynamicConstraint(hfw2, Qt::Vertical)
+                                        .dynamicConstraint(hfw2, BobUI::Vertical)
                                     << ItemDesc(1,0)
                                         .minSize(QSizeF(200, 200))
                                         .maxSize(QSizeF(200, 200))
-                                        .dynamicConstraint(hfw2, Qt::Vertical)
+                                        .dynamicConstraint(hfw2, BobUI::Vertical)
                                     << ItemDesc(2,0)
                                         .minSize(QSizeF(300, 300))
                                         .maxSize(QSizeF(300, 300))
@@ -2861,17 +2861,17 @@ void tst_QGraphicsGridLayout::geometries_data()
                                 << QRectF(0, 300, 300, 300)
                             );
 
-    QTest::newRow("hfw-alignment2") << (ItemList()
+    BOBUIest::newRow("hfw-alignment2") << (ItemList()
                                     << ItemDesc(0,0)
                                         .minSize(QSizeF(100, 100))
                                         .maxSize(QSizeF(100, 100))
-                                        .dynamicConstraint(hfw2, Qt::Vertical)
-                                        .alignment(Qt::AlignRight)
+                                        .dynamicConstraint(hfw2, BobUI::Vertical)
+                                        .alignment(BobUI::AlignRight)
                                     << ItemDesc(1,0)
                                         .minSize(QSizeF(200, 200))
                                         .maxSize(QSizeF(200, 200))
-                                        .dynamicConstraint(hfw2, Qt::Vertical)
-                                        .alignment(Qt::AlignHCenter)
+                                        .dynamicConstraint(hfw2, BobUI::Vertical)
+                                        .alignment(BobUI::AlignHCenter)
                                     << ItemDesc(2,0)
                                         .minSize(QSizeF(300, 300))
                                         .maxSize(QSizeF(300, 300))
@@ -2893,7 +2893,7 @@ void tst_QGraphicsGridLayout::geometries()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout;
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -2927,10 +2927,10 @@ void tst_QGraphicsGridLayout::geometries()
 
 void tst_QGraphicsGridLayout::avoidRecursionInInsertItem()
 {
-    QGraphicsWidget window(0, Qt::Window);
+    QGraphicsWidget window(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout(&window);
     QCOMPARE(layout->count(), 0);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsGridLayout::addItem: cannot insert itself");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsGridLayout::addItem: cannot insert itself");
     layout->addItem(layout, 0, 0);
     QCOMPARE(layout->count(), 0);
 }
@@ -2953,7 +2953,7 @@ void tst_QGraphicsGridLayout::task236367_maxSizeHint()
     QCOMPARE(widget->size(), QSizeF(w, h));
 }
 
-static QSizeF hfw(Qt::SizeHint /*which*/, const QSizeF &constraint)
+static QSizeF hfw(BobUI::SizeHint /*which*/, const QSizeF &constraint)
 {
     QSizeF result(constraint);
     const qreal cw = constraint.width();
@@ -2972,7 +2972,7 @@ static QSizeF hfw(Qt::SizeHint /*which*/, const QSizeF &constraint)
     return result;
 }
 
-static QSizeF wfh(Qt::SizeHint /*which*/, const QSizeF &constraint)
+static QSizeF wfh(BobUI::SizeHint /*which*/, const QSizeF &constraint)
 {
     QSizeF result(constraint);
     const qreal ch = constraint.height();
@@ -2990,39 +2990,39 @@ void tst_QGraphicsGridLayout::heightForWidth()
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     RectWidget *w00 = new RectWidget;
-    w00->setSizeHint(Qt::MinimumSize, QSizeF(1,1));
-    w00->setSizeHint(Qt::PreferredSize, QSizeF(10,10));
-    w00->setSizeHint(Qt::MaximumSize, QSizeF(100,100));
+    w00->setSizeHint(BobUI::MinimumSize, QSizeF(1,1));
+    w00->setSizeHint(BobUI::PreferredSize, QSizeF(10,10));
+    w00->setSizeHint(BobUI::MaximumSize, QSizeF(100,100));
     layout->addItem(w00, 0, 0);
 
     RectWidget *w01 = new RectWidget;
-    w01->setSizeHint(Qt::MinimumSize, QSizeF(1,1));
-    w01->setSizeHint(Qt::PreferredSize, QSizeF(10,10));
-    w01->setSizeHint(Qt::MaximumSize, QSizeF(100,100));
+    w01->setSizeHint(BobUI::MinimumSize, QSizeF(1,1));
+    w01->setSizeHint(BobUI::PreferredSize, QSizeF(10,10));
+    w01->setSizeHint(BobUI::MaximumSize, QSizeF(100,100));
     layout->addItem(w01, 0, 1);
 
     RectWidget *w10 = new RectWidget;
-    w10->setSizeHint(Qt::MinimumSize, QSizeF(1,1));
-    w10->setSizeHint(Qt::PreferredSize, QSizeF(10,10));
-    w10->setSizeHint(Qt::MaximumSize, QSizeF(100,100));
+    w10->setSizeHint(BobUI::MinimumSize, QSizeF(1,1));
+    w10->setSizeHint(BobUI::PreferredSize, QSizeF(10,10));
+    w10->setSizeHint(BobUI::MaximumSize, QSizeF(100,100));
     layout->addItem(w10, 1, 0);
 
     RectWidget *w11 = new RectWidget;
-    w11->setSizeHint(Qt::MinimumSize, QSizeF(1,1));
-    w11->setSizeHint(Qt::MaximumSize, QSizeF(30000,30000));
+    w11->setSizeHint(BobUI::MinimumSize, QSizeF(1,1));
+    w11->setSizeHint(BobUI::MaximumSize, QSizeF(30000,30000));
     w11->setConstraintFunction(hfw);
     QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
     sp.setHeightForWidth(true);
     w11->setSizePolicy(sp);
     layout->addItem(w11, 1, 1);
 
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(-1, -1)), QSizeF(2, 2));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(-1, -1)), QSizeF(210, 110));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(-1, -1)), QSizeF(30100, 30100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(-1, -1)), QSizeF(2, 2));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(-1, -1)), QSizeF(210, 110));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(-1, -1)), QSizeF(30100, 30100));
 
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(2, -1)), QSizeF(2, 20001));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(2, -1)), QSizeF(2, 20010));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(2, -1)), QSizeF(2, 20100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(2, -1)), QSizeF(2, 20001));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(2, -1)), QSizeF(2, 20010));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(2, -1)), QSizeF(2, 20100));
 
     // Since 20 is somewhere between "minimum width hint" (2) and
     // "preferred width hint" (210), it will try to do distribution by
@@ -3030,19 +3030,19 @@ void tst_QGraphicsGridLayout::heightForWidth()
     // Since column 1 has a "preferred width" of 200 it means that
     // column 1 will be a bit wider than column 0. Thus it will also be a bit
     // shorter than 2001, (the expected height if all columns had width=10)
-    QSizeF sh = layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(20, -1));
+    QSizeF sh = layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(20, -1));
     // column 1 cannot be wider than 19, which means that it must be taller than 20000/19~=1052
     QVERIFY(sh.height() < 2000 + 1 && sh.height() > 1052 + 1);
 
-    sh = layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(20, -1));
+    sh = layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(20, -1));
     QVERIFY(sh.height() < 2000 + 10 && sh.height() > 1052 + 10);
 
-    sh = layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(20, -1));
+    sh = layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(20, -1));
     QVERIFY(sh.height() < 2000 + 100 && sh.height() > 1052 + 100);
 
     // the height of the hfw widget is shorter than the one to the left, which is 100, so
     // the total height of the last row is 100 (which leaves the layout height to be 200)
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(500, -1)), QSizeF(500, 100 + 100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(500, -1)), QSizeF(500, 100 + 100));
 
 }
 
@@ -3074,9 +3074,9 @@ void tst_QGraphicsGridLayout::widthForHeight()
     layout->addItem(w10, 1, 0);
 
     RectWidget *w11 = new RectWidget;
-    w11->setSizeHint(Qt::MinimumSize, QSizeF(1,1));
-    w11->setSizeHint(Qt::PreferredSize, QSizeF(50,50));
-    w11->setSizeHint(Qt::MaximumSize, QSizeF(30000,30000));
+    w11->setSizeHint(BobUI::MinimumSize, QSizeF(1,1));
+    w11->setSizeHint(BobUI::PreferredSize, QSizeF(50,50));
+    w11->setSizeHint(BobUI::MaximumSize, QSizeF(30000,30000));
 
     // This will make sure its always square.
     w11->setConstraintFunction(wfh);
@@ -3099,28 +3099,28 @@ void tst_QGraphicsGridLayout::widthForHeight()
     */
 
 
-    QSizeF prefSize = layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(-1, -1));
+    QSizeF prefSize = layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(-1, -1));
     QCOMPARE(prefSize, QSizeF(50+50, 50+50));
 
     // wfh(1):  = 1
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(-1, 2)), QSizeF(1 + 1, 2));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(-1, 2)), QSizeF(50 + 50, 2));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(-1, 2)), QSizeF(100 + 100, 2));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(-1, 2)), QSizeF(1 + 1, 2));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(-1, 2)), QSizeF(50 + 50, 2));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(-1, 2)), QSizeF(100 + 100, 2));
 
     // wfh(40) = 40
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(-1, 80)), QSizeF(1 + 40, 80));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(-1, 80)), QSizeF(50 + 50, 80));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(-1, 80)), QSizeF(100 + 100, 80));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(-1, 80)), QSizeF(1 + 40, 80));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(-1, 80)), QSizeF(50 + 50, 80));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(-1, 80)), QSizeF(100 + 100, 80));
 
     // wfh(80) = 80
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(-1, 160)), QSizeF(1 + 80, 160));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(-1, 160)), QSizeF(50 + 80, 160));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(-1, 160)), QSizeF(100 + 100, 160));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(-1, 160)), QSizeF(1 + 80, 160));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(-1, 160)), QSizeF(50 + 80, 160));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(-1, 160)), QSizeF(100 + 100, 160));
 
     // wfh(200) = 200
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(-1, 300)), QSizeF(1 + 200, 300));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(-1, 300)), QSizeF(50 + 200, 300));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(-1, 300)), QSizeF(100 + 200, 300));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(-1, 300)), QSizeF(1 + 200, 300));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(-1, 300)), QSizeF(50 + 200, 300));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(-1, 300)), QSizeF(100 + 200, 300));
 }
 
 void tst_QGraphicsGridLayout::heightForWidthWithSpanning()
@@ -3132,43 +3132,43 @@ void tst_QGraphicsGridLayout::heightForWidthWithSpanning()
     layout->setSpacing(0);
 
     RectWidget *w = new RectWidget;
-    w->setSizeHint(Qt::MinimumSize, QSizeF(1,1));
-    w->setSizeHint(Qt::MaximumSize, QSizeF(30000,30000));
+    w->setSizeHint(BobUI::MinimumSize, QSizeF(1,1));
+    w->setSizeHint(BobUI::MaximumSize, QSizeF(30000,30000));
     w->setConstraintFunction(hfw);
     QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
     sp.setHeightForWidth(true);
     w->setSizePolicy(sp);
     layout->addItem(w, 0,0,2,2);
 
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(-1, -1)), QSizeF(1, 1));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(-1, -1)), QSizeF(200, 100));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(-1, -1)), QSizeF(30000, 30000));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(-1, -1)), QSizeF(1, 1));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(-1, -1)), QSizeF(200, 100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(-1, -1)), QSizeF(30000, 30000));
 
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(200, -1)), QSizeF(200, 100));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(200, -1)), QSizeF(200, 100));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(200, -1)), QSizeF(200, 100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(200, -1)), QSizeF(200, 100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(200, -1)), QSizeF(200, 100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(200, -1)), QSizeF(200, 100));
 
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(2, -1)), QSizeF(2, 10000));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(2, -1)), QSizeF(2, 10000));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(2, -1)), QSizeF(2, 10000));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(2, -1)), QSizeF(2, 10000));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(2, -1)), QSizeF(2, 10000));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(2, -1)), QSizeF(2, 10000));
 
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize, QSizeF(200, -1)), QSizeF(200, 100));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize, QSizeF(200, -1)), QSizeF(200, 100));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize, QSizeF(200, -1)), QSizeF(200, 100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize, QSizeF(200, -1)), QSizeF(200, 100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize, QSizeF(200, -1)), QSizeF(200, 100));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize, QSizeF(200, -1)), QSizeF(200, 100));
 }
 
 void tst_QGraphicsGridLayout::spanningItem2x2_data()
 {
-    QTest::addColumn<QSizePolicy::Policy>("sizePolicy");
-    QTest::addColumn<int>("itemHeight");
-    QTest::addColumn<int>("expectedHeight");
+    BOBUIest::addColumn<QSizePolicy::Policy>("sizePolicy");
+    BOBUIest::addColumn<int>("itemHeight");
+    BOBUIest::addColumn<int>("expectedHeight");
 
-    QTest::newRow("A larger spanning item with 2 widgets with fixed policy") << QSizePolicy::Fixed << 39 << 80;
-    QTest::newRow("A larger spanning item with 2 widgets with preferred policy") << QSizePolicy::Preferred << 39 << 80;
-    QTest::newRow("An equally-sized spanning item with 2 widgets with fixed policy") << QSizePolicy::Fixed << 40 << 80;
-    QTest::newRow("An equally-sized spanning item with 2 widgets with preferred policy") << QSizePolicy::Preferred << 40 << 80;
-    QTest::newRow("A smaller spanning item with 2 widgets with fixed policy") << QSizePolicy::Fixed << 41 << 82;
-    QTest::newRow("A smaller spanning item with 2 widgets with preferred policy") << QSizePolicy::Preferred << 41 << 82;
+    BOBUIest::newRow("A larger spanning item with 2 widgets with fixed policy") << QSizePolicy::Fixed << 39 << 80;
+    BOBUIest::newRow("A larger spanning item with 2 widgets with preferred policy") << QSizePolicy::Preferred << 39 << 80;
+    BOBUIest::newRow("An equally-sized spanning item with 2 widgets with fixed policy") << QSizePolicy::Fixed << 40 << 80;
+    BOBUIest::newRow("An equally-sized spanning item with 2 widgets with preferred policy") << QSizePolicy::Preferred << 40 << 80;
+    BOBUIest::newRow("A smaller spanning item with 2 widgets with fixed policy") << QSizePolicy::Fixed << 41 << 82;
+    BOBUIest::newRow("A smaller spanning item with 2 widgets with preferred policy") << QSizePolicy::Preferred << 41 << 82;
 }
 
 void tst_QGraphicsGridLayout::spanningItem2x2()
@@ -3177,7 +3177,7 @@ void tst_QGraphicsGridLayout::spanningItem2x2()
     QFETCH(int, itemHeight);
     QFETCH(int, expectedHeight);
 
-    QGraphicsWidget form(0, Qt::Window);
+    QGraphicsWidget form(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout(&form);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -3209,11 +3209,11 @@ void tst_QGraphicsGridLayout::spanningItem2x2()
 
 void tst_QGraphicsGridLayout::spanningItem2x3_data()
 {
-    QTest::addColumn<bool>("w1_fixed");
-    QTest::addColumn<bool>("w2_fixed");
-    QTest::addColumn<bool>("w3_fixed");
-    QTest::addColumn<bool>("w4_fixed");
-    QTest::addColumn<bool>("w5_fixed");
+    BOBUIest::addColumn<bool>("w1_fixed");
+    BOBUIest::addColumn<bool>("w2_fixed");
+    BOBUIest::addColumn<bool>("w3_fixed");
+    BOBUIest::addColumn<bool>("w4_fixed");
+    BOBUIest::addColumn<bool>("w5_fixed");
 
     for(int w1 = 0; w1 < 2; w1++)
         for(int w2 = 0; w2 < 2; w2++)
@@ -3221,7 +3221,7 @@ void tst_QGraphicsGridLayout::spanningItem2x3_data()
                 for(int w4 = 0; w4 < 2; w4++)
                     for(int w5 = 0; w5 < 2; w5++) {
                         QString description = QString("Fixed sizes:") + (w1?" w1":"") + (w2?" w2":"") + (w3?" w3":"") + (w4?" w4":"") + (w5?" w5":"");
-                        QTest::newRow(description.toLatin1()) << (bool)w1 << (bool)w2 << (bool)w3 << (bool)w4 << (bool)w5;
+                        BOBUIest::newRow(description.toLatin1()) << (bool)w1 << (bool)w2 << (bool)w3 << (bool)w4 << (bool)w5;
                     }
 }
 
@@ -3288,7 +3288,7 @@ void tst_QGraphicsGridLayout::spanningItem2x3()
 
 void tst_QGraphicsGridLayout::spanningItem()
 {
-    QGraphicsWidget *form = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *form = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout(form);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -3317,7 +3317,7 @@ void tst_QGraphicsGridLayout::spanningItem()
 
 void tst_QGraphicsGridLayout::spanAcrossEmptyRow()
 {
-    const auto form = std::make_unique<QGraphicsWidget>(nullptr, Qt::Window);
+    const auto form = std::make_unique<QGraphicsWidget>(nullptr, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout(form.get());
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -3327,9 +3327,9 @@ void tst_QGraphicsGridLayout::spanAcrossEmptyRow()
 
     QSizeF size(10, 10);
     for (int i = 0; i < 3; ++i) {
-        w1->setSizeHint((Qt::SizeHint)i, size);
-        w2->setSizeHint((Qt::SizeHint)i, size);
-        w3->setSizeHint((Qt::SizeHint)i, size);
+        w1->setSizeHint((BobUI::SizeHint)i, size);
+        w2->setSizeHint((BobUI::SizeHint)i, size);
+        w3->setSizeHint((BobUI::SizeHint)i, size);
         size+=size;                 //[(10,10), (20,20), (40,40)]
     }
     layout->addItem(w1, 0, 0, 1, 1);
@@ -3341,29 +3341,29 @@ void tst_QGraphicsGridLayout::spanAcrossEmptyRow()
     QCOMPARE(w2->geometry(), QRectF(20, 0, 20, 20));
     QCOMPARE(w3->geometry(), QRectF(40, 0, 20, 20));
 
-    QCOMPARE(layout->effectiveSizeHint(Qt::MinimumSize), QSizeF(30, 10));
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize), QSizeF(60, 20));
-    QCOMPARE(layout->effectiveSizeHint(Qt::MaximumSize), QSizeF(120, 40));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MinimumSize), QSizeF(30, 10));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize), QSizeF(60, 20));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::MaximumSize), QSizeF(120, 40));
 }
 
 void tst_QGraphicsGridLayout::stretchAndHeightForWidth()
 {
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsGridLayout *layout = new QGraphicsGridLayout;
     widget->setLayout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     RectWidget *w1 = new RectWidget;
-    w1->setSizeHint(Qt::MinimumSize, QSizeF(10, 10));
-    w1->setSizeHint(Qt::PreferredSize, QSizeF(100, 100));
-    w1->setSizeHint(Qt::MaximumSize, QSizeF(500, 500));
+    w1->setSizeHint(BobUI::MinimumSize, QSizeF(10, 10));
+    w1->setSizeHint(BobUI::PreferredSize, QSizeF(100, 100));
+    w1->setSizeHint(BobUI::MaximumSize, QSizeF(500, 500));
     layout->addItem(w1, 0,0,1,1);
 
     RectWidget *w2 = new RectWidget;
-    w2->setSizeHint(Qt::MinimumSize, QSizeF(10, 10));
-    w2->setSizeHint(Qt::PreferredSize, QSizeF(100, 100));
-    w2->setSizeHint(Qt::MaximumSize, QSizeF(500, 500));
+    w2->setSizeHint(BobUI::MinimumSize, QSizeF(10, 10));
+    w2->setSizeHint(BobUI::PreferredSize, QSizeF(100, 100));
+    w2->setSizeHint(BobUI::MaximumSize, QSizeF(500, 500));
     layout->addItem(w2, 0,1,1,1);
     layout->setColumnStretchFactor(1, 2);
 
@@ -3535,6 +3535,6 @@ void tst_QGraphicsGridLayout::hiddenItems()
 
 }
 
-QTEST_MAIN(tst_QGraphicsGridLayout)
+BOBUIEST_MAIN(tst_QGraphicsGridLayout)
 #include "tst_qgraphicsgridlayout.moc"
 

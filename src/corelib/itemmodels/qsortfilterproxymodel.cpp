@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsortfilterproxymodel.h"
 #include "qitemselectionmodel.h"
@@ -14,7 +14,7 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using QModelIndexPairList = QList<std::pair<QModelIndex, QPersistentModelIndex>>;
 
@@ -121,13 +121,13 @@ public:
         QModelIndex source_parent;
     };
 
-    mutable QHash<QtPrivate::QModelIndexWrapper, Mapping*> source_index_mapping;
+    mutable QHash<BobUIPrivate::QModelIndexWrapper, Mapping*> source_index_mapping;
 
-    void setSortCaseSensitivityForwarder(Qt::CaseSensitivity cs)
+    void setSortCaseSensitivityForwarder(BobUI::CaseSensitivity cs)
     {
         q_func()->setSortCaseSensitivity(cs);
     }
-    void sortCaseSensitivityChangedForwarder(Qt::CaseSensitivity cs)
+    void sortCaseSensitivityChangedForwarder(BobUI::CaseSensitivity cs)
     {
         emit q_func()->sortCaseSensitivityChanged(cs);
     }
@@ -160,11 +160,11 @@ public:
 
     void setDynamicSortFilterForwarder(bool enable) { q_func()->setDynamicSortFilter(enable); }
 
-    void setFilterCaseSensitivityForwarder(Qt::CaseSensitivity cs)
+    void setFilterCaseSensitivityForwarder(BobUI::CaseSensitivity cs)
     {
         q_func()->setFilterCaseSensitivity(cs);
     }
-    void filterCaseSensitivityChangedForwarder(Qt::CaseSensitivity cs)
+    void filterCaseSensitivityChangedForwarder(BobUI::CaseSensitivity cs)
     {
         emit q_func()->filterCaseSensitivityChanged(cs);
     }
@@ -176,18 +176,18 @@ public:
 
     int source_sort_column = -1;
     int proxy_sort_column = -1;
-    Qt::SortOrder sort_order = Qt::AscendingOrder;
+    BobUI::SortOrder sort_order = BobUI::AscendingOrder;
     bool complete_insert = false;
 
     Q_OBJECT_COMPAT_PROPERTY_WITH_ARGS(
-            QSortFilterProxyModelPrivate, Qt::CaseSensitivity, sort_casesensitivity,
+            QSortFilterProxyModelPrivate, BobUI::CaseSensitivity, sort_casesensitivity,
             &QSortFilterProxyModelPrivate::setSortCaseSensitivityForwarder,
-            &QSortFilterProxyModelPrivate::sortCaseSensitivityChangedForwarder, Qt::CaseSensitive)
+            &QSortFilterProxyModelPrivate::sortCaseSensitivityChangedForwarder, BobUI::CaseSensitive)
 
     Q_OBJECT_COMPAT_PROPERTY_WITH_ARGS(QSortFilterProxyModelPrivate, int, sort_role,
                                        &QSortFilterProxyModelPrivate::setSortRoleForwarder,
                                        &QSortFilterProxyModelPrivate::sortRoleChangedForwarder,
-                                       Qt::DisplayRole)
+                                       BobUI::DisplayRole)
 
     Q_OBJECT_COMPAT_PROPERTY_WITH_ARGS(QSortFilterProxyModelPrivate, int, filter_column,
                                        &QSortFilterProxyModelPrivate::setFilterKeyColumnForwarder,
@@ -196,7 +196,7 @@ public:
     Q_OBJECT_COMPAT_PROPERTY_WITH_ARGS(QSortFilterProxyModelPrivate, int, filter_role,
                                        &QSortFilterProxyModelPrivate::setFilterRoleForwarder,
                                        &QSortFilterProxyModelPrivate::filterRoleChangedForwarder,
-                                       Qt::DisplayRole)
+                                       BobUI::DisplayRole)
 
     Q_OBJECT_COMPAT_PROPERTY_WITH_ARGS(
             QSortFilterProxyModelPrivate, bool, sort_localeaware,
@@ -218,9 +218,9 @@ public:
                                        true)
 
     Q_OBJECT_COMPAT_PROPERTY_WITH_ARGS(
-            QSortFilterProxyModelPrivate, Qt::CaseSensitivity, filter_casesensitive,
+            QSortFilterProxyModelPrivate, BobUI::CaseSensitivity, filter_casesensitive,
             &QSortFilterProxyModelPrivate::setFilterCaseSensitivityForwarder,
-            &QSortFilterProxyModelPrivate::filterCaseSensitivityChangedForwarder, Qt::CaseSensitive)
+            &QSortFilterProxyModelPrivate::filterCaseSensitivityChangedForwarder, BobUI::CaseSensitive)
 
     Q_OBJECT_COMPAT_PROPERTY(QSortFilterProxyModelPrivate, QRegularExpression,
                              filter_regularexpression,
@@ -234,9 +234,9 @@ public:
 
     std::array<QMetaObject::Connection, 18> sourceConnections;
 
-    QHash<QtPrivate::QModelIndexWrapper, Mapping *>::const_iterator create_mapping(
+    QHash<BobUIPrivate::QModelIndexWrapper, Mapping *>::const_iterator create_mapping(
         const QModelIndex &source_parent) const;
-    QHash<QtPrivate::QModelIndexWrapper, Mapping *>::const_iterator create_mapping_recursive(
+    QHash<BobUIPrivate::QModelIndexWrapper, Mapping *>::const_iterator create_mapping_recursive(
             const QModelIndex &source_parent) const;
     QModelIndex proxy_to_source(const QModelIndex &proxyIndex) const;
     QModelIndex source_to_proxy(const QModelIndex &sourceIndex) const;
@@ -260,14 +260,14 @@ public:
         filter_regularexpression.setValueBypassingBindings(re);
     }
 
-    inline QHash<QtPrivate::QModelIndexWrapper, Mapping *>::const_iterator index_to_iterator(
+    inline QHash<BobUIPrivate::QModelIndexWrapper, Mapping *>::const_iterator index_to_iterator(
         const QModelIndex &proxy_index) const
     {
         Q_ASSERT(proxy_index.isValid());
         Q_ASSERT(proxy_index.model() == q_func());
         const void *p = proxy_index.internalPointer();
         Q_ASSERT(p);
-        QHash<QtPrivate::QModelIndexWrapper, Mapping *>::const_iterator it =
+        QHash<BobUIPrivate::QModelIndexWrapper, Mapping *>::const_iterator it =
                 source_index_mapping.constFind(static_cast<const Mapping*>(p)->source_parent);
         Q_ASSERT(it != source_index_mapping.constEnd());
         Q_ASSERT(it.value());
@@ -275,7 +275,7 @@ public:
     }
 
     inline QModelIndex create_index(int row, int column,
-                                    QHash<QtPrivate::QModelIndexWrapper, Mapping*>::const_iterator it) const
+                                    QHash<BobUIPrivate::QModelIndexWrapper, Mapping*>::const_iterator it) const
     {
         return q_func()->createIndex(row, column, *it);
     }
@@ -283,7 +283,7 @@ public:
     void _q_sourceDataChanged(const QModelIndex &source_top_left,
                               const QModelIndex &source_bottom_right,
                               const QList<int> &roles);
-    void _q_sourceHeaderDataChanged(Qt::Orientation orientation, int start, int end);
+    void _q_sourceHeaderDataChanged(BobUI::Orientation orientation, int start, int end);
 
     void _q_sourceAboutToBeReset();
     void _q_sourceReset();
@@ -379,7 +379,7 @@ public:
     bool recursiveParentAcceptsRow(const QModelIndex &source_parent) const;
 };
 
-typedef QHash<QtPrivate::QModelIndexWrapper, QSortFilterProxyModelPrivate::Mapping *> IndexMap;
+typedef QHash<BobUIPrivate::QModelIndexWrapper, QSortFilterProxyModelPrivate::Mapping *> IndexMap;
 
 void QSortFilterProxyModelPrivate::_q_sourceModelDestroyed()
 {
@@ -679,14 +679,14 @@ void QSortFilterProxyModelPrivate::sort_source_rows(
 {
     Q_Q(const QSortFilterProxyModel);
     if (source_sort_column >= 0) {
-        if (sort_order == Qt::AscendingOrder) {
+        if (sort_order == BobUI::AscendingOrder) {
             QSortFilterProxyModelLessThan lt(source_sort_column, source_parent, model, q);
             std::stable_sort(source_rows.begin(), source_rows.end(), lt);
         } else {
             QSortFilterProxyModelGreaterThan gt(source_sort_column, source_parent, model, q);
             std::stable_sort(source_rows.begin(), source_rows.end(), gt);
         }
-    } else if (sort_order == Qt::AscendingOrder) {
+    } else if (sort_order == BobUI::AscendingOrder) {
         std::stable_sort(source_rows.begin(), source_rows.end(), std::less{});
     } else {
         std::stable_sort(source_rows.begin(), source_rows.end(), std::greater{});
@@ -845,7 +845,7 @@ QList<std::pair<int, QList<int>>> QSortFilterProxyModelPrivate::proxy_intervals_
             proxy_item = (proxy_low + proxy_high) / 2;
             if (compare) {
                 QModelIndex i2 = model->index(proxy_to_source.at(proxy_item), source_sort_column, source_parent);
-                if ((sort_order == Qt::AscendingOrder) ? q->lessThan(i1, i2) : q->lessThan(i2, i1))
+                if ((sort_order == BobUI::AscendingOrder) ? q->lessThan(i1, i2) : q->lessThan(i2, i1))
                     proxy_high = proxy_item - 1;
                 else
                     proxy_low = proxy_item + 1;
@@ -868,7 +868,7 @@ QList<std::pair<int, QList<int>>> QSortFilterProxyModelPrivate::proxy_intervals_
                 int new_source_item = source_items.at(source_items_index);
                 if (compare) {
                     QModelIndex i2 = model->index(new_source_item, source_sort_column, source_parent);
-                    if ((sort_order == Qt::AscendingOrder) ? q->lessThan(i1, i2) : q->lessThan(i2, i1))
+                    if ((sort_order == BobUI::AscendingOrder) ? q->lessThan(i1, i2) : q->lessThan(i2, i1))
                         break;
                 } else {
                     if (proxy_to_source.at(proxy_item) < new_source_item)
@@ -919,7 +919,7 @@ void QSortFilterProxyModelPrivate::insert_source_items(
                 q->beginInsertColumns(proxy_parent, proxy_start, proxy_end);
         }
 
-        // TODO: use the range QList::insert() overload once it is implemented (QTBUG-58633).
+        // TODO: use the range QList::insert() overload once it is implemented (BOBUIBUG-58633).
         proxy_to_source.insert(proxy_start, source_items.size(), 0);
         std::copy(source_items.cbegin(), source_items.cend(), proxy_to_source.begin() + proxy_start);
 
@@ -1382,13 +1382,13 @@ bool QSortFilterProxyModelPrivate::needsReorder(const QList<int> &source_rows, c
         if (proxyIndex.row() > 0) {
             const QModelIndex prevProxyIndex = q->sibling(proxyIndex.row() - 1, proxy_sort_column, proxyIndex);
             const QModelIndex prevSourceIndex = proxy_to_source(prevProxyIndex);
-            if (sort_order == Qt::AscendingOrder ? q->lessThan(sourceIndex, prevSourceIndex) : q->lessThan(prevSourceIndex, sourceIndex))
+            if (sort_order == BobUI::AscendingOrder ? q->lessThan(sourceIndex, prevSourceIndex) : q->lessThan(prevSourceIndex, sourceIndex))
                 return true;
         }
         if (proxyIndex.row() < proxyRowCount - 1) {
             const QModelIndex nextProxyIndex = q->sibling(proxyIndex.row() + 1, proxy_sort_column, proxyIndex);
             const QModelIndex nextSourceIndex = proxy_to_source(nextProxyIndex);
-            if (sort_order == Qt::AscendingOrder ? q->lessThan(nextSourceIndex, sourceIndex) : q->lessThan(sourceIndex, nextSourceIndex))
+            if (sort_order == BobUI::AscendingOrder ? q->lessThan(nextSourceIndex, sourceIndex) : q->lessThan(sourceIndex, nextSourceIndex))
                 return true;
         }
         return false;
@@ -1539,7 +1539,7 @@ void QSortFilterProxyModelPrivate::_q_sourceDataChanged(const QModelIndex &sourc
     }
 }
 
-void QSortFilterProxyModelPrivate::_q_sourceHeaderDataChanged(Qt::Orientation orientation,
+void QSortFilterProxyModelPrivate::_q_sourceHeaderDataChanged(BobUI::Orientation orientation,
                                                            int start, int end)
 {
     Q_ASSERT(start <= end);
@@ -1547,7 +1547,7 @@ void QSortFilterProxyModelPrivate::_q_sourceHeaderDataChanged(Qt::Orientation or
     Q_Q(QSortFilterProxyModel);
     Mapping *m = create_mapping(QModelIndex()).value();
 
-    const QList<int> &source_to_proxy = (orientation == Qt::Vertical) ? m->proxy_rows : m->proxy_columns;
+    const QList<int> &source_to_proxy = (orientation == BobUI::Vertical) ? m->proxy_rows : m->proxy_columns;
 
     QList<int> proxy_positions;
     proxy_positions.reserve(end - start + 1);
@@ -1855,7 +1855,7 @@ void QSortFilterProxyModelPrivate::_q_sourceColumnsMoved(
 /*!
     \since 4.1
     \class QSortFilterProxyModel
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSortFilterProxyModel class provides support for sorting and
     filtering data passed between another model and a view.
 
@@ -1903,8 +1903,8 @@ void QSortFilterProxyModelPrivate::_q_sourceColumnsMoved(
 
     \section1 Sorting
 
-    QTableView and QTreeView have a
-    \l{QTreeView::sortingEnabled}{sortingEnabled} property that controls
+    BOBUIableView and BOBUIreeView have a
+    \l{BOBUIreeView::sortingEnabled}{sortingEnabled} property that controls
     whether the user can sort the view by clicking the view's horizontal
     header. For example:
 
@@ -1914,13 +1914,13 @@ void QSortFilterProxyModelPrivate::_q_sourceColumnsMoved(
     sorts the items according to that column. By clicking repeatedly, the user
     can alternate between ascending and descending order.
 
-    \image qsortfilterproxymodel-sorting.png A sorted QTreeView
+    \image qsortfilterproxymodel-sorting.png A sorted BOBUIreeView
 
     Behind the scene, the view calls the sort() virtual function on the model
     to reorder the data in the model. To make your data sortable, you can
     either implement sort() in your model, or use a QSortFilterProxyModel to
     wrap your model -- QSortFilterProxyModel provides a generic sort()
-    reimplementation that operates on the sortRole() (Qt::DisplayRole by
+    reimplementation that operates on the sortRole() (BobUI::DisplayRole by
     default) of the items and that understands several data types, including
     \c int, QString, and QDateTime. For hierarchical models, sorting is applied
     recursively to all child items. String comparisons are case sensitive by
@@ -1957,7 +1957,7 @@ void QSortFilterProxyModelPrivate::_q_sourceColumnsMoved(
 
     In addition to sorting, QSortFilterProxyModel can be used to hide items
     that do not match a certain filter. The filter is specified using a QRegularExpression
-    object and is applied to the filterRole() (Qt::DisplayRole by default) of
+    object and is applied to the filterRole() (BobUI::DisplayRole by default) of
     each item, for a given column. The QRegularExpression object can be used to match a
     regular expression, a wildcard pattern, or a fixed string. For example:
 
@@ -2243,14 +2243,14 @@ bool QSortFilterProxyModel::setData(const QModelIndex &index, const QVariant &va
 /*!
   \reimp
 */
-QVariant QSortFilterProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QSortFilterProxyModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     Q_D(const QSortFilterProxyModel);
     IndexMap::const_iterator it = d->create_mapping(QModelIndex());
     if (it.value()->source_rows.size() * it.value()->source_columns.size() > 0)
         return QAbstractProxyModel::headerData(section, orientation, role);
     int source_section;
-    if (orientation == Qt::Vertical) {
+    if (orientation == BobUI::Vertical) {
         if (section < 0 || section >= it.value()->source_rows.size())
             return QVariant();
         source_section = it.value()->source_rows.at(section);
@@ -2265,7 +2265,7 @@ QVariant QSortFilterProxyModel::headerData(int section, Qt::Orientation orientat
 /*!
   \reimp
 */
-bool QSortFilterProxyModel::setHeaderData(int section, Qt::Orientation orientation,
+bool QSortFilterProxyModel::setHeaderData(int section, BobUI::Orientation orientation,
                                           const QVariant &value, int role)
 {
     Q_D(QSortFilterProxyModel);
@@ -2273,7 +2273,7 @@ bool QSortFilterProxyModel::setHeaderData(int section, Qt::Orientation orientati
     if (it.value()->source_rows.size() * it.value()->source_columns.size() > 0)
         return QAbstractProxyModel::setHeaderData(section, orientation, value, role);
     int source_section;
-    if (orientation == Qt::Vertical) {
+    if (orientation == BobUI::Vertical) {
         if (section < 0 || section >= it.value()->source_rows.size())
             return false;
         source_section = it.value()->source_rows.at(section);
@@ -2310,17 +2310,17 @@ QStringList QSortFilterProxyModel::mimeTypes() const
 /*!
   \reimp
 */
-Qt::DropActions QSortFilterProxyModel::supportedDropActions() const
+BobUI::DropActions QSortFilterProxyModel::supportedDropActions() const
 {
     Q_D(const QSortFilterProxyModel);
     return d->model->supportedDropActions();
 }
 
-// Qt6: remove unnecessary reimplementation
+// BobUI6: remove unnecessary reimplementation
 /*!
   \reimp
 */
-bool QSortFilterProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QSortFilterProxyModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                                          int row, int column, const QModelIndex &parent)
 {
     return QAbstractProxyModel::dropMimeData(data, action, row, column, parent);
@@ -2466,7 +2466,7 @@ bool QSortFilterProxyModel::canFetchMore(const QModelIndex &parent) const
 /*!
   \reimp
 */
-Qt::ItemFlags QSortFilterProxyModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QSortFilterProxyModel::flags(const QModelIndex &index) const
 {
     return QAbstractProxyModel::flags(index);
 }
@@ -2491,7 +2491,7 @@ QModelIndex QSortFilterProxyModel::buddy(const QModelIndex &index) const
 */
 QModelIndexList QSortFilterProxyModel::match(const QModelIndex &start, int role,
                                              const QVariant &value, int hits,
-                                             Qt::MatchFlags flags) const
+                                             BobUI::MatchFlags flags) const
 {
     return QAbstractProxyModel::match(start, role, value, hits, flags);
 }
@@ -2516,7 +2516,7 @@ QSize QSortFilterProxyModel::span(const QModelIndex &index) const
 
     \sa sortColumn()
 */
-void QSortFilterProxyModel::sort(int column, Qt::SortOrder order)
+void QSortFilterProxyModel::sort(int column, BobUI::SortOrder order)
 {
     Q_D(QSortFilterProxyModel);
     if (d->dynamic_sortfilter && d->proxy_sort_column == column && d->sort_order == order)
@@ -2547,11 +2547,11 @@ int QSortFilterProxyModel::sortColumn() const
     \return the order currently used for sorting
 
     This returns the most recently used sort order. The default value is
-    Qt::AscendingOrder.
+    BobUI::AscendingOrder.
 
     \sa sort()
 */
-Qt::SortOrder QSortFilterProxyModel::sortOrder() const
+BobUI::SortOrder QSortFilterProxyModel::sortOrder() const
 {
     Q_D(const QSortFilterProxyModel);
     return d->sort_order;
@@ -2597,11 +2597,11 @@ void QSortFilterProxyModel::setFilterRegularExpression(const QRegularExpression 
             regularExpression != d->filter_regularexpression.valueBypassingBindings();
     d->filter_regularexpression.removeBindingUnlessInWrapper();
     d->filter_casesensitive.removeBindingUnlessInWrapper();
-    const Qt::CaseSensitivity cs = d->filter_casesensitive.valueBypassingBindings();
+    const BobUI::CaseSensitivity cs = d->filter_casesensitive.valueBypassingBindings();
     d->filter_about_to_be_changed();
-    const Qt::CaseSensitivity updatedCs =
+    const BobUI::CaseSensitivity updatedCs =
             regularExpression.patternOptions() & QRegularExpression::CaseInsensitiveOption
-            ? Qt::CaseInsensitive : Qt::CaseSensitive;
+            ? BobUI::CaseInsensitive : BobUI::CaseSensitive;
     d->filter_regularexpression.setValueBypassingBindings(regularExpression);
     if (cs != updatedCs)
         d->filter_casesensitive.setValueBypassingBindings(updatedCs);
@@ -2669,17 +2669,17 @@ QBindable<int> QSortFilterProxyModel::bindableFilterKeyColumn()
 
 /*!
     \since 5.15
-    \fn void QSortFilterProxyModel::filterCaseSensitivityChanged(Qt::CaseSensitivity filterCaseSensitivity)
+    \fn void QSortFilterProxyModel::filterCaseSensitivityChanged(BobUI::CaseSensitivity filterCaseSensitivity)
     \brief This signal is emitted when the case sensitivity of the filter
            changes to \a filterCaseSensitivity.
  */
-Qt::CaseSensitivity QSortFilterProxyModel::filterCaseSensitivity() const
+BobUI::CaseSensitivity QSortFilterProxyModel::filterCaseSensitivity() const
 {
     Q_D(const QSortFilterProxyModel);
     return d->filter_casesensitive;
 }
 
-void QSortFilterProxyModel::setFilterCaseSensitivity(Qt::CaseSensitivity cs)
+void QSortFilterProxyModel::setFilterCaseSensitivity(BobUI::CaseSensitivity cs)
 {
     Q_D(QSortFilterProxyModel);
     d->filter_casesensitive.removeBindingUnlessInWrapper();
@@ -2690,7 +2690,7 @@ void QSortFilterProxyModel::setFilterCaseSensitivity(Qt::CaseSensitivity cs)
     const QScopedPropertyUpdateGroup guard;
     QRegularExpression::PatternOptions options =
             d->filter_regularexpression.value().patternOptions();
-    options.setFlag(QRegularExpression::CaseInsensitiveOption, cs == Qt::CaseInsensitive);
+    options.setFlag(QRegularExpression::CaseInsensitiveOption, cs == BobUI::CaseInsensitive);
     d->filter_casesensitive.setValueBypassingBindings(cs);
 
     d->filter_about_to_be_changed();
@@ -2702,10 +2702,10 @@ void QSortFilterProxyModel::setFilterCaseSensitivity(Qt::CaseSensitivity cs)
     d->filter_casesensitive.notify();
 }
 
-QBindable<Qt::CaseSensitivity> QSortFilterProxyModel::bindableFilterCaseSensitivity()
+QBindable<BobUI::CaseSensitivity> QSortFilterProxyModel::bindableFilterCaseSensitivity()
 {
     Q_D(QSortFilterProxyModel);
-    return QBindable<Qt::CaseSensitivity>(&d->filter_casesensitive);
+    return QBindable<BobUI::CaseSensitivity>(&d->filter_casesensitive);
 }
 
 /*!
@@ -2720,17 +2720,17 @@ QBindable<Qt::CaseSensitivity> QSortFilterProxyModel::bindableFilterCaseSensitiv
 
 /*!
     \since 5.15
-    \fn void QSortFilterProxyModel::sortCaseSensitivityChanged(Qt::CaseSensitivity sortCaseSensitivity)
+    \fn void QSortFilterProxyModel::sortCaseSensitivityChanged(BobUI::CaseSensitivity sortCaseSensitivity)
     \brief This signal is emitted when the case sensitivity for sorting
            changes to \a sortCaseSensitivity.
 */
-Qt::CaseSensitivity QSortFilterProxyModel::sortCaseSensitivity() const
+BobUI::CaseSensitivity QSortFilterProxyModel::sortCaseSensitivity() const
 {
     Q_D(const QSortFilterProxyModel);
     return d->sort_casesensitivity;
 }
 
-void QSortFilterProxyModel::setSortCaseSensitivity(Qt::CaseSensitivity cs)
+void QSortFilterProxyModel::setSortCaseSensitivity(BobUI::CaseSensitivity cs)
 {
     Q_D(QSortFilterProxyModel);
     d->sort_casesensitivity.removeBindingUnlessInWrapper();
@@ -2742,10 +2742,10 @@ void QSortFilterProxyModel::setSortCaseSensitivity(Qt::CaseSensitivity cs)
     d->sort_casesensitivity.notify(); // also emits a signal
 }
 
-QBindable<Qt::CaseSensitivity> QSortFilterProxyModel::bindableSortCaseSensitivity()
+QBindable<BobUI::CaseSensitivity> QSortFilterProxyModel::bindableSortCaseSensitivity()
 {
     Q_D(QSortFilterProxyModel);
-    return QBindable<Qt::CaseSensitivity>(&d->sort_casesensitivity);
+    return QBindable<BobUI::CaseSensitivity>(&d->sort_casesensitivity);
 }
 
 /*!
@@ -2916,7 +2916,7 @@ QBindable<bool> QSortFilterProxyModel::bindableDynamicSortFilter()
     \brief the item role that is used to query the source model's data when
            sorting items.
 
-    The default value is Qt::DisplayRole.
+    The default value is BobUI::DisplayRole.
 
     \sa lessThan()
 */
@@ -2955,7 +2955,7 @@ QBindable<int> QSortFilterProxyModel::bindableSortRole()
     \brief the item role that is used to query the source model's data when
            filtering items.
 
-    The default value is Qt::DisplayRole.
+    The default value is BobUI::DisplayRole.
 
     \sa filterAcceptsRow()
 */
@@ -3114,7 +3114,7 @@ void QSortFilterProxyModel::beginFilterChange()
     d->create_mapping({});
 }
 
-#if QT_DEPRECATED_SINCE(6, 13)
+#if BOBUI_DEPRECATED_SINCE(6, 13)
 /*!
    \since 4.3
    \deprecated [6.13] use beginFilterChange() and endFilterChange() instead.
@@ -3182,7 +3182,7 @@ void QSortFilterProxyModel::invalidateRowsFilter()
     Q_D(QSortFilterProxyModel);
     d->filter_changed(Direction::Rows);
 }
-#endif // QT_DEPRECATED_SINCE(6, 13)
+#endif // BOBUI_DEPRECATED_SINCE(6, 13)
 
 /*!
     \enum QSortFilterProxyModel::Direction
@@ -3237,7 +3237,7 @@ void QSortFilterProxyModel::endFilterChange(QSortFilterProxyModel::Directions di
     \li QMetaType::Double
     \li QMetaType::QChar
     \li QMetaType::QDate
-    \li QMetaType::QTime
+    \li QMetaType::BOBUIime
     \li QMetaType::QDateTime
     \li QMetaType::QString
     \endlist
@@ -3249,7 +3249,7 @@ void QSortFilterProxyModel::endFilterChange(QSortFilterProxyModel::Directions di
     be changed using the \l {QSortFilterProxyModel::sortCaseSensitivity}
     {sortCaseSensitivity} property.
 
-    By default, the Qt::DisplayRole associated with the
+    By default, the BobUI::DisplayRole associated with the
     \l{QModelIndex}es is used for comparisons. This can be changed by
     setting the \l {QSortFilterProxyModel::sortRole} {sortRole} property.
 
@@ -3273,7 +3273,7 @@ bool QSortFilterProxyModel::lessThan(const QModelIndex &source_left, const QMode
     The default implementation returns \c true if the value held by the relevant item
     matches the filter string, wildcard string or regular expression.
 
-    \note By default, the Qt::DisplayRole is used to determine if the row
+    \note By default, the BobUI::DisplayRole is used to determine if the row
     should be accepted or not. This can be changed by setting the
     \l{QSortFilterProxyModel::filterRole}{filterRole} property.
 
@@ -3360,6 +3360,6 @@ QItemSelection QSortFilterProxyModel::mapSelectionFromSource(const QItemSelectio
     return QAbstractProxyModel::mapSelectionFromSource(sourceSelection);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsortfilterproxymodel.cpp"

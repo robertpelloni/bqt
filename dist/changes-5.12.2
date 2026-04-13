@@ -1,18 +1,18 @@
-Qt 5.12.2 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 5.12.0 through 5.12.1.
+BobUI 5.12.2 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 5.12.0 through 5.12.1.
 
 For more details, refer to the online documentation included in this
 distribution. The documentation is also available online:
 
-https://doc.qt.io/qt-5/index.html
+https://doc.bobui.io/bobui-5/index.html
 
-The Qt version 5.12 series is binary compatible with the 5.11.x series.
+The BobUI version 5.12 series is binary compatible with the 5.11.x series.
 Applications compiled for 5.11 will continue to run with 5.12.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-https://bugreports.qt.io/
+https://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -21,34 +21,34 @@ information about a particular change.
 *                        Important Behavior Changes                        *
 ****************************************************************************
 
- - QtTestLib:
-   * [QTBUG-72928] Blacklisting of tests will be taken into account for
+ - BobUITestLib:
+   * [BOBUIBUG-72928] Blacklisting of tests will be taken into account for
      XPASS and XFAIL. A blacklisted test that causes an XPASS will no
      longer be a fail.
 
 ****************************************************************************
-*                                  QtCore                                  *
+*                                  BobUICore                                  *
 ****************************************************************************
 
- - [QTBUG-72885] Fixed a number of warnings with Clang or Clang-Tidy in
-   Qt headers related to alignment of Qt private classes.
+ - [BOBUIBUG-72885] Fixed a number of warnings with Clang or Clang-Tidy in
+   BobUI headers related to alignment of BobUI private classes.
 
- - QDate, QTime and QDateTime;
-   * [QTBUG-51208] Corrected documentation of how non-placeholder
+ - QDate, BOBUIime and QDateTime;
+   * [BOBUIBUG-51208] Corrected documentation of how non-placeholder
      characters are handled in format patterns passed to toString().
 
  - QCoreApplication:
-   * [QTBUG-57171] Fixed an out-of-bounds access if the translatable
+   * [BOBUIBUG-57171] Fixed an out-of-bounds access if the translatable
      string passed to tr() ended in '%'.
 
  - QFileInfo:
-   * [QTBUG-72644] Fixed a bug that would cause QFileInfo to report an
+   * [BOBUIBUG-72644] Fixed a bug that would cause QFileInfo to report an
      link incorrectly as a non-link.
 
  - QLocale:
    * Fixed a crash if qDebug() is used after main() has exited.
-   * [QTBUG-73403] Fixed a race condition in getting the system locale
-     (possible regression from Qt 5.11.x)
+   * [BOBUIBUG-73403] Fixed a race condition in getting the system locale
+     (possible regression from BobUI 5.11.x)
 
  - QSysInfo:
    * Fixed a bug on BSD systems in getting the machineUniqueId().
@@ -59,7 +59,7 @@ information about a particular change.
    * Fixed handling of wait(QDeadlineTimer::Forever) on 32-bit platforms.
 
 ****************************************************************************
-*                                QtWidgets                                 *
+*                                BobUIWidgets                                 *
 ****************************************************************************
 
  - ItemViews:
@@ -83,7 +83,7 @@ information about a particular change.
 *                                 Android                                  *
 ****************************************************************************
 
- - Added the --no-strip command line option to androiddeployqt.
+ - Added the --no-strip command line option to androiddeploybobui.
 
  - qmake:
    * Can now set the version name and code for Android using
@@ -101,5 +101,5 @@ information about a particular change.
 *                                  qmake                                   *
 ****************************************************************************
 
- - [QTBUG-27079] A new feature "cmdline" was added that implies "CONFIG +=
+ - [BOBUIBUG-27079] A new feature "cmdline" was added that implies "CONFIG +=
    console" and "CONFIG -= app_bundle".

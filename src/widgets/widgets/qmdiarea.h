@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMDIAREA_H
 #define QMDIAREA_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractscrollarea.h>
-#if QT_CONFIG(tabwidget)
-#include <QtWidgets/qtabwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractscrollarea.h>
+#if BOBUI_CONFIG(tabwidget)
+#include <BobUIWidgets/bobuiabwidget.h>
 #endif
 
-QT_REQUIRE_CONFIG(mdiarea);
+BOBUI_REQUIRE_CONFIG(mdiarea);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMdiSubWindow;
 
@@ -24,14 +24,14 @@ class Q_WIDGETS_EXPORT QMdiArea : public QAbstractScrollArea
     Q_PROPERTY(QBrush background READ background WRITE setBackground)
     Q_PROPERTY(WindowOrder activationOrder READ activationOrder WRITE setActivationOrder)
     Q_PROPERTY(ViewMode viewMode READ viewMode WRITE setViewMode)
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     Q_PROPERTY(bool documentMode READ documentMode WRITE setDocumentMode)
     Q_PROPERTY(bool tabsClosable READ tabsClosable WRITE setTabsClosable)
     Q_PROPERTY(bool tabsMovable READ tabsMovable WRITE setTabsMovable)
 #endif
-#if QT_CONFIG(tabwidget)
-    Q_PROPERTY(QTabWidget::TabShape tabShape READ tabShape WRITE setTabShape)
-    Q_PROPERTY(QTabWidget::TabPosition tabPosition READ tabPosition WRITE setTabPosition)
+#if BOBUI_CONFIG(tabwidget)
+    Q_PROPERTY(BOBUIabWidget::TabShape tabShape READ tabShape WRITE setTabShape)
+    Q_PROPERTY(BOBUIabWidget::TabPosition tabPosition READ tabPosition WRITE setTabPosition)
 #endif
 public:
     enum AreaOption {
@@ -62,7 +62,7 @@ public:
     QMdiSubWindow *activeSubWindow() const;
     QList<QMdiSubWindow *> subWindowList(WindowOrder order = CreationOrder) const;
 
-    QMdiSubWindow *addSubWindow(QWidget *widget, Qt::WindowFlags flags = Qt::WindowFlags());
+    QMdiSubWindow *addSubWindow(QWidget *widget, BobUI::WindowFlags flags = BobUI::WindowFlags());
     void removeSubWindow(QWidget *widget);
 
     QBrush background() const;
@@ -77,7 +77,7 @@ public:
     void setViewMode(ViewMode mode);
     ViewMode viewMode() const;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     bool documentMode() const;
     void setDocumentMode(bool enabled);
 
@@ -87,12 +87,12 @@ public:
     void setTabsMovable(bool movable);
     bool tabsMovable() const;
 #endif
-#if QT_CONFIG(tabwidget)
-    void setTabShape(QTabWidget::TabShape shape);
-    QTabWidget::TabShape tabShape() const;
+#if BOBUI_CONFIG(tabwidget)
+    void setTabShape(BOBUIabWidget::TabShape shape);
+    BOBUIabWidget::TabShape tabShape() const;
 
-    void setTabPosition(QTabWidget::TabPosition position);
-    QTabWidget::TabPosition tabPosition() const;
+    void setTabPosition(BOBUIabWidget::TabPosition position);
+    BOBUIabWidget::TabPosition tabPosition() const;
 #endif
 
 Q_SIGNALS:
@@ -116,7 +116,7 @@ protected:
     void paintEvent(QPaintEvent *paintEvent) override;
     void childEvent(QChildEvent *childEvent) override;
     void resizeEvent(QResizeEvent *resizeEvent) override;
-    void timerEvent(QTimerEvent *timerEvent) override;
+    void timerEvent(BOBUIimerEvent *timerEvent) override;
     void showEvent(QShowEvent *showEvent) override;
     bool viewportEvent(QEvent *event) override;
     void scrollContentsBy(int dx, int dy) override;
@@ -125,7 +125,7 @@ private:
     Q_DISABLE_COPY(QMdiArea)
     Q_DECLARE_PRIVATE(QMdiArea)
     Q_PRIVATE_SLOT(d_func(), void _q_deactivateAllWindows())
-    Q_PRIVATE_SLOT(d_func(), void _q_processWindowStateChanged(Qt::WindowStates, Qt::WindowStates))
+    Q_PRIVATE_SLOT(d_func(), void _q_processWindowStateChanged(BobUI::WindowStates, BobUI::WindowStates))
     Q_PRIVATE_SLOT(d_func(), void _q_currentTabChanged(int))
     Q_PRIVATE_SLOT(d_func(), void _q_closeTab(int))
     Q_PRIVATE_SLOT(d_func(), void _q_moveTab(int, int))
@@ -133,6 +133,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMdiArea::AreaOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMDIAREA_H

@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include "tst_qmetatype_common.h"
 #include "tst_qvariant_common.h"
 
@@ -15,7 +15,7 @@ struct MessageHandlerCustom : public MessageHandler
     MessageHandlerCustom(const int typeId)
         : MessageHandler(typeId, handler)
     {}
-    static void handler(QtMsgType, const QMessageLogContext &, const QString &msg)
+    static void handler(BobUIMsgType, const QMessageLogContext &, const QString &msg)
     {
         QCOMPARE(msg.trimmed(), expectedMessage.trimmed());
     }
@@ -37,7 +37,7 @@ private:
     void registerGadget(const char * name, const QList<GadgetPropertyType> &gadgetProperties);
 
 private slots:
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     void threadSafety();
 #endif
     void namespaces();
@@ -69,7 +69,7 @@ private slots:
     void flagsBinaryCompatibility6_0();
     void construct_data();
     void construct();
-    void defaultConstructTrivial_QTBUG_109594();
+    void defaultConstructTrivial_BOBUIBUG_109594();
     void typedConstruct();
     void constructCopy_data();
     void constructCopy();
@@ -113,10 +113,10 @@ private slots:
     void typesWithInaccessibleDTors();
     void voidIsNotUnknown();
     void typeNameNormalization();
-    void typeNameInQtPrivate();
+    void typeNameInBobUIPrivate();
 
     // Tests for deprecated APIs
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     void testDeprecatedGetters_data() { type_data(); }
     void testDeprecatedGetters();
     void testDeprecatedLoadSave_data() { saveAndLoadBuiltin_data(); }
@@ -131,9 +131,9 @@ Q_DECLARE_METATYPE(Whity<int>)
 Q_DECLARE_METATYPE(Whity<double>)
 
 #if !defined(Q_CC_CLANG) && defined(Q_CC_GNU) && Q_CC_GNU < 501
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(Whity<double>, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif
 
 struct CustomConvertibleType
@@ -202,8 +202,8 @@ struct CustomEqualsOnlyType
     { return !operator==(lhs, rhs); }
 };
 
-static_assert(QTypeTraits::has_operator_equal_v<CustomEqualsOnlyType>);
-static_assert(!QTypeTraits::has_operator_less_than_v<CustomEqualsOnlyType>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<CustomEqualsOnlyType>);
+static_assert(!BOBUIypeTraits::has_operator_less_than_v<CustomEqualsOnlyType>);
 
 struct BaseGadgetType
 {
@@ -235,9 +235,9 @@ struct CustomMovable {
 };
 
 #if !defined(Q_CC_CLANG) && defined(Q_CC_GNU) && Q_CC_GNU < 501
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(CustomMovable, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif
 
 Q_DECLARE_METATYPE(CustomMovable);

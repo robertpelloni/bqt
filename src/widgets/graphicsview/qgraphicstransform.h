@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSTRANSFORM_H
 #define QGRAPHICSTRANSFORM_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/QObject>
-#include <QtGui/QVector3D>
-#include <QtGui/QTransform>
-#include <QtGui/QMatrix4x4>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/QObject>
+#include <BobUIGui/QVector3D>
+#include <BobUIGui/BOBUIransform>
+#include <BobUIGui/QMatrix4x4>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsItem;
 class QGraphicsTransformPrivate;
@@ -99,7 +99,7 @@ public:
 
     QVector3D axis() const;
     void setAxis(const QVector3D &axis);
-    void setAxis(Qt::Axis axis);
+    void setAxis(BobUI::Axis axis);
 
     void applyTo(QMatrix4x4 *matrix) const override;
 
@@ -112,6 +112,6 @@ private:
     Q_DECLARE_PRIVATE(QGraphicsRotation)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFXTRANSFORM_H

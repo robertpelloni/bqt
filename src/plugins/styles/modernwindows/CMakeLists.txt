@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QWindowsVistaStylePlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QModernWindowsStylePlugin
+bobui_internal_add_plugin(QModernWindowsStylePlugin
     OUTPUT_NAME qmodernwindowsstyle
     PLUGIN_TYPE styles
     SOURCES
@@ -21,8 +21,8 @@ qt_internal_add_plugin(QModernWindowsStylePlugin
         gdi32
         user32
         uxtheme
-        Qt::Core
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::WidgetsPrivate
+        BobUI::Core
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::WidgetsPrivate
 )

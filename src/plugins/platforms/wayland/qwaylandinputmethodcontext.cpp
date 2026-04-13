@@ -1,30 +1,30 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandinputmethodcontext_p.h"
 #include "qwaylandinputcontext_p.h"
 #include "qwaylanddisplay_p.h"
 #include "qwaylandinputdevice_p.h"
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qtextformat.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/bobuiextformat.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 static constexpr int maxStringSize = 1000; // actual max is 4096/3
 
-QWaylandTextInputMethod::QWaylandTextInputMethod(QWaylandDisplay *display, struct ::qt_text_input_method_v1 *textInputMethod)
-    : QtWayland::qt_text_input_method_v1(textInputMethod)
+QWaylandTextInputMethod::QWaylandTextInputMethod(QWaylandDisplay *display, struct ::bobui_text_input_method_v1 *textInputMethod)
+    : BobUIWayland::bobui_text_input_method_v1(textInputMethod)
 {
     Q_UNUSED(display);
 }
 
 QWaylandTextInputMethod::~QWaylandTextInputMethod()
 {
-    qt_text_input_method_v1_destroy(object());
+    bobui_text_input_method_v1_destroy(object());
 }
 
 void QWaylandTextInputMethod::text_input_method_v1_visible_changed(int32_t visible)
@@ -42,7 +42,7 @@ void QWaylandTextInputMethod::text_input_method_v1_locale_changed(const QString 
 
 void QWaylandTextInputMethod::text_input_method_v1_input_direction_changed(int32_t inputDirection)
 {
-    m_layoutDirection = Qt::LayoutDirection(inputDirection);
+    m_layoutDirection = BobUI::LayoutDirection(inputDirection);
 }
 
 void QWaylandTextInputMethod::text_input_method_v1_keyboard_rectangle_changed(wl_fixed_t x, wl_fixed_t y, wl_fixed_t width, wl_fixed_t height)
@@ -114,9 +114,9 @@ void QWaylandTextInputMethod::text_input_method_v1_input_method_event_attribute(
         break;
     case QInputMethodEvent::TextFormat:
     {
-        QTextCharFormat textFormat;
-        textFormat.setProperty(QTextFormat::FontUnderline, true);
-        textFormat.setProperty(QTextFormat::TextUnderlineStyle, QTextCharFormat::SingleUnderline);
+        BOBUIextCharFormat textFormat;
+        textFormat.setProperty(BOBUIextFormat::FontUnderline, true);
+        textFormat.setProperty(BOBUIextFormat::TextUnderlineStyle, BOBUIextCharFormat::SingleUnderline);
         attributes.append(QInputMethodEvent::Attribute(QInputMethodEvent::AttributeType(type), start, length, textFormat));
         break;
     }
@@ -127,21 +127,21 @@ void QWaylandTextInputMethod::text_input_method_v1_input_method_event_attribute(
     };
 }
 
-void QWaylandTextInputMethod::sendInputState(QInputMethodQueryEvent *event, Qt::InputMethodQueries queries)
+void QWaylandTextInputMethod::sendInputState(QInputMethodQueryEvent *event, BobUI::InputMethodQueries queries)
 {
-    int cursorPosition = event->value(Qt::ImCursorPosition).toInt();
-    int anchorPosition = event->value(Qt::ImAnchorPosition).toInt();
-    QString surroundingText = event->value(Qt::ImSurroundingText).toString();
+    int cursorPosition = event->value(BobUI::ImCursorPosition).toInt();
+    int anchorPosition = event->value(BobUI::ImAnchorPosition).toInt();
+    QString surroundingText = event->value(BobUI::ImSurroundingText).toString();
     int offset = calculateOffset(surroundingText, cursorPosition);
 
-    if (queries & Qt::ImCursorPosition)
+    if (queries & BobUI::ImCursorPosition)
         update_cursor_position(mapPositionToCompositor(cursorPosition, offset));
-    if (queries & Qt::ImSurroundingText)
+    if (queries & BobUI::ImSurroundingText)
         update_surrounding_text(mapSurroundingTextToCompositor(surroundingText, offset), offset);
-    if (queries & Qt::ImAnchorPosition)
+    if (queries & BobUI::ImAnchorPosition)
         update_anchor_position(mapPositionToCompositor(anchorPosition, offset));
-    if (queries & Qt::ImAbsolutePosition)
-        update_absolute_position(event->value(Qt::ImAbsolutePosition).toInt()); // do not map: this is the position in the whole document
+    if (queries & BobUI::ImAbsolutePosition)
+        update_absolute_position(event->value(BobUI::ImAbsolutePosition).toInt()); // do not map: this is the position in the whole document
 }
 
 
@@ -162,7 +162,7 @@ void QWaylandTextInputMethod::text_input_method_v1_end_input_method_event(uint32
 
     // Send current state to make sure it matches
     if (QGuiApplication::focusObject() != nullptr) {
-        QInputMethodQueryEvent event(Qt::ImCursorPosition | Qt::ImSurroundingText | Qt::ImAnchorPosition | Qt::ImAbsolutePosition);
+        QInputMethodQueryEvent event(BobUI::ImCursorPosition | BobUI::ImSurroundingText | BobUI::ImAnchorPosition | BobUI::ImAbsolutePosition);
         QCoreApplication::sendEvent(QGuiApplication::focusObject(), &event);
         sendInputState(&event);
     }
@@ -183,7 +183,7 @@ void QWaylandTextInputMethod::text_input_method_v1_key(int32_t type,
     if (QGuiApplication::focusObject() != nullptr) {
         QKeyEvent event(QKeyEvent::Type(type),
                         key,
-                        Qt::KeyboardModifiers(modifiers),
+                        BobUI::KeyboardModifiers(modifiers),
                         nativeScanCode,
                         nativeVirtualKey,
                         nativeModifiers,
@@ -238,7 +238,7 @@ void QWaylandInputMethodContext::commit()
     m_display->forceRoundTrip();
 }
 
-void QWaylandInputMethodContext::update(Qt::InputMethodQueries queries)
+void QWaylandInputMethodContext::update(BobUI::InputMethodQueries queries)
 {
     wl_surface *currentSurface = m_currentWindow != nullptr && m_currentWindow->handle() != nullptr
                 ? static_cast<QWaylandWindow *>(m_currentWindow->handle())->wlSurface()
@@ -257,18 +257,18 @@ void QWaylandInputMethodContext::update(Qt::InputMethodQueries queries)
         }
     }
 
-    queries &= (Qt::ImEnabled
-                | Qt::ImHints
-                | Qt::ImCursorRectangle
-                | Qt::ImCursorPosition
-                | Qt::ImSurroundingText
-                | Qt::ImCurrentSelection
-                | Qt::ImAnchorPosition
-                | Qt::ImTextAfterCursor
-                | Qt::ImTextBeforeCursor
-                | Qt::ImPreferredLanguage);
+    queries &= (BobUI::ImEnabled
+                | BobUI::ImHints
+                | BobUI::ImCursorRectangle
+                | BobUI::ImCursorPosition
+                | BobUI::ImSurroundingText
+                | BobUI::ImCurrentSelection
+                | BobUI::ImAnchorPosition
+                | BobUI::ImTextAfterCursor
+                | BobUI::ImTextBeforeCursor
+                | BobUI::ImPreferredLanguage);
 
-    const Qt::InputMethodQueries queriesNeedingOffset = Qt::ImCursorPosition | Qt::ImSurroundingText | Qt::ImAnchorPosition;
+    const BobUI::InputMethodQueries queriesNeedingOffset = BobUI::ImCursorPosition | BobUI::ImSurroundingText | BobUI::ImAnchorPosition;
     if (queries & queriesNeedingOffset)
         queries |= queriesNeedingOffset;
 
@@ -279,18 +279,18 @@ void QWaylandInputMethodContext::update(Qt::InputMethodQueries queries)
 
         inputMethod->start_update(int(queries));
 
-        if (queries & Qt::ImHints)
-            inputMethod->update_hints(event.value(Qt::ImHints).toInt());
+        if (queries & BobUI::ImHints)
+            inputMethod->update_hints(event.value(BobUI::ImHints).toInt());
 
-        if (queries & Qt::ImCursorRectangle) {
-            QRect rect = event.value(Qt::ImCursorRectangle).toRect();
+        if (queries & BobUI::ImCursorRectangle) {
+            QRect rect = event.value(BobUI::ImCursorRectangle).toRect();
             inputMethod->update_cursor_rectangle(rect.x(), rect.y(), rect.width(), rect.height());
         }
 
         inputMethod->sendInputState(&event, queries);
 
-        if (queries & Qt::ImPreferredLanguage)
-            inputMethod->update_preferred_language(event.value(Qt::ImPreferredLanguage).toString());
+        if (queries & BobUI::ImPreferredLanguage)
+            inputMethod->update_preferred_language(event.value(BobUI::ImPreferredLanguage).toString());
 
         inputMethod->end_update();
 
@@ -346,13 +346,13 @@ QLocale QWaylandInputMethodContext::locale() const
         return QLocale();
 }
 
-Qt::LayoutDirection QWaylandInputMethodContext::inputDirection() const
+BobUI::LayoutDirection QWaylandInputMethodContext::inputDirection() const
 {
     QWaylandTextInputMethod *inputMethod = textInputMethod();
     if (inputMethod != nullptr)
         return inputMethod->inputDirection();
     else
-        return Qt::LeftToRight;
+        return BobUI::LeftToRight;
 }
 
 void QWaylandInputMethodContext::setFocusObject(QObject *)
@@ -384,7 +384,7 @@ void QWaylandInputMethodContext::setFocusObject(QObject *)
             }
         }
 
-        update(Qt::ImQueryAll);
+        update(BobUI::ImQueryAll);
     }
 }
 
@@ -393,8 +393,8 @@ QWaylandTextInputMethod *QWaylandInputMethodContext::textInputMethod() const
     return m_display->defaultInputDevice() ? m_display->defaultInputDevice()->textInputMethod() : nullptr;
 }
 
-} // QtWaylandClient
+} // BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandinputmethodcontext_p.cpp"

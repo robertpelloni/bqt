@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
@@ -20,9 +20,9 @@
 
 #include <BobUIDBus/private/bobuidbusglobal_p.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-#ifdef QT_LINKED_LIBDBUS
+#ifdef BOBUI_LINKED_LIBDBUS
 #  include <dbus/dbus.h>
 #else
 #  include "dbus_minimal_p.h"
@@ -36,7 +36,7 @@
 
 BOBUI_BEGIN_NAMESPACE
 
-#if !defined QT_LINKED_LIBDBUS
+#if !defined BOBUI_LINKED_LIBDBUS
 
 QFunctionPointer qdbus_resolve_conditionally(const char *name); // doesn't print a warning
 QFunctionPointer qdbus_resolve_me(const char *name); // prints a warning
@@ -147,14 +147,14 @@ template <>           struct TraceReturn<void> { typedef void Type; };
         funcret DEBUGRET(ret) ptr argcall;                                        \
     }
 
-#else // defined QT_LINKED_LIBDBUS
+#else // defined BOBUI_LINKED_LIBDBUS
 
 inline bool qdbus_loadLibDBus() { return true; }
 
 # define DEFINEFUNC(ret, func, args, argcall, funcret) \
     static inline ret q_##func args { funcret func argcall; }
 
-#endif // defined QT_LINKED_LIBDBUS
+#endif // defined BOBUI_LINKED_LIBDBUS
 
 /* dbus-bus.h */
 DEFINEFUNC(void, dbus_bus_add_match, (DBusConnection *connection,
@@ -289,12 +289,12 @@ DEFINEFUNC(const char*   , dbus_message_get_signature, (DBusMessage   *message),
 DEFINEFUNC(int           , dbus_message_get_type, (DBusMessage   *message),
            (message), return)
 
-#if !defined QT_LINKED_LIBDBUS
+#if !defined BOBUI_LINKED_LIBDBUS
 
 DEFINEFUNC_CONDITIONALLY(dbus_bool_t   , dbus_message_get_allow_interactive_authorization, (DBusMessage   *message),
                          (message), return, return false)
 
-#else // defined QT_LINKED_LIBDBUS
+#else // defined BOBUI_LINKED_LIBDBUS
 
 static inline dbus_bool_t q_dbus_message_get_allow_interactive_authorization(DBusMessage *message)
 {
@@ -306,7 +306,7 @@ static inline dbus_bool_t q_dbus_message_get_allow_interactive_authorization(DBu
 #endif
 }
 
-#endif // defined QT_LINKED_LIBDBUS
+#endif // defined BOBUI_LINKED_LIBDBUS
 
 DEFINEFUNC(dbus_bool_t , dbus_message_iter_append_basic, (DBusMessageIter *iter,
                                                           int              type,
@@ -386,13 +386,13 @@ DEFINEFUNC(dbus_bool_t   , dbus_message_set_sender, (DBusMessage   *message,
 DEFINEFUNC(void          , dbus_message_unref, (DBusMessage   *message),
            (message), )
 
-#if !defined QT_LINKED_LIBDBUS
+#if !defined BOBUI_LINKED_LIBDBUS
 
 DEFINEFUNC_CONDITIONALLY(void, dbus_message_set_allow_interactive_authorization,
                          (DBusMessage *message, dbus_bool_t allow), (message, allow), return, return)
 
 
-#else // defined QT_LINKED_LIBDBUS
+#else // defined BOBUI_LINKED_LIBDBUS
 
 static inline void q_dbus_message_set_allow_interactive_authorization(DBusMessage *message, dbus_bool_t allow)
 {
@@ -404,7 +404,7 @@ static inline void q_dbus_message_set_allow_interactive_authorization(DBusMessag
 #endif
 }
 
-#endif // defined QT_LINKED_LIBDBUS
+#endif // defined BOBUI_LINKED_LIBDBUS
 
 /* dbus-misc.h */
 DEFINEFUNC(char*         , dbus_get_local_machine_id ,  (void), (), return)
@@ -477,5 +477,5 @@ DEFINEFUNC(dbus_bool_t     , dbus_threads_init_default, (), (), return)
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif // QDBUS_SYMBOLS_P_H

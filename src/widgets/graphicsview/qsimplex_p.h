@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSIMPLEX_P_H
 #define QSIMPLEX_P_H
@@ -9,20 +9,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qstring.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qstring.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QSimplexVariable
 {
@@ -31,7 +31,7 @@ struct QSimplexVariable
     qreal result;
     int index;
 protected:
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QSimplexVariable)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QSimplexVariable)
 };
 
 // "pure" QSimplexVariable without the protected destructor
@@ -93,7 +93,7 @@ struct QSimplexConstraint final
         }
     }
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     QString toString() {
         QString result;
         result += QString::fromLatin1("-- QSimplexConstraint %1 --").arg(quintptr(this), 0, 16);
@@ -176,6 +176,6 @@ inline void QSimplex::setValueAt(int rowIndex, int columnIndex, qreal value)
     matrix[rowIndex * columns + columnIndex] = value;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSIMPLEX_P_H

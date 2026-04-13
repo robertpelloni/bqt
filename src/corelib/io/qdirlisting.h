@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2024 Ahmad Samir <a.samirh78@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIRLISTING_H
 #define QDIRLISTING_H
 
-#include <QtCore/qtdeprecationmarkers.h>
-#include <QtCore/qfiledevice.h>
-#include <QtCore/qflags.h>
-#include <QtCore/qtmetamacros.h>
-#include <QtCore/qtclasshelpermacros.h>
-#include <QtCore/qtcoreexports.h>
-#include <QtCore/qdatetime.h>
+#include <BobUICore/bobuideprecationmarkers.h>
+#include <BobUICore/qfiledevice.h>
+#include <BobUICore/qflags.h>
+#include <BobUICore/bobuimetamacros.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
+#include <BobUICore/bobuicoreexports.h>
+#include <BobUICore/qdatetime.h>
 
 #include <iterator>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDirListingPrivate;
 class QFileInfo;
 class QDebug;
 class QDir;
-class QTimeZone;
+class BOBUIimeZone;
 
 class QDirListing
 {
@@ -33,8 +33,8 @@ public:
         Default =               0x000000,
         ExcludeFiles =          0x000004,
         ExcludeDirs =           0x000008,
-#if QT_DEPRECATED_SINCE(6, 14)
-        ExcludeSpecial QT_DEPRECATED_VERSION_X_6_14("Use ExcludeOther instead.") = 0x000010,
+#if BOBUI_DEPRECATED_SINCE(6, 14)
+        ExcludeSpecial BOBUI_DEPRECATED_VERSION_X_6_14("Use ExcludeOther instead.") = 0x000010,
 #endif
         ExcludeOther =          0x000010,
         ResolveSymlinks =       0x000020,
@@ -58,9 +58,9 @@ public:
 
     QDirListing(QDirListing &&other) noexcept
         : d{std::exchange(other.d, nullptr)} {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QDirListing)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QDirListing)
 
-    void swap(QDirListing &other) noexcept { qt_ptr_swap(d, other.d); }
+    void swap(QDirListing &other) noexcept { bobui_ptr_swap(d, other.d); }
 
     Q_CORE_EXPORT ~QDirListing();
 
@@ -94,15 +94,15 @@ public:
         Q_CORE_EXPORT QString absolutePath() const;
         Q_CORE_EXPORT qint64 size() const;
 
-        QDateTime birthTime(const QTimeZone &tz) const
+        QDateTime birthTime(const BOBUIimeZone &tz) const
         { return fileTime(QFileDevice::FileBirthTime, tz); }
-        QDateTime metadataChangeTime(const QTimeZone &tz) const
+        QDateTime metadataChangeTime(const BOBUIimeZone &tz) const
         { return fileTime(QFileDevice::FileMetadataChangeTime, tz); }
-        QDateTime lastModified(const QTimeZone &tz) const
+        QDateTime lastModified(const BOBUIimeZone &tz) const
         { return fileTime(QFileDevice::FileModificationTime, tz); }
-        QDateTime lastRead(const QTimeZone &tz) const
+        QDateTime lastRead(const BOBUIimeZone &tz) const
         { return fileTime(QFileDevice::FileAccessTime, tz); }
-        Q_CORE_EXPORT QDateTime fileTime(QFileDevice::FileTime type, const QTimeZone &tz) const;
+        Q_CORE_EXPORT QDateTime fileTime(QFileDevice::FileTime type, const BOBUIimeZone &tz) const;
     };
 
     class sentinel
@@ -150,7 +150,7 @@ public:
     sentinel end() const { return {}; }
     sentinel cend() const { return end(); }
 
-    // Qt compatibility
+    // BobUI compatibility
     const_iterator constBegin() const { return begin(); }
     sentinel constEnd() const { return end(); }
 
@@ -164,6 +164,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDirListing::IteratorFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDIRLISTING_H

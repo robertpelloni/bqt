@@ -1,4 +1,4 @@
-Qt includes standard dialogs for many common operations, such as file
+BobUI includes standard dialogs for many common operations, such as file
 selection, printing, and color selection.
 
 Custom dialogs can also be created for specialized modal or modeless
@@ -6,4 +6,4 @@ interactions with users.
 
 
 Documentation for these examples can be found via the Examples
-link in the main Qt documentation.
+link in the main BobUI documentation.

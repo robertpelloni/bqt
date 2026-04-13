@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSSCENEINDEX_H
 #define QGRAPHICSSCENEINDEX_H
@@ -9,32 +9,32 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qgraphicsscene_p.h"
 #include "qgraphicsscene.h"
 #include <private/qobject_p.h>
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/qobject.h>
-#include <QtGui/qtransform.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qobject.h>
+#include <BobUIGui/bobuiransform.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsSceneIndexPrivate;
 class QPointF;
 class QRectF;
 
-typedef bool (*QGraphicsSceneIndexIntersector)(const QGraphicsItem *item, const QRectF &exposeRect, Qt::ItemSelectionMode mode,
-                                               const QTransform &deviceTransform, const void *data);
+typedef bool (*QGraphicsSceneIndexIntersector)(const QGraphicsItem *item, const QRectF &exposeRect, BobUI::ItemSelectionMode mode,
+                                               const BOBUIransform &deviceTransform, const void *data);
 
 class Q_AUTOTEST_EXPORT QGraphicsSceneIndex : public QObject
 {
@@ -46,18 +46,18 @@ public:
 
     QGraphicsScene *scene() const;
 
-    virtual QList<QGraphicsItem *> items(Qt::SortOrder order = Qt::DescendingOrder) const  = 0;
-    virtual QList<QGraphicsItem *> items(const QPointF &pos, Qt::ItemSelectionMode mode,
-                                         Qt::SortOrder order, const QTransform &deviceTransform = QTransform()) const;
-    virtual QList<QGraphicsItem *> items(const QRectF &rect, Qt::ItemSelectionMode mode,
-                                         Qt::SortOrder order, const QTransform &deviceTransform = QTransform()) const;
-    virtual QList<QGraphicsItem *> items(const QPolygonF &polygon, Qt::ItemSelectionMode mode,
-                                         Qt::SortOrder order, const QTransform &deviceTransform = QTransform()) const;
-    virtual QList<QGraphicsItem *> items(const QPainterPath &path, Qt::ItemSelectionMode mode,
-                                         Qt::SortOrder order, const QTransform &deviceTransform = QTransform()) const;
-    virtual QList<QGraphicsItem *> estimateItems(const QPointF &point, Qt::SortOrder order) const;
-    virtual QList<QGraphicsItem *> estimateItems(const QRectF &rect, Qt::SortOrder order) const = 0;
-    virtual QList<QGraphicsItem *> estimateTopLevelItems(const QRectF &, Qt::SortOrder order) const;
+    virtual QList<QGraphicsItem *> items(BobUI::SortOrder order = BobUI::DescendingOrder) const  = 0;
+    virtual QList<QGraphicsItem *> items(const QPointF &pos, BobUI::ItemSelectionMode mode,
+                                         BobUI::SortOrder order, const BOBUIransform &deviceTransform = BOBUIransform()) const;
+    virtual QList<QGraphicsItem *> items(const QRectF &rect, BobUI::ItemSelectionMode mode,
+                                         BobUI::SortOrder order, const BOBUIransform &deviceTransform = BOBUIransform()) const;
+    virtual QList<QGraphicsItem *> items(const QPolygonF &polygon, BobUI::ItemSelectionMode mode,
+                                         BobUI::SortOrder order, const BOBUIransform &deviceTransform = BOBUIransform()) const;
+    virtual QList<QGraphicsItem *> items(const QPainterPath &path, BobUI::ItemSelectionMode mode,
+                                         BobUI::SortOrder order, const BOBUIransform &deviceTransform = BOBUIransform()) const;
+    virtual QList<QGraphicsItem *> estimateItems(const QPointF &point, BobUI::SortOrder order) const;
+    virtual QList<QGraphicsItem *> estimateItems(const QRectF &rect, BobUI::SortOrder order) const = 0;
+    virtual QList<QGraphicsItem *> estimateTopLevelItems(const QRectF &, BobUI::SortOrder order) const;
 
 protected Q_SLOTS:
     virtual void updateSceneRect(const QRectF &rect);
@@ -91,34 +91,34 @@ public:
     ~QGraphicsSceneIndexPrivate();
 
     void init();
-    static bool itemCollidesWithPath(const QGraphicsItem *item, const QPainterPath &path, Qt::ItemSelectionMode mode);
+    static bool itemCollidesWithPath(const QGraphicsItem *item, const QPainterPath &path, BobUI::ItemSelectionMode mode);
 
     void recursive_items_helper(QGraphicsItem *item, QRectF exposeRect,
                                 QGraphicsSceneIndexIntersector intersect, QList<QGraphicsItem *> *items,
-                                const QTransform &viewTransform,
-                                Qt::ItemSelectionMode mode, qreal parentOpacity, const void *intersectData) const;
+                                const BOBUIransform &viewTransform,
+                                BobUI::ItemSelectionMode mode, qreal parentOpacity, const void *intersectData) const;
     inline void items_helper(const QRectF &rect, QGraphicsSceneIndexIntersector intersect,
-                             QList<QGraphicsItem *> *items, const QTransform &viewTransform,
-                             Qt::ItemSelectionMode mode, Qt::SortOrder order, const void *intersectData) const;
+                             QList<QGraphicsItem *> *items, const BOBUIransform &viewTransform,
+                             BobUI::ItemSelectionMode mode, BobUI::SortOrder order, const void *intersectData) const;
 
     QGraphicsScene *scene;
 };
 
 inline void QGraphicsSceneIndexPrivate::items_helper(const QRectF &rect, QGraphicsSceneIndexIntersector intersect,
-                                                     QList<QGraphicsItem *> *items, const QTransform &viewTransform,
-                                                     Qt::ItemSelectionMode mode, Qt::SortOrder order, const void *intersectData) const
+                                                     QList<QGraphicsItem *> *items, const BOBUIransform &viewTransform,
+                                                     BobUI::ItemSelectionMode mode, BobUI::SortOrder order, const void *intersectData) const
 {
     Q_Q(const QGraphicsSceneIndex);
-    const QList<QGraphicsItem *> tli = q->estimateTopLevelItems(rect, Qt::AscendingOrder);
+    const QList<QGraphicsItem *> tli = q->estimateTopLevelItems(rect, BobUI::AscendingOrder);
     for (int i = 0; i < tli.size(); ++i)
         recursive_items_helper(tli.at(i), rect, intersect, items, viewTransform, mode, 1.0, intersectData);
-    if (order == Qt::DescendingOrder) {
+    if (order == BobUI::DescendingOrder) {
         const int n = items->size();
         for (int i = 0; i < n / 2; ++i)
             items->swapItemsAt(i, n - i - 1);
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGRAPHICSSCENEINDEX_H

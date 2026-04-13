@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
+#include <BobUIGui>
 #include <iostream>
 
 namespace textdocumentendsnippet {
 void wrapper()
 {
     QString contentString("One\nTwp\nThree");
-    QTextDocument *doc = new QTextDocument(contentString);
+    BOBUIextDocument *doc = new BOBUIextDocument(contentString);
 
 //! [0]
-for (QTextBlock it = doc->begin(); it != doc->end(); it = it.next())
+for (BOBUIextBlock it = doc->begin(); it != doc->end(); it = it.next())
     std::cout << it.text().toStdString() << "\n";
 //! [0]
 

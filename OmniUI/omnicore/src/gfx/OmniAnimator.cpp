@@ -13,7 +13,7 @@ OmniAnimator::OmniAnimator(QObject *parent)
 {
     setObjectName("OmniAnimator");
     m_clock.start();
-    connect(&m_frameTimer, &QTimer::timeout, this, &OmniAnimator::processFrame);
+    connect(&m_frameTimer, &BOBUIimer::timeout, this, &OmniAnimator::processFrame);
 }
 
 OmniAnimator::~OmniAnimator() = default;

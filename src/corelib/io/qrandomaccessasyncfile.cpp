@@ -1,11 +1,11 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qrandomaccessasyncfile_p.h"
 #include "qrandomaccessasyncfile_p_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QRandomAccessAsyncFileBackend::QRandomAccessAsyncFileBackend(QRandomAccessAsyncFile *owner)
     : m_owner(owner)
@@ -19,11 +19,11 @@ void QRandomAccessAsyncFilePrivate::init()
 {
     Q_Q(QRandomAccessAsyncFile);
 
-#if defined(QT_RANDOMACCESSASYNCFILE_QIORING) || defined(Q_OS_DARWIN)
+#if defined(BOBUI_RANDOMACCESSASYNCFILE_QIORING) || defined(Q_OS_DARWIN)
     m_backend = std::make_unique<QRandomAccessAsyncFileNativeBackend>(q);
 #endif
     if (!m_backend || !m_backend->init()) {
-#if QT_CONFIG(thread) && QT_CONFIG(future)
+#if BOBUI_CONFIG(thread) && BOBUI_CONFIG(future)
         m_backend = std::make_unique<QRandomAccessAsyncFileThreadPoolBackend>(q);
         [[maybe_unused]]
         bool result = m_backend->init();
@@ -228,6 +228,6 @@ QRandomAccessAsyncFile::writeFrom(qint64 offset, QSpan<const QSpan<const std::by
     return d->writeFrom(offset, buffers);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qrandomaccessasyncfile_p.cpp"

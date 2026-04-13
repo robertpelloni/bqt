@@ -1,25 +1,25 @@
 // Copyright (C) 2013 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLDEBUG_H
 #define QOPENGLDEBUG_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#include <QtCore/qshareddata.h>
-#include <QtCore/qflags.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmetatype.h>
-#include <QtGui/qopenglcontext.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qflags.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUIGui/qopenglcontext.h>
 
 #if defined(Q_QDOC)
 #undef GLuint
 typedef unsigned int GLuint;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QOpenGLDebugLogger;
@@ -73,7 +73,7 @@ public:
     QOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage);
 
     QOpenGLDebugMessage &operator=(const QOpenGLDebugMessage &debugMessage);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QOpenGLDebugMessage)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QOpenGLDebugMessage)
     ~QOpenGLDebugMessage();
 
     void swap(QOpenGLDebugMessage &other) noexcept { d.swap(other.d); }
@@ -107,7 +107,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QOpenGLDebugMessage::Sources)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QOpenGLDebugMessage::Types)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QOpenGLDebugMessage::Severities)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_OPENGL_EXPORT QDebug operator<<(QDebug debug, const QOpenGLDebugMessage &message);
 Q_OPENGL_EXPORT QDebug operator<<(QDebug debug, QOpenGLDebugMessage::Source source);
 Q_OPENGL_EXPORT QDebug operator<<(QDebug debug, QOpenGLDebugMessage::Type type);
@@ -175,10 +175,10 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_contextAboutToBeDestroyed())
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QOpenGLDebugMessage, Q_OPENGL_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QOpenGLDebugMessage, Q_OPENGL_EXPORT)
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif // QOPENGLDEBUG_H

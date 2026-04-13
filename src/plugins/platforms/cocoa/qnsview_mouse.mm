@@ -1,10 +1,10 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // This file is included from qnsview.mm, and only used to organize the code
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
 {
@@ -49,7 +49,7 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     that the events we are getting stem from our own tracking areas.
 
     FIXME: Ideally we wouldn't need this workaround, and would correctly
-    interact with the responder chain by e.g. calling super if Qt does not
+    interact with the responder chain by e.g. calling super if BobUI does not
     accept the mouse event
 */
 @implementation QNSViewMouseMoveHelper {
@@ -91,8 +91,8 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
 - (void)resetMouseButtons
 {
     qCDebug(lcQpaMouse) << "Resetting mouse buttons";
-    m_buttons = Qt::NoButton;
-    m_frameStrutButtons = Qt::NoButton;
+    m_buttons = BobUI::NoButton;
+    m_frameStrutButtons = BobUI::NoButton;
 }
 
 - (void)handleMouseEvent:(NSEvent *)theEvent
@@ -100,42 +100,42 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     if (!m_platformWindow)
         return;
 
-#ifndef QT_NO_TABLETEVENT
+#ifndef BOBUI_NO_TABLETEVENT
     // Tablet events may come in via the mouse event handlers,
     // check if this is a valid tablet event first.
     if ([self handleTabletEvent: theEvent])
         return;
 #endif
 
-    QPointF qtWindowPoint;
-    QPointF qtScreenPoint;
+    QPointF bobuiWindowPoint;
+    QPointF bobuiScreenPoint;
     QNSView *targetView = self;
     if (!targetView.platformWindow)
         return;
 
 
-    [targetView convertFromScreen:[self screenMousePoint:theEvent] toWindowPoint:&qtWindowPoint andScreenPoint:&qtScreenPoint];
+    [targetView convertFromScreen:[self screenMousePoint:theEvent] toWindowPoint:&bobuiWindowPoint andScreenPoint:&bobuiScreenPoint];
     ulong timestamp = [theEvent timestamp] * 1000;
 
     QCocoaDrag* nativeDrag = QCocoaIntegration::instance()->drag();
     nativeDrag->setLastInputEvent(theEvent, self);
 
     const auto modifiers = QAppleKeyMapper::fromCocoaModifiers(theEvent.modifierFlags);
-    auto button = cocoaButton2QtButton(theEvent);
-    if (button == Qt::LeftButton && m_sendUpAsRightButton)
-        button = Qt::RightButton;
-    const auto eventType = cocoaEvent2QtMouseEvent(theEvent);
+    auto button = cocoaButton2BobUIButton(theEvent);
+    if (button == BobUI::LeftButton && m_sendUpAsRightButton)
+        button = BobUI::RightButton;
+    const auto eventType = cocoaEvent2BobUIMouseEvent(theEvent);
 
     const QPointingDevice *device = pointingDeviceFor(theEvent.deviceID);
     Q_ASSERT(device);
 
     if (eventType == QEvent::MouseMove)
-        qCDebug(lcQpaMouse) << eventType << "at" << qtWindowPoint << "with" << m_buttons;
+        qCDebug(lcQpaMouse) << eventType << "at" << bobuiWindowPoint << "with" << m_buttons;
     else
-        qCInfo(lcQpaMouse) << eventType << "of" << button << "at" << qtWindowPoint << "with" << m_buttons;
+        qCInfo(lcQpaMouse) << eventType << "of" << button << "at" << bobuiWindowPoint << "with" << m_buttons;
 
     QWindowSystemInterface::handleMouseEvent(targetView->m_platformWindow->window(),
-                                             timestamp, qtWindowPoint, qtScreenPoint,
+                                             timestamp, bobuiWindowPoint, bobuiScreenPoint,
                                              m_buttons, button, eventType, modifiers);
 }
 
@@ -146,22 +146,22 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
 
     switch (theEvent.type) {
     case NSEventTypeLeftMouseDown:
-        m_frameStrutButtons |= Qt::LeftButton;
+        m_frameStrutButtons |= BobUI::LeftButton;
         break;
     case NSEventTypeLeftMouseUp:
-         m_frameStrutButtons &= ~Qt::LeftButton;
+         m_frameStrutButtons &= ~BobUI::LeftButton;
          break;
     case NSEventTypeRightMouseDown:
-        m_frameStrutButtons |= Qt::RightButton;
+        m_frameStrutButtons |= BobUI::RightButton;
         break;
     case NSEventTypeRightMouseUp:
-        m_frameStrutButtons &= ~Qt::RightButton;
+        m_frameStrutButtons &= ~BobUI::RightButton;
         break;
     case NSEventTypeOtherMouseDown:
-        m_frameStrutButtons |= cocoaButton2QtButton(theEvent.buttonNumber);
+        m_frameStrutButtons |= cocoaButton2BobUIButton(theEvent.buttonNumber);
         break;
     case NSEventTypeOtherMouseUp:
-        m_frameStrutButtons &= ~cocoaButton2QtButton(theEvent.buttonNumber);
+        m_frameStrutButtons &= ~cocoaButton2BobUIButton(theEvent.buttonNumber);
     default:
         break;
     }
@@ -169,14 +169,14 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     // m_buttons can sometimes get out of sync with the button state in AppKit
     // E.g if the QNSView where a drag starts is reparented to another window
     // while the drag is ongoing, it will not get the corresponding mouseUp
-    // call. This will result in m_buttons to be stuck on Qt::LeftButton.
+    // call. This will result in m_buttons to be stuck on BobUI::LeftButton.
     // Since we know which buttons was pressed/released directly on the frame
     // strut, we can rectify m_buttons here so that we at least don't return early
     // from the drag test underneath because of the faulty m_buttons state.
     // FIXME: get m_buttons in sync with AppKit/NSEvent all over in QNSView.
     m_buttons &= ~m_frameStrutButtons;
 
-    if (m_buttons != Qt::NoButton) {
+    if (m_buttons != BobUI::NoButton) {
         // Don't send frame strut events if we are in the middle of
         // a mouse drag that didn't start on the frame strut.
         return;
@@ -191,13 +191,13 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     int titleBarHeight = windowScreenY - viewScreenY;
 
     NSPoint nsViewPoint = [self convertPoint: windowPoint fromView: nil];
-    QPoint qtWindowPoint = QPoint(nsViewPoint.x, titleBarHeight + nsViewPoint.y);
+    QPoint bobuiWindowPoint = QPoint(nsViewPoint.x, titleBarHeight + nsViewPoint.y);
     NSPoint screenPoint = [window convertRectToScreen:NSMakeRect(windowPoint.x, windowPoint.y, 0, 0)].origin;
-    QPoint qtScreenPoint = QCocoaScreen::mapFromNative(screenPoint).toPoint();
+    QPoint bobuiScreenPoint = QCocoaScreen::mapFromNative(screenPoint).toPoint();
 
     ulong timestamp = [theEvent timestamp] * 1000;
 
-    const auto button = cocoaButton2QtButton(theEvent);
+    const auto button = cocoaButton2BobUIButton(theEvent);
     auto eventType = [&]() {
         switch (theEvent.type) {
         case NSEventTypeLeftMouseDown:
@@ -221,9 +221,9 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
         }
     }();
 
-    qCInfo(lcQpaMouse) << eventType << "at" << qtWindowPoint << "with" << m_frameStrutButtons << "in" << self.window;
+    qCInfo(lcQpaMouse) << eventType << "at" << bobuiWindowPoint << "with" << m_frameStrutButtons << "in" << self.window;
     QWindowSystemInterface::handleMouseEvent(m_platformWindow->window(),
-        timestamp, qtWindowPoint, qtScreenPoint, m_frameStrutButtons, button, eventType);
+        timestamp, bobuiWindowPoint, bobuiScreenPoint, m_frameStrutButtons, button, eventType);
 }
 @end
 
@@ -231,16 +231,16 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
 
 - (void)initMouse
 {
-    m_buttons = Qt::NoButton;
-    m_acceptedMouseDowns = Qt::NoButton;
-    m_frameStrutButtons = Qt::NoButton;
+    m_buttons = BobUI::NoButton;
+    m_acceptedMouseDowns = BobUI::NoButton;
+    m_frameStrutButtons = BobUI::NoButton;
 
     m_scrolling = false;
     self.cursor = nil;
 
     m_sendUpAsRightButton = false;
-    m_dontOverrideCtrlLMB = qt_mac_resolveOption(false, m_platformWindow->window(),
-            "_q_platform_MacDontOverrideCtrlLMB", "QT_MAC_DONT_OVERRIDE_CTRL_LMB");
+    m_dontOverrideCtrlLMB = bobui_mac_resolveOption(false, m_platformWindow->window(),
+            "_q_platform_MacDontOverrideCtrlLMB", "BOBUI_MAC_DONT_OVERRIDE_CTRL_LMB");
 
     m_mouseMoveHelper = [[QNSViewMouseMoveHelper alloc] initWithView:self];
 
@@ -253,7 +253,7 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     trackingOptions |= NSTrackingActiveAlways;
 
     // Ideally, NSTrackingMouseMoved should be turned on only if QWidget::mouseTracking
-    // is enabled, hover is on, or a tool tip is set. Unfortunately, Qt will send "tooltip"
+    // is enabled, hover is on, or a tool tip is set. Unfortunately, BobUI will send "tooltip"
     // events on mouse moves, so we need to turn it on in ALL case. That means EVERY QWindow
     // gets to pay the cost of mouse moves delivered to it (Apple recommends keeping it OFF
     // because there is a performance hit).
@@ -303,16 +303,16 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     if ([self isTransparentForUserInput])
         return false;
 
-    const auto button = cocoaButton2QtButton(theEvent);
+    const auto button = cocoaButton2BobUIButton(theEvent);
 
-    QPointF qtWindowPoint;
-    QPointF qtScreenPoint;
-    [self convertFromScreen:[self screenMousePoint:theEvent] toWindowPoint:&qtWindowPoint andScreenPoint:&qtScreenPoint];
-    Q_UNUSED(qtScreenPoint);
+    QPointF bobuiWindowPoint;
+    QPointF bobuiScreenPoint;
+    [self convertFromScreen:[self screenMousePoint:theEvent] toWindowPoint:&bobuiWindowPoint andScreenPoint:&bobuiScreenPoint];
+    Q_UNUSED(bobuiScreenPoint);
 
     // Maintain masked state for the button for use by MouseDragged and MouseUp.
     QRegion mask = QHighDpi::toNativeLocalPosition(m_platformWindow->window()->mask(), m_platformWindow->window());
-    const bool masked = !mask.isEmpty() && !mask.contains(qtWindowPoint.toPoint());
+    const bool masked = !mask.isEmpty() && !mask.contains(bobuiWindowPoint.toPoint());
     if (masked)
         m_acceptedMouseDowns &= ~button;
     else
@@ -333,9 +333,9 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     if ([self isTransparentForUserInput])
         return false;
 
-    const auto button = cocoaButton2QtButton(theEvent);
+    const auto button = cocoaButton2BobUIButton(theEvent);
 
-    // Forward the event to the next responder if Qt did not accept the
+    // Forward the event to the next responder if BobUI did not accept the
     // corresponding mouse down for this button
     if (!(m_acceptedMouseDowns & button) == button)
         return false;
@@ -349,21 +349,21 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     if ([self isTransparentForUserInput])
         return false;
 
-    auto button = cocoaButton2QtButton(theEvent);
+    auto button = cocoaButton2BobUIButton(theEvent);
 
-    // Forward the event to the next responder if Qt did not accept the
+    // Forward the event to the next responder if BobUI did not accept the
     // corresponding mouse down for this button
     if (!(m_acceptedMouseDowns & button) == button)
         return false;
 
-    if (m_sendUpAsRightButton && button == Qt::LeftButton)
-        button = Qt::RightButton;
+    if (m_sendUpAsRightButton && button == BobUI::LeftButton)
+        button = BobUI::RightButton;
 
     m_buttons &= ~button;
 
     [self handleMouseEvent:theEvent];
 
-    if (button == Qt::RightButton)
+    if (button == BobUI::RightButton)
         m_sendUpAsRightButton = false;
 
     return true;
@@ -375,18 +375,18 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
         return [super mouseDown:theEvent];
     m_sendUpAsRightButton = false;
 
-    QPointF qtWindowPoint;
-    QPointF qtScreenPoint;
-    [self convertFromScreen:[self screenMousePoint:theEvent] toWindowPoint:&qtWindowPoint andScreenPoint:&qtScreenPoint];
-    Q_UNUSED(qtScreenPoint);
+    QPointF bobuiWindowPoint;
+    QPointF bobuiScreenPoint;
+    [self convertFromScreen:[self screenMousePoint:theEvent] toWindowPoint:&bobuiWindowPoint andScreenPoint:&bobuiScreenPoint];
+    Q_UNUSED(bobuiScreenPoint);
 
     QRegion mask = QHighDpi::toNativeLocalPosition(m_platformWindow->window()->mask(), m_platformWindow->window());
-    const bool masked = !mask.isEmpty() && !mask.contains(qtWindowPoint.toPoint());
+    const bool masked = !mask.isEmpty() && !mask.contains(bobuiWindowPoint.toPoint());
     // Maintain masked state for the button for use by MouseDragged and Up.
     if (masked)
-        m_acceptedMouseDowns &= ~Qt::LeftButton;
+        m_acceptedMouseDowns &= ~BobUI::LeftButton;
     else
-        m_acceptedMouseDowns |= Qt::LeftButton;
+        m_acceptedMouseDowns |= BobUI::LeftButton;
 
     // Forward masked out events to the next responder
     if (masked) {
@@ -401,7 +401,7 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     if (queryInputMethod(focusObject)) {
         // Input method is enabled. Pass on to the input context if we
         // are hitting the input item.
-        if (QPlatformInputContext::inputItemClipRectangle().contains(qtWindowPoint)) {
+        if (QPlatformInputContext::inputItemClipRectangle().contains(bobuiWindowPoint)) {
             qCDebug(lcQpaInputMethods) << "Asking input context to handle mouse press"
                 << "for focus object" << focusObject;
             if ([NSTextInputContext.currentInputContext handleEvent:theEvent]) {
@@ -416,10 +416,10 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     }
 
     if (!m_dontOverrideCtrlLMB && (theEvent.modifierFlags & NSEventModifierFlagControl)) {
-        m_buttons |= Qt::RightButton;
+        m_buttons |= BobUI::RightButton;
         m_sendUpAsRightButton = true;
     } else {
-        m_buttons |= Qt::LeftButton;
+        m_buttons |= BobUI::LeftButton;
     }
 
     [self handleMouseEvent:theEvent];
@@ -503,7 +503,7 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
         return;
 
     // Top-level windows generate enter-leave events for sub-windows.
-    // Qt wants to know which window (if any) will be entered at the
+    // BobUI wants to know which window (if any) will be entered at the
     // the time of the leave. This is dificult to accomplish by
     // handling mouseEnter and mouseLeave envents, since they are sent
     // individually to different views.
@@ -535,7 +535,7 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
         QWindowSystemInterface::handleEnterLeaveEvent(QCocoaWindow::s_windowUnderMouse->window(), windowToLeave->window(), windowPoint, screenPoint);
     }
 
-    // Cocoa keeps firing mouse move events for obscured parent views. Qt should not
+    // Cocoa keeps firing mouse move events for obscured parent views. BobUI should not
     // send those events so filter them out here.
     if (m_platformWindow != QCocoaWindow::s_windowUnderMouse)
         return;
@@ -635,7 +635,7 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     QWindowSystemInterface::handleLeaveEvent(windowToLeave->window());
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 - (void)scrollWheel:(NSEvent *)theEvent
 {
     if (!m_platformWindow)
@@ -645,17 +645,17 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
         return [super scrollWheel:theEvent];
 
     QPoint angleDelta;
-    Qt::MouseEventSource source = Qt::MouseEventNotSynthesized;
+    BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized;
     if ([theEvent hasPreciseScrollingDeltas]) {
         // The mouse device contains pixel scroll wheel support (Mighty Mouse, Trackpad).
         // Since deviceDelta is delivered as pixels rather than degrees, we need to
         // convert from pixels to degrees in a sensible manner.
         // It looks like 1/4 degrees per pixel behaves most native.
-        // (NB: Qt expects the unit for delta to be 8 per degree):
+        // (NB: BobUI expects the unit for delta to be 8 per degree):
         const int pixelsToDegrees = 2; // 8 * 1/4
         angleDelta.setX([theEvent scrollingDeltaX] * pixelsToDegrees);
         angleDelta.setY([theEvent scrollingDeltaY] * pixelsToDegrees);
-        source = Qt::MouseEventSynthesizedBySystem;
+        source = BobUI::MouseEventSynthesizedBySystem;
     } else {
         // Remove acceleration, and use either -120 or 120 as delta:
         angleDelta.setX(qBound(-120, int([theEvent deltaX] * 10000), 120));
@@ -674,46 +674,46 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
         pixelDelta.setY([theEvent scrollingDeltaY] * lineWithEstimate);
     }
 
-    QPointF qt_windowPoint;
-    QPointF qt_screenPoint;
-    [self convertFromScreen:[self screenMousePoint:theEvent] toWindowPoint:&qt_windowPoint andScreenPoint:&qt_screenPoint];
+    QPointF bobui_windowPoint;
+    QPointF bobui_screenPoint;
+    [self convertFromScreen:[self screenMousePoint:theEvent] toWindowPoint:&bobui_windowPoint andScreenPoint:&bobui_screenPoint];
     NSTimeInterval timestamp = [theEvent timestamp];
-    ulong qt_timestamp = timestamp * 1000;
+    ulong bobui_timestamp = timestamp * 1000;
 
-    Qt::ScrollPhase phase = Qt::NoScrollPhase;
+    BobUI::ScrollPhase phase = BobUI::NoScrollPhase;
     if (theEvent.phase == NSEventPhaseMayBegin || theEvent.phase == NSEventPhaseBegan) {
         // MayBegin is likely to happen. We treat it the same as an actual begin,
         // and follow it with an update when the actual begin is delivered.
-        phase = m_scrolling ? Qt::ScrollUpdate : Qt::ScrollBegin;
+        phase = m_scrolling ? BobUI::ScrollUpdate : BobUI::ScrollBegin;
         m_scrolling = true;
     } else if (theEvent.phase == NSEventPhaseStationary || theEvent.phase == NSEventPhaseChanged) {
-        phase = Qt::ScrollUpdate;
+        phase = BobUI::ScrollUpdate;
     } else if (theEvent.phase == NSEventPhaseEnded) {
         // A scroll event phase may be followed by a momentum phase after the user releases
-        // the finger, and in that case we don't want to send a Qt::ScrollEnd until after
+        // the finger, and in that case we don't want to send a BobUI::ScrollEnd until after
         // the momentum phase has ended. Unfortunately there isn't any guaranteed way of
         // knowing whether or not a NSEventPhaseEnded will be followed by a momentum phase.
         // The best we can do is to look at the event queue and hope that the system has
         // had time to emit a momentum phase event.
         if ([NSApp nextEventMatchingMask:NSEventMaskScrollWheel untilDate:[NSDate distantPast]
-                inMode:@"QtMomementumEventSearchMode" dequeue:NO].momentumPhase == NSEventPhaseBegan) {
+                inMode:@"BobUIMomementumEventSearchMode" dequeue:NO].momentumPhase == NSEventPhaseBegan) {
             return; // Ignore, even if it has delta
         } else {
-            phase = Qt::ScrollEnd;
+            phase = BobUI::ScrollEnd;
             m_scrolling = false;
         }
     } else if (theEvent.momentumPhase == NSEventPhaseBegan) {
         // If we missed finding a momentum NSEventPhaseBegan when the non-momentum
         // phase ended we need to treat this as a scroll begin, to not confuse client
         // code. Otherwise we treat it as a continuation of the existing scroll.
-        phase = m_scrolling ? Qt::ScrollUpdate : Qt::ScrollBegin;
+        phase = m_scrolling ? BobUI::ScrollUpdate : BobUI::ScrollBegin;
         m_scrolling = true;
     } else if (theEvent.momentumPhase == NSEventPhaseChanged) {
-        phase = Qt::ScrollMomentum;
+        phase = BobUI::ScrollMomentum;
     } else if (theEvent.phase == NSEventPhaseCancelled
             || theEvent.momentumPhase == NSEventPhaseEnded
             || theEvent.momentumPhase == NSEventPhaseCancelled) {
-        phase = Qt::ScrollEnd;
+        phase = BobUI::ScrollEnd;
         m_scrolling = false;
     } else {
         Q_ASSERT(theEvent.momentumPhase != NSEventPhaseStationary);
@@ -734,15 +734,15 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
     // the keyboard modifier state to be the state at the beginning of the
     // flick in order to avoid changing the interpretation of the events
     // mid-stream. One example of this happening would be when pressing cmd
-    // after scrolling in Qt Creator: not taking the phase into account causes
+    // after scrolling in BobUI Creator: not taking the phase into account causes
     // the end of the event stream to be interpreted as font size changes.
     if (theEvent.momentumPhase == NSEventPhaseNone)
         m_currentWheelModifiers = QAppleKeyMapper::fromCocoaModifiers(theEvent.modifierFlags);
 
-    // "isInverted": natural OS X scrolling, inverted from the Qt/other platform/Jens perspective.
+    // "isInverted": natural OS X scrolling, inverted from the BobUI/other platform/Jens perspective.
     bool isInverted  = [theEvent isDirectionInvertedFromDevice];
 
-    qCInfo(lcQpaMouse).nospace() << phase << " at " << qt_windowPoint
+    qCInfo(lcQpaMouse).nospace() << phase << " at " << bobui_windowPoint
         << " pixelDelta=" << pixelDelta << " angleDelta=" << angleDelta
         << (isInverted ? " inverted=true" : "");
 
@@ -759,10 +759,10 @@ static const QPointingDevice *pointingDeviceFor(qint64 deviceID)
         }
     }
 
-    QWindowSystemInterface::handleWheelEvent(m_platformWindow->window(), qt_timestamp,
-        device, qt_windowPoint, qt_screenPoint, pixelDelta, angleDelta,
+    QWindowSystemInterface::handleWheelEvent(m_platformWindow->window(), bobui_timestamp,
+        device, bobui_windowPoint, bobui_screenPoint, pixelDelta, angleDelta,
         m_currentWheelModifiers, phase, source, isInverted);
 }
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 
 @end

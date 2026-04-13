@@ -1,5 +1,5 @@
-QT += core gui widgets
-requires(qtConfig(treeview))
+BOBUI += core gui widgets
+requires(bobuiConfig(treeview))
 TARGET = storageview
 TEMPLATE = app
 SOURCES += storagemodel.cpp \
@@ -8,5 +8,5 @@ HEADERS += \
     storagemodel.h
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/storageview
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/storageview
 INSTALLS += target

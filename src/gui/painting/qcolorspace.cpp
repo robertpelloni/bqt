@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcolorspace.h"
 #include "qcolorspace_p.h"
@@ -13,11 +13,11 @@
 
 #include <qatomic.h>
 #include <qmath.h>
-#include <qtransform.h>
+#include <bobuiransform.h>
 
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_CONSTINIT QBasicMutex QColorSpacePrivate::s_lutWriteLock;
 
@@ -535,7 +535,7 @@ void QColorSpacePrivate::clearElementListProcessingForEdit()
 
     \ingroup painting
     \ingroup appearance
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Color values can be interpreted in different ways, and based on the interpretation
     can live in different spaces. We call this \e {color spaces}.
@@ -569,7 +569,7 @@ void QColorSpacePrivate::clearElementListProcessingForEdit()
 
     Predefined color spaces.
 
-    \value SRgb The sRGB color space, which Qt operates in by default. It is a close approximation
+    \value SRgb The sRGB color space, which BobUI operates in by default. It is a close approximation
     of how most classic monitors operate, and a mode most software and hardware support.
     \l{http://www.color.org/chardata/rgb/srgb.xalter}{ICC registration of sRGB}.
     \value SRgbLinear The sRGB color space with linear gamma. Useful for gamma-corrected blending.
@@ -650,7 +650,7 @@ void QColorSpacePrivate::clearElementListProcessingForEdit()
 /*!
     \class QColorSpace::PrimaryPoints
     \brief The PrimaryPoints struct contains four primary color space points.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.9
 
     The four CIE XY color space points describing the gamut of an RGB color space; red, green, blue, and white.
@@ -816,7 +816,7 @@ QColorSpace::QColorSpace(const QPointF &whitePoint, const QPointF &redPoint,
 
 QColorSpace::~QColorSpace() = default;
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QColorSpacePrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QColorSpacePrivate)
 
 QColorSpace::QColorSpace(const QColorSpace &colorSpace) noexcept = default;
 
@@ -1482,14 +1482,14 @@ void QColorSpace::setDescription(const QString &description)
 /*****************************************************************************
   QColorSpace stream functions
  *****************************************************************************/
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QColorSpace &colorSpace)
     \relates QColorSpace
 
     Writes the given \a colorSpace to the given \a stream as an ICC profile.
 
-    \sa QColorSpace::iccProfile(), {Serializing Qt Data Types}
+    \sa QColorSpace::iccProfile(), {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QColorSpace &image)
@@ -1505,7 +1505,7 @@ QDataStream &operator<<(QDataStream &s, const QColorSpace &image)
     Reads a color space from the given \a stream and stores it in the given
     \a colorSpace.
 
-    \sa QColorSpace::fromIccProfile(), {Serializing Qt Data Types}
+    \sa QColorSpace::fromIccProfile(), {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QColorSpace &colorSpace)
@@ -1515,9 +1515,9 @@ QDataStream &operator>>(QDataStream &s, QColorSpace &colorSpace)
     colorSpace = QColorSpace::fromIccProfile(iccProfile);
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QColorSpacePrivate::TransferElement &)
 {
     return dbg << ":Transfer";
@@ -1573,6 +1573,6 @@ QDebug operator<<(QDebug dbg, const QColorSpace &colorSpace)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcolorspace.cpp"

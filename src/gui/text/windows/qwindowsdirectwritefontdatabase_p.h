@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSDIRECTWRITEFONTDATABASE_P_H
 #define QWINDOWSDIRECTWRITEFONTDATABASE_P_H
@@ -8,20 +8,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/private/qtgui-config_p.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/private/bobuigui-config_p.h>
 
-QT_REQUIRE_CONFIG(directwrite3);
+BOBUI_REQUIRE_CONFIG(directwrite3);
 
 #include "qwindowsfontdatabase_p.h"
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qloggingcategory.h>
 
 struct IDWriteFactory;
 struct IDWriteFont;
@@ -29,7 +29,7 @@ struct IDWriteFont1;
 struct IDWriteFontFamily;
 struct IDWriteLocalizedStrings;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QWindowsDirectWriteFontDatabase : public QWindowsFontDatabase
 {
@@ -75,6 +75,6 @@ private:
     QSet<QString> m_populatedBitmapFonts;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSDIRECTWRITEFONTDATABASE_P_H

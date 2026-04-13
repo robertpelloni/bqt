@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qpa/qplatforminputcontext.h>
 
@@ -14,7 +14,7 @@ public:
         m_commitCallCount(0),
         m_localeCallCount(0),
         m_inputDirectionCallCount(0),
-        m_lastQueries(Qt::ImhNone),
+        m_lastQueries(BobUI::ImhNone),
         m_action(QInputMethod::Click),
         m_cursorPosition(0),
         m_setFocusObjectCallCount(0)
@@ -40,7 +40,7 @@ public:
         m_commitString = commitString;
     }
 
-    virtual void update(Qt::InputMethodQueries queries) override
+    virtual void update(BobUI::InputMethodQueries queries) override
     {
         m_updateCallCount++;
         m_lastQueries = queries;
@@ -67,10 +67,10 @@ public:
         m_localeCallCount++;
         return QLocale::c();
     }
-    virtual Qt::LayoutDirection inputDirection() const override
+    virtual BobUI::LayoutDirection inputDirection() const override
     {
         m_inputDirectionCallCount++;
-        return Qt::LeftToRight;
+        return BobUI::LeftToRight;
     }
     virtual void setFocusObject(QObject *object) override
     {
@@ -86,7 +86,7 @@ public:
     QString m_commitString;
     mutable int m_localeCallCount;
     mutable int m_inputDirectionCallCount;
-    Qt::InputMethodQueries m_lastQueries;
+    BobUI::InputMethodQueries m_lastQueries;
     QInputMethod::Action m_action;
     int m_cursorPosition;
     QRectF m_keyboardRect;

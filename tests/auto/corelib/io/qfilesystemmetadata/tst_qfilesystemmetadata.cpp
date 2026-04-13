@@ -1,9 +1,9 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QDateTime>
-#include <QtCore/private/qfilesystemmetadata_p.h>
+#include <BOBUIest>
+#include <BobUICore/QDateTime>
+#include <BobUICore/private/qfilesystemmetadata_p.h>
 
 class tst_QFileSystemMetaData : public QObject
 {
@@ -13,7 +13,7 @@ private slots:
     void timeSinceEpoch();
 };
 
-#if defined(QT_BUILD_INTERNAL) && defined(QT_SHARED)
+#if defined(BOBUI_BUILD_INTERNAL) && defined(BOBUI_SHARED)
 #ifdef Q_OS_WIN
 static FILETIME epochToFileTime(long seconds)
 {
@@ -31,7 +31,7 @@ static FILETIME epochToFileTime(long seconds)
 
 void tst_QFileSystemMetaData::timeSinceEpoch()
 {
-    // Regression test for QTBUG-48306, used to fail for TZ=Russia/Moscow
+    // Regression test for BOBUIBUG-48306, used to fail for TZ=Russia/Moscow
     // Oct 22 2014 6:00 UTC; TZ=Russia/Moscow changed from +4 to +3 on Oct 26.
     const long afterEpochUtc = 1413957600L;
     QFileSystemMetaData meta;
@@ -43,14 +43,14 @@ void tst_QFileSystemMetaData::timeSinceEpoch()
     data.ftCreationTime = epochToFileTime(afterEpochUtc);
     meta.fillFromFindData(data);
     QCOMPARE(meta.birthTime().toUTC(),
-             QDateTime::fromMSecsSinceEpoch(afterEpochUtc * qint64(1000), QTimeZone::UTC));
+             QDateTime::fromMSecsSinceEpoch(afterEpochUtc * qint64(1000), BOBUIimeZone::UTC));
 #else
-    QT_STATBUF data;
+    BOBUI_STATBUF data;
     memset(&data, 0, sizeof(data));
     data.st_ctime = afterEpochUtc;
     meta.fillFromStatBuf(data);
     QCOMPARE(meta.metadataChangeTime().toUTC(),
-             QDateTime::fromMSecsSinceEpoch(afterEpochUtc * qint64(1000), QTimeZone::UTC));
+             QDateTime::fromMSecsSinceEpoch(afterEpochUtc * qint64(1000), BOBUIimeZone::UTC));
 #endif
 }
 #else // i.e. no Q_AUTOTEST_EXPORT
@@ -59,5 +59,5 @@ void tst_QFileSystemMetaData::timeSinceEpoch()
     QSKIP("QFileSystemMetaData methods aren't available to test");
 }
 #endif
-QTEST_MAIN(tst_QFileSystemMetaData)
+BOBUIEST_MAIN(tst_QFileSystemMetaData)
 #include <tst_qfilesystemmetadata.moc>

@@ -1,6 +1,6 @@
-QT += widgets
-requires(qtConfig(listwidget))
-qtHaveModule(printsupport): QT += printsupport
+BOBUI += widgets
+requires(bobuiConfig(listwidget))
+bobuiHaveModule(printsupport): BOBUI += printsupport
 
 HEADERS         = mainwindow.h
 SOURCES         = main.cpp \
@@ -8,5 +8,5 @@ SOURCES         = main.cpp \
 RESOURCES       = dockwidgets.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/mainwindows/dockwidgets
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/mainwindows/dockwidgets
 INSTALLS += target

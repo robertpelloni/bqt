@@ -42,4 +42,4 @@ instructions:
         variableName: COIN_CTEST_IGNORE_EXIT_CODE
         variableValue: "0"
 
-  - !include "{{qt/qtbase}}/cmake_run_ctest.yaml"
+  - !include "{{bobui/bobuibase}}/cmake_run_ctest.yaml"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "imageitem.h"
 #include "gestures.h"
@@ -15,7 +15,7 @@ ImageItem::ImageItem(const QImage &image)
 void ImageItem::setImage(const QImage &image)
 {
     image_ = image;
-    pixmap_ = QPixmap::fromImage(image.scaled(400, 400, Qt::KeepAspectRatio));
+    pixmap_ = QPixmap::fromImage(image.scaled(400, 400, BobUI::KeepAspectRatio));
     update();
 }
 
@@ -39,7 +39,7 @@ void ImageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidge
 GestureImageItem::GestureImageItem(const QImage &image)
     : ImageItem(image)
 {
-    grabGesture(Qt::PanGesture);
+    grabGesture(BobUI::PanGesture);
     grabGesture(ThreeFingerSlideGesture::Type);
 }
 

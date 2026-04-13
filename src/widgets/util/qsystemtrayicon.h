@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSYSTEMTRAYICON_H
 #define QSYSTEMTRAYICON_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
-#include <QtGui/qicon.h>
+#include <BobUIGui/qicon.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QSystemTrayIconPrivate;
@@ -43,7 +43,7 @@ public:
         MiddleClick
     };
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     void setContextMenu(QMenu *menu);
     QMenu *contextMenu() const;
 #endif
@@ -87,7 +87,7 @@ private:
     friend class QBalloonTip;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_SYSTEMTRAYICON
+#endif // BOBUI_NO_SYSTEMTRAYICON
 #endif // QSYSTEMTRAYICON_H

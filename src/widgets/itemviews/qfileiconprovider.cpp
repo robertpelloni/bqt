@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfileiconprovider.h"
 #include "qfileiconprovider_p.h"
@@ -17,17 +17,17 @@
 #include <qpa/qplatformtheme.h>
 
 #if defined(Q_OS_WIN)
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #  include <commctrl.h>
 #  include <objbase.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
   \class QFileIconProvider
 
-  \inmodule QtWidgets
+  \inmodule BobUIWidgets
 
   \brief The QFileIconProvider class provides file icons for the QFileSystemModel class.
 */
@@ -200,4 +200,4 @@ QIcon QFileIconProvider::icon(const QFileInfo &info) const
   return QIcon();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

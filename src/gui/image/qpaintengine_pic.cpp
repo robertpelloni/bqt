@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "private/qpaintengine_p.h"
 #include "private/qpainter_p.h"
 #include "private/qpicture_p.h"
 #include "private/qfont_p.h"
 
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
 
 #include "qbuffer.h"
 #include "qbytearray.h"
@@ -16,13 +16,13 @@
 #include "qpicture.h"
 #include "qpolygon.h"
 #include "qrect.h"
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 
-//#define QT_PICTURE_DEBUG
+//#define BOBUI_PICTURE_DEBUG
 #include <qdebug.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPicturePaintEnginePrivate : public QPaintEnginePrivate
 {
@@ -55,7 +55,7 @@ QPicturePaintEngine::~QPicturePaintEngine()
 bool QPicturePaintEngine::begin(QPaintDevice *pd)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug("QPicturePaintEngine::begin()");
 #endif
     Q_ASSERT(pd);
@@ -70,7 +70,7 @@ bool QPicturePaintEngine::begin(QPaintDevice *pd)
 
     d->pic_d->pictb.open(QIODevice::WriteOnly | QIODevice::Truncate);
     d->sizeLimitExceeded = false;
-    d->s.writeRawData(qt_mfhdr_tag, 4);
+    d->s.writeRawData(bobui_mfhdr_tag, 4);
     d->s << (quint16) 0 << (quint16) d->pic_d->formatMajor << (quint16) d->pic_d->formatMinor;
     d->s << (quint8) QPicturePrivate::PdcBegin << (quint8) sizeof(qint32);
     d->pic_d->brect = QRect();
@@ -89,7 +89,7 @@ bool QPicturePaintEngine::begin(QPaintDevice *pd)
 bool QPicturePaintEngine::end()
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug("QPicturePaintEngine::end()");
 #endif
     d->pic_d->trecs++;
@@ -123,7 +123,7 @@ bool QPicturePaintEngine::end()
 void QPicturePaintEngine::updatePen(const QPen &pen)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updatePen(): width:" << pen.width() << "style:"
              << pen.style() << "color:" << pen.color();
 #endif
@@ -142,7 +142,7 @@ void QPicturePaintEngine::updatePen(const QPen &pen)
 void QPicturePaintEngine::updateCompositionMode(QPainter::CompositionMode cmode)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateCompositionMode():" << cmode;
 #endif
     int pos;
@@ -154,7 +154,7 @@ void QPicturePaintEngine::updateCompositionMode(QPainter::CompositionMode cmode)
 void QPicturePaintEngine::updateClipEnabled(bool enabled)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateClipEnabled():" << enabled;
 #endif
     int pos;
@@ -166,7 +166,7 @@ void QPicturePaintEngine::updateClipEnabled(bool enabled)
 void QPicturePaintEngine::updateOpacity(qreal opacity)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateOpacity():" << opacity;
 #endif
     int pos;
@@ -178,7 +178,7 @@ void QPicturePaintEngine::updateOpacity(qreal opacity)
 void QPicturePaintEngine::updateBrush(const QBrush &brush)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateBrush(): style:" << brush.style();
 #endif
     int pos;
@@ -196,7 +196,7 @@ void QPicturePaintEngine::updateBrush(const QBrush &brush)
 void QPicturePaintEngine::updateBrushOrigin(const QPointF &p)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateBrushOrigin(): " << p;
 #endif
     int pos;
@@ -208,7 +208,7 @@ void QPicturePaintEngine::updateBrushOrigin(const QPointF &p)
 void QPicturePaintEngine::updateFont(const QFont &font)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateFont(): pt sz:" << font.pointSize();
 #endif
     int pos;
@@ -218,10 +218,10 @@ void QPicturePaintEngine::updateFont(const QFont &font)
     writeCmdLength(pos, QRectF(), false);
 }
 
-void QPicturePaintEngine::updateBackground(Qt::BGMode bgMode, const QBrush &bgBrush)
+void QPicturePaintEngine::updateBackground(BobUI::BGMode bgMode, const QBrush &bgBrush)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateBackground(): mode:" << bgMode << "style:" << bgBrush.style();
 #endif
     int pos;
@@ -234,10 +234,10 @@ void QPicturePaintEngine::updateBackground(Qt::BGMode bgMode, const QBrush &bgBr
     writeCmdLength(pos, QRectF(), false);
 }
 
-void QPicturePaintEngine::updateMatrix(const QTransform &matrix)
+void QPicturePaintEngine::updateMatrix(const BOBUIransform &matrix)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateMatrix():" << matrix;
 #endif
     int pos;
@@ -246,10 +246,10 @@ void QPicturePaintEngine::updateMatrix(const QTransform &matrix)
     writeCmdLength(pos, QRectF(), false);
 }
 
-void QPicturePaintEngine::updateClipRegion(const QRegion &region, Qt::ClipOperation op)
+void QPicturePaintEngine::updateClipRegion(const QRegion &region, BobUI::ClipOperation op)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateClipRegion(): op:" << op
              << "bounding rect:" << region.boundingRect();
 #endif
@@ -259,10 +259,10 @@ void QPicturePaintEngine::updateClipRegion(const QRegion &region, Qt::ClipOperat
     writeCmdLength(pos, QRectF(), false);
 }
 
-void QPicturePaintEngine::updateClipPath(const QPainterPath &path, Qt::ClipOperation op)
+void QPicturePaintEngine::updateClipPath(const QPainterPath &path, BobUI::ClipOperation op)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateClipPath(): op:" << op
              << "bounding rect:" << path.boundingRect();
 #endif
@@ -276,7 +276,7 @@ void QPicturePaintEngine::updateClipPath(const QPainterPath &path, Qt::ClipOpera
 void QPicturePaintEngine::updateRenderHints(QPainter::RenderHints hints)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> updateRenderHints(): " << hints;
 #endif
     int pos;
@@ -359,7 +359,7 @@ void QPicturePaintEngine::writeCmdLength(int pos, const QRectF &r, bool corr)
 void QPicturePaintEngine::drawEllipse(const QRectF &rect)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> drawEllipse():" << rect;
 #endif
     int pos;
@@ -371,7 +371,7 @@ void QPicturePaintEngine::drawEllipse(const QRectF &rect)
 void QPicturePaintEngine::drawPath(const QPainterPath &path)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> drawPath():" << path.boundingRect();
 #endif
     int pos;
@@ -383,7 +383,7 @@ void QPicturePaintEngine::drawPath(const QPainterPath &path)
 void QPicturePaintEngine::drawPolygon(const QPointF *points, int numPoints, PolygonDrawMode mode)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> drawPolygon(): size=" << numPoints;
 #endif
     int pos;
@@ -408,7 +408,7 @@ void QPicturePaintEngine::drawPolygon(const QPointF *points, int numPoints, Poly
 void QPicturePaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> drawPixmap():" << r;
 #endif
     int pos;
@@ -427,7 +427,7 @@ void QPicturePaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const Q
 void QPicturePaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> drawTiledPixmap():" << r << s;
 #endif
     int pos;
@@ -443,10 +443,10 @@ void QPicturePaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
 }
 
 void QPicturePaintEngine::drawImage(const QRectF &r, const QImage &image, const QRectF &sr,
-                                    Qt::ImageConversionFlags flags)
+                                    BobUI::ImageConversionFlags flags)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> drawImage():" << r << sr;
 #endif
     int pos;
@@ -461,14 +461,14 @@ void QPicturePaintEngine::drawImage(const QRectF &r, const QImage &image, const 
     writeCmdLength(pos, r, false);
 }
 
-void QPicturePaintEngine::drawTextItem(const QPointF &p , const QTextItem &ti)
+void QPicturePaintEngine::drawTextItem(const QPointF &p , const BOBUIextItem &ti)
 {
     Q_D(QPicturePaintEngine);
-#ifdef QT_PICTURE_DEBUG
+#ifdef BOBUI_PICTURE_DEBUG
     qDebug() << " -> drawTextItem():" << p << ti.text();
 #endif
 
-    const QTextItemInt &si = static_cast<const QTextItemInt &>(ti);
+    const BOBUIextItemInt &si = static_cast<const BOBUIextItemInt &>(ti);
     if (si.chars == nullptr)
         QPaintEngine::drawTextItem(p, ti); // Draw as path
 
@@ -484,7 +484,7 @@ void QPicturePaintEngine::drawTextItem(const QPointF &p , const QTextItem &ti)
         if (si.justified)
             justificationWidth = si.width.toReal();
 
-        d->s << p << ti.text() << fnt << ti.renderFlags() << double(fnt.d->dpi)/qt_defaultDpi() << justificationWidth;
+        d->s << p << ti.text() << fnt << ti.renderFlags() << double(fnt.d->dpi)/bobui_defaultDpi() << justificationWidth;
         writeCmdLength(pos, /*brect=*/QRectF(), /*corr=*/false);
     } else if (d->pic_d->formatMajor >= 8) {
         // old old (buggy) format
@@ -518,6 +518,6 @@ void QPicturePaintEngine::updateState(const QPaintEngineState &state)
     if (flags & DirtyOpacity) updateOpacity(state.opacity());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PICTURE
+#endif // BOBUI_NO_PICTURE

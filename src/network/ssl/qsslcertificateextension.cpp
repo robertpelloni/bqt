@@ -1,6 +1,6 @@
 // Copyright (C) 2011 Richard J. Moore <rich@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QSslCertificateExtension
@@ -12,7 +12,7 @@
     \ingroup network
     \ingroup ssl
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QSslCertificateExtension provides access to an extension stored in
     an X509 certificate. The information available depends on the type
@@ -38,7 +38,7 @@
     \row
        \li supported
        \li If this is true the structure of the extension's value will not
-          change between Qt versions.
+          change between BobUI versions.
     \row
        \li value
        \li A QVariant with a structure dependent on the type of extension.
@@ -95,7 +95,7 @@
 #include "qsslcertificateextension.h"
 #include "qsslcertificateextension_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     Constructs a QSslCertificateExtension.
@@ -181,4 +181,4 @@ bool QSslCertificateExtension::isSupported() const
     return d->supported;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

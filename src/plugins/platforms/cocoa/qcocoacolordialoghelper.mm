@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qtimer.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/bobuiimer.h>
 #include <qpa/qplatformtheme.h>
 
 #include "qcocoacolordialoghelper.h"
@@ -13,15 +13,15 @@
 #include "qcocoaeventdispatcher.h"
 #include "private/qcoregraphics_p.h"
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-@interface QT_MANGLE_NAMESPACE(QNSColorPanelDelegate) : NSObject<NSWindowDelegate, QNSPanelDelegate>
+@interface BOBUI_MANGLE_NAMESPACE(QNSColorPanelDelegate) : NSObject<NSWindowDelegate, QNSPanelDelegate>
 - (void)restoreOriginalContentView;
-- (void)updateQtColor;
+- (void)updateBobUIColor;
 - (void)finishOffWithCode:(NSInteger)code;
 @end
 
-QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
 
 @implementation QNSColorPanelDelegate {
     @public
@@ -29,7 +29,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
     QCocoaColorDialogHelper *mHelper;
     NSView *mStolenContentView;
     QNSPanelContentsWrapper *mPanelButtons;
-    QColor mQtColor;
+    QColor mBobUIColor;
     NSInteger mResultCode;
     BOOL mDialogIsExecuting;
     BOOL mResultSet;
@@ -101,7 +101,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
 - (void)colorChanged:(NSNotification *)notification
 {
     Q_UNUSED(notification);
-    [self updateQtColor];
+    [self updateBobUIColor];
 }
 
 - (void)windowWillClose:(NSNotification *)notification
@@ -130,7 +130,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
 {
     mClosingDueToKnownButton = true;
     [mColorPanel close];
-    [self updateQtColor];
+    [self updateBobUIColor];
     [self finishOffWithCode:NSModalResponseOK];
 }
 
@@ -139,12 +139,12 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
     if (mPanelButtons) {
         mClosingDueToKnownButton = true;
         [mColorPanel close];
-        mQtColor = QColor();
+        mBobUIColor = QColor();
         [self finishOffWithCode:NSModalResponseCancel];
     }
 }
 
-- (void)updateQtColor
+- (void)updateBobUIColor
 {
     // Discard the color space and pass the color components to QColor. This
     // is a good option as long as QColor is color-unmanaged: we preserve the
@@ -157,17 +157,17 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
     case NSColorSpaceModelGray: {
         CGFloat white = 0, alpha = 0;
         [componentColor getWhite:&white alpha:&alpha];
-        mQtColor.setRgbF(white, white, white, alpha);
+        mBobUIColor.setRgbF(white, white, white, alpha);
     } break;
     case NSColorSpaceModelRGB: {
         CGFloat red = 0, green = 0, blue = 0, alpha = 0;
         [componentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-        mQtColor.setRgbF(red, green, blue, alpha);
+        mBobUIColor.setRgbF(red, green, blue, alpha);
     } break;
     case NSColorSpaceModelCMYK: {
         CGFloat cyan = 0, magenta = 0, yellow = 0, black = 0, alpha = 0;
         [componentColor getCyan:&cyan magenta:&magenta yellow:&yellow black:&black alpha:&alpha];
-        mQtColor.setCmykF(cyan, magenta, yellow, black, alpha);
+        mBobUIColor.setCmykF(cyan, magenta, yellow, black, alpha);
     } break;
     default:
         qWarning("QNSColorPanelDelegate: Unsupported color space model");
@@ -175,7 +175,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
     }
 
     if (mHelper)
-        emit mHelper->currentColorChanged(mQtColor);
+        emit mHelper->currentColorChanged(mBobUIColor);
 }
 
 - (void)showModelessPanel
@@ -228,7 +228,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
 {
     Q_UNUSED(window);
     if (!mPanelButtons)
-        [self updateQtColor];
+        [self updateBobUIColor];
     if (mDialogIsExecuting) {
         [self finishOffWithCode:NSModalResponseCancel];
     } else {
@@ -267,7 +267,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSColorPanelDelegate);
 
 @end
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaColorPanel
 {
@@ -302,12 +302,12 @@ public:
         return [mDelegate runApplicationModalPanel];
     }
 
-    bool show(Qt::WindowModality windowModality, QWindow *parent)
+    bool show(BobUI::WindowModality windowModality, QWindow *parent)
     {
         Q_UNUSED(parent);
-        if (windowModality != Qt::ApplicationModal)
+        if (windowModality != BobUI::ApplicationModal)
             [mDelegate showModelessPanel];
-        // no need to show a Qt::ApplicationModal dialog here, because it will be shown in runApplicationModalPanel
+        // no need to show a BobUI::ApplicationModal dialog here, because it will be shown in runApplicationModalPanel
         return true;
     }
 
@@ -318,7 +318,7 @@ public:
 
     QColor currentColor() const
     {
-        return mDelegate->mQtColor;
+        return mDelegate->mBobUIColor;
     }
 
     void setCurrentColor(const QColor &color)
@@ -342,7 +342,7 @@ public:
                                                  blue:color.blueF()
                                                 alpha:color.alphaF()];
         }
-        mDelegate->mQtColor = color;
+        mDelegate->mBobUIColor = color;
         [mDelegate->mColorPanel setColor:nsColor];
     }
 
@@ -369,10 +369,10 @@ void QCocoaColorDialogHelper::exec()
         emit reject();
 }
 
-bool QCocoaColorDialogHelper::show(Qt::WindowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QCocoaColorDialogHelper::show(BobUI::WindowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
-    if (windowModality == Qt::ApplicationModal)
-        windowModality = Qt::WindowModal;
+    if (windowModality == BobUI::ApplicationModal)
+        windowModality = BobUI::WindowModal;
     // Workaround for Apple rdar://25792119: If you invoke
     // -setShowsAlpha: multiple times before showing the color
     // picker, its height grows irrevocably.  Instead, only
@@ -400,4 +400,4 @@ QColor QCocoaColorDialogHelper::currentColor() const
     return sharedColorPanel()->currentColor();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

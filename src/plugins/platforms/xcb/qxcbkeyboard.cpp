@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbkeyboard.h"
 #include "qxcbwindow.h"
@@ -12,27 +12,27 @@
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformcursor.h>
 
-#include <QtCore/QMetaEnum>
+#include <BobUICore/QMetaEnum>
 
 #include <private/qguiapplication_p.h>
 
 #include <xcb/xinput.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Qt::KeyboardModifiers QXcbKeyboard::translateModifiers(int s) const
+BobUI::KeyboardModifiers QXcbKeyboard::translateModifiers(int s) const
 {
-    Qt::KeyboardModifiers ret = Qt::NoModifier;
+    BobUI::KeyboardModifiers ret = BobUI::NoModifier;
     if (s & XCB_MOD_MASK_SHIFT)
-        ret |= Qt::ShiftModifier;
+        ret |= BobUI::ShiftModifier;
     if (s & XCB_MOD_MASK_CONTROL)
-        ret |= Qt::ControlModifier;
+        ret |= BobUI::ControlModifier;
     if (s & rmod_masks.alt)
-        ret |= Qt::AltModifier;
+        ret |= BobUI::AltModifier;
     if (s & rmod_masks.meta)
-        ret |= Qt::MetaModifier;
+        ret |= BobUI::MetaModifier;
     if (s & rmod_masks.altgr)
-        ret |= Qt::GroupSwitchModifier;
+        ret |= BobUI::GroupSwitchModifier;
     return ret;
 }
 
@@ -386,7 +386,7 @@ QList<QKeyCombination> QXcbKeyboard::possibleKeyCombinations(const QKeyEvent *ev
         m_xkbState.get(), event, m_superAsMeta, m_hyperAsMeta);
 }
 
-Qt::KeyboardModifiers QXcbKeyboard::queryKeyboardModifiers() const
+BobUI::KeyboardModifiers QXcbKeyboard::queryKeyboardModifiers() const
 {
     // FIXME: Should we base this on m_xkbState?
     int stateMask = 0;
@@ -461,7 +461,7 @@ void QXcbKeyboard::handleStateChanges(xkb_state_component changedComponents)
     // via system settings, which means that the layout change would not be detected
     // by this code. That can be solved by emitting KeyboardLayoutChange also from updateKeymap().
     if ((changedComponents & XKB_STATE_LAYOUT_EFFECTIVE) == XKB_STATE_LAYOUT_EFFECTIVE)
-        qCDebug(lcQpaKeyboard, "TODO: Support KeyboardLayoutChange on QPA (QTBUG-27681)");
+        qCDebug(lcQpaKeyboard, "TODO: Support KeyboardLayoutChange on QPA (BOBUIBUG-27681)");
 }
 
 xkb_mod_mask_t QXcbKeyboard::xkbModMask(quint16 state)
@@ -574,7 +574,7 @@ void QXcbKeyboard::updateVModMapping()
                                   XCB_XKB_ID_USE_CORE_KBD,
                                   XCB_XKB_NAME_DETAIL_VIRTUAL_MOD_NAMES);
     if (!name_reply) {
-        qWarning("Qt: failed to retrieve the virtual modifier names from XKB");
+        qWarning("BobUI: failed to retrieve the virtual modifier names from XKB");
         return;
     }
 
@@ -637,7 +637,7 @@ void QXcbKeyboard::updateVModToRModMapping()
                                  XCB_XKB_MAP_PART_VIRTUAL_MODS,
                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     if (!map_reply) {
-        qWarning("Qt: failed to retrieve the virtual modifier map from XKB");
+        qWarning("BobUI: failed to retrieve the virtual modifier map from XKB");
         return;
     }
 
@@ -699,7 +699,7 @@ void QXcbKeyboard::updateModifiers(const KeysymModifierMap &keysymMods)
         updateVModToRModMapping();
     } else {
         memset(&rmod_masks, 0, sizeof(rmod_masks));
-        // Compute X modifier bits for Qt modifiers
+        // Compute X modifier bits for BobUI modifiers
         applyModifier(&rmod_masks.alt,   keysymMods.value(XKB_KEY_Alt_L,       -1));
         applyModifier(&rmod_masks.alt,   keysymMods.value(XKB_KEY_Alt_R,       -1));
         applyModifier(&rmod_masks.meta,  keysymMods.value(XKB_KEY_Meta_L,      -1));
@@ -736,7 +736,7 @@ QXcbKeyboard::KeysymModifierMap QXcbKeyboard::keysymsToModifiers()
 
     auto modMapReply = Q_XCB_REPLY(xcb_get_modifier_mapping, xcb_connection());
     if (!modMapReply) {
-        qWarning("Qt: failed to get modifier mapping");
+        qWarning("BobUI: failed to get modifier mapping");
         return map;
     }
 
@@ -786,7 +786,7 @@ QXcbKeyboard::KeysymModifierMap QXcbKeyboard::keysymsToModifiers()
      * As modMap contains key codes, search modKeyCodes for a match;
      * if one is found we can look up the associated keysym.
      * Together with the modifier index this will be used
-     * to compute a mapping between X modifier bits and Qt's
+     * to compute a mapping between X modifier bits and BobUI's
      * modifiers (Alt, Ctrl etc). */
     for (int i = 0; i < modMapLength; i++) {
         if (modMap[i] == XCB_NO_SYMBOL)
@@ -814,7 +814,7 @@ QXcbKeyboard::KeysymModifierMap QXcbKeyboard::keysymsToModifiers()
 void QXcbKeyboard::resolveMaskConflicts()
 {
     // if we don't have a meta key (or it's hidden behind alt), use super or hyper to generate
-    // Qt::Key_Meta and Qt::MetaModifier, since most newer XFree86/Xorg installations map the Windows
+    // BobUI::Key_Meta and BobUI::MetaModifier, since most newer XFree86/Xorg installations map the Windows
     // key to Super
     if (rmod_masks.alt == rmod_masks.meta)
         rmod_masks.meta = 0;
@@ -867,11 +867,11 @@ void QXcbKeyboard::handleKeyEvent(xcb_window_t sourceWindow, QEvent::Type type, 
     xcb_keysym_t sym = xkb_state_key_get_one_sym(xkbState, code);
     QString text = QXkbCommon::lookupString(xkbState, code);
 
-    Qt::KeyboardModifiers modifiers = translateModifiers(state);
+    BobUI::KeyboardModifiers modifiers = translateModifiers(state);
     if (QXkbCommon::isKeypad(sym))
-        modifiers |= Qt::KeypadModifier;
+        modifiers |= BobUI::KeypadModifier;
 
-    int qtcode = QXkbCommon::keysymToQtKey(sym, modifiers, xkbState, code, m_superAsMeta, m_hyperAsMeta);
+    int bobuicode = QXkbCommon::keysymToBobUIKey(sym, modifiers, xkbState, code, m_superAsMeta, m_hyperAsMeta);
 
     if (type == QEvent::KeyPress) {
         if (m_isAutoRepeat && m_autoRepeatCode != code)
@@ -894,21 +894,21 @@ void QXcbKeyboard::handleKeyEvent(xcb_window_t sourceWindow, QEvent::Type type, 
 
     bool filtered = false;
     if (auto inputContext = QGuiApplicationPrivate::platformIntegration()->inputContext()) {
-        QKeyEvent event(type, qtcode, modifiers, code, sym, state, text, m_isAutoRepeat, text.size());
+        QKeyEvent event(type, bobuicode, modifiers, code, sym, state, text, m_isAutoRepeat, text.size());
         event.setTimestamp(time);
         filtered = inputContext->filterEvent(&event);
     }
 
     if (!filtered) {
         QWindow *window = targetWindow->window();
-#ifndef QT_NO_CONTEXTMENU
-        if (type == QEvent::KeyPress && qtcode == Qt::Key_Menu) {
+#ifndef BOBUI_NO_CONTEXTMENU
+        if (type == QEvent::KeyPress && bobuicode == BobUI::Key_Menu) {
             const QPoint globalPos = window->screen()->handle()->cursor()->pos();
             const QPoint pos = window->mapFromGlobal(globalPos);
             QWindowSystemInterface::handleContextMenuEvent(window, false, pos, globalPos, modifiers);
         }
 #endif
-        QWindowSystemInterface::handleExtendedKeyEvent(window, time, type, qtcode, modifiers,
+        QWindowSystemInterface::handleExtendedKeyEvent(window, time, type, bobuicode, modifiers,
                                                        code, sym, state, text, m_isAutoRepeat);
     }
 }
@@ -932,4 +932,4 @@ void QXcbKeyboard::handleKeyReleaseEvent(const xcb_key_release_event_t *e)
     handleKeyEvent(e->event, QEvent::KeyRelease, e->detail, e->state, e->time, fromSendEvent(e));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

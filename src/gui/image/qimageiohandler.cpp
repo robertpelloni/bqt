@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 /*!
     \class QImageIOHandler
     \brief The QImageIOHandler class defines the common image I/O
-    interface for all image formats in Qt.
+    interface for all image formats in BobUI.
     \reentrant
-    \inmodule QtGui
+    \inmodule BobUIGui
 
-    Qt uses QImageIOHandler for reading and writing images through
+    BobUI uses QImageIOHandler for reading and writing images through
     QImageReader and QImageWriter. You can also derive from this class
-    to write your own image format handler using Qt's plugin mechanism.
+    to write your own image format handler using BobUI's plugin mechanism.
 
     Call setDevice() to assign a device to the handler, and
     setFormat() to assign a format to it. One QImageIOHandler may
@@ -22,7 +22,7 @@
     the functions loopCount(), imageCount(), nextImageDelay() and
     currentImageNumber().
 
-    In order to determine what options an image handler supports, Qt
+    In order to determine what options an image handler supports, BobUI
     will call supportsOption() and setOption(). Make sure to
     reimplement these functions if you can provide support for any of
     the options in the ImageOption enum.
@@ -167,7 +167,7 @@
 
 /*!
     \class QImageIOPlugin
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief The QImageIOPlugin class defines an interface for writing
     an image format plugin.
     \reentrant
@@ -176,12 +176,12 @@
 
     QImageIOPlugin is a factory for creating QImageIOHandler objects,
     which are used internally by QImageReader and QImageWriter to add
-    support for different image formats to Qt.
+    support for different image formats to BobUI.
 
     Writing an image I/O plugin is achieved by subclassing this
     base class, reimplementing the pure virtual functions capabilities()
     and create(), and exporting the class with the
-    Q_PLUGIN_METADATA() macro. See \l{How to Create Qt Plugins} for details.
+    Q_PLUGIN_METADATA() macro. See \l{How to Create BobUI Plugins} for details.
 
     An image format plugin can support three capabilities: reading (\l
     CanRead), writing (\l CanWrite) and \e incremental reading (\l
@@ -206,12 +206,12 @@
 
     Different plugins can support different capabilities. For example,
     you may have one plugin that supports reading the GIF format, and
-    another that supports writing. Qt will select the correct plugin
+    another that supports writing. BobUI will select the correct plugin
     for the job, depending on the return value of capabilities(). If
-    several plugins support the same capability, Qt will select one
+    several plugins support the same capability, BobUI will select one
     arbitrarily.
 
-    \sa QImageIOHandler, {How to Create Qt Plugins}
+    \sa QImageIOHandler, {How to Create BobUI Plugins}
 */
 
 /*!
@@ -232,9 +232,9 @@
 #include <qloggingcategory.h>
 #include <qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcImageIo, "qt.gui.imageio")
+Q_LOGGING_CATEGORY(lcImageIo, "bobui.gui.imageio")
 
 class QIODevice;
 
@@ -539,7 +539,7 @@ bool QImageIOHandler::allocateImage(QSize size, QImage::Format format, QImage *i
         image->detach();
     } else {
         if (const int mbLimit = QImageReader::allocationLimit()) {
-            qsizetype depth = qMax(qt_depthForFormat(format), 32); // Effective gui depth = 32
+            qsizetype depth = qMax(bobui_depthForFormat(format), 32); // Effective gui depth = 32
             QImageData::ImageSizeParameters szp =
                     QImageData::calculateImageParameters(size.width(), size.height(), depth);
             if (!szp.isValid())
@@ -556,7 +556,7 @@ bool QImageIOHandler::allocateImage(QSize size, QImage::Format format, QImage *i
     return !image->isNull();
 }
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
 
 /*!
     Constructs an image plugin with the given \a parent. This is
@@ -570,7 +570,7 @@ QImageIOPlugin::QImageIOPlugin(QObject *parent)
 /*!
     Destroys the picture format plugin.
 
-    You never have to call this explicitly. Qt destroys a plugin
+    You never have to call this explicitly. BobUI destroys a plugin
     automatically when it is no longer used.
 */
 QImageIOPlugin::~QImageIOPlugin()
@@ -608,8 +608,8 @@ QImageIOPlugin::~QImageIOPlugin()
     Format names are always given in lower case.
 */
 
-#endif // QT_NO_IMAGEFORMATPLUGIN
+#endif // BOBUI_NO_IMAGEFORMATPLUGIN
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qimageiohandler.cpp"

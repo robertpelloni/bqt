@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QString>
 #include <QDBusArgument>
@@ -19,12 +19,21 @@ class MyObject: public QObject
 {
     Q_OBJECT
 
+<<<<<<< HEAD
     Q_CLASSINFO("D-Bus Interface", "org.qtproject.BobUIDBus.MyObject")
     Q_CLASSINFO("D-Bus Introspection", ""
 "  <interface name=\"org.qtproject.BobUIDBus.MyObject\" >\n"
 "    <property access=\"readwrite\" type=\"i\" name=\"prop1\" />\n"
 "    <property name=\"complexProp\" type=\"ai\" access=\"readwrite\">\n"
 "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName\" value=\"QList&lt;int&gt;\"/>\n"
+=======
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.BobUIDBus.MyObject")
+    Q_CLASSINFO("D-Bus Introspection", ""
+"  <interface name=\"org.bobuiproject.BobUIDBus.MyObject\" >\n"
+"    <property access=\"readwrite\" type=\"i\" name=\"prop1\" />\n"
+"    <property name=\"complexProp\" type=\"ai\" access=\"readwrite\">\n"
+"      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName\" value=\"QList&lt;int&gt;\"/>\n"
+>>>>>>> origin/dev
 "    </property>\n"
 "    <signal name=\"somethingHappened\" >\n"
 "      <arg direction=\"out\" type=\"s\" />\n"
@@ -52,14 +61,24 @@ class MyObject: public QObject
 "    <method name=\"ping\" >\n"
 "      <arg direction=\"in\" type=\"ai\" name=\"ping\" />\n"
 "      <arg direction=\"out\" type=\"ai\" name=\"ping\" />\n"
+<<<<<<< HEAD
 "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.In0\" value=\"QList&lt;int&gt;\"/>\n"
 "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.Out0\" value=\"QList&lt;int&gt;\"/>\n"
+=======
+"      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\" value=\"QList&lt;int&gt;\"/>\n"
+"      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QList&lt;int&gt;\"/>\n"
+>>>>>>> origin/dev
 "    </method>\n"
 "    <method name=\"ping_invokable\" >\n"
 "      <arg direction=\"in\" type=\"ai\" name=\"ping_invokable\" />\n"
 "      <arg direction=\"out\" type=\"ai\" name=\"ping_invokable\" />\n"
+<<<<<<< HEAD
 "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.In0\" value=\"QList&lt;int&gt;\"/>\n"
 "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.Out0\" value=\"QList&lt;int&gt;\"/>\n"
+=======
+"      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\" value=\"QList&lt;int&gt;\"/>\n"
+"      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QList&lt;int&gt;\"/>\n"
+>>>>>>> origin/dev
 "    </method>\n"
 "  </interface>\n"
         "")

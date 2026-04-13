@@ -1,21 +1,21 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformmenubar.h"
 #include "qandroidplatformmenu.h"
 #include "androidjnimenu.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QAndroidPlatformMenuBar::QAndroidPlatformMenuBar()
 {
     m_parentWindow = 0;
-    QtAndroidMenu::addMenuBar(this);
+    BobUIAndroidMenu::addMenuBar(this);
 }
 
 QAndroidPlatformMenuBar::~QAndroidPlatformMenuBar()
 {
-    QtAndroidMenu::removeMenuBar(this);
+    BobUIAndroidMenu::removeMenuBar(this);
 }
 
 void QAndroidPlatformMenuBar::insertMenu(QPlatformMenu *menu, QPlatformMenu *before)
@@ -62,7 +62,7 @@ int QAndroidPlatformMenuBar::menuId(QPlatformMenu *menu) const
 
 void QAndroidPlatformMenuBar::syncMenu(QPlatformMenu *menu)
 {
-    QtAndroidMenu::syncMenu(static_cast<QAndroidPlatformMenu *>(menu));
+    BobUIAndroidMenu::syncMenu(static_cast<QAndroidPlatformMenu *>(menu));
 }
 
 void QAndroidPlatformMenuBar::handleReparent(QWindow *newParentWindow)
@@ -70,7 +70,7 @@ void QAndroidPlatformMenuBar::handleReparent(QWindow *newParentWindow)
     if (m_parentWindow == newParentWindow)
         return;
     m_parentWindow = newParentWindow;
-    QtAndroidMenu::setMenuBar(this, newParentWindow);
+    BobUIAndroidMenu::setMenuBar(this, newParentWindow);
 }
 
 QPlatformMenu *QAndroidPlatformMenuBar::menuForTag(quintptr tag) const
@@ -103,4 +103,4 @@ QMutex *QAndroidPlatformMenuBar::menusListMutex()
     return &m_menusListMutex;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

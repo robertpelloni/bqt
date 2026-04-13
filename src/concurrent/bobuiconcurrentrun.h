@@ -1,0 +1,97 @@
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
+
+#ifndef BOBUICONCURRENT_RUN_H
+#define BOBUICONCURRENT_RUN_H
+
+#if 0
+#pragma bobui_class(BobUIConcurrentRun)
+#endif
+
+#include <BobUIConcurrent/bobuiconcurrentcompilertest.h>
+
+#if !defined(BOBUI_NO_CONCURRENT) || defined(Q_QDOC)
+
+#include <BobUIConcurrent/bobuiconcurrentrunbase.h>
+#include <BobUIConcurrent/bobuiconcurrentstoredfunctioncall.h>
+
+BOBUI_BEGIN_NAMESPACE
+
+#ifdef Q_QDOC
+
+typedef int Function;
+
+namespace BobUIConcurrent {
+
+    template <typename T>
+    QFuture<T> run(Function function, ...);
+
+    template <typename T>
+    QFuture<T> run(BOBUIhreadPool *pool, Function function, ...);
+
+} // namespace BobUIConcurrent
+
+#else
+
+namespace BobUIConcurrent {
+
+#define BOBUICONCURRENT_RUN_NODISCARD \
+    Q_NODISCARD_X("Use BOBUIhreadPool::start(Callable&&) if you don't need the returned QFuture")
+
+template <class Function, class ...Args>
+BOBUICONCURRENT_RUN_NODISCARD
+auto run(BOBUIhreadPool *pool, Function &&f, Args &&...args)
+{
+    DecayedTuple<Function, Args...> tuple { std::forward<Function>(f),
+                                            std::forward<Args>(args)... };
+    return TaskResolver<std::decay_t<Function>, std::decay_t<Args>...>::run(
+                std::move(tuple), TaskStartParameters { pool });
+}
+
+template <class Function, class ...Args>
+BOBUICONCURRENT_RUN_NODISCARD
+auto run(BOBUIhreadPool *pool, std::reference_wrapper<const Function> &&functionWrapper,
+         Args &&...args)
+{
+    return run(pool, std::forward<const Function>(functionWrapper.get()),
+               std::forward<Args>(args)...);
+}
+
+template <class Function, class ...Args>
+BOBUICONCURRENT_RUN_NODISCARD
+auto run(Function &&f, Args &&...args)
+{
+    return run(BOBUIhreadPool::globalInstance(), std::forward<Function>(f),
+               std::forward<Args>(args)...);
+}
+
+// overload with a Promise Type hint, takes thread pool
+template <class PromiseType, class Function, class ...Args>
+BOBUICONCURRENT_RUN_NODISCARD
+auto run(BOBUIhreadPool *pool, Function &&f, Args &&...args)
+{
+    return (new StoredFunctionCallWithPromise<Function, PromiseType, Args...>(
+                std::forward<Function>(f), std::forward<Args>(args)...))->start(pool);
+}
+
+// overload with a Promise Type hint, uses global thread pool
+template <class PromiseType, class Function, class ...Args>
+BOBUICONCURRENT_RUN_NODISCARD
+auto run(Function &&f, Args &&...args)
+{
+    return run<PromiseType>(BOBUIhreadPool::globalInstance(), std::forward<Function>(f),
+                            std::forward<Args>(args)...);
+}
+
+#undef BOBUICONCURRENT_RUN_NODISCARD
+
+} //namespace BobUIConcurrent
+
+#endif // Q_QDOC
+
+BOBUI_END_NAMESPACE
+
+#endif // BOBUI_NO_CONCURRENT
+
+#endif

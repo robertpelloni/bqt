@@ -1,12 +1,12 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 import * as names from 'names.js';
 
 function main() {
     startApplication("qlayout");
-    mouseClick(waitForObject(names.qComboBox_2), 478, 16, Qt.NoModifier, Qt.LeftButton);
-    mouseClick(waitForObjectItem(names.qComboBox_2, "Grid Layout"), 376, 6, Qt.NoModifier, Qt.LeftButton);
+    mouseClick(waitForObject(names.qComboBox_2), 478, 16, BobUI.NoModifier, BobUI.LeftButton);
+    mouseClick(waitForObjectItem(names.qComboBox_2, "Grid Layout"), 376, 6, BobUI.NoModifier, BobUI.LeftButton);
 
     first = waitForObjectExists(names.o123QLabel).geometry;
     second = waitForObjectExists(names.o123QLabel_2).geometry;

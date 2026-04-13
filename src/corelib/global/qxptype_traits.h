@@ -1,23 +1,23 @@
 // Copyright (C) 2023 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>, Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QXPTYPE_TRAITS_H
 #define QXPTYPE_TRAITS_H
 
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qcompilerdetection.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/qcompilerdetection.h>
 
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q20type_traits.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. Types and functions defined in this
+// This file is not part of the BobUI API. Types and functions defined in this
 // file can reliably be replaced by their std counterparts, once available.
 // You may use these definitions in your own code, but be aware that we
-// will remove them once Qt depends on the C++ version that supports
+// will remove them once BobUI depends on the C++ version that supports
 // them in namespace std. There will be NO deprecation warning, the
 // definitions will JUST go away.
 //
@@ -26,7 +26,7 @@
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // like std::experimental::{nonesuch,is_detected/_v}(LFTSv2)
 namespace qxp {
@@ -79,14 +79,14 @@ using std::is_virtual_base_of_v;
 namespace _detail {
     // Check that From* can be converted to To*, ignoring accessibility.
     // This can be done using a C cast (see [expr.cast]/4).
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wold-style-cast")
-QT_WARNING_DISABLE_CLANG("-Wold-style-cast")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wold-style-cast")
+BOBUI_WARNING_DISABLE_CLANG("-Wold-style-cast")
     template <typename From, typename To>
     using is_virtual_base_conversion_test = decltype(
         (To *)std::declval<From *>()
     );
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
     template <typename Base, typename Derived, typename = void>
     struct is_virtual_base_of : std::false_type {};
@@ -128,7 +128,7 @@ constexpr inline bool is_virtual_base_of_v = is_virtual_base_of<Base, Derived>::
 
 } // namespace qxp
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QXPTYPE_TRAITS_H
 

@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "private/qppmhandler_p.h"
 
-#ifndef QT_NO_IMAGEFORMAT_PPM
+#ifndef BOBUI_NO_IMAGEFORMAT_PPM
 
 #include <qdebug.h>
 #include <qimage.h>
@@ -13,10 +13,10 @@
 #include <qrgba64.h>
 #include <qvariant.h>
 #include <private/qlocale_p.h>
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 #include <private/qimage_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*****************************************************************************
   PBM/PGM/PPM (ASCII and RAW) image read/write functions
@@ -40,7 +40,7 @@ static quint16 read_pbm_int(QIODevice *d, bool *ok, int maxDigits = -1)
     for (;;) {
         if (!d->getChar(&c))                // end of file
             break;
-        digit = QtMiscUtils::isAsciiDigit(c);
+        digit = BobUIMiscUtils::isAsciiDigit(c);
         if (val != -1) {
             if (digit) {
                 const int cValue = c - '0';
@@ -77,7 +77,7 @@ static bool read_pbm_header(QIODevice *device, char& type, int& w, int& h, quint
     if (device->read(buf, 3) != 3)                        // read P[1-6]<white-space>
         return false;
 
-    if (!(buf[0] == 'P' && QtMiscUtils::isAsciiDigit(buf[1]) && ascii_isspace(buf[2])))
+    if (!(buf[0] == 'P' && BobUIMiscUtils::isAsciiDigit(buf[1]) && ascii_isspace(buf[2])))
         return false;
 
     type = buf[1];
@@ -589,6 +589,6 @@ void QPpmHandler::setOption(ImageOption option, const QVariant &value)
         subType = value.toByteArray().toLower();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_IMAGEFORMAT_PPM
+#endif // BOBUI_NO_IMAGEFORMAT_PPM

@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpointingdevice.h"
 #include "qpointingdevice_p.h"
@@ -13,18 +13,18 @@
 
 #include <private/qdebug_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcPointerGrab, "qt.pointer.grab");
+Q_LOGGING_CATEGORY(lcPointerGrab, "bobui.pointer.grab");
 
 /*!
     \class QPointingDevice
     \brief The QPointingDevice class describes a device from which mouse, touch or tablet events originate.
     \since 6.0
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Each QPointerEvent contains a QPointingDevice pointer to allow accessing
     device-specific properties like type and capabilities. It is the
@@ -49,15 +49,15 @@ Q_LOGGING_CATEGORY(lcPointerGrab, "qt.pointer.grab");
         This means the surface and display typically have the same size, such
         that there is a direct relationship between the touch points' physical
         positions and the coordinate reported by QEventPoint. As a
-        result, Qt allows the user to interact directly with multiple QWidgets,
-        QGraphicsItems, or Qt Quick Items at the same time.
+        result, BobUI allows the user to interact directly with multiple QWidgets,
+        QGraphicsItems, or BobUI Quick Items at the same time.
 
     \value TouchPad
         In this type of device, the touch surface is separate from the display.
         There is not a direct relationship between the physical touch location
         and the on-screen coordinates. Instead, they are calculated relative to
         the current mouse position, and the user must use the touch-pad to move
-        this reference point. Unlike touch-screens, Qt allows users to only
+        this reference point. Unlike touch-screens, BobUI allows users to only
         interact with a single QWidget or QGraphicsItem at a time.
 
     \value Stylus
@@ -66,7 +66,7 @@ Q_LOGGING_CATEGORY(lcPointerGrab, "qt.pointer.grab");
 
     \value Airbrush
         A stylus with a thumbwheel to adjust
-        \l {QTabletEvent::tangentialPressure}{tangentialPressure}.
+        \l {BOBUIabletEvent::tangentialPressure}{tangentialPressure}.
 
     \value Puck
         A device that is similar to a flat mouse with a transparent circle with
@@ -187,7 +187,7 @@ QPointingDevice::QPointingDevice(QPointingDevicePrivate &d, QObject *parent)
 {
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
     \internal
     \deprecated [6.0] Please use the constructor rather than setters.
@@ -238,7 +238,7 @@ void QPointingDevice::setMaximumTouchPoints(int c)
     Q_D(QPointingDevice);
     d->maximumTouchPoints = c;
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*!
     \property QPointingDevice::pointerType
@@ -310,7 +310,7 @@ QPointingDeviceUniqueId QPointingDevice::uniqueId() const
     or touchpad that matches the given \a seatName and that does not have
     another device as its parent. Usually only one master or core device does
     not have a parent device. But if such a device is not found, this function
-    creates a new virtual "core pointer" mouse. Thus Qt continues to work on
+    creates a new virtual "core pointer" mouse. Thus BobUI continues to work on
     platforms that are not yet doing input device discovery and registration.
 */
 const QPointingDevice *QPointingDevice::primaryPointingDevice(const QString& seatName)
@@ -417,11 +417,11 @@ const QPointingDevice *QPointingDevicePrivate::pointingDeviceById(qint64 systemI
 
 /*!
     \internal
-    First, ensure that the \a cancelEvent's QTouchEvent::points() list contains
+    First, ensure that the \a cancelEvent's BOBUIouchEvent::points() list contains
     all points that have exclusive grabs. Then send the event to each object
     that has an exclusive grab of any of the points.
 */
-void QPointingDevicePrivate::sendTouchCancelEvent(QTouchEvent *cancelEvent)
+void QPointingDevicePrivate::sendTouchCancelEvent(BOBUIouchEvent *cancelEvent)
 {
     // An incoming TouchCancel event will typically not contain any points, but
     // QQuickPointerHandler::onGrabChanged needs to be called for each point
@@ -700,7 +700,7 @@ const QPointingDevice *QPointingDevicePrivate::tabletDevice(QInputDevice::Device
     const QPointingDevice *dev = queryTabletDevice(deviceType, pointerType, uniqueId);
     if (!dev) {
         qCDebug(lcQpaInputDevices) << "failed to find registered tablet device"
-                                   << deviceType << pointerType << Qt::hex << uniqueId.numericId()
+                                   << deviceType << pointerType << BobUI::hex << uniqueId.numericId()
                                    << "The platform plugin should have provided one via "
                                       "QWindowSystemInterface::registerInputDevice(). Creating a default one for now.";
         dev = new QPointingDevice("fake tablet"_L1, 2, deviceType, pointerType,
@@ -721,7 +721,7 @@ bool QPointingDevice::operator==(const QPointingDevice &other) const
             uniqueId() == other.uniqueId();
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QPointingDevice *device)
 {
     QDebugStateSaver saver(debug);
@@ -730,37 +730,37 @@ QDebug operator<<(QDebug debug, const QPointingDevice *device)
     debug << "QPointingDevice(";
     if (device) {
         debug << '"' << device->name() << "\" ";
-        QtDebugUtils::formatQEnum(debug, device->type());
+        BobUIDebugUtils::formatQEnum(debug, device->type());
         debug << " id=" << device->systemId();
         if (!device->seatName().isEmpty())
             debug << " seat=" << device->seatName();
         if (device->pointerType() != QPointingDevice::PointerType::Generic) {
             debug << " ptrType=";
-            QtDebugUtils::formatQEnum(debug, device->pointerType());
+            BobUIDebugUtils::formatQEnum(debug, device->pointerType());
         }
         if (int(device->capabilities()) != int(QInputDevice::Capability::Position)) {
             debug << " caps=";
-            QtDebugUtils::formatQFlags(debug, device->capabilities());
+            BobUIDebugUtils::formatQFlags(debug, device->capabilities());
         }
         if (device->buttonCount() > 0)
             debug << " buttonCount=" << device->buttonCount();
         if (device->maximumPoints() > 1)
             debug << " maxPts=" << device->maximumPoints();
         if (device->uniqueId().isValid())
-            debug << " uniqueId=" << Qt::hex << device->uniqueId().numericId() << Qt::dec;
+            debug << " uniqueId=" << BobUI::hex << device->uniqueId().numericId() << BobUI::dec;
     } else {
         debug << "0x0";
     }
     debug << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 /*!
     \class QPointingDeviceUniqueId
     \since 5.8
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief QPointingDeviceUniqueId identifies a unique object, such as a tagged token
     or stylus, which is used with a pointing device.
@@ -841,6 +841,6 @@ size_t qHash(QPointingDeviceUniqueId key, size_t seed) noexcept
     return qHash(key.numericId(), seed);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpointingdevice.cpp"

@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-// This test is for "release" mode, with -DQT_NO_DEBUG -DQT_NO_DEBUG_OUTPUT
-#ifndef QT_NO_DEBUG
-#define QT_NO_DEBUG
+// This test is for "release" mode, with -DBOBUI_NO_DEBUG -DBOBUI_NO_DEBUG_OUTPUT
+#ifndef BOBUI_NO_DEBUG
+#define BOBUI_NO_DEBUG
 #endif
-#ifndef QT_NO_DEBUG_OUTPUT
-#define QT_NO_DEBUG_OUTPUT
+#ifndef BOBUI_NO_DEBUG_OUTPUT
+#define BOBUI_NO_DEBUG_OUTPUT
 #endif
 
-#include <QtCore/QtCore>
-#include <QtCore/QtDebug>
-#include <QtCore/QLoggingCategory>
-#include <QTest>
+#include <BobUICore/BobUICore>
+#include <BobUICore/BobUIDebug>
+#include <BobUICore/QLoggingCategory>
+#include <BOBUIest>
 
 class tst_QNoDebug: public QObject
 {
@@ -31,20 +31,20 @@ void tst_QNoDebug::noDebugOutput() const
     qCDebug(cat, "foo");
 
     // qWarning still works, though
-    QTest::ignoreMessage(QtWarningMsg, "bar");
-    QTest::ignoreMessage(QtWarningMsg, "custom-bar");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "bar");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "custom-bar");
     qWarning() << "bar";
     qCWarning(cat) << "custom-bar";
 }
 
 void tst_QNoDebug::streaming() const
 {
-    QDateTime dt(QDate(1,2,3),QTime(4,5,6));
+    QDateTime dt(QDate(1,2,3),BOBUIime(4,5,6));
     const QByteArray debugString = dt.toString(u"yyyy-MM-dd HH:mm:ss.zzz t").toLocal8Bit();
-    const QByteArray message = "QDateTime(" + debugString + " Qt::LocalTime)";
-    QTest::ignoreMessage(QtWarningMsg, message.constData());
+    const QByteArray message = "QDateTime(" + debugString + " BobUI::LocalTime)";
+    BOBUIest::ignoreMessage(BobUIWarningMsg, message.constData());
     qWarning() << dt;
 }
 
-QTEST_MAIN(tst_QNoDebug);
+BOBUIEST_MAIN(tst_QNoDebug);
 #include "tst_qnodebug.moc"

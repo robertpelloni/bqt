@@ -1,6 +1,6 @@
 
 #global defaults
-qtPrepareLibExecTool(QMAKE_MOC, moc)
+bobuiPrepareLibExecTool(QMAKE_MOC, moc)
 isEmpty(MOC_DIR):MOC_DIR = .
 isEmpty(QMAKE_H_MOD_MOC):QMAKE_H_MOD_MOC = moc_
 isEmpty(QMAKE_EXT_CPP_MOC):QMAKE_EXT_CPP_MOC = .moc
@@ -40,7 +40,7 @@ if(gcc|intel_icl|msvc):!rim_qcc:!uikit:!no_moc_predefs:if(!macos|count(QMAKE_APP
     moc_predefs.input = MOC_PREDEF_FILE
     silent: moc_predefs.commands = @echo generating $$moc_predefs.output$$escape_expand(\\n\\t)@$$moc_predefs.commands
     QMAKE_EXTRA_COMPILERS += moc_predefs
-    MOC_PREDEF_FILE = $$[QT_HOST_DATA/src]/mkspecs/features/data/dummy.cpp
+    MOC_PREDEF_FILE = $$[BOBUI_HOST_DATA/src]/mkspecs/features/data/dummy.cpp
 }
 
 defineReplace(mocCmdBase) {

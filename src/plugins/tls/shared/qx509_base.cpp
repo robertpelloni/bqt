@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qx509_base_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTlsPrivate {
+namespace BOBUIlsPrivate {
 
 QByteArray X509CertificateBase::subjectInfoToString(QSslCertificate::SubjectInfo info)
 {
@@ -138,6 +138,6 @@ bool X509CertificateBase::isExtensionSupported(qsizetype index) const
     return extensions[index].supported;
 }
 
-} // namespace QTlsPrivate
+} // namespace BOBUIlsPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

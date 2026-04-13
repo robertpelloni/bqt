@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef ARTHURWIDGETS_H
 #define ARTHURWIDGETS_H
@@ -9,9 +9,9 @@
 #include <QPushButton>
 #include <QGroupBox>
 
-QT_FORWARD_DECLARE_CLASS(QTextDocument)
-QT_FORWARD_DECLARE_CLASS(QTextEdit)
-QT_FORWARD_DECLARE_CLASS(QVBoxLayout)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIextDocument)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIextEdit)
+BOBUI_FORWARD_DECLARE_CLASS(QVBoxLayout)
 
 class ArthurFrame : public QWidget
 
@@ -46,7 +46,7 @@ protected:
 
     bool m_showDoc = false;
     bool m_preferImage = false;
-    QTextDocument *m_document = nullptr;
+    BOBUIextDocument *m_document = nullptr;
 
     QString m_sourceFileName;
 };

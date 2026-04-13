@@ -1,4 +1,4 @@
-QT += widgets gui-private
+BOBUI += widgets gui-private
 TEMPLATE = app
 TARGET = defaultUpMenuBar
 SOURCES += main.cpp

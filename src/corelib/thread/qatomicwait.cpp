@@ -1,6 +1,6 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qatomicwait_p.h"
 
@@ -12,7 +12,7 @@
 #include <condition_variable>
 #include <mutex>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
  * Implementation details:
@@ -42,7 +42,7 @@ QT_BEGIN_NAMESPACE
  *
  * This implementation is designed for systems where neither the Standard
  * Library's own std::atomic_wait nor operating system futexes are available
- * (read: usually, not the systems Qt is used most frequently on). Therefore,
+ * (read: usually, not the systems BobUI is used most frequently on). Therefore,
  * it's designed for simplicity, not performance. Simplifications applied
  * include:
  * - the total number of possible condition variables
@@ -65,8 +65,8 @@ struct QAtomicWaitLocks
     static void *contendedWatchAddress() { return reinterpret_cast<void *>(-1); }
 
     struct Lock {
-        alignas(QtPrivate::IdealMutexAlignment) std::mutex mutex;
-        alignas(QtPrivate::IdealMutexAlignment) std::condition_variable cond;
+        alignas(BobUIPrivate::IdealMutexAlignment) std::mutex mutex;
+        alignas(BobUIPrivate::IdealMutexAlignment) std::condition_variable cond;
 
         // Can assume values:
         // - nullptr: no waiter is waiting
@@ -101,7 +101,7 @@ struct QAtomicWaitLocks
 static inline void checkFutexUse()
 {
 #if !defined(QATOMICWAIT_USE_FALLBACK)
-    if (QtFutex::futexAvailable()) {
+    if (BobUIFutex::futexAvailable()) {
         // This will disable the code and data on systems where futexes are
         // always available (currently: FreeBSD, Linux, Windows).
         qFatal("Implementation should have used futex!");
@@ -135,7 +135,7 @@ static bool isEqual(const void *address, const void *old, qsizetype size) noexce
     Q_UNREACHABLE_RETURN(false);
 }
 
-void QtPrivate::_q_atomicWait(const void *address, const void *old, qsizetype size) noexcept
+void BobUIPrivate::_q_atomicWait(const void *address, const void *old, qsizetype size) noexcept
 {
     auto &locker = atomicLocks().lockFor(address);
 
@@ -160,7 +160,7 @@ void QtPrivate::_q_atomicWait(const void *address, const void *old, qsizetype si
         locker.watchedAddress = nullptr;
 }
 
-void QtPrivate::_q_atomicWake(void *address, WakeMode mode) noexcept
+void BobUIPrivate::_q_atomicWake(void *address, WakeMode mode) noexcept
 {
     auto &locker = atomicLocks().lockFor(address);
 
@@ -173,7 +173,7 @@ void QtPrivate::_q_atomicWake(void *address, WakeMode mode) noexcept
     else if (locker.watchedAddress != nullptr)
         locker.cond.notify_all();
     else
-        qt_noop();          // no one was waiting
+        bobui_noop();          // no one was waiting
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

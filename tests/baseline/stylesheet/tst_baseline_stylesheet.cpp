@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qbaselinetest.h>
 #include <qwidgetbaselinetest.h>
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include <QByteArray>
 
 class tst_Stylesheet : public QWidgetBaselineTest
@@ -18,20 +18,20 @@ public:
     void doInit() override;
 
 private slots:
-    void tst_QToolButton_data();
-    void tst_QToolButton();
+    void tst_BOBUIoolButton_data();
+    void tst_BOBUIoolButton();
 
     void tst_QScrollArea_data();
     void tst_QScrollArea();
 
-    void tst_QTreeView_data();
-    void tst_QTreeView();
+    void tst_BOBUIreeView_data();
+    void tst_BOBUIreeView();
 
     void tst_QHeaderView_data();
     void tst_QHeaderView();
 
-    void tst_QTableView_data();
-    void tst_QTableView();
+    void tst_BOBUIableView_data();
+    void tst_BOBUIableView();
 
     void tst_QListView_data();
     void tst_QListView();
@@ -54,7 +54,7 @@ void tst_Stylesheet::doInit()
 
 void tst_Stylesheet::loadTestFiles()
 {
-    QTest::addColumn<QString>("styleSheet");
+    BOBUIest::addColumn<QString>("styleSheet");
 
     QStringList qssFiles;
     // first add generic test files
@@ -62,7 +62,7 @@ void tst_Stylesheet::loadTestFiles()
         qssFiles << styleSheetDir.absoluteFilePath(qssFile);
 
     // then test-function specific files
-    const QString testFunction = QString(QTest::currentTestFunction()).remove("tst_").toLower();
+    const QString testFunction = QString(BOBUIest::currentTestFunction()).remove("tst_").toLower();
     if (styleSheetDir.cd(testFunction)) {
         for (const auto &qssFile : styleSheetDir.entryList({QStringLiteral("*.qss")}, QDir::Files | QDir::Readable))
             qssFiles << styleSheetDir.absoluteFilePath(qssFile);
@@ -78,21 +78,21 @@ void tst_Stylesheet::loadTestFiles()
     }
 }
 
-void tst_Stylesheet::tst_QToolButton_data()
+void tst_Stylesheet::tst_BOBUIoolButton_data()
 {
     loadTestFiles();
 }
 
-void tst_Stylesheet::tst_QToolButton()
+void tst_Stylesheet::tst_BOBUIoolButton()
 {
     const QIcon trashIcon = QApplication::style()->standardIcon(QStyle::SP_TrashIcon);
 
     QVBoxLayout *vbox = new QVBoxLayout;
 
     QHBoxLayout *normalButtons = new QHBoxLayout;
-    for (const auto &buttonStyle : {Qt::ToolButtonIconOnly, Qt::ToolButtonTextOnly,
-                                    Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon}) {
-        QToolButton *normal = new QToolButton;
+    for (const auto &buttonStyle : {BobUI::ToolButtonIconOnly, BobUI::ToolButtonTextOnly,
+                                    BobUI::ToolButtonTextUnderIcon, BobUI::ToolButtonTextBesideIcon}) {
+        BOBUIoolButton *normal = new BOBUIoolButton;
         normal->setToolButtonStyle(buttonStyle);
         normal->setText("Norm");
         normal->setIcon(trashIcon);
@@ -101,8 +101,8 @@ void tst_Stylesheet::tst_QToolButton()
     vbox->addLayout(normalButtons);
 
     QHBoxLayout *arrowButtons = new QHBoxLayout;
-    for (const auto &arrowType : {Qt::LeftArrow, Qt::RightArrow, Qt::UpArrow, Qt::DownArrow}) {
-        QToolButton *arrow = new QToolButton;
+    for (const auto &arrowType : {BobUI::LeftArrow, BobUI::RightArrow, BobUI::UpArrow, BobUI::DownArrow}) {
+        BOBUIoolButton *arrow = new BOBUIoolButton;
         arrow->setText("Arrs");
         arrow->setArrowType(arrowType);
         arrowButtons->addWidget(arrow);
@@ -110,20 +110,20 @@ void tst_Stylesheet::tst_QToolButton()
     vbox->addLayout(arrowButtons);
 
     QHBoxLayout *arrowWithTextButtons = new QHBoxLayout;
-    for (const auto &buttonStyle : {Qt::ToolButtonTextOnly,
-                                    Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon}) {
-        QToolButton *arrow = new QToolButton;
+    for (const auto &buttonStyle : {BobUI::ToolButtonTextOnly,
+                                    BobUI::ToolButtonTextUnderIcon, BobUI::ToolButtonTextBesideIcon}) {
+        BOBUIoolButton *arrow = new BOBUIoolButton;
         arrow->setText("ArrTxt");
-        arrow->setArrowType(Qt::UpArrow);
+        arrow->setArrowType(BobUI::UpArrow);
         arrow->setToolButtonStyle(buttonStyle);
         arrowWithTextButtons->addWidget(arrow);
     }
     vbox->addLayout(arrowWithTextButtons);
 
     QHBoxLayout *menuButtons = new QHBoxLayout;
-    for (const auto &popupMode : {QToolButton::InstantPopup, QToolButton::MenuButtonPopup,
-                                  QToolButton::DelayedPopup}) {
-        QToolButton *menuButton = new QToolButton;
+    for (const auto &popupMode : {BOBUIoolButton::InstantPopup, BOBUIoolButton::MenuButtonPopup,
+                                  BOBUIoolButton::DelayedPopup}) {
+        BOBUIoolButton *menuButton = new BOBUIoolButton;
         menuButton->setText("PppMd");
         menuButton->setIcon(trashIcon);
         QMenu *menuButtonMenu = new QMenu;
@@ -149,7 +149,7 @@ void tst_Stylesheet::tst_QScrollArea_data()
 void tst_Stylesheet::tst_QScrollArea()
 {
     QHBoxLayout *layout = new QHBoxLayout;
-    QTableWidget *table = new QTableWidget(20, 20);
+    BOBUIableWidget *table = new BOBUIableWidget(20, 20);
     layout->addWidget(table);
     testWindow()->setLayout(layout);
 
@@ -157,15 +157,15 @@ void tst_Stylesheet::tst_QScrollArea()
     QBASELINE_TEST(takeSnapshot());
 }
 
-void tst_Stylesheet::tst_QTreeView_data()
+void tst_Stylesheet::tst_BOBUIreeView_data()
 {
     loadTestFiles();
 }
 
-void tst_Stylesheet::tst_QTreeView()
+void tst_Stylesheet::tst_BOBUIreeView()
 {
     QHBoxLayout *layout = new QHBoxLayout;
-    QTreeWidget *tw = new QTreeWidget();
+    BOBUIreeWidget *tw = new BOBUIreeWidget();
     tw->header()->hide();
     layout->addWidget(tw);
 
@@ -180,23 +180,23 @@ void tst_Stylesheet::tst_QTreeView()
     };
 
     for (int i = 0; i < NConfigs; ++i) {
-        QTreeWidgetItem *topLevelItem = new QTreeWidgetItem(tw, QStringList{QString("top %1").arg(i)});
+        BOBUIreeWidgetItem *topLevelItem = new BOBUIreeWidgetItem(tw, QStringList{QString("top %1").arg(i)});
         switch (i) {
         case Unchecked:
         case Disabled:
-            topLevelItem->setCheckState(0, Qt::Unchecked);
+            topLevelItem->setCheckState(0, BobUI::Unchecked);
             break;
         case Checked:
         case CheckedDisabled:
-            topLevelItem->setCheckState(0, Qt::Checked);
+            topLevelItem->setCheckState(0, BobUI::Checked);
             break;
         case Children:
         case ChildrenDisabled:
-            topLevelItem->setCheckState(0, Qt::PartiallyChecked);
+            topLevelItem->setCheckState(0, BobUI::PartiallyChecked);
             topLevelItem->setExpanded(true);
             for (int j = 0; j < 2; ++j) {
-                QTreeWidgetItem *childItem = new QTreeWidgetItem(topLevelItem, QStringList{QString("child %1").arg(j)});
-                childItem->setCheckState(0, j % 2 ? Qt::Unchecked : Qt::Checked);
+                BOBUIreeWidgetItem *childItem = new BOBUIreeWidgetItem(topLevelItem, QStringList{QString("child %1").arg(j)});
+                childItem->setCheckState(0, j % 2 ? BobUI::Unchecked : BobUI::Checked);
             }
             break;
         }
@@ -225,7 +225,7 @@ void tst_Stylesheet::tst_QHeaderView_data()
 void tst_Stylesheet::tst_QHeaderView()
 {
     QHBoxLayout *layout = new QHBoxLayout;
-    QTableWidget *tw = new QTableWidget(10, 10);
+    BOBUIableWidget *tw = new BOBUIableWidget(10, 10);
     tw->setCurrentCell(1, 1);
     layout->addWidget(tw);
     testWindow()->setLayout(layout);
@@ -233,15 +233,15 @@ void tst_Stylesheet::tst_QHeaderView()
     QBASELINE_TEST(takeSnapshot());
 }
 
-void tst_Stylesheet::tst_QTableView_data()
+void tst_Stylesheet::tst_BOBUIableView_data()
 {
     loadTestFiles();
 }
 
-void tst_Stylesheet::tst_QTableView()
+void tst_Stylesheet::tst_BOBUIableView()
 {
     QHBoxLayout *layout = new QHBoxLayout;
-    QTableWidget *tw = new QTableWidget(2, 3);
+    BOBUIableWidget *tw = new BOBUIableWidget(2, 3);
     layout->addWidget(tw);
     testWindow()->setLayout(layout);
     makeVisible();

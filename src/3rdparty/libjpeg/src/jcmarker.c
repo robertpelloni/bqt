@@ -55,7 +55,7 @@ typedef enum {                  /* JPEG marker codes */
   M_SOI   = 0xd8,
   M_EOI   = 0xd9,
   M_SOS   = 0xda,
-  M_DQT   = 0xdb,
+  M_DBOBUI   = 0xdb,
   M_DNL   = 0xdc,
   M_DRI   = 0xdd,
   M_DHP   = 0xde,
@@ -148,25 +148,25 @@ emit_2bytes(j_compress_ptr cinfo, int value)
  */
 
 LOCAL(int)
-emit_dqt(j_compress_ptr cinfo, int index)
-/* Emit a DQT marker */
+emit_dbobui(j_compress_ptr cinfo, int index)
+/* Emit a DBOBUI marker */
 /* Returns the precision used (0 = 8bits, 1 = 16bits) for baseline checking */
 {
-  JQUANT_TBL *qtbl = cinfo->quant_tbl_ptrs[index];
+  JQUANT_TBL *bobuibl = cinfo->quant_tbl_ptrs[index];
   int prec;
   int i;
 
-  if (qtbl == NULL)
+  if (bobuibl == NULL)
     ERREXIT1(cinfo, JERR_NO_QUANT_TABLE, index);
 
   prec = 0;
   for (i = 0; i < DCTSIZE2; i++) {
-    if (qtbl->quantval[i] > 255)
+    if (bobuibl->quantval[i] > 255)
       prec = 1;
   }
 
-  if (!qtbl->sent_table) {
-    emit_marker(cinfo, M_DQT);
+  if (!bobuibl->sent_table) {
+    emit_marker(cinfo, M_DBOBUI);
 
     emit_2bytes(cinfo, prec ? DCTSIZE2 * 2 + 1 + 2 : DCTSIZE2 + 1 + 2);
 
@@ -174,13 +174,13 @@ emit_dqt(j_compress_ptr cinfo, int index)
 
     for (i = 0; i < DCTSIZE2; i++) {
       /* The table entries must be emitted in zigzag order. */
-      unsigned int qval = qtbl->quantval[jpeg_natural_order[i]];
+      unsigned int qval = bobuibl->quantval[jpeg_natural_order[i]];
       if (prec)
         emit_byte(cinfo, (int)(qval >> 8));
       emit_byte(cinfo, (int)(qval & 0xFF));
     }
 
-    qtbl->sent_table = TRUE;
+    bobuibl->sent_table = TRUE;
   }
 
   return prec;
@@ -490,8 +490,8 @@ write_file_header(j_compress_ptr cinfo)
 
 /*
  * Write frame header.
- * This consists of DQT and SOFn markers.
- * Note that we do not emit the SOF until we have emitted the DQT(s).
+ * This consists of DBOBUI and SOFn markers.
+ * Note that we do not emit the SOF until we have emitted the DBOBUI(s).
  * This avoids compatibility problems with incorrect implementations that
  * try to error-check the quant table numbers as soon as they see the SOF.
  */
@@ -504,12 +504,12 @@ write_frame_header(j_compress_ptr cinfo)
   jpeg_component_info *compptr;
 
   if (!cinfo->master->lossless) {
-    /* Emit DQT for each quantization table.
-     * Note that emit_dqt() suppresses any duplicate tables.
+    /* Emit DBOBUI for each quantization table.
+     * Note that emit_dbobui() suppresses any duplicate tables.
      */
     for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
          ci++, compptr++) {
-      prec += emit_dqt(cinfo, compptr->quant_tbl_no);
+      prec += emit_dbobui(cinfo, compptr->quant_tbl_no);
     }
     /* now prec is nonzero iff there are any 16-bit quant tables. */
   }
@@ -613,7 +613,7 @@ write_file_trailer(j_compress_ptr cinfo)
 
 /*
  * Write an abbreviated table-specification datastream.
- * This consists of SOI, DQT and DHT tables, and EOI.
+ * This consists of SOI, DBOBUI and DHT tables, and EOI.
  * Any table that is defined and not marked sent_table = TRUE will be
  * emitted.  Note that all tables will be marked sent_table = TRUE at exit.
  */
@@ -627,7 +627,7 @@ write_tables_only(j_compress_ptr cinfo)
 
   for (i = 0; i < NUM_QUANT_TBLS; i++) {
     if (cinfo->quant_tbl_ptrs[i] != NULL)
-      (void)emit_dqt(cinfo, i);
+      (void)emit_dbobui(cinfo, i);
   }
 
   if (!cinfo->arith_code) {

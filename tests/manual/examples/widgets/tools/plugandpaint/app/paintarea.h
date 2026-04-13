@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef PAINTAREA_H
 #define PAINTAREA_H
@@ -41,7 +41,7 @@ private:
     void setupPainter(QPainter &painter);
 
     QImage theImage = {500, 400, QImage::Format_RGB32};
-    QColor color = Qt::blue;
+    QColor color = BobUI::blue;
     int thickness = 3;
 
     BrushInterface *brushInterface = nullptr;

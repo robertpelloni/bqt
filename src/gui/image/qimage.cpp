@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qimage.h"
 
@@ -9,7 +9,7 @@
 #include "qcolortransform.h"
 #include "qfloat16.h"
 #include "qmap.h"
-#include "qtransform.h"
+#include "bobuiransform.h"
 #include "qimagereader.h"
 #include "qimagewriter.h"
 #include "qrgbafloat.h"
@@ -37,28 +37,28 @@
 #include <private/qimage_p.h>
 #include <private/qfont_p.h>
 
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
 #include <private/qlatch_p.h>
-#include <qthreadpool.h>
-#include <private/qthreadpool_p.h>
+#include <bobuihreadpool.h>
+#include <private/bobuihreadpool_p.h>
 #endif
 
-#include <qtgui_tracepoints_p.h>
+#include <bobuigui_tracepoints_p.h>
 
 #include <memory>
 
-#define QT_XFORM_TYPE_MSBFIRST 0
-#define QT_XFORM_TYPE_LSBFIRST 1
+#define BOBUI_XFORM_TYPE_MSBFIRST 0
+#define BOBUI_XFORM_TYPE_LSBFIRST 1
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QCmyk32;
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // MSVC 19.28 does show spurious warning "C4723: potential divide by 0" for code that divides
 // by height() in release builds. Anyhow, all the code paths in this file are only executed
 // for valid QImage's, where height() cannot be 0. Therefore disable the warning.
-QT_WARNING_DISABLE_MSVC(4723)
+BOBUI_WARNING_DISABLE_MSVC(4723)
 
 #if defined(Q_CC_DEC) && defined(__alpha) && (__DECCXX_VER-0 >= 50190001)
 #pragma message disable narrowptr
@@ -71,17 +71,17 @@ QT_WARNING_DISABLE_MSVC(4723)
         return QImage(); \
     }
 
-Q_TRACE_PREFIX(qtgui,
+Q_TRACE_PREFIX(bobuigui,
    "#include <qimagereader.h>"
 );
 
-Q_TRACE_METADATA(qtgui,
+Q_TRACE_METADATA(bobuigui,
 "ENUM { } QImage::Format;" \
-"FLAGS { } Qt::ImageConversionFlags;"
+"FLAGS { } BobUI::ImageConversionFlags;"
 );
 
-Q_TRACE_PARAM_REPLACE(Qt::AspectRatioMode, int);
-Q_TRACE_PARAM_REPLACE(Qt::TransformationMode, int);
+Q_TRACE_PARAM_REPLACE(BobUI::AspectRatioMode, int);
+Q_TRACE_PARAM_REPLACE(BobUI::TransformationMode, int);
 
 static QImage rotated90(const QImage &src);
 static QImage rotated180(const QImage &src);
@@ -98,8 +98,8 @@ QImageData::QImageData()
       format(QImage::Format_ARGB32), bytes_per_line(0),
       ser_no(next_qimage_serial_number()),
       detach_no(0),
-      dpmx(qt_defaultDpiX() * 100 / qreal(2.54)),
-      dpmy(qt_defaultDpiY() * 100 / qreal(2.54)),
+      dpmx(bobui_defaultDpiX() * 100 / qreal(2.54)),
+      dpmy(bobui_defaultDpiY() * 100 / qreal(2.54)),
       offset(0, 0), own_data(true), ro_data(false), has_alpha_clut(false),
       is_cached(false), cleanupFunction(nullptr), cleanupInfo(nullptr),
       paintEngine(nullptr)
@@ -113,7 +113,7 @@ QImageData::QImageData()
     Creates a new image data.
     Returns \nullptr if invalid parameters are give or anything else failed.
 */
-QImageData * Q_TRACE_INSTRUMENT(qtgui) QImageData::create(const QSize &size, QImage::Format format)
+QImageData * Q_TRACE_INSTRUMENT(bobuigui) QImageData::create(const QSize &size, QImage::Format format)
 {
     if (size.isEmpty() || format <= QImage::Format_Invalid || format >= QImage::NImageFormats)
         return nullptr;                             // invalid parameter(s)
@@ -122,7 +122,7 @@ QImageData * Q_TRACE_INSTRUMENT(qtgui) QImageData::create(const QSize &size, QIm
 
     int width = size.width();
     int height = size.height();
-    int depth = qt_depthForFormat(format);
+    int depth = bobui_depthForFormat(format);
     auto params = calculateImageParameters(width, height, depth);
     if (!params.isValid())
         return nullptr;
@@ -133,8 +133,8 @@ QImageData * Q_TRACE_INSTRUMENT(qtgui) QImageData::create(const QSize &size, QIm
     case QImage::Format_Mono:
     case QImage::Format_MonoLSB:
         d->colortable.resize(2);
-        d->colortable[0] = QColor(Qt::black).rgba();
-        d->colortable[1] = QColor(Qt::white).rgba();
+        d->colortable[0] = QColor(BobUI::black).rgba();
+        d->colortable[1] = QColor(BobUI::white).rgba();
         break;
     default:
         break;
@@ -166,7 +166,7 @@ QImageData::~QImageData()
         QImagePixmapCleanupHooks::executeImageHooks((((qint64) ser_no) << 32) | ((qint64) detach_no));
     delete paintEngine;
     if (data && own_data)
-        QtPrivate::sizedFree(data, nbytes);
+        BobUIPrivate::sizedFree(data, nbytes);
     data = nullptr;
 }
 
@@ -328,7 +328,7 @@ bool QImageData::checkForAlphaPixels() const
 /*!
     \class QImage
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup painting
     \ingroup shared
 
@@ -338,7 +338,7 @@ bool QImageData::checkForAlphaPixels() const
     representation that allows direct access to the pixel data, and
     can be used as a paint device.
 
-    Qt provides four classes for handling image data: QImage, QPixmap,
+    BobUI provides four classes for handling image data: QImage, QPixmap,
     QBitmap and QPicture.  QImage is designed and optimized for I/O,
     and for direct pixel access and manipulation, while QPixmap is
     designed and optimized for showing images on screen. QBitmap is
@@ -353,7 +353,7 @@ bool QImageData::checkForAlphaPixels() const
 
     The QImage class supports several image formats described by the
     \l Format enum. These include monochrome, 8-bit, 32-bit and
-    alpha-blended images which are available in all versions of Qt
+    alpha-blended images which are available in all versions of BobUI
     4.x.
 
     QImage provides a collection of functions that can be used to
@@ -364,8 +364,8 @@ bool QImageData::checkForAlphaPixels() const
     class uses \l{Implicit Data Sharing}{implicit data
     sharing}. QImage objects can also be streamed and compared.
 
-    \note If you would like to load QImage objects in a static build of Qt,
-    refer to the \l{How to Create Qt Plugins}{Plugin HowTo}.
+    \note If you would like to load QImage objects in a static build of BobUI,
+    refer to the \l{How to Create BobUI Plugins}{Plugin HowTo}.
 
     \warning Painting on a QImage with the format
     QImage::Format_Indexed8 or QImage::Format_CMYK8888 is not supported.
@@ -378,7 +378,7 @@ bool QImageData::checkForAlphaPixels() const
     the static fromData() function, constructing a QImage from the
     given data.  When loading an image, the file name can either refer
     to an actual file on disk or to one of the application's embedded
-    resources. See \l{The Qt Resource System} overview for details
+    resources. See \l{The BobUI Resource System} overview for details
     on how to embed images and other resource files in the
     application's executable.
 
@@ -387,11 +387,11 @@ bool QImageData::checkForAlphaPixels() const
     The complete list of supported file formats are available through
     the QImageReader::supportedImageFormats() and
     QImageWriter::supportedImageFormats() functions. New file formats
-    can be added as plugins. By default, Qt supports the following
+    can be added as plugins. By default, BobUI supports the following
     formats:
 
     \table
-    \header \li Format \li Description                      \li Qt's support
+    \header \li Format \li Description                      \li BobUI's support
     \row    \li BMP    \li Windows Bitmap                   \li Read/write
     \row    \li GIF    \li Graphic Interchange Format (optional) \li Read
     \row    \li JPG    \li Joint Photographic Experts Group \li Read/write
@@ -673,7 +673,7 @@ bool QImageData::checkForAlphaPixels() const
 /*!
     \enum QImage::Format
 
-    The following image formats are available in Qt.
+    The following image formats are available in BobUI.
     See the notes after the table.
 
     \value Format_Invalid   The image is invalid.
@@ -837,7 +837,7 @@ QImageData *QImageData::create(uchar *data, int width, int height,  qsizetype bp
     if (width <= 0 || height <= 0 || !data || format <= QImage::Format_Invalid || format >= QImage::NImageFormats)
         return nullptr;
 
-    const int depth = qt_depthForFormat(format);
+    const int depth = bobui_depthForFormat(format);
     auto params = calculateImageParameters(width, height, depth);
     if (!params.isValid())
         return nullptr;
@@ -1010,8 +1010,8 @@ QImage::QImage(const QString &fileName, const char *format)
     load(fileName, format);
 }
 
-#ifndef QT_NO_IMAGEFORMAT_XPM
-extern bool qt_read_xpm_image_or_array(QIODevice *device, const char * const *source, QImage &image);
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
+extern bool bobui_read_xpm_image_or_array(QIODevice *device, const char * const *source, QImage &image);
 
 /*!
     Constructs an image from the given \a xpm image.
@@ -1035,11 +1035,11 @@ QImage::QImage(const char * const xpm[])
     d = nullptr;
     if (!xpm)
         return;
-    if (!qt_read_xpm_image_or_array(nullptr, xpm, *this))
+    if (!bobui_read_xpm_image_or_array(nullptr, xpm, *this))
         // Issue: Warning because the constructor may be ambiguous
         qWarning("QImage::QImage(), XPM is not supported");
 }
-#endif // QT_NO_IMAGEFORMAT_XPM
+#endif // BOBUI_NO_IMAGEFORMAT_XPM
 
 /*!
     Constructs a shallow copy of the given \a image.
@@ -1216,14 +1216,14 @@ static void copyMetadata(QImage *dst, const QImage &src)
     images, this means black; for 32-bit ARGB images, this means
     transparent black; for 8-bit images, this means the color with
     index 0 in the color table which can be anything; for 1-bit
-    images, this means Qt::color0.
+    images, this means BobUI::color0.
 
     If the given \a rectangle is a null rectangle the entire image is
     copied.
 
     \sa QImage()
 */
-QImage Q_TRACE_INSTRUMENT(qtgui) QImage::copy(const QRect& r) const
+QImage Q_TRACE_INSTRUMENT(bobuigui) QImage::copy(const QRect& r) const
 {
     Q_TRACE_SCOPE(QImage_copy, r);
     if (!d)
@@ -1234,7 +1234,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::copy(const QRect& r) const
         if (image.isNull())
             return image;
 
-        // Qt for Embedded Linux can create images with non-default bpl
+        // BobUI for Embedded Linux can create images with non-default bpl
         // make sure we don't crash.
         if (image.d->nbytes != d->nbytes) {
             qsizetype bpl = qMin(bytesPerLine(), image.bytesPerLine());
@@ -1502,7 +1502,7 @@ qreal QImage::devicePixelRatio() const
     will result in effective (device-independent) painting bounds
     of 100x100.
 
-    Code paths in Qt that calculate layout geometry based on the
+    Code paths in BobUI that calculate layout geometry based on the
     image size will take the ratio into account:
     QSize layoutSize = image.size() / image.devicePixelRatio()
     The net effect of this is that the image is displayed as
@@ -1781,30 +1781,30 @@ void QImage::fill(uint pixel)
         } else {
             pixel &= 0xff;
         }
-        qt_rectfill<quint8>(d->data, pixel, 0, 0,
+        bobui_rectfill<quint8>(d->data, pixel, 0, 0,
                             w, d->height, d->bytes_per_line);
         return;
     } else if (d->depth == 16) {
         if (d->format == Format_RGB444)
             pixel |= 0xf000;
-        qt_rectfill<quint16>(reinterpret_cast<quint16*>(d->data), pixel,
+        bobui_rectfill<quint16>(reinterpret_cast<quint16*>(d->data), pixel,
                              0, 0, d->width, d->height, d->bytes_per_line);
         return;
     } else if (d->depth == 24) {
         if (d->format == Format_RGB666)
             pixel |= 0xfc0000;
-        qt_rectfill<quint24>(reinterpret_cast<quint24*>(d->data), pixel,
+        bobui_rectfill<quint24>(reinterpret_cast<quint24*>(d->data), pixel,
                              0, 0, d->width, d->height, d->bytes_per_line);
         return;
     } else if (d->format >= QImage::Format_RGBX64 && d->format <= QImage::Format_RGBA64_Premultiplied) {
-        qt_rectfill<quint64>(reinterpret_cast<quint64*>(d->data), QRgba64::fromArgb32(pixel),
+        bobui_rectfill<quint64>(reinterpret_cast<quint64*>(d->data), QRgba64::fromArgb32(pixel),
                              0, 0, d->width, d->height, d->bytes_per_line);
         return;
     } else if (d->format >= QImage::Format_RGBX16FPx4 && d->format <= QImage::Format_RGBA16FPx4_Premultiplied) {
         quint64 cu;
         QRgbaFloat16 cf = QRgbaFloat16::fromArgb32(pixel);
         ::memcpy(&cu, &cf, sizeof(quint64));
-        qt_rectfill<quint64>(reinterpret_cast<quint64*>(d->data), cu,
+        bobui_rectfill<quint64>(reinterpret_cast<quint64*>(d->data), cu,
                              0, 0, d->width, d->height, d->bytes_per_line);
         return;
     } else if (d->format >= QImage::Format_RGBX32FPx4 && d->format <= QImage::Format_RGBA32FPx4_Premultiplied) {
@@ -1831,20 +1831,20 @@ void QImage::fill(uint pixel)
     if (d->format == Format_BGR30 || d->format == Format_RGB30)
         pixel |= 0xc0000000;
 
-    qt_rectfill<uint>(reinterpret_cast<uint*>(d->data), pixel,
+    bobui_rectfill<uint>(reinterpret_cast<uint*>(d->data), pixel,
                       0, 0, d->width, d->height, d->bytes_per_line);
 }
 
 
 /*!
-    \fn void QImage::fill(Qt::GlobalColor color)
+    \fn void QImage::fill(BobUI::GlobalColor color)
     \overload
 
     Fills the image with the given \a color, described as a standard global
     color.
  */
 
-void QImage::fill(Qt::GlobalColor color)
+void QImage::fill(BobUI::GlobalColor color)
 {
     fill(QColor(color));
 }
@@ -1859,7 +1859,7 @@ void QImage::fill(Qt::GlobalColor color)
     Fills the entire image with the given \a color.
 
     If the depth of the image is 1, the image will be filled with 1 if
-    \a color equals Qt::color1; it will otherwise be filled with 0.
+    \a color equals BobUI::color1; it will otherwise be filled with 0.
 
     If the depth of the image is 8, the image will be filled with the
     index corresponding the \a color in the color table if present; it
@@ -1917,21 +1917,21 @@ void QImage::fill(const QColor &color)
     }
     case QImage::Format_Mono:
     case QImage::Format_MonoLSB:
-        if (color == Qt::color1)
+        if (color == BobUI::color1)
             fill((uint) 1);
         else
             fill((uint) 0);
         break;
     case QImage::Format_RGBX64:
-        qt_rectfill<quint64>(reinterpret_cast<quint64*>(d->data), opaque,
+        bobui_rectfill<quint64>(reinterpret_cast<quint64*>(d->data), opaque,
                              0, 0, d->width, d->height, d->bytes_per_line);
         break;
     case QImage::Format_RGBA64:
-        qt_rectfill<quint64>(reinterpret_cast<quint64*>(d->data), color.rgba64(),
+        bobui_rectfill<quint64>(reinterpret_cast<quint64*>(d->data), color.rgba64(),
                              0, 0, d->width, d->height, d->bytes_per_line);
         break;
     case QImage::Format_RGBA64_Premultiplied:
-        qt_rectfill<quint64>(reinterpret_cast<quint64 *>(d->data), color.rgba64().premultiplied(),
+        bobui_rectfill<quint64>(reinterpret_cast<quint64 *>(d->data), color.rgba64().premultiplied(),
                              0, 0, d->width, d->height, d->bytes_per_line);
         break;
     case QImage::Format_RGBX16FPx4:
@@ -1948,13 +1948,13 @@ void QImage::fill(const QColor &color)
             QRgbaFloat16 c16{qfloat16(r), qfloat16(g), qfloat16(b), qfloat16(a)};
             if (d->format == Format_RGBA16FPx4_Premultiplied)
                 c16 = c16.premultiplied();
-            qt_rectfill<QRgbaFloat16>(reinterpret_cast<QRgbaFloat16 *>(d->data), c16,
+            bobui_rectfill<QRgbaFloat16>(reinterpret_cast<QRgbaFloat16 *>(d->data), c16,
                                  0, 0, d->width, d->height, d->bytes_per_line);
         } else {
             QRgbaFloat32 c32{r, g, b, a};
             if (d->format == Format_RGBA32FPx4_Premultiplied)
                 c32 = c32.premultiplied();
-            qt_rectfill<QRgbaFloat32>(reinterpret_cast<QRgbaFloat32 *>(d->data), c32,
+            bobui_rectfill<QRgbaFloat32>(reinterpret_cast<QRgbaFloat32 *>(d->data), c32,
                                  0, 0, d->width, d->height, d->bytes_per_line);
         }
         break;
@@ -2174,8 +2174,8 @@ QImage::Format QImage::format() const
 }
 
 /*!
-    \fn QImage QImage::convertToFormat(Format format, Qt::ImageConversionFlags flags) const &
-    \fn QImage QImage::convertToFormat(Format format, Qt::ImageConversionFlags flags) &&
+    \fn QImage QImage::convertToFormat(Format format, BobUI::ImageConversionFlags flags) const &
+    \fn QImage QImage::convertToFormat(Format format, BobUI::ImageConversionFlags flags) &&
 
     Returns a copy of the image in the given \a format.
 
@@ -2186,8 +2186,8 @@ QImage::Format QImage::format() const
 */
 
 /*!
-    \fn QImage QImage::convertedTo(Format format, Qt::ImageConversionFlags flags) const &
-    \fn QImage QImage::convertedTo(Format format, Qt::ImageConversionFlags flags) &&
+    \fn QImage QImage::convertedTo(Format format, BobUI::ImageConversionFlags flags) const &
+    \fn QImage QImage::convertedTo(Format format, BobUI::ImageConversionFlags flags) &&
     \since 6.0
 
     Returns a copy of the image in the given \a format.
@@ -2201,7 +2201,7 @@ QImage::Format QImage::format() const
 /*!
     \internal
 */
-QImage QImage::convertToFormat_helper(Format format, Qt::ImageConversionFlags flags) const
+QImage QImage::convertToFormat_helper(Format format, BobUI::ImageConversionFlags flags) const
 {
     if (!d || d->format == format)
         return *this;
@@ -2212,10 +2212,10 @@ QImage QImage::convertToFormat_helper(Format format, Qt::ImageConversionFlags fl
     const QPixelLayout *destLayout = &qPixelLayouts[format];
     Image_Converter converter = qimage_converter_map[d->format][format];
     if (!converter && format > QImage::Format_Indexed8 && d->format > QImage::Format_Indexed8) {
-        if (qt_highColorPrecision(d->format, !destLayout->hasAlphaChannel)
-                && qt_highColorPrecision(format, !hasAlphaChannel())) {
-#if QT_CONFIG(raster_fp)
-            if (qt_fpColorPrecision(d->format) && qt_fpColorPrecision(format))
+        if (bobui_highColorPrecision(d->format, !destLayout->hasAlphaChannel)
+                && bobui_highColorPrecision(format, !hasAlphaChannel())) {
+#if BOBUI_CONFIG(raster_fp)
+            if (bobui_fpColorPrecision(d->format) && bobui_fpColorPrecision(format))
                 converter = convert_generic_over_rgba32f;
             else
 #endif
@@ -2247,7 +2247,7 @@ QImage QImage::convertToFormat_helper(Format format, Qt::ImageConversionFlags fl
 /*!
     \internal
 */
-bool QImage::convertToFormat_inplace(Format format, Qt::ImageConversionFlags flags)
+bool QImage::convertToFormat_inplace(Format format, BobUI::ImageConversionFlags flags)
 {
     return d && d->convertInPlace(format, flags);
 }
@@ -2335,7 +2335,7 @@ static QImage convertWithPalette(const QImage &src, QImage::Format format,
     and will use a straightforward nearest color approach, with no
     dithering.
 */
-QImage QImage::convertToFormat(Format format, const QList<QRgb> &colorTable, Qt::ImageConversionFlags flags) const
+QImage QImage::convertToFormat(Format format, const QList<QRgb> &colorTable, BobUI::ImageConversionFlags flags) const
 {
     if (!d || d->format == format)
         return *this;
@@ -2379,7 +2379,7 @@ bool QImage::reinterpretAsFormat(Format format)
         return false;
     if (d->format == format)
         return true;
-    if (qt_depthForFormat(format) != qt_depthForFormat(d->format))
+    if (bobui_depthForFormat(format) != bobui_depthForFormat(d->format))
         return false;
     if (!isDetached()) { // Detach only if shared, not for read-only data.
         QImageData *oldD = d;
@@ -2407,7 +2407,7 @@ bool QImage::reinterpretAsFormat(Format format)
     \sa convertedTo()
 */
 
-void QImage::convertTo(Format format, Qt::ImageConversionFlags flags)
+void QImage::convertTo(Format format, BobUI::ImageConversionFlags flags)
 {
     if (!d || format <= QImage::Format_Invalid || format >= QImage::NImageFormats)
         return;
@@ -3009,8 +3009,8 @@ bool QImage::isGrayscale() const
 }
 
 /*!
-    \fn QImage QImage::scaled(int width, int height, Qt::AspectRatioMode aspectRatioMode,
-                             Qt::TransformationMode transformMode) const
+    \fn QImage QImage::scaled(int width, int height, BobUI::AspectRatioMode aspectRatioMode,
+                             BobUI::TransformationMode transformMode) const
     \overload
 
     Returns a copy of the image scaled to a rectangle with the given
@@ -3022,8 +3022,8 @@ bool QImage::isGrayscale() const
 */
 
 /*!
-    \fn QImage QImage::scaled(const QSize &size, Qt::AspectRatioMode aspectRatioMode,
-                             Qt::TransformationMode transformMode) const
+    \fn QImage QImage::scaled(const QSize &size, BobUI::AspectRatioMode aspectRatioMode,
+                             BobUI::TransformationMode transformMode) const
 
     Returns a copy of the image scaled to a rectangle defined by the
     given \a size according to the given \a aspectRatioMode and \a
@@ -3033,11 +3033,11 @@ bool QImage::isGrayscale() const
            ways to scale images with Aspect Ratio Mode}
 
     \list
-    \li If \a aspectRatioMode is Qt::IgnoreAspectRatio, the image
+    \li If \a aspectRatioMode is BobUI::IgnoreAspectRatio, the image
        is scaled to \a size.
-    \li If \a aspectRatioMode is Qt::KeepAspectRatio, the image is
+    \li If \a aspectRatioMode is BobUI::KeepAspectRatio, the image is
        scaled to a rectangle as large as possible inside \a size, preserving the aspect ratio.
-    \li If \a aspectRatioMode is Qt::KeepAspectRatioByExpanding,
+    \li If \a aspectRatioMode is BobUI::KeepAspectRatioByExpanding,
        the image is scaled to a rectangle as small as possible
        outside \a size, preserving the aspect ratio.
     \endlist
@@ -3047,7 +3047,7 @@ bool QImage::isGrayscale() const
     \sa isNull(), {QImage#Image Transformations}{Image
     Transformations}
 */
-QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaled(const QSize& s, Qt::AspectRatioMode aspectMode, Qt::TransformationMode mode) const
+QImage Q_TRACE_INSTRUMENT(bobuigui) QImage::scaled(const QSize& s, BobUI::AspectRatioMode aspectMode, BobUI::TransformationMode mode) const
 {
     if (!d) {
         qWarning("QImage::scaled: Image is a null image");
@@ -3065,13 +3065,13 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaled(const QSize& s, Qt::AspectRatioM
 
     Q_TRACE_SCOPE(QImage_scaled, s, aspectMode, mode);
 
-    QTransform wm = QTransform::fromScale((qreal)newSize.width() / width(), (qreal)newSize.height() / height());
+    BOBUIransform wm = BOBUIransform::fromScale((qreal)newSize.width() / width(), (qreal)newSize.height() / height());
     QImage img = transformed(wm, mode);
     return img;
 }
 
 /*!
-    \fn QImage QImage::scaledToWidth(int width, Qt::TransformationMode mode) const
+    \fn QImage QImage::scaledToWidth(int width, BobUI::TransformationMode mode) const
 
     Returns a scaled copy of the image. The returned image is scaled
     to the given \a width using the specified transformation \a
@@ -3084,7 +3084,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaled(const QSize& s, Qt::AspectRatioM
 
     \sa {QImage#Image Transformations}{Image Transformations}
 */
-QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaledToWidth(int w, Qt::TransformationMode mode) const
+QImage Q_TRACE_INSTRUMENT(bobuigui) QImage::scaledToWidth(int w, BobUI::TransformationMode mode) const
 {
     if (!d) {
         qWarning("QImage::scaleWidth: Image is a null image");
@@ -3096,12 +3096,12 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaledToWidth(int w, Qt::Transformation
     Q_TRACE_SCOPE(QImage_scaledToWidth, w, mode);
 
     qreal factor = (qreal) w / width();
-    QTransform wm = QTransform::fromScale(factor, factor);
+    BOBUIransform wm = BOBUIransform::fromScale(factor, factor);
     return transformed(wm, mode);
 }
 
 /*!
-    \fn QImage QImage::scaledToHeight(int height, Qt::TransformationMode mode) const
+    \fn QImage QImage::scaledToHeight(int height, BobUI::TransformationMode mode) const
 
     Returns a scaled copy of the image. The returned image is scaled
     to the given \a height using the specified transformation \a
@@ -3114,7 +3114,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaledToWidth(int w, Qt::Transformation
 
     \sa {QImage#Image Transformations}{Image Transformations}
 */
-QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaledToHeight(int h, Qt::TransformationMode mode) const
+QImage Q_TRACE_INSTRUMENT(bobuigui) QImage::scaledToHeight(int h, BobUI::TransformationMode mode) const
 {
     if (!d) {
         qWarning("QImage::scaleHeight: Image is a null image");
@@ -3126,7 +3126,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaledToHeight(int h, Qt::Transformatio
     Q_TRACE_SCOPE(QImage_scaledToHeight, h, mode);
 
     qreal factor = (qreal) h / height();
-    QTransform wm = QTransform::fromScale(factor, factor);
+    BOBUIransform wm = BOBUIransform::fromScale(factor, factor);
     return transformed(wm, mode);
 }
 
@@ -3136,7 +3136,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaledToHeight(int h, Qt::Transformatio
     QImage::Format_RGB32.
 
     The \a flags argument is a bitwise-OR of the
-    Qt::ImageConversionFlags, and controls the conversion
+    BobUI::ImageConversionFlags, and controls the conversion
     process. Passing 0 for flags sets all the default options.
 
     The returned image has little-endian bit order (i.e. the image's
@@ -3147,7 +3147,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::scaledToHeight(int h, Qt::Transformatio
     \sa createHeuristicMask(), {QImage#Image Transformations}{Image
     Transformations}
 */
-QImage Q_TRACE_INSTRUMENT(qtgui) QImage::createAlphaMask(Qt::ImageConversionFlags flags) const
+QImage Q_TRACE_INSTRUMENT(bobuigui) QImage::createAlphaMask(BobUI::ImageConversionFlags flags) const
 {
     if (!d || d->format == QImage::Format_RGB32)
         return QImage();
@@ -3166,7 +3166,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::createAlphaMask(Qt::ImageConversionFlag
     return mask;
 }
 
-#ifndef QT_NO_IMAGE_HEURISTIC_MASK
+#ifndef BOBUI_NO_IMAGE_HEURISTIC_MASK
 /*!
     Creates and returns a 1-bpp heuristic mask for this image.
 
@@ -3208,8 +3208,8 @@ QImage QImage::createHeuristicMask(bool clipTight) const
     QImage m(w, h, Format_MonoLSB);
     QIMAGE_SANITYCHECK_MEMORY(m);
     m.setColorCount(2);
-    m.setColor(0, QColor(Qt::color0).rgba());
-    m.setColor(1, QColor(Qt::color1).rgba());
+    m.setColor(0, QColor(BobUI::color0).rgba());
+    m.setColor(1, QColor(BobUI::color1).rgba());
     m.fill(0xff);
 
     QRgb background = PIX(0,0);
@@ -3283,7 +3283,7 @@ QImage QImage::createHeuristicMask(bool clipTight) const
     copyPhysicalMetadata(m.d, d);
     return m;
 }
-#endif //QT_NO_IMAGE_HEURISTIC_MASK
+#endif //BOBUI_NO_IMAGE_HEURISTIC_MASK
 
 /*!
     Creates and returns a mask for this image based on the given \a
@@ -3295,7 +3295,7 @@ QImage QImage::createHeuristicMask(bool clipTight) const
     \sa createAlphaMask(), createHeuristicMask()
 */
 
-QImage QImage::createMaskFromColor(QRgb color, Qt::MaskMode mode) const
+QImage QImage::createMaskFromColor(QRgb color, BobUI::MaskMode mode) const
 {
     if (!d)
         return QImage();
@@ -3324,7 +3324,7 @@ QImage QImage::createMaskFromColor(QRgb color, Qt::MaskMode mode) const
             s += maskImage.bytesPerLine();
         }
     }
-    if  (mode == Qt::MaskOutColor)
+    if  (mode == BobUI::MaskOutColor)
         maskImage.invertPixels();
 
     copyPhysicalMetadata(maskImage.d, d);
@@ -3334,7 +3334,7 @@ QImage QImage::createMaskFromColor(QRgb color, Qt::MaskMode mode) const
 /*!
     \fn QImage QImage::mirrored(bool horizontal = false, bool vertical = true) const &
     \fn QImage QImage::mirrored(bool horizontal = false, bool vertical = true) &&
-    \deprecated [6.13] Use flipped(Qt::Orientations) instead.
+    \deprecated [6.13] Use flipped(BobUI::Orientations) instead.
 
     Returns a mirror of the image, mirrored in the horizontal and/or
     the vertical direction depending on whether \a horizontal and \a
@@ -3348,7 +3348,7 @@ QImage QImage::createMaskFromColor(QRgb color, Qt::MaskMode mode) const
 /*!
     \fn void QImage::mirror(bool horizontal = false, bool vertical = true)
     \since 6.0
-    \deprecated [6.13] Use flip(Qt::Orientations) instead.
+    \deprecated [6.13] Use flip(BobUI::Orientations) instead.
 
     Mirrors of the image in the horizontal and/or the vertical direction depending
     on whether \a horizontal and \a vertical are set to true or false.
@@ -3357,8 +3357,8 @@ QImage QImage::createMaskFromColor(QRgb color, Qt::MaskMode mode) const
 */
 
 /*!
-    \fn QImage QImage::flipped(Qt::Orientations orient) const &
-    \fn QImage QImage::flipped(Qt::Orientations orient) &&
+    \fn QImage QImage::flipped(BobUI::Orientations orient) const &
+    \fn QImage QImage::flipped(BobUI::Orientations orient) &&
     \since 6.9
 
     Returns a flipped or mirror version of the image, mirrored in the horizontal and/or
@@ -3366,17 +3366,17 @@ QImage QImage::createMaskFromColor(QRgb color, Qt::MaskMode mode) const
 
     Note that the original image is not changed.
 
-    \sa flip(Qt::Orientations), {QImage#Image Transformations}{Image Transformations}
+    \sa flip(BobUI::Orientations), {QImage#Image Transformations}{Image Transformations}
 */
 
 /*!
-    \fn void QImage::flip(Qt::Orientations orient)
+    \fn void QImage::flip(BobUI::Orientations orient)
     \since 6.9
 
     Flips or mirrors the image in the horizontal and/or the vertical direction depending
     on \a orient.
 
-    \sa flipped(Qt::Orientations), {QImage#Image Transformations}{Image Transformations}
+    \sa flipped(BobUI::Orientations), {QImage#Image Transformations}{Image Transformations}
 */
 
 template<class T> inline void do_mirror_data(QImageData *dst, QImageData *src,
@@ -3504,7 +3504,7 @@ inline void do_mirror(QImageData *dst, QImageData *src, bool horizontal, bool ve
     if (horizontal && dst->depth == 1) {
         Q_ASSERT(dst->format == QImage::Format_Mono || dst->format == QImage::Format_MonoLSB);
         const int shift = 8 - (dst->width % 8);
-        const uchar *bitflip = qt_get_bitflip_array();
+        const uchar *bitflip = bobui_get_bitflip_array();
         for (int y = 0; y < h; ++y) {
             uchar *begin = dst->data + y * dst->bytes_per_line;
             uchar *end = begin + dst->bytes_per_line;
@@ -3624,7 +3624,7 @@ static inline void rgbSwapped_generic(int width, int height, const QImage *src, 
 /*!
     \internal
 */
-QImage Q_TRACE_INSTRUMENT(qtgui) QImage::rgbSwapped_helper() const
+QImage Q_TRACE_INSTRUMENT(bobuigui) QImage::rgbSwapped_helper() const
 {
     if (isNull())
         return *this;
@@ -3984,7 +3984,7 @@ bool QImageData::doImageIO(const QImage *image, QImageWriter *writer, int qualit
     if (quality >= 0)
         writer->setQuality(qMin(quality,100));
     const bool result = writer->write(*image);
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (!result)
         qWarning("QImage::save: failed to write image - %s", qPrintable(writer->errorString()));
 #endif
@@ -3994,7 +3994,7 @@ bool QImageData::doImageIO(const QImage *image, QImageWriter *writer, int qualit
 /*****************************************************************************
   QImage stream functions
  *****************************************************************************/
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QImage &image)
     \relates QImage
@@ -4003,7 +4003,7 @@ bool QImageData::doImageIO(const QImage *image, QImageWriter *writer, int qualit
     or as a BMP image if the stream's version is 1. Note that writing
     the stream to a file will not produce a valid image file.
 
-    \sa QImage::save(), {Serializing Qt Data Types}
+    \sa QImage::save(), {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QImage &image)
@@ -4029,7 +4029,7 @@ QDataStream &operator<<(QDataStream &s, const QImage &image)
     Reads an image from the given \a stream and stores it in the given
     \a image.
 
-    \sa QImage::load(), {Serializing Qt Data Types}
+    \sa QImage::load(), {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QImage &image)
@@ -4047,7 +4047,7 @@ QDataStream &operator>>(QDataStream &s, QImage &image)
         s.setStatus(QDataStream::ReadPastEnd);
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 
 
@@ -4452,7 +4452,7 @@ int QImage::metric(PaintDeviceMetric metric) const
         // END OF MACRO
 
 static
-bool qt_xForm_helper(const QTransform &trueMat, int xoffset, int type, int depth,
+bool bobui_xForm_helper(const BOBUIransform &trueMat, int xoffset, int type, int depth,
                      uchar *dptr, qsizetype dbpl, int p_inc, int dHeight,
                      const uchar *sptr, qsizetype sbpl, int sWidth, int sHeight)
 {
@@ -4529,7 +4529,7 @@ bool qt_xForm_helper(const QTransform &trueMat, int xoffset, int type, int depth
             }
         } else  {
             switch (type) {
-                case QT_XFORM_TYPE_MSBFIRST:
+                case BOBUI_XFORM_TYPE_MSBFIRST:
                     while (dptr < maxp) {
                         IWX_MSB(128);
                         IWX_MSB(64);
@@ -4542,7 +4542,7 @@ bool qt_xForm_helper(const QTransform &trueMat, int xoffset, int type, int depth
                         dptr++;
                     }
                     break;
-                case QT_XFORM_TYPE_LSBFIRST:
+                case BOBUI_XFORM_TYPE_LSBFIRST:
                     while (dptr < maxp) {
                         IWX_LSB(1);
                         IWX_LSB(2);
@@ -4626,7 +4626,7 @@ void QImage::setAlphaChannel(const QImage &alphaChannel)
         return;
     }
 
-    const Format alphaFormat = qt_alphaVersionForPainting(d->format);
+    const Format alphaFormat = bobui_alphaVersionForPainting(d->format);
     if (d->format == alphaFormat)
         detach();
     else
@@ -4714,7 +4714,7 @@ int QImage::bitPlaneCount() const
         bpc = 96;
         break;
     default:
-        bpc = qt_depthForFormat(d->format);
+        bpc = bobui_depthForFormat(d->format);
         break;
     }
     return bpc;
@@ -4741,7 +4741,7 @@ QImage QImage::smoothScaled(int w, int h) const
     case QImage::Format_RGBX8888:
 #endif
     case QImage::Format_RGBA8888_Premultiplied:
-#if QT_CONFIG(raster_64bit)
+#if BOBUI_CONFIG(raster_64bit)
     case QImage::Format_RGBX64:
     case QImage::Format_RGBA64_Premultiplied:
         break;
@@ -4750,7 +4750,7 @@ QImage QImage::smoothScaled(int w, int h) const
         src.convertTo(QImage::Format_RGBA64_Premultiplied);
         break;
 #endif
-#if QT_CONFIG(raster_fp)
+#if BOBUI_CONFIG(raster_fp)
     case QImage::Format_RGBX32FPx4:
     case QImage::Format_RGBA32FPx4_Premultiplied:
         break;
@@ -4807,7 +4807,7 @@ static QImage rotated180(const QImage &image)
 {
     const MemRotateFunc memrotate = qMemRotateFunctions[qPixelLayouts[image.format()].bpp][1];
     if (!memrotate)
-        return image.flipped(Qt::Horizontal | Qt::Vertical);
+        return image.flipped(BobUI::Horizontal | BobUI::Vertical);
 
     QImage out(image.width(), image.height(), image.format());
     if (out.isNull())
@@ -4871,12 +4871,12 @@ static QImage rotated270(const QImage &image)
     Transformations}
 */
 
-QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Qt::TransformationMode mode ) const
+QImage Q_TRACE_INSTRUMENT(bobuigui) QImage::transformed(const BOBUIransform &matrix, BobUI::TransformationMode mode ) const
 {
     if (!d)
         return QImage();
 
-    Q_TRACE_PARAM_REPLACE(const QTransform &, double[9]);
+    Q_TRACE_PARAM_REPLACE(const BOBUIransform &, double[9]);
     Q_TRACE_SCOPE(QImage_transformed, QList<double>({matrix.m11(), matrix.m12(), matrix.m13(),
                                                   matrix.m21(), matrix.m22(), matrix.m23(),
                                                   matrix.m31(), matrix.m32(), matrix.m33()}).data(), mode);
@@ -4890,12 +4890,12 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
     int hd;
 
     // compute size of target image
-    QTransform mat = trueMatrix(matrix, ws, hs);
+    BOBUIransform mat = trueMatrix(matrix, ws, hs);
     bool complex_xform = false;
     bool scale_xform = false;
     bool nonpaintable_scale_xform = false;
-    if (mat.type() <= QTransform::TxScale) {
-        if (mat.type() == QTransform::TxNone) // identity matrix
+    if (mat.type() <= BOBUIransform::TxScale) {
+        if (mat.type() == BOBUIransform::TxNone) // identity matrix
             return *this;
         else if (mat.m11() == -1. && mat.m22() == -1.)
             return rotated180(*this);
@@ -4911,7 +4911,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
         if (format() == QImage::Format_CMYK8888)
             nonpaintable_scale_xform = true;
     } else {
-        if (mat.type() <= QTransform::TxRotate && mat.m11() == 0 && mat.m22() == 0) {
+        if (mat.type() <= BOBUIransform::TxRotate && mat.m11() == 0 && mat.m22() == 0) {
             if (mat.m12() == 1. && mat.m21() == -1.)
                 return rotated90(*this);
             else if (mat.m12() == -1. && mat.m21() == 1.)
@@ -4929,7 +4929,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
     if (wd == 0 || hd == 0)
         return QImage();
 
-    if (scale_xform && mode == Qt::SmoothTransformation) {
+    if (scale_xform && mode == BobUI::SmoothTransformation) {
         switch (format()) {
         case QImage::Format_RGB32:
         case QImage::Format_ARGB32_Premultiplied:
@@ -4937,7 +4937,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
         case QImage::Format_RGBX8888:
 #endif
         case QImage::Format_RGBA8888_Premultiplied:
-#if QT_CONFIG(raster_64bit)
+#if BOBUI_CONFIG(raster_64bit)
         case QImage::Format_RGBX64:
         case QImage::Format_RGBA64_Premultiplied:
 #endif
@@ -4951,17 +4951,17 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
         }
         // Otherwise only use it when the scaling factor demands it, or the image is large enough to scale multi-threaded
         if (nonpaintable_scale_xform
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
             || (ws * hs) >= (1<<20)
 #endif
             ) {
             QImage scaledImage;
             if (mat.m11() < 0.0F && mat.m22() < 0.0F) { // horizontal/vertical flip
-                scaledImage = smoothScaled(wd, hd).flipped(Qt::Horizontal | Qt::Vertical);
+                scaledImage = smoothScaled(wd, hd).flipped(BobUI::Horizontal | BobUI::Vertical);
             } else if (mat.m11() < 0.0F) { // horizontal flip
-                scaledImage = smoothScaled(wd, hd).flipped(Qt::Horizontal);
+                scaledImage = smoothScaled(wd, hd).flipped(BobUI::Horizontal);
             } else if (mat.m22() < 0.0F) { // vertical flip
-                scaledImage = smoothScaled(wd, hd).flipped(Qt::Vertical);
+                scaledImage = smoothScaled(wd, hd).flipped(BobUI::Vertical);
             } else { // no flipping
                 scaledImage = smoothScaled(wd, hd);
             }
@@ -4984,9 +4984,9 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
 
     QImage::Format target_format = d->format;
 
-    if (complex_xform || mode == Qt::SmoothTransformation) {
+    if (complex_xform || mode == BobUI::SmoothTransformation) {
         if (d->format < QImage::Format_RGB32 || (!hasAlphaChannel() && complex_xform)) {
-            target_format = qt_alphaVersion(d->format);
+            target_format = bobui_alphaVersion(d->format);
         }
     }
 
@@ -5027,7 +5027,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
         Q_ASSERT(sImage.devicePixelRatio() == dImage.devicePixelRatio());
 
         QPainter p(&dImage);
-        if (mode == Qt::SmoothTransformation) {
+        if (mode == BobUI::SmoothTransformation) {
             p.setRenderHint(QPainter::Antialiasing);
             p.setRenderHint(QPainter::SmoothPixmapTransform);
         }
@@ -5040,9 +5040,9 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
             return QImage();
 
         // create target image (some of the code is from QImage::copy())
-        int type = format() == Format_Mono ? QT_XFORM_TYPE_MSBFIRST : QT_XFORM_TYPE_LSBFIRST;
+        int type = format() == Format_Mono ? BOBUI_XFORM_TYPE_MSBFIRST : BOBUI_XFORM_TYPE_LSBFIRST;
         qsizetype dbpl = dImage.bytesPerLine();
-        qt_xForm_helper(mat, 0, type, bpp, dImage.bits(), dbpl, 0, hd, sptr, sbpl, ws, hs);
+        bobui_xForm_helper(mat, 0, type, bpp, dImage.bits(), dbpl, 0, hd, sptr, sbpl, ws, hs);
     }
     copyMetadata(dImage.d, d);
 
@@ -5050,7 +5050,7 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
 }
 
 /*!
-    \fn QTransform QImage::trueMatrix(const QTransform &matrix, int width, int height)
+    \fn BOBUIransform QImage::trueMatrix(const BOBUIransform &matrix, int width, int height)
 
     Returns the actual matrix used for transforming an image with the
     given \a width, \a height and \a matrix.
@@ -5070,12 +5070,12 @@ QImage Q_TRACE_INSTRUMENT(qtgui) QImage::transformed(const QTransform &matrix, Q
     Transformations}
 */
 
-QTransform QImage::trueMatrix(const QTransform &matrix, int w, int h)
+BOBUIransform QImage::trueMatrix(const BOBUIransform &matrix, int w, int h)
 {
     const QRectF rect(0, 0, w, h);
     const QRect mapped = matrix.mapRect(rect).toAlignedRect();
     const QPoint delta = mapped.topLeft();
-    return matrix * QTransform().translate(-delta.x(), -delta.y());
+    return matrix * BOBUIransform().translate(-delta.x(), -delta.y());
 }
 
 /*!
@@ -5091,7 +5091,7 @@ void QImage::setColorSpace(const QColorSpace &colorSpace)
         return;
     if (d->colorSpace == colorSpace)
         return;
-    if (colorSpace.isValid() && !qt_compatibleColorModelSource(pixelFormat().colorModel(), colorSpace.colorModel()))
+    if (colorSpace.isValid() && !bobui_compatibleColorModelSource(pixelFormat().colorModel(), colorSpace.colorModel()))
         return;
 
     detachMetadata(false);
@@ -5121,7 +5121,7 @@ void QImage::convertToColorSpace(const QColorSpace &colorSpace)
     }
     if (d->colorSpace == colorSpace)
         return;
-    if (!qt_compatibleColorModelTarget(pixelFormat().colorModel(),
+    if (!bobui_compatibleColorModelTarget(pixelFormat().colorModel(),
                                        colorSpace.colorModel(), colorSpace.transformModel())) {
         *this = convertedToColorSpace(colorSpace);
         return;
@@ -5145,7 +5145,7 @@ void QImage::convertToColorSpace(const QColorSpace &colorSpace)
 
     \sa convertedToColorSpace(), setColorSpace()
 */
-void QImage::convertToColorSpace(const QColorSpace &colorSpace, QImage::Format format, Qt::ImageConversionFlags flags)
+void QImage::convertToColorSpace(const QColorSpace &colorSpace, QImage::Format format, BobUI::ImageConversionFlags flags)
 {
     if (!d || !d->colorSpace.isValid())
         return;
@@ -5153,7 +5153,7 @@ void QImage::convertToColorSpace(const QColorSpace &colorSpace, QImage::Format f
         qWarning() << "QImage::convertToColorSpace: Output colorspace is not valid";
         return;
     }
-    if (!qt_compatibleColorModelTarget(toPixelFormat(format).colorModel(),
+    if (!bobui_compatibleColorModelTarget(toPixelFormat(format).colorModel(),
                                        colorSpace.colorModel(), colorSpace.transformModel())) {
         qWarning() << "QImage::convertToColorSpace: Color space is not compatible with format";
         return;
@@ -5195,8 +5195,8 @@ QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace) const
 }
 
 /*!
-    \fn QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format, Qt::ImageConversionFlags flags) const &
-    \fn QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format, Qt::ImageConversionFlags flags) &&
+    \fn QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format, BobUI::ImageConversionFlags flags) const &
+    \fn QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format, BobUI::ImageConversionFlags flags) &&
     \since 6.8
 
     Returns the image converted to \a colorSpace and \a format.
@@ -5208,7 +5208,7 @@ QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace) const
 
     \sa colorTransformed()
 */
-QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format, Qt::ImageConversionFlags flags) const &
+QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format, BobUI::ImageConversionFlags flags) const &
 {
     if (!d || !d->colorSpace.isValid())
         return QImage();
@@ -5216,7 +5216,7 @@ QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Form
         qWarning() << "QImage::convertedToColorSpace: Output colorspace is not valid";
         return QImage();
     }
-    if (!qt_compatibleColorModelTarget(toPixelFormat(format).colorModel(),
+    if (!bobui_compatibleColorModelTarget(toPixelFormat(format).colorModel(),
                                        colorSpace.colorModel(), colorSpace.transformModel())) {
         qWarning() << "QImage::convertedToColorSpace: Color space is not compatible with format";
         return QImage();
@@ -5228,7 +5228,7 @@ QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Form
     return image;
 }
 
-QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format, Qt::ImageConversionFlags flags) &&
+QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format, BobUI::ImageConversionFlags flags) &&
 {
     if (!d || !d->colorSpace.isValid())
         return QImage();
@@ -5236,7 +5236,7 @@ QImage QImage::convertedToColorSpace(const QColorSpace &colorSpace, QImage::Form
         qWarning() << "QImage::convertedToColorSpace: Output colorspace is not valid";
         return QImage();
     }
-    if (!qt_compatibleColorModelTarget(toPixelFormat(format).colorModel(),
+    if (!bobui_compatibleColorModelTarget(toPixelFormat(format).colorModel(),
                                        colorSpace.colorModel(), colorSpace.transformModel())) {
         qWarning() << "QImage::convertedToColorSpace: Color space is not compatible with format";
         return QImage();
@@ -5269,8 +5269,8 @@ void QImage::applyColorTransform(const QColorTransform &transform)
     if (transform.isIdentity())
         return;
 
-    if (!qt_compatibleColorModelSource(pixelFormat().colorModel(), QColorTransformPrivate::get(transform)->colorSpaceIn->colorModel) ||
-        !qt_compatibleColorModelTarget(pixelFormat().colorModel(), QColorTransformPrivate::get(transform)->colorSpaceOut->colorModel,
+    if (!bobui_compatibleColorModelSource(pixelFormat().colorModel(), QColorTransformPrivate::get(transform)->colorSpaceIn->colorModel) ||
+        !bobui_compatibleColorModelTarget(pixelFormat().colorModel(), QColorTransformPrivate::get(transform)->colorSpaceOut->colorModel,
                                        QColorTransformPrivate::get(transform)->colorSpaceOut->transformModel)) {
         qWarning() << "QImage::applyColorTransform can not apply format switching transform without switching format";
         return;
@@ -5285,7 +5285,7 @@ void QImage::applyColorTransform(const QColorTransform &transform)
         return;
     }
     QImage::Format oldFormat = format();
-    if (qt_fpColorPrecision(oldFormat)) {
+    if (bobui_fpColorPrecision(oldFormat)) {
         if (oldFormat != QImage::Format_RGBX32FPx4 && oldFormat != QImage::Format_RGBA32FPx4
                 && oldFormat != QImage::Format_RGBA32FPx4_Premultiplied)
             convertTo(QImage::Format_RGBA32FPx4);
@@ -5341,7 +5341,7 @@ void QImage::applyColorTransform(const QColorTransform &transform)
                 QColorTransformPrivate::get(transform)->apply(scanline, scanline, width(), flags);
             }
         };
-    } else if (qt_fpColorPrecision(format())) {
+    } else if (bobui_fpColorPrecision(format())) {
         transformSegment = [&](int yStart, int yEnd) {
             for (int y = yStart; y < yEnd; ++y) {
                 QRgbaFloat32 *scanline = reinterpret_cast<QRgbaFloat32 *>(d->data + y * d->bytes_per_line);
@@ -5371,11 +5371,11 @@ void QImage::applyColorTransform(const QColorTransform &transform)
         };
     }
 
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     int segments = (qsizetype(width()) * height()) >> 16;
     segments = std::min(segments, height());
-    QThreadPool *threadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    if (segments > 1 && threadPool && !threadPool->contains(QThread::currentThread())) {
+    BOBUIhreadPool *threadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    if (segments > 1 && threadPool && !threadPool->contains(BOBUIhread::currentThread())) {
         QLatch latch(segments);
         int y = 0;
         for (int i = 0; i < segments; ++i) {
@@ -5403,7 +5403,7 @@ void QImage::applyColorTransform(const QColorTransform &transform)
     The specified image conversion \a flags control how the image data
     is handled during the format conversion process.
 */
-void QImage::applyColorTransform(const QColorTransform &transform, QImage::Format toFormat, Qt::ImageConversionFlags flags)
+void QImage::applyColorTransform(const QColorTransform &transform, QImage::Format toFormat, BobUI::ImageConversionFlags flags)
 {
     if (!d)
         return;
@@ -5434,17 +5434,17 @@ QImage QImage::colorTransformed(const QColorTransform &transform) const &
 
     const QColorSpacePrivate *inColorSpace = QColorTransformPrivate::get(transform)->colorSpaceIn.constData();
     const QColorSpacePrivate *outColorSpace = QColorTransformPrivate::get(transform)->colorSpaceOut.constData();
-    if (!qt_compatibleColorModelSource(pixelFormat().colorModel(), inColorSpace->colorModel)) {
+    if (!bobui_compatibleColorModelSource(pixelFormat().colorModel(), inColorSpace->colorModel)) {
         qWarning() << "QImage::colorTransformed: Invalid input color space for transform";
         return QImage();
     }
-    if (!qt_compatibleColorModelTarget(pixelFormat().colorModel(), outColorSpace->colorModel, outColorSpace->transformModel)) {
+    if (!bobui_compatibleColorModelTarget(pixelFormat().colorModel(), outColorSpace->colorModel, outColorSpace->transformModel)) {
         // All model switching transforms are opaque in at least one end.
         switch (outColorSpace->colorModel) {
         case QColorSpace::ColorModel::Rgb:
-            return colorTransformed(transform, qt_highColorPrecision(format(), true) ? QImage::Format_RGBX64 : QImage::Format_RGB32);
+            return colorTransformed(transform, bobui_highColorPrecision(format(), true) ? QImage::Format_RGBX64 : QImage::Format_RGB32);
         case QColorSpace::ColorModel::Gray:
-            return colorTransformed(transform, qt_highColorPrecision(format(), true) ? QImage::Format_Grayscale16 : QImage::Format_Grayscale8);
+            return colorTransformed(transform, bobui_highColorPrecision(format(), true) ? QImage::Format_Grayscale16 : QImage::Format_Grayscale8);
         case QColorSpace::ColorModel::Cmyk:
             return colorTransformed(transform, QImage::Format_CMYK8888);
         case QColorSpace::ColorModel::Undefined:
@@ -5510,7 +5510,7 @@ static bool isRgb32fpx4Data(QImage::Format f)
 
     \sa applyColorTransform()
 */
-QImage QImage::colorTransformed(const QColorTransform &transform, QImage::Format toFormat, Qt::ImageConversionFlags flags) const &
+QImage QImage::colorTransformed(const QColorTransform &transform, QImage::Format toFormat, BobUI::ImageConversionFlags flags) const &
 {
     if (!d)
         return QImage();
@@ -5521,11 +5521,11 @@ QImage QImage::colorTransformed(const QColorTransform &transform, QImage::Format
 
     const QColorSpacePrivate *inColorSpace = QColorTransformPrivate::get(transform)->colorSpaceIn.constData();
     const QColorSpacePrivate *outColorSpace = QColorTransformPrivate::get(transform)->colorSpaceOut.constData();
-    if (!qt_compatibleColorModelSource(pixelFormat().colorModel(), inColorSpace->colorModel)) {
+    if (!bobui_compatibleColorModelSource(pixelFormat().colorModel(), inColorSpace->colorModel)) {
         qWarning() << "QImage::colorTransformed: Invalid input color space for transform";
         return QImage();
     }
-    if (!qt_compatibleColorModelTarget(toPixelFormat(toFormat).colorModel(), outColorSpace->colorModel, outColorSpace->transformModel)) {
+    if (!bobui_compatibleColorModelTarget(toPixelFormat(toFormat).colorModel(), outColorSpace->colorModel, outColorSpace->transformModel)) {
         qWarning() << "QImage::colorTransformed: Invalid output color space for transform";
         return QImage();
     }
@@ -5588,22 +5588,22 @@ QImage QImage::colorTransformed(const QColorTransform &transform, QImage::Format
         Q_UNREACHABLE();
         break;
     }
-    QColorSpace::ColorModel inColorData = qt_csColorData(pixelFormat().colorModel());
-    QColorSpace::ColorModel outColorData = qt_csColorData(toPixelFormat(toFormat).colorModel());
+    QColorSpace::ColorModel inColorData = bobui_csColorData(pixelFormat().colorModel());
+    QColorSpace::ColorModel outColorData = bobui_csColorData(toPixelFormat(toFormat).colorModel());
     // Ensure only precision increasing transforms
     if (inColorData != outColorData) {
         if (fromImage.format() == QImage::Format_Grayscale8 && outColorData == QColorSpace::ColorModel::Rgb)
             tmpFormat = QImage::Format_RGB32;
-        else if (tmpFormat == QImage::Format_Grayscale8 && qt_highColorPrecision(fromImage.format()))
+        else if (tmpFormat == QImage::Format_Grayscale8 && bobui_highColorPrecision(fromImage.format()))
             tmpFormat = QImage::Format_Grayscale16;
         else if (fromImage.format() == QImage::Format_Grayscale16 && outColorData == QColorSpace::ColorModel::Rgb)
             tmpFormat = QImage::Format_RGBX64;
     } else {
         if (tmpFormat == QImage::Format_Grayscale8 && fromImage.format() == QImage::Format_Grayscale16)
             tmpFormat = QImage::Format_Grayscale16;
-        else if (qt_fpColorPrecision(fromImage.format()) && !qt_fpColorPrecision(tmpFormat))
+        else if (bobui_fpColorPrecision(fromImage.format()) && !bobui_fpColorPrecision(tmpFormat))
             tmpFormat = QImage::Format_RGBA32FPx4;
-        else if (isRgb32Data(tmpFormat) && qt_highColorPrecision(fromImage.format(), true))
+        else if (isRgb32Data(tmpFormat) && bobui_highColorPrecision(fromImage.format(), true))
             tmpFormat = QImage::Format_RGBA64;
     }
 
@@ -5765,11 +5765,11 @@ QImage QImage::colorTransformed(const QColorTransform &transform, QImage::Format
         }
 
         QImage::Format oldFormat = format();
-        if (qt_fpColorPrecision(oldFormat)) {
+        if (bobui_fpColorPrecision(oldFormat)) {
             if (oldFormat != QImage::Format_RGBX32FPx4 && oldFormat != QImage::Format_RGBA32FPx4
                 && oldFormat != QImage::Format_RGBA32FPx4_Premultiplied)
                 fromImage.convertTo(QImage::Format_RGBA32FPx4);
-        } else if (qt_highColorPrecision(oldFormat, true)) {
+        } else if (bobui_highColorPrecision(oldFormat, true)) {
             if (oldFormat != QImage::Format_RGBX64 && oldFormat != QImage::Format_RGBA64
                 && oldFormat != QImage::Format_RGBA64_Premultiplied && oldFormat != QImage::Format_Grayscale16)
                 fromImage.convertTo(QImage::Format_RGBA64);
@@ -5861,11 +5861,11 @@ QImage QImage::colorTransformed(const QColorTransform &transform, QImage::Format
         }
     }
 
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     int segments = (qsizetype(width()) * height()) >> 16;
     segments = std::min(segments, height());
-    QThreadPool *threadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    if (segments > 1 && threadPool && !threadPool->contains(QThread::currentThread())) {
+    BOBUIhreadPool *threadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    if (segments > 1 && threadPool && !threadPool->contains(BOBUIhread::currentThread())) {
         QLatch latch(segments);
         int y = 0;
         for (int i = 0; i < segments; ++i) {
@@ -5902,17 +5902,17 @@ QImage QImage::colorTransformed(const QColorTransform &transform) &&
 
     const QColorSpacePrivate *inColorSpace = QColorTransformPrivate::get(transform)->colorSpaceIn.constData();
     const QColorSpacePrivate *outColorSpace = QColorTransformPrivate::get(transform)->colorSpaceOut.constData();
-    if (!qt_compatibleColorModelSource(pixelFormat().colorModel(), inColorSpace->colorModel)) {
+    if (!bobui_compatibleColorModelSource(pixelFormat().colorModel(), inColorSpace->colorModel)) {
         qWarning() << "QImage::colorTransformed: Invalid input color space for transform";
         return QImage();
     }
-    if (!qt_compatibleColorModelTarget(pixelFormat().colorModel(), outColorSpace->colorModel, outColorSpace->transformModel)) {
+    if (!bobui_compatibleColorModelTarget(pixelFormat().colorModel(), outColorSpace->colorModel, outColorSpace->transformModel)) {
         // There is currently no inplace conversion of both colorspace and format, so just use the normal version.
         switch (outColorSpace->colorModel) {
         case QColorSpace::ColorModel::Rgb:
-            return colorTransformed(transform, qt_highColorPrecision(format(), true) ? QImage::Format_RGBX64 : QImage::Format_RGB32);
+            return colorTransformed(transform, bobui_highColorPrecision(format(), true) ? QImage::Format_RGBX64 : QImage::Format_RGB32);
         case QColorSpace::ColorModel::Gray:
-            return colorTransformed(transform, qt_highColorPrecision(format(), true) ? QImage::Format_Grayscale16 : QImage::Format_Grayscale8);
+            return colorTransformed(transform, bobui_highColorPrecision(format(), true) ? QImage::Format_Grayscale16 : QImage::Format_Grayscale8);
         case QColorSpace::ColorModel::Cmyk:
             return colorTransformed(transform, QImage::Format_CMYK8888);
         case QColorSpace::ColorModel::Undefined:
@@ -5933,13 +5933,13 @@ QImage QImage::colorTransformed(const QColorTransform &transform) &&
 
     \sa applyColorTransform()
 */
-QImage QImage::colorTransformed(const QColorTransform &transform, QImage::Format format, Qt::ImageConversionFlags flags) &&
+QImage QImage::colorTransformed(const QColorTransform &transform, QImage::Format format, BobUI::ImageConversionFlags flags) &&
 {
     // There is currently no inplace conversion of both colorspace and format, so just use the normal version.
     return colorTransformed(transform, format, flags);
 }
 
-bool QImageData::convertInPlace(QImage::Format newFormat, Qt::ImageConversionFlags flags)
+bool QImageData::convertInPlace(QImage::Format newFormat, BobUI::ImageConversionFlags flags)
 {
     if (format == newFormat)
         return true;
@@ -5954,10 +5954,10 @@ bool QImageData::convertInPlace(QImage::Format newFormat, Qt::ImageConversionFla
     if (format > QImage::Format_Indexed8 && newFormat > QImage::Format_Indexed8 && !qimage_converter_map[format][newFormat]) {
         // Convert inplace generic, but only if there are no direct converters,
         // any direct ones are probably better even if not inplace.
-        if (qt_highColorPrecision(newFormat, !qPixelLayouts[newFormat].hasAlphaChannel)
-                && qt_highColorPrecision(format, !qPixelLayouts[format].hasAlphaChannel)) {
-#if QT_CONFIG(raster_fp)
-            if (qt_fpColorPrecision(format) && qt_fpColorPrecision(newFormat))
+        if (bobui_highColorPrecision(newFormat, !qPixelLayouts[newFormat].hasAlphaChannel)
+                && bobui_highColorPrecision(format, !qPixelLayouts[format].hasAlphaChannel)) {
+#if BOBUI_CONFIG(raster_fp)
+            if (bobui_fpColorPrecision(format) && bobui_fpColorPrecision(newFormat))
                 return convert_generic_inplace_over_rgba32f(this, newFormat, flags);
 #endif
             return convert_generic_inplace_over_rgb64(this, newFormat, flags);
@@ -5977,7 +5977,7 @@ bool QImageData::convertInPlace(QImage::Format newFormat, Qt::ImageConversionFla
     \internal
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QImage &i)
 {
     QDebugStateSaver saver(dbg);
@@ -6508,17 +6508,17 @@ QImage::Format QImage::toImageFormat(QPixelFormat format) noexcept
     return Format_Invalid;
 }
 
-static inline Qt::Orientations toOrientations(QImageIOHandler::Transformations orient)
+static inline BobUI::Orientations toOrientations(QImageIOHandler::Transformations orient)
 {
-    Qt::Orientations orients = {};
+    BobUI::Orientations orients = {};
     if (orient.testFlag(QImageIOHandler::TransformationMirror))
-        orients |= Qt::Horizontal;
+        orients |= BobUI::Horizontal;
     if (orient.testFlag(QImageIOHandler::TransformationFlip))
-        orients |= Qt::Vertical;
+        orients |= BobUI::Vertical;
     return orients;
 }
 
-Q_GUI_EXPORT void qt_imageTransform(QImage &src, QImageIOHandler::Transformations orient)
+Q_GUI_EXPORT void bobui_imageTransform(QImage &src, QImageIOHandler::Transformations orient)
 {
     if (orient == QImageIOHandler::TransformationNone)
         return;
@@ -6531,9 +6531,9 @@ Q_GUI_EXPORT void qt_imageTransform(QImage &src, QImageIOHandler::Transformation
     }
 }
 
-QMap<QString, QString> qt_getImageText(const QImage &image, const QString &description)
+QMap<QString, QString> bobui_getImageText(const QImage &image, const QString &description)
 {
-    QMap<QString, QString> text = qt_getImageTextFromDescription(description);
+    QMap<QString, QString> text = bobui_getImageTextFromDescription(description);
     const auto textKeys = image.textKeys();
     for (const QString &key : textKeys) {
         if (!key.isEmpty() && !text.contains(key))
@@ -6542,7 +6542,7 @@ QMap<QString, QString> qt_getImageText(const QImage &image, const QString &descr
     return text;
 }
 
-QMap<QString, QString> qt_getImageTextFromDescription(const QString &description)
+QMap<QString, QString> bobui_getImageTextFromDescription(const QString &description)
 {
     QMap<QString, QString> text;
     for (const auto &pair : QStringView{description}.tokenize(u"\n\n")) {
@@ -6559,6 +6559,6 @@ QMap<QString, QString> qt_getImageTextFromDescription(const QString &description
     return text;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qimage.cpp"

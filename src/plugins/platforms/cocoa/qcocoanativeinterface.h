@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOANATIVEINTERFACE_H
 #define QCOCOANATIVEINTERFACE_H
@@ -8,10 +8,10 @@
 #include <ApplicationServices/ApplicationServices.h>
 
 #include <qpa/qplatformnativeinterface.h>
-#include <QtGui/qpixmap.h>
+#include <BobUIGui/qpixmap.h>
 Q_MOC_INCLUDE(<QWindow>)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWidget;
 class QPrintEngine;
@@ -58,7 +58,7 @@ private:
     static bool testContentBorderPosition(QWindow *window, int position);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOCOANATIVEINTERFACE_H
 

@@ -1,6 +1,6 @@
 #!/bin/bash
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 VERBOSE=0
 CONTINUE_ON_FAILURE=1
@@ -80,11 +80,11 @@ grep -E '^#include' "$MOCS_COMPILATION_FILE" | cut -d\" -f2 | cut -d/ -f2 | whil
     done
     if [[ -f "$CPPFILE" ]] ; then
         log "going to include $MOCFILE into $CPPFILE"
-        if ! grep -qE '^QT_END_NAMESPACE$' "$CPPFILE"; then
-            warn "Can't find QT_END_NAMESPACE in \"$CPPFILE\", simply appending the #include. Please check placement manually."
+        if ! grep -qE '^BOBUI_END_NAMESPACE$' "$CPPFILE"; then
+            warn "Can't find BOBUI_END_NAMESPACE in \"$CPPFILE\", simply appending the #include. Please check placement manually."
             echo "#include \"$MOCFILE\"" >> "$CPPFILE" || die "Failed to write to \"$CPPFILE\""
         else
-            sed -i -e "1,/QT_END_NAMESPACE/ s/QT_END_NAMESPACE/QT_END_NAMESPACE\n\n#include \"$MOCFILE\"/" "$CPPFILE" || die "Failed to includemoc \"$MOCFILE\" into \"$CPPFILE\"."
+            sed -i -e "1,/BOBUI_END_NAMESPACE/ s/BOBUI_END_NAMESPACE/BOBUI_END_NAMESPACE\n\n#include \"$MOCFILE\"/" "$CPPFILE" || die "Failed to includemoc \"$MOCFILE\" into \"$CPPFILE\"."
         fi
     else
         continue_or_die "Can't find a cpp file for $MOCFILE (not looking for .cxx .cc etc)."

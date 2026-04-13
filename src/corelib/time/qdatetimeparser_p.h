@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDATETIMEPARSER_P_H
 #define QDATETIMEPARSER_P_H
@@ -8,37 +8,37 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 #include "qplatformdefs.h"
-#include "QtCore/qatomic.h"
-#include "QtCore/qcalendar.h"
-#include "QtCore/qcoreapplication.h"
-#include "QtCore/qdatetime.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qlocale.h"
-#include "QtCore/qstringlist.h"
-#ifndef QT_BOOTSTRAPPED
-# include "QtCore/qvariant.h"
+#include "BobUICore/qatomic.h"
+#include "BobUICore/qcalendar.h"
+#include "BobUICore/qcoreapplication.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qlocale.h"
+#include "BobUICore/qstringlist.h"
+#ifndef BOBUI_BOOTSTRAPPED
+# include "BobUICore/qvariant.h"
 #endif
 
-QT_REQUIRE_CONFIG(datetimeparser);
+BOBUI_REQUIRE_CONFIG(datetimeparser);
 
-#define QDATETIMEEDIT_TIME_MIN QTime(0, 0) // Prefer QDate::startOfDay()
-#define QDATETIMEEDIT_TIME_MAX QTime(23, 59, 59, 999) // Prefer QDate::endOfDay()
+#define QDATETIMEEDIT_TIME_MIN BOBUIime(0, 0) // Prefer QDate::startOfDay()
+#define QDATETIMEEDIT_TIME_MAX BOBUIime(23, 59, 59, 999) // Prefer QDate::endOfDay()
 #define QDATETIMEEDIT_DATE_MIN QDate(100, 1, 1)
 #define QDATETIMEEDIT_COMPAT_DATE_MIN QDate(1752, 9, 14)
 #define QDATETIMEEDIT_DATE_MAX QDate(9999, 12, 31)
 #define QDATETIMEEDIT_DATE_INITIAL QDate(2000, 1, 1)
 
-QT_BEGIN_NAMESPACE
-class QTimeZone;
+BOBUI_BEGIN_NAMESPACE
+class BOBUIimeZone;
 
 class Q_CORE_EXPORT QDateTimeParser
 {
@@ -126,7 +126,7 @@ public:
 
     StateNode parse(const QString &input, int position,
                     const QDateTime &defaultValue, bool fixup) const;
-    bool fromString(const QString &text, QDate *date, QTime *time,
+    bool fromString(const QString &text, QDate *date, BOBUIime *time,
                     int baseYear = QLocale::DefaultTwoDigitBaseYear) const;
     bool fromString(const QString &text, QDateTime *datetime, int baseYear) const;
     bool parseFormat(QStringView format);
@@ -194,7 +194,7 @@ private:
     };
 
     QString getAmPmText(AmPm ap, Case cs) const;
-    QDateTime baseDate(const QTimeZone &zone) const;
+    QDateTime baseDate(const BOBUIimeZone &zone) const;
 
     friend class QDTPUnitTestParser;
 
@@ -220,8 +220,8 @@ protected: // for the benefit of QDateTimeEditPrivate
     }
     QString stateName(State s) const;
 
-    virtual QDateTime getMinimum(const QTimeZone &zone) const;
-    virtual QDateTime getMaximum(const QTimeZone &zone) const;
+    virtual QDateTime getMinimum(const BOBUIimeZone &zone) const;
+    virtual QDateTime getMaximum(const BOBUIimeZone &zone) const;
     virtual int cursorPosition() const { return -1; }
     virtual QLocale locale() const { return defaultLocale; }
 
@@ -259,6 +259,6 @@ Q_CORE_EXPORT bool operator==(QDateTimeParser::SectionNode s1, QDateTimeParser::
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDateTimeParser::Sections)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDateTimeParser::FieldInfo)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDATETIMEPARSER_P_H

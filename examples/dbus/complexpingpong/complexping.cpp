@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "ping-common.h"
 #include "complexping.h"
@@ -21,7 +21,7 @@ void Ping::start(const QString &name)
 
     auto connection = QDBusConnection::sessionBus();
     // find our remote
-    auto iface = new QDBusInterface(SERVICE_NAME, "/", "org.example.QtDBus.ComplexPong.Pong",
+    auto iface = new QDBusInterface(SERVICE_NAME, "/", "org.example.BobUIDBus.ComplexPong.Pong",
                                     connection, this);
     if (!iface->isValid()) {
         qWarning().noquote() << connection.lastError().message();

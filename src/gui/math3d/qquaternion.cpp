@@ -1,24 +1,24 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qquaternion.h"
-#include <QtCore/qdatastream.h>
-#include <QtCore/qmath.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdatastream.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qdebug.h>
 
 #include <cmath>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_QUATERNION
+#ifndef BOBUI_NO_QUATERNION
 
 /*!
     \class QQuaternion
     \brief The QQuaternion class represents a quaternion consisting of a vector and scalar.
     \since 4.6
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Quaternions are used to represent rotations in 3D space, and
     consist of a 3D rotation axis specified by the x, y, and z
@@ -33,7 +33,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QQuaternion::QQuaternion(Qt::Initialization) noexcept
+    \fn QQuaternion::QQuaternion(BobUI::Initialization) noexcept
     \since 5.5
     \internal
 
@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
     and \a scalar.
 */
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \fn QQuaternion::QQuaternion(float scalar, const QVector3D &vector) noexcept
@@ -84,7 +84,7 @@ QT_BEGIN_NAMESPACE
     \sa vector(), setScalar()
 */
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 
 /*!
     \fn QQuaternion::QQuaternion(const QVector4D &vector) noexcept
@@ -326,7 +326,7 @@ QVector3D QQuaternion::rotatedVector(const QVector3D &vector) const
     \sa operator*=()
 */
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \fn void QQuaternion::getAxisAndAngle(QVector3D *axis, float *angle) const noexcept
@@ -420,7 +420,7 @@ QQuaternion QQuaternion::fromAxisAndAngle
     return QQuaternion(c, x * s, y * s, z * s).normalized();
 }
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \fn QVector3D QQuaternion::toEulerAngles() const
@@ -445,7 +445,7 @@ QQuaternion QQuaternion::fromAxisAndAngle
     \sa toEulerAngles()
 */
 
-#endif // QT_NO_VECTOR3D
+#endif // BOBUI_NO_VECTOR3D
 
 /*!
     \fn void QQuaternion::getEulerAngles(float *pitch, float *yaw, float *roll) const
@@ -468,7 +468,7 @@ QQuaternion QQuaternion::fromAxisAndAngle
     \since 6.11
     \class QQuaternion::EulerAngles
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     EulerAngles\<T\> is a struct template where \a T specifies the floating-point
     type used for the angle values (typically \c float).
@@ -634,7 +634,7 @@ QMatrix3x3 QQuaternion::toRotationMatrix() const
     // Algorithm from:
     // http://www.j3d.org/matrix_faq/matrfaq_latest.html#Q54
 
-    QMatrix3x3 rot3x3(Qt::Uninitialized);
+    QMatrix3x3 rot3x3(BobUI::Uninitialized);
 
     const float f2x = xp + xp;
     const float f2y = yp + yp;
@@ -707,13 +707,13 @@ QQuaternion QQuaternion::fromRotationMatrix(const QMatrix3x3 &rot3x3)
     return QQuaternion(scalar, axis[0], axis[1], axis[2]);
 }
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \since 6.11
     \class QQuaternion::Axes
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     A struct containing the three orthonormal axes that define a
     \l{QQuaternion}{quaternion}.
@@ -786,7 +786,7 @@ auto QQuaternion::toAxes() const -> Axes
 */
 QQuaternion QQuaternion::fromAxes(const QVector3D &xAxis, const QVector3D &yAxis, const QVector3D &zAxis)
 {
-    QMatrix3x3 rot3x3(Qt::Uninitialized);
+    QMatrix3x3 rot3x3(BobUI::Uninitialized);
     rot3x3(0, 0) = xAxis.x();
     rot3x3(1, 0) = xAxis.y();
     rot3x3(2, 0) = xAxis.z();
@@ -873,7 +873,7 @@ QQuaternion QQuaternion::rotationTo(const QVector3D &from, const QVector3D &to)
     return QQuaternion(d * 0.5f, axis).normalized();
 }
 
-#endif // QT_NO_VECTOR3D
+#endif // BOBUI_NO_VECTOR3D
 
 /*!
     \fn bool QQuaternion::operator==(const QQuaternion &q1, const QQuaternion &q2) noexcept
@@ -961,7 +961,7 @@ QQuaternion QQuaternion::rotationTo(const QVector3D &from, const QVector3D &to)
     \sa QQuaternion::operator/=()
 */
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \fn QVector3D operator*(const QQuaternion &quaternion, const QVector3D &vec) noexcept
@@ -1068,7 +1068,7 @@ QQuaternion::operator QVariant() const
     return QVariant::fromValue(*this);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 QDebug operator<<(QDebug dbg, const QQuaternion &q)
 {
@@ -1081,7 +1081,7 @@ QDebug operator<<(QDebug dbg, const QQuaternion &q)
 
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QQuaternion &quaternion)
@@ -1090,7 +1090,7 @@ QDebug operator<<(QDebug dbg, const QQuaternion &q)
     Writes the given \a quaternion to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &stream, const QQuaternion &quaternion)
@@ -1107,7 +1107,7 @@ QDataStream &operator<<(QDataStream &stream, const QQuaternion &quaternion)
     Reads a quaternion from the given \a stream into the given \a quaternion
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &stream, QQuaternion &quaternion)
@@ -1124,8 +1124,8 @@ QDataStream &operator>>(QDataStream &stream, QQuaternion &quaternion)
     return stream;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #ifndef RANDOMLISTMODEL_H
 #define RANDOMLISTMODEL_H
 
 #include <QContiguousCache>
 #include <QAbstractListModel>
 
-QT_FORWARD_DECLARE_CLASS(QTimer)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIimer)
 
 class RandomListModel : public QAbstractListModel
 {

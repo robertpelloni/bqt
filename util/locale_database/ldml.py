@@ -1,5 +1,5 @@
-# Copyright (C) 2020 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2020 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 """Parsing the Locale Data Markup Language
 
 It's an XML format, so the raw parsing of XML is, of course, delegated
@@ -301,8 +301,8 @@ class LocaleScanner (object):
         digits: str = lookup(system)['digits']
         assert len(digits) == 10
         zero: str = digits[0]
-        # Qt's number-formatting code assumes digits are consecutive
-        # (except Suzhou - see QTBUG-85409 - which shares its zero
+        # BobUI's number-formatting code assumes digits are consecutive
+        # (except Suzhou - see BOBUIBUG-85409 - which shares its zero
         # with CLDR's very-non-contiguous hanidec):
         assert all(ord(c) == i + (0x3020 if ord(zero) == 0x3007 else ord(zero))
                    for i, c in enumerate(digits[1:], 1))
@@ -358,7 +358,7 @@ class LocaleScanner (object):
     def endonyms(self, language: str, script: str, territory: str, variant: str
                  ) -> Iterator[tuple[str, str]]:
         # TODO: take variant into account ?
-        # TODO: QTBUG-47892, support query for all combinations
+        # TODO: BOBUIBUG-47892, support query for all combinations
         for seq in ((language, script, territory),
                     (language, script), (language, territory), (language,)):
             if not all(seq):

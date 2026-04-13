@@ -1,18 +1,18 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore/qmetaobject.h>
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/qwidget.h>
-#include <QtWidgets/qpushbutton.h>
-#include <QtWidgets/qlayout.h>
-#include <QtWidgets/qmessagebox.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIWidgets/qwidget.h>
+#include <BobUIWidgets/qpushbutton.h>
+#include <BobUIWidgets/qlayout.h>
+#include <BobUIWidgets/qmessagebox.h>
 
-#if !QT_CONFIG(permissions)
+#if !BOBUI_CONFIG(permissions)
 #error "This example requires the permissions feature, which is not enabled on this platform"
 #endif
 
-#include <QtCore/qpermissions.h>
+#include <BobUICore/qpermissions.h>
 
 class PermissionWidget : public QWidget
 {
@@ -53,7 +53,7 @@ private:
         Q_ASSERT(permission.type().isValid());
 
         switch (qApp->checkPermission(permission)) {
-        case Qt::PermissionStatus::Undetermined:
+        case BobUI::PermissionStatus::Undetermined:
                 qApp->requestPermission(permission, this,
                     [button](const QPermission &permission) {
                         Q_UNUSED(permission);
@@ -61,12 +61,12 @@ private:
                     }
                 );
             return;
-        case Qt::PermissionStatus::Denied:
+        case BobUI::PermissionStatus::Denied:
             QMessageBox::warning(this, button->text(),
                 tr("Permission is needed to use %1. Please grant permission "\
                 "to this application in the system settings.").arg(button->text()));
             return;
-        case Qt::PermissionStatus::Granted:
+        case BobUI::PermissionStatus::Granted:
             break; // Proceed
         }
 

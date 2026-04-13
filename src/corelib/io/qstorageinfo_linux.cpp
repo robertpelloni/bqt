@@ -1,18 +1,18 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2014 Ivan Komissarov <ABBAPOH@gmail.com>
 // Copyright (C) 2016 Intel Corporation.
 // Copyright (C) 2023 Ahmad Samir <a.samirh78@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstorageinfo_linux_p.h"
 
 #include <private/qcore_unix_p.h>
 #include <private/qlocale_tools_p.h>
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
-#include <QtCore/qdirlisting.h>
-#include <QtCore/qsystemdetection.h>
+#include <BobUICore/qdirlisting.h>
+#include <BobUICore/qsystemdetection.h>
 
 #include <q20memory.h>
 
@@ -41,9 +41,9 @@
 #include <private/qjnihelpers_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const char MountInfoPath[] = "/proc/self/mountinfo";
 
@@ -256,10 +256,10 @@ namespace {
 struct AutoFileDescriptor
 {
     int fd = -1;
-    AutoFileDescriptor(const QString &path, int mode = QT_OPEN_RDONLY)
-        : fd(qt_safe_open(QFile::encodeName(path), mode))
+    AutoFileDescriptor(const QString &path, int mode = BOBUI_OPEN_RDONLY)
+        : fd(bobui_safe_open(QFile::encodeName(path), mode))
     {}
-    ~AutoFileDescriptor() { if (fd >= 0) qt_safe_close(fd); }
+    ~AutoFileDescriptor() { if (fd >= 0) bobui_safe_close(fd); }
     operator int() const noexcept { return fd; }
 };
 }
@@ -269,7 +269,7 @@ struct AutoFileDescriptor
 // characters not considered safe (e.g. '\' or ' ') are encoded as hex
 static QString decodeFsEncString(QString &&str)
 {
-    using namespace QtMiscUtils;
+    using namespace BobUIMiscUtils;
     qsizetype start = str.indexOf(u'\\');
     if (start < 0)
         return std::move(str);
@@ -305,8 +305,8 @@ static QString decodeFsEncString(QString &&str)
 
 static inline dev_t deviceIdForPath(const QString &device)
 {
-    QT_STATBUF st;
-    if (QT_STAT(QFile::encodeName(device), &st) < 0)
+    BOBUI_STATBUF st;
+    if (BOBUI_STAT(QFile::encodeName(device), &st) < 0)
         return 0;
     return st.st_dev;
 }
@@ -341,8 +341,8 @@ static inline quint64 retrieveDeviceId(const QByteArray &device, quint64 deviceI
     if (device.size() < 2 || !device.startsWith('/'))
         return 0;
 
-    QT_STATBUF st;
-    if (QT_STAT(device, &st) < 0)
+    BOBUI_STATBUF st;
+    if (BOBUI_STAT(device, &st) < 0)
         return 0;
     if (!S_ISBLK(st.st_mode))
         return 0;
@@ -408,7 +408,7 @@ void QStorageInfoPrivate::retrieveVolumeInfo()
 {
     struct statfs64 statfs_buf;
     int result;
-    QT_EINTR_LOOP(result, statfs64(QFile::encodeName(rootPath).constData(), &statfs_buf));
+    BOBUI_EINTR_LOOP(result, statfs64(QFile::encodeName(rootPath).constData(), &statfs_buf));
     valid = ready = (result == 0);
     if (valid) {
         bytesTotal = statfs_buf.f_blocks * statfs_buf.f_frsize;
@@ -434,9 +434,9 @@ static std::vector<MountInfo> parseMountInfo(FilterMountInfo filter = FilterMoun
 void QStorageInfoPrivate::doStat()
 {
 #ifdef Q_OS_ANDROID
-    if (QtAndroidPrivate::isUncompressedNativeLibs()) {
+    if (BobUIAndroidPrivate::isUncompressedNativeLibs()) {
         // We need to pass the actual file path on the file system to statfs64
-        QString possibleApk = QtAndroidPrivate::resolveApkPath(rootPath);
+        QString possibleApk = BobUIAndroidPrivate::resolveApkPath(rootPath);
         if (!possibleApk.isEmpty())
             rootPath = possibleApk;
     }
@@ -562,4 +562,4 @@ QList<QStorageInfo> QStorageInfoPrivate::mountedVolumes()
     return volumes;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -10,7 +10,7 @@ TARGET_BASENAME = $$basename(QMAKE_RESOLVED_TARGET)
 # Configure testcocoon for a full instrumentation - excluding the moc, ui and qrc files from the instrumentation
 # --cs-output defines the name to give to the execution report (.csexe).
 TESTCOCOON_COVERAGE_OPTIONS = \
-    --cs-qt4 \
+    --cs-bobui4 \
     --cs-exclude-file-regex=\'(^|[/\\\\])(qrc|moc)_.*\\.cpp\$\$\' \
     --cs-exclude-file-regex=\'.*\\.moc\$\$\' \
     --cs-exclude-file-regex=\'.*\\.g\$\$\' \
@@ -20,7 +20,7 @@ TESTCOCOON_COVERAGE_OPTIONS = \
 # The .csmes file should be placed alongside the .so or binary.
 # Unfortunately, testcocoon has no option to specify the output directory,
 # so we must move it into place if a custom destdir was used.
-# We don't move applications' csmes because some qt applications (tools, examples)
+# We don't move applications' csmes because some bobui applications (tools, examples)
 # are using DESTDIR in some cases but always alongside target.path, so the binary
 # is built directly in target.path and there is no need to move the csmes.
 !isEmpty(DESTDIR):contains(TEMPLATE, lib) {

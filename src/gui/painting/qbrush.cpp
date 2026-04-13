@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qbrush.h"
 #include "qpixmap.h"
@@ -11,27 +11,27 @@
 #include "qvariant.h"
 #include "qline.h"
 #include "qdebug.h"
-#include <QtCore/qjsondocument.h>
-#include <QtCore/qjsonarray.h>
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qjsondocument.h>
+#include <BobUICore/qjsonarray.h>
+#include <BobUICore/qcoreapplication.h>
 #include "private/qhexstring_p.h"
-#include <QtCore/qnumeric.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/private/qoffsetstringarray_p.h>
+#include <BobUICore/qnumeric.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/private/qoffsetstringarray_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 // Avoid an ABI break due to the QScopedPointer->std::unique_ptr change
 static_assert(sizeof(QBrush::DataPtr) == sizeof(QScopedPointer<QBrushData, QBrushDataPointerDeleter>));
 #endif
 
-const uchar *qt_patternForBrush(int brushStyle, bool invert)
+const uchar *bobui_patternForBrush(int brushStyle, bool invert)
 {
-    Q_ASSERT(brushStyle > Qt::SolidPattern && brushStyle < Qt::LinearGradientPattern);
+    Q_ASSERT(brushStyle > BobUI::SolidPattern && brushStyle < BobUI::LinearGradientPattern);
     static const uchar pat_tbl[][2][8] = {
         {
             /* dense1 */ { 0x00, 0x44, 0x00, 0x00, 0x00, 0x44, 0x00, 0x00 },
@@ -74,18 +74,18 @@ const uchar *qt_patternForBrush(int brushStyle, bool invert)
             /*~dcross */ { 0x81, 0x42, 0x24, 0x18, 0x18, 0x24, 0x42, 0x81 },
         },
     };
-    return pat_tbl[brushStyle - Qt::Dense1Pattern][invert];
+    return pat_tbl[brushStyle - BobUI::Dense1Pattern][invert];
 }
 
-Q_GUI_EXPORT QPixmap qt_pixmapForBrush(int brushStyle, bool invert)
+Q_GUI_EXPORT QPixmap bobui_pixmapForBrush(int brushStyle, bool invert)
 {
 
     QPixmap pm;
-    QString key = "$qt-brush$"_L1
+    QString key = "$bobui-brush$"_L1
                   % HexString<uint>(brushStyle)
                   % QLatin1Char(invert ? '1' : '0');
     if (!QPixmapCache::find(key, &pm)) {
-        pm = QBitmap::fromData(QSize(8, 8), qt_patternForBrush(brushStyle, invert),
+        pm = QBitmap::fromData(QSize(8, 8), bobui_patternForBrush(brushStyle, invert),
                                QImage::Format_MonoLSB);
         QPixmapCache::insert(key, pm);
     }
@@ -93,7 +93,7 @@ Q_GUI_EXPORT QPixmap qt_pixmapForBrush(int brushStyle, bool invert)
     return pm;
 }
 
-static void qt_cleanup_brush_pattern_image_cache();
+static void bobui_cleanup_brush_pattern_image_cache();
 class QBrushPatternImageCache
 {
 public:
@@ -105,26 +105,26 @@ public:
 
     void init()
     {
-        qAddPostRoutine(qt_cleanup_brush_pattern_image_cache);
-        for (int style = Qt::Dense1Pattern; style <= Qt::DiagCrossPattern; ++style) {
-            int i = style - Qt::Dense1Pattern;
-            m_images[i][0] = QImage(qt_patternForBrush(style, 0), 8, 8, 1, QImage::Format_MonoLSB);
-            m_images[i][1] = QImage(qt_patternForBrush(style, 1), 8, 8, 1, QImage::Format_MonoLSB);
+        qAddPostRoutine(bobui_cleanup_brush_pattern_image_cache);
+        for (int style = BobUI::Dense1Pattern; style <= BobUI::DiagCrossPattern; ++style) {
+            int i = style - BobUI::Dense1Pattern;
+            m_images[i][0] = QImage(bobui_patternForBrush(style, 0), 8, 8, 1, QImage::Format_MonoLSB);
+            m_images[i][1] = QImage(bobui_patternForBrush(style, 1), 8, 8, 1, QImage::Format_MonoLSB);
         }
         m_initialized = true;
     }
 
     QImage getImage(int brushStyle, bool invert) const
     {
-        Q_ASSERT(brushStyle >= Qt::Dense1Pattern && brushStyle <= Qt::DiagCrossPattern);
+        Q_ASSERT(brushStyle >= BobUI::Dense1Pattern && brushStyle <= BobUI::DiagCrossPattern);
         if (!m_initialized)
             const_cast<QBrushPatternImageCache*>(this)->init();
-        return m_images[brushStyle - Qt::Dense1Pattern][invert];
+        return m_images[brushStyle - BobUI::Dense1Pattern][invert];
     }
 
     void cleanup() {
-        for (int style = Qt::Dense1Pattern; style <= Qt::DiagCrossPattern; ++style) {
-            int i = style - Qt::Dense1Pattern;
+        for (int style = BobUI::Dense1Pattern; style <= BobUI::DiagCrossPattern; ++style) {
+            int i = style - BobUI::Dense1Pattern;
             m_images[i][0] = QImage();
             m_images[i][1] = QImage();
         }
@@ -132,33 +132,33 @@ public:
     }
 
 private:
-    QImage m_images[Qt::DiagCrossPattern - Qt::Dense1Pattern + 1][2];
+    QImage m_images[BobUI::DiagCrossPattern - BobUI::Dense1Pattern + 1][2];
     bool m_initialized;
 };
 
-Q_GLOBAL_STATIC(QBrushPatternImageCache, qt_brushPatternImageCache)
+Q_GLOBAL_STATIC(QBrushPatternImageCache, bobui_brushPatternImageCache)
 
-static void qt_cleanup_brush_pattern_image_cache()
+static void bobui_cleanup_brush_pattern_image_cache()
 {
-    qt_brushPatternImageCache()->cleanup();
+    bobui_brushPatternImageCache()->cleanup();
 }
 
-Q_GUI_EXPORT QImage qt_imageForBrush(int brushStyle, bool invert)
+Q_GUI_EXPORT QImage bobui_imageForBrush(int brushStyle, bool invert)
 {
-    return qt_brushPatternImageCache()->getImage(brushStyle, invert);
+    return bobui_brushPatternImageCache()->getImage(brushStyle, invert);
 }
 
 struct QBasicBrushData : public QBrushData
 {
 };
 
-struct QTexturedBrushData : public QBrushData
+struct BOBUIexturedBrushData : public QBrushData
 {
-    QTexturedBrushData() {
+    BOBUIexturedBrushData() {
         m_has_pixmap_texture = false;
         m_pixmap = nullptr;
     }
-    ~QTexturedBrushData() {
+    ~BOBUIexturedBrushData() {
         delete m_pixmap;
     }
 
@@ -205,9 +205,9 @@ struct QTexturedBrushData : public QBrushData
 // brush texture, false otherwise
 bool Q_GUI_EXPORT qHasPixmapTexture(const QBrush& brush)
 {
-    if (brush.style() != Qt::TexturePattern)
+    if (brush.style() != BobUI::TexturePattern)
         return false;
-    QTexturedBrushData *tx_data = static_cast<QTexturedBrushData *>(brush.d.get());
+    BOBUIexturedBrushData *tx_data = static_cast<BOBUIexturedBrushData *>(brush.d.get());
     return tx_data->m_has_pixmap_texture;
 }
 
@@ -219,29 +219,29 @@ struct QGradientBrushData : public QBrushData
 static void deleteData(QBrushData *d)
 {
     switch (d->style) {
-    case Qt::TexturePattern:
-        delete static_cast<QTexturedBrushData*>(d);
+    case BobUI::TexturePattern:
+        delete static_cast<BOBUIexturedBrushData*>(d);
         break;
-    case Qt::LinearGradientPattern:
-    case Qt::RadialGradientPattern:
-    case Qt::ConicalGradientPattern:
+    case BobUI::LinearGradientPattern:
+    case BobUI::RadialGradientPattern:
+    case BobUI::ConicalGradientPattern:
         delete static_cast<QGradientBrushData*>(d);
         break;
-    case Qt::NoBrush:
-    case Qt::SolidPattern:
-    case Qt::Dense1Pattern:
-    case Qt::Dense2Pattern:
-    case Qt::Dense3Pattern:
-    case Qt::Dense4Pattern:
-    case Qt::Dense5Pattern:
-    case Qt::Dense6Pattern:
-    case Qt::Dense7Pattern:
-    case Qt::HorPattern:
-    case Qt::VerPattern:
-    case Qt::CrossPattern:
-    case Qt::BDiagPattern:
-    case Qt::FDiagPattern:
-    case Qt::DiagCrossPattern:
+    case BobUI::NoBrush:
+    case BobUI::SolidPattern:
+    case BobUI::Dense1Pattern:
+    case BobUI::Dense2Pattern:
+    case BobUI::Dense3Pattern:
+    case BobUI::Dense4Pattern:
+    case BobUI::Dense5Pattern:
+    case BobUI::Dense6Pattern:
+    case BobUI::Dense7Pattern:
+    case BobUI::HorPattern:
+    case BobUI::VerPattern:
+    case BobUI::CrossPattern:
+    case BobUI::BDiagPattern:
+    case BobUI::FDiagPattern:
+    case BobUI::DiagCrossPattern:
         delete static_cast<QBasicBrushData*>(d);
         break;
     }
@@ -257,7 +257,7 @@ void QBrushDataPointerDeleter::operator()(QBrushData *d) const noexcept
     \class QBrush
     \ingroup painting
     \ingroup shared
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QBrush class defines the fill pattern of shapes drawn
     by QPainter.
@@ -265,10 +265,10 @@ void QBrushDataPointerDeleter::operator()(QBrushData *d) const noexcept
     A brush has a style, a color, a gradient and a texture.
 
     The brush style() defines the fill pattern using the
-    Qt::BrushStyle enum. The default brush style is Qt::NoBrush
+    BobUI::BrushStyle enum. The default brush style is BobUI::NoBrush
     (depending on how you construct a brush). This style tells the
     painter to not fill shapes. The standard style for filling is
-    Qt::SolidPattern. The style can be set when the brush is created
+    BobUI::SolidPattern. The style can be set when the brush is created
     using the appropriate constructor, and in addition the setStyle()
     function provides means for altering the style once the brush is
     constructed.
@@ -276,31 +276,31 @@ void QBrushDataPointerDeleter::operator()(QBrushData *d) const noexcept
     \image brush-styles.png Brush Styles
 
     The brush color() defines the color of the fill pattern. The color
-    can either be one of Qt's predefined colors, Qt::GlobalColor, or
+    can either be one of BobUI's predefined colors, BobUI::GlobalColor, or
     any other custom QColor. The currently set color can be retrieved
     and altered using the color() and setColor() functions,
     respectively.
 
     The gradient() defines the gradient fill used when the current
-    style is either Qt::LinearGradientPattern,
-    Qt::RadialGradientPattern or Qt::ConicalGradientPattern. Gradient
+    style is either BobUI::LinearGradientPattern,
+    BobUI::RadialGradientPattern or BobUI::ConicalGradientPattern. Gradient
     brushes are created by giving a QGradient as a constructor
-    argument when creating the QBrush. Qt provides three different
+    argument when creating the QBrush. BobUI provides three different
     gradients: QLinearGradient, QConicalGradient, and QRadialGradient
     - all of which inherit QGradient.
 
     \snippet brush/gradientcreationsnippet.cpp 0
 
     The texture() defines the pixmap used when the current style is
-    Qt::TexturePattern.  You can create a brush with a texture by
+    BobUI::TexturePattern.  You can create a brush with a texture by
     providing the pixmap when the brush is created or by using
     setTexture().
 
     Note that applying setTexture() makes style() ==
-    Qt::TexturePattern, regardless of previous style
+    BobUI::TexturePattern, regardless of previous style
     settings. Also, calling setColor() will not make a difference if
     the style is a gradient. The same is the case if the style is
-    Qt::TexturePattern style unless the current texture is a QBitmap.
+    BobUI::TexturePattern style unless the current texture is a QBitmap.
 
     The isOpaque() function returns \c true if the brush is fully opaque
     otherwise false. A brush is considered opaque if:
@@ -317,21 +317,21 @@ void QBrushDataPointerDeleter::operator()(QBrushData *d) const noexcept
     \li
 
     To specify the style and color of lines and outlines, use the
-    QPainter's \l {QPen}{pen} combined with Qt::PenStyle and
-    Qt::GlobalColor:
+    QPainter's \l {QPen}{pen} combined with BobUI::PenStyle and
+    BobUI::GlobalColor:
 
     \snippet code/src_gui_painting_qbrush.cpp 0
 
     Note that, by default, QPainter renders the outline (using the
-    currently set pen) when drawing shapes. Use \l {Qt::NoPen}{\c
-    painter.setPen(Qt::NoPen)} to disable this behavior.
+    currently set pen) when drawing shapes. Use \l {BobUI::NoPen}{\c
+    painter.setPen(BobUI::NoPen)} to disable this behavior.
 
     \endtable
 
     For more information about painting in general, see the \l{Paint
     System}.
 
-    \sa Qt::BrushStyle, QPainter, QColor
+    \sa BobUI::BrushStyle, QPainter, QColor
 */
 
 class QNullBrushData
@@ -341,8 +341,8 @@ public:
     QNullBrushData() : brush(new QBasicBrushData)
     {
         brush->ref.storeRelaxed(1);
-        brush->style = Qt::BrushStyle(0);
-        brush->color = Qt::black;
+        brush->style = BobUI::BrushStyle(0);
+        brush->color = BobUI::black;
     }
     ~QNullBrushData()
     {
@@ -358,14 +358,14 @@ static QBrushData *nullBrushInstance()
     return nullBrushInstance_holder()->brush;
 }
 
-static bool qbrush_check_type(Qt::BrushStyle style) {
+static bool qbrush_check_type(BobUI::BrushStyle style) {
     switch (style) {
-    case Qt::TexturePattern:
+    case BobUI::TexturePattern:
          qWarning("QBrush: Incorrect use of TexturePattern");
          break;
-    case Qt::LinearGradientPattern:
-    case Qt::RadialGradientPattern:
-    case Qt::ConicalGradientPattern:
+    case BobUI::LinearGradientPattern:
+    case BobUI::RadialGradientPattern:
+    case BobUI::ConicalGradientPattern:
         qWarning("QBrush: Wrong use of a gradient pattern");
         break;
     default:
@@ -379,36 +379,36 @@ static bool qbrush_check_type(Qt::BrushStyle style) {
   Initializes the brush.
 */
 
-void QBrush::init(const QColor &color, Qt::BrushStyle style)
+void QBrush::init(const QColor &color, BobUI::BrushStyle style)
 {
     switch(style) {
-    case Qt::NoBrush:
+    case BobUI::NoBrush:
         d.reset(nullBrushInstance());
         d->ref.ref();
         if (d->color != color) setColor(color);
         return;
-    case Qt::TexturePattern:
-        d.reset(new QTexturedBrushData);
+    case BobUI::TexturePattern:
+        d.reset(new BOBUIexturedBrushData);
         break;
-    case Qt::LinearGradientPattern:
-    case Qt::RadialGradientPattern:
-    case Qt::ConicalGradientPattern:
+    case BobUI::LinearGradientPattern:
+    case BobUI::RadialGradientPattern:
+    case BobUI::ConicalGradientPattern:
         d.reset(new QGradientBrushData);
         break;
-    case Qt::SolidPattern:
-    case Qt::Dense1Pattern:
-    case Qt::Dense2Pattern:
-    case Qt::Dense3Pattern:
-    case Qt::Dense4Pattern:
-    case Qt::Dense5Pattern:
-    case Qt::Dense6Pattern:
-    case Qt::Dense7Pattern:
-    case Qt::HorPattern:
-    case Qt::VerPattern:
-    case Qt::CrossPattern:
-    case Qt::BDiagPattern:
-    case Qt::FDiagPattern:
-    case Qt::DiagCrossPattern:
+    case BobUI::SolidPattern:
+    case BobUI::Dense1Pattern:
+    case BobUI::Dense2Pattern:
+    case BobUI::Dense3Pattern:
+    case BobUI::Dense4Pattern:
+    case BobUI::Dense5Pattern:
+    case BobUI::Dense6Pattern:
+    case BobUI::Dense7Pattern:
+    case BobUI::HorPattern:
+    case BobUI::VerPattern:
+    case BobUI::CrossPattern:
+    case BobUI::BDiagPattern:
+    case BobUI::FDiagPattern:
+    case BobUI::DiagCrossPattern:
         d.reset(new QBasicBrushData);
         break;
     }
@@ -418,7 +418,7 @@ void QBrush::init(const QColor &color, Qt::BrushStyle style)
 }
 
 /*!
-    Constructs a default black brush with the style Qt::NoBrush
+    Constructs a default black brush with the style BobUI::NoBrush
     (i.e. this brush will not fill shapes).
 */
 
@@ -431,28 +431,28 @@ QBrush::QBrush()
 
 /*!
     Constructs a brush with a black color and a texture set to the
-    given \a pixmap. The style is set to Qt::TexturePattern.
+    given \a pixmap. The style is set to BobUI::TexturePattern.
 
     \sa setTexture()
 */
 
 QBrush::QBrush(const QPixmap &pixmap)
 {
-    init(Qt::black, Qt::TexturePattern);
+    init(BobUI::black, BobUI::TexturePattern);
     setTexture(pixmap);
 }
 
 
 /*!
     Constructs a brush with a black color and a texture set to the
-    given \a image. The style is set to Qt::TexturePattern.
+    given \a image. The style is set to BobUI::TexturePattern.
 
     \sa setTextureImage()
 */
 
 QBrush::QBrush(const QImage &image)
 {
-    init(Qt::black, Qt::TexturePattern);
+    init(BobUI::black, BobUI::TexturePattern);
     setTextureImage(image);
 }
 
@@ -462,8 +462,8 @@ QBrush::QBrush(const QImage &image)
     \sa setStyle()
 */
 
-QBrush::QBrush(Qt::BrushStyle style)
-    : QBrush(QColor(Qt::black), style)
+QBrush::QBrush(BobUI::BrushStyle style)
+    : QBrush(QColor(BobUI::black), style)
 {
 }
 
@@ -473,7 +473,7 @@ QBrush::QBrush(Qt::BrushStyle style)
     \sa setColor(), setStyle()
 */
 
-QBrush::QBrush(const QColor &color, Qt::BrushStyle style)
+QBrush::QBrush(const QColor &color, BobUI::BrushStyle style)
 {
     if (qbrush_check_type(style))
         init(color, style);
@@ -484,13 +484,13 @@ QBrush::QBrush(const QColor &color, Qt::BrushStyle style)
 }
 
 /*!
-    \fn QBrush::QBrush(Qt::GlobalColor color, Qt::BrushStyle style)
+    \fn QBrush::QBrush(BobUI::GlobalColor color, BobUI::BrushStyle style)
 
     Constructs a brush with the given \a color and \a style.
 
     \sa setColor(), setStyle()
 */
-QBrush::QBrush(Qt::GlobalColor color, Qt::BrushStyle style)
+QBrush::QBrush(BobUI::GlobalColor color, BobUI::BrushStyle style)
     : QBrush(QColor(color), style)
 {
 }
@@ -499,7 +499,7 @@ QBrush::QBrush(Qt::GlobalColor color, Qt::BrushStyle style)
     Constructs a brush with the given \a color and the custom pattern
     stored in \a pixmap.
 
-    The style is set to Qt::TexturePattern. The color will only have
+    The style is set to BobUI::TexturePattern. The color will only have
     an effect for QBitmaps.
 
     \sa setColor(), setTexture()
@@ -507,7 +507,7 @@ QBrush::QBrush(Qt::GlobalColor color, Qt::BrushStyle style)
 
 QBrush::QBrush(const QColor &color, const QPixmap &pixmap)
 {
-    init(color, Qt::TexturePattern);
+    init(color, BobUI::TexturePattern);
     setTexture(pixmap);
 }
 
@@ -516,14 +516,14 @@ QBrush::QBrush(const QColor &color, const QPixmap &pixmap)
     Constructs a brush with the given \a color and the custom pattern
     stored in \a pixmap.
 
-    The style is set to Qt::TexturePattern. The color will only have
+    The style is set to BobUI::TexturePattern. The color will only have
     an effect for QBitmaps.
 
     \sa setColor(), setTexture()
 */
-QBrush::QBrush(Qt::GlobalColor color, const QPixmap &pixmap)
+QBrush::QBrush(BobUI::GlobalColor color, const QPixmap &pixmap)
 {
-    init(color, Qt::TexturePattern);
+    init(color, BobUI::TexturePattern);
     setTexture(pixmap);
 }
 
@@ -541,8 +541,8 @@ QBrush::QBrush(const QBrush &other)
     Constructs a brush based on the given \a gradient.
 
     The brush style is set to the corresponding gradient style (either
-    Qt::LinearGradientPattern, Qt::RadialGradientPattern or
-    Qt::ConicalGradientPattern).
+    BobUI::LinearGradientPattern, BobUI::RadialGradientPattern or
+    BobUI::ConicalGradientPattern).
 */
 QBrush::QBrush(const QGradient &gradient)
 {
@@ -552,10 +552,10 @@ QBrush::QBrush(const QGradient &gradient)
         return;
     }
 
-    const Qt::BrushStyle enum_table[] = {
-        Qt::LinearGradientPattern,
-        Qt::RadialGradientPattern,
-        Qt::ConicalGradientPattern
+    const BobUI::BrushStyle enum_table[] = {
+        BobUI::LinearGradientPattern,
+        BobUI::RadialGradientPattern,
+        BobUI::ConicalGradientPattern
     };
 
     init(QColor(), enum_table[gradient.type()]);
@@ -571,15 +571,15 @@ QBrush::~QBrush()
 {
 }
 
-static constexpr inline bool use_same_brushdata(Qt::BrushStyle lhs, Qt::BrushStyle rhs)
+static constexpr inline bool use_same_brushdata(BobUI::BrushStyle lhs, BobUI::BrushStyle rhs)
 {
-    return lhs == rhs // includes Qt::TexturePattern
-        || (lhs >= Qt::NoBrush && lhs <= Qt::DiagCrossPattern && rhs >= Qt::NoBrush && rhs <= Qt::DiagCrossPattern)
-        || (lhs >= Qt::LinearGradientPattern && lhs <= Qt::ConicalGradientPattern && rhs >= Qt::LinearGradientPattern && rhs <= Qt::ConicalGradientPattern)
+    return lhs == rhs // includes BobUI::TexturePattern
+        || (lhs >= BobUI::NoBrush && lhs <= BobUI::DiagCrossPattern && rhs >= BobUI::NoBrush && rhs <= BobUI::DiagCrossPattern)
+        || (lhs >= BobUI::LinearGradientPattern && lhs <= BobUI::ConicalGradientPattern && rhs >= BobUI::LinearGradientPattern && rhs <= BobUI::ConicalGradientPattern)
            ;
 }
 
-void QBrush::detach(Qt::BrushStyle newStyle)
+void QBrush::detach(BobUI::BrushStyle newStyle)
 {
     if (use_same_brushdata(newStyle, d->style) && d->ref.loadRelaxed() == 1) {
         d->style = newStyle;
@@ -588,10 +588,10 @@ void QBrush::detach(Qt::BrushStyle newStyle)
 
     DataPtr x;
     switch(newStyle) {
-    case Qt::TexturePattern: {
-        QTexturedBrushData *tbd = new QTexturedBrushData;
-        if (d->style == Qt::TexturePattern) {
-            QTexturedBrushData *data = static_cast<QTexturedBrushData *>(d.get());
+    case BobUI::TexturePattern: {
+        BOBUIexturedBrushData *tbd = new BOBUIexturedBrushData;
+        if (d->style == BobUI::TexturePattern) {
+            BOBUIexturedBrushData *data = static_cast<BOBUIexturedBrushData *>(d.get());
             if (data->m_has_pixmap_texture)
                 tbd->setPixmap(data->pixmap());
             else
@@ -600,14 +600,14 @@ void QBrush::detach(Qt::BrushStyle newStyle)
         x.reset(tbd);
         break;
         }
-    case Qt::LinearGradientPattern:
-    case Qt::RadialGradientPattern:
-    case Qt::ConicalGradientPattern: {
+    case BobUI::LinearGradientPattern:
+    case BobUI::RadialGradientPattern:
+    case BobUI::ConicalGradientPattern: {
         QGradientBrushData *gbd = new QGradientBrushData;
         switch (d->style) {
-        case Qt::LinearGradientPattern:
-        case Qt::RadialGradientPattern:
-        case Qt::ConicalGradientPattern:
+        case BobUI::LinearGradientPattern:
+        case BobUI::RadialGradientPattern:
+        case BobUI::ConicalGradientPattern:
             gbd->gradient =
                     static_cast<QGradientBrushData *>(d.get())->gradient;
             break;
@@ -617,21 +617,21 @@ void QBrush::detach(Qt::BrushStyle newStyle)
         x.reset(gbd);
         break;
         }
-    case Qt::NoBrush:
-    case Qt::SolidPattern:
-    case Qt::Dense1Pattern:
-    case Qt::Dense2Pattern:
-    case Qt::Dense3Pattern:
-    case Qt::Dense4Pattern:
-    case Qt::Dense5Pattern:
-    case Qt::Dense6Pattern:
-    case Qt::Dense7Pattern:
-    case Qt::HorPattern:
-    case Qt::VerPattern:
-    case Qt::CrossPattern:
-    case Qt::BDiagPattern:
-    case Qt::FDiagPattern:
-    case Qt::DiagCrossPattern:
+    case BobUI::NoBrush:
+    case BobUI::SolidPattern:
+    case BobUI::Dense1Pattern:
+    case BobUI::Dense2Pattern:
+    case BobUI::Dense3Pattern:
+    case BobUI::Dense4Pattern:
+    case BobUI::Dense5Pattern:
+    case BobUI::Dense6Pattern:
+    case BobUI::Dense7Pattern:
+    case BobUI::HorPattern:
+    case BobUI::VerPattern:
+    case BobUI::CrossPattern:
+    case BobUI::BDiagPattern:
+    case BobUI::FDiagPattern:
+    case BobUI::DiagCrossPattern:
         x.reset(new QBasicBrushData);
         break;
     }
@@ -660,7 +660,7 @@ QBrush &QBrush::operator=(const QBrush &brush)
 
 /*!
     \fn QBrush &QBrush::operator=(QColor color)
-    \fn QBrush &QBrush::operator=(Qt::GlobalColor color)
+    \fn QBrush &QBrush::operator=(BobUI::GlobalColor color)
     \overload
     \since 6.9
 
@@ -669,7 +669,7 @@ QBrush &QBrush::operator=(const QBrush &brush)
 */
 QBrush &QBrush::operator=(QColor color)
 {
-    detach(Qt::SolidPattern);
+    detach(BobUI::SolidPattern);
     d->color = color;
     d->transform = {};
     return *this;
@@ -682,10 +682,10 @@ QBrush &QBrush::operator=(QColor color)
     Makes this brush a black brush of the given \a style,
     and returns a reference to \e this brush.
 */
-QBrush &QBrush::operator=(Qt::BrushStyle style)
+QBrush &QBrush::operator=(BobUI::BrushStyle style)
 {
     detach(style);
-    d->color = Qt::black;
+    d->color = BobUI::black;
     d->transform = {};
     return *this;
 }
@@ -713,7 +713,7 @@ QBrush::operator QVariant() const
 }
 
 /*!
-    \fn Qt::BrushStyle QBrush::style() const
+    \fn BobUI::BrushStyle QBrush::style() const
 
     Returns the brush style.
 
@@ -726,7 +726,7 @@ QBrush::operator QVariant() const
     \sa style()
 */
 
-void QBrush::setStyle(Qt::BrushStyle style)
+void QBrush::setStyle(BobUI::BrushStyle style)
 {
     if (d->style == style)
         return;
@@ -753,7 +753,7 @@ void QBrush::setStyle(Qt::BrushStyle style)
 
     Note that calling setColor() will not make a difference if the
     style is a gradient. The same is the case if the style is
-    Qt::TexturePattern style unless the current texture is a QBitmap.
+    BobUI::TexturePattern style unless the current texture is a QBitmap.
 
     \sa color()
 */
@@ -768,7 +768,7 @@ void QBrush::setColor(const QColor &c)
 }
 
 /*!
-    \fn void QBrush::setColor(Qt::GlobalColor color)
+    \fn void QBrush::setColor(BobUI::GlobalColor color)
     \overload
 
     Sets the brush color to the given \a color.
@@ -784,14 +784,14 @@ void QBrush::setColor(const QColor &c)
 */
 QPixmap QBrush::texture() const
 {
-    return d->style == Qt::TexturePattern
-                     ? (static_cast<QTexturedBrushData *>(d.get()))->pixmap()
+    return d->style == BobUI::TexturePattern
+                     ? (static_cast<BOBUIexturedBrushData *>(d.get()))->pixmap()
                      : QPixmap();
 }
 
 /*!
     Sets the brush pixmap to \a pixmap. The style is set to
-    Qt::TexturePattern.
+    BobUI::TexturePattern.
 
     The current brush color will only have an effect for monochrome
     pixmaps, i.e. for QPixmap::depth() == 1 (\l {QBitmap}{QBitmaps}).
@@ -802,11 +802,11 @@ QPixmap QBrush::texture() const
 void QBrush::setTexture(const QPixmap &pixmap)
 {
     if (!pixmap.isNull()) {
-        detach(Qt::TexturePattern);
-        QTexturedBrushData *data = static_cast<QTexturedBrushData *>(d.get());
+        detach(BobUI::TexturePattern);
+        BOBUIexturedBrushData *data = static_cast<BOBUIexturedBrushData *>(d.get());
         data->setPixmap(pixmap);
     } else {
-        detach(Qt::NoBrush);
+        detach(BobUI::NoBrush);
     }
 }
 
@@ -825,8 +825,8 @@ void QBrush::setTexture(const QPixmap &pixmap)
 
 QImage QBrush::textureImage() const
 {
-    return d->style == Qt::TexturePattern
-                     ? (static_cast<QTexturedBrushData *>(d.get()))->image()
+    return d->style == BobUI::TexturePattern
+                     ? (static_cast<BOBUIexturedBrushData *>(d.get()))->image()
                      : QImage();
 }
 
@@ -835,7 +835,7 @@ QImage QBrush::textureImage() const
     \since 4.2
 
     Sets the brush image to \a image. The style is set to
-    Qt::TexturePattern.
+    BobUI::TexturePattern.
 
     Note the current brush color will \e not have any affect on
     monochrome images, as opposed to calling setTexture() with a
@@ -850,11 +850,11 @@ QImage QBrush::textureImage() const
 void QBrush::setTextureImage(const QImage &image)
 {
     if (!image.isNull()) {
-        detach(Qt::TexturePattern);
-        QTexturedBrushData *data = static_cast<QTexturedBrushData *>(d.get());
+        detach(BobUI::TexturePattern);
+        BOBUIexturedBrushData *data = static_cast<BOBUIexturedBrushData *>(d.get());
         data->setImage(image);
     } else {
-        detach(Qt::NoBrush);
+        detach(BobUI::NoBrush);
     }
 }
 
@@ -864,17 +864,17 @@ void QBrush::setTextureImage(const QImage &image)
 */
 const QGradient *QBrush::gradient() const
 {
-    if (d->style == Qt::LinearGradientPattern
-        || d->style == Qt::RadialGradientPattern
-        || d->style == Qt::ConicalGradientPattern) {
+    if (d->style == BobUI::LinearGradientPattern
+        || d->style == BobUI::RadialGradientPattern
+        || d->style == BobUI::ConicalGradientPattern) {
         return &static_cast<const QGradientBrushData *>(d.get())->gradient;
     }
     return nullptr;
 }
 
-Q_GUI_EXPORT bool qt_isExtendedRadialGradient(const QBrush &brush)
+Q_GUI_EXPORT bool bobui_isExtendedRadialGradient(const QBrush &brush)
 {
-    if (brush.style() == Qt::RadialGradientPattern) {
+    if (brush.style() == BobUI::RadialGradientPattern) {
         const QGradient *g = brush.gradient();
         const QRadialGradient *rg = static_cast<const QRadialGradient *>(g);
 
@@ -906,21 +906,21 @@ bool QBrush::isOpaque() const
     bool opaqueColor = d->color.alphaF() >= 1.0f;
 
     // Test awfully simple case first
-    if (d->style == Qt::SolidPattern)
+    if (d->style == BobUI::SolidPattern)
         return opaqueColor;
 
-    if (qt_isExtendedRadialGradient(*this))
+    if (bobui_isExtendedRadialGradient(*this))
         return false;
 
-    if (d->style == Qt::LinearGradientPattern
-        || d->style == Qt::RadialGradientPattern
-        || d->style == Qt::ConicalGradientPattern) {
+    if (d->style == BobUI::LinearGradientPattern
+        || d->style == BobUI::RadialGradientPattern
+        || d->style == BobUI::ConicalGradientPattern) {
         QGradientStops stops = gradient()->stops();
         for (int i=0; i<stops.size(); ++i)
             if (stops.at(i).second.alphaF() < 1.0f)
                 return false;
         return true;
-    } else if (d->style == Qt::TexturePattern) {
+    } else if (d->style == BobUI::TexturePattern) {
         return qHasPixmapTexture(*this)
             ? !texture().hasAlphaChannel() && !texture().isQBitmap()
             : !textureImage().hasAlphaChannel();
@@ -938,7 +938,7 @@ bool QBrush::isOpaque() const
 
     \sa transform()
 */
-void QBrush::setTransform(const QTransform &matrix)
+void QBrush::setTransform(const BOBUIransform &matrix)
 {
     detach(d->style);
     d->transform = matrix;
@@ -976,7 +976,7 @@ bool QBrush::operator==(const QBrush &b) const
     if (b.d->style != d->style || b.d->color != d->color || b.d->transform != d->transform)
         return false;
     switch (d->style) {
-    case Qt::TexturePattern:
+    case BobUI::TexturePattern:
         {
             // Note this produces false negatives if the textures have identical data,
             // but does not share the same data in memory. Since equality is likely to
@@ -985,16 +985,16 @@ bool QBrush::operator==(const QBrush &b) const
             const QPixmap *us = nullptr, *them = nullptr;
             qint64 cacheKey1, cacheKey2;
             if (qHasPixmapTexture(*this)) {
-                us = (static_cast<QTexturedBrushData *>(d.get()))->m_pixmap;
+                us = (static_cast<BOBUIexturedBrushData *>(d.get()))->m_pixmap;
                 cacheKey1 = us->cacheKey();
             } else
-                cacheKey1 = (static_cast<QTexturedBrushData *>(d.get()))->image().cacheKey();
+                cacheKey1 = (static_cast<BOBUIexturedBrushData *>(d.get()))->image().cacheKey();
 
             if (qHasPixmapTexture(b)) {
-                them = (static_cast<QTexturedBrushData *>(b.d.get()))->m_pixmap;
+                them = (static_cast<BOBUIexturedBrushData *>(b.d.get()))->m_pixmap;
                 cacheKey2 = them->cacheKey();
             } else
-                cacheKey2 = (static_cast<QTexturedBrushData *>(b.d.get()))->image().cacheKey();
+                cacheKey2 = (static_cast<BOBUIexturedBrushData *>(b.d.get()))->image().cacheKey();
 
             if (cacheKey1 != cacheKey2)
                 return false;
@@ -1007,9 +1007,9 @@ bool QBrush::operator==(const QBrush &b) const
                 return true;
             return false;
         }
-    case Qt::LinearGradientPattern:
-    case Qt::RadialGradientPattern:
-    case Qt::ConicalGradientPattern:
+    case BobUI::LinearGradientPattern:
+    case BobUI::RadialGradientPattern:
+    case BobUI::ConicalGradientPattern:
         {
             const QGradientBrushData *d1 = static_cast<QGradientBrushData *>(d.get());
             const QGradientBrushData *d2 = static_cast<QGradientBrushData *>(b.d.get());
@@ -1025,29 +1025,29 @@ bool QBrush::operator==(const QBrush &b) const
 */
 bool QBrush::doCompareEqualColor(QColor rhs) const noexcept
 {
-    return style() == Qt::SolidPattern && color() == rhs && d->transform.isIdentity();
+    return style() == BobUI::SolidPattern && color() == rhs && d->transform.isIdentity();
 }
 
 /*!
     \internal
 */
-bool QBrush::doCompareEqualStyle(Qt::BrushStyle rhs) const noexcept
+bool QBrush::doCompareEqualStyle(BobUI::BrushStyle rhs) const noexcept
 {
     switch (rhs) {
-    case Qt::NoBrush:
-    case Qt::TexturePattern:
-    case Qt::LinearGradientPattern:
-    case Qt::RadialGradientPattern:
-    case Qt::ConicalGradientPattern:
+    case BobUI::NoBrush:
+    case BobUI::TexturePattern:
+    case BobUI::LinearGradientPattern:
+    case BobUI::RadialGradientPattern:
+    case BobUI::ConicalGradientPattern:
         // A brush constructed only from one of those styles will end up
         // using NoBrush (see qbrush_check_type)
-        return style() == Qt::NoBrush;
+        return style() == BobUI::NoBrush;
     default:
         return style() == rhs && color() == QColor(0, 0, 0);
     }
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
   \internal
 */
@@ -1085,7 +1085,7 @@ QDebug operator<<(QDebug dbg, const QBrush &b)
 /*****************************************************************************
   QBrush stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QBrush &brush)
     \relates QBrush
@@ -1093,7 +1093,7 @@ QDebug operator<<(QDebug dbg, const QBrush &b)
     Writes the given \a brush to the given \a stream and returns a
     reference to the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QBrush &b)
@@ -1101,32 +1101,32 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
     quint8 style = (quint8) b.style();
     bool gradient_style = false;
 
-    if (style == Qt::LinearGradientPattern || style == Qt::RadialGradientPattern
-        || style == Qt::ConicalGradientPattern)
+    if (style == BobUI::LinearGradientPattern || style == BobUI::RadialGradientPattern
+        || style == BobUI::ConicalGradientPattern)
         gradient_style = true;
 
-    if (s.version() < QDataStream::Qt_4_0 && gradient_style)
-        style = Qt::NoBrush;
+    if (s.version() < QDataStream::BobUI_4_0 && gradient_style)
+        style = BobUI::NoBrush;
 
     s << style << b.color();
-    if (b.style() == Qt::TexturePattern) {
-        if (s.version() >= QDataStream::Qt_5_5)
+    if (b.style() == BobUI::TexturePattern) {
+        if (s.version() >= QDataStream::BobUI_5_5)
             s << b.textureImage();
         else
             s << b.texture();
-    } else if (s.version() >= QDataStream::Qt_4_0 && gradient_style) {
+    } else if (s.version() >= QDataStream::BobUI_4_0 && gradient_style) {
         const QGradient *gradient = b.gradient();
         int type_as_int = int(gradient->type());
         s << type_as_int;
-        if (s.version() >= QDataStream::Qt_4_3) {
+        if (s.version() >= QDataStream::BobUI_4_3) {
             s << int(gradient->spread());
             QGradient::CoordinateMode co_mode = gradient->coordinateMode();
-            if (s.version() < QDataStream::Qt_5_12 && co_mode == QGradient::ObjectMode)
+            if (s.version() < QDataStream::BobUI_5_12 && co_mode == QGradient::ObjectMode)
                 co_mode = QGradient::ObjectBoundingMode;
             s << int(co_mode);
         }
 
-        if (s.version() >= QDataStream::Qt_4_5)
+        if (s.version() >= QDataStream::BobUI_4_5)
             s << int(gradient->interpolationMode());
 
         if (sizeof(qreal) == sizeof(double)) {
@@ -1150,14 +1150,14 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
             s << static_cast<const QRadialGradient *>(gradient)->center();
             s << static_cast<const QRadialGradient *>(gradient)->focalPoint();
             s << (double) static_cast<const QRadialGradient *>(gradient)->radius();
-            if (s.version() >= QDataStream::Qt_6_0)
+            if (s.version() >= QDataStream::BobUI_6_0)
                 s << (double) static_cast<const QRadialGradient *>(gradient)->focalRadius();
         } else { // type == Conical
             s << static_cast<const QConicalGradient *>(gradient)->center();
             s << (double) static_cast<const QConicalGradient *>(gradient)->angle();
         }
     }
-    if (s.version() >= QDataStream::Qt_4_3)
+    if (s.version() >= QDataStream::BobUI_4_3)
         s << b.transform();
     return s;
 }
@@ -1169,7 +1169,7 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
     Reads the given \a brush from the given \a stream and returns a
     reference to the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QBrush &b)
@@ -1179,8 +1179,8 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
     s >> style;
     s >> color;
     b = QBrush(color);
-    if (style == Qt::TexturePattern) {
-        if (s.version() >= QDataStream::Qt_5_5) {
+    if (style == BobUI::TexturePattern) {
+        if (s.version() >= QDataStream::BobUI_5_5) {
             QImage img;
             s >> img;
             b.setTextureImage(std::move(img));
@@ -1189,9 +1189,9 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
             s >> pm;
             b.setTexture(std::move(pm));
         }
-    } else if (style == Qt::LinearGradientPattern
-               || style == Qt::RadialGradientPattern
-               || style == Qt::ConicalGradientPattern) {
+    } else if (style == BobUI::LinearGradientPattern
+               || style == BobUI::RadialGradientPattern
+               || style == BobUI::ConicalGradientPattern) {
 
         int type_as_int;
         QGradient::Type type;
@@ -1202,14 +1202,14 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
 
         s >> type_as_int;
         type = QGradient::Type(type_as_int);
-        if (s.version() >= QDataStream::Qt_4_3) {
+        if (s.version() >= QDataStream::BobUI_4_3) {
             s >> type_as_int;
             spread = QGradient::Spread(type_as_int);
             s >> type_as_int;
             cmode = QGradient::CoordinateMode(type_as_int);
         }
 
-        if (s.version() >= QDataStream::Qt_4_5) {
+        if (s.version() >= QDataStream::BobUI_4_5) {
             s >> type_as_int;
             imode = QGradient::InterpolationMode(type_as_int);
         }
@@ -1251,7 +1251,7 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
             rg.setSpread(spread);
             rg.setCoordinateMode(cmode);
             rg.setInterpolationMode(imode);
-            if (s.version() >= QDataStream::Qt_6_0)
+            if (s.version() >= QDataStream::BobUI_6_0)
                 s >> focalRadius;
             rg.setFocalRadius(focalRadius);
             b = QBrush(rg);
@@ -1268,16 +1268,16 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
             b = QBrush(cg);
         }
     } else {
-        b = QBrush(color, (Qt::BrushStyle)style);
+        b = QBrush(color, (BobUI::BrushStyle)style);
     }
-    if (s.version() >= QDataStream::Qt_4_3) {
-        QTransform transform;
+    if (s.version() >= QDataStream::BobUI_4_3) {
+        BOBUIransform transform;
         s >> transform;
         b.setTransform(transform);
     }
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*******************************************************************************
  * QGradient implementations
@@ -1288,12 +1288,12 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
     \class QGradient
     \ingroup painting
     \ingroup shared
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QGradient class is used in combination with QBrush to
     specify gradient fills.
 
-    Qt currently supports three types of gradient fills:
+    BobUI currently supports three types of gradient fills:
 
     \list
     \li \e Linear gradients interpolate colors between start and end points.
@@ -1577,8 +1577,8 @@ QGradient::QGradient()
 */
 QGradient::QGradient(Preset preset)
     : m_type(LinearGradient)
-    , m_stops(qt_preset_gradient_stops(preset))
-    , m_data(qt_preset_gradient_data[preset - 1])
+    , m_stops(bobui_preset_gradient_stops(preset))
+    , m_data(bobui_preset_gradient_data[preset - 1])
     , m_coordinateMode(ObjectMode)
 {
 }
@@ -1752,7 +1752,7 @@ QGradientStops QGradient::stops() const
     \value ObjectMode In this mode the gradient coordinates are
     relative to the bounding rectangle of the object being drawn, with
     (0,0) in the top left corner, and (1,1) in the bottom right corner
-    of the object's bounding rectangle. This value was added in Qt
+    of the object's bounding rectangle. This value was added in BobUI
     5.12.
     \value StretchToDeviceMode In this mode the gradient coordinates
     are relative to the bounding rectangle of the paint device,
@@ -1871,7 +1871,7 @@ bool QGradient::operator==(const QGradient &gradient) const
 /*!
     \class QLinearGradient
     \ingroup painting
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QLinearGradient class is used in combination with QBrush to
     specify a linear gradient brush.
@@ -2052,12 +2052,12 @@ void QLinearGradient::setFinalStop(const QPointF &stop)
 /*!
     \class QRadialGradient
     \ingroup painting
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QRadialGradient class is used in combination with QBrush to
     specify a radial gradient brush.
 
-    Qt supports both simple and extended radial gradients.
+    BobUI supports both simple and extended radial gradients.
 
     Simple radial gradients interpolate colors between a focal point and end
     points on a circle surrounding it. Extended radial gradients interpolate
@@ -2097,7 +2097,7 @@ void QLinearGradient::setFinalStop(const QPointF &stop)
     Gradients Example}
 */
 
-static QPointF qt_radial_gradient_adapt_focal_point(const QPointF &center,
+static QPointF bobui_radial_gradient_adapt_focal_point(const QPointF &center,
                                                     qreal radius,
                                                     const QPointF &focalPoint)
 {
@@ -2132,7 +2132,7 @@ QRadialGradient::QRadialGradient(const QPointF &center, qreal radius, const QPoi
     m_data.radial.cradius = radius;
     m_data.radial.fradius = 0;
 
-    QPointF adapted_focal = qt_radial_gradient_adapt_focal_point(center, radius, focalPoint);
+    QPointF adapted_focal = bobui_radial_gradient_adapt_focal_point(center, radius, focalPoint);
     m_data.radial.fx = adapted_focal.x();
     m_data.radial.fy = adapted_focal.y();
 }
@@ -2413,7 +2413,7 @@ void QRadialGradient::setFocalPoint(const QPointF &focalPoint)
 /*!
     \class QConicalGradient
     \ingroup painting
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QConicalGradient class is used in combination with QBrush to
     specify a conical gradient brush.
@@ -2603,7 +2603,7 @@ void QConicalGradient::setAngle(qreal angle)
 */
 
 /*!
-    \fn QTransform QBrush::transform() const
+    \fn BOBUIransform QBrush::transform() const
     \since 4.3
 
     Returns the current transformation matrix for the brush.
@@ -2611,6 +2611,6 @@ void QConicalGradient::setAngle(qreal angle)
     \sa setTransform()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qbrush.cpp"

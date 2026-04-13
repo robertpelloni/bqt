@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## [1.1.0] - 2026-04-03
 ### Added
 - **Liquid Glass Edition**: Complete Notepad++ UI overhaul with Apple-inspired liquid glass aesthetics.
@@ -464,6 +465,8 @@ All notable changes to this project will be documented in this file.
 - `go test ./internal/...` passes.
 - `go build -buildvcs=false .` succeeds.
 
+=======
+>>>>>>> origin/dev
 ## [1.1.29] - 2026-04-05
 ### Added
 - Added `docs/ai/design/2026-04-05-cpp-go-side-by-side-migration-strategy.md` documenting the safe staged strategy for keeping C++ and Go buildable side by side during naming migration.

@@ -1,5 +1,5 @@
 // Copyright (C) 2013 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MYINTERFACE_H
 #define MYINTERFACE_H
@@ -11,10 +11,10 @@ class MyInterface
 
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_INTERFACE(MyInterface, "org.cmake.example.MyInterface")
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

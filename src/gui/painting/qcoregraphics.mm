@@ -1,33 +1,33 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcoregraphics_p.h"
 
 #include <private/qcore_mac_p.h>
 #include <qpa/qplatformpixmap.h>
-#include <QtGui/qicon.h>
-#include <QtGui/private/qpaintengine_p.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qoperatingsystemversion.h>
-#include <QtGui/qcolorspace.h>
-#include <QtGui/private/qicon_p.h>
+#include <BobUIGui/qicon.h>
+#include <BobUIGui/private/qpaintengine_p.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qoperatingsystemversion.h>
+#include <BobUIGui/qcolorspace.h>
+#include <BobUIGui/private/qicon_p.h>
 
 #if defined(Q_OS_MACOS)
 # include <AppKit/AppKit.h>
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
 # include <UIKit/UIKit.h>
 #endif
 
 #include <Accelerate/Accelerate.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // ---------------------- Images ----------------------
 
-std::optional<vImage_CGImageFormat> qt_mac_cgImageFormatForImage(const QImage &image)
+std::optional<vImage_CGImageFormat> bobui_mac_cgImageFormatForImage(const QImage &image)
 {
     const QPixelFormat format = image.pixelFormat();
 
@@ -73,7 +73,7 @@ std::optional<vImage_CGImageFormat> qt_mac_cgImageFormatForImage(const QImage &i
 
     switch (format.typeInterpretation()) {
     case QPixelFormat::UnsignedByte:
-        // Qt always uses UnsignedByte for BigEndian formats, instead of
+        // BobUI always uses UnsignedByte for BigEndian formats, instead of
         // representing e.g. Format_RGBX8888 as UnsignedInteger+BigEndian,
         // so we need to look at the bits per pixel as well.
         if (format.bitsPerPixel() == 32)
@@ -138,7 +138,7 @@ std::optional<vImage_CGImageFormat> qt_mac_cgImageFormatForImage(const QImage &i
     };
 }
 
-CGImageRef qt_mac_toCGImage(const QImage &inImage)
+CGImageRef bobui_mac_toCGImage(const QImage &inImage)
 {
     CGImageRef cgImage = inImage.toCGImage();
     if (cgImage)
@@ -148,7 +148,7 @@ CGImageRef qt_mac_toCGImage(const QImage &inImage)
     return inImage.convertToFormat(QImage::Format_ARGB32_Premultiplied).toCGImage();
 }
 
-void qt_mac_drawCGImage(CGContextRef inContext, const CGRect *inBounds, CGImageRef inImage)
+void bobui_mac_drawCGImage(CGContextRef inContext, const CGRect *inBounds, CGImageRef inImage)
 {
     CGContextSaveGState( inContext );
     CGContextTranslateCTM (inContext, 0, inBounds->origin.y + CGRectGetMaxY(*inBounds));
@@ -159,7 +159,7 @@ void qt_mac_drawCGImage(CGContextRef inContext, const CGRect *inBounds, CGImageR
     CGContextRestoreGState(inContext);
 }
 
-QImage::Format qt_mac_imageFormatForCGImage(CGImageRef image)
+QImage::Format bobui_mac_imageFormatForCGImage(CGImageRef image)
 {
     if (!image)
         return QImage::Format_Invalid;
@@ -171,7 +171,7 @@ QImage::Format qt_mac_imageFormatForCGImage(CGImageRef image)
     const CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(image);
     const auto byteOrder = CGImageByteOrderInfo(bitmapInfo & kCGBitmapByteOrderMask);
 
-    auto qtByteOrder = [&]() -> std::optional<QPixelFormat::ByteOrder> {
+    auto bobuiByteOrder = [&]() -> std::optional<QPixelFormat::ByteOrder> {
         switch (byteOrder) {
         case kCGImageByteOrder16Big:
         case kCGImageByteOrder32Big:
@@ -184,14 +184,14 @@ QImage::Format qt_mac_imageFormatForCGImage(CGImageRef image)
             return {};
         }
     }();
-    if (!qtByteOrder)
+    if (!bobuiByteOrder)
         return QImage::Format_Invalid;
 
     auto typeInterpretation = [&]() -> std::optional<QPixelFormat::TypeInterpretation> {
         if (bitmapInfo & kCGBitmapFloatComponents)
             return QPixelFormat::FloatingPoint;
-        else if (qtByteOrder == QPixelFormat::BigEndian)
-            // Qt always uses UnsignedByte for BigEndian formats, instead of
+        else if (bobuiByteOrder == QPixelFormat::BigEndian)
+            // BobUI always uses UnsignedByte for BigEndian formats, instead of
             // representing e.g. Format_RGBX8888 as UnsignedInteger+BigEndian.
             return QPixelFormat::UnsignedByte;
         else if (byteOrder == kCGImageByteOrder16Little)
@@ -256,18 +256,18 @@ QImage::Format qt_mac_imageFormatForCGImage(CGImageRef image)
 
     QPixelFormat pixelFormat(QPixelFormat::RGB, redSize, greenSize, blueSize, 0, 0,
         alphaSize, alphaUsage, alphaPosition, alphaPremultiplied,
-        *typeInterpretation, *qtByteOrder);
+        *typeInterpretation, *bobuiByteOrder);
 
     return QImage::toImageFormat(pixelFormat);
 }
 
-QImage qt_mac_toQImage(CGImageRef cgImage)
+QImage bobui_mac_toQImage(CGImageRef cgImage)
 {
     const size_t width = CGImageGetWidth(cgImage);
     const size_t height = CGImageGetHeight(cgImage);
 
     QImage image = [&]() -> QImage {
-        QImage::Format imageFormat = qt_mac_imageFormatForCGImage(cgImage);
+        QImage::Format imageFormat = bobui_mac_imageFormatForCGImage(cgImage);
         if (imageFormat == QImage::Format_Invalid)
             return {};
 
@@ -289,10 +289,10 @@ QImage qt_mac_toQImage(CGImageRef cgImage)
     if (image.isNull()) {
         // Fall back to drawing to a know good format
         image = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
-        image.fill(Qt::transparent);
+        image.fill(BobUI::transparent);
         QMacCGContext context(&image);
         CGRect rect = CGRectMake(0, 0, width, height);
-        qt_mac_drawCGImage(context, &rect, cgImage);
+        bobui_mac_drawCGImage(context, &rect, cgImage);
     }
 
     if (!image.isNull()) {
@@ -304,7 +304,7 @@ QImage qt_mac_toQImage(CGImageRef cgImage)
     return image;
 }
 
-QImage qt_mac_padToSquareImage(const QImage &image)
+QImage bobui_mac_padToSquareImage(const QImage &image)
 {
     if (image.width() == image.height())
         return image;
@@ -312,7 +312,7 @@ QImage qt_mac_padToSquareImage(const QImage &image)
     const int size = std::max(image.width(), image.height());
     QImage squareImage(size, size, image.format());
     squareImage.setDevicePixelRatio(image.devicePixelRatio());
-    squareImage.fill(Qt::transparent);
+    squareImage.fill(BobUI::transparent);
 
     QPoint pos((size - image.width()) / (2.0 * image.devicePixelRatio()),
                (size - image.height()) / (2.0 * image.devicePixelRatio()));
@@ -326,9 +326,9 @@ QImage qt_mac_padToSquareImage(const QImage &image)
 
 #ifdef Q_OS_MACOS
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-@implementation NSImage (QtExtras)
+@implementation NSImage (BobUIExtras)
 + (instancetype)imageFromQImage:(const QImage &)image
 {
     if (image.isNull())
@@ -399,13 +399,13 @@ QT_END_NAMESPACE
 
     if (!size.isNull()) {
         auto imageSize = QSizeF::fromCGSize(nsImage.size);
-        nsImage.size = imageSize.scaled(size, Qt::KeepAspectRatio).toCGSize();
+        nsImage.size = imageSize.scaled(size, BobUI::KeepAspectRatio).toCGSize();
     }
 
     return nsImage;
 }
 
-+ (instancetype)internalImageFromQIcon:(const QT_PREPEND_NAMESPACE(QIcon) &)icon
++ (instancetype)internalImageFromQIcon:(const BOBUI_PREPEND_NAMESPACE(QIcon) &)icon
 {
     if (icon.isNull())
         return nil;
@@ -419,16 +419,16 @@ QT_END_NAMESPACE
 
 @end
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QPixmap qt_mac_toQPixmap(const NSImage *image, const QSizeF &size)
+QPixmap bobui_mac_toQPixmap(const NSImage *image, const QSizeF &size)
 {
     // ### TODO: add parameter so that we can decide whether to maintain the aspect
     // ratio of the image (positioning the image inside the pixmap of size \a size),
     // or whether we want to fill the resulting pixmap by stretching the image.
     const NSSize pixmapSize = NSMakeSize(size.width(), size.height());
     QPixmap pixmap(pixmapSize.width, pixmapSize.height);
-    pixmap.fill(Qt::transparent);
+    pixmap.fill(BobUI::transparent);
     [image setSize:pixmapSize];
     const NSRect iconRect = NSMakeRect(0, 0, pixmapSize.width, pixmapSize.height);
     QMacCGContext ctx(&pixmap);
@@ -446,13 +446,13 @@ QPixmap qt_mac_toQPixmap(const NSImage *image, const QSizeF &size)
 
 #endif // Q_OS_MACOS
 
-#ifdef QT_PLATFORM_UIKIT
+#ifdef BOBUI_PLATFORM_UIKIT
 
-QImage qt_mac_toQImage(const UIImage *image, QSizeF size)
+QImage bobui_mac_toQImage(const UIImage *image, QSizeF size)
 {
     // ### TODO: same as above
     QImage ret(size.width(), size.height(), QImage::Format_ARGB32_Premultiplied);
-    ret.fill(Qt::transparent);
+    ret.fill(BobUI::transparent);
     QMacCGContext ctx(&ret);
     if (!ctx)
         return QImage();
@@ -463,36 +463,36 @@ QImage qt_mac_toQImage(const UIImage *image, QSizeF size)
     return ret;
 }
 
-#endif // QT_PLATFORM_UIKIT
+#endif // BOBUI_PLATFORM_UIKIT
 
 // ---------------------- Colors and Brushes ----------------------
 
-QColor qt_mac_toQColor(CGColorRef color)
+QColor bobui_mac_toQColor(CGColorRef color)
 {
-    QColor qtColor;
+    QColor bobuiColor;
     CGColorSpaceModel model = CGColorSpaceGetModel(CGColorGetColorSpace(color));
     const CGFloat *components = CGColorGetComponents(color);
     if (model == kCGColorSpaceModelRGB) {
-        qtColor.setRgbF(components[0], components[1], components[2], components[3]);
+        bobuiColor.setRgbF(components[0], components[1], components[2], components[3]);
     } else if (model == kCGColorSpaceModelCMYK) {
-        qtColor.setCmykF(components[0], components[1], components[2], components[3]);
+        bobuiColor.setCmykF(components[0], components[1], components[2], components[3]);
     } else if (model == kCGColorSpaceModelMonochrome) {
-        qtColor.setRgbF(components[0], components[0], components[0], components[1]);
+        bobuiColor.setRgbF(components[0], components[0], components[0], components[1]);
     } else {
         // Colorspace we can't deal with.
-        qWarning("Qt: qt_mac_toQColor: cannot convert from colorspace model: %d", model);
+        qWarning("BobUI: bobui_mac_toQColor: cannot convert from colorspace model: %d", model);
         Q_ASSERT(false);
     }
-    return qtColor;
+    return bobuiColor;
 }
 
 #ifdef Q_OS_MACOS
-QColor qt_mac_toQColor(const NSColor *color)
+QColor bobui_mac_toQColor(const NSColor *color)
 {
     if (!color)
         return QColor();
 
-    QColor qtColor;
+    QColor bobuiColor;
     switch (color.type) {
     case NSColorTypeComponentBased: {
         const NSColorSpace *colorSpace = [color colorSpace];
@@ -500,13 +500,13 @@ QColor qt_mac_toQColor(const NSColor *color)
             && color.numberOfComponents == 4) { // rbga
             CGFloat components[4];
             [color getComponents:components];
-            qtColor.setRgbF(components[0], components[1], components[2], components[3]);
+            bobuiColor.setRgbF(components[0], components[1], components[2], components[3]);
             break;
         } else if (colorSpace == NSColorSpace.genericCMYKColorSpace
                    && color.numberOfComponents == 5) { // cmyk + alpha
             CGFloat components[5];
             [color getComponents:components];
-            qtColor.setCmykF(components[0], components[1], components[2], components[3], components[4]);
+            bobuiColor.setCmykF(components[0], components[1], components[2], components[3], components[4]);
             break;
         }
     }
@@ -515,32 +515,32 @@ QColor qt_mac_toQColor(const NSColor *color)
         const NSColor *tmpColor = [color colorUsingColorSpace:NSColorSpace.genericRGBColorSpace];
         CGFloat red = 0, green = 0, blue = 0, alpha = 0;
         [tmpColor getRed:&red green:&green blue:&blue alpha:&alpha];
-        qtColor.setRgbF(red, green, blue, alpha);
+        bobuiColor.setRgbF(red, green, blue, alpha);
         break;
     }
     }
 
-    return qtColor;
+    return bobuiColor;
 }
 #endif
 
-QBrush qt_mac_toQBrush(CGColorRef color)
+QBrush bobui_mac_toQBrush(CGColorRef color)
 {
-    QBrush qtBrush;
+    QBrush bobuiBrush;
     CGColorSpaceModel model = CGColorSpaceGetModel(CGColorGetColorSpace(color));
     if (model == kCGColorSpaceModelPattern) {
         // Colorspace we can't deal with; the color is drawn directly using a callback.
-        qWarning("Qt: qt_mac_toQBrush: cannot convert from colorspace model: %d", model);
+        qWarning("BobUI: bobui_mac_toQBrush: cannot convert from colorspace model: %d", model);
         Q_ASSERT(false);
     } else {
-        qtBrush.setStyle(Qt::SolidPattern);
-        qtBrush.setColor(qt_mac_toQColor(color));
+        bobuiBrush.setStyle(BobUI::SolidPattern);
+        bobuiBrush.setColor(bobui_mac_toQColor(color));
     }
-    return qtBrush;
+    return bobuiBrush;
 }
 
 #ifdef Q_OS_MACOS
-static bool qt_mac_isSystemColorOrInstance(const NSColor *color, NSString *colorNameComponent, NSString *className)
+static bool bobui_mac_isSystemColorOrInstance(const NSColor *color, NSString *colorNameComponent, NSString *className)
 {
     // We specifically do not want isKindOfClass: here
     if ([color.className isEqualToString:className]) // NSPatternColorSpace
@@ -552,14 +552,14 @@ static bool qt_mac_isSystemColorOrInstance(const NSColor *color, NSString *color
     return false;
 }
 
-QBrush qt_mac_toQBrush(const NSColor *color, QPalette::ColorGroup colorGroup)
+QBrush bobui_mac_toQBrush(const NSColor *color, QPalette::ColorGroup colorGroup)
 {
-    QBrush qtBrush;
+    QBrush bobuiBrush;
 
-    // QTBUG-49773: This calls NSDrawMenuItemBackground to render a 1 by n gradient; could use HITheme
+    // BOBUIBUG-49773: This calls NSDrawMenuItemBackground to render a 1 by n gradient; could use HITheme
     if ([color.className isEqualToString:@"NSMenuItemHighlightColor"]) {
-        qWarning("Qt: qt_mac_toQBrush: cannot convert from NSMenuItemHighlightColor");
-        return qtBrush;
+        qWarning("BobUI: bobui_mac_toQBrush: cannot convert from NSMenuItemHighlightColor");
+        return bobuiBrush;
     }
 
     // Not a catalog color or a manifestation of System.windowBackgroundColor;
@@ -570,14 +570,14 @@ QBrush qt_mac_toQBrush(const NSColor *color, QPalette::ColorGroup colorGroup)
         // which returns a texture sized 1 by (window height, including frame), backed by a CGPattern
         // which follows the window key state... probably need to allow QBrush to store a function pointer
         // like CGPattern does
-        qWarning("Qt: qt_mac_toQBrush: cannot convert from NSMetalPatternColor");
-        return qtBrush;
+        qWarning("BobUI: bobui_mac_toQBrush: cannot convert from NSMetalPatternColor");
+        return bobuiBrush;
     }
 
     // No public API to get these colors/stops;
     // both accurately obtained through runtime object inspection on OS X 10.11
     // (the NSColor object has NSGradient i-vars for both color groups)
-    if (qt_mac_isSystemColorOrInstance(color, @"_sourceListBackgroundColor", @"NSSourceListBackgroundColor")) {
+    if (bobui_mac_isSystemColorOrInstance(color, @"_sourceListBackgroundColor", @"NSSourceListBackgroundColor")) {
         QLinearGradient gradient;
         if (colorGroup == QPalette::Active) {
             gradient.setColorAt(0, QColor(233, 237, 242));
@@ -596,29 +596,29 @@ QBrush qt_mac_toQBrush(const NSColor *color, QPalette::ColorGroup colorGroup)
     // ([NSColor colorWithCalibratedWhite:0.909804 alpha:1.000000]) while still returning the
     // ruled lines pattern image (from OS X 10.4) to the user from -[NSColor patternImage]
     // (and providing no public API to get the underlying color without this insanity)
-    if (qt_mac_isSystemColorOrInstance(color, @"controlColor", @"NSGradientPatternColor") ||
-        qt_mac_isSystemColorOrInstance(color, @"windowBackgroundColor", @"NSGradientPatternColor")) {
-        qtBrush.setStyle(Qt::SolidPattern);
-        qtBrush.setColor(qt_mac_toQColor(color.CGColor));
-        return qtBrush;
+    if (bobui_mac_isSystemColorOrInstance(color, @"controlColor", @"NSGradientPatternColor") ||
+        bobui_mac_isSystemColorOrInstance(color, @"windowBackgroundColor", @"NSGradientPatternColor")) {
+        bobuiBrush.setStyle(BobUI::SolidPattern);
+        bobuiBrush.setColor(bobui_mac_toQColor(color.CGColor));
+        return bobuiBrush;
     }
 
     if (color.type == NSColorTypePattern) {
         NSImage *patternImage = color.patternImage;
         const QSizeF sz(patternImage.size.width, patternImage.size.height);
-        // FIXME: QBrush is not resolution independent (QTBUG-49774)
-        qtBrush.setTexture(qt_mac_toQPixmap(patternImage, sz));
+        // FIXME: QBrush is not resolution independent (BOBUIBUG-49774)
+        bobuiBrush.setTexture(bobui_mac_toQPixmap(patternImage, sz));
     } else {
-        qtBrush.setStyle(Qt::SolidPattern);
-        qtBrush.setColor(qt_mac_toQColor(color));
+        bobuiBrush.setStyle(BobUI::SolidPattern);
+        bobuiBrush.setColor(bobui_mac_toQColor(color));
     }
-    return qtBrush;
+    return bobuiBrush;
 }
 #endif
 
 // ---------------------- Geometry Helpers ----------------------
 
-void qt_mac_clip_cg(CGContextRef hd, const QRegion &rgn, CGAffineTransform *orig_xform)
+void bobui_mac_clip_cg(CGContextRef hd, const QRegion &rgn, CGAffineTransform *orig_xform)
 {
     CGAffineTransform old_xform = CGAffineTransformIdentity;
     if (orig_xform) { //setup xforms
@@ -646,7 +646,7 @@ void qt_mac_clip_cg(CGContextRef hd, const QRegion &rgn, CGAffineTransform *orig
 }
 
 // move to QRegion?
-void qt_mac_scale_region(QRegion *region, qreal scaleFactor)
+void bobui_mac_scale_region(QRegion *region, qreal scaleFactor)
 {
     if (!region || !region->rectCount())
         return;
@@ -703,7 +703,7 @@ QMacCGContext::QMacCGContext(QPainter *painter)
 
     paintEngine->syncState();
 
-    if (Qt::HANDLE handle = QPaintEnginePrivate::get(paintEngine)->nativeHandle()) {
+    if (BobUI::HANDLE handle = QPaintEnginePrivate::get(paintEngine)->nativeHandle()) {
         context = static_cast<CGContextRef>(handle);
         return;
     }
@@ -734,7 +734,7 @@ QMacCGContext::QMacCGContext(QPainter *painter)
 
 void QMacCGContext::initialize(const QImage *image, QPainter *painter)
 {
-    auto cgImageFormat = qt_mac_cgImageFormatForImage(*image);
+    auto cgImageFormat = bobui_mac_cgImageFormatForImage(*image);
     if (!cgImageFormat) {
         qWarning() << "QMacCGContext:: Could not get bitmap info for" << image;
         return;
@@ -753,13 +753,13 @@ void QMacCGContext::initialize(const QImage *image, QPainter *painter)
     if (painter && painter->device()->devType() == QInternal::Widget) {
         // Set the clip rect which is an intersection of the system clip and the painter clip
         QRegion clip = painter->paintEngine()->systemClip();
-        QTransform deviceTransform = painter->deviceTransform();
+        BOBUIransform deviceTransform = painter->deviceTransform();
 
         if (painter->hasClipping()) {
             // To make matters more interesting the painter clip is in device-independent pixels,
             // so we need to scale it to match the device-pixels of the system clip.
             QRegion painterClip = painter->clipRegion();
-            qt_mac_scale_region(&painterClip, devicePixelRatio);
+            bobui_mac_scale_region(&painterClip, devicePixelRatio);
 
             painterClip.translate(deviceTransform.dx(), deviceTransform.dy());
 
@@ -769,7 +769,7 @@ void QMacCGContext::initialize(const QImage *image, QPainter *painter)
                 clip &= painterClip;
         }
 
-        qt_mac_clip_cg(context, clip, nullptr);
+        bobui_mac_clip_cg(context, clip, nullptr);
 
         CGContextTranslateCTM(context, deviceTransform.dx(), deviceTransform.dy());
     }
@@ -778,4 +778,4 @@ void QMacCGContext::initialize(const QImage *image, QPainter *painter)
     CGContextScaleCTM(context, devicePixelRatio, devicePixelRatio);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

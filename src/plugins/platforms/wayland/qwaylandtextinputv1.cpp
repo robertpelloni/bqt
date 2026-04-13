@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #include <qpa/qplatforminputcontext.h>
 
 #include "qwaylandtextinputv1_p.h"
@@ -8,35 +8,35 @@
 #include "qwaylandwindow_p.h"
 #include "qwaylandinputmethodeventbuilder_p.h"
 
-#include <QtCore/qloggingcategory.h>
-#include <QtGui/QGuiApplication>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
-#include <QtGui/qpa/qplatformintegration.h>
-#include <QtGui/qevent.h>
-#include <QtGui/qwindow.h>
-#include <QTextCharFormat>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/qpa/qplatformintegration.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qwindow.h>
+#include <BOBUIextCharFormat>
 #include <QList>
 #include <QRectF>
 #include <QLocale>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 namespace {
 
-const Qt::InputMethodQueries supportedQueries1 = Qt::ImEnabled |
-                                                Qt::ImSurroundingText |
-                                                Qt::ImCursorPosition |
-                                                Qt::ImAnchorPosition |
-                                                Qt::ImHints |
-                                                Qt::ImCursorRectangle |
-                                                Qt::ImPreferredLanguage;
+const BobUI::InputMethodQueries supportedQueries1 = BobUI::ImEnabled |
+                                                BobUI::ImSurroundingText |
+                                                BobUI::ImCursorPosition |
+                                                BobUI::ImAnchorPosition |
+                                                BobUI::ImHints |
+                                                BobUI::ImCursorRectangle |
+                                                BobUI::ImPreferredLanguage;
 }
 
 QWaylandTextInputv1::QWaylandTextInputv1(QWaylandDisplay *display, struct ::zwp_text_input_v1 *text_input)
-    : QtWayland::zwp_text_input_v1(text_input)
+    : BobUIWayland::zwp_text_input_v1(text_input)
 {
     Q_UNUSED(display);
 }
@@ -52,7 +52,7 @@ void QWaylandTextInputv1::reset()
 {
     m_builder.reset();
     m_preeditCommit = QString();
-    updateState(Qt::ImQueryAll, QWaylandTextInputInterface::update_state_reset);
+    updateState(BobUI::ImQueryAll, QWaylandTextInputInterface::update_state_reset);
 }
 
 void QWaylandTextInputv1::commit()
@@ -80,7 +80,7 @@ void QWaylandTextInputv1::resetCallback(void *data, wl_callback *, uint32_t)
     }
 }
 
-void QWaylandTextInputv1::updateState(Qt::InputMethodQueries queries, uint32_t flags)
+void QWaylandTextInputv1::updateState(BobUI::InputMethodQueries queries, uint32_t flags)
 {
     if (!QGuiApplication::focusObject())
         return;
@@ -96,16 +96,16 @@ void QWaylandTextInputv1::updateState(Qt::InputMethodQueries queries, uint32_t f
     queries &= supportedQueries1;
 
     // Surrounding text, cursor and anchor positions are transferred together
-    if ((queries & Qt::ImSurroundingText) || (queries & Qt::ImCursorPosition) || (queries & Qt::ImAnchorPosition))
-        queries |= Qt::ImSurroundingText | Qt::ImCursorPosition | Qt::ImAnchorPosition;
+    if ((queries & BobUI::ImSurroundingText) || (queries & BobUI::ImCursorPosition) || (queries & BobUI::ImAnchorPosition))
+        queries |= BobUI::ImSurroundingText | BobUI::ImCursorPosition | BobUI::ImAnchorPosition;
 
     QInputMethodQueryEvent event(queries);
     QCoreApplication::sendEvent(QGuiApplication::focusObject(), &event);
 
-    if ((queries & Qt::ImSurroundingText) || (queries & Qt::ImCursorPosition) || (queries & Qt::ImAnchorPosition)) {
-        QString text = event.value(Qt::ImSurroundingText).toString();
-        int cursor = event.value(Qt::ImCursorPosition).toInt();
-        int anchor = event.value(Qt::ImAnchorPosition).toInt();
+    if ((queries & BobUI::ImSurroundingText) || (queries & BobUI::ImCursorPosition) || (queries & BobUI::ImAnchorPosition)) {
+        QString text = event.value(BobUI::ImSurroundingText).toString();
+        int cursor = event.value(BobUI::ImCursorPosition).toInt();
+        int anchor = event.value(BobUI::ImAnchorPosition).toInt();
 
         // Make sure text is not too big
         if (text.toUtf8().size() > 2048) {
@@ -120,13 +120,13 @@ void QWaylandTextInputv1::updateState(Qt::InputMethodQueries queries, uint32_t f
         set_surrounding_text(text, QWaylandInputMethodEventBuilder::indexToWayland(text, cursor), QWaylandInputMethodEventBuilder::indexToWayland(text, anchor));
     }
 
-    if (queries & Qt::ImHints) {
-        QWaylandInputMethodContentType contentType = QWaylandInputMethodContentType::convert(static_cast<Qt::InputMethodHints>(event.value(Qt::ImHints).toInt()));
+    if (queries & BobUI::ImHints) {
+        QWaylandInputMethodContentType contentType = QWaylandInputMethodContentType::convert(static_cast<BobUI::InputMethodHints>(event.value(BobUI::ImHints).toInt()));
         set_content_type(contentType.hint, contentType.purpose);
     }
 
-    if (queries & Qt::ImCursorRectangle) {
-        const QRect &cRect = event.value(Qt::ImCursorRectangle).toRect();
+    if (queries & BobUI::ImCursorRectangle) {
+        const QRect &cRect = event.value(BobUI::ImCursorRectangle).toRect();
         const QRect &windowRect = QGuiApplication::inputMethod()->inputItemTransform().mapRect(cRect);
         const QRect &nativeRect = QHighDpi::toNativePixels(windowRect, QGuiApplication::focusWindow());
         const QMargins margins = window->clientSideMargins();
@@ -134,13 +134,13 @@ void QWaylandTextInputv1::updateState(Qt::InputMethodQueries queries, uint32_t f
         set_cursor_rectangle(surfaceRect.x(), surfaceRect.y(), surfaceRect.width(), surfaceRect.height());
     }
 
-    if (queries & Qt::ImPreferredLanguage) {
-        const QString &language = event.value(Qt::ImPreferredLanguage).toString();
+    if (queries & BobUI::ImPreferredLanguage) {
+        const QString &language = event.value(BobUI::ImPreferredLanguage).toString();
         set_preferred_language(language);
     }
 
     if (flags == QWaylandTextInputInterface::update_state_reset)
-        QtWayland::zwp_text_input_v1::reset();
+        BobUIWayland::zwp_text_input_v1::reset();
     else
         commit_state(m_serial);
 }
@@ -165,7 +165,7 @@ QLocale QWaylandTextInputv1::locale() const
     return m_locale;
 }
 
-Qt::LayoutDirection QWaylandTextInputv1::inputDirection() const
+BobUI::LayoutDirection QWaylandTextInputv1::inputDirection() const
 {
     return m_inputDirection;
 }
@@ -174,7 +174,7 @@ void QWaylandTextInputv1::zwp_text_input_v1_enter(::wl_surface *surface)
 {
     m_surface = surface;
 
-    updateState(Qt::ImQueryAll, QWaylandTextInputInterface::update_state_reset);
+    updateState(BobUI::ImQueryAll, QWaylandTextInputInterface::update_state_reset);
 }
 
 void QWaylandTextInputv1::zwp_text_input_v1_leave()
@@ -190,17 +190,17 @@ void QWaylandTextInputv1::zwp_text_input_v1_modifiers_map(wl_array *map)
 
     for (const QByteArray &modifier : modifiersMap) {
         if (modifier == "Shift")
-            m_modifiersMap.append(Qt::ShiftModifier);
+            m_modifiersMap.append(BobUI::ShiftModifier);
         else if (modifier == "Control")
-            m_modifiersMap.append(Qt::ControlModifier);
+            m_modifiersMap.append(BobUI::ControlModifier);
         else if (modifier == "Alt")
-            m_modifiersMap.append(Qt::AltModifier);
+            m_modifiersMap.append(BobUI::AltModifier);
         else if (modifier == "Mod1")
-            m_modifiersMap.append(Qt::AltModifier);
+            m_modifiersMap.append(BobUI::AltModifier);
         else if (modifier == "Mod4")
-            m_modifiersMap.append(Qt::MetaModifier);
+            m_modifiersMap.append(BobUI::MetaModifier);
         else
-            m_modifiersMap.append(Qt::NoModifier);
+            m_modifiersMap.append(BobUI::NoModifier);
     }
 }
 
@@ -285,7 +285,7 @@ void QWaylandTextInputv1::zwp_text_input_v1_keysym(uint32_t serial, uint32_t tim
 {
     m_serial = serial;
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     if (m_resetCallback) {
         qCDebug(qLcQpaInputMethods()) << "discard keysym: reset not confirmed";
         return;
@@ -294,14 +294,14 @@ void QWaylandTextInputv1::zwp_text_input_v1_keysym(uint32_t serial, uint32_t tim
     if (!QGuiApplication::focusWindow())
         return;
 
-    Qt::KeyboardModifiers qtModifiers = modifiersToQtModifiers(modifiers);
+    BobUI::KeyboardModifiers bobuiModifiers = modifiersToBobUIModifiers(modifiers);
 
     QEvent::Type type = state == WL_KEYBOARD_KEY_STATE_PRESSED ? QEvent::KeyPress : QEvent::KeyRelease;
     QString text = QXkbCommon::lookupStringNoKeysymTransformations(sym);
-    int qtkey = QXkbCommon::keysymToQtKey(sym, qtModifiers);
+    int bobuikey = QXkbCommon::keysymToBobUIKey(sym, bobuiModifiers);
 
     QWindowSystemInterface::handleKeyEvent(QGuiApplication::focusWindow(),
-                                           time, type, qtkey, qtModifiers, text);
+                                           time, type, bobuikey, bobuiModifiers, text);
 #else
     Q_UNUSED(time);
     Q_UNUSED(sym);
@@ -335,18 +335,18 @@ void QWaylandTextInputv1::zwp_text_input_v1_text_direction(uint32_t serial, uint
         return;
     }
 
-    const Qt::LayoutDirection inputDirection = (direction == text_direction_auto) ? Qt::LayoutDirectionAuto :
-                                               (direction == text_direction_ltr) ? Qt::LeftToRight :
-                                               (direction == text_direction_rtl) ? Qt::RightToLeft : Qt::LayoutDirectionAuto;
+    const BobUI::LayoutDirection inputDirection = (direction == text_direction_auto) ? BobUI::LayoutDirectionAuto :
+                                               (direction == text_direction_ltr) ? BobUI::LeftToRight :
+                                               (direction == text_direction_rtl) ? BobUI::RightToLeft : BobUI::LayoutDirectionAuto;
     if (m_inputDirection != inputDirection) {
         m_inputDirection = inputDirection;
         QGuiApplicationPrivate::platformIntegration()->inputContext()->emitInputDirectionChanged(m_inputDirection);
     }
 }
 
-Qt::KeyboardModifiers QWaylandTextInputv1::modifiersToQtModifiers(uint32_t modifiers)
+BobUI::KeyboardModifiers QWaylandTextInputv1::modifiersToBobUIModifiers(uint32_t modifiers)
 {
-    Qt::KeyboardModifiers ret = Qt::NoModifier;
+    BobUI::KeyboardModifiers ret = BobUI::NoModifier;
     for (int i = 0; i < m_modifiersMap.size(); ++i) {
         if (modifiers & (1 << i)) {
             ret |= m_modifiersMap[i];
@@ -357,5 +357,5 @@ Qt::KeyboardModifiers QWaylandTextInputv1::modifiersToQtModifiers(uint32_t modif
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

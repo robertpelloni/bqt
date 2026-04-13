@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandeglwindow_p.h"
 
-#include <QtWaylandClient/private/qwaylandscreen_p.h>
-#include <QtWaylandClient/private/qwaylandsurface_p.h>
+#include <BobUIWaylandClient/private/qwaylandscreen_p.h>
+#include <BobUIWaylandClient/private/qwaylandsurface_p.h>
 #include "qwaylandglcontext_p.h"
 
-#include <QtGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
 
 #include <QDebug>
-#include <QtGui/QWindow>
+#include <BobUIGui/QWindow>
 #include <qpa/qwindowsysteminterface.h>
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLContext>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandEglWindow::QWaylandEglWindow(QWindow *window, QWaylandDisplay *display)
     : QWaylandWindow(window, display)
@@ -92,7 +92,7 @@ void QWaylandEglWindow::updateSurface(bool create)
         if (m_waylandEglWindow) {
             int current_width = 0;
             int current_height = 0;
-            static bool disableResizeCheck = qgetenv("QT_WAYLAND_DISABLE_RESIZECHECK").toInt();
+            static bool disableResizeCheck = qgetenv("BOBUI_WAYLAND_DISABLE_RESIZECHECK").toInt();
 
             if (!disableResizeCheck) {
                 wl_egl_window_get_attached_size(m_waylandEglWindow, &current_width, &current_height);
@@ -196,6 +196,6 @@ void QWaylandEglWindow::bindContentFBO()
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandeglwindow_p.cpp"

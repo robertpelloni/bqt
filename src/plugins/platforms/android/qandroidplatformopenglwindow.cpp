@@ -1,6 +1,6 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformopenglwindow.h"
 
@@ -9,16 +9,16 @@
 #include "qandroidplatformscreen.h"
 
 #include <QSurfaceFormat>
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/qguiapplication.h>
 
-#include <QtGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
 #include <qpa/qplatformscreen.h>
 #include <qpa/qwindowsysteminterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QAndroidPlatformOpenGLWindow::QAndroidPlatformOpenGLWindow(QWindow *window, EGLDisplay display)
     :QAndroidPlatformWindow(window), m_eglDisplay(display)
@@ -51,7 +51,7 @@ void QAndroidPlatformOpenGLWindow::setGeometry(const QRect &rect)
 EGLSurface QAndroidPlatformOpenGLWindow::eglSurface(EGLConfig config)
 {
     if (QAndroidEventDispatcherStopper::stopped() ||
-        QGuiApplication::applicationState() == Qt::ApplicationSuspended) {
+        QGuiApplication::applicationState() == BobUI::ApplicationSuspended) {
         qCDebug(lcQpaWindow) << "Application not active, return existing surface.";
         return m_eglSurface;
     }
@@ -59,7 +59,7 @@ EGLSurface QAndroidPlatformOpenGLWindow::eglSurface(EGLConfig config)
     // the Surface
     if (!m_androidSurfaceCreated) {
         static constexpr char funcName[] = "QAndroidPlatformOpenGLWindow::eglSurface()";
-        QtAndroidPrivate::AndroidDeadlockProtector protector(funcName);
+        BobUIAndroidPrivate::AndroidDeadlockProtector protector(funcName);
         if (!protector.acquire()) {
             qFatal("Failed to acquire deadlock protector for %s.", funcName);
             return m_eglSurface;
@@ -76,10 +76,10 @@ EGLSurface QAndroidPlatformOpenGLWindow::eglSurface(EGLConfig config)
     return m_eglSurface;
 }
 
-void QAndroidPlatformOpenGLWindow::applicationStateChanged(Qt::ApplicationState state)
+void QAndroidPlatformOpenGLWindow::applicationStateChanged(BobUI::ApplicationState state)
 {
     QAndroidPlatformWindow::applicationStateChanged(state);
-    if (state <=  Qt::ApplicationHidden) {
+    if (state <=  BobUI::ApplicationHidden) {
         lockSurface();
         destroySurface();
         clearSurface();
@@ -142,4 +142,4 @@ void QAndroidPlatformOpenGLWindow::clearSurface()
     decrementSurfacesCount();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

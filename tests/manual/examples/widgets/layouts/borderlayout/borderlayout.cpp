@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "borderlayout.h"
 
@@ -33,9 +33,9 @@ void BorderLayout::addWidget(QWidget *widget, Position position)
     add(new QWidgetItem(widget), position);
 }
 
-Qt::Orientations BorderLayout::expandingDirections() const
+BobUI::Orientations BorderLayout::expandingDirections() const
 {
-    return Qt::Horizontal | Qt::Vertical;
+    return BobUI::Horizontal | BobUI::Vertical;
 }
 
 bool BorderLayout::hasHeightForWidth() const

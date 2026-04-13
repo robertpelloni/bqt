@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QString>
 #include <QSpinBox>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QDialogButtonBox>
-#include <QTimer>
+#include <BOBUIimer>
 
 #include <qinputdialog.h>
-#include <QtWidgets/private/qdialog_p.h>
+#include <BobUIWidgets/private/qdialog_p.h>
 
 class tst_QInputDialog : public QObject
 {
@@ -25,13 +25,13 @@ class tst_QInputDialog : public QObject
     static void testFuncGetText(QInputDialog *dialog);
     static void testFuncGetItem(QInputDialog *dialog);
     static void testFuncSingleStepDouble(QInputDialog *dialog);
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
 private slots:
     void getInt_data();
     void getInt();
     void getDouble_data();
     void getDouble();
-    void taskQTBUG_54693_crashWhenParentIsDeletedWhileDialogIsOpen();
+    void taskBOBUIBUG_54693_crashWhenParentIsDeletedWhileDialogIsOpen();
     void task255502getDouble();
     void getText_data();
     void getText();
@@ -64,12 +64,12 @@ QString normalizeNumericString(const QString &s)
 
 void _keyClick(QWidget *widget, char key)
 {
-    QTest::keyClick(widget, key);
+    BOBUIest::keyClick(widget, key);
 }
 
-void _keyClick(QWidget *widget, Qt::Key key)
+void _keyClick(QWidget *widget, BobUI::Key key)
 {
-    QTest::keyClick(widget, key);
+    BOBUIest::keyClick(widget, key);
 }
 
 template <typename SpinBoxType>
@@ -105,11 +105,11 @@ void testInvalidateAndRestore(
     const ValueType lastValidValue = sbox->value();
 
     sbox->selectAll();
-    _keyClick(ledit, Qt::Key_Delete);
+    _keyClick(ledit, BobUI::Key_Delete);
     QVERIFY(!sbox->hasAcceptableInput());
     QVERIFY(!okButton->isEnabled());
 
-    _keyClick(ledit, Qt::Key_Return); // should work with Qt::Key_Enter too
+    _keyClick(ledit, BobUI::Key_Return); // should work with BobUI::Key_Enter too
     QVERIFY(sbox->hasAcceptableInput());
     QVERIFY(okButton->isEnabled());
     QCOMPARE(sbox->value(), lastValidValue);
@@ -211,7 +211,7 @@ void tst_QInputDialog::testFuncGetItem(QInputDialog *dialog)
     ::testGetItem(dialog);
 }
 
-void tst_QInputDialog::timerEvent(QTimerEvent *event)
+void tst_QInputDialog::timerEvent(BOBUIimerEvent *event)
 {
     killTimer(event->timerId());
     QInputDialog *dialog = parent->findChild<QInputDialog *>();
@@ -223,13 +223,13 @@ void tst_QInputDialog::timerEvent(QTimerEvent *event)
 
 void tst_QInputDialog::getInt_data()
 {
-    QTest::addColumn<int>("min");
-    QTest::addColumn<int>("max");
-    QTest::newRow("getInt() - -") << -20 << -10;
-    QTest::newRow("getInt() - 0") << -20 <<   0;
-    QTest::newRow("getInt() - +") << -20 <<  20;
-    QTest::newRow("getInt() 0 +") <<   0 <<  20;
-    QTest::newRow("getInt() + +") <<  10 <<  20;
+    BOBUIest::addColumn<int>("min");
+    BOBUIest::addColumn<int>("max");
+    BOBUIest::newRow("getInt() - -") << -20 << -10;
+    BOBUIest::newRow("getInt() - 0") << -20 <<   0;
+    BOBUIest::newRow("getInt() - +") << -20 <<  20;
+    BOBUIest::newRow("getInt() 0 +") <<   0 <<  20;
+    BOBUIest::newRow("getInt() + +") <<  10 <<  20;
 }
 
 void tst_QInputDialog::getInt()
@@ -240,7 +240,7 @@ void tst_QInputDialog::getInt()
 
 #if defined(Q_OS_MACOS)
     if (QSysInfo::productVersion() == QLatin1String("10.12")) {
-        QSKIP("Test hangs  on macOS 10.12 -- QTQAINFRA-1356");
+        QSKIP("Test hangs  on macOS 10.12 -- BOBUIQAINFRA-1356");
         return;
     }
 #endif
@@ -259,24 +259,24 @@ void tst_QInputDialog::getInt()
 
 void tst_QInputDialog::getDouble_data()
 {
-    QTest::addColumn<double>("min");
-    QTest::addColumn<double>("max");
-    QTest::addColumn<int>("decimals");
-    QTest::newRow("getDouble() - - d0") << -20.0  << -10.0  << 0;
-    QTest::newRow("getDouble() - 0 d0") << -20.0  <<   0.0  << 0;
-    QTest::newRow("getDouble() - + d0") << -20.0  <<  20.0  << 0;
-    QTest::newRow("getDouble() 0 + d0") <<   0.0  <<  20.0  << 0;
-    QTest::newRow("getDouble() + + d0") <<  10.0  <<  20.0  << 0;
-    QTest::newRow("getDouble() - - d1") << -20.5  << -10.5  << 1;
-    QTest::newRow("getDouble() - 0 d1") << -20.5  <<   0.0  << 1;
-    QTest::newRow("getDouble() - + d1") << -20.5  <<  20.5  << 1;
-    QTest::newRow("getDouble() 0 + d1") <<   0.0  <<  20.5  << 1;
-    QTest::newRow("getDouble() + + d1") <<  10.5  <<  20.5  << 1;
-    QTest::newRow("getDouble() - - d2") << -20.05 << -10.05 << 2;
-    QTest::newRow("getDouble() - 0 d2") << -20.05 <<   0.0  << 2;
-    QTest::newRow("getDouble() - + d2") << -20.05 <<  20.05 << 2;
-    QTest::newRow("getDouble() 0 + d2") <<   0.0  <<  20.05 << 2;
-    QTest::newRow("getDouble() + + d2") <<  10.05 <<  20.05 << 2;
+    BOBUIest::addColumn<double>("min");
+    BOBUIest::addColumn<double>("max");
+    BOBUIest::addColumn<int>("decimals");
+    BOBUIest::newRow("getDouble() - - d0") << -20.0  << -10.0  << 0;
+    BOBUIest::newRow("getDouble() - 0 d0") << -20.0  <<   0.0  << 0;
+    BOBUIest::newRow("getDouble() - + d0") << -20.0  <<  20.0  << 0;
+    BOBUIest::newRow("getDouble() 0 + d0") <<   0.0  <<  20.0  << 0;
+    BOBUIest::newRow("getDouble() + + d0") <<  10.0  <<  20.0  << 0;
+    BOBUIest::newRow("getDouble() - - d1") << -20.5  << -10.5  << 1;
+    BOBUIest::newRow("getDouble() - 0 d1") << -20.5  <<   0.0  << 1;
+    BOBUIest::newRow("getDouble() - + d1") << -20.5  <<  20.5  << 1;
+    BOBUIest::newRow("getDouble() 0 + d1") <<   0.0  <<  20.5  << 1;
+    BOBUIest::newRow("getDouble() + + d1") <<  10.5  <<  20.5  << 1;
+    BOBUIest::newRow("getDouble() - - d2") << -20.05 << -10.05 << 2;
+    BOBUIest::newRow("getDouble() - 0 d2") << -20.05 <<   0.0  << 2;
+    BOBUIest::newRow("getDouble() - + d2") << -20.05 <<  20.05 << 2;
+    BOBUIest::newRow("getDouble() 0 + d2") <<   0.0  <<  20.05 << 2;
+    BOBUIest::newRow("getDouble() + + d2") <<  10.05 <<  20.05 << 2;
 }
 
 void tst_QInputDialog::getDouble()
@@ -288,7 +288,7 @@ void tst_QInputDialog::getDouble()
 
 #if defined(Q_OS_MACOS)
     if (QSysInfo::productVersion() == QLatin1String("10.12")) {
-        QSKIP("Test hangs  on macOS 10.12 -- QTQAINFRA-1356");
+        QSKIP("Test hangs  on macOS 10.12 -- BOBUIQAINFRA-1356");
         return;
     }
 #endif
@@ -303,7 +303,7 @@ void tst_QInputDialog::getDouble()
     // rounded off to 10.03)
     const double value = static_cast<int>(min + (max - min) / 2);
     const double result =
-        QInputDialog::getDouble(parent, "", "", value, min, max, decimals, &ok, Qt::WindowFlags(), 1);
+        QInputDialog::getDouble(parent, "", "", value, min, max, decimals, &ok, BobUI::WindowFlags(), 1);
     QVERIFY(ok);
     QCOMPARE(result, value);
     delete parent;
@@ -317,12 +317,12 @@ public:
     explicit SelfDestructParent(int delay = 100)
         : QWidget(nullptr)
     {
-        QTimer::singleShot(delay, this, SLOT(deleteLater()));
+        BOBUIimer::singleShot(delay, this, SLOT(deleteLater()));
     }
 };
 }
 
-void tst_QInputDialog::taskQTBUG_54693_crashWhenParentIsDeletedWhileDialogIsOpen()
+void tst_QInputDialog::taskBOBUIBUG_54693_crashWhenParentIsDeletedWhileDialogIsOpen()
 {
     // getText
     {
@@ -373,7 +373,7 @@ void tst_QInputDialog::taskQTBUG_54693_crashWhenParentIsDeletedWhileDialogIsOpen
         QAutoPointer<SelfDestructParent> dialog(new SelfDestructParent);
         bool ok = true;
         const double result = QInputDialog::getDouble(dialog.get(), "Title", "Label", initial, -10, +10, 2, &ok,
-                                                      Qt::WindowFlags(), 1);
+                                                      BobUI::WindowFlags(), 1);
         QVERIFY(!dialog);
         QVERIFY(!ok);
         QCOMPARE(result, initial);
@@ -389,7 +389,7 @@ void tst_QInputDialog::task255502getDouble()
     bool ok = false;
     const double value = 0.001;
     const double result =
-        QInputDialog::getDouble(parent, "", "", value, -1, 1, 4, &ok, Qt::WindowFlags(), 1);
+        QInputDialog::getDouble(parent, "", "", value, -1, 1, 4, &ok, BobUI::WindowFlags(), 1);
     QVERIFY(ok);
     QCOMPARE(result, value);
     delete parent;
@@ -397,12 +397,12 @@ void tst_QInputDialog::task255502getDouble()
 
 void tst_QInputDialog::getText_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::newRow("getText() 1") << "";
-    QTest::newRow("getText() 2") << "foobar";
-    QTest::newRow("getText() 3") << "  foobar";
-    QTest::newRow("getText() 4") << "foobar  ";
-    QTest::newRow("getText() 5") << "aAzZ`1234567890-=~!@#$%^&*()_+[]{}\\|;:'\",.<>/?";
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::newRow("getText() 1") << "";
+    BOBUIest::newRow("getText() 2") << "foobar";
+    BOBUIest::newRow("getText() 3") << "  foobar";
+    BOBUIest::newRow("getText() 4") << "foobar  ";
+    BOBUIest::newRow("getText() 5") << "aAzZ`1234567890-=~!@#$%^&*()_+[]{}\\|;:'\",.<>/?";
 }
 
 void tst_QInputDialog::getText()
@@ -434,13 +434,13 @@ void tst_QInputDialog::task256299_getTextReturnNullStringOnRejected()
 
 void tst_QInputDialog::getItem_data()
 {
-    QTest::addColumn<QStringList>("items");
-    QTest::addColumn<bool>("editable");
-    QTest::newRow("getItem() 1 true") << (QStringList() << "") << true;
-    QTest::newRow("getItem() 2 true") <<
+    BOBUIest::addColumn<QStringList>("items");
+    BOBUIest::addColumn<bool>("editable");
+    BOBUIest::newRow("getItem() 1 true") << (QStringList() << "") << true;
+    BOBUIest::newRow("getItem() 2 true") <<
         (QStringList() << "spring" << "summer" << "fall" << "winter") << true;
-    QTest::newRow("getItem() 1 false") << (QStringList() << "") << false;
-    QTest::newRow("getItem() 2 false") <<
+    BOBUIest::newRow("getItem() 1 false") << (QStringList() << "") << false;
+    BOBUIest::newRow("getItem() 2 false") <<
         (QStringList() << "spring" << "summer" << "fall" << "winter") << false;
 }
 
@@ -473,30 +473,30 @@ void tst_QInputDialog::inputMethodHintsOfChildWidget()
     }
     QVERIFY(editWidget);
     QCOMPARE(editWidget->inputMethodHints(), dialog.inputMethodHints());
-    QCOMPARE(editWidget->inputMethodHints(), Qt::ImhNone);
-    dialog.setInputMethodHints(Qt::ImhDigitsOnly);
+    QCOMPARE(editWidget->inputMethodHints(), BobUI::ImhNone);
+    dialog.setInputMethodHints(BobUI::ImhDigitsOnly);
     QCOMPARE(editWidget->inputMethodHints(), dialog.inputMethodHints());
-    QCOMPARE(editWidget->inputMethodHints(), Qt::ImhDigitsOnly);
+    QCOMPARE(editWidget->inputMethodHints(), BobUI::ImhDigitsOnly);
 }
 
 void tst_QInputDialog::testFuncSingleStepDouble(QInputDialog *dialog)
 {
     QDoubleSpinBox *sbox = dialog->findChild<QDoubleSpinBox *>();
     QVERIFY(sbox);
-    QTest::keyClick(sbox, Qt::Key_Up);
+    BOBUIest::keyClick(sbox, BobUI::Key_Up);
 }
 
 void tst_QInputDialog::setDoubleStep_data()
 {
-    QTest::addColumn<double>("min");
-    QTest::addColumn<double>("max");
-    QTest::addColumn<int>("decimals");
-    QTest::addColumn<double>("doubleStep");
-    QTest::addColumn<double>("actualResult");
-    QTest::newRow("step 2.0") << 0.0 << 10.0 << 0 << 2.0 << 2.0;
-    QTest::newRow("step 2.5") << 0.5 << 10.5 << 1 << 2.5 << 3.0;
-    QTest::newRow("step 2.25") << 10.05 << 20.05 << 2 << 2.25 << 12.30;
-    QTest::newRow("step 2.25 fewer decimals") << 0.5 << 10.5 << 1 << 2.25 << 2.75;
+    BOBUIest::addColumn<double>("min");
+    BOBUIest::addColumn<double>("max");
+    BOBUIest::addColumn<int>("decimals");
+    BOBUIest::addColumn<double>("doubleStep");
+    BOBUIest::addColumn<double>("actualResult");
+    BOBUIest::newRow("step 2.0") << 0.0 << 10.0 << 0 << 2.0 << 2.0;
+    BOBUIest::newRow("step 2.5") << 0.5 << 10.5 << 1 << 2.5 << 3.0;
+    BOBUIest::newRow("step 2.25") << 10.05 << 20.05 << 2 << 2.25 << 12.30;
+    BOBUIest::newRow("step 2.25 fewer decimals") << 0.5 << 10.5 << 1 << 2.25 << 2.75;
 }
 
 void tst_QInputDialog::setDoubleStep()
@@ -513,11 +513,11 @@ void tst_QInputDialog::setDoubleStep()
     startTimer(0);
     bool ok = false;
     const double result = QInputDialog::getDouble(parent, QString(), QString(), min, min,
-                                                  max, decimals, &ok, QFlags<Qt::WindowType>(),
+                                                  max, decimals, &ok, QFlags<BobUI::WindowType>(),
                                                   doubleStep);
     QVERIFY(ok);
     QCOMPARE(result, actualResult);
 }
 
-QTEST_MAIN(tst_QInputDialog)
+BOBUIEST_MAIN(tst_QInputDialog)
 #include "tst_qinputdialog.moc"

@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkaccessbackend_p.h"
 #include "qnetworkreplyimpl_p.h"
@@ -8,8 +8,8 @@
 #include "qnetworkrequest.h"
 #include "qnetworkreply.h"
 #include "qnetworkreply_p.h"
-#include "QtCore/qmutex.h"
-#include "QtCore/qstringlist.h"
+#include "BobUICore/qmutex.h"
+#include "BobUICore/qstringlist.h"
 
 #include "qnetworkaccesscachebackend_p.h"
 #include "qabstractnetworkcache.h"
@@ -17,7 +17,7 @@
 
 #include "private/qnoncontiguousbytedevice_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QNetworkAccessBackendFactoryData: public QList<QNetworkAccessBackendFactory *>
 {
@@ -93,7 +93,7 @@ QStringList QNetworkAccessManagerPrivate::backendSupportedSchemes() const
 /*!
     \class QNetworkAccessBackendFactory
     \brief QNetworkAccessBackendFactory is the base class to inherit
-    from for Qt to instantiate and query your QNetworkAccessBackend
+    from for BobUI to instantiate and query your QNetworkAccessBackend
     plugin.
     \since 6.0
     \internal
@@ -102,9 +102,9 @@ QStringList QNetworkAccessManagerPrivate::backendSupportedSchemes() const
     The class is considered semi-private and as such requires linking
     to "NetworkPrivate" to access the header. Furthermore it means
     the class is not under the same binary compatibility restrictions
-    as the rest of Qt. While we still try to avoid breakage it may
+    as the rest of BobUI. While we still try to avoid breakage it may
     still occur. The class is primarily meant to be used by plugins
-    which would be recompiled every time Qt is updated.
+    which would be recompiled every time BobUI is updated.
 //! [semi-private-notice]
 
     This class acts as the primary interface to the plugin and must
@@ -118,7 +118,7 @@ QStringList QNetworkAccessManagerPrivate::backendSupportedSchemes() const
 /*!
     \fn QStringList QNetworkAccessBackendFactory::supportedSchemes() const
 
-    Override this method in your own derived class to let Qt know
+    Override this method in your own derived class to let BobUI know
     what schemes your class can handle.
 */
 
@@ -304,7 +304,7 @@ QNetworkAccessBackend::IOFeatures QNetworkAccessBackend::ioFeatures() const noex
 bool QNetworkAccessBackend::start()
 {
     Q_D(QNetworkAccessBackend);
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     if (targetTypes() & QNetworkAccessBackend::TargetType::Networked)
         d->m_reply->proxyList = d->m_manager->queryProxy(QNetworkProxyQuery(url()));
 #endif
@@ -338,7 +338,7 @@ bool QNetworkAccessBackend::start()
     This function gets called when the QNetworkReply is closed or aborted.
 
     You should not emit an error or call finished() during this call since
-    QtNetwork will set and emit the \c{QNetworkReply::OperationCanceledError}
+    BobUINetwork will set and emit the \c{QNetworkReply::OperationCanceledError}
     error by itself after control flow returns from this function.
 */
 
@@ -355,7 +355,7 @@ bool QNetworkAccessBackend::start()
     return zero if there are no bytes available.
 */
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 /*!
     Passes a \a configuration with the user's desired TLS
     configuration. If you don't have the TLS security feature this
@@ -488,7 +488,7 @@ bool QNetworkAccessBackend::wantToRead()
     return false;
 }
 
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
 /*!
     Returns a list of proxies configured for the URL returned by
     url().
@@ -759,7 +759,7 @@ void QNetworkAccessBackend::error(QNetworkReply::NetworkError code, const QStrin
     d_func()->m_reply->error(code, errorString);
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 /*!
     Call this slot if, when connecting through a proxy, it requests
     authentication. This may cause the
@@ -860,6 +860,6 @@ QNetworkAccessBackendFactory::~QNetworkAccessBackendFactory()
         factoryData->removeAll(this);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkaccessbackend_p.cpp"

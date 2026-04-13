@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QUUID_H
 #define QUUID_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qendian.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qsystemdetection.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qsystemdetection.h>
 
 #if defined(Q_OS_WIN) || defined(Q_QDOC)
 #ifndef GUID_DEFINED
@@ -27,11 +27,11 @@ Q_FORWARD_DECLARE_CF_TYPE(CFUUID);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSUUID);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QUuid
 {
-    QUuid(Qt::Initialization) {}
+    QUuid(BobUI::Initialization) {}
 public:
     enum Variant {
         VarUnknown        =-1,
@@ -63,13 +63,13 @@ public:
         quint16 data16[8];
         quint32 data32[4];
         quint64 data64[2];
-#if defined(QT_COMPILER_SUPPORTS_INT128)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wpedantic")    // ISO C++ does not support ‘__int128’ for ‘data128’
+#if defined(BOBUI_COMPILER_SUPPORTS_INT128)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wpedantic")    // ISO C++ does not support ‘__int128’ for ‘data128’
         unsigned __int128 data128[1];
-QT_WARNING_POP
-#elif defined(QT_SUPPORTS_INT128)
-#  error "struct QUuid::Id128Bytes should not depend on QT_SUPPORTS_INT128 for ABI reasons."
+BOBUI_WARNING_POP
+#elif defined(BOBUI_SUPPORTS_INT128)
+#  error "struct QUuid::Id128Bytes should not depend on BOBUI_SUPPORTS_INT128 for ABI reasons."
 #  error "Adjust the declaration of the `data128` member above so it is always defined if it's " \
         "supported by the current compiler/architecture in any configuration."
 #endif
@@ -100,7 +100,7 @@ QT_WARNING_POP
     explicit QUuid(QAnyStringView string) noexcept
         : QUuid{fromString(string)} {}
     static QUuid fromString(QAnyStringView string) noexcept;
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
     explicit QUuid(const QString &);
     static QUuid fromString(QStringView string) noexcept;
     static QUuid fromString(QLatin1StringView string) noexcept;
@@ -113,17 +113,17 @@ QT_WARNING_POP
     QByteArray toRfc4122() const;
 
     static inline QUuid fromBytes(const void *bytes, QSysInfo::Endian order = QSysInfo::BigEndian);
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
     static QUuid fromRfc4122(const QByteArray &);
 #endif
     static QUuid fromRfc4122(QByteArrayView) noexcept;
 
-#if QT_CORE_REMOVED_SINCE(6, 9)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9)
     bool isNull() const noexcept;
 #endif
-    constexpr bool isNull(QT6_DECL_NEW_OVERLOAD) const noexcept
+    constexpr bool isNull(BOBUI6_DECL_NEW_OVERLOAD) const noexcept
     {
-#if defined(__cpp_lib_bit_cast) && defined(QT_SUPPORTS_INT128)
+#if defined(__cpp_lib_bit_cast) && defined(BOBUI_SUPPORTS_INT128)
         return std::bit_cast<quint128>(*this) == 0;
 #else
         // QNX fails to compile
@@ -138,7 +138,7 @@ QT_WARNING_POP
 #endif
     }
 
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     static constexpr QUuid fromUInt128(quint128 uuid, QSysInfo::Endian order = QSysInfo::BigEndian) noexcept;
     constexpr quint128 toUInt128(QSysInfo::Endian order = QSysInfo::BigEndian) const noexcept;
 #endif
@@ -148,46 +148,46 @@ private:
     {
         return is_eq(compareThreeWay_helper(lhs, rhs));
     }
-    static constexpr Qt::strong_ordering
+    static constexpr BobUI::strong_ordering
     compareThreeWay_helper(const QUuid &lhs, const QUuid &rhs) noexcept
     {
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
-        if (const auto c = Qt::compareThreeWay(lhs.data1, rhs.data1); !is_eq(c))
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
+        if (const auto c = BobUI::compareThreeWay(lhs.data1, rhs.data1); !is_eq(c))
             return c;
-        if (const auto c = Qt::compareThreeWay(lhs.data2, rhs.data2); !is_eq(c))
+        if (const auto c = BobUI::compareThreeWay(lhs.data2, rhs.data2); !is_eq(c))
             return c;
-        if (const auto c = Qt::compareThreeWay(lhs.data3, rhs.data3); !is_eq(c))
+        if (const auto c = BobUI::compareThreeWay(lhs.data3, rhs.data3); !is_eq(c))
             return c;
-#elif defined(__cpp_lib_bit_cast) && defined(QT_SUPPORTS_INT128)
+#elif defined(__cpp_lib_bit_cast) && defined(BOBUI_SUPPORTS_INT128)
         quint128 lu = qFromBigEndian(std::bit_cast<quint128>(lhs));
         quint128 ru = qFromBigEndian(std::bit_cast<quint128>(rhs));
-        return Qt::compareThreeWay(lu, ru);
+        return BobUI::compareThreeWay(lu, ru);
 #else
         auto make_int = [](const QUuid &u) {
             quint64 result = quint64(u.data3) << 48;
             result |= quint64(u.data2) << 32;
             return qFromBigEndian(result | u.data1);
         };
-        if (const auto c = Qt::compareThreeWay(make_int(lhs), make_int(rhs)); !is_eq(c))
+        if (const auto c = BobUI::compareThreeWay(make_int(lhs), make_int(rhs)); !is_eq(c))
             return c;
 #endif
         for (unsigned i = 0; i < sizeof(lhs.data4); ++i) {
-            if (const auto c = Qt::compareThreeWay(lhs.data4[i], rhs.data4[i]); !is_eq(c))
+            if (const auto c = BobUI::compareThreeWay(lhs.data4[i], rhs.data4[i]); !is_eq(c))
                 return c;
         }
-        return Qt::strong_ordering::equal;
+        return BobUI::strong_ordering::equal;
     }
-    friend constexpr Qt::strong_ordering compareThreeWay(const QUuid &lhs, const QUuid &rhs) noexcept
+    friend constexpr BobUI::strong_ordering compareThreeWay(const QUuid &lhs, const QUuid &rhs) noexcept
     {
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
-        // Keep the old sorting order from before Qt 6.8, which sorted first on
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
+        // Keep the old sorting order from before BobUI 6.8, which sorted first on
         // variant(). We don't need the exact algorithm to achieve same results.
         auto fastVariant = [](const QUuid &uuid) {
             quint8 v = uuid.data4[0];
             // i.e.: return v >= Microsoft ? v : v >= DCE ? DCE : NCS;
             return v >= 0xC0 ? v & 0xE0 : v >= 0x80 ? 0x80 : 0;
         };
-        if (const auto c = Qt::compareThreeWay(fastVariant(lhs), fastVariant(rhs)); !is_eq(c))
+        if (const auto c = BobUI::compareThreeWay(fastVariant(lhs), fastVariant(rhs)); !is_eq(c))
             return c;
 #endif
         return compareThreeWay_helper(lhs, rhs);
@@ -195,8 +195,8 @@ private:
 
 public:
 /*  To prevent a meta-type creation ambiguity on Windows, we put comparison
-    macros under NOT QT_CORE_REMOVED_SINCE(6, 8) part. */
-#if QT_CORE_REMOVED_SINCE(6, 8)
+    macros under NOT BOBUI_CORE_REMOVED_SINCE(6, 8) part. */
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     constexpr bool operator==(const QUuid &orig) const noexcept
     {
         return comparesEqual(*this, orig);
@@ -211,7 +211,7 @@ public:
     bool operator>(const QUuid &other) const noexcept;
 #else
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QUuid)
-#endif // QT_CORE_REMOVED_SINCE(6, 8)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 8)
 #if defined(Q_OS_WIN) || defined(Q_QDOC)
     // On Windows we have a type GUID that is used by the platform API, so we
     // provide convenience operators to cast from and to this type.
@@ -238,8 +238,8 @@ private:
     }
 public:
 /*  To prevent a meta-type creation ambiguity on Windows, we put comparison
-    macros under NOT QT_CORE_REMOVED_SINCE(6, 8) part. */
-#if QT_CORE_REMOVED_SINCE(6, 8)
+    macros under NOT BOBUI_CORE_REMOVED_SINCE(6, 8) part. */
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     constexpr bool operator==(const GUID &guid) const noexcept
     {
         return comparesEqual(*this, QUuid(guid));
@@ -251,18 +251,18 @@ public:
     }
 #else
     Q_DECLARE_EQUALITY_COMPARABLE_LITERAL_TYPE(QUuid, GUID)
-#endif // !QT_CORE_REMOVED_SINCE(6, 8)
+#endif // !BOBUI_CORE_REMOVED_SINCE(6, 8)
 #endif
 public:
     static QUuid createUuid();
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     static QUuid createUuidV3(const QUuid &ns, const QByteArray &baseData) noexcept;
     static QUuid createUuidV5(const QUuid &ns, const QByteArray &baseData) noexcept;
 #endif
     static QUuid createUuidV5(QUuid ns, QByteArrayView baseData) noexcept;
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     static QUuid createUuidV3(QUuid ns, QByteArrayView baseData) noexcept;
-#if !QT_CORE_REMOVED_SINCE(6, 8)
+#if !BOBUI_CORE_REMOVED_SINCE(6, 8)
     Q_WEAK_OVERLOAD
 #endif
     static inline QUuid createUuidV3(const QUuid &ns, const QString &baseData)
@@ -270,7 +270,7 @@ public:
         return QUuid::createUuidV3(ns, qToByteArrayViewIgnoringNull(baseData.toUtf8()));
     }
 #endif
-#if !QT_CORE_REMOVED_SINCE(6, 8)
+#if !BOBUI_CORE_REMOVED_SINCE(6, 8)
     Q_WEAK_OVERLOAD
 #endif
     static inline QUuid createUuidV5(const QUuid &ns, const QString &baseData)
@@ -298,21 +298,21 @@ private:
     }
 
 public:
-#if QT_CORE_REMOVED_SINCE(6, 9)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9)
     QUuid::Variant variant() const noexcept;
     QUuid::Version version() const noexcept;
 #endif
-    constexpr Variant variant(QT6_DECL_NEW_OVERLOAD) const noexcept
+    constexpr Variant variant(BOBUI6_DECL_NEW_OVERLOAD) const noexcept
     {
         // Check the 3 MSB of data4[0]
         const quint8 var = data4[0] & 0xE0;
         if (var < 0x80)
-            return isNull(QT6_CALL_NEW_OVERLOAD) ? VarUnknown : NCS;
+            return isNull(BOBUI6_CALL_NEW_OVERLOAD) ? VarUnknown : NCS;
         if (var < 0xC0)
             return DCE;
         return Variant(var >> 5); // Microsoft or Reserved
     }
-    constexpr Version version(QT6_DECL_NEW_OVERLOAD) const noexcept
+    constexpr Version version(BOBUI6_DECL_NEW_OVERLOAD) const noexcept
     {
         // Check the 4 MSB of data3
         const Version ver = Version(data3 >> 12);
@@ -337,12 +337,12 @@ public:
 
 Q_DECLARE_TYPEINFO(QUuid, Q_PRIMITIVE_TYPE);
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QUuid &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QUuid &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QUuid &);
 #endif
 
@@ -380,7 +380,7 @@ QUuid QUuid::fromBytes(const void *bytes, QSysInfo::Endian order)
     return QUuid(result, order);
 }
 
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
 constexpr QUuid QUuid::fromUInt128(quint128 uuid, QSysInfo::Endian order) noexcept
 {
     QUuid result = {};
@@ -432,6 +432,6 @@ QUuid::Id128Bytes qToBigEndian(QUuid::Id128Bytes src);
 QUuid::Id128Bytes qToLittleEndian(QUuid::Id128Bytes src);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QUUID_H

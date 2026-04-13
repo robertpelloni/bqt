@@ -42,11 +42,11 @@ The X server currently has a workaround, but it would not address the following
 situation:
 
  - there are multiple modules within the same X client (e.g. part of the application
-   uses Qt, another part talks to X server via another library)
+   uses BobUI, another part talks to X server via another library)
  - both of the modules talk to XI
  - at least one module requests for XI 2.4 protocol support.
 
-The request for XI 2.4 disables the workaround on the X server and Qt side would
+The request for XI 2.4 disables the workaround on the X server and BobUI side would
 crash horribly.
 
 For more details, see https://gitlab.freedesktop.org/xorg/lib/libxcb/-/merge_requests/20

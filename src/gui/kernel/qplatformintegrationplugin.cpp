@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformintegrationplugin.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPlatformIntegrationPlugin::QPlatformIntegrationPlugin(QObject *parent)
     : QObject(parent)
@@ -28,6 +28,6 @@ QPlatformIntegration *QPlatformIntegrationPlugin::create(const QString &key, con
     return create(key, paramList); // Fallback for platform plugins that do not implement the argc/argv version.
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformintegrationplugin.cpp"

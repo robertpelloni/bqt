@@ -1,4 +1,4 @@
-QT += core gui widgets gui-private
+BOBUI += core gui widgets gui-private
 
 TARGET = keyevents
 TEMPLATE = app

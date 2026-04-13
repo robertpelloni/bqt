@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QRasterWindow>
 #include <QPainter>
 #include <QPainterPath>
 #include <QGuiApplication>
 #include <QMatrix4x4>
-#include <QTimer>
+#include <BOBUIimer>
 
 static QPainterPath painterPathForTriangle()
 {
@@ -32,7 +32,7 @@ public:
                       QVector3D(0,0,0),
                       QVector3D(0,1,0));
         m_timer.setInterval(16);
-        connect(&m_timer, &QTimer::timeout, this, qOverload<>(&PaintedWindow::update));
+        connect(&m_timer, &BOBUIimer::timeout, this, qOverload<>(&PaintedWindow::update));
         m_timer.start();
     }
 
@@ -40,7 +40,7 @@ protected:
     void paintEvent(QPaintEvent *)
     {
         QPainter p(this);
-        p.fillRect(QRect(0,0,width(),height()),Qt::gray);
+        p.fillRect(QRect(0,0,width(),height()),BobUI::gray);
 
         p.setWorldTransform(m_window_matrix.toTransform());
 
@@ -54,7 +54,7 @@ protected:
 
     void resizeEvent(QResizeEvent *)
     {
-        m_window_matrix = QTransform();
+        m_window_matrix = BOBUIransform();
         m_window_matrix.translate(width() / 2.0, height() / 2.0);
         m_window_matrix.scale(width() / 2.0, -height() / 2.0);
 
@@ -62,8 +62,8 @@ protected:
         m_projection.perspective(45.f, qreal(width()) / qreal(height()), 0.1f, 100.f);
 
         QLinearGradient gradient(QPointF(-1,-1), QPointF(1,1));
-        gradient.setColorAt(0, Qt::red);
-        gradient.setColorAt(1, Qt::green);
+        gradient.setColorAt(0, BobUI::red);
+        gradient.setColorAt(1, BobUI::green);
 
         m_brush = QBrush(gradient);
     }
@@ -74,7 +74,7 @@ private:
     QMatrix4x4 m_view;
     QMatrix4x4 m_model;
     QBrush m_brush;
-    QTimer m_timer;
+    BOBUIimer m_timer;
 };
 
 int main (int argc, char **argv)

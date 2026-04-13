@@ -1,27 +1,27 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#ifdef QT_GUI_LIB
-#  include <QtGui/QGuiApplication>
+#ifdef BOBUI_GUI_LIB
+#  include <BobUIGui/QGuiApplication>
 #else
-#  include <QtCore/QCoreApplication>
+#  include <BobUICore/QCoreApplication>
 #endif
 
-#include <QtCore/private/qglobal_p.h>
-#include <QTest>
+#include <BobUICore/private/qglobal_p.h>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 
 #include <qbasictimer.h>
 #include <qchronotimer.h>
-#include <qthread.h>
-#include <qtimer.h>
+#include <bobuihread.h>
+#include <bobuiimer.h>
 #include <qelapsedtimer.h>
 #include <qproperty.h>
 
 #if defined(Q_OS_WIN32)
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 
 #if defined Q_OS_UNIX
@@ -32,7 +32,7 @@ using namespace std::chrono_literals;
 
 #ifdef DISABLE_GLIB
 static bool glibDisabled = []() {
-    qputenv("QT_NO_GLIB", "1");
+    qputenv("BOBUI_NO_GLIB", "1");
     return true;
 }();
 #endif
@@ -96,7 +96,7 @@ void tst_QChronoTimer::zeroTimer()
     QSignalSpy timeoutSpy(&timer, &QChronoTimer::timeout);
     timer.start();
 
-    // Pass timeout to work round glib issue, see QTBUG-84291.
+    // Pass timeout to work round glib issue, see BOBUIBUG-84291.
     QCoreApplication::processEvents(QEventLoop::AllEvents, INT_MAX);
 
     QCOMPARE(timeoutSpy.size(), 1);
@@ -115,7 +115,7 @@ void tst_QChronoTimer::singleShotTimeout()
 
     QVERIFY(timeoutSpy.wait(500ms));
     QCOMPARE(timeoutSpy.size(), 1);
-    QTest::qWait(500ms);
+    BOBUIest::qWait(500ms);
     QCOMPARE(timeoutSpy.size(), 1);
 }
 
@@ -129,10 +129,10 @@ void tst_QChronoTimer::timeout()
 
     QCOMPARE(timeoutSpy.size(), 0);
 
-    QTRY_VERIFY_WITH_TIMEOUT(timeoutSpy.size() > 0, Timeout_Interval);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(timeoutSpy.size() > 0, Timeout_Interval);
     const qsizetype oldCount = timeoutSpy.size();
 
-    QTRY_VERIFY_WITH_TIMEOUT(timeoutSpy.size() > oldCount, Timeout_Interval);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(timeoutSpy.size() > oldCount, Timeout_Interval);
 }
 
 void tst_QChronoTimer::sequentialTimers_data()
@@ -140,7 +140,7 @@ void tst_QChronoTimer::sequentialTimers_data()
 #ifdef Q_OS_WIN
     QSKIP("The API used by QEventDispatcherWin32 doesn't respect the order");
 #endif
-    QTest::addColumn<QList<std::chrono::milliseconds>>("timeouts");
+    BOBUIest::addColumn<QList<std::chrono::milliseconds>>("timeouts");
     auto addRow = [](const QList<std::chrono::milliseconds> &l) {
         Q_ASSERT_X(std::is_sorted(l.begin(), l.end()),
                    "tst_QChronoTimer", "input list must be sorted");
@@ -148,7 +148,7 @@ void tst_QChronoTimer::sequentialTimers_data()
         for (auto msec : l)
             name += QByteArray::number(msec.count()) + ',';
         name.chop(1);
-        QTest::addRow("%s", name.constData()) << l;
+        BOBUIest::addRow("%s", name.constData()) << l;
     };
     // PreciseTimers
     addRow({0ms, 0ms, 0ms, 0ms, 0ms, 0ms});
@@ -185,7 +185,7 @@ void tst_QChronoTimer::sequentialTimers()
     for (auto &timer : timers)
         timer->start();
 
-    QTestEventLoop::instance().enterLoop(timeouts.last() * 2 + 10ms);
+    BOBUIestEventLoop::instance().enterLoop(timeouts.last() * 2 + 10ms);
 
     QCOMPARE(result, expected);
 }
@@ -193,10 +193,10 @@ void tst_QChronoTimer::sequentialTimers()
 void tst_QChronoTimer::remainingTime()
 {
     QChronoTimer tested;
-    tested.setTimerType(Qt::PreciseTimer);
+    tested.setTimerType(BobUI::PreciseTimer);
 
     QChronoTimer tester;
-    tester.setTimerType(Qt::PreciseTimer);
+    tester.setTimerType(BobUI::PreciseTimer);
     tester.setSingleShot(true);
 
     constexpr auto tested_interval = 200ms;
@@ -222,7 +222,7 @@ void tst_QChronoTimer::remainingTime()
         else
             testIteration = desiredTestCount; // We are going to fail on QVERIFY2()
                                               // below, so we don't want to iterate
-                                              // anymore and quickly exit the QTRY_...()
+                                              // anymore and quickly exit the BOBUIRY_...()
                                               // with this failure.
         if (testIteration == desiredTestCount)
             QObject::disconnect(connection); // Last iteration, don't start tester again.
@@ -239,36 +239,36 @@ void tst_QChronoTimer::remainingTime()
     // Test it desiredTestCount times, give it reasonable amount of time
     // (twice as much as needed).
     const auto tryTimeout = tested_interval * desiredTestCount * 2;
-    QTRY_COMPARE_WITH_TIMEOUT(testIteration, desiredTestCount, tryTimeout);
+    BOBUIRY_COMPARE_WITH_TIMEOUT(testIteration, desiredTestCount, tryTimeout);
 }
 
 void tst_QChronoTimer::remainingTimeInitial_data()
 {
     using namespace std::chrono;
 
-    QTest::addColumn<nanoseconds>("startTimeNs");
-    QTest::addColumn<Qt::TimerType>("timerType");
+    BOBUIest::addColumn<nanoseconds>("startTimeNs");
+    BOBUIest::addColumn<BobUI::TimerType>("timerType");
 
-    QTest::addRow("precisetiemr-0ns") << 0ns << Qt::PreciseTimer;
-    QTest::addRow("precisetimer-1ms") << nanoseconds{1ms} << Qt::PreciseTimer;
-    QTest::addRow("precisetimer-10ms") <<nanoseconds{10ms} << Qt::PreciseTimer;
-    QTest::addRow("precisetimer-25days") << nanoseconds{25 * 24h} << Qt::PreciseTimer;
-    QTest::addRow("precisetimer-50days") << nanoseconds{50 * 24h} << Qt::PreciseTimer;
+    BOBUIest::addRow("precisetiemr-0ns") << 0ns << BobUI::PreciseTimer;
+    BOBUIest::addRow("precisetimer-1ms") << nanoseconds{1ms} << BobUI::PreciseTimer;
+    BOBUIest::addRow("precisetimer-10ms") <<nanoseconds{10ms} << BobUI::PreciseTimer;
+    BOBUIest::addRow("precisetimer-25days") << nanoseconds{25 * 24h} << BobUI::PreciseTimer;
+    BOBUIest::addRow("precisetimer-50days") << nanoseconds{50 * 24h} << BobUI::PreciseTimer;
 
-    QTest::addRow("coarsetimer-0ns") << 0ns << Qt::CoarseTimer;
-    QTest::addRow("coarsetimer-1ms") << nanoseconds{1ms} << Qt::CoarseTimer;
-    QTest::addRow("coarsetimer-10ms") << nanoseconds{10ms} << Qt::CoarseTimer;
-    QTest::addRow("coarsetimer-25days") << nanoseconds{25 * 24h} << Qt::CoarseTimer;
-    QTest::addRow("coarsetimer-50days") << nanoseconds{50 * 24h} << Qt::CoarseTimer;
+    BOBUIest::addRow("coarsetimer-0ns") << 0ns << BobUI::CoarseTimer;
+    BOBUIest::addRow("coarsetimer-1ms") << nanoseconds{1ms} << BobUI::CoarseTimer;
+    BOBUIest::addRow("coarsetimer-10ms") << nanoseconds{10ms} << BobUI::CoarseTimer;
+    BOBUIest::addRow("coarsetimer-25days") << nanoseconds{25 * 24h} << BobUI::CoarseTimer;
+    BOBUIest::addRow("coarsetimer-50days") << nanoseconds{50 * 24h} << BobUI::CoarseTimer;
 }
 
 void tst_QChronoTimer::remainingTimeInitial()
 {
     QFETCH(std::chrono::nanoseconds, startTimeNs);
-    QFETCH(Qt::TimerType, timerType);
+    QFETCH(BobUI::TimerType, timerType);
 
     QChronoTimer timer;
-    QCOMPARE(timer.timerType(), Qt::CoarseTimer);
+    QCOMPARE(timer.timerType(), BobUI::CoarseTimer);
     timer.setTimerType(timerType);
     QCOMPARE(timer.timerType(), timerType);
     timer.setInterval(startTimeNs);
@@ -276,7 +276,7 @@ void tst_QChronoTimer::remainingTimeInitial()
 
     const std::chrono::nanoseconds rt = timer.remainingTime();
     QCOMPARE_GE(rt, 0ns);
-    if (timerType != Qt::PreciseTimer) {
+    if (timerType != BobUI::PreciseTimer) {
         // For coarse timers the calculated interval might be up to 5% larger
         // then specified
         auto largerStartTime = std::chrono::nanoseconds{startTimeNs + startTimeNs / 20};
@@ -296,9 +296,9 @@ void tst_QChronoTimer::remainingTimeInitial()
 
 void tst_QChronoTimer::remainingTimeDuringActivation_data()
 {
-    QTest::addColumn<bool>("singleShot");
-    QTest::newRow("repeating") << false;
-    QTest::newRow("single-shot") << true;
+    BOBUIest::addColumn<bool>("singleShot");
+    BOBUIest::newRow("repeating") << false;
+    BOBUIest::newRow("single-shot") << true;
 }
 
 void tst_QChronoTimer::remainingTimeDuringActivation()
@@ -325,7 +325,7 @@ void tst_QChronoTimer::remainingTimeDuringActivation()
     }
 
     if (!singleShot) {
-        // do it again - see QTBUG-46940
+        // do it again - see BOBUIBUG-46940
         remainingTime = std::chrono::nanoseconds::min();
         QVERIFY(timeoutSpy.wait());
         QCOMPARE_LE(remainingTime, timeout);
@@ -372,7 +372,7 @@ void tst_QChronoTimer::basic_chrono()
     timer.setInterval(200ms);
     timer.start();
     QCOMPARE(timer.interval(), 200ms);
-    QTest::qWait(50ms);
+    BOBUIest::qWait(50ms);
     QCOMPARE(timeoutSpy.size(), 0);
 
     nanoseconds rt = timer.remainingTime();
@@ -385,16 +385,16 @@ void tst_QChronoTimer::basic_chrono()
     timer.start();
     QVERIFY(timeoutSpy.wait(Timeout_Interval));
     QCOMPARE(timeoutSpy.size(), 1);
-    QTest::qWait(500ms);
+    BOBUIest::qWait(500ms);
     QCOMPARE(timeoutSpy.size(), 1);
 }
 
 void tst_QChronoTimer::livelock_data()
 {
-    QTest::addColumn<std::chrono::nanoseconds>("interval");
-    QTest::newRow("zero-timer") << 0ns;
-    QTest::newRow("non-zero-timer") << std::chrono::nanoseconds{1ms};
-    QTest::newRow("longer-than-sleep") << std::chrono::nanoseconds{20ms};
+    BOBUIest::addColumn<std::chrono::nanoseconds>("interval");
+    BOBUIest::newRow("zero-timer") << 0ns;
+    BOBUIest::newRow("non-zero-timer") << std::chrono::nanoseconds{1ms};
+    BOBUIest::newRow("longer-than-sleep") << std::chrono::nanoseconds{20ms};
 }
 
 /*!
@@ -410,9 +410,9 @@ public:
     LiveLockTester(std::chrono::nanoseconds i)
         : interval(i)
     {
-        firstTimerId = Qt::TimerId{startTimer(interval)};
-        extraTimerId = Qt::TimerId{startTimer(interval + 80ms)};
-        secondTimerId = Qt::TimerId::Invalid; // started later
+        firstTimerId = BobUI::TimerId{startTimer(interval)};
+        extraTimerId = BobUI::TimerId{startTimer(interval + 80ms)};
+        secondTimerId = BobUI::TimerId::Invalid; // started later
     }
 
     bool event(QEvent *e) override
@@ -426,14 +426,14 @@ public:
         return QObject::event(e);
     }
 
-    void timerEvent(QTimerEvent *te) override
+    void timerEvent(BOBUIimerEvent *te) override
     {
         if (te->id() == firstTimerId) {
             if (++timeoutsForFirst == 1) {
                 killTimer(extraTimerId);
-                extraTimerId = Qt::TimerId::Invalid;
+                extraTimerId = BobUI::TimerId::Invalid;
                 QCoreApplication::postEvent(this, new QEvent(PostEventType));
-                secondTimerId = Qt::TimerId{startTimer(interval)};
+                secondTimerId = BobUI::TimerId{startTimer(interval)};
             }
         } else if (te->id() == secondTimerId) {
             ++timeoutsForSecond;
@@ -442,14 +442,14 @@ public:
         }
 
         // sleep for 2ms
-        QTest::qSleep(2);
+        BOBUIest::qSleep(2);
         killTimer(te->id());
     }
 
     const std::chrono::nanoseconds interval;
-    Qt::TimerId firstTimerId = Qt::TimerId::Invalid;
-    Qt::TimerId secondTimerId = Qt::TimerId::Invalid;
-    Qt::TimerId extraTimerId = Qt::TimerId::Invalid;
+    BobUI::TimerId firstTimerId = BobUI::TimerId::Invalid;
+    BobUI::TimerId secondTimerId = BobUI::TimerId::Invalid;
+    BobUI::TimerId extraTimerId = BobUI::TimerId::Invalid;
     int timeoutsForFirst = 0;
     int timeoutsForExtra = 0;
     int timeoutsForSecond = 0;
@@ -467,10 +467,10 @@ void tst_QChronoTimer::livelock()
     */
     QFETCH(std::chrono::nanoseconds, interval);
     LiveLockTester tester(interval);
-    QTest::qWait(180ms); // we have to use wait here, since we're testing timers with a non-zero timeout
-    QTRY_COMPARE(tester.timeoutsForFirst, 1);
+    BOBUIest::qWait(180ms); // we have to use wait here, since we're testing timers with a non-zero timeout
+    BOBUIRY_COMPARE(tester.timeoutsForFirst, 1);
     QCOMPARE(tester.timeoutsForExtra, 0);
-    QTRY_COMPARE(tester.timeoutsForSecond, 1);
+    BOBUIRY_COMPARE(tester.timeoutsForSecond, 1);
     QVERIFY(tester.postEventAtRightTime);
 }
 
@@ -485,7 +485,7 @@ public:
         : interval(interval)
     { }
 
-    void timerEvent(QTimerEvent *timerEvent) override
+    void timerEvent(BOBUIimerEvent *timerEvent) override
     {
         timerEventRecursed = inTimerEvent;
         if (timerEventRecursed) {
@@ -496,7 +496,7 @@ public:
         inTimerEvent = true;
 
         QEventLoop eventLoop;
-        QTimer::singleShot(std::max<std::chrono::nanoseconds>(100ms, interval * 2),
+        BOBUIimer::singleShot(std::max<std::chrono::nanoseconds>(100ms, interval * 2),
                            &eventLoop, &QEventLoop::quit);
         eventLoop.exec();
 
@@ -508,13 +508,13 @@ public:
 
 void tst_QChronoTimer::timerInfiniteRecursion_data()
 {
-    QTest::addColumn<std::chrono::nanoseconds>("interval");
-    QTest::newRow("zero timer") << 0ns;
-    QTest::newRow("non-zero timer") << std::chrono::nanoseconds{1ms};
-    QTest::newRow("10ms timer") << std::chrono::nanoseconds{10ms};
-    QTest::newRow("11ms timer") << std::chrono::nanoseconds{11ms};
-    QTest::newRow("100ms timer") << std::chrono::nanoseconds{100ms};
-    QTest::newRow("1s timer") << std::chrono::nanoseconds{1000ms};
+    BOBUIest::addColumn<std::chrono::nanoseconds>("interval");
+    BOBUIest::newRow("zero timer") << 0ns;
+    BOBUIest::newRow("non-zero timer") << std::chrono::nanoseconds{1ms};
+    BOBUIest::newRow("10ms timer") << std::chrono::nanoseconds{10ms};
+    BOBUIest::newRow("11ms timer") << std::chrono::nanoseconds{11ms};
+    BOBUIest::newRow("100ms timer") << std::chrono::nanoseconds{100ms};
+    BOBUIest::newRow("1s timer") << std::chrono::nanoseconds{1000ms};
 }
 
 
@@ -525,7 +525,7 @@ void tst_QChronoTimer::timerInfiniteRecursion()
     (void) object.startTimer(interval);
 
     QEventLoop eventLoop;
-    QTimer::singleShot(std::max<std::chrono::nanoseconds>(100ms, interval * 2),
+    BOBUIimer::singleShot(std::max<std::chrono::nanoseconds>(100ms, interval * 2),
                        &eventLoop, &QEventLoop::quit);
     eventLoop.exec();
 
@@ -544,14 +544,14 @@ public:
         : times(0), target(target), recurse(false)
     { }
 
-    void timerEvent(QTimerEvent *timerEvent) override
+    void timerEvent(BOBUIimerEvent *timerEvent) override
     {
         if (++times == target) {
             killTimer(timerEvent->timerId());
             Q_EMIT done();
         } if (recurse) {
             QEventLoop eventLoop;
-            QTimer::singleShot(100ms, &eventLoop, &QEventLoop::quit);
+            BOBUIimer::singleShot(100ms, &eventLoop, &QEventLoop::quit);
             eventLoop.exec();
         }
     }
@@ -562,13 +562,13 @@ signals:
 
 void tst_QChronoTimer::recurringTimer_data()
 {
-    QTest::addColumn<std::chrono::nanoseconds>("interval");
-    QTest::addColumn<bool>("recurse");
+    BOBUIest::addColumn<std::chrono::nanoseconds>("interval");
+    BOBUIest::addColumn<bool>("recurse");
     // make sure that eventloop recursion doesn't affect timer recurrence
-    QTest::newRow("zero timer, don't recurse") << 0ns << false;
-    QTest::newRow("zero timer, recurse") << 0ns << true;
-    QTest::newRow("non-zero timer, don't recurse") << std::chrono::nanoseconds{1ms} << false;
-    QTest::newRow("non-zero timer, recurse") << std::chrono::nanoseconds{1ms} << true;
+    BOBUIest::newRow("zero timer, don't recurse") << 0ns << false;
+    BOBUIest::newRow("zero timer, recurse") << 0ns << true;
+    BOBUIest::newRow("non-zero timer, don't recurse") << std::chrono::nanoseconds{1ms} << false;
+    BOBUIest::newRow("non-zero timer, recurse") << std::chrono::nanoseconds{1ms} << true;
 }
 
 void tst_QChronoTimer::recurringTimer()
@@ -601,7 +601,7 @@ void tst_QChronoTimer::deleteLaterOnQChronoTimer()
 }
 
 namespace {
-int operator&(Qt::TimerId id, int i) { return qToUnderlying(id) & i; }
+int operator&(BobUI::TimerId id, int i) { return qToUnderlying(id) & i; }
 }
 
 static constexpr auto MoveToThread_Timeout = 200ms;
@@ -612,7 +612,7 @@ void tst_QChronoTimer::moveToThread()
 #if defined(Q_OS_WIN32)
     QSKIP("Does not work reliably on Windows :(");
 #elif defined(Q_OS_MACOS)
-    QSKIP("Does not work reliably on macOS 10.12+ (QTBUG-59679)");
+    QSKIP("Does not work reliably on macOS 10.12+ (BOBUIBUG-59679)");
 #endif
     QChronoTimer timer1{MoveToThread_Timeout};
     QChronoTimer timer2{MoveToThread_Timeout};
@@ -620,15 +620,15 @@ void tst_QChronoTimer::moveToThread()
     timer1.start();
     timer2.start();
     QVERIFY((timer1.id() & 0xffffff) != (timer2.id() & 0xffffff));
-    QThread tr;
+    BOBUIhread tr;
     timer1.moveToThread(&tr);
-    connect(&timer1, &QChronoTimer::timeout, &tr, &QThread::quit);
+    connect(&timer1, &QChronoTimer::timeout, &tr, &BOBUIhread::quit);
     tr.start();
     QChronoTimer ti3{MoveToThread_Timeout};
     ti3.start();
     QVERIFY((ti3.id() & 0xffffff) != (timer2.id() & 0xffffff));
     QVERIFY((ti3.id() & 0xffffff) != (timer1.id() & 0xffffff));
-    QTest::qWait(MoveToThread_Wait);
+    BOBUIest::qWait(MoveToThread_Wait);
     QVERIFY(tr.wait());
     timer2.stop();
     QChronoTimer ti4{MoveToThread_Timeout};
@@ -647,7 +647,7 @@ class TimerListener : public QObject
 {
     Q_OBJECT
 public:
-    void timerEvent(QTimerEvent *) override
+    void timerEvent(BOBUIimerEvent *) override
     {
         m_timerElapsed = true;
     }
@@ -662,11 +662,11 @@ void tst_QChronoTimer::newTimerFiresTooSoon()
 #else
     // Arrange - Create timer and make sure it ticked
     {
-        QTest::qWait(0 /*ms*/); // Clean up event queue from previous tests
+        BOBUIest::qWait(0 /*ms*/); // Clean up event queue from previous tests
 
         TimerListener listener;
-        const auto timerId = Qt::TimerId{listener.startTimer(50ms, Qt::CoarseTimer)};
-        QThread::sleep(100ms);
+        const auto timerId = BobUI::TimerId{listener.startTimer(50ms, BobUI::CoarseTimer)};
+        BOBUIhread::sleep(100ms);
 
         // Force WM_TIMER events on Windows event queue
         MSG msg{};
@@ -677,9 +677,9 @@ void tst_QChronoTimer::newTimerFiresTooSoon()
 
     // Act - Create new timer with long interval and make sure it does not immediately tick
     TimerListener listener;
-    const auto timerId = Qt::TimerId{listener.startTimer(60s, Qt::CoarseTimer)};
+    const auto timerId = BobUI::TimerId{listener.startTimer(60s, BobUI::CoarseTimer)};
 
-    QTest::qWait(0 /*ms*/); // Process event queue - Should not call timerEvent
+    BOBUIest::qWait(0 /*ms*/); // Process event queue - Should not call timerEvent
     listener.killTimer(timerId);
 
     // Assert
@@ -712,7 +712,7 @@ public:
         interval = interval > 0ms ? 0ms : 1s;
     }
 
-    void timerEvent(QTimerEvent* ev) override
+    void timerEvent(BOBUIimerEvent* ev) override
     {
         if (!ev->matches(m_timer))
             return;
@@ -775,9 +775,9 @@ public:
 
 void tst_QChronoTimer::timerFiresOnlyOncePerProcessEvents_data()
 {
-    QTest::addColumn<std::chrono::nanoseconds>("interval");
-    QTest::newRow("zero-timer") << 0ns;
-    QTest::newRow("non-zero-timer") << std::chrono::nanoseconds{10ms};
+    BOBUIest::addColumn<std::chrono::nanoseconds>("interval");
+    BOBUIest::newRow("zero-timer") << 0ns;
+    BOBUIest::newRow("non-zero-timer") << std::chrono::nanoseconds{10ms};
 }
 
 void tst_QChronoTimer::timerFiresOnlyOncePerProcessEvents()
@@ -795,11 +795,11 @@ void tst_QChronoTimer::timerFiresOnlyOncePerProcessEvents()
     QCOMPARE(longSlot.count, 1);
 }
 
-class TimerIdPersistsAfterThreadExitThread : public QThread
+class TimerIdPersistsAfterThreadExitThread : public BOBUIhread
 {
 public:
     std::unique_ptr<QChronoTimer> timer;
-    Qt::TimerId timerId = Qt::TimerId::Invalid;
+    BobUI::TimerId timerId = BobUI::TimerId::Invalid;
     int returnValue = -1;
 
     void run() override
@@ -824,7 +824,7 @@ void tst_QChronoTimer::timerIdPersistsAfterThreadExit()
     // even though the thread has exited, and the event dispatcher destroyed, the timer is still
     // "active", meaning the timer id should NOT be reused (i.e. the event dispatcher should not
     // have unregistered it)
-    Qt::TimerId timerId = Qt::TimerId{thread.startTimer(100ms)};
+    BobUI::TimerId timerId = BobUI::TimerId{thread.startTimer(100ms)};
     QVERIFY((timerId & 0xffffff) != (thread.timerId & 0xffffff));
 }
 
@@ -872,7 +872,7 @@ public slots:
 void tst_QChronoTimer::recurseOnTimeoutAndStopTimer()
 {
     QEventLoop eventLoop;
-    QTimer::singleShot(1s, &eventLoop, &QEventLoop::quit);
+    BOBUIimer::singleShot(1s, &eventLoop, &QEventLoop::quit);
 
     RecursOnTimeoutAndStopTimerTimer t;
     t.one = new QChronoTimer(&t);
@@ -894,16 +894,16 @@ void tst_QChronoTimer::recurseOnTimeoutAndStopTimer()
 
 struct CountedStruct
 {
-    CountedStruct(int *count, QThread *t = nullptr) : count(count), thread(t) { }
+    CountedStruct(int *count, BOBUIhread *t = nullptr) : count(count), thread(t) { }
     ~CountedStruct() { }
-    void operator()() const { ++(*count); if (thread) QCOMPARE(QThread::currentThread(), thread); }
+    void operator()() const { ++(*count); if (thread) QCOMPARE(BOBUIhread::currentThread(), thread); }
 
     int *count;
-    QThread *thread;
+    BOBUIhread *thread;
 };
 
 static QScopedPointer<QEventLoop> _e;
-static QThread *_t = nullptr;
+static BOBUIhread *_t = nullptr;
 
 class StaticEventLoop
 {
@@ -918,7 +918,7 @@ public:
         QVERIFY(!_e.isNull());
         _e->quit();
         if (_t)
-            QCOMPARE(QThread::currentThread(), _t);
+            QCOMPARE(BOBUIhread::currentThread(), _t);
     }
 };
 
@@ -927,7 +927,7 @@ class DontBlockEvents : public QObject
     Q_OBJECT
 public:
     DontBlockEvents();
-    void timerEvent(QTimerEvent*) override;
+    void timerEvent(BOBUIimerEvent*) override;
 
     int count;
     int total;
@@ -953,10 +953,10 @@ DontBlockEvents::DontBlockEvents()
     m_timer.start(1ms, this);
 }
 
-void DontBlockEvents::timerEvent(QTimerEvent* event)
+void DontBlockEvents::timerEvent(BOBUIimerEvent* event)
 {
     if (event->id() == m_timer.id()) {
-        QMetaObject::invokeMethod(this, &DontBlockEvents::paintEvent, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, &DontBlockEvents::paintEvent, BobUI::QueuedConnection);
         m_timer.start(0ms, this);
         count++;
         QCOMPARE(count, 1);
@@ -970,13 +970,13 @@ void DontBlockEvents::paintEvent()
     QCOMPARE(count, 0);
 }
 
-// This is a regression test for QTBUG-13633, where a timer with a zero
+// This is a regression test for BOBUIBUG-13633, where a timer with a zero
 // timeout that was restarted by the event handler could starve other timers.
 void tst_QChronoTimer::dontBlockEvents()
 {
     DontBlockEvents t;
-    QTest::qWait(60ms);
-    QTRY_VERIFY(t.total > 2);
+    BOBUIest::qWait(60ms);
+    BOBUIRY_VERIFY(t.total > 2);
 }
 
 class SlotRepeater : public QObject {
@@ -987,7 +987,7 @@ public:
 public slots:
     void repeatThisSlot()
     {
-        QMetaObject::invokeMethod(this, &SlotRepeater::repeatThisSlot, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, &SlotRepeater::repeatThisSlot, BobUI::QueuedConnection);
     }
 };
 
@@ -1000,17 +1000,17 @@ void tst_QChronoTimer::postedEventsShouldNotStarveTimers()
     timer.start();
     SlotRepeater slotRepeater;
     slotRepeater.repeatThisSlot();
-    QTRY_VERIFY_WITH_TIMEOUT(timeoutSpy.size() > 5, 100);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(timeoutSpy.size() > 5, 100);
 }
 
 struct DummyFunctor {
-    static QThread *callThread;
+    static BOBUIhread *callThread;
     void operator()() {
-        callThread = QThread::currentThread();
+        callThread = BOBUIhread::currentThread();
         callThread->quit();
     }
 };
-QThread *DummyFunctor::callThread = nullptr;
+BOBUIhread *DummyFunctor::callThread = nullptr;
 
 void tst_QChronoTimer::callOnTimeout()
 {
@@ -1026,7 +1026,7 @@ void tst_QChronoTimer::callOnTimeout()
     timer.callOnTimeout(&timer, &QChronoTimer::stop);
 
 
-    QTest::qWait(100ms);
+    BOBUIest::qWait(100ms);
     QCOMPARE(count, 2);
     QCOMPARE(timeoutSpy.size(), 1);
 
@@ -1061,15 +1061,15 @@ void tst_QChronoTimer::bindToTimer()
     QCOMPARE(interval.value(), 100ms);
 
     // timerType property
-    QProperty<Qt::TimerType> timerType;
+    QProperty<BobUI::TimerType> timerType;
     timerType.setBinding(timer.bindableTimerType().makeBinding());
     QCOMPARE(timer.timerType(), timerType);
 
-    timer.setTimerType(Qt::PreciseTimer);
-    QCOMPARE(timerType, Qt::PreciseTimer);
+    timer.setTimerType(BobUI::PreciseTimer);
+    QCOMPARE(timerType, BobUI::PreciseTimer);
 
-    timer.setTimerType(Qt::VeryCoarseTimer);
-    QCOMPARE(timerType, Qt::VeryCoarseTimer);
+    timer.setTimerType(BobUI::VeryCoarseTimer);
+    QCOMPARE(timerType, BobUI::VeryCoarseTimer);
 
     // active property
     QProperty<bool> active;
@@ -1089,7 +1089,7 @@ void tst_QChronoTimer::bindToTimer()
     QVERIFY(active);
 
     auto ignoreMsg = [] {
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              "QChronoTimer::setInterval: negative intervals aren't allowed; the "
                              "interval will be set to 1ms.");
     };
@@ -1119,7 +1119,7 @@ void tst_QChronoTimer::bindTimer()
     QVERIFY(!timer.isSingleShot());
 
     QProperty<bool> singleShot;
-    timer.bindableSingleShot().setBinding(Qt::makePropertyBinding(singleShot));
+    timer.bindableSingleShot().setBinding(BobUI::makePropertyBinding(singleShot));
 
     singleShot = true;
     QVERIFY(timer.isSingleShot());
@@ -1130,7 +1130,7 @@ void tst_QChronoTimer::bindTimer()
     QCOMPARE(timer.interval(), 0ns);
 
     QProperty<std::chrono::nanoseconds> interval;
-    timer.bindableInterval().setBinding(Qt::makePropertyBinding(interval));
+    timer.bindableInterval().setBinding(BobUI::makePropertyBinding(interval));
 
     interval = 10ms;
     QCOMPARE(timer.interval(), 10ms);
@@ -1142,15 +1142,15 @@ void tst_QChronoTimer::bindTimer()
     QCOMPARE(timer.interval(), 50ms);
 
     // timerType property
-    QCOMPARE(timer.timerType(), Qt::CoarseTimer);
+    QCOMPARE(timer.timerType(), BobUI::CoarseTimer);
 
-    QProperty<Qt::TimerType> timerType;
-    timer.bindableTimerType().setBinding(Qt::makePropertyBinding(timerType));
+    QProperty<BobUI::TimerType> timerType;
+    timer.bindableTimerType().setBinding(BobUI::makePropertyBinding(timerType));
 
-    timerType = Qt::PreciseTimer;
-    QCOMPARE(timer.timerType(), Qt::PreciseTimer);
-    timerType = Qt::VeryCoarseTimer;
-    QCOMPARE(timer.timerType(), Qt::VeryCoarseTimer);
+    timerType = BobUI::PreciseTimer;
+    QCOMPARE(timer.timerType(), BobUI::PreciseTimer);
+    timerType = BobUI::VeryCoarseTimer;
+    QCOMPARE(timer.timerType(), BobUI::VeryCoarseTimer);
 }
 
 void tst_QChronoTimer::automatedBindingTests()
@@ -1158,24 +1158,24 @@ void tst_QChronoTimer::automatedBindingTests()
     QChronoTimer timer;
 
     QVERIFY(!timer.isSingleShot());
-    QTestPrivate::testReadWritePropertyBasics(timer, true, false, "singleShot");
-    if (QTest::currentTestFailed()) {
+    BOBUIestPrivate::testReadWritePropertyBasics(timer, true, false, "singleShot");
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QChronoTimer::singleShot");
         return;
     }
 
     QCOMPARE_NE(timer.interval(), 10ms);
     using NSec = std::chrono::nanoseconds;
-    QTestPrivate::testReadWritePropertyBasics(timer, NSec{10ms}, NSec{20ms}, "interval");
-    if (QTest::currentTestFailed()) {
+    BOBUIestPrivate::testReadWritePropertyBasics(timer, NSec{10ms}, NSec{20ms}, "interval");
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QChronoTimer::interval");
         return;
     }
 
-    QCOMPARE_NE(timer.timerType(), Qt::PreciseTimer);
-    QTestPrivate::testReadWritePropertyBasics(timer, Qt::PreciseTimer, Qt::CoarseTimer,
+    QCOMPARE_NE(timer.timerType(), BobUI::PreciseTimer);
+    BOBUIestPrivate::testReadWritePropertyBasics(timer, BobUI::PreciseTimer, BobUI::CoarseTimer,
                                               "timerType");
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QChronoTimer::timerType");
         return;
     }
@@ -1183,9 +1183,9 @@ void tst_QChronoTimer::automatedBindingTests()
     timer.setInterval(1s);
     timer.start();
     QVERIFY(timer.isActive());
-    QTestPrivate::testReadOnlyPropertyBasics(timer, true, false, "active",
+    BOBUIestPrivate::testReadOnlyPropertyBasics(timer, true, false, "active",
                                              [&timer]() { timer.stop(); });
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QChronoTimer::active");
         return;
     }
@@ -1196,7 +1196,7 @@ void tst_QChronoTimer::negativeInterval()
     QChronoTimer timer;
 
     auto ignoreMsg = [] {
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              "QChronoTimer::setInterval: negative intervals aren't allowed; the "
                              "interval will be set to 1ms.");
     };
@@ -1236,16 +1236,16 @@ public:
         switch (callType)
         {
         case String:
-            QTimer::singleShot(0ns, this, SLOT(stringSlot()));
+            BOBUIimer::singleShot(0ns, this, SLOT(stringSlot()));
             break;
         case PMF:
-            QTimer::singleShot(0ns, this, &OrderHelper::pmfSlot);
+            BOBUIimer::singleShot(0ns, this, &OrderHelper::pmfSlot);
             break;
         case Functor:
-            QTimer::singleShot(0ns, this, [this]() { functorSlot(); });
+            BOBUIimer::singleShot(0ns, this, [this]() { functorSlot(); });
             break;
         case FunctorNoCtx:
-            QTimer::singleShot(0ns, [this]() { functorNoCtxSlot(); });
+            BOBUIimer::singleShot(0ns, [this]() { functorNoCtxSlot(); });
             break;
         }
     }
@@ -1268,12 +1268,12 @@ void tst_QChronoTimer::timerOrder()
     for (const auto call : calls)
         helper.triggerCall(call);
 
-    QTRY_COMPARE(helper.calls, calls);
+    BOBUIRY_COMPARE(helper.calls, calls);
 }
 
 void tst_QChronoTimer::timerOrder_data()
 {
-    QTest::addColumn<QList<OrderHelper::CallType>>("calls");
+    BOBUIest::addColumn<QList<OrderHelper::CallType>>("calls");
 
     QList<OrderHelper::CallType> calls = {
         OrderHelper::String, OrderHelper::PMF,
@@ -1283,14 +1283,14 @@ void tst_QChronoTimer::timerOrder_data()
 
     int permutation = 0;
     do {
-        QTest::addRow("permutation=%d", permutation) << calls;
+        BOBUIest::addRow("permutation=%d", permutation) << calls;
         ++permutation;
     } while (std::next_permutation(calls.begin(), calls.end()));
 }
 
 void tst_QChronoTimer::timerOrderBackgroundThread()
 {
-    auto *thread = QThread::create([this]() { timerOrder(); });
+    auto *thread = BOBUIhread::create([this]() { timerOrder(); });
     thread->start();
     QVERIFY(thread->wait());
     delete thread;
@@ -1305,12 +1305,12 @@ void tst_QChronoTimer::timerPrecision()
     QEventLoop loop;
 
     QChronoTimer zeroTimer{0ns};
-    zeroTimer.setTimerType(Qt::PreciseTimer);
+    zeroTimer.setTimerType(BobUI::PreciseTimer);
     zeroTimer.setSingleShot(true);
     connect(&zeroTimer, &QChronoTimer::timeout, this, [&t1] { t1 = steady_clock::now(); });
 
     QChronoTimer oneNSecTimer{1ns};
-    oneNSecTimer.setTimerType(Qt::PreciseTimer);
+    oneNSecTimer.setTimerType(BobUI::PreciseTimer);
     oneNSecTimer.setSingleShot(true);
     connect(&oneNSecTimer, &QChronoTimer::timeout, this, [&t2, &loop] {
         t2 = steady_clock::now();
@@ -1324,6 +1324,6 @@ void tst_QChronoTimer::timerPrecision()
     // qDebug() << "t2 - t1" << duration<double, std::chrono::milliseconds::period>{t2 - t1};
 }
 
-QTEST_MAIN(tst_QChronoTimer)
+BOBUIEST_MAIN(tst_QChronoTimer)
 
 #include "tst_qchronotimer.moc"

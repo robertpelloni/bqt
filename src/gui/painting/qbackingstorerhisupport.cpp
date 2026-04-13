@@ -1,20 +1,20 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qbackingstorerhisupport_p.h"
 #include <qpa/qplatformintegration.h>
 #include <private/qguiapplication_p.h>
 
-#if QT_CONFIG(opengl)
-#include <QtGui/qoffscreensurface.h>
-#include <QtGui/private/qopenglcontext_p.h>
+#if BOBUI_CONFIG(opengl)
+#include <BobUIGui/qoffscreensurface.h>
+#include <BobUIGui/private/qopenglcontext_p.h>
 #endif
 
-#if QT_CONFIG(vulkan)
-#include <QtGui/private/qvulkandefaultinstance_p.h>
+#if BOBUI_CONFIG(vulkan)
+#include <BobUIGui/private/qvulkandefaultinstance_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QBackingStoreRhiSupport::~QBackingStoreRhiSupport()
 {
@@ -54,7 +54,7 @@ bool QBackingStoreRhiSupport::create()
     QOffscreenSurface *surface = nullptr;
     QRhi::Flags flags;
 
-    // These must be the same env.vars Qt Quick uses (as documented), in order
+    // These must be the same env.vars BobUI Quick uses (as documented), in order
     // to ensure symmetry in the behavior between a QQuickWindow and a
     // (QRhi-based) widget top-level window.
     if (qEnvironmentVariableIntValue("QSG_RHI_PREFER_SOFTWARE_RENDERER"))
@@ -67,7 +67,7 @@ bool QBackingStoreRhiSupport::create()
         rhi = QRhi::create(QRhi::Null, &params, flags);
     }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     if (!rhi && m_config.api() == QPlatformBackingStoreRhiConfig::OpenGL) {
         surface = QRhiGles2InitParams::newFallbackSurface(m_format);
         QRhiGles2InitParams params;
@@ -105,10 +105,10 @@ bool QBackingStoreRhiSupport::create()
     }
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     if (!rhi && m_config.api() == QPlatformBackingStoreRhiConfig::Metal) {
         QRhiMetalInitParams params;
-        // For parity with Qt Quick, fall back to OpenGL when there is no Metal (f.ex. in macOS virtual machines).
+        // For parity with BobUI Quick, fall back to OpenGL when there is no Metal (f.ex. in macOS virtual machines).
         if (QRhi::probe(QRhi::Metal, &params)) {
             rhi = QRhi::create(QRhi::Metal, &params, flags);
         } else {
@@ -118,7 +118,7 @@ bool QBackingStoreRhiSupport::create()
     }
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (!rhi && m_config.api() == QPlatformBackingStoreRhiConfig::Vulkan) {
         if (m_config.isDebugLayerEnabled())
             QVulkanDefaultInstance::setFlag(QVulkanDefaultInstance::EnableValidation);
@@ -165,7 +165,7 @@ QRhiSwapChain *QBackingStoreRhiSupport::swapChainForWindow(QWindow *window)
             flags |= QRhiSwapChain::NoVSync;
         if (format.alphaBufferSize() > 0)
             flags |= QRhiSwapChain::SurfaceHasNonPreMulAlpha;
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
         if (m_config.api() == QPlatformBackingStoreRhiConfig::Vulkan && !window->vulkanInstance())
             window->setVulkanInstance(QVulkanDefaultInstance::instance());
 #endif
@@ -262,10 +262,10 @@ bool QBackingStoreRhiSupport::checkForceRhi(QPlatformBackingStoreRhiConfig *outC
     if (!checked) {
         checked = true;
 
-        const bool alwaysRhi = qEnvironmentVariableIntValue("QT_WIDGETS_RHI");
-        const bool highdpiDownscale = qEnvironmentVariableIntValue("QT_WIDGETS_HIGHDPI_DOWNSCALE");
+        const bool alwaysRhi = qEnvironmentVariableIntValue("BOBUI_WIDGETS_RHI");
+        const bool highdpiDownscale = qEnvironmentVariableIntValue("BOBUI_WIDGETS_HIGHDPI_DOWNSCALE");
         if (highdpiDownscale)
-            qCDebug(lcQpaBackingStore) << "Enabling QT_WIDGETS_RHI due to QT_WIDGETS_HIGHDPI_DOWNSCALE";
+            qCDebug(lcQpaBackingStore) << "Enabling BOBUI_WIDGETS_RHI due to BOBUI_WIDGETS_HIGHDPI_DOWNSCALE";
         if (alwaysRhi || highdpiDownscale)
             config.setEnabled(true);
 
@@ -273,41 +273,41 @@ bool QBackingStoreRhiSupport::checkForceRhi(QPlatformBackingStoreRhiConfig *outC
         if (config.isEnabled()) {
 #if defined(Q_OS_WIN)
             config.setApi(QPlatformBackingStoreRhiConfig::D3D11);
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
             config.setApi(QPlatformBackingStoreRhiConfig::Metal);
-#elif QT_CONFIG(opengl)
+#elif BOBUI_CONFIG(opengl)
             config.setApi(QPlatformBackingStoreRhiConfig::OpenGL);
-#elif QT_CONFIG(vulkan)
+#elif BOBUI_CONFIG(vulkan)
             config.setApi(QPlatformBackingStoreRhiConfig::Vulkan);
 #else
-            qWarning("QT_WIDGETS_RHI is set but no backend is available; ignoring");
+            qWarning("BOBUI_WIDGETS_RHI is set but no backend is available; ignoring");
             return false;
 #endif
 
             // the env.var. will always override
-            if (qEnvironmentVariableIsSet("QT_WIDGETS_RHI_BACKEND")) {
-                const QString backend = qEnvironmentVariable("QT_WIDGETS_RHI_BACKEND");
+            if (qEnvironmentVariableIsSet("BOBUI_WIDGETS_RHI_BACKEND")) {
+                const QString backend = qEnvironmentVariable("BOBUI_WIDGETS_RHI_BACKEND");
 #ifdef Q_OS_WIN
                 if (backend == QStringLiteral("d3d11") || backend == QStringLiteral("d3d"))
                     config.setApi(QPlatformBackingStoreRhiConfig::D3D11);
                 if (backend == QStringLiteral("d3d12"))
                     config.setApi(QPlatformBackingStoreRhiConfig::D3D12);
 #endif
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
                 if (backend == QStringLiteral("metal"))
                     config.setApi(QPlatformBackingStoreRhiConfig::Metal);
 #endif
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
                 if (backend == QStringLiteral("opengl") || backend == QStringLiteral("gl"))
                     config.setApi(QPlatformBackingStoreRhiConfig::OpenGL);
 #endif
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
                 if (backend == QStringLiteral("vulkan"))
                     config.setApi(QPlatformBackingStoreRhiConfig::Vulkan);
 #endif
             }
 
-            if (qEnvironmentVariableIntValue("QT_WIDGETS_RHI_DEBUG_LAYER"))
+            if (qEnvironmentVariableIntValue("BOBUI_WIDGETS_RHI_DEBUG_LAYER"))
                 config.setDebugLayer(true);
         }
 
@@ -325,4 +325,4 @@ bool QBackingStoreRhiSupport::checkForceRhi(QPlatformBackingStoreRhiConfig *outC
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

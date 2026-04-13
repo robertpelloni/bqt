@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLAYOUTITEM_H
 #define QLAYOUTITEM_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qsizepolicy.h>
-#include <QtCore/qrect.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qsizepolicy.h>
+#include <BobUICore/qrect.h>
 
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 inline constexpr int QLAYOUTSIZE_MAX = INT_MAX/256/16;
@@ -25,12 +25,12 @@ class QSize;
 class Q_WIDGETS_EXPORT QLayoutItem
 {
 public:
-    inline explicit QLayoutItem(Qt::Alignment alignment = Qt::Alignment());
+    inline explicit QLayoutItem(BobUI::Alignment alignment = BobUI::Alignment());
     virtual ~QLayoutItem();
     virtual QSize sizeHint() const = 0;
     virtual QSize minimumSize() const = 0;
     virtual QSize maximumSize() const = 0;
-    virtual Qt::Orientations expandingDirections() const = 0;
+    virtual BobUI::Orientations expandingDirections() const = 0;
     virtual void setGeometry(const QRect&) = 0;
     virtual QRect geometry() const = 0;
     virtual bool isEmpty() const = 0;
@@ -43,15 +43,15 @@ public:
     virtual QLayout *layout();
     virtual QSpacerItem *spacerItem();
 
-    Qt::Alignment alignment() const { return align; }
-    void setAlignment(Qt::Alignment a);
+    BobUI::Alignment alignment() const { return align; }
+    void setAlignment(BobUI::Alignment a);
     virtual QSizePolicy::ControlTypes controlTypes() const;
 
 protected:
-    Qt::Alignment align;
+    BobUI::Alignment align;
 };
 
-inline QLayoutItem::QLayoutItem(Qt::Alignment aalignment)
+inline QLayoutItem::QLayoutItem(BobUI::Alignment aalignment)
     : align(aalignment) { }
 
 class Q_WIDGETS_EXPORT QSpacerItem : public QLayoutItem
@@ -69,7 +69,7 @@ public:
     QSize sizeHint() const override;
     QSize minimumSize() const override;
     QSize maximumSize() const override;
-    Qt::Orientations expandingDirections() const override;
+    BobUI::Orientations expandingDirections() const override;
     bool isEmpty() const override;
     void setGeometry(const QRect&) override;
     QRect geometry() const override;
@@ -94,7 +94,7 @@ public:
     QSize sizeHint() const override;
     QSize minimumSize() const override;
     QSize maximumSize() const override;
-    Qt::Orientations expandingDirections() const override;
+    BobUI::Orientations expandingDirections() const override;
     bool isEmpty() const override;
     void setGeometry(const QRect&) override;
     QRect geometry() const override;
@@ -142,6 +142,6 @@ private:
     Q_DISABLE_COPY(QWidgetItemV2)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLAYOUTITEM_H

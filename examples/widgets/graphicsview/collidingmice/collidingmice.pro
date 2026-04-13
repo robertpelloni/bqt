@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS += \
 	mouse.h
@@ -10,5 +10,5 @@ RESOURCES += \
 	mice.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/graphicsview/collidingmice
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/graphicsview/collidingmice
 INSTALLS += target

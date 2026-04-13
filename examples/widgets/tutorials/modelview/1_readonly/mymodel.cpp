@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [Quoting ModelView Tutorial]
 // mymodel.cpp
@@ -22,7 +22,7 @@ int MyModel::columnCount(const QModelIndex & /*parent*/) const
 
 QVariant MyModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole)
+    if (role == BobUI::DisplayRole)
        return QString("Row%1, Column%2")
                    .arg(index.row() + 1)
                    .arg(index.column() +1);

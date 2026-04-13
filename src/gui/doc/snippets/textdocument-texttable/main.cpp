@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QTextEdit>
-#include <QTextTable>
+#include <BOBUIextEdit>
+#include <BOBUIextTable>
 
 int main(int argc, char * argv[])
 {
@@ -10,22 +10,22 @@ int main(int argc, char * argv[])
     int columns = 2;
 
     QApplication app(argc, argv);
-    QTextEdit *textEdit = new QTextEdit;
-    QTextCursor cursor(textEdit->textCursor());
-    cursor.movePosition(QTextCursor::Start);
+    BOBUIextEdit *textEdit = new BOBUIextEdit;
+    BOBUIextCursor cursor(textEdit->textCursor());
+    cursor.movePosition(BOBUIextCursor::Start);
 
-    QTextTableFormat tableFormat;
-    tableFormat.setAlignment(Qt::AlignHCenter);
+    BOBUIextTableFormat tableFormat;
+    tableFormat.setAlignment(BobUI::AlignHCenter);
     tableFormat.setCellPadding(2);
     tableFormat.setCellSpacing(2);
-    QTextTable *table = cursor.insertTable(rows, columns);
+    BOBUIextTable *table = cursor.insertTable(rows, columns);
     table->setFormat(tableFormat);
 
-    QTextCharFormat boldFormat;
+    BOBUIextCharFormat boldFormat;
     boldFormat.setFontWeight(QFont::Bold);
 
-    QTextBlockFormat centerFormat;
-    centerFormat.setAlignment(Qt::AlignHCenter);
+    BOBUIextBlockFormat centerFormat;
+    centerFormat.setAlignment(BobUI::AlignHCenter);
     cursor.mergeBlockFormat(centerFormat);
 
     cursor = table->cellAt(0, 0).firstCursorPosition();

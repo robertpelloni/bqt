@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
-// Qt-Security score:insignificant reason:docs
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+// BobUI-Security score:insignificant reason:docs
 
 /*!
     \class QLocale
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QLocale class converts between numbers and their
     string representations in various languages.
 
@@ -958,7 +958,7 @@
     \enum QLocale::FormatType
 
     This enum describes the different formats that can be used when
-    converting QDate, QTime, and QDateTime objects, as well
+    converting QDate, BOBUIime, and QDateTime objects, as well
     as months and days, to strings specific to the locale.
 
     \value LongFormat Longer format.
@@ -1064,7 +1064,7 @@
     \value ISO639Part2T ISO 639 Part 2 terminological Alpha 3 code.
     \value ISO639Part3 ISO 639 Part 3 Alpha 3 code.
     \value LegacyLanguageCode Codes that are not part of the above set, but that
-            were supported by Qt in the past. This value can only be used by
+            were supported by BobUI in the past. This value can only be used by
             codeToLanguage(). It is ignored when passed to languageToCode().
     \value ISO639Part2 Any ISO 639 Part 2 code.
     \value ISO639Alpha2 Any ISO-639 2-letter code.
@@ -1117,7 +1117,7 @@
 /*!
     \internal
     \class QSystemLocale
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSystemLocale class can be used to finetune the system locale
     of the user.
     \since 4.2
@@ -1157,8 +1157,8 @@
   \value MonthNameShort a QString specifying the short name of a month. the in variant contains an integer between 1 and 12
   \value DateToStringLong converts the QDate stored in the in variant to a QString using the long date format
   \value DateToStringShort converts the QDate stored in the in variant to a QString using the short date format
-  \value TimeToStringLong converts the QTime stored in the in variant to a QString using the long time format
-  \value TimeToStringShort converts the QTime stored in the in variant to a QString using the short time format
+  \value TimeToStringLong converts the BOBUIime stored in the in variant to a QString using the long time format
+  \value TimeToStringShort converts the BOBUIime stored in the in variant to a QString using the short time format
   \value DateTimeFormatLong a QString specifying the long date time format
   \value DateTimeFormatShort a QString specifying the short date time format
   \value DateTimeToStringLong converts the QDateTime in the in variant to a QString using the long datetime format
@@ -1166,13 +1166,13 @@
   \value MeasurementSystem a QLocale::MeasurementSystem enum specifying the measurement system
   \value AMText a string that represents the system AM designator associated with a 12-hour clock.
   \value PMText a string that represents the system PM designator associated with a 12-hour clock.
-  \value FirstDayOfWeek a Qt::DayOfWeek enum specifying the first day of the week
+  \value FirstDayOfWeek a BobUI::DayOfWeek enum specifying the first day of the week
   \value CurrencySymbol a string that represents a currency in a format QLocale::CurrencyFormat.
   \value CurrencyToString a localized string representation of a number with a currency symbol. Converts a QSystemLocale::CurrencyToStringArgument stored in the in variant to a QString.
   \value UILanguages a list of strings representing locale names that could be used for UI translation.
   \value StringToStandardQuotation a QString containing a quoted version of the string ref stored in the in variant using standard quotes.
   \value StringToAlternateQuotation a QString containing a quoted version of the string ref stored in the in variant using alternate quotes.
-  \value Weekdays a QList<Qt::DayOfWeek> specifying the regular weekdays
+  \value Weekdays a QList<BobUI::DayOfWeek> specifying the regular weekdays
   \value LocaleChanged this type is queried whenever the system locale is changed.
   \value ListToSeparatedString a string that represents a join of a given QStringList with a locale-defined separator.
   \value NativeLanguageName a string that represents the name of the native language.
@@ -1204,7 +1204,7 @@
 
 /*!
     \class QSystemLocale::CurrencyToStringArgument
-    \inmodule QtCore
+    \inmodule BobUICore
 
     A helper class that provides arguments for the QSystemLocale::query()
     function with query type QSystemLocale::CurrencyToString.

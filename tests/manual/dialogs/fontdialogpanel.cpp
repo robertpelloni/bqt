@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "fontdialogpanel.h"
 #include "utils.h"
@@ -12,7 +12,7 @@
 #include <QMessageBox>
 #include <QFontComboBox>
 #include <QDoubleSpinBox>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QDebug>
 
 FontDialogPanel::FontDialogPanel(QWidget *parent)
@@ -48,8 +48,8 @@ FontDialogPanel::FontDialogPanel(QWidget *parent)
     QVBoxLayout *buttonsLayout = new QVBoxLayout(buttonsGroupBox);
     addButton(tr("Exec modal"), buttonsLayout, this, SLOT(execModal()));
     addButton(tr("Show application modal"), buttonsLayout,
-              [this]() { showModal(Qt::ApplicationModal); });
-    addButton(tr("Show window modal"), buttonsLayout, [this]() { showModal(Qt::WindowModal); });
+              [this]() { showModal(BobUI::ApplicationModal); });
+    addButton(tr("Show window modal"), buttonsLayout, [this]() { showModal(BobUI::WindowModal); });
     m_deleteModalDialogButton =
         addButton(tr("Delete modal"), buttonsLayout, this, SLOT(deleteModalDialog()));
     addButton(tr("Show non-modal"), buttonsLayout, this, SLOT(showNonModal()));
@@ -77,20 +77,20 @@ void FontDialogPanel::execModal()
     QFontDialog dialog(this);
     applySettings(&dialog);
     connect(&dialog, SIGNAL(accepted()), this, SLOT(accepted()));
-    dialog.setWindowTitle(tr("Modal Font Dialog Qt %1").arg(QLatin1String(QT_VERSION_STR)));
+    dialog.setWindowTitle(tr("Modal Font Dialog BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)));
     dialog.exec();
 }
 
-void FontDialogPanel::showModal(Qt::WindowModality modality)
+void FontDialogPanel::showModal(BobUI::WindowModality modality)
 {
     if (m_modalDialog.isNull()) {
         static int  n = 0;
         m_modalDialog = new QFontDialog(this);
         m_modalDialog->setModal(true);
         connect(m_modalDialog.data(), SIGNAL(accepted()), this, SLOT(accepted()));
-        m_modalDialog->setWindowTitle(tr("Modal Font Dialog #%1 Qt %2")
+        m_modalDialog->setWindowTitle(tr("Modal Font Dialog #%1 BobUI %2")
                                       .arg(++n)
-                                      .arg(QLatin1String(QT_VERSION_STR)));
+                                      .arg(QLatin1String(BOBUI_VERSION_STR)));
         enableDeleteModalDialogButton();
     }
     m_modalDialog->setWindowModality(modality);
@@ -104,9 +104,9 @@ void FontDialogPanel::showNonModal()
         static int  n = 0;
         m_nonModalDialog = new QFontDialog(this);
         connect(m_nonModalDialog.data(), SIGNAL(accepted()), this, SLOT(accepted()));
-        m_nonModalDialog->setWindowTitle(tr("Non-Modal Font Dialog #%1 Qt %2")
+        m_nonModalDialog->setWindowTitle(tr("Non-Modal Font Dialog #%1 BobUI %2")
                                          .arg(++n)
-                                         .arg(QLatin1String(QT_VERSION_STR)));
+                                         .arg(QLatin1String(BOBUI_VERSION_STR)));
         enableDeleteNonModalDialogButton();
     }
     applySettings(m_nonModalDialog);
@@ -135,7 +135,7 @@ void FontDialogPanel::accepted()
     QDebug(&m_result).nospace()
         << "Current font: " << d->currentFont()
         << "\nSelected font: " << d->selectedFont();
-    QTimer::singleShot(0, this, SLOT(showAcceptedResult())); // Avoid problems with the closing (modal) dialog as parent.
+    BOBUIimer::singleShot(0, this, SLOT(showAcceptedResult())); // Avoid problems with the closing (modal) dialog as parent.
 }
 
 void FontDialogPanel::showAcceptedResult()

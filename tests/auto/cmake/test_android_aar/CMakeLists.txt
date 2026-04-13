@@ -1,16 +1,16 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 
 project(test_android_aar)
 
-find_package(Qt6 COMPONENTS Core Gui REQUIRED)
+find_package(BobUI6 COMPONENTS Core Gui REQUIRED)
 
-qt6_add_executable(test_aar main.cpp)
+bobui6_add_executable(test_aar main.cpp)
 
-# To support opening the project in QtCreator
-if($CACHE{QT_USE_TARGET_ANDROID_BUILD_DIR})
+# To support opening the project in BobUICreator
+if($CACHE{BOBUI_USE_TARGET_ANDROID_BUILD_DIR})
     set(TARGET_ANDROID_BUILD_DIR ${CMAKE_BINARY_DIR}/android-build-test_aar)
 else()
     set(TARGET_ANDROID_BUILD_DIR ${CMAKE_BINARY_DIR}/android-build)
@@ -18,17 +18,17 @@ endif()
 
 # Add common libs for available ABIs that should be present in the aar package in a list
 unset(aar_content_filepaths_to_verify)
-foreach(abi IN LISTS QT_ANDROID_ABIS)
-   list(APPEND aar_content_filepaths_to_verify "jni/${abi}/libQt6Core_${abi}.so")
-   list(APPEND aar_content_filepaths_to_verify "jni/${abi}/libQt6Gui_${abi}.so")
+foreach(abi IN LISTS BOBUI_ANDROID_ABIS)
+   list(APPEND aar_content_filepaths_to_verify "jni/${abi}/libBobUI6Core_${abi}.so")
+   list(APPEND aar_content_filepaths_to_verify "jni/${abi}/libBobUI6Gui_${abi}.so")
    list(APPEND aar_content_filepaths_to_verify
-            "jni/${abi}/libplugins_platforms_qtforandroid_${abi}.so")
+            "jni/${abi}/libplugins_platforms_bobuiforandroid_${abi}.so")
    list(APPEND aar_content_filepaths_to_verify "jni/${abi}/libtest_aar_${abi}.so")
 endforeach()
 
 # Add a few ABI independent file that should be present in the aar package in a list
-list(APPEND aar_content_filepaths_to_verify "libs/Qt6Android.jar")
-list(APPEND aar_content_filepaths_to_verify "res/xml/qtprovider_paths.xml")
+list(APPEND aar_content_filepaths_to_verify "libs/BobUI6Android.jar")
+list(APPEND aar_content_filepaths_to_verify "res/xml/bobuiprovider_paths.xml")
 list(APPEND aar_content_filepaths_to_verify "AndroidManifest.xml")
 list(JOIN aar_content_filepaths_to_verify "|"  grep_pattern)
 
@@ -51,4 +51,4 @@ add_custom_target(verify_aar
 # Build aar package before verification
 add_dependencies(verify_aar aar)
 
-target_link_libraries(test_aar PRIVATE Qt::Core Qt::Gui)
+target_link_libraries(test_aar PRIVATE BobUI::Core BobUI::Gui)

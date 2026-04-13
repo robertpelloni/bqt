@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLISTWIDGET_P_H
 #define QLISTWIDGET_P_H
@@ -9,24 +9,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. This header file may change
+// This file is not part of the BobUI API. This header file may change
 // from version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtWidgets/qabstractitemview.h>
-#include <QtWidgets/qlistwidget.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUIWidgets/qabstractitemview.h>
+#include <BobUIWidgets/qlistwidget.h>
 #include <private/qlistview_p.h>
 #include <private/qwidgetitemdata_p.h>
 
 #include <array>
 
-QT_REQUIRE_CONFIG(listwidget);
+BOBUI_REQUIRE_CONFIG(listwidget);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QListModelLessThan
 {
@@ -66,7 +66,7 @@ public:
     QModelIndex index(const QListWidgetItem *item) const;
     QModelIndex index(int row, int column = 0, const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     bool clearItemData(const QModelIndex &index) override;
 
@@ -76,10 +76,10 @@ public:
     bool removeRows(int row, int count = 1, const QModelIndex &parent = QModelIndex()) override;
     bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild) override;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
 
-    void sort(int column, Qt::SortOrder order) override;
-    void ensureSorted(int column, Qt::SortOrder order, int start, int end);
+    void sort(int column, BobUI::SortOrder order) override;
+    void ensureSorted(int column, BobUI::SortOrder order, int start, int end);
     static bool itemLessThan(const std::pair<QListWidgetItem*,int> &left,
                              const std::pair<QListWidgetItem*,int> &right);
     static bool itemGreaterThan(const std::pair<QListWidgetItem*,int> &left,
@@ -87,18 +87,18 @@ public:
     static QList<QListWidgetItem*>::iterator sortedInsertionIterator(
         const QList<QListWidgetItem*>::iterator &begin,
         const QList<QListWidgetItem*>::iterator &end,
-        Qt::SortOrder order, QListWidgetItem *item);
+        BobUI::SortOrder order, QListWidgetItem *item);
 
     void itemChanged(QListWidgetItem *item, const QList<int> &roles = QList<int>());
 
     // dnd
     QStringList mimeTypes() const override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
-#if QT_CONFIG(draganddrop)
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+#if BOBUI_CONFIG(draganddrop)
+    bool dropMimeData(const QMimeData *data, BobUI::DropAction action,
                       int row, int column, const QModelIndex &parent) override;
-    Qt::DropActions supportedDropActions() const override;
-    Qt::DropActions supportedDragActions() const override;
+    BobUI::DropActions supportedDropActions() const override;
+    BobUI::DropActions supportedDragActions() const override;
 #endif
     QMimeData *internalMimeData()  const;
 private:
@@ -114,7 +114,7 @@ class QListWidgetPrivate : public QListViewPrivate
 {
     Q_DECLARE_PUBLIC(QListWidget)
 public:
-    QListWidgetPrivate() : QListViewPrivate(), sortOrder(Qt::AscendingOrder), sortingEnabled(false) {}
+    QListWidgetPrivate() : QListViewPrivate(), sortOrder(BobUI::AscendingOrder), sortingEnabled(false) {}
     inline QListModel *listModel() const { return qobject_cast<QListModel*>(model); }
     void setup();
     void clearConnections();
@@ -128,9 +128,9 @@ public:
     void sort();
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
-    Qt::SortOrder sortOrder;
+    BobUI::SortOrder sortOrder;
     bool sortingEnabled;
-    std::optional<Qt::DropActions> supportedDragActions;
+    std::optional<BobUI::DropActions> supportedDragActions;
     std::array<QMetaObject::Connection, 8> connections;
     std::array<QMetaObject::Connection, 2> selectionModelConnections;
 };
@@ -144,6 +144,6 @@ public:
     int theid;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLISTWIDGET_P_H

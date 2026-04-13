@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
+#include <BobUIGui>
 
 #include "javastyle.h"
 #include <math.h>
@@ -23,13 +23,13 @@ JavaStyle::JavaStyle()
 
 
 inline QPoint JavaStyle::adjustScrollPoint(const QPoint &point,
-                    Qt::Orientation orientation,
+                    BobUI::Orientation orientation,
                     bool add) const
 {
     int adder = add ? -1 : 1;
     QPoint retPoint;
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         retPoint = QPoint(point.y() * adder, point.x());
     } else {
         retPoint = QPoint(point.x(), point.y() * adder);
@@ -45,15 +45,15 @@ QPalette JavaStyle::standardPalette() const
     palette.setBrush(QPalette::Active, QPalette::Button,
                      QColor(184, 207, 229));
     palette.setBrush(QPalette::Active, QPalette::WindowText,
-                     Qt::black);
+                     BobUI::black);
     palette.setBrush(QPalette::Active, QPalette::Background,
                      QColor(238, 238, 238));
     palette.setBrush(QPalette::Active, QPalette::Window,
                      QColor(238 ,238, 238));
-    palette.setBrush(QPalette::Active, QPalette::Base, Qt::white);
+    palette.setBrush(QPalette::Active, QPalette::Base, BobUI::white);
     palette.setBrush(QPalette::Active, QPalette::AlternateBase, QColor(238, 238, 238));
-    palette.setBrush(QPalette::Active, QPalette::Text, Qt::black);
-    palette.setBrush(QPalette::Active, QPalette::BrightText, Qt::white);
+    palette.setBrush(QPalette::Active, QPalette::Text, BobUI::black);
+    palette.setBrush(QPalette::Active, QPalette::BrightText, BobUI::white);
 
     palette.setBrush(QPalette::Active, QPalette::Light, QColor(163, 184, 204)); // focusFrameColor
     palette.setBrush(QPalette::Active, QPalette::Midlight, QColor(99, 130, 191)); // tabBarBorderColor
@@ -62,10 +62,10 @@ QPalette JavaStyle::standardPalette() const
     palette.setBrush(QPalette::Active, QPalette::Shadow, QColor(122, 138, 153)); // defaultFrame
 
     palette.setBrush(QPalette::Active, QPalette::Highlight, QColor(184, 207, 229));
-    palette.setBrush(QPalette::Active, QPalette::HighlightedText, Qt::black);
+    palette.setBrush(QPalette::Active, QPalette::HighlightedText, BobUI::black);
 
     palette.setBrush(QPalette::Inactive, QPalette::Highlight, QColor(184, 207, 229));
-    palette.setBrush(QPalette::Inactive, QPalette::HighlightedText, Qt::black);
+    palette.setBrush(QPalette::Inactive, QPalette::HighlightedText, BobUI::black);
 
     palette.setBrush(QPalette::Disabled, QPalette::Button,
                      QColor(238, 238, 238));
@@ -95,11 +95,11 @@ inline void JavaStyle::drawScrollBarArrow(const QRect &rect, QPainter *painter,
 
     painter->save();
 
-    Qt::Orientation orient = option->orientation;
+    BobUI::Orientation orient = option->orientation;
     QPoint offset;
 
     if (add) {
-        if (orient == Qt::Vertical) {
+        if (orient == BobUI::Vertical) {
             offset = rect.bottomLeft();
         } else {
             offset = rect.topRight();
@@ -136,12 +136,12 @@ inline void JavaStyle::drawScrollBarArrow(const QRect &rect, QPainter *painter,
     painter->restore();
 }
 
-inline QPoint JavaStyle::adjustScrollHandlePoint(Qt::Orientation orig,
+inline QPoint JavaStyle::adjustScrollHandlePoint(BobUI::Orientation orig,
                          const QPoint &point) const
 {
     QPoint retPoint;
 
-    if (orig == Qt::Vertical)
+    if (orig == BobUI::Vertical)
         retPoint = point;
     else
         retPoint = QPoint(point.y(), point.x());
@@ -162,7 +162,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
 
             painter->save();
 
-            if (box->direction == Qt::RightToLeft) {
+            if (box->direction == BobUI::RightToLeft) {
                 painter->rotate(1);
                 painter->translate(box->rect.width(), -box->rect.height());
             }
@@ -192,7 +192,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                (box->rect.bottomRight() + QPoint(0, -4));
 
             painter->setPen(box->palette.color(QPalette::Midlight));
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
             painter->drawPolyline(outerLine);
 
             painter->restore();
@@ -222,10 +222,10 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             QLinearGradient gradient(rect.topLeft(),
                                      rect.bottomLeft());
             gradient.setColorAt(1.0, QColor(191, 212, 231));
-            gradient.setColorAt(0.3, Qt::white);
+            gradient.setColorAt(0.3, BobUI::white);
             gradient.setColorAt(0.0, QColor(221, 232, 243));
 
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->setBrush(gradient);
             painter->drawRect(rect.adjusted(0, 0, -1, -1));
 
@@ -238,8 +238,8 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                 painter->setFont(font);
                 painter->setPen(docker->palette.text().color());
                 painter->drawText(textRect, docker->title,
-                                  QTextOption(Qt::AlignHCenter |
-                                  Qt::AlignVCenter));
+                                  BOBUIextOption(BobUI::AlignHCenter |
+                                  BobUI::AlignVCenter));
             }
             break;
         }
@@ -256,13 +256,13 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             const QStyleOptionHeader *header =
                 qstyleoption_cast<const QStyleOptionHeader *>(option);
 
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->setBrush(option->palette.color(QPalette::Active,
                               QPalette::Background));
             painter->drawRect(option->rect);
 
             painter->setPen(header->palette.color(QPalette::Mid));
-            if (header->orientation == Qt::Horizontal) {
+            if (header->orientation == BobUI::Horizontal) {
                 if (header->position == QStyleOptionHeader::Beginning ||
                     header->position == QStyleOptionHeader::OnlyOneSection) {
                     painter->drawRect(header->rect.adjusted(0, 0, -1, -1));
@@ -320,7 +320,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                 painter->setPen(QColor(204, 204, 204));
                 painter->setBrush(gradient);
             } else {
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 painter->setBrush(option->palette.color(QPalette::Background));
             }
             painter->drawRect(rect.adjusted(0, 0, -1, -1));
@@ -331,9 +331,9 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                 qstyleoption_cast<const QStyleOptionProgressBar *>(option);
 
             QRect rect = bar->rect;
-            if (bar->orientation == Qt::Vertical) {
+            if (bar->orientation == BobUI::Vertical) {
                 rect = QRect(rect.left(), rect.top(), rect.height(), rect.width());
-                QTransform m;
+                BOBUIransform m;
                 m.translate(rect.height()-1, 0);
                 m.rotate(90.0);
                 painter->setTransform(m);
@@ -344,7 +344,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
 
             QRect grooveRect = subElementRect(SE_ProgressBarGroove, bar,
                                               widget);
-            if (bar->orientation == Qt::Vertical) {
+            if (bar->orientation == BobUI::Vertical) {
                 grooveRect = QRect(grooveRect.left(), grooveRect.top(),
                                    grooveRect.height(), grooveRect.width());
             }
@@ -356,7 +356,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
 
             QRect progressRect = subElementRect(SE_ProgressBarContents, bar,
                                                 widget);
-            if (bar->orientation == Qt::Vertical) {
+            if (bar->orientation == BobUI::Vertical) {
                 progressRect = QRect(progressRect.left(), progressRect.top(),
                 progressRect.height(), progressRect.width());
                 progressRect.adjust(0, 0, 0, -1);
@@ -366,7 +366,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             drawControl(CE_ProgressBarContents, &progressOpt, painter, widget);
 
             QRect labelRect = subElementRect(SE_ProgressBarLabel, bar, widget);
-            if (bar->orientation == Qt::Vertical) {
+            if (bar->orientation == BobUI::Vertical) {
                 labelRect = QRect(labelRect.left(), labelRect.top(),
                 labelRect.height(), labelRect.width());
             }
@@ -379,7 +379,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
         }
         case CE_ProgressBarGroove: {
             painter->setBrush(option->palette.color(QPalette::Background));
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->drawRect(option->rect.adjusted(0, 0, -1, -1));
 
             painter->setPen(option->palette.color(QPalette::Button));
@@ -395,13 +395,13 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                                 bar->rect.width());
 
             painter->setBrush(bar->palette.color(QPalette::Light));
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             QRect progressRect = QRect(bar->rect.topLeft(), QPoint(progress,
             bar->rect.bottom()));
             painter->drawRect(progressRect);
 
             painter->setPen(bar->palette.color(QPalette::Midlight));
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
 
             painter->drawLine(bar->rect.bottomLeft(), bar->rect.topLeft());
             painter->drawLine(bar->rect.topLeft(), QPoint(progress,
@@ -439,12 +439,12 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             QRect textRect = QFontMetrics(font).boundingRect(bar->text);
             textRect.moveCenter(option->rect.center());
             painter->drawText(textRect, bar->text,
-                              QTextOption(Qt::AlignCenter));
+                              BOBUIextOption(BobUI::AlignCenter));
             if (!leftRect.isNull()) {
                 painter->setPen(bar->palette.color(QPalette::Base));
-                painter->setClipRect(leftRect, Qt::IntersectClip);
+                painter->setClipRect(leftRect, BobUI::IntersectClip);
                 painter->drawText(textRect, bar->text,
-                                  QTextOption(Qt::AlignCenter));
+                                  BOBUIextOption(BobUI::AlignCenter));
             }
 
             painter->restore();
@@ -466,10 +466,10 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             if (!(option->state & State_Sunken)) {
                 QLinearGradient gradient(option->rect.topLeft(),
                                          option->rect.bottomLeft());
-                gradient.setColorAt(0.0, Qt::white);
+                gradient.setColorAt(0.0, BobUI::white);
                 gradient.setColorAt(1.0, QColor(223, 223, 223));
 
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 painter->setBrush(gradient);
             } else {
                 painter->setBrush(option->palette.color(QPalette::Light));
@@ -480,7 +480,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                 painter->setPen(option->palette.color(QPalette::Mid));
                 painter->drawRect(option->rect.adjusted(0, 0, -1, -1));
                 painter->setPen(option->palette.color(QPalette::Base));
-                painter->setBrush(Qt::NoBrush);
+                painter->setBrush(BobUI::NoBrush);
                 painter->drawLine(option->rect.bottomRight() + QPoint(0, -1),
                                   option->rect.topRight() + QPoint(0, -1));
             }
@@ -513,7 +513,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
 
             if (selected) {
                 painter->setBrush(menuItem->palette.color(QPalette::Light));
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 painter->drawRect(menuItem->rect);
                 painter->setPen(menuItem->palette.color(QPalette::Midlight));
                 painter->drawLine(menuItem->rect.topLeft(),
@@ -624,11 +624,11 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             QString s = menuitem->text;
             if (!s.isEmpty()) {
                 qsizetype t = s.indexOf(u'\t');
-                int text_flags = Qt::AlignVCenter | Qt::TextShowMnemonic |
-                 Qt::TextDontClip | Qt::TextSingleLine;
+                int text_flags = BobUI::AlignVCenter | BobUI::TextShowMnemonic |
+                 BobUI::TextDontClip | BobUI::TextSingleLine;
                 if (!styleHint(SH_UnderlineShortcut, menuitem, widget))
-                    text_flags |= Qt::TextHideMnemonic;
-                text_flags |= Qt::AlignLeft;
+                    text_flags |= BobUI::TextHideMnemonic;
+                text_flags |= BobUI::AlignLeft;
                 if (t >= 0) {
                     QRect vShortcutRect = visualRect(opt->direction,
                              menuitem->rect,
@@ -670,7 +670,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
 
                 painter->save();
                 painter->setBrush(menuItem->palette.color(QPalette::Text));
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 painter->drawPath(arrow);
                 painter->restore();
             }
@@ -692,18 +692,18 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             const QStyleOptionSlider *scrollBar =
                 qstyleoption_cast<const QStyleOptionSlider *>(option);
             QRect myRect;
-            if (scrollBar->orientation == Qt::Horizontal) {
+            if (scrollBar->orientation == BobUI::Horizontal) {
                 myRect = QRect(option->rect.topLeft(),
                 option->rect.bottomRight()).adjusted(0, 0, 1, -1);
             } else {
                 myRect = option->rect;
             }
 
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->setBrush(option->palette.color(QPalette::Background));
             painter->drawRect(myRect);
 
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
             painter->setPen(scrollBar->palette.color(QPalette::Mid));
             painter->drawRect(myRect.adjusted(0, 0, -1, 0));
             painter->setPen(scrollBar->palette.color(QPalette::Button));
@@ -722,7 +722,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             QRect button1;
             QRect button2;
 
-            if (scrollBar->orientation == Qt::Horizontal) {
+            if (scrollBar->orientation == BobUI::Horizontal) {
                 button1.setRect(scrollBarSubLine.left(), scrollBarSubLine.top(),
                 16, scrollBarExtent);
                 button2.setRect(scrollBarSubLine.right() - 15,
@@ -734,7 +734,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                 scrollBarSubLine.bottom() - 15, scrollBarExtent, 16);
             }
 
-            painter->fillRect(button2, Qt::blue);
+            painter->fillRect(button2, BobUI::blue);
 
             drawScrollBarArrow(button1, painter, scrollBar);
             drawScrollBarArrow(button2, painter, scrollBar);
@@ -755,7 +755,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             painter->drawRect(scrollBar->rect.adjusted(-1, 0, -3, -1));
 
             QPoint g1, g2;
-            if (scrollBar->orientation == Qt::Horizontal) {
+            if (scrollBar->orientation == BobUI::Horizontal) {
                 g1 = option->rect.topLeft();
                 g2 = option->rect.bottomLeft();
             } else {
@@ -766,7 +766,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             if (scrollBar->state & State_Enabled) {
                 QLinearGradient gradient(g1, g2);
                 gradient.setColorAt(1.0, QColor(188, 210, 230));
-                gradient.setColorAt(0.3, Qt::white);
+                gradient.setColorAt(0.3, BobUI::white);
                 gradient.setColorAt(0.0, QColor(223, 233, 243));
                 painter->setBrush(gradient);
             } else {
@@ -776,11 +776,11 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             painter->drawRect(scrollBar->rect.adjusted(0, 0, -1, -1));
 
             int sliderLength = option->rect.height();
-            int drawPos = scrollBar->orientation == Qt::Vertical ?
+            int drawPos = scrollBar->orientation == BobUI::Vertical ?
                 (sliderLength / 2) + 1 : 1 - ((option->rect.width() / 2));
 
             QPoint origin;
-            if (scrollBar->orientation == Qt::Vertical)
+            if (scrollBar->orientation == BobUI::Vertical)
                 origin = option->rect.bottomLeft();
             else
                 origin = option->rect.topLeft();
@@ -832,7 +832,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                 *qstyleoption_cast<const QStyleOptionTab *>(option);
             if (copy.state & State_HasFocus)
                 copy.state ^= State_HasFocus;
-                painter->setBrush(Qt::NoBrush);
+                painter->setBrush(BobUI::NoBrush);
                 QCommonStyle::drawControl(CE_TabBarTabLabel, &copy, painter,
                                           widget);
             break;
@@ -845,8 +845,8 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
 
             if ((tab->position == QStyleOptionTab::Beginning) ||
                 (tab->position == QStyleOptionTab::OnlyOneTab)) {
-                if (tab->shape == QTabBar::RoundedSouth ||
-                    tab->shape == QTabBar::RoundedNorth) {
+                if (tab->shape == BOBUIabBar::RoundedSouth ||
+                    tab->shape == BOBUIabBar::RoundedNorth) {
                     myRect = myRect.adjusted(2, 0, 0, 0);
                 } else {
                     myRect = myRect.adjusted(0, 2, 0, 0);
@@ -854,25 +854,25 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             }
 
             switch (tab->shape) {
-                case QTabBar::RoundedNorth:
+                case BOBUIabBar::RoundedNorth:
                     topLeft = myRect.topLeft();
                     topRight = myRect.topRight();
                     bottomLeft = myRect.bottomLeft();
                     bottomRight = myRect.bottomRight();
                     break;
-                case QTabBar::RoundedSouth:
+                case BOBUIabBar::RoundedSouth:
                     topLeft = myRect.bottomLeft();
                     topRight = myRect.bottomRight();
                     bottomLeft = myRect.topLeft();
                     bottomRight = myRect.topRight();
                     break;
-                case QTabBar::RoundedWest:
+                case BOBUIabBar::RoundedWest:
                     topLeft = myRect.topLeft();
                     topRight = myRect.bottomLeft();
                     bottomLeft = myRect.topRight();
                     bottomRight = myRect.bottomRight();
                     break;
-                case QTabBar::RoundedEast:
+                case BOBUIabBar::RoundedEast:
                     topLeft = myRect.topRight();
                     topRight = myRect.bottomRight();
                     bottomLeft = myRect.topLeft();
@@ -929,7 +929,7 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                                         bottomRight + adjustTabPoint(
                                         QPoint(-2, 0), tab->shape)));
                 painter->setPen(tab->palette.color(QPalette::Base));
-                painter->setBrush(Qt::NoBrush);
+                painter->setBrush(BobUI::NoBrush);
                 painter->drawPath(whitePath);
 
                 if (option->state & State_HasFocus) {
@@ -948,9 +948,9 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
             if (const QStyleOptionButton *button =
                 qstyleoption_cast<const QStyleOptionButton *>(option)) {
                 QRect ir = button->rect;
-                uint tf = Qt::AlignVCenter | Qt::TextShowMnemonic;
+                uint tf = BobUI::AlignVCenter | BobUI::TextShowMnemonic;
                 if (!styleHint(SH_UnderlineShortcut, button, widget))
-                    tf |= Qt::TextHideMnemonic;
+                    tf |= BobUI::TextHideMnemonic;
 
                 if (!button->icon.isNull()) {
                     QPoint point;
@@ -974,22 +974,22 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
                     point = QPoint(ir.x() + ir.width() / 2 - w / 2,
                                    ir.y() + ir.height() / 2 - h / 2);
 
-                    if (button->direction == Qt::RightToLeft)
+                    if (button->direction == BobUI::RightToLeft)
                         point.rx() += pixmap.width();
 
                     painter->drawPixmap(visualPos(button->direction, button->rect,
                               point), pixmap);
 
-                    if (button->direction == Qt::RightToLeft)
+                    if (button->direction == BobUI::RightToLeft)
                         ir.translate(-point.x() - 2, 0);
                     else
                         ir.translate(point.x() + pixmap.width(), 0);
 
                     if (!button->text.isEmpty())
-                        tf |= Qt::AlignLeft;
+                        tf |= BobUI::AlignLeft;
 
                 } else {
-                    tf |= Qt::AlignHCenter;
+                    tf |= BobUI::AlignHCenter;
                 }
 
                 if (button->fontMetrics.height() > 14)
@@ -1010,18 +1010,18 @@ void JavaStyle::drawControl(ControlElement control, const QStyleOption *option,
 }
 
 inline QPoint JavaStyle::adjustTabPoint(const QPoint &point,
-                                        QTabBar::Shape shape) const
+                                        BOBUIabBar::Shape shape) const
 {
     QPoint rPoint;
 
     switch (shape) {
-        case QTabBar::RoundedWest:
+        case BOBUIabBar::RoundedWest:
             rPoint = QPoint(point.y(), point.x());
             break;
-        case QTabBar::RoundedSouth:
+        case BOBUIabBar::RoundedSouth:
             rPoint = QPoint(point.x(), point.y() * -1);
             break;
-        case QTabBar::RoundedEast:
+        case BOBUIabBar::RoundedEast:
             rPoint = QPoint(point.y() * -1, point.x());
             break;
         default:
@@ -1173,7 +1173,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
             const QStyleOptionComboBox *combo =
                 qstyleoption_cast<const QStyleOptionComboBox *>(option);
 
-            bool reverse = combo->direction == Qt::RightToLeft;
+            bool reverse = combo->direction == BobUI::RightToLeft;
 
             switch (subControl) {
                 case SC_ComboBoxFrame:
@@ -1208,7 +1208,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
                 qstyleoption_cast<const QStyleOptionSlider *>(option);
             int scrollBarExtent = pixelMetric(PM_ScrollBarExtent, scrollBar,
                           widget);
-            int sliderMaxLength = ((scrollBar->orientation == Qt::Horizontal) ?
+            int sliderMaxLength = ((scrollBar->orientation == BobUI::Horizontal) ?
                                    scrollBar->rect.width() :
                                     scrollBar->rect.height()) - (16 * 3);
             int sliderMinLength = pixelMetric(PM_ScrollBarSliderMin, scrollBar,
@@ -1236,7 +1236,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
 
             switch (subControl) {
                 case SC_ScrollBarSubLine:
-                    if (scrollBar->orientation == Qt::Horizontal) {
+                    if (scrollBar->orientation == BobUI::Horizontal) {
                         rect.setRect(scrollBarRect.left(), scrollBarRect.top(),
                         scrollBarRect.width() - 16, scrollBarExtent);
                     } else {
@@ -1245,7 +1245,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
                     }
                     break;
                 case SC_ScrollBarAddLine:
-                    if (scrollBar->orientation == Qt::Horizontal) {
+                    if (scrollBar->orientation == BobUI::Horizontal) {
                         rect.setRect(scrollBarRect.right() - 15,
                         scrollBarRect.top(), 16, scrollBarExtent);
                     } else {
@@ -1254,7 +1254,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
                     }
                     break;
                 case SC_ScrollBarSubPage:
-                    if (scrollBar->orientation == Qt::Horizontal) {
+                    if (scrollBar->orientation == BobUI::Horizontal) {
                         rect.setRect(scrollBarRect.left() + 16, scrollBarRect.top(),
                                      sliderStart - (scrollBarRect.left() + 16),
                                      scrollBarExtent);
@@ -1265,7 +1265,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
                     }
                     break;
                 case SC_ScrollBarAddPage:
-                    if (scrollBar->orientation == Qt::Horizontal)
+                    if (scrollBar->orientation == BobUI::Horizontal)
                         rect.setRect(sliderStart + sliderLength, 0,
                                      sliderMaxLength - sliderStart -
                         sliderLength + 16, scrollBarExtent);
@@ -1275,14 +1275,14 @@ QRect JavaStyle::subControlRect(ComplexControl control,
                     sliderStart - sliderLength + 16);
                     break;
                 case SC_ScrollBarGroove:
-                    if (scrollBar->orientation == Qt::Horizontal) {
+                    if (scrollBar->orientation == BobUI::Horizontal) {
                         rect = scrollBarRect.adjusted(16, 0, -32, 0);
                     } else {
                         rect = scrollBarRect.adjusted(0, 16, 0, -32);
                     }
                     break;
                 case SC_ScrollBarSlider:
-                    if (scrollBar->orientation == Qt::Horizontal) {
+                    if (scrollBar->orientation == BobUI::Horizontal) {
                         rect.setRect(sliderStart, 0, sliderLength,
                                      scrollBarExtent);
                     } else {
@@ -1304,7 +1304,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
             int handleSize = pixelMetric(PM_SliderControlThickness, option,
                                          widget);
 
-            int dist = slider->orientation == Qt::Vertical ? slider->rect.height() :
+            int dist = slider->orientation == BobUI::Vertical ? slider->rect.height() :
                                               slider->rect.width();
             int pos = QStyle::sliderPositionFromValue(slider->minimum,
                 slider->maximum, slider->sliderValue, dist - handleSize);
@@ -1313,7 +1313,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
                 case SC_SliderGroove: {
                     QPoint center = rect.center();
 
-                    if (slider->orientation == Qt::Horizontal) {
+                    if (slider->orientation == BobUI::Horizontal) {
                         rect.setHeight(handleSize);
                         if (slider->tickPosition == QSlider::TicksBelow) {
                             center.ry() -= tickSize;
@@ -1331,7 +1331,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
                 case SC_SliderHandle: {
                     QPoint center = rect.center();
 
-                    if (slider->orientation == Qt::Horizontal) {
+                    if (slider->orientation == BobUI::Horizontal) {
                         rect.setHeight(handleSize);
                         if (slider->tickPosition == QSlider::TicksBelow) {
                             center.ry() -= tickSize;
@@ -1368,7 +1368,7 @@ QRect JavaStyle::subControlRect(ComplexControl control,
                     QPoint center = slider->rect.center();
 
                     if (slider->tickPosition & QSlider::TicksBelow) {
-                        if (slider->orientation == Qt::Horizontal) {
+                        if (slider->orientation == BobUI::Horizontal) {
                             rect.setHeight(tickSize);
                             center.ry() += tickSize / 2;
                             rect.adjust(6, 0, -10, 0);
@@ -1439,10 +1439,10 @@ void JavaStyle::drawComplexControl(ComplexControl control,
             QLinearGradient gradient(bar->rect.bottomLeft(),
                                      bar->rect.topLeft());
             gradient.setColorAt(0.0, QColor(191, 212, 231));
-            gradient.setColorAt(0.7, Qt::white);
+            gradient.setColorAt(0.7, BobUI::white);
             gradient.setColorAt(1.0, QColor(221, 232, 243));
 
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             if (bar->titleBarState & State_Active) {
                 painter->setBrush(gradient);
             }
@@ -1471,17 +1471,17 @@ void JavaStyle::drawComplexControl(ComplexControl control,
 
             QColor textColor = option->palette.color(QPalette::Text);
             painter->setPen(textColor);
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
 
-            drawItemText(painter, labelRect, Qt::TextShowMnemonic |
-                         Qt::AlignHCenter | Qt::AlignCenter,
+            drawItemText(painter, labelRect, BobUI::TextShowMnemonic |
+                         BobUI::AlignHCenter | BobUI::AlignCenter,
                          bar->palette, bar->state & State_Enabled, bar->text,
                          textColor.isValid() ? QPalette::NoRole :
                          QPalette::WindowText);
 
             for (int i = 0; i < gripRect.width(); ++i) {
                 painter->setPen(i % 2 ? bar->palette.color(QPalette::Midlight)
-                                      : Qt::white);
+                                      : BobUI::white);
 
                 for (int j = 0; j < 4; ++j) {
                     painter->drawPoint(i + gripRect.left(),
@@ -1558,8 +1558,8 @@ void JavaStyle::drawComplexControl(ComplexControl control,
                 if (textColor.isValid())
                     painter->setPen(textColor);
 
-                drawItemText(painter, labelRect,  Qt::TextShowMnemonic |
-                Qt::AlignHCenter | int(box->textAlignment),
+                drawItemText(painter, labelRect,  BobUI::TextShowMnemonic |
+                BobUI::AlignHCenter | int(box->textAlignment),
                 box->palette, box->state & State_Enabled,
                 box->text, textColor.isValid() ? QPalette::NoRole :
                 QPalette::WindowText);
@@ -1574,7 +1574,7 @@ void JavaStyle::drawComplexControl(ComplexControl control,
             QRect upRect = subControlRect(control, spinner, SC_SpinBoxUp);
             QRect downRect = subControlRect(control, spinner, SC_SpinBoxDown);
 
-            painter->setPen(Qt::white);
+            painter->setPen(BobUI::white);
             painter->drawRect(frameRect.adjusted(1, 1, -1, -1));
             painter->drawPoint(frameRect.bottomLeft());
 
@@ -1631,7 +1631,7 @@ void JavaStyle::drawComplexControl(ComplexControl control,
             const QStyleOptionToolButton *button =
                 qstyleoption_cast<const QStyleOptionToolButton *>(option);
 
-            painter->setPen(Qt::white);
+            painter->setPen(BobUI::white);
             painter->drawRect(button->rect.adjusted(1, 1, -1, -1));
 
             QStyleOptionToolButton panelOption = *button;
@@ -1690,9 +1690,9 @@ void JavaStyle::drawComplexControl(ComplexControl control,
             QRect arrowRect = subControlRect(control, option, SC_ComboBoxArrow,
                                              widget);
             painter->setPen(combo->palette.color(QPalette::Button));
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
 
-            if (combo->direction == Qt::LeftToRight) {
+            if (combo->direction == BobUI::LeftToRight) {
                 painter->drawRect(QRect(frameRect.topLeft() + QPoint(1, 1),
                                   arrowRect.bottomLeft() + QPoint(-2, -2)));
             } else {
@@ -1736,7 +1736,7 @@ void JavaStyle::drawComplexControl(ComplexControl control,
             const QStyleOptionSlider *slider =
                 qstyleoption_cast<const QStyleOptionSlider *>(option);
 
-            bool horizontal = slider->orientation == Qt::Horizontal;
+            bool horizontal = slider->orientation == BobUI::Horizontal;
 
             QRect groove = subControlRect(control, option, SC_SliderGroove,
                                           widget);
@@ -1778,7 +1778,7 @@ void JavaStyle::drawComplexControl(ComplexControl control,
                 QLinearGradient gradient(groove.bottomLeft(),
                                          groove.bottomRight());
                 gradient.setColorAt(1.0, QColor(188, 210, 230));
-                gradient.setColorAt(0.3, Qt::white);
+                gradient.setColorAt(0.3, BobUI::white);
                 gradient.setColorAt(0.0, QColor(223, 233, 243));
 
                 painter->setBrush(gradient);
@@ -1981,10 +1981,10 @@ void JavaStyle::polish(QWidget *widget)
     if (qobject_cast<QCheckBox *>(widget) ||
         qobject_cast<QRadioButton *>(widget) ||
         qobject_cast<QPushButton *>(widget) ||
-        qobject_cast<QToolButton *>(widget) ||
+        qobject_cast<BOBUIoolButton *>(widget) ||
         qobject_cast<QSpinBox *>(widget) ||
         qobject_cast<QGroupBox *>(widget))
-            widget->setAttribute(Qt::WA_Hover, true);
+            widget->setAttribute(BobUI::WA_Hover, true);
 }
 
 void JavaStyle::unpolish(QWidget *widget)
@@ -1992,10 +1992,10 @@ void JavaStyle::unpolish(QWidget *widget)
     if (qobject_cast<QPushButton *>(widget) ||
         qobject_cast<QCheckBox *>(widget) ||
         qobject_cast<QRadioButton *>(widget) ||
-        qobject_cast<QToolButton *>(widget) ||
+        qobject_cast<BOBUIoolButton *>(widget) ||
         qobject_cast<QSpinBox *>(widget) ||
         qobject_cast<QGroupBox *>(widget))
-            widget->setAttribute(Qt::WA_Hover, false);
+            widget->setAttribute(BobUI::WA_Hover, false);
 }
 
 void JavaStyle::drawSplitter(const QStyleOption *option, QPainter *painter,
@@ -2003,12 +2003,12 @@ void JavaStyle::drawSplitter(const QStyleOption *option, QPainter *painter,
 {
     QRect rect = option->rect;
 
-    painter->setPen(Qt::NoPen);
+    painter->setPen(BobUI::NoPen);
     painter->setBrush(option->palette.color(QPalette::Background));
 
     painter->drawRect(rect);
 
-    QColor colors[] = { Qt::white, option->palette.color(QPalette::Mid) };
+    QColor colors[] = { BobUI::white, option->palette.color(QPalette::Mid) };
     int iterations = horizontal ? rect.height() - 1 : rect.width() - 1;
     for (int i = 0; i < iterations; ++i) {
         painter->setPen(colors[i % 2]);
@@ -2040,7 +2040,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
         case PE_FrameButtonBevel: {
             painter->save();
             painter->setBrush(option->palette.background());
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->drawRect(option->rect);
             painter->restore();
             break;
@@ -2056,7 +2056,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
             QPoint center = option->rect.center();
 
             painter->setPen(lineColor);
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
 
             if (option->state & State_Item) {
                 painter->drawLine(center,
@@ -2090,7 +2090,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
             painter->save();
             bool active = option->state & State_Active;
 
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->setBrush(active ? option->palette.color(QPalette::Midlight)
                                      : option->palette.color(QPalette::Mid));
 
@@ -2099,7 +2099,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
             painter->drawRect(QRect(option->rect.bottomRight() + QPoint(-5, 0), option->rect.topRight()));
             painter->drawRect(QRect(option->rect.topLeft(), option->rect.topRight() + QPoint(0, 4)));
 
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
             painter->setPen(option->palette.color(QPalette::Active, QPalette::WindowText));
             painter->drawLine(option->rect.topLeft() + QPoint(2, 14),
                               option->rect.bottomLeft() + QPoint(2, -14));
@@ -2171,7 +2171,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
                                           option->rect.width();
 
             for (int i = 0; i < iterations; ++i) {
-                painter->setPen(i % 2 ? Qt::white :
+                painter->setPen(i % 2 ? BobUI::white :
                     option->palette.color(QPalette::Mid));
                 int add = i % 4;
                 painter->drawPoint(offset + xySwitch(QPoint(add, i),
@@ -2193,7 +2193,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
             qstyleoption_cast<const QStyleOptionToolButton *>(option);
 
             if (!button)  {
-                painter->setPen(Qt::red);
+                painter->setPen(BobUI::red);
                 if (!(option->state & State_Enabled))
                     painter->drawRect(option->rect.adjusted(0, 0, -1, -1));
                 drawButtonBackground(option, painter, false);
@@ -2208,7 +2208,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
 
                 drawButtonBackground(&bevel, painter, false);
             } else {
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 painter->setBrush(button->palette.color(QPalette::Background));
 
                 painter->drawRect(button->rect.adjusted(0, 0, -1, -1));
@@ -2292,7 +2292,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
                 !(option->state & State_Sunken)) {
                 gradientBrush(option->rect);
                 painter->setPen(option->palette.color(QPalette::Button));
-                painter->setBrush(Qt::NoBrush);
+                painter->setBrush(BobUI::NoBrush);
                 QRect rect = option->rect.adjusted(1, 1, -2, -2);
                 painter->drawEllipse(rect);
                 rect = rect.adjusted(1, 1, -1, -1);
@@ -2301,7 +2301,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
 
             if (option->state & State_On) {
                 painter->setBrush(option->palette.color(QPalette::Text));
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 painter->drawEllipse(option->rect.adjusted(3, 3, -3, -3));
             }
             if (option->state & State_Sunken &&
@@ -2316,7 +2316,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
         case PE_FrameTabWidget: {
             painter->setPen(option->palette.color(QPalette::Midlight));
             painter->drawRect(option->rect.adjusted(0, 0, -1, -1));
-            painter->setPen(Qt::white);
+            painter->setPen(BobUI::white);
             painter->drawRect(option->rect.adjusted(1, 1, -2, -2));
             break;
         }
@@ -2327,7 +2327,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
 
             painter->setPen(frame->palette.color(QPalette::Mid));
             painter->drawRect(frame->rect.adjusted(0, 0, -2, -2));
-            painter->setPen(Qt::white);
+            painter->setPen(BobUI::white);
             painter->drawRect(frame->rect.adjusted(1, 1, -1, -1));
             painter->setPen(frame->palette.color(QPalette::Active,
                                                   QPalette::Background));
@@ -2339,7 +2339,7 @@ void JavaStyle::drawPrimitive(PrimitiveElement element,
         }
         case PE_FrameFocusRect: {
             painter->setPen(option->palette.color(QPalette::Light));
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
             QRect rect = option->rect;
             rect = rect.adjusted(0,0, -1, -1);
             painter->drawRect(rect);
@@ -2378,7 +2378,7 @@ void JavaStyle::drawButtonBackground(const QStyleOption *option,
         if (sunken && !disabled) {
             drawSunkenButtonShadow(painter, rect,
                    option->palette.color(QPalette::Mid),
-                   option->direction == Qt::RightToLeft);
+                   option->direction == BobUI::RightToLeft);
     }
 }
 //! [1]
@@ -2387,7 +2387,7 @@ QBrush JavaStyle::gradientBrush(const QRect &rect) const
 {
     QLinearGradient gradient(rect.topLeft(), rect.bottomLeft());
     gradient.setColorAt(1.0, QColor(188, 210, 230));
-    gradient.setColorAt(0.3, Qt::white);
+    gradient.setColorAt(0.3, BobUI::white);
     gradient.setColorAt(0.0, QColor(223, 233, 243));
 
     return QBrush(gradient);

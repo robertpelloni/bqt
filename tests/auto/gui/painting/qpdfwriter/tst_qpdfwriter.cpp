@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtGlobal>
-#include <QtAlgorithms>
-#include <QTemporaryFile>
+#include <BOBUIest>
+#include <BobUIGlobal>
+#include <BobUIAlgorithms>
+#include <BOBUIemporaryFile>
 
-#include <QtGui/QAbstractTextDocumentLayout>
-#include <QtGui/QPageLayout>
-#include <QtGui/QPdfWriter>
-#include <QtGui/QTextCursor>
-#include <QtGui/QTextDocument>
+#include <BobUIGui/QAbstractTextDocumentLayout>
+#include <BobUIGui/QPageLayout>
+#include <BobUIGui/QPdfWriter>
+#include <BobUIGui/BOBUIextCursor>
+#include <BobUIGui/BOBUIextDocument>
 
 class tst_QPdfWriter : public QObject
 {
@@ -20,12 +20,12 @@ private slots:
     void basics();
     void testPageMetrics_data();
     void testPageMetrics();
-    void qtbug59443();
+    void bobuibug59443();
 };
 
 void tst_QPdfWriter::basics()
 {
-    QTemporaryFile file;
+    BOBUIemporaryFile file;
     QVERIFY2(file.open(), qPrintable(file.errorString()));
     QPdfWriter writer(file.fileName());
 
@@ -116,27 +116,27 @@ void tst_QPdfWriter::basics()
 // Test the old page metrics methods, see also QPrinter tests for the same.
 void tst_QPdfWriter::testPageMetrics_data()
 {
-    QTest::addColumn<QPageSize::PageSizeId>("pageSizeId");
-    QTest::addColumn<qreal>("widthMMf");
-    QTest::addColumn<qreal>("heightMMf");
-    QTest::addColumn<bool>("setMargins");
-    QTest::addColumn<qreal>("leftMMf");
-    QTest::addColumn<qreal>("rightMMf");
-    QTest::addColumn<qreal>("topMMf");
-    QTest::addColumn<qreal>("bottomMMf");
+    BOBUIest::addColumn<QPageSize::PageSizeId>("pageSizeId");
+    BOBUIest::addColumn<qreal>("widthMMf");
+    BOBUIest::addColumn<qreal>("heightMMf");
+    BOBUIest::addColumn<bool>("setMargins");
+    BOBUIest::addColumn<qreal>("leftMMf");
+    BOBUIest::addColumn<qreal>("rightMMf");
+    BOBUIest::addColumn<qreal>("topMMf");
+    BOBUIest::addColumn<qreal>("bottomMMf");
 
-    QTest::newRow("A4")         << QPageSize::A4 << 210.0 << 297.0 << false
+    BOBUIest::newRow("A4")         << QPageSize::A4 << 210.0 << 297.0 << false
                                 << 3.53 <<  3.53 << 3.53 <<  3.53;
-    QTest::newRow("A4 Margins") << QPageSize::A4 << 210.0 << 297.0 << true
+    BOBUIest::newRow("A4 Margins") << QPageSize::A4 << 210.0 << 297.0 << true
                                 << 20.0 << 30.0  << 40.0  << 50.0;
 
-    QTest::newRow("Portrait")          << QPageSize::Custom << 345.0 << 678.0 << false
+    BOBUIest::newRow("Portrait")          << QPageSize::Custom << 345.0 << 678.0 << false
                                        << 3.53 << 3.53 << 3.53 <<  3.53;
-    QTest::newRow("Portrait Margins")  << QPageSize::Custom << 345.0 << 678.0 << true
+    BOBUIest::newRow("Portrait Margins")  << QPageSize::Custom << 345.0 << 678.0 << true
                                        << 20.0 << 30.0 << 40.0 << 50.0;
-    QTest::newRow("Landscape")         << QPageSize::Custom << 678.0 << 345.0 << false
+    BOBUIest::newRow("Landscape")         << QPageSize::Custom << 678.0 << 345.0 << false
                                        << 3.53 << 3.53 << 3.53 << 3.53;
-    QTest::newRow("Landscape Margins") << QPageSize::Custom << 678.0 << 345.0 << true
+    BOBUIest::newRow("Landscape Margins") << QPageSize::Custom << 678.0 << 345.0 << true
                                        << 20.0 << 30.0 << 40.0 << 50.0;
 }
 
@@ -153,7 +153,7 @@ void tst_QPdfWriter::testPageMetrics()
 
     QSizeF sizeMMf = QSizeF(widthMMf, heightMMf);
 
-    QTemporaryFile file;
+    BOBUIemporaryFile file;
     QVERIFY2(file.open(), qPrintable(file.errorString()));
     QPdfWriter writer(file.fileName());
     QCOMPARE(writer.pageLayout().orientation(), QPageLayout::Portrait);
@@ -235,18 +235,18 @@ void tst_QPdfWriter::testPageMetrics()
     QCOMPARE(writer.pageLayout().paintRect(QPageLayout::Millimeter), QRectF(leftMMf, topMMf, heightMMf - leftMMf - rightMMf, widthMMf - topMMf - bottomMMf));
 }
 
-void tst_QPdfWriter::qtbug59443()
+void tst_QPdfWriter::bobuibug59443()
 {
     // Do not crash or assert
-    QTemporaryFile file;
+    BOBUIemporaryFile file;
     QVERIFY2(file.open(), qPrintable(file.errorString()));
     QPdfWriter writer(file.fileName());
     writer.setPageSize(QPageSize(QPageSize::A4));
-    QTextDocument doc;
+    BOBUIextDocument doc;
     doc.documentLayout()->setPaintDevice(&writer);
 
     doc.setUndoRedoEnabled(false);
-    QTextCursor cursor(&doc);
+    BOBUIextCursor cursor(&doc);
     QFont font = doc.defaultFont();
     font.setFamily("Calibri");
     font.setPointSize(8);
@@ -257,6 +257,6 @@ void tst_QPdfWriter::qtbug59443()
 
 }
 
-QTEST_MAIN(tst_QPdfWriter)
+BOBUIEST_MAIN(tst_QPdfWriter)
 
 #include "tst_qpdfwriter.moc"

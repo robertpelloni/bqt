@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include <private/qguiapplication_p.h>
@@ -19,12 +19,12 @@ public:
     {
         if (event->type() == QEvent::InputMethodQuery) {
             QInputMethodQueryEvent *query = static_cast<QInputMethodQueryEvent *>(event);
-            if (query->queries() & Qt::ImEnabled)
-                query->setValue(Qt::ImEnabled, m_enabled);
-            if (query->queries() & Qt::ImCursorRectangle)
-                query->setValue(Qt::ImCursorRectangle, cursorRectangle);
-            if (query->queries() & Qt::ImPreferredLanguage)
-                query->setValue(Qt::ImPreferredLanguage, QString("English"));
+            if (query->queries() & BobUI::ImEnabled)
+                query->setValue(BobUI::ImEnabled, m_enabled);
+            if (query->queries() & BobUI::ImCursorRectangle)
+                query->setValue(BobUI::ImCursorRectangle, cursorRectangle);
+            if (query->queries() & BobUI::ImPreferredLanguage)
+                query->setValue(BobUI::ImPreferredLanguage, QString("English"));
             m_lastQueries = query->queries();
             query->accept();
             return true;
@@ -35,12 +35,12 @@ public:
     void setEnabled(bool enabled) {
         if (enabled != m_enabled) {
             m_enabled = enabled;
-            qApp->inputMethod()->update(Qt::ImEnabled);
+            qApp->inputMethod()->update(BobUI::ImEnabled);
         }
     }
 
     QRectF cursorRectangle;
-    Qt::InputMethodQueries m_lastQueries;
+    BobUI::InputMethodQueries m_lastQueries;
     bool m_enabled;
 };
 
@@ -142,10 +142,10 @@ void tst_qinputmethod::keyboarRectangle()
 
 void tst_qinputmethod::inputItemTransform()
 {
-    QCOMPARE(qApp->inputMethod()->inputItemTransform(), QTransform());
+    QCOMPARE(qApp->inputMethod()->inputItemTransform(), BOBUIransform());
     QSignalSpy spy(qApp->inputMethod(), SIGNAL(cursorRectangleChanged()));
 
-    QTransform transform;
+    BOBUIransform transform;
     transform.translate(10, 10);
     transform.scale(2, 2);
     transform.shear(2, 2);
@@ -155,7 +155,7 @@ void tst_qinputmethod::inputItemTransform()
     QCOMPARE(spy.size(), 1);
 
     // reset
-    qApp->inputMethod()->setInputItemTransform(QTransform());
+    qApp->inputMethod()->setInputItemTransform(BOBUIransform());
 }
 
 void tst_qinputmethod::cursorRectangle()
@@ -167,12 +167,12 @@ void tst_qinputmethod::cursorRectangle()
 
     DummyWindow window;
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
     window.requestActivate();
-    QTRY_COMPARE(qApp->focusWindow(), &window);
+    BOBUIRY_COMPARE(qApp->focusWindow(), &window);
     window.setFocusObject(&m_inputItem);
 
-    QTransform transform;
+    BOBUIransform transform;
     transform.translate(10, 10);
     transform.scale(2, 2);
     transform.shear(2, 2);
@@ -184,7 +184,7 @@ void tst_qinputmethod::cursorRectangle()
 
     // reset
     m_inputItem.cursorRectangle = QRectF(1, 2, 3, 4);
-    qApp->inputMethod()->setInputItemTransform(QTransform());
+    qApp->inputMethod()->setInputItemTransform(BOBUIransform());
 }
 
 void tst_qinputmethod::invokeAction()
@@ -222,28 +222,28 @@ void tst_qinputmethod::commit()
 void tst_qinputmethod::update()
 {
     QCOMPARE(m_platformInputContext.m_updateCallCount, 0);
-    QCOMPARE(int(m_platformInputContext.m_lastQueries), int(Qt::ImhNone));
+    QCOMPARE(int(m_platformInputContext.m_lastQueries), int(BobUI::ImhNone));
 
-    qApp->inputMethod()->update(Qt::ImQueryInput);
+    qApp->inputMethod()->update(BobUI::ImQueryInput);
     QCOMPARE(m_platformInputContext.m_updateCallCount, 1);
-    QCOMPARE(int(m_platformInputContext.m_lastQueries), int(Qt::ImQueryInput));
+    QCOMPARE(int(m_platformInputContext.m_lastQueries), int(BobUI::ImQueryInput));
 
-    qApp->inputMethod()->update(Qt::ImQueryAll);
+    qApp->inputMethod()->update(BobUI::ImQueryAll);
     QCOMPARE(m_platformInputContext.m_updateCallCount, 2);
-    QCOMPARE(int(m_platformInputContext.m_lastQueries), int(Qt::ImQueryAll));
+    QCOMPARE(int(m_platformInputContext.m_lastQueries), int(BobUI::ImQueryAll));
 
     QCOMPARE(qApp->inputMethod()->keyboardRectangle(), QRectF(10, 20, 30, 40));
 }
 
 void tst_qinputmethod::query()
 {
-    QInputMethodQueryEvent query(Qt::InputMethodQueries(Qt::ImPreferredLanguage | Qt::ImCursorRectangle));
+    QInputMethodQueryEvent query(BobUI::InputMethodQueries(BobUI::ImPreferredLanguage | BobUI::ImCursorRectangle));
     QGuiApplication::sendEvent(&m_inputItem, &query);
 
-    QString language = query.value(Qt::ImPreferredLanguage).toString();
+    QString language = query.value(BobUI::ImPreferredLanguage).toString();
     QCOMPARE(language, QString("English"));
 
-    QRect cursorRectangle = query.value(Qt::ImCursorRectangle).toRect();
+    QRect cursorRectangle = query.value(BobUI::ImCursorRectangle).toRect();
     QCOMPARE(cursorRectangle, QRect(1,2,3,4));
 }
 
@@ -263,12 +263,12 @@ void tst_qinputmethod::inputMethodAccepted()
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("QWindow::requestActivate() is not supported.");
 
-    if (!QGuiApplication::platformName().compare(QLatin1String("minimal"), Qt::CaseInsensitive)
-        || !QGuiApplication::platformName().compare(QLatin1String("offscreen"), Qt::CaseInsensitive)) {
+    if (!QGuiApplication::platformName().compare(QLatin1String("minimal"), BobUI::CaseInsensitive)
+        || !QGuiApplication::platformName().compare(QLatin1String("offscreen"), BobUI::CaseInsensitive)) {
         QSKIP("minimal/offscreen: This fails. Figure out why.");
     }
 
-    if (!QGuiApplication::platformName().compare(QLatin1String("xcb"), Qt::CaseInsensitive))
+    if (!QGuiApplication::platformName().compare(QLatin1String("xcb"), BobUI::CaseInsensitive))
         QSKIP("XCB: depends on dedicated platform context.");
 
     InputItem disabledItem;
@@ -276,9 +276,9 @@ void tst_qinputmethod::inputMethodAccepted()
 
     DummyWindow window;
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
     window.requestActivate();
-    QTRY_COMPARE(qApp->focusWindow(), &window);
+    BOBUIRY_COMPARE(qApp->focusWindow(), &window);
     window.setFocusObject(&disabledItem);
 
     QCOMPARE(m_platformInputContext.inputMethodAccepted(), false);
@@ -287,5 +287,5 @@ void tst_qinputmethod::inputMethodAccepted()
     QCOMPARE(m_platformInputContext.inputMethodAccepted(), true);
 }
 
-QTEST_MAIN(tst_qinputmethod)
+BOBUIEST_MAIN(tst_qinputmethod)
 #include "tst_qinputmethod.moc"

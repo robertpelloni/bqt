@@ -1,14 +1,14 @@
 // Copyright (C) 2012 Hewlett-Packard Development Company, L.P.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QBuffer>
-#include <QTestEventLoop>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkDiskCache>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QTcpServer>
-#include <QtNetwork/QTcpSocket>
+#include <BOBUIestEventLoop>
+#include <BobUINetwork/QNetworkAccessManager>
+#include <BobUINetwork/QNetworkDiskCache>
+#include <BobUINetwork/QNetworkReply>
+#include <BobUINetwork/BOBUIcpServer>
+#include <BobUINetwork/BOBUIcpSocket>
 
 #define TEST_CASE_TIMEOUT 30
 
@@ -47,7 +47,7 @@ public:
     }
 };
 
-class HttpServer : public QTcpServer
+class HttpServer : public BOBUIcpServer
 {
     Q_OBJECT
 public:
@@ -86,7 +86,7 @@ private Q_SLOTS:
 private:
     QByteArray m_reply;
     qint64 m_writePos;
-    QTcpSocket *m_client;
+    BOBUIcpSocket *m_client;
 };
 
 class tst_qnetworkreply_from_cache : public QObject
@@ -110,7 +110,7 @@ protected Q_SLOTS:
     void replyReadAll() { m_replyData += m_reply->readAll(); }
 
 private:
-    QTemporaryDir m_tempDir;
+    BOBUIemporaryDir m_tempDir;
     QNetworkAccessManager *m_networkAccessManager;
     NetworkDiskCache *m_networkDiskCache;
     QNetworkReply *m_reply;
@@ -135,10 +135,10 @@ void tst_qnetworkreply_from_cache::timeReadAll(const QString &headers, const QBy
     QBENCHMARK_ONCE {
         QNetworkRequest request(QUrl(QString("http://127.0.0.1:%1").arg(server.serverPort())));
         m_reply = m_networkAccessManager->get(request);
-        connect(m_reply, SIGNAL(readyRead()), this, SLOT(replyReadAll()), Qt::QueuedConnection);
-        connect(m_reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()), Qt::QueuedConnection);
-        QTestEventLoop::instance().enterLoop(TEST_CASE_TIMEOUT);
-        QVERIFY(!QTestEventLoop::instance().timeout());
+        connect(m_reply, SIGNAL(readyRead()), this, SLOT(replyReadAll()), BobUI::QueuedConnection);
+        connect(m_reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()), BobUI::QueuedConnection);
+        BOBUIestEventLoop::instance().enterLoop(TEST_CASE_TIMEOUT);
+        QVERIFY(!BOBUIestEventLoop::instance().timeout());
         delete m_reply;
     }
 
@@ -161,10 +161,10 @@ void tst_qnetworkreply_from_cache::cleanup()
 
 void tst_qnetworkreply_from_cache::readAll_data()
 {
-    QTest::addColumn<int>("dataSize");
-    QTest::newRow("1MB") << (int)1e6;
-    QTest::newRow("5MB") << (int)5e6;
-    QTest::newRow("10MB") << (int)10e6;
+    BOBUIest::addColumn<int>("dataSize");
+    BOBUIest::newRow("1MB") << (int)1e6;
+    BOBUIest::newRow("5MB") << (int)5e6;
+    BOBUIest::newRow("10MB") << (int)10e6;
 }
 
 void tst_qnetworkreply_from_cache::readAll()
@@ -190,5 +190,5 @@ void tst_qnetworkreply_from_cache::readAllFromCache()
     timeReadAll(headers, data);
 }
 
-QTEST_MAIN(tst_qnetworkreply_from_cache)
+BOBUIEST_MAIN(tst_qnetworkreply_from_cache)
 #include "tst_qnetworkreply_from_cache.moc"

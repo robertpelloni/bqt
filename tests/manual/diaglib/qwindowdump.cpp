@@ -1,29 +1,29 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwindowdump.h"
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QScreen>
-#include <QtGui/QWindow>
-#include <QtCore/QDebug>
-#include <QtCore/QMetaObject>
-#include <QtCore/QRect>
-#include <QtCore/QTextStream>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QWindow>
+#include <BobUICore/QDebug>
+#include <BobUICore/QMetaObject>
+#include <BobUICore/QRect>
+#include <BobUICore/BOBUIextStream>
 
 #include <qpa/qplatformwindow.h>
 #include <private/qwindow_p.h>
 #include <private/qhighdpiscaling_p.h>
 
-namespace QtDiag {
+namespace BobUIDiag {
 
-void indentStream(QTextStream &s, int indent)
+void indentStream(BOBUIextStream &s, int indent)
 {
     for (int i = 0; i < indent; ++i)
         s << ' ';
 }
 
-void formatObject(QTextStream &str, const QObject *o)
+void formatObject(BOBUIextStream &str, const QObject *o)
 {
     str << o->metaObject()->className();
     const QString on = o->objectName();
@@ -31,10 +31,10 @@ void formatObject(QTextStream &str, const QObject *o)
         str << "/\"" << on << '"';
 }
 
-void formatRect(QTextStream &str, const QRect &geom)
+void formatRect(BOBUIextStream &str, const QRect &geom)
 {
-    str << geom.width() << 'x' << geom.height() << Qt::forcesign
-        << geom.x() << geom.y() << Qt::noforcesign;
+    str << geom.width() << 'x' << geom.height() << BobUI::forcesign
+        << geom.x() << geom.y() << BobUI::noforcesign;
 }
 
 #define debugType(s, type, typeConstant) \
@@ -45,49 +45,49 @@ if ((type & typeConstant) == typeConstant) \
 if (flags & flagConstant) \
     s << ' ' << #flagConstant;
 
-void formatWindowFlags(QTextStream &str, Qt::WindowFlags flags)
+void formatWindowFlags(BOBUIextStream &str, BobUI::WindowFlags flags)
 {
-    str << Qt::showbase << Qt::hex << unsigned(flags) << Qt::dec << Qt::noshowbase;
-    const Qt::WindowFlags windowType = flags & Qt::WindowType_Mask;
-    debugFlag(str, flags, Qt::Window)
-    debugType(str, windowType, Qt::Dialog)
-    debugType(str, windowType, Qt::Sheet)
-    debugType(str, windowType, Qt::Drawer)
-    debugType(str, windowType, Qt::Popup)
-    debugType(str, windowType, Qt::Tool)
-    debugType(str, windowType, Qt::ToolTip)
-    debugType(str, windowType, Qt::SplashScreen)
-    debugType(str, windowType, Qt::SubWindow)
-    debugType(str, windowType, Qt::ForeignWindow)
-    debugType(str, windowType, Qt::CoverWindow)
-    debugFlag(str, flags, Qt::MSWindowsFixedSizeDialogHint)
-    debugFlag(str, flags, Qt::MSWindowsOwnDC)
-    debugFlag(str, flags, Qt::X11BypassWindowManagerHint)
-    debugFlag(str, flags, Qt::FramelessWindowHint)
-    debugFlag(str, flags, Qt::WindowTitleHint)
-    debugFlag(str, flags, Qt::WindowSystemMenuHint)
-    debugFlag(str, flags, Qt::WindowMinimizeButtonHint)
-    debugFlag(str, flags, Qt::WindowMaximizeButtonHint)
-    debugFlag(str, flags, Qt::WindowContextHelpButtonHint)
-    debugFlag(str, flags, Qt::WindowShadeButtonHint)
-    debugFlag(str, flags, Qt::WindowStaysOnTopHint)
-    debugFlag(str, flags, Qt::CustomizeWindowHint)
-    debugFlag(str, flags, Qt::WindowTransparentForInput)
-    debugFlag(str, flags, Qt::WindowOverridesSystemGestures)
-    debugFlag(str, flags, Qt::WindowDoesNotAcceptFocus)
-    debugFlag(str, flags, Qt::NoDropShadowWindowHint)
-    debugFlag(str, flags, Qt::WindowFullscreenButtonHint)
-    debugFlag(str, flags, Qt::WindowStaysOnBottomHint)
-    debugFlag(str, flags, Qt::BypassGraphicsProxyWidget)
+    str << BobUI::showbase << BobUI::hex << unsigned(flags) << BobUI::dec << BobUI::noshowbase;
+    const BobUI::WindowFlags windowType = flags & BobUI::WindowType_Mask;
+    debugFlag(str, flags, BobUI::Window)
+    debugType(str, windowType, BobUI::Dialog)
+    debugType(str, windowType, BobUI::Sheet)
+    debugType(str, windowType, BobUI::Drawer)
+    debugType(str, windowType, BobUI::Popup)
+    debugType(str, windowType, BobUI::Tool)
+    debugType(str, windowType, BobUI::ToolTip)
+    debugType(str, windowType, BobUI::SplashScreen)
+    debugType(str, windowType, BobUI::SubWindow)
+    debugType(str, windowType, BobUI::ForeignWindow)
+    debugType(str, windowType, BobUI::CoverWindow)
+    debugFlag(str, flags, BobUI::MSWindowsFixedSizeDialogHint)
+    debugFlag(str, flags, BobUI::MSWindowsOwnDC)
+    debugFlag(str, flags, BobUI::X11BypassWindowManagerHint)
+    debugFlag(str, flags, BobUI::FramelessWindowHint)
+    debugFlag(str, flags, BobUI::WindowTitleHint)
+    debugFlag(str, flags, BobUI::WindowSystemMenuHint)
+    debugFlag(str, flags, BobUI::WindowMinimizeButtonHint)
+    debugFlag(str, flags, BobUI::WindowMaximizeButtonHint)
+    debugFlag(str, flags, BobUI::WindowContextHelpButtonHint)
+    debugFlag(str, flags, BobUI::WindowShadeButtonHint)
+    debugFlag(str, flags, BobUI::WindowStaysOnTopHint)
+    debugFlag(str, flags, BobUI::CustomizeWindowHint)
+    debugFlag(str, flags, BobUI::WindowTransparentForInput)
+    debugFlag(str, flags, BobUI::WindowOverridesSystemGestures)
+    debugFlag(str, flags, BobUI::WindowDoesNotAcceptFocus)
+    debugFlag(str, flags, BobUI::NoDropShadowWindowHint)
+    debugFlag(str, flags, BobUI::WindowFullscreenButtonHint)
+    debugFlag(str, flags, BobUI::WindowStaysOnBottomHint)
+    debugFlag(str, flags, BobUI::BypassGraphicsProxyWidget)
 }
 
-void formatWindow(QTextStream &str, const QWindow *w, FormatWindowOptions options)
+void formatWindow(BOBUIextStream &str, const QWindow *w, FormatWindowOptions options)
 {
     const QPlatformWindow *pw = w->handle();
     formatObject(str, w);
     str << ' ' << (w->isVisible() ? "[visible] " : "[hidden] ");
     if (const WId nativeWinId = pw ? pw->winId() : WId(0))
-        str << "[native: " << Qt::hex << Qt::showbase << nativeWinId << Qt::dec << Qt::noshowbase
+        str << "[native: " << BobUI::hex << BobUI::showbase << nativeWinId << BobUI::dec << BobUI::noshowbase
             << "] ";
     if (w->isTopLevel())
         str << "[top] ";
@@ -96,7 +96,7 @@ void formatWindow(QTextStream &str, const QWindow *w, FormatWindowOptions option
     if (w->surfaceClass() == QWindow::Offscreen)
         str << "[offscreen] ";
     str << "surface=" << w->surfaceType() << ' ';
-    if (const Qt::WindowState state = w->windowState())
+    if (const BobUI::WindowState state = w->windowState())
         str << "windowState=" << state << ' ';
     formatRect(str, w->geometry());
     if (w->isTopLevel()) {
@@ -120,7 +120,7 @@ void formatWindow(QTextStream &str, const QWindow *w, FormatWindowOptions option
     str << '\n';
 }
 
-static void dumpWindowRecursion(QTextStream &str, const QWindow *w,
+static void dumpWindowRecursion(BOBUIextStream &str, const QWindow *w,
                                 FormatWindowOptions options = {}, int depth = 0)
 {
     indentStream(str, 2 * depth);
@@ -134,11 +134,11 @@ static void dumpWindowRecursion(QTextStream &str, const QWindow *w,
 void dumpAllWindows(FormatWindowOptions options)
 {
     QString d;
-    QTextStream str(&d);
+    BOBUIextStream str(&d);
     str << "### QWindows:\n";
     for (QWindow *w : QGuiApplication::topLevelWindows())
         dumpWindowRecursion(str, w, options);
     qDebug().noquote() << d;
 }
 
-} // namespace QtDiag
+} // namespace BobUIDiag

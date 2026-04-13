@@ -36,7 +36,7 @@ jpeg_add_quant_table(j_compress_ptr cinfo, int which_tbl,
  * are limited to 1..255 for JPEG baseline compatibility.
  */
 {
-  JQUANT_TBL **qtblptr;
+  JQUANT_TBL **bobuiblptr;
   int i;
   long temp;
 
@@ -45,12 +45,12 @@ jpeg_add_quant_table(j_compress_ptr cinfo, int which_tbl,
     ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);
 
   if (which_tbl < 0 || which_tbl >= NUM_QUANT_TBLS)
-    ERREXIT1(cinfo, JERR_DQT_INDEX, which_tbl);
+    ERREXIT1(cinfo, JERR_DBOBUI_INDEX, which_tbl);
 
-  qtblptr = &cinfo->quant_tbl_ptrs[which_tbl];
+  bobuiblptr = &cinfo->quant_tbl_ptrs[which_tbl];
 
-  if (*qtblptr == NULL)
-    *qtblptr = jpeg_alloc_quant_table((j_common_ptr)cinfo);
+  if (*bobuiblptr == NULL)
+    *bobuiblptr = jpeg_alloc_quant_table((j_common_ptr)cinfo);
 
   for (i = 0; i < DCTSIZE2; i++) {
     temp = ((long)basic_table[i] * scale_factor + 50L) / 100L;
@@ -59,11 +59,11 @@ jpeg_add_quant_table(j_compress_ptr cinfo, int which_tbl,
     if (temp > 32767L) temp = 32767L; /* max quantizer needed for 12 bits */
     if (force_baseline && temp > 255L)
       temp = 255L;              /* limit to baseline range if requested */
-    (*qtblptr)->quantval[i] = (UINT16)temp;
+    (*bobuiblptr)->quantval[i] = (UINT16)temp;
   }
 
   /* Initialize sent_table FALSE so table will be written to JPEG file. */
-  (*qtblptr)->sent_table = FALSE;
+  (*bobuiblptr)->sent_table = FALSE;
 }
 
 
@@ -96,7 +96,7 @@ static const unsigned int std_chrominance_quant_tbl[DCTSIZE2] = {
 
 #if JPEG_LIB_VERSION >= 70
 GLOBAL(void)
-jpeg_default_qtables(j_compress_ptr cinfo, boolean force_baseline)
+jpeg_default_bobuiables(j_compress_ptr cinfo, boolean force_baseline)
 /* Set or change the 'quality' (quantization) setting, using default tables
  * and straight percentage-scaling quality scales.
  * This entry point allows different scalings for luminance and chrominance.

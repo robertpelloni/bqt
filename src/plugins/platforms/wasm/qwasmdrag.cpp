@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmdrag.h"
 
@@ -10,10 +10,10 @@
 
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtCore/private/qstdweb_p.h>
-#include <QtCore/qeventloop.h>
-#include <QtCore/qmimedata.h>
-#include <QtCore/qtimer.h>
+#include <BobUICore/private/qstdweb_p.h>
+#include <BobUICore/qeventloop.h>
+#include <BobUICore/qmimedata.h>
+#include <BobUICore/bobuiimer.h>
 #include <QFile>
 
 #include <private/qshapedpixmapdndwindow_p.h>
@@ -23,7 +23,7 @@
 #include <string>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 
@@ -73,7 +73,7 @@ struct QWasmDrag::DragState
     QWindow *window;
     std::function<void()> quitEventLoopClosure;
     std::unique_ptr<DragImage> dragImage;
-    Qt::DropAction dropAction = Qt::DropAction::IgnoreAction;
+    BobUI::DropAction dropAction = BobUI::DropAction::IgnoreAction;
 };
 
 QWasmDrag::QWasmDrag() = default;
@@ -85,15 +85,15 @@ QWasmDrag *QWasmDrag::instance()
     return static_cast<QWasmDrag *>(QWasmIntegration::get()->drag());
 }
 
-Qt::DropAction QWasmDrag::drag(QDrag *drag)
+BobUI::DropAction QWasmDrag::drag(QDrag *drag)
 {
     Q_ASSERT_X(!m_dragState, Q_FUNC_INFO, "Drag already in progress");
 
     QWindow *window = windowForDrag(drag);
     if (!window)
-        return Qt::IgnoreAction;
+        return BobUI::IgnoreAction;
 
-    Qt::DropAction dragResult = Qt::IgnoreAction;
+    BobUI::DropAction dragResult = BobUI::IgnoreAction;
     if (qstdweb::haveAsyncify()) {
         m_dragState = std::make_unique<DragState>(drag, window, [this]() { QSimpleDrag::cancelDrag();  });
         dragResult = QSimpleDrag::drag(drag);
@@ -134,10 +134,10 @@ void QWasmDrag::onNativeDragOver(DragEvent *event)
 
     auto mimeDataPreview = event->dataTransfer.toMimeDataPreview();
 
-    const Qt::DropActions actions = m_dragState
+    const BobUI::DropActions actions = m_dragState
             ? m_dragState->drag->supportedActions()
-            : (Qt::DropAction::CopyAction | Qt::DropAction::MoveAction
-               | Qt::DropAction::LinkAction);
+            : (BobUI::DropAction::CopyAction | BobUI::DropAction::MoveAction
+               | BobUI::DropAction::LinkAction);
 
     const auto dragResponse = QWindowSystemInterface::handleDrag(
             event->targetWindow, &*mimeDataPreview, event->pointInPage.toPoint(), actions,
@@ -147,8 +147,8 @@ void QWasmDrag::onNativeDragOver(DragEvent *event)
         setExecutedDropAction(dragResponse.acceptedAction());
         event->dataTransfer.setDropAction(dragResponse.acceptedAction());
     } else {
-        setExecutedDropAction(Qt::DropAction::IgnoreAction);
-        event->dataTransfer.setDropAction(Qt::DropAction::IgnoreAction);
+        setExecutedDropAction(BobUI::DropAction::IgnoreAction);
+        event->dataTransfer.setDropAction(BobUI::DropAction::IgnoreAction);
     }
 }
 
@@ -164,12 +164,12 @@ void QWasmDrag::onNativeDrop(DragEvent *event)
             wasmWindow->platformScreen()->mapFromLocal(screenElementPos);
     const QPoint targetWindowPos = event->targetWindow->mapFromGlobal(screenPos).toPoint();
 
-    const Qt::DropActions actions = m_dragState
+    const BobUI::DropActions actions = m_dragState
                                         ? m_dragState->drag->supportedActions()
-                                        : (Qt::DropAction::CopyAction | Qt::DropAction::MoveAction
-                                           | Qt::DropAction::LinkAction);
-    Qt::MouseButton mouseButton = event->mouseButton;
-    QFlags<Qt::KeyboardModifier> modifiers = event->modifiers;
+                                        : (BobUI::DropAction::CopyAction | BobUI::DropAction::MoveAction
+                                           | BobUI::DropAction::LinkAction);
+    BobUI::MouseButton mouseButton = event->mouseButton;
+    QFlags<BobUI::KeyboardModifier> modifiers = event->modifiers;
 
     // Accept the native drop event: We are going to async read any dropped
     // files, but the browser expects that accepted state is set before any
@@ -181,7 +181,7 @@ void QWasmDrag::onNativeDrop(DragEvent *event)
     const auto dropCallback = [dragState, wasmWindow, targetWindowPos,
         actions, mouseButton, modifiers](QMimeData *mimeData) {
         if (mimeData) {
-            auto dropResponse = std::make_shared<QPlatformDropQtResponse>(true, Qt::DropAction::CopyAction);
+            auto dropResponse = std::make_shared<QPlatformDropBobUIResponse>(true, BobUI::DropAction::CopyAction);
             *dropResponse = QWindowSystemInterface::handleDrop(wasmWindow->window(), mimeData,
                                                            targetWindowPos, actions,
                                                            mouseButton, modifiers);
@@ -220,7 +220,7 @@ void QWasmDrag::onNativeDragEnter(DragEvent *event)
 
     QDrag *drag = new QDrag(this);
     drag->setMimeData(new QMimeData());
-    drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+    drag->exec(BobUI::CopyAction | BobUI::MoveAction, BobUI::CopyAction);
 }
 
 void QWasmDrag::onNativeDragLeave(DragEvent *event)
@@ -229,7 +229,7 @@ void QWasmDrag::onNativeDragLeave(DragEvent *event)
     if (m_dragState)
         m_dragState->dropAction = event->dropAction;
     setExecutedDropAction(event->dropAction);
-    event->dataTransfer.setDropAction(Qt::DropAction::IgnoreAction);
+    event->dataTransfer.setDropAction(BobUI::DropAction::IgnoreAction);
 }
 
 QWasmDrag::DragState::DragImage::DragImage(const QPixmap &pixmap, const QMimeData *mimeData,
@@ -284,7 +284,7 @@ emscripten::val QWasmDrag::DragState::DragImage::generateDefaultDragImage()
     innerImgElement.set("src",
                         "data:image/" + std::string("svg+xml") + ";base64,"
                                 + std::string(Base64IconStore::get()->getIcon(
-                                        Base64IconStore::IconType::QtLogo)));
+                                        Base64IconStore::IconType::BobUILogo)));
 
     constexpr char DragImageSize[] = "50px";
 
@@ -333,4 +333,4 @@ QWasmDrag::DragState::DragState(QDrag *drag, QWindow *window,
 
 QWasmDrag::DragState::~DragState() = default;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

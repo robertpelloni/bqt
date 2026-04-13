@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFORMLAYOUT_H
 #define QFORMLAYOUT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/QLayout>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/QLayout>
 
-QT_REQUIRE_CONFIG(formlayout);
+BOBUI_REQUIRE_CONFIG(formlayout);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QFormLayoutPrivate;
@@ -23,9 +23,9 @@ class Q_WIDGETS_EXPORT QFormLayout : public QLayout
                RESET resetFieldGrowthPolicy)
     Q_PROPERTY(RowWrapPolicy rowWrapPolicy READ rowWrapPolicy WRITE setRowWrapPolicy
                RESET resetRowWrapPolicy)
-    Q_PROPERTY(Qt::Alignment labelAlignment READ labelAlignment WRITE setLabelAlignment
+    Q_PROPERTY(BobUI::Alignment labelAlignment READ labelAlignment WRITE setLabelAlignment
                RESET resetLabelAlignment)
-    Q_PROPERTY(Qt::Alignment formAlignment READ formAlignment WRITE setFormAlignment
+    Q_PROPERTY(BobUI::Alignment formAlignment READ formAlignment WRITE setFormAlignment
                RESET resetFormAlignment)
     Q_PROPERTY(int horizontalSpacing READ horizontalSpacing WRITE setHorizontalSpacing)
     Q_PROPERTY(int verticalSpacing READ verticalSpacing WRITE setVerticalSpacing)
@@ -64,10 +64,10 @@ public:
     FieldGrowthPolicy fieldGrowthPolicy() const;
     void setRowWrapPolicy(RowWrapPolicy policy);
     RowWrapPolicy rowWrapPolicy() const;
-    void setLabelAlignment(Qt::Alignment alignment);
-    Qt::Alignment labelAlignment() const;
-    void setFormAlignment(Qt::Alignment alignment);
-    Qt::Alignment formAlignment() const;
+    void setLabelAlignment(BobUI::Alignment alignment);
+    BobUI::Alignment labelAlignment() const;
+    void setFormAlignment(BobUI::Alignment alignment);
+    BobUI::Alignment formAlignment() const;
 
     void setHorizontalSpacing(int spacing);
     int horizontalSpacing() const;
@@ -130,7 +130,7 @@ public:
 
     bool hasHeightForWidth() const override;
     int heightForWidth(int width) const override;
-    Qt::Orientations expandingDirections() const override;
+    BobUI::Orientations expandingDirections() const override;
     int count() const override;
 
     int rowCount() const;
@@ -148,6 +148,6 @@ private:
 
 Q_DECLARE_TYPEINFO(QFormLayout::TakeRowResult, Q_PRIMITIVE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

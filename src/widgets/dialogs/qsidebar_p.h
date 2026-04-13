@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSIDEBAR_H
 #define QSIDEBAR_H
@@ -9,23 +9,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include <qlist.h>
 #include <qlistview.h>
 #include <qstandarditemmodel.h>
 #include <qstyleditemdelegate.h>
 #include <qurl.h>
 
-QT_REQUIRE_CONFIG(filedialog);
+BOBUI_REQUIRE_CONFIG(filedialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFileSystemModel;
 
@@ -43,8 +43,8 @@ class Q_AUTOTEST_EXPORT QUrlModel : public QStandardItemModel
 
 public:
     enum Roles {
-        UrlRole = Qt::UserRole + 1,
-        EnabledRole = Qt::UserRole + 2
+        UrlRole = BobUI::UserRole + 1,
+        EnabledRole = BobUI::UserRole + 2
     };
 
     QUrlModel(QObject *parent = nullptr);
@@ -52,12 +52,12 @@ public:
 
     QStringList mimeTypes() const override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     bool canDrop(QDragEnterEvent *event);
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
+    bool dropMimeData(const QMimeData *data, BobUI::DropAction action, int row, int column, const QModelIndex &parent) override;
 #endif
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role=Qt::EditRole) override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role=BobUI::EditRole) override;
 
     void setUrls(const QList<QUrl> &list);
     void addUrls(const QList<QUrl> &urls, int row = -1, bool move = true);
@@ -78,7 +78,7 @@ private:
         QModelIndex index;
         QString path;
     };
-    friend class QTypeInfo<WatchItem>;
+    friend class BOBUIypeInfo<WatchItem>;
 
     QList<WatchItem> watching;
     QList<QUrl> invalidUrls;
@@ -109,13 +109,13 @@ public:
 protected:
     bool event(QEvent * e) override;
     void focusInEvent(QFocusEvent *event) override;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragEnterEvent(QDragEnterEvent *event) override;
 #endif
 
 private Q_SLOTS:
     void clicked(const QModelIndex &index);
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     void showContextMenu(const QPoint &position);
 #endif
     void removeEntry();
@@ -124,7 +124,7 @@ private:
     QUrlModel *urlModel;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSIDEBAR_H
 

@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfunctions_win_p.h"
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
 #include <combaseapi.h>
 #include <objbase.h>
@@ -13,7 +13,7 @@
 #  define HAS_APPMODEL
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QComHelper::QComHelper(COINIT concurrencyModel)
 {
@@ -45,7 +45,7 @@ QComHelper::~QComHelper()
 
     https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/modernize-packaged-apps
 */
-void qt_win_ensureComInitializedOnThisThread()
+void bobui_win_ensureComInitializedOnThisThread()
 {
     static thread_local QComHelper s_comHelper;
 }
@@ -59,7 +59,7 @@ void qt_win_ensureComInitializedOnThisThread()
 
     https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/modernize-packaged-apps
 */
-bool qt_win_hasPackageIdentity()
+bool bobui_win_hasPackageIdentity()
 {
 #if defined(HAS_APPMODEL)
     static const bool hasPackageIdentity = []() {
@@ -80,4 +80,4 @@ bool qt_win_hasPackageIdentity()
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

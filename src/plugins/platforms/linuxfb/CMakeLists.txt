@@ -1,39 +1,39 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QLinuxFbIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QLinuxFbIntegrationPlugin
+bobui_internal_add_plugin(QLinuxFbIntegrationPlugin
     OUTPUT_NAME qlinuxfb
     PLUGIN_TYPE platforms
-    DEFAULT_IF "linuxfb" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "linuxfb" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         main.cpp
         qlinuxfbintegration.cpp qlinuxfbintegration.h
         qlinuxfbscreen.cpp qlinuxfbscreen.h
     DEFINES
-        QT_NO_FOREACH
+        BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::FbSupportPrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::FbSupportPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QLinuxFbIntegrationPlugin CONDITION TARGET Qt::InputSupportPrivate
+bobui_internal_extend_target(QLinuxFbIntegrationPlugin CONDITION TARGET BobUI::InputSupportPrivate
     LIBRARIES
-        Qt::InputSupportPrivate
+        BobUI::InputSupportPrivate
 )
 
-qt_internal_extend_target(QLinuxFbIntegrationPlugin CONDITION TARGET Qt::KmsSupportPrivate
+bobui_internal_extend_target(QLinuxFbIntegrationPlugin CONDITION TARGET BobUI::KmsSupportPrivate
     SOURCES
         qlinuxfbdrmscreen.cpp qlinuxfbdrmscreen.h
     LIBRARIES
-        Qt::KmsSupportPrivate
+        BobUI::KmsSupportPrivate
 )

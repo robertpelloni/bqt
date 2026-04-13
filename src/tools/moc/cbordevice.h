@@ -1,10 +1,10 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef CBORDEVICE_H
 #define CBORDEVICE_H
 
-#include <QtCore/qtypes.h>
+#include <BobUICore/bobuiypes.h>
 
 #include <memory>
 #include <stdio.h>

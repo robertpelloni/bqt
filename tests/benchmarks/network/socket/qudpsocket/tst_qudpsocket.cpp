@@ -1,11 +1,11 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/qglobal.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtNetwork/qudpsocket.h>
-#include <QtNetwork/qnetworkdatagram.h>
+#include <BOBUIest>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUINetwork/qudpsocket.h>
+#include <BobUINetwork/qnetworkdatagram.h>
 
 class tst_QUdpSocket : public QObject
 {
@@ -24,9 +24,9 @@ tst_QUdpSocket::tst_QUdpSocket()
 
 void tst_QUdpSocket::pendingDatagramSize_data()
 {
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<int>("size");
     for (int value : {52, 1024, 2049, 4500, 4098, 8192, 12000, 25000, 32 * 1024, 63 * 1024})
-        QTest::addRow("%d", value) << value;
+        BOBUIest::addRow("%d", value) << value;
 }
 
 void tst_QUdpSocket::pendingDatagramSize()
@@ -42,7 +42,7 @@ void tst_QUdpSocket::pendingDatagramSize()
     auto sent = socket.writeDatagram(datagram);
     QCOMPARE(sent, size);
 
-    auto res = QTest::qWaitFor([&socket]() { return socket.hasPendingDatagrams(); }, 5000);
+    auto res = BOBUIest::qWaitFor([&socket]() { return socket.hasPendingDatagrams(); }, 5000);
     QVERIFY(res);
 
     QBENCHMARK {
@@ -51,5 +51,5 @@ void tst_QUdpSocket::pendingDatagramSize()
     }
 }
 
-QTEST_MAIN(tst_QUdpSocket)
+BOBUIEST_MAIN(tst_QUdpSocket)
 #include "tst_qudpsocket.moc"

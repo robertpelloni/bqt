@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 /*
   main.cpp
@@ -11,7 +11,7 @@
 #include <QApplication>
 #include <QHeaderView>
 #include <QItemSelectionModel>
-#include <QTableView>
+#include <BOBUIableView>
 
 #include "../common-table-model/model.h"
 
@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
     TableModel *model = new TableModel(4, 2, &app);
 
     //! [0]
-    QTableView *firstTableView = new QTableView;
-    QTableView *secondTableView = new QTableView;
+    BOBUIableView *firstTableView = new BOBUIableView;
+    BOBUIableView *secondTableView = new BOBUIableView;
     //! [0]
 
     //! [1]

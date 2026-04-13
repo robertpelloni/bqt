@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsoffscreenwindow_p.h"
 #include "qeglfshooks_p.h"
-#include <QtGui/QOffscreenSurface>
-#include <QtGui/private/qeglconvenience_p.h>
+#include <BobUIGui/QOffscreenSurface>
+#include <BobUIGui/private/qeglconvenience_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
-    In some cases pbuffers are not available. Triggering QtGui's built-in
+    In some cases pbuffers are not available. Triggering BobUIGui's built-in
     fallback for a hidden QWindow is not suitable for eglfs since this would be
     treated as an attempt to create multiple top-level, native windows.
 
@@ -25,7 +25,7 @@ QEglFSOffscreenWindow::QEglFSOffscreenWindow(EGLDisplay display, const QSurfaceF
     , m_surface(EGL_NO_SURFACE)
     , m_window(0)
 {
-    m_window = qt_egl_device_integration()->createNativeOffscreenWindow(format);
+    m_window = bobui_egl_device_integration()->createNativeOffscreenWindow(format);
     if (!m_window) {
         qWarning("QEglFSOffscreenWindow: Failed to create native window");
         return;
@@ -41,7 +41,7 @@ QEglFSOffscreenWindow::~QEglFSOffscreenWindow()
     if (m_surface != EGL_NO_SURFACE)
         eglDestroySurface(m_display, m_surface);
     if (m_window)
-        qt_egl_device_integration()->destroyNativeWindow(m_window);
+        bobui_egl_device_integration()->destroyNativeWindow(m_window);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

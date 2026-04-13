@@ -1,12 +1,12 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tracegen Tool:
 #####################################################################
 
-qt_get_tool_target_name(target_name tracegen)
-qt_internal_add_tool(${target_name}
+bobui_get_tool_target_name(target_name tracegen)
+bobui_internal_add_tool(${target_name}
     CORE_LIBRARY Bootstrap
     INSTALL_DIR "${INSTALL_LIBEXECDIR}"
     TOOLS_TARGET Core
@@ -17,8 +17,8 @@ qt_internal_add_tool(${target_name}
         lttng.cpp lttng.h
         panic.cpp panic.h
         provider.cpp provider.h
-        qtheaders.cpp qtheaders.h
+        bobuiheaders.cpp bobuiheaders.h
         tracegen.cpp
     NO_UNITY_BUILD
 )
-qt_internal_return_unless_building_tools()
+bobui_internal_return_unless_building_tools()

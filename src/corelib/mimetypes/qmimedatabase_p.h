@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMIMEDATABASE_P_H
 #define QMIMEDATABASE_P_H
@@ -10,7 +10,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -20,19 +20,19 @@
 #include "qmimedatabase.h"
 #include "qmimetype.h"
 
-QT_REQUIRE_CONFIG(mimetype);
+BOBUI_REQUIRE_CONFIG(mimetype);
 
 #include "qmimetype_p.h"
 #include "qmimeglobpattern_p.h"
 
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmutex.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmutex.h>
 
 #include <vector>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFileInfo;
 class QIODevice;
@@ -90,6 +90,6 @@ public:
     QMutex mutex;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMIMEDATABASE_P_H

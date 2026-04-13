@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QCalendar>
 #include <private/qgregoriancalendar_p.h>
 Q_DECLARE_METATYPE(QCalendar::System)
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QCalendar : public QObject
 {
@@ -109,7 +109,7 @@ void tst_QCalendar::checkYear(const QCalendar &cal, int year)
         QCOMPARE_GE(cal.daysInMonth(i), last);
 
         checkCenturyResolution(cal, {year, i, (last + 1) / 2});
-        if (QTest::currentTestFailed())
+        if (BOBUIest::currentTestFailed())
             return;
     }
     // Months add up to the whole year:
@@ -117,18 +117,18 @@ void tst_QCalendar::checkYear(const QCalendar &cal, int year)
 }
 
 #define CHECKYEAR(cal, year) checkYear(cal, year); \
-    if (QTest::currentTestFailed()) \
+    if (BOBUIest::currentTestFailed()) \
         return
 
 void tst_QCalendar::basic_data()
 {
-    QTest::addColumn<QCalendar::System>("system");
+    BOBUIest::addColumn<QCalendar::System>("system");
 
     const QMetaEnum e = QMetaEnum::fromType<QCalendar::System>();
     for (int i = 0; i <= int(QCalendar::System::Last); ++i) {
         // There may be gaps in the enum's numbering; and Last is a duplicate:
         if (e.value(i) != -1 && qstrcmp(e.key(i), "Last"))
-            QTest::newRow(e.key(i)) << QCalendar::System(e.value(i));
+            BOBUIest::newRow(e.key(i)) << QCalendar::System(e.value(i));
     }
 }
 
@@ -207,36 +207,36 @@ void tst_QCalendar::nameCase()
 
 void tst_QCalendar::specific_data()
 {
-    QTest::addColumn<QCalendar::System>("system");
+    BOBUIest::addColumn<QCalendar::System>("system");
     // Date in that system:
-    QTest::addColumn<QString>("monthName");
-    QTest::addColumn<int>("sysyear");
-    QTest::addColumn<int>("sysmonth");
-    QTest::addColumn<int>("sysday");
+    BOBUIest::addColumn<QString>("monthName");
+    BOBUIest::addColumn<int>("sysyear");
+    BOBUIest::addColumn<int>("sysmonth");
+    BOBUIest::addColumn<int>("sysday");
     // Gregorian equivalent:
-    QTest::addColumn<int>("gregyear");
-    QTest::addColumn<int>("gregmonth");
-    QTest::addColumn<int>("gregday");
+    BOBUIest::addColumn<int>("gregyear");
+    BOBUIest::addColumn<int>("gregmonth");
+    BOBUIest::addColumn<int>("gregday");
 
 #define ADDROW(cal, monthName, year, month, day, gy, gm, gd) \
-    QTest::newRow(#cal) << QCalendar::System::cal << QStringLiteral(monthName) \
+    BOBUIest::newRow(#cal) << QCalendar::System::cal << QStringLiteral(monthName) \
                         << year << month << day << gy << gm << gd
 
     ADDROW(Gregorian, "January", 1970, 1, 1, 1970, 1, 1);
 
     // One known specific date, for each calendar
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     // Julian 1582-10-4 was followed by Gregorian 1582-10-15
     ADDROW(Julian, "October", 1582, 10, 4, 1582, 10, 14);
     // Milankovic matches Gregorian for a few centuries
     ADDROW(Milankovic, "March", 1923, 3, 20, 1923, 3, 20);
 #endif
 
-#if QT_CONFIG(jalalicalendar)
+#if BOBUI_CONFIG(jalalicalendar)
     // Jalali year 1355 started on Gregorian 1976-3-21:
     ADDROW(Jalali, "Farvardin", 1355, 1, 1, 1976, 3, 21);
 #endif // jalali
-#if QT_CONFIG(islamiccivilcalendar)
+#if BOBUI_CONFIG(islamiccivilcalendar)
     // TODO: confirm this is correct
     ADDROW(IslamicCivil, "Muharram", 1, 1, 1, 622, 7, 19);
 #endif
@@ -323,37 +323,37 @@ void tst_QCalendar::testYearMonthDate()
 
 void tst_QCalendar::properties_data()
 {
-    QTest::addColumn<QCalendar::System>("system");
-    QTest::addColumn<bool>("gregory");
-    QTest::addColumn<bool>("lunar");
-    QTest::addColumn<bool>("luniSolar");
-    QTest::addColumn<bool>("solar");
-    QTest::addColumn<bool>("proleptic");
-    QTest::addColumn<bool>("yearZero");
-    QTest::addColumn<int>("monthMax");
-    QTest::addColumn<int>("monthMin");
-    QTest::addColumn<int>("yearMax");
-    QTest::addColumn<QString>("name");
+    BOBUIest::addColumn<QCalendar::System>("system");
+    BOBUIest::addColumn<bool>("gregory");
+    BOBUIest::addColumn<bool>("lunar");
+    BOBUIest::addColumn<bool>("luniSolar");
+    BOBUIest::addColumn<bool>("solar");
+    BOBUIest::addColumn<bool>("proleptic");
+    BOBUIest::addColumn<bool>("yearZero");
+    BOBUIest::addColumn<int>("monthMax");
+    BOBUIest::addColumn<int>("monthMin");
+    BOBUIest::addColumn<int>("yearMax");
+    BOBUIest::addColumn<QString>("name");
 
-    QTest::addRow("Gregorian")
+    BOBUIest::addRow("Gregorian")
         << QCalendar::System::Gregorian << true << false << false << true << true << false
         << 31 << 28 << 12 << QStringLiteral("Gregorian");
-#ifndef QT_BOOTSTRAPPED
-    QTest::addRow("Julian")
+#ifndef BOBUI_BOOTSTRAPPED
+    BOBUIest::addRow("Julian")
         << QCalendar::System::Julian << false << false << false << true << true << false
         << 31 << 28 << 12 << QStringLiteral("Julian");
-    QTest::addRow("Milankovic")
+    BOBUIest::addRow("Milankovic")
         << QCalendar::System::Milankovic << false << false << false << true << true << false
         << 31 << 28 << 12 << QStringLiteral("Milankovic");
 #endif
 
-#if QT_CONFIG(jalalicalendar)
-    QTest::addRow("Jalali")
+#if BOBUI_CONFIG(jalalicalendar)
+    BOBUIest::addRow("Jalali")
         << QCalendar::System::Jalali << false << false << false << true << true << false
         << 31 << 29 << 12 << QStringLiteral("Jalali");
 #endif
-#if QT_CONFIG(islamiccivilcalendar)
-    QTest::addRow("IslamicCivil")
+#if BOBUI_CONFIG(islamiccivilcalendar)
+    BOBUIest::addRow("IslamicCivil")
         << QCalendar::System::IslamicCivil << false << true << false << false << true << false
         << 30 << 29 << 12 << QStringLiteral("Islamic Civil");
 #endif
@@ -389,10 +389,10 @@ void tst_QCalendar::properties()
 void tst_QCalendar::aliases()
 {
     QCOMPARE(QCalendar(u"gregory").name(), u"Gregorian");
-#if QT_CONFIG(jalalicalendar)
+#if BOBUI_CONFIG(jalalicalendar)
     QCOMPARE(QCalendar(u"Persian").name(), u"Jalali");
 #endif
-#if QT_CONFIG(islamiccivilcalendar)
+#if BOBUI_CONFIG(islamiccivilcalendar)
     // Exercise all constructors from name, while we're at it:
     QCOMPARE(QCalendar(u"islamic-civil").name(), u"Islamic Civil");
     QCOMPARE(QCalendar("islamic"_L1).name(), u"Islamic Civil");
@@ -449,5 +449,5 @@ void tst_QCalendar::gregory()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QCalendar)
+BOBUIEST_APPLESS_MAIN(tst_QCalendar)
 #include "tst_qcalendar.moc"

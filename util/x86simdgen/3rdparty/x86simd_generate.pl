@@ -163,7 +163,7 @@ for (my $i = 0; $i < scalar @features; ++$i) {
     my $feature = $features[$i];
     my $str = $feature->{name} . ',' . $feature->{depends};
     $str =~ s/,$//;
-    printf "#define QT_FUNCTION_TARGET_STRING_%-17s \"%s\"\n",
+    printf "#define BOBUI_FUNCTION_TARGET_STRING_%-17s \"%s\"\n",
         $feature->{id}, $str;
 }
 for (@architecture_names) {
@@ -171,7 +171,7 @@ for (@architecture_names) {
     my $base = $arch->{base};
     my $featurestr = "";
     if ($base ne "<>") {
-        $featurestr = "QT_FUNCTION_TARGET_STRING_ARCH_" . uc($base);
+        $featurestr = "BOBUI_FUNCTION_TARGET_STRING_ARCH_" . uc($base);
     }
 
     my @features = @{$arch->{features}};
@@ -182,7 +182,7 @@ for (@architecture_names) {
         $featurestr .= join(',', @features);
         $featurestr .= '"';
     }
-    printf "#define QT_FUNCTION_TARGET_STRING_ARCH_%-12s %s\n", uc($arch->{id}), $featurestr;
+    printf "#define BOBUI_FUNCTION_TARGET_STRING_ARCH_%-12s %s\n", uc($arch->{id}), $featurestr;
 }
 
 print q{

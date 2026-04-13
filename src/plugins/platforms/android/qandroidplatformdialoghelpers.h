@@ -1,6 +1,6 @@
 // Copyright (C) 2013 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMDIALOGHELPERS_H
 #define QANDROIDPLATFORMDIALOGHELPERS_H
@@ -8,14 +8,14 @@
 #include <jni.h>
 
 #include <QEventLoop>
-#include <QtCore/QJniObject>
+#include <BobUICore/QJniObject>
 #include <qpa/qplatformdialoghelper.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QJniEnvironment;
 
-namespace QtAndroidDialogHelpers {
+namespace BobUIAndroidDialogHelpers {
 
 class QAndroidPlatformMessageDialogHelper: public QPlatformMessageDialogHelper
 {
@@ -25,7 +25,7 @@ public:
     ~QAndroidPlatformMessageDialogHelper();
 
     void exec() override;
-    bool show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality,
+    bool show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality,
               QWindow *parent) override;
     void hide() override;
 
@@ -46,6 +46,6 @@ bool registerNatives(QJniEnvironment &env);
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDPLATFORMDIALOGHELPERS_H

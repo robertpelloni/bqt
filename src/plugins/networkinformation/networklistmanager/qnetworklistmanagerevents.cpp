@@ -1,21 +1,21 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworklistmanagerevents.h"
-#include <QtCore/private/qsystemerror_p.h>
+#include <BobUICore/private/qsystemerror_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <mutex>
 
-#if QT_CONFIG(cpp_winrt)
-#include <QtCore/private/qt_winrtbase_p.h>
+#if BOBUI_CONFIG(cpp_winrt)
+#include <BobUICore/private/bobui_winrtbase_p.h>
 
 #include <winrt/Windows.Networking.Connectivity.h>
-#endif // QT_CONFIG(cpp_winrt)
+#endif // BOBUI_CONFIG(cpp_winrt)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 template<typename T>
@@ -100,7 +100,7 @@ bool QNetworkListManagerEvents::start()
         emit connectivityChanged(connectivity);
     }
 
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
     using namespace winrt::Windows::Networking::Connectivity;
     using winrt::Windows::Foundation::IInspectable;
     try {
@@ -138,7 +138,7 @@ void QNetworkListManagerEvents::stop()
     }
     // Even if we fail we should still try to unregister from winrt events:
 
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
     // Try to synchronize unregistering with potentially in-progress callbacks
     std::scoped_lock locker(winrtLock);
     if (token) {
@@ -188,7 +188,7 @@ bool QNetworkListManagerEvents::checkBehindCaptivePortal()
     return false;
 }
 
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
 namespace {
 using namespace winrt::Windows::Networking::Connectivity;
 // NB: this isn't part of "network list manager", but sadly NLM doesn't have an
@@ -262,8 +262,8 @@ void QNetworkListManagerEvents::emitWinRTUpdates()
     emit transportMediumChanged(getTransportMedium(profile));
     emit isMeteredChanged(getMetered(profile));
 }
-#endif // QT_CONFIG(cpp_winrt)
+#endif // BOBUI_CONFIG(cpp_winrt)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworklistmanagerevents.cpp"

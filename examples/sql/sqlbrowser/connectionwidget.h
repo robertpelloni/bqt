@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef CONNECTIONWIDGET_H
 #define CONNECTIONWIDGET_H
 
 #include <QWidget>
 
-QT_FORWARD_DECLARE_CLASS(QTreeWidget)
-QT_FORWARD_DECLARE_CLASS(QTreeWidgetItem)
-QT_FORWARD_DECLARE_CLASS(QSqlDatabase)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIreeWidget)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIreeWidgetItem)
+BOBUI_FORWARD_DECLARE_CLASS(QSqlDatabase)
 
 class ConnectionWidget : public QWidget
 {
@@ -26,13 +26,13 @@ signals:
 public slots:
     void refresh();
     void showMetaData();
-    void onItemActivated(QTreeWidgetItem *item);
-    void onCurrentItemChanged(QTreeWidgetItem *current);
+    void onItemActivated(BOBUIreeWidgetItem *item);
+    void onCurrentItemChanged(BOBUIreeWidgetItem *current);
 
 private:
-    void setActive(QTreeWidgetItem *);
+    void setActive(BOBUIreeWidgetItem *);
 
-    QTreeWidget *tree;
+    BOBUIreeWidget *tree;
     QAction *metaDataAction;
     QString activeDb;
 };

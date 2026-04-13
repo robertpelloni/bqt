@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatformwindow_p.h>
-#include <QtCore/QObject>
-#include <QtCore/QPointer>
-#include <QtGui/QSurfaceFormat>
-#include <QtGui/QImage>
+#include <BobUICore/QObject>
+#include <BobUICore/QPointer>
+#include <BobUIGui/QSurfaceFormat>
+#include <BobUIGui/QImage>
 
 #include <xcb/xcb.h>
 #include <xcb/sync.h>
 
 #include "qxcbobject.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbScreen;
 class QXcbSyncWindowRequest;
@@ -56,8 +56,8 @@ public:
     QMargins frameMargins() const override;
 
     void setVisible(bool visible) override;
-    void setWindowFlags(Qt::WindowFlags flags) override;
-    void setWindowState(Qt::WindowStates state) override;
+    void setWindowFlags(BobUI::WindowFlags flags) override;
+    void setWindowState(BobUI::WindowStates state) override;
     WId winId() const override;
     void setParent(const QPlatformWindow *window) override;
 
@@ -83,7 +83,7 @@ public:
 
     bool windowEvent(QEvent *event) override;
 
-    bool startSystemResize(Qt::Edges edges) override;
+    bool startSystemResize(BobUI::Edges edges) override;
     bool startSystemMove() override;
 
     void setOpacity(qreal level) override;
@@ -113,20 +113,20 @@ public:
     void handleFocusInEvent(const xcb_focus_in_event_t *event) override;
     void handleFocusOutEvent(const xcb_focus_out_event_t *event) override;
     void handlePropertyNotifyEvent(const xcb_property_notify_event_t *event) override;
-    void handleXIMouseEvent(xcb_ge_event_t *, Qt::MouseEventSource source = Qt::MouseEventNotSynthesized) override;
+    void handleXIMouseEvent(xcb_ge_event_t *, BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized) override;
     void handleXIEnterLeave(xcb_ge_event_t *) override;
 
     QXcbWindow *toWindow() override;
 
     void handleMouseEvent(xcb_timestamp_t time, const QPoint &local, const QPoint &global,
-                          Qt::KeyboardModifiers modifiers, QEvent::Type type, Qt::MouseEventSource source);
+                          BobUI::KeyboardModifiers modifiers, QEvent::Type type, BobUI::MouseEventSource source);
 
     void updateNetWmUserTime(xcb_timestamp_t timestamp);
     void updateWmTransientFor();
     void registerWmTransientForChild(QXcbWindow *);
 
     WindowTypes wmWindowTypes() const;
-    void setWmWindowType(WindowTypes types, Qt::WindowFlags flags);
+    void setWmWindowType(WindowTypes types, BobUI::WindowFlags flags);
     void setWindowType(WindowTypes windowTypes) override { setWmWindowType(windowTypes, window()->flags()); }
     void setWindowRole(const QString &role) override;
 
@@ -173,12 +173,12 @@ protected:
     QXcbScreen *initialScreen() const;
 
     void setNetWmState(bool set, xcb_atom_t one, xcb_atom_t two = 0);
-    void setNetWmState(Qt::WindowFlags flags);
-    void setNetWmState(Qt::WindowStates state);
+    void setNetWmState(BobUI::WindowFlags flags);
+    void setNetWmState(BobUI::WindowStates state);
     void setNetWmStateOnUnmappedWindow();
     NetWmStates netWmStates();
 
-    void setMotifWmHints(Qt::WindowFlags flags);
+    void setMotifWmHints(BobUI::WindowFlags flags);
 
     void setTransparentForMouseEvents(bool transparent);
     void updateDoesNotAcceptFocus(bool doesNotAcceptFocus);
@@ -195,16 +195,16 @@ protected:
     void doFocusOut();
 
     void handleButtonPressEvent(int event_x, int event_y, int root_x, int root_y,
-                                int detail, Qt::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
-                                QEvent::Type type, Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
+                                int detail, BobUI::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
+                                QEvent::Type type, BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized);
 
     void handleButtonReleaseEvent(int event_x, int event_y, int root_x, int root_y,
-                                  int detail, Qt::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
-                                  QEvent::Type type, Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
+                                  int detail, BobUI::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
+                                  QEvent::Type type, BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized);
 
     void handleMotionNotifyEvent(int event_x, int event_y, int root_x, int root_y,
-                                 Qt::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
-                                 QEvent::Type type, Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
+                                 BobUI::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
+                                 QEvent::Type type, BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized);
 
     void handleEnterNotifyEvent(int event_x, int event_y, int root_x, int root_y,
                                 quint8 mode, quint8 detail, xcb_timestamp_t timestamp);
@@ -221,7 +221,7 @@ protected:
     xcb_sync_int64_t m_syncValue;
     xcb_sync_counter_t m_syncCounter = 0;
 
-    Qt::WindowStates m_windowState = Qt::WindowNoState;
+    BobUI::WindowStates m_windowState = BobUI::WindowNoState;
 
     QMutex m_mappedMutex;
     bool m_mapped = false;
@@ -246,7 +246,7 @@ protected:
 
     xcb_visualid_t m_visualId = 0;
     // Last sent state. Initialized to an invalid state, on purpose.
-    Qt::WindowStates m_lastWindowStateEvent = Qt::WindowActive;
+    BobUI::WindowStates m_lastWindowStateEvent = BobUI::WindowActive;
 
     enum SyncState {
         NoSyncNeeded,
@@ -278,6 +278,6 @@ protected:
 
 QList<xcb_rectangle_t> qRegionToXcbRectangleList(const QRegion &region);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QXcbWindow*)

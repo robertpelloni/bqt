@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlocalsocket_p.h"
 #include <qscopedvaluerollback.h>
 #include <qdeadlinetimer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 struct QSocketPoller
@@ -82,7 +82,7 @@ void QLocalSocketPrivate::init()
     pipeReader = new QWindowsPipeReader(q);
     QObjectPrivate::connect(pipeReader, &QWindowsPipeReader::readyRead,
                             this, &QLocalSocketPrivate::_q_canRead);
-    q->connect(pipeReader, SIGNAL(pipeClosed()), SLOT(_q_pipeClosed()), Qt::QueuedConnection);
+    q->connect(pipeReader, SIGNAL(pipeClosed()), SLOT(_q_pipeClosed()), BobUI::QueuedConnection);
     q->connect(pipeReader, SIGNAL(winError(ulong,QString)), SLOT(_q_winError(ulong,QString)));
 }
 
@@ -560,4 +560,4 @@ bool QLocalSocket::waitForBytesWritten(int msecs)
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

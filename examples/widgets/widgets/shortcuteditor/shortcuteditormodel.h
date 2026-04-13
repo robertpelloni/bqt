@@ -1,5 +1,5 @@
 // Copyright (C) 2022 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SHORTCUTEDITORMODEL_H
 #define SHORTCUTEDITORMODEL_H
@@ -8,9 +8,9 @@
 #include <QList>
 #include <QVariant>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 enum class Column : uint8_t {
     Name,
@@ -49,15 +49,15 @@ public:
     explicit ShortcutEditorModel(QObject *parent = nullptr);
     ~ShortcutEditorModel() override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
+    QVariant headerData(int section, BobUI::Orientation orientation, int role = BobUI::DisplayRole) const override;
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &index = QModelIndex()) const override;
     int columnCount(const QModelIndex &index = QModelIndex()) const override;
 
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = BobUI::EditRole) override;
 
     void setActions();
 

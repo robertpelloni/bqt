@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbwindow.h"
 
-#include <QtDebug>
+#include <BobUIDebug>
 #include <QMetaEnum>
 #include <QScreen>
-#include <QtCore/QFileInfo>
-#include <QtGui/QIcon>
-#include <QtGui/QRegion>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUICore/QFileInfo>
+#include <BobUIGui/QIcon>
+#include <BobUIGui/QRegion>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 
 #include "qxcbintegration.h"
 #include "qxcbconnection.h"
 #include "qxcbscreen.h"
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include "qxcbdrag.h"
 #endif
 #include "qxcbkeyboard.h"
@@ -44,7 +44,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
 #define register        /* C++17 deprecated register */
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -57,12 +57,12 @@ enum {
     defaultWindowHeight = 160
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcQpaWindow, "qt.qpa.window");
-Q_STATIC_LOGGING_CATEGORY(lcQpaXcbWindow, "qt.qpa.xcb.window");
+Q_STATIC_LOGGING_CATEGORY(lcQpaWindow, "bobui.qpa.window");
+Q_STATIC_LOGGING_CATEGORY(lcQpaXcbWindow, "bobui.qpa.xcb.window");
 
 Q_DECLARE_TYPEINFO(xcb_rectangle_t, Q_PRIMITIVE_TYPE);
 
@@ -106,7 +106,7 @@ QXcbScreen *QXcbWindow::initialScreen() const
     // Resolve initial screen via QWindowPrivate::screenForGeometry(),
     // which works in platform independent coordinates, as opposed to
     // QPlatformWindow::screenForGeometry() that uses native coordinates.
-    QWindowPrivate *windowPrivate = qt_window_private(window());
+    QWindowPrivate *windowPrivate = bobui_window_private(window());
     QScreen *screen = windowPrivate->screenForGeometry(window()->geometry());
     return static_cast<QXcbScreen*>(screen->handle());
 }
@@ -114,18 +114,18 @@ QXcbScreen *QXcbWindow::initialScreen() const
 // Returns \c true if we should set WM_TRANSIENT_FOR on \a w
 static inline bool isTransient(const QWindow *w)
 {
-    return w->type() == Qt::Dialog
-           || w->type() == Qt::Sheet
-           || w->type() == Qt::Tool
-           || w->type() == Qt::SplashScreen
-           || w->type() == Qt::ToolTip
-           || w->type() == Qt::Drawer
-           || w->type() == Qt::Popup;
+    return w->type() == BobUI::Dialog
+           || w->type() == BobUI::Sheet
+           || w->type() == BobUI::Tool
+           || w->type() == BobUI::SplashScreen
+           || w->type() == BobUI::ToolTip
+           || w->type() == BobUI::Drawer
+           || w->type() == BobUI::Popup;
 }
 
 void QXcbWindow::setImageFormatForVisual(const xcb_visualtype_t *visual)
 {
-    if (qt_xcb_imageFormatForVisual(connection(), m_depth, visual, &m_imageFormat, &m_imageRgbSwap))
+    if (bobui_xcb_imageFormatForVisual(connection(), m_depth, visual, &m_imageFormat, &m_imageRgbSwap))
         return;
 
     switch (m_depth) {
@@ -143,7 +143,7 @@ void QXcbWindow::setImageFormatForVisual(const xcb_visualtype_t *visual)
     }
 }
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
 static inline XTextProperty* qstringToXTP(Display *dpy, const QString& s)
 {
     #include <X11/Xatom.h>
@@ -178,7 +178,7 @@ static inline XTextProperty* qstringToXTP(Display *dpy, const QString& s)
     }
     return &tp;
 }
-#endif // QT_CONFIG(xcb_xlib)
+#endif // BOBUI_CONFIG(xcb_xlib)
 
 // TODO move this into a utility function in QWindow or QGuiApplication
 static QWindow *childWindowAt(QWindow *win, const QPoint &p)
@@ -193,7 +193,7 @@ static QWindow *childWindowAt(QWindow *win, const QPoint &p)
         }
     }
     if (!win->isTopLevel()
-            && !(win->flags() & Qt::WindowTransparentForInput)
+            && !(win->flags() & BobUI::WindowTransparentForInput)
             && win->geometry().contains(win->parent()->mapFromGlobal(p))) {
         return win;
     }
@@ -231,10 +231,10 @@ void QXcbWindow::create()
     xcb_window_t old_m_window = m_window;
     destroy();
 
-    m_windowState = Qt::WindowNoState;
+    m_windowState = BobUI::WindowNoState;
     m_trayIconWindow = isTrayIconWindow(window());
 
-    Qt::WindowType type = window()->type();
+    BobUI::WindowType type = window()->type();
 
     QXcbScreen *currentScreen = xcbScreen();
     QXcbScreen *platformScreen = QPlatformWindow::parent() ? parentScreen() : initialScreen();
@@ -320,8 +320,8 @@ void QXcbWindow::create()
         XCB_BACK_PIXMAP_NONE,
         platformScreen->screen()->black_pixel,
         XCB_GRAVITY_NORTH_WEST,
-        type == Qt::Popup || type == Qt::ToolTip || (window()->flags() & Qt::BypassWindowManagerHint),
-        type == Qt::Popup || type == Qt::Tool || type == Qt::SplashScreen || type == Qt::ToolTip || type == Qt::Drawer,
+        type == BobUI::Popup || type == BobUI::ToolTip || (window()->flags() & BobUI::BypassWindowManagerHint),
+        type == BobUI::Popup || type == BobUI::Tool || type == BobUI::SplashScreen || type == BobUI::ToolTip || type == BobUI::Drawer,
         defaultEventMask,
         platformScreen->colormapForVisual(m_visualId)
     };
@@ -354,7 +354,7 @@ void QXcbWindow::create()
     if (connection()->hasXSync())
         properties[propertyCount++] = atom(QXcbAtom::Atom_NET_WM_SYNC_REQUEST);
 
-    if (window()->flags() & Qt::WindowContextHelpButtonHint)
+    if (window()->flags() & BobUI::WindowContextHelpButtonHint)
         properties[propertyCount++] = atom(QXcbAtom::Atom_NET_WM_CONTEXT_HELP);
 
     xcb_change_property(xcb_connection(),
@@ -380,7 +380,7 @@ void QXcbWindow::create()
         QFileInfo fi = QFileInfo(QCoreApplication::instance()->applicationFilePath());
         QStringList domainName =
                 QCoreApplication::instance()->organizationDomain().split(QLatin1Char('.'),
-                                                                         Qt::SkipEmptyParts);
+                                                                         BobUI::SkipEmptyParts);
 
         if (domainName.isEmpty()) {
             desktopFileName = fi.baseName();
@@ -454,14 +454,14 @@ void QXcbWindow::create()
     setWindowFlags(window()->flags());
     setWindowTitle(window()->title());
 
-    // force sync to read outstanding requests - see QTBUG-29106
+    // force sync to read outstanding requests - see BOBUIBUG-29106
     connection()->sync();
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     connection()->drag()->dndEnable(this, true);
 #endif
 
-    const qreal opacity = qt_window_private(window())->opacity;
+    const qreal opacity = bobui_window_private(window())->opacity;
     if (!qFuzzyCompare(opacity, qreal(1.0)))
         setOpacity(opacity);
 
@@ -572,7 +572,7 @@ void QXcbWindow::setGeometry(const QRect &rect)
     if (newScreen != currentScreen)
         QWindowSystemInterface::handleWindowScreenChanged(window(), newScreen->QPlatformScreen::screen());
 
-    if (qt_window_private(window())->positionAutomatic) {
+    if (bobui_window_private(window())->positionAutomatic) {
         const quint32 mask = XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT;
         const qint32 values[] = {
             qBound<qint32>(1,           rect.width(),  XCOORD_MAX),
@@ -740,7 +740,7 @@ void QXcbWindow::show()
         setNetWmStateOnUnmappedWindow();
     }
 
-    // QWidget-attribute Qt::WA_ShowWithoutActivating.
+    // QWidget-attribute BobUI::WA_ShowWithoutActivating.
     const auto showWithoutActivating = window()->property("_q_showWithoutActivating");
     if (showWithoutActivating.isValid() && showWithoutActivating.toBool())
         updateNetWmUserTime(0);
@@ -848,7 +848,7 @@ void QXcbWindow::doFocusIn()
         return;
     QWindow *w = static_cast<QWindowPrivate *>(QObjectPrivate::get(window()))->eventReceiver();
     connection()->setFocusWindow(w);
-    QWindowSystemInterface::handleFocusWindowChanged(w, Qt::ActiveWindowFocusReason);
+    QWindowSystemInterface::handleFocusWindowChanged(w, BobUI::ActiveWindowFocusReason);
 }
 
 void QXcbWindow::doFocusOut()
@@ -859,7 +859,7 @@ void QXcbWindow::doFocusOut()
     connection()->focusInTimer().start();
 }
 
-struct QtMotifWmHints {
+struct BobUIMotifWmHints {
     quint32 flags, functions, decorations;
     qint32 input_mode; // unused
     quint32 status; // unused
@@ -922,27 +922,27 @@ QXcbWindow::NetWmStates QXcbWindow::netWmStates()
     return result;
 }
 
-void QXcbWindow::setWindowFlags(Qt::WindowFlags flags)
+void QXcbWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
-    Qt::WindowType type = static_cast<Qt::WindowType>(int(flags & Qt::WindowType_Mask));
+    BobUI::WindowType type = static_cast<BobUI::WindowType>(int(flags & BobUI::WindowType_Mask));
 
-    if (type == Qt::ToolTip)
-        flags |= Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint;
-    if (type == Qt::Popup)
-        flags |= Qt::X11BypassWindowManagerHint;
+    if (type == BobUI::ToolTip)
+        flags |= BobUI::WindowStaysOnTopHint | BobUI::FramelessWindowHint | BobUI::X11BypassWindowManagerHint;
+    if (type == BobUI::Popup)
+        flags |= BobUI::X11BypassWindowManagerHint;
 
-    Qt::WindowFlags oldflags = window()->flags();
-    if ((oldflags & Qt::WindowStaysOnTopHint) != (flags & Qt::WindowStaysOnTopHint))
+    BobUI::WindowFlags oldflags = window()->flags();
+    if ((oldflags & BobUI::WindowStaysOnTopHint) != (flags & BobUI::WindowStaysOnTopHint))
         m_recreationReasons |= WindowStaysOnTopHintChanged;
-    if ((oldflags & Qt::WindowStaysOnBottomHint) != (flags & Qt::WindowStaysOnBottomHint))
+    if ((oldflags & BobUI::WindowStaysOnBottomHint) != (flags & BobUI::WindowStaysOnBottomHint))
         m_recreationReasons |= WindowStaysOnBottomHintChanged;
 
     const quint32 mask = XCB_CW_OVERRIDE_REDIRECT | XCB_CW_EVENT_MASK;
     const quint32 values[] = {
          // XCB_CW_OVERRIDE_REDIRECT
-         (flags & Qt::BypassWindowManagerHint) ? 1u : 0,
+         (flags & BobUI::BypassWindowManagerHint) ? 1u : 0,
          // XCB_CW_EVENT_MASK
-         (flags & Qt::WindowTransparentForInput) ? transparentForInputEventMask : defaultEventMask
+         (flags & BobUI::WindowTransparentForInput) ? transparentForInputEventMask : defaultEventMask
      };
 
     xcb_change_window_attributes(xcb_connection(), xcb_window(), mask, values);
@@ -957,49 +957,49 @@ void QXcbWindow::setWindowFlags(Qt::WindowFlags flags)
     setNetWmState(flags);
     setMotifWmHints(flags);
 
-    setTransparentForMouseEvents(flags & Qt::WindowTransparentForInput);
-    updateDoesNotAcceptFocus(flags & Qt::WindowDoesNotAcceptFocus);
+    setTransparentForMouseEvents(flags & BobUI::WindowTransparentForInput);
+    updateDoesNotAcceptFocus(flags & BobUI::WindowDoesNotAcceptFocus);
 }
 
-void QXcbWindow::setMotifWmHints(Qt::WindowFlags flags)
+void QXcbWindow::setMotifWmHints(BobUI::WindowFlags flags)
 {
-    Qt::WindowType type = static_cast<Qt::WindowType>(int(flags & Qt::WindowType_Mask));
+    BobUI::WindowType type = static_cast<BobUI::WindowType>(int(flags & BobUI::WindowType_Mask));
 
-    QtMotifWmHints mwmhints;
+    BobUIMotifWmHints mwmhints;
     memset(&mwmhints, 0, sizeof(mwmhints));
 
-    if (type != Qt::SplashScreen) {
+    if (type != BobUI::SplashScreen) {
         mwmhints.flags |= MWM_HINTS_DECORATIONS;
 
-        bool customize = flags & Qt::CustomizeWindowHint;
-        if (type == Qt::Window && !customize) {
-            const Qt::WindowFlags defaultFlags = Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint;
+        bool customize = flags & BobUI::CustomizeWindowHint;
+        if (type == BobUI::Window && !customize) {
+            const BobUI::WindowFlags defaultFlags = BobUI::WindowSystemMenuHint | BobUI::WindowMinMaxButtonsHint | BobUI::WindowCloseButtonHint;
             if (!(flags & defaultFlags))
                 flags |= defaultFlags;
         }
-        if (!(flags & Qt::FramelessWindowHint) && !(customize && !(flags & Qt::WindowTitleHint))) {
+        if (!(flags & BobUI::FramelessWindowHint) && !(customize && !(flags & BobUI::WindowTitleHint))) {
             mwmhints.decorations |= MWM_DECOR_BORDER;
             mwmhints.decorations |= MWM_DECOR_RESIZEH;
             mwmhints.decorations |= MWM_DECOR_TITLE;
 
-            if (flags & Qt::WindowSystemMenuHint)
+            if (flags & BobUI::WindowSystemMenuHint)
                 mwmhints.decorations |= MWM_DECOR_MENU;
 
-            if (flags & Qt::WindowMinimizeButtonHint) {
+            if (flags & BobUI::WindowMinimizeButtonHint) {
                 mwmhints.decorations |= MWM_DECOR_MINIMIZE;
                 mwmhints.functions |= MWM_FUNC_MINIMIZE;
             }
 
-            if (flags & Qt::WindowMaximizeButtonHint) {
+            if (flags & BobUI::WindowMaximizeButtonHint) {
                 mwmhints.decorations |= MWM_DECOR_MAXIMIZE;
                 mwmhints.functions |= MWM_FUNC_MAXIMIZE;
             }
 
-            if (flags & Qt::WindowCloseButtonHint)
+            if (flags & BobUI::WindowCloseButtonHint)
                 mwmhints.functions |= MWM_FUNC_CLOSE;
         }
     } else {
-        // if type == Qt::SplashScreen
+        // if type == BobUI::SplashScreen
         mwmhints.decorations = MWM_DECOR_ALL;
     }
 
@@ -1010,13 +1010,13 @@ void QXcbWindow::setMotifWmHints(Qt::WindowFlags flags)
         mwmhints.functions = MWM_FUNC_ALL;
     }
 
-    if (!(flags & Qt::FramelessWindowHint)
-        && flags & Qt::CustomizeWindowHint
-        && flags & Qt::WindowTitleHint
+    if (!(flags & BobUI::FramelessWindowHint)
+        && flags & BobUI::CustomizeWindowHint
+        && flags & BobUI::WindowTitleHint
         && !(flags &
-             (Qt::WindowMinimizeButtonHint
-              | Qt::WindowMaximizeButtonHint
-              | Qt::WindowCloseButtonHint)))
+             (BobUI::WindowMinimizeButtonHint
+              | BobUI::WindowMaximizeButtonHint
+              | BobUI::WindowCloseButtonHint)))
     {
         // a special case - only the titlebar without any button
         mwmhints.flags = MWM_HINTS_FUNCTIONS;
@@ -1058,24 +1058,24 @@ void QXcbWindow::setNetWmState(bool set, xcb_atom_t one, xcb_atom_t two)
                    (const char *)&event);
 }
 
-void QXcbWindow::setNetWmState(Qt::WindowStates state)
+void QXcbWindow::setNetWmState(BobUI::WindowStates state)
 {
-    if ((m_windowState ^ state) & Qt::WindowMaximized) {
-        setNetWmState(state & Qt::WindowMaximized,
+    if ((m_windowState ^ state) & BobUI::WindowMaximized) {
+        setNetWmState(state & BobUI::WindowMaximized,
                       atom(QXcbAtom::Atom_NET_WM_STATE_MAXIMIZED_HORZ),
                       atom(QXcbAtom::Atom_NET_WM_STATE_MAXIMIZED_VERT));
     }
 
-    if ((m_windowState ^ state) & Qt::WindowFullScreen)
-        setNetWmState(state & Qt::WindowFullScreen, atom(QXcbAtom::Atom_NET_WM_STATE_FULLSCREEN));
+    if ((m_windowState ^ state) & BobUI::WindowFullScreen)
+        setNetWmState(state & BobUI::WindowFullScreen, atom(QXcbAtom::Atom_NET_WM_STATE_FULLSCREEN));
 }
 
-void QXcbWindow::setNetWmState(Qt::WindowFlags flags)
+void QXcbWindow::setNetWmState(BobUI::WindowFlags flags)
 {
-    setNetWmState(flags & Qt::WindowStaysOnTopHint,
+    setNetWmState(flags & BobUI::WindowStaysOnTopHint,
                   atom(QXcbAtom::Atom_NET_WM_STATE_ABOVE),
                   atom(QXcbAtom::Atom_NET_WM_STATE_STAYS_ON_TOP));
-    setNetWmState(flags & Qt::WindowStaysOnBottomHint, atom(QXcbAtom::Atom_NET_WM_STATE_BELOW));
+    setNetWmState(flags & BobUI::WindowStaysOnBottomHint, atom(QXcbAtom::Atom_NET_WM_STATE_BELOW));
 }
 
 void QXcbWindow::setNetWmStateOnUnmappedWindow()
@@ -1085,26 +1085,26 @@ void QXcbWindow::setNetWmStateOnUnmappedWindow()
         qCDebug(lcQpaXcb()) << "internal info: " << Q_FUNC_INFO << "called on mapped window";
 
     NetWmStates states;
-    const Qt::WindowFlags flags = window()->flags();
-    if (flags & Qt::WindowStaysOnTopHint) {
+    const BobUI::WindowFlags flags = window()->flags();
+    if (flags & BobUI::WindowStaysOnTopHint) {
         states |= NetWmStateAbove;
         states |= NetWmStateStaysOnTop;
-    } else if (flags & Qt::WindowStaysOnBottomHint) {
+    } else if (flags & BobUI::WindowStaysOnBottomHint) {
         states |= NetWmStateBelow;
     }
 
-    if (window()->windowStates() & Qt::WindowMinimized)
+    if (window()->windowStates() & BobUI::WindowMinimized)
         states |= NetWmStateHidden;
 
-    if (window()->windowStates() & Qt::WindowFullScreen)
+    if (window()->windowStates() & BobUI::WindowFullScreen)
         states |= NetWmStateFullScreen;
 
-    if (window()->windowStates() & Qt::WindowMaximized) {
+    if (window()->windowStates() & BobUI::WindowMaximized) {
         states |= NetWmStateMaximizedHorz;
         states |= NetWmStateMaximizedVert;
     }
 
-    if (window()->modality() != Qt::NonModal)
+    if (window()->modality() != BobUI::NonModal)
         states |= NetWmStateModal;
 
     // According to EWMH:
@@ -1154,26 +1154,26 @@ void QXcbWindow::setNetWmStateOnUnmappedWindow()
     xcb_flush(xcb_connection());
 }
 
-void QXcbWindow::setWindowState(Qt::WindowStates state)
+void QXcbWindow::setWindowState(BobUI::WindowStates state)
 {
     if (state == m_windowState)
         return;
 
-    Qt::WindowStates unsetState = m_windowState & ~state;
-    Qt::WindowStates newState =  state & ~m_windowState;
+    BobUI::WindowStates unsetState = m_windowState & ~state;
+    BobUI::WindowStates newState =  state & ~m_windowState;
 
     // unset old state
-    if (unsetState & Qt::WindowMinimized)
+    if (unsetState & BobUI::WindowMinimized)
         xcb_map_window(xcb_connection(), m_window);
-    if (unsetState & Qt::WindowMaximized)
+    if (unsetState & BobUI::WindowMaximized)
         setNetWmState(false,
                       atom(QXcbAtom::Atom_NET_WM_STATE_MAXIMIZED_HORZ),
                       atom(QXcbAtom::Atom_NET_WM_STATE_MAXIMIZED_VERT));
-    if (unsetState & Qt::WindowFullScreen)
+    if (unsetState & BobUI::WindowFullScreen)
         setNetWmState(false, atom(QXcbAtom::Atom_NET_WM_STATE_FULLSCREEN));
 
     // set new state
-    if (newState & Qt::WindowMinimized) {
+    if (newState & BobUI::WindowMinimized) {
         {
             xcb_client_message_event_t event;
 
@@ -1201,7 +1201,7 @@ void QXcbWindow::setWindowState(Qt::WindowStates state)
     xcb_get_property_cookie_t cookie = xcb_icccm_get_wm_hints_unchecked(xcb_connection(), m_window);
     xcb_icccm_wm_hints_t hints;
     if (xcb_icccm_get_wm_hints_reply(xcb_connection(), cookie, &hints, nullptr)) {
-        if (state & Qt::WindowMinimized)
+        if (state & BobUI::WindowMinimized)
             xcb_icccm_wm_hints_set_iconic(&hints);
         else
             xcb_icccm_wm_hints_set_normal(&hints);
@@ -1241,7 +1241,7 @@ void QXcbWindow::updateNetWmUserTime(xcb_timestamp_t timestamp)
             xcb_delete_property(xcb_connection(), m_window, atom(QXcbAtom::Atom_NET_WM_USER_TIME));
 
             QXcbWindow::setWindowTitle(connection(), m_netWmUserTimeWindow,
-                                       QStringLiteral("Qt NET_WM User Time Window"));
+                                       QStringLiteral("BobUI NET_WM User Time Window"));
 
         } else if (!isSupportedByWM) {
             // WM no longer supports it, then we should remove the
@@ -1417,7 +1417,7 @@ void QXcbWindow::propagateSizeHints()
     memset(&hints, 0, sizeof(hints));
 
     const QRect rect = geometry();
-    QWindowPrivate *win = qt_window_private(window());
+    QWindowPrivate *win = bobui_window_private(window());
 
     if (!win->positionAutomatic)
         xcb_icccm_size_hints_set_position(&hints, true, rect.x(), rect.y());
@@ -1486,7 +1486,7 @@ void QXcbWindow::requestActivateWindow()
     }
 
     if (window()->isTopLevel()
-        && !(window()->flags() & Qt::X11BypassWindowManagerHint)
+        && !(window()->flags() & BobUI::X11BypassWindowManagerHint)
         && (!focusWindow || !window()->isAncestorOf(focusWindow))
         && connection()->wmSupport()->isSupportedByWM(atom(QXcbAtom::Atom_NET_ACTIVE_WINDOW))) {
         xcb_client_message_event_t event;
@@ -1583,11 +1583,11 @@ QXcbWindow::WindowTypes QXcbWindow::wmWindowTypes() const
     return result;
 }
 
-void QXcbWindow::setWmWindowType(WindowTypes types, Qt::WindowFlags flags)
+void QXcbWindow::setWmWindowType(WindowTypes types, BobUI::WindowFlags flags)
 {
     QList<xcb_atom_t> atoms;
 
-    // manual selection 1 (these are never set by Qt and take precedence)
+    // manual selection 1 (these are never set by BobUI and take precedence)
     if (types & WindowType::Normal)
         atoms.append(atom(QXcbAtom::Atom_NET_WM_WINDOW_TYPE_NORMAL));
     if (types & WindowType::Desktop)
@@ -1597,7 +1597,7 @@ void QXcbWindow::setWmWindowType(WindowTypes types, Qt::WindowFlags flags)
     if (types & WindowType::Notification)
         atoms.append(atom(QXcbAtom::Atom_NET_WM_WINDOW_TYPE_NOTIFICATION));
 
-    // manual selection 2 (Qt uses these during auto selection);
+    // manual selection 2 (BobUI uses these during auto selection);
     if (types & WindowType::Utility)
         atoms.append(atom(QXcbAtom::Atom_NET_WM_WINDOW_TYPE_UTILITY));
     if (types & WindowType::Splash)
@@ -1609,8 +1609,8 @@ void QXcbWindow::setWmWindowType(WindowTypes types, Qt::WindowFlags flags)
     if (types & WindowType::KdeOverride)
         atoms.append(atom(QXcbAtom::Atom_KDE_NET_WM_WINDOW_TYPE_OVERRIDE));
 
-    // manual selection 3 (these can be set by Qt, but don't have a
-    // corresponding Qt::WindowType). note that order of the *MENU
+    // manual selection 3 (these can be set by BobUI, but don't have a
+    // corresponding BobUI::WindowType). note that order of the *MENU
     // atoms is important
     if (types & WindowType::Menu)
         atoms.append(atom(QXcbAtom::Atom_NET_WM_WINDOW_TYPE_MENU));
@@ -1626,23 +1626,23 @@ void QXcbWindow::setWmWindowType(WindowTypes types, Qt::WindowFlags flags)
         atoms.append(atom(QXcbAtom::Atom_NET_WM_WINDOW_TYPE_DND));
 
     // automatic selection
-    Qt::WindowType type = static_cast<Qt::WindowType>(int(flags & Qt::WindowType_Mask));
+    BobUI::WindowType type = static_cast<BobUI::WindowType>(int(flags & BobUI::WindowType_Mask));
     switch (type) {
-    case Qt::Dialog:
-    case Qt::Sheet:
+    case BobUI::Dialog:
+    case BobUI::Sheet:
         if (!(types & WindowType::Dialog))
             atoms.append(atom(QXcbAtom::Atom_NET_WM_WINDOW_TYPE_DIALOG));
         break;
-    case Qt::Tool:
-    case Qt::Drawer:
+    case BobUI::Tool:
+    case BobUI::Drawer:
         if (!(types & WindowType::Utility))
             atoms.append(atom(QXcbAtom::Atom_NET_WM_WINDOW_TYPE_UTILITY));
         break;
-    case Qt::ToolTip:
+    case BobUI::ToolTip:
         if (!(types & WindowType::Tooltip))
             atoms.append(atom(QXcbAtom::Atom_NET_WM_WINDOW_TYPE_TOOLTIP));
         break;
-    case Qt::SplashScreen:
+    case BobUI::SplashScreen:
         if (!(types & WindowType::Splash))
             atoms.append(atom(QXcbAtom::Atom_NET_WM_WINDOW_TYPE_SPLASH));
         break;
@@ -1650,7 +1650,7 @@ void QXcbWindow::setWmWindowType(WindowTypes types, Qt::WindowFlags flags)
         break;
     }
 
-    if ((flags & Qt::FramelessWindowHint) && !(types & WindowType::KdeOverride)) {
+    if ((flags & BobUI::FramelessWindowHint) && !(types & WindowType::KdeOverride)) {
         // override netwm type - quick and easy for KDE noborder
         atoms.append(atom(QXcbAtom::Atom_KDE_NET_WM_WINDOW_TYPE_OVERRIDE));
     }
@@ -1760,7 +1760,7 @@ void QXcbWindow::handleClientMessageEvent(const xcb_client_message_event_t *even
             m_syncValue.hi = event->data.data32[3];
             if (connection()->hasXSync())
                 m_syncState = SyncReceived;
-#ifndef QT_NO_WHATSTHIS
+#ifndef BOBUI_NO_WHATSTHIS
         } else if (protocolAtom == atom(QXcbAtom::Atom_NET_WM_CONTEXT_HELP)) {
             QWindowSystemInterface::handleEnterWhatsThisEvent();
 #endif
@@ -1768,7 +1768,7 @@ void QXcbWindow::handleClientMessageEvent(const xcb_client_message_event_t *even
             qCWarning(lcQpaXcb, "Unhandled WM_PROTOCOLS (%s)",
                       connection()->atomName(protocolAtom).constData());
         }
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     } else if (event->type == atom(QXcbAtom::AtomXdndEnter)) {
         connection()->drag()->handleEnter(this, event);
     } else if (event->type == atom(QXcbAtom::AtomXdndPosition)) {
@@ -1911,15 +1911,15 @@ void QXcbWindow::handleUnmapNotifyEvent(const xcb_unmap_notify_event_t *event)
 }
 
 void QXcbWindow::handleButtonPressEvent(int event_x, int event_y, int root_x, int root_y,
-                                        int detail, Qt::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
-                                        QEvent::Type type, Qt::MouseEventSource source)
+                                        int detail, BobUI::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
+                                        QEvent::Type type, BobUI::MouseEventSource source)
 {
     const bool isWheel = detail >= 4 && detail <= 7;
     if (!isWheel && window() != QGuiApplication::focusWindow()) {
         QWindow *w = static_cast<QWindowPrivate *>(QObjectPrivate::get(window()))->eventReceiver();
-        if (!(w->flags() & (Qt::WindowDoesNotAcceptFocus | Qt::BypassWindowManagerHint))
-                && w->type() != Qt::ToolTip
-                && w->type() != Qt::Popup) {
+        if (!(w->flags() & (BobUI::WindowDoesNotAcceptFocus | BobUI::BypassWindowManagerHint))
+                && w->type() != BobUI::ToolTip
+                && w->type() != BobUI::Popup) {
             w->requestActivate();
         }
     }
@@ -1948,7 +1948,7 @@ void QXcbWindow::handleButtonPressEvent(int event_x, int event_y, int root_x, in
                 angleDelta.setX(120);
             else if (detail == 7)
                 angleDelta.setX(-120);
-            if (modifiers & Qt::AltModifier)
+            if (modifiers & BobUI::AltModifier)
                 angleDelta = angleDelta.transposed();
             QWindowSystemInterface::handleWheelEvent(window(), timestamp, local, global, QPoint(), angleDelta, modifiers);
         }
@@ -1961,8 +1961,8 @@ void QXcbWindow::handleButtonPressEvent(int event_x, int event_y, int root_x, in
 }
 
 void QXcbWindow::handleButtonReleaseEvent(int event_x, int event_y, int root_x, int root_y,
-                                          int detail, Qt::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
-                                          QEvent::Type type, Qt::MouseEventSource source)
+                                          int detail, BobUI::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
+                                          QEvent::Type type, BobUI::MouseEventSource source)
 {
     QPoint local(event_x, event_y);
     QPoint global(root_x, root_y);
@@ -1972,7 +1972,7 @@ void QXcbWindow::handleButtonReleaseEvent(int event_x, int event_y, int root_x, 
         return;
     }
 
-    if (connection()->buttonState() == Qt::NoButton) {
+    if (connection()->buttonState() == BobUI::NoButton) {
         connection()->setMousePressWindow(nullptr);
         m_ignorePressedWindowOnMouseLeave = false;
     }
@@ -1989,7 +1989,7 @@ static inline bool doCheckUnGrabAncestor(QXcbConnection *conn)
      * not pressed, otherwise (e.g. on Alt+Tab) it can igonre important enter/leave events.
     */
     if (conn) {
-        const bool mouseButtonsPressed = (conn->buttonState() != Qt::NoButton);
+        const bool mouseButtonsPressed = (conn->buttonState() != BobUI::NoButton);
         return mouseButtonsPressed || conn->hasXInput2();
     }
     return true;
@@ -2026,7 +2026,7 @@ void QXcbWindow::handleEnterNotifyEvent(int event_x, int event_y, int root_x, in
     // Updates scroll valuators, as user might have done some scrolling outside our X client.
     connection()->xi2UpdateScrollingDevices();
 
-    if (mode == XCB_NOTIFY_MODE_UNGRAB && connection()->queryMouseButtons() != Qt::NoButton)
+    if (mode == XCB_NOTIFY_MODE_UNGRAB && connection()->queryMouseButtons() != BobUI::NoButton)
         m_ignorePressedWindowOnMouseLeave = true;
 
     const QPoint global = QPoint(root_x, root_y);
@@ -2069,15 +2069,15 @@ void QXcbWindow::handleLeaveNotifyEvent(int root_x, int root_y,
 }
 
 void QXcbWindow::handleMotionNotifyEvent(int event_x, int event_y, int root_x, int root_y,
-                                         Qt::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
-                                         QEvent::Type type, Qt::MouseEventSource source)
+                                         BobUI::KeyboardModifiers modifiers, xcb_timestamp_t timestamp,
+                                         QEvent::Type type, BobUI::MouseEventSource source)
 {
     QPoint local(event_x, event_y);
     QPoint global(root_x, root_y);
 
     // "mousePressWindow" can be NULL i.e. if a window will be grabbed or unmapped, so set it again here.
     // Unset "mousePressWindow" when mouse button isn't pressed - in some cases the release event won't arrive.
-    const bool isMouseButtonPressed = (connection()->buttonState() != Qt::NoButton);
+    const bool isMouseButtonPressed = (connection()->buttonState() != BobUI::NoButton);
     const bool hasMousePressWindow = (connection()->mousePressWindow() != nullptr);
     if (isMouseButtonPressed && !hasMousePressWindow)
         connection()->setMousePressWindow(this);
@@ -2089,21 +2089,21 @@ void QXcbWindow::handleMotionNotifyEvent(int event_x, int event_y, int root_x, i
 
 void QXcbWindow::handleButtonPressEvent(const xcb_button_press_event_t *event)
 {
-    Qt::KeyboardModifiers modifiers = connection()->keyboard()->translateModifiers(event->state);
+    BobUI::KeyboardModifiers modifiers = connection()->keyboard()->translateModifiers(event->state);
     handleButtonPressEvent(event->event_x, event->event_y, event->root_x, event->root_y, event->detail,
                            modifiers, event->time, QEvent::MouseButtonPress);
 }
 
 void QXcbWindow::handleButtonReleaseEvent(const xcb_button_release_event_t *event)
 {
-    Qt::KeyboardModifiers modifiers = connection()->keyboard()->translateModifiers(event->state);
+    BobUI::KeyboardModifiers modifiers = connection()->keyboard()->translateModifiers(event->state);
     handleButtonReleaseEvent(event->event_x, event->event_y, event->root_x, event->root_y, event->detail,
                              modifiers, event->time, QEvent::MouseButtonRelease);
 }
 
 void QXcbWindow::handleMotionNotifyEvent(const xcb_motion_notify_event_t *event)
 {
-    Qt::KeyboardModifiers modifiers = connection()->keyboard()->translateModifiers(event->state);
+    BobUI::KeyboardModifiers modifiers = connection()->keyboard()->translateModifiers(event->state);
     handleMotionNotifyEvent(event->event_x, event->event_y, event->root_x, event->root_y, modifiers,
                             event->time, QEvent::MouseMove);
 }
@@ -2113,9 +2113,9 @@ static inline int fixed1616ToInt(xcb_input_fp1616_t val)
     return int(qreal(val) / 0x10000);
 }
 
-#define qt_xcb_mask_is_set(ptr, event) (((unsigned char*)(ptr))[(event)>>3] & (1 << ((event) & 7)))
+#define bobui_xcb_mask_is_set(ptr, event) (((unsigned char*)(ptr))[(event)>>3] & (1 << ((event) & 7)))
 
-void QXcbWindow::handleXIMouseEvent(xcb_ge_event_t *event, Qt::MouseEventSource source)
+void QXcbWindow::handleXIMouseEvent(xcb_ge_event_t *event, BobUI::MouseEventSource source)
 {
     QXcbConnection *conn = connection();
     auto *ev = reinterpret_cast<xcb_input_button_press_event_t *>(event);
@@ -2126,16 +2126,16 @@ void QXcbWindow::handleXIMouseEvent(xcb_ge_event_t *event, Qt::MouseEventSource 
         // XIPointerEmulated being set: https://bugs.freedesktop.org/show_bug.cgi?id=98188
         // Filter them out by other attributes: when their source device is a touch screen
         // and the LMB is pressed.
-        if (qt_xcb_mask_is_set(buttonMask, 1) && conn->isTouchScreen(ev->sourceid)) {
+        if (bobui_xcb_mask_is_set(buttonMask, 1) && conn->isTouchScreen(ev->sourceid)) {
             if (Q_UNLIKELY(lcQpaXInputEvents().isDebugEnabled()))
                 qCDebug(lcQpaXInput, "XI2 mouse event from touch device %d was ignored", ev->sourceid);
             return;
         }
         for (int i = 1; i <= 15; ++i)
-            conn->setButtonState(conn->translateMouseButton(i), qt_xcb_mask_is_set(buttonMask, i));
+            conn->setButtonState(conn->translateMouseButton(i), bobui_xcb_mask_is_set(buttonMask, i));
     }
 
-    const Qt::KeyboardModifiers modifiers = conn->keyboard()->translateModifiers(ev->mods.effective);
+    const BobUI::KeyboardModifiers modifiers = conn->keyboard()->translateModifiers(ev->mods.effective);
     const int event_x = fixed1616ToInt(ev->event_x);
     const int event_y = fixed1616ToInt(ev->event_y);
     const int root_x = fixed1616ToInt(ev->root_x);
@@ -2143,12 +2143,12 @@ void QXcbWindow::handleXIMouseEvent(xcb_ge_event_t *event, Qt::MouseEventSource 
 
     conn->keyboard()->updateXKBStateFromXI(&ev->mods, &ev->group);
 
-    const Qt::MouseButton button = conn->xiToQtMouseButton(ev->detail);
+    const BobUI::MouseButton button = conn->xiToBobUIMouseButton(ev->detail);
 
     const char *sourceName = nullptr;
     if (Q_UNLIKELY(lcQpaXInputEvents().isDebugEnabled())) {
-        const QMetaObject *metaObject = qt_getEnumMetaObject(source);
-        const QMetaEnum me = metaObject->enumerator(metaObject->indexOfEnumerator(qt_getEnumName(source)));
+        const QMetaObject *metaObject = bobui_getEnumMetaObject(source);
+        const QMetaEnum me = metaObject->enumerator(metaObject->indexOfEnumerator(bobui_getEnumName(source)));
         sourceName = me.valueToKey(source);
     }
 
@@ -2212,12 +2212,12 @@ void QXcbWindow::handleXIEnterLeave(xcb_ge_event_t *event)
 QXcbWindow *QXcbWindow::toWindow() { return this; }
 
 void QXcbWindow::handleMouseEvent(xcb_timestamp_t time, const QPoint &local, const QPoint &global,
-        Qt::KeyboardModifiers modifiers, QEvent::Type type, Qt::MouseEventSource source)
+        BobUI::KeyboardModifiers modifiers, QEvent::Type type, BobUI::MouseEventSource source)
 {
     m_lastPointerPosition = local;
     m_lastPointerGlobalPosition = global;
     connection()->setTime(time);
-    Qt::MouseButton button = type == QEvent::MouseMove ? Qt::NoButton : connection()->button();
+    BobUI::MouseButton button = type == QEvent::MouseMove ? BobUI::NoButton : connection()->button();
     QWindowSystemInterface::handleMouseEvent(window(), time, local, global,
                                              connection()->buttonState(), button,
                                              type, modifiers, source);
@@ -2243,7 +2243,7 @@ void QXcbWindow::handlePropertyNotifyEvent(const xcb_property_notify_event_t *ev
         if (propertyDeleted)
             return;
 
-        Qt::WindowStates newState = Qt::WindowNoState;
+        BobUI::WindowStates newState = BobUI::WindowNoState;
 
         if (event->atom == atom(QXcbAtom::AtomWM_STATE)) { // WM_STATE: Quick check for 'Minimize'.
             auto reply = Q_XCB_REPLY(xcb_get_property, xcb_connection(),
@@ -2264,18 +2264,18 @@ void QXcbWindow::handlePropertyNotifyEvent(const xcb_property_notify_event_t *ev
         // the _NET_WM_STATE_HIDDEN state.
         if (m_minimized && (!connection()->wmSupport()->isSupportedByWM(NetWmStateHidden)
                             || states.testFlag(NetWmStateHidden)))
-            newState = Qt::WindowMinimized;
+            newState = BobUI::WindowMinimized;
 
         if (states & NetWmStateFullScreen)
-            newState |= Qt::WindowFullScreen;
+            newState |= BobUI::WindowFullScreen;
         if ((states & NetWmStateMaximizedHorz) && (states & NetWmStateMaximizedVert))
-            newState |= Qt::WindowMaximized;
+            newState |= BobUI::WindowMaximized;
         // Send Window state, compress events in case other flags (modality, etc) are changed.
         if (m_lastWindowStateEvent != newState) {
             QWindowSystemInterface::handleWindowStateChanged(window(), newState);
             m_lastWindowStateEvent = newState;
             m_windowState = newState;
-            if ((m_windowState & Qt::WindowMinimized) && connection()->mouseGrabber() == this)
+            if ((m_windowState & BobUI::WindowMinimized) && connection()->mouseGrabber() == this)
                 connection()->setMouseGrabber(nullptr);
         }
         return;
@@ -2384,13 +2384,13 @@ bool QXcbWindow::windowEvent(QEvent *event)
         if (m_embedded && !m_trayIconWindow && !event->spontaneous()) {
             QFocusEvent *focusEvent = static_cast<QFocusEvent *>(event);
             switch (focusEvent->reason()) {
-            case Qt::TabFocusReason:
-            case Qt::BacktabFocusReason:
+            case BobUI::TabFocusReason:
+            case BobUI::BacktabFocusReason:
                 {
                 const QXcbWindow *container =
                     static_cast<const QXcbWindow *>(QPlatformWindow::parent());
                 sendXEmbedMessage(container->xcb_window(),
-                                  focusEvent->reason() == Qt::TabFocusReason ?
+                                  focusEvent->reason() == BobUI::TabFocusReason ?
                                   XEMBED_FOCUS_NEXT : XEMBED_FOCUS_PREV);
                 event->accept();
                 }
@@ -2406,7 +2406,7 @@ bool QXcbWindow::windowEvent(QEvent *event)
     return QPlatformWindow::windowEvent(event);
 }
 
-bool QXcbWindow::startSystemResize(Qt::Edges edges)
+bool QXcbWindow::startSystemResize(BobUI::Edges edges)
 {
     return startSystemMoveResize(m_lastPointerPosition, edges);
 }
@@ -2422,7 +2422,7 @@ bool QXcbWindow::startSystemMoveResize(const QPoint &pos, int edges)
     if (!connection()->wmSupport()->isSupportedByWM(moveResize))
         return false;
 
-    // ### FIXME QTBUG-53389
+    // ### FIXME BOBUIBUG-53389
     bool startedByTouch = connection()->startSystemMoveResizeForTouch(m_window, edges);
     if (startedByTouch) {
         const QString wmname = connection()->windowManagerName();
@@ -2440,23 +2440,23 @@ bool QXcbWindow::startSystemMoveResize(const QPoint &pos, int edges)
     return true;
 }
 
-static uint qtEdgesToXcbMoveResizeDirection(Qt::Edges edges)
+static uint bobuiEdgesToXcbMoveResizeDirection(BobUI::Edges edges)
 {
-    if (edges == (Qt::TopEdge | Qt::LeftEdge))
+    if (edges == (BobUI::TopEdge | BobUI::LeftEdge))
         return 0;
-    if (edges == Qt::TopEdge)
+    if (edges == BobUI::TopEdge)
         return 1;
-    if (edges == (Qt::TopEdge | Qt::RightEdge))
+    if (edges == (BobUI::TopEdge | BobUI::RightEdge))
         return 2;
-    if (edges == Qt::RightEdge)
+    if (edges == BobUI::RightEdge)
         return 3;
-    if (edges == (Qt::RightEdge | Qt::BottomEdge))
+    if (edges == (BobUI::RightEdge | BobUI::BottomEdge))
         return 4;
-    if (edges == Qt::BottomEdge)
+    if (edges == BobUI::BottomEdge)
         return 5;
-    if (edges == (Qt::BottomEdge | Qt::LeftEdge))
+    if (edges == (BobUI::BottomEdge | BobUI::LeftEdge))
         return 6;
-    if (edges == Qt::LeftEdge)
+    if (edges == BobUI::LeftEdge)
         return 7;
 
     qWarning() << "Cannot convert " << edges << "to _NET_WM_MOVERESIZE direction.";
@@ -2478,7 +2478,7 @@ void QXcbWindow::doStartSystemMoveResize(const QPoint &globalPos, int edges)
     if (edges == 16)
         xev.data.data32[2] = 8; // move
     else
-        xev.data.data32[2] = qtEdgesToXcbMoveResizeDirection(Qt::Edges(edges));
+        xev.data.data32[2] = bobuiEdgesToXcbMoveResizeDirection(BobUI::Edges(edges));
     xev.data.data32[3] = XCB_BUTTON_INDEX_1;
     xev.data.data32[4] = 0;
     xcb_ungrab_pointer(connection()->xcb_connection(), XCB_CURRENT_TIME);
@@ -2532,17 +2532,17 @@ void QXcbWindow::handleXEmbedMessage(const xcb_client_message_event_t *event)
         break;
     case XEMBED_FOCUS_IN:
         connection()->focusInTimer().stop();
-        Qt::FocusReason reason;
+        BobUI::FocusReason reason;
         switch (event->data.data32[2]) {
         case XEMBED_FOCUS_FIRST:
-            reason = Qt::TabFocusReason;
+            reason = BobUI::TabFocusReason;
             break;
         case XEMBED_FOCUS_LAST:
-            reason = Qt::BacktabFocusReason;
+            reason = BobUI::BacktabFocusReason;
             break;
         case XEMBED_FOCUS_CURRENT:
         default:
-            reason = Qt::OtherFocusReason;
+            reason = BobUI::OtherFocusReason;
             break;
         }
         connection()->setFocusWindow(window());
@@ -2656,7 +2656,7 @@ void QXcbWindow::setWindowTitle(const QXcbConnection *conn, xcb_window_t window,
                         ba.size(),
                         ba.constData());
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     Display *dpy = static_cast<Display *>(conn->xlib_display());
     XTextProperty *text = qstringToXTP(dpy, title);
     if (text)
@@ -2687,5 +2687,5 @@ QString QXcbWindow::windowTitle(const QXcbConnection *conn, xcb_window_t window)
     return QString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

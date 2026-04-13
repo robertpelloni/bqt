@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include <qapplication.h>
 #include <qpainter.h>
 #include <qstyleoption.h>
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include <qkeysequence.h>
 #endif
 #include <qevent.h>
@@ -19,7 +19,7 @@
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformtheme.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 class tst_QAbstractButton : public QObject
 {
@@ -38,7 +38,7 @@ private slots:
     void setText();
     void setIcon();
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void setShortcut();
 #endif
 
@@ -49,13 +49,13 @@ private slots:
     void isChecked();
     void toggled();
     void setEnabled();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void shortcutEvents();
 #endif
     void stopRepeatTimer();
 
-    void mouseReleased(); // QTBUG-53244
-#ifdef QT_KEYPAD_NAVIGATION
+    void mouseReleased(); // BOBUIBUG-53244
+#ifdef BOBUI_KEYPAD_NAVIGATION
     void keyNavigation();
 #endif
 
@@ -86,10 +86,10 @@ public:
     {
         QPainter p(this);
         QRect r = rect();
-        p.fillRect(r, isDown() ? Qt::black : (isChecked() ? Qt::lightGray : Qt::white));
-        p.setPen(isDown() ? Qt::white : Qt::black);
+        p.fillRect(r, isDown() ? BobUI::black : (isChecked() ? BobUI::lightGray : BobUI::white));
+        p.setPen(isDown() ? BobUI::white : BobUI::black);
         p.drawRect(r);
-        p.drawText(r, Qt::AlignCenter | Qt::TextShowMnemonic, text());
+        p.drawText(r, BobUI::AlignCenter | BobUI::TextShowMnemonic, text());
         if (hasFocus()) {
             r.adjust(2, 2, -2, -2);
             QStyleOptionFocusRect opt;
@@ -98,7 +98,7 @@ public:
             opt.state = QStyle::State_None;
             style()->drawPrimitive(QStyle::PE_FrameFocusRect, &opt, &p, this);
 #ifdef Q_OS_MAC
-            p.setPen(Qt::red);
+            p.setPen(BobUI::red);
             p.drawRect(r);
 #endif
         }
@@ -118,7 +118,7 @@ private:
 
     int timerEvents;
 
-    void timerEvent(QTimerEvent *event) override
+    void timerEvent(BOBUIimerEvent *event) override
     {
         ++timerEvents;
         QAbstractButton::timerEvent(event);
@@ -149,7 +149,7 @@ void tst_QAbstractButton::init()
     testWidget->setEnabled( true );
     testWidget->setDown( false );
     testWidget->setAutoRepeat( false );
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QKeySequence seq;
     testWidget->setShortcut( seq );
 #endif
@@ -190,14 +190,14 @@ void tst_QAbstractButton::onReleased()
 
 void tst_QAbstractButton::setAutoRepeat_data()
 {
-    QTest::addColumn<int>("mode");
-    QTest::newRow("mode 0") << 0;
-    QTest::newRow("mode 1") << 1;
-    QTest::newRow("mode 2") << 2;
-    QTest::newRow("mode 3") << 3;
-    QTest::newRow("mode 4") << 4;
-    QTest::newRow("mode 5") << 5;
-    QTest::newRow("mode 6") << 6;
+    BOBUIest::addColumn<int>("mode");
+    BOBUIest::newRow("mode 0") << 0;
+    BOBUIest::newRow("mode 1") << 1;
+    BOBUIest::newRow("mode 2") << 2;
+    BOBUIest::newRow("mode 3") << 3;
+    BOBUIest::newRow("mode 4") << 4;
+    BOBUIest::newRow("mode 5") << 5;
+    BOBUIest::newRow("mode 6") << 6;
 }
 
 #define REPEAT_DELAY 1000
@@ -229,9 +229,9 @@ void tst_QAbstractButton::setAutoRepeat()
         // check that the button is down if we press space and not in autorepeat
         testWidget->setDown( false );
         testWidget->setAutoRepeat( false );
-        QTest::keyPress( testWidget, Qt::Key_Space );
+        BOBUIest::keyPress( testWidget, BobUI::Key_Space );
 
-        QTest::qWait( REPEAT_DELAY );
+        BOBUIest::qWait( REPEAT_DELAY );
 
         QVERIFY( release_count == 0 );
         QVERIFY( testWidget->isDown() );
@@ -239,7 +239,7 @@ void tst_QAbstractButton::setAutoRepeat()
         QVERIFY( press_count == 1 );
         QVERIFY( click_count == 0 );
 
-        QTest::keyRelease( testWidget, Qt::Key_Space );
+        BOBUIest::keyRelease( testWidget, BobUI::Key_Space );
         QVERIFY( click_count == 1 );
         QVERIFY( release_count == 1 );
         break;
@@ -247,10 +247,10 @@ void tst_QAbstractButton::setAutoRepeat()
         // check that the button is down if we press space while in autorepeat
         testWidget->setDown(false);
         testWidget->setAutoRepeat(true);
-        QTest::keyPress(testWidget, Qt::Key_Space);
-        QTest::qWait(REPEAT_DELAY);
+        BOBUIest::keyPress(testWidget, BobUI::Key_Space);
+        BOBUIest::qWait(REPEAT_DELAY);
         QVERIFY(testWidget->isDown());
-        QTest::keyRelease(testWidget, Qt::Key_Space);
+        BOBUIest::keyRelease(testWidget, BobUI::Key_Space);
         QCOMPARE(release_count, press_count);
         QCOMPARE(toggle_count, uint(0));
         QCOMPARE(press_count, click_count);
@@ -259,23 +259,23 @@ void tst_QAbstractButton::setAutoRepeat()
     case 4: {
         const auto buttonPressKeys = QGuiApplicationPrivate::platformTheme()
                                              ->themeHint(QPlatformTheme::ButtonPressKeys)
-                                             .value<QList<Qt::Key>>();
-        if (buttonPressKeys.contains(Qt::Key_Enter)) {
+                                             .value<QList<BobUI::Key>>();
+        if (buttonPressKeys.contains(BobUI::Key_Enter)) {
             QSKIP("platform theme has Key_Enter in ButtonPressKeys");
         }
         // check that pressing ENTER has no effect when autorepeat is false
         testWidget->setDown( false );
         testWidget->setAutoRepeat( false );
-        QTest::keyPress( testWidget, Qt::Key_Enter );
+        BOBUIest::keyPress( testWidget, BobUI::Key_Enter );
 
-        QTest::qWait( REPEAT_DELAY );
+        BOBUIest::qWait( REPEAT_DELAY );
 
         QVERIFY( !testWidget->isDown() );
         QVERIFY( toggle_count == 0 );
         QVERIFY( press_count == 0 );
         QVERIFY( release_count == 0 );
         QVERIFY( click_count == 0 );
-        QTest::keyRelease( testWidget, Qt::Key_Enter );
+        BOBUIest::keyRelease( testWidget, BobUI::Key_Enter );
 
         QVERIFY( click_count == 0 );
         break;
@@ -283,16 +283,16 @@ void tst_QAbstractButton::setAutoRepeat()
     case 5: {
         const auto buttonPressKeys = QGuiApplicationPrivate::platformTheme()
                                              ->themeHint(QPlatformTheme::ButtonPressKeys)
-                                             .value<QList<Qt::Key>>();
-        if (buttonPressKeys.contains(Qt::Key_Enter)) {
+                                             .value<QList<BobUI::Key>>();
+        if (buttonPressKeys.contains(BobUI::Key_Enter)) {
             QSKIP("platform theme has Key_Enter in ButtonPressKeys");
         }
         // check that pressing ENTER has no effect when autorepeat is true
         testWidget->setDown( false );
         testWidget->setAutoRepeat( true );
-        QTest::keyPress( testWidget, Qt::Key_Enter );
+        BOBUIest::keyPress( testWidget, BobUI::Key_Enter );
 
-        QTest::qWait( REPEAT_DELAY );
+        BOBUIest::qWait( REPEAT_DELAY );
 
         QVERIFY( !testWidget->isDown() );
         QVERIFY( toggle_count == 0 );
@@ -300,7 +300,7 @@ void tst_QAbstractButton::setAutoRepeat()
         QVERIFY( release_count == 0 );
         QVERIFY( click_count == 0 );
 
-        QTest::keyRelease( testWidget, Qt::Key_Enter );
+        BOBUIest::keyRelease( testWidget, BobUI::Key_Enter );
 
         QVERIFY( click_count == 0 );
         break;
@@ -317,15 +317,15 @@ void tst_QAbstractButton::setAutoRepeat()
 void tst_QAbstractButton::pressed()
 {
     // pressed/released signals expected for a QAbstractButton
-    QTest::keyPress( testWidget, ' ' );
+    BOBUIest::keyPress( testWidget, ' ' );
     QCOMPARE( press_count, (uint)1 );
 }
 
 void tst_QAbstractButton::released()
 {
     // pressed/released signals expected for a QAbstractButton
-    QTest::keyPress( testWidget, ' ' );
-    QTest::keyRelease( testWidget, ' ' );
+    BOBUIest::keyPress( testWidget, ' ' );
+    BOBUIest::keyRelease( testWidget, ' ' );
     QCOMPARE( release_count, (uint)1 );
 }
 
@@ -337,17 +337,17 @@ void tst_QAbstractButton::setText()
     QCOMPARE( testWidget->text(), QString("simple") );
     testWidget->setText("&ampersand");
     QCOMPARE( testWidget->text(), QString("&ampersand") );
-#if QT_CONFIG(shortcut) && !defined(Q_OS_DARWIN) // no mnemonics on Mac.
+#if BOBUI_CONFIG(shortcut) && !defined(Q_OS_DARWIN) // no mnemonics on Mac.
     QCOMPARE( testWidget->shortcut(), QKeySequence("ALT+A"));
 #endif
     testWidget->setText("te&st");
     QCOMPARE( testWidget->text(), QString("te&st") );
-#if QT_CONFIG(shortcut) && !defined(Q_OS_DARWIN) // no mnemonics on Mac.
+#if BOBUI_CONFIG(shortcut) && !defined(Q_OS_DARWIN) // no mnemonics on Mac.
     QCOMPARE( testWidget->shortcut(), QKeySequence("ALT+S"));
 #endif
     testWidget->setText("foo");
     QCOMPARE( testWidget->text(), QString("foo") );
-#if QT_CONFIG(shortcut) && !defined(Q_OS_DARWIN) // no mnemonics on Mac.
+#if BOBUI_CONFIG(shortcut) && !defined(Q_OS_DARWIN) // no mnemonics on Mac.
     QCOMPARE( testWidget->shortcut(), QKeySequence());
 #endif
 }
@@ -405,11 +405,11 @@ void tst_QAbstractButton::setEnabled()
 {
     testWidget->setEnabled( false );
     QVERIFY( !testWidget->isEnabled() );
-//    QTEST( testWidget, "disabled" );
+//    BOBUIEST( testWidget, "disabled" );
 
     testWidget->setEnabled( true );
     QVERIFY( testWidget->isEnabled() );
-//    QTEST( testWidget, "enabled" );
+//    BOBUIEST( testWidget, "enabled" );
 }
 
 void tst_QAbstractButton::isCheckable()
@@ -423,7 +423,7 @@ void tst_QAbstractButton::setDown()
     QVERIFY( !testWidget->isDown() );
 
     testWidget->setDown( true );
-    QTest::qWait(300);
+    BOBUIest::qWait(300);
     QVERIFY( testWidget->isDown() );
 
     testWidget->setDown( true );
@@ -436,7 +436,7 @@ void tst_QAbstractButton::setDown()
     if (grab != 0 && grab != testWidget)
         qDebug( "testWidget != focusWidget" );
 
-    QTest::keyClick( testWidget, Qt::Key_Escape );
+    BOBUIest::keyClick( testWidget, BobUI::Key_Escape );
     QVERIFY( !testWidget->isDown() );
 }
 
@@ -458,11 +458,11 @@ void tst_QAbstractButton::toggled()
     testWidget->toggle();
     QVERIFY( toggle_count == 0 );
 
-    QTest::mousePress( testWidget, Qt::LeftButton );
+    BOBUIest::mousePress( testWidget, BobUI::LeftButton );
     QVERIFY( toggle_count == 0 );
     QVERIFY( click_count == 0 );
 
-    QTest::mouseRelease( testWidget, Qt::LeftButton );
+    BOBUIest::mouseRelease( testWidget, BobUI::LeftButton );
     QVERIFY( click_count == 1 );
 
     testWidget->setCheckable(true);
@@ -472,20 +472,20 @@ void tst_QAbstractButton::toggled()
     testWidget->setCheckable(false);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 void tst_QAbstractButton::setShortcut()
 {
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
 
-    QKeySequence seq( Qt::Key_A );
+    QKeySequence seq( BobUI::Key_A );
     testWidget->setShortcut( seq );
     testWidget->activateWindow();
     // must be active to get shortcuts
-    QVERIFY(QTest::qWaitForWindowActive(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(testWidget));
 
-    QTest::keyClick( testWidget, 'A' );
-    QTest::qWait(300);                      // Animate click takes time
+    BOBUIest::keyClick( testWidget, 'A' );
+    BOBUIest::qWait(300);                      // Animate click takes time
     QCOMPARE(click_count,  (uint)1);
     QCOMPARE(press_count,  (uint)1); // Press is part of a click
     QCOMPARE(release_count,(uint)1); // Release is part of a click
@@ -493,9 +493,9 @@ void tst_QAbstractButton::setShortcut()
     QVERIFY( toggle_count == 0 );
 
 //     resetValues();
-//     QTest::keyPress( testWidget, 'A' );
-//     QTest::qWait(10000);
-//     QTest::keyRelease( testWidget, 'A' );
+//     BOBUIest::keyPress( testWidget, 'A' );
+//     BOBUIest::qWait(10000);
+//     BOBUIest::keyRelease( testWidget, 'A' );
 //     QCOMPARE(click_count,  (uint)1);
 //     QCOMPARE(press_count,  (uint)1);
 //     QCOMPARE(release_count,(uint)1);
@@ -503,7 +503,7 @@ void tst_QAbstractButton::setShortcut()
 //     qDebug() << click_count;
 
 }
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QAbstractButton::animateClick()
 {
@@ -529,7 +529,7 @@ void tst_QAbstractButton::animateClick()
         QCOMPARE(releasedSpy.size(), 0);
         QCOMPARE(clickedSpy.size(), 0);
     }
-    QTRY_VERIFY(!button.isDown());
+    BOBUIRY_VERIFY(!button.isDown());
     // but once the button has been clicked, it must have taken at least 100ms
     QVERIFY(elapsed.elapsed() >= 100);
     QCOMPARE(pressedSpy.size(), 1);
@@ -537,7 +537,7 @@ void tst_QAbstractButton::animateClick()
     QCOMPARE(clickedSpy.size(), 1);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QAbstractButton::shortcutEvents()
 {
@@ -552,17 +552,17 @@ void tst_QAbstractButton::shortcutEvents()
         QShortcutEvent event(sequence, /*shortcutId*/ 0);
         QApplication::sendEvent(&button, &event);
         if (i < 2)
-            QTest::qWait(500);
+            BOBUIest::qWait(500);
     }
 
-    QTest::qWait(1000); // ensure animate timer is expired
+    BOBUIest::qWait(1000); // ensure animate timer is expired
 
     QCOMPARE(pressedSpy.size(), 3);
     QCOMPARE(releasedSpy.size(), 3);
     QCOMPARE(clickedSpy.size(), 3);
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QAbstractButton::stopRepeatTimer()
 {
@@ -571,28 +571,28 @@ void tst_QAbstractButton::stopRepeatTimer()
 
     // Mouse trigger case:
     button.resetTimerEvents();
-    QTest::mousePress(&button, Qt::LeftButton);
-    QTest::qWait(1000);
+    BOBUIest::mousePress(&button, BobUI::LeftButton);
+    BOBUIest::qWait(1000);
     QVERIFY(button.timerEventCount() > 0);
 
-    QTest::mouseRelease(&button, Qt::LeftButton);
+    BOBUIest::mouseRelease(&button, BobUI::LeftButton);
     button.resetTimerEvents();
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
     QCOMPARE(button.timerEventCount(), 0);
 
     // Key trigger case:
     button.resetTimerEvents();
-    QTest::keyPress(&button, Qt::Key_Space);
-    QTest::qWait(1000);
+    BOBUIest::keyPress(&button, BobUI::Key_Space);
+    BOBUIest::qWait(1000);
     QVERIFY(button.timerEventCount() > 0);
 
-    QTest::keyRelease(&button, Qt::Key_Space);
+    BOBUIest::keyRelease(&button, BobUI::Key_Space);
     button.resetTimerEvents();
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
     QCOMPARE(button.timerEventCount(), 0);
 }
 
-void tst_QAbstractButton::mouseReleased() // QTBUG-53244
+void tst_QAbstractButton::mouseReleased() // BOBUIBUG-53244
 {
     MyButton button(nullptr);
     button.setObjectName("button");
@@ -600,12 +600,12 @@ void tst_QAbstractButton::mouseReleased() // QTBUG-53244
     QSignalSpy spyPress(&button, &QAbstractButton::pressed);
     QSignalSpy spyRelease(&button, &QAbstractButton::released);
 
-    QTest::mousePress(&button, Qt::LeftButton);
+    BOBUIest::mousePress(&button, BobUI::LeftButton);
     QCOMPARE(spyPress.size(), 1);
     QCOMPARE(button.isDown(), true);
     QCOMPARE(spyRelease.size(), 0);
 
-    QTest::mouseClick(&button, Qt::RightButton);
+    BOBUIest::mouseClick(&button, BobUI::RightButton);
     QCOMPARE(spyPress.size(), 1);
     QCOMPARE(button.isDown(), true);
     QCOMPARE(spyRelease.size(), 0);
@@ -613,8 +613,8 @@ void tst_QAbstractButton::mouseReleased() // QTBUG-53244
     QPointF posOutOfWidget = QPointF(30, 30);
     QMouseEvent me(QEvent::MouseMove,
                    posOutOfWidget, button.mapToGlobal(posOutOfWidget),
-                   Qt::NoButton, Qt::MouseButtons(Qt::LeftButton),
-                   Qt::NoModifier); // mouse press and move
+                   BobUI::NoButton, BobUI::MouseButtons(BobUI::LeftButton),
+                   BobUI::NoModifier); // mouse press and move
 
     qApp->sendEvent(&button, &me);
     // should emit released signal once mouse is dragging out of boundary
@@ -623,10 +623,10 @@ void tst_QAbstractButton::mouseReleased() // QTBUG-53244
     QCOMPARE(spyRelease.size(), 1);
 }
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
 void tst_QAbstractButton::keyNavigation()
 {
-    QApplication::setNavigationMode(Qt::NavigationModeKeypadDirectional);
+    QApplication::setNavigationMode(BobUI::NavigationModeKeypadDirectional);
 
     QWidget widget;
     QGridLayout *layout = new QGridLayout(&widget);
@@ -634,7 +634,7 @@ void tst_QAbstractButton::keyNavigation()
     for(int y = 0; y < 3; y++) {
         for(int x = 0; x < 3; x++) {
             buttons[y][x] = new MyButton(&widget);
-            buttons[y][x]->setFocusPolicy(Qt::StrongFocus);
+            buttons[y][x]->setFocusPolicy(BobUI::StrongFocus);
             layout->addWidget(buttons[y][x], y, x);
         }
     }
@@ -642,40 +642,40 @@ void tst_QAbstractButton::keyNavigation()
     widget.show();
     QApplicationPrivate::setActiveWindow(&widget);
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
 
     buttons[1][1]->setFocus();
-    QTest::qWait(400);
+    BOBUIest::qWait(400);
     QVERIFY(buttons[1][1]->hasFocus());
-    QTest::keyPress(buttons[1][1], Qt::Key_Up);
-    QTest::qWait(100);
+    BOBUIest::keyPress(buttons[1][1], BobUI::Key_Up);
+    BOBUIest::qWait(100);
     QVERIFY(buttons[0][1]->hasFocus());
-    QTest::keyPress(buttons[0][1], Qt::Key_Down);
-    QTest::qWait(100);
+    BOBUIest::keyPress(buttons[0][1], BobUI::Key_Down);
+    BOBUIest::qWait(100);
     QVERIFY(buttons[1][1]->hasFocus());
-    QTest::keyPress(buttons[1][1], Qt::Key_Left);
-    QTest::qWait(100);
+    BOBUIest::keyPress(buttons[1][1], BobUI::Key_Left);
+    BOBUIest::qWait(100);
     QVERIFY(buttons[1][0]->hasFocus());
-    QTest::keyPress(buttons[1][0], Qt::Key_Down);
-    QTest::qWait(100);
+    BOBUIest::keyPress(buttons[1][0], BobUI::Key_Down);
+    BOBUIest::qWait(100);
     QVERIFY(buttons[2][0]->hasFocus());
-    QTest::keyPress(buttons[2][0], Qt::Key_Right);
-    QTest::qWait(100);
+    BOBUIest::keyPress(buttons[2][0], BobUI::Key_Right);
+    BOBUIest::qWait(100);
     QVERIFY(buttons[2][1]->hasFocus());
-    QTest::keyPress(buttons[2][1], Qt::Key_Right);
-    QTest::qWait(100);
+    BOBUIest::keyPress(buttons[2][1], BobUI::Key_Right);
+    BOBUIest::qWait(100);
     QVERIFY(buttons[2][2]->hasFocus());
-    QTest::keyPress(buttons[2][2], Qt::Key_Up);
-    QTest::qWait(100);
+    BOBUIest::keyPress(buttons[2][2], BobUI::Key_Up);
+    BOBUIest::qWait(100);
     QVERIFY(buttons[1][2]->hasFocus());
-    QTest::keyPress(buttons[1][2], Qt::Key_Up);
-    QTest::qWait(100);
+    BOBUIest::keyPress(buttons[1][2], BobUI::Key_Up);
+    BOBUIest::qWait(100);
     QVERIFY(buttons[0][2]->hasFocus());
     buttons[0][1]->hide();
-    QTest::keyPress(buttons[0][2], Qt::Key_Left);
-    QTest::qWait(100);
-    QTest::keyPress(buttons[0][2], Qt::Key_Left);
-    QEXPECT_FAIL("", "QTBUG-22286" ,Abort);
+    BOBUIest::keyPress(buttons[0][2], BobUI::Key_Left);
+    BOBUIest::qWait(100);
+    BOBUIest::keyPress(buttons[0][2], BobUI::Key_Left);
+    QEXPECT_FAIL("", "BOBUIBUG-22286" ,Abort);
     QVERIFY(buttons[0][0]->hasFocus());
 }
 #endif
@@ -684,12 +684,12 @@ void tst_QAbstractButton::buttonPressKeys()
 {
     const auto buttonPressKeys = QGuiApplicationPrivate::platformTheme()
                                          ->themeHint(QPlatformTheme::ButtonPressKeys)
-                                         .value<QList<Qt::Key>>();
+                                         .value<QList<BobUI::Key>>();
     for (uint i = 0; i < buttonPressKeys.size(); ++i) {
-        QTest::keyClick(testWidget, buttonPressKeys[i]);
+        BOBUIest::keyClick(testWidget, buttonPressKeys[i]);
         QCOMPARE(click_count, i + 1);
     }
 }
 
-QTEST_MAIN(tst_QAbstractButton)
+BOBUIEST_MAIN(tst_QAbstractButton)
 #include "tst_qabstractbutton.moc"

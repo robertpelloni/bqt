@@ -1,16 +1,16 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSMENU_H
 #define QWINDOWSMENU_H
 
-#include "qtwindowsglobal.h"
+#include "bobuiwindowsglobal.h"
 
 #include <qpa/qplatformmenu.h>
 
-#include <QtCore/qlist.h>
+#include <BobUICore/qlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 
@@ -34,7 +34,7 @@ public:
     void setRole(MenuRole) override {}
     void setCheckable(bool checkable) override;
     void setChecked(bool isChecked) override;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     void setShortcut(const QKeySequence& shortcut) override;
 #endif
     void setEnabled(bool enabled) override;
@@ -54,7 +54,7 @@ public:
     void insertIntoMenu(QWindowsMenu *menuItem, bool append, int index);
     bool removeFromMenu();
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     void formatDebug(QDebug &d) const;
 #endif
 
@@ -76,7 +76,7 @@ private:
     bool m_checkable = false;
     bool m_checked = false;
     bool m_enabled = true;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QKeySequence m_shortcut;
 #endif
 };
@@ -124,7 +124,7 @@ public:
     void insertIntoMenuBar(QWindowsMenuBar *bar, bool append, int index);
     bool removeFromParent();
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     void formatDebug(QDebug &d) const;
 #endif
 
@@ -185,7 +185,7 @@ public:
 
     static QWindowsMenuBar *menuBarOf(const QWindow *notYetCreatedWindow);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     void formatDebug(QDebug &d) const;
 #endif
 
@@ -197,12 +197,12 @@ private:
     HMENU m_hMenuBar = nullptr;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QPlatformMenuItem *);
 QDebug operator<<(QDebug d, const QPlatformMenu *);
 QDebug operator<<(QDebug d, const QPlatformMenuBar *);
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSMENU_H

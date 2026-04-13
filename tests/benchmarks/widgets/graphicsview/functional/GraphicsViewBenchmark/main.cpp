@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtGui/qpixmapcache.h>
-#include <QtGui/QScreen>
+#include <BOBUIest>
+#include <BobUIGui/qpixmapcache.h>
+#include <BobUIGui/QScreen>
 
 #include "mainview.h"
 #include "dummydatagen.h"
@@ -143,7 +143,7 @@ void tst_GraphicsViewBenchmark::resetView()
         delete widget;
         currentListSize = -1;
         currentListType = None;
-        QTest::qWait(50);
+        BOBUIest::qWait(50);
     } else {
         if (currentListSize != -1)
             qFatal("tst_GraphicsViewBenchmark::resetView: internal error: wrong list size");
@@ -169,7 +169,7 @@ void tst_GraphicsViewBenchmark::ensureListSizeAndType(int listSize, ListType lis
             fillList(mDataGenerator, listSize, list);
             setTestWidget(list, listSize, listType);
         }
-        QTest::qWait(50);
+        BOBUIest::qWait(50);
         return;
     }
 
@@ -204,7 +204,7 @@ void tst_GraphicsViewBenchmark::ensureTheme(Theme::Themes theme)
         // sure we give it a little bit time to stabilize *after*
         // the changes, hence sendPostedEvents(); qWait();
         QApplication::sendPostedEvents();
-        QTest::qWait(50);
+        BOBUIest::qWait(50);
     }
 }
 
@@ -230,7 +230,7 @@ void tst_GraphicsViewBenchmark::ensureRotationAngle(int angle)
         }
     }
     if (wait)
-        QTest::qWait(50);
+        BOBUIest::qWait(50);
 }
 
 void tst_GraphicsViewBenchmark::ensureSubtreeCache(bool enable)
@@ -242,12 +242,12 @@ void tst_GraphicsViewBenchmark::ensureSubtreeCache(bool enable)
     if (SimpleList *list = qobject_cast<SimpleList *>(widget)) {
         if (list->listItemCaching() != enable) {
             list->setListItemCaching(enable);
-            QTest::qWait(50);
+            BOBUIest::qWait(50);
         }
     } else if (ItemRecyclingList *list = qobject_cast<ItemRecyclingList *>(widget)) {
         if (list->listItemCaching() != enable) {
             list->setListItemCaching(enable);
-            QTest::qWait(50);
+            BOBUIest::qWait(50);
         }
     }
     QPixmapCache::clear();
@@ -257,21 +257,21 @@ void tst_GraphicsViewBenchmark::ensureImageBasedRendering(bool enable)
 {
     if (mMainView->imageBasedRendering() != enable) {
         mMainView->setImageBasedRendering(enable);
-        QTest::qWait(50);
+        BOBUIest::qWait(50);
     }
 }
 
 void tst_GraphicsViewBenchmark::insertListData()
 {
-    QTest::addColumn<int>("listSize");
-    QTest::addColumn<ListType>("listType");
+    BOBUIest::addColumn<int>("listSize");
+    BOBUIest::addColumn<ListType>("listType");
 
-    QTest::newRow("Simple list containing 10 items") << 10 << Simple;
-    QTest::newRow("Recycling list containing 10 items") << 10 << Recycling;
-    QTest::newRow("Simple list containing 50 items") << 50 << Simple;
-    QTest::newRow("Recycling list containing 50 items") << 50 << Recycling;
-    QTest::newRow("Simple list containing 500 items") << 500 << Simple;
-    QTest::newRow("Recycling list containing 500 items") << 500 << Recycling;
+    BOBUIest::newRow("Simple list containing 10 items") << 10 << Simple;
+    BOBUIest::newRow("Recycling list containing 10 items") << 10 << Recycling;
+    BOBUIest::newRow("Simple list containing 50 items") << 50 << Simple;
+    BOBUIest::newRow("Recycling list containing 50 items") << 50 << Recycling;
+    BOBUIest::newRow("Simple list containing 500 items") << 500 << Simple;
+    BOBUIest::newRow("Recycling list containing 500 items") << 500 << Recycling;
 }
 
 void tst_GraphicsViewBenchmark::initTestCase()
@@ -301,7 +301,7 @@ void tst_GraphicsViewBenchmark::initTestCase()
     currentListSize = -1;
     currentListType = None;
 
-    QVERIFY(QTest::qWaitForWindowExposed(mMainView));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(mMainView));
 }
 
 void tst_GraphicsViewBenchmark::cleanupTestCase()
@@ -314,7 +314,7 @@ void tst_GraphicsViewBenchmark::init()
 {
     // Make sure we don't have pending events in the queue.
     // Yes, each test run takes a little bit longer, but the results are more stable.
-    QTest::qWait(150);
+    BOBUIest::qWait(150);
 }
 
 void tst_GraphicsViewBenchmark::createAndFillList_data()
@@ -362,7 +362,7 @@ void tst_GraphicsViewBenchmark::add100ItemsToBeginningOfList()
         SimpleList *list = new SimpleList;
         fillList(mDataGenerator, listSize, list);
         setTestWidget(list, listSize, listType);
-        QTest::qWait(50);
+        BOBUIest::qWait(50);
         QBENCHMARK {
             for (int i = 0; i < AddRemoveCount; ++i)
                 list->insertItem(0, newSimpleListItem(mDataGenerator, i));
@@ -371,7 +371,7 @@ void tst_GraphicsViewBenchmark::add100ItemsToBeginningOfList()
         ItemRecyclingList *list = new ItemRecyclingList;
         fillList(mDataGenerator, listSize, list);
         setTestWidget(list, listSize, listType);
-        QTest::qWait(50);
+        BOBUIest::qWait(50);
         QBENCHMARK {
             for (int i = 0; i < AddRemoveCount; ++i)
                 list->insertItem(0, newRecyclingListItem(mDataGenerator, i));
@@ -397,7 +397,7 @@ void tst_GraphicsViewBenchmark::remove100ItemsFromBeginningOfList()
         SimpleList *list = new SimpleList;
         fillList(mDataGenerator, listSize, list);
         setTestWidget(list, listSize, listType);
-        QTest::qWait(50);
+        BOBUIest::qWait(50);
         QBENCHMARK {
             for (int i = 0; i < AddRemoveCount; ++i)
                 delete list->takeItem(0);
@@ -406,7 +406,7 @@ void tst_GraphicsViewBenchmark::remove100ItemsFromBeginningOfList()
         ItemRecyclingList *list = new ItemRecyclingList;
         fillList(mDataGenerator, listSize, list);
         setTestWidget(list, listSize, listType);
-        QTest::qWait(50);
+        BOBUIest::qWait(50);
         QBENCHMARK {
             for (int i = 0; i < AddRemoveCount; ++i)
                 delete list->takeItem(0);
@@ -419,8 +419,8 @@ void tst_GraphicsViewBenchmark::remove100ItemsFromBeginningOfList()
 void tst_GraphicsViewBenchmark::deleteList_data()
 {
     insertListData();
-    QTest::newRow("Simple list containing 1000 items") << 1000 << Simple;
-    QTest::newRow("Recycling list containing 1000 items") << 1000 << Recycling;
+    BOBUIest::newRow("Simple list containing 1000 items") << 1000 << Simple;
+    BOBUIest::newRow("Recycling list containing 1000 items") << 1000 << Recycling;
 }
 
 void tst_GraphicsViewBenchmark::deleteList()
@@ -437,7 +437,7 @@ void tst_GraphicsViewBenchmark::deleteList()
     else
         list = new ItemRecyclingList;
     fillList(mDataGenerator, listSize, list);
-    QTest::qWait(20);
+    BOBUIest::qWait(20);
 
     QBENCHMARK_ONCE {
         delete list;
@@ -446,28 +446,28 @@ void tst_GraphicsViewBenchmark::deleteList()
 
 void tst_GraphicsViewBenchmark::themeChange_data()
 {
-    QTest::addColumn<int>("listSize");
-    QTest::addColumn<ListType>("listType");
-    QTest::addColumn<Theme::Themes>("fromTheme");
-    QTest::addColumn<Theme::Themes>("toTheme");
+    BOBUIest::addColumn<int>("listSize");
+    BOBUIest::addColumn<ListType>("listType");
+    BOBUIest::addColumn<Theme::Themes>("fromTheme");
+    BOBUIest::addColumn<Theme::Themes>("toTheme");
 
-    QTest::newRow("From Blue to Lime, simple list containing 10 items") << 10 << Simple << Theme::Blue << Theme::Lime;
-    QTest::newRow("From Lime to Blue, simple list containing 10 items") << 10 << Simple << Theme::Lime << Theme::Blue;
+    BOBUIest::newRow("From Blue to Lime, simple list containing 10 items") << 10 << Simple << Theme::Blue << Theme::Lime;
+    BOBUIest::newRow("From Lime to Blue, simple list containing 10 items") << 10 << Simple << Theme::Lime << Theme::Blue;
 
-    QTest::newRow("From Blue to Lime, recycling list containing 10 items") << 10 << Recycling << Theme::Blue << Theme::Lime;
-    QTest::newRow("From Lime to Blue, recycling list containing 10 items") << 10 << Recycling << Theme::Lime << Theme::Blue;
+    BOBUIest::newRow("From Blue to Lime, recycling list containing 10 items") << 10 << Recycling << Theme::Blue << Theme::Lime;
+    BOBUIest::newRow("From Lime to Blue, recycling list containing 10 items") << 10 << Recycling << Theme::Lime << Theme::Blue;
 
-    QTest::newRow("From Blue to Lime, simple list containing 50 items") << 50 << Simple << Theme::Blue << Theme::Lime;
-    QTest::newRow("From Lime to Blue, simple list containing 50 items") << 50 << Simple << Theme::Lime << Theme::Blue;
+    BOBUIest::newRow("From Blue to Lime, simple list containing 50 items") << 50 << Simple << Theme::Blue << Theme::Lime;
+    BOBUIest::newRow("From Lime to Blue, simple list containing 50 items") << 50 << Simple << Theme::Lime << Theme::Blue;
 
-    QTest::newRow("From Blue to Lime, recycling list containing 50 items") << 50 << Recycling << Theme::Blue << Theme::Lime;
-    QTest::newRow("From Lime to Blue, recycling list containing 50 items") << 50 << Recycling << Theme::Lime << Theme::Blue;
+    BOBUIest::newRow("From Blue to Lime, recycling list containing 50 items") << 50 << Recycling << Theme::Blue << Theme::Lime;
+    BOBUIest::newRow("From Lime to Blue, recycling list containing 50 items") << 50 << Recycling << Theme::Lime << Theme::Blue;
 
-    QTest::newRow("From Blue to Lime, simple list containing 500 items") << 500 << Simple << Theme::Blue << Theme::Lime;
-    QTest::newRow("From Lime to Blue, simple list containing 500 items") << 500 << Simple << Theme::Lime << Theme::Blue;
+    BOBUIest::newRow("From Blue to Lime, simple list containing 500 items") << 500 << Simple << Theme::Blue << Theme::Lime;
+    BOBUIest::newRow("From Lime to Blue, simple list containing 500 items") << 500 << Simple << Theme::Lime << Theme::Blue;
 
-    QTest::newRow("From Blue to Lime, recycling list containing 500 items") << 500 << Recycling << Theme::Blue << Theme::Lime;
-    QTest::newRow("From Lime to Blue, recycling list containing 500 items") << 500 << Recycling << Theme::Lime << Theme::Blue;
+    BOBUIest::newRow("From Blue to Lime, recycling list containing 500 items") << 500 << Recycling << Theme::Blue << Theme::Lime;
+    BOBUIest::newRow("From Lime to Blue, recycling list containing 500 items") << 500 << Recycling << Theme::Lime << Theme::Blue;
 }
 
 void tst_GraphicsViewBenchmark::themeChange()
@@ -534,12 +534,12 @@ static inline QString rowString(int listSize, tst_GraphicsViewBenchmark::ListTyp
 
 void tst_GraphicsViewBenchmark::update_data()
 {
-    QTest::addColumn<int>("listSize");
-    QTest::addColumn<ListType>("listType");
-    QTest::addColumn<Theme::Themes>("theme");
-    QTest::addColumn<bool>("renderToImage");
-    QTest::addColumn<bool>("subtreeCache");
-    QTest::addColumn<int>("rotationAngle");
+    BOBUIest::addColumn<int>("listSize");
+    BOBUIest::addColumn<ListType>("listType");
+    BOBUIest::addColumn<Theme::Themes>("theme");
+    BOBUIest::addColumn<bool>("renderToImage");
+    BOBUIest::addColumn<bool>("subtreeCache");
+    BOBUIest::addColumn<int>("rotationAngle");
 
     // Generate rows:
     for (ListType listType : {Simple, Recycling}) {
@@ -549,7 +549,7 @@ void tst_GraphicsViewBenchmark::update_data()
                     for (int toImage = 0; toImage < 2; ++toImage) {
                         for (int cache = 0; cache < 2; ++cache) {
                             QString string = rowString(listSize, listType, theme, toImage, cache, angle);
-                            QTest::newRow(string.toLatin1()) << listSize << listType << theme << bool(toImage)
+                            BOBUIest::newRow(string.toLatin1()) << listSize << listType << theme << bool(toImage)
                                                              << bool(cache) << angle;
                         }
                     }
@@ -578,14 +578,14 @@ void tst_GraphicsViewBenchmark::update()
 
     QEventLoop loop;
     QObject::connect(mMainView, SIGNAL(repainted()), &loop, SLOT(quit()));
-    QTimer::singleShot(4000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(4000, &loop, SLOT(quit()));
     // Dry run (especially important when cache is enabled).
     // NB! setUpdatesEnabled triggers an update().
     mMainView->viewport()->setUpdatesEnabled(true);
     loop.exec(QEventLoop::AllEvents | QEventLoop::ExcludeUserInputEvents| QEventLoop::ExcludeSocketNotifiers);
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
 
-    QTimer::singleShot(4000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(4000, &loop, SLOT(quit()));
     QBENCHMARK {
         mMainView->viewport()->update();
         loop.exec(QEventLoop::AllEvents | QEventLoop::ExcludeUserInputEvents| QEventLoop::ExcludeSocketNotifiers);
@@ -594,12 +594,12 @@ void tst_GraphicsViewBenchmark::update()
 
 void tst_GraphicsViewBenchmark::scroll_data()
 {
-    QTest::addColumn<int>("listSize");
-    QTest::addColumn<ListType>("listType");
-    QTest::addColumn<Theme::Themes>("theme");
-    QTest::addColumn<bool>("subtreeCache");
-    QTest::addColumn<int>("rotationAngle");
-    QTest::addColumn<ScrollStep>("scrollStep");
+    BOBUIest::addColumn<int>("listSize");
+    BOBUIest::addColumn<ListType>("listType");
+    BOBUIest::addColumn<Theme::Themes>("theme");
+    BOBUIest::addColumn<bool>("subtreeCache");
+    BOBUIest::addColumn<int>("rotationAngle");
+    BOBUIest::addColumn<ScrollStep>("scrollStep");
 
     // Generate rows:
     for (ListType listType : {Simple, Recycling}) {
@@ -609,7 +609,7 @@ void tst_GraphicsViewBenchmark::scroll_data()
                     for (Theme::Themes theme : {Theme::Blue, Theme::Lime}) {
                         for (int cache = 0; cache < 2; ++cache) {
                             QString string = rowString(listSize, listType, theme, cache, angle, step);
-                            QTest::newRow(string.toLatin1()) << listSize << listType << theme
+                            BOBUIest::newRow(string.toLatin1()) << listSize << listType << theme
                                                              << bool(cache) << angle << step;
                         }
                     }
@@ -647,14 +647,14 @@ void tst_GraphicsViewBenchmark::scroll()
 
     QEventLoop loop;
     QObject::connect(mMainView, SIGNAL(repainted()), &loop, SLOT(quit()));
-    QTimer::singleShot(4000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(4000, &loop, SLOT(quit()));
     // Dry run (especially important when cache is enabled).
     // NB! setUpdatesEnabled triggers an update().
     mMainView->viewport()->setUpdatesEnabled(true);
     loop.exec(QEventLoop::AllEvents | QEventLoop::ExcludeUserInputEvents| QEventLoop::ExcludeSocketNotifiers);
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
 
-    QTimer::singleShot(4000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(4000, &loop, SLOT(quit()));
     QBENCHMARK {
         sb->setSliderPosition(sliderTarget);
         loop.exec(QEventLoop::AllEvents | QEventLoop::ExcludeUserInputEvents| QEventLoop::ExcludeSocketNotifiers);
@@ -717,9 +717,9 @@ int main(int argc, char *argv[])
         }
         returnValue = app.exec();
     } else {
-        QTEST_DISABLE_KEYPAD_NAVIGATION
+        BOBUIEST_DISABLE_KEYPAD_NAVIGATION
         tst_GraphicsViewBenchmark tc(&settings);
-        returnValue = QTest::qExec(&tc, aargc, aargv);
+        returnValue = BOBUIest::qExec(&tc, aargc, aargv);
     }
 
     delete [] aargv;

@@ -1,20 +1,20 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #define BUILD_LIBRARY
 
-#include <qthread.h>
+#include <bobuihread.h>
 #include <qpluginloader.h>
 #include <qfileinfo.h>
 #include <qdir.h>
-#include <qtenvironmentvariables.h>
+#include <bobuienvironmentvariables.h>
 #include <qjsonarray.h>
 
 #include "qctf_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static bool s_initialized = false;
 static bool s_triedLoading = false;
@@ -22,12 +22,12 @@ static bool s_prevent_recursion = false;
 static bool s_shutdown = false;
 static QCtfLib* s_plugin = nullptr;
 
-#if QT_CONFIG(library) && defined(QT_SHARED)
+#if BOBUI_CONFIG(library) && defined(BOBUI_SHARED)
 
 #if defined(Q_OS_ANDROID)
 static QString findPlugin(QLatin1StringView plugin)
 {
-    const QString pluginPath = qEnvironmentVariable("QT_PLUGIN_PATH");
+    const QString pluginPath = qEnvironmentVariable("BOBUI_PLUGIN_PATH");
     for (const auto &entry : QDirListing(pluginPath, QDirListing::IteratorFlag::FilesOnly)) {
         if (entry.fileName().contains(plugin))
             return entry.absoluteFilePath();
@@ -40,7 +40,7 @@ static bool loadPlugin(bool &retry)
 {
     retry = false;
 #ifdef Q_OS_WIN
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     QPluginLoader loader(QStringLiteral("tracing/QCtfTracePlugind.dll"));
 #else
     QPluginLoader loader(QStringLiteral("tracing/QCtfTracePlugin.dll"));
@@ -70,7 +70,7 @@ static bool loadPlugin(bool &retry)
 
 #else
 
-#define QCtfPluginIID QStringLiteral("org.qt-project.Qt.QCtfLib")
+#define QCtfPluginIID QStringLiteral("org.bobui-project.BobUI.QCtfLib")
 
 static bool loadPlugin(bool &retry)
 {
@@ -140,6 +140,6 @@ QCtfTracePointPrivate *_initialize_tracepoint(const QCtfTracePointEvent &point)
     return s_plugin ? s_plugin->initializeTracepoint(point) : nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qctf_p.cpp"

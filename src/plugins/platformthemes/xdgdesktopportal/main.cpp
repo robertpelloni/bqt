@@ -1,13 +1,13 @@
 // Copyright (C) 2017-2018 Red Hat, Inc
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qpa/qplatformthemeplugin.h>
 #include "qxdgdesktopportaltheme.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QXdgDesktopPortalThemePlugin : public QPlatformThemePlugin
 {
@@ -24,6 +24,6 @@ QPlatformTheme *QXdgDesktopPortalThemePlugin::create(const QString &key, const Q
     return QXdgDesktopPortalTheme::isXdgPlugin(key) ? new QXdgDesktopPortalTheme : nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

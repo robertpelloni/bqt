@@ -1,12 +1,12 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmeventdispatcher.h"
 #include "qwasmintegration.h"
 
-#include <QtGui/qpa/qwindowsysteminterface.h>
+#include <BobUIGui/qpa/qwindowsysteminterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QWasmEventDispatcher::QWasmEventDispatcher(std::shared_ptr<QWasmSuspendResumeControl> suspendResume)
     :QEventDispatcherWasm(suspendResume)
@@ -15,7 +15,7 @@ QWasmEventDispatcher::QWasmEventDispatcher(std::shared_ptr<QWasmSuspendResumeCon
 }
 
 // Note: All event dispatcher functionality is implemented in QEventDispatcherWasm
-// in QtCore, except for processPostedEvents() below which uses API from QtGui.
+// in BobUICore, except for processPostedEvents() below which uses API from BobUIGui.
 bool QWasmEventDispatcher::sendPostedEvents()
 {
     QEventDispatcherWasm::sendPostedEvents();
@@ -25,7 +25,7 @@ bool QWasmEventDispatcher::sendPostedEvents()
 void QWasmEventDispatcher::onLoaded()
 {
     // This function is called when the application is ready to paint
-    // the first frame. Send the qtlaoder onLoaded event first (via
+    // the first frame. Send the bobuilaoder onLoaded event first (via
     // the base class implementation), and then enable/call requestUpdate
     // to deliver a frame.
     QEventDispatcherWasm::onLoaded();
@@ -38,4 +38,4 @@ void QWasmEventDispatcher::onLoaded()
     wasmIntegration->releaseRequesetUpdateHold();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

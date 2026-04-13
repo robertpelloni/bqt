@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(treeview))
+BOBUI += widgets
+requires(bobuiConfig(treeview))
 
 FORMS       = mainwindow.ui
 HEADERS     = mainwindow.h \
@@ -12,5 +12,5 @@ SOURCES     = mainwindow.cpp \
               main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/editabletreemodel
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/editabletreemodel
 INSTALLS += target

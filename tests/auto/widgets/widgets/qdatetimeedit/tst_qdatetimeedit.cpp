@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qapplication.h>
 #include <qgroupbox.h>
@@ -10,11 +10,11 @@
 #include <qeventloop.h>
 #include <qstyle.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QStyleOptionSpinBox>
 #include <QDate>
 #include <QDateTime>
-#include <QTime>
+#include <BOBUIime>
 #include <QList>
 #include <QDateTimeEdit>
 #include <QCalendarWidget>
@@ -33,30 +33,30 @@
 #include <QEventLoop>
 #include <QStyle>
 #include <QStyleOptionComboBox>
-#include <QTimeEdit>
+#include <BOBUIimeEdit>
 #include <QMetaType>
 #include <QDebug>
 #include <QWheelEvent>
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QTestEventList>
+#include <BOBUIestEventList>
 #include <QDateEdit>
 #include <QProxyStyle>
-#include <QTimeZone>
+#include <BOBUIimeZone>
 #include <QScopeGuard>
 
 #include <private/qdatetimeedit_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 #ifdef Q_OS_WIN
-# include <qt_windows.h>
+# include <bobui_windows.h>
 #endif
 
 
-Q_DECLARE_METATYPE(Qt::Key);
-Q_DECLARE_METATYPE(Qt::KeyboardModifiers);
-Q_DECLARE_METATYPE(Qt::KeyboardModifier);
+Q_DECLARE_METATYPE(BobUI::Key);
+Q_DECLARE_METATYPE(BobUI::KeyboardModifiers);
+Q_DECLARE_METATYPE(BobUI::KeyboardModifier);
 
 class EditorDateEdit : public QDateTimeEdit
 {
@@ -104,7 +104,7 @@ public:
         }
     }
 
-    Qt::KeyboardModifier stepModifier = Qt::ControlModifier;
+    BobUI::KeyboardModifier stepModifier = BobUI::ControlModifier;
 };
 
 class tst_QDateTimeEdit : public QObject
@@ -124,8 +124,8 @@ private slots:
     void constructor_qdatetime();
     void constructor_qdate_data();
     void constructor_qdate();
-    void constructor_qtime_data();
-    void constructor_qtime();
+    void constructor_bobuiime_data();
+    void constructor_bobuiime();
 
     void sectionText_data();
     void sectionText();
@@ -233,7 +233,7 @@ private slots:
     void nextPrevSection();
 
     void dateEditTimeEditFormats();
-#if QT_DEPRECATED_SINCE(6, 10)
+#if BOBUI_DEPRECATED_SINCE(6, 10)
     void timeSpec_data();
     void timeSpec();
 #endif
@@ -254,13 +254,13 @@ private slots:
     void task196924();
     void focusNextPrevChild();
 
-    void taskQTBUG_12384_timeZoneShowTimeOnly();
+    void taskBOBUIBUG_12384_timeZoneShowTimeOnly();
 
     void deleteCalendarWidget();
 
     void setLocaleOnCalendarWidget();
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void dateEditCorrectSectionSize_data();
     void dateEditCorrectSectionSize();
 #endif
@@ -286,25 +286,25 @@ private:
 };
 
 typedef QList<QDate> DateList;
-typedef QList<QTime> TimeList;
-typedef QList<Qt::Key> KeyList;
+typedef QList<BOBUIime> TimeList;
+typedef QList<BobUI::Key> KeyList;
 
-static QLatin1String modifierToName(Qt::KeyboardModifier modifier)
+static QLatin1String modifierToName(BobUI::KeyboardModifier modifier)
 {
     switch (modifier) {
-    case Qt::NoModifier:
+    case BobUI::NoModifier:
         return QLatin1String("No");
         break;
-    case Qt::ControlModifier:
+    case BobUI::ControlModifier:
         return QLatin1String("Ctrl");
         break;
-    case Qt::ShiftModifier:
+    case BobUI::ShiftModifier:
         return QLatin1String("Shift");
         break;
-    case Qt::AltModifier:
+    case BobUI::AltModifier:
         return QLatin1String("Alt");
         break;
-    case Qt::MetaModifier:
+    case BobUI::MetaModifier:
         return QLatin1String("Meta");
         break;
     default:
@@ -349,22 +349,22 @@ static QDate stepDate(QDate startDate, const QDateTimeEdit::Section section, con
     }
 }
 
-static QTime stepTime(QTime startTime, const QDateTimeEdit::Section section, const int steps)
+static BOBUIime stepTime(BOBUIime startTime, const QDateTimeEdit::Section section, const int steps)
 {
     switch (section) {
     case QDateTimeEdit::SecondSection:
         return startTime.addSecs(steps);
     case QDateTimeEdit::MinuteSection:
-        return QTime(startTime.hour(),
+        return BOBUIime(startTime.hour(),
                      startTime.minute() + steps,
                      startTime.second());
     case QDateTimeEdit::HourSection:
-        return QTime(startTime.hour() + steps,
+        return BOBUIime(startTime.hour() + steps,
                      startTime.minute(),
                      startTime.second());
     default:
         qFatal("Unexpected section");
-        return QTime();
+        return BOBUIime();
     }
 }
 
@@ -372,7 +372,7 @@ static QTime stepTime(QTime startTime, const QDateTimeEdit::Section section, con
 void tst_QDateTimeEdit::getSetCheck()
 {
     QDateTimeEdit obj1;
-    QCOMPARE(obj1.inputMethodQuery(Qt::ImHints), QVariant(int(Qt::ImhPreferNumbers)));
+    QCOMPARE(obj1.inputMethodQuery(BobUI::ImHints), QVariant(int(BobUI::ImhPreferNumbers)));
     obj1.setDisplayFormat("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z AP");
     // Section QDateTimeEdit::currentSection()
     // void QDateTimeEdit::setCurrentSection(Section)
@@ -396,9 +396,9 @@ void tst_QDateTimeEdit::getSetCheck()
     QCOMPARE(QDateTimeEdit::YearSection, obj1.currentSection());
 
     QDateEdit dateEdit;
-    QCOMPARE(dateEdit.inputMethodQuery(Qt::ImHints), QVariant(int(Qt::ImhPreferNumbers)));
-    QTimeEdit timeEdit;
-    QCOMPARE(timeEdit.inputMethodQuery(Qt::ImHints), QVariant(int(Qt::ImhPreferNumbers)));
+    QCOMPARE(dateEdit.inputMethodQuery(BobUI::ImHints), QVariant(int(BobUI::ImhPreferNumbers)));
+    BOBUIimeEdit timeEdit;
+    QCOMPARE(timeEdit.inputMethodQuery(BobUI::ImHints), QVariant(int(BobUI::ImhPreferNumbers)));
 }
 
 void tst_QDateTimeEdit::initTestCase()
@@ -429,7 +429,7 @@ void tst_QDateTimeEdit::init()
     SetThreadLocale(MAKELCID(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), SORT_DEFAULT));
 #endif
     testWidget->setDisplayFormat("dd/MM/yyyy"); // Nice default to have
-    testWidget->setDateTime(QDateTime(QDate(2000, 1, 1), QTime(0, 0)));
+    testWidget->setDateTime(QDateTime(QDate(2000, 1, 1), BOBUIime(0, 0)));
     testWidget->show();
     testFocusWidget->move(-1000, -1000);
 }
@@ -438,7 +438,7 @@ void tst_QDateTimeEdit::cleanup()
 {
     testWidget->clearMinimumDateTime();
     testWidget->clearMaximumDateTime();
-    testWidget->setTimeZone(QTimeZone::LocalTime);
+    testWidget->setTimeZone(BOBUIimeZone::LocalTime);
     testWidget->setSpecialValueText(QString());
     testWidget->setWrapping(false);
     // Restore the default.
@@ -450,19 +450,19 @@ void tst_QDateTimeEdit::constructor_qwidget()
     testWidget->hide();
     QDateTimeEdit dte(0);
     dte.show();
-    QCOMPARE(dte.dateTime(), QDateTime(QDate(2000, 1, 1), QTime(0, 0, 0, 0)));
+    QCOMPARE(dte.dateTime(), QDateTime(QDate(2000, 1, 1), BOBUIime(0, 0, 0, 0)));
     QCOMPARE(dte.minimumDate(), QDate(1752, 9, 14));
-    QCOMPARE(dte.minimumTime(), QTime(0, 0, 0, 0));
+    QCOMPARE(dte.minimumTime(), BOBUIime(0, 0, 0, 0));
     QCOMPARE(dte.maximumDate(), QDate(9999, 12, 31));
-    QCOMPARE(dte.maximumTime(), QTime(23, 59, 59, 999));
+    QCOMPARE(dte.maximumTime(), BOBUIime(23, 59, 59, 999));
 }
 
 void tst_QDateTimeEdit::constructor_qdatetime_data()
 {
-    QTest::addColumn<QDateTime>("parameter");
+    BOBUIest::addColumn<QDateTime>("parameter");
 
-    QTest::newRow("normal") << QDateTime(QDate(2004, 6, 16), QTime(13, 46, 32, 764));
-    QTest::newRow("invalid") << QDateTime(QDate(9999, 99, 99), QTime(13, 46, 32, 764));
+    BOBUIest::newRow("normal") << QDateTime(QDate(2004, 6, 16), BOBUIime(13, 46, 32, 764));
+    BOBUIest::newRow("invalid") << QDateTime(QDate(9999, 99, 99), BOBUIime(13, 46, 32, 764));
 }
 
 void tst_QDateTimeEdit::constructor_qdatetime()
@@ -472,22 +472,22 @@ void tst_QDateTimeEdit::constructor_qdatetime()
 
     QDateTimeEdit dte(parameter);
     dte.show();
-    if (QByteArrayView(QTest::currentDataTag()) == "invalid")
-        QCOMPARE(dte.dateTime(), QDateTime(QDate(2000, 1, 1), QTime(0, 0)));
+    if (QByteArrayView(BOBUIest::currentDataTag()) == "invalid")
+        QCOMPARE(dte.dateTime(), QDateTime(QDate(2000, 1, 1), BOBUIime(0, 0)));
     else
         QCOMPARE(dte.dateTime(), parameter);
     QCOMPARE(dte.minimumDate(), QDate(1752, 9, 14));
-    QCOMPARE(dte.minimumTime(), QTime(0, 0));
+    QCOMPARE(dte.minimumTime(), BOBUIime(0, 0));
     QCOMPARE(dte.maximumDate(), QDate(9999, 12, 31));
-    QCOMPARE(dte.maximumTime(), QTime(23, 59, 59, 999));
+    QCOMPARE(dte.maximumTime(), BOBUIime(23, 59, 59, 999));
 }
 
 void tst_QDateTimeEdit::constructor_qdate_data()
 {
-    QTest::addColumn<QDate>("parameter");
+    BOBUIest::addColumn<QDate>("parameter");
 
-    QTest::newRow("normal") << QDate(2004, 6, 16);
-    QTest::newRow("invalid") << QDate(9999, 99, 99);
+    BOBUIest::newRow("normal") << QDate(2004, 6, 16);
+    BOBUIest::newRow("invalid") << QDate(9999, 99, 99);
 }
 
 void tst_QDateTimeEdit::constructor_qdate()
@@ -498,79 +498,79 @@ void tst_QDateTimeEdit::constructor_qdate()
     {
         QDateTimeEdit dte(parameter);
         dte.show();
-        if (QByteArrayView(QTest::currentDataTag()) == "invalid")
-            QCOMPARE(dte.dateTime(), QDateTime(QDate(2000, 1, 1), QTime(0, 0)));
+        if (QByteArrayView(BOBUIest::currentDataTag()) == "invalid")
+            QCOMPARE(dte.dateTime(), QDateTime(QDate(2000, 1, 1), BOBUIime(0, 0)));
         else
-            QCOMPARE(dte.dateTime(), QDateTime(parameter, QTime(0, 0)));
+            QCOMPARE(dte.dateTime(), QDateTime(parameter, BOBUIime(0, 0)));
         QCOMPARE(dte.minimumDate(), QDate(1752, 9, 14));
-        QCOMPARE(dte.minimumTime(), QTime(0, 0));
+        QCOMPARE(dte.minimumTime(), BOBUIime(0, 0));
         QCOMPARE(dte.maximumDate(), QDate(9999, 12, 31));
-        QCOMPARE(dte.maximumTime(), QTime(23, 59, 59, 999));
+        QCOMPARE(dte.maximumTime(), BOBUIime(23, 59, 59, 999));
     }
     {
         QDateEdit dte(parameter);
         dte.show();
-        if (QByteArrayView(QTest::currentDataTag()) == "invalid")
+        if (QByteArrayView(BOBUIest::currentDataTag()) == "invalid")
             QCOMPARE(dte.date(), QDate(2000, 1, 1));
         else
             QCOMPARE(dte.date(), parameter);
         QCOMPARE(dte.minimumDate(), QDate(1752, 9, 14));
-        QCOMPARE(dte.minimumTime(), QTime(0, 0));
+        QCOMPARE(dte.minimumTime(), BOBUIime(0, 0));
         QCOMPARE(dte.maximumDate(), QDate(9999, 12, 31));
-        QCOMPARE(dte.maximumTime(), QTime(23, 59, 59, 999));
+        QCOMPARE(dte.maximumTime(), BOBUIime(23, 59, 59, 999));
     }
 }
 
-void tst_QDateTimeEdit::constructor_qtime_data()
+void tst_QDateTimeEdit::constructor_bobuiime_data()
 {
-    QTest::addColumn<QTime>("parameter");
+    BOBUIest::addColumn<BOBUIime>("parameter");
 
-    QTest::newRow("normal") << QTime(13, 46, 32, 764);
-    QTest::newRow("invalid") << QTime(99, 99, 99, 5000);
+    BOBUIest::newRow("normal") << BOBUIime(13, 46, 32, 764);
+    BOBUIest::newRow("invalid") << BOBUIime(99, 99, 99, 5000);
 }
 
-void tst_QDateTimeEdit::constructor_qtime()
+void tst_QDateTimeEdit::constructor_bobuiime()
 {
-    QFETCH(QTime, parameter);
+    QFETCH(BOBUIime, parameter);
     testWidget->hide();
 
     {
         QDateTimeEdit dte(parameter);
         dte.show();
-        if (QByteArrayView(QTest::currentDataTag()) == "invalid")
-            QCOMPARE(dte.dateTime(), QDateTime(QDate(2000, 1, 1), QTime(0, 0)));
+        if (QByteArrayView(BOBUIest::currentDataTag()) == "invalid")
+            QCOMPARE(dte.dateTime(), QDateTime(QDate(2000, 1, 1), BOBUIime(0, 0)));
         else
             QCOMPARE(dte.dateTime(), QDateTime(QDate(2000, 1, 1), parameter));
         QCOMPARE(dte.minimumDate(), QDate(2000, 1, 1));
-        QCOMPARE(dte.minimumTime(), QTime(0, 0));
+        QCOMPARE(dte.minimumTime(), BOBUIime(0, 0));
         QCOMPARE(dte.maximumDate(), QDate(2000, 1, 1));
-        QCOMPARE(dte.maximumTime(), QTime(23, 59, 59, 999));
+        QCOMPARE(dte.maximumTime(), BOBUIime(23, 59, 59, 999));
     }
     {
-        QTimeEdit dte(parameter);
+        BOBUIimeEdit dte(parameter);
         dte.show();
-        if (QByteArrayView(QTest::currentDataTag()) == "invalid")
-            QCOMPARE(dte.time(), QTime(0, 0));
+        if (QByteArrayView(BOBUIest::currentDataTag()) == "invalid")
+            QCOMPARE(dte.time(), BOBUIime(0, 0));
         else
             QCOMPARE(dte.time(), parameter);
         QCOMPARE(dte.minimumDate(), QDate(2000, 1, 1));
-        QCOMPARE(dte.minimumTime(), QTime(0, 0));
+        QCOMPARE(dte.minimumTime(), BOBUIime(0, 0));
         QCOMPARE(dte.maximumDate(), QDate(2000, 1, 1));
-        QCOMPARE(dte.maximumTime(), QTime(23, 59, 59, 999));
+        QCOMPARE(dte.maximumTime(), BOBUIime(23, 59, 59, 999));
     }
 }
 
 void tst_QDateTimeEdit::minimumDate_data()
 {
-    QTest::addColumn<QDate>("minimumDate");
-    QTest::addColumn<QDate>("expectedMinDate");
+    BOBUIest::addColumn<QDate>("minimumDate");
+    BOBUIest::addColumn<QDate>("expectedMinDate");
 
-    QTest::newRow("normal-0") << QDate(2004, 5, 10) << QDate(2004, 5, 10);
-    QTest::newRow("normal-1") << QDate(2002, 3, 15) << QDate(2002, 3, 15);
-    QTest::newRow("normal-2") << QDate(9999, 12, 31) << QDate(9999, 12, 31);
-    QTest::newRow("normal-3") << QDate(1753, 1, 1) << QDate(1753, 1, 1);
-    QTest::newRow("invalid-0") << QDate(0, 0, 0) << QDate(1752, 9, 14);
-    QTest::newRow("old") << QDate(1492, 8, 3) << QDate(1492, 8, 3);
+    BOBUIest::newRow("normal-0") << QDate(2004, 5, 10) << QDate(2004, 5, 10);
+    BOBUIest::newRow("normal-1") << QDate(2002, 3, 15) << QDate(2002, 3, 15);
+    BOBUIest::newRow("normal-2") << QDate(9999, 12, 31) << QDate(9999, 12, 31);
+    BOBUIest::newRow("normal-3") << QDate(1753, 1, 1) << QDate(1753, 1, 1);
+    BOBUIest::newRow("invalid-0") << QDate(0, 0, 0) << QDate(1752, 9, 14);
+    BOBUIest::newRow("old") << QDate(1492, 8, 3) << QDate(1492, 8, 3);
 }
 
 void tst_QDateTimeEdit::minimumDate()
@@ -584,23 +584,23 @@ void tst_QDateTimeEdit::minimumDate()
 
 void tst_QDateTimeEdit::minimumDateTime_data()
 {
-    QTest::addColumn<QDateTime>("minimumDateTime");
-    QTest::addColumn<QDateTime>("expectedMinDateTime");
+    BOBUIest::addColumn<QDateTime>("minimumDateTime");
+    BOBUIest::addColumn<QDateTime>("expectedMinDateTime");
 
-    QTest::newRow("normal-0") << QDateTime(QDate(2004, 5, 10), QTime(2, 3, 14))
-                              << QDateTime(QDate(2004, 5, 10), QTime(2, 3, 14));
+    BOBUIest::newRow("normal-0") << QDateTime(QDate(2004, 5, 10), BOBUIime(2, 3, 14))
+                              << QDateTime(QDate(2004, 5, 10), BOBUIime(2, 3, 14));
 
-    QTest::newRow("normal-1") << QDateTime(QDate(2005, 5, 10), QTime(22, 33, 1))
-                              << QDateTime(QDate(2005, 5, 10), QTime(22, 33, 1));
-    QTest::newRow("normal-2") << QDateTime(QDate(2006, 5, 10), QTime(13, 31, 23))
-                              << QDateTime(QDate(2006, 5, 10), QTime(13, 31, 23));
-    QTest::newRow("normal-3") << QDateTime(QDate(2007, 5, 10), QTime(22, 23, 23))
-                              << QDateTime(QDate(2007, 5, 10), QTime(22, 23, 23));
-    QTest::newRow("normal-4") << QDateTime(QDate(2008, 5, 10), QTime(2, 3, 1))
-                              << QDateTime(QDate(2008, 5, 10), QTime(2, 3, 1));
-    QTest::newRow("invalid-0") << QDateTime() << QDateTime(QDate(1752, 9, 14), QTime(0, 0, 0));
-    QTest::newRow("old") << QDateTime(QDate(1492, 8, 3), QTime(2, 3, 1))
-                         << QDateTime(QDate(1492, 8, 3), QTime(2, 3, 1));
+    BOBUIest::newRow("normal-1") << QDateTime(QDate(2005, 5, 10), BOBUIime(22, 33, 1))
+                              << QDateTime(QDate(2005, 5, 10), BOBUIime(22, 33, 1));
+    BOBUIest::newRow("normal-2") << QDateTime(QDate(2006, 5, 10), BOBUIime(13, 31, 23))
+                              << QDateTime(QDate(2006, 5, 10), BOBUIime(13, 31, 23));
+    BOBUIest::newRow("normal-3") << QDateTime(QDate(2007, 5, 10), BOBUIime(22, 23, 23))
+                              << QDateTime(QDate(2007, 5, 10), BOBUIime(22, 23, 23));
+    BOBUIest::newRow("normal-4") << QDateTime(QDate(2008, 5, 10), BOBUIime(2, 3, 1))
+                              << QDateTime(QDate(2008, 5, 10), BOBUIime(2, 3, 1));
+    BOBUIest::newRow("invalid-0") << QDateTime() << QDateTime(QDate(1752, 9, 14), BOBUIime(0, 0, 0));
+    BOBUIest::newRow("old") << QDateTime(QDate(1492, 8, 3), BOBUIime(2, 3, 1))
+                         << QDateTime(QDate(1492, 8, 3), BOBUIime(2, 3, 1));
 }
 
 void tst_QDateTimeEdit::minimumDateTime()
@@ -614,21 +614,21 @@ void tst_QDateTimeEdit::minimumDateTime()
 
 void tst_QDateTimeEdit::maximumDateTime_data()
 {
-    QTest::addColumn<QDateTime>("maximumDateTime");
-    QTest::addColumn<QDateTime>("expectedMinDateTime");
+    BOBUIest::addColumn<QDateTime>("maximumDateTime");
+    BOBUIest::addColumn<QDateTime>("expectedMinDateTime");
 
-    QTest::newRow("normal-0") << QDateTime(QDate(2004, 5, 10), QTime(2, 3, 14))
-                              << QDateTime(QDate(2004, 5, 10), QTime(2, 3, 14));
+    BOBUIest::newRow("normal-0") << QDateTime(QDate(2004, 5, 10), BOBUIime(2, 3, 14))
+                              << QDateTime(QDate(2004, 5, 10), BOBUIime(2, 3, 14));
 
-    QTest::newRow("normal-1") << QDateTime(QDate(2005, 5, 10), QTime(22, 33, 1))
-                              << QDateTime(QDate(2005, 5, 10), QTime(22, 33, 1));
-    QTest::newRow("normal-2") << QDateTime(QDate(2006, 5, 10), QTime(13, 31, 23))
-                              << QDateTime(QDate(2006, 5, 10), QTime(13, 31, 23));
-    QTest::newRow("normal-3") << QDateTime(QDate(2007, 5, 10), QTime(22, 23, 23))
-                              << QDateTime(QDate(2007, 5, 10), QTime(22, 23, 23));
-    QTest::newRow("normal-4") << QDateTime(QDate(2008, 5, 10), QTime(2, 3, 1))
-                              << QDateTime(QDate(2008, 5, 10), QTime(2, 3, 1));
-    QTest::newRow("invalid-0") << QDateTime() << QDateTime(QDate(9999, 12, 31), QTime(23, 59, 59, 999));
+    BOBUIest::newRow("normal-1") << QDateTime(QDate(2005, 5, 10), BOBUIime(22, 33, 1))
+                              << QDateTime(QDate(2005, 5, 10), BOBUIime(22, 33, 1));
+    BOBUIest::newRow("normal-2") << QDateTime(QDate(2006, 5, 10), BOBUIime(13, 31, 23))
+                              << QDateTime(QDate(2006, 5, 10), BOBUIime(13, 31, 23));
+    BOBUIest::newRow("normal-3") << QDateTime(QDate(2007, 5, 10), BOBUIime(22, 23, 23))
+                              << QDateTime(QDate(2007, 5, 10), BOBUIime(22, 23, 23));
+    BOBUIest::newRow("normal-4") << QDateTime(QDate(2008, 5, 10), BOBUIime(2, 3, 1))
+                              << QDateTime(QDate(2008, 5, 10), BOBUIime(2, 3, 1));
+    BOBUIest::newRow("invalid-0") << QDateTime() << QDateTime(QDate(9999, 12, 31), BOBUIime(23, 59, 59, 999));
 }
 
 void tst_QDateTimeEdit::maximumDateTime()
@@ -642,14 +642,14 @@ void tst_QDateTimeEdit::maximumDateTime()
 
 void tst_QDateTimeEdit::maximumDate_data()
 {
-    QTest::addColumn<QDate>("maximumDate");
-    QTest::addColumn<QDate>("expectedMaxDate");
+    BOBUIest::addColumn<QDate>("maximumDate");
+    BOBUIest::addColumn<QDate>("expectedMaxDate");
 
-    QTest::newRow("normal-0") << QDate(2004, 05, 10) << QDate(2004, 5, 10);
-    QTest::newRow("normal-1") << QDate(2002, 03, 15) << QDate(2002, 3, 15);
-    QTest::newRow("normal-2") << QDate(9999, 12, 31) << QDate(9999, 12, 31);
-    QTest::newRow("normal-3") << QDate(1753, 1, 1) << QDate(1753, 1, 1);
-    QTest::newRow("invalid-0") << QDate(0, 0, 0) << QDate(9999, 12, 31);
+    BOBUIest::newRow("normal-0") << QDate(2004, 05, 10) << QDate(2004, 5, 10);
+    BOBUIest::newRow("normal-1") << QDate(2002, 03, 15) << QDate(2002, 3, 15);
+    BOBUIest::newRow("normal-2") << QDate(9999, 12, 31) << QDate(9999, 12, 31);
+    BOBUIest::newRow("normal-3") << QDate(1753, 1, 1) << QDate(1753, 1, 1);
+    BOBUIest::newRow("invalid-0") << QDate(0, 0, 0) << QDate(9999, 12, 31);
 }
 
 void tst_QDateTimeEdit::maximumDate()
@@ -663,15 +663,15 @@ void tst_QDateTimeEdit::maximumDate()
 
 void tst_QDateTimeEdit::clearMinimumDate_data()
 {
-    QTest::addColumn<QDate>("minimumDate");
-    QTest::addColumn<bool>("valid");
-    QTest::addColumn<QDate>("expectedMinDateAfterClear");
+    BOBUIest::addColumn<QDate>("minimumDate");
+    BOBUIest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QDate>("expectedMinDateAfterClear");
 
-    QTest::newRow("normal-0") << QDate(2004, 05, 10) << true << QDate(1752, 9, 14);
-    QTest::newRow("normal-1") << QDate(2002, 3, 15) << true << QDate(1752, 9, 14);
-    QTest::newRow("normal-2") << QDate(9999, 12, 31) << true << QDate(1752, 9, 14);
-    QTest::newRow("normal-3") << QDate(1753, 1, 1) << true << QDate(1752, 9, 14);
-    QTest::newRow("invalid-0") << QDate(0, 0, 0) << false << QDate(1752, 9, 14);
+    BOBUIest::newRow("normal-0") << QDate(2004, 05, 10) << true << QDate(1752, 9, 14);
+    BOBUIest::newRow("normal-1") << QDate(2002, 3, 15) << true << QDate(1752, 9, 14);
+    BOBUIest::newRow("normal-2") << QDate(9999, 12, 31) << true << QDate(1752, 9, 14);
+    BOBUIest::newRow("normal-3") << QDate(1753, 1, 1) << true << QDate(1752, 9, 14);
+    BOBUIest::newRow("invalid-0") << QDate(0, 0, 0) << false << QDate(1752, 9, 14);
 }
 
 void tst_QDateTimeEdit::clearMinimumDate()
@@ -689,21 +689,21 @@ void tst_QDateTimeEdit::clearMinimumDate()
 
 void tst_QDateTimeEdit::clearMinimumDateTime_data()
 {
-    QTest::addColumn<QDateTime>("minimumDateTime");
-    QTest::addColumn<bool>("valid");
-    QTest::addColumn<QDateTime>("expectedMinDateTimeAfterClear");
+    BOBUIest::addColumn<QDateTime>("minimumDateTime");
+    BOBUIest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QDateTime>("expectedMinDateTimeAfterClear");
 
-    QTest::newRow("normal-0") << QDateTime(QDate(2004, 05, 10), QTime(12, 12, 12))
-                              << true << QDateTime(QDate(1752, 9, 14), QTime(0, 0));
-    QTest::newRow("normal-1") << QDateTime(QDate(2002, 3, 15), QTime(13, 13, 13))
-                              << true << QDateTime(QDate(1752, 9, 14), QTime(0, 0));
-    QTest::newRow("normal-2") << QDateTime(QDate(9999, 12, 31), QTime(14, 14, 14))
-                              << true << QDateTime(QDate(1752, 9, 14), QTime(0, 0));
-    QTest::newRow("normal-3") << QDateTime(QDate(1753, 1, 1), QTime(15, 15, 15))
-                              << true << QDateTime(QDate(1752, 9, 14), QTime(0, 0));
-    QTest::newRow("invalid-0") << QDateTime() << false << QDateTime(QDate(1752, 9, 14), QTime(0, 0));
-    QTest::newRow("old") << QDateTime(QDate(1492, 8, 3), QTime(2, 3, 1)) << true
-                         << QDateTime(QDate(1752, 9, 14), QTime(0, 0));
+    BOBUIest::newRow("normal-0") << QDateTime(QDate(2004, 05, 10), BOBUIime(12, 12, 12))
+                              << true << QDateTime(QDate(1752, 9, 14), BOBUIime(0, 0));
+    BOBUIest::newRow("normal-1") << QDateTime(QDate(2002, 3, 15), BOBUIime(13, 13, 13))
+                              << true << QDateTime(QDate(1752, 9, 14), BOBUIime(0, 0));
+    BOBUIest::newRow("normal-2") << QDateTime(QDate(9999, 12, 31), BOBUIime(14, 14, 14))
+                              << true << QDateTime(QDate(1752, 9, 14), BOBUIime(0, 0));
+    BOBUIest::newRow("normal-3") << QDateTime(QDate(1753, 1, 1), BOBUIime(15, 15, 15))
+                              << true << QDateTime(QDate(1752, 9, 14), BOBUIime(0, 0));
+    BOBUIest::newRow("invalid-0") << QDateTime() << false << QDateTime(QDate(1752, 9, 14), BOBUIime(0, 0));
+    BOBUIest::newRow("old") << QDateTime(QDate(1492, 8, 3), BOBUIime(2, 3, 1)) << true
+                         << QDateTime(QDate(1752, 9, 14), BOBUIime(0, 0));
 }
 
 void tst_QDateTimeEdit::clearMinimumDateTime()
@@ -721,20 +721,20 @@ void tst_QDateTimeEdit::clearMinimumDateTime()
 
 void tst_QDateTimeEdit::clearMaximumDateTime_data()
 {
-    QTest::addColumn<QDateTime>("maximumDateTime");
-    QTest::addColumn<bool>("valid");
-    QTest::addColumn<QDateTime>("expectedMinDateTimeAfterClear");
+    BOBUIest::addColumn<QDateTime>("maximumDateTime");
+    BOBUIest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QDateTime>("expectedMinDateTimeAfterClear");
 
-    QTest::newRow("normal-0") << QDateTime(QDate(2004, 05, 10), QTime(12, 12, 12))
-                              << true << QDateTime(QDate(9999, 12, 31), QTime(23, 59, 59, 999));
-    QTest::newRow("normal-1") << QDateTime(QDate(2002, 3, 15), QTime(13, 13, 13))
-                              << true << QDateTime(QDate(9999, 12, 31), QTime(23, 59, 59, 999));
-    QTest::newRow("normal-2") << QDateTime(QDate(9999, 12, 31), QTime(14, 14, 14))
-                              << true << QDateTime(QDate(9999, 12, 31), QTime(23, 59, 59, 999));
-    QTest::newRow("normal-3") << QDateTime(QDate(1753, 1, 1), QTime(15, 15, 15))
-                              << true << QDateTime(QDate(9999, 12, 31), QTime(23, 59, 59, 999));
-    QTest::newRow("invalid-0") << QDateTime()
-                               << false << QDateTime(QDate(9999, 12, 31), QTime(23, 59, 59, 999));
+    BOBUIest::newRow("normal-0") << QDateTime(QDate(2004, 05, 10), BOBUIime(12, 12, 12))
+                              << true << QDateTime(QDate(9999, 12, 31), BOBUIime(23, 59, 59, 999));
+    BOBUIest::newRow("normal-1") << QDateTime(QDate(2002, 3, 15), BOBUIime(13, 13, 13))
+                              << true << QDateTime(QDate(9999, 12, 31), BOBUIime(23, 59, 59, 999));
+    BOBUIest::newRow("normal-2") << QDateTime(QDate(9999, 12, 31), BOBUIime(14, 14, 14))
+                              << true << QDateTime(QDate(9999, 12, 31), BOBUIime(23, 59, 59, 999));
+    BOBUIest::newRow("normal-3") << QDateTime(QDate(1753, 1, 1), BOBUIime(15, 15, 15))
+                              << true << QDateTime(QDate(9999, 12, 31), BOBUIime(23, 59, 59, 999));
+    BOBUIest::newRow("invalid-0") << QDateTime()
+                               << false << QDateTime(QDate(9999, 12, 31), BOBUIime(23, 59, 59, 999));
 }
 
 void tst_QDateTimeEdit::clearMaximumDateTime()
@@ -752,15 +752,15 @@ void tst_QDateTimeEdit::clearMaximumDateTime()
 
 void tst_QDateTimeEdit::clearMaximumDate_data()
 {
-    QTest::addColumn<QDate>("maximumDate");
-    QTest::addColumn<bool>("valid");
-    QTest::addColumn<QDate>("expectedMaxDateAfterClear");
+    BOBUIest::addColumn<QDate>("maximumDate");
+    BOBUIest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QDate>("expectedMaxDateAfterClear");
 
-    QTest::newRow("normal-0") << QDate(2004, 05, 10) << true << QDate(9999, 12, 31);
-    QTest::newRow("normal-1") << QDate(2002, 03, 15) << true << QDate(9999, 12, 31);
-    QTest::newRow("normal-2") << QDate(9999, 12, 31) << true << QDate(9999, 12, 31);
-    QTest::newRow("normal-3") << QDate(2000, 1, 1) << true << QDate(9999, 12, 31);
-    QTest::newRow("invalid-0") << QDate(0, 0, 0) << false << QDate(9999, 12, 31);
+    BOBUIest::newRow("normal-0") << QDate(2004, 05, 10) << true << QDate(9999, 12, 31);
+    BOBUIest::newRow("normal-1") << QDate(2002, 03, 15) << true << QDate(9999, 12, 31);
+    BOBUIest::newRow("normal-2") << QDate(9999, 12, 31) << true << QDate(9999, 12, 31);
+    BOBUIest::newRow("normal-3") << QDate(2000, 1, 1) << true << QDate(9999, 12, 31);
+    BOBUIest::newRow("invalid-0") << QDate(0, 0, 0) << false << QDate(9999, 12, 31);
 }
 
 void tst_QDateTimeEdit::clearMaximumDate()
@@ -778,28 +778,28 @@ void tst_QDateTimeEdit::clearMaximumDate()
 
 void tst_QDateTimeEdit::displayFormat_data()
 {
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<bool>("valid");
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<QDateTime>("date");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<QDateTime>("date");
 
-    const QDateTime dt(QDate(2999, 12, 31), QTime(3, 59, 59, 999));
+    const QDateTime dt(QDate(2999, 12, 31), BOBUIime(3, 59, 59, 999));
 
-    QTest::newRow("valid-0") << QString("yyyy MM dd") << true << QString("2999 12 31") << dt;
-    QTest::newRow("valid-1") << QString("dd MM yyyy::ss:mm:hh") << true
+    BOBUIest::newRow("valid-0") << QString("yyyy MM dd") << true << QString("2999 12 31") << dt;
+    BOBUIest::newRow("valid-1") << QString("dd MM yyyy::ss:mm:hh") << true
                              << QString("31 12 2999::59:59:03") << dt;
-    QTest::newRow("valid-2") << QString("hh-dd-mm-MM-yy") << true << QString("03-31-59-12-99") << dt;
-    QTest::newRow("valid-3") << QString("ddd MM d yyyy::ss:mm:hh") << true
+    BOBUIest::newRow("valid-2") << QString("hh-dd-mm-MM-yy") << true << QString("03-31-59-12-99") << dt;
+    BOBUIest::newRow("valid-3") << QString("ddd MM d yyyy::ss:mm:hh") << true
                              << QLocale::system().dayName(2, QLocale::ShortFormat) + " 12 31 2999::59:59:03" << dt;
-    QTest::newRow("valid-4") << QString("hh-dd-mm-MM-yyyy") << true << QString("03-31-59-12-2999") << dt;
-    QTest::newRow("invalid-0") << QString("yyyy.MM.yy") << true << QString("2999.12.99") << dt;
-    QTest::newRow("invalid-1") << QString("y") << false << QString() << dt;
-    QTest::newRow("invalid-2") << QString("") << false << QString() << dt;
-    QTest::newRow("quoted-1") << QString("'Midday is at:' dd") << true << QString("Midday is at: 31") << dt;
-    QTest::newRow("leading1") << QString("h:hh:hhh") << true << QString("3:03:033") << dt;
-    QTest::newRow("H1") << QString("HH:hh:ap") << true << QString("03:03:am") << dt;
-    QTest::newRow("H2") << QString("HH:hh:ap") << true << QString("23:11:pm")
-                        << QDateTime(dt.date(), QTime(23, 0, 0));
+    BOBUIest::newRow("valid-4") << QString("hh-dd-mm-MM-yyyy") << true << QString("03-31-59-12-2999") << dt;
+    BOBUIest::newRow("invalid-0") << QString("yyyy.MM.yy") << true << QString("2999.12.99") << dt;
+    BOBUIest::newRow("invalid-1") << QString("y") << false << QString() << dt;
+    BOBUIest::newRow("invalid-2") << QString("") << false << QString() << dt;
+    BOBUIest::newRow("quoted-1") << QString("'Midday is at:' dd") << true << QString("Midday is at: 31") << dt;
+    BOBUIest::newRow("leading1") << QString("h:hh:hhh") << true << QString("3:03:033") << dt;
+    BOBUIest::newRow("H1") << QString("HH:hh:ap") << true << QString("03:03:am") << dt;
+    BOBUIest::newRow("H2") << QString("HH:hh:ap") << true << QString("23:11:pm")
+                        << QDateTime(dt.date(), BOBUIime(23, 0, 0));
 }
 
 void tst_QDateTimeEdit::displayFormat()
@@ -823,7 +823,7 @@ void tst_QDateTimeEdit::displayFormat()
 void tst_QDateTimeEdit::selectAndScrollWithKeys()
 {
 #ifdef Q_OS_MAC
-    QSKIP("QTBUG-23674");
+    QSKIP("BOBUIBUG-23674");
     return;
 #endif
 
@@ -831,98 +831,98 @@ void tst_QDateTimeEdit::selectAndScrollWithKeys()
     testWidget->setDisplayFormat("dd/MM/yyyy");
     testWidget->show();
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("1"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/0"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/05"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/05/"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/05/2"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/05/20"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/05/200"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/05/2004"));
 
     // Now the year part should be selected
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2005, 5, 11));
     QCOMPARE(testWidget->currentSection(), QDateTimeEdit::YearSection);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("2005"));
-    QTest::keyClick(testWidget, Qt::Key_Down);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     QCOMPARE(testWidget->date(), QDate(2004, 5, 11));
     QCOMPARE(testWidget->currentSection(), QDateTimeEdit::YearSection);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("2004"));
 
 
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("4"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("04"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("004"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("2004"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("5/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("1/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11/05/2004"));
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
 
     // Now the day part should be selected
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2004, 5, 12));
     QCOMPARE(testWidget->currentSection(), QDateTimeEdit::DaySection);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("12"));
-    QTest::keyClick(testWidget, Qt::Key_Down);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     QCOMPARE(testWidget->date(), QDate(2004, 5, 11));
     QCOMPARE(testWidget->currentSection(), QDateTimeEdit::DaySection);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11"));
 
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
 
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11"));
     // Now the day part should be selected
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2004, 05, 12));
 }
 
@@ -932,62 +932,62 @@ void tst_QDateTimeEdit::backspaceKey()
     testWidget->setDisplayFormat("d/MM/yyyy");
     testWidget->show();
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
     QCOMPARE(testWidget->text(), QString("11/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QCOMPARE(testWidget->text(), QString("11/05/200"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("11/05/20"));
     // Check that moving into another field reverts it
     for (int i=0;i<3;i++)
-        QTest::keyClick(testWidget, Qt::Key_Left);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Left);
     QCOMPARE(testWidget->text(), QString("11/05/2004"));
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
     for (int i=0;i<4;i++)
-        QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
 
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("11/05/"));
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("11/0/2004"));
     testWidget->interpretText();
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("11/05/200"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("11/05/20"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("11/05/2"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("11/05/"));
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("11/0/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("11//2004"));
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("1/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QCOMPARE(testWidget->text(), QString("1/05/2004"));
 }
 
@@ -996,16 +996,16 @@ void tst_QDateTimeEdit::deleteKey()
     testWidget->setDate(QDate(2004, 05, 11));
     testWidget->setDisplayFormat("d/MM/yyyy");
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Delete);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Delete);
     QCOMPARE(testWidget->text(), QString("1/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Delete);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Delete);
     QCOMPARE(testWidget->text(), QString("/05/2004"));
-    QTest::keyClick(testWidget, Qt::Key_Right);
-    QTest::keyClick(testWidget, Qt::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
     QCOMPARE(testWidget->text(), QString("1/05/2004"));
 }
 
@@ -1016,13 +1016,13 @@ void tst_QDateTimeEdit::tabKeyNavigation()
     testWidget->show();
     testWidget->setCurrentSection(QDateTimeEdit::DaySection);
 
-    QTest::keyClick(testWidget, Qt::Key_Tab);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("05"));
-    QTest::keyClick(testWidget, Qt::Key_Tab);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("2004"));
-    QTest::keyClick(testWidget, Qt::Key_Tab, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("05"));
-    QTest::keyClick(testWidget, Qt::Key_Tab, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11"));
 }
 
@@ -1031,15 +1031,15 @@ void tst_QDateTimeEdit::tabKeyNavigationWithPrefix()
     testWidget->setDate(QDate(2004, 05, 11));
     testWidget->setDisplayFormat("prefix dd/MM/yyyy");
 
-    QTest::keyClick(testWidget, Qt::Key_Tab);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11"));
-    QTest::keyClick(testWidget, Qt::Key_Tab);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("05"));
-    QTest::keyClick(testWidget, Qt::Key_Tab);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("2004"));
-    QTest::keyClick(testWidget, Qt::Key_Tab, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("05"));
-    QTest::keyClick(testWidget, Qt::Key_Tab, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11"));
 }
 
@@ -1048,13 +1048,13 @@ void tst_QDateTimeEdit::tabKeyNavigationWithSuffix()
     testWidget->setDate(QDate(2004, 05, 11));
     testWidget->setDisplayFormat("dd/MM/yyyy 'suffix'");
 
-    QTest::keyClick(testWidget, Qt::Key_Tab);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("05"));
-    QTest::keyClick(testWidget, Qt::Key_Tab);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("2004"));
-    QTest::keyClick(testWidget, Qt::Key_Tab, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("05"));
-    QTest::keyClick(testWidget, Qt::Key_Tab, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab, BobUI::ShiftModifier);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11"));
 }
 
@@ -1065,49 +1065,49 @@ void tst_QDateTimeEdit::enterKey()
     testWidget->lineEdit()->setFocus();
 
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QVERIFY(!testWidget->lineEdit()->hasSelectedText());
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QVERIFY(!testWidget->lineEdit()->hasSelectedText());
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Tab);
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11"));
-    QTest::keyClick(testWidget, Qt::Key_1);
-    QTest::keyClick(testWidget, Qt::Key_5);
+    BOBUIest::keyClick(testWidget, BobUI::Key_1);
+    BOBUIest::keyClick(testWidget, BobUI::Key_5);
 
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
 
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("15"));
     QCOMPARE(testWidget->date(), QDate(2004, 5, 15));
 
-    QTest::keyClick(testWidget, Qt::Key_9);
-    QTest::keyClick(testWidget, Qt::Key_Tab, Qt::ShiftModifier);
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_9);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab, BobUI::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("9"));
     QCOMPARE(testWidget->date(), QDate(2004, 5, 9));
 
-    QTest::keyClick(testWidget, Qt::Key_0);
-    QTest::keyClick(testWidget, Qt::Key_0);
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_0);
+    BOBUIest::keyClick(testWidget, BobUI::Key_0);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("9"));
     QCOMPARE(testWidget->date(), QDate(2004, 5, 9));
 
@@ -1116,7 +1116,7 @@ void tst_QDateTimeEdit::enterKey()
     // wasn't actually changed.  While this behaviour is questionable,
     // we include this test so a change to the behaviour can't go unnoticed.
     QSignalSpy enterSpy(testWidget, SIGNAL(dateChanged(QDate)));
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QCOMPARE(enterSpy.size(), 1);
     QVariantList list = enterSpy.takeFirst();
     QCOMPARE(list.at(0).toDate(), QDate(2004, 5, 9));
@@ -1131,75 +1131,75 @@ void tst_QDateTimeEdit::specialValueText()
     testWidget->setCurrentSection(QDateTimeEdit::DaySection);
     QCOMPARE(testWidget->date(), QDate(2000, 1, 2));
     QCOMPARE(testWidget->text(), QString("02/01/2000"));
-    QTest::keyClick(testWidget, Qt::Key_Down);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     QCOMPARE(testWidget->date(), QDate(2000, 1, 1));
     QCOMPARE(testWidget->text(), QString("fOo"));
-    QTest::keyClick(testWidget, Qt::Key_Down);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     QCOMPARE(testWidget->date(), QDate(2000, 1, 1));
     QCOMPARE(testWidget->text(), QString("fOo"));
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2000, 1, 2));
     QCOMPARE(testWidget->text(), QString("02/01/2000"));
-    QTest::keyClick(testWidget, Qt::Key_Down);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     QCOMPARE(testWidget->date(), QDate(2000, 1, 1));
     QCOMPARE(testWidget->text(), QString("fOo"));
 
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2000, 1, 2));
     QCOMPARE(testWidget->text(), QString("02/01/2000"));
-    QTest::keyClick(testWidget, Qt::Key_Down);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     QCOMPARE(testWidget->text(), QString("fOo"));
 
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("fO"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString("f"));
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString());
-    QTest::keyClick(testWidget, Qt::Key_F);
+    BOBUIest::keyClick(testWidget, BobUI::Key_F);
     QCOMPARE(testWidget->text(), QString("f"));
-    QTest::keyClick(testWidget, Qt::Key_O); // will automatically uppercase
+    BOBUIest::keyClick(testWidget, BobUI::Key_O); // will automatically uppercase
     QCOMPARE(testWidget->text(), QString("fO"));
-    QTest::keyClick(testWidget, Qt::Key_O);
+    BOBUIest::keyClick(testWidget, BobUI::Key_O);
     QCOMPARE(testWidget->text(), QString("fOo"));
 }
 
 void tst_QDateTimeEdit::setRange_data()
 {
-    QTest::addColumn<QTime>("minTime");
-    QTest::addColumn<QTime>("maxTime");
-    QTest::addColumn<QDate>("minDate");
-    QTest::addColumn<QDate>("maxDate");
-    QTest::addColumn<QDateTime>("expectedMin");
-    QTest::addColumn<QDateTime>("expectedMax");
+    BOBUIest::addColumn<BOBUIime>("minTime");
+    BOBUIest::addColumn<BOBUIime>("maxTime");
+    BOBUIest::addColumn<QDate>("minDate");
+    BOBUIest::addColumn<QDate>("maxDate");
+    BOBUIest::addColumn<QDateTime>("expectedMin");
+    BOBUIest::addColumn<QDateTime>("expectedMax");
 
     const QDate cdt = QDate::currentDate();
 
-    QTest::newRow("data0") << QTime(0, 0) << QTime(14, 12, 0)
+    BOBUIest::newRow("data0") << BOBUIime(0, 0) << BOBUIime(14, 12, 0)
                            << cdt << cdt
-                           << QDateTime(cdt, QTime(0, 0))
-                           << QDateTime(cdt, QTime(14, 12, 0));
+                           << QDateTime(cdt, BOBUIime(0, 0))
+                           << QDateTime(cdt, BOBUIime(14, 12, 0));
 
-    QTest::newRow("data1") << QTime(10, 0) << QTime(1, 12, 0) << cdt.addDays(-1)
+    BOBUIest::newRow("data1") << BOBUIime(10, 0) << BOBUIime(1, 12, 0) << cdt.addDays(-1)
                            << cdt
-                           << QDateTime(cdt.addDays(-1), QTime(10, 0))
-                           << QDateTime(cdt, QTime(1, 12, 0));
+                           << QDateTime(cdt.addDays(-1), BOBUIime(10, 0))
+                           << QDateTime(cdt, BOBUIime(1, 12, 0));
 }
 
 void tst_QDateTimeEdit::setRange()
 {
-    QFETCH(QTime, minTime);
-    QFETCH(QTime, maxTime);
+    QFETCH(BOBUIime, minTime);
+    QFETCH(BOBUIime, maxTime);
     QFETCH(QDate, minDate);
     QFETCH(QDate, maxDate);
     QFETCH(QDateTime, expectedMin);
@@ -1276,50 +1276,50 @@ void tst_QDateTimeEdit::setRange()
 */
 void tst_QDateTimeEdit::editingRanged_data()
 {
-    QTest::addColumn<QDate>("minDate");
-    QTest::addColumn<QTime>("minTime");
-    QTest::addColumn<QDate>("maxDate");
-    QTest::addColumn<QTime>("maxTime");
-    QTest::addColumn<QString>("userInput");
-    QTest::addColumn<QDateTime>("expected");
+    BOBUIest::addColumn<QDate>("minDate");
+    BOBUIest::addColumn<BOBUIime>("minTime");
+    BOBUIest::addColumn<QDate>("maxDate");
+    BOBUIest::addColumn<BOBUIime>("maxTime");
+    BOBUIest::addColumn<QString>("userInput");
+    BOBUIest::addColumn<QDateTime>("expected");
 
-    QTest::addRow("trivial")
-        << QDate(2010, 1, 1) << QTime(9, 0)
-        << QDate(2011, 12, 31) << QTime(16, 0)
+    BOBUIest::addRow("trivial")
+        << QDate(2010, 1, 1) << BOBUIime(9, 0)
+        << QDate(2011, 12, 31) << BOBUIime(16, 0)
         << QString::fromLatin1("311220101600")
-        << QDateTime(QDate(2010, 12, 31), QTime(16, 0));
+        << QDateTime(QDate(2010, 12, 31), BOBUIime(16, 0));
 
-    QTest::addRow("data0")
-        << QDate(2010, 12, 30) << QTime(16, 0)
-        << QDate(2011, 1, 2) << QTime(9, 0)
+    BOBUIest::addRow("data0")
+        << QDate(2010, 12, 30) << BOBUIime(16, 0)
+        << QDate(2011, 1, 2) << BOBUIime(9, 0)
         << QString::fromLatin1("311220102359")
-        << QDateTime(QDate(2010, 12, 31), QTime(23, 59));
+        << QDateTime(QDate(2010, 12, 31), BOBUIime(23, 59));
 
-    QTest::addRow("data1")
-        << QDate(2010, 12, 30) << QTime(16, 0)
-        << QDate(2011, 1, 2) << QTime(9, 0)
+    BOBUIest::addRow("data1")
+        << QDate(2010, 12, 30) << BOBUIime(16, 0)
+        << QDate(2011, 1, 2) << BOBUIime(9, 0)
         << QString::fromLatin1("010120111823")
-        << QDateTime(QDate(2011, 1, 1), QTime(18, 23));
+        << QDateTime(QDate(2011, 1, 1), BOBUIime(18, 23));
 
-    QTest::addRow("Out of range")
-        << QDate(2010, 12, 30) << QTime(16, 0)
-        << QDate(2011, 1, 2) << QTime(9, 0)
+    BOBUIest::addRow("Out of range")
+        << QDate(2010, 12, 30) << BOBUIime(16, 0)
+        << QDate(2011, 1, 2) << BOBUIime(9, 0)
         << QString::fromLatin1("090920111823")
-        << QDateTime(QDate(2011, 1, 2), QTime(9, 0));
+        << QDateTime(QDate(2011, 1, 2), BOBUIime(9, 0));
 
-    QTest::addRow("only date")
-        << QDate(2010, 12, 30) << QTime()
-        << QDate(2011, 1, 2) << QTime()
+    BOBUIest::addRow("only date")
+        << QDate(2010, 12, 30) << BOBUIime()
+        << QDate(2011, 1, 2) << BOBUIime()
         << QString::fromLatin1("01012011")
-        << QDateTime(QDate(2011, 1, 1), QTime(), QTimeZone::UTC);
+        << QDateTime(QDate(2011, 1, 1), BOBUIime(), BOBUIimeZone::UTC);
 }
 
 void tst_QDateTimeEdit::editingRanged()
 {
     QFETCH(QDate, minDate);
-    QFETCH(QTime, minTime);
+    QFETCH(BOBUIime, minTime);
     QFETCH(QDate, maxDate);
-    QFETCH(QTime, maxTime);
+    QFETCH(BOBUIime, maxTime);
     QFETCH(QString, userInput);
     QFETCH(QDateTime, expected);
 
@@ -1347,16 +1347,16 @@ void tst_QDateTimeEdit::editingRanged()
     });
 
     edit->show();
-    QVERIFY(QTest::qWaitForWindowFocused(edit.get()));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(edit.get()));
     edit->setFocus();
 
     // with keyboard tracking, never get a signal with an out-of-range value
     edit->setKeyboardTracking(true);
-    QTest::keyClicks(edit.get(), userInput);
-    QTest::keyClick(edit.get(), Qt::Key_Return);
+    BOBUIest::keyClicks(edit.get(), userInput);
+    BOBUIest::keyClick(edit.get(), BobUI::Key_Return);
     QVERIFY(callCount > 0);
 
-    // QDateTimeEdit blocks these dates from being entered - see QTBUG-65
+    // QDateTimeEdit blocks these dates from being entered - see BOBUIBUG-65
     QEXPECT_FAIL("data0", "Can't enter this date", Continue);
     QEXPECT_FAIL("data1", "Can't enter this date", Continue);
     QEXPECT_FAIL("Out of range", "Can't enter this date", Continue);
@@ -1369,65 +1369,65 @@ void tst_QDateTimeEdit::editingRanged()
     callCount = 0;
 
     edit->setKeyboardTracking(false);
-    QTest::keyClicks(edit.get(), userInput);
-    QTest::keyClick(edit.get(), Qt::Key_Return);
+    BOBUIest::keyClicks(edit.get(), userInput);
+    BOBUIest::keyClick(edit.get(), BobUI::Key_Return);
     QCOMPARE(edit->dateTime(), expected);
     QCOMPARE(callCount, 1);
 }
 
 void tst_QDateTimeEdit::wrappingTime_data()
 {
-    QTest::addColumn<bool>("startWithMin");
-    QTest::addColumn<QTime>("minimumTime");
-    QTest::addColumn<QTime>("maximumTime");
-    QTest::addColumn<uint>("section");
-    QTest::addColumn<QTime>("newTime");
+    BOBUIest::addColumn<bool>("startWithMin");
+    BOBUIest::addColumn<BOBUIime>("minimumTime");
+    BOBUIest::addColumn<BOBUIime>("maximumTime");
+    BOBUIest::addColumn<uint>("section");
+    BOBUIest::addColumn<BOBUIime>("newTime");
 
-    QTest::newRow("data0") << false << QTime(0,0,0) << QTime(2,2,2) << (uint)QDateTimeEdit::HourSection
-                        << QTime(0,2,2);
-    QTest::newRow("data1") << true << QTime(0,0,0) << QTime(2,2,2) << (uint)QDateTimeEdit::HourSection
-                        << QTime(2,0,0);
-    QTest::newRow("data2") << false << QTime(0,0,0) << QTime(2,2,2) << (uint)QDateTimeEdit::MinuteSection
-                        << QTime(2,0,2);
-    QTest::newRow("data3") << true << QTime(0,0,0) << QTime(2,2,2) << (uint)QDateTimeEdit::MinuteSection
-                        << QTime(0,59,0);
-    QTest::newRow("data4") << false << QTime(0,0,0) << QTime(2,2,2) << (uint)QDateTimeEdit::SecondSection
-                        << QTime(2,2,0);
-    QTest::newRow("data5") << true << QTime(0,0,0) << QTime(2,2,2) << (uint)QDateTimeEdit::SecondSection
-                        << QTime(0,0,59);
-    QTest::newRow("data6") << false << QTime(1,1,1) << QTime(22,22,22) << (uint)QDateTimeEdit::HourSection
-                        << QTime(1,22,22);
-    QTest::newRow("data7") << true << QTime(1,1,1) << QTime(22,22,22) << (uint)QDateTimeEdit::HourSection
-                        << QTime(22,1,1);
-    QTest::newRow("data8") << false << QTime(1,1,1) << QTime(22,22,22) << (uint)QDateTimeEdit::MinuteSection
-                        << QTime(22,0,22);
-    QTest::newRow("data9") << true << QTime(1,1,1) << QTime(22,22,22) << (uint)QDateTimeEdit::MinuteSection
-                        << QTime(1,59,1);
-    QTest::newRow("data10") << false << QTime(1,1,1) << QTime(22,22,22) << (uint)QDateTimeEdit::SecondSection
-                         << QTime(22,22,0);
-    QTest::newRow("data11") << true << QTime(1,1,1) << QTime(22,22,22) << (uint)QDateTimeEdit::SecondSection
-                         << QTime(1,1,59);
-    QTest::newRow("data12") << false << QTime(1,1,1) << QTime(1,2,1) << (uint)QDateTimeEdit::HourSection
-                         << QTime(1,2,1);
-    QTest::newRow("data13") << true << QTime(1,1,1) << QTime(1,2,1) << (uint)QDateTimeEdit::HourSection
-                         << QTime(1,1,1);
-    QTest::newRow("data14") << false << QTime(1,1,1) << QTime(1,2,1) << (uint)QDateTimeEdit::MinuteSection
-                         << QTime(1,1,1);
-    QTest::newRow("data15") << true << QTime(1,1,1) << QTime(1,2,1) << (uint)QDateTimeEdit::MinuteSection
-                         << QTime(1,2,1);
-    QTest::newRow("data16") << false << QTime(1,1,1) << QTime(1,2,1) << (uint)QDateTimeEdit::SecondSection
-                         << QTime(1,2,0);
-    QTest::newRow("data17") << true << QTime(1,1,1) << QTime(1,2,1) << (uint)QDateTimeEdit::SecondSection
-                         << QTime(1,1,59);
+    BOBUIest::newRow("data0") << false << BOBUIime(0,0,0) << BOBUIime(2,2,2) << (uint)QDateTimeEdit::HourSection
+                        << BOBUIime(0,2,2);
+    BOBUIest::newRow("data1") << true << BOBUIime(0,0,0) << BOBUIime(2,2,2) << (uint)QDateTimeEdit::HourSection
+                        << BOBUIime(2,0,0);
+    BOBUIest::newRow("data2") << false << BOBUIime(0,0,0) << BOBUIime(2,2,2) << (uint)QDateTimeEdit::MinuteSection
+                        << BOBUIime(2,0,2);
+    BOBUIest::newRow("data3") << true << BOBUIime(0,0,0) << BOBUIime(2,2,2) << (uint)QDateTimeEdit::MinuteSection
+                        << BOBUIime(0,59,0);
+    BOBUIest::newRow("data4") << false << BOBUIime(0,0,0) << BOBUIime(2,2,2) << (uint)QDateTimeEdit::SecondSection
+                        << BOBUIime(2,2,0);
+    BOBUIest::newRow("data5") << true << BOBUIime(0,0,0) << BOBUIime(2,2,2) << (uint)QDateTimeEdit::SecondSection
+                        << BOBUIime(0,0,59);
+    BOBUIest::newRow("data6") << false << BOBUIime(1,1,1) << BOBUIime(22,22,22) << (uint)QDateTimeEdit::HourSection
+                        << BOBUIime(1,22,22);
+    BOBUIest::newRow("data7") << true << BOBUIime(1,1,1) << BOBUIime(22,22,22) << (uint)QDateTimeEdit::HourSection
+                        << BOBUIime(22,1,1);
+    BOBUIest::newRow("data8") << false << BOBUIime(1,1,1) << BOBUIime(22,22,22) << (uint)QDateTimeEdit::MinuteSection
+                        << BOBUIime(22,0,22);
+    BOBUIest::newRow("data9") << true << BOBUIime(1,1,1) << BOBUIime(22,22,22) << (uint)QDateTimeEdit::MinuteSection
+                        << BOBUIime(1,59,1);
+    BOBUIest::newRow("data10") << false << BOBUIime(1,1,1) << BOBUIime(22,22,22) << (uint)QDateTimeEdit::SecondSection
+                         << BOBUIime(22,22,0);
+    BOBUIest::newRow("data11") << true << BOBUIime(1,1,1) << BOBUIime(22,22,22) << (uint)QDateTimeEdit::SecondSection
+                         << BOBUIime(1,1,59);
+    BOBUIest::newRow("data12") << false << BOBUIime(1,1,1) << BOBUIime(1,2,1) << (uint)QDateTimeEdit::HourSection
+                         << BOBUIime(1,2,1);
+    BOBUIest::newRow("data13") << true << BOBUIime(1,1,1) << BOBUIime(1,2,1) << (uint)QDateTimeEdit::HourSection
+                         << BOBUIime(1,1,1);
+    BOBUIest::newRow("data14") << false << BOBUIime(1,1,1) << BOBUIime(1,2,1) << (uint)QDateTimeEdit::MinuteSection
+                         << BOBUIime(1,1,1);
+    BOBUIest::newRow("data15") << true << BOBUIime(1,1,1) << BOBUIime(1,2,1) << (uint)QDateTimeEdit::MinuteSection
+                         << BOBUIime(1,2,1);
+    BOBUIest::newRow("data16") << false << BOBUIime(1,1,1) << BOBUIime(1,2,1) << (uint)QDateTimeEdit::SecondSection
+                         << BOBUIime(1,2,0);
+    BOBUIest::newRow("data17") << true << BOBUIime(1,1,1) << BOBUIime(1,2,1) << (uint)QDateTimeEdit::SecondSection
+                         << BOBUIime(1,1,59);
 }
 
 void tst_QDateTimeEdit::wrappingTime()
 {
     QFETCH(bool, startWithMin);
-    QFETCH(QTime, minimumTime);
-    QFETCH(QTime, maximumTime);
+    QFETCH(BOBUIime, minimumTime);
+    QFETCH(BOBUIime, maximumTime);
     QFETCH(uint, section);
-    QFETCH(QTime, newTime);
+    QFETCH(BOBUIime, newTime);
 
     testWidget->setDisplayFormat("hh:mm:ss");
     testWidget->setMinimumTime(minimumTime);
@@ -1436,385 +1436,385 @@ void tst_QDateTimeEdit::wrappingTime()
     testWidget->setCurrentSection((QDateTimeEdit::Section)section);
     if (startWithMin) {
         testWidget->setTime(minimumTime);
-        QTest::keyClick(testWidget, Qt::Key_Down);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     } else {
         testWidget->setTime(maximumTime);
-        QTest::keyClick(testWidget, Qt::Key_Up);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     }
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QCOMPARE(testWidget->time(), newTime);
 }
 
 void tst_QDateTimeEdit::userKeyPress_Time_data()
 {
-    QTest::addColumn<bool>("ampm");
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<QTime>("expected_time");
+    BOBUIest::addColumn<bool>("ampm");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<BOBUIime>("expected_time");
 
     // ***************** test the hours ***************
 
     // use up/down keys to change hour in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 10, 0, 0 );
-        QTest::newRow( "data0" ) << bool(true) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 10, 0, 0 );
+        BOBUIest::newRow( "data0" ) << bool(true) << keys << expected;
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         for (uint i=0; i<5; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 6, 0, 0 );
-        QTest::newRow( "data1" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 6, 0, 0 );
+        BOBUIest::newRow( "data1" ) << bool(true) << keys << expected;
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         for (uint i=0; i<10; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 1, 0, 0 );
-        QTest::newRow( "data2" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 1, 0, 0 );
+        BOBUIest::newRow( "data2" ) << bool(true) << keys << expected;
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         for (uint i=0; i<12; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 23, 0, 0 );
-        QTest::newRow( "data3" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 23, 0, 0 );
+        BOBUIest::newRow( "data3" ) << bool(true) << keys << expected;
     }
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 12, 0, 0 );
-        QTest::newRow( "data4" ) << bool(true) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 12, 0, 0 );
+        BOBUIest::newRow( "data4" ) << bool(true) << keys << expected;
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 13, 0, 0 );
-        QTest::newRow( "data5" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 13, 0, 0 );
+        BOBUIest::newRow( "data5" ) << bool(true) << keys << expected;
     }
 
     // use up/down keys to change hour in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 10, 0, 0 );
-        QTest::newRow( "data6" ) << bool(false) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 10, 0, 0 );
+        BOBUIest::newRow( "data6" ) << bool(false) << keys << expected;
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         for (uint i=0; i<5; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 6, 0, 0 );
-        QTest::newRow( "data7" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 6, 0, 0 );
+        BOBUIest::newRow( "data7" ) << bool(false) << keys << expected;
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         for (uint i=0; i<10; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 1, 0, 0 );
-        QTest::newRow( "data8" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 1, 0, 0 );
+        BOBUIest::newRow( "data8" ) << bool(false) << keys << expected;
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         for (uint i=0; i<12; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 23, 0, 0 );
-        QTest::newRow( "data9" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 23, 0, 0 );
+        BOBUIest::newRow( "data9" ) << bool(false) << keys << expected;
     }
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 12, 0, 0 );
-        QTest::newRow( "data10" ) << bool(false) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 12, 0, 0 );
+        BOBUIest::newRow( "data10" ) << bool(false) << keys << expected;
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 13, 0, 0 );
-        QTest::newRow( "data11" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 13, 0, 0 );
+        BOBUIest::newRow( "data11" ) << bool(false) << keys << expected;
     }
 
     // enter a one digit valid hour
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick( '5' );
-        QTime expected( 5, 0, 0 );
-        QTest::newRow( "data12" ) << bool(true) << keys << expected;
+        BOBUIime expected( 5, 0, 0 );
+        BOBUIest::newRow( "data12" ) << bool(true) << keys << expected;
     }
 
     // entering a two digit valid hour
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick( '1' );
         keys.addKeyClick( '1' );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data13" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data13" ) << bool(true) << keys << expected;
     }
 
     // entering an invalid hour
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick( '2' );
         // the '5' creates an invalid hour (25) so it must be ignored
         keys.addKeyClick( '5' );
-        QTime expected( 2, 0, 0 );
-        QTest::newRow( "data14" ) << bool(true) << keys << expected;
+        BOBUIime expected( 2, 0, 0 );
+        BOBUIest::newRow( "data14" ) << bool(true) << keys << expected;
     }
 
     // enter a value, in hour which causes a field change
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick( '0' );
         keys.addKeyClick( '2' );
         keys.addKeyClick( '1' );
-        QTime expected( 2, 1, 0 );
-        QTest::newRow( "data15" ) << bool(true) << keys << expected;
+        BOBUIime expected( 2, 1, 0 );
+        BOBUIest::newRow( "data15" ) << bool(true) << keys << expected;
     }
 
     // enter a one digit valid hour in 24 h mode
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick( '5' );
-        QTime expected( 5, 0, 0 );
-        QTest::newRow( "data16" ) << bool(false) << keys << expected;
+        BOBUIime expected( 5, 0, 0 );
+        BOBUIest::newRow( "data16" ) << bool(false) << keys << expected;
     }
 
     // enter a two digit valid hour in 24 h mode
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick( '1' );
         keys.addKeyClick( '1' );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data17" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data17" ) << bool(false) << keys << expected;
     }
 
     // enter a two digit valid hour (>12) in 24 h mode
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick( '1' );
         keys.addKeyClick( '5' );
-        QTime expected( 15, 0, 0 );
-        QTest::newRow( "data18" ) << bool(false) << keys << expected;
+        BOBUIime expected( 15, 0, 0 );
+        BOBUIest::newRow( "data18" ) << bool(false) << keys << expected;
     }
 
     // enter a two digit valid hour (>20) in 24 h mode
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick( '2' );
         keys.addKeyClick( '1' );
-        QTime expected( 21, 0, 0 );
-        QTest::newRow( "data19" ) << bool(false) << keys << expected;
+        BOBUIime expected( 21, 0, 0 );
+        BOBUIest::newRow( "data19" ) << bool(false) << keys << expected;
     }
 
     // enter a two digit invalid hour (>23) in 24 h mode
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick( '2' );
         keys.addKeyClick( '4' );
-        QTime expected( 2, 0, 0 );
-        QTest::newRow( "data20" ) << bool(false) << keys << expected;
+        BOBUIime expected( 2, 0, 0 );
+        BOBUIest::newRow( "data20" ) << bool(false) << keys << expected;
     }
 
     // ***************** test the minutes ***************
 
     // use up/down keys to change the minutes in 12 hour mode
     { // test a valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 2, 0 );
-        QTest::newRow( "data21" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 2, 0 );
+        BOBUIest::newRow( "data21" ) << bool(true) << keys << expected;
     }
     { // test a valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<16; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 16, 0 );
-        QTest::newRow( "data22" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 16, 0 );
+        BOBUIest::newRow( "data22" ) << bool(true) << keys << expected;
     }
     { // test maximum value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<59; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 59, 0 );
-        QTest::newRow( "data23" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 59, 0 );
+        BOBUIest::newRow( "data23" ) << bool(true) << keys << expected;
     }
     { // test 'overflow'
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<60; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data24" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data24" ) << bool(true) << keys << expected;
     }
     { // test 'underflow'
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 59, 0 );
-        QTest::newRow( "data25" ) << bool(true) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 59, 0 );
+        BOBUIest::newRow( "data25" ) << bool(true) << keys << expected;
     }
     { // test valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 58, 0 );
-        QTest::newRow( "data26" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 58, 0 );
+        BOBUIest::newRow( "data26" ) << bool(true) << keys << expected;
     }
 
     // use up/down keys to change the minutes in 24 hour mode
 
     { // test a valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 2, 0 );
-        QTest::newRow( "data27" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 2, 0 );
+        BOBUIest::newRow( "data27" ) << bool(false) << keys << expected;
     }
     { // test a valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<16; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 16, 0 );
-        QTest::newRow( "data28" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 16, 0 );
+        BOBUIest::newRow( "data28" ) << bool(false) << keys << expected;
     }
     { // test maximum value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<59; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 59, 0 );
-        QTest::newRow( "data29" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 59, 0 );
+        BOBUIest::newRow( "data29" ) << bool(false) << keys << expected;
     }
     { // test 'overflow'
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<60; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data30" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data30" ) << bool(false) << keys << expected;
     }
     { // test 'underflow'
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 59, 0 );
-        QTest::newRow( "data31" ) << bool(false) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 59, 0 );
+        BOBUIest::newRow( "data31" ) << bool(false) << keys << expected;
     }
     { // test valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 58, 0 );
-        QTest::newRow( "data32" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 58, 0 );
+        BOBUIest::newRow( "data32" ) << bool(false) << keys << expected;
     }
 
     // enter a valid one digit minute in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Tab);
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Tab);
         keys.addKeyClick( '2' );
-        QTime expected( 11, 2, 0 );
-        QTest::newRow( "data33" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 2, 0 );
+        BOBUIest::newRow( "data33" ) << bool(true) << keys << expected;
     }
 
     // enter a valid two digit minutes in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Tab);
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Tab);
         keys.addKeyClick( '2' );
         keys.addKeyClick( '4' );
-        QTime expected( 11, 24, 0 );
-        QTest::newRow( "data34" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 24, 0 );
+        BOBUIest::newRow( "data34" ) << bool(true) << keys << expected;
     }
 
     // check the lower limit of the minutes in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Tab);
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Tab);
         keys.addKeyClick( '0' );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data35" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data35" ) << bool(true) << keys << expected;
     }
 
     // check the upper limit of the minutes in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Tab);
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Tab);
         keys.addKeyClick( '5' );
         keys.addKeyClick( '9' );
-        QTime expected( 11, 59, 0 );
-        QTest::newRow( "data36" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 59, 0 );
+        BOBUIest::newRow( "data36" ) << bool(true) << keys << expected;
     }
 
     // enter an invalid two digit minutes in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '6' );
         keys.addKeyClick( '0' );
-        QTime expected( 11, 6, 0 );
-        QTest::newRow( "data37" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 6, 0 );
+        BOBUIest::newRow( "data37" ) << bool(true) << keys << expected;
     }
 
     // test minutes in 24 hour motestWidget-> Behaviour should be exactly the same
 
     // enter a valid one digit minute in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '2' );
-        QTime expected( 11, 2, 0 );
-        QTest::newRow( "data38" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 2, 0 );
+        BOBUIest::newRow( "data38" ) << bool(false) << keys << expected;
     }
 
     // enter a valid two digit minutes in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '2' );
         keys.addKeyClick( '4' );
-        QTime expected( 11, 24, 0 );
-        QTest::newRow( "data39" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 24, 0 );
+        BOBUIest::newRow( "data39" ) << bool(false) << keys << expected;
     }
 
     // check the lower limit of the minutes in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '0' );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data40" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data40" ) << bool(false) << keys << expected;
     }
 
     // check the upper limit of the minutes in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '5' );
         keys.addKeyClick( '9' );
-        QTime expected( 11, 59, 0 );
-        QTest::newRow( "data41" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 59, 0 );
+        BOBUIest::newRow( "data41" ) << bool(false) << keys << expected;
     }
 
     // enter an invalid two digit minutes in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '6' );
         keys.addKeyClick( '0' );
-        QTime expected( 11, 6, 0 );
-        QTest::newRow( "data42" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 6, 0 );
+        BOBUIest::newRow( "data42" ) << bool(false) << keys << expected;
     }
 
     // ***************** test the seconds ***************
@@ -1823,322 +1823,322 @@ void tst_QDateTimeEdit::userKeyPress_Time_data()
 
     // use up/down keys to change the seconds in 12 hour mode
     { // test a valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 2 );
-        QTest::newRow( "data43" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 2 );
+        BOBUIest::newRow( "data43" ) << bool(true) << keys << expected;
     }
     { // test a valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<16; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 16 );
-        QTest::newRow( "data44" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 16 );
+        BOBUIest::newRow( "data44" ) << bool(true) << keys << expected;
     }
     { // test maximum value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<59; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 59 );
-        QTest::newRow( "data45" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 59 );
+        BOBUIest::newRow( "data45" ) << bool(true) << keys << expected;
     }
     { // test 'overflow'
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<60; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data46" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data46" ) << bool(true) << keys << expected;
     }
     { // test 'underflow'
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 0, 59 );
-        QTest::newRow( "data47" ) << bool(true) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 0, 59 );
+        BOBUIest::newRow( "data47" ) << bool(true) << keys << expected;
     }
     { // test valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 0, 58 );
-        QTest::newRow( "data48" ) << bool(true) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 0, 58 );
+        BOBUIest::newRow( "data48" ) << bool(true) << keys << expected;
     }
 
     // use up/down keys to change the seconds in 24 hour mode
 
     { // test a valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 2 );
-        QTest::newRow( "data49" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 2 );
+        BOBUIest::newRow( "data49" ) << bool(false) << keys << expected;
     }
     { // test a valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<16; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 16 );
-        QTest::newRow( "data50" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 16 );
+        BOBUIest::newRow( "data50" ) << bool(false) << keys << expected;
     }
     { // test maximum value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<59; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 59 );
-        QTest::newRow( "data51" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 59 );
+        BOBUIest::newRow( "data51" ) << bool(false) << keys << expected;
     }
     { // test 'overflow'
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<60; i++)
-            keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data52" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data52" ) << bool(false) << keys << expected;
     }
     { // test 'underflow'
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 0, 59 );
-        QTest::newRow( "data53" ) << bool(false) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 0, 59 );
+        BOBUIest::newRow( "data53" ) << bool(false) << keys << expected;
     }
     { // test valid value
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         for (uint i=0; i<2; i++)
-            keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 0, 58 );
-        QTest::newRow( "data54" ) << bool(false) << keys << expected;
+            keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 0, 58 );
+        BOBUIest::newRow( "data54" ) << bool(false) << keys << expected;
     }
 
     // enter a valid one digit second in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '2' );
-        QTime expected( 11, 0, 2 );
-        QTest::newRow( "data55" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 0, 2 );
+        BOBUIest::newRow( "data55" ) << bool(true) << keys << expected;
     }
 
     // enter a valid two digit seconds in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '2' );
         keys.addKeyClick( '4' );
-        QTime expected( 11, 0, 24 );
-        QTest::newRow( "data56" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 0, 24 );
+        BOBUIest::newRow( "data56" ) << bool(true) << keys << expected;
     }
 
     // check the lower limit of the seconds in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '0' );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data57" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data57" ) << bool(true) << keys << expected;
     }
 
     // check the upper limit of the seconds in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '5' );
         keys.addKeyClick( '9' );
-        QTime expected( 11, 0, 59 );
-        QTest::newRow( "data58" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 0, 59 );
+        BOBUIest::newRow( "data58" ) << bool(true) << keys << expected;
     }
 
     // enter an invalid two digit seconds in 12 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '6' );
         keys.addKeyClick( '0' );
-        QTime expected( 11, 0, 6 );
-        QTest::newRow( "data59" ) << bool(true) << keys << expected;
+        BOBUIime expected( 11, 0, 6 );
+        BOBUIest::newRow( "data59" ) << bool(true) << keys << expected;
     }
 
     // test seconds in 24 hour mode. Behaviour should be exactly the same
 
     // enter a valid one digit minute in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '2' );
-        QTime expected( 11, 0, 2 );
-        QTest::newRow( "data60" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 0, 2 );
+        BOBUIest::newRow( "data60" ) << bool(false) << keys << expected;
     }
 
     // enter a valid two digit seconds in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '2' );
         keys.addKeyClick( '4' );
-        QTime expected( 11, 0, 24 );
-        QTest::newRow( "data61" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 0, 24 );
+        BOBUIest::newRow( "data61" ) << bool(false) << keys << expected;
     }
 
     // check the lower limit of the seconds in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '0' );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data62" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data62" ) << bool(false) << keys << expected;
     }
 
     // check the upper limit of the seconds in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '5' );
         keys.addKeyClick( '9' );
-        QTime expected( 11, 0, 59 );
-        QTest::newRow( "data63" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 0, 59 );
+        BOBUIest::newRow( "data63" ) << bool(false) << keys << expected;
     }
 
     // enter an invalid two digit seconds in 24 h mode
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
         keys.addKeyClick( '6' );
         keys.addKeyClick( '0' );
-        QTime expected( 11, 0, 6 );
-        QTest::newRow( "data64" ) << bool(false) << keys << expected;
+        BOBUIime expected( 11, 0, 6 );
+        BOBUIest::newRow( "data64" ) << bool(false) << keys << expected;
     }
 
     // Test the AMPM indicator
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Up );
-        QTime expected( 23, 0, 0 );
-        QTest::newRow( "data65" ) << bool(true) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Up );
+        BOBUIime expected( 23, 0, 0 );
+        BOBUIest::newRow( "data65" ) << bool(true) << keys << expected;
     }
     // Test the AMPM indicator
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 23, 0, 0 );
-        QTest::newRow( "data66" ) << bool(true) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 23, 0, 0 );
+        BOBUIest::newRow( "data66" ) << bool(true) << keys << expected;
     }
     // Test the AMPM indicator
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Down );
-        keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data67" ) << bool(true) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Down );
+        keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data67" ) << bool(true) << keys << expected;
     }
     // Test the AMPM indicator
     {
-        QTestEventList keys;
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Tab );
-        keys.addKeyClick( Qt::Key_Up );
-        keys.addKeyClick( Qt::Key_Down );
-        QTime expected( 11, 0, 0 );
-        QTest::newRow( "data68" ) << bool(true) << keys << expected;
+        BOBUIestEventList keys;
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Tab );
+        keys.addKeyClick( BobUI::Key_Up );
+        keys.addKeyClick( BobUI::Key_Down );
+        BOBUIime expected( 11, 0, 0 );
+        BOBUIest::newRow( "data68" ) << bool(true) << keys << expected;
     }
 }
 
 void tst_QDateTimeEdit::userKeyPress_Time()
 {
     QFETCH(bool, ampm);
-    QFETCH(QTestEventList, keys);
-    QFETCH(QTime, expected_time);
+    QFETCH(BOBUIestEventList, keys);
+    QFETCH(BOBUIime, expected_time);
 
     if (ampm)
         testWidget->setDisplayFormat("hh:mm:ss ap");
     else
         testWidget->setDisplayFormat("hh:mm:ss");
 
-    testWidget->setTime(QTime(11, 0, 0));
+    testWidget->setTime(BOBUIime(11, 0, 0));
     testWidget->setFocus();
 
     testWidget->setWrapping(true);
 
-    QTest::keyClick(testWidget, Qt::Key_Enter); // Make sure the first section is now focused
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter); // Make sure the first section is now focused
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("11"));
     keys.simulate(testWidget);
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
 
     QCOMPARE(testWidget->time(), expected_time);
 }
 
 void tst_QDateTimeEdit::wrappingDate_data()
 {
-    QTest::addColumn<bool>("startWithMin");
-    QTest::addColumn<QDate>("minimumDate");
-    QTest::addColumn<QDate>("maximumDate");
-    QTest::addColumn<uint>("section");
-    QTest::addColumn<QDate>("newDate");
+    BOBUIest::addColumn<bool>("startWithMin");
+    BOBUIest::addColumn<QDate>("minimumDate");
+    BOBUIest::addColumn<QDate>("maximumDate");
+    BOBUIest::addColumn<uint>("section");
+    BOBUIest::addColumn<QDate>("newDate");
 
-    QTest::newRow("data0") << false << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::DaySection
+    BOBUIest::newRow("data0") << false << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::DaySection
                         << QDate(1999, 1, 1);
-    QTest::newRow("data1") << true << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::DaySection
+    BOBUIest::newRow("data1") << true << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::DaySection
                         << QDate(1999, 1, 31);
-    QTest::newRow("data2") << false << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::MonthSection
+    BOBUIest::newRow("data2") << false << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::MonthSection
                         << QDate(1999, 1, 31);
-    QTest::newRow("data3") << true << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::MonthSection
+    BOBUIest::newRow("data3") << true << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::MonthSection
                         << QDate(1999, 1, 1);
-    QTest::newRow("data4") << false << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::YearSection
+    BOBUIest::newRow("data4") << false << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::YearSection
                         << QDate(1999, 1, 31);
-    QTest::newRow("data5") << true << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::YearSection
+    BOBUIest::newRow("data5") << true << QDate(1999, 1, 1) << QDate(1999, 1, 31) << (uint)QDateTimeEdit::YearSection
                         << QDate(1999, 1, 1);
-    QTest::newRow("data6") << false << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::DaySection
+    BOBUIest::newRow("data6") << false << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::DaySection
                         << QDate(2000, 1, 1);
-    QTest::newRow("data7") << true << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::DaySection
+    BOBUIest::newRow("data7") << true << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::DaySection
                         << QDate(1999, 1, 31);
-    QTest::newRow("data8") << false << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::MonthSection
+    BOBUIest::newRow("data8") << false << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::MonthSection
                         << QDate(2000, 1, 31);
-    QTest::newRow("data9") << true << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::MonthSection
+    BOBUIest::newRow("data9") << true << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::MonthSection
                         << QDate(1999, 12, 1);
-    QTest::newRow("data10") << false << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::YearSection
+    BOBUIest::newRow("data10") << false << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::YearSection
                          << QDate(1999, 1, 31);
-    QTest::newRow("data11") << true << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::YearSection
+    BOBUIest::newRow("data11") << true << QDate(1999, 1, 1) << QDate(2000, 1, 31) << (uint)QDateTimeEdit::YearSection
                          << QDate(2000, 1, 1);
 }
 
@@ -2158,10 +2158,10 @@ void tst_QDateTimeEdit::wrappingDate()
 
     if (startWithMin) {
         testWidget->setDate(minimumDate);
-        QTest::keyClick(testWidget, Qt::Key_Down);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     } else {
         testWidget->setDate(maximumDate);
-        QTest::keyClick(testWidget, Qt::Key_Up);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     }
     if (testWidget->currentSection() == QDateTimeEdit::MonthSection)
         QCOMPARE(testWidget->date(), newDate);
@@ -2169,12 +2169,12 @@ void tst_QDateTimeEdit::wrappingDate()
 
 void tst_QDateTimeEdit::dateSignalChecking_data()
 {
-    QTest::addColumn<QDate>("originalDate");
-    QTest::addColumn<QDate>("newDate");
-    QTest::addColumn<int>("timesEmitted");
+    BOBUIest::addColumn<QDate>("originalDate");
+    BOBUIest::addColumn<QDate>("newDate");
+    BOBUIest::addColumn<int>("timesEmitted");
 
-    QTest::newRow("data0") << QDate(2004, 06, 22) << QDate(2004, 07, 23) << 1;
-    QTest::newRow("data1") << QDate(2004, 06, 22) << QDate(2004, 06, 22) << 0;
+    BOBUIest::newRow("data0") << QDate(2004, 06, 22) << QDate(2004, 07, 23) << 1;
+    BOBUIest::newRow("data1") << QDate(2004, 06, 22) << QDate(2004, 06, 22) << 0;
 }
 
 void tst_QDateTimeEdit::dateSignalChecking()
@@ -2187,7 +2187,7 @@ void tst_QDateTimeEdit::dateSignalChecking()
 
     QSignalSpy dateSpy(testWidget, SIGNAL(dateChanged(QDate)));
     QSignalSpy dateTimeSpy(testWidget, SIGNAL(dateTimeChanged(QDateTime)));
-    QSignalSpy timeSpy(testWidget, SIGNAL(timeChanged(QTime)));
+    QSignalSpy timeSpy(testWidget, SIGNAL(timeChanged(BOBUIime)));
 
     testWidget->setDate(newDate);
     QCOMPARE(dateSpy.size(), timesEmitted);
@@ -2204,18 +2204,18 @@ void tst_QDateTimeEdit::dateSignalChecking()
 
 void tst_QDateTimeEdit::timeSignalChecking_data()
 {
-    QTest::addColumn<QTime>("originalTime");
-    QTest::addColumn<QTime>("newTime");
-    QTest::addColumn<int>("timesEmitted");
+    BOBUIest::addColumn<BOBUIime>("originalTime");
+    BOBUIest::addColumn<BOBUIime>("newTime");
+    BOBUIest::addColumn<int>("timesEmitted");
 
-    QTest::newRow("data0") << QTime(15, 55, 00) << QTime(15, 17, 12) << 1;
-    QTest::newRow("data1") << QTime(15, 55, 00) << QTime(15, 55, 00) << 0;
+    BOBUIest::newRow("data0") << BOBUIime(15, 55, 00) << BOBUIime(15, 17, 12) << 1;
+    BOBUIest::newRow("data1") << BOBUIime(15, 55, 00) << BOBUIime(15, 55, 00) << 0;
 }
 
 void tst_QDateTimeEdit::timeSignalChecking()
 {
-    QFETCH(QTime, originalTime);
-    QFETCH(QTime, newTime);
+    QFETCH(BOBUIime, originalTime);
+    QFETCH(BOBUIime, newTime);
     QFETCH(int, timesEmitted);
 
     testWidget->setTime(originalTime);
@@ -2223,15 +2223,15 @@ void tst_QDateTimeEdit::timeSignalChecking()
     testWidget->setDisplayFormat("hh:mm:ss");
     QSignalSpy dateSpy(testWidget, SIGNAL(dateChanged(QDate)));
     QSignalSpy dateTimeSpy(testWidget, SIGNAL(dateTimeChanged(QDateTime)));
-    QSignalSpy timeSpy(testWidget, SIGNAL(timeChanged(QTime)));
+    QSignalSpy timeSpy(testWidget, SIGNAL(timeChanged(BOBUIime)));
 
     testWidget->setTime(newTime);
     QCOMPARE(timeSpy.size(), timesEmitted);
 
     if (timesEmitted > 0) {
         QList<QVariant> list = timeSpy.takeFirst();
-        QTime t;
-        t = qvariant_cast<QTime>(list.at(0));
+        BOBUIime t;
+        t = qvariant_cast<BOBUIime>(list.at(0));
         QCOMPARE(t, newTime);
     }
     QCOMPARE(dateTimeSpy.size(), timesEmitted);
@@ -2240,23 +2240,23 @@ void tst_QDateTimeEdit::timeSignalChecking()
 
 void tst_QDateTimeEdit::dateTimeSignalChecking_data()
 {
-    QTest::addColumn<QDateTime>("originalDateTime");
-    QTest::addColumn<QDateTime>("newDateTime");
-    QTest::addColumn<int>("timesDateEmitted");
-    QTest::addColumn<int>("timesTimeEmitted");
-    QTest::addColumn<int>("timesDateTimeEmitted");
+    BOBUIest::addColumn<QDateTime>("originalDateTime");
+    BOBUIest::addColumn<QDateTime>("newDateTime");
+    BOBUIest::addColumn<int>("timesDateEmitted");
+    BOBUIest::addColumn<int>("timesTimeEmitted");
+    BOBUIest::addColumn<int>("timesDateTimeEmitted");
 
-    QTest::newRow("data0") << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 0))
-                        << QDateTime(QDate(2004, 7, 23), QTime(15, 17, 12))
+    BOBUIest::newRow("data0") << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 0))
+                        << QDateTime(QDate(2004, 7, 23), BOBUIime(15, 17, 12))
                         << 1 << 1 << 1;
-    QTest::newRow("data1") << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 0))
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 17, 12))
+    BOBUIest::newRow("data1") << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 0))
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 17, 12))
                         << 0 << 1 << 1;
-    QTest::newRow("data2") << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 0))
-                        << QDateTime(QDate(2004, 7, 23), QTime(15, 55, 0))
+    BOBUIest::newRow("data2") << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 0))
+                        << QDateTime(QDate(2004, 7, 23), BOBUIime(15, 55, 0))
                         << 1 << 0 << 1;
-    QTest::newRow("data3") << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 0))
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 0))
+    BOBUIest::newRow("data3") << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 0))
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 0))
                         << 0 << 0 << 0;
 }
 
@@ -2272,7 +2272,7 @@ void tst_QDateTimeEdit::dateTimeSignalChecking()
     testWidget->setDateTime(originalDateTime);
 
     QSignalSpy dateSpy(testWidget, SIGNAL(dateChanged(QDate)));
-    QSignalSpy timeSpy(testWidget, SIGNAL(timeChanged(QTime)));
+    QSignalSpy timeSpy(testWidget, SIGNAL(timeChanged(BOBUIime)));
     QSignalSpy dateTimeSpy(testWidget, SIGNAL(dateTimeChanged(QDateTime)));
 
     testWidget->setDateTime(newDateTime);
@@ -2287,8 +2287,8 @@ void tst_QDateTimeEdit::dateTimeSignalChecking()
     QCOMPARE(timeSpy.size(), timesTimeEmitted);
     if (timesTimeEmitted > 0) {
         QList<QVariant> list = timeSpy.takeFirst();
-        QTime t;
-        t = qvariant_cast<QTime>(list.at(0));
+        BOBUIime t;
+        t = qvariant_cast<BOBUIime>(list.at(0));
         QCOMPARE(t, newDateTime.time());
     }
     QCOMPARE(dateTimeSpy.size(), timesDateTimeEmitted);
@@ -2302,46 +2302,46 @@ void tst_QDateTimeEdit::dateTimeSignalChecking()
 
 void tst_QDateTimeEdit::sectionText_data()
 {
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<QDateTime>("dateTime");
-    QTest::addColumn<uint>("section");
-    QTest::addColumn<QString>("sectionText");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<QDateTime>("dateTime");
+    BOBUIest::addColumn<uint>("section");
+    BOBUIest::addColumn<QString>("sectionText");
 
-    QTest::newRow("data0") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data0") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::NoSection << QString();
-    QTest::newRow("data1") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data1") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::AmPmSection << QString("pm");
-    QTest::newRow("data2") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data2") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::MSecSection << QString("789");
-    QTest::newRow("data3") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data3") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::SecondSection << QString("03");
-    QTest::newRow("data4") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data4") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::MinuteSection << QString("55");
-    QTest::newRow("data5") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data5") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::HourSection << QString("03");
-    QTest::newRow("data6") << QString("dd/MM/yyyy hh:mm:ss zzz")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data6") << QString("dd/MM/yyyy hh:mm:ss zzz")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::HourSection << QString("15");
-    QTest::newRow("data7") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data7") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::DaySection << QString("22");
-    QTest::newRow("data8") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data8") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::MonthSection << QString("06");
-    QTest::newRow("data9") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
-                        << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data9") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+                        << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                         << (uint)QDateTimeEdit::YearSection << QString("2004");
-    QTest::newRow("data10") << QString("dd/MM/yyyy hh:mm:ss zzz AP")
-                         << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data10") << QString("dd/MM/yyyy hh:mm:ss zzz AP")
+                         << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                          << (uint)QDateTimeEdit::AmPmSection << QString("PM");
-    QTest::newRow("data11") << QString("dd/MM/yyyy hh:mm:ss ap")
-                         << QDateTime(QDate(2004, 6, 22), QTime(15, 55, 3, 789))
+    BOBUIest::newRow("data11") << QString("dd/MM/yyyy hh:mm:ss ap")
+                         << QDateTime(QDate(2004, 6, 22), BOBUIime(15, 55, 3, 789))
                          << (uint)QDateTimeEdit::MSecSection << QString();
 }
 
@@ -2356,9 +2356,9 @@ void tst_QDateTimeEdit::sectionText()
     testWidget->setDateTime(dateTime);
     QCOMPARE(testWidget->sectionText(QDateTimeEdit::Section(section)), sectionText);
 
-    QApplication::setLayoutDirection(Qt::RightToLeft);
+    QApplication::setLayoutDirection(BobUI::RightToLeft);
     const QScopeGuard resetLayoutDirection([]() {
-            QApplication::setLayoutDirection(Qt::LeftToRight);
+            QApplication::setLayoutDirection(BobUI::LeftToRight);
         });
     testWidget->setDisplayFormat(format);
     QCOMPARE(format, testWidget->displayFormat());
@@ -2378,154 +2378,154 @@ void tst_QDateTimeEdit::mousePress()
     QRect rectUp = testWidget->style()->subControlRect(QStyle::CC_SpinBox, &so, QStyle::SC_SpinBoxUp, testWidget);
 
     // Send mouseClick to center of SC_SpinBoxUp
-    QTest::mouseClick(testWidget, Qt::LeftButton, {}, rectUp.center());
+    BOBUIest::mouseClick(testWidget, BobUI::LeftButton, {}, rectUp.center());
     QCOMPARE(testWidget->date().year(), 2005);
 }
 
 void tst_QDateTimeEdit::stepHourAMPM_data()
 {
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<KeyList>("keys");
-    QTest::addColumn<TimeList>("expected");
-    QTest::addColumn<QTime>("start");
-    QTest::addColumn<QTime>("min");
-    QTest::addColumn<QTime>("max");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<KeyList>("keys");
+    BOBUIest::addColumn<TimeList>("expected");
+    BOBUIest::addColumn<BOBUIime>("start");
+    BOBUIest::addColumn<BOBUIime>("min");
+    BOBUIest::addColumn<BOBUIime>("max");
 
     {
         KeyList keys;
         TimeList expected;
-        keys << Qt::Key_Up;
-        expected << QTime(1, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(2, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(3, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(4, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(5, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(6, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(7, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(8, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(9, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(10, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(11, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(12, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(13, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(14, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(15, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(16, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(17, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(18, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(19, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(20, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(21, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(22, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(23, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(22, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(21, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(20, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(19, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(18, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(17, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(16, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(15, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(14, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(13, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(12, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(11, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(10, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(9, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(8, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(7, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(6, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(5, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(4, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(3, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(2, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(1, 0, 0);
-        keys << Qt::Key_Down;
-        expected << QTime(0, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(1, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(2, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(3, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(4, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(5, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(6, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(7, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(8, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(9, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(10, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(11, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(12, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(13, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(14, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(15, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(16, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(17, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(18, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(19, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(20, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(21, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(22, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(23, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(22, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(21, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(20, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(19, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(18, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(17, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(16, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(15, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(14, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(13, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(12, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(11, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(10, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(9, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(8, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(7, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(6, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(5, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(4, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(3, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(2, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(1, 0, 0);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(0, 0, 0);
 
-        QTest::newRow("hh 1") << QString("hh") << keys << expected << QTime(0, 0)
-                              << QTime(0, 0) << QTime(23, 59, 59);
-        QTest::newRow("hh:ap 1") << QString("hh:ap") << keys << expected
-                                 << QTime(0, 0) << QTime(0, 0)
-                                 << QTime(23, 59, 59);
+        BOBUIest::newRow("hh 1") << QString("hh") << keys << expected << BOBUIime(0, 0)
+                              << BOBUIime(0, 0) << BOBUIime(23, 59, 59);
+        BOBUIest::newRow("hh:ap 1") << QString("hh:ap") << keys << expected
+                                 << BOBUIime(0, 0) << BOBUIime(0, 0)
+                                 << BOBUIime(23, 59, 59);
 
-        QTest::newRow("HH:ap 2") << QString("HH:ap") << keys << expected
-                                 << QTime(0, 0) << QTime(0, 0)
-                                 << QTime(23, 59, 59);
+        BOBUIest::newRow("HH:ap 2") << QString("HH:ap") << keys << expected
+                                 << BOBUIime(0, 0) << BOBUIime(0, 0)
+                                 << BOBUIime(23, 59, 59);
     }
     {
         KeyList keys;
         TimeList expected;
-        keys << Qt::Key_Down;
-        expected << QTime(2, 0, 0);
-        QTest::newRow("hh 2") << QString("hh") << keys << expected << QTime(0, 0) << QTime(2, 0, 0) << QTime(23, 59, 59);
-        QTest::newRow("hh:ap 2") << QString("hh:ap") << keys << expected << QTime(0, 0) << QTime(2, 0, 0) << QTime(23, 59, 59);
+        keys << BobUI::Key_Down;
+        expected << BOBUIime(2, 0, 0);
+        BOBUIest::newRow("hh 2") << QString("hh") << keys << expected << BOBUIime(0, 0) << BOBUIime(2, 0, 0) << BOBUIime(23, 59, 59);
+        BOBUIest::newRow("hh:ap 2") << QString("hh:ap") << keys << expected << BOBUIime(0, 0) << BOBUIime(2, 0, 0) << BOBUIime(23, 59, 59);
     }
     {
         KeyList keys;
         TimeList expected;
-        keys << Qt::Key_Up;
-        expected << QTime(23, 0, 0);
-        keys << Qt::Key_Up;
-        expected << QTime(23, 0, 0);
-        QTest::newRow("hh 3") << QString("hh") << keys << expected << QTime(0, 0) << QTime(22, 0, 0)
-                              << QTime(23, 59, 59);
-        QTest::newRow("hh:ap 3") << QString("hh:ap") << keys << expected << QTime(0, 0)
-                                 << QTime(22, 0, 0) << QTime(23, 59, 59);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(23, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(23, 0, 0);
+        BOBUIest::newRow("hh 3") << QString("hh") << keys << expected << BOBUIime(0, 0) << BOBUIime(22, 0, 0)
+                              << BOBUIime(23, 59, 59);
+        BOBUIest::newRow("hh:ap 3") << QString("hh:ap") << keys << expected << BOBUIime(0, 0)
+                                 << BOBUIime(22, 0, 0) << BOBUIime(23, 59, 59);
     }
     {
         KeyList keys;
         TimeList expected;
-        keys << Qt::Key_Up;
-        expected << QTime(15, 31, 0);
-        QTest::newRow("hh:mm:ap 3") << QString("hh:mm:ap") << keys << expected << QTime(15, 31, 0)
-                                    << QTime(9, 0, 0) << QTime(16, 0, 0);
-        QTest::newRow("hh:mm 3") << QString("hh:mm") << keys << expected << QTime(15, 31, 0)
-                                 << QTime(9, 0, 0) << QTime(16, 0, 0);
+        keys << BobUI::Key_Up;
+        expected << BOBUIime(15, 31, 0);
+        BOBUIest::newRow("hh:mm:ap 3") << QString("hh:mm:ap") << keys << expected << BOBUIime(15, 31, 0)
+                                    << BOBUIime(9, 0, 0) << BOBUIime(16, 0, 0);
+        BOBUIest::newRow("hh:mm 3") << QString("hh:mm") << keys << expected << BOBUIime(15, 31, 0)
+                                 << BOBUIime(9, 0, 0) << BOBUIime(16, 0, 0);
     }
 }
 
@@ -2534,9 +2534,9 @@ void tst_QDateTimeEdit::stepHourAMPM()
     QFETCH(QString, format);
     QFETCH(KeyList, keys);
     QFETCH(TimeList, expected);
-    QFETCH(QTime, start);
-    QFETCH(QTime, min);
-    QFETCH(QTime, max);
+    QFETCH(BOBUIime, start);
+    QFETCH(BOBUIime, min);
+    QFETCH(BOBUIime, max);
 
     testWidget->setDisplayFormat(format);
     testWidget->setTime(start);
@@ -2548,41 +2548,41 @@ void tst_QDateTimeEdit::stepHourAMPM()
     }
 
     for (int i=0; i<keys.size(); ++i) {
-        QTest::keyClick(testWidget, keys.at(i));
+        BOBUIest::keyClick(testWidget, keys.at(i));
         QCOMPARE(testWidget->time(), expected.at(i));
     }
 }
 
 void tst_QDateTimeEdit::displayedSections_data()
 {
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<uint>("section");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<uint>("section");
 
-    QTest::newRow("data0") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data0") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)(QDateTimeEdit::DaySection | QDateTimeEdit::MonthSection
                                   | QDateTimeEdit::YearSection | QDateTimeEdit::HourSection
                                   | QDateTimeEdit::MinuteSection | QDateTimeEdit::SecondSection
                                   | QDateTimeEdit::MSecSection | QDateTimeEdit::AmPmSection);
-    QTest::newRow("data1") << QString("dd/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data1") << QString("dd/yyyy hh:mm:ss zzz ap")
                         << (uint)(QDateTimeEdit::DaySection
                                   | QDateTimeEdit::YearSection | QDateTimeEdit::HourSection
                                   | QDateTimeEdit::MinuteSection | QDateTimeEdit::SecondSection
                                   | QDateTimeEdit::MSecSection | QDateTimeEdit::AmPmSection);
-    QTest::newRow("data2") << QString("dd/MM/yyyy mm zzz ap")
+    BOBUIest::newRow("data2") << QString("dd/MM/yyyy mm zzz ap")
                         << (uint)(QDateTimeEdit::DaySection | QDateTimeEdit::MonthSection
                                   | QDateTimeEdit::YearSection
                                   | QDateTimeEdit::MinuteSection
                                   | QDateTimeEdit::MSecSection | QDateTimeEdit::AmPmSection);
-    QTest::newRow("data3") << QString("dd/MM/yyyy")
+    BOBUIest::newRow("data3") << QString("dd/MM/yyyy")
                         << (uint)(QDateTimeEdit::DaySection | QDateTimeEdit::MonthSection
                                   | QDateTimeEdit::YearSection);
-    QTest::newRow("data4") << QString("hh:mm:ss zzz ap")
+    BOBUIest::newRow("data4") << QString("hh:mm:ss zzz ap")
                         << (uint)(QDateTimeEdit::HourSection
                                   | QDateTimeEdit::MinuteSection | QDateTimeEdit::SecondSection
                                   | QDateTimeEdit::MSecSection | QDateTimeEdit::AmPmSection);
-    QTest::newRow("data5") << QString("dd ap")
+    BOBUIest::newRow("data5") << QString("dd ap")
                         << (uint)(QDateTimeEdit::DaySection | QDateTimeEdit::AmPmSection);
-    QTest::newRow("data6") << QString("zzz")
+    BOBUIest::newRow("data6") << QString("zzz")
                         << (uint)QDateTimeEdit::MSecSection;
 }
 
@@ -2597,32 +2597,32 @@ void tst_QDateTimeEdit::displayedSections()
 
 void tst_QDateTimeEdit::currentSection_data()
 {
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<uint>("section");
-    QTest::addColumn<uint>("currentSection");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<uint>("section");
+    BOBUIest::addColumn<uint>("currentSection");
 
     // First is deliberate, this way we can make sure that it is not reset by specifying no section.
-    QTest::newRow("data0") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data0") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)QDateTimeEdit::NoSection << (uint)QDateTimeEdit::YearSection;
-    QTest::newRow("data1") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data1") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)QDateTimeEdit::AmPmSection << (uint)QDateTimeEdit::AmPmSection;
-    QTest::newRow("data2") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data2") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)QDateTimeEdit::MSecSection << (uint)QDateTimeEdit::MSecSection;
-    QTest::newRow("data3") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data3") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)QDateTimeEdit::SecondSection << (uint)QDateTimeEdit::SecondSection;
-    QTest::newRow("data4") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data4") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)QDateTimeEdit::MinuteSection << (uint)QDateTimeEdit::MinuteSection;
-    QTest::newRow("data5") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data5") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)QDateTimeEdit::HourSection << (uint)QDateTimeEdit::HourSection;
-    QTest::newRow("data6") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data6") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)QDateTimeEdit::DaySection << (uint)QDateTimeEdit::DaySection;
-    QTest::newRow("data7") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data7") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)QDateTimeEdit::MonthSection << (uint)QDateTimeEdit::MonthSection;
-    QTest::newRow("data8") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
+    BOBUIest::newRow("data8") << QString("dd/MM/yyyy hh:mm:ss zzz ap")
                         << (uint)QDateTimeEdit::YearSection << (uint)QDateTimeEdit::YearSection;
-    QTest::newRow("data9") << QString("dd/MM/yyyy hh:mm:ss zzz AP")
+    BOBUIest::newRow("data9") << QString("dd/MM/yyyy hh:mm:ss zzz AP")
                         << (uint)QDateTimeEdit::AmPmSection << (uint)QDateTimeEdit::AmPmSection;
-    QTest::newRow("data10") << QString("dd/MM/yyyy hh:mm:ss ap")
+    BOBUIest::newRow("data10") << QString("dd/MM/yyyy hh:mm:ss ap")
                          << (uint)QDateTimeEdit::MSecSection << (uint)QDateTimeEdit::DaySection;
 }
 
@@ -2646,15 +2646,15 @@ void tst_QDateTimeEdit::readOnly()
     dt.setDisplayFormat("yyyy.MM.dd");
     dt.show();
     dt.setCurrentSection(QDateTimeEdit::DaySection);
-    QTest::keyClick(&dt, Qt::Key_Up);
+    BOBUIest::keyClick(&dt, BobUI::Key_Up);
     QCOMPARE(dt.date(), QDate(2000, 2, 2));
     dt.setReadOnly(true);
-    QTest::keyClick(&dt, Qt::Key_Up);
+    BOBUIest::keyClick(&dt, BobUI::Key_Up);
     QCOMPARE(dt.date(), QDate(2000, 2, 2));
     dt.stepBy(1); // stepBy should still work
     QCOMPARE(dt.date(), QDate(2000, 2, 3));
     dt.setReadOnly(false);
-    QTest::keyClick(&dt, Qt::Key_Up);
+    BOBUIest::keyClick(&dt, BobUI::Key_Up);
     QCOMPARE(dt.date(), QDate(2000, 2, 4));
 }
 
@@ -2664,21 +2664,21 @@ void tst_QDateTimeEdit::weirdCase()
     testWidget->setDateRange(QDate(2005, 1, 1), QDate(2010, 12, 31));
     testWidget->setDisplayFormat("dd//MM//yyyy");
     testWidget->setDate(testWidget->minimumDate());
-    QTest::keyClick(testWidget, Qt::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
     QVERIFY(!testWidget->lineEdit()->hasSelectedText());
     QCOMPARE(testWidget->lineEdit()->cursorPosition(), 0);
-    QTest::keyClick(testWidget, Qt::Key_Right);
-    QTest::keyClick(testWidget, Qt::Key_Right);
-    QTest::keyClick(testWidget, Qt::Key_Right);
-    QTest::keyClick(testWidget, Qt::Key_Right);
-    QTest::keyClick(testWidget, Qt::Key_Right);
-    QTest::keyClick(testWidget, Qt::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
     QVERIFY(!testWidget->lineEdit()->hasSelectedText());
     QCOMPARE(testWidget->lineEdit()->cursorPosition(), 8);
 
-    QTest::keyClick(testWidget, Qt::Key_Delete);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Delete);
     QCOMPARE(testWidget->text(), QString("01//01//005"));
-    QTest::keyClick(testWidget, Qt::Key_4);
+    BOBUIest::keyClick(testWidget, BobUI::Key_4);
     QCOMPARE(testWidget->text(), QString("01//01//005"));
 }
 
@@ -2696,34 +2696,34 @@ void tst_QDateTimeEdit::newCase()
     testWidget->setDate(QDate(2005, 6, 1));
     QCOMPARE(testWidget->text(), QString("Junea6bJunc06"));
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->text(), QString("Julya7bJulc07"));
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("July"));
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString());
-    QTest::keyClick(testWidget, Qt::Key_Right);
-    QTest::keyClick(testWidget, Qt::Key_Right);
-    QTest::keyClick(testWidget, Qt::Key_Right);
-    QTest::keyClick(testWidget, Qt::Key_Delete);
-    QTest::keyClick(testWidget, Qt::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Delete);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
 
     QCOMPARE(testWidget->text(), QString("Jula7bJulc07"));
-    QTest::keyClick(testWidget, Qt::Key_Delete);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Delete);
     QCOMPARE(testWidget->text(), QString("Jua7bJulc07"));
-    QTest::keyClick(testWidget, Qt::Key_N);
+    BOBUIest::keyClick(testWidget, BobUI::Key_N);
     QCOMPARE(testWidget->text(), QString("Juna7bJulc07"));
-    QTest::keyClick(testWidget, Qt::Key_E);
+    BOBUIest::keyClick(testWidget, BobUI::Key_E);
     QCOMPARE(testWidget->text(), QString("Junea6bJunc06"));
 }
 
@@ -2731,8 +2731,8 @@ void tst_QDateTimeEdit::newCase2()
 {
     testWidget->setDisplayFormat("MMMM yyyy-MM-dd MMMM");
     testWidget->setDate(QDate(2005, 8, 8));
-    QTest::keyClick(testWidget, Qt::Key_Return);
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->text(), QString(" 2005-08-08 ") + QLocale::system().monthName(8, QLocale::LongFormat));
 }
 
@@ -2745,15 +2745,15 @@ void tst_QDateTimeEdit::newCase3()
     testWidget->setDate(QDate(2000, 1, 1));
     testWidget->setGeometry(QRect(QPoint(0, 0), testWidget->sizeHint()));
     testWidget->setCurrentSection(QDateTimeEdit::MonthSection);
-    QTest::keyClick(testWidget, Qt::Key_Return);
-    QTest::keyClick(testWidget, Qt::Key_J);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_J);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("01 J 2000"));
     QCOMPARE(testWidget->lineEdit()->cursorPosition(), 4);
-    QTest::keyClick(testWidget, Qt::Key_A);
-    QTest::keyClick(testWidget, Qt::Key_N);
-    QTest::keyClick(testWidget, Qt::Key_U);
-    QTest::keyClick(testWidget, Qt::Key_A);
-    QTest::keyClick(testWidget, Qt::Key_R);
+    BOBUIest::keyClick(testWidget, BobUI::Key_A);
+    BOBUIest::keyClick(testWidget, BobUI::Key_N);
+    BOBUIest::keyClick(testWidget, BobUI::Key_U);
+    BOBUIest::keyClick(testWidget, BobUI::Key_A);
+    BOBUIest::keyClick(testWidget, BobUI::Key_R);
 }
 
 void tst_QDateTimeEdit::cursorPos()
@@ -2764,29 +2764,29 @@ void tst_QDateTimeEdit::cursorPos()
     testWidget->setDisplayFormat("dd MMMM yyyy");
     //testWidget->setGeometry(0, 0, 200, 200);
     testWidget->setCurrentSection(QDateTimeEdit::MonthSection);
-    QTest::keyClick(testWidget, Qt::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
     QCOMPARE(testWidget->lineEdit()->cursorPosition(), 10);
-    QTest::keyClick(testWidget, Qt::Key_J);
-    QTest::keyClick(testWidget, Qt::Key_A);
-    QTest::keyClick(testWidget, Qt::Key_N);
-    QTest::keyClick(testWidget, Qt::Key_U);
-    QTest::keyClick(testWidget, Qt::Key_A);
-    QTest::keyClick(testWidget, Qt::Key_R);
+    BOBUIest::keyClick(testWidget, BobUI::Key_J);
+    BOBUIest::keyClick(testWidget, BobUI::Key_A);
+    BOBUIest::keyClick(testWidget, BobUI::Key_N);
+    BOBUIest::keyClick(testWidget, BobUI::Key_U);
+    BOBUIest::keyClick(testWidget, BobUI::Key_A);
+    BOBUIest::keyClick(testWidget, BobUI::Key_R);
     //QCursor::setPos(20, 20);
     //QEventLoop l;
     //l.exec();
-    QTest::keyClick(testWidget, Qt::Key_Y);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Y);
     QCOMPARE(testWidget->lineEdit()->cursorPosition(), 11);
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Return);
-    QTest::keyClick(testWidget, Qt::Key_3);
-    QTest::keyClick(testWidget, Qt::Key_1);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_3);
+    BOBUIest::keyClick(testWidget, BobUI::Key_1);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QCOMPARE(testWidget->lineEdit()->cursorPosition(), 3);
 }
@@ -2794,39 +2794,39 @@ void tst_QDateTimeEdit::cursorPos()
 void tst_QDateTimeEdit::newCase4()
 {
     testWidget->setDisplayFormat("hh:mm");
-    testWidget->setMinimumTime(QTime(3, 3, 0));
-    QTest::keyClick(testWidget, Qt::Key_Return);
-    QTest::keyClick(testWidget, Qt::Key_0);
+    testWidget->setMinimumTime(BOBUIime(3, 3, 0));
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_0);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("0:03"));
-    QTest::keyClick(testWidget, Qt::Key_2);
+    BOBUIest::keyClick(testWidget, BobUI::Key_2);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("0:03"));
-    QTest::keyClick(testWidget, Qt::Key_4);
+    BOBUIest::keyClick(testWidget, BobUI::Key_4);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("04:03"));
 }
 
 void tst_QDateTimeEdit::newCase5()
 {
     testWidget->setDisplayFormat("yyyy-MM-dd hh:mm:ss zzz 'ms'");
-    testWidget->setDateTime(QDateTime(QDate(2005, 10, 7), QTime(17, 44, 13, 100)));
+    testWidget->setDateTime(QDateTime(QDate(2005, 10, 7), BOBUIime(17, 44, 13, 100)));
     testWidget->show();
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("2005-10-07 17:44:13 100 ms"));
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Backtab, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backtab, BobUI::ShiftModifier);
 
-    QTest::keyClick(testWidget, Qt::Key_Return);
-    QTest::keyClick(testWidget, Qt::Key_1);
-    QTest::keyClick(testWidget, Qt::Key_2);
-    QTest::keyClick(testWidget, Qt::Key_4);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_1);
+    BOBUIest::keyClick(testWidget, BobUI::Key_2);
+    BOBUIest::keyClick(testWidget, BobUI::Key_4);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("2005-10-07 17:44:13 124 ms"));
 
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("2005-10-07 17:44:13 12 ms"));
 }
 
@@ -2837,27 +2837,27 @@ void tst_QDateTimeEdit::newCase6()
     testWidget->show();
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("7-2005-10-07"));
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Return);
-    QTest::keyClick(testWidget, Qt::Key_1);
-    QTest::keyClick(testWidget, Qt::Key_2);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_1);
+    BOBUIest::keyClick(testWidget, BobUI::Key_2);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("12-2005-10-12"));
 }
 
 void tst_QDateTimeEdit::task98554()
 {
     testWidget->setDisplayFormat("mm.ss.zzz(ms)");
-    testWidget->setTime(QTime(0, 0, 9));
+    testWidget->setTime(BOBUIime(0, 0, 9));
     testWidget->setCurrentSection(QDateTimeEdit::SecondSection);
     testWidget->show();
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("00.09.000(09)"));
-    QCOMPARE(testWidget->time(), QTime(0, 0, 9, 0));
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    QCOMPARE(testWidget->time(), BOBUIime(0, 0, 9, 0));
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("00.10.000(010)"));
-    QCOMPARE(testWidget->time(), QTime(0, 0, 10, 0));
+    QCOMPARE(testWidget->time(), BOBUIime(0, 0, 10, 0));
 }
 
 static QList<int> makeList(int val1, int val2, int val3)
@@ -2869,30 +2869,30 @@ static QList<int> makeList(int val1, int val2, int val3)
 
 void tst_QDateTimeEdit::setCurrentSection_data()
 {
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<QDateTime>("dateTime");
-    QTest::addColumn<QList<int> >("setCurrentSections");
-    QTest::addColumn<QList<int> >("expectedCursorPositions");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<QDateTime>("dateTime");
+    BOBUIest::addColumn<QList<int> >("setCurrentSections");
+    BOBUIest::addColumn<QList<int> >("expectedCursorPositions");
 
-    QTest::newRow("Day") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), QTime(1, 2, 3, 4))
+    BOBUIest::newRow("Day") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), BOBUIime(1, 2, 3, 4))
                          << makeList(QDateTimeEdit::DaySection, QDateTimeEdit::DaySection, QDateTimeEdit::DaySection)
                          << makeList(24, 0, 24);
-    QTest::newRow("Month") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), QTime(1, 2, 3, 4))
+    BOBUIest::newRow("Month") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), BOBUIime(1, 2, 3, 4))
                            << makeList(QDateTimeEdit::MonthSection, QDateTimeEdit::MonthSection, QDateTimeEdit::MonthSection)
                            << makeList(3, 26, 3);
-    QTest::newRow("Year") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), QTime(1, 2, 3, 4))
+    BOBUIest::newRow("Year") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), BOBUIime(1, 2, 3, 4))
                           << makeList(QDateTimeEdit::YearSection, QDateTimeEdit::YearSection, QDateTimeEdit::YearSection)
                           << makeList(6, 28, 6);
-    QTest::newRow("Hour") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), QTime(1, 2, 3, 4))
+    BOBUIest::newRow("Hour") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), BOBUIime(1, 2, 3, 4))
                           << makeList(QDateTimeEdit::HourSection, QDateTimeEdit::HourSection, QDateTimeEdit::HourSection)
                           << makeList(11, 31, 11);
-    QTest::newRow("Minute") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), QTime(1, 2, 3, 4))
+    BOBUIest::newRow("Minute") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), BOBUIime(1, 2, 3, 4))
                             << makeList(QDateTimeEdit::MinuteSection, QDateTimeEdit::MinuteSection, QDateTimeEdit::MinuteSection)
                             << makeList(14, 33, 14);
-    QTest::newRow("Second") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), QTime(1, 2, 3, 4))
+    BOBUIest::newRow("Second") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), BOBUIime(1, 2, 3, 4))
                             << makeList(QDateTimeEdit::SecondSection, QDateTimeEdit::SecondSection, QDateTimeEdit::SecondSection)
                             << makeList(17, 35, 17);
-    QTest::newRow("MSec") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), QTime(1, 2, 3, 4))
+    BOBUIest::newRow("MSec") << QString("dd/MM/yyyy hh:mm:ss.zzz d/M/yy h:m:s.z") << QDateTime(QDate(2001, 1, 1), BOBUIime(1, 2, 3, 4))
                           << makeList(QDateTimeEdit::MSecSection, QDateTimeEdit::MSecSection, QDateTimeEdit::MSecSection)
                           << makeList(20, 37, 20);
 }
@@ -2908,9 +2908,9 @@ void tst_QDateTimeEdit::setCurrentSection()
     testWidget->setDisplayFormat(format);
     testWidget->setDateTime(dateTime);
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
 
     testWidget->resize(400, 100);
@@ -2924,15 +2924,15 @@ void tst_QDateTimeEdit::setCurrentSection()
 void tst_QDateTimeEdit::setSelectedSection()
 {
     testWidget->setDisplayFormat("mm.ss.zzz('ms') m");
-    testWidget->setTime(QTime(0, 0, 9));
+    testWidget->setTime(BOBUIime(0, 0, 9));
     testWidget->show();
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_Home);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Home);
 #endif
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QVERIFY(!testWidget->lineEdit()->hasSelectedText());
     testWidget->setSelectedSection(QDateTimeEdit::MinuteSection);
@@ -2956,7 +2956,7 @@ void tst_QDateTimeEdit::calendarPopup()
     }
 
     {
-        QTimeEdit edit;
+        BOBUIimeEdit edit;
         QVERIFY(!edit.calendarWidget());
         edit.setCalendarPopup(true);
         QVERIFY(!edit.calendarWidget());
@@ -2981,7 +2981,7 @@ void tst_QDateTimeEdit::calendarPopup()
     }
 
     testWidget->setDisplayFormat("dd/MM/yyyy");
-    testWidget->setDateTime(QDateTime(QDate(2000, 1, 1), QTime(0, 0)));
+    testWidget->setDateTime(QDateTime(QDate(2000, 1, 1), BOBUIime(0, 0)));
     testWidget->show();
     testWidget->setCalendarPopup(true);
     QCOMPARE(testWidget->calendarPopup(), true);
@@ -2991,22 +2991,22 @@ void tst_QDateTimeEdit::calendarPopup()
     opt.editable = true;
     opt.subControls = QStyle::SC_ComboBoxArrow;
     QRect rect = style->subControlRect(QStyle::CC_ComboBox, &opt, QStyle::SC_ComboBoxArrow, testWidget);
-    QTest::mouseClick(testWidget, Qt::LeftButton, {},
+    BOBUIest::mouseClick(testWidget, BobUI::LeftButton, {},
                       QPoint(rect.left() + rect.width() / 2, rect.top() + rect.height() / 2));
-    QWidget *wid = testWidget->findChild<QWidget *>("qt_datetimedit_calendar");
+    QWidget *wid = testWidget->findChild<QWidget *>("bobui_datetimedit_calendar");
     QVERIFY(wid != 0);
     testWidget->hide();
 
-    QTimeEdit timeEdit;
+    BOBUIimeEdit timeEdit;
     timeEdit.setCalendarPopup(true);
     timeEdit.show();
 
     opt.initFrom(&timeEdit);
     opt.subControls = QStyle::SC_ComboBoxArrow;
     rect = style->subControlRect(QStyle::CC_ComboBox, &opt, QStyle::SC_ComboBoxArrow, &timeEdit);
-    QTest::mouseClick(&timeEdit, Qt::LeftButton, {},
+    BOBUIest::mouseClick(&timeEdit, BobUI::LeftButton, {},
                       QPoint(rect.left() + rect.width() / 2, rect.top() + rect.height() / 2));
-    QWidget *wid2 = timeEdit.findChild<QWidget *>("qt_datetimedit_calendar");
+    QWidget *wid2 = timeEdit.findChild<QWidget *>("bobui_datetimedit_calendar");
     QVERIFY(!wid2);
     timeEdit.hide();
 
@@ -3019,9 +3019,9 @@ void tst_QDateTimeEdit::calendarPopup()
     opt.initFrom(&dateEdit);
     opt.subControls = QStyle::SC_ComboBoxArrow;
     rect = style->subControlRect(QStyle::CC_ComboBox, &opt, QStyle::SC_ComboBoxArrow, &dateEdit);
-    QTest::mouseClick(&dateEdit, Qt::LeftButton, {},
+    BOBUIest::mouseClick(&dateEdit, BobUI::LeftButton, {},
                       QPoint(rect.left() + rect.width() / 2, rect.top() + rect.height() / 2));
-    QWidget *wid3 = dateEdit.findChild<QWidget *>("qt_datetimedit_calendar");
+    QWidget *wid3 = dateEdit.findChild<QWidget *>("bobui_datetimedit_calendar");
     QVERIFY(!wid3);
     dateEdit.hide();
 }
@@ -3029,7 +3029,7 @@ void tst_QDateTimeEdit::calendarPopup()
 class RestoreLayoutDirectioner
 {
 public:
-    RestoreLayoutDirectioner(Qt::LayoutDirection was)
+    RestoreLayoutDirectioner(BobUI::LayoutDirection was)
         : old(was)
     {}
 
@@ -3038,26 +3038,26 @@ public:
         QApplication::setLayoutDirection(old);
     }
 private:
-    const Qt::LayoutDirection old;
+    const BobUI::LayoutDirection old;
 };
 
 void tst_QDateTimeEdit::reverseTest()
 {
     const RestoreLayoutDirectioner restorer(QApplication::layoutDirection());
-    QApplication::setLayoutDirection(Qt::RightToLeft);
+    QApplication::setLayoutDirection(BobUI::RightToLeft);
     testWidget->setDisplayFormat("dd/MM/yyyy");
     testWidget->setDate(QDate(2001, 3, 30));
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("2001/03/30"));
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QCOMPARE(testWidget->currentSection(), QDateTimeEdit::DaySection);
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2001, 3, 31));
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("2001/03/31"));
 }
@@ -3065,27 +3065,27 @@ void tst_QDateTimeEdit::reverseTest()
 void tst_QDateTimeEdit::hour12Test()
 {
     testWidget->setDisplayFormat("hh a");
-    testWidget->setTime(QTime(0, 0, 0));
+    testWidget->setTime(BOBUIime(0, 0, 0));
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("12 am"));
     for (int i=0; i<11; ++i) {
-        QTest::keyClick(testWidget, Qt::Key_Up);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     }
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("11 am"));
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("12 pm"));
     for (int i=0; i<11; ++i) {
-        QTest::keyClick(testWidget, Qt::Key_Up);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     }
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("11 pm"));
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("11 pm"));
     for (int i=0; i<12; ++i) {
-        QTest::keyClick(testWidget, Qt::Key_Down);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     }
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("11 am"));
-    QTest::keyClick(testWidget, Qt::Key_1);
+    BOBUIest::keyClick(testWidget, BobUI::Key_1);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("1 am"));
-    QTest::keyClick(testWidget, Qt::Key_3);
+    BOBUIest::keyClick(testWidget, BobUI::Key_3);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("1 am"));
 }
 
@@ -3094,25 +3094,25 @@ void tst_QDateTimeEdit::yyTest()
     testWidget->setDisplayFormat("dd-MMM-yy");
     testWidget->setDateRange(QDate(2005, 1, 1), QDate(2010, 12, 31));
     testWidget->setDate(testWidget->minimumDate());
-    testWidget->setTime(QTime(12, 0, 0)); // Mid-day to avoid DST artefacts.
+    testWidget->setTime(BOBUIime(12, 0, 0)); // Mid-day to avoid DST artefacts.
     testWidget->setCurrentSection(QDateTimeEdit::YearSection);
 
     QString jan = QLocale::system().monthName(1, QLocale::ShortFormat);
     QCOMPARE(testWidget->lineEdit()->displayText(), "01-" + jan + "-05");
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), "01-" + jan + "-06");
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), "01-" + jan + "-07");
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), "01-" + jan + "-08");
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), "01-" + jan + "-09");
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), "01-" + jan + "-10");
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), "01-" + jan + "-10");
     testWidget->setWrapping(true);
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->lineEdit()->displayText(), "01-" + jan + "-05");
 
     testWidget->setDateRange(QDate(100, 1, 1), QDate(8000, 12, 31));
@@ -3132,29 +3132,29 @@ void tst_QDateTimeEdit::yyTest()
 void tst_QDateTimeEdit::task108572()
 {
     testWidget->setDisplayFormat("hh:mm:ss.zzz");
-    testWidget->setTime(QTime(0, 1, 2, 0));
+    testWidget->setTime(BOBUIime(0, 1, 2, 0));
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("00:01:02.000"));
 
     testWidget->setCurrentSection(QDateTimeEdit::MSecSection);
-    QTest::keyClick(testWidget, Qt::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("000"));
-    QTest::keyClick(testWidget, Qt::Key_2);
+    BOBUIest::keyClick(testWidget, BobUI::Key_2);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("00:01:02.2"));
-    QTest::keyClick(testWidget, Qt::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
     QCOMPARE(testWidget->lineEdit()->displayText(), QString("00:01:02.200"));
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("200"));
-    QCOMPARE(testWidget->time(), QTime(0, 1, 2, 200));
+    QCOMPARE(testWidget->time(), BOBUIime(0, 1, 2, 200));
 }
 
 void tst_QDateTimeEdit::task149097()
 {
     QSignalSpy dtSpy(testWidget, SIGNAL(dateTimeChanged(QDateTime)));
     QSignalSpy dSpy(testWidget, SIGNAL(dateChanged(QDate)));
-    QSignalSpy tSpy(testWidget, SIGNAL(timeChanged(QTime)));
+    QSignalSpy tSpy(testWidget, SIGNAL(timeChanged(BOBUIime)));
 
     testWidget->setDisplayFormat("yyyy/MM/dd hh:mm:ss");
-    testWidget->setDateTime(QDateTime(QDate(2001, 02, 03), QTime(5, 1, 2)));
-//    QTest::keyClick(testWidget, Qt::Key_Enter);
+    testWidget->setDateTime(QDateTime(QDate(2001, 02, 03), BOBUIime(5, 1, 2)));
+//    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QCOMPARE(dtSpy.size(), 1);
     QCOMPARE(dSpy.size(), 1);
     QCOMPARE(tSpy.size(), 1);
@@ -3188,8 +3188,8 @@ void tst_QDateTimeEdit::task148725()
 
 void tst_QDateTimeEdit::task148522()
 {
-    QTimeEdit edit;
-    const QDateTime dt(QDate(2000, 12, 12), QTime(12, 13, 14, 15));
+    BOBUIimeEdit edit;
+    const QDateTime dt(QDate(2000, 12, 12), BOBUIime(12, 13, 14, 15));
     edit.setDateTime(dt);
     QCOMPARE(edit.dateTime(), dt);
 }
@@ -3199,49 +3199,49 @@ void tst_QDateTimeEdit::ddMMMMyyyy()
     testWidget->setDisplayFormat("dd.MMMM.yyyy");
     testWidget->setDate(QDate(2000, 1, 1));
     testWidget->setCurrentSection(QDateTimeEdit::YearSection);
-    QTest::keyClick(testWidget, Qt::Key_Enter);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Enter);
     QCOMPARE(testWidget->lineEdit()->selectedText(), QString("2000"));
 #ifdef Q_OS_MAC
-    QTest::keyClick(testWidget, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(testWidget, Qt::Key_End);
+    BOBUIest::keyClick(testWidget, BobUI::Key_End);
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Backspace);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QCOMPARE(testWidget->lineEdit()->text(), "01." + QLocale::system().monthName(1, QLocale::LongFormat) + ".200");
 }
 
 void tst_QDateTimeEdit::wheelEvent_data()
 {
-#if QT_CONFIG(wheelevent)
-    QTest::addColumn<QPoint>("angleDelta");
-    QTest::addColumn<int>("stepModifier");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<Qt::MouseEventSource>("source");
-    QTest::addColumn<QDateTimeEdit::Section>("section");
-    QTest::addColumn<QDate>("startDate");
-    QTest::addColumn<DateList>("expectedDates");
+#if BOBUI_CONFIG(wheelevent)
+    BOBUIest::addColumn<QPoint>("angleDelta");
+    BOBUIest::addColumn<int>("stepModifier");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<BobUI::MouseEventSource>("source");
+    BOBUIest::addColumn<QDateTimeEdit::Section>("section");
+    BOBUIest::addColumn<QDate>("startDate");
+    BOBUIest::addColumn<DateList>("expectedDates");
 
     const auto fractions = {false, true};
 
     const auto directions = {true, false};
 
-    const auto modifierList = {Qt::NoModifier,
-                               Qt::ShiftModifier,
-                               Qt::ControlModifier,
-                               Qt::AltModifier,
-                               Qt::MetaModifier};
+    const auto modifierList = {BobUI::NoModifier,
+                               BobUI::ShiftModifier,
+                               BobUI::ControlModifier,
+                               BobUI::AltModifier,
+                               BobUI::MetaModifier};
 
-    const auto validStepModifierList = {Qt::NoModifier,
-                                        Qt::ControlModifier,
-                                        Qt::ShiftModifier};
+    const auto validStepModifierList = {BobUI::NoModifier,
+                                        BobUI::ControlModifier,
+                                        BobUI::ShiftModifier};
 
-    const auto sources = {Qt::MouseEventNotSynthesized,
-                          Qt::MouseEventSynthesizedBySystem,
-                          Qt::MouseEventSynthesizedByQt,
-                          Qt::MouseEventSynthesizedByApplication};
+    const auto sources = {BobUI::MouseEventNotSynthesized,
+                          BobUI::MouseEventSynthesizedBySystem,
+                          BobUI::MouseEventSynthesizedByBobUI,
+                          BobUI::MouseEventSynthesizedByApplication};
 
     const auto sections = {QDateTimeEdit::DaySection,
                            QDateTimeEdit::MonthSection,
@@ -3256,7 +3256,7 @@ void tst_QDateTimeEdit::wheelEvent_data()
 
             for (auto modifier : modifierList) {
 
-                const Qt::KeyboardModifiers modifiers(modifier);
+                const BobUI::KeyboardModifiers modifiers(modifier);
 
                 const auto modifierName = modifierToName(modifier);
                 if (modifierName.isEmpty())
@@ -3275,8 +3275,8 @@ void tst_QDateTimeEdit::wheelEvent_data()
 
 #ifdef Q_OS_MACOS
                         QPoint angleDelta;
-                        if ((modifier & Qt::ShiftModifier) &&
-                                source == Qt::MouseEventNotSynthesized) {
+                        if ((modifier & BobUI::ShiftModifier) &&
+                                source == BobUI::MouseEventNotSynthesized) {
                             // On macOS the Shift modifier converts vertical
                             // mouse wheel events to horizontal.
                             angleDelta = { units, 0 };
@@ -3291,16 +3291,16 @@ void tst_QDateTimeEdit::wheelEvent_data()
 
                         QLatin1String sourceName;
                         switch (source) {
-                        case Qt::MouseEventNotSynthesized:
+                        case BobUI::MouseEventNotSynthesized:
                             sourceName = QLatin1String("NotSynthesized");
                             break;
-                        case Qt::MouseEventSynthesizedBySystem:
+                        case BobUI::MouseEventSynthesizedBySystem:
                             sourceName = QLatin1String("SynthesizedBySystem");
                             break;
-                        case Qt::MouseEventSynthesizedByQt:
-                            sourceName = QLatin1String("SynthesizedByQt");
+                        case BobUI::MouseEventSynthesizedByBobUI:
+                            sourceName = QLatin1String("SynthesizedByBobUI");
                             break;
-                        case Qt::MouseEventSynthesizedByApplication:
+                        case BobUI::MouseEventSynthesizedByApplication:
                             sourceName = QLatin1String("SynthesizedByApplication");
                             break;
                         default:
@@ -3322,7 +3322,7 @@ void tst_QDateTimeEdit::wheelEvent_data()
 
                             const QLatin1String sectionName = sectionToName(section);
 
-                            QTest::addRow("%s%s%s%sWith%sKeyboardModifier%s",
+                            BOBUIest::addRow("%s%s%s%sWith%sKeyboardModifier%s",
                                           fraction ? "half" : "full",
                                           up ? "Up" : "Down",
                                           stepModifierName.latin1(),
@@ -3349,11 +3349,11 @@ void tst_QDateTimeEdit::wheelEvent_data()
 
 void tst_QDateTimeEdit::wheelEvent()
 {
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     QFETCH(QPoint, angleDelta);
     QFETCH(int, stepModifier);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
-    QFETCH(Qt::MouseEventSource, source);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::MouseEventSource, source);
     QFETCH(QDateTimeEdit::Section, section);
     QFETCH(QDate, startDate);
     QFETCH(DateList, expectedDates);
@@ -3364,11 +3364,11 @@ void tst_QDateTimeEdit::wheelEvent()
 
     QScopedPointer<StepModifierStyle, QScopedPointerDeleteLater> style(
                 new StepModifierStyle);
-    style->stepModifier = static_cast<Qt::KeyboardModifier>(stepModifier);
+    style->stepModifier = static_cast<BobUI::KeyboardModifier>(stepModifier);
     edit.setStyle(style.data());
 
     QWheelEvent event(QPointF(), QPointF(), QPoint(), angleDelta,
-                      Qt::NoButton, modifiers, Qt::NoScrollPhase, false, source);
+                      BobUI::NoButton, modifiers, BobUI::NoScrollPhase, false, source);
 
     QCOMPARE(edit.date(), startDate);
     for (QDate expected : expectedDates) {
@@ -3377,7 +3377,7 @@ void tst_QDateTimeEdit::wheelEvent()
     }
 #else
     QSKIP("Built with --no-feature-wheelevent");
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 }
 
 void tst_QDateTimeEdit::specialValueCornerCase()
@@ -3418,64 +3418,64 @@ void tst_QDateTimeEdit::task118867()
 {
     EditorDateEdit edit;
     edit.setDisplayFormat("hh:mm");
-    edit.setMinimumTime(QTime(5, 30));
-    edit.setMaximumTime(QTime(6, 30));
+    edit.setMinimumTime(BOBUIime(5, 30));
+    edit.setMaximumTime(BOBUIime(6, 30));
     QCOMPARE(edit.text(), QString("05:30"));
     edit.lineEdit()->setCursorPosition(5);
-    QTest::keyClick(&edit, Qt::Key_Backspace);
+    BOBUIest::keyClick(&edit, BobUI::Key_Backspace);
     QCOMPARE(edit.text(), QString("05:3"));
-    QTest::keyClick(&edit, Qt::Key_Backspace);
+    BOBUIest::keyClick(&edit, BobUI::Key_Backspace);
     QCOMPARE(edit.text(), QString("05:"));
-    QTest::keyClick(&edit, Qt::Key_1);
+    BOBUIest::keyClick(&edit, BobUI::Key_1);
     QCOMPARE(edit.text(), QString("05:"));
-    QTest::keyClick(&edit, Qt::Key_2);
+    BOBUIest::keyClick(&edit, BobUI::Key_2);
     QCOMPARE(edit.text(), QString("05:"));
-    QTest::keyClick(&edit, Qt::Key_3);
+    BOBUIest::keyClick(&edit, BobUI::Key_3);
     QCOMPARE(edit.text(), QString("05:3"));
-    QTest::keyClick(&edit, Qt::Key_3);
+    BOBUIest::keyClick(&edit, BobUI::Key_3);
     QCOMPARE(edit.text(), QString("05:33"));
 }
 
 void tst_QDateTimeEdit::nextPrevSection_data()
 {
-    QTest::addColumn<Qt::Key>("key");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<QString>("selectedText");
+    BOBUIest::addColumn<BobUI::Key>("key");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<QString>("selectedText");
 
-    QTest::newRow("tab") << Qt::Key_Tab << (Qt::KeyboardModifiers)Qt::NoModifier << QString("56");
-    QTest::newRow("backtab") << Qt::Key_Backtab << (Qt::KeyboardModifiers)Qt::NoModifier << QString("12");
-    QTest::newRow("shift-tab") << Qt::Key_Tab << (Qt::KeyboardModifiers)Qt::ShiftModifier << QString("12");
-    QTest::newRow("/") << Qt::Key_Slash << (Qt::KeyboardModifiers)Qt::NoModifier << QString("56");
-    QTest::newRow("b") << Qt::Key_B << (Qt::KeyboardModifiers)Qt::NoModifier << QString("56");
-    QTest::newRow("c") << Qt::Key_C << (Qt::KeyboardModifiers)Qt::NoModifier << QString("56");
+    BOBUIest::newRow("tab") << BobUI::Key_Tab << (BobUI::KeyboardModifiers)BobUI::NoModifier << QString("56");
+    BOBUIest::newRow("backtab") << BobUI::Key_Backtab << (BobUI::KeyboardModifiers)BobUI::NoModifier << QString("12");
+    BOBUIest::newRow("shift-tab") << BobUI::Key_Tab << (BobUI::KeyboardModifiers)BobUI::ShiftModifier << QString("12");
+    BOBUIest::newRow("/") << BobUI::Key_Slash << (BobUI::KeyboardModifiers)BobUI::NoModifier << QString("56");
+    BOBUIest::newRow("b") << BobUI::Key_B << (BobUI::KeyboardModifiers)BobUI::NoModifier << QString("56");
+    BOBUIest::newRow("c") << BobUI::Key_C << (BobUI::KeyboardModifiers)BobUI::NoModifier << QString("56");
 
     // 1. mac doesn't do these,
     // 2. some WinCE devices do not have modifiers
 #if !defined(Q_OS_DARWIN)
-    QTest::newRow("ctrl-right") << Qt::Key_Right << (Qt::KeyboardModifiers)Qt::ControlModifier << QString("56");
-    QTest::newRow("ctrl-left") << Qt::Key_Left << (Qt::KeyboardModifiers)Qt::ControlModifier << QString("12");
+    BOBUIest::newRow("ctrl-right") << BobUI::Key_Right << (BobUI::KeyboardModifiers)BobUI::ControlModifier << QString("56");
+    BOBUIest::newRow("ctrl-left") << BobUI::Key_Left << (BobUI::KeyboardModifiers)BobUI::ControlModifier << QString("12");
 #endif
 }
 
 void tst_QDateTimeEdit::nextPrevSection()
 {
-    QFETCH(Qt::Key, key);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::Key, key);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(QString, selectedText);
 
     EditorDateEdit edit;
     edit.setDisplayFormat("hh/mm/bc9ss");
-    edit.setTime(QTime(12, 34, 56));
+    edit.setTime(BOBUIime(12, 34, 56));
     edit.show();
     edit.setSelectedSection(QDateTimeEdit::MinuteSection);
     QCOMPARE(edit.lineEdit()->selectedText(), QString("34")); // selftest
-    QTest::keyClick(&edit, key, modifiers);
+    BOBUIest::keyClick(&edit, key, modifiers);
     QCOMPARE(edit.lineEdit()->selectedText(), selectedText);
 }
 
 void tst_QDateTimeEdit::dateEditTimeEditFormats()
 {
-    QTimeEdit t;
+    BOBUIimeEdit t;
     t.setDisplayFormat("hh yyyy");
     QCOMPARE(t.displayedSections(), QDateTimeEdit::HourSection);
 
@@ -3484,16 +3484,16 @@ void tst_QDateTimeEdit::dateEditTimeEditFormats()
     QCOMPARE(d.displayedSections(), QDateTimeEdit::YearSection);
 }
 
-#if QT_DEPRECATED_SINCE(6, 10)
+#if BOBUI_DEPRECATED_SINCE(6, 10)
 void tst_QDateTimeEdit::timeSpec_data()
 {
-    QTest::addColumn<bool>("useSetProperty");
-    QTest::newRow("setProperty") << true;
-    QTest::newRow("setTimeSpec") << false;
+    BOBUIest::addColumn<bool>("useSetProperty");
+    BOBUIest::newRow("setProperty") << true;
+    BOBUIest::newRow("setTimeSpec") << false;
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QDateTimeEdit::timeSpec()
 {
     QFETCH(bool, useSetProperty);
@@ -3503,29 +3503,29 @@ void tst_QDateTimeEdit::timeSpec()
     QCOMPARE(edit.minimumDateTime().timeSpec(), edit.timeSpec());
     QCOMPARE(edit.maximumDateTime().timeSpec(), edit.timeSpec());
     if (useSetProperty) {
-        edit.setProperty("timeSpec", Qt::UTC);
+        edit.setProperty("timeSpec", BobUI::UTC);
     } else {
-        edit.setTimeSpec(Qt::UTC);
+        edit.setTimeSpec(BobUI::UTC);
     }
     QCOMPARE(edit.minimumDateTime().timeSpec(), edit.timeSpec());
     QCOMPARE(edit.maximumDateTime().timeSpec(), edit.timeSpec());
     QCOMPARE(edit.dateTime().timeSpec(), edit.timeSpec());
     if (useSetProperty) {
-        edit.setProperty("timeSpec", Qt::LocalTime);
+        edit.setProperty("timeSpec", BobUI::LocalTime);
     } else {
-        edit.setTimeSpec(Qt::LocalTime);
+        edit.setTimeSpec(BobUI::LocalTime);
     }
     const QDateTime dt = edit.dateTime();
-    QCOMPARE(edit.timeSpec(), Qt::LocalTime);
+    QCOMPARE(edit.timeSpec(), BobUI::LocalTime);
     const QDateTime utc = dt.toUTC();
     if (dt.time() != utc.time()) {
-        const QDateTime min(QDate(1999, 1, 1), QTime(1, 0));
+        const QDateTime min(QDate(1999, 1, 1), BOBUIime(1, 0));
         edit.setMinimumDateTime(min);
         QCOMPARE(edit.minimumTime(), min.time());
         if (useSetProperty) {
-            edit.setProperty("timeSpec", Qt::UTC);
+            edit.setProperty("timeSpec", BobUI::UTC);
         } else {
-            edit.setTimeSpec(Qt::UTC);
+            edit.setTimeSpec(BobUI::UTC);
         }
         QVERIFY(edit.minimumTime() != min.time());
         QVERIFY(edit.minimumDateTime().timeSpec() != min.timeSpec());
@@ -3534,44 +3534,44 @@ void tst_QDateTimeEdit::timeSpec()
         QSKIP("Not tested in the GMT timezone");
     }
 }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif // test deprecated timeSpec property
 
 void tst_QDateTimeEdit::timeZoneBug()
 {
-    testWidget->setTimeZone(QTimeZone::UTC);
+    testWidget->setTimeZone(BOBUIimeZone::UTC);
     testWidget->setDisplayFormat("hh:mm");
-    testWidget->setTime(QTime(2, 2));
+    testWidget->setTime(BOBUIime(2, 2));
     const QString oldText = testWidget->text();
     const QDateTime oldDateTime = testWidget->dateTime();
-    QTest::keyClick(testWidget, Qt::Key_Tab);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Tab);
     QCOMPARE(oldDateTime, testWidget->dateTime());
     QCOMPARE(oldText, testWidget->text());
 }
 
 void tst_QDateTimeEdit::timeZoneInit()
 {
-    QDateTime utc(QDate(2000, 1, 1), QTime(12, 0), QTimeZone::UTC);
+    QDateTime utc(QDate(2000, 1, 1), BOBUIime(12, 0), BOBUIimeZone::UTC);
     QDateTimeEdit widget(utc);
     QCOMPARE(widget.dateTime(), utc);
 }
 
 void tst_QDateTimeEdit::setDateTime_data()
 {
-    const QDateTime localNoon(QDate(2019, 12, 24), QTime(12, 0));
-    const QTimeZone UTC(QTimeZone::UTC), local(QTimeZone::LocalTime);
-    QTest::addColumn<QTimeZone>("zone");
-    QTest::addColumn<QDateTime>("store");
-    QTest::addColumn<QDateTime>("expect");
-    QTest::newRow("LocalTime/LocalTime") << local << localNoon << localNoon;
-    QTest::newRow("LocalTime/UTC") << local << localNoon.toUTC() << localNoon;
-    QTest::newRow("UTC/LocalTime") << UTC << localNoon << localNoon.toUTC();
-    QTest::newRow("UTC/UTC") << UTC << localNoon.toUTC() << localNoon.toUTC();
+    const QDateTime localNoon(QDate(2019, 12, 24), BOBUIime(12, 0));
+    const BOBUIimeZone UTC(BOBUIimeZone::UTC), local(BOBUIimeZone::LocalTime);
+    BOBUIest::addColumn<BOBUIimeZone>("zone");
+    BOBUIest::addColumn<QDateTime>("store");
+    BOBUIest::addColumn<QDateTime>("expect");
+    BOBUIest::newRow("LocalTime/LocalTime") << local << localNoon << localNoon;
+    BOBUIest::newRow("LocalTime/UTC") << local << localNoon.toUTC() << localNoon;
+    BOBUIest::newRow("UTC/LocalTime") << UTC << localNoon << localNoon.toUTC();
+    BOBUIest::newRow("UTC/UTC") << UTC << localNoon.toUTC() << localNoon.toUTC();
 }
 
 void tst_QDateTimeEdit::setDateTime()
 {
-    QFETCH(const QTimeZone, zone);
+    QFETCH(const BOBUIimeZone, zone);
     QFETCH(const QDateTime, store);
     QFETCH(const QDateTime, expect);
     QDateTimeEdit editor;
@@ -3585,27 +3585,27 @@ void tst_QDateTimeEdit::cachedDayTest()
     testWidget->setDisplayFormat("MM/dd");
     testWidget->setDate(QDate(2007, 1, 30));
     testWidget->setCurrentSection(QDateTimeEdit::DaySection);
-    //QTest::keyClick(testWidget->lineEdit(), Qt::Key_Up); // this doesn't work
-    //on Mac. Qt Test bug? ###
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    //BOBUIest::keyClick(testWidget->lineEdit(), BobUI::Key_Up); // this doesn't work
+    //on Mac. BobUI Test bug? ###
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     testWidget->setCurrentSection(QDateTimeEdit::MonthSection);
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2007, 2, 28));
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2007, 3, 31));
-    QTest::keyClick(testWidget, Qt::Key_Down);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     QCOMPARE(testWidget->date(), QDate(2007, 2, 28));
-    QTest::keyClick(testWidget, Qt::Key_Down);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     QCOMPARE(testWidget->date(), QDate(2007, 1, 31));
 
     testWidget->setCurrentSection(QDateTimeEdit::DaySection);
-    QTest::keyClick(testWidget, Qt::Key_Down);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down);
     QCOMPARE(testWidget->date(), QDate(2007, 1, 30));
     testWidget->setCurrentSection(QDateTimeEdit::MonthSection);
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2007, 2, 28));
     testWidget->setCurrentSection(QDateTimeEdit::MonthSection);
-    QTest::keyClick(testWidget, Qt::Key_Up);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up);
     QCOMPARE(testWidget->date(), QDate(2007, 3, 30));
 }
 
@@ -3617,7 +3617,7 @@ void tst_QDateTimeEdit::monthEdgeCase()
     edit.setDate(QDate(2000, 1, 1));
     QCOMPARE(edit.text(), QString("janv. 1"));
     edit.lineEdit()->setCursorPosition(5);
-    QTest::keyClick(&edit, Qt::Key_Backspace);
+    BOBUIest::keyClick(&edit, BobUI::Key_Backspace);
     QCOMPARE(edit.text(), QString("janv 1"));
 }
 
@@ -3675,13 +3675,13 @@ void tst_QDateTimeEdit::potentialYYValueBug()
     edit.lineEdit()->setFocus();
 
 #ifdef Q_OS_MAC
-    QTest::keyClick(&edit, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(&edit, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(&edit, Qt::Key_End);
+    BOBUIest::keyClick(&edit, BobUI::Key_End);
 #endif
-    QTest::keyClick(&edit, Qt::Key_Backspace);
+    BOBUIest::keyClick(&edit, BobUI::Key_Backspace);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QCOMPARE(edit.text(), QString("14/09/5"));
 }
@@ -3693,42 +3693,42 @@ void tst_QDateTimeEdit::textSectionAtEnd()
     edit.setDate(QDate(2000, 1, 1));
     edit.lineEdit()->setFocus();
 #ifdef Q_OS_MAC
-    QTest::keyClick(&edit, Qt::Key_Right, Qt::ControlModifier);
+    BOBUIest::keyClick(&edit, BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    QTest::keyClick(&edit, Qt::Key_End);
+    BOBUIest::keyClick(&edit, BobUI::Key_End);
 #endif
-    QTest::keyClick(&edit, Qt::Key_Backspace);
+    BOBUIest::keyClick(&edit, BobUI::Key_Backspace);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23674", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23674", Abort);
 #endif
     QCOMPARE(edit.text(), QString("Januar"));
 }
 
 void tst_QDateTimeEdit::keypadAutoAdvance_data()
 {
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::newRow("None") << (Qt::KeyboardModifiers)Qt::NoModifier;
-    QTest::newRow("Keypad") << (Qt::KeyboardModifiers)Qt::KeypadModifier;
-    // QTBUG-7842: Using KeyPad with shift (numlock off)
-    QTest::newRow("Keypad+Shift") << (Qt::KeyboardModifiers)(Qt::KeypadModifier|Qt::ShiftModifier);
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::newRow("None") << (BobUI::KeyboardModifiers)BobUI::NoModifier;
+    BOBUIest::newRow("Keypad") << (BobUI::KeyboardModifiers)BobUI::KeypadModifier;
+    // BOBUIBUG-7842: Using KeyPad with shift (numlock off)
+    BOBUIest::newRow("Keypad+Shift") << (BobUI::KeyboardModifiers)(BobUI::KeypadModifier|BobUI::ShiftModifier);
 }
 
 void tst_QDateTimeEdit::keypadAutoAdvance()
 {
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
 
     EditorDateEdit edit;
     edit.setDate(QDate(2000, 2, 1));
     edit.setDisplayFormat("dd/MM");
 #ifdef Q_OS_MAC
-    QTest::keyClick(&edit, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(&edit, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(&edit, Qt::Key_Home);
+    BOBUIest::keyClick(&edit, BobUI::Key_Home);
 #endif
-    QTest::keyClick(&edit, Qt::Key_Return);
+    BOBUIest::keyClick(&edit, BobUI::Key_Return);
     QCOMPARE(edit.lineEdit()->selectedText(), QString("01"));
-    QTest::keyClick(&edit, Qt::Key_1, modifiers);
-    QTest::keyClick(&edit, Qt::Key_2, modifiers);
+    BOBUIest::keyClick(&edit, BobUI::Key_1, modifiers);
+    BOBUIest::keyClick(&edit, BobUI::Key_2, modifiers);
     QCOMPARE(edit.lineEdit()->selectedText(), QString("02"));
 }
 
@@ -3738,9 +3738,9 @@ void tst_QDateTimeEdit::task196924()
     edit.setDisplayFormat("dd/M/yyyy");
     edit.setDate(QDate(2345, 6, 17));
     QCOMPARE(edit.text(), QString("17/6/2345"));
-    QTest::keyClick(&edit, Qt::Key_Tab);
+    BOBUIest::keyClick(&edit, BobUI::Key_Tab);
     QCOMPARE(edit.lineEdit()->selectedText(), QString("6"));
-    QTest::keyClick(&edit, Qt::Key_3);
+    BOBUIest::keyClick(&edit, BobUI::Key_3);
     QCOMPARE(edit.lineEdit()->selectedText(), QString("2345"));
     QCOMPARE(edit.text(), QString("17/3/2345"));
 
@@ -3748,9 +3748,9 @@ void tst_QDateTimeEdit::task196924()
     edit.setDate(QDate(2345, 6, 17));
     edit.lineEdit()->setCursorPosition(0);
     QCOMPARE(edit.text(), QString("17/06/2345"));
-    QTest::keyClick(&edit, Qt::Key_Tab);
+    BOBUIest::keyClick(&edit, BobUI::Key_Tab);
     QCOMPARE(edit.lineEdit()->selectedText(), QString("06"));
-    QTest::keyClick(&edit, Qt::Key_3);
+    BOBUIest::keyClick(&edit, BobUI::Key_3);
     QCOMPARE(edit.lineEdit()->selectedText(), QString("2345"));
     QCOMPARE(edit.text(), QString("17/03/2345"));
 }
@@ -3769,18 +3769,18 @@ void tst_QDateTimeEdit::focusNextPrevChild()
     QCOMPARE(edit.currentSection(), QDateTimeEdit::MonthSection);
 }
 
-void tst_QDateTimeEdit::taskQTBUG_12384_timeZoneShowTimeOnly()
+void tst_QDateTimeEdit::taskBOBUIBUG_12384_timeZoneShowTimeOnly()
 {
     QDateTime time = QDateTime::fromString("20100723 04:02:40", "yyyyMMdd hh:mm:ss");
-    time.setTimeZone(QTimeZone::UTC);
+    time.setTimeZone(BOBUIimeZone::UTC);
 
     EditorDateEdit edit;
     edit.setDisplayFormat("hh:mm:ss");
-    edit.setTimeZone(QTimeZone::UTC);
+    edit.setTimeZone(BOBUIimeZone::UTC);
     edit.setDateTime(time);
 
-    QCOMPARE(edit.minimumTime(), QTime(0, 0, 0, 0));
-    QCOMPARE(edit.maximumTime(), QTime(23, 59, 59, 999));
+    QCOMPARE(edit.minimumTime(), BOBUIime(0, 0, 0, 0));
+    QCOMPARE(edit.maximumTime(), BOBUIime(23, 59, 59, 999));
     QCOMPARE(edit.time(), time.time());
 }
 
@@ -3822,9 +3822,9 @@ void tst_QDateTimeEdit::setLocaleOnCalendarWidget()
     }
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 
-using KeyPair = std::pair<Qt::Key, Qt::KeyboardModifier>;
+using KeyPair = std::pair<BobUI::Key, BobUI::KeyboardModifier>;
 typedef QList<KeyPair> KeyPairList;
 
 Q_DECLARE_METATYPE(KeyPair)
@@ -3842,354 +3842,354 @@ focus changed.
 
 void tst_QDateTimeEdit::dateEditCorrectSectionSize_data()
 {
-    QTest::addColumn<QLocale>("locale");
-    QTest::addColumn<QDate>("defaultDate");
-    QTest::addColumn<QString>("displayFormat");
-    QTest::addColumn<KeyPairList>("keyPresses");
-    QTest::addColumn<QDate>("expectedDate");
-    QTest::addColumn<QString>("expectedDisplayString");
+    BOBUIest::addColumn<QLocale>("locale");
+    BOBUIest::addColumn<QDate>("defaultDate");
+    BOBUIest::addColumn<QString>("displayFormat");
+    BOBUIest::addColumn<KeyPairList>("keyPresses");
+    BOBUIest::addColumn<QDate>("expectedDate");
+    BOBUIest::addColumn<QString>("expectedDisplayString");
 
-    const auto key = [](Qt::Key key, Qt::KeyboardModifier modifier = Qt::NoModifier) {
+    const auto key = [](BobUI::Key key, BobUI::KeyboardModifier modifier = BobUI::NoModifier) {
         return KeyPair(key, modifier);
     };
     const QDate y2kStart(2000, 1, 1), start2001(2001, 1, 1);
     const QLocale ozzy(QLocale::English, QLocale::Australia);
-    const KeyPairList thirtyUpKeypresses(30, key(Qt::Key_Up));
+    const KeyPairList thirtyUpKeypresses(30, key(BobUI::Key_Up));
 
     // Make day the current section, set day to 31st (invalid for february),
     // move to month field, set month to february (2).
     KeyPairList threeDigitDayIssueKeypresses;
-    threeDigitDayIssueKeypresses << key(Qt::Key_Tab) << key(Qt::Key_Tab)
-        << key(Qt::Key_3) << key(Qt::Key_1) << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses << key(BobUI::Key_Tab) << key(BobUI::Key_Tab)
+        << key(BobUI::Key_3) << key(BobUI::Key_1) << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_2);
 
     // Same as above, except day-year-month format.
     KeyPairList threeDigitDayIssueKeypresses_DayYearMonth;
-    threeDigitDayIssueKeypresses_DayYearMonth << key(Qt::Key_3) << key(Qt::Key_1) << key(Qt::Key_Tab)
-        << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_DayYearMonth << key(BobUI::Key_3) << key(BobUI::Key_1) << key(BobUI::Key_Tab)
+        << key(BobUI::Key_2);
 
     // Same as threeDigitDayIssueKeypresses, except doesn't require the day to be corrected.
     KeyPairList threeDigitDayIssueKeypresses_Nofixday;
-    threeDigitDayIssueKeypresses_Nofixday << key(Qt::Key_Tab) << key(Qt::Key_Tab)
-        << key(Qt::Key_2) << key(Qt::Key_8) << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_Nofixday << key(BobUI::Key_Tab) << key(BobUI::Key_Tab)
+        << key(BobUI::Key_2) << key(BobUI::Key_8) << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_2);
 
     // Set day to 31st (invalid for february), set month to february (2).
     KeyPairList reverseThreeDigitDayIssueKeypresses;
     reverseThreeDigitDayIssueKeypresses
-        << key(Qt::Key_3) << key(Qt::Key_1) << key(Qt::Key_2);
+        << key(BobUI::Key_3) << key(BobUI::Key_1) << key(BobUI::Key_2);
 
     // Make day the current section, set day to 31st, move to month field, set month to november (11).
     KeyPairList threeDigitDayIssueKeypresses_TwoDigitMonth;
-    threeDigitDayIssueKeypresses_TwoDigitMonth << key(Qt::Key_Tab) << key(Qt::Key_Tab) << key(Qt::Key_3)
-        << key(Qt::Key_1) << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_1) << key(Qt::Key_1);
+    threeDigitDayIssueKeypresses_TwoDigitMonth << key(BobUI::Key_Tab) << key(BobUI::Key_Tab) << key(BobUI::Key_3)
+        << key(BobUI::Key_1) << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_1) << key(BobUI::Key_1);
 
     // Make day the current section, set day to 3rd, move to month field, set month to february (2).
     KeyPairList threeDigitDayIssueKeypresses_OneDigitDay;
-    threeDigitDayIssueKeypresses_OneDigitDay << key(Qt::Key_Tab) << key(Qt::Key_Tab)
-        << key(Qt::Key_3) << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_OneDigitDay << key(BobUI::Key_Tab) << key(BobUI::Key_Tab)
+        << key(BobUI::Key_3) << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_2);
 
     // Make day the current section, set day to 31st (invalid for february), move to month field,
     // set month to february (2).
     KeyPairList threeDigitDayIssueKeypresses_ShortMonthName;
-    threeDigitDayIssueKeypresses_ShortMonthName << key(Qt::Key_Tab) << key(Qt::Key_Tab)
-        << key(Qt::Key_3) << key(Qt::Key_1) << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_Up);
+    threeDigitDayIssueKeypresses_ShortMonthName << key(BobUI::Key_Tab) << key(BobUI::Key_Tab)
+        << key(BobUI::Key_3) << key(BobUI::Key_1) << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_Up);
 
     // Make day the current section, set day to 31st (Monday), move to month field, set month to february (2).
     // Will probably never see this display format in a QDateTimeEdit, but it's good to test it anyway.
     KeyPairList threeDigitDayIssueKeypresses_DayName;
-    threeDigitDayIssueKeypresses_DayName << key(Qt::Key_Tab) << key(Qt::Key_Tab) << thirtyUpKeypresses
-        << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_DayName << key(BobUI::Key_Tab) << key(BobUI::Key_Tab) << thirtyUpKeypresses
+        << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_2);
 
     KeyPairList threeDigitDayIssueKeypresses_DayName_DayYearMonth;
-    threeDigitDayIssueKeypresses_DayName_DayYearMonth << thirtyUpKeypresses << key(Qt::Key_Tab)
-        << key(Qt::Key_Tab) << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_DayName_DayYearMonth << thirtyUpKeypresses << key(BobUI::Key_Tab)
+        << key(BobUI::Key_Tab) << key(BobUI::Key_2);
 
     KeyPairList threeDigitDayIssueKeypresses_DayName_YearDayMonth;
-    threeDigitDayIssueKeypresses_DayName_YearDayMonth << key(Qt::Key_Tab) << thirtyUpKeypresses
-        << key(Qt::Key_Tab) << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_DayName_YearDayMonth << key(BobUI::Key_Tab) << thirtyUpKeypresses
+        << key(BobUI::Key_Tab) << key(BobUI::Key_2);
 
     KeyPairList threeDigitDayIssueKeypresses_DayName_DayMonthYear;
-    threeDigitDayIssueKeypresses_DayName_DayMonthYear << thirtyUpKeypresses << key(Qt::Key_Tab)
-        << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_DayName_DayMonthYear << thirtyUpKeypresses << key(BobUI::Key_Tab)
+        << key(BobUI::Key_2);
 
     KeyPairList threeDigitDayIssueKeypresses_DayName_MonthDayYear;
-    threeDigitDayIssueKeypresses_DayName_MonthDayYear << key(Qt::Key_Tab) << thirtyUpKeypresses
-        << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_DayName_MonthDayYear << key(BobUI::Key_Tab) << thirtyUpKeypresses
+        << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_2);
 
     // Make day the current section, set day to 31st (invalid for february), move to month field,
     // set month to february (2).
     KeyPairList threeDigitDayIssueKeypresses_YearDayMonth;
-    threeDigitDayIssueKeypresses_YearDayMonth << key(Qt::Key_Tab) << key(Qt::Key_3) << key(Qt::Key_1)
-        << key(Qt::Key_Tab) << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_YearDayMonth << key(BobUI::Key_Tab) << key(BobUI::Key_3) << key(BobUI::Key_1)
+        << key(BobUI::Key_Tab) << key(BobUI::Key_2);
 
     // Make day the current section, set day to 31st, move to month field, set month to february (2).
     KeyPairList threeDigitDayIssueKeypresses_MonthDayYear;
-    threeDigitDayIssueKeypresses_MonthDayYear << key(Qt::Key_Tab) << key(Qt::Key_3) << key(Qt::Key_1)
-        << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_MonthDayYear << key(BobUI::Key_Tab) << key(BobUI::Key_3) << key(BobUI::Key_1)
+        << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_2);
 
     // Same as above, except month-year-day format.
     KeyPairList threeDigitDayIssueKeypresses_MonthYearDay;
-    threeDigitDayIssueKeypresses_MonthYearDay << key(Qt::Key_Tab) << key(Qt::Key_Tab) << key(Qt::Key_3)
-        << key(Qt::Key_1) << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_Tab, Qt::ShiftModifier)
-        << key(Qt::Key_2);
+    threeDigitDayIssueKeypresses_MonthYearDay << key(BobUI::Key_Tab) << key(BobUI::Key_Tab) << key(BobUI::Key_3)
+        << key(BobUI::Key_1) << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_Tab, BobUI::ShiftModifier)
+        << key(BobUI::Key_2);
 
     // Same as above, except short month name.
     KeyPairList threeDigitDayIssueKeypresses_ShortMonthName_MonthYearDay;
-    threeDigitDayIssueKeypresses_ShortMonthName_MonthYearDay << key(Qt::Key_Tab) << key(Qt::Key_Tab)
-        << key(Qt::Key_3) << key(Qt::Key_1) << key(Qt::Key_Tab, Qt::ShiftModifier)
-        << key(Qt::Key_Tab, Qt::ShiftModifier) << key(Qt::Key_Up);
+    threeDigitDayIssueKeypresses_ShortMonthName_MonthYearDay << key(BobUI::Key_Tab) << key(BobUI::Key_Tab)
+        << key(BobUI::Key_3) << key(BobUI::Key_1) << key(BobUI::Key_Tab, BobUI::ShiftModifier)
+        << key(BobUI::Key_Tab, BobUI::ShiftModifier) << key(BobUI::Key_Up);
 
     KeyPairList shortAndLongNameIssueKeypresses;
-    shortAndLongNameIssueKeypresses << key(Qt::Key_Tab) << key(Qt::Key_3) << key(Qt::Key_1) << key(Qt::Key_Up);
+    shortAndLongNameIssueKeypresses << key(BobUI::Key_Tab) << key(BobUI::Key_3) << key(BobUI::Key_1) << key(BobUI::Key_Up);
 
     // When day-of-week is specified, rather than day-of-month, changing month
     // cares more about preserving day-of-week than day-of-month, so Jan/31 ->
     // Feb picks 28th even in a leap year, as that's exactly four weeks later.
-    QTest::newRow("no fixday, leap, yy/M/dddd")
+    BOBUIest::newRow("no fixday, leap, yy/M/dddd")
         << ozzy << y2kStart << QString::fromLatin1("yy/M/dddd")
         << threeDigitDayIssueKeypresses_DayName
         << QDate(2000, 2, 28) << QString::fromLatin1("00/2/Monday");
 
-    QTest::newRow("no fixday, leap, yy/M/ddd")
+    BOBUIest::newRow("no fixday, leap, yy/M/ddd")
         << ozzy << y2kStart << QString::fromLatin1("yy/M/ddd")
         << threeDigitDayIssueKeypresses_DayName
         << QDate(2000, 2, 28) << QString::fromLatin1("00/2/Mon");
 
-    QTest::newRow("no fixday, leap, yy/MM/dddd")
+    BOBUIest::newRow("no fixday, leap, yy/MM/dddd")
         << ozzy << y2kStart << QString::fromLatin1("yy/MM/dddd")
         << threeDigitDayIssueKeypresses_DayName
         << QDate(2000, 2, 28) << QString::fromLatin1("00/02/Monday");
 
-    QTest::newRow("fixday, leap, yy/MM/dd")
+    BOBUIest::newRow("fixday, leap, yy/MM/dd")
         << ozzy << y2kStart << QString::fromLatin1("yy/MM/dd")
         << threeDigitDayIssueKeypresses
         << QDate(2000, 2, 29) << QString::fromLatin1("00/02/29");
 
-    QTest::newRow("fixday, leap, yy/MM/d")
+    BOBUIest::newRow("fixday, leap, yy/MM/d")
         << ozzy << y2kStart << QString::fromLatin1("yy/MM/d")
         << threeDigitDayIssueKeypresses
         << QDate(2000, 2, 29) << QString::fromLatin1("00/02/29");
 
-    QTest::newRow("fixday, leap, yyyy/M/d")
+    BOBUIest::newRow("fixday, leap, yyyy/M/d")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/M/d")
         << threeDigitDayIssueKeypresses
         << QDate(2000, 2, 29) << QString::fromLatin1("2000/2/29");
 
-    QTest::newRow("no fixday, yyyy/M/d")
+    BOBUIest::newRow("no fixday, yyyy/M/d")
         << ozzy << start2001 << QString::fromLatin1("yyyy/M/d")
         << threeDigitDayIssueKeypresses_Nofixday
         << QDate(2001, 2, 28) << QString::fromLatin1("2001/2/28");
 
-    QTest::newRow("fixday, leap, 2-digit month, yyyy/M/dd")
+    BOBUIest::newRow("fixday, leap, 2-digit month, yyyy/M/dd")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/M/dd")
         << threeDigitDayIssueKeypresses_TwoDigitMonth
         << QDate(2000, 11, 30) << QString::fromLatin1("2000/11/30");
 
-    QTest::newRow("no fixday, leap, 1-digit day, yyyy/M/dd")
+    BOBUIest::newRow("no fixday, leap, 1-digit day, yyyy/M/dd")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/M/dd")
         << threeDigitDayIssueKeypresses_OneDigitDay
         << QDate(2000, 2, 3) << QString::fromLatin1("2000/2/03");
 
-    QTest::newRow("fixday, leap, yyyy/MM/dd")
+    BOBUIest::newRow("fixday, leap, yyyy/MM/dd")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/MM/dd")
         << threeDigitDayIssueKeypresses
         << QDate(2000, 2, 29) << QString::fromLatin1("2000/02/29");
 
-    QTest::newRow("no fixday, yyyy/MM/dd")
+    BOBUIest::newRow("no fixday, yyyy/MM/dd")
         << ozzy << start2001 << QString::fromLatin1("yyyy/MM/dd")
         << threeDigitDayIssueKeypresses_Nofixday
         << QDate(2001, 2, 28) << QString::fromLatin1("2001/02/28");
 
-    QTest::newRow("fixday, leap, 2-digit month, yyyy/MM/dd")
+    BOBUIest::newRow("fixday, leap, 2-digit month, yyyy/MM/dd")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/MM/dd")
         << threeDigitDayIssueKeypresses_TwoDigitMonth
         << QDate(2000, 11, 30) << QString::fromLatin1("2000/11/30");
 
-    QTest::newRow("no fixday, leap, yyyy/M/dddd")
+    BOBUIest::newRow("no fixday, leap, yyyy/M/dddd")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/M/dddd")
         << threeDigitDayIssueKeypresses_DayName
         << QDate(2000, 2, 28) << QString::fromLatin1("2000/2/Monday");
 
-    QTest::newRow("no fixday, leap, yyyy/MM/dddd")
+    BOBUIest::newRow("no fixday, leap, yyyy/MM/dddd")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/MM/dddd")
         << threeDigitDayIssueKeypresses_DayName
         << QDate(2000, 2, 28) << QString::fromLatin1("2000/02/Monday");
 
-    QTest::newRow("fixday, leap, yyyy/dd/MM")
+    BOBUIest::newRow("fixday, leap, yyyy/dd/MM")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/dd/MM")
         << threeDigitDayIssueKeypresses_YearDayMonth
         << QDate(2000, 2, 29) << QString::fromLatin1("2000/29/02");
 
-    QTest::newRow("fixday, leap, yyyy/dd/M")
+    BOBUIest::newRow("fixday, leap, yyyy/dd/M")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/dd/M")
         << threeDigitDayIssueKeypresses_YearDayMonth
         << QDate(2000, 2, 29) << QString::fromLatin1("2000/29/2");
 
-    QTest::newRow("fixday, leap, yyyy/d/M")
+    BOBUIest::newRow("fixday, leap, yyyy/d/M")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/d/M")
         << threeDigitDayIssueKeypresses_YearDayMonth
         << QDate(2000, 2, 29) << QString::fromLatin1("2000/29/2");
 
-    QTest::newRow("fixday, leap, yyyy/MMM/dd")
+    BOBUIest::newRow("fixday, leap, yyyy/MMM/dd")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/MMM/dd")
         << threeDigitDayIssueKeypresses_ShortMonthName
         << QDate(2000, 2, 29) << QString::fromLatin1("2000/Feb/29");
 
-    QTest::newRow("fixday, leap, yyyy/MMM/d")
+    BOBUIest::newRow("fixday, leap, yyyy/MMM/d")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/MMM/d")
         << threeDigitDayIssueKeypresses_ShortMonthName
         << QDate(2000, 2, 29) << QString::fromLatin1("2000/Feb/29");
 
-    QTest::newRow("fixday, leap, yy/MMM/dd")
+    BOBUIest::newRow("fixday, leap, yy/MMM/dd")
         << ozzy << y2kStart << QString::fromLatin1("yy/MMM/dd")
         << threeDigitDayIssueKeypresses_ShortMonthName
         << QDate(2000, 2, 29) << QString::fromLatin1("00/Feb/29");
 
-    QTest::newRow("fixday, leap, yyyy/dddd/M")
+    BOBUIest::newRow("fixday, leap, yyyy/dddd/M")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/dddd/M")
         << threeDigitDayIssueKeypresses_DayName_YearDayMonth
         << QDate(2000, 2, 28) << QString::fromLatin1("2000/Monday/2");
 
-    QTest::newRow("fixday, leap, yyyy/dddd/MM")
+    BOBUIest::newRow("fixday, leap, yyyy/dddd/MM")
         << ozzy << y2kStart << QString::fromLatin1("yyyy/dddd/MM")
         << threeDigitDayIssueKeypresses_DayName_YearDayMonth
         << QDate(2000, 2, 28) << QString::fromLatin1("2000/Monday/02");
 
-    QTest::newRow("fixday, leap, d/M/yyyy")
+    BOBUIest::newRow("fixday, leap, d/M/yyyy")
         << ozzy << y2kStart << QString::fromLatin1("d/M/yyyy")
         << reverseThreeDigitDayIssueKeypresses
         << QDate(2000, 2, 29) << QString::fromLatin1("29/2/2000");
 
-    QTest::newRow("fixday, leap, dd/MM/yyyy")
+    BOBUIest::newRow("fixday, leap, dd/MM/yyyy")
         << ozzy << y2kStart << QString::fromLatin1("dd/MM/yyyy")
         << reverseThreeDigitDayIssueKeypresses
         << QDate(2000, 2, 29) << QString::fromLatin1("29/02/2000");
 
-    QTest::newRow("fixday, dd/MM/yyyy")
+    BOBUIest::newRow("fixday, dd/MM/yyyy")
         << ozzy << start2001 << QString::fromLatin1("dd/MM/yyyy")
         << reverseThreeDigitDayIssueKeypresses
         << QDate(2001, 2, 28) << QString::fromLatin1("28/02/2001");
 
-    QTest::newRow("fixday, leap, dddd/MM/yyyy")
+    BOBUIest::newRow("fixday, leap, dddd/MM/yyyy")
         << ozzy << y2kStart << QString::fromLatin1("dddd/MM/yyyy")
         << threeDigitDayIssueKeypresses_DayName_DayMonthYear
         << QDate(2000, 2, 28) << QString::fromLatin1("Monday/02/2000");
 
-    QTest::newRow("fixday, leap, d/yy/M")
+    BOBUIest::newRow("fixday, leap, d/yy/M")
         << ozzy << y2kStart << QString::fromLatin1("d/yy/M")
         << threeDigitDayIssueKeypresses_DayYearMonth
         << QDate(2000, 2, 29) << QString::fromLatin1("29/00/2");
 
-    QTest::newRow("fixday, leap, d/yyyy/M")
+    BOBUIest::newRow("fixday, leap, d/yyyy/M")
         << ozzy << y2kStart << QString::fromLatin1("d/yyyy/M")
         << threeDigitDayIssueKeypresses_DayYearMonth
         << QDate(2000, 2, 29) << QString::fromLatin1("29/2000/2");
 
-    QTest::newRow("fixday, leap, d/yyyy/MM")
+    BOBUIest::newRow("fixday, leap, d/yyyy/MM")
         << ozzy << y2kStart << QString::fromLatin1("d/yyyy/MM")
         << threeDigitDayIssueKeypresses_DayYearMonth
         << QDate(2000, 2, 29) << QString::fromLatin1("29/2000/02");
 
-    QTest::newRow("fixday, leap, dd/yy/MM")
+    BOBUIest::newRow("fixday, leap, dd/yy/MM")
         << ozzy << y2kStart << QString::fromLatin1("dd/yy/MM")
         << threeDigitDayIssueKeypresses_DayYearMonth
         << QDate(2000, 2, 29) << QString::fromLatin1("29/00/02");
 
-    QTest::newRow("fixday, leap, dd/yyyy/M")
+    BOBUIest::newRow("fixday, leap, dd/yyyy/M")
         << ozzy << y2kStart << QString::fromLatin1("dd/yyyy/M")
         << threeDigitDayIssueKeypresses_DayYearMonth
         << QDate(2000, 2, 29) << QString::fromLatin1("29/2000/2");
 
-    QTest::newRow("fixday, leap, dd/yyyy/MM")
+    BOBUIest::newRow("fixday, leap, dd/yyyy/MM")
         << ozzy << y2kStart << QString::fromLatin1("dd/yyyy/MM")
         << threeDigitDayIssueKeypresses_DayYearMonth
         << QDate(2000, 2, 29) << QString::fromLatin1("29/2000/02");
 
-    QTest::newRow("fixday, leap, dddd/yy/M")
+    BOBUIest::newRow("fixday, leap, dddd/yy/M")
         << ozzy << y2kStart << QString::fromLatin1("dddd/yy/M")
         << threeDigitDayIssueKeypresses_DayName_DayYearMonth
         << QDate(2000, 2, 28) << QString::fromLatin1("Monday/00/2");
 
-    QTest::newRow("fixday, leap, dddd/yy/MM")
+    BOBUIest::newRow("fixday, leap, dddd/yy/MM")
         << ozzy << y2kStart << QString::fromLatin1("dddd/yy/MM")
         << threeDigitDayIssueKeypresses_DayName_DayYearMonth
         << QDate(2000, 2, 28) << QString::fromLatin1("Monday/00/02");
 
-    QTest::newRow("fixday, leap, M/d/yy")
+    BOBUIest::newRow("fixday, leap, M/d/yy")
         << ozzy << y2kStart << QString::fromLatin1("M/d/yy")
         << threeDigitDayIssueKeypresses_MonthDayYear
         << QDate(2000, 2, 29) << QString::fromLatin1("2/29/00");
 
-    QTest::newRow("fixday, leap, M/d/yyyy")
+    BOBUIest::newRow("fixday, leap, M/d/yyyy")
         << ozzy << y2kStart << QString::fromLatin1("M/d/yyyy")
         << threeDigitDayIssueKeypresses_MonthDayYear
         << QDate(2000, 2, 29) << QString::fromLatin1("2/29/2000");
 
-    QTest::newRow("fixday, leap, M/dd/yyyy")
+    BOBUIest::newRow("fixday, leap, M/dd/yyyy")
         << ozzy << y2kStart << QString::fromLatin1("M/dd/yyyy")
         << threeDigitDayIssueKeypresses_MonthDayYear
         << QDate(2000, 2, 29) << QString::fromLatin1("2/29/2000");
 
-    QTest::newRow("fixday, leap, M/dddd/yyyy")
+    BOBUIest::newRow("fixday, leap, M/dddd/yyyy")
         << ozzy << y2kStart << QString::fromLatin1("M/dddd/yyyy")
         << threeDigitDayIssueKeypresses_DayName_MonthDayYear
         << QDate(2000, 2, 28) << QString::fromLatin1("2/Monday/2000");
 
-    QTest::newRow("fixday, leap, MM/dd/yyyy")
+    BOBUIest::newRow("fixday, leap, MM/dd/yyyy")
         << ozzy << y2kStart << QString::fromLatin1("MM/dd/yyyy")
         << threeDigitDayIssueKeypresses_MonthDayYear
         << QDate(2000, 2, 29) << QString::fromLatin1("02/29/2000");
 
-    QTest::newRow("fixday, leap, MM/dddd/yyyy")
+    BOBUIest::newRow("fixday, leap, MM/dddd/yyyy")
         << ozzy << y2kStart << QString::fromLatin1("MM/dddd/yyyy")
         << threeDigitDayIssueKeypresses_DayName_MonthDayYear
         << QDate(2000, 2, 28) << QString::fromLatin1("02/Monday/2000");
 
-    QTest::newRow("fixday, leap, M/yyyy/dd")
+    BOBUIest::newRow("fixday, leap, M/yyyy/dd")
         << ozzy << y2kStart << QString::fromLatin1("M/yyyy/dd")
         << threeDigitDayIssueKeypresses_MonthYearDay
         << QDate(2000, 2, 29) << QString::fromLatin1("2/2000/29");
 
-    QTest::newRow("fixday, leap, M/yy/dd")
+    BOBUIest::newRow("fixday, leap, M/yy/dd")
         << ozzy << y2kStart << QString::fromLatin1("M/yy/dd")
         << threeDigitDayIssueKeypresses_MonthYearDay
         << QDate(2000, 2, 29) << QString::fromLatin1("2/00/29");
 
-    QTest::newRow("fixday, leap, M/yy/d")
+    BOBUIest::newRow("fixday, leap, M/yy/d")
         << ozzy << y2kStart << QString::fromLatin1("M/yy/d")
         << threeDigitDayIssueKeypresses_MonthYearDay
         << QDate(2000, 2, 29) << QString::fromLatin1("2/00/29");
 
-    QTest::newRow("fixday, leap, MM/yyyy/dd")
+    BOBUIest::newRow("fixday, leap, MM/yyyy/dd")
         << ozzy << y2kStart << QString::fromLatin1("MM/yyyy/dd")
         << threeDigitDayIssueKeypresses_MonthYearDay
         << QDate(2000, 2, 29) << QString::fromLatin1("02/2000/29");
 
-    QTest::newRow("fixday, leap, MMM/yy/d")
+    BOBUIest::newRow("fixday, leap, MMM/yy/d")
         << ozzy << y2kStart << QString::fromLatin1("MMM/yy/d")
         << threeDigitDayIssueKeypresses_ShortMonthName_MonthYearDay
         << QDate(2000, 2, 29) << QString::fromLatin1("Feb/00/29");
 
-    QTest::newRow("fixday, leap, MMM/yyyy/d")
+    BOBUIest::newRow("fixday, leap, MMM/yyyy/d")
         << ozzy << y2kStart << QString::fromLatin1("MMM/yyyy/d")
         << threeDigitDayIssueKeypresses_ShortMonthName_MonthYearDay
         << QDate(2000, 2, 29) << QString::fromLatin1("Feb/2000/29");
 
-    QTest::newRow("fixday, MMM/yyyy/d")
+    BOBUIest::newRow("fixday, MMM/yyyy/d")
         << ozzy << start2001 << QString::fromLatin1("MMM/yyyy/d")
         << threeDigitDayIssueKeypresses_ShortMonthName_MonthYearDay
         << QDate(2001, 2, 28) << QString::fromLatin1("Feb/2001/28");
 
-    QTest::newRow("fixday, leap, MMM/yyyy/dd")
+    BOBUIest::newRow("fixday, leap, MMM/yyyy/dd")
         << ozzy << y2kStart << QString::fromLatin1("MMM/yyyy/dd")
         << threeDigitDayIssueKeypresses_ShortMonthName_MonthYearDay
         << QDate(2000, 2, 29) << QString::fromLatin1("Feb/2000/29");
 
-    QTest::newRow("fixday, leap, dddd, dd. MMMM yyyy")
+    BOBUIest::newRow("fixday, leap, dddd, dd. MMMM yyyy")
         << ozzy << y2kStart << QString::fromLatin1("dddd, dd. MMMM yyyy")
         << shortAndLongNameIssueKeypresses
         << QDate(2000, 2, 29) << QString::fromLatin1("Tuesday, 29. February 2000");
 
-    QTest::newRow("fixday, leap, german, dddd, dd. MMMM yyyy")
+    BOBUIest::newRow("fixday, leap, german, dddd, dd. MMMM yyyy")
         << QLocale(QLocale::German, QLocale::Germany) << y2kStart
         << QString::fromLatin1("dddd, dd. MMMM yyyy") << shortAndLongNameIssueKeypresses
         << QDate(2000, 2, 29) << QString::fromLatin1("Dienstag, 29. Februar 2000");
@@ -4219,33 +4219,33 @@ void tst_QDateTimeEdit::dateEditCorrectSectionSize()
     edit.setSelectedSection(edit.sectionAt(0));
 
     for (const KeyPair &keyPair : keyPresses)
-        QTest::keyClick(&edit, keyPair.first, keyPair.second);
+        BOBUIest::keyClick(&edit, keyPair.first, keyPair.second);
 
     QCOMPARE(edit.date(), expectedDate);
-    QDateTimeEditPrivate* edit_d_ptr(static_cast<QDateTimeEditPrivate*>(qt_widget_private(&edit)));
+    QDateTimeEditPrivate* edit_d_ptr(static_cast<QDateTimeEditPrivate*>(bobui_widget_private(&edit)));
     QCOMPARE(edit_d_ptr->QDateTimeParser::displayText(), expectedDisplayString);
 }
 #endif
 
 void tst_QDateTimeEdit::stepModifierKeys_data()
 {
-    QTest::addColumn<QDate>("startDate");
-    QTest::addColumn<int>("stepModifier");
-    QTest::addColumn<QDateTimeEdit::Section>("section");
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<QDate>("expectedDate");
+    BOBUIest::addColumn<QDate>("startDate");
+    BOBUIest::addColumn<int>("stepModifier");
+    BOBUIest::addColumn<QDateTimeEdit::Section>("section");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<QDate>("expectedDate");
 
-    const auto keyList = {Qt::Key_Up, Qt::Key_Down};
+    const auto keyList = {BobUI::Key_Up, BobUI::Key_Down};
 
-    const auto modifierList = {Qt::NoModifier,
-                                   Qt::ShiftModifier,
-                                   Qt::ControlModifier,
-                                   Qt::AltModifier,
-                                   Qt::MetaModifier};
+    const auto modifierList = {BobUI::NoModifier,
+                                   BobUI::ShiftModifier,
+                                   BobUI::ControlModifier,
+                                   BobUI::AltModifier,
+                                   BobUI::MetaModifier};
 
-    const auto validStepModifierList = {Qt::NoModifier,
-                                        Qt::ControlModifier,
-                                        Qt::ShiftModifier};
+    const auto validStepModifierList = {BobUI::NoModifier,
+                                        BobUI::ControlModifier,
+                                        BobUI::ShiftModifier};
 
     const auto sections = {QDateTimeEdit::DaySection,
                            QDateTimeEdit::MonthSection,
@@ -4253,14 +4253,14 @@ void tst_QDateTimeEdit::stepModifierKeys_data()
 
     for (auto key : keyList) {
 
-        const bool up = key == Qt::Key_Up;
-        Q_ASSERT(up || key == Qt::Key_Down);
+        const bool up = key == BobUI::Key_Up;
+        Q_ASSERT(up || key == BobUI::Key_Down);
 
         const QDate startDate(2000, up ? 2 : 12, 17);
 
         for (auto modifier : modifierList) {
 
-            QTestEventList keys;
+            BOBUIestEventList keys;
             keys.addKeyClick(key, modifier);
 
             const auto modifierName = modifierToName(modifier);
@@ -4284,7 +4284,7 @@ void tst_QDateTimeEdit::stepModifierKeys_data()
 
                     const auto sectionName = sectionToName(section);
 
-                    QTest::addRow("%s%s%sWith%sKeyboardModifier",
+                    BOBUIest::addRow("%s%s%sWith%sKeyboardModifier",
                                   up ? "up" : "down",
                                   stepModifierName.latin1(),
                                   sectionName.latin1(),
@@ -4302,13 +4302,13 @@ void tst_QDateTimeEdit::stepModifierKeys_data()
 
 void tst_QDateTimeEdit::stepModifierKeys()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(QDate, startDate);
     QFETCH(int, stepModifier);
     QFETCH(QDateTimeEdit::Section, section);
-    QFETCH(QTestEventList, keys);
+    QFETCH(BOBUIestEventList, keys);
     QFETCH(QDate, expectedDate);
 
     // This can interfere with our stuff.
@@ -4317,12 +4317,12 @@ void tst_QDateTimeEdit::stepModifierKeys()
     QDateTimeEdit edit(0);
     edit.setDate(startDate);
     edit.show();
-    QVERIFY(QTest::qWaitForWindowActive(&edit));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&edit));
     edit.setCurrentSection(section);
 
     QScopedPointer<StepModifierStyle, QScopedPointerDeleteLater> style(
                 new StepModifierStyle);
-    style->stepModifier = static_cast<Qt::KeyboardModifier>(stepModifier);
+    style->stepModifier = static_cast<BobUI::KeyboardModifier>(stepModifier);
     edit.setStyle(style.data());
 
     QCOMPARE(edit.date(), startDate);
@@ -4332,30 +4332,30 @@ void tst_QDateTimeEdit::stepModifierKeys()
 
 void tst_QDateTimeEdit::stepModifierButtons_data()
 {
-    QTest::addColumn<QStyle::SubControl>("subControl");
-    QTest::addColumn<int>("stepModifier");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<QDateTimeEdit::Section>("section");
-    QTest::addColumn<QTime>("startTime");
-    QTest::addColumn<QTime>("expectedTime");
+    BOBUIest::addColumn<QStyle::SubControl>("subControl");
+    BOBUIest::addColumn<int>("stepModifier");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<QDateTimeEdit::Section>("section");
+    BOBUIest::addColumn<BOBUIime>("startTime");
+    BOBUIest::addColumn<BOBUIime>("expectedTime");
 
     const auto subControls = {QStyle::SC_SpinBoxUp, QStyle::SC_SpinBoxDown};
 
-    const auto modifierList = {Qt::NoModifier,
-                                   Qt::ShiftModifier,
-                                   Qt::ControlModifier,
-                                   Qt::AltModifier,
-                                   Qt::MetaModifier};
+    const auto modifierList = {BobUI::NoModifier,
+                                   BobUI::ShiftModifier,
+                                   BobUI::ControlModifier,
+                                   BobUI::AltModifier,
+                                   BobUI::MetaModifier};
 
-    const auto validStepModifierList = {Qt::NoModifier,
-                                        Qt::ControlModifier,
-                                        Qt::ShiftModifier};
+    const auto validStepModifierList = {BobUI::NoModifier,
+                                        BobUI::ControlModifier,
+                                        BobUI::ShiftModifier};
 
     const auto sections = {QDateTimeEdit::SecondSection,
                            QDateTimeEdit::MinuteSection,
                            QDateTimeEdit::HourSection};
 
-    const QTime startTime(12, 36, 24);
+    const BOBUIime startTime(12, 36, 24);
 
     for (auto subControl : subControls) {
 
@@ -4364,7 +4364,7 @@ void tst_QDateTimeEdit::stepModifierButtons_data()
 
         for (auto modifier : modifierList) {
 
-            const Qt::KeyboardModifiers modifiers(modifier);
+            const BobUI::KeyboardModifiers modifiers(modifier);
 
             const auto modifierName = modifierToName(modifier);
             if (modifierName.isEmpty())
@@ -4387,7 +4387,7 @@ void tst_QDateTimeEdit::stepModifierButtons_data()
 
                     const auto sectionName = sectionToName(section);
 
-                    QTest::addRow("%s%s%sWith%sKeyboardModifier",
+                    BOBUIest::addRow("%s%s%sWith%sKeyboardModifier",
                                   up ? "up" : "down",
                                   stepModifierName.latin1(),
                                   sectionName.latin1(),
@@ -4406,15 +4406,15 @@ void tst_QDateTimeEdit::stepModifierButtons_data()
 
 void tst_QDateTimeEdit::stepModifierButtons()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(QStyle::SubControl, subControl);
     QFETCH(int, stepModifier);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(QDateTimeEdit::Section, section);
-    QFETCH(QTime, startTime);
-    QFETCH(QTime, expectedTime);
+    QFETCH(BOBUIime, startTime);
+    QFETCH(BOBUIime, expectedTime);
 
     testWidget->hide();
 
@@ -4422,12 +4422,12 @@ void tst_QDateTimeEdit::stepModifierButtons()
     edit.setDisplayFormat("HH:mm:ss");
     edit.setTime(startTime);
     edit.show();
-    QVERIFY(QTest::qWaitForWindowActive(&edit));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&edit));
     edit.setCurrentSection(section);
 
     QScopedPointer<StepModifierStyle, QScopedPointerDeleteLater> style(
                 new StepModifierStyle);
-    style->stepModifier = static_cast<Qt::KeyboardModifier>(stepModifier);
+    style->stepModifier = static_cast<BobUI::KeyboardModifier>(stepModifier);
     edit.setStyle(style.data());
 
     QStyleOptionSpinBox spinBoxStyleOption;
@@ -4437,28 +4437,28 @@ void tst_QDateTimeEdit::stepModifierButtons()
                 QStyle::CC_SpinBox, &spinBoxStyleOption, subControl, &edit);
 
     QCOMPARE(edit.time(), startTime);
-    QTest::mouseClick(&edit, Qt::LeftButton, modifiers, buttonRect.center());
+    BOBUIest::mouseClick(&edit, BobUI::LeftButton, modifiers, buttonRect.center());
     QCOMPARE(edit.time(), expectedTime);
 }
 
 void tst_QDateTimeEdit::stepModifierPressAndHold_data()
 {
-    QTest::addColumn<QStyle::SubControl>("subControl");
-    QTest::addColumn<int>("stepModifier");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<int>("expectedStepModifier");
+    BOBUIest::addColumn<QStyle::SubControl>("subControl");
+    BOBUIest::addColumn<int>("stepModifier");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<int>("expectedStepModifier");
 
     const auto subControls = {QStyle::SC_SpinBoxUp, QStyle::SC_SpinBoxDown};
 
-    const auto modifierList = {Qt::NoModifier,
-                               Qt::ShiftModifier,
-                               Qt::ControlModifier,
-                               Qt::AltModifier,
-                               Qt::MetaModifier};
+    const auto modifierList = {BobUI::NoModifier,
+                               BobUI::ShiftModifier,
+                               BobUI::ControlModifier,
+                               BobUI::AltModifier,
+                               BobUI::MetaModifier};
 
-    const auto validStepModifierList = {Qt::NoModifier,
-                                        Qt::ControlModifier,
-                                        Qt::ShiftModifier};
+    const auto validStepModifierList = {BobUI::NoModifier,
+                                        BobUI::ControlModifier,
+                                        BobUI::ShiftModifier};
 
     for (auto subControl : subControls) {
 
@@ -4467,7 +4467,7 @@ void tst_QDateTimeEdit::stepModifierPressAndHold_data()
 
         for (auto modifier : modifierList) {
 
-            const Qt::KeyboardModifiers modifiers(modifier);
+            const BobUI::KeyboardModifiers modifiers(modifier);
 
             const auto modifierName = modifierToName(modifier);
             if (modifierName.isEmpty())
@@ -4482,7 +4482,7 @@ void tst_QDateTimeEdit::stepModifierPressAndHold_data()
                 const int steps = (modifier & stepModifier ? 10 : 1)
                         * (up ? 1 : -1);
 
-                QTest::addRow("%s%sWith%sKeyboardModifier",
+                BOBUIest::addRow("%s%sWith%sKeyboardModifier",
                               up ? "up" : "down",
                               stepModifierName.latin1(),
                               modifierName.latin1())
@@ -4497,12 +4497,12 @@ void tst_QDateTimeEdit::stepModifierPressAndHold_data()
 
 void tst_QDateTimeEdit::stepModifierPressAndHold()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(QStyle::SubControl, subControl);
     QFETCH(int, stepModifier);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(int, expectedStepModifier);
 
     // Some west African zones (e.g. Niamey, Conakry) changed from 1 hour west
@@ -4518,13 +4518,13 @@ void tst_QDateTimeEdit::stepModifierPressAndHold()
 
     QScopedPointer<StepModifierStyle, QScopedPointerDeleteLater> stepModifierStyle(
                 new StepModifierStyle(new PressAndHoldStyle));
-    stepModifierStyle->stepModifier = static_cast<Qt::KeyboardModifier>(stepModifier);
+    stepModifierStyle->stepModifier = static_cast<BobUI::KeyboardModifier>(stepModifier);
     edit.setStyle(stepModifierStyle.data());
 
     QSignalSpy spy(&edit, &EditorDateEdit::dateChanged);
 
     edit.show();
-    QVERIFY(QTest::qWaitForWindowActive(&edit));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&edit));
     edit.setCurrentSection(QDateTimeEdit::YearSection);
 
     QStyleOptionSpinBox spinBoxStyleOption;
@@ -4533,9 +4533,9 @@ void tst_QDateTimeEdit::stepModifierPressAndHold()
     const QRect buttonRect = edit.style()->subControlRect(
                 QStyle::CC_SpinBox, &spinBoxStyleOption, subControl, &edit);
 
-    QTest::mousePress(&edit, Qt::LeftButton, modifiers, buttonRect.center());
-    QTRY_VERIFY(spy.size() >= 3);
-    QTest::mouseRelease(&edit, Qt::LeftButton, modifiers, buttonRect.center());
+    BOBUIest::mousePress(&edit, BobUI::LeftButton, modifiers, buttonRect.center());
+    BOBUIRY_VERIFY(spy.size() >= 3);
+    BOBUIest::mouseRelease(&edit, BobUI::LeftButton, modifiers, buttonRect.center());
 
     const auto value = spy.last().at(0);
     QVERIFY(value.userType() == QMetaType::QDate);
@@ -4544,7 +4544,7 @@ void tst_QDateTimeEdit::stepModifierPressAndHold()
     QCOMPARE(value.toDate(), expectedDate);
 }
 
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 /*
     The following tests verify correct handling of the spring forward gap; which
     hour is skipped, and on which day, depends on the local time zone. We try to
@@ -4553,14 +4553,14 @@ void tst_QDateTimeEdit::stepModifierPressAndHold()
 
     If this function returns an invalid QDateTime, then the tests should be skipped.
 */
-static QDateTime findSpring(int year, const QTimeZone &timeZone)
+static QDateTime findSpring(int year, const BOBUIimeZone &timeZone)
 {
     if (!timeZone.hasTransitions())
         return QDateTime();
 
     // Southern hemisphere spring is after midsummer
     const QDateTime midSummer = QDate(year, 6, 21).startOfDay(timeZone);
-    const QTimeZone::OffsetData transition =
+    const BOBUIimeZone::OffsetData transition =
         midSummer.isDaylightTime() ? timeZone.previousTransition(midSummer)
                                    : timeZone.nextTransition(midSummer);
     const QDateTime spring = transition.atUtc.toTimeZone(timeZone);
@@ -4585,13 +4585,13 @@ static int missingSecondsNear(const QDateTime &when)
 */
 void tst_QDateTimeEdit::springForward_data()
 {
-#if QT_CONFIG(timezone)
-    QTest::addColumn<QDateTime>("start");
-    QTest::addColumn<QAbstractSpinBox::CorrectionMode>("correctionMode");
-    QTest::addColumn<QTime>("inputTime");
-    QTest::addColumn<QDateTime>("expected");
+#if BOBUI_CONFIG(timezone)
+    BOBUIest::addColumn<QDateTime>("start");
+    BOBUIest::addColumn<QAbstractSpinBox::CorrectionMode>("correctionMode");
+    BOBUIest::addColumn<BOBUIime>("inputTime");
+    BOBUIest::addColumn<QDateTime>("expected");
 
-    const QTimeZone timeZone = QTimeZone::systemTimeZone();
+    const BOBUIimeZone timeZone = BOBUIimeZone::systemTimeZone();
     if (!timeZone.hasDaylightTime())
         QSKIP("This test needs to run in a timezone that observes DST!");
 
@@ -4604,36 +4604,36 @@ void tst_QDateTimeEdit::springForward_data()
     if (gapWidth <= 0)
         QSKIP("Spring forward transition did not actually skip any time!");
 
-    const QTime springGap = springTransition.time().addSecs(-gapWidth);
-    const QTime springGapMiddle = springTransition.time().addSecs(-gapWidth / 2);
+    const BOBUIime springGap = springTransition.time().addSecs(-gapWidth);
+    const BOBUIime springGapMiddle = springTransition.time().addSecs(-gapWidth / 2);
     const QByteArray startGapTime = springGap.toString("hh:mm").toLocal8Bit();
     const QByteArray midGapTime = springGapMiddle.toString("hh:mm").toLocal8Bit();
 
-    QTest::addRow("forward to %s, correct to previous", startGapTime.data())
+    BOBUIest::addRow("forward to %s, correct to previous", startGapTime.data())
         << QDateTime(springDate, springGap.addSecs(-gapWidth))
         << QAbstractSpinBox::CorrectToPreviousValue
         << springGap
         << QDateTime(springDate, springGap.addSecs(-gapWidth));
 
-    QTest::addRow("back to %s, correct to previous", startGapTime.data())
+    BOBUIest::addRow("back to %s, correct to previous", startGapTime.data())
         << springTransition
         << QAbstractSpinBox::CorrectToPreviousValue
         << springGap
         << springTransition;
 
-    QTest::addRow("forward to %s, correct to nearest", midGapTime.data())
+    BOBUIest::addRow("forward to %s, correct to nearest", midGapTime.data())
         << QDateTime(springDate, springGap.addSecs(-gapWidth))
         << QAbstractSpinBox::CorrectToNearestValue
         << springGapMiddle
         << springTransition;
 
-    QTest::addRow("back to %s, correct to nearest", midGapTime.data())
+    BOBUIest::addRow("back to %s, correct to nearest", midGapTime.data())
         << springTransition
         << QAbstractSpinBox::CorrectToNearestValue
         << springGapMiddle
         << springTransition;
 
-    QTest::addRow("jump to %s, correct to nearest", midGapTime.data())
+    BOBUIest::addRow("jump to %s, correct to nearest", midGapTime.data())
         << QDateTime(QDate(1980, 5, 10), springGap)
         << QAbstractSpinBox::CorrectToNearestValue
         << springGapMiddle
@@ -4645,10 +4645,10 @@ void tst_QDateTimeEdit::springForward_data()
 
 void tst_QDateTimeEdit::springForward()
 {
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     QFETCH(QDateTime, start);
     QFETCH(QAbstractSpinBox::CorrectionMode, correctionMode);
-    QFETCH(QTime, inputTime);
+    QFETCH(BOBUIime, inputTime);
     QFETCH(QDateTime, expected);
 
     QDateTimeEdit edit;
@@ -4666,12 +4666,12 @@ void tst_QDateTimeEdit::springForward()
     const QString year = QString::number(date.year());
     const QString hour = QString::number(inputTime.hour()).rightJustified(2, u'0');
     const QString minute = QString::number(inputTime.minute()).rightJustified(2, u'0');
-    QTest::keyClicks(&edit, day);
-    QTest::keyClicks(&edit, month);
-    QTest::keyClicks(&edit, year);
-    QTest::keyClicks(&edit, hour);
-    QTest::keyClicks(&edit, minute);
-    QTest::keyClick(&edit, Qt::Key_Return, {});
+    BOBUIest::keyClicks(&edit, day);
+    BOBUIest::keyClicks(&edit, month);
+    BOBUIest::keyClicks(&edit, year);
+    BOBUIest::keyClicks(&edit, hour);
+    BOBUIest::keyClicks(&edit, minute);
+    BOBUIest::keyClick(&edit, BobUI::Key_Return, {});
 
     QCOMPARE(edit.dateTime(), expected);
 #endif
@@ -4686,13 +4686,13 @@ void tst_QDateTimeEdit::springForward()
 */
 void tst_QDateTimeEdit::stepIntoDSTGap_data()
 {
-#if QT_CONFIG(timezone)
-    QTest::addColumn<QDateTime>("start");
-    QTest::addColumn<QDateTimeEdit::Section>("section");
-    QTest::addColumn<int>("steps");
-    QTest::addColumn<QDateTime>("end");
+#if BOBUI_CONFIG(timezone)
+    BOBUIest::addColumn<QDateTime>("start");
+    BOBUIest::addColumn<QDateTimeEdit::Section>("section");
+    BOBUIest::addColumn<int>("steps");
+    BOBUIest::addColumn<QDateTime>("end");
 
-    const QTimeZone timeZone = QTimeZone::systemTimeZone();
+    const BOBUIimeZone timeZone = BOBUIimeZone::systemTimeZone();
     if (!timeZone.hasDaylightTime())
         QSKIP("This test needs to run in a timezone that observes DST!");
 
@@ -4705,19 +4705,19 @@ void tst_QDateTimeEdit::stepIntoDSTGap_data()
     if (gapWidth <= 0)
         QSKIP("Spring forward transition did not actually skip any time!");
 
-    const QTime springGap = springTransition.time().addSecs(-gapWidth);
+    const BOBUIime springGap = springTransition.time().addSecs(-gapWidth);
     const QByteArray springTime = springGap.toString("hh:mm").toLocal8Bit();
 
     // change hour (can't change day):
     if (springGap.hour() != 0) {
-        QTest::addRow("hour up into %s gap", springTime.data())
+        BOBUIest::addRow("hour up into %s gap", springTime.data())
             << QDateTime(spring, springGap.addSecs(-3600))
             << QDateTimeEdit::HourSection
             << +1
             << springTransition;
 
         // 3:00:10 into 2:00:10 should get us to 1:00:10
-        QTest::addRow("hour down into %s gap", springTime.data())
+        BOBUIest::addRow("hour down into %s gap", springTime.data())
             << QDateTime(spring, springGap.addSecs(gapWidth + 10))
             << QDateTimeEdit::HourSection
             << -1
@@ -4727,7 +4727,7 @@ void tst_QDateTimeEdit::stepIntoDSTGap_data()
     // change day
     if (spring.day() != 1) {
         // today's 2:05 is tomorrow's 3:05
-        QTest::addRow("day up into %s gap", springTime.data())
+        BOBUIest::addRow("day up into %s gap", springTime.data())
             << QDateTime(spring.addDays(-1), springGap.addSecs(300))
             << QDateTimeEdit::DaySection
             << +1
@@ -4735,7 +4735,7 @@ void tst_QDateTimeEdit::stepIntoDSTGap_data()
     }
 
     if (spring.day() != spring.daysInMonth()) {
-        QTest::addRow("day down into %s gap", springTime.data())
+        BOBUIest::addRow("day down into %s gap", springTime.data())
             << QDateTime(spring.addDays(1), springGap)
             << QDateTimeEdit::DaySection
             << -1
@@ -4746,14 +4746,14 @@ void tst_QDateTimeEdit::stepIntoDSTGap_data()
     // Previous month may well be February, so lack the day-of-month that
     // matches spring (e.g. Asia/Jerusalem, March 30).
     if (QDate prior = spring.addMonths(-1); prior.day() == spring.day()) {
-        QTest::addRow("month up into %s gap", springTime.data())
+        BOBUIest::addRow("month up into %s gap", springTime.data())
             << QDateTime(prior, springGap) << QDateTimeEdit::MonthSection << +1 << springTransition;
     }
     // America/{Jujuy,Cordoba,Catamarca} did a 2007 Dec 30th 00:00 spring
     // forward; and QDTE month steps won't change the year.
     if (QDate prior = spring.addMonths(1);
         prior.year() == spring.year() && prior.day() == spring.day()) {
-        QTest::addRow("month down into %s gap", springTime.data())
+        BOBUIest::addRow("month down into %s gap", springTime.data())
             << QDateTime(prior, springGap) << QDateTimeEdit::MonthSection << -1 << springTransition;
     }
 
@@ -4761,11 +4761,11 @@ void tst_QDateTimeEdit::stepIntoDSTGap_data()
     // Some zones (e.g. Asia/Baghdad) do transitions on a fixed date; for these,
     // the springGap moment is invalid every year, so skip this test.
     if (QDateTime prior = QDateTime(spring.addYears(-1), springGap); prior.isValid()) {
-        QTest::addRow("year up into %s gap", springTime.data())
+        BOBUIest::addRow("year up into %s gap", springTime.data())
             << prior << QDateTimeEdit::YearSection << +1 << springTransition;
     }
     if (QDateTime later(spring.addYears(1), springGap); later.isValid()) {
-        QTest::addRow("year down into %s gap", springTime.data())
+        BOBUIest::addRow("year down into %s gap", springTime.data())
             << later << QDateTimeEdit::YearSection << -1 << springTransition;
     }
 #else
@@ -4775,7 +4775,7 @@ void tst_QDateTimeEdit::stepIntoDSTGap_data()
 
 void tst_QDateTimeEdit::stepIntoDSTGap()
 {
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     QFETCH(QDateTime, start);
     QFETCH(QDateTimeEdit::Section, section);
     QFETCH(int, steps);
@@ -4795,11 +4795,11 @@ void tst_QDateTimeEdit::stepIntoDSTGap()
 
     const auto stepCount = qAbs(steps);
     for (int step = 0; step < stepCount; ++step)
-        QTest::keyClick(&edit, steps > 0 ? Qt::Key_Up : Qt::Key_Down, {});
+        BOBUIest::keyClick(&edit, steps > 0 ? BobUI::Key_Up : BobUI::Key_Down, {});
 
     QCOMPARE(edit.dateTime(), end);
 #endif
 }
 
-QTEST_MAIN(tst_QDateTimeEdit)
+BOBUIEST_MAIN(tst_QDateTimeEdit)
 #include "tst_qdatetimeedit.moc"

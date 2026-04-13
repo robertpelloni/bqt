@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2013 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qmath.h>
 #include <qfloat16.h>
 
@@ -46,26 +46,26 @@ void tst_QMath::fastSinCos()
 
 void tst_QMath::degreesToRadians_data()
 {
-    QTest::addColumn<float>("degreesFloat");
-    QTest::addColumn<float>("radiansFloat");
-    QTest::addColumn<double>("degreesDouble");
-    QTest::addColumn<double>("radiansDouble");
+    BOBUIest::addColumn<float>("degreesFloat");
+    BOBUIest::addColumn<float>("radiansFloat");
+    BOBUIest::addColumn<double>("degreesDouble");
+    BOBUIest::addColumn<double>("radiansDouble");
 
-    QTest::newRow( "pi" ) << 180.0f << float(M_PI) << 180.0 << M_PI;
-    QTest::newRow( "doublepi" ) << 360.0f << float(2 * M_PI) << 360.0 << 2 * M_PI;
-    QTest::newRow( "halfpi" ) << 90.0f << float(M_PI_2) << 90.0 << M_PI_2;
+    BOBUIest::newRow( "pi" ) << 180.0f << float(M_PI) << 180.0 << M_PI;
+    BOBUIest::newRow( "doublepi" ) << 360.0f << float(2 * M_PI) << 360.0 << 2 * M_PI;
+    BOBUIest::newRow( "halfpi" ) << 90.0f << float(M_PI_2) << 90.0 << M_PI_2;
 
-    QTest::newRow( "random" ) << 123.1234567f << 2.1489097058516724f << 123.123456789123456789 << 2.148909707407169856192285627;
-    QTest::newRow( "bigrandom" ) << 987654321.9876543f << 17237819.79023679f << 987654321987654321.987654321987654321 << 17237819790236794.0;
+    BOBUIest::newRow( "random" ) << 123.1234567f << 2.1489097058516724f << 123.123456789123456789 << 2.148909707407169856192285627;
+    BOBUIest::newRow( "bigrandom" ) << 987654321.9876543f << 17237819.79023679f << 987654321987654321.987654321987654321 << 17237819790236794.0;
 
-    QTest::newRow( "zero" ) << 0.0f << 0.0f << 0.0 << 0.0;
+    BOBUIest::newRow( "zero" ) << 0.0f << 0.0f << 0.0 << 0.0;
 
-    QTest::newRow( "minuspi" ) << -180.0f << float(-M_PI) << 180.0 << M_PI;
-    QTest::newRow( "minusdoublepi" ) << -360.0f << float(-2 * M_PI) << -360.0 << -2 * M_PI;
-    QTest::newRow( "minushalfpi" ) << -90.0f << float(-M_PI_2) << -90.0 << -M_PI_2;
+    BOBUIest::newRow( "minuspi" ) << -180.0f << float(-M_PI) << 180.0 << M_PI;
+    BOBUIest::newRow( "minusdoublepi" ) << -360.0f << float(-2 * M_PI) << -360.0 << -2 * M_PI;
+    BOBUIest::newRow( "minushalfpi" ) << -90.0f << float(-M_PI_2) << -90.0 << -M_PI_2;
 
-    QTest::newRow( "minusrandom" ) << -123.1234567f << -2.1489097058516724f << -123.123456789123456789 << -2.148909707407169856192285627;
-    QTest::newRow( "minusbigrandom" ) << -987654321.9876543f << -17237819.79023679f << -987654321987654321.987654321987654321 << -17237819790236794.0;
+    BOBUIest::newRow( "minusrandom" ) << -123.1234567f << -2.1489097058516724f << -123.123456789123456789 << -2.148909707407169856192285627;
+    BOBUIest::newRow( "minusbigrandom" ) << -987654321.9876543f << -17237819.79023679f << -987654321987654321.987654321987654321 << -17237819790236794.0;
 }
 
 void tst_QMath::degreesToRadians()
@@ -81,26 +81,26 @@ void tst_QMath::degreesToRadians()
 
 void tst_QMath::radiansToDegrees_data()
 {
-    QTest::addColumn<float>("radiansFloat");
-    QTest::addColumn<float>("degreesFloat");
-    QTest::addColumn<double>("radiansDouble");
-    QTest::addColumn<double>("degreesDouble");
+    BOBUIest::addColumn<float>("radiansFloat");
+    BOBUIest::addColumn<float>("degreesFloat");
+    BOBUIest::addColumn<double>("radiansDouble");
+    BOBUIest::addColumn<double>("degreesDouble");
 
-    QTest::newRow( "pi" ) << float(M_PI) << 180.0f << M_PI << 180.0;
-    QTest::newRow( "doublepi" ) << float(2 * M_PI) << 360.0f << 2 * M_PI << 360.0;
-    QTest::newRow( "halfpi" ) << float(M_PI_2) << 90.0f << M_PI_2 << 90.0;
+    BOBUIest::newRow( "pi" ) << float(M_PI) << 180.0f << M_PI << 180.0;
+    BOBUIest::newRow( "doublepi" ) << float(2 * M_PI) << 360.0f << 2 * M_PI << 360.0;
+    BOBUIest::newRow( "halfpi" ) << float(M_PI_2) << 90.0f << M_PI_2 << 90.0;
 
-    QTest::newRow( "random" ) << 123.1234567f << 7054.454427971739f << 123.123456789123456789 << 7054.4544330781363896676339209079742431640625;
-    QTest::newRow( "bigrandom" ) << 987654321.9876543f << 56588424267.74745f << 987654321987654321.987654321987654321 << 56588424267747450880.0;
+    BOBUIest::newRow( "random" ) << 123.1234567f << 7054.454427971739f << 123.123456789123456789 << 7054.4544330781363896676339209079742431640625;
+    BOBUIest::newRow( "bigrandom" ) << 987654321.9876543f << 56588424267.74745f << 987654321987654321.987654321987654321 << 56588424267747450880.0;
 
-    QTest::newRow( "zero" ) << 0.0f << 0.0f << 0.0 << 0.0;
+    BOBUIest::newRow( "zero" ) << 0.0f << 0.0f << 0.0 << 0.0;
 
-    QTest::newRow( "minuspi" ) << float(-M_PI) << -180.0f << -M_PI << -180.0;
-    QTest::newRow( "minusdoublepi" ) << float(-2 * M_PI) << -360.0f << -2 * M_PI << -360.0;
-    QTest::newRow( "minushalfpi" ) << float(-M_PI_2) << -90.0f << -M_PI_2 << -90.0;
+    BOBUIest::newRow( "minuspi" ) << float(-M_PI) << -180.0f << -M_PI << -180.0;
+    BOBUIest::newRow( "minusdoublepi" ) << float(-2 * M_PI) << -360.0f << -2 * M_PI << -360.0;
+    BOBUIest::newRow( "minushalfpi" ) << float(-M_PI_2) << -90.0f << -M_PI_2 << -90.0;
 
-    QTest::newRow( "minusrandom" ) << -123.1234567f << -7054.454427971739f << -123.123456789123456789 << -7054.4544330781363896676339209079742431640625;
-    QTest::newRow( "minusbigrandom" ) << -987654321.9876543f << -56588424267.74745f << -987654321987654321.987654321987654321 << -56588424267747450880.0;
+    BOBUIest::newRow( "minusrandom" ) << -123.1234567f << -7054.454427971739f << -123.123456789123456789 << -7054.4544330781363896676339209079742431640625;
+    BOBUIest::newRow( "minusbigrandom" ) << -987654321.9876543f << -56588424267.74745f << -987654321987654321.987654321987654321 << -56588424267747450880.0;
 }
 
 void tst_QMath::radiansToDegrees()
@@ -116,14 +116,14 @@ void tst_QMath::radiansToDegrees()
 
 void tst_QMath::trigonometry_data()
 {
-    QTest::addColumn<double>("x");
-    QTest::addColumn<double>("y");
-    QTest::addColumn<double>("angle");
+    BOBUIest::addColumn<double>("x");
+    BOBUIest::addColumn<double>("y");
+    BOBUIest::addColumn<double>("angle");
 
-    QTest::newRow("zero") << 1.0 << 0.0 << 0.0;
-    QTest::newRow("turn/4") << 0.0 << 1.0 << M_PI_2;
-    QTest::newRow("turn/2") << -1.0 << 0.0 << M_PI;
-    QTest::newRow("3*turn/4") << 0.0 << -1.0 << -M_PI_2;
+    BOBUIest::newRow("zero") << 1.0 << 0.0 << 0.0;
+    BOBUIest::newRow("turn/4") << 0.0 << 1.0 << M_PI_2;
+    BOBUIest::newRow("turn/2") << -1.0 << 0.0 << M_PI;
+    BOBUIest::newRow("3*turn/4") << 0.0 << -1.0 << -M_PI_2;
 }
 
 void tst_QMath::trigonometry()
@@ -221,52 +221,52 @@ void tst_QMath::hypotenuse()
 
 void tst_QMath::funcs_data()
 {
-    QTest::addColumn<double>("value");
-    QTest::addColumn<int>("floor");
-    QTest::addColumn<int>("ceil");
-    QTest::addColumn<double>("abs");
-    QTest::addColumn<double>("sqrt");
-    QTest::addColumn<double>("log");
-    QTest::addColumn<double>("exp");
-    QTest::addColumn<double>("cube");
+    BOBUIest::addColumn<double>("value");
+    BOBUIest::addColumn<int>("floor");
+    BOBUIest::addColumn<int>("ceil");
+    BOBUIest::addColumn<double>("abs");
+    BOBUIest::addColumn<double>("sqrt");
+    BOBUIest::addColumn<double>("log");
+    BOBUIest::addColumn<double>("exp");
+    BOBUIest::addColumn<double>("cube");
     const double nan = qQNaN();
 
-    QTest::newRow("0") << 0.0 << 0 << 0 << 0.0 << 0.0 << nan << 1.0 << 0.0;
-    QTest::newRow("1.44")
+    BOBUIest::newRow("0") << 0.0 << 0 << 0 << 0.0 << 0.0 << nan << 1.0 << 0.0;
+    BOBUIest::newRow("1.44")
         << 1.44 << 1 << 2 << 1.44 << 1.2 << 0.36464311358790924 << 4.220695816996552 << 2.985984;
-    QTest::newRow("-1.44")
+    BOBUIest::newRow("-1.44")
         << -1.44 << -2 << -1 << 1.44 << nan << nan << 0.23692775868212176 << -2.985984;
 }
 
 void tst_QMath::funcs()
 {
     QFETCH(double, value);
-    QTEST(qFloor(value), "floor");
-    QTEST(qCeil(value), "ceil");
-    QTEST(qFabs(value), "abs");
+    BOBUIEST(qFloor(value), "floor");
+    BOBUIEST(qCeil(value), "ceil");
+    BOBUIEST(qFabs(value), "abs");
     if (value >= 0)
-        QTEST(qSqrt(value), "sqrt");
+        BOBUIEST(qSqrt(value), "sqrt");
     if (value > 0)
-        QTEST(qLn(value), "log");
-    QTEST(qExp(value), "exp");
-    QTEST(qPow(value, 3), "cube");
+        BOBUIEST(qLn(value), "log");
+    BOBUIEST(qExp(value), "exp");
+    BOBUIEST(qPow(value, 3), "cube");
 }
 
 void tst_QMath::qNextPowerOfTwo32S_data()
 {
-    QTest::addColumn<qint32>("input");
-    QTest::addColumn<quint32>("output");
+    BOBUIest::addColumn<qint32>("input");
+    BOBUIest::addColumn<quint32>("output");
 
-    QTest::newRow("0") << 0 << 1U;
-    QTest::newRow("1") << 1 << 2U;
-    QTest::newRow("2") << 2 << 4U;
-    QTest::newRow("17") << 17 << 32U;
-    QTest::newRow("128") << 128 << 256U;
-    QTest::newRow("65535") << 65535 << 65536U;
-    QTest::newRow("65536") << 65536 << 131072U;
-    QTest::newRow("2^30") << (1 << 30) << (1U << 31);
-    QTest::newRow("2^30 + 1") << (1 << 30) + 1 << (1U << 31);
-    QTest::newRow("2^31 - 1") << 0x7FFFFFFF << (1U<<31);
+    BOBUIest::newRow("0") << 0 << 1U;
+    BOBUIest::newRow("1") << 1 << 2U;
+    BOBUIest::newRow("2") << 2 << 4U;
+    BOBUIest::newRow("17") << 17 << 32U;
+    BOBUIest::newRow("128") << 128 << 256U;
+    BOBUIest::newRow("65535") << 65535 << 65536U;
+    BOBUIest::newRow("65536") << 65536 << 131072U;
+    BOBUIest::newRow("2^30") << (1 << 30) << (1U << 31);
+    BOBUIest::newRow("2^30 + 1") << (1 << 30) + 1 << (1U << 31);
+    BOBUIest::newRow("2^31 - 1") << 0x7FFFFFFF << (1U<<31);
 }
 
 void tst_QMath::qNextPowerOfTwo32S()
@@ -279,19 +279,19 @@ void tst_QMath::qNextPowerOfTwo32S()
 
 void tst_QMath::qNextPowerOfTwo32U_data()
 {
-    QTest::addColumn<quint32>("input");
-    QTest::addColumn<quint32>("output");
+    BOBUIest::addColumn<quint32>("input");
+    BOBUIest::addColumn<quint32>("output");
 
-    QTest::newRow("0") << 0U << 1U;
-    QTest::newRow("1") << 1U << 2U;
-    QTest::newRow("2") << 2U << 4U;
-    QTest::newRow("17") << 17U << 32U;
-    QTest::newRow("128") << 128U << 256U;
-    QTest::newRow("65535") << 65535U << 65536U;
-    QTest::newRow("65536") << 65536U << 131072U;
-    QTest::newRow("2^30") << (1U << 30) << (1U << 31);
-    QTest::newRow("2^30 + 1") << (1U << 30) + 1 << (1U << 31);
-    QTest::newRow("2^31 - 1") << 2147483647U << 2147483648U;
+    BOBUIest::newRow("0") << 0U << 1U;
+    BOBUIest::newRow("1") << 1U << 2U;
+    BOBUIest::newRow("2") << 2U << 4U;
+    BOBUIest::newRow("17") << 17U << 32U;
+    BOBUIest::newRow("128") << 128U << 256U;
+    BOBUIest::newRow("65535") << 65535U << 65536U;
+    BOBUIest::newRow("65536") << 65536U << 131072U;
+    BOBUIest::newRow("2^30") << (1U << 30) << (1U << 31);
+    BOBUIest::newRow("2^30 + 1") << (1U << 30) + 1 << (1U << 31);
+    BOBUIest::newRow("2^31 - 1") << 2147483647U << 2147483648U;
 }
 
 void tst_QMath::qNextPowerOfTwo32U()
@@ -310,20 +310,20 @@ void tst_QMath::qNextPowerOfTwo32U()
 
 void tst_QMath::qNextPowerOfTwo64S_data()
 {
-    QTest::addColumn<qint64>("input");
-    QTest::addColumn<quint64>("output");
+    BOBUIest::addColumn<qint64>("input");
+    BOBUIest::addColumn<quint64>("output");
 
-    QTest::newRow("0") << Q_INT64_C(0) << Q_UINT64_C(1);
-    QTest::newRow("1") << Q_INT64_C(1) << Q_UINT64_C(2);
-    QTest::newRow("2") << Q_INT64_C(2) << Q_UINT64_C(4);
-    QTest::newRow("17") << Q_INT64_C(17) << Q_UINT64_C(32);
-    QTest::newRow("128") << Q_INT64_C(128) << Q_UINT64_C(256);
-    QTest::newRow("65535") << Q_INT64_C(65535) << Q_UINT64_C(65536);
-    QTest::newRow("65536") << Q_INT64_C(65536) << Q_UINT64_C(131072);
-    QTest::newRow("2^31 - 1") << Q_INT64_C(2147483647) << Q_UINT64_C(0x80000000);
-    QTest::newRow("2^31") << Q_INT64_C(2147483648) << Q_UINT64_C(0x100000000);
-    QTest::newRow("2^31 + 1") << Q_INT64_C(2147483649) << Q_UINT64_C(0x100000000);
-    QTest::newRow("2^63 - 1") << Q_INT64_C(0x7FFFFFFFFFFFFFFF) << Q_UINT64_C(0x8000000000000000);
+    BOBUIest::newRow("0") << Q_INT64_C(0) << Q_UINT64_C(1);
+    BOBUIest::newRow("1") << Q_INT64_C(1) << Q_UINT64_C(2);
+    BOBUIest::newRow("2") << Q_INT64_C(2) << Q_UINT64_C(4);
+    BOBUIest::newRow("17") << Q_INT64_C(17) << Q_UINT64_C(32);
+    BOBUIest::newRow("128") << Q_INT64_C(128) << Q_UINT64_C(256);
+    BOBUIest::newRow("65535") << Q_INT64_C(65535) << Q_UINT64_C(65536);
+    BOBUIest::newRow("65536") << Q_INT64_C(65536) << Q_UINT64_C(131072);
+    BOBUIest::newRow("2^31 - 1") << Q_INT64_C(2147483647) << Q_UINT64_C(0x80000000);
+    BOBUIest::newRow("2^31") << Q_INT64_C(2147483648) << Q_UINT64_C(0x100000000);
+    BOBUIest::newRow("2^31 + 1") << Q_INT64_C(2147483649) << Q_UINT64_C(0x100000000);
+    BOBUIest::newRow("2^63 - 1") << Q_INT64_C(0x7FFFFFFFFFFFFFFF) << Q_UINT64_C(0x8000000000000000);
 }
 
 void tst_QMath::qNextPowerOfTwo64S()
@@ -336,17 +336,17 @@ void tst_QMath::qNextPowerOfTwo64S()
 
 void tst_QMath::qNextPowerOfTwo64U_data()
 {
-    QTest::addColumn<quint64>("input");
-    QTest::addColumn<quint64>("output");
+    BOBUIest::addColumn<quint64>("input");
+    BOBUIest::addColumn<quint64>("output");
 
-    QTest::newRow("0") << Q_UINT64_C(0) << Q_UINT64_C(1);
-    QTest::newRow("1") << Q_UINT64_C(1) << Q_UINT64_C(2);
-    QTest::newRow("2") << Q_UINT64_C(2) << Q_UINT64_C(4);
-    QTest::newRow("17") << Q_UINT64_C(17) << Q_UINT64_C(32);
-    QTest::newRow("128") << Q_UINT64_C(128) << Q_UINT64_C(256);
-    QTest::newRow("65535") << Q_UINT64_C(65535) << Q_UINT64_C(65536);
-    QTest::newRow("65536") << Q_UINT64_C(65536) << Q_UINT64_C(131072);
-    QTest::newRow("2^63 - 1") << Q_UINT64_C(0x7FFFFFFFFFFFFFFF)  << Q_UINT64_C(0x8000000000000000);
+    BOBUIest::newRow("0") << Q_UINT64_C(0) << Q_UINT64_C(1);
+    BOBUIest::newRow("1") << Q_UINT64_C(1) << Q_UINT64_C(2);
+    BOBUIest::newRow("2") << Q_UINT64_C(2) << Q_UINT64_C(4);
+    BOBUIest::newRow("17") << Q_UINT64_C(17) << Q_UINT64_C(32);
+    BOBUIest::newRow("128") << Q_UINT64_C(128) << Q_UINT64_C(256);
+    BOBUIest::newRow("65535") << Q_UINT64_C(65535) << Q_UINT64_C(65536);
+    BOBUIest::newRow("65536") << Q_UINT64_C(65536) << Q_UINT64_C(131072);
+    BOBUIest::newRow("2^63 - 1") << Q_UINT64_C(0x7FFFFFFFFFFFFFFF)  << Q_UINT64_C(0x8000000000000000);
 }
 
 void tst_QMath::qNextPowerOfTwo64U()
@@ -364,6 +364,6 @@ void tst_QMath::qNextPowerOfTwo64U()
     QCOMPARE(qNextPowerOfTwo(input), output);
 }
 
-QTEST_APPLESS_MAIN(tst_QMath)
+BOBUIEST_APPLESS_MAIN(tst_QMath)
 
 #include "tst_qmath.moc"

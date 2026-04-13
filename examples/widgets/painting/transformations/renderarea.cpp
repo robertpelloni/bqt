@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "renderarea.h"
 
@@ -56,7 +56,7 @@ void RenderArea::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.fillRect(event->rect(), QBrush(Qt::white));
+    painter.fillRect(event->rect(), QBrush(BobUI::white));
 
     painter.translate(66, 66);
 //! [5]
@@ -82,7 +82,7 @@ void RenderArea::paintEvent(QPaintEvent *event)
 //! [9]
 void RenderArea::drawCoordinates(QPainter &painter)
 {
-    painter.setPen(Qt::red);
+    painter.setPen(BobUI::red);
 
     painter.drawLine(0, 0, 50, 0);
     painter.drawLine(48, -2, 50, 0);
@@ -101,9 +101,9 @@ void RenderArea::drawCoordinates(QPainter &painter)
 //! [10]
 void RenderArea::drawOutline(QPainter &painter)
 {
-    painter.setPen(Qt::darkGreen);
-    painter.setPen(Qt::DashLine);
-    painter.setBrush(Qt::NoBrush);
+    painter.setPen(BobUI::darkGreen);
+    painter.setPen(BobUI::DashLine);
+    painter.setBrush(BobUI::NoBrush);
     painter.drawRect(0, 0, 100, 100);
 }
 //! [10]
@@ -111,7 +111,7 @@ void RenderArea::drawOutline(QPainter &painter)
 //! [11]
 void RenderArea::drawShape(QPainter &painter)
 {
-    painter.fillPath(shape, Qt::blue);
+    painter.fillPath(shape, BobUI::blue);
 }
 //! [11]
 

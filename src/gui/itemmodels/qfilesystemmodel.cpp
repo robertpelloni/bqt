@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qfilesystemmodel_p.h"
 #include "qfilesystemmodel.h"
@@ -9,23 +9,23 @@
 #include <qmimedata.h>
 #include <qurl.h>
 #include <qdebug.h>
-#include <QtCore/qcollator.h>
-#if QT_CONFIG(regularexpression)
-#  include <QtCore/qregularexpression.h>
+#include <BobUICore/qcollator.h>
+#if BOBUI_CONFIG(regularexpression)
+#  include <BobUICore/qregularexpression.h>
 #endif
 
 #include <algorithm>
 #include <functional>
 
 #ifdef Q_OS_WIN
-#  include <QtCore/QVarLengthArray>
-#  include <qt_windows.h>
+#  include <BobUICore/QVarLengthArray>
+#  include <bobui_windows.h>
 #  include <shlobj.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \enum QFileSystemModel::Roles
@@ -43,7 +43,7 @@ using namespace Qt::StringLiterals;
     \brief The QFileSystemModel class provides a data model for the local filesystem.
 
     \ingroup model-view
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This class provides access to the local filesystem, providing functions
     for renaming and removing files and directories, and for creating new
@@ -176,14 +176,14 @@ bool QFileSystemModel::remove(const QModelIndex &aindex)
 
     const QString path = d->filePath(aindex);
     const QFileInfo fileInfo(path);
-#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
-    // QTBUG-65683: Remove file system watchers prior to deletion to prevent
+#if BOBUI_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+    // BOBUIBUG-65683: Remove file system watchers prior to deletion to prevent
     // failure due to locked files on Windows.
     const QStringList watchedPaths = d->unwatchPathsAt(aindex);
 #endif // filesystemwatcher && Q_OS_WIN
     const bool success = (fileInfo.isFile() || fileInfo.isSymLink())
             ? QFile::remove(path) : QDir(path).removeRecursively();
-#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+#if BOBUI_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
     if (!success)
         d->watchPaths(watchedPaths);
 #endif // filesystemwatcher && Q_OS_WIN
@@ -280,7 +280,7 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QM
 }
 
 #ifdef Q_OS_WIN32
-static QString qt_GetLongPathName(const QString &strShortPath)
+static QString bobui_GetLongPathName(const QString &strShortPath)
 {
     if (strShortPath.isEmpty()
         || strShortPath == "."_L1 || strShortPath == ".."_L1)
@@ -347,7 +347,7 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
     // Construct the nodes up to the new root path if they need to be built
     QString absolutePath;
 #ifdef Q_OS_WIN32
-    QString longPath = qt_GetLongPathName(path);
+    QString longPath = bobui_GetLongPathName(path);
 #else
     QString longPath = path;
 #endif
@@ -357,7 +357,7 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
         absolutePath = QDir(longPath).absolutePath();
 
     // ### TODO can we use bool QAbstractFileEngine::caseSensitive() const?
-    QStringList pathElements = absolutePath.split(u'/', Qt::SkipEmptyParts);
+    QStringList pathElements = absolutePath.split(u'/', BobUI::SkipEmptyParts);
     if ((pathElements.isEmpty())
 #if !defined(Q_OS_WIN)
         && QDir::fromNativeSeparators(longPath) != "/"_L1
@@ -446,7 +446,7 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
         if (!alreadyExisted) {
 #ifdef Q_OS_WIN
             // Special case: elementPath is a drive root path (C:). If we do not have the trailing
-            // '/' it will be read as a relative path (QTBUG-133746)
+            // '/' it will be read as a relative path (BOBUIBUG-133746)
             if (elementPath.length() == 2 && elementPath.at(0).isLetter()
                 && elementPath.at(1) == u':') {
                 elementPath.append(u'/');
@@ -459,7 +459,7 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
                 return const_cast<QFileSystemModelPrivate::QFileSystemNode*>(&root);
             QFileSystemModelPrivate *p = const_cast<QFileSystemModelPrivate*>(this);
             node = p->addNode(parent, element,info);
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
             node->populate(fileInfoGatherer->getInfo(info));
 #endif
         } else {
@@ -492,12 +492,12 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
 /*!
     \reimp
 */
-void QFileSystemModel::timerEvent(QTimerEvent *event)
+void QFileSystemModel::timerEvent(BOBUIimerEvent *event)
 {
     Q_D(QFileSystemModel);
     if (event->timerId() == d->fetchingTimer.timerId()) {
         d->fetchingTimer.stop();
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
         for (int i = 0; i < d->toFetch.size(); ++i) {
             const QFileSystemModelPrivate::QFileSystemNode *node = d->toFetch.at(i).node;
             if (!node->hasInformation()) {
@@ -555,14 +555,14 @@ QString QFileSystemModel::type(const QModelIndex &index) const
 
     This is an overloaded function, equivalent to calling:
     \code
-    lastModified(index, QTimeZone::LocalTime);
+    lastModified(index, BOBUIimeZone::LocalTime);
     \endcode
 
     If \a index is invalid, a default constructed QDateTime is returned.
  */
 QDateTime QFileSystemModel::lastModified(const QModelIndex &index) const
 {
-    return lastModified(index, QTimeZone::LocalTime);
+    return lastModified(index, BOBUIimeZone::LocalTime);
 }
 
 /*!
@@ -570,14 +570,14 @@ QDateTime QFileSystemModel::lastModified(const QModelIndex &index) const
     Returns the date and time, in the time zone \a tz, when
     \a index was last modified.
 
-    Typical arguments for \a tz are \c QTimeZone::UTC or \c QTimeZone::LocalTime.
+    Typical arguments for \a tz are \c BOBUIimeZone::UTC or \c BOBUIimeZone::LocalTime.
     UTC does not require any conversion from the time returned by the native file
     system API, therefore getting the time in UTC is potentially faster. LocalTime
     is typically chosen if the time is shown to the user.
 
     If \a index is invalid, a default constructed QDateTime is returned.
  */
-QDateTime QFileSystemModel::lastModified(const QModelIndex &index, const QTimeZone &tz) const
+QDateTime QFileSystemModel::lastModified(const QModelIndex &index, const BOBUIimeZone &tz) const
 {
     Q_D(const QFileSystemModel);
     if (!index.isValid())
@@ -671,7 +671,7 @@ void QFileSystemModel::fetchMore(const QModelIndex &parent)
     if (indexNode->populatedChildren)
         return;
     indexNode->populatedChildren = true;
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     d->fileInfoGatherer->list(filePath(parent));
 #endif
 }
@@ -703,18 +703,18 @@ int QFileSystemModel::columnCount(const QModelIndex &parent) const
 /*!
     Returns the data stored under the given \a role for the item "My Computer".
 
-    \sa Qt::ItemDataRole
+    \sa BobUI::ItemDataRole
  */
 QVariant QFileSystemModel::myComputer(int role) const
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     Q_D(const QFileSystemModel);
 #endif
     switch (role) {
-    case Qt::DisplayRole:
+    case BobUI::DisplayRole:
         return QFileSystemModelPrivate::myComputer();
-#if QT_CONFIG(filesystemwatcher)
-    case Qt::DecorationRole:
+#if BOBUI_CONFIG(filesystemwatcher)
+    case BobUI::DecorationRole:
         if (auto *provider = d->fileInfoGatherer->iconProvider())
             return provider->icon(QAbstractFileIconProvider::Computer);
     break;
@@ -733,11 +733,11 @@ QVariant QFileSystemModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     switch (role) {
-    case Qt::EditRole:
+    case BobUI::EditRole:
         if (index.column() == QFileSystemModelPrivate::NameColumn)
             return d->name(index);
         Q_FALLTHROUGH();
-    case Qt::DisplayRole:
+    case BobUI::DisplayRole:
         switch (index.column()) {
         case QFileSystemModelPrivate::NameColumn: return d->displayName(index);
         case QFileSystemModelPrivate::SizeColumn: return d->size(index);
@@ -754,10 +754,10 @@ QVariant QFileSystemModel::data(const QModelIndex &index, int role) const
         return d->name(index);
     case FileInfoRole:
         return QVariant::fromValue(fileInfo(index));
-    case Qt::DecorationRole:
+    case BobUI::DecorationRole:
         if (index.column() == QFileSystemModelPrivate::NameColumn) {
             QIcon icon = d->icon(index);
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
             if (icon.isNull()) {
                 using P = QAbstractFileIconProvider;
                 if (auto *provider = d->fileInfoGatherer->iconProvider())
@@ -767,9 +767,9 @@ QVariant QFileSystemModel::data(const QModelIndex &index, int role) const
             return icon;
         }
         break;
-    case Qt::TextAlignmentRole:
+    case BobUI::TextAlignmentRole:
         if (index.column() == QFileSystemModelPrivate::SizeColumn)
-            return QVariant(Qt::AlignTrailing | Qt::AlignVCenter);
+            return QVariant(BobUI::AlignTrailing | BobUI::AlignVCenter);
         break;
     case FilePermissions:
         int p = permissions(index);
@@ -813,8 +813,8 @@ QString QFileSystemModelPrivate::time(const QModelIndex &index) const
 {
     if (!index.isValid())
         return QString();
-#if QT_CONFIG(datestring)
-    return QLocale::system().toString(node(index)->lastModified(QTimeZone::LocalTime), QLocale::ShortFormat);
+#if BOBUI_CONFIG(datestring)
+    return QLocale::system().toString(node(index)->lastModified(BOBUIimeZone::LocalTime), QLocale::ShortFormat);
 #else
     Q_UNUSED(index);
     return QString();
@@ -840,7 +840,7 @@ QString QFileSystemModelPrivate::name(const QModelIndex &index) const
         return QString();
     QFileSystemNode *dirNode = node(index);
     if (
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
         fileInfoGatherer->resolveSymlinks() &&
 #endif
         !resolvedSymLinks.isEmpty() && dirNode->isSymLink(/* ignoreNtfsSymLinks = */ true)) {
@@ -881,8 +881,8 @@ bool QFileSystemModel::setData(const QModelIndex &idx, const QVariant &value, in
     Q_D(QFileSystemModel);
     if (!idx.isValid()
         || idx.column() != 0
-        || role != Qt::EditRole
-        || (flags(idx) & Qt::ItemIsEditable) == 0) {
+        || role != BobUI::EditRole
+        || (flags(idx) & BobUI::ItemIsEditable) == 0) {
         return false;
     }
 
@@ -902,13 +902,13 @@ bool QFileSystemModel::setData(const QModelIndex &idx, const QVariant &value, in
     if (newName.isEmpty() || QDir::toNativeSeparators(newName).contains(QDir::separator()))
         return false;
 
-#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
-    // QTBUG-65683: Remove file system watchers prior to renaming to prevent
+#if BOBUI_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+    // BOBUIBUG-65683: Remove file system watchers prior to renaming to prevent
     // failure due to locked files on Windows.
     const QStringList watchedPaths = d->unwatchPathsAt(idx);
 #endif // filesystemwatcher && Q_OS_WIN
     if (!QDir(parentPath).rename(oldName, newName)) {
-#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+#if BOBUI_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
         d->watchPaths(watchedPaths);
 #endif
         return false;
@@ -931,7 +931,7 @@ bool QFileSystemModel::setData(const QModelIndex &idx, const QVariant &value, in
         std::unique_ptr<QFileSystemModelPrivate::QFileSystemNode> nodeToRename(parentNode->children.take(oldName));
         nodeToRename->fileName = newName;
         nodeToRename->parent = parentNode;
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
         nodeToRename->populate(d->fileInfoGatherer->getInfo(QFileInfo(parentPath, newName)));
 #endif
         nodeToRename->isVisible = true;
@@ -947,23 +947,23 @@ bool QFileSystemModel::setData(const QModelIndex &idx, const QVariant &value, in
 /*!
     \reimp
 */
-QVariant QFileSystemModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QFileSystemModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     switch (role) {
-    case Qt::DecorationRole:
+    case BobUI::DecorationRole:
         if (section == 0) {
             // ### TODO oh man this is ugly and doesn't even work all the way!
             // it is still 2 pixels off
             QImage pixmap(16, 1, QImage::Format_ARGB32_Premultiplied);
-            pixmap.fill(Qt::transparent);
+            pixmap.fill(BobUI::transparent);
             return pixmap;
         }
         break;
-    case Qt::TextAlignmentRole:
-        return Qt::AlignLeft;
+    case BobUI::TextAlignmentRole:
+        return BobUI::AlignLeft;
     }
 
-    if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
+    if (orientation != BobUI::Horizontal || role != BobUI::DisplayRole)
         return QAbstractItemModel::headerData(section, orientation, role);
 
     QString returnValue;
@@ -997,30 +997,30 @@ QVariant QFileSystemModel::headerData(int section, Qt::Orientation orientation, 
 /*!
     \reimp
 */
-Qt::ItemFlags QFileSystemModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QFileSystemModel::flags(const QModelIndex &index) const
 {
     Q_D(const QFileSystemModel);
-    Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+    BobUI::ItemFlags flags = QAbstractItemModel::flags(index);
     if (!index.isValid())
         return flags;
 
     QFileSystemModelPrivate::QFileSystemNode *indexNode = d->node(index);
     if (d->nameFilterDisables && !d->passNameFilters(indexNode)) {
-        flags &= ~Qt::ItemIsEnabled;
+        flags &= ~BobUI::ItemIsEnabled;
         // ### TODO you shouldn't be able to set this as the current item, task 119433
         return flags;
     }
 
-    flags |= Qt::ItemIsDragEnabled;
+    flags |= BobUI::ItemIsDragEnabled;
 
     if (!indexNode->isDir())
-        flags |= Qt::ItemNeverHasChildren;
+        flags |= BobUI::ItemNeverHasChildren;
     if (d->readOnly)
         return flags;
     if ((index.column() == 0) && indexNode->permissions() & QFile::WriteUser) {
-        flags |= Qt::ItemIsEditable;
+        flags |= BobUI::ItemIsEditable;
         if (indexNode->isDir())
-            flags |= Qt::ItemIsDropEnabled;
+            flags |= BobUI::ItemIsDropEnabled;
     }
     return flags;
 }
@@ -1045,7 +1045,7 @@ public:
     inline QFileSystemModelSorter(int column) : sortColumn(column)
     {
         naturalCompare.setNumericMode(true);
-        naturalCompare.setCaseSensitivity(Qt::CaseInsensitive);
+        naturalCompare.setCaseSensitivity(BobUI::CaseInsensitive);
     }
 
     bool compareNodes(const QFileSystemModelPrivate::QFileSystemNode *l,
@@ -1086,8 +1086,8 @@ public:
         }
         case QFileSystemModelPrivate::TimeColumn:
         {
-            const QDateTime left = l->lastModified(QTimeZone::UTC);
-            const QDateTime right = r->lastModified(QTimeZone::UTC);
+            const QDateTime left = l->lastModified(BOBUIimeZone::UTC);
+            const QDateTime right = r->lastModified(BOBUIimeZone::UTC);
             if (left == right)
                 return naturalCompare.compare(l->fileName, r->fileName) < 0;
 
@@ -1159,7 +1159,7 @@ void QFileSystemModelPrivate::sortChildren(int column, const QModelIndex &parent
 /*!
     \reimp
 */
-void QFileSystemModel::sort(int column, Qt::SortOrder order)
+void QFileSystemModel::sort(int column, BobUI::SortOrder order)
 {
     Q_D(QFileSystemModel);
     if (d->sortOrder == order && d->sortColumn == column && !d->forceSort)
@@ -1226,7 +1226,7 @@ QMimeData *QFileSystemModel::mimeData(const QModelIndexList &indexes) const
 
     \sa supportedDropActions()
 */
-bool QFileSystemModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QFileSystemModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                              int row, int column, const QModelIndex &parent)
 {
     Q_UNUSED(row);
@@ -1241,19 +1241,19 @@ bool QFileSystemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     QList<QUrl>::const_iterator it = urls.constBegin();
 
     switch (action) {
-    case Qt::CopyAction:
+    case BobUI::CopyAction:
         for (; it != urls.constEnd(); ++it) {
             QString path = (*it).toLocalFile();
             success = QFile::copy(path, to + QFileInfo(path).fileName()) && success;
         }
         break;
-    case Qt::LinkAction:
+    case BobUI::LinkAction:
         for (; it != urls.constEnd(); ++it) {
             QString path = (*it).toLocalFile();
             success = QFile::link(path, to + QFileInfo(path).fileName()) && success;
         }
         break;
-    case Qt::MoveAction:
+    case BobUI::MoveAction:
         for (; it != urls.constEnd(); ++it) {
             QString path = (*it).toLocalFile();
             success = QFile::rename(path, to + QFileInfo(path).fileName()) && success;
@@ -1269,9 +1269,9 @@ bool QFileSystemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 /*!
     \reimp
 */
-Qt::DropActions QFileSystemModel::supportedDropActions() const
+BobUI::DropActions QFileSystemModel::supportedDropActions() const
 {
-    return Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
+    return BobUI::CopyAction | BobUI::MoveAction | BobUI::LinkAction;
 }
 
 /*!
@@ -1281,7 +1281,7 @@ QHash<int, QByteArray> QFileSystemModel::roleNames() const
 {
     static auto ret = [] {
         auto ret = QAbstractItemModelPrivate::defaultRoleNames();
-        ret.insert(QFileSystemModel::FileIconRole, "fileIcon"_ba); // == Qt::decoration
+        ret.insert(QFileSystemModel::FileIconRole, "fileIcon"_ba); // == BobUI::decoration
         ret.insert(QFileSystemModel::FilePathRole, "filePath"_ba);
         ret.insert(QFileSystemModel::FileNameRole, "fileName"_ba);
         ret.insert(QFileSystemModel::FilePermissions, "filePermissions"_ba);
@@ -1357,7 +1357,7 @@ void QFileSystemModel::setOptions(Options options)
     if (changed.testFlag(DontResolveSymlinks))
         setResolveSymlinks(!options.testFlag(DontResolveSymlinks));
 
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     Q_D(QFileSystemModel);
     if (changed.testFlag(DontWatchForChanges))
         d->fileInfoGatherer->setWatching(!options.testFlag(DontWatchForChanges));
@@ -1379,7 +1379,7 @@ QFileSystemModel::Options QFileSystemModel::options() const
 {
     QFileSystemModel::Options result;
     result.setFlag(DontResolveSymlinks, !resolveSymlinks());
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     Q_D(const QFileSystemModel);
     result.setFlag(DontWatchForChanges, !d->fileInfoGatherer->isWatching());
 #else
@@ -1402,7 +1402,7 @@ QString QFileSystemModel::filePath(const QModelIndex &index) const
     QString fullPath = d->filePath(index);
     QFileSystemModelPrivate::QFileSystemNode *dirNode = d->node(index);
     if (dirNode->isSymLink()
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
         && d->fileInfoGatherer->resolveSymlinks()
 #endif
         && d->resolvedSymLinks.contains(fullPath)
@@ -1471,7 +1471,7 @@ QModelIndex QFileSystemModel::mkdir(const QModelIndex &parent, const QString &na
     d->addNode(parentNode, fileName, QFileInfo());
     Q_ASSERT(parentNode->children.contains(fileName));
     QFileSystemModelPrivate::QFileSystemNode *node = parentNode->children[fileName];
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     node->populate(d->fileInfoGatherer->getInfo(QFileInfo(dir.absolutePath() + QDir::separator() + fileName)));
 #endif
     d->addVisibleFiles(parentNode, QStringList(fileName));
@@ -1500,14 +1500,14 @@ QFile::Permissions QFileSystemModel::permissions(const QModelIndex &index) const
     the model is \e not changed to include only files and directories
     within the directory specified by \a newPath in the file system.
 
-    \sa {QTreeView::setRootIndex()}, {QtQuick::}{TreeView::rootIndex}
+    \sa {BOBUIreeView::setRootIndex()}, {BobUIQuick::}{TreeView::rootIndex}
   */
 QModelIndex QFileSystemModel::setRootPath(const QString &newPath)
 {
     Q_D(QFileSystemModel);
 #ifdef Q_OS_WIN
 #ifdef Q_OS_WIN32
-    QString longNewPath = qt_GetLongPathName(newPath);
+    QString longNewPath = bobui_GetLongPathName(newPath);
 #else
     QString longNewPath = QDir::fromNativeSeparators(newPath);
 #endif
@@ -1541,7 +1541,7 @@ QModelIndex QFileSystemModel::setRootPath(const QString &newPath)
     //We remove the watcher on the previous path
     if (!rootPath().isEmpty() && rootPath() != "."_L1) {
         //This remove the watcher for the old rootPath
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
         d->fileInfoGatherer->removePath(rootPath());
 #endif
         //This line "marks" the node as dirty, so the next fetchMore
@@ -1597,7 +1597,7 @@ QDir QFileSystemModel::rootDirectory() const
 void QFileSystemModel::setIconProvider(QAbstractFileIconProvider *provider)
 {
     Q_D(QFileSystemModel);
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     d->fileInfoGatherer->setIconProvider(provider);
 #endif
     d->root.updateIcon(provider, QString());
@@ -1608,7 +1608,7 @@ void QFileSystemModel::setIconProvider(QAbstractFileIconProvider *provider)
 */
 QAbstractFileIconProvider *QFileSystemModel::iconProvider() const
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     Q_D(const QFileSystemModel);
     return d->fileInfoGatherer->iconProvider();
 #else
@@ -1664,7 +1664,7 @@ QDir::Filters QFileSystemModel::filter() const
 */
 void QFileSystemModel::setResolveSymlinks(bool enable)
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     Q_D(QFileSystemModel);
     d->fileInfoGatherer->setResolveSymlinks(enable);
 #else
@@ -1674,7 +1674,7 @@ void QFileSystemModel::setResolveSymlinks(bool enable)
 
 bool QFileSystemModel::resolveSymlinks() const
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     Q_D(const QFileSystemModel);
     return d->fileInfoGatherer->resolveSymlinks();
 #else
@@ -1730,7 +1730,7 @@ bool QFileSystemModel::nameFilterDisables() const
 */
 void QFileSystemModel::setNameFilters(const QStringList &filters)
 {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     Q_D(QFileSystemModel);
 
     if (!d->bypassFilters.isEmpty()) {
@@ -1765,7 +1765,7 @@ void QFileSystemModel::setNameFilters(const QStringList &filters)
 */
 QStringList QFileSystemModel::nameFilters() const
 {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     Q_D(const QFileSystemModel);
     return d->nameFilters;
 #else
@@ -1778,7 +1778,7 @@ QStringList QFileSystemModel::nameFilters() const
 */
 bool QFileSystemModel::event(QEvent *event)
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     Q_D(QFileSystemModel);
     if (event->type() == QEvent::LanguageChange) {
         d->root.retranslateStrings(d->fileInfoGatherer->iconProvider(), QString());
@@ -1795,7 +1795,7 @@ bool QFileSystemModel::rmdir(const QModelIndex &aindex)
     QString path = filePath(aindex);
     const bool success = QDir().rmdir(path);
     if (success) {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
         d->fileInfoGatherer->removePath(path);
 #endif
         QFileSystemModelPrivate::QFileSystemNode *parentNode = d->node(aindex.parent());
@@ -1859,7 +1859,7 @@ QFileSystemModelPrivate::QFileSystemNode* QFileSystemModelPrivate::addNode(QFile
 {
     // In the common case, itemLocation == count() so check there first
     QFileSystemModelPrivate::QFileSystemNode *node = new QFileSystemModelPrivate::QFileSystemNode(fileName, parentNode);
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     node->populate(info);
 #else
     Q_UNUSED(info);
@@ -1961,7 +1961,7 @@ void QFileSystemModelPrivate::removeVisibleFile(QFileSystemNode *parentNode, int
 void QFileSystemModelPrivate::fileSystemChanged(const QString &path,
                                                    const QList<std::pair<QString, QFileInfo>> &updates)
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     Q_Q(QFileSystemModel);
     QList<QString> rowsToUpdate;
     QStringList newFiles;
@@ -1986,7 +1986,7 @@ void QFileSystemModelPrivate::fileSystemChanged(const QString &path,
             if (node->fileName != fileName)
                 continue;
         } else {
-            if (QString::compare(node->fileName,fileName,Qt::CaseInsensitive) != 0)
+            if (QString::compare(node->fileName,fileName,BobUI::CaseInsensitive) != 0)
                 continue;
         }
         if (isCaseSensitive) {
@@ -2079,7 +2079,7 @@ void QFileSystemModelPrivate::resolvedName(const QString &fileName, const QStrin
     resolvedSymLinks[fileName] = resolvedName;
 }
 
-#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+#if BOBUI_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
 // Remove file system watchers at/below the index and return a list of previously
 // watched files. This should be called prior to operations like rename/remove
 // which might fail due to watchers on platforms like Windows. The watchers
@@ -2089,8 +2089,8 @@ QStringList QFileSystemModelPrivate::unwatchPathsAt(const QModelIndex &index)
     const QFileSystemModelPrivate::QFileSystemNode *indexNode = node(index);
     if (indexNode == nullptr)
         return QStringList();
-    const Qt::CaseSensitivity caseSensitivity = indexNode->caseSensitive()
-        ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    const BobUI::CaseSensitivity caseSensitivity = indexNode->caseSensitive()
+        ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
     const QString path = indexNode->fileInfo().absoluteFilePath();
 
     QStringList result;
@@ -2120,7 +2120,7 @@ QStringList QFileSystemModelPrivate::unwatchPathsAt(const QModelIndex &index)
 #endif // filesystemwatcher && Q_OS_WIN
 
 QFileSystemModelPrivate::QFileSystemModelPrivate()
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     : fileInfoGatherer(new QFileInfoGatherer)
 #endif // filesystemwatcher
 {
@@ -2128,7 +2128,7 @@ QFileSystemModelPrivate::QFileSystemModelPrivate()
 
 QFileSystemModelPrivate::~QFileSystemModelPrivate()
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     fileInfoGatherer->requestAbort();
     if (!fileInfoGatherer->wait(1000)) {
         // If the thread hangs, perhaps because the network was disconnected
@@ -2150,7 +2150,7 @@ void QFileSystemModelPrivate::init()
     delayedSortTimer.setSingleShot(true);
 
     qRegisterMetaType<QList<std::pair<QString, QFileInfo>>>();
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     QObjectPrivate::connect(fileInfoGatherer.get(), &QFileInfoGatherer::newListOfFiles,
                             this, &QFileSystemModelPrivate::directoryChanged);
     QObjectPrivate::connect(fileInfoGatherer.get(), &QFileInfoGatherer::updates,
@@ -2161,9 +2161,9 @@ void QFileSystemModelPrivate::init()
     q->connect(fileInfoGatherer.get(), &QFileInfoGatherer::directoryLoaded,
                q, &QFileSystemModel::directoryLoaded);
 #endif // filesystemwatcher
-    QObjectPrivate::connect(&delayedSortTimer, &QTimer::timeout,
+    QObjectPrivate::connect(&delayedSortTimer, &BOBUIimer::timeout,
                             this, &QFileSystemModelPrivate::performDelayedSort,
-                            Qt::QueuedConnection);
+                            BobUI::QueuedConnection);
 }
 
 /*!
@@ -2178,7 +2178,7 @@ bool QFileSystemModelPrivate::filtersAcceptsNode(const QFileSystemNode *node) co
 {
     // When the model is set to only show files, then a node representing a dir
     // should be hidden regardless of bypassFilters.
-    // QTBUG-74471
+    // BOBUIBUG-74471
     const bool hideDirs = (filters & (QDir::Dirs | QDir::AllDirs)) == 0;
     const bool shouldHideDirNode = hideDirs && node->isDir();
 
@@ -2227,7 +2227,7 @@ bool QFileSystemModelPrivate::filtersAcceptsNode(const QFileSystemNode *node) co
  */
 bool QFileSystemModelPrivate::passNameFilters(const QFileSystemNode *node) const
 {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     if (nameFilters.isEmpty())
         return true;
 
@@ -2247,12 +2247,12 @@ bool QFileSystemModelPrivate::passNameFilters(const QFileSystemNode *node) const
     return true;
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void QFileSystemModelPrivate::rebuildNameFilterRegexps()
 {
     nameFiltersRegexps.clear();
     nameFiltersRegexps.reserve(nameFilters.size());
-    const auto cs = (filters & QDir::CaseSensitive) ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    const auto cs = (filters & QDir::CaseSensitive) ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
     const auto convertWildcardToRegexp = [cs](const QString &nameFilter)
     {
         return QRegularExpression::fromWildcard(nameFilter, cs);
@@ -2264,6 +2264,6 @@ void QFileSystemModelPrivate::rebuildNameFilterRegexps()
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfilesystemmodel.cpp"

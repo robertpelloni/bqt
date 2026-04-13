@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
@@ -8,8 +8,8 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 
-QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
-QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLTexture)
 
 class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -38,7 +38,7 @@ protected:
 private:
     void makeObject();
 
-    QColor clearColor = Qt::black;
+    QColor clearColor = BobUI::black;
     QPoint lastPos;
     int xRot = 0;
     int yRot = 0;

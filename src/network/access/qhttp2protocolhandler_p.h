@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHTTP2PROTOCOLHANDLER_P_H
 #define QHTTP2PROTOCOLHANDLER_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
@@ -30,11 +30,11 @@
 #include <private/hpacktable_p.h>
 #include <private/hpack_p.h>
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qflags.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qflags.h>
+#include <BobUICore/qhash.h>
 
 #include <vector>
 #include <limits>
@@ -42,9 +42,9 @@
 #include <deque>
 #include <set>
 
-QT_REQUIRE_CONFIG(http);
+BOBUI_REQUIRE_CONFIG(http);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHttp2ProtocolHandler : public QObject, public QAbstractProtocolHandler
 {
@@ -82,7 +82,7 @@ private:
     void handleHeadersReceived(const HPack::HttpHeader &headers, bool endStream);
     void handleDataReceived(const QByteArray &data, bool endStream);
     void finishStream(QHttp2Stream *stream,
-                      Qt::ConnectionType connectionType = Qt::DirectConnection);
+                      BobUI::ConnectionType connectionType = BobUI::DirectConnection);
     // Error code send by a peer (GOAWAY/RST_STREAM):
     void handleGOAWAY(Http2::Http2Error errorCode, quint32 lastStreamID);
     void finishStreamWithError(QHttp2Stream *stream, Http2::Http2Error errorCode);
@@ -113,6 +113,6 @@ private:
     void closeSession();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'downloads.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,18 +9,18 @@
 #ifndef DOWNLOADS_H
 #define DOWNLOADS_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
 #include "edittableview.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_DownloadDialog
 {
@@ -90,6 +90,6 @@ namespace Ui {
     class DownloadDialog: public Ui_DownloadDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // DOWNLOADS_H

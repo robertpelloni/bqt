@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "nfa.h"
 #include "re2nfa.h"
@@ -28,7 +28,7 @@ static QList<Symbol> tokenize(const DFA &dfa, const QString &input, Config *cfg,
     for (int i = 0; i < input.length(); ++i) {
         QChar ch = input.at(i);
         QChar chForInput = ch;
-        if (cfg->caseSensitivity == Qt::CaseInsensitive)
+        if (cfg->caseSensitivity == BobUI::CaseInsensitive)
             chForInput = chForInput.toLower();
         int next = dfa.at(state).transitions.value(chForInput.unicode());
         if (cfg->debug)
@@ -132,9 +132,9 @@ static bool loadConfig(const QString &ruleFile, Config *cfg)
     if (maxInputSet.isEmpty())
         return false;
 
-    Qt::CaseSensitivity cs = Qt::CaseInsensitive;
+    BobUI::CaseSensitivity cs = BobUI::CaseInsensitive;
     if (sections.value("Options").contains("case-sensitive"))
-        cs = Qt::CaseSensitive;
+        cs = BobUI::CaseSensitive;
 
     cfg->configSections = sections;
     cfg->caseSensitivity = cs;
@@ -250,7 +250,7 @@ int main(int argc, char **argv)
 
     if (testRules) {
         qWarning("Testing:");
-        QString input = QTextStream(stdin).readAll();
+        QString input = BOBUIextStream(stdin).readAll();
         /*
         qDebug() << "NFA has" << machine.stateCount() << "states";
         qDebug() << "Converting to DFA... (this may take a while)";
@@ -277,7 +277,7 @@ int main(int argc, char **argv)
             qDebug() << "Error while tokenizing!";
     } else {
         Generator gen(machine, cfg);
-        QTextStream(stdout)
+        BOBUIextStream(stdout)
             << gen.generate();
     }
 

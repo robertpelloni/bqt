@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QBACKINGSTORE_COCOA_H
 #define QBACKINGSTORE_COCOA_H
 
-#include <QtGui/private/qrasterbackingstore_p.h>
+#include <BobUIGui/private/qrasterbackingstore_p.h>
 
 #include <private/qcore_mac_p.h>
 
@@ -14,7 +14,7 @@
 
 #include <unordered_map>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaBackingStore : public QPlatformBackingStore
 {
@@ -95,6 +95,6 @@ private:
     bool m_clearSurfaceOnPaint = true;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

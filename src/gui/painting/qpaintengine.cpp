@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #include "qpaintengine.h"
 #include "qpaintengine_p.h"
 #include "qpainter_p.h"
@@ -14,26 +14,26 @@
 #include <private/qfontengine_p.h>
 #include <private/qguiapplication_p.h>
 #include <private/qpaintengineex_p.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
-    \class QTextItem
-    \inmodule QtGui
+    \class BOBUIextItem
+    \inmodule BobUIGui
 
-    \brief The QTextItem class provides all the information required to draw
+    \brief The BOBUIextItem class provides all the information required to draw
     text in a custom paint engine.
 
     When you reimplement your own paint engine, you must reimplement
-    QPaintEngine::drawTextItem(), a function that takes a QTextItem as
+    QPaintEngine::drawTextItem(), a function that takes a BOBUIextItem as
     one of its arguments.
 */
 
 /*!
-  \enum QTextItem::RenderFlag
+  \enum BOBUIextItem::RenderFlag
 
   \value  RightToLeft Render the text from right to left.
   \value  Overline    Paint a line above the text.
@@ -44,68 +44,68 @@ QT_BEGIN_NAMESPACE
 
 
 /*!
-    \fn qreal QTextItem::descent() const
+    \fn qreal BOBUIextItem::descent() const
 
     Corresponds to the \l{QFontMetrics::descent()}{descent} of the piece of text that is drawn.
 */
-qreal QTextItem::descent() const
+qreal BOBUIextItem::descent() const
 {
-    const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
+    const BOBUIextItemInt *ti = static_cast<const BOBUIextItemInt *>(this);
     return ti->descent.toReal();
 }
 
 /*!
-    \fn qreal QTextItem::ascent() const
+    \fn qreal BOBUIextItem::ascent() const
 
     Corresponds to the \l{QFontMetrics::ascent()}{ascent} of the piece of text that is drawn.
 */
-qreal QTextItem::ascent() const
+qreal BOBUIextItem::ascent() const
 {
-    const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
+    const BOBUIextItemInt *ti = static_cast<const BOBUIextItemInt *>(this);
     return ti->ascent.toReal();
 }
 
 /*!
-    \fn qreal QTextItem::width() const
+    \fn qreal BOBUIextItem::width() const
 
     Specifies the total width of the text to be drawn.
 */
-qreal QTextItem::width() const
+qreal BOBUIextItem::width() const
 {
-    const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
+    const BOBUIextItemInt *ti = static_cast<const BOBUIextItemInt *>(this);
     return ti->width.toReal();
 }
 
 /*!
-    \fn QTextItem::RenderFlags QTextItem::renderFlags() const
+    \fn BOBUIextItem::RenderFlags BOBUIextItem::renderFlags() const
 
     Returns the render flags used.
 */
-QTextItem::RenderFlags QTextItem::renderFlags() const
+BOBUIextItem::RenderFlags BOBUIextItem::renderFlags() const
 {
-    const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
+    const BOBUIextItemInt *ti = static_cast<const BOBUIextItemInt *>(this);
     return ti->flags;
 }
 
 /*!
-    \fn QString QTextItem::text() const
+    \fn QString BOBUIextItem::text() const
 
     Returns the text that should be drawn.
 */
-QString QTextItem::text() const
+QString BOBUIextItem::text() const
 {
-    const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
+    const BOBUIextItemInt *ti = static_cast<const BOBUIextItemInt *>(this);
     return QString(ti->chars, ti->num_chars);
 }
 
 /*!
-    \fn QFont QTextItem::font() const
+    \fn QFont BOBUIextItem::font() const
 
     Returns the font that should be used to draw the text.
 */
-QFont QTextItem::font() const
+QFont BOBUIextItem::font() const
 {
-    const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
+    const BOBUIextItemInt *ti = static_cast<const BOBUIextItemInt *>(this);
     return ti->f ? *ti->f : QGuiApplication::font();
 }
 
@@ -113,12 +113,12 @@ QFont QTextItem::font() const
 /*!
   \class QPaintEngine
   \ingroup painting
-    \inmodule QtGui
+    \inmodule BobUIGui
 
   \brief The QPaintEngine class provides an abstract definition of how
   QPainter draws to a given device on a given platform.
 
-  Qt provides several premade implementations of QPaintEngine for the
+  BobUI provides several premade implementations of QPaintEngine for the
   different painter backends we support. The primary paint engine
   provided is the raster paint engine, which contains a software
   rasterizer which supports the full feature set on all supported platforms.
@@ -174,7 +174,7 @@ QFont QTextItem::font() const
   \value PaintOutsidePaintEvent The engine is capable of painting outside of
                                 paint events.
   \value PatternBrush       The engine is capable of rendering brushes with
-                            the brush patterns specified in Qt::BrushStyle.
+                            the brush patterns specified in BobUI::BrushStyle.
   \value PatternTransform   The engine has support for transforming brush
                             patterns.
   \value PerspectiveTransform The engine has support for performing perspective
@@ -273,12 +273,12 @@ void QPaintEngine::syncState()
         static_cast<QPaintEngineEx *>(this)->sync();
 }
 
-static QPaintEngine *qt_polygon_recursion = nullptr;
-struct QT_Point {
+static QPaintEngine *bobui_polygon_recursion = nullptr;
+struct BOBUI_Point {
     int x;
     int y;
 };
-Q_DECLARE_TYPEINFO(QT_Point, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(BOBUI_Point, Q_PRIMITIVE_TYPE);
 
 /*!
     \fn void QPaintEngine::drawPolygon(const QPointF *points, int pointCount,
@@ -292,24 +292,24 @@ Q_DECLARE_TYPEINFO(QT_Point, Q_PRIMITIVE_TYPE);
 */
 void QPaintEngine::drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode)
 {
-    Q_ASSERT_X(qt_polygon_recursion != this, "QPaintEngine::drawPolygon",
+    Q_ASSERT_X(bobui_polygon_recursion != this, "QPaintEngine::drawPolygon",
                "At least one drawPolygon function must be implemented");
-    qt_polygon_recursion = this;
-    Q_ASSERT(sizeof(QT_Point) == sizeof(QPoint));
-    QVarLengthArray<QT_Point> p(pointCount);
+    bobui_polygon_recursion = this;
+    Q_ASSERT(sizeof(BOBUI_Point) == sizeof(QPoint));
+    QVarLengthArray<BOBUI_Point> p(pointCount);
     for (int i = 0; i < pointCount; ++i) {
         p[i].x = qRound(points[i].x());
         p[i].y = qRound(points[i].y());
     }
     drawPolygon((QPoint *)p.data(), pointCount, mode);
-    qt_polygon_recursion = nullptr;
+    bobui_polygon_recursion = nullptr;
 }
 
-struct QT_PointF {
+struct BOBUI_PointF {
     qreal x;
     qreal y;
 };
-Q_DECLARE_TYPEINFO(QT_PointF, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(BOBUI_PointF, Q_PRIMITIVE_TYPE);
 
 /*!
     \overload
@@ -321,17 +321,17 @@ Q_DECLARE_TYPEINFO(QT_PointF, Q_PRIMITIVE_TYPE);
 */
 void QPaintEngine::drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode)
 {
-    Q_ASSERT_X(qt_polygon_recursion != this, "QPaintEngine::drawPolygon",
+    Q_ASSERT_X(bobui_polygon_recursion != this, "QPaintEngine::drawPolygon",
                "At least one drawPolygon function must be implemented");
-    qt_polygon_recursion = this;
-    Q_ASSERT(sizeof(QT_PointF) == sizeof(QPointF));
-    QVarLengthArray<QT_PointF> p(pointCount);
+    bobui_polygon_recursion = this;
+    Q_ASSERT(sizeof(BOBUI_PointF) == sizeof(QPointF));
+    QVarLengthArray<BOBUI_PointF> p(pointCount);
     for (int i=0; i<pointCount; ++i) {
         p[i].x = points[i].x();
         p[i].y = points[i].y();
     }
     drawPolygon((QPointF *)p.data(), pointCount, mode);
-    qt_polygon_recursion = nullptr;
+    bobui_polygon_recursion = nullptr;
 }
 
 /*!
@@ -342,7 +342,7 @@ void QPaintEngine::drawPolygon(const QPoint *points, int pointCount, PolygonDraw
     \value MacPrinter
     \value CoreGraphics \macos's Quartz2D (CoreGraphics)
     \value QuickDraw \macos's QuickDraw
-    \value QWindowSystem Qt for Embedded Linux
+    \value QWindowSystem BobUI for Embedded Linux
     \value OpenGL
     \value Picture QPicture format
     \value SVG Scalable Vector Graphics XML format
@@ -409,18 +409,18 @@ void QPaintEngine::drawPoints(const QPointF *points, int pointCount)
     if (penWidth == 0)
         penWidth = 1;
 
-    bool ellipses = p->pen().capStyle() == Qt::RoundCap;
+    bool ellipses = p->pen().capStyle() == BobUI::RoundCap;
 
     p->save();
 
-    QTransform transform;
+    BOBUIransform transform;
     if (p->pen().isCosmetic()) {
         transform = p->transform();
-        p->setTransform(QTransform());
+        p->setTransform(BOBUIransform());
     }
 
     p->setBrush(p->pen().brush());
-    p->setPen(Qt::NoPen);
+    p->setPen(BobUI::NoPen);
 
     for (int i=0; i<pointCount; ++i) {
         QPointF pos = transform.map(points[i]);
@@ -445,8 +445,8 @@ void QPaintEngine::drawPoints(const QPointF *points, int pointCount)
 */
 void QPaintEngine::drawPoints(const QPoint *points, int pointCount)
 {
-    Q_ASSERT(sizeof(QT_PointF) == sizeof(QPointF));
-    QT_PointF fp[256];
+    Q_ASSERT(sizeof(BOBUI_PointF) == sizeof(QPointF));
+    BOBUI_PointF fp[256];
     while (pointCount) {
         int i = 0;
         while (i < pointCount && i < 256) {
@@ -500,7 +500,7 @@ void QPaintEngine::drawEllipse(const QRect &rect)
 */
 
 
-void qt_fill_tile(QPixmap *tile, const QPixmap &pixmap)
+void bobui_fill_tile(QPixmap *tile, const QPixmap &pixmap)
 {
     QPainter p(tile);
     p.drawPixmap(0, 0, pixmap);
@@ -516,7 +516,7 @@ void qt_fill_tile(QPixmap *tile, const QPixmap &pixmap)
     }
 }
 
-Q_GUI_EXPORT void qt_draw_tile(QPaintEngine *gc, qreal x, qreal y, qreal w, qreal h,
+Q_GUI_EXPORT void bobui_draw_tile(QPaintEngine *gc, qreal x, qreal y, qreal w, qreal h,
                                const QPixmap &pixmap, qreal xOffset, qreal yOffset)
 {
     qreal yPos, xPos, drawH, drawW, yOff, xOff;
@@ -565,18 +565,18 @@ void QPaintEngine::drawTiledPixmap(const QRectF &rect, const QPixmap &pixmap, co
         } else {
             tile = QPixmap(tw, th);
             if (pixmap.hasAlphaChannel())
-                tile.fill(Qt::transparent);
+                tile.fill(BobUI::transparent);
         }
-        qt_fill_tile(&tile, pixmap);
-        qt_draw_tile(this, rect.x(), rect.y(), rect.width(), rect.height(), tile, p.x(), p.y());
+        bobui_fill_tile(&tile, pixmap);
+        bobui_draw_tile(this, rect.x(), rect.y(), rect.width(), rect.height(), tile, p.x(), p.y());
     } else {
-        qt_draw_tile(this, rect.x(), rect.y(), rect.width(), rect.height(), pixmap, p.x(), p.y());
+        bobui_draw_tile(this, rect.x(), rect.y(), rect.width(), rect.height(), pixmap, p.x(), p.y());
     }
 }
 
 /*!
     \fn void QPaintEngine::drawImage(const QRectF &rectangle, const QImage
-    &image, const QRectF &sr, Qt::ImageConversionFlags flags)
+    &image, const QRectF &sr, BobUI::ImageConversionFlags flags)
 
     Reimplement this function to draw the part of the \a image
     specified by the \a sr rectangle in the given \a rectangle using
@@ -584,7 +584,7 @@ void QPaintEngine::drawTiledPixmap(const QRectF &rect, const QPixmap &pixmap, co
 */
 
 void QPaintEngine::drawImage(const QRectF &r, const QImage &image, const QRectF &sr,
-                             Qt::ImageConversionFlags flags)
+                             BobUI::ImageConversionFlags flags)
 {
     QRectF baseSize(0, 0, image.width(), image.height());
     QImage im = image;
@@ -717,23 +717,23 @@ void QPaintEngine::drawPath(const QPainterPath &)
     QPainterPath and paints the resulting path.
 */
 
-void QPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
+void QPaintEngine::drawTextItem(const QPointF &p, const BOBUIextItem &textItem)
 {
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
+    const BOBUIextItemInt &ti = static_cast<const BOBUIextItemInt &>(textItem);
     if (ti.glyphs.numGlyphs == 0)
         return;
 
     if (ti.fontEngine->glyphFormat == QFontEngine::Format_ARGB) {
         QVarLengthArray<QFixedPoint> positions;
         QVarLengthArray<glyph_t> glyphs;
-        QTransform matrix = QTransform::fromTranslate(p.x(), p.y() - ti.fontEngine->ascent().toReal());
+        BOBUIransform matrix = BOBUIransform::fromTranslate(p.x(), p.y() - ti.fontEngine->ascent().toReal());
         ti.fontEngine->getGlyphPositions(ti.glyphs, matrix, ti.flags, glyphs, positions);
         painter()->save();
         painter()->setRenderHint(QPainter::SmoothPixmapTransform,
                                  bool((painter()->renderHints() & QPainter::TextAntialiasing)
                                       && !(painter()->font().styleStrategy() & QFont::NoAntialias)));
         for (int i = 0; i < ti.glyphs.numGlyphs; ++i) {
-            QImage glyph = ti.fontEngine->bitmapForGlyph(glyphs[i], QFixedPoint(), QTransform());
+            QImage glyph = ti.fontEngine->bitmapForGlyph(glyphs[i], QFixedPoint(), BOBUIransform());
             painter()->drawImage(positions[i].x.toReal(), positions[i].y.toReal(), glyph);
         }
         painter()->restore();
@@ -741,7 +741,7 @@ void QPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
     }
 
     QPainterPath path;
-    path.setFillRule(Qt::WindingFill);
+    path.setFillRule(BobUI::WindingFill);
     ti.fontEngine->addOutlineToPath(0, 0, ti.glyphs, &path, ti.flags);
     if (!path.isEmpty()) {
         painter()->save();
@@ -765,7 +765,7 @@ void QPaintEngine::drawLines(const QLineF *lines, int lineCount)
         QPointF pts[2] = { lines[i].p1(), lines[i].p2() };
 
         if (pts[0] == pts[1]) {
-            if (state->pen().capStyle() != Qt::FlatCap)
+            if (state->pen().capStyle() != BobUI::FlatCap)
                 drawPoints(pts, 1);
             continue;
         }
@@ -986,7 +986,7 @@ QPixmap QPaintEngine::createPixmap(QSize size)
 
     Creates a QPixmap optimized for this paint engine and device.
 */
-QPixmap QPaintEngine::createPixmapFromImage(QImage image, Qt::ImageConversionFlags flags)
+QPixmap QPaintEngine::createPixmapFromImage(QImage image, BobUI::ImageConversionFlags flags)
 {
     if (Q_UNLIKELY(!qobject_cast<QGuiApplication *>(QCoreApplication::instance()))) {
         qWarning("QPaintEngine::createPixmapFromImage: QPixmap cannot be created without a QGuiApplication");
@@ -1005,7 +1005,7 @@ QPaintEnginePrivate::~QPaintEnginePrivate()
 {
 }
 
-void QPaintEnginePrivate::drawBoxTextItem(const QPointF &p, const QTextItemInt &ti)
+void QPaintEnginePrivate::drawBoxTextItem(const QPointF &p, const BOBUIextItemInt &ti)
 {
     if (!ti.glyphs.numGlyphs)
         return;
@@ -1014,7 +1014,7 @@ void QPaintEnginePrivate::drawBoxTextItem(const QPointF &p, const QTextItemInt &
     const int size = qRound(ti.fontEngine->ascent());
     QVarLengthArray<QFixedPoint> positions;
     QVarLengthArray<glyph_t> glyphs;
-    QTransform matrix = QTransform::fromTranslate(p.x(), p.y() - size);
+    BOBUIransform matrix = BOBUIransform::fromTranslate(p.x(), p.y() - size);
     ti.fontEngine->getGlyphPositions(ti.glyphs, matrix, ti.flags, glyphs, positions);
     if (glyphs.size() == 0)
         return;
@@ -1023,7 +1023,7 @@ void QPaintEnginePrivate::drawBoxTextItem(const QPointF &p, const QTextItemInt &
 
     QPainter *painter = q_func()->state->painter();
     painter->save();
-    painter->setBrush(Qt::NoBrush);
+    painter->setBrush(BobUI::NoBrush);
     QPen pen = painter->pen();
     pen.setWidthF(ti.fontEngine->lineThickness().toReal());
     painter->setPen(pen);
@@ -1032,4 +1032,4 @@ void QPaintEnginePrivate::drawBoxTextItem(const QPointF &p, const QTextItemInt &
     painter->restore();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

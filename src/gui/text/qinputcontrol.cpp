@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qinputcontrol_p.h"
 
-#include <QtCore/qmimedata.h>
-#include <QtGui/qevent.h>
+#include <BobUICore/qmimedata.h>
+#include <BobUIGui/qevent.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QInputControl::QInputControl(Type type, QObject *parent)
     : QObject(parent)
@@ -33,9 +33,9 @@ bool QInputControl::isAcceptableInput(const QKeyEvent *event) const
     if (c.category() == QChar::Other_Format)
         return true;
 
-    // QTBUG-35734: ignore Ctrl/Ctrl+Shift; accept only AltGr (Alt+Ctrl) on German keyboards
-    if (event->modifiers() == Qt::ControlModifier
-            || event->modifiers() == (Qt::ShiftModifier | Qt::ControlModifier)) {
+    // BOBUIBUG-35734: ignore Ctrl/Ctrl+Shift; accept only AltGr (Alt+Ctrl) on German keyboards
+    if (event->modifiers() == BobUI::ControlModifier
+            || event->modifiers() == (BobUI::ShiftModifier | BobUI::ControlModifier)) {
         return false;
     }
 
@@ -56,30 +56,30 @@ bool QInputControl::isAcceptableInput(const QKeyEvent *event) const
 
 bool QInputControl::isCommonTextEditShortcut(const QKeyEvent *ke)
 {
-    if (ke->modifiers() == Qt::NoModifier
-        || ke->modifiers() == Qt::ShiftModifier
-        || ke->modifiers() == Qt::KeypadModifier) {
-        if (ke->key() < Qt::Key_Escape) {
+    if (ke->modifiers() == BobUI::NoModifier
+        || ke->modifiers() == BobUI::ShiftModifier
+        || ke->modifiers() == BobUI::KeypadModifier) {
+        if (ke->key() < BobUI::Key_Escape) {
             return true;
         } else {
             switch (ke->key()) {
-                case Qt::Key_Return:
-                case Qt::Key_Enter:
-                case Qt::Key_Delete:
-                case Qt::Key_Home:
-                case Qt::Key_End:
-                case Qt::Key_Backspace:
-                case Qt::Key_Left:
-                case Qt::Key_Right:
-                case Qt::Key_Up:
-                case Qt::Key_Down:
-                case Qt::Key_Tab:
+                case BobUI::Key_Return:
+                case BobUI::Key_Enter:
+                case BobUI::Key_Delete:
+                case BobUI::Key_Home:
+                case BobUI::Key_End:
+                case BobUI::Key_Backspace:
+                case BobUI::Key_Left:
+                case BobUI::Key_Right:
+                case BobUI::Key_Up:
+                case BobUI::Key_Down:
+                case BobUI::Key_Tab:
                 return true;
             default:
                 break;
             }
         }
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     } else if (ke->matches(QKeySequence::Copy)
                || ke->matches(QKeySequence::Paste)
                || ke->matches(QKeySequence::Cut)
@@ -109,7 +109,7 @@ bool QInputControl::isCommonTextEditShortcut(const QKeyEvent *ke)
     \internal
 
     Creates a wrapper for returning QMimeData in response to
-    Qt::ImCurrentSelection, while being backwards compatible
+    BobUI::ImCurrentSelection, while being backwards compatible
     with clients who only read the plain text string.
 */
 QVariant QInputControl::selectionWrapper(QMimeData *mimeData)
@@ -138,6 +138,6 @@ QMimeData *QInputControl::mimeDataForInputEvent(QInputMethodEvent *event)
         mimeDataAttr->value.value<QMimeData*>() : nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qinputcontrol_p.cpp"

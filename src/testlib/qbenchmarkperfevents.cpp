@@ -1,11 +1,11 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qbenchmarkperfevents_p.h"
 #include "qbenchmarkmetric.h"
 #include "qbenchmark_p.h"
 
-#ifdef QTESTLIB_USE_PERF_EVENTS
+#ifdef BOBUIESTLIB_USE_PERF_EVENTS
 
 // include the qcore_unix_p.h without core-private
 // we only use inline functions anyway
@@ -46,7 +46,7 @@
 #define CACHE_BRANCH_READ           (PERF_COUNT_HW_CACHE_BPU | PERF_COUNT_HW_CACHE_OP_READ << 8 | PERF_COUNT_HW_CACHE_RESULT_ACCESS << 16)
 #define CACHE_BRANCH_READ_MISS      (PERF_COUNT_HW_CACHE_BPU | PERF_COUNT_HW_CACHE_OP_READ << 8 | PERF_COUNT_HW_CACHE_RESULT_MISS << 16)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct PerfEvent
 {
@@ -185,7 +185,7 @@ for $entry (@strings) {
 # print the table
 print "    \"\\0\";\n\nstatic const Events eventlist[] = {\n";
 for $entry (sort @strings) {
-    printf "    { %3d, PERF_TYPE_%s, %s, QTest::%s },\n",
+    printf "    { %3d, PERF_TYPE_%s, %s, BOBUIest::%s },\n",
         $map{$entry}[0],
     $map{$entry}[1],
         $map{$entry}[2],
@@ -199,7 +199,7 @@ struct Events {
     unsigned offset;
     quint32 type;
     quint64 event_id;
-    QTest::QBenchmarkMetric metric;
+    BOBUIest::QBenchmarkMetric metric;
 };
 
 /* -- BEGIN GENERATED CODE -- */
@@ -291,100 +291,100 @@ static const char eventlist_strings[] =
     "\0";
 
 static const Events eventlist[] = {
-    {   0, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_ALIGNMENT_FAULTS, QTest::AlignmentFaults },
-    {  17, PERF_TYPE_HARDWARE, PERF_COUNT_HW_BRANCH_INSTRUCTIONS, QTest::BranchInstructions },
-    {  37, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ_MISS, QTest::BranchMisses },
-    {  56, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ, QTest::BranchInstructions },
-    {  69, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ_MISS, QTest::BranchMisses },
-    {  88, PERF_TYPE_HARDWARE, PERF_COUNT_HW_BRANCH_MISSES, QTest::BranchMisses },
-    { 102, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ, QTest::BranchInstructions },
-    { 118, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ_MISS, QTest::BranchMisses },
-    { 137, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ, QTest::BranchInstructions },
-    { 150, PERF_TYPE_HARDWARE, PERF_COUNT_HW_BRANCH_INSTRUCTIONS, QTest::BranchInstructions },
-    { 159, PERF_TYPE_HARDWARE, PERF_COUNT_HW_BUS_CYCLES, QTest::BusCycles },
-    { 170, PERF_TYPE_HARDWARE, PERF_COUNT_HW_CACHE_MISSES, QTest::CacheMisses },
-    { 183, PERF_TYPE_HARDWARE, PERF_COUNT_HW_CACHE_REFERENCES, QTest::CacheReferences },
-    { 200, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CONTEXT_SWITCHES, QTest::ContextSwitches },
-    { 217, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CPU_CLOCK, QTest::WalltimeNanoseconds },
-    { 227, PERF_TYPE_HARDWARE, PERF_COUNT_HW_CPU_CYCLES, QTest::CPUCycles },
-    { 238, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CPU_MIGRATIONS, QTest::CPUMigrations },
-    { 253, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CONTEXT_SWITCHES, QTest::ContextSwitches },
-    { 256, PERF_TYPE_HARDWARE, PERF_COUNT_HW_CPU_CYCLES, QTest::CPUCycles },
-    { 263, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_EMULATION_FAULTS, QTest::EmulationFaults },
-    { 280, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_PAGE_FAULTS, QTest::PageFaults },
-    { 287, PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_BACKEND, QTest::StalledCycles },
-    { 307, PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_FRONTEND, QTest::StalledCycles },
-    { 328, PERF_TYPE_HARDWARE, PERF_COUNT_HW_INSTRUCTIONS, QTest::Instructions },
-    { 341, PERF_TYPE_HW_CACHE, CACHE_L1D_READ_MISS, QTest::CacheReads },
-    { 363, PERF_TYPE_HW_CACHE, CACHE_L1D_READ, QTest::CacheReads },
-    { 379, PERF_TYPE_HW_CACHE, CACHE_L1D_PREFETCH_MISS, QTest::CachePrefetches },
-    { 405, PERF_TYPE_HW_CACHE, CACHE_L1D_PREFETCH, QTest::CachePrefetches },
-    { 426, PERF_TYPE_HW_CACHE, CACHE_L1D_READ_MISS, QTest::CacheReads },
-    { 448, PERF_TYPE_HW_CACHE, CACHE_L1D_READ, QTest::CacheReads },
-    { 464, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE_MISS, QTest::CacheWrites },
-    { 487, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE, QTest::CacheWrites },
-    { 504, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE_MISS, QTest::CacheWrites },
-    { 527, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE, QTest::CacheWrites },
-    { 544, PERF_TYPE_HW_CACHE, CACHE_L1D_READ_MISS, QTest::CacheReads },
-    { 560, PERF_TYPE_HW_CACHE, CACHE_L1D_READ, QTest::CacheReads },
-    { 570, PERF_TYPE_HW_CACHE, CACHE_L1D_PREFETCH_MISS, QTest::CachePrefetches },
-    { 590, PERF_TYPE_HW_CACHE, CACHE_L1D_PREFETCH, QTest::CachePrefetches },
-    { 605, PERF_TYPE_HW_CACHE, CACHE_L1D_READ_MISS, QTest::CacheReads },
-    { 621, PERF_TYPE_HW_CACHE, CACHE_L1D_READ, QTest::CacheReads },
-    { 631, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE_MISS, QTest::CacheWrites },
-    { 648, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE, QTest::CacheWrites },
-    { 659, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE_MISS, QTest::CacheWrites },
-    { 676, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE, QTest::CacheWrites },
-    { 687, PERF_TYPE_HW_CACHE, CACHE_L1I_READ_MISS, QTest::CacheReads },
-    { 709, PERF_TYPE_HW_CACHE, CACHE_L1I_READ, QTest::CacheReads },
-    { 725, PERF_TYPE_HW_CACHE, CACHE_L1I_PREFETCH_MISS, QTest::CachePrefetches },
-    { 751, PERF_TYPE_HW_CACHE, CACHE_L1I_PREFETCH, QTest::CachePrefetches },
-    { 772, PERF_TYPE_HW_CACHE, CACHE_L1I_READ_MISS, QTest::CacheReads },
-    { 794, PERF_TYPE_HW_CACHE, CACHE_L1I_READ, QTest::CacheReads },
-    { 810, PERF_TYPE_HW_CACHE, CACHE_L1I_READ_MISS, QTest::CacheReads },
-    { 826, PERF_TYPE_HW_CACHE, CACHE_L1I_READ, QTest::CacheReads },
-    { 836, PERF_TYPE_HW_CACHE, CACHE_L1I_PREFETCH_MISS, QTest::CachePrefetches },
-    { 856, PERF_TYPE_HW_CACHE, CACHE_L1I_PREFETCH, QTest::CachePrefetches },
-    { 871, PERF_TYPE_HW_CACHE, CACHE_L1I_READ_MISS, QTest::CacheReads },
-    { 887, PERF_TYPE_HW_CACHE, CACHE_L1I_READ, QTest::CacheReads },
-    { 897, PERF_TYPE_HW_CACHE, CACHE_LLC_READ_MISS, QTest::CacheReads },
-    { 919, PERF_TYPE_HW_CACHE, CACHE_LLC_READ, QTest::CacheReads },
-    { 935, PERF_TYPE_HW_CACHE, CACHE_LLC_PREFETCH_MISS, QTest::CachePrefetches },
-    { 961, PERF_TYPE_HW_CACHE, CACHE_LLC_PREFETCH, QTest::CachePrefetches },
-    { 982, PERF_TYPE_HW_CACHE, CACHE_LLC_READ_MISS, QTest::CacheReads },
-    { 1004, PERF_TYPE_HW_CACHE, CACHE_LLC_READ, QTest::CacheReads },
-    { 1020, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE_MISS, QTest::CacheWrites },
-    { 1043, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE, QTest::CacheWrites },
-    { 1060, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE_MISS, QTest::CacheWrites },
-    { 1083, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE, QTest::CacheWrites },
-    { 1100, PERF_TYPE_HW_CACHE, CACHE_LLC_READ_MISS, QTest::CacheReads },
-    { 1116, PERF_TYPE_HW_CACHE, CACHE_LLC_READ, QTest::CacheReads },
-    { 1126, PERF_TYPE_HW_CACHE, CACHE_LLC_PREFETCH_MISS, QTest::CachePrefetches },
-    { 1146, PERF_TYPE_HW_CACHE, CACHE_LLC_PREFETCH, QTest::CachePrefetches },
-    { 1161, PERF_TYPE_HW_CACHE, CACHE_LLC_READ_MISS, QTest::CacheReads },
-    { 1177, PERF_TYPE_HW_CACHE, CACHE_LLC_READ, QTest::CacheReads },
-    { 1187, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE_MISS, QTest::CacheWrites },
-    { 1204, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE, QTest::CacheWrites },
-    { 1215, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE_MISS, QTest::CacheWrites },
-    { 1232, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE, QTest::CacheWrites },
-    { 1243, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_PAGE_FAULTS_MAJ, QTest::MajorPageFaults },
-    { 1256, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CPU_MIGRATIONS, QTest::CPUMigrations },
-    { 1267, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_PAGE_FAULTS_MIN, QTest::MinorPageFaults },
-    { 1280, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_PAGE_FAULTS, QTest::PageFaults },
-    { 1292, PERF_TYPE_HARDWARE, PERF_COUNT_HW_REF_CPU_CYCLES, QTest::RefCPUCycles },
-    { 1303, PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_BACKEND, QTest::StalledCycles },
-    { 1326, PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_FRONTEND, QTest::StalledCycles },
-    { 1350, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_TASK_CLOCK, QTest::WalltimeNanoseconds },
+    {   0, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_ALIGNMENT_FAULTS, BOBUIest::AlignmentFaults },
+    {  17, PERF_TYPE_HARDWARE, PERF_COUNT_HW_BRANCH_INSTRUCTIONS, BOBUIest::BranchInstructions },
+    {  37, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ_MISS, BOBUIest::BranchMisses },
+    {  56, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ, BOBUIest::BranchInstructions },
+    {  69, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ_MISS, BOBUIest::BranchMisses },
+    {  88, PERF_TYPE_HARDWARE, PERF_COUNT_HW_BRANCH_MISSES, BOBUIest::BranchMisses },
+    { 102, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ, BOBUIest::BranchInstructions },
+    { 118, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ_MISS, BOBUIest::BranchMisses },
+    { 137, PERF_TYPE_HW_CACHE, CACHE_BRANCH_READ, BOBUIest::BranchInstructions },
+    { 150, PERF_TYPE_HARDWARE, PERF_COUNT_HW_BRANCH_INSTRUCTIONS, BOBUIest::BranchInstructions },
+    { 159, PERF_TYPE_HARDWARE, PERF_COUNT_HW_BUS_CYCLES, BOBUIest::BusCycles },
+    { 170, PERF_TYPE_HARDWARE, PERF_COUNT_HW_CACHE_MISSES, BOBUIest::CacheMisses },
+    { 183, PERF_TYPE_HARDWARE, PERF_COUNT_HW_CACHE_REFERENCES, BOBUIest::CacheReferences },
+    { 200, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CONTEXT_SWITCHES, BOBUIest::ContextSwitches },
+    { 217, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CPU_CLOCK, BOBUIest::WalltimeNanoseconds },
+    { 227, PERF_TYPE_HARDWARE, PERF_COUNT_HW_CPU_CYCLES, BOBUIest::CPUCycles },
+    { 238, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CPU_MIGRATIONS, BOBUIest::CPUMigrations },
+    { 253, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CONTEXT_SWITCHES, BOBUIest::ContextSwitches },
+    { 256, PERF_TYPE_HARDWARE, PERF_COUNT_HW_CPU_CYCLES, BOBUIest::CPUCycles },
+    { 263, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_EMULATION_FAULTS, BOBUIest::EmulationFaults },
+    { 280, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_PAGE_FAULTS, BOBUIest::PageFaults },
+    { 287, PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_BACKEND, BOBUIest::StalledCycles },
+    { 307, PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_FRONTEND, BOBUIest::StalledCycles },
+    { 328, PERF_TYPE_HARDWARE, PERF_COUNT_HW_INSTRUCTIONS, BOBUIest::Instructions },
+    { 341, PERF_TYPE_HW_CACHE, CACHE_L1D_READ_MISS, BOBUIest::CacheReads },
+    { 363, PERF_TYPE_HW_CACHE, CACHE_L1D_READ, BOBUIest::CacheReads },
+    { 379, PERF_TYPE_HW_CACHE, CACHE_L1D_PREFETCH_MISS, BOBUIest::CachePrefetches },
+    { 405, PERF_TYPE_HW_CACHE, CACHE_L1D_PREFETCH, BOBUIest::CachePrefetches },
+    { 426, PERF_TYPE_HW_CACHE, CACHE_L1D_READ_MISS, BOBUIest::CacheReads },
+    { 448, PERF_TYPE_HW_CACHE, CACHE_L1D_READ, BOBUIest::CacheReads },
+    { 464, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE_MISS, BOBUIest::CacheWrites },
+    { 487, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE, BOBUIest::CacheWrites },
+    { 504, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE_MISS, BOBUIest::CacheWrites },
+    { 527, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE, BOBUIest::CacheWrites },
+    { 544, PERF_TYPE_HW_CACHE, CACHE_L1D_READ_MISS, BOBUIest::CacheReads },
+    { 560, PERF_TYPE_HW_CACHE, CACHE_L1D_READ, BOBUIest::CacheReads },
+    { 570, PERF_TYPE_HW_CACHE, CACHE_L1D_PREFETCH_MISS, BOBUIest::CachePrefetches },
+    { 590, PERF_TYPE_HW_CACHE, CACHE_L1D_PREFETCH, BOBUIest::CachePrefetches },
+    { 605, PERF_TYPE_HW_CACHE, CACHE_L1D_READ_MISS, BOBUIest::CacheReads },
+    { 621, PERF_TYPE_HW_CACHE, CACHE_L1D_READ, BOBUIest::CacheReads },
+    { 631, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE_MISS, BOBUIest::CacheWrites },
+    { 648, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE, BOBUIest::CacheWrites },
+    { 659, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE_MISS, BOBUIest::CacheWrites },
+    { 676, PERF_TYPE_HW_CACHE, CACHE_L1D_WRITE, BOBUIest::CacheWrites },
+    { 687, PERF_TYPE_HW_CACHE, CACHE_L1I_READ_MISS, BOBUIest::CacheReads },
+    { 709, PERF_TYPE_HW_CACHE, CACHE_L1I_READ, BOBUIest::CacheReads },
+    { 725, PERF_TYPE_HW_CACHE, CACHE_L1I_PREFETCH_MISS, BOBUIest::CachePrefetches },
+    { 751, PERF_TYPE_HW_CACHE, CACHE_L1I_PREFETCH, BOBUIest::CachePrefetches },
+    { 772, PERF_TYPE_HW_CACHE, CACHE_L1I_READ_MISS, BOBUIest::CacheReads },
+    { 794, PERF_TYPE_HW_CACHE, CACHE_L1I_READ, BOBUIest::CacheReads },
+    { 810, PERF_TYPE_HW_CACHE, CACHE_L1I_READ_MISS, BOBUIest::CacheReads },
+    { 826, PERF_TYPE_HW_CACHE, CACHE_L1I_READ, BOBUIest::CacheReads },
+    { 836, PERF_TYPE_HW_CACHE, CACHE_L1I_PREFETCH_MISS, BOBUIest::CachePrefetches },
+    { 856, PERF_TYPE_HW_CACHE, CACHE_L1I_PREFETCH, BOBUIest::CachePrefetches },
+    { 871, PERF_TYPE_HW_CACHE, CACHE_L1I_READ_MISS, BOBUIest::CacheReads },
+    { 887, PERF_TYPE_HW_CACHE, CACHE_L1I_READ, BOBUIest::CacheReads },
+    { 897, PERF_TYPE_HW_CACHE, CACHE_LLC_READ_MISS, BOBUIest::CacheReads },
+    { 919, PERF_TYPE_HW_CACHE, CACHE_LLC_READ, BOBUIest::CacheReads },
+    { 935, PERF_TYPE_HW_CACHE, CACHE_LLC_PREFETCH_MISS, BOBUIest::CachePrefetches },
+    { 961, PERF_TYPE_HW_CACHE, CACHE_LLC_PREFETCH, BOBUIest::CachePrefetches },
+    { 982, PERF_TYPE_HW_CACHE, CACHE_LLC_READ_MISS, BOBUIest::CacheReads },
+    { 1004, PERF_TYPE_HW_CACHE, CACHE_LLC_READ, BOBUIest::CacheReads },
+    { 1020, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE_MISS, BOBUIest::CacheWrites },
+    { 1043, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE, BOBUIest::CacheWrites },
+    { 1060, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE_MISS, BOBUIest::CacheWrites },
+    { 1083, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE, BOBUIest::CacheWrites },
+    { 1100, PERF_TYPE_HW_CACHE, CACHE_LLC_READ_MISS, BOBUIest::CacheReads },
+    { 1116, PERF_TYPE_HW_CACHE, CACHE_LLC_READ, BOBUIest::CacheReads },
+    { 1126, PERF_TYPE_HW_CACHE, CACHE_LLC_PREFETCH_MISS, BOBUIest::CachePrefetches },
+    { 1146, PERF_TYPE_HW_CACHE, CACHE_LLC_PREFETCH, BOBUIest::CachePrefetches },
+    { 1161, PERF_TYPE_HW_CACHE, CACHE_LLC_READ_MISS, BOBUIest::CacheReads },
+    { 1177, PERF_TYPE_HW_CACHE, CACHE_LLC_READ, BOBUIest::CacheReads },
+    { 1187, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE_MISS, BOBUIest::CacheWrites },
+    { 1204, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE, BOBUIest::CacheWrites },
+    { 1215, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE_MISS, BOBUIest::CacheWrites },
+    { 1232, PERF_TYPE_HW_CACHE, CACHE_LLC_WRITE, BOBUIest::CacheWrites },
+    { 1243, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_PAGE_FAULTS_MAJ, BOBUIest::MajorPageFaults },
+    { 1256, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CPU_MIGRATIONS, BOBUIest::CPUMigrations },
+    { 1267, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_PAGE_FAULTS_MIN, BOBUIest::MinorPageFaults },
+    { 1280, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_PAGE_FAULTS, BOBUIest::PageFaults },
+    { 1292, PERF_TYPE_HARDWARE, PERF_COUNT_HW_REF_CPU_CYCLES, BOBUIest::RefCPUCycles },
+    { 1303, PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_BACKEND, BOBUIest::StalledCycles },
+    { 1326, PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_FRONTEND, BOBUIest::StalledCycles },
+    { 1350, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_TASK_CLOCK, BOBUIest::WalltimeNanoseconds },
 };
 /* -- END GENERATED CODE -- */
 
-static QTest::QBenchmarkMetric metricForEvent(PerfEvent counter)
+static BOBUIest::QBenchmarkMetric metricForEvent(PerfEvent counter)
 {
     for (const Events &ev : eventlist) {
         if (ev.type == counter.type && ev.event_id == counter.config)
             return ev.metric;
     }
-    return QTest::Events;
+    return BOBUIest::Events;
 }
 
 void QBenchmarkPerfEventsMeasurer::setCounter(const char *name)
@@ -445,13 +445,13 @@ QBenchmarkPerfEventsMeasurer::QBenchmarkPerfEventsMeasurer() = default;
 QBenchmarkPerfEventsMeasurer::~QBenchmarkPerfEventsMeasurer()
 {
     for (int fd : std::as_const(fds))
-        qt_safe_close(fd);
+        bobui_safe_close(fd);
 }
 
 void QBenchmarkPerfEventsMeasurer::start()
 {
-    QT_WARNING_DISABLE_GCC("-Wmissing-field-initializers")
-    QT_WARNING_DISABLE_CLANG("-Wmissing-field-initializers")
+    BOBUI_WARNING_DISABLE_GCC("-Wmissing-field-initializers")
+    BOBUI_WARNING_DISABLE_CLANG("-Wmissing-field-initializers")
     perf_event_attr attr = {
         .size = sizeof attr,
         .read_format = PERF_FORMAT_TOTAL_TIME_ENABLED | PERF_FORMAT_TOTAL_TIME_RUNNING,
@@ -545,7 +545,7 @@ static quint64 rawReadValue(int fd)
     size_t nread = 0;
     while (nread < sizeof results) {
         char *ptr = reinterpret_cast<char *>(&results);
-        qint64 r = qt_safe_read(fd, ptr + nread, sizeof results - nread);
+        qint64 r = bobui_safe_read(fd, ptr + nread, sizeof results - nread);
         if (r < 0) {
             perror("QBenchmarkPerfEventsMeasurer::readValue: reading the results");
             exit(1);
@@ -566,6 +566,6 @@ QBenchmarkMeasurerBase::Measurement QBenchmarkPerfEventsMeasurer::readValue(qsiz
     return { qreal(qint64(raw)), metricForEvent(eventTypes->at(idx)) };
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

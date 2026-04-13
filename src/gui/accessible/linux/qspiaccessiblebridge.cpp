@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qspiaccessiblebridge_p.h"
@@ -16,13 +16,13 @@
 #include "dbusconnection_p.h"
 #include "qspi_struct_marshallers_p.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "deviceeventcontroller_adaptor.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtGuiPrivate; // for D-Bus accessibility wrappers
+using namespace BobUI::StringLiterals;
+using namespace BobUIGuiPrivate; // for D-Bus accessibility wrappers
 
 /*!
     \class QSpiAccessibleBridge
@@ -37,7 +37,7 @@ QSpiAccessibleBridge::QSpiAccessibleBridge()
     // Now that we have connected the signal, make sure we didn't miss a change,
     // e.g. when running as root or when AT_SPI_BUS_ADDRESS is set by hand.
     // But do that only on next loop, once dbus is really settled.
-    QTimer::singleShot(
+    BOBUIimer::singleShot(
         0, this, [this]{
             if (dbusConnection->isEnabled() && dbusConnection->connection().isConnected())
                 enabledChanged(true);
@@ -53,7 +53,7 @@ void QSpiAccessibleBridge::enabledChanged(bool enabled)
 QSpiAccessibleBridge::~QSpiAccessibleBridge()
 {
     delete dbusConnection;
-} // Qt currently doesn't delete plugins.
+} // BobUI currently doesn't delete plugins.
 
 QDBusConnection QSpiAccessibleBridge::dBusConnection() const
 {
@@ -94,169 +94,169 @@ struct RoleMapping {
 
 static RoleMapping map[] = {
     //: Role of an accessible object - the object is in an invalid state or could not be constructed
-    { QAccessible::NoRole, ATSPI_ROLE_INVALID, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "invalid role") },
+    { QAccessible::NoRole, ATSPI_ROLE_INVALID, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "invalid role") },
     //: Role of an accessible object
-    { QAccessible::TitleBar, ATSPI_ROLE_TEXT, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "title bar") },
+    { QAccessible::TitleBar, ATSPI_ROLE_TEXT, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "title bar") },
     //: Role of an accessible object
-    { QAccessible::MenuBar, ATSPI_ROLE_MENU_BAR, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "menu bar") },
+    { QAccessible::MenuBar, ATSPI_ROLE_MENU_BAR, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "menu bar") },
     //: Role of an accessible object
-    { QAccessible::ScrollBar, ATSPI_ROLE_SCROLL_BAR, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "scroll bar") },
+    { QAccessible::ScrollBar, ATSPI_ROLE_SCROLL_BAR, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "scroll bar") },
     //: Role of an accessible object - the grip is usually used for resizing another object
-    { QAccessible::Grip, ATSPI_ROLE_UNKNOWN, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "grip") },
+    { QAccessible::Grip, ATSPI_ROLE_UNKNOWN, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "grip") },
     //: Role of an accessible object
-    { QAccessible::Sound, ATSPI_ROLE_UNKNOWN, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "sound") },
+    { QAccessible::Sound, ATSPI_ROLE_UNKNOWN, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "sound") },
     //: Role of an accessible object
-    { QAccessible::Cursor, ATSPI_ROLE_UNKNOWN, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "cursor") },
+    { QAccessible::Cursor, ATSPI_ROLE_UNKNOWN, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "cursor") },
     //: Role of an accessible object
-    { QAccessible::Caret, ATSPI_ROLE_UNKNOWN, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "text caret") },
+    { QAccessible::Caret, ATSPI_ROLE_UNKNOWN, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "text caret") },
     //: Role of an accessible object
-    { QAccessible::AlertMessage, ATSPI_ROLE_ALERT, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "alert message") },
+    { QAccessible::AlertMessage, ATSPI_ROLE_ALERT, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "alert message") },
     //: Role of an accessible object: a window with frame and title
-    { QAccessible::Window, ATSPI_ROLE_FRAME, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "frame") },
+    { QAccessible::Window, ATSPI_ROLE_FRAME, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "frame") },
     //: Role of an accessible object
-    { QAccessible::Client, ATSPI_ROLE_FILLER, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "filler") },
+    { QAccessible::Client, ATSPI_ROLE_FILLER, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "filler") },
     //: Role of an accessible object
-    { QAccessible::PopupMenu, ATSPI_ROLE_POPUP_MENU, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "popup menu") },
+    { QAccessible::PopupMenu, ATSPI_ROLE_POPUP_MENU, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "popup menu") },
     //: Role of an accessible object
-    { QAccessible::MenuItem, ATSPI_ROLE_MENU_ITEM, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "menu item") },
+    { QAccessible::MenuItem, ATSPI_ROLE_MENU_ITEM, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "menu item") },
     //: Role of an accessible object
-    { QAccessible::ToolTip, ATSPI_ROLE_TOOL_TIP, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "tool tip") },
+    { QAccessible::ToolTip, ATSPI_ROLE_TOOL_TIP, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "tool tip") },
     //: Role of an accessible object
-    { QAccessible::Application, ATSPI_ROLE_APPLICATION, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "application") },
+    { QAccessible::Application, ATSPI_ROLE_APPLICATION, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "application") },
     //: Role of an accessible object
-    { QAccessible::Document, ATSPI_ROLE_DOCUMENT_FRAME, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "document") },
+    { QAccessible::Document, ATSPI_ROLE_DOCUMENT_FRAME, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "document") },
     //: Role of an accessible object
-    { QAccessible::Pane, ATSPI_ROLE_PANEL, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "panel") },
+    { QAccessible::Pane, ATSPI_ROLE_PANEL, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "panel") },
     //: Role of an accessible object
-    { QAccessible::Chart, ATSPI_ROLE_CHART, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "chart") },
+    { QAccessible::Chart, ATSPI_ROLE_CHART, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "chart") },
     //: Role of an accessible object
-    { QAccessible::Dialog, ATSPI_ROLE_DIALOG, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "dialog") },
+    { QAccessible::Dialog, ATSPI_ROLE_DIALOG, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "dialog") },
     //: Role of an accessible object
-    { QAccessible::Border, ATSPI_ROLE_PANEL, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "panel") },
+    { QAccessible::Border, ATSPI_ROLE_PANEL, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "panel") },
     //: Role of an accessible object
-    { QAccessible::Grouping, ATSPI_ROLE_PANEL, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "panel") },
+    { QAccessible::Grouping, ATSPI_ROLE_PANEL, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "panel") },
     //: Role of an accessible object
-    { QAccessible::Separator, ATSPI_ROLE_SEPARATOR, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "separator") },
+    { QAccessible::Separator, ATSPI_ROLE_SEPARATOR, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "separator") },
     //: Role of an accessible object
-    { QAccessible::ToolBar, ATSPI_ROLE_TOOL_BAR, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "tool bar") },
+    { QAccessible::ToolBar, ATSPI_ROLE_TOOL_BAR, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "tool bar") },
     //: Role of an accessible object
-    { QAccessible::StatusBar, ATSPI_ROLE_STATUS_BAR, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "status bar") },
+    { QAccessible::StatusBar, ATSPI_ROLE_STATUS_BAR, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "status bar") },
     //: Role of an accessible object
-    { QAccessible::Table, ATSPI_ROLE_TABLE, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "table") },
+    { QAccessible::Table, ATSPI_ROLE_TABLE, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "table") },
     //: Role of an accessible object - part of a table
-    { QAccessible::ColumnHeader, ATSPI_ROLE_TABLE_COLUMN_HEADER, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "column header") },
+    { QAccessible::ColumnHeader, ATSPI_ROLE_TABLE_COLUMN_HEADER, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "column header") },
     //: Role of an accessible object - part of a table
-    { QAccessible::RowHeader, ATSPI_ROLE_TABLE_ROW_HEADER, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "row header") },
+    { QAccessible::RowHeader, ATSPI_ROLE_TABLE_ROW_HEADER, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "row header") },
     //: Role of an accessible object - part of a table
-    { QAccessible::Column, ATSPI_ROLE_TABLE_CELL, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "column") },
+    { QAccessible::Column, ATSPI_ROLE_TABLE_CELL, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "column") },
     //: Role of an accessible object - part of a table
-    { QAccessible::Row, ATSPI_ROLE_TABLE_ROW, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "row") },
+    { QAccessible::Row, ATSPI_ROLE_TABLE_ROW, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "row") },
     //: Role of an accessible object - part of a table
-    { QAccessible::Cell, ATSPI_ROLE_TABLE_CELL, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "cell") },
+    { QAccessible::Cell, ATSPI_ROLE_TABLE_CELL, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "cell") },
     //: Role of an accessible object
-    { QAccessible::Link, ATSPI_ROLE_LINK, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "link") },
+    { QAccessible::Link, ATSPI_ROLE_LINK, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "link") },
     //: Role of an accessible object
-    { QAccessible::HelpBalloon, ATSPI_ROLE_DIALOG, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "help balloon") },
+    { QAccessible::HelpBalloon, ATSPI_ROLE_DIALOG, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "help balloon") },
     //: Role of an accessible object - a helper dialog
-    { QAccessible::Assistant, ATSPI_ROLE_DIALOG, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "assistant") },
+    { QAccessible::Assistant, ATSPI_ROLE_DIALOG, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "assistant") },
     //: Role of an accessible object
-    { QAccessible::List, ATSPI_ROLE_LIST, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "list") },
+    { QAccessible::List, ATSPI_ROLE_LIST, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "list") },
     //: Role of an accessible object
-    { QAccessible::ListItem, ATSPI_ROLE_LIST_ITEM, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "list item") },
+    { QAccessible::ListItem, ATSPI_ROLE_LIST_ITEM, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "list item") },
     //: Role of an accessible object
-    { QAccessible::Tree, ATSPI_ROLE_TREE, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "tree") },
+    { QAccessible::Tree, ATSPI_ROLE_TREE, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "tree") },
     //: Role of an accessible object
-    { QAccessible::TreeItem, ATSPI_ROLE_TABLE_CELL, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "tree item") },
+    { QAccessible::TreeItem, ATSPI_ROLE_TABLE_CELL, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "tree item") },
     //: Role of an accessible object
-    { QAccessible::PageTab, ATSPI_ROLE_PAGE_TAB, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "page tab") },
+    { QAccessible::PageTab, ATSPI_ROLE_PAGE_TAB, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "page tab") },
     //: Role of an accessible object
-    { QAccessible::PropertyPage, ATSPI_ROLE_PAGE_TAB, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "property page") },
+    { QAccessible::PropertyPage, ATSPI_ROLE_PAGE_TAB, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "property page") },
     //: Role of an accessible object
-    { QAccessible::Indicator, ATSPI_ROLE_UNKNOWN, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "indicator") },
+    { QAccessible::Indicator, ATSPI_ROLE_UNKNOWN, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "indicator") },
     //: Role of an accessible object
-    { QAccessible::Graphic, ATSPI_ROLE_IMAGE, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "graphic") },
+    { QAccessible::Graphic, ATSPI_ROLE_IMAGE, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "graphic") },
     //: Role of an accessible object
-    { QAccessible::StaticText, ATSPI_ROLE_LABEL, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "label") },
+    { QAccessible::StaticText, ATSPI_ROLE_LABEL, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "label") },
     //: Role of an accessible object
-    { QAccessible::EditableText, ATSPI_ROLE_TEXT, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "text") },
+    { QAccessible::EditableText, ATSPI_ROLE_TEXT, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "text") },
     //: Role of an accessible object
-    { QAccessible::PushButton, ATSPI_ROLE_PUSH_BUTTON, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "push button") },
+    { QAccessible::PushButton, ATSPI_ROLE_PUSH_BUTTON, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "push button") },
     //: Role of an accessible object
-    { QAccessible::CheckBox, ATSPI_ROLE_CHECK_BOX, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "check box") },
+    { QAccessible::CheckBox, ATSPI_ROLE_CHECK_BOX, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "check box") },
     //: Role of an accessible object
 #if ATSPI_ROLE_COUNT >= 132
-    { QAccessible::Switch, ATSPI_ROLE_SWITCH, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "switch") },
+    { QAccessible::Switch, ATSPI_ROLE_SWITCH, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "switch") },
 #else
-    { QAccessible::Switch, ATSPI_ROLE_CHECK_BOX, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "check box") },
+    { QAccessible::Switch, ATSPI_ROLE_CHECK_BOX, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "check box") },
 #endif
     //: Role of an accessible object
-    { QAccessible::RadioButton, ATSPI_ROLE_RADIO_BUTTON, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "radio button") },
+    { QAccessible::RadioButton, ATSPI_ROLE_RADIO_BUTTON, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "radio button") },
     //: Role of an accessible object
-    { QAccessible::ComboBox, ATSPI_ROLE_COMBO_BOX, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "combo box") },
+    { QAccessible::ComboBox, ATSPI_ROLE_COMBO_BOX, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "combo box") },
     //: Role of an accessible object
-    { QAccessible::ProgressBar, ATSPI_ROLE_PROGRESS_BAR, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "progress bar") },
+    { QAccessible::ProgressBar, ATSPI_ROLE_PROGRESS_BAR, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "progress bar") },
     //: Role of an accessible object
-    { QAccessible::Dial, ATSPI_ROLE_DIAL, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "dial") },
+    { QAccessible::Dial, ATSPI_ROLE_DIAL, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "dial") },
     //: Role of an accessible object
-    { QAccessible::HotkeyField, ATSPI_ROLE_TEXT, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "hotkey field") },
+    { QAccessible::HotkeyField, ATSPI_ROLE_TEXT, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "hotkey field") },
     //: Role of an accessible object
-    { QAccessible::Slider, ATSPI_ROLE_SLIDER, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "slider") },
+    { QAccessible::Slider, ATSPI_ROLE_SLIDER, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "slider") },
     //: Role of an accessible object
-    { QAccessible::SpinBox, ATSPI_ROLE_SPIN_BUTTON, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "spin box") },
+    { QAccessible::SpinBox, ATSPI_ROLE_SPIN_BUTTON, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "spin box") },
     //: Role of an accessible object
-    { QAccessible::Canvas, ATSPI_ROLE_CANVAS, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "canvas") },
+    { QAccessible::Canvas, ATSPI_ROLE_CANVAS, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "canvas") },
     //: Role of an accessible object
-    { QAccessible::Animation, ATSPI_ROLE_ANIMATION, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "animation") },
+    { QAccessible::Animation, ATSPI_ROLE_ANIMATION, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "animation") },
     //: Role of an accessible object
-    { QAccessible::Equation, ATSPI_ROLE_TEXT, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "equation") },
+    { QAccessible::Equation, ATSPI_ROLE_TEXT, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "equation") },
     //: Role of an accessible object
-    { QAccessible::ButtonDropDown, ATSPI_ROLE_PUSH_BUTTON, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "button with drop down") },
+    { QAccessible::ButtonDropDown, ATSPI_ROLE_PUSH_BUTTON, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "button with drop down") },
     //: Role of an accessible object
 #if ATSPI_ROLE_COUNT > 130
-    { QAccessible::ButtonMenu, ATSPI_ROLE_PUSH_BUTTON_MENU, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "button menu") },
+    { QAccessible::ButtonMenu, ATSPI_ROLE_PUSH_BUTTON_MENU, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "button menu") },
 #else
-    { QAccessible::ButtonMenu, ATSPI_ROLE_PUSH_BUTTON, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "button menu") },
+    { QAccessible::ButtonMenu, ATSPI_ROLE_PUSH_BUTTON, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "button menu") },
 #endif
     //: Role of an accessible object - a button that expands a grid.
-    { QAccessible::ButtonDropGrid, ATSPI_ROLE_PUSH_BUTTON, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "button with drop down grid") },
+    { QAccessible::ButtonDropGrid, ATSPI_ROLE_PUSH_BUTTON, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "button with drop down grid") },
     //: Role of an accessible object - blank space between other objects.
-    { QAccessible::Whitespace, ATSPI_ROLE_FILLER, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "space") },
+    { QAccessible::Whitespace, ATSPI_ROLE_FILLER, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "space") },
     //: Role of an accessible object
-    { QAccessible::PageTabList, ATSPI_ROLE_PAGE_TAB_LIST, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "page tab list") },
+    { QAccessible::PageTabList, ATSPI_ROLE_PAGE_TAB_LIST, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "page tab list") },
     //: Role of an accessible object
-    { QAccessible::Clock, ATSPI_ROLE_UNKNOWN, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "clock") },
+    { QAccessible::Clock, ATSPI_ROLE_UNKNOWN, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "clock") },
     //: Role of an accessible object
-    { QAccessible::Splitter, ATSPI_ROLE_SPLIT_PANE, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "splitter") },
+    { QAccessible::Splitter, ATSPI_ROLE_SPLIT_PANE, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "splitter") },
     //: Role of an accessible object
-    { QAccessible::LayeredPane, ATSPI_ROLE_LAYERED_PANE, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "layered pane") },
+    { QAccessible::LayeredPane, ATSPI_ROLE_LAYERED_PANE, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "layered pane") },
     //: Role of an accessible object
-    { QAccessible::WebDocument, ATSPI_ROLE_DOCUMENT_WEB, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "web document") },
+    { QAccessible::WebDocument, ATSPI_ROLE_DOCUMENT_WEB, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "web document") },
     //: Role of an accessible object
-    { QAccessible::Paragraph, ATSPI_ROLE_PARAGRAPH, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "paragraph") },
+    { QAccessible::Paragraph, ATSPI_ROLE_PARAGRAPH, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "paragraph") },
     //: Role of an accessible object
-    { QAccessible::Section, ATSPI_ROLE_SECTION, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "section") },
+    { QAccessible::Section, ATSPI_ROLE_SECTION, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "section") },
     //: Role of an accessible object
-    { QAccessible::ColorChooser, ATSPI_ROLE_COLOR_CHOOSER, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "color chooser") },
+    { QAccessible::ColorChooser, ATSPI_ROLE_COLOR_CHOOSER, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "color chooser") },
     //: Role of an accessible object
-    { QAccessible::Footer, ATSPI_ROLE_FOOTER, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "footer") },
+    { QAccessible::Footer, ATSPI_ROLE_FOOTER, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "footer") },
     //: Role of an accessible object
-    { QAccessible::Form, ATSPI_ROLE_FORM, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "form") },
+    { QAccessible::Form, ATSPI_ROLE_FORM, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "form") },
     //: Role of an accessible object
-    { QAccessible::Heading, ATSPI_ROLE_HEADING, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "heading") },
+    { QAccessible::Heading, ATSPI_ROLE_HEADING, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "heading") },
     //: Role of an accessible object
-    { QAccessible::Note, ATSPI_ROLE_COMMENT, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "note") },
+    { QAccessible::Note, ATSPI_ROLE_COMMENT, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "note") },
     //: Role of an accessible object
-    { QAccessible::ComplementaryContent, ATSPI_ROLE_SECTION, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "complementary content") },
+    { QAccessible::ComplementaryContent, ATSPI_ROLE_SECTION, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "complementary content") },
     //: Role of an accessible object
-    { QAccessible::Terminal, ATSPI_ROLE_TERMINAL, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "terminal") },
+    { QAccessible::Terminal, ATSPI_ROLE_TERMINAL, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "terminal") },
     //: Role of an accessible object
-    { QAccessible::Desktop, ATSPI_ROLE_DESKTOP_FRAME, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "desktop") },
+    { QAccessible::Desktop, ATSPI_ROLE_DESKTOP_FRAME, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "desktop") },
     //: Role of an accessible object
-    { QAccessible::Notification, ATSPI_ROLE_NOTIFICATION, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "notification") },
+    { QAccessible::Notification, ATSPI_ROLE_NOTIFICATION, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "notification") },
     //: Role of an accessible object
-    { QAccessible::BlockQuote, ATSPI_ROLE_BLOCK_QUOTE, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "block quote") },
+    { QAccessible::BlockQuote, ATSPI_ROLE_BLOCK_QUOTE, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "block quote") },
     //: Role of an accessible object
-    { QAccessible::UserRole, ATSPI_ROLE_UNKNOWN, QT_TRANSLATE_NOOP("QSpiAccessibleBridge", "unknown") }
+    { QAccessible::UserRole, ATSPI_ROLE_UNKNOWN, BOBUI_TRANSLATE_NOOP("QSpiAccessibleBridge", "unknown") }
 };
 
 void QSpiAccessibleBridge::initializeConstantMappings()
@@ -286,7 +286,7 @@ RoleNames QSpiAccessibleBridge::namesForRole(QAccessible::Role role)
     return brigde ? brigde->spiRoleNames().value(role) : RoleNames();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qspiaccessiblebridge_p.cpp"
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

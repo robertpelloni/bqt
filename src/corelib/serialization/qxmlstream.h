@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QXMLSTREAM_H
 #define QXMLSTREAM_H
 
-#include <QtCore/qiodevice.h>
+#include <BobUICore/qiodevice.h>
 
-#if QT_CONFIG(xmlstream)
+#if BOBUI_CONFIG(xmlstream)
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qstring.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class QXmlString {
     QStringPrivate m_string;
@@ -47,13 +47,13 @@ private:
 };
 
 }
-Q_DECLARE_SHARED_NS_EXT(QtPrivate, QXmlString)
+Q_DECLARE_SHARED_NS_EXT(BobUIPrivate, QXmlString)
 
 
 class QXmlStreamReaderPrivate;
 class QXmlStreamAttributes;
 class Q_CORE_EXPORT QXmlStreamAttribute {
-    QtPrivate::QXmlString m_name, m_namespaceUri, m_qualifiedName, m_value;
+    BobUIPrivate::QXmlString m_name, m_namespaceUri, m_qualifiedName, m_value;
     uint m_isDefault : 1;
     friend class QXmlStreamReaderPrivate;
     friend class QXmlStreamAttributes;
@@ -70,7 +70,7 @@ public:
     }
     inline QStringView value() const { return m_value; }
     inline bool isDefault() const { return m_isDefault; }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     inline bool operator==(const QXmlStreamAttribute &other) const
     { return comparesEqual(*this, other); }
     inline bool operator!=(const QXmlStreamAttribute &other) const
@@ -99,7 +99,7 @@ class QXmlStreamAttributes : public QList<QXmlStreamAttribute>
 {
 public:
     inline QXmlStreamAttributes() {}
-#if QT_CORE_REMOVED_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 6)
     Q_CORE_EXPORT QStringView value(const QString &namespaceUri, const QString &name) const;
     Q_CORE_EXPORT QStringView value(const QString &namespaceUri, QLatin1StringView name) const;
     Q_CORE_EXPORT QStringView value(QLatin1StringView namespaceUri, QLatin1StringView name) const;
@@ -126,7 +126,7 @@ public:
 };
 
 class Q_CORE_EXPORT QXmlStreamNamespaceDeclaration {
-    QtPrivate::QXmlString m_prefix, m_namespaceUri;
+    BobUIPrivate::QXmlString m_prefix, m_namespaceUri;
 
     friend class QXmlStreamReaderPrivate;
 public:
@@ -135,7 +135,7 @@ public:
 
     inline QStringView prefix() const { return m_prefix; }
     inline QStringView namespaceUri() const { return m_namespaceUri; }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     inline bool operator==(const QXmlStreamNamespaceDeclaration &other) const
     { return comparesEqual(*this, other); }
     inline bool operator!=(const QXmlStreamNamespaceDeclaration &other) const
@@ -155,7 +155,7 @@ Q_DECLARE_TYPEINFO(QXmlStreamNamespaceDeclaration, Q_RELOCATABLE_TYPE);
 typedef QList<QXmlStreamNamespaceDeclaration> QXmlStreamNamespaceDeclarations;
 
 class Q_CORE_EXPORT QXmlStreamNotationDeclaration {
-    QtPrivate::QXmlString m_name, m_systemId, m_publicId;
+    BobUIPrivate::QXmlString m_name, m_systemId, m_publicId;
 
     friend class QXmlStreamReaderPrivate;
 public:
@@ -164,7 +164,7 @@ public:
     inline QStringView name() const { return m_name; }
     inline QStringView systemId() const { return m_systemId; }
     inline QStringView publicId() const { return m_publicId; }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     inline bool operator==(const QXmlStreamNotationDeclaration &other) const
     { return comparesEqual(*this, other); }
     inline bool operator!=(const QXmlStreamNotationDeclaration &other) const
@@ -184,7 +184,7 @@ Q_DECLARE_TYPEINFO(QXmlStreamNotationDeclaration, Q_RELOCATABLE_TYPE);
 typedef QList<QXmlStreamNotationDeclaration> QXmlStreamNotationDeclarations;
 
 class Q_CORE_EXPORT QXmlStreamEntityDeclaration {
-    QtPrivate::QXmlString m_name, m_notationName, m_systemId, m_publicId, m_value;
+    BobUIPrivate::QXmlString m_name, m_notationName, m_systemId, m_publicId, m_value;
 
     friend class QXmlStreamReaderPrivate;
 public:
@@ -195,7 +195,7 @@ public:
     inline QStringView systemId() const { return m_systemId; }
     inline QStringView publicId() const { return m_publicId; }
     inline QStringView value() const { return m_value; }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     inline bool operator==(const QXmlStreamEntityDeclaration &other) const
     { return comparesEqual(*this, other); }
     inline bool operator!=(const QXmlStreamEntityDeclaration &other) const
@@ -228,7 +228,7 @@ public:
     virtual QString resolveUndeclaredEntity(const QString &name);
 };
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 class Q_CORE_EXPORT QXmlStreamReader
 {
     QDOC_PROPERTY(bool namespaceProcessing READ namespaceProcessing WRITE setNamespaceProcessing)
@@ -250,11 +250,11 @@ public:
 
     QXmlStreamReader();
     explicit QXmlStreamReader(QIODevice *device);
-#if QT_CORE_REMOVED_SINCE(6, 5)
+#if BOBUI_CORE_REMOVED_SINCE(6, 5)
     explicit QXmlStreamReader(const QByteArray &data);
     explicit QXmlStreamReader(const QString &data);
     explicit QXmlStreamReader(const char * data);
-#endif // QT_CORE_REMOVED_SINCE(6, 5)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 5)
     Q_WEAK_OVERLOAD
     explicit QXmlStreamReader(const QByteArray &data)
         : QXmlStreamReader(data, PrivateConstructorTag{}) { }
@@ -263,11 +263,11 @@ public:
 
     void setDevice(QIODevice *device);
     QIODevice *device() const;
-#if QT_CORE_REMOVED_SINCE(6, 5)
+#if BOBUI_CORE_REMOVED_SINCE(6, 5)
     void addData(const QByteArray &data);
     void addData(const QString &data);
     void addData(const char *data);
-#endif // QT_CORE_REMOVED_SINCE(6, 5)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 5)
     Q_WEAK_OVERLOAD
     void addData(const QByteArray &data) { addDataImpl(data); }
     void addData(QAnyStringView data);
@@ -370,7 +370,7 @@ private:
 };
 #endif // feature xmlstreamreader
 
-#if QT_CONFIG(xmlstreamwriter)
+#if BOBUI_CONFIG(xmlstreamwriter)
 
 class QXmlStreamWriterPrivate;
 
@@ -398,7 +398,7 @@ public:
     void setStopWritingOnError(bool stop);
     bool stopWritingOnError() const;
 
-#if QT_CORE_REMOVED_SINCE(6,5)
+#if BOBUI_CORE_REMOVED_SINCE(6,5)
     void writeAttribute(const QString &qualifiedName, const QString &value);
     void writeAttribute(const QString &namespaceUri, const QString &name, const QString &value);
 #endif
@@ -408,7 +408,7 @@ public:
     void writeAttribute(const QXmlStreamAttribute& attribute);
     void writeAttributes(const QXmlStreamAttributes& attributes);
 
-#if QT_CORE_REMOVED_SINCE(6,5)
+#if BOBUI_CORE_REMOVED_SINCE(6,5)
     void writeCDATA(const QString &text);
     void writeCharacters(const QString &text);
     void writeComment(const QString &text);
@@ -437,7 +437,7 @@ public:
     void writeEndDocument();
     void writeEndElement();
 
-#if QT_CORE_REMOVED_SINCE(6,5)
+#if BOBUI_CORE_REMOVED_SINCE(6,5)
     void writeEntityReference(const QString &name);
     void writeNamespace(const QString &namespaceUri, const QString &prefix);
     void writeDefaultNamespace(const QString &namespaceUri);
@@ -449,7 +449,7 @@ public:
     void writeProcessingInstruction(QAnyStringView target, QAnyStringView data = {});
 
     void writeStartDocument();
-#if QT_CORE_REMOVED_SINCE(6,5)
+#if BOBUI_CORE_REMOVED_SINCE(6,5)
     void writeStartDocument(const QString &version);
     void writeStartDocument(const QString &version, bool standalone);
     void writeStartElement(const QString &qualifiedName);
@@ -460,7 +460,7 @@ public:
     void writeStartElement(QAnyStringView qualifiedName);
     void writeStartElement(QAnyStringView namespaceUri, QAnyStringView name);
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
     void writeCurrentToken(const QXmlStreamReader &reader);
 #endif
 
@@ -484,7 +484,7 @@ private:
 };
 #endif // feature xmlstreamwriter
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // feature xmlstream
 

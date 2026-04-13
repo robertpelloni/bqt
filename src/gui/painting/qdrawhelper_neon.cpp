@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <private/qdrawhelper_neon_p.h>
 #include <private/qblendfunctions_p.h>
@@ -10,9 +10,9 @@
 
 #include <private/qpaintengine_raster_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-void qt_memfill32(quint32 *dest, quint32 value, qsizetype count)
+void bobui_memfill32(quint32 *dest, quint32 value, qsizetype count)
 {
     const int epilogueSize = count % 16;
 #if defined(Q_CC_GHS) || defined(Q_CC_MSVC)
@@ -165,12 +165,12 @@ pixman_composite_src_0565_0565_asm_neon (int32_t   w,
                                          uint16_t *src,
                                          int32_t   src_stride);
 // qblendfunctions.cpp
-void qt_blend_argb32_on_rgb16_const_alpha(uchar *destPixels, int dbpl,
+void bobui_blend_argb32_on_rgb16_const_alpha(uchar *destPixels, int dbpl,
                                           const uchar *srcPixels, int sbpl,
                                           int w, int h,
                                           int const_alpha);
 
-void qt_blend_rgb16_on_argb32_neon(uchar *destPixels, int dbpl,
+void bobui_blend_rgb16_on_argb32_neon(uchar *destPixels, int dbpl,
                                    const uchar *srcPixels, int sbpl,
                                    int w, int h,
                                    int const_alpha)
@@ -198,7 +198,7 @@ void qt_blend_rgb16_on_argb32_neon(uchar *destPixels, int dbpl,
 }
 
 // qblendfunctions.cpp
-void qt_blend_rgb16_on_rgb16(uchar *dst, int dbpl,
+void bobui_blend_rgb16_on_rgb16(uchar *dst, int dbpl,
                              const uchar *src, int sbpl,
                              int w, int h,
                              int const_alpha);
@@ -246,14 +246,14 @@ static inline void blockBlit16(quint16 *dst, quint16 *src, int dstride, int sstr
     }
 }
 
-void qt_blend_rgb16_on_rgb16_neon(uchar *destPixels, int dbpl,
+void bobui_blend_rgb16_on_rgb16_neon(uchar *destPixels, int dbpl,
                                   const uchar *srcPixels, int sbpl,
                                   int w, int h,
                                   int const_alpha)
 {
     // testing show that the default memcpy is faster for widths 150 and up
     if (const_alpha != 256 || w >= 150) {
-        qt_blend_rgb16_on_rgb16(destPixels, dbpl, srcPixels, sbpl, w, h, const_alpha);
+        bobui_blend_rgb16_on_rgb16(destPixels, dbpl, srcPixels, sbpl, w, h, const_alpha);
         return;
     }
 
@@ -290,7 +290,7 @@ void qt_blend_rgb16_on_rgb16_neon(uchar *destPixels, int dbpl,
 
 extern "C" void blend_8_pixels_argb32_on_rgb16_neon(quint16 *dst, const quint32 *src, int const_alpha);
 
-void qt_blend_argb32_on_rgb16_neon(uchar *destPixels, int dbpl,
+void bobui_blend_argb32_on_rgb16_neon(uchar *destPixels, int dbpl,
                                    const uchar *srcPixels, int sbpl,
                                    int w, int h,
                                    int const_alpha)
@@ -331,20 +331,20 @@ void qt_blend_argb32_on_rgb16_neon(uchar *destPixels, int dbpl,
 }
 #endif
 
-void qt_blend_argb32_on_argb32_scanline_neon(uint *dest, const uint *src, int length, uint const_alpha)
+void bobui_blend_argb32_on_argb32_scanline_neon(uint *dest, const uint *src, int length, uint const_alpha)
 {
     if (const_alpha == 255) {
 #if defined(ENABLE_PIXMAN_DRAWHELPERS)
         pixman_composite_scanline_over_asm_neon(length, dest, src);
 #else
-        qt_blend_argb32_on_argb32_neon((uchar *)dest, 4 * length, (uchar *)src, 4 * length, length, 1, 256);
+        bobui_blend_argb32_on_argb32_neon((uchar *)dest, 4 * length, (uchar *)src, 4 * length, length, 1, 256);
 #endif
     } else {
-        qt_blend_argb32_on_argb32_neon((uchar *)dest, 4 * length, (uchar *)src, 4 * length, length, 1, (const_alpha * 256) / 255);
+        bobui_blend_argb32_on_argb32_neon((uchar *)dest, 4 * length, (uchar *)src, 4 * length, length, 1, (const_alpha * 256) / 255);
     }
 }
 
-void qt_blend_argb32_on_argb32_neon(uchar *destPixels, int dbpl,
+void bobui_blend_argb32_on_argb32_neon(uchar *destPixels, int dbpl,
                                     const uchar *srcPixels, int sbpl,
                                     int w, int h,
                                     int const_alpha)
@@ -450,12 +450,12 @@ void qt_blend_argb32_on_argb32_neon(uchar *destPixels, int dbpl,
 }
 
 // qblendfunctions.cpp
-void qt_blend_rgb32_on_rgb32(uchar *destPixels, int dbpl,
+void bobui_blend_rgb32_on_rgb32(uchar *destPixels, int dbpl,
                              const uchar *srcPixels, int sbpl,
                              int w, int h,
                              int const_alpha);
 
-void qt_blend_rgb32_on_rgb32_neon(uchar *destPixels, int dbpl,
+void bobui_blend_rgb32_on_rgb32_neon(uchar *destPixels, int dbpl,
                                   const uchar *srcPixels, int sbpl,
                                   int w, int h,
                                   int const_alpha)
@@ -506,25 +506,25 @@ void qt_blend_rgb32_on_rgb32_neon(uchar *destPixels, int dbpl,
             }
         }
     } else {
-        qt_blend_rgb32_on_rgb32(destPixels, dbpl, srcPixels, sbpl, w, h, const_alpha);
+        bobui_blend_rgb32_on_rgb32(destPixels, dbpl, srcPixels, sbpl, w, h, const_alpha);
     }
 }
 
 #if defined(ENABLE_PIXMAN_DRAWHELPERS)
-extern void qt_alphamapblit_quint16(QRasterBuffer *rasterBuffer,
+extern void bobui_alphamapblit_quint16(QRasterBuffer *rasterBuffer,
                                     int x, int y, const QRgba64 &color,
                                     const uchar *map,
                                     int mapWidth, int mapHeight, int mapStride,
                                     const QClipData *clip, bool useGammaCorrection);
 
-void qt_alphamapblit_quint16_neon(QRasterBuffer *rasterBuffer,
+void bobui_alphamapblit_quint16_neon(QRasterBuffer *rasterBuffer,
                                   int x, int y, const QRgba64 &color,
                                   const uchar *bitmap,
                                   int mapWidth, int mapHeight, int mapStride,
                                   const QClipData *clip, bool useGammaCorrection)
 {
     if (clip || useGammaCorrection) {
-        qt_alphamapblit_quint16(rasterBuffer, x, y, color, bitmap, mapWidth, mapHeight, mapStride, clip, useGammaCorrection);
+        bobui_alphamapblit_quint16(rasterBuffer, x, y, color, bitmap, mapWidth, mapHeight, mapStride, clip, useGammaCorrection);
         return;
     }
 
@@ -588,7 +588,7 @@ Blend_on_RGB16_SourceAndConstAlpha_Neon_create(BlendFunc blender, int const_alph
     return Blend_on_RGB16_SourceAndConstAlpha_Neon<SRC, BlendFunc>(blender, const_alpha);
 }
 
-void qt_scale_image_argb32_on_rgb16_neon(uchar *destPixels, int dbpl,
+void bobui_scale_image_argb32_on_rgb16_neon(uchar *destPixels, int dbpl,
                                          const uchar *srcPixels, int sbpl, int srch,
                                          const QRectF &targetRect,
                                          const QRectF &sourceRect,
@@ -598,18 +598,18 @@ void qt_scale_image_argb32_on_rgb16_neon(uchar *destPixels, int dbpl,
     if (const_alpha == 0)
         return;
 
-    qt_scale_image_16bit<quint32>(destPixels, dbpl, srcPixels, sbpl, srch, targetRect, sourceRect, clip,
+    bobui_scale_image_16bit<quint32>(destPixels, dbpl, srcPixels, sbpl, srch, targetRect, sourceRect, clip,
         Blend_on_RGB16_SourceAndConstAlpha_Neon_create<quint32>(blend_8_pixels_argb32_on_rgb16_neon, const_alpha));
 }
 
-void qt_scale_image_rgb16_on_rgb16(uchar *destPixels, int dbpl,
+void bobui_scale_image_rgb16_on_rgb16(uchar *destPixels, int dbpl,
                                    const uchar *srcPixels, int sbpl, int srch,
                                    const QRectF &targetRect,
                                    const QRectF &sourceRect,
                                    const QRect &clip,
                                    int const_alpha);
 
-void qt_scale_image_rgb16_on_rgb16_neon(uchar *destPixels, int dbpl,
+void bobui_scale_image_rgb16_on_rgb16_neon(uchar *destPixels, int dbpl,
                                         const uchar *srcPixels, int sbpl, int srch,
                                         const QRectF &targetRect,
                                         const QRectF &sourceRect,
@@ -620,55 +620,55 @@ void qt_scale_image_rgb16_on_rgb16_neon(uchar *destPixels, int dbpl,
         return;
 
     if (const_alpha == 256) {
-        qt_scale_image_rgb16_on_rgb16(destPixels, dbpl, srcPixels, sbpl, srch, targetRect, sourceRect, clip, const_alpha);
+        bobui_scale_image_rgb16_on_rgb16(destPixels, dbpl, srcPixels, sbpl, srch, targetRect, sourceRect, clip, const_alpha);
         return;
     }
 
-    qt_scale_image_16bit<quint16>(destPixels, dbpl, srcPixels, sbpl, srch, targetRect, sourceRect, clip,
+    bobui_scale_image_16bit<quint16>(destPixels, dbpl, srcPixels, sbpl, srch, targetRect, sourceRect, clip,
         Blend_on_RGB16_SourceAndConstAlpha_Neon_create<quint16>(blend_8_pixels_rgb16_on_rgb16_neon, const_alpha));
 }
 
-extern void qt_transform_image_rgb16_on_rgb16(uchar *destPixels, int dbpl,
+extern void bobui_transform_image_rgb16_on_rgb16(uchar *destPixels, int dbpl,
                                               const uchar *srcPixels, int sbpl,
                                               const QRectF &targetRect,
                                               const QRectF &sourceRect,
                                               const QRect &clip,
-                                              const QTransform &targetRectTransform,
+                                              const BOBUIransform &targetRectTransform,
                                               int const_alpha);
 
-void qt_transform_image_rgb16_on_rgb16_neon(uchar *destPixels, int dbpl,
+void bobui_transform_image_rgb16_on_rgb16_neon(uchar *destPixels, int dbpl,
                                             const uchar *srcPixels, int sbpl,
                                             const QRectF &targetRect,
                                             const QRectF &sourceRect,
                                             const QRect &clip,
-                                            const QTransform &targetRectTransform,
+                                            const BOBUIransform &targetRectTransform,
                                             int const_alpha)
 {
     if (const_alpha == 0)
         return;
 
     if (const_alpha == 256) {
-        qt_transform_image_rgb16_on_rgb16(destPixels, dbpl, srcPixels, sbpl, targetRect, sourceRect, clip, targetRectTransform, const_alpha);
+        bobui_transform_image_rgb16_on_rgb16(destPixels, dbpl, srcPixels, sbpl, targetRect, sourceRect, clip, targetRectTransform, const_alpha);
         return;
     }
 
-    qt_transform_image(reinterpret_cast<quint16 *>(destPixels), dbpl,
+    bobui_transform_image(reinterpret_cast<quint16 *>(destPixels), dbpl,
                        reinterpret_cast<const quint16 *>(srcPixels), sbpl, targetRect, sourceRect, clip, targetRectTransform,
         Blend_on_RGB16_SourceAndConstAlpha_Neon_create<quint16>(blend_8_pixels_rgb16_on_rgb16_neon, const_alpha));
 }
 
-void qt_transform_image_argb32_on_rgb16_neon(uchar *destPixels, int dbpl,
+void bobui_transform_image_argb32_on_rgb16_neon(uchar *destPixels, int dbpl,
                                              const uchar *srcPixels, int sbpl,
                                              const QRectF &targetRect,
                                              const QRectF &sourceRect,
                                              const QRect &clip,
-                                             const QTransform &targetRectTransform,
+                                             const BOBUIransform &targetRectTransform,
                                              int const_alpha)
 {
     if (const_alpha == 0)
         return;
 
-    qt_transform_image(reinterpret_cast<quint16 *>(destPixels), dbpl,
+    bobui_transform_image(reinterpret_cast<quint16 *>(destPixels), dbpl,
                        reinterpret_cast<const quint32 *>(srcPixels), sbpl, targetRect, sourceRect, clip, targetRectTransform,
         Blend_on_RGB16_SourceAndConstAlpha_Neon_create<quint32>(blend_8_pixels_argb32_on_rgb16_neon, const_alpha));
 }
@@ -697,7 +697,7 @@ static inline void convert_8_pixels_rgb16_to_argb32(quint32 *dst, const quint16 
     );
 }
 
-uint * QT_FASTCALL qt_destFetchRGB16_neon(uint *buffer, QRasterBuffer *rasterBuffer, int x, int y, int length)
+uint * BOBUI_FASTCALL bobui_destFetchRGB16_neon(uint *buffer, QRasterBuffer *rasterBuffer, int x, int y, int length)
 {
     const ushort *data = (const ushort *)rasterBuffer->scanLine(y) + x;
 
@@ -740,7 +740,7 @@ static inline void convert_8_pixels_argb32_to_rgb16(quint16 *dst, const quint32 
     );
 }
 
-void QT_FASTCALL qt_destStoreRGB16_neon(QRasterBuffer *rasterBuffer, int x, int y, const uint *buffer, int length)
+void BOBUI_FASTCALL bobui_destStoreRGB16_neon(QRasterBuffer *rasterBuffer, int x, int y, const uint *buffer, int length)
 {
     quint16 *data = (quint16*)rasterBuffer->scanLine(y) + x;
 
@@ -764,10 +764,10 @@ void QT_FASTCALL qt_destStoreRGB16_neon(QRasterBuffer *rasterBuffer, int x, int 
 }
 #endif
 
-void QT_FASTCALL comp_func_solid_SourceOver_neon(uint *destPixels, int length, uint color, uint const_alpha)
+void BOBUI_FASTCALL comp_func_solid_SourceOver_neon(uint *destPixels, int length, uint color, uint const_alpha)
 {
     if ((const_alpha & qAlpha(color)) == 255) {
-        qt_memfill32(destPixels, color, length);
+        bobui_memfill32(destPixels, color, length);
     } else {
         if (const_alpha != 255)
             color = BYTE_MUL(color, const_alpha);
@@ -807,7 +807,7 @@ void QT_FASTCALL comp_func_solid_SourceOver_neon(uint *destPixels, int length, u
     }
 }
 
-void QT_FASTCALL comp_func_Plus_neon(uint *dst, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_Plus_neon(uint *dst, const uint *src, int length, uint const_alpha)
 {
     if (const_alpha == 255) {
         uint *const end = dst + length;
@@ -862,9 +862,9 @@ void QT_FASTCALL comp_func_Plus_neon(uint *dst, const uint *src, int length, uin
 #if defined(ENABLE_PIXMAN_DRAWHELPERS)
 static const int tileSize = 32;
 
-extern "C" void qt_rotate90_16_neon(quint16 *dst, const quint16 *src, int sstride, int dstride, int count);
+extern "C" void bobui_rotate90_16_neon(quint16 *dst, const quint16 *src, int sstride, int dstride, int count);
 
-void qt_memrotate90_16_neon(const uchar *srcPixels, int w, int h, int sstride, uchar *destPixels, int dstride)
+void bobui_memrotate90_16_neon(const uchar *srcPixels, int w, int h, int sstride, uchar *destPixels, int dstride)
 {
     const ushort *src = (const ushort *)srcPixels;
     ushort *dest = (ushort *)destPixels;
@@ -899,11 +899,11 @@ void qt_memrotate90_16_neon(const uchar *srcPixels, int w, int h, int sstride, u
             const int stopy = qMin(starty + tileSize, h - unoptimizedY);
 
             int x = startx;
-            // qt_rotate90_16_neon writes to eight rows, four pixels at a time
+            // bobui_rotate90_16_neon writes to eight rows, four pixels at a time
             for (; x >= stopx + 7; x -= 8) {
                 ushort *d = dest + (w - x - 1) * dstride + starty;
                 const ushort *s = &src[starty * sstride + x - 7];
-                qt_rotate90_16_neon(d, s, sstride * 2, dstride * 2, stopy - starty);
+                bobui_rotate90_16_neon(d, s, sstride * 2, dstride * 2, stopy - starty);
             }
 
             for (; x >= stopx; --x) {
@@ -932,9 +932,9 @@ void qt_memrotate90_16_neon(const uchar *srcPixels, int w, int h, int sstride, u
     }
 }
 
-extern "C" void qt_rotate270_16_neon(quint16 *dst, const quint16 *src, int sstride, int dstride, int count);
+extern "C" void bobui_rotate270_16_neon(quint16 *dst, const quint16 *src, int sstride, int dstride, int count);
 
-void qt_memrotate270_16_neon(const uchar *srcPixels, int w, int h,
+void bobui_memrotate270_16_neon(const uchar *srcPixels, int w, int h,
                              int sstride,
                              uchar *destPixels, int dstride)
 {
@@ -971,11 +971,11 @@ void qt_memrotate270_16_neon(const uchar *srcPixels, int w, int h,
             const int stopy = qMax(starty - tileSize, unoptimizedY);
 
             int x = startx;
-            // qt_rotate90_16_neon writes to eight rows, four pixels at a time
+            // bobui_rotate90_16_neon writes to eight rows, four pixels at a time
             for (; x < stopx - 7; x += 8) {
                 ushort *d = dest + x * dstride + h - 1 - starty;
                 const ushort *s = &src[starty * sstride + x];
-                qt_rotate90_16_neon(d + 7 * dstride, s, -sstride * 2, -dstride * 2, starty - stopy);
+                bobui_rotate90_16_neon(d + 7 * dstride, s, -sstride * 2, -dstride * 2, starty - stopy);
             }
 
             for (; x < stopx; ++x) {
@@ -1050,19 +1050,19 @@ public:
     static inline Int32x4 v_greaterOrEqual(Float32x4 a, Float32x4 b) { return vreinterpretq_s32_u32(vcgeq_f32(a, b)); }
 };
 
-const uint * QT_FASTCALL qt_fetch_radial_gradient_neon(uint *buffer, const Operator *op, const QSpanData *data,
+const uint * BOBUI_FASTCALL bobui_fetch_radial_gradient_neon(uint *buffer, const Operator *op, const QSpanData *data,
                                                        int y, int x, int length)
 {
-    return qt_fetch_radial_gradient_template<QRadialFetchSimd<QSimdNeon>,uint>(buffer, op, data, y, x, length);
+    return bobui_fetch_radial_gradient_template<QRadialFetchSimd<QSimdNeon>,uint>(buffer, op, data, y, x, length);
 }
 
-extern void QT_FASTCALL qt_convert_rgb888_to_rgb32_neon(quint32 *dst, const uchar *src, int len);
+extern void BOBUI_FASTCALL bobui_convert_rgb888_to_rgb32_neon(quint32 *dst, const uchar *src, int len);
 
-const uint * QT_FASTCALL qt_fetchUntransformed_888_neon(uint *buffer, const Operator *, const QSpanData *data,
+const uint * BOBUI_FASTCALL bobui_fetchUntransformed_888_neon(uint *buffer, const Operator *, const QSpanData *data,
                                                        int y, int x, int length)
 {
     const uchar *line = data->texture.scanLine(y) + x * 3;
-    qt_convert_rgb888_to_rgb32_neon(buffer, line, length);
+    bobui_convert_rgb888_to_rgb32_neon(buffer, line, length);
     return buffer;
 }
 
@@ -1075,9 +1075,9 @@ static inline uint32x4_t vrgba2argb(uint32x4_t srcVector)
     const uint8x8_t rgbaMask  = qvset_n_u8(2, 1, 0, 3, 6, 5, 4, 7);
 #endif
 #if defined(Q_PROCESSOR_ARM_64)
-    srcVector = vreinterpretq_u32_u8(vqtbl1q_u8(vreinterpretq_u8_u32(srcVector), rgbaMask));
+    srcVector = vreinterpretq_u32_u8(vbobuibl1q_u8(vreinterpretq_u8_u32(srcVector), rgbaMask));
 #else
-    // no vqtbl1q_u8, so use two vtbl1_u8
+    // no vbobuibl1q_u8, so use two vtbl1_u8
     const uint8x8_t low = vtbl1_u8(vreinterpret_u8_u32(vget_low_u32(srcVector)), rgbaMask);
     const uint8x8_t high = vtbl1_u8(vreinterpret_u8_u32(vget_high_u32(srcVector)), rgbaMask);
     srcVector = vcombine_u32(vreinterpret_u32_u8(low), vreinterpret_u32_u8(high));
@@ -1286,80 +1286,80 @@ static inline void convertARGBFromARGB32PM_neon(uint *buffer, const uint *src, i
     }
 }
 
-void QT_FASTCALL convertARGB32ToARGB32PM_neon(uint *buffer, int count, const QList<QRgb> *)
+void BOBUI_FASTCALL convertARGB32ToARGB32PM_neon(uint *buffer, int count, const QList<QRgb> *)
 {
     convertARGBToARGB32PM_neon<false>(buffer, buffer, count);
 }
 
-void QT_FASTCALL convertRGBA8888ToARGB32PM_neon(uint *buffer, int count, const QList<QRgb> *)
+void BOBUI_FASTCALL convertRGBA8888ToARGB32PM_neon(uint *buffer, int count, const QList<QRgb> *)
 {
     convertARGBToARGB32PM_neon<true>(buffer, buffer, count);
 }
 
-const uint *QT_FASTCALL fetchARGB32ToARGB32PM_neon(uint *buffer, const uchar *src, int index, int count,
+const uint *BOBUI_FASTCALL fetchARGB32ToARGB32PM_neon(uint *buffer, const uchar *src, int index, int count,
                                                    const QList<QRgb> *, QDitherInfo *)
 {
     convertARGBToARGB32PM_neon<false>(buffer, reinterpret_cast<const uint *>(src) + index, count);
     return buffer;
 }
 
-const uint *QT_FASTCALL fetchRGBA8888ToARGB32PM_neon(uint *buffer, const uchar *src, int index, int count,
+const uint *BOBUI_FASTCALL fetchRGBA8888ToARGB32PM_neon(uint *buffer, const uchar *src, int index, int count,
                                                      const QList<QRgb> *, QDitherInfo *)
 {
     convertARGBToARGB32PM_neon<true>(buffer, reinterpret_cast<const uint *>(src) + index, count);
     return buffer;
 }
 
-const QRgba64 * QT_FASTCALL convertARGB32ToRGBA64PM_neon(QRgba64 *buffer, const uint *src, int count,
+const QRgba64 * BOBUI_FASTCALL convertARGB32ToRGBA64PM_neon(QRgba64 *buffer, const uint *src, int count,
                                                          const QList<QRgb> *, QDitherInfo *)
 {
     convertARGB32ToRGBA64PM_neon<false>(buffer, src, count);
     return buffer;
 }
 
-const QRgba64 * QT_FASTCALL convertRGBA8888ToRGBA64PM_neon(QRgba64 *buffer, const uint *src, int count,
+const QRgba64 * BOBUI_FASTCALL convertRGBA8888ToRGBA64PM_neon(QRgba64 *buffer, const uint *src, int count,
                                                            const QList<QRgb> *, QDitherInfo *)
 {
     convertARGB32ToRGBA64PM_neon<true>(buffer, src, count);
     return buffer;
 }
 
-const QRgba64 *QT_FASTCALL fetchARGB32ToRGBA64PM_neon(QRgba64 *buffer, const uchar *src, int index, int count,
+const QRgba64 *BOBUI_FASTCALL fetchARGB32ToRGBA64PM_neon(QRgba64 *buffer, const uchar *src, int index, int count,
                                                       const QList<QRgb> *, QDitherInfo *)
 {
     convertARGB32ToRGBA64PM_neon<false>(buffer, reinterpret_cast<const uint *>(src) + index, count);
     return buffer;
 }
 
-const QRgba64 *QT_FASTCALL fetchRGBA8888ToRGBA64PM_neon(QRgba64 *buffer, const uchar *src, int index, int count,
+const QRgba64 *BOBUI_FASTCALL fetchRGBA8888ToRGBA64PM_neon(QRgba64 *buffer, const uchar *src, int index, int count,
                                                         const QList<QRgb> *, QDitherInfo *)
 {
     convertARGB32ToRGBA64PM_neon<true>(buffer, reinterpret_cast<const uint *>(src) + index, count);
     return buffer;
 }
 
-void QT_FASTCALL storeRGB32FromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
+void BOBUI_FASTCALL storeRGB32FromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
                                              const QList<QRgb> *, QDitherInfo *)
 {
     uint *d = reinterpret_cast<uint *>(dest) + index;
     convertARGBFromARGB32PM_neon<false,true>(d, src, count);
 }
 
-void QT_FASTCALL storeARGB32FromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
+void BOBUI_FASTCALL storeARGB32FromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
                                               const QList<QRgb> *, QDitherInfo *)
 {
     uint *d = reinterpret_cast<uint *>(dest) + index;
     convertARGBFromARGB32PM_neon<false,false>(d, src, count);
 }
 
-void QT_FASTCALL storeRGBA8888FromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
+void BOBUI_FASTCALL storeRGBA8888FromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
                                                 const QList<QRgb> *, QDitherInfo *)
 {
     uint *d = reinterpret_cast<uint *>(dest) + index;
     convertARGBFromARGB32PM_neon<true,false>(d, src, count);
 }
 
-void QT_FASTCALL storeRGBXFromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
+void BOBUI_FASTCALL storeRGBXFromARGB32PM_neon(uchar *dest, const uint *src, int index, int count,
                                             const QList<QRgb> *, QDitherInfo *)
 {
     uint *d = reinterpret_cast<uint *>(dest) + index;
@@ -1368,7 +1368,7 @@ void QT_FASTCALL storeRGBXFromARGB32PM_neon(uchar *dest, const uint *src, int in
 
 #endif // Q_BYTE_ORDER == Q_LITTLE_ENDIAN
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // __ARM_NEON__
 

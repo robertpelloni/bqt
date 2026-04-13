@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qbytearraymatcher.h>
 #include <qelapsedtimer.h>
@@ -132,7 +132,7 @@ void tst_QByteArrayMatcher::indexIn()
     QCOMPARE(matcher.indexIn(haystack, 1), 5);
     QCOMPARE(matcher.indexIn(haystack, 2), 5);
 
-    QByteArray allChars(256, Qt::Uninitialized);
+    QByteArray allChars(256, BobUI::Uninitialized);
     for (int i = 0; i < 256; ++i)
         allChars[i] = char(i);
 
@@ -226,7 +226,7 @@ void tst_QByteArrayMatcher::staticByteArrayMatcher()
 
 void tst_QByteArrayMatcher::haystacksWithMoreThan4GiBWork()
 {
-#if QT_POINTER_SIZE > 4
+#if BOBUI_POINTER_SIZE > 4
     // use a large needle to trigger long skips in the Boyer-Moore algorithm
     // (to speed up the test)
     constexpr std::string_view needle = LONG_STRING_256;
@@ -288,5 +288,5 @@ void tst_QByteArrayMatcher::haystacksWithMoreThan4GiBWork()
 #undef LONG_STRING__64
 #undef LONG_STRING__32
 
-QTEST_APPLESS_MAIN(tst_QByteArrayMatcher)
+BOBUIEST_APPLESS_MAIN(tst_QByteArrayMatcher)
 #include "tst_qbytearraymatcher.moc"

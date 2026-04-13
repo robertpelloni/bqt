@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRADIOBUTTON_H
 #define QRADIOBUTTON_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractbutton.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractbutton.h>
 
-QT_REQUIRE_CONFIG(radiobutton);
+BOBUI_REQUIRE_CONFIG(radiobutton);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QRadioButtonPrivate;
@@ -42,6 +42,6 @@ private:
     friend class QAccessibleButton;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRADIOBUTTON_H

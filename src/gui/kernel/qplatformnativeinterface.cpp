@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformnativeinterface.h"
-#include <QtCore/qvariant.h>
-#include <QtCore/qmap.h>
-#include <QtGui/qcursor.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qmap.h>
+#include <BobUIGui/qcursor.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPlatformNativeInterface
@@ -53,14 +53,14 @@ void * QPlatformNativeInterface::nativeResourceForBackingStore(const QByteArray 
     return nullptr;
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void *QPlatformNativeInterface::nativeResourceForCursor(const QByteArray &resource, const QCursor &cursor)
 {
     Q_UNUSED(resource);
     Q_UNUSED(cursor);
     return nullptr;
 }
-#endif // !QT_NO_CURSOR
+#endif // !BOBUI_NO_CURSOR
 
 QPlatformNativeInterface::NativeResourceForIntegrationFunction QPlatformNativeInterface::nativeResourceFunctionForIntegration(const QByteArray &resource)
 {
@@ -140,6 +140,6 @@ void QPlatformNativeInterface::setWindowProperty(QPlatformWindow *window, const 
     Q_UNUSED(value);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformnativeinterface.cpp"

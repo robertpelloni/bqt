@@ -26,7 +26,7 @@
       <string>Launch two of these dialogs.  In the first, press the top button and load an image from a file.  In the second, press the bottom button and display the loaded image from shared memory.</string>
      </property>
      <property name="alignment" >
-      <set>Qt::AlignCenter</set>
+      <set>BobUI::AlignCenter</set>
      </property>
      <property name="wordWrap" >
       <bool>true</bool>

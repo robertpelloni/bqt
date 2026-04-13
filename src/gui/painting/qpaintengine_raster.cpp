@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qmutex.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qmutex.h>
 
-#define QT_FT_BEGIN_HEADER
-#define QT_FT_END_HEADER
+#define BOBUI_FT_BEGIN_HEADER
+#define BOBUI_FT_END_HEADER
 
 #include <private/qrasterdefs_p.h>
 #include <private/qgrayraster_p.h>
@@ -18,7 +18,7 @@
 
 //   #include <private/qdatabuffer_p.h>
 //   #include <private/qpainter_p.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 #include <private/qfontengine_p.h>
 #include <private/qpixmap_raster_p.h>
 //   #include <private/qrasterizer_p.h>
@@ -40,13 +40,13 @@
 #ifdef Q_OS_WIN
 #  include <qvarlengtharray.h>
 #  include <private/qfontengine_p.h>
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #ifdef Q_OS_WIN64
 #    include <malloc.h>
 #  endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRectVectorPath : public QVectorPath {
 public:
@@ -96,17 +96,17 @@ public:
     qreal pts[8];
 };
 
-Q_GUI_EXPORT extern bool qt_scaleForTransform(const QTransform &transform, qreal *scale); // qtransform.cpp
+Q_GUI_EXPORT extern bool bobui_scaleForTransform(const BOBUIransform &transform, qreal *scale); // bobuiransform.cpp
 
-#define qt_swap_int(x, y) { int tmp = (x); (x) = (y); (y) = tmp; }
-#define qt_swap_qreal(x, y) { qreal tmp = (x); (x) = (y); (y) = tmp; }
+#define bobui_swap_int(x, y) { int tmp = (x); (x) = (y); (y) = tmp; }
+#define bobui_swap_qreal(x, y) { qreal tmp = (x); (x) = (y); (y) = tmp; }
 
-// #define QT_DEBUG_DRAW
-#ifdef QT_DEBUG_DRAW
+// #define BOBUI_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
 void dumpClip(int width, int height, const QClipData *clip);
 #endif
 
-#define QT_FAST_SPANS
+#define BOBUI_FAST_SPANS
 
 
 // A little helper macro to get a better approximation of dimensions.
@@ -143,15 +143,15 @@ bool QRasterPaintEngine::clearTypeFontsEnabled()
 /********************************************************************************
  * Span functions
  */
-static void qt_span_fill_clipRect(int count, const QT_FT_Span *spans, void *userData);
-static void qt_span_fill_clipped(int count, const QT_FT_Span *spans, void *userData);
-static void qt_span_clip(int count, const QT_FT_Span *spans, void *userData);
+static void bobui_span_fill_clipRect(int count, const BOBUI_FT_Span *spans, void *userData);
+static void bobui_span_fill_clipped(int count, const BOBUI_FT_Span *spans, void *userData);
+static void bobui_span_clip(int count, const BOBUI_FT_Span *spans, void *userData);
 
 struct ClipData
 {
     QClipData *oldClip;
     QClipData *newClip;
-    Qt::ClipOperation operation;
+    BobUI::ClipOperation operation;
 };
 
 enum LineDrawMode {
@@ -169,7 +169,7 @@ struct QRasterFloatPoint {
     qreal y;
 };
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
 static const QRectF boundingRect(const QPointF *points, int pointCount)
 {
     const QPointF *e = points;
@@ -191,29 +191,29 @@ static const QRectF boundingRect(const QPointF *points, int pointCount)
 }
 #endif
 
-static void qt_ft_outline_move_to(qfixed x, qfixed y, void *data)
+static void bobui_ft_outline_move_to(qfixed x, qfixed y, void *data)
 {
-    ((QOutlineMapper *) data)->moveTo(QPointF(qt_fixed_to_real(x), qt_fixed_to_real(y)));
+    ((QOutlineMapper *) data)->moveTo(QPointF(bobui_fixed_to_real(x), bobui_fixed_to_real(y)));
 }
 
-static void qt_ft_outline_line_to(qfixed x, qfixed y, void *data)
+static void bobui_ft_outline_line_to(qfixed x, qfixed y, void *data)
 {
-    ((QOutlineMapper *) data)->lineTo(QPointF(qt_fixed_to_real(x), qt_fixed_to_real(y)));
+    ((QOutlineMapper *) data)->lineTo(QPointF(bobui_fixed_to_real(x), bobui_fixed_to_real(y)));
 }
 
-static void qt_ft_outline_cubic_to(qfixed c1x, qfixed c1y,
+static void bobui_ft_outline_cubic_to(qfixed c1x, qfixed c1y,
                              qfixed c2x, qfixed c2y,
                              qfixed ex, qfixed ey,
                              void *data)
 {
-    ((QOutlineMapper *) data)->curveTo(QPointF(qt_fixed_to_real(c1x), qt_fixed_to_real(c1y)),
-                                       QPointF(qt_fixed_to_real(c2x), qt_fixed_to_real(c2y)),
-                                       QPointF(qt_fixed_to_real(ex), qt_fixed_to_real(ey)));
+    ((QOutlineMapper *) data)->curveTo(QPointF(bobui_fixed_to_real(c1x), bobui_fixed_to_real(c1y)),
+                                       QPointF(bobui_fixed_to_real(c2x), bobui_fixed_to_real(c2y)),
+                                       QPointF(bobui_fixed_to_real(ex), bobui_fixed_to_real(ey)));
 }
 
 
-#if !defined(QT_NO_DEBUG) && 0
-static void qt_debug_path(const QPainterPath &path)
+#if !defined(BOBUI_NO_DEBUG) && 0
+static void bobui_debug_path(const QPainterPath &path)
 {
     const char *names[] = {
         "MoveTo     ",
@@ -241,17 +241,17 @@ QRasterPaintEnginePrivate::QRasterPaintEnginePrivate() :
 /*!
     \class QRasterPaintEngine
     \internal
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 4.2
 
     \brief The QRasterPaintEngine class enables hardware acceleration
-    of painting operations in Qt for Embedded Linux.
+    of painting operations in BobUI for Embedded Linux.
 
     Note that this functionality is only available in
-    Qt for Embedded Linux.
+    BobUI for Embedded Linux.
 
-    In Qt for Embedded Linux, painting is a pure software
-    implementation. But starting with Qt 4.2, it is
+    In BobUI for Embedded Linux, painting is a pure software
+    implementation. But starting with BobUI 4.2, it is
     possible to add an accelerated graphics driver to take advantage
     of available hardware resources.
 
@@ -260,7 +260,7 @@ QRasterPaintEnginePrivate::QRasterPaintEnginePrivate() :
     implementing a custom paint engine accelerating the various
     painting operations. Then a custom paint device and a custom
     window surface must be implemented to make
-    Qt for Embedded Linux aware of the accelerated driver.
+    BobUI for Embedded Linux aware of the accelerated driver.
 
     \note The QRasterPaintEngine class does not support 8-bit images.
     Instead, they need to be converted to a supported format, such as
@@ -309,10 +309,10 @@ void QRasterPaintEngine::init()
 #endif
 
     // The antialiasing raster.
-    d->grayRaster.reset(new QT_FT_Raster);
+    d->grayRaster.reset(new BOBUI_FT_Raster);
     Q_CHECK_PTR(d->grayRaster.data());
-    if (QT_MANGLE_NAMESPACE(qt_ft_grays_raster).raster_new(d->grayRaster.data()))
-        QT_THROW(std::bad_alloc()); // an error creating the raster is caused by a bad malloc
+    if (BOBUI_MANGLE_NAMESPACE(bobui_ft_grays_raster).raster_new(d->grayRaster.data()))
+        BOBUI_THROW(std::bad_alloc()); // an error creating the raster is caused by a bad malloc
 
 
     d->rasterizer.reset(new QRasterizer);
@@ -320,9 +320,9 @@ void QRasterPaintEngine::init()
     d->outlineMapper.reset(new QOutlineMapper);
     d->outlinemapper_xform_dirty = true;
 
-    d->basicStroker.setMoveToHook(qt_ft_outline_move_to);
-    d->basicStroker.setLineToHook(qt_ft_outline_line_to);
-    d->basicStroker.setCubicToHook(qt_ft_outline_cubic_to);
+    d->basicStroker.setMoveToHook(bobui_ft_outline_move_to);
+    d->basicStroker.setLineToHook(bobui_ft_outline_line_to);
+    d->basicStroker.setCubicToHook(bobui_ft_outline_cubic_to);
 
     d->baseClip.reset(new QClipData(d->device->height()));
     d->baseClip->setClipRect(QRect(0, 0, d->device->width(), d->device->height()));
@@ -376,7 +376,7 @@ QRasterPaintEngine::~QRasterPaintEngine()
 {
     Q_D(QRasterPaintEngine);
 
-    QT_MANGLE_NAMESPACE(qt_ft_grays_raster).raster_done(*d->grayRaster.data());
+    BOBUI_MANGLE_NAMESPACE(bobui_ft_grays_raster).raster_done(*d->grayRaster.data());
 }
 
 /*!
@@ -420,7 +420,7 @@ bool QRasterPaintEngine::begin(QPaintDevice *device)
 
     setDirty(DirtyBrushOrigin);
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::begin(" << (void *) device
              << ") devType:" << device->devType()
              << "devRect:" << d->deviceRect;
@@ -454,7 +454,7 @@ bool QRasterPaintEngine::begin(QPaintDevice *device)
 */
 bool QRasterPaintEngine::end()
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     Q_D(QRasterPaintEngine);
     qDebug() << "QRasterPaintEngine::end devRect:" << d->deviceRect;
     if (d->baseClip) {
@@ -468,12 +468,12 @@ bool QRasterPaintEngine::end()
 /*!
     \internal
 */
-void QRasterPaintEngine::updateMatrix(const QTransform &matrix)
+void QRasterPaintEngine::updateMatrix(const BOBUIransform &matrix)
 {
     QRasterPaintEngineState *s = state();
     // FALCON: get rid of this line, see drawImage call below.
     s->matrix = matrix;
-    s->flags.tx_noshear = qt_scaleForTransform(s->matrix, &s->txscale);
+    s->flags.tx_noshear = bobui_scaleForTransform(s->matrix, &s->txscale);
 
     ensureOutlineMapper();
 }
@@ -580,7 +580,7 @@ void QRasterPaintEngine::setState(QPainterState *s)
 */
 void QRasterPaintEngine::penChanged()
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::penChanged():" << state()->pen;
 #endif
     QRasterPaintEngineState *s = state();
@@ -596,30 +596,30 @@ void QRasterPaintEngine::updatePen(const QPen &pen)
 {
     Q_D(QRasterPaintEngine);
     QRasterPaintEngineState *s = state();
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::updatePen():" << s->pen;
 #endif
 
-    Qt::PenStyle pen_style = qpen_style(pen);
+    BobUI::PenStyle pen_style = qpen_style(pen);
 
     s->lastPen = pen;
     s->strokeFlags = 0;
 
     s->penData.clip = d->clip();
-    s->penData.setup(pen_style == Qt::NoPen ? QBrush() : pen.brush(), s->intOpacity,
+    s->penData.setup(pen_style == BobUI::NoPen ? QBrush() : pen.brush(), s->intOpacity,
                      s->composition_mode, s->flags.cosmetic_brush);
 
     if (s->strokeFlags & QRasterPaintEngine::DirtyTransform
-        || pen.brush().transform().type() >= QTransform::TxNone) {
+        || pen.brush().transform().type() >= BOBUIransform::TxNone) {
         d->updateMatrixData(&s->penData, pen.brush(), s->matrix);
     }
 
     // Slightly ugly handling of an uncommon case... We need to change
     // the pen because it is reused in draw_midpoint to decide dashed
     // or non-dashed.
-    if (pen_style == Qt::CustomDashLine && pen.dashPattern().size() == 0) {
-        pen_style = Qt::SolidLine;
-        s->lastPen.setStyle(Qt::SolidLine);
+    if (pen_style == BobUI::CustomDashLine && pen.dashPattern().size() == 0) {
+        pen_style = BobUI::SolidLine;
+        s->lastPen.setStyle(BobUI::SolidLine);
     }
 
     d->basicStroker.setJoinStyle(qpen_joinStyle(pen));
@@ -632,9 +632,9 @@ void QRasterPaintEngine::updatePen(const QPen &pen)
     else
         d->basicStroker.setStrokeWidth(penWidth);
 
-    if (pen_style == Qt::SolidLine) {
+    if (pen_style == BobUI::SolidLine) {
         s->stroker = &d->basicStroker;
-    } else if (pen_style != Qt::NoPen) {
+    } else if (pen_style != BobUI::NoPen) {
         if (!d->dashStroker)
             d->dashStroker.reset(new QDashStroker(&d->basicStroker));
         if (pen.isCosmetic()) {
@@ -653,12 +653,12 @@ void QRasterPaintEngine::updatePen(const QPen &pen)
 
     ensureRasterState(); // needed because of tx_noshear...
     bool cosmetic = pen.isCosmetic();
-    s->flags.fast_pen = pen_style > Qt::NoPen
+    s->flags.fast_pen = pen_style > BobUI::NoPen
             && s->penData.blend
             && ((cosmetic && penWidth <= 1)
                 || (!cosmetic && (s->flags.tx_noshear || !s->flags.antialiased) && penWidth * s->txscale <= 1));
 
-    s->flags.non_complex_pen = qpen_capStyle(s->lastPen) <= Qt::SquareCap && s->flags.tx_noshear;
+    s->flags.non_complex_pen = qpen_capStyle(s->lastPen) <= BobUI::SquareCap && s->flags.tx_noshear;
 
     s->strokeFlags = 0;
 }
@@ -671,7 +671,7 @@ void QRasterPaintEngine::updatePen(const QPen &pen)
 void QRasterPaintEngine::brushOriginChanged()
 {
     QRasterPaintEngineState *s = state();
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::brushOriginChanged()" << s->brushOrigin;
 #endif
 
@@ -685,7 +685,7 @@ void QRasterPaintEngine::brushOriginChanged()
 void QRasterPaintEngine::brushChanged()
 {
     QRasterPaintEngineState *s = state();
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::brushChanged():" << s->brush;
 #endif
     s->fillFlags |= DirtyBrush;
@@ -699,7 +699,7 @@ void QRasterPaintEngine::brushChanged()
 */
 void QRasterPaintEngine::updateBrush(const QBrush &brush)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::updateBrush()" << brush;
 #endif
     Q_D(QRasterPaintEngine);
@@ -708,7 +708,7 @@ void QRasterPaintEngine::updateBrush(const QBrush &brush)
     s->brushData.clip = d->clip();
     s->brushData.setup(brush, s->intOpacity, s->composition_mode, s->flags.cosmetic_brush);
     if (s->fillFlags & DirtyTransform
-        || brush.transform().type() >= QTransform::TxNone)
+        || brush.transform().type() >= BOBUIransform::TxNone)
         d_func()->updateMatrixData(&s->brushData, brush, d->brushMatrix());
     s->lastBrush = brush;
     s->fillFlags = 0;
@@ -748,7 +748,7 @@ void QRasterPaintEngine::opacityChanged()
 {
     QRasterPaintEngineState *s = state();
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::opacityChanged()" << s->opacity;
 #endif
 
@@ -767,7 +767,7 @@ void QRasterPaintEngine::compositionModeChanged()
     Q_D(QRasterPaintEngine);
     QRasterPaintEngineState *s = state();
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::compositionModeChanged()" << s->composition_mode;
 #endif
 
@@ -787,8 +787,8 @@ void QRasterPaintEngine::renderHintsChanged()
 {
     QRasterPaintEngineState *s = state();
 
-#ifdef QT_DEBUG_DRAW
-    qDebug() << "QRasterPaintEngine::renderHintsChanged()" << Qt::hex << s->renderHints;
+#ifdef BOBUI_DEBUG_DRAW
+    qDebug() << "QRasterPaintEngine::renderHintsChanged()" << BobUI::hex << s->renderHints;
 #endif
 
     bool was_aa = s->flags.antialiased;
@@ -821,7 +821,7 @@ void QRasterPaintEngine::transformChanged()
 {
     QRasterPaintEngineState *s = state();
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::transformChanged()" << s->matrix;
 #endif
 
@@ -841,7 +841,7 @@ void QRasterPaintEngine::clipEnabledChanged()
 {
     QRasterPaintEngineState *s = state();
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::clipEnabledChanged()" << s->clipEnabled;
 #endif
 
@@ -992,7 +992,7 @@ void QRasterPaintEnginePrivate::blitImage(const QPointF &pt,
     const uint *src = (const uint *) srcBits;
     uint *dst = reinterpret_cast<uint *>(rasterBuffer->buffer() + x * dstSize + y * dstBPL);
 
-    const int len = iw * (qt_depthForFormat(rasterBuffer->format) >> 3);
+    const int len = iw * (bobui_depthForFormat(rasterBuffer->format) >> 3);
     for (int y = 0; y < ih; ++y) {
         memcpy(dst, src, len);
         dst = (quint32 *)(((uchar *) dst) + dstBPL);
@@ -1004,8 +1004,8 @@ void QRasterPaintEnginePrivate::blitImage(const QPointF &pt,
 void QRasterPaintEnginePrivate::systemStateChanged()
 {
     deviceRectUnclipped = QRect(0, 0,
-            qMin(QT_RASTER_COORD_LIMIT, device->width()),
-            qMin(QT_RASTER_COORD_LIMIT, device->height()));
+            qMin(BOBUI_RASTER_COORD_LIMIT, device->width()),
+            qMin(BOBUI_RASTER_COORD_LIMIT, device->height()));
 
     if (!systemClip.isEmpty()) {
         QRegion clippedDeviceRgn = systemClip & deviceRectUnclipped;
@@ -1015,7 +1015,7 @@ void QRasterPaintEnginePrivate::systemStateChanged()
         deviceRect = deviceRectUnclipped;
         baseClip->setClipRect(deviceRect);
     }
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "systemStateChanged" << this << "deviceRect" << deviceRect << deviceRectUnclipped << systemClip;
 #endif
 
@@ -1029,18 +1029,18 @@ void QRasterPaintEnginePrivate::systemStateChanged()
     }
 }
 
-void QRasterPaintEnginePrivate::updateMatrixData(QSpanData *spanData, const QBrush &b, const QTransform &m)
+void QRasterPaintEnginePrivate::updateMatrixData(QSpanData *spanData, const QBrush &b, const BOBUIransform &m)
 {
-    if (b.d->style == Qt::NoBrush || b.d->style == Qt::SolidPattern)
+    if (b.d->style == BobUI::NoBrush || b.d->style == BobUI::SolidPattern)
         return;
 
     Q_Q(QRasterPaintEngine);
     bool bilinear = q->state()->flags.bilinear;
 
-    if (b.d->transform.type() > QTransform::TxNone) { // FALCON: optimize
+    if (b.d->transform.type() > BOBUIransform::TxNone) { // FALCON: optimize
         spanData->setupMatrix(b.transform() * m, bilinear);
     } else {
-        if (m.type() <= QTransform::TxTranslate) {
+        if (m.type() <= BOBUIransform::TxTranslate) {
             // specialize setupMatrix for translation matrices
             // to avoid needless matrix inversion
             spanData->m11 = 1;
@@ -1062,9 +1062,9 @@ void QRasterPaintEnginePrivate::updateMatrixData(QSpanData *spanData, const QBru
     }
 }
 
-// #define QT_CLIPPING_RATIOS
+// #define BOBUI_CLIPPING_RATIOS
 
-#ifdef QT_CLIPPING_RATIOS
+#ifdef BOBUI_CLIPPING_RATIOS
 int rectClips;
 int regionClips;
 int totalClips;
@@ -1107,7 +1107,7 @@ static void qrasterpaintengine_dirty_clip(QRasterPaintEnginePrivate *d, QRasterP
     d->solid_color_filler.clip = d->clip();
     d->solid_color_filler.adjustSpanMethods();
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     dumpClip(d->rasterBuffer->width(), d->rasterBuffer->height(), &*d->clip());
 #endif
 
@@ -1117,9 +1117,9 @@ static void qrasterpaintengine_dirty_clip(QRasterPaintEnginePrivate *d, QRasterP
 /*!
     \internal
 */
-void QRasterPaintEngine::clip(const QVectorPath &path, Qt::ClipOperation op)
+void QRasterPaintEngine::clip(const QVectorPath &path, BobUI::ClipOperation op)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::clip(): " << path << op;
 
     if (path.elements()) {
@@ -1139,41 +1139,41 @@ void QRasterPaintEngine::clip(const QVectorPath &path, Qt::ClipOperation op)
     QRasterPaintEngineState *s = state();
 
     // There are some cases that are not supported by clip(QRect)
-    if (op != Qt::IntersectClip || !s->clip || s->clip->hasRectClip || s->clip->hasRegionClip) {
-        if (s->matrix.type() <= QTransform::TxScale
+    if (op != BobUI::IntersectClip || !s->clip || s->clip->hasRectClip || s->clip->hasRegionClip) {
+        if (s->matrix.type() <= BOBUIransform::TxScale
             && path.isRect()) {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
             qDebug(" --- optimizing vector clip to rect clip...");
 #endif
             const qreal *points = path.points();
             QRectF r(points[0], points[1], points[4]-points[0], points[5]-points[1]);
-            if (setClipRectInDeviceCoords(qt_mapFillRect(r, s->matrix), op))
+            if (setClipRectInDeviceCoords(bobui_mapFillRect(r, s->matrix), op))
                 return;
         }
     }
 
-    if (op == Qt::NoClip) {
+    if (op == BobUI::NoClip) {
         qrasterpaintengine_state_setNoClip(s);
 
     } else {
         QClipData *base = d->baseClip.data();
 
         // Intersect with current clip when available...
-        if (op == Qt::IntersectClip && s->clip)
+        if (op == BobUI::IntersectClip && s->clip)
             base = s->clip;
 
         // We always intersect, except when there is nothing to
         // intersect with, in which case we simplify the operation to
         // a replace...
-        Qt::ClipOperation isectOp = Qt::IntersectClip;
+        BobUI::ClipOperation isectOp = BobUI::IntersectClip;
         if (base == nullptr)
-            isectOp = Qt::ReplaceClip;
+            isectOp = BobUI::ReplaceClip;
 
         QClipData *newClip = new QClipData(d->rasterBuffer->height());
         newClip->initialize();
         ClipData clipData = { base, newClip, isectOp };
         ensureOutlineMapper();
-        d->rasterize(d->outlineMapper->convertPath(path), qt_span_clip, &clipData, nullptr);
+        d->rasterize(d->outlineMapper->convertPath(path), bobui_span_clip, &clipData, nullptr);
 
         newClip->fixup();
 
@@ -1191,35 +1191,35 @@ void QRasterPaintEngine::clip(const QVectorPath &path, Qt::ClipOperation op)
 /*!
     \internal
 */
-void QRasterPaintEngine::clip(const QRect &rect, Qt::ClipOperation op)
+void QRasterPaintEngine::clip(const QRect &rect, BobUI::ClipOperation op)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::clip(): " << rect << op;
 #endif
 
     QRasterPaintEngineState *s = state();
 
-    if (op == Qt::NoClip) {
+    if (op == BobUI::NoClip) {
         qrasterpaintengine_state_setNoClip(s);
 
-    } else if (s->matrix.type() > QTransform::TxScale) {
+    } else if (s->matrix.type() > BOBUIransform::TxScale) {
         QPaintEngineEx::clip(rect, op);
         return;
 
-    } else if (!setClipRectInDeviceCoords(qt_mapFillRect(rect, s->matrix), op)) {
+    } else if (!setClipRectInDeviceCoords(bobui_mapFillRect(rect, s->matrix), op)) {
         QPaintEngineEx::clip(rect, op);
         return;
     }
 }
 
 
-bool QRasterPaintEngine::setClipRectInDeviceCoords(const QRect &r, Qt::ClipOperation op)
+bool QRasterPaintEngine::setClipRectInDeviceCoords(const QRect &r, BobUI::ClipOperation op)
 {
     Q_D(QRasterPaintEngine);
     QRect clipRect = r & d->deviceRect;
     QRasterPaintEngineState *s = state();
 
-    if (op == Qt::ReplaceClip || s->clip == nullptr) {
+    if (op == BobUI::ReplaceClip || s->clip == nullptr) {
 
         // No current clip, hence we intersect with sysclip and be
         // done with it...
@@ -1238,7 +1238,7 @@ bool QRasterPaintEngine::setClipRectInDeviceCoords(const QRect &r, Qt::ClipOpera
         s->clip->enabled = true;
         s->flags.has_clip_ownership = true;
 
-    } else if (op == Qt::IntersectClip){ // intersect clip with current clip
+    } else if (op == BobUI::IntersectClip){ // intersect clip with current clip
         QClipData *base = s->clip;
 
         Q_ASSERT(base);
@@ -1267,9 +1267,9 @@ bool QRasterPaintEngine::setClipRectInDeviceCoords(const QRect &r, Qt::ClipOpera
 /*!
     \internal
 */
-void QRasterPaintEngine::clip(const QRegion &region, Qt::ClipOperation op)
+void QRasterPaintEngine::clip(const QRegion &region, BobUI::ClipOperation op)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::clip(): " << region << op;
 #endif
 
@@ -1284,17 +1284,17 @@ void QRasterPaintEngine::clip(const QRegion &region, Qt::ClipOperation op)
     const QClipData *clip = d->clip();
     const QClipData *baseClip = d->baseClip.data();
 
-    if (op == Qt::NoClip) {
+    if (op == BobUI::NoClip) {
         qrasterpaintengine_state_setNoClip(s);
-    } else if (s->matrix.type() > QTransform::TxScale
-               || (op == Qt::IntersectClip && !clip->hasRectClip && !clip->hasRegionClip)
-               || (op == Qt::ReplaceClip && !baseClip->hasRectClip && !baseClip->hasRegionClip)) {
+    } else if (s->matrix.type() > BOBUIransform::TxScale
+               || (op == BobUI::IntersectClip && !clip->hasRectClip && !clip->hasRegionClip)
+               || (op == BobUI::ReplaceClip && !baseClip->hasRectClip && !baseClip->hasRegionClip)) {
         QPaintEngineEx::clip(region, op);
     } else {
         const QClipData *curClip;
         QClipData *newClip;
 
-        if (op == Qt::IntersectClip)
+        if (op == BobUI::IntersectClip)
             curClip = clip;
         else
             curClip = baseClip;
@@ -1330,7 +1330,7 @@ void QRasterPaintEngine::clip(const QRegion &region, Qt::ClipOperation op)
 */
 void QRasterPaintEngine::fillPath(const QPainterPath &path, QSpanData *fillData)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " --- fillPath, bounds=" << path.boundingRect();
 #endif
 
@@ -1344,10 +1344,10 @@ void QRasterPaintEngine::fillPath(const QPainterPath &path, QSpanData *fillData)
     QRasterPaintEngineState *s = state();
     const QRect deviceRect = s->matrix.mapRect(controlPointRect).toRect();
     ProcessSpans blend = d->getBrushFunc(deviceRect, fillData);
-    const bool do_clip = (deviceRect.left() < -QT_RASTER_COORD_LIMIT
-                          || deviceRect.right() > QT_RASTER_COORD_LIMIT
-                          || deviceRect.top() < -QT_RASTER_COORD_LIMIT
-                          || deviceRect.bottom() > QT_RASTER_COORD_LIMIT);
+    const bool do_clip = (deviceRect.left() < -BOBUI_RASTER_COORD_LIMIT
+                          || deviceRect.right() > BOBUI_RASTER_COORD_LIMIT
+                          || deviceRect.top() < -BOBUI_RASTER_COORD_LIMIT
+                          || deviceRect.bottom() > BOBUI_RASTER_COORD_LIMIT);
 
     if (!s->flags.antialiased && !do_clip) {
         d->initializeRasterizer(fillData);
@@ -1410,7 +1410,7 @@ static void fillRect_normalized(const QRect &r, QSpanData *data,
     ProcessSpans blend = isUnclipped ? data->unclipped_blend : data->blend;
 
     const int nspans = 512;
-    Q_DECL_UNINITIALIZED QT_FT_Span spans[nspans];
+    Q_DECL_UNINITIALIZED BOBUI_FT_Span spans[nspans];
 
     Q_ASSERT(data->blend);
     int y = y1;
@@ -1435,7 +1435,7 @@ static void fillRect_normalized(const QRect &r, QSpanData *data,
 */
 void QRasterPaintEngine::drawRects(const QRect *rects, int rectCount)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug(" - QRasterPaintEngine::drawRect(), rectCount=%d", rectCount);
 #endif
     Q_D(QRasterPaintEngine);
@@ -1445,7 +1445,7 @@ void QRasterPaintEngine::drawRects(const QRect *rects, int rectCount)
     // Fill
     ensureBrush();
     if (s->brushData.blend) {
-        if (!s->flags.antialiased && s->matrix.type() <= QTransform::TxTranslate) {
+        if (!s->flags.antialiased && s->matrix.type() <= BOBUIransform::TxTranslate) {
             const QRect *r = rects;
             const QRect *lastRect = rects + rectCount;
 
@@ -1489,10 +1489,10 @@ void QRasterPaintEngine::drawRects(const QRect *rects, int rectCount)
 */
 void QRasterPaintEngine::drawRects(const QRectF *rects, int rectCount)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug(" - QRasterPaintEngine::drawRect(QRectF*), rectCount=%d", rectCount);
 #endif
-#ifdef QT_FAST_SPANS
+#ifdef BOBUI_FAST_SPANS
     Q_D(QRasterPaintEngine);
     ensureRasterState();
     QRasterPaintEngineState *s = state();
@@ -1531,7 +1531,7 @@ void QRasterPaintEngine::drawRects(const QRectF *rects, int rectCount)
 
         return;
     }
-#endif // QT_FAST_SPANS
+#endif // BOBUI_FAST_SPANS
     QPaintEngineEx::drawRects(rects, rectCount);
 }
 
@@ -1583,17 +1583,17 @@ void QRasterPaintEngine::stroke(const QVectorPath &path, const QPen &pen)
         for (int i = 0; i < lineCount; ++i) {
             const QLineF line = s->matrix.map(lines[i]);
             if (line.p1() == line.p2()) {
-                if (s->lastPen.capStyle() != Qt::FlatCap) {
+                if (s->lastPen.capStyle() != BobUI::FlatCap) {
                     const QPointF delta(width / 2, 0);
                     d->rasterizer->rasterizeLine(line.p1() - delta, line.p1() + delta, 1);
                 }
                 continue;
             }
 
-            if (qpen_style(s->lastPen) == Qt::SolidLine) {
+            if (qpen_style(s->lastPen) == BobUI::SolidLine) {
                 d->rasterizer->rasterizeLine(line.p1(), line.p2(),
                                             width / line.length(),
-                                            s->lastPen.capStyle() == Qt::SquareCap);
+                                            s->lastPen.capStyle() == BobUI::SquareCap);
             } else {
                 // LinesHint means each line is distinct, so restart dashing
                 int dIndex = dashIndex;
@@ -1629,11 +1629,11 @@ void QRasterPaintEngine::fill(const QVectorPath &path, const QBrush &brush)
 {
     if (path.isEmpty())
         return;
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     QRectF rf = path.controlPointRect();
     qDebug() << "QRasterPaintEngine::fill(): "
              << "size=" << path.elementCount()
-             << ", hints=" << Qt::hex << path.hints()
+             << ", hints=" << BobUI::hex << path.hints()
              << rf << brush;
 #endif
 
@@ -1645,7 +1645,7 @@ void QRasterPaintEngine::fill(const QVectorPath &path, const QBrush &brush)
         return;
 
     if (path.shape() == QVectorPath::RectangleHint) {
-        if (!s->flags.antialiased && s->matrix.type() <= QTransform::TxScale) {
+        if (!s->flags.antialiased && s->matrix.type() <= BOBUIransform::TxScale) {
             const qreal *p = path.points();
             QPointF tl = QPointF(p[0], p[1]) * s->matrix;
             QPointF br = QPointF(p[4], p[5]) * s->matrix;
@@ -1677,10 +1677,10 @@ void QRasterPaintEngine::fill(const QVectorPath &path, const QBrush &brush)
     ProcessSpans blend = d->getBrushFunc(pathDeviceRect, &s->brushData);
 
         // ### Falcon
-//         const bool do_clip = (deviceRect.left() < -QT_RASTER_COORD_LIMIT
-//                               || deviceRect.right() > QT_RASTER_COORD_LIMIT
-//                               || deviceRect.top() < -QT_RASTER_COORD_LIMIT
-//                               || deviceRect.bottom() > QT_RASTER_COORD_LIMIT);
+//         const bool do_clip = (deviceRect.left() < -BOBUI_RASTER_COORD_LIMIT
+//                               || deviceRect.right() > BOBUI_RASTER_COORD_LIMIT
+//                               || deviceRect.top() < -BOBUI_RASTER_COORD_LIMIT
+//                               || deviceRect.bottom() > BOBUI_RASTER_COORD_LIMIT);
 
         // ### Falonc: implement....
 //         if (!s->flags.antialiased && !do_clip) {
@@ -1700,14 +1700,14 @@ void QRasterPaintEngine::fillRect(const QRectF &r, QSpanData *data)
 
     if (!s->flags.antialiased) {
         uint txop = s->matrix.type();
-        if (txop == QTransform::TxNone) {
+        if (txop == BOBUIransform::TxNone) {
             fillRect_normalized(toNormalizedFillRect(r), data, d);
             return;
-        } else if (txop == QTransform::TxTranslate) {
+        } else if (txop == BOBUIransform::TxTranslate) {
             const QRect rr = toNormalizedFillRect(r.translated(s->matrix.dx(), s->matrix.dy()));
             fillRect_normalized(rr, data, d);
             return;
-        } else if (txop == QTransform::TxScale) {
+        } else if (txop == BOBUIransform::TxScale) {
             const QRect rr = toNormalizedFillRect(s->matrix.mapRect(r));
             fillRect_normalized(rr, data, d);
             return;
@@ -1736,7 +1736,7 @@ void QRasterPaintEngine::fillRect(const QRectF &r, QSpanData *data)
 */
 void QRasterPaintEngine::fillRect(const QRectF &r, const QBrush &brush)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::fillRecct(): " << r << brush;
 #endif
     QRasterPaintEngineState *s = state();
@@ -1751,7 +1751,7 @@ void QRasterPaintEngine::fillRect(const QRectF &r, const QBrush &brush)
 static QColor qPremultiplyWithExtraAlpha(const QColor &c, int alpha)
 {
     if (alpha == 0)
-        return Qt::transparent;
+        return BobUI::transparent;
     if (c.spec() == QColor::ExtendedRgb) {
         float r, g, b, a;
         c.getRgbF(&r, &g, &b, &a);
@@ -1766,7 +1766,7 @@ static QColor qPremultiplyWithExtraAlpha(const QColor &c, int alpha)
 */
 void QRasterPaintEngine::fillRect(const QRectF &r, const QColor &color)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QRasterPaintEngine::fillRect(): " << r << color;
 #endif
     Q_D(QRasterPaintEngine);
@@ -1866,7 +1866,7 @@ void QRasterPaintEngine::fillPolygon(const QPointF *points, int pointCount, Poly
     // Compose polygon fill..,
     QVectorPath vp((const qreal *) points, pointCount, nullptr, QVectorPath::polygonFlags(mode));
     ensureOutlineMapper();
-    QT_FT_Outline *outline = d->outlineMapper->convertPath(vp);
+    BOBUI_FT_Outline *outline = d->outlineMapper->convertPath(vp);
 
     // scanconvert.
     ProcessSpans brushBlend = d->getBrushFunc(d->outlineMapper->controlPointRect,
@@ -1882,7 +1882,7 @@ void QRasterPaintEngine::drawPolygon(const QPointF *points, int pointCount, Poly
     Q_D(QRasterPaintEngine);
     QRasterPaintEngineState *s = state();
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug(" - QRasterPaintEngine::drawPolygon(F), pointCount=%d", pointCount);
     for (int i=0; i<pointCount; ++i)
         qDebug() << "   - " << points[i];
@@ -1923,7 +1923,7 @@ void QRasterPaintEngine::drawPolygon(const QPoint *points, int pointCount, Polyg
     Q_D(QRasterPaintEngine);
     QRasterPaintEngineState *s = state();
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug(" - QRasterPaintEngine::drawPolygon(I), pointCount=%d", pointCount);
     for (int i=0; i<pointCount; ++i)
         qDebug() << "   - " << points[i];
@@ -1946,7 +1946,7 @@ void QRasterPaintEngine::drawPolygon(const QPoint *points, int pointCount, Polyg
         if (s->brushData.blend) {
             // Compose polygon fill..,
             ensureOutlineMapper();
-            d->outlineMapper->beginOutline(mode == WindingMode ? Qt::WindingFill : Qt::OddEvenFill);
+            d->outlineMapper->beginOutline(mode == WindingMode ? BobUI::WindingFill : BobUI::OddEvenFill);
             d->outlineMapper->moveTo(*points);
             const QPoint *p = points;
             const QPoint *ep = points + pointCount - 1;
@@ -1984,7 +1984,7 @@ void QRasterPaintEngine::drawPolygon(const QPoint *points, int pointCount, Polyg
 */
 void QRasterPaintEngine::drawPixmap(const QPointF &pos, const QPixmap &pixmap)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " - QRasterPaintEngine::drawPixmap(), pos=" << pos << " pixmap=" << pixmap.size() << "depth=" << pixmap.depth();
 #endif
 
@@ -1994,7 +1994,7 @@ void QRasterPaintEngine::drawPixmap(const QPointF &pos, const QPixmap &pixmap)
         if (image.depth() == 1) {
             Q_D(QRasterPaintEngine);
             QRasterPaintEngineState *s = state();
-            if (s->matrix.type() <= QTransform::TxTranslate) {
+            if (s->matrix.type() <= BOBUIransform::TxTranslate) {
                 ensurePen();
                 drawBitmap(pos + QPointF(s->matrix.dx(), s->matrix.dy()), image, &s->penData);
             } else {
@@ -2008,7 +2008,7 @@ void QRasterPaintEngine::drawPixmap(const QPointF &pos, const QPixmap &pixmap)
         if (pixmap.depth() == 1) {
             Q_D(QRasterPaintEngine);
             QRasterPaintEngineState *s = state();
-            if (s->matrix.type() <= QTransform::TxTranslate) {
+            if (s->matrix.type() <= BOBUIransform::TxTranslate) {
                 ensurePen();
                 drawBitmap(pos + QPointF(s->matrix.dx(), s->matrix.dy()), image, &s->penData);
             } else {
@@ -2025,7 +2025,7 @@ void QRasterPaintEngine::drawPixmap(const QPointF &pos, const QPixmap &pixmap)
 */
 void QRasterPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pixmap, const QRectF &sr)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " - QRasterPaintEngine::drawPixmap(), r=" << r << " sr=" << sr << " pixmap=" << pixmap.size() << "depth=" << pixmap.depth();
 #endif
 
@@ -2035,7 +2035,7 @@ void QRasterPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pixmap, cons
         if (image.depth() == 1) {
             Q_D(QRasterPaintEngine);
             QRasterPaintEngineState *s = state();
-            if (s->matrix.type() <= QTransform::TxTranslate
+            if (s->matrix.type() <= BOBUIransform::TxTranslate
                 && r.size() == sr.size()
                 && r.size() == pixmap.size()) {
                 ensurePen();
@@ -2054,7 +2054,7 @@ void QRasterPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pixmap, cons
         if (image.depth() == 1) {
             Q_D(QRasterPaintEngine);
             QRasterPaintEngineState *s = state();
-            if (s->matrix.type() <= QTransform::TxTranslate
+            if (s->matrix.type() <= BOBUIransform::TxTranslate
                 && r.size() == sr.size()
                 && r.size() == pixmap.size()) {
                 ensurePen();
@@ -2092,7 +2092,7 @@ static inline const QRect toAlignedRect_positive(const QRectF &rect)
 */
 void QRasterPaintEngine::drawImage(const QPointF &p, const QImage &img)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " - QRasterPaintEngine::drawImage(), p=" <<  p << " image=" << img.size() << "depth=" << img.depth();
 #endif
 
@@ -2100,7 +2100,7 @@ void QRasterPaintEngine::drawImage(const QPointF &p, const QImage &img)
     QRasterPaintEngineState *s = state();
     qreal scale = img.devicePixelRatio();
 
-    if (scale > 1.0 ||  s->matrix.type() > QTransform::TxTranslate) {
+    if (scale > 1.0 ||  s->matrix.type() > BOBUIransform::TxTranslate) {
         drawImage(QRectF(p.x(), p.y(), img.width() / scale, img.height() / scale),
                   img,
                   QRectF(0, 0, img.width(), img.height()));
@@ -2133,7 +2133,7 @@ void QRasterPaintEngine::drawImage(const QPointF &p, const QImage &img)
 
 
         d->image_filler.clip = clip;
-        d->image_filler.initTexture(&img, s->intOpacity, QTextureData::Plain, img.rect());
+        d->image_filler.initTexture(&img, s->intOpacity, BOBUIextureData::Plain, img.rect());
         if (!d->image_filler.blend)
             return;
         d->image_filler.dx = -pt.x();
@@ -2145,7 +2145,7 @@ void QRasterPaintEngine::drawImage(const QPointF &p, const QImage &img)
 
 }
 
-QRectF qt_mapRect_non_normalizing(const QRectF &r, const QTransform &t)
+QRectF bobui_mapRect_non_normalizing(const QRectF &r, const BOBUIransform &t)
 {
     return QRectF(r.topLeft() * t, r.bottomRight() * t);
 }
@@ -2158,22 +2158,22 @@ namespace {
         NoRotation
     };
 
-    inline RotationType qRotationType(const QTransform &transform)
+    inline RotationType qRotationType(const BOBUIransform &transform)
     {
-        QTransform::TransformationType type = transform.type();
+        BOBUIransform::TransformationType type = transform.type();
 
-        if (type > QTransform::TxRotate)
+        if (type > BOBUIransform::TxRotate)
             return NoRotation;
 
-        if (type == QTransform::TxRotate && qFuzzyIsNull(transform.m11()) && qFuzzyCompare(transform.m12(), qreal(-1))
+        if (type == BOBUIransform::TxRotate && qFuzzyIsNull(transform.m11()) && qFuzzyCompare(transform.m12(), qreal(-1))
             && qFuzzyCompare(transform.m21(), qreal(1)) && qFuzzyIsNull(transform.m22()))
             return Rotation90;
 
-        if (type == QTransform::TxScale && qFuzzyCompare(transform.m11(), qreal(-1)) && qFuzzyIsNull(transform.m12())
+        if (type == BOBUIransform::TxScale && qFuzzyCompare(transform.m11(), qreal(-1)) && qFuzzyIsNull(transform.m12())
             && qFuzzyIsNull(transform.m21()) && qFuzzyCompare(transform.m22(), qreal(-1)))
             return Rotation180;
 
-        if (type == QTransform::TxRotate && qFuzzyIsNull(transform.m11()) && qFuzzyCompare(transform.m12(), qreal(1))
+        if (type == BOBUIransform::TxRotate && qFuzzyIsNull(transform.m11()) && qFuzzyCompare(transform.m12(), qreal(1))
             && qFuzzyCompare(transform.m21(), qreal(-1)) && qFuzzyIsNull(transform.m22()))
             return Rotation270;
 
@@ -2194,9 +2194,9 @@ namespace {
     \reimp
 */
 void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRectF &sr,
-                                   Qt::ImageConversionFlags)
+                                   BobUI::ImageConversionFlags)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " - QRasterPaintEngine::drawImage(), r=" << r << " sr=" << sr << " image=" << img.size() << "depth=" << img.depth();
 #endif
 
@@ -2211,10 +2211,10 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
     int sr_t = qFloor(sr.top());
     int sr_b = qCeil(sr.bottom()) - 1;
 
-    if (s->matrix.type() <= QTransform::TxScale && !s->flags.antialiased && sr_l == sr_r && sr_t == sr_b) {
+    if (s->matrix.type() <= BOBUIransform::TxScale && !s->flags.antialiased && sr_l == sr_r && sr_t == sr_b) {
         // as fillRect will apply the aliased coordinate delta we need to
         // subtract it here as we don't use it for image drawing
-        QTransform old = s->matrix;
+        BOBUIransform old = s->matrix;
 
         // Do whatever fillRect() does, but without premultiplying the color if it's already premultiplied.
         QRgb color = img.pixel(sr_l, sr_t);
@@ -2240,7 +2240,7 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
 
     const QClipData *clip = d->clip();
 
-    if (s->matrix.type() == QTransform::TxRotate
+    if (s->matrix.type() == BOBUIransform::TxRotate
         && !stretch_sr
         && (!clip || clip->hasRectClip)
         && s->intOpacity == 256
@@ -2286,7 +2286,7 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
         }
     }
 
-    if (s->matrix.type() > QTransform::TxTranslate || stretch_sr) {
+    if (s->matrix.type() > BOBUIransform::TxTranslate || stretch_sr) {
 
         QRectF targetBounds = s->matrix.mapRect(r);
         bool exceedsPrecision = r.width() > 0x7fff
@@ -2300,9 +2300,9 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
                              || s->matrix.m11() >= 512
                              || s->matrix.m22() >= 512;
         if (!exceedsPrecision && d->canUseFastImageBlending(d->rasterBuffer->compositionMode, img)) {
-            if (s->matrix.type() > QTransform::TxScale) {
+            if (s->matrix.type() > BOBUIransform::TxScale) {
                 SrcOverTransformFunc func = qTransformFunctions[d->rasterBuffer->format][img.format()];
-                // The fast transform methods doesn't really work on small targets, see QTBUG-93475
+                // The fast transform methods doesn't really work on small targets, see BOBUIBUG-93475
                 // And it can't antialias the edges
                 if (func && (!clip || clip->hasRectClip) && !s->flags.antialiased && targetBounds.width() >= 16 && targetBounds.height() >= 16) {
                     func(d->rasterBuffer->buffer(), d->rasterBuffer->bytesPerLine(), img.bits(),
@@ -2314,7 +2314,7 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
                 // Test for optimized high-dpi case: 2x source on 2x target. (Could be generalized to nX.)
                 bool sourceRect2x = r.width() * 2 == sr.width() && r.height() * 2 == sr.height();
                 bool scale2x = (s->matrix.m11() == qreal(2)) && (s->matrix.m22() == qreal(2));
-                if (s->matrix.type() == QTransform::TxScale && sourceRect2x && scale2x) {
+                if (s->matrix.type() == BOBUIransform::TxScale && sourceRect2x && scale2x) {
                     SrcOverBlendFunc func = qBlendFunctions[d->rasterBuffer->format][img.format()];
                     if (func) {
                         QPointF pt(r.x() * 2 + s->matrix.dx(), r.y() * 2 + s->matrix.dy());
@@ -2329,7 +2329,7 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
                 }
                 SrcOverScaleFunc func = qScaleFunctions[d->rasterBuffer->format][img.format()];
                 if (func && (!clip || clip->hasRectClip)) {
-                    QRectF tr = qt_mapRect_non_normalizing(r, s->matrix);
+                    QRectF tr = bobui_mapRect_non_normalizing(r, s->matrix);
                     if (!s->flags.antialiased) {
                         tr.setX(qRound(tr.x()));
                         tr.setY(qRound(tr.y()));
@@ -2346,19 +2346,19 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
             }
         }
 
-        QTransform copy = s->matrix;
+        BOBUIransform copy = s->matrix;
         copy.translate(r.x(), r.y());
         if (stretch_sr)
             copy.scale(r.width() / sr.width(), r.height() / sr.height());
         copy.translate(-sr.x(), -sr.y());
 
         d->image_filler_xform.clip = clip;
-        d->image_filler_xform.initTexture(&img, s->intOpacity, QTextureData::Plain, toAlignedRect_positive(sr));
+        d->image_filler_xform.initTexture(&img, s->intOpacity, BOBUIextureData::Plain, toAlignedRect_positive(sr));
         if (!d->image_filler_xform.blend)
             return;
         d->image_filler_xform.setupMatrix(copy, s->flags.bilinear);
 
-        if (!s->flags.antialiased && s->matrix.type() == QTransform::TxScale) {
+        if (!s->flags.antialiased && s->matrix.type() == BOBUIransform::TxScale) {
             QRectF rr = s->matrix.mapRect(r);
 
             const int x1 = qRound(rr.x());
@@ -2370,9 +2370,9 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
             return;
         }
 
-#ifdef QT_FAST_SPANS
+#ifdef BOBUI_FAST_SPANS
         ensureRasterState();
-        if (s->flags.tx_noshear || s->matrix.type() == QTransform::TxScale) {
+        if (s->flags.tx_noshear || s->matrix.type() == BOBUIransform::TxScale) {
             d->initializeRasterizer(&d->image_filler_xform);
             d->rasterizer->setAntialiased(s->flags.antialiased);
 
@@ -2389,8 +2389,8 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
 #endif
         QPainterPath path;
         path.addRect(r);
-        QTransform m = s->matrix;
-        s->matrix = QTransform(m.m11(), m.m12(), m.m13(),
+        BOBUIransform m = s->matrix;
+        s->matrix = BOBUIransform(m.m11(), m.m12(), m.m13(),
                                m.m21(), m.m22(), m.m23(),
                                m.m31(), m.m32(), m.m33());
         fillPath(path, &d->image_filler_xform);
@@ -2419,7 +2419,7 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
         }
 
         d->image_filler.clip = clip;
-        d->image_filler.initTexture(&img, s->intOpacity, QTextureData::Plain, toAlignedRect_positive(sr));
+        d->image_filler.initTexture(&img, s->intOpacity, BOBUIextureData::Plain, toAlignedRect_positive(sr));
         if (!d->image_filler.blend)
             return;
         d->image_filler.dx = -(r.x() + s->matrix.dx()) + sr.x();
@@ -2442,7 +2442,7 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
 */
 void QRasterPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &sr)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " - QRasterPaintEngine::drawTiledPixmap(), r=" << r << "pixmap=" << pixmap.size();
 #endif
     Q_D(QRasterPaintEngine);
@@ -2462,21 +2462,21 @@ void QRasterPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap,
         image = d->rasterBuffer->colorizeBitmap(image, s->pen.color());
 
     const qreal pixmapDevicePixelRatio = pixmap.devicePixelRatio();
-    if (s->matrix.type() > QTransform::TxTranslate || pixmapDevicePixelRatio > qreal(1.0)) {
-        QTransform copy = s->matrix;
+    if (s->matrix.type() > BOBUIransform::TxTranslate || pixmapDevicePixelRatio > qreal(1.0)) {
+        BOBUIransform copy = s->matrix;
         copy.translate(r.x(), r.y());
         copy.translate(-sr.x(), -sr.y());
         const qreal inverseDpr = qreal(1.0) / pixmapDevicePixelRatio;
         copy.scale(inverseDpr, inverseDpr);
         d->image_filler_xform.clip = d->clip();
-        d->image_filler_xform.initTexture(&image, s->intOpacity, QTextureData::Tiled);
+        d->image_filler_xform.initTexture(&image, s->intOpacity, BOBUIextureData::Tiled);
         if (!d->image_filler_xform.blend)
             return;
         d->image_filler_xform.setupMatrix(copy, s->flags.bilinear);
 
-#ifdef QT_FAST_SPANS
+#ifdef BOBUI_FAST_SPANS
         ensureRasterState();
-        if (s->flags.tx_noshear || s->matrix.type() == QTransform::TxScale) {
+        if (s->flags.tx_noshear || s->matrix.type() == BOBUIransform::TxScale) {
             d->initializeRasterizer(&d->image_filler_xform);
             d->rasterizer->setAntialiased(s->flags.antialiased);
 
@@ -2496,7 +2496,7 @@ void QRasterPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap,
     } else {
         d->image_filler.clip = d->clip();
 
-        d->image_filler.initTexture(&image, s->intOpacity, QTextureData::Tiled);
+        d->image_filler.initTexture(&image, s->intOpacity, BOBUIextureData::Tiled);
         if (!d->image_filler.blend)
             return;
         d->image_filler.dx = -(r.x() + s->matrix.dx()) + sr.x();
@@ -2648,7 +2648,7 @@ void QRasterPaintEngine::alphaPenBlt(const void* src, int bpl, int depth, int rx
         return;
 
     const int NSPANS = 512;
-    QT_FT_Span spans[NSPANS];
+    BOBUI_FT_Span spans[NSPANS];
     int current = 0;
 
     const int x1 = x0 + w;
@@ -2842,8 +2842,8 @@ bool QRasterPaintEngine::drawCachedGlyphs(int numGlyphs, const glyph_t *glyphs,
             if (!verticalSubPixelPositions)
                 subPixelPosition.y = 0;
 
-            QTextureGlyphCache::GlyphAndSubPixelPosition glyph(glyphs[i], subPixelPosition);
-            const QTextureGlyphCache::Coord &c = cache->coords[glyph];
+            BOBUIextureGlyphCache::GlyphAndSubPixelPosition glyph(glyphs[i], subPixelPosition);
+            const BOBUIextureGlyphCache::Coord &c = cache->coords[glyph];
             if (c.isNull())
                 continue;
 
@@ -2867,8 +2867,8 @@ bool QRasterPaintEngine::drawCachedGlyphs(int numGlyphs, const glyph_t *glyphs,
                 // The current state transform has already been applied to the positions,
                 // so we prevent drawImage() from re-applying the transform by clearing
                 // the state for the duration of the call.
-                QTransform originalTransform = s->matrix;
-                s->matrix = QTransform();
+                BOBUIransform originalTransform = s->matrix;
+                s->matrix = BOBUIransform();
                 drawImage(QPoint(x, y), QImage(glyphBits, c.w, c.h, bpl, image.format()));
                 s->matrix = originalTransform;
             } else {
@@ -2906,7 +2906,7 @@ bool QRasterPaintEnginePrivate::isUnclipped_normalized(const QRect &r) const
         return (r.left() >= r1.left() && r.right() <= r1.right()
                 && r.top() >= r1.top() && r.bottom() <= r1.bottom());
     } else {
-        return qt_region_strictContains(cl->clipRegion, r);
+        return bobui_region_strictContains(cl->clipRegion, r);
     }
 }
 
@@ -2945,7 +2945,7 @@ bool QRasterPaintEnginePrivate::isUnclipped(const QRect &rect,
         return (r.left() >= r1.left() && r.right() <= r1.right()
                 && r.top() >= r1.top() && r.bottom() <= r1.bottom());
     } else {
-        return qt_region_strictContains(cl->clipRegion, r);
+        return bobui_region_strictContains(cl->clipRegion, r);
     }
 }
 
@@ -2981,7 +2981,7 @@ QRasterPaintEnginePrivate::getPenFunc(const QRectF &rect,
     Q_Q(const QRasterPaintEngine);
     const QRasterPaintEngineState *s = q->state();
 
-    if (!s->flags.fast_pen && s->matrix.type() > QTransform::TxTranslate)
+    if (!s->flags.fast_pen && s->matrix.type() > BOBUIransform::TxTranslate)
         return data->blend;
     const int penWidth = s->flags.fast_pen ? 1 : qCeil(s->lastPen.widthF());
     return isUnclipped(rect, penWidth) ? data->unclipped_blend : data->blend;
@@ -3037,15 +3037,15 @@ void QRasterPaintEngine::drawStaticTextItem(QStaticTextItem *textItem)
     ensurePen();
     ensureRasterState();
 
-    QTransform matrix = state()->matrix;
+    BOBUIransform matrix = state()->matrix;
 
     QFontEngine *fontEngine = textItem->fontEngine();
     if (shouldDrawCachedGlyphs(fontEngine, matrix)) {
         drawCachedGlyphs(textItem->numGlyphs, textItem->glyphs, textItem->glyphPositions,
                          fontEngine);
-    } else if (matrix.type() < QTransform::TxProject) {
+    } else if (matrix.type() < BOBUIransform::TxProject) {
         bool invertible;
-        QTransform invMat = matrix.inverted(&invertible);
+        BOBUIransform invMat = matrix.inverted(&invertible);
         if (!invertible)
             return;
 
@@ -3065,11 +3065,11 @@ void QRasterPaintEngine::drawStaticTextItem(QStaticTextItem *textItem)
 /*!
     \reimp
 */
-void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
+void QRasterPaintEngine::drawTextItem(const QPointF &p, const BOBUIextItem &textItem)
 {
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
+    const BOBUIextItemInt &ti = static_cast<const BOBUIextItemInt &>(textItem);
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     Q_D(QRasterPaintEngine);
     fprintf(stderr," - QRasterPaintEngine::drawTextItem(), (%.2f,%.2f), string=%s ct=%d\n",
            p.x(), p.y(), QStringView(ti.chars, ti.num_chars).toLatin1().data(),
@@ -3082,7 +3082,7 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
     ensureRasterState();
 
     QRasterPaintEngineState *s = state();
-    QTransform matrix = s->matrix;
+    BOBUIransform matrix = s->matrix;
 
     if (shouldDrawCachedGlyphs(ti.fontEngine, matrix)) {
         QVarLengthArray<QFixedPoint> positions;
@@ -3092,17 +3092,17 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
         ti.fontEngine->getGlyphPositions(ti.glyphs, matrix, ti.flags, glyphs, positions);
 
         drawCachedGlyphs(glyphs.size(), glyphs.constData(), positions.constData(), ti.fontEngine);
-    } else if (matrix.type() < QTransform::TxProject
+    } else if (matrix.type() < BOBUIransform::TxProject
                && ti.fontEngine->supportsTransformation(matrix)) {
         bool invertible;
-        QTransform invMat = matrix.inverted(&invertible);
+        BOBUIransform invMat = matrix.inverted(&invertible);
         if (!invertible)
             return;
 
         QVarLengthArray<QFixedPoint> positions;
         QVarLengthArray<glyph_t> glyphs;
 
-        ti.fontEngine->getGlyphPositions(ti.glyphs, QTransform::fromTranslate(p.x(), p.y()),
+        ti.fontEngine->getGlyphPositions(ti.glyphs, BOBUIransform::fromTranslate(p.x(), p.y()),
                                          ti.flags, glyphs, positions);
         const auto range = visibleGlyphRange(invMat.mapRect(clipBoundingRect()),
                                              ti.fontEngine, glyphs.data(), positions.data(),
@@ -3169,7 +3169,7 @@ void QRasterPaintEngine::drawPoints(const QPoint *points, int pointCount)
 */
 void QRasterPaintEngine::drawLines(const QLine *lines, int lineCount)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " - QRasterPaintEngine::drawLines(QLine*)" << lineCount;
 #endif
     Q_D(QRasterPaintEngine);
@@ -3200,7 +3200,7 @@ void QRasterPaintEnginePrivate::rasterizeLine_dashed(QLineF line,
     QRasterPaintEngineState *s = q->state();
 
     const QPen &pen = s->lastPen;
-    const bool squareCap = (pen.capStyle() == Qt::SquareCap);
+    const bool squareCap = (pen.capStyle() == BobUI::SquareCap);
     const QList<qreal> pattern = pen.dashPattern();
 
     qreal patternLength = 0;
@@ -3246,7 +3246,7 @@ void QRasterPaintEnginePrivate::rasterizeLine_dashed(QLineF line,
 */
 void QRasterPaintEngine::drawLines(const QLineF *lines, int lineCount)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << " - QRasterPaintEngine::drawLines(QLineF *)" << lineCount;
 #endif
     Q_D(QRasterPaintEngine);
@@ -3276,12 +3276,12 @@ void QRasterPaintEngine::drawEllipse(const QRectF &rect)
     QRasterPaintEngineState *s = state();
 
     ensurePen();
-    if (((qpen_style(s->lastPen) == Qt::SolidLine && s->flags.fast_pen)
-           || (qpen_style(s->lastPen) == Qt::NoPen))
+    if (((qpen_style(s->lastPen) == BobUI::SolidLine && s->flags.fast_pen)
+           || (qpen_style(s->lastPen) == BobUI::NoPen))
         && !s->flags.antialiased
-        && qMax(rect.width(), rect.height()) < QT_RASTER_COORD_LIMIT
+        && qMax(rect.width(), rect.height()) < BOBUI_RASTER_COORD_LIMIT
         && !rect.isEmpty()
-        && s->matrix.type() <= QTransform::TxScale) // no shear
+        && s->matrix.type() <= BOBUIransform::TxScale) // no shear
     {
         ensureBrush();
         const QRectF r = s->matrix.mapRect(rect);
@@ -3330,7 +3330,7 @@ void QRasterPaintEngine::releaseDC(HDC) const
 /*!
     \internal
 */
-bool QRasterPaintEngine::requiresPretransformedGlyphPositions(QFontEngine *fontEngine, const QTransform &m) const
+bool QRasterPaintEngine::requiresPretransformedGlyphPositions(QFontEngine *fontEngine, const BOBUIransform &m) const
 {
     // Cached glyphs always require pretransformed positions
     if (shouldDrawCachedGlyphs(fontEngine, m))
@@ -3344,10 +3344,10 @@ bool QRasterPaintEngine::requiresPretransformedGlyphPositions(QFontEngine *fontE
    Returns whether glyph caching is supported by the font engine
    \a fontEngine with the given transform \a m applied.
 */
-bool QRasterPaintEngine::shouldDrawCachedGlyphs(QFontEngine *fontEngine, const QTransform &m) const
+bool QRasterPaintEngine::shouldDrawCachedGlyphs(QFontEngine *fontEngine, const BOBUIransform &m) const
 {
     // The raster engine does not support projected cached glyph drawing
-    if (m.type() >= QTransform::TxProject)
+    if (m.type() >= BOBUIransform::TxProject)
         return false;
 
     // The font engine might not support filling the glyph cache
@@ -3382,7 +3382,7 @@ void QRasterPaintEngine::drawBitmap(const QPointF &pos, const QImage &image, QSp
     Q_ASSERT(image.depth() == 1);
 
     const int spanCount = 512;
-    QT_FT_Span spans[spanCount];
+    BOBUI_FT_Span spans[spanCount];
     int n = 0;
 
     // Boundaries
@@ -3527,7 +3527,7 @@ void QRasterPaintEnginePrivate::initializeRasterizer(QSpanData *data)
     rasterizer->initialize(blend, data);
 }
 
-void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
+void QRasterPaintEnginePrivate::rasterize(BOBUI_FT_Outline *outline,
                                           ProcessSpans callback,
                                           QSpanData *spanData, QRasterBuffer *rasterBuffer)
 {
@@ -3540,9 +3540,9 @@ void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
     if (!s->flags.antialiased) {
         initializeRasterizer(spanData);
 
-        const Qt::FillRule fillRule = outline->flags == QT_FT_OUTLINE_NONE
-                                      ? Qt::WindingFill
-                                      : Qt::OddEvenFill;
+        const BobUI::FillRule fillRule = outline->flags == BOBUI_FT_OUTLINE_NONE
+                                      ? BobUI::WindingFill
+                                      : BobUI::OddEvenFill;
 
         rasterizer->rasterize(outline, fillRule);
         return;
@@ -3552,7 +3552,7 @@ void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
 }
 
 extern "C" {
-int QT_MANGLE_NAMESPACE(q_gray_rendered_spans)(QT_FT_Raster raster);
+int BOBUI_MANGLE_NAMESPACE(q_gray_rendered_spans)(BOBUI_FT_Raster raster);
 }
 
 static inline uchar *alignAddress(uchar *address, quintptr alignmentMask)
@@ -3560,7 +3560,7 @@ static inline uchar *alignAddress(uchar *address, quintptr alignmentMask)
     return (uchar *)(((quintptr)address + alignmentMask) & ~alignmentMask);
 }
 
-void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
+void QRasterPaintEnginePrivate::rasterize(BOBUI_FT_Outline *outline,
                                           ProcessSpans callback,
                                           void *userData, QRasterBuffer *)
 {
@@ -3575,9 +3575,9 @@ void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
         rasterizer->setClipRect(deviceRect);
         rasterizer->initialize(callback, userData);
 
-        const Qt::FillRule fillRule = outline->flags == QT_FT_OUTLINE_NONE
-                                      ? Qt::WindingFill
-                                      : Qt::OddEvenFill;
+        const BobUI::FillRule fillRule = outline->flags == BOBUI_FT_OUTLINE_NONE
+                                      ? BobUI::WindingFill
+                                      : BobUI::OddEvenFill;
 
         rasterizer->rasterize(outline, fillRule);
         return;
@@ -3592,19 +3592,19 @@ void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
     uchar *rasterPoolBase = alignAddress(rasterPoolOnStack, 0xf);
     uchar *rasterPoolOnHeap = nullptr;
 
-    QT_MANGLE_NAMESPACE(qt_ft_grays_raster).raster_reset(*grayRaster.data(), rasterPoolBase, rasterPoolSize);
+    BOBUI_MANGLE_NAMESPACE(bobui_ft_grays_raster).raster_reset(*grayRaster.data(), rasterPoolBase, rasterPoolSize);
 
     void *data = userData;
 
-    QT_FT_BBox clip_box = { deviceRect.x(),
+    BOBUI_FT_BBox clip_box = { deviceRect.x(),
                             deviceRect.y(),
                             deviceRect.x() + deviceRect.width(),
                             deviceRect.y() + deviceRect.height() };
 
-    QT_FT_Raster_Params rasterParams;
+    BOBUI_FT_Raster_Params rasterParams;
     rasterParams.target = nullptr;
     rasterParams.source = outline;
-    rasterParams.flags = QT_FT_RASTER_FLAG_CLIP;
+    rasterParams.flags = BOBUI_FT_RASTER_FLAG_CLIP;
     rasterParams.gray_spans = nullptr;
     rasterParams.black_spans = nullptr;
     rasterParams.bit_test = nullptr;
@@ -3619,10 +3619,10 @@ void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
 
     while (!done) {
 
-        rasterParams.flags |= (QT_FT_RASTER_FLAG_AA | QT_FT_RASTER_FLAG_DIRECT);
+        rasterParams.flags |= (BOBUI_FT_RASTER_FLAG_AA | BOBUI_FT_RASTER_FLAG_DIRECT);
         rasterParams.gray_spans = callback;
         rasterParams.skip_spans = rendered_spans;
-        error = QT_MANGLE_NAMESPACE(qt_ft_grays_raster).raster_render(*grayRaster.data(), &rasterParams);
+        error = BOBUI_MANGLE_NAMESPACE(bobui_ft_grays_raster).raster_render(*grayRaster.data(), &rasterParams);
 
         // Out of memory, reallocate some more and try again...
         if (error == -6) { // ErrRaster_OutOfMemory from qgrayraster.c
@@ -3632,7 +3632,7 @@ void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
                 break;
             }
 
-            rendered_spans += QT_MANGLE_NAMESPACE(q_gray_rendered_spans)(*grayRaster.data());
+            rendered_spans += BOBUI_MANGLE_NAMESPACE(q_gray_rendered_spans)(*grayRaster.data());
 
             free(rasterPoolOnHeap);
             rasterPoolOnHeap = (uchar *)malloc(rasterPoolSize + 0xf);
@@ -3641,9 +3641,9 @@ void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
 
             rasterPoolBase = alignAddress(rasterPoolOnHeap, 0xf);
 
-            QT_MANGLE_NAMESPACE(qt_ft_grays_raster).raster_done(*grayRaster.data());
-            QT_MANGLE_NAMESPACE(qt_ft_grays_raster).raster_new(grayRaster.data());
-            QT_MANGLE_NAMESPACE(qt_ft_grays_raster).raster_reset(*grayRaster.data(), rasterPoolBase, rasterPoolSize);
+            BOBUI_MANGLE_NAMESPACE(bobui_ft_grays_raster).raster_done(*grayRaster.data());
+            BOBUI_MANGLE_NAMESPACE(bobui_ft_grays_raster).raster_new(grayRaster.data());
+            BOBUI_MANGLE_NAMESPACE(bobui_ft_grays_raster).raster_reset(*grayRaster.data(), rasterPoolBase, rasterPoolSize);
         } else {
             done = true;
         }
@@ -3670,7 +3670,7 @@ void QRasterPaintEnginePrivate::recalculateFastImages()
     QRasterPaintEngineState *s = q->state();
 
     s->flags.fast_images = !(s->renderHints & QPainter::SmoothPixmapTransform)
-                           && s->matrix.type() <= QTransform::TxShear;
+                           && s->matrix.type() <= BOBUIransform::TxShear;
 }
 
 bool QRasterPaintEnginePrivate::canUseFastImageBlending(QPainter::CompositionMode mode, const QImage &image) const
@@ -3694,7 +3694,7 @@ bool QRasterPaintEnginePrivate::canUseImageBlitting(QPainter::CompositionMode mo
         return false;
 
     const QRasterPaintEngineState *s = q->state();
-    Q_ASSERT(s->matrix.type() <= QTransform::TxTranslate || s->matrix.type() == QTransform::TxRotate);
+    Q_ASSERT(s->matrix.type() <= BOBUIransform::TxTranslate || s->matrix.type() == BOBUIransform::TxRotate);
 
     if (s->intOpacity != 256
         || image.depth() < 8
@@ -3706,7 +3706,7 @@ bool QRasterPaintEnginePrivate::canUseImageBlitting(QPainter::CompositionMode mo
     QImage::Format sFormat = image.format();
     // Formats must match or source format must be an opaque version of destination format
     if (dFormat != sFormat && image.pixelFormat().alphaUsage() == QPixelFormat::IgnoresAlpha)
-        dFormat = qt_maybeDataCompatibleOpaqueVersion(dFormat);
+        dFormat = bobui_maybeDataCompatibleOpaqueVersion(dFormat);
     return (dFormat == sFormat);
 }
 
@@ -3748,8 +3748,8 @@ void QRasterBuffer::init()
 QImage::Format QRasterBuffer::prepare(QImage *image)
 {
     m_buffer = (uchar *)image->bits();
-    m_width = qMin(QT_RASTER_COORD_LIMIT, image->width());
-    m_height = qMin(QT_RASTER_COORD_LIMIT, image->height());
+    m_width = qMin(BOBUI_RASTER_COORD_LIMIT, image->width());
+    m_height = qMin(BOBUI_RASTER_COORD_LIMIT, image->height());
     bytes_per_pixel = image->depth()/8;
     bytes_per_line = image->bytesPerLine();
 
@@ -3796,16 +3796,16 @@ void QClipData::initialize()
         m_clipLines = (ClipLine *)calloc(clipSpanHeight, sizeof(ClipLine));
 
     Q_CHECK_PTR(m_clipLines);
-    QT_TRY {
+    BOBUI_TRY {
         allocated = clipSpanHeight;
         count = 0;
-        QT_TRY {
+        BOBUI_TRY {
             if (hasRegionClip) {
                 const auto rects = clipRegion.begin();
                 const int numRects = clipRegion.rectCount();
                 const int maxSpans = (ymax - ymin) * numRects;
                 allocated = qMax(allocated, maxSpans);
-                m_spans = (QT_FT_Span *)malloc(allocated * sizeof(QT_FT_Span));
+                m_spans = (BOBUI_FT_Span *)malloc(allocated * sizeof(BOBUI_FT_Span));
                 Q_CHECK_PTR(m_spans);
 
                 int y = 0;
@@ -3831,7 +3831,7 @@ void QClipData::initialize()
 
                         for (int r = firstInBand; r <= lastInBand; ++r) {
                             const QRect &currRect = rects[r];
-                            QT_FT_Span *span = m_spans + count;
+                            BOBUI_FT_Span *span = m_spans + count;
                             span->x = currRect.x();
                             span->len = currRect.width();
                             span->y = y;
@@ -3855,7 +3855,7 @@ void QClipData::initialize()
                 return;
             }
 
-            m_spans = (QT_FT_Span *)malloc(allocated * sizeof(QT_FT_Span));
+            m_spans = (BOBUI_FT_Span *)malloc(allocated * sizeof(BOBUI_FT_Span));
             Q_CHECK_PTR(m_spans);
 
             if (hasRectClip) {
@@ -3868,7 +3868,7 @@ void QClipData::initialize()
 
                 const int len = clipRect.width();
                 while (y < ymax) {
-                    QT_FT_Span *span = m_spans + count;
+                    BOBUI_FT_Span *span = m_spans + count;
                     span->x = xmin;
                     span->len = len;
                     span->y = y;
@@ -3886,15 +3886,15 @@ void QClipData::initialize()
                     ++y;
                 }
             }
-        } QT_CATCH(...) {
+        } BOBUI_CATCH(...) {
             free(m_spans); // have to free m_spans again or someone might think that we were successfully initialized.
             m_spans = nullptr;
-            QT_RETHROW;
+            BOBUI_RETHROW;
         }
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         free(m_clipLines); // same for clipLines
         m_clipLines = nullptr;
-        QT_RETHROW;
+        BOBUI_RETHROW;
     }
 }
 
@@ -3918,7 +3918,7 @@ void QClipData::fixup()
     bool isRect = true;
 
     for (int i = 0; i < count; ++i) {
-        QT_FT_Span_& span = m_spans[i];
+        BOBUI_FT_Span_& span = m_spans[i];
 
         if (span.y != y) {
             if (span.y != y + 1 && y != -1)
@@ -4007,16 +4007,16 @@ void QClipData::setClipRegion(const QRegion &region)
     \internal
     spans must be sorted on y
 */
-static const QT_FT_Span *qt_intersect_spans(const QClipData *clip, int *currentClip,
-                                            const QT_FT_Span *spans, const QT_FT_Span *end,
-                                            QT_FT_Span **outSpans, int available)
+static const BOBUI_FT_Span *bobui_intersect_spans(const QClipData *clip, int *currentClip,
+                                            const BOBUI_FT_Span *spans, const BOBUI_FT_Span *end,
+                                            BOBUI_FT_Span **outSpans, int available)
 {
     const_cast<QClipData *>(clip)->initialize();
 
-    QT_FT_Span *out = *outSpans;
+    BOBUI_FT_Span *out = *outSpans;
 
-    const QT_FT_Span *clipSpans = clip->m_spans + *currentClip;
-    const QT_FT_Span *clipEnd = clip->m_spans + clip->count;
+    const BOBUI_FT_Span *clipSpans = clip->m_spans + *currentClip;
+    const BOBUI_FT_Span *clipEnd = clip->m_spans + clip->count;
 
     while (available && spans < end ) {
         if (clipSpans >= clipEnd) {
@@ -4054,7 +4054,7 @@ static const QT_FT_Span *qt_intersect_spans(const QClipData *clip, int *currentC
             out->x = qMax(sx1, cx1);
             out->len = qMin(sx2, cx2) - out->x;
             out->y = spans->y;
-            out->coverage = qt_div_255(spans->coverage * clipSpans->coverage);
+            out->coverage = bobui_div_255(spans->coverage * clipSpans->coverage);
             ++out;
             --available;
         }
@@ -4070,20 +4070,20 @@ static const QT_FT_Span *qt_intersect_spans(const QClipData *clip, int *currentC
     return spans;
 }
 
-static void qt_span_fill_clipped(int spanCount, const QT_FT_Span *spans, void *userData)
+static void bobui_span_fill_clipped(int spanCount, const BOBUI_FT_Span *spans, void *userData)
 {
-//     qDebug() << "qt_span_fill_clipped" << spanCount;
+//     qDebug() << "bobui_span_fill_clipped" << spanCount;
     QSpanData *fillData = reinterpret_cast<QSpanData *>(userData);
 
     Q_ASSERT(fillData->blend && fillData->unclipped_blend);
 
     const int NSPANS = 512;
-    Q_DECL_UNINITIALIZED QT_FT_Span cspans[NSPANS];
+    Q_DECL_UNINITIALIZED BOBUI_FT_Span cspans[NSPANS];
     int currentClip = 0;
-    const QT_FT_Span *end = spans + spanCount;
+    const BOBUI_FT_Span *end = spans + spanCount;
     while (spans < end) {
-        QT_FT_Span *clipped = cspans;
-        spans = qt_intersect_spans(fillData->clip, &currentClip, spans, end, &clipped, NSPANS);
+        BOBUI_FT_Span *clipped = cspans;
+        spans = bobui_intersect_spans(fillData->clip, &currentClip, spans, end, &clipped, NSPANS);
 //         qDebug() << "processed " << spanCount - (end - spans) << "clipped" << clipped-cspans
 //                  << "span:" << cspans->x << cspans->y << cspans->len << spans->coverage;
 
@@ -4097,7 +4097,7 @@ static void qt_span_fill_clipped(int spanCount, const QT_FT_Span *spans, void *u
     Clip spans to \a{clip}-rectangle.
     Returns number of unclipped spans
 */
-static int qt_intersect_spans(QT_FT_Span *&spans, int numSpans,
+static int bobui_intersect_spans(BOBUI_FT_Span *&spans, int numSpans,
                               const QRect &clip)
 {
     const int minx = clip.left();
@@ -4105,14 +4105,14 @@ static int qt_intersect_spans(QT_FT_Span *&spans, int numSpans,
     const int maxx = clip.right();
     const int maxy = clip.bottom();
 
-    QT_FT_Span *end = spans + numSpans;
+    BOBUI_FT_Span *end = spans + numSpans;
     while (spans < end) {
         if (spans->y >= miny)
             break;
         ++spans;
     }
 
-    QT_FT_Span *s = spans;
+    BOBUI_FT_Span *s = spans;
     while (s < end) {
         if (s->y > maxy)
             break;
@@ -4134,7 +4134,7 @@ static int qt_intersect_spans(QT_FT_Span *&spans, int numSpans,
 }
 
 
-static void qt_span_fill_clipRect(int count, const QT_FT_Span *spans,
+static void bobui_span_fill_clipRect(int count, const BOBUI_FT_Span *spans,
                                   void *userData)
 {
     QSpanData *fillData = reinterpret_cast<QSpanData *>(userData);
@@ -4143,49 +4143,49 @@ static void qt_span_fill_clipRect(int count, const QT_FT_Span *spans,
     Q_ASSERT(fillData->clip);
     Q_ASSERT(!fillData->clip->clipRect.isEmpty());
 
-    QT_FT_Span *s = const_cast<QT_FT_Span *>(spans);
+    BOBUI_FT_Span *s = const_cast<BOBUI_FT_Span *>(spans);
     // hw: check if this const_cast<> is safe!!!
-    count = qt_intersect_spans(s, count,
+    count = bobui_intersect_spans(s, count,
                                fillData->clip->clipRect);
     if (count > 0)
         fillData->unclipped_blend(count, s, fillData);
 }
 
-static void qt_span_clip(int count, const QT_FT_Span *spans, void *userData)
+static void bobui_span_clip(int count, const BOBUI_FT_Span *spans, void *userData)
 {
     ClipData *clipData = reinterpret_cast<ClipData *>(userData);
 
-//     qDebug() << " qt_span_clip: " << count << clipData->operation;
+//     qDebug() << " bobui_span_clip: " << count << clipData->operation;
 //     for (int i = 0; i < qMin(count, 10); ++i) {
 //         qDebug() << "    " << spans[i].x << spans[i].y << spans[i].len << spans[i].coverage;
 //     }
 
     switch (clipData->operation) {
 
-    case Qt::IntersectClip:
+    case BobUI::IntersectClip:
         {
             QClipData *newClip = clipData->newClip;
             newClip->initialize();
 
             int currentClip = 0;
-            const QT_FT_Span *end = spans + count;
+            const BOBUI_FT_Span *end = spans + count;
             while (spans < end) {
-                QT_FT_Span *newspans = newClip->m_spans + newClip->count;
-                spans = qt_intersect_spans(clipData->oldClip, &currentClip, spans, end,
+                BOBUI_FT_Span *newspans = newClip->m_spans + newClip->count;
+                spans = bobui_intersect_spans(clipData->oldClip, &currentClip, spans, end,
                                            &newspans, newClip->allocated - newClip->count);
                 newClip->count = newspans - newClip->m_spans;
                 if (spans < end) {
-                    newClip->m_spans = q_check_ptr((QT_FT_Span *)realloc(newClip->m_spans, newClip->allocated * 2 * sizeof(QT_FT_Span)));
+                    newClip->m_spans = q_check_ptr((BOBUI_FT_Span *)realloc(newClip->m_spans, newClip->allocated * 2 * sizeof(BOBUI_FT_Span)));
                     newClip->allocated *= 2;
                 }
             }
         }
         break;
 
-    case Qt::ReplaceClip:
+    case BobUI::ReplaceClip:
         clipData->newClip->appendSpans(spans, count);
         break;
-    case Qt::NoClip:
+    case BobUI::NoClip:
         break;
     }
 }
@@ -4445,7 +4445,7 @@ void QGradientCache::generateGradientColorTable(const QGradient& gradient, QRgba
     colorTable[size - 1] = current_color;
 }
 
-Q_GLOBAL_STATIC(QGradientCache, qt_gradient_cache)
+Q_GLOBAL_STATIC(QGradientCache, bobui_gradient_cache)
 
 
 void QSpanData::init(QRasterBuffer *rb, const QRasterPaintEngine *pe)
@@ -4459,15 +4459,15 @@ void QSpanData::init(QRasterBuffer *rb, const QRasterPaintEngine *pe)
     clip = pe ? pe->d_func()->clip() : nullptr;
 }
 
-Q_GUI_EXPORT extern QImage qt_imageForBrush(int brushStyle, bool invert);
+Q_GUI_EXPORT extern QImage bobui_imageForBrush(int brushStyle, bool invert);
 
 void QSpanData::setup(const QBrush &brush, int alpha, QPainter::CompositionMode compositionMode,
                       bool isCosmetic)
 {
-    Qt::BrushStyle brushStyle = qbrush_style(brush);
+    BobUI::BrushStyle brushStyle = qbrush_style(brush);
     cachedGradient.reset();
     switch (brushStyle) {
-    case Qt::SolidPattern: {
+    case BobUI::SolidPattern: {
         type = Solid;
         QColor c = qbrush_color(brush);
         solidColor = qPremultiplyWithExtraAlpha(c, alpha);
@@ -4476,15 +4476,15 @@ void QSpanData::setup(const QBrush &brush, int alpha, QPainter::CompositionMode 
         break;
     }
 
-    case Qt::LinearGradientPattern:
+    case BobUI::LinearGradientPattern:
         {
             type = LinearGradient;
             const QLinearGradient *g = static_cast<const QLinearGradient *>(brush.gradient());
             gradient.alphaColor = !brush.isOpaque() || alpha != 256;
 
-            auto cacheInfo = qt_gradient_cache()->getBuffer(*g, alpha);
+            auto cacheInfo = bobui_gradient_cache()->getBuffer(*g, alpha);
             gradient.colorTable32 = cacheInfo->buffer32;
-#if QT_CONFIG(raster_64bit) || QT_CONFIG(raster_fp)
+#if BOBUI_CONFIG(raster_64bit) || BOBUI_CONFIG(raster_fp)
             gradient.colorTable64 = cacheInfo->buffer64;
 #endif
             cachedGradient = std::move(cacheInfo);
@@ -4500,15 +4500,15 @@ void QSpanData::setup(const QBrush &brush, int alpha, QPainter::CompositionMode 
             break;
         }
 
-    case Qt::RadialGradientPattern:
+    case BobUI::RadialGradientPattern:
         {
             type = RadialGradient;
             const QRadialGradient *g = static_cast<const QRadialGradient *>(brush.gradient());
             gradient.alphaColor = !brush.isOpaque() || alpha != 256;
 
-            auto cacheInfo = qt_gradient_cache()->getBuffer(*g, alpha);
+            auto cacheInfo = bobui_gradient_cache()->getBuffer(*g, alpha);
             gradient.colorTable32 = cacheInfo->buffer32;
-#if QT_CONFIG(raster_64bit) || QT_CONFIG(raster_fp)
+#if BOBUI_CONFIG(raster_64bit) || BOBUI_CONFIG(raster_fp)
             gradient.colorTable64 = cacheInfo->buffer64;
 #endif
             cachedGradient = std::move(cacheInfo);
@@ -4528,15 +4528,15 @@ void QSpanData::setup(const QBrush &brush, int alpha, QPainter::CompositionMode 
         }
         break;
 
-    case Qt::ConicalGradientPattern:
+    case BobUI::ConicalGradientPattern:
         {
             type = ConicalGradient;
             const QConicalGradient *g = static_cast<const QConicalGradient *>(brush.gradient());
             gradient.alphaColor = !brush.isOpaque() || alpha != 256;
 
-            auto cacheInfo = qt_gradient_cache()->getBuffer(*g, alpha);
+            auto cacheInfo = bobui_gradient_cache()->getBuffer(*g, alpha);
             gradient.colorTable32 = cacheInfo->buffer32;
-#if QT_CONFIG(raster_64bit) || QT_CONFIG(raster_fp)
+#if BOBUI_CONFIG(raster_64bit) || BOBUI_CONFIG(raster_fp)
             gradient.colorTable64 = cacheInfo->buffer64;
 #endif
             cachedGradient = std::move(cacheInfo);
@@ -4552,26 +4552,26 @@ void QSpanData::setup(const QBrush &brush, int alpha, QPainter::CompositionMode 
         }
         break;
 
-    case Qt::Dense1Pattern:
-    case Qt::Dense2Pattern:
-    case Qt::Dense3Pattern:
-    case Qt::Dense4Pattern:
-    case Qt::Dense5Pattern:
-    case Qt::Dense6Pattern:
-    case Qt::Dense7Pattern:
-    case Qt::HorPattern:
-    case Qt::VerPattern:
-    case Qt::CrossPattern:
-    case Qt::BDiagPattern:
-    case Qt::FDiagPattern:
-    case Qt::DiagCrossPattern:
+    case BobUI::Dense1Pattern:
+    case BobUI::Dense2Pattern:
+    case BobUI::Dense3Pattern:
+    case BobUI::Dense4Pattern:
+    case BobUI::Dense5Pattern:
+    case BobUI::Dense6Pattern:
+    case BobUI::Dense7Pattern:
+    case BobUI::HorPattern:
+    case BobUI::VerPattern:
+    case BobUI::CrossPattern:
+    case BobUI::BDiagPattern:
+    case BobUI::FDiagPattern:
+    case BobUI::DiagCrossPattern:
         type = Texture;
         if (!tempImage)
             tempImage = new QImage();
-        *tempImage = rasterBuffer->colorizeBitmap(qt_imageForBrush(brushStyle, true), brush.color());
-        initTexture(tempImage, alpha, isCosmetic ? QTextureData::Pattern : QTextureData::Tiled);
+        *tempImage = rasterBuffer->colorizeBitmap(bobui_imageForBrush(brushStyle, true), brush.color());
+        initTexture(tempImage, alpha, isCosmetic ? BOBUIextureData::Pattern : BOBUIextureData::Tiled);
         break;
-    case Qt::TexturePattern:
+    case BobUI::TexturePattern:
         type = Texture;
         if (!tempImage)
             tempImage = new QImage();
@@ -4580,10 +4580,10 @@ void QSpanData::setup(const QBrush &brush, int alpha, QPainter::CompositionMode 
             *tempImage = rasterBuffer->colorizeBitmap(brush.textureImage(), brush.color());
         else
             *tempImage = brush.textureImage();
-        initTexture(tempImage, alpha, QTextureData::Tiled, tempImage->rect());
+        initTexture(tempImage, alpha, BOBUIextureData::Tiled, tempImage->rect());
         break;
 
-    case Qt::NoBrush:
+    case BobUI::NoBrush:
     default:
         type = None;
         break;
@@ -4630,19 +4630,19 @@ void QSpanData::adjustSpanMethods()
     } else if (!clip) {
         blend = unclipped_blend;
     } else if (clip->hasRectClip) {
-        blend = clip->clipRect.isEmpty() ? nullptr : qt_span_fill_clipRect;
+        blend = clip->clipRect.isEmpty() ? nullptr : bobui_span_fill_clipRect;
     } else {
-        blend = qt_span_fill_clipped;
+        blend = bobui_span_fill_clipped;
     }
 }
 
-void QSpanData::setupMatrix(const QTransform &matrix, int bilin)
+void QSpanData::setupMatrix(const BOBUIransform &matrix, int bilin)
 {
-    QTransform delta;
+    BOBUIransform delta;
     // make sure we round off correctly in qdrawhelper.cpp
     delta.translate(1.0 / 65536, 1.0 / 65536);
 
-    QTransform inv = (delta * matrix).inverted();
+    BOBUIransform inv = (delta * matrix).inverted();
     m11 = inv.m11();
     m12 = inv.m12();
     m13 = inv.m13();
@@ -4669,7 +4669,7 @@ void QSpanData::setupMatrix(const QTransform &matrix, int bilin)
     adjustSpanMethods();
 }
 
-void QSpanData::initTexture(const QImage *image, int alpha, QTextureData::Type _type, const QRect &sourceRect)
+void QSpanData::initTexture(const QImage *image, int alpha, BOBUIextureData::Type _type, const QRect &sourceRect)
 {
     const QImageData *d = const_cast<QImage *>(image)->data_ptr();
     if (!d || d->height == 0) {
@@ -4726,8 +4726,8 @@ static inline void drawEllipsePoints(int x, int y, int length,
     if (length == 0)
         return;
 
-    QT_FT_Span _outline[4];
-    QT_FT_Span *outline = _outline;
+    BOBUI_FT_Span _outline[4];
+    BOBUI_FT_Span *outline = _outline;
     const int midx = rect.x() + (rect.width() + 1) / 2;
     const int midy = rect.y() + (rect.height() + 1) / 2;
 
@@ -4759,8 +4759,8 @@ static inline void drawEllipsePoints(int x, int y, int length,
     outline[3].coverage = 255;
 
     if (brush_func && outline[0].x + outline[0].len < outline[1].x) {
-        QT_FT_Span _fill[2];
-        QT_FT_Span *fill = _fill;
+        BOBUI_FT_Span _fill[2];
+        BOBUI_FT_Span *fill = _fill;
 
         // top fill
         fill[0].x = outline[0].x + outline[0].len - 1;
@@ -4775,13 +4775,13 @@ static inline void drawEllipsePoints(int x, int y, int length,
         fill[1].coverage = 255;
 
         int n = (fill[0].y >= fill[1].y ? 1 : 2);
-        n = qt_intersect_spans(fill, n, clip);
+        n = bobui_intersect_spans(fill, n, clip);
         if (n > 0)
             brush_func(n, fill, brush_data);
     }
     if (pen_func) {
         int n = (outline[1].y >= outline[2].y ? 2 : 4);
-        n = qt_intersect_spans(outline, n, clip);
+        n = bobui_intersect_spans(outline, n, clip);
         if (n > 0)
             pen_func(n, outline, pen_data);
     }
@@ -4842,7 +4842,7 @@ static void drawEllipse_midpoint_i(const QRect &rect, const QRect &clip,
 */
 
 
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
 void dumpClip(int width, int height, const QClipData *clip)
 {
     QImage clipImg(width, height, QImage::Format_ARGB32_Premultiplied);
@@ -4856,7 +4856,7 @@ void dumpClip(int width, int height, const QClipData *clip)
     ((QClipData *) clip)->spans(); // Force allocation of the spans structure...
 
     for (int i = 0; i < clip->count; ++i) {
-        const QT_FT_Span *span = ((QClipData *) clip)->spans() + i;
+        const BOBUI_FT_Span *span = ((QClipData *) clip)->spans() + i;
         for (int j = 0; j < span->len; ++j)
             clipImg.setPixel(span->x + j, span->y, 0xffffff00);
         x0 = qMin(x0, int(span->x));
@@ -4879,4 +4879,4 @@ void dumpClip(int width, int height, const QClipData *clip)
 #endif
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SCRIBBLEAREA_H
 #define SCRIBBLEAREA_H
@@ -44,7 +44,7 @@ private:
     bool modified = false;
     bool scribbling = false;
     int myPenWidth = 1;
-    QColor myPenColor = Qt::blue;
+    QColor myPenColor = BobUI::blue;
     QImage image;
     QPoint lastPoint;
 };

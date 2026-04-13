@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLCACHEDRESULT_P_H
 #define QSQLCACHEDRESULT_P_H
@@ -9,19 +9,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtSql/private/qtsqlglobal_p.h>
-#include "QtSql/qsqlresult.h"
-#include "QtSql/private/qsqlresult_p.h"
-#include <QtCore/qcontainerfwd.h>
+#include <BobUISql/private/bobuisqlglobal_p.h>
+#include "BobUISql/qsqlresult.h"
+#include "BobUISql/private/qsqlresult_p.h"
+#include <BobUICore/qcontainerfwd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVariant;
 
@@ -81,6 +81,6 @@ public:
     bool atEnd = false;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLCACHEDRESULT_P_H

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (C) 2025 Klaralvdalens Datakonsult AB (KDAB)
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 set -e
 
@@ -18,7 +18,7 @@ wget "$downloadURL" -O tika-mimetypes.xml.orig
 ./process_tika_mimetypes.py
 
 # Update attribution file
-jsonfile="qt_attribution.json"
+jsonfile="bobui_attribution.json"
 
 sed_inplace() {
     if sed --version 2>/dev/null | grep -q GNU; then

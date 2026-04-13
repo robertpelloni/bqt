@@ -1,24 +1,24 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qlogging LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_executable(qlogging_helper
+bobui_internal_add_executable(qlogging_helper
     NO_INSTALL
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     SOURCES qlogging_helper.cpp ../../../../shared/disablecoredumps.cpp
-    DEFINES QT_MESSAGELOGCONTEXT
-    LIBRARIES Qt::Core)
+    DEFINES BOBUI_MESSAGELOGCONTEXT
+    LIBRARIES BobUI::Core)
 
-qt_internal_add_executable(qlogging_race_helper
+bobui_internal_add_executable(qlogging_race_helper
     NO_INSTALL
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     SOURCES qlogging_race_helper.cpp ../../../../shared/disablecoredumps.cpp
-    LIBRARIES Qt::Core
+    LIBRARIES BobUI::Core
 )
 
 # Fixes required for the backtrace stack to be correct
@@ -27,14 +27,14 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT MINGW)
 endif()
 set_target_properties(qlogging_helper PROPERTIES CXX_VISIBILITY_PRESET default)
 
-qt_internal_add_test(tst_qlogging SOURCES tst_qlogging.cpp
+bobui_internal_add_test(tst_qlogging SOURCES tst_qlogging.cpp
     DEFINES
-        QT_MESSAGELOGCONTEXT
+        BOBUI_MESSAGELOGCONTEXT
 )
 
 add_dependencies(tst_qlogging qlogging_helper qlogging_race_helper)
 
-qt_internal_add_test(tst_qmessagelogger SOURCES tst_qmessagelogger.cpp
+bobui_internal_add_test(tst_qmessagelogger SOURCES tst_qmessagelogger.cpp
     DEFINES
-        QT_MESSAGELOGCONTEXT
+        BOBUI_MESSAGELOGCONTEXT
 )

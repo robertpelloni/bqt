@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [main program]
 //! [first part]
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QLabel *queryLabel = new QLabel(
         QApplication::translate("nestedlayouts", "Query:"));
     QLineEdit *queryEdit = new QLineEdit();
-    QTableView *resultView = new QTableView();
+    BOBUIableView *resultView = new BOBUIableView();
 
     QHBoxLayout *queryLayout = new QHBoxLayout();
     queryLayout->addWidget(queryLabel);

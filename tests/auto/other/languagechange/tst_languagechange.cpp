@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QTimer>
+#include <BOBUIest>
+#include <BOBUIimer>
 
 #include <qapplication.h>
 #include <private/qguiapplication_p.h>
-#include <QtCore/QSet>
-#include <QtCore/QFile>
-#include <QtCore/QTranslator>
-#include <QtCore/QTemporaryDir>
-#include <private/qthread_p.h>
+#include <BobUICore/QSet>
+#include <BobUICore/QFile>
+#include <BobUICore/BOBUIranslator>
+#include <BobUICore/BOBUIemporaryDir>
+#include <private/bobuihread_p.h>
 #include <qpa/qplatformtheme.h>
-#include <QtWidgets/QInputDialog>
-#include <QtWidgets/QColorDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFileDialog>
+#include <BobUIWidgets/QInputDialog>
+#include <BobUIWidgets/QColorDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFileDialog>
 
 class tst_languageChange : public QObject
 {
@@ -53,12 +53,12 @@ void tst_languageChange::cleanupTestCase()
 /**
  * Records all calls to translate()
  */
-class TransformTranslator : public QTranslator
+class TransformTranslator : public BOBUIranslator
 {
     Q_OBJECT
 public:
-    TransformTranslator() : QTranslator() {}
-    TransformTranslator(QObject *parent) : QTranslator(parent) {}
+    TransformTranslator() : BOBUIranslator() {}
+    TransformTranslator(QObject *parent) : BOBUIranslator(parent) {}
     QString translate(const char *context, const char *sourceText,
                               const char *disambiguation = 0, int = -1) const override
     {
@@ -96,7 +96,7 @@ class LanguageTestStateMachine : public QObject
 {
     Q_OBJECT
 public:
-    LanguageTestStateMachine(QTranslator *translator);
+    LanguageTestStateMachine(BOBUIranslator *translator);
     void start() { m_timer.start(); }
 
 private slots:
@@ -105,12 +105,12 @@ private slots:
 private:
     enum State { InstallTranslator, CloseDialog };
 
-    QTimer m_timer;
-    QTranslator *m_translator;
+    BOBUIimer m_timer;
+    BOBUIranslator *m_translator;
     State m_state;
 };
 
-LanguageTestStateMachine::LanguageTestStateMachine(QTranslator *translator) :
+LanguageTestStateMachine::LanguageTestStateMachine(BOBUIranslator *translator) :
     m_translator(translator), m_state(InstallTranslator)
 {
     m_timer.setInterval(500);
@@ -144,15 +144,15 @@ Q_DECLARE_METATYPE(TranslationSet)
 
 void tst_languageChange::retranslatability_data()
 {
-    QTest::addColumn<int>("dialogType");
-    QTest::addColumn<TranslationSet >("expected");
+    BOBUIest::addColumn<int>("dialogType");
+    BOBUIest::addColumn<TranslationSet >("expected");
 
     //next we fill it with data
-    QTest::newRow( "QInputDialog" )
+    BOBUIest::newRow( "QInputDialog" )
         << int(InputDialog) << (QSet<QByteArray>()
                     << "QPlatformTheme::Cancel");
 
-    QTest::newRow( "QColorDialog" )
+    BOBUIest::newRow( "QColorDialog" )
         << int(ColorDialog) << (QSet<QByteArray>()
                     << "QPlatformTheme::Cancel"
                     << "QColorDialog::&Sat:"
@@ -166,7 +166,7 @@ void tst_languageChange::retranslatability_data()
                     << "QColorDialog::&Val:"
                     << "QColorDialog::Hu&e:");
 
-    QTest::newRow( "QFileDialog" )
+    BOBUIest::newRow( "QFileDialog" )
         << int(FileDialog) << (QSet<QByteArray>()
                     << "QFileDialog::All Files (*)"
                     << "QFileDialog::Back"
@@ -210,7 +210,7 @@ void tst_languageChange::retranslatability()
         QSKIP("The input data are not suitable for this layout (QDialogButtonBox::GnomeLayout)");
 
     // This will always be queried for when a language changes
-    expected.insert("QGuiApplication::QT_LAYOUT_DIRECTION::Translate this string to the string 'LTR' in left-to-right "
+    expected.insert("QGuiApplication::BOBUI_LAYOUT_DIRECTION::Translate this string to the string 'LTR' in left-to-right "
                     "languages or to 'RTL' in right-to-left languages (such as Hebrew and Arabic) to "
                     "get proper widget layout.");
 
@@ -238,7 +238,7 @@ void tst_languageChange::retranslatability()
         if (!tempDirPattern.endsWith(QLatin1Char('/')))
             tempDirPattern += QLatin1Char('/');
         tempDirPattern += QStringLiteral("languagechangetestdirXXXXXX");
-        QTemporaryDir temporaryDir(tempDirPattern);
+        BOBUIemporaryDir temporaryDir(tempDirPattern);
         temporaryDir.setAutoRemove(true);
         QVERIFY2(temporaryDir.isValid(), qPrintable(temporaryDir.errorString()));
         const QString finalDir = temporaryDir.path() + QStringLiteral("/finaldir");
@@ -254,7 +254,7 @@ void tst_languageChange::retranslatability()
         dlg.setViewMode(QFileDialog::Detail);
         stateMachine.start();
         dlg.exec();
-        QTest::qWait(3000);
+        BOBUIest::qWait(3000);
         break; }
     }
 
@@ -282,5 +282,5 @@ void tst_languageChange::retranslatability()
     QVERIFY(expected.isEmpty());
 }
 
-QTEST_MAIN(tst_languageChange)
+BOBUIEST_MAIN(tst_languageChange)
 #include "tst_languagechange.moc"

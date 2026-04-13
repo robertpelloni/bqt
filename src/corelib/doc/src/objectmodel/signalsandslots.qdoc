@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page signalsandslots.html
     \title Signals & Slots
     \keyword Signals and Slots
-    \ingroup qt-basic-concepts
-    \brief An overview of Qt's signals and slots inter-object
+    \ingroup bobui-basic-concepts
+    \brief An overview of BobUI's signals and slots inter-object
     communication mechanism.
     \ingroup explanations-basics
     Signals and slots are used for communication between objects. The
-    signals and slots mechanism is a central feature of Qt and
+    signals and slots mechanism is a central feature of BobUI and
     probably the part that differs most from the features provided by
-    other frameworks. Signals and slots are made possible by Qt's
+    other frameworks. Signals and slots are made possible by BobUI's
     \l{The Meta-Object System}{meta-object system}.
 
     \section1 Introduction
@@ -34,12 +34,12 @@
 
     \section1 Signals and Slots
 
-    In Qt, we have an alternative to the callback technique: We use
+    In BobUI, we have an alternative to the callback technique: We use
     signals and slots. A signal is emitted when a particular event
-    occurs. Qt's widgets have many predefined signals, but we can
+    occurs. BobUI's widgets have many predefined signals, but we can
     always subclass widgets to add our own signals to them. A slot
     is a function that is called in response to a particular signal.
-    Qt's widgets have many pre-defined slots, but it is common
+    BobUI's widgets have many pre-defined slots, but it is common
     practice to subclass widgets and add your own slots so that you
     can handle the signals that you are interested in.
 
@@ -57,7 +57,7 @@
     and SLOT syntax will detect type mismatches at runtime.
     Signals and slots are loosely coupled: A class which emits a
     signal neither knows nor cares which slots receive the signal.
-    Qt's signals and slots mechanism ensures that if you connect a
+    BobUI's signals and slots mechanism ensures that if you connect a
     signal to a slot, the slot will be called with the signal's
     parameters at the right time. Signals and slots can take any
     number of arguments of any type. They are completely type safe.
@@ -74,7 +74,7 @@
     member functions. Just as an object does not know if anything receives
     its signals, a slot does not know if it has any signals connected to
     it. This ensures that truly independent components can be created with
-    Qt.
+    BobUI.
 
     You can connect as many signals as you want to a single slot, and a
     signal can be connected to as many slots as you need. It is even
@@ -98,7 +98,7 @@
     happens, the signals and slots mechanism is totally independent of
     any GUI event loop. Execution of the code following the \c emit
     statement will occur once all slots have returned. The situation is
-    slightly different when using \l{Qt::ConnectionType}{queued
+    slightly different when using \l{BobUI::ConnectionType}{queued
     connections}; in such a case, the code following the \c emit keyword
     will continue immediately, and the slots will be executed later.
 
@@ -154,7 +154,7 @@
 
     Note that other libraries that define variables called \c signals
     or \c slots may cause compiler warnings and errors when compiled
-    alongside a Qt-based application. To solve this problem, \c
+    alongside a BobUI-based application. To solve this problem, \c
     #undef the offending preprocessor symbol.
 
 
@@ -216,7 +216,7 @@
     By default, for every connection you make, a signal is emitted;
     two signals are emitted for duplicate connections. You can break
     all of these connections with a single \l{QObject::disconnect()}{disconnect()} call.
-    If you pass the Qt::UniqueConnection \a type, the connection will only
+    If you pass the BobUI::UniqueConnection \a type, the connection will only
     be made if it is not a duplicate. If there is already a duplicate
     (exact same signal to the exact same slot on the same objects),
     the connection will fail and connect will return \c false.
@@ -270,7 +270,7 @@
 
     If on the other hand you want to call two different error
     functions when the number overflows, simply connect the signal to
-    two different slots. Qt will call both (in the order they were connected).
+    two different slots. BobUI will call both (in the order they were connected).
 
     \snippet signalsandslots/lcdnumber.h 10
     \snippet signalsandslots/lcdnumber.h 11
@@ -289,7 +289,7 @@
     QScrollBar to the \c display() slot, so the LCD number
     continuously shows the value of the scroll bar.
 
-    Note that display() is overloaded. Qt's signals and slots give you
+    Note that display() is overloaded. BobUI's signals and slots give you
     strongly-typed connections. They're safer at compile time than traditional
     callbacks. With callbacks, you'd need different function names and manual
     type tracking. But with overloaded functions, you need to specify which
@@ -326,7 +326,7 @@
 
     \section1 Automatic Connection Management
 
-    Qt automatically manages the lifetime of connections between
+    BobUI automatically manages the lifetime of connections between
     \l {QObject}-derived types. When either the sender or receiver object is
     destroyed, the connection is automatically removed, preventing calls to
     deleted objects. This applies to both the function-pointer syntax and the
@@ -339,7 +339,7 @@
     connect(button, &QPushButton::clicked, this, [this]{ handleClick(); });
     \endcode
 
-    While Qt protects against signal delivery to fully destroyed objects,
+    While BobUI protects against signal delivery to fully destroyed objects,
     signals may still be delivered during object destruction after a derived
     class destructor has finished but before reaching \c{~QObject}. This
     limitation applies specifically to connections made with the
@@ -420,7 +420,7 @@
     \section1 Advanced Signals and Slots Usage
 
     For cases where you may require information on the sender of the
-    signal, Qt provides the QObject::sender() function, which returns
+    signal, BobUI provides the QObject::sender() function, which returns
     a pointer to the object that sent the signal.
 
     Lambda expressions are a convenient way to pass custom arguments to a slot:
@@ -430,12 +430,12 @@
             [=]() { engine->processAction(action->text()); });
     \endcode
 
-    \sa {Meta-Object System}, {Qt's Property System}
+    \sa {Meta-Object System}, {BobUI's Property System}
 
     \target 3rd Party Signals and Slots
-    \section2 Using Qt with 3rd Party Signals and Slots
+    \section2 Using BobUI with 3rd Party Signals and Slots
 
-    It is possible to use Qt with a 3rd party signal/slot mechanism.
+    It is possible to use BobUI with a 3rd party signal/slot mechanism.
     You can even use both mechanisms in the same project. To do that,
     write the following into your CMake project file:
 
@@ -445,25 +445,25 @@
 
     \snippet code/doc_src_containers.cpp 22
 
-    It tells Qt not to define the moc keywords \c{signals}, \c{slots},
+    It tells BobUI not to define the moc keywords \c{signals}, \c{slots},
     and \c{emit}, because these names will be used by a 3rd party
-    library, e.g. Boost. Then to continue using Qt signals and slots
-    with the \c{no_keywords} flag, simply replace all uses of the Qt
-    moc keywords in your sources with the corresponding Qt macros
+    library, e.g. Boost. Then to continue using BobUI signals and slots
+    with the \c{no_keywords} flag, simply replace all uses of the BobUI
+    moc keywords in your sources with the corresponding BobUI macros
     Q_SIGNALS (or Q_SIGNAL), Q_SLOTS (or Q_SLOT), and Q_EMIT.
 
-    \section2 Signals and slots in Qt-based libraries
+    \section2 Signals and slots in BobUI-based libraries
 
-    The public API of Qt-based libraries should use the keywords
+    The public API of BobUI-based libraries should use the keywords
     \c{Q_SIGNALS} and \c{Q_SLOTS} instead of \c{signals} and
     \c{slots}. Otherwise it is hard to use such a library in a project
-    that defines \c{QT_NO_KEYWORDS}.
+    that defines \c{BOBUI_NO_KEYWORDS}.
 
     To enforce this restriction, the library creator may set the
-    preprocessor define \c{QT_NO_SIGNALS_SLOTS_KEYWORDS} when building
+    preprocessor define \c{BOBUI_NO_SIGNALS_SLOTS_KEYWORDS} when building
     the library.
 
     This define excludes signals and slots without affecting whether
-    other Qt-specific keywords can be used in the library
+    other BobUI-specific keywords can be used in the library
     implementation.
  */

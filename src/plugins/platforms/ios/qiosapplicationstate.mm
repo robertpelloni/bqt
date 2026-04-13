@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qiosapplicationstate.h"
 
@@ -8,14 +8,14 @@
 #include "qiosintegration.h"
 
 #include <qpa/qwindowsysteminterface.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static void qRegisterApplicationStateNotifications()
 {
@@ -26,7 +26,7 @@ static void qRegisterApplicationStateNotifications()
     // there's no separate notification for moving to UIApplicationStateInactive,
     // so we use UIApplicationWillResignActiveNotification as an intermediate.
     using NotificationMap = QMap<NSNotificationName, UIApplicationState>;
-    static auto notifications = qt_apple_isApplicationExtension() ? NotificationMap{
+    static auto notifications = bobui_apple_isApplicationExtension() ? NotificationMap{
         { NSExtensionHostWillEnterForegroundNotification, UIApplicationStateInactive },
         { NSExtensionHostDidBecomeActiveNotification, UIApplicationStateActive },
         { NSExtensionHostWillResignActiveNotification, UIApplicationStateInactive },
@@ -47,13 +47,13 @@ static void qRegisterApplicationStateNotifications()
         }];
     }
 
-    if (qt_apple_isApplicationExtension()) {
+    if (bobui_apple_isApplicationExtension()) {
         // Extensions are not allowed to access UIApplication, so we assume the state is active
         QIOSApplicationState::handleApplicationStateChanged(UIApplicationStateActive,
             "Extension loaded, assuming state is active"_L1);
     } else {
-        // Initialize correct startup state, which may not be the Qt default (inactive)
-        UIApplicationState startupState = qt_apple_sharedApplication().applicationState;
+        // Initialize correct startup state, which may not be the BobUI default (inactive)
+        UIApplicationState startupState = bobui_apple_sharedApplication().applicationState;
         QIOSApplicationState::handleApplicationStateChanged(startupState, "Application loaded"_L1);
     }
 }
@@ -61,16 +61,16 @@ Q_CONSTRUCTOR_FUNCTION(qRegisterApplicationStateNotifications)
 
 QIOSApplicationState::QIOSApplicationState()
 {
-    if (!qt_apple_isApplicationExtension()) {
-        UIApplicationState startupState = qt_apple_sharedApplication().applicationState;
+    if (!bobui_apple_isApplicationExtension()) {
+        UIApplicationState startupState = bobui_apple_sharedApplication().applicationState;
         QIOSApplicationState::handleApplicationStateChanged(startupState, "Application launched"_L1);
     }
 }
 
 void QIOSApplicationState::handleApplicationStateChanged(UIApplicationState uiState, const QString &reason)
 {
-    Qt::ApplicationState oldState = QGuiApplication::applicationState();
-    Qt::ApplicationState newState = toQtApplicationState(uiState);
+    BobUI::ApplicationState oldState = QGuiApplication::applicationState();
+    BobUI::ApplicationState newState = toBobUIApplicationState(uiState);
     qCDebug(lcQpaApplication) << qPrintable(reason) << "- moving from" << oldState << "to" << newState;
 
     if (QIOSIntegration *integration = QIOSIntegration::instance()) {
@@ -84,15 +84,15 @@ void QIOSApplicationState::handleApplicationStateChanged(UIApplicationState uiSt
     }
 }
 
-Qt::ApplicationState QIOSApplicationState::toQtApplicationState(UIApplicationState state)
+BobUI::ApplicationState QIOSApplicationState::toBobUIApplicationState(UIApplicationState state)
 {
     switch (state) {
-    case UIApplicationStateActive: return Qt::ApplicationActive;
-    case UIApplicationStateInactive: return Qt::ApplicationInactive;
-    case UIApplicationStateBackground: return Qt::ApplicationSuspended;
+    case UIApplicationStateActive: return BobUI::ApplicationActive;
+    case UIApplicationStateInactive: return BobUI::ApplicationInactive;
+    case UIApplicationStateBackground: return BobUI::ApplicationSuspended;
     }
 }
 
 #include "moc_qiosapplicationstate.cpp"
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

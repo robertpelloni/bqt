@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #pragma once
 
-#include <QtCore/QByteArray>
-#include <QtGui/qpa/qplatformnativeinterface.h>
+#include <BobUICore/QByteArray>
+#include <BobUIGui/qpa/qplatformnativeinterface.h>
 
 #include "qxcbexport.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbNativeInterface;
 class Q_XCB_EXPORT QXcbNativeInterfaceHandler
@@ -28,4 +28,4 @@ protected:
     QXcbNativeInterface *m_native_interface;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

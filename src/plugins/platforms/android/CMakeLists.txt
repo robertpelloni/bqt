@@ -1,15 +1,15 @@
-# Copyright (C) 2023 The Qt Company Ltd.
+# Copyright (C) 2023 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QAndroidIntegrationPlugin Plugin:
 #####################################################################
-qt_find_package(EGL MODULE)
+bobui_find_package(EGL MODULE)
 
-qt_internal_add_plugin(QAndroidIntegrationPlugin
-    OUTPUT_NAME qtforandroid
+bobui_internal_add_plugin(QAndroidIntegrationPlugin
+    OUTPUT_NAME bobuiforandroid
     PLUGIN_TYPE platforms
-    DEFAULT_IF "android" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "android" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         androidcontentfileengine.cpp androidcontentfileengine.h
         qandroidapkfileengine.h qandroidapkfileengine.cpp
@@ -55,12 +55,12 @@ qt_internal_add_plugin(QAndroidIntegrationPlugin
         qandroidsystemlocale.cpp
     INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${QtBase_SOURCE_DIR}/src/3rdparty/android
+        ${BobUIBase_SOURCE_DIR}/src/3rdparty/android
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
         android
         jnigraphics
 )
@@ -68,22 +68,22 @@ qt_internal_add_plugin(QAndroidIntegrationPlugin
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QAndroidIntegrationPlugin CONDITION QT_FEATURE_android_style_assets
+bobui_internal_extend_target(QAndroidIntegrationPlugin CONDITION BOBUI_FEATURE_android_style_assets
     SOURCES
         extract.cpp
 )
 
-qt_internal_extend_target(QAndroidIntegrationPlugin CONDITION NOT QT_FEATURE_android_style_assets
+bobui_internal_extend_target(QAndroidIntegrationPlugin CONDITION NOT BOBUI_FEATURE_android_style_assets
     SOURCES
         extract-dummy.cpp
 )
 
-qt_internal_extend_target(QAndroidIntegrationPlugin CONDITION QT_FEATURE_clipboard
+bobui_internal_extend_target(QAndroidIntegrationPlugin CONDITION BOBUI_FEATURE_clipboard
     SOURCES
         qandroidplatformclipboard.cpp qandroidplatformclipboard.h
 )
 
-qt_internal_extend_target(QAndroidIntegrationPlugin CONDITION QT_FEATURE_accessibility
+bobui_internal_extend_target(QAndroidIntegrationPlugin CONDITION BOBUI_FEATURE_accessibility
     SOURCES
         androidjniaccessibility.cpp androidjniaccessibility.h
         qandroidplatformaccessibility.cpp qandroidplatformaccessibility.h
@@ -91,7 +91,7 @@ qt_internal_extend_target(QAndroidIntegrationPlugin CONDITION QT_FEATURE_accessi
         androidjniaccessibility.cpp
 )
 
-qt_internal_extend_target(QAndroidIntegrationPlugin CONDITION QT_FEATURE_egl
+bobui_internal_extend_target(QAndroidIntegrationPlugin CONDITION BOBUI_FEATURE_egl
     SOURCES
         qandroidplatformopenglcontext.cpp qandroidplatformopenglcontext.h
         qandroidplatformopenglwindow.cpp qandroidplatformopenglwindow.h
@@ -103,7 +103,7 @@ qt_internal_extend_target(QAndroidIntegrationPlugin CONDITION QT_FEATURE_egl
         qandroidplatformoffscreensurface.cpp
 )
 
-qt_internal_extend_target(QAndroidIntegrationPlugin CONDITION QT_FEATURE_vulkan
+bobui_internal_extend_target(QAndroidIntegrationPlugin CONDITION BOBUI_FEATURE_vulkan
     SOURCES
         qandroidplatformvulkaninstance.cpp qandroidplatformvulkaninstance.h
         qandroidplatformvulkanwindow.cpp qandroidplatformvulkanwindow.h

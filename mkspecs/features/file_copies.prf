@@ -10,7 +10,7 @@ build_pass:build_all:!isEqual(BUILD_PASS, $$first(BUILDS)) {
     return()
 }
 
-defineReplace(qtStripProPwd) {
+defineReplace(bobuiStripProPwd) {
     return($$relative_path($$1, $$_PRO_FILE_PWD_))
 }
 
@@ -36,12 +36,12 @@ for (cp, COPIES) {
     isEmpty(base) {
         $${pfx}.output = $$path/${QMAKE_FILE_IN_NAME}
     } else: isEqual(base, $$_PRO_FILE_PWD_) {
-        $${pfx}.output = $$path/${QMAKE_FUNC_FILE_IN_qtStripProPwd}
+        $${pfx}.output = $$path/${QMAKE_FUNC_FILE_IN_bobuiStripProPwd}
     } else {
-        eval(defineReplace(qtStripSrcDir_$$cp) { \
+        eval(defineReplace(bobuiStripSrcDir_$$cp) { \
             return(\$\$relative_path(\$\$1, $$val_escape(base))) \
         })
-        $${pfx}.output = $$path/${QMAKE_FUNC_FILE_IN_qtStripSrcDir_$$cp}
+        $${pfx}.output = $$path/${QMAKE_FUNC_FILE_IN_bobuiStripSrcDir_$$cp}
     }
     $${pfx}.input = $${pfx}.files
     contains(TEMPLATE, "vc.*"): copycommand = $$QMAKE_QMAKE -install qinstall

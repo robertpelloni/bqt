@@ -5,7 +5,7 @@
 #include <QString>
 #include <QKeySequence>
 
-// Multi-User Action System (Qt6 QAction Parity)
+// Multi-User Action System (BobUI6 QAction Parity)
 // Actions in BobUI are not global; they belong to specific user focus trees.
 class OmniAction : public QObject {
     Q_OBJECT

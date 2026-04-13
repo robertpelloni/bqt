@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "logwidget.h"
 #include <QApplication>
 #include <QStyle>
 
-#include <QtCore/QDebug>
-#include <QtCore/QLibraryInfo>
-#include <QtCore/QList>
-#include <QtCore/qlogging.h>
-#include <QtCore/QStringList>
+#include <BobUICore/QDebug>
+#include <BobUICore/QLibraryInfo>
+#include <BobUICore/QList>
+#include <BobUICore/qlogging.h>
+#include <BobUICore/QStringList>
 
 #include <iostream>
 
@@ -66,7 +66,7 @@ static const QList<QString> &messageTypes()
     return result;
 }
 
-static void messageHandler(QtMsgType type, const QString &text)
+static void messageHandler(BobUIMsgType type, const QString &text)
 {
     static int n = 0;
     QString message;
@@ -89,12 +89,12 @@ static void messageHandler(QtMsgType type, const QString &text)
     n++;
 }
 
-static void qtMessageHandler(QtMsgType type, const QMessageLogContext &, const QString &text)
+static void bobuiMessageHandler(BobUIMsgType type, const QMessageLogContext &, const QString &text)
 { messageHandler(type, text); }
 
 void LogWidget::install()
 {
-    qInstallMessageHandler(qtMessageHandler);
+    qInstallMessageHandler(bobuiMessageHandler);
     qInfo("%s", qPrintable(LogWidget::startupMessage()));
 }
 

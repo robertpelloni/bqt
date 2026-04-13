@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QTest>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BOBUIest>
 #include <QUndoGroup>
 #include <QUndoStack>
 #include <QAction>
 #include <QSignalSpy>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 #include <QLibraryInfo>
-#include <QTranslator>
+#include <BOBUIranslator>
 
 /******************************************************************************
 ** Commands
@@ -570,7 +570,7 @@ void tst_QUndoGroup::addStackAndDie()
 
 void tst_QUndoGroup::commandTextFormat()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No QProcess available");
 #else
     QString binDir = QLibraryInfo::path(QLibraryInfo::BinariesPath);
@@ -583,7 +583,7 @@ void tst_QUndoGroup::commandTextFormat()
     QFile::remove("qundogroup.qm"); // Avoid confusion by strays.
     QVERIFY(!QProcess::execute(binDir + "/lrelease -silent " + tsFile + " -qm qundogroup.qm"));
 
-    QTranslator translator;
+    BOBUIranslator translator;
 
     QVERIFY(translator.load("qundogroup.qm"));
     QFile::remove("qundogroup.qm");
@@ -617,7 +617,7 @@ void tst_QUndoGroup::commandTextFormat()
 #endif
 }
 
-QTEST_MAIN(tst_QUndoGroup)
+BOBUIEST_MAIN(tst_QUndoGroup)
 
 #include "tst_qundogroup.moc"
 

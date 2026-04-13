@@ -1,16 +1,16 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXSCREENEVENTHANDLER_H
 #define QQNXSCREENEVENTHANDLER_H
 
 #include <qpa/qwindowsysteminterface.h>
-#include <QtCore/QBasicTimer>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QBasicTimer>
+#include <BobUICore/QLoggingCategory>
 
 #include <screen/screen.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaScreenEvents);
 
@@ -39,7 +39,7 @@ Q_SIGNALS:
     void windowClosed(void *window);
 
 protected:
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
 
 private Q_SLOTS:
     void processEvents();
@@ -64,7 +64,7 @@ private:
     QQnxIntegration *m_qnxIntegration;
     QPoint m_lastGlobalMousePoint;
     QPoint m_lastLocalMousePoint;
-    Qt::MouseButtons m_lastButtonState;
+    BobUI::MouseButtons m_lastButtonState;
     screen_window_t m_lastMouseWindow;
     QPointingDevice *m_touchDevice;
     QPointingDevice *m_mouseDevice;
@@ -74,6 +74,6 @@ private:
     QBasicTimer m_focusLostTimer;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXSCREENEVENTHANDLER_H

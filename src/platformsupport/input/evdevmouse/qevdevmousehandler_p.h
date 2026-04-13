@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVDEVMOUSEHANDLER_P_H
 #define QEVDEVMOUSEHANDLER_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -25,7 +25,7 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcEvdevMouse)
 
@@ -41,8 +41,8 @@ public:
     void readMouseData();
 
 signals:
-    void handleMouseEvent(int x, int y, bool abs, Qt::MouseButtons buttons,
-                          Qt::MouseButton button, QEvent::Type type);
+    void handleMouseEvent(int x, int y, bool abs, BobUI::MouseButtons buttons,
+                          BobUI::MouseButton button, QEvent::Type type);
     void handleWheelEvent(QPoint delta);
 
 private:
@@ -63,8 +63,8 @@ private:
     bool m_compression;
     bool m_hiResWheel = false;
     bool m_hiResHWheel = false;
-    Qt::MouseButtons m_buttons;
-    Qt::MouseButton m_button;
+    BobUI::MouseButtons m_buttons;
+    BobUI::MouseButton m_button;
     QEvent::Type m_eventType;
     int m_jitterLimitSquared;
     bool m_prevInvalid = true;
@@ -74,6 +74,6 @@ private:
     qreal m_hardwareScalerX;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVDEVMOUSEHANDLER_P_H

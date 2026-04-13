@@ -4,7 +4,7 @@
 #include <QQuickPaintedItem>
 #include <QString>
 #include <QColor>
-#include <QTimer>
+#include <BOBUIimer>
 
 // Simulates complex fragment shaders on the CPU/QPainter level natively
 // to provide cross-platform compatibility without Vulkan/RHI dependencies.
@@ -47,7 +47,7 @@ private:
     QColor m_baseColor;
     
     double m_time;
-    QTimer m_animTimer;
+    BOBUIimer m_animTimer;
 };
 
 #endif // OMNISHADEREFFECT_H

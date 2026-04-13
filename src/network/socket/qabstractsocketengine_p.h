@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTSOCKETENGINE_P_H
 #define QABSTRACTSOCKETENGINE_P_H
@@ -10,26 +10,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include "QtNetwork/qhostaddress.h"
-#include "QtNetwork/qabstractsocket.h"
-#include <QtCore/qdeadlinetimer.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include "BobUINetwork/qhostaddress.h"
+#include "BobUINetwork/qabstractsocket.h"
+#include <BobUICore/qdeadlinetimer.h>
 #include "private/qabstractsocketenginereceiver_p.h"
 #include "private/qnetworkdatagram_p.h"
 #include "private/qobject_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAuthenticator;
 class QAbstractSocketEnginePrivate;
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 class QNetworkInterface;
 #endif
 class QNetworkProxy;
@@ -39,7 +39,7 @@ static constexpr std::chrono::seconds DefaultTimeout{30};
 class Q_AUTOTEST_EXPORT QAbstractSocketEngine : public QObject
 {
     Q_OBJECT
-    Q_MOC_INCLUDE(<QtNetwork/qauthenticator.h>)
+    Q_MOC_INCLUDE(<BobUINetwork/qauthenticator.h>)
 public:
 
     static QAbstractSocketEngine *createSocketEngine(QAbstractSocket::SocketType socketType, const QNetworkProxy &, QObject *parent);
@@ -102,19 +102,19 @@ public:
     virtual qint64 read(char *data, qint64 maxlen) = 0;
     virtual qint64 write(const char *data, qint64 len) = 0;
 
-#ifndef QT_NO_UDPSOCKET
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_UDPSOCKET
+#ifndef BOBUI_NO_NETWORKINTERFACE
     virtual bool joinMulticastGroup(const QHostAddress &groupAddress,
                                     const QNetworkInterface &iface) = 0;
     virtual bool leaveMulticastGroup(const QHostAddress &groupAddress,
                                      const QNetworkInterface &iface) = 0;
     virtual QNetworkInterface multicastInterface() const = 0;
     virtual bool setMulticastInterface(const QNetworkInterface &iface) = 0;
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
     virtual bool hasPendingDatagrams() const = 0;
     virtual qint64 pendingDatagramSize() const = 0;
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
     virtual qint64 readDatagram(char *data, qint64 maxlen, QIpPacketHeader *header = nullptr,
                                 PacketHeaderOptions = WantNone) = 0;
@@ -159,7 +159,7 @@ public Q_SLOTS:
     void closeNotification();
     void exceptionNotification();
     void connectionNotification();
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 #endif
 
@@ -219,6 +219,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractSocketEngine::PacketHeaderOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTSOCKETENGINE_P_H

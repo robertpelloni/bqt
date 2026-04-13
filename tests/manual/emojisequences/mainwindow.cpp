@@ -1,12 +1,12 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QtCore>
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUICore>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->toolButton, &QToolButton::clicked, this, &MainWindow::loadCustomFont);
+    connect(ui->toolButton, &BOBUIoolButton::clicked, this, &MainWindow::loadCustomFont);
 
     populateEmojiTest();
 }
@@ -38,7 +38,7 @@ void MainWindow::populateEmojiTest()
 
             QStringList toolTip;
             QString testString;
-            QStringList tokens = l.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+            QStringList tokens = l.split(QLatin1Char(' '), BobUI::SkipEmptyParts);
             for (int i = 0; i < tokens.size(); ++i) {
                 if (tokens.at(i) == QLatin1Char(';'))
                     break;
@@ -65,7 +65,7 @@ void MainWindow::populateEmojiTest()
         QString testString = strings.at(i).first;
         QString toolTip = strings.at(i).second;
 
-        QTableWidgetItem *it = new QTableWidgetItem(testString);
+        BOBUIableWidgetItem *it = new BOBUIableWidgetItem(testString);
         ui->tableWidget->setItem(row, column, it);
         it->setText(testString);
         it->setToolTip(toolTip);
@@ -74,7 +74,7 @@ void MainWindow::populateEmojiTest()
 
 void MainWindow::loadCustomFont()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(6, 9, 0)
     ui->tableWidget->clear();
     QFontDatabase::removeAllApplicationFonts();
 

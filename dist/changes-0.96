@@ -1,9 +1,9 @@
-Here is a list of (major) changes in Qt from 0.95 to 0.96.
+Here is a list of (major) changes in BobUI from 0.95 to 0.96.
 
 Bug-fixes, optimizations and improved documentation, of course.
 QClipboard is new.
 
-There are some changes in the API (Qt header files).  Some functions have
+There are some changes in the API (BobUI header files).  Some functions have
 been renamed or the arguments have changed. The old versions of these
 functions have been obsoleted. A call to an obsoleted function will by
 default generate a runtime warning the first time it is called, but it
@@ -15,7 +15,7 @@ Obsoleted functions will disappear in a future release.  To get
 compile-time errors for each use of an obsoleted function, compile your
 code with -DTEST_OBSOLETE. You should recompile without this option when
 you have upgraded your code (otherwise, you may get linking errors). 
-Note: it is probably not a good idea to compile the Qt library with
+Note: it is probably not a good idea to compile the BobUI library with
 -DTEST_OBSOLETE, it may cause problems if you try to link or run
 programs that use obsoleted functions.
 
@@ -44,7 +44,7 @@ QPopupMenu
 QDataStream:
 -----------
   Serialization of int and uint is no longer supported. Use INT32 and
-  UINT32 instead. This had to be changed in order to run Qt on 64-bit
+  UINT32 instead. This had to be changed in order to run BobUI on 64-bit
   architectures.
 
 
@@ -75,7 +75,7 @@ QCache/QIntCache:
   Using int/uint instead of long/ulong.
 
 
-QDate/QTime/QDateTime:
+QDate/BOBUIime/QDateTime:
 ----------------------
   Using int/uint instead of long/ulong (MS-DOS required long).
 
@@ -90,12 +90,12 @@ QKeyEvent:
   ascii() now returns int (previously uchar).
 
 
-QTableView:
+BOBUIableView:
 ------------
   uint used instead of ulong (tableFlags() etc.)
 
 
-QTextStream:
+BOBUIextStream:
 ------------
   int used instead of long (flags() etc.)
 
@@ -166,14 +166,14 @@ QPainter:
 --------- 
 
   drawBezier() is obsolete, general Bezier curves are rarely used and
-  cost too much. Qt will only support drawQuadBezier() (four-point
+  cost too much. BobUI will only support drawQuadBezier() (four-point
   Bezier) in the future.
 
 QPointArray:
 -----------
   move() is obsolete, use translate() instead.
   bezier() is obsolete, general Bezier curves are rarely used and
-  cost too much. Qt will only support quadBezier() (four-point
+  cost too much. BobUI will only support quadBezier() (four-point
   Bezier) in the future.
 
 

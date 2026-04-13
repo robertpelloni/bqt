@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
 #include <QDBusServer>
@@ -11,8 +11,8 @@
 
 #include "../myobject.h"
 
-static const char serviceName[] = "org.qtproject.autotests.qmyserver";
-static const char objectPath[] = "/org/qtproject/qmyserver";
+static const char serviceName[] = "org.bobuiproject.autotests.qmyserver";
+static const char objectPath[] = "/org/bobuiproject/qmyserver";
 //static const char *interfaceName = serviceName;
 
 const char *slotSpy;
@@ -23,7 +23,7 @@ Q_DECLARE_METATYPE(QDBusConnection::RegisterOptions)
 class MyServer : public QDBusServer, protected QDBusContext
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.autotests.qmyserver")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.autotests.qmyserver")
 
 public:
     MyServer(QObject* parent = nullptr)

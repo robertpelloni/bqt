@@ -185,8 +185,8 @@ PluginDemo_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 PluginDemo_SOURCE_DIR:STATIC=C:/Users/hyper/workspace/bobui/OmniUI/examples/PluginDemo
 
-//The directory containing a CMake configuration file for Qt6.
-Qt6_DIR:PATH=Qt6_DIR-NOTFOUND
+//The directory containing a CMake configuration file for BobUI6.
+BobUI6_DIR:PATH=BobUI6_DIR-NOTFOUND
 
 
 ########################

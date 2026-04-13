@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QString>
-#include <QtWebSockets/QWebSocket>
+#include <BobUIWebSockets/QWebSocket>
 
 class OmniWebSocket : public QObject {
     Q_OBJECT

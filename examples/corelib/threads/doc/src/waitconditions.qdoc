@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example threads/waitconditions
     \examplecategory {Data Processing & I/O}
     \title Producer and Consumer using Wait Conditions
-    \ingroup qtconcurrent-mtexamples
+    \ingroup bobuiconcurrent-mtexamples
     \ingroup corelib_examples
 
     \brief The Producer and Consumer using Wait Conditions example shows
@@ -25,7 +25,7 @@
     working on \e{different parts} of the buffer at the same time.
 
     The example comprises two classes: \c Producer and \c Consumer.
-    Both inherit from QThread. The circular buffer used for
+    Both inherit from BOBUIhread. The circular buffer used for
     communicating between these two classes and the synchronization
     tools that protect it are global variables.
 
@@ -100,7 +100,7 @@
 
     \section1 The main() Function
 
-    In \c main(), we create the two threads and call QThread::wait()
+    In \c main(), we create the two threads and call BOBUIhread::wait()
     to ensure that both threads get time to finish before we exit:
 
     \snippet threads/waitconditions/waitconditions.cpp 5

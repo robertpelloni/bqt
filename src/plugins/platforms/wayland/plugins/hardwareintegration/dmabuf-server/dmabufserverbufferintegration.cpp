@@ -1,21 +1,21 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "dmabufserverbufferintegration.h"
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
 #include <QDebug>
-#include <QtOpenGL/QOpenGLTexture>
-#include <QtGui/QOpenGLContext>
+#include <BobUIOpenGL/QOpenGLTexture>
+#include <BobUIGui/QOpenGLContext>
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 DmaBufServerBuffer::DmaBufServerBuffer(DmaBufServerBufferIntegration *integration
-                                       , struct ::qt_server_buffer *id
+                                       , struct ::bobui_server_buffer *id
                                        , int32_t fd
                                        , int32_t width
                                        , int32_t height
@@ -47,9 +47,9 @@ DmaBufServerBuffer::DmaBufServerBuffer(DmaBufServerBufferIntegration *integratio
     int err = eglGetError();
     qCDebug(lcQpaWayland) << "imported egl image" << m_image;
     if (m_image == EGL_NO_IMAGE_KHR || err != EGL_SUCCESS)
-       qCWarning(lcQpaWayland) << "DmaBufServerBuffer error importing image. EGL error code" << Qt::hex << err;
+       qCWarning(lcQpaWayland) << "DmaBufServerBuffer error importing image. EGL error code" << BobUI::hex << err;
 
-    qt_server_buffer_set_user_data(id, this);
+    bobui_server_buffer_set_user_data(id, this);
 
 }
 
@@ -57,9 +57,9 @@ DmaBufServerBuffer::~DmaBufServerBuffer()
 {
     int err = m_integration->eglDestroyImageKHR(m_image);
     if (err != EGL_SUCCESS)
-        qCWarning(lcQpaWayland) << "~DmaBufServerBuffer error destroying image" << m_image << "error code " << Qt::hex << err;
-    qt_server_buffer_release(m_server_buffer);
-    qt_server_buffer_destroy(m_server_buffer);
+        qCWarning(lcQpaWayland) << "~DmaBufServerBuffer error destroying image" << m_image << "error code " << BobUI::hex << err;
+    bobui_server_buffer_release(m_server_buffer);
+    bobui_server_buffer_destroy(m_server_buffer);
 }
 
 QOpenGLTexture *DmaBufServerBuffer::toOpenGlTexture()
@@ -122,21 +122,21 @@ void DmaBufServerBufferIntegration::initialize(QWaylandDisplay *display)
     display->addRegistryListener(&wlDisplayHandleGlobal, this);
 }
 
-QWaylandServerBuffer *DmaBufServerBufferIntegration::serverBuffer(struct qt_server_buffer *buffer)
+QWaylandServerBuffer *DmaBufServerBufferIntegration::serverBuffer(struct bobui_server_buffer *buffer)
 {
-    return static_cast<QWaylandServerBuffer *>(qt_server_buffer_get_user_data(buffer));
+    return static_cast<QWaylandServerBuffer *>(bobui_server_buffer_get_user_data(buffer));
 }
 
 void DmaBufServerBufferIntegration::wlDisplayHandleGlobal(void *data, ::wl_registry *registry, uint32_t id, const QString &interface, uint32_t version)
 {
     Q_UNUSED(version);
-    if (interface == QStringLiteral("qt_dmabuf_server_buffer")) {
+    if (interface == QStringLiteral("bobui_dmabuf_server_buffer")) {
         auto *integration = static_cast<DmaBufServerBufferIntegration *>(data);
-        integration->QtWayland::qt_dmabuf_server_buffer::init(registry, id, 1);
+        integration->BobUIWayland::bobui_dmabuf_server_buffer::init(registry, id, 1);
     }
 }
 
-void DmaBufServerBufferIntegration::dmabuf_server_buffer_server_buffer_created(struct ::qt_server_buffer *id
+void DmaBufServerBufferIntegration::dmabuf_server_buffer_server_buffer_created(struct ::bobui_server_buffer *id
                                                                                , int32_t name
                                                                                , int32_t width
                                                                                , int32_t height
@@ -149,4 +149,4 @@ void DmaBufServerBufferIntegration::dmabuf_server_buffer_server_buffer_created(s
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

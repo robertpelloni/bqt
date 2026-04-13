@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include "qnetworkreply.h"
 #include "qnetworkreply_p.h"
-#include <QtNetwork/qsslconfiguration.h>
+#include <BobUINetwork/qsslconfiguration.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QNetworkReply::NetworkError, QNetworkReply__NetworkError)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QNetworkReply::NetworkError, QNetworkReply__NetworkError)
 
 const int QNetworkReplyPrivate::progressSignalInterval = 100;
 
@@ -34,7 +34,7 @@ QNetworkReplyPrivate::QNetworkReplyPrivate()
 
     \reentrant
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     The QNetworkReply class contains the data and metadata related to
     a request posted with QNetworkAccessManager. Like QNetworkRequest,
@@ -613,7 +613,7 @@ QVariant QNetworkReply::header(QNetworkRequest::KnownHeaders header) const
     the remote server.
 
     \sa rawHeader()
-    \note In Qt versions prior to 6.7, this function took QByteArray only.
+    \note In BobUI versions prior to 6.7, this function took QByteArray only.
 */
 bool QNetworkReply::hasRawHeader(QAnyStringView headerName) const
 {
@@ -629,7 +629,7 @@ bool QNetworkReply::hasRawHeader(QAnyStringView headerName) const
     header field.
 
     \sa setRawHeader(), hasRawHeader(), header()
-    \note In Qt versions prior to 6.7, this function took QByteArray only.
+    \note In BobUI versions prior to 6.7, this function took QByteArray only.
 */
 QByteArray QNetworkReply::rawHeader(QAnyStringView headerName) const
 {
@@ -690,7 +690,7 @@ QVariant QNetworkReply::attribute(QNetworkRequest::Attribute code) const
     return d_func()->attributes.value(code);
 }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 /*!
     Returns the SSL configuration and state associated with this
     reply, if SSL was used. It will contain the remote server's
@@ -788,7 +788,7 @@ void QNetworkReply::ignoreSslErrorsImplementation(const QList<QSslError> &)
 {
 }
 
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 
 /*!
     If this function is called, SSL errors related to network
@@ -983,6 +983,6 @@ void QNetworkReply::setAttribute(QNetworkRequest::Attribute code, const QVariant
         d->attributes.remove(code);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkreply.cpp"

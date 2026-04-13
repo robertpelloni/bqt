@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMIMEGLOBPATTERN_P_H
 #define QMIMEGLOBPATTERN_P_H
@@ -9,23 +9,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_REQUIRE_CONFIG(mimetype);
+BOBUI_REQUIRE_CONFIG(mimetype);
 
-#include <QtCore/qstringlist.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qhash.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QMimeGlobMatchResult
 {
@@ -48,8 +48,8 @@ public:
 
     explicit QMimeGlobPattern(const QString &thePattern, const QString &theMimeType,
                               unsigned theWeight = DefaultWeight,
-                              Qt::CaseSensitivity s = Qt::CaseInsensitive) :
-        m_pattern(s == Qt::CaseInsensitive ? thePattern.toLower() : thePattern),
+                              BobUI::CaseSensitivity s = BobUI::CaseInsensitive) :
+        m_pattern(s == BobUI::CaseInsensitive ? thePattern.toLower() : thePattern),
         m_mimeType(theMimeType),
         m_weight(theWeight),
         m_caseSensitivity(s),
@@ -71,7 +71,7 @@ public:
     inline const QString &pattern() const { return m_pattern; }
     inline unsigned weight() const { return m_weight; }
     inline const QString &mimeType() const { return m_mimeType; }
-    inline bool isCaseSensitive() const { return m_caseSensitivity == Qt::CaseSensitive; }
+    inline bool isCaseSensitive() const { return m_caseSensitivity == BobUI::CaseSensitive; }
 
 private:
     enum PatternType {
@@ -87,7 +87,7 @@ private:
     QString m_pattern;
     QString m_mimeType;
     int m_weight;
-    Qt::CaseSensitivity m_caseSensitivity;
+    BobUI::CaseSensitivity m_caseSensitivity;
     PatternType m_patternType;
 };
 Q_DECLARE_SHARED(QMimeGlobPattern)
@@ -143,6 +143,6 @@ public:
     QMimeGlobPatternList m_lowWeightGlobs; // <= 50, including the non-fast 50 patterns
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMIMEGLOBPATTERN_P_H

@@ -1,5 +1,5 @@
 // Copyright (C) 2013 David Faure <faure@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDebug>
 #include <QCoreApplication>
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
                 "description using explicit newline characters "
                 "(but testing automatic wrapping too). In addition, "
                 "here, we test breaking after a comma. Testing -option. "
-                "Long URL: http://qt-project.org/wiki/How_to_create_a_library_with_Qt_and_use_it_in_an_application "
+                "Long URL: http://bobui-project.org/wiki/How_to_create_a_library_with_BobUI_and_use_it_in_an_application "
                 "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"));
     parser.addOption(newlineOption);
 
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
         const QString size = parser.value("size");
         printf("Resizing %s to %s and saving to %s\n", qPrintable(parser.value("load")), qPrintable(size), qPrintable(parser.value("o")));
     } else if (command == "long") {
-        // A very long option (QTBUG-79926)
+        // A very long option (BOBUIBUG-79926)
         QCommandLineOption longOption(QStringList{QStringLiteral("looooooooooooong-option"), QStringLiteral("looooong-opt-alias")});
         longOption.setDescription(QStringLiteral("Short description"));
         longOption.setValueName(QStringLiteral("looooooooooooong-value-name"));

@@ -1,4 +1,4 @@
-Here is a list of (major) changes in Qt from 0.96 to 0.98.
+Here is a list of (major) changes in BobUI from 0.96 to 0.98.
 As usual, we fixed some bugs and improved the documentation.
 
 
@@ -36,7 +36,7 @@ Disabled copy constructors and operators=
     QMenuBar QMenuData QMenuItem QMessageBox QMetaObject QObject
     QPSPrinter QPaintDevice QPainter QPicture QPopupMenu QPrintDialog
     QPrinter QPushButton QRadioButton QRangeControl QScrollBar QSignal
-    QSocketNotifier QTableView QTextStream QTimer QWidget QWindow
+    QSocketNotifier BOBUIableView BOBUIextStream BOBUIimer QWidget QWindow
 
   The other classes all have sensible copy constructors and operators=.
 
@@ -54,7 +54,7 @@ QListBox:
   way of defining custom QLBItems. See the QListBoxItem documentation for
   details.
 
-QTime:
+BOBUIime:
 ------
   This was protected, now private:
 	uint   ds;
@@ -91,7 +91,7 @@ QWidget:
   You can specify a custom widget frame for top level widgets, including
   no frame at all. See the widget constructor doc. for details.
 
-  Qt now has enter and leave events. Reimplement the virtual functions  
+  BobUI now has enter and leave events. Reimplement the virtual functions  
   void enterEvent( QEvent * ) and void leaveEvent( QEvent * ) to receive
   events when the mouse cursor leaves or enters the visible part of the
   widget.

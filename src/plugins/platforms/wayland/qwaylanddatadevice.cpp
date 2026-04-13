@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qwaylanddatadevice_p.h"
@@ -13,27 +13,27 @@
 #include "qwaylandabstractdecoration_p.h"
 #include "qwaylandsurface_p.h"
 
-#include <QtWaylandClient/private/qwayland-xdg-toplevel-drag-v1.h>
+#include <BobUIWaylandClient/private/qwayland-xdg-toplevel-drag-v1.h>
 
-#include <QtCore/QMimeData>
-#include <QtGui/QGuiApplication>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/QMimeData>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #include <qpa/qplatformclipboard.h>
 #endif
 #include <qpa/qplatformdrag.h>
 #include <qpa/qwindowsysteminterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QWaylandDataDevice::QWaylandDataDevice(QWaylandDataDeviceManager *manager, QWaylandInputDevice *inputDevice)
     : QObject(inputDevice)
-    , QtWayland::wl_data_device(manager->get_data_device(inputDevice->wl_seat()))
+    , BobUIWayland::wl_data_device(manager->get_data_device(inputDevice->wl_seat()))
     , m_display(manager->display())
     , m_inputDevice(inputDevice)
 {
@@ -59,7 +59,7 @@ void QWaylandDataDevice::invalidateSelectionOffer()
 
     m_selectionOffer.reset();
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QGuiApplicationPrivate::platformIntegration()->clipboard()->emitChanged(QClipboard::Clipboard);
 #endif
 }
@@ -77,13 +77,13 @@ void QWaylandDataDevice::setSelectionSource(QWaylandDataSource *source)
     m_selectionSource.reset(source);
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 QWaylandDataOffer *QWaylandDataDevice::dragOffer() const
 {
     return m_dragOffer.data();
 }
 
-bool QWaylandDataDevice::startDrag(QMimeData *mimeData, Qt::DropActions supportedActions, QWaylandWindow *icon)
+bool QWaylandDataDevice::startDrag(QMimeData *mimeData, BobUI::DropActions supportedActions, QWaylandWindow *icon)
 {
     auto *origin = m_display->lastInputWindow();
 
@@ -92,11 +92,11 @@ bool QWaylandDataDevice::startDrag(QMimeData *mimeData, Qt::DropActions supporte
         return false;
     }
 
-    // dragging data without mimetypes is a legal operation in Qt terms
+    // dragging data without mimetypes is a legal operation in BobUI terms
     // but Wayland uses a mimetype to determine if a drag is accepted or not
     // In this rare case, insert a placeholder
     if (mimeData->formats().isEmpty())
-        mimeData->setData("application/x-qt-avoid-empty-placeholder"_L1, QByteArray("1"));
+        mimeData->setData("application/x-bobui-avoid-empty-placeholder"_L1, QByteArray("1"));
 
     static const QString plain = QStringLiteral("text/plain");
     static const QString utf8 = QStringLiteral("text/plain;charset=utf-8");
@@ -110,7 +110,7 @@ bool QWaylandDataDevice::startDrag(QMimeData *mimeData, Qt::DropActions supporte
         m_dragSource->set_actions(dropActionsToWl(supportedActions));
 
     connect(m_dragSource.data(), &QWaylandDataSource::cancelled, this, &QWaylandDataDevice::dragSourceCancelled);
-    connect(m_dragSource.data(), &QWaylandDataSource::dndResponseUpdated, this, [this](bool accepted, Qt::DropAction action) {
+    connect(m_dragSource.data(), &QWaylandDataSource::dndResponseUpdated, this, [this](bool accepted, BobUI::DropAction action) {
             auto drag = static_cast<QWaylandDrag *>(QGuiApplicationPrivate::platformIntegration()->drag());
             if (!drag->currentDrag()) {
                 return;
@@ -119,20 +119,20 @@ bool QWaylandDataDevice::startDrag(QMimeData *mimeData, Qt::DropActions supporte
             if (m_dragSource->version() < 3) {
                 drag->setResponse(accepted);
             } else {
-                QPlatformDropQtResponse response(accepted, action);
+                QPlatformDropBobUIResponse response(accepted, action);
                 drag->setResponse(response);
             }
     });
     connect(m_dragSource.data(), &QWaylandDataSource::dndDropped, this,
-            [this](bool accepted, Qt::DropAction action) {
-                QPlatformDropQtResponse response(accepted, action);
+            [this](bool accepted, BobUI::DropAction action) {
+                QPlatformDropBobUIResponse response(accepted, action);
                 if (m_toplevelDrag) {
                     // If the widget was dropped but the drag not accepted it
                     // should be its own window in the future. To distinguish
                     // from canceling mid-drag the drag is accepted here as the
                     // we know if the widget is over a zone where it can be
                     // incorporated or not
-                    response = { true, Qt::MoveAction };
+                    response = { true, BobUI::MoveAction };
                 }
                 static_cast<QWaylandDrag *>(QGuiApplicationPrivate::platformIntegration()->drag())
                         ->setDropResponse(response);
@@ -145,18 +145,18 @@ bool QWaylandDataDevice::startDrag(QMimeData *mimeData, Qt::DropActions supporte
         }
     });
 
-    if (mimeData->hasFormat("application/x-qt-mainwindowdrag-window"_L1)
+    if (mimeData->hasFormat("application/x-bobui-mainwindowdrag-window"_L1)
         && m_display->xdgToplevelDragManager()) {
         qintptr dockWindowPtr;
         QPoint offset;
-        QDataStream windowStream(mimeData->data("application/x-qt-mainwindowdrag-window"_L1));
+        QDataStream windowStream(mimeData->data("application/x-bobui-mainwindowdrag-window"_L1));
         windowStream >> dockWindowPtr;
         QWindow *dockWindow = reinterpret_cast<QWindow *>(dockWindowPtr);
-        QDataStream offsetStream(mimeData->data("application/x-qt-mainwindowdrag-position"_L1));
+        QDataStream offsetStream(mimeData->data("application/x-bobui-mainwindowdrag-position"_L1));
         offsetStream >> offset;
         if (auto waylandWindow = static_cast<QWaylandWindow *>(dockWindow->handle())) {
             if (auto toplevel = waylandWindow->surfaceRole<xdg_toplevel>()) {
-                m_toplevelDrag = new QtWayland::xdg_toplevel_drag_v1(
+                m_toplevelDrag = new BobUIWayland::xdg_toplevel_drag_v1(
                         m_display->xdgToplevelDragManager()->get_xdg_toplevel_drag(
                                 m_dragSource->object()));
                 m_toplevelDrag->attach(toplevel, offset.x(), offset.y());
@@ -179,13 +179,13 @@ void QWaylandDataDevice::data_device_data_offer(struct ::wl_data_offer *id)
     new QWaylandDataOffer(m_display, id);
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void QWaylandDataDevice::data_device_drop()
 {
     QDrag *drag = static_cast<QWaylandDrag *>(QGuiApplicationPrivate::platformIntegration()->drag())->currentDrag();
 
     QMimeData *dragData = nullptr;
-    Qt::DropActions supportedActions;
+    BobUI::DropActions supportedActions;
     if (drag) {
         dragData = drag->mimeData();
         supportedActions = drag->supportedActions();
@@ -196,7 +196,7 @@ void QWaylandDataDevice::data_device_drop()
         return;
     }
 
-    QPlatformDropQtResponse response = QWindowSystemInterface::handleDrop(m_dragWindow, dragData, m_dragPoint, supportedActions,
+    QPlatformDropBobUIResponse response = QWindowSystemInterface::handleDrop(m_dragWindow, dragData, m_dragPoint, supportedActions,
                                                                           QGuiApplication::mouseButtons(),
                                                                           m_inputDevice->modifiers());
 
@@ -222,7 +222,7 @@ void QWaylandDataDevice::data_device_enter(uint32_t serial, wl_surface *surface,
     m_enterSerial = serial;
 
     QMimeData *dragData = nullptr;
-    Qt::DropActions supportedActions;
+    BobUI::DropActions supportedActions;
 
     m_dragOffer.reset(static_cast<QWaylandDataOffer *>(wl_data_offer_get_user_data(id)));
     QDrag *drag = static_cast<QWaylandDrag *>(QGuiApplicationPrivate::platformIntegration()->drag())->currentDrag();
@@ -234,7 +234,7 @@ void QWaylandDataDevice::data_device_enter(uint32_t serial, wl_surface *surface,
         supportedActions = m_dragOffer->supportedActions();
     }
 
-    const QPlatformDragQtResponse &response = QWindowSystemInterface::handleDrag(
+    const QPlatformDragBobUIResponse &response = QWindowSystemInterface::handleDrag(
             m_dragWindow, dragData, m_dragPoint, supportedActions, QGuiApplication::mouseButtons(),
             m_inputDevice->modifiers());
     if (drag) {
@@ -247,7 +247,7 @@ void QWaylandDataDevice::data_device_enter(uint32_t serial, wl_surface *surface,
 void QWaylandDataDevice::data_device_leave()
 {
     if (m_dragWindow)
-        QWindowSystemInterface::handleDrag(m_dragWindow, nullptr, QPoint(), Qt::IgnoreAction,
+        QWindowSystemInterface::handleDrag(m_dragWindow, nullptr, QPoint(), BobUI::IgnoreAction,
                                            QGuiApplication::mouseButtons(),
                                            m_inputDevice->modifiers());
 
@@ -272,7 +272,7 @@ void QWaylandDataDevice::data_device_motion(uint32_t time, wl_fixed_t x, wl_fixe
     m_dragPoint = calculateDragPosition(x, y, m_dragWindow);
 
     QMimeData *dragData = nullptr;
-    Qt::DropActions supportedActions;
+    BobUI::DropActions supportedActions;
     if (drag) {
         dragData = drag->mimeData();
         supportedActions = drag->supportedActions();
@@ -281,7 +281,7 @@ void QWaylandDataDevice::data_device_motion(uint32_t time, wl_fixed_t x, wl_fixe
         supportedActions = m_dragOffer->supportedActions();
     }
 
-    const QPlatformDragQtResponse response = QWindowSystemInterface::handleDrag(m_dragWindow, dragData, m_dragPoint, supportedActions,
+    const QPlatformDragBobUIResponse response = QWindowSystemInterface::handleDrag(m_dragWindow, dragData, m_dragPoint, supportedActions,
                                                                           QGuiApplication::mouseButtons(),
                                                                           m_inputDevice->modifiers());
 
@@ -291,7 +291,7 @@ void QWaylandDataDevice::data_device_motion(uint32_t time, wl_fixed_t x, wl_fixe
 
     sendResponse(supportedActions, response);
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 void QWaylandDataDevice::data_device_selection(wl_data_offer *id)
 {
@@ -300,7 +300,7 @@ void QWaylandDataDevice::data_device_selection(wl_data_offer *id)
     else
         m_selectionOffer.reset();
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QGuiApplicationPrivate::platformIntegration()->clipboard()->emitChanged(QClipboard::Clipboard);
 #endif
 }
@@ -308,12 +308,12 @@ void QWaylandDataDevice::data_device_selection(wl_data_offer *id)
 void QWaylandDataDevice::selectionSourceCancelled()
 {
     m_selectionSource.reset();
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QGuiApplicationPrivate::platformIntegration()->clipboard()->emitChanged(QClipboard::Clipboard);
 #endif
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void QWaylandDataDevice::dragSourceCancelled()
 {
     static_cast<QWaylandDrag *>(QGuiApplicationPrivate::platformIntegration()->drag())->finishDrag();
@@ -337,7 +337,7 @@ QPoint QWaylandDataDevice::calculateDragPosition(int x, int y, QWindow *wnd) con
     return pnt;
 }
 
-void QWaylandDataDevice::sendResponse(Qt::DropActions supportedActions, const QPlatformDragQtResponse &response)
+void QWaylandDataDevice::sendResponse(BobUI::DropActions supportedActions, const QPlatformDragBobUIResponse &response)
 {
     if (response.isAccepted()) {
         if (version() >= 3)
@@ -349,13 +349,13 @@ void QWaylandDataDevice::sendResponse(Qt::DropActions supportedActions, const QP
     }
 }
 
-int QWaylandDataDevice::dropActionsToWl(Qt::DropActions actions)
+int QWaylandDataDevice::dropActionsToWl(BobUI::DropActions actions)
 {
 
     int wlActions = WL_DATA_DEVICE_MANAGER_DND_ACTION_NONE;
-    if (actions & Qt::CopyAction)
+    if (actions & BobUI::CopyAction)
         wlActions |= WL_DATA_DEVICE_MANAGER_DND_ACTION_COPY;
-    if (actions & (Qt::MoveAction | Qt::TargetMoveAction))
+    if (actions & (BobUI::MoveAction | BobUI::TargetMoveAction))
         wlActions |= WL_DATA_DEVICE_MANAGER_DND_ACTION_MOVE;
 
     // wayland does not support LinkAction at the time of writing
@@ -363,10 +363,10 @@ int QWaylandDataDevice::dropActionsToWl(Qt::DropActions actions)
 }
 
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylanddatadevice_p.cpp"

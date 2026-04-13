@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qgraphicsitem.h>
 #include <qgraphicstransform.h>
 
@@ -18,10 +18,10 @@ private slots:
     void rotation3dArbitraryAxis();
 
 private:
-    QString toString(QTransform const&);
+    QString toString(BOBUIransform const&);
 };
 
-static QTransform transform2D(const QGraphicsTransform& t)
+static BOBUIransform transform2D(const QGraphicsTransform& t)
 {
     QMatrix4x4 m;
     t.applyTo(&m);
@@ -49,7 +49,7 @@ void tst_QGraphicsTransform::scale()
     scale.applyTo(&t);
 
     QCOMPARE(t, QMatrix4x4());
-    QCOMPARE(transform2D(scale), QTransform());
+    QCOMPARE(transform2D(scale), BOBUIransform());
 
     scale.setXScale(10);
     scale.setOrigin(QVector3D(0, 0, 0));
@@ -59,7 +59,7 @@ void tst_QGraphicsTransform::scale()
     QCOMPARE(scale.zScale(), qreal(1));
     QCOMPARE(scale.origin(), QVector3D(0, 0, 0));
 
-    QTransform res;
+    BOBUIransform res;
     res.scale(10, 1);
 
     QCOMPARE(transform2D(scale), res);
@@ -85,7 +85,7 @@ void tst_QGraphicsTransform::scale()
 
     // Because the origin has a non-zero z, mapping (4, 5) in 2D
     // will introduce a projective component into the result.
-    QTransform t3 = t2.toTransform();
+    BOBUIransform t3 = t2.toTransform();
     QCOMPARE(t3.map(QPointF(4, 5)), QPointF(31 / t3.m33(), 8 / t3.m33()));
 }
 
@@ -108,10 +108,10 @@ static inline bool fuzzyCompare(float p1, float p2)
         return fuzzyCompareNonZero(p1, p2);
 }
 
-// This compares two QTransforms by casting the elements to float. This is
+// This compares two BOBUIransforms by casting the elements to float. This is
 // necessary here because in this test one of the transforms is created from
 // a QMatrix4x4 which uses float storage.
-static bool fuzzyCompareAsFloat(const QTransform& t1, const QTransform& t2)
+static bool fuzzyCompareAsFloat(const BOBUIransform& t1, const BOBUIransform& t2)
 {
     return fuzzyCompare(float(t1.m11()), float(t2.m11())) &&
            fuzzyCompare(float(t1.m12()), float(t2.m12())) &&
@@ -150,7 +150,7 @@ void tst_QGraphicsTransform::rotation()
     rotation.applyTo(&t);
 
     QCOMPARE(t, QMatrix4x4());
-    QCOMPARE(transform2D(rotation), QTransform());
+    QCOMPARE(transform2D(rotation), BOBUIransform());
 
     rotation.setAngle(40);
     rotation.setOrigin(QVector3D(0, 0, 0));
@@ -159,7 +159,7 @@ void tst_QGraphicsTransform::rotation()
     QCOMPARE(rotation.origin(), QVector3D(0, 0, 0));
     QCOMPARE(rotation.angle(), (qreal)40);
 
-    QTransform res;
+    BOBUIransform res;
     res.rotate(40);
 
     QVERIFY(fuzzyCompareAsFloat(transform2D(rotation), res));
@@ -174,25 +174,25 @@ void tst_QGraphicsTransform::rotation()
     QCOMPARE(transform2D(rotation).map(QPointF(20, 10)), QPointF(20, 10));
 }
 
-Q_DECLARE_METATYPE(Qt::Axis);
+Q_DECLARE_METATYPE(BobUI::Axis);
 void tst_QGraphicsTransform::rotation3d_data()
 {
-    QTest::addColumn<Qt::Axis>("axis");
-    QTest::addColumn<qreal>("angle");
+    BOBUIest::addColumn<BobUI::Axis>("axis");
+    BOBUIest::addColumn<qreal>("angle");
 
     for (int angle = 0; angle <= 360; angle++) {
-        QTest::newRow(QString("test rotation on X at angle %1").arg(angle).toLatin1())
-            << Qt::XAxis << qreal(angle);
-        QTest::newRow(QString("test rotation on Y at angle %1").arg(angle).toLatin1())
-            << Qt::YAxis << qreal(angle);
-        QTest::newRow(QString("test rotation on Z at angle %1").arg(angle).toLatin1())
-            << Qt::ZAxis << qreal(angle);
+        BOBUIest::newRow(QString("test rotation on X at angle %1").arg(angle).toLatin1())
+            << BobUI::XAxis << qreal(angle);
+        BOBUIest::newRow(QString("test rotation on Y at angle %1").arg(angle).toLatin1())
+            << BobUI::YAxis << qreal(angle);
+        BOBUIest::newRow(QString("test rotation on Z at angle %1").arg(angle).toLatin1())
+            << BobUI::ZAxis << qreal(angle);
     }
 }
 
 void tst_QGraphicsTransform::rotation3d()
 {
-    QFETCH(Qt::Axis, axis);
+    QFETCH(BobUI::Axis, axis);
     QFETCH(qreal, angle);
 
     QGraphicsRotation rotation;
@@ -207,10 +207,10 @@ void tst_QGraphicsTransform::rotation3d()
     rotation.setAngle(angle);
 
     // QGraphicsRotation uses a correct mathematical rotation in 3D.
-    // QTransform's Qt::YAxis rotation is inverted from the mathematical
+    // BOBUIransform's BobUI::YAxis rotation is inverted from the mathematical
     // version of rotation.  We correct for that here.
-    QTransform expected;
-    if (axis == Qt::YAxis && angle != 180.)
+    BOBUIransform expected;
+    if (axis == BobUI::YAxis && angle != 180.)
         expected.rotate(-angle, axis);
     else
         expected.rotate(angle, axis);
@@ -256,8 +256,8 @@ QByteArray labelForTest(QVector3D const& axis, int angle) {
 
 void tst_QGraphicsTransform::rotation3dArbitraryAxis_data()
 {
-    QTest::addColumn<QVector3D>("axis");
-    QTest::addColumn<qreal>("angle");
+    BOBUIest::addColumn<QVector3D>("axis");
+    BOBUIest::addColumn<qreal>("angle");
 
     QVector3D axis1 = QVector3D(1.0f, 1.0f, 1.0f);
     QVector3D axis2 = QVector3D(2.0f, -3.0f, 0.5f);
@@ -266,11 +266,11 @@ void tst_QGraphicsTransform::rotation3dArbitraryAxis_data()
     QVector3D axis5 = QVector3D(0.01f, 0.01f, 0.01f);
 
     for (int angle = 0; angle <= 360; angle++) {
-        QTest::newRow(labelForTest(axis1, angle).constData()) << axis1 << qreal(angle);
-        QTest::newRow(labelForTest(axis2, angle).constData()) << axis2 << qreal(angle);
-        QTest::newRow(labelForTest(axis3, angle).constData()) << axis3 << qreal(angle);
-        QTest::newRow(labelForTest(axis4, angle).constData()) << axis4 << qreal(angle);
-        QTest::newRow(labelForTest(axis5, angle).constData()) << axis5 << qreal(angle);
+        BOBUIest::newRow(labelForTest(axis1, angle).constData()) << axis1 << qreal(angle);
+        BOBUIest::newRow(labelForTest(axis2, angle).constData()) << axis2 << qreal(angle);
+        BOBUIest::newRow(labelForTest(axis3, angle).constData()) << axis3 << qreal(angle);
+        BOBUIest::newRow(labelForTest(axis4, angle).constData()) << axis4 << qreal(angle);
+        BOBUIest::newRow(labelForTest(axis5, angle).constData()) << axis5 << qreal(angle);
     }
 }
 
@@ -294,9 +294,9 @@ void tst_QGraphicsTransform::rotation3dArbitraryAxis()
     // These two steps are performed in one hit by QGraphicsRotation.
     QMatrix4x4 exp;
     exp.rotate(angle, axis);
-    QTransform expected = exp.toTransform(1024.0f);
+    BOBUIransform expected = exp.toTransform(1024.0f);
 
-    QTransform actual = transform2D(rotation);
+    BOBUIransform actual = transform2D(rotation);
     QVERIFY2(fuzzyCompareAsFloat(actual, expected), qPrintable(
         QString("\nactual:   %1\n"
                   "expected: %2")
@@ -318,7 +318,7 @@ void tst_QGraphicsTransform::rotation3dArbitraryAxis()
     }
 }
 
-QString tst_QGraphicsTransform::toString(QTransform const& t)
+QString tst_QGraphicsTransform::toString(BOBUIransform const& t)
 {
     return QString("[ [ %1  %2   %3 ]; [ %4  %5  %6 ]; [ %7  %8  %9 ] ]")
         .arg(t.m11())
@@ -334,6 +334,6 @@ QString tst_QGraphicsTransform::toString(QTransform const& t)
 }
 
 
-QTEST_MAIN(tst_QGraphicsTransform)
+BOBUIEST_MAIN(tst_QGraphicsTransform)
 #include "tst_qgraphicstransform.moc"
 

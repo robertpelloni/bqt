@@ -101,7 +101,7 @@ start_pass(j_decompress_ptr cinfo)
   jpeg_component_info *compptr;
   int method = 0;
   _inverse_DCT_method_ptr method_ptr = NULL;
-  JQUANT_TBL *qtbl;
+  JQUANT_TBL *bobuibl;
 
   for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
        ci++, compptr++) {
@@ -245,8 +245,8 @@ start_pass(j_decompress_ptr cinfo)
      */
     if (!compptr->component_needed || idct->cur_method[ci] == method)
       continue;
-    qtbl = compptr->quant_table;
-    if (qtbl == NULL)           /* happens if no data yet for component */
+    bobuibl = compptr->quant_table;
+    if (bobuibl == NULL)           /* happens if no data yet for component */
       continue;
     idct->cur_method[ci] = method;
     switch (method) {
@@ -258,7 +258,7 @@ start_pass(j_decompress_ptr cinfo)
          */
         ISLOW_MULT_TYPE *ismtbl = (ISLOW_MULT_TYPE *)compptr->dct_table;
         for (i = 0; i < DCTSIZE2; i++) {
-          ismtbl[i] = (ISLOW_MULT_TYPE)qtbl->quantval[i];
+          ismtbl[i] = (ISLOW_MULT_TYPE)bobuibl->quantval[i];
         }
       }
       break;
@@ -290,7 +290,7 @@ start_pass(j_decompress_ptr cinfo)
 
         for (i = 0; i < DCTSIZE2; i++) {
           ifmtbl[i] = (IFAST_MULT_TYPE)
-            DESCALE(MULTIPLY16V16((JLONG)qtbl->quantval[i],
+            DESCALE(MULTIPLY16V16((JLONG)bobuibl->quantval[i],
                                   (JLONG)aanscales[i]),
                     CONST_BITS - IFAST_SCALE_BITS);
         }
@@ -316,7 +316,7 @@ start_pass(j_decompress_ptr cinfo)
         for (row = 0; row < DCTSIZE; row++) {
           for (col = 0; col < DCTSIZE; col++) {
             fmtbl[i] = (FLOAT_MULT_TYPE)
-              ((double)qtbl->quantval[i] *
+              ((double)bobuibl->quantval[i] *
                aanscalefactor[row] * aanscalefactor[col]);
             i++;
           }

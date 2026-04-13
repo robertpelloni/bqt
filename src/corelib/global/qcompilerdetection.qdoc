@@ -1,16 +1,16 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \headerfile <QtCompilerDetection>
-    \inmodule QtCore
+    \headerfile <BobUICompilerDetection>
+    \inmodule BobUICore
     \title Compiler-specific Macro Definitions
     \ingroup funclists
 
-    \brief The <QtCompilerDetection> header file includes various
+    \brief The <BobUICompilerDetection> header file includes various
     compiler-specific macros.
 
-    The <QtCompilerDetection> header file provides a range of macros (Q_CC_*)
+    The <BobUICompilerDetection> header file provides a range of macros (Q_CC_*)
     that are defined if the application is compiled using the specified
     compiler. For example, the Q_CC_SUN macro is defined if the application is
     compiled using Forte Developer, or Sun Studio C++.
@@ -21,7 +21,7 @@
 
 /*!
     \macro Q_CC_SYM
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Digital Mars C/C++
     (used to be Symantec C++).
@@ -29,7 +29,7 @@
 
 /*!
     \macro Q_CC_MSVC
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Microsoft Visual
     C/C++, Intel C++ for Windows.
@@ -37,42 +37,42 @@
 
 /*!
     \macro Q_CC_CLANG
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Clang.
 */
 
 /*!
     \macro Q_CC_BOR
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Borland/Turbo C++.
 */
 
 /*!
     \macro Q_CC_WAT
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Watcom C++.
 */
 
 /*!
     \macro Q_CC_GNU
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using GNU Compiler Collection (GCC).
 */
 
 /*!
     \macro Q_CC_COMEAU
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Comeau C++.
 */
 
 /*!
     \macro Q_CC_EDG
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Edison Design Group
     C++.
@@ -80,14 +80,14 @@
 
 /*!
     \macro Q_CC_OC
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using CenterLine C++.
 */
 
 /*!
     \macro Q_CC_SUN
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Forte Developer, or
     Sun Studio C++.
@@ -95,49 +95,49 @@
 
 /*!
     \macro Q_CC_MIPS
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using MIPSpro C++.
 */
 
 /*!
     \macro Q_CC_DEC
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using DEC C++.
 */
 
 /*!
     \macro Q_CC_HPACC
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using HP aC++.
 */
 
 /*!
     \macro Q_CC_USLC
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using SCO OUDK and UDK.
 */
 
 /*!
     \macro Q_CC_CDS
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Reliant C++.
 */
 
 /*!
     \macro Q_CC_KAI
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using KAI C++.
 */
 
 /*!
     \macro Q_CC_INTEL
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \obsolete
 
     This macro used to be defined if the application was compiled with the old
@@ -149,21 +149,21 @@
 
 /*!
     \macro Q_CC_HIGHC
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using MetaWare High C/C++.
 */
 
 /*!
     \macro Q_CC_PGI
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Portland Group C++.
 */
 
 /*!
     \macro Q_CC_GHS
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Defined if the application is compiled using Green Hills
     Optimizing C++ Compilers.
@@ -171,7 +171,7 @@
 
 /*!
     \macro void Q_FALLTHROUGH()
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 5.8
 
     Can be used in switch statements at the end of case block to tell the compiler
@@ -185,7 +185,7 @@
 
 /*!
     \macro Q_LIKELY(expr)
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 4.8
 
     \brief Hints to the compiler that the enclosed condition, \a expr, is
@@ -202,7 +202,7 @@
 
 /*!
     \macro Q_UNLIKELY(expr)
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 4.8
 
     \brief Hints to the compiler that the enclosed condition, \a expr, is
@@ -219,7 +219,7 @@
 
 /*!
     \macro Q_LIKELY_BRANCH
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 6.9
 
     \brief Hints to the compiler that the following block is likely to be
@@ -235,7 +235,7 @@
 
 /*!
     \macro Q_UNLIKELY_BRANCH
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 6.9
 
     \brief Hints to the compiler that the following block is unlikely to be
@@ -251,7 +251,7 @@
 
 /*!
     \macro Q_CONSTINIT
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 6.4
 
     \brief Enforces constant initialization when supported by the compiler.
@@ -293,7 +293,7 @@
 
 /*!
     \macro Q_DECL_EXPORT
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     This macro marks a symbol for shared library export (see
      \l{sharedlibrary.html}{Creating Shared Libraries}).
@@ -303,7 +303,7 @@
 
 /*!
     \macro Q_DECL_IMPORT
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     This macro declares a symbol to be an import from a shared library (see
     \l{sharedlibrary.html}{Creating Shared Libraries}).
@@ -313,7 +313,7 @@
 
 /*!
     \macro Q_DECL_CONSTEXPR
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \deprecated [6.4] Use the \c constexpr keyword instead.
 
     This macro can be used to declare variable that should be constructed at compile-time,
@@ -324,7 +324,7 @@
 
 /*!
     \macro Q_DECL_RELAXED_CONSTEXPR
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \deprecated [6.4] Use the \c constexpr keyword instead.
 
     This macro can be used to declare an inline function that can be computed
@@ -335,7 +335,7 @@
 
 /*!
     \macro Q_DECL_CONSTEXPR_DTOR
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 6.9
 
     Expands to \c{constexpr} on compilers that support C++20, where
@@ -350,7 +350,7 @@
 
 /*!
     \macro Q_CONSTEXPR_DTOR
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 6.9
 
     Expands to \c{constexpr} on compilers that support C++20, where
@@ -365,7 +365,7 @@
 
 /*!
     \macro Q_DECL_EQ_DELETE_X(reason)
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 6.9
 
     Expands to \c{= delete(reason)} on compilers that support C++26, where
@@ -379,7 +379,7 @@
 
 /*!
     \macro Q_DECL_NOTHROW
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 5.0
     \deprecated [6.4] Use the \c noexcept keyword instead.
 
@@ -392,7 +392,7 @@
 
 /*!
     \macro Q_DECL_NOEXCEPT
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 5.0
     \deprecated [6.4] Use the \c noexcept keyword instead.
 
@@ -406,7 +406,7 @@
 
 /*!
     \macro Q_DECL_NOEXCEPT_EXPR(x)
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 5.0
     \deprecated [6.4] Use the \c noexcept keyword instead.
 
@@ -422,7 +422,7 @@
     \macro Q_DECL_OVERRIDE
     \since 5.0
     \deprecated
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     This macro can be used to declare an overriding virtual
     function. Use of this markup will allow the compiler to generate
@@ -442,7 +442,7 @@
     \macro Q_DECL_FINAL
     \since 5.0
     \deprecated
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     This macro can be used to declare an overriding virtual or a class
     as "final", with Java semantics. Further-derived classes can then
@@ -464,7 +464,7 @@
 
 /*!
     \macro const char* Q_FUNC_INFO()
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
 
     Expands to a string that describe the function the macro resides in. How this string looks
     more specifically is compiler dependent. With GNU GCC it is typically the function signature,
@@ -483,7 +483,7 @@
 
 /*!
     \macro Q_NODISCARD_CTOR
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 6.6
 
     \brief Expands to \c{[[nodiscard]]} on compilers that accept it on constructors.
@@ -504,7 +504,7 @@
 /*!
     \macro Q_NODISCARD_X(message)
     \macro Q_NODISCARD_CTOR_X(message)
-    \relates <QtCompilerDetection>
+    \relates <BobUICompilerDetection>
     \since 6.7
 
     \brief Expand to \c{[[nodiscard(message)]]} on compilers that support the feature.

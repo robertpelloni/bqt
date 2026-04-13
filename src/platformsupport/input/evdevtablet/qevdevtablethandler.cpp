@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qevdevtablethandler_p.h"
 
@@ -8,7 +8,7 @@
 #include <QGuiApplication>
 #include <QPointingDevice>
 #include <QLoggingCategory>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
 #include <qpa/qwindowsysteminterface.h>
 #ifdef Q_OS_FREEBSD
 #include <dev/evdev/input.h>
@@ -16,11 +16,11 @@
 #include <linux/input.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(qLcEvdevTablet, "qt.qpa.input")
+Q_LOGGING_CATEGORY(qLcEvdevTablet, "bobui.qpa.input")
 
 class QEvdevTabletData
 {
@@ -118,7 +118,7 @@ void QEvdevTabletData::report()
     if (state.down || state.lastReportDown) {
         QWindowSystemInterface::handleTabletEvent(0, QPointF(), globalPos,
                                                   int(QInputDevice::DeviceType::Stylus), pointer,
-                                                  state.down ? Qt::LeftButton : Qt::NoButton,
+                                                  state.down ? BobUI::LeftButton : BobUI::NoButton,
                                                   pressure, 0, 0, 0, 0, 0, q->deviceId(),
                                                   qGuiApp->keyboardModifiers());
     }
@@ -141,7 +141,7 @@ QEvdevTabletHandler::QEvdevTabletHandler(const QString &device, const QString &s
 
     qCDebug(qLcEvdevTablet, "evdevtablet: using %ls", qUtf16Printable(device));
 
-    m_fd = QT_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
+    m_fd = BOBUI_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
     if (m_fd < 0) {
         qErrnoWarning("evdevtablet: Cannot open input device %ls", qUtf16Printable(device));
         return;
@@ -164,7 +164,7 @@ QEvdevTabletHandler::QEvdevTabletHandler(const QString &device, const QString &s
 QEvdevTabletHandler::~QEvdevTabletHandler()
 {
     if (m_fd >= 0)
-        QT_CLOSE(m_fd);
+        BOBUI_CLOSE(m_fd);
 
     delete d;
 }
@@ -218,7 +218,7 @@ void QEvdevTabletHandler::readData()
     input_event buffer[32];
     int n = 0;
     for (; ;) {
-        int result = QT_READ(m_fd, reinterpret_cast<char*>(buffer) + n, sizeof(buffer) - n);
+        int result = BOBUI_READ(m_fd, reinterpret_cast<char*>(buffer) + n, sizeof(buffer) - n);
         if (!result) {
             qWarning("evdevtablet: %ls: Got EOF from input device", qUtf16Printable(m_device));
             return;
@@ -228,7 +228,7 @@ void QEvdevTabletHandler::readData()
                 if (errno == ENODEV) { // device got disconnected -> stop reading
                     delete m_notifier;
                     m_notifier = 0;
-                    QT_CLOSE(m_fd);
+                    BOBUI_CLOSE(m_fd);
                     m_fd = -1;
                 }
                 return;
@@ -268,4 +268,4 @@ void QEvdevTabletHandlerThread::run()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

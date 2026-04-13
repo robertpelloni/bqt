@@ -5,12 +5,12 @@
 # WAYLANDSERVERSOURCES_SYSTEM and WAYLANDCLIENTSOURCES_SYSTEM
 # are for protocols where the wayland-scanner output is already
 # included in the system libraries. In that case, .c files must
-# not be generated, to avoid the Qt version replacing driver-specific
+# not be generated, to avoid the BobUI version replacing driver-specific
 # functions. These files are therefore omitted from wayland_code.input.
-# Header files are still generated because they are used to build QtWayland.
+# Header files are still generated because they are used to build BobUIWayland.
 #
-# qtwaylandscanner must be used even in the _SYSTEM case, since the system
-# Wayland libraries do not contain Qt code.
+# bobuiwaylandscanner must be used even in the _SYSTEM case, since the system
+# Wayland libraries do not contain BobUI code.
 
 isEmpty(QMAKE_WAYLAND_SCANNER):error("QMAKE_WAYLAND_SCANNER not defined for this mkspec")
 
@@ -42,40 +42,40 @@ wayland_code.commands = $$QMAKE_WAYLAND_SCANNER --strict --include-core-only pub
 silent:wayland_code.commands = @echo Wayland code header ${QMAKE_FILE_IN} && $$wayland_code.commands
 QMAKE_EXTRA_COMPILERS += wayland_code
 
-qtPrepareLibExecTool(QMAKE_QTWAYLANDSCANNER, qtwaylandscanner)
+bobuiPrepareLibExecTool(QMAKE_BOBUIWAYLANDSCANNER, bobuiwaylandscanner)
 
-qtwayland_client_header.name = qtwayland ${QMAKE_FILE_BASE}
-qtwayland_client_header.input = WAYLANDCLIENTSOURCES WAYLANDCLIENTSOURCES_SYSTEM
-qtwayland_client_header.variable_out = HEADERS
-qtwayland_client_header.depends += $$QMAKE_QTWAYLANDSCANNER_EXE wayland-${QMAKE_FILE_BASE}-client-protocol$${first(QMAKE_EXT_H)}
-qtwayland_client_header.output = qwayland-${QMAKE_FILE_BASE}$${first(QMAKE_EXT_H)}
-qtwayland_client_header.commands = $$QMAKE_QTWAYLANDSCANNER client-header ${QMAKE_FILE_IN} $$WAYLAND_INCLUDE_DIR > ${QMAKE_FILE_OUT}
-silent:qtwayland_client_header.commands = @echo QtWayland client header ${QMAKE_FILE_IN} && $$qtwayland_client_header.commands
-QMAKE_EXTRA_COMPILERS += qtwayland_client_header
+bobuiwayland_client_header.name = bobuiwayland ${QMAKE_FILE_BASE}
+bobuiwayland_client_header.input = WAYLANDCLIENTSOURCES WAYLANDCLIENTSOURCES_SYSTEM
+bobuiwayland_client_header.variable_out = HEADERS
+bobuiwayland_client_header.depends += $$QMAKE_BOBUIWAYLANDSCANNER_EXE wayland-${QMAKE_FILE_BASE}-client-protocol$${first(QMAKE_EXT_H)}
+bobuiwayland_client_header.output = qwayland-${QMAKE_FILE_BASE}$${first(QMAKE_EXT_H)}
+bobuiwayland_client_header.commands = $$QMAKE_BOBUIWAYLANDSCANNER client-header ${QMAKE_FILE_IN} $$WAYLAND_INCLUDE_DIR > ${QMAKE_FILE_OUT}
+silent:bobuiwayland_client_header.commands = @echo BobUIWayland client header ${QMAKE_FILE_IN} && $$bobuiwayland_client_header.commands
+QMAKE_EXTRA_COMPILERS += bobuiwayland_client_header
 
-qtwayland_client_code.name = qtwayland ${QMAKE_FILE_BASE}
-qtwayland_client_code.input = WAYLANDCLIENTSOURCES WAYLANDCLIENTSOURCES_SYSTEM
-qtwayland_client_code.variable_out = SOURCES
-qtwayland_client_code.depends += $$QMAKE_QTWAYLANDSCANNER_EXE qwayland-${QMAKE_FILE_BASE}$${first(QMAKE_EXT_H)}
-qtwayland_client_code.output = qwayland-${QMAKE_FILE_BASE}.cpp
-qtwayland_client_code.commands = $$QMAKE_QTWAYLANDSCANNER client-code ${QMAKE_FILE_IN} $$WAYLAND_INCLUDE_DIR > ${QMAKE_FILE_OUT}
-silent:qtwayland_client_code.commands = @echo QtWayland client code ${QMAKE_FILE_IN} && $$qtwayland_client_code.commands
-QMAKE_EXTRA_COMPILERS += qtwayland_client_code
+bobuiwayland_client_code.name = bobuiwayland ${QMAKE_FILE_BASE}
+bobuiwayland_client_code.input = WAYLANDCLIENTSOURCES WAYLANDCLIENTSOURCES_SYSTEM
+bobuiwayland_client_code.variable_out = SOURCES
+bobuiwayland_client_code.depends += $$QMAKE_BOBUIWAYLANDSCANNER_EXE qwayland-${QMAKE_FILE_BASE}$${first(QMAKE_EXT_H)}
+bobuiwayland_client_code.output = qwayland-${QMAKE_FILE_BASE}.cpp
+bobuiwayland_client_code.commands = $$QMAKE_BOBUIWAYLANDSCANNER client-code ${QMAKE_FILE_IN} $$WAYLAND_INCLUDE_DIR > ${QMAKE_FILE_OUT}
+silent:bobuiwayland_client_code.commands = @echo BobUIWayland client code ${QMAKE_FILE_IN} && $$bobuiwayland_client_code.commands
+QMAKE_EXTRA_COMPILERS += bobuiwayland_client_code
 
-qtwayland_server_header.name = qtwayland ${QMAKE_FILE_BASE}
-qtwayland_server_header.input = WAYLANDSERVERSOURCES WAYLANDSERVERSOURCES_SYSTEM
-qtwayland_server_header.variable_out = HEADERS
-qtwayland_server_header.depends += $$QMAKE_QTWAYLANDSCANNER_EXE wayland-${QMAKE_FILE_BASE}-server-protocol$${first(QMAKE_EXT_H)}
-qtwayland_server_header.output = qwayland-server-${QMAKE_FILE_BASE}$${first(QMAKE_EXT_H)}
-qtwayland_server_header.commands = $$QMAKE_QTWAYLANDSCANNER server-header ${QMAKE_FILE_IN} $$WAYLAND_INCLUDE_DIR > ${QMAKE_FILE_OUT}
-silent:qtwayland_server_header.commands = @echo QtWayland server header ${QMAKE_FILE_IN} && $$qtwayland_server_header.commands
-QMAKE_EXTRA_COMPILERS += qtwayland_server_header
+bobuiwayland_server_header.name = bobuiwayland ${QMAKE_FILE_BASE}
+bobuiwayland_server_header.input = WAYLANDSERVERSOURCES WAYLANDSERVERSOURCES_SYSTEM
+bobuiwayland_server_header.variable_out = HEADERS
+bobuiwayland_server_header.depends += $$QMAKE_BOBUIWAYLANDSCANNER_EXE wayland-${QMAKE_FILE_BASE}-server-protocol$${first(QMAKE_EXT_H)}
+bobuiwayland_server_header.output = qwayland-server-${QMAKE_FILE_BASE}$${first(QMAKE_EXT_H)}
+bobuiwayland_server_header.commands = $$QMAKE_BOBUIWAYLANDSCANNER server-header ${QMAKE_FILE_IN} $$WAYLAND_INCLUDE_DIR > ${QMAKE_FILE_OUT}
+silent:bobuiwayland_server_header.commands = @echo BobUIWayland server header ${QMAKE_FILE_IN} && $$bobuiwayland_server_header.commands
+QMAKE_EXTRA_COMPILERS += bobuiwayland_server_header
 
-qtwayland_server_code.name = qtwayland ${QMAKE_FILE_BASE}
-qtwayland_server_code.input = WAYLANDSERVERSOURCES WAYLANDSERVERSOURCES_SYSTEM
-qtwayland_server_code.variable_out = SOURCES
-qtwayland_server_code.depends += $$QMAKE_QTWAYLANDSCANNER_EXE qwayland-server-${QMAKE_FILE_BASE}$${first(QMAKE_EXT_H)}
-qtwayland_server_code.output = qwayland-server-${QMAKE_FILE_BASE}.cpp
-qtwayland_server_code.commands = $$QMAKE_QTWAYLANDSCANNER server-code ${QMAKE_FILE_IN} $$WAYLAND_INCLUDE_DIR > ${QMAKE_FILE_OUT}
-silent:qtwayland_server_code.commands = @echo QtWayland server code ${QMAKE_FILE_IN} && $$qtwayland_server_code.commands
-QMAKE_EXTRA_COMPILERS += qtwayland_server_code
+bobuiwayland_server_code.name = bobuiwayland ${QMAKE_FILE_BASE}
+bobuiwayland_server_code.input = WAYLANDSERVERSOURCES WAYLANDSERVERSOURCES_SYSTEM
+bobuiwayland_server_code.variable_out = SOURCES
+bobuiwayland_server_code.depends += $$QMAKE_BOBUIWAYLANDSCANNER_EXE qwayland-server-${QMAKE_FILE_BASE}$${first(QMAKE_EXT_H)}
+bobuiwayland_server_code.output = qwayland-server-${QMAKE_FILE_BASE}.cpp
+bobuiwayland_server_code.commands = $$QMAKE_BOBUIWAYLANDSCANNER server-code ${QMAKE_FILE_IN} $$WAYLAND_INCLUDE_DIR > ${QMAKE_FILE_OUT}
+silent:bobuiwayland_server_code.commands = @echo BobUIWayland server code ${QMAKE_FILE_IN} && $$bobuiwayland_server_code.commands
+QMAKE_EXTRA_COMPILERS += bobuiwayland_server_code

@@ -97,7 +97,7 @@ program
     if (options.wasm) {
         log('Configuring for WebAssembly...');
         // Using a standard toolchain file path convention
-        cmakeCmd += ' -DQT_WASM=ON -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake';
+        cmakeCmd += ' -DBOBUI_WASM=ON -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake';
     }
 
     try {
@@ -124,7 +124,7 @@ program
     if (type === 'widget') {
         const content = `
 import OmniUI 1.0
-import QtQuick 2.15
+import BobUIQuick 2.15
 
 Button {
     text: "${name}"

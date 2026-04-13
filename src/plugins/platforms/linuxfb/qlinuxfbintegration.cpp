@@ -1,49 +1,49 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qlinuxfbintegration.h"
 #include "qlinuxfbscreen.h"
-#if QT_CONFIG(kms)
+#if BOBUI_CONFIG(kms)
 #include "qlinuxfbdrmscreen.h"
 #endif
 
-#include <QtGui/private/qgenericunixfontdatabase_p.h>
-#include <QtGui/private/qgenericunixeventdispatcher_p.h>
+#include <BobUIGui/private/qgenericunixfontdatabase_p.h>
+#include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
 #include <qpa/qplatformservices.h>
 
-#include <QtFbSupport/private/qfbvthandler_p.h>
-#include <QtFbSupport/private/qfbbackingstore_p.h>
-#include <QtFbSupport/private/qfbwindow_p.h>
-#include <QtFbSupport/private/qfbcursor_p.h>
+#include <BobUIFbSupport/private/qfbvthandler_p.h>
+#include <BobUIFbSupport/private/qfbbackingstore_p.h>
+#include <BobUIFbSupport/private/qfbwindow_p.h>
+#include <BobUIFbSupport/private/qfbcursor_p.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <qpa/qwindowsysteminterface.h>
 
-#if QT_CONFIG(libinput)
-#include <QtInputSupport/private/qlibinputhandler_p.h>
+#if BOBUI_CONFIG(libinput)
+#include <BobUIInputSupport/private/qlibinputhandler_p.h>
 #endif
 
-#if QT_CONFIG(evdev)
-#include <QtInputSupport/private/qevdevmousemanager_p.h>
-#include <QtInputSupport/private/qevdevkeyboardmanager_p.h>
-#include <QtInputSupport/private/qevdevtouchmanager_p.h>
+#if BOBUI_CONFIG(evdev)
+#include <BobUIInputSupport/private/qevdevmousemanager_p.h>
+#include <BobUIInputSupport/private/qevdevkeyboardmanager_p.h>
+#include <BobUIInputSupport/private/qevdevtouchmanager_p.h>
 #endif
 
-#if QT_CONFIG(tslib)
-#include <QtInputSupport/private/qtslib_p.h>
+#if BOBUI_CONFIG(tslib)
+#include <BobUIInputSupport/private/bobuislib_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QLinuxFbIntegration::QLinuxFbIntegration(const QStringList &paramList)
     : m_primaryScreen(nullptr),
       m_fontDb(new QGenericUnixFontDatabase)
 {
-#if QT_CONFIG(kms)
-    if (qEnvironmentVariableIntValue("QT_QPA_FB_DRM") != 0)
+#if BOBUI_CONFIG(kms)
+    if (qEnvironmentVariableIntValue("BOBUI_QPA_FB_DRM") != 0)
         m_primaryScreen = new QLinuxFbDrmScreen(paramList);
 #endif
     if (!m_primaryScreen)
@@ -66,7 +66,7 @@ void QLinuxFbIntegration::initialize()
 
     m_vtHandler.reset(new QFbVtHandler);
 
-    if (!qEnvironmentVariableIntValue("QT_QPA_FB_DISABLE_INPUT"))
+    if (!qEnvironmentVariableIntValue("BOBUI_QPA_FB_DISABLE_INPUT"))
         createInputHandlers();
 }
 
@@ -117,23 +117,23 @@ QPlatformServices *QLinuxFbIntegration::services() const
 
 void QLinuxFbIntegration::createInputHandlers()
 {
-#if QT_CONFIG(libinput)
-    if (!qEnvironmentVariableIntValue("QT_QPA_FB_NO_LIBINPUT")) {
+#if BOBUI_CONFIG(libinput)
+    if (!qEnvironmentVariableIntValue("BOBUI_QPA_FB_NO_LIBINPUT")) {
         new QLibInputHandler("libinput"_L1, QString());
         return;
     }
 #endif
 
-#if QT_CONFIG(tslib)
-    bool useTslib = qEnvironmentVariableIntValue("QT_QPA_FB_TSLIB");
+#if BOBUI_CONFIG(tslib)
+    bool useTslib = qEnvironmentVariableIntValue("BOBUI_QPA_FB_TSLIB");
     if (useTslib)
-        new QTsLibMouseHandler("TsLib"_L1, QString());
+        new BOBUIsLibMouseHandler("TsLib"_L1, QString());
 #endif
 
-#if QT_CONFIG(evdev)
+#if BOBUI_CONFIG(evdev)
     m_kbdMgr = new QEvdevKeyboardManager("EvdevKeyboard"_L1, QString(), this);
     new QEvdevMouseManager("EvdevMouse"_L1, QString(), this);
-#if QT_CONFIG(tslib)
+#if BOBUI_CONFIG(tslib)
     if (!useTslib)
 #endif
         new QEvdevTouchManager("EvdevTouch"_L1, QString() /* spec */, this);
@@ -151,7 +151,7 @@ QFunctionPointer QLinuxFbIntegration::platformFunction(const QByteArray &functio
     return nullptr;
 }
 
-#if QT_CONFIG(evdev)
+#if BOBUI_CONFIG(evdev)
 void QLinuxFbIntegration::loadKeymap(const QString &filename)
 {
     if (m_kbdMgr)
@@ -169,4 +169,4 @@ void QLinuxFbIntegration::switchLang()
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

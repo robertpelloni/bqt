@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QDebug>
@@ -16,10 +16,10 @@
 #include <QPushButton>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QLineEdit>
 
-// Compiles with Qt 4.8 and Qt 5.
+// Compiles with BobUI 4.8 and BobUI 5.
 
 class MainWindow : public QMainWindow
 {
@@ -96,7 +96,7 @@ MainWindow::MainWindow()
 {
     setObjectName(QLatin1String("MainWindow"));
     setMinimumWidth(800);
-    setWindowTitle(QString::fromLatin1("Manual Grab Test %1").arg(QLatin1String(QT_VERSION_STR)));
+    setWindowTitle(QString::fromLatin1("Manual Grab Test %1").arg(QLatin1String(BOBUI_VERSION_STR)));
 
     QMenu *fileMenu = menuBar()->addMenu(QLatin1String("File"));
     fileMenu->setObjectName("FileMenu");
@@ -114,7 +114,7 @@ MainWindow::MainWindow()
     QVBoxLayout *layout = new QVBoxLayout(w);
     QPlainTextEdit *instructions = new QPlainTextEdit(this);
     instructions->setObjectName(QLatin1String("InstructionsEdit"));
-    instructions->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    instructions->setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
     instructions->setPlainText(QLatin1String(testCasesC));
     instructions->setReadOnly(true);
     layout->addWidget(instructions);
@@ -142,7 +142,7 @@ MainWindow::MainWindow()
 
     row++;
     m_grabMouseWindowCheckBox->setObjectName(QLatin1String("GrabWindowCheckBox"));
-    m_grabMouseWindowCheckBox->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
+    m_grabMouseWindowCheckBox->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_W));
     connect(m_grabMouseWindowCheckBox, SIGNAL(toggled(bool)), this, SLOT(grabMouseWindowToggled(bool)));
     controlLayout->addWidget(m_grabMouseWindowCheckBox, row, 0);
     QPushButton *delayedWindowGrabButton = new QPushButton("Delayed window grab");
@@ -184,7 +184,7 @@ MainWindow::MainWindow()
     lineEdit->setObjectName(QLatin1String("LineEdit"));
     controlLayout->addWidget(lineEdit, row, 0, 1, 2);
 
-    m_logEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    m_logEdit->setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
     m_logEdit->setObjectName(QLatin1String("LogEdit"));
     layout->addWidget(m_logEdit);
     setCentralWidget(w);
@@ -219,11 +219,11 @@ bool MainWindow::eventFilter(QObject *o, QEvent *e)
             QDebug debug = QDebug(&message).nospace();
             debug << '#' << m_mouseEventCount++ << ' ';
             if (e->type() == QEvent::MouseButtonPress) {
-                if (me->buttons() & Qt::LeftButton)
+                if (me->buttons() & BobUI::LeftButton)
                     debug << "Left button press";
-                if (me->buttons() & Qt::MiddleButton)
+                if (me->buttons() & BobUI::MiddleButton)
                     debug << "Middle button press";
-                if (me->buttons() & Qt::RightButton)
+                if (me->buttons() & BobUI::RightButton)
                     debug << "Right button press";
             } else {
                 debug << "Button release";
@@ -302,7 +302,7 @@ void MainWindow::mouseGrabToggled(bool g)
 
 void MainWindow::delayedMouseGrab()
 {
-    QTimer::singleShot(2000, m_grabMouseCheckBox, SLOT(animateClick()));
+    BOBUIimer::singleShot(2000, m_grabMouseCheckBox, SLOT(animateClick()));
 }
 
 void MainWindow::grabMouseWindowToggled(bool g)
@@ -312,7 +312,7 @@ void MainWindow::grabMouseWindowToggled(bool g)
 
 void MainWindow::delayedMouseWindowGrab()
 {
-    QTimer::singleShot(2000, m_grabMouseWindowCheckBox, SLOT(animateClick()));
+    BOBUIimer::singleShot(2000, m_grabMouseWindowCheckBox, SLOT(animateClick()));
 }
 
 void MainWindow::keyboardGrabToggled(bool g)

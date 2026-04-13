@@ -1,5 +1,5 @@
 // Copyright (C) 2013 - 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxglobal.h"
 
@@ -12,7 +12,7 @@
 
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QQnxRasterWindow::QQnxRasterWindow(QWindow *window, screen_context_t context, bool needRootWindow) :
     QQnxWindow(window, context, needRootWindow),
@@ -38,15 +38,15 @@ void QQnxRasterWindow::post(const QRegion &dirty)
     // The current buffer starts with the complete, full image of the second to last posting
     // of the window.
     //
-    // During painting, Qt paints on the current buffer. Thus, when Qt has finished painting, the
+    // During painting, BobUI paints on the current buffer. Thus, when BobUI has finished painting, the
     // current buffer contains the second to last image plus the newly painted regions.
     // Since the second to last image is too old, we copy over the image from the previous buffer, but
-    // only for those regions that Qt didn't paint (because that would overwrite what Qt has just
+    // only for those regions that BobUI didn't paint (because that would overwrite what BobUI has just
     // painted). This is the copyPreviousToCurrent() call below.
     //
     // After the call to copyPreviousToCurrent(), the current buffer contains the complete, full image of the
     // whole window in its current state, and we call screen_post_window() to make the new buffer
-    // available to libscreen (called "posting"). There, only the regions that Qt painted on are
+    // available to libscreen (called "posting"). There, only the regions that BobUI painted on are
     // posted, as nothing else has changed.
     //
     // After that, the previous and the current buffers are swapped, and the whole cycle starts anew.
@@ -207,4 +207,4 @@ void QQnxRasterWindow::blitPreviousToCurrent(const QRegion &region, int dx, int 
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

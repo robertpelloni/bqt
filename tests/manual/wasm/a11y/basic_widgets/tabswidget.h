@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TABDIALOG_H
 #define TABDIALOG_H
-#include <QTabWidget>
-#include <QtWidgets>
+#include <BOBUIabWidget>
+#include <BobUIWidgets>
 
 class GeneralTab : public QWidget
 {
@@ -22,7 +22,7 @@ class EditViewTab : public QWidget
 private:
    bool b_connected = false;
    QPlainTextEdit* textEdit =nullptr;
-   QToolBar* m_toolbar= nullptr;
+   BOBUIoolBar* m_toolbar= nullptr;
 public:
    void showEvent( QShowEvent* event ) ;
     QPlainTextEdit* getTextEdit(){return textEdit;}

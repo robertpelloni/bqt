@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # Copyright (C) 2017 Intel Corporation.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 use strict;
 
 MAKEFILE: while ($_ = shift @ARGV) {
@@ -87,7 +87,7 @@ MAKEFILE: while ($_ = shift @ARGV) {
         close CPP;
 
         if (defined($include)) {
-            # Try to insert the new #include between QT_END_NAMESPACE and any #endif lines
+            # Try to insert the new #include between BOBUI_END_NAMESPACE and any #endif lines
             my $n = 0;
             my $extrablank = "";
             while (defined($include)) {

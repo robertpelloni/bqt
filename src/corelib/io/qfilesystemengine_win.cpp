@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qfilesystemengine_p.h"
 #include "qoperatingsystemversion.h"
@@ -17,8 +17,8 @@
 #include "qdatetime.h"
 #include "qfile.h"
 #include "qvarlengtharray.h"
-#include "qt_windows.h"
-#if QT_CONFIG(regularexpression)
+#include "bobui_windows.h"
+#if BOBUI_CONFIG(regularexpression)
 #include "qregularexpression.h"
 #endif
 #include "qstring.h"
@@ -40,8 +40,8 @@
 
 #include <cstdio>
 
-#include <QtCore/private/qfunctions_win_p.h>
-#include <QtCore/private/wcharhelpers_win_p.h>
+#include <BobUICore/private/qfunctions_win_p.h>
+#include <BobUICore/private/wcharhelpers_win_p.h>
 
 #ifndef SPI_GETPLATFORMTYPE
 #define SPI_GETPLATFORMTYPE 257
@@ -108,7 +108,7 @@ typedef struct _REPARSE_DATA_BUFFER {
         CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 42, METHOD_BUFFERED, FILE_ANY_ACCESS)
 #endif
 
-#if QT_CONFIG(fslibs)
+#if BOBUI_CONFIG(fslibs)
 #include <aclapi.h>
 #include <authz.h>
 #include <userenv.h>
@@ -118,10 +118,10 @@ static PSID worldSID = nullptr;
 static HANDLE currentUserImpersonatedToken = nullptr;
 #endif // fslibs
 
-QT_BEGIN_NAMESPACE
-using namespace Qt::StringLiterals;
+BOBUI_BEGIN_NAMESPACE
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(fslibs)
+#if BOBUI_CONFIG(fslibs)
 namespace {
 struct GlobalSid
 {
@@ -383,38 +383,38 @@ constexpr QFileDevice::Permissions toSpecificPermissions(PermissionTag tag,
 }
 
 } // anonymous namespace
-#endif // QT_CONFIG(fslibs)
+#endif // BOBUI_CONFIG(fslibs)
 
-#if QT_DEPRECATED_SINCE(6,6)
-int qt_ntfs_permission_lookup = 0;
+#if BOBUI_DEPRECATED_SINCE(6,6)
+int bobui_ntfs_permission_lookup = 0;
 #endif
 
-static QBasicAtomicInt qt_ntfs_permission_lookup_v2 = Q_BASIC_ATOMIC_INITIALIZER(0);
+static QBasicAtomicInt bobui_ntfs_permission_lookup_v2 = Q_BASIC_ATOMIC_INITIALIZER(0);
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 bool qEnableNtfsPermissionChecks() noexcept
 {
-    return qt_ntfs_permission_lookup_v2.fetchAndAddRelaxed(1)
-QT_IF_DEPRECATED_SINCE(6, 6, /*nothing*/, + qt_ntfs_permission_lookup)
+    return bobui_ntfs_permission_lookup_v2.fetchAndAddRelaxed(1)
+BOBUI_IF_DEPRECATED_SINCE(6, 6, /*nothing*/, + bobui_ntfs_permission_lookup)
         != 0;
 }
 
 bool qDisableNtfsPermissionChecks() noexcept
 {
-    return qt_ntfs_permission_lookup_v2.fetchAndSubRelaxed(1)
-QT_IF_DEPRECATED_SINCE(6, 6, /*nothing*/, + qt_ntfs_permission_lookup)
+    return bobui_ntfs_permission_lookup_v2.fetchAndSubRelaxed(1)
+BOBUI_IF_DEPRECATED_SINCE(6, 6, /*nothing*/, + bobui_ntfs_permission_lookup)
         == 1;
 }
 
 bool qAreNtfsPermissionChecksEnabled() noexcept
 {
-    return qt_ntfs_permission_lookup_v2.loadRelaxed()
-QT_IF_DEPRECATED_SINCE(6, 6, /*nothing*/, + qt_ntfs_permission_lookup)
+    return bobui_ntfs_permission_lookup_v2.loadRelaxed()
+BOBUI_IF_DEPRECATED_SINCE(6, 6, /*nothing*/, + bobui_ntfs_permission_lookup)
         ;
 }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 /*!
     \class QNativeFilePermissions
@@ -450,7 +450,7 @@ QT_WARNING_POP
 QNativeFilePermissions::QNativeFilePermissions(std::optional<QFileDevice::Permissions> perms,
                                                bool isDir)
 {
-#if QT_CONFIG(fslibs)
+#if BOBUI_CONFIG(fslibs)
     if (!perms) {
         ok = true;
         return;
@@ -590,7 +590,7 @@ QNativeFilePermissions::QNativeFilePermissions(std::optional<QFileDevice::Permis
 #else
     Q_UNUSED(perms);
     Q_UNUSED(isDir);
-#endif // QT_CONFIG(fslibs)
+#endif // BOBUI_CONFIG(fslibs)
     ok = true;
 }
 
@@ -611,10 +611,10 @@ SECURITY_ATTRIBUTES *QNativeFilePermissions::securityAttributes()
 static inline bool toFileTime(const QDateTime &date, FILETIME *fileTime)
 {
     SYSTEMTIME sTime;
-    if (date.timeSpec() == Qt::LocalTime) {
+    if (date.timeSpec() == BobUI::LocalTime) {
         SYSTEMTIME lTime;
         const QDate d = date.date();
-        const QTime t = date.time();
+        const BOBUIime t = date.time();
 
         lTime.wYear = d.year();
         lTime.wMonth = d.month();
@@ -630,7 +630,7 @@ static inline bool toFileTime(const QDateTime &date, FILETIME *fileTime)
     } else {
         QDateTime utcDate = date.toUTC();
         const QDate d = utcDate.date();
-        const QTime t = utcDate.time();
+        const BOBUIime t = utcDate.time();
 
         sTime.wYear = d.year();
         sTime.wMonth = d.month();
@@ -676,7 +676,7 @@ static QString readSymLink(const QFileSystemEntry &link)
         free(rdb);
         CloseHandle(handle);
 
-#if QT_CONFIG(fslibs) && QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(fslibs) && BOBUI_CONFIG(regularexpression)
         initGlobalSid();
         QRegularExpression matchVolumeRe("^Volume\\{([a-z]|[0-9]|-)+\\}\\\\"_L1,
                                          QRegularExpression::CaseInsensitiveOption);
@@ -686,19 +686,19 @@ static QString readSymLink(const QFileSystemEntry &link)
             DWORD len;
             wchar_t buffer[MAX_PATH];
             const QString volumeName = "\\\\?\\"_L1 + matchVolume.captured();
-            if (GetVolumePathNamesForVolumeName(qt_castToWchar(volumeName), buffer, MAX_PATH, &len)
+            if (GetVolumePathNamesForVolumeName(bobui_castToWchar(volumeName), buffer, MAX_PATH, &len)
                 != 0) {
                 result.replace(0, matchVolume.capturedLength(), QString::fromWCharArray(buffer));
             }
         }
-#endif // QT_CONFIG(fslibs)
+#endif // BOBUI_CONFIG(fslibs)
     }
     return result;
 }
 
 static QString readLink(const QFileSystemEntry &link)
 {
-#if QT_CONFIG(fslibs)
+#if BOBUI_CONFIG(fslibs)
     QString ret;
 
     IShellLink *psl;                            // pointer to IShellLink i/f
@@ -731,18 +731,18 @@ static QString readLink(const QFileSystemEntry &link)
 #else
     Q_UNUSED(link);
     return QString();
-#endif // QT_CONFIG(fslibs)
+#endif // BOBUI_CONFIG(fslibs)
 }
 
 static bool uncShareExists(const QString &server)
 {
     // This code assumes the UNC path is always like \\?\UNC\server...
-    const auto parts = QStringView{server}.split(u'\\', Qt::SkipEmptyParts);
+    const auto parts = QStringView{server}.split(u'\\', BobUI::SkipEmptyParts);
     if (parts.count() >= 3) {
         QStringList shares;
         if (QFileSystemEngine::uncListSharesOnServer("\\\\"_L1 + parts.at(2), &shares))
             return parts.count() < 4
-                    || shares.contains(parts.at(3).toString(), Qt::CaseInsensitive);
+                    || shares.contains(parts.at(3).toString(), BobUI::CaseInsensitive);
     }
     return false;
 }
@@ -1025,7 +1025,7 @@ static inline QByteArray fileId(HANDLE handle)
 // File ID for Windows starting from version 8.
 QByteArray fileIdWin8(HANDLE handle)
 {
-#if !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_BOOTSTRAPPED)
     QByteArray result;
     FILE_ID_INFO infoEx;
     if (GetFileInformationByHandleEx(
@@ -1039,11 +1039,11 @@ QByteArray fileIdWin8(HANDLE handle)
                              int(sizeof(infoEx.FileId)))
                           .toHex();
     } else {
-        // GetFileInformationByHandleEx() is observed to fail for FAT32, QTBUG-74759
+        // GetFileInformationByHandleEx() is observed to fail for FAT32, BOBUIBUG-74759
         result = fileId(handle);
     }
     return result;
-#else // !QT_BOOTSTRAPPED
+#else // !BOBUI_BOOTSTRAPPED
     return fileId(handle);
 #endif
 }
@@ -1110,7 +1110,7 @@ bool QFileSystemEngine::setFileTime(HANDLE fHandle, const QDateTime &newDate,
 QString QFileSystemEngine::owner(const QFileSystemEntry &entry, QAbstractFileEngine::FileOwner own)
 {
     QString name;
-#if QT_CONFIG(fslibs)
+#if BOBUI_CONFIG(fslibs)
     if (qAreNtfsPermissionChecksEnabled()) {
         initGlobalSid();
         {
@@ -1164,7 +1164,7 @@ QString QFileSystemEngine::owner(const QFileSystemEntry &entry, QAbstractFileEng
 bool QFileSystemEngine::fillPermissions(const QFileSystemEntry &entry, QFileSystemMetaData &data,
                                         QFileSystemMetaData::MetaDataFlags what)
 {
-#if QT_CONFIG(fslibs)
+#if BOBUI_CONFIG(fslibs)
     if (qAreNtfsPermissionChecksEnabled()) {
         initGlobalSid();
 
@@ -1245,7 +1245,7 @@ bool QFileSystemEngine::fillPermissions(const QFileSystemEntry &entry, QFileSyst
     {
         //### what to do with permissions if we don't use NTFS
         // for now just add all permissions and what about exe missions ??
-        // also qt_ntfs_permission_lookup is now not set by default ... should it ?
+        // also bobui_ntfs_permission_lookup is now not set by default ... should it ?
         data.entryFlags |= QFileSystemMetaData::OwnerReadPermission
                            | QFileSystemMetaData::GroupReadPermission
                            | QFileSystemMetaData::OtherReadPermission;
@@ -1611,7 +1611,7 @@ QString QFileSystemEngine::rootPath()
 QString QFileSystemEngine::homePath()
 {
     QString ret;
-#if QT_CONFIG(fslibs)
+#if BOBUI_CONFIG(fslibs)
     initGlobalSid();
     {
         HANDLE hnd = ::GetCurrentProcess();
@@ -1698,7 +1698,7 @@ bool QFileSystemEngine::setCurrentPath(const QFileSystemEntry &entry)
 
 QFileSystemEntry QFileSystemEngine::currentPath()
 {
-    QString ret(PATH_MAX, Qt::Uninitialized);
+    QString ret(PATH_MAX, BobUI::Uninitialized);
     DWORD size = GetCurrentDirectoryW(PATH_MAX, reinterpret_cast<wchar_t *>(ret.data()));
     if (size > PATH_MAX) {
         // try again after enlarging the buffer
@@ -1886,7 +1886,7 @@ bool QFileSystemEngine::setPermissions(const QFileSystemEntry &entry,
 
 bool QFileSystemEngine::isCaseSensitive(const QFileSystemEntry &, QFileSystemMetaData &)
 {
-    // FIXME: This may not be accurate for all file systems (QTBUG-28246)
+    // FIXME: This may not be accurate for all file systems (BOBUIBUG-28246)
     return false;
 }
 
@@ -1898,8 +1898,8 @@ static inline QDateTime fileTimeToQDateTime(const FILETIME *time)
     SYSTEMTIME sTime;
     FileTimeToSystemTime(time, &sTime);
     return QDateTime(QDate(sTime.wYear, sTime.wMonth, sTime.wDay),
-                     QTime(sTime.wHour, sTime.wMinute, sTime.wSecond, sTime.wMilliseconds),
-                     QTimeZone::UTC);
+                     BOBUIime(sTime.wHour, sTime.wMinute, sTime.wSecond, sTime.wMilliseconds),
+                     BOBUIimeZone::UTC);
 }
 
 QDateTime QFileSystemMetaData::birthTime() const
@@ -1919,4 +1919,4 @@ QDateTime QFileSystemMetaData::accessTime() const
     return fileTimeToQDateTime(&lastAccessTime_);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,20 +1,20 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSETTINGS_H
 #define QSETTINGS_H
 
-#include <QtCore/qobject.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qscopedpointer.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qscopedpointer.h>
 
-QT_REQUIRE_CONFIG(settings);
+BOBUI_REQUIRE_CONFIG(settings);
 
 #include <ctype.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Status // we seem to pick up a macro Status --> int somewhere
 #undef Status
@@ -23,13 +23,13 @@ QT_BEGIN_NAMESPACE
 class QIODevice;
 class QSettingsPrivate;
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 class Q_CORE_EXPORT QSettings : public QObject
 #else
 class Q_CORE_EXPORT QSettings
 #endif
 {
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_OBJECT
 #else
     std::unique_ptr<QSettingsPrivate> d_ptr;
@@ -42,7 +42,7 @@ public:
         AccessError,
         FormatError
     };
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_ENUM(Status)
 #endif
 
@@ -78,7 +78,7 @@ public:
         CustomFormat15,
         CustomFormat16
     };
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_ENUM(Format)
 #endif
 
@@ -86,11 +86,11 @@ public:
         UserScope,
         SystemScope
     };
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_ENUM(Scope)
 #endif
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     explicit QSettings(const QString &organization,
                        const QString &application = QString(), QObject *parent = nullptr);
     QSettings(Scope scope, const QString &organization,
@@ -118,14 +118,14 @@ public:
     bool isAtomicSyncRequired() const;
     void setAtomicSyncRequired(bool enable);
 
-#if QT_CORE_REMOVED_SINCE(6, 4)
+#if BOBUI_CORE_REMOVED_SINCE(6, 4)
     void beginGroup(const QString &prefix);
 #endif
     void beginGroup(QAnyStringView prefix);
     void endGroup();
     QString group() const;
 
-#if QT_CORE_REMOVED_SINCE(6, 4)
+#if BOBUI_CORE_REMOVED_SINCE(6, 4)
     int beginReadArray(const QString &prefix);
     void beginWriteArray(const QString &prefix, int size = -1);
 #endif
@@ -139,7 +139,7 @@ public:
     QStringList childGroups() const;
     bool isWritable() const;
 
-#if QT_CORE_REMOVED_SINCE(6, 4)
+#if BOBUI_CORE_REMOVED_SINCE(6, 4)
     void setValue(const QString &key, const QVariant &value);
     QVariant value(const QString &key, const QVariant &defaultValue) const;
     QVariant value(const QString &key) const;
@@ -148,7 +148,7 @@ public:
     QVariant value(QAnyStringView key, const QVariant &defaultValue) const;
     QVariant value(QAnyStringView key) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 4)
+#if BOBUI_CORE_REMOVED_SINCE(6, 4)
     void remove(const QString &key);
     bool contains(const QString &key) const;
 #endif
@@ -173,10 +173,10 @@ public:
     typedef bool (*WriteFunc)(QIODevice &device, const SettingsMap &map);
 
     static Format registerFormat(const QString &extension, ReadFunc readFunc, WriteFunc writeFunc,
-                                 Qt::CaseSensitivity caseSensitivity = Qt::CaseSensitive);
+                                 BobUI::CaseSensitivity caseSensitivity = BobUI::CaseSensitive);
 
 protected:
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     bool event(QEvent *event) override;
 #endif
 
@@ -184,6 +184,6 @@ private:
     Q_DISABLE_COPY(QSettings)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSETTINGS_H

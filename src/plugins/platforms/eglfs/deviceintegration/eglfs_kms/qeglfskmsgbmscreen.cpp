@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsgbmscreen_p.h"
 #include "qeglfskmsgbmdevice_p.h"
@@ -10,15 +10,15 @@
 #include <private/qeglfsintegration_p.h>
 #include <private/qeglfskmsintegration_p.h>
 
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QLoggingCategory>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtFbSupport/private/qfbvthandler_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIFbSupport/private/qfbvthandler_p.h>
 
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QMutex QEglFSKmsGbmScreen::s_nonThreadedFlipMutex;
 
@@ -146,7 +146,7 @@ gbm_surface *QEglFSKmsGbmScreen::createSurface(EGLConfig eglConfig)
         if (queryFromEgl) {
             EGLint native_format = -1;
             EGLBoolean success = eglGetConfigAttrib(display(), eglConfig, EGL_NATIVE_VISUAL_ID, &native_format);
-            qCDebug(qLcEglfsKmsDebug) << "Got native format" << Qt::hex << native_format << Qt::dec
+            qCDebug(qLcEglfsKmsDebug) << "Got native format" << BobUI::hex << native_format << BobUI::dec
                                       << "from eglGetConfigAttrib() with return code" << bool(success);
 
             if (success) {
@@ -203,7 +203,7 @@ void QEglFSKmsGbmScreen::resetSurface()
     // Leave m_gbm_bo_next untouched. waitForFlip() should
     // still do its work, when called. Otherwise we end up
     // in device-is-busy errors if there is a new QWindow
-    // created afterwards. (QTBUG-122663)
+    // created afterwards. (BOBUIBUG-122663)
 
     // If not using atomic, will need a new drmModeSetCrtc if a new window
     // gets created later on (and so there's a new fb).
@@ -257,7 +257,7 @@ void QEglFSKmsGbmScreen::ensureModeSet(uint32_t fb)
             qCDebug(qLcEglfsKmsDebug, "Setting mode for screen %s", qPrintable(name()));
 
             if (device()->hasAtomicSupport()) {
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
                 drmModeAtomicReq *request = device()->threadLocalAtomicRequest();
                 if (request) {
                     drmModeAtomicAddProperty(request, op.connector_id, op.crtcIdPropertyId, op.crtc_id);
@@ -354,12 +354,12 @@ void QEglFSKmsGbmScreen::waitForFlip()
         }
     }
 
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
     device()->threadLocalAtomicReset();
 #endif
 }
 
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
 static void addAtomicFlip(drmModeAtomicReq *request, const QKmsOutput &output, uint32_t fb)
 {
     drmModeAtomicAddProperty(request, output.eglfs_plane->id,
@@ -430,16 +430,16 @@ void QEglFSKmsGbmScreen::flip()
     m_flipPending = true;
 
     if (device()->hasAtomicSupport()) {
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
         drmModeAtomicReq *request = device()->threadLocalAtomicRequest();
         if (request) {
             addAtomicFlip(request, thisOutput, fb->fb);
-            static int zpos = qEnvironmentVariableIntValue("QT_QPA_EGLFS_KMS_ZPOS");
+            static int zpos = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_KMS_ZPOS");
             if (zpos) {
                 drmModeAtomicAddProperty(request, thisOutput.eglfs_plane->id,
                                          thisOutput.eglfs_plane->zposPropertyId, zpos);
             }
-            static uint blendOp = uint(qEnvironmentVariableIntValue("QT_QPA_EGLFS_KMS_BLEND_OP"));
+            static uint blendOp = uint(qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_KMS_BLEND_OP"));
             if (blendOp) {
                 drmModeAtomicAddProperty(request, thisOutput.eglfs_plane->id,
                                          thisOutput.eglfs_plane->blendOpPropertyId, blendOp);
@@ -465,7 +465,7 @@ void QEglFSKmsGbmScreen::flip()
             const QKmsOutput &destOutput(d.screen->output());
 
             if (device()->hasAtomicSupport()) {
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
                 drmModeAtomicReq *request = device()->threadLocalAtomicRequest();
                 if (request)
                     addAtomicFlip(request, destOutput, fb->fb);
@@ -494,7 +494,7 @@ void QEglFSKmsGbmScreen::flip()
     }
 
     if (device()->hasAtomicSupport()) {
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
         if (!device()->threadLocalAtomicCommit(this)) {
             return;
         }
@@ -550,4 +550,4 @@ void QEglFSKmsGbmScreen::updateFlipStatus()
     m_gbm_bo_next = nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

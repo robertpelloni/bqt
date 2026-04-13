@@ -1,12 +1,12 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDEVENTDISPATCHER_H
 #define QANDROIDEVENTDISPATCHER_H
 
-#include <QtCore/QMutex>
-#include <QtCore/QSemaphore>
-#include <QtGui/private/qunixeventdispatcher_qpa_p.h>
+#include <BobUICore/QMutex>
+#include <BobUICore/QSemaphore>
+#include <BobUIGui/private/qunixeventdispatcher_qpa_p.h>
 
 class QAndroidEventDispatcher : public QUnixEventDispatcherQPA
 {

@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include <rcc.h>
 
@@ -9,7 +9,7 @@
 #include <qfile.h>
 #include <qfileinfo.h>
 #include <qhashfunctions.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qatomic.h>
 #include <qglobal.h>
 #include <qcoreapplication.h>
@@ -22,11 +22,11 @@
 #  include <stdio.h>
 #endif // Q_OS_WIN
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-void dumpRecursive(const QDir &dir, QTextStream &out)
+void dumpRecursive(const QDir &dir, BOBUIextStream &out)
 {
     const QFileInfoList entries = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot
                                                     | QDir::NoSymLinks);
@@ -63,7 +63,7 @@ int createProject(const QString &outFileName)
         return 1;
     }
 
-    QTextStream out(&file);
+    BOBUIextStream out(&file);
     out << "<!DOCTYPE RCC><RCC version=\"1.0\">\n"
            "<qresource>\n"_L1;
 
@@ -93,7 +93,7 @@ QString makefileEscape(const QString &filepath)
 
 void writeDepFile(QIODevice &iodev, const QStringList &depsList, const QString &targetName)
 {
-    QTextStream out(&iodev);
+    BOBUIextStream out(&iodev);
     out << qPrintable(makefileEscape(targetName));
     out << QChar(u':');
 
@@ -110,13 +110,13 @@ void writeDepFile(QIODevice &iodev, const QStringList &depsList, const QString &
 int runRcc(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationVersion(QStringLiteral(QT_VERSION_STR));
+    QCoreApplication::setApplicationVersion(QStringLiteral(BOBUI_VERSION_STR));
 
     // Note that rcc isn't translated.
     // If you use this code as an example for a translated app, make sure to translate the strings.
     QCommandLineParser parser;
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
-    parser.setApplicationDescription("Qt Resource Compiler version " QT_VERSION_STR ""_L1);
+    parser.setApplicationDescription("BobUI Resource Compiler version " BOBUI_VERSION_STR ""_L1);
     parser.addHelpOption();
     parser.addVersionOption();
 
@@ -136,11 +136,11 @@ int runRcc(int argc, char *argv[])
     QCommandLineOption rootOption(QStringLiteral("root"), QStringLiteral("Prefix resource access path with root path."), QStringLiteral("path"));
     parser.addOption(rootOption);
 
-#if QT_CONFIG(zstd) && !defined(QT_NO_COMPRESS)
+#if BOBUI_CONFIG(zstd) && !defined(BOBUI_NO_COMPRESS)
 #  define ALGOS     "[zstd], zlib, none"
-#elif QT_CONFIG(zstd)
+#elif BOBUI_CONFIG(zstd)
 #  define ALGOS     "[zstd], none"
-#elif !defined(QT_NO_COMPRESS)
+#elif !defined(BOBUI_NO_COMPRESS)
 #  define ALGOS     "[zlib], none"
 #else
 #  define ALGOS     "[none]"
@@ -251,7 +251,7 @@ int runRcc(int argc, char *argv[])
             library.setFormat(RCCResourceLibrary::C_Code);
         } else if (value == "python"_L1) {
             library.setFormat(RCCResourceLibrary::Python_Code);
-        } else if (value == "python2"_L1) { // ### fixme Qt 7: remove
+        } else if (value == "python2"_L1) { // ### fixme BobUI 7: remove
             qWarning("Format python2 is no longer supported, defaulting to python.");
             library.setFormat(RCCResourceLibrary::Python_Code);
         } else {
@@ -307,7 +307,7 @@ int runRcc(int argc, char *argv[])
         return 1;
 
     if (library.verbose())
-        errorDevice.write("Qt resource compiler\n");
+        errorDevice.write("BobUI resource compiler\n");
 
     library.setInputFiles(filenamesIn);
 
@@ -420,14 +420,14 @@ int runRcc(int argc, char *argv[])
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 int main(int argc, char *argv[])
 {
     // rcc uses a QHash to store files in the resource system.
-    // we must force a certain hash order when testing or tst_rcc will fail, see QTBUG-25078
+    // we must force a certain hash order when testing or tst_rcc will fail, see BOBUIBUG-25078
     // similar requirements exist for reproducibly builds.
     QHashSeed::setDeterministicGlobalSeed();
 
-    return QT_PREPEND_NAMESPACE(runRcc)(argc, argv);
+    return BOBUI_PREPEND_NAMESPACE(runRcc)(argc, argv);
 }

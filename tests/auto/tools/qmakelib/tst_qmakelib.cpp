@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_qmakelib.h"
 
@@ -16,8 +16,8 @@ void tst_qmakelib::initTestCase()
     m_env.insert(QStringLiteral("COMSPEC"), qgetenv("COMSPEC"));
 #endif
     m_prop.insert(ProKey("P1"), ProString("prop val"));
-    m_prop.insert(ProKey("QT_HOST_DATA/get"), ProString(m_indir));
-    m_prop.insert(ProKey("QT_HOST_DATA/src"), ProString(m_indir));
+    m_prop.insert(ProKey("BOBUI_HOST_DATA/get"), ProString(m_indir));
+    m_prop.insert(ProKey("BOBUI_HOST_DATA/src"), ProString(m_indir));
 
     QVERIFY(!m_indir.isEmpty());
     QVERIFY(QDir(m_outdir).removeRecursively());
@@ -110,26 +110,26 @@ void tst_qmakelib::proString()
 void tst_qmakelib::proStringList()
 {
     ProStringList sl1;
-    sl1 << ProString("qt") << ProString(QLatin1String("is"))
+    sl1 << ProString("bobui") << ProString(QLatin1String("is"))
         << ProString(QStringLiteral("uncool")).mid(2);
 
-    QCOMPARE(sl1.toQStringList(), QStringList() << "qt" << "is" << "cool");
-    QCOMPARE(sl1.join(QStringLiteral("~~")), QStringLiteral("qt~~is~~cool"));
+    QCOMPARE(sl1.toQStringList(), QStringList() << "bobui" << "is" << "cool");
+    QCOMPARE(sl1.join(QStringLiteral("~~")), QStringLiteral("bobui~~is~~cool"));
 
     ProStringList sl2;
     sl2 << ProString("mostly") << ProString("...") << ProString("is") << ProString("...");
     sl1.insertUnique(sl2);
-    QCOMPARE(sl1.toQStringList(), QStringList() << "qt" << "is" << "cool" << "mostly" << "...");
+    QCOMPARE(sl1.toQStringList(), QStringList() << "bobui" << "is" << "cool" << "mostly" << "...");
 
     QVERIFY(sl1.contains("cool"));
     QVERIFY(!sl1.contains("COOL"));
-    QVERIFY(sl1.contains("COOL", Qt::CaseInsensitive));
+    QVERIFY(sl1.contains("COOL", BobUI::CaseInsensitive));
 }
 
 void tst_qmakelib::quoteArgUnix_data()
 {
-    QTest::addColumn<QString>("in");
-    QTest::addColumn<QString>("out");
+    BOBUIest::addColumn<QString>("in");
+    BOBUIest::addColumn<QString>("out");
 
     static const struct {
         const char * const in;
@@ -142,7 +142,7 @@ void tst_qmakelib::quoteArgUnix_data()
     };
 
     for (unsigned i = 0; i < sizeof(vals)/sizeof(vals[0]); i++)
-        QTest::newRow(vals[i].in) << QString::fromLatin1(vals[i].in)
+        BOBUIest::newRow(vals[i].in) << QString::fromLatin1(vals[i].in)
                                   << QString::fromLatin1(vals[i].out);
 }
 
@@ -156,8 +156,8 @@ void tst_qmakelib::quoteArgUnix()
 
 void tst_qmakelib::quoteArgWin_data()
 {
-    QTest::addColumn<QString>("in");
-    QTest::addColumn<QString>("out");
+    BOBUIest::addColumn<QString>("in");
+    BOBUIest::addColumn<QString>("out");
 
     static const struct {
         const char * const in;
@@ -173,7 +173,7 @@ void tst_qmakelib::quoteArgWin_data()
     };
 
     for (unsigned i = 0; i < sizeof(vals)/sizeof(vals[0]); i++)
-        QTest::newRow(vals[i].in) << QString::fromLatin1(vals[i].in)
+        BOBUIest::newRow(vals[i].in) << QString::fromLatin1(vals[i].in)
                                   << QString::fromLatin1(vals[i].out);
 }
 
@@ -204,8 +204,8 @@ void tst_qmakelib::pathUtils()
 
 void tst_qmakelib::ioUtilRelativity_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("relative");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("relative");
 
     static const struct {
         const char *name;
@@ -225,8 +225,8 @@ void tst_qmakelib::ioUtilRelativity_data()
         { "drive-abs-bs", "c:\\path\\to\\file", false },
         { "drive-path", "c:path/to/file.txt", true },
         { "drive-path-bs", "c:path\\to\\file.txt", true },
-        { "rooted", "/Users/qt/bin/true", true },
-        { "rooted-bs", "\\Users\\qt\\bin\\true", true },
+        { "rooted", "/Users/bobui/bin/true", true },
+        { "rooted-bs", "\\Users\\bobui\\bin\\true", true },
         { "drive-rel", "c:file.txt", true },
         { "subdir-bs", "path\\to\\file", true },
 #else
@@ -238,7 +238,7 @@ void tst_qmakelib::ioUtilRelativity_data()
     };
 
     for (unsigned int i = sizeof(rows) / sizeof(rows[0]); i-- > 0; )
-        QTest::newRow(rows[i].name) << QString::fromLatin1(rows[i].path)
+        BOBUIest::newRow(rows[i].name) << QString::fromLatin1(rows[i].path)
                                     << rows[i].relative;
 }
 
@@ -252,9 +252,9 @@ void tst_qmakelib::ioUtilRelativity()
 
 void tst_qmakelib::ioUtilResolve_data()
 {
-    QTest::addColumn<QString>("base");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("expect");
+    BOBUIest::addColumn<QString>("base");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("expect");
 
     static const struct {
         const char *name;
@@ -279,7 +279,7 @@ void tst_qmakelib::ioUtilResolve_data()
     };
 
     for (unsigned i = sizeof(data) / sizeof(data[0]); i-- > 0; )
-        QTest::newRow(data[i].name) << QString::fromLatin1(data[i].base)
+        BOBUIest::newRow(data[i].name) << QString::fromLatin1(data[i].base)
                                     << QString::fromLatin1(data[i].path)
                                     << QString::fromLatin1(data[i].expect);
 }
@@ -313,4 +313,4 @@ void QMakeTestHandler::doPrint(const QString &msg)
     }
 }
 
-QTEST_MAIN(tst_qmakelib)
+BOBUIEST_MAIN(tst_qmakelib)

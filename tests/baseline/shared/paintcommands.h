@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef PAINTCOMMANDS_H
 #define PAINTCOMMANDS_H
 
@@ -13,11 +13,11 @@
 #include <qbrush.h>
 #include <qhash.h>
 
-QT_FORWARD_DECLARE_CLASS(QPainter)
-#ifndef QT_NO_OPENGL
-QT_FORWARD_DECLARE_CLASS(QOpenGLFramebufferObject)
-QT_FORWARD_DECLARE_CLASS(QOpenGLPaintDevice)
-QT_FORWARD_DECLARE_CLASS(QOpenGLContext)
+BOBUI_FORWARD_DECLARE_CLASS(QPainter)
+#ifndef BOBUI_NO_OPENGL
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLFramebufferObject)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLPaintDevice)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLContext)
 #endif
 
 enum DeviceType {
@@ -54,7 +54,7 @@ public:
         , m_type(WidgetType)
         , m_checkers_background(true)
         , m_shouldDrawText(true)
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
         , m_default_glcontext(0)
         , m_surface_glcontext(0)
         , m_surface_glbuffer(0)
@@ -180,7 +180,7 @@ private:
     void command_drawAlignedText(QRegularExpressionMatch re);
     void command_drawStaticText(QRegularExpressionMatch re);
     void command_drawGlyphRun(QRegularExpressionMatch re);
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
     void command_drawTextDocument(QRegularExpressionMatch re);
 #endif
     void command_drawTiledPixmap(QRegularExpressionMatch re);
@@ -263,7 +263,7 @@ private:
 
     QList<QPointF> m_controlPoints;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOpenGLContext *m_default_glcontext;
     QOpenGLContext *m_surface_glcontext;
     QOpenGLFramebufferObject *m_surface_glbuffer;

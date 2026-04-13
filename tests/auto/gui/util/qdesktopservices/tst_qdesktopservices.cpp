@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qdesktopservices.h>
 #include <qregularexpression.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_qdesktopservices : public QObject
 {
@@ -25,7 +25,7 @@ void tst_qdesktopservices::openUrl()
     // this test is only valid on windows on other systems it might mean open a new document in the application handling .file
     const QRegularExpression messagePattern("ShellExecute 'file://invalid\\.file' failed \\(error \\d+\\)\\.");
     QVERIFY(messagePattern.isValid());
-    QTest::ignoreMessage(QtWarningMsg, messagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, messagePattern);
     QCOMPARE(QDesktopServices::openUrl(QUrl("file://invalid.file")), false);
 #endif
 }
@@ -64,6 +64,6 @@ void tst_qdesktopservices::handlers()
     QCOMPARE(barHandler.lastHandledUrl.toString(), barUrl.toString());
 }
 
-QTEST_MAIN(tst_qdesktopservices)
+BOBUIEST_MAIN(tst_qdesktopservices)
 
 #include "tst_qdesktopservices.moc"

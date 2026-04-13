@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsqlerror.h"
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QSqlError &s)
 {
     QDebugStateSaver saver(dbg);
@@ -28,14 +28,14 @@ public:
     QSqlError::ErrorType errorType;
     QString errorCode;
 };
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QSqlErrorPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QSqlErrorPrivate)
 
 /*!
     \class QSqlError
     \brief The QSqlError class provides SQL database error information.
 
     \ingroup database
-    \inmodule QtSql
+    \inmodule BobUISql
 
     A QSqlError object can provide database-specific error data,
     including the driverText() and databaseText() messages (or both
@@ -218,4 +218,4 @@ bool QSqlError::isValid() const
     return d->errorType != NoError;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

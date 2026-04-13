@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "pbuilder_pbx.h"
 #include "option.h"
@@ -21,7 +21,7 @@
 #include <private/qcore_mac_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //#define GENERATE_AGGREGRATE_SUBDIR
 
@@ -29,14 +29,14 @@ QT_BEGIN_NAMESPACE
 
 using namespace QMakeInternal;
 
-static QString qtSha1(const QByteArray &src)
+static QString bobuiSha1(const QByteArray &src)
 {
     QByteArray digest = QCryptographicHash::hash(src, QCryptographicHash::Sha1);
     return QString::fromLatin1(digest.toHex());
 }
 
 bool
-ProjectBuilderMakefileGenerator::writeMakefile(QTextStream &t)
+ProjectBuilderMakefileGenerator::writeMakefile(BOBUIextStream &t)
 {
     writingUnixMakefileGenerator = false;
     if(!project->values("QMAKE_FAILED_REQUIREMENTS").isEmpty()) {
@@ -67,7 +67,7 @@ struct ProjectBuilderSubDirs {
 };
 
 bool
-ProjectBuilderMakefileGenerator::writeSubDirs(QTextStream &t)
+ProjectBuilderMakefileGenerator::writeSubDirs(BOBUIextStream &t)
 {
     //HEADER
     const int pbVersion = pbuilderVersion();
@@ -409,13 +409,13 @@ ProjectBuilderSources::files(QMakeProject *project) const
 {
     QStringList ret = project->values(ProKey(key)).toQStringList();
     if(key == "QMAKE_INTERNAL_INCLUDED_FILES") {
-        QString qtPrefix(project->propertyValue(ProKey("QT_INSTALL_PREFIX/get")).toQString() + '/');
-        QString qtSrcPrefix(project->propertyValue(ProKey("QT_INSTALL_PREFIX/src")).toQString() + '/');
+        QString bobuiPrefix(project->propertyValue(ProKey("BOBUI_INSTALL_PREFIX/get")).toQString() + '/');
+        QString bobuiSrcPrefix(project->propertyValue(ProKey("BOBUI_INSTALL_PREFIX/src")).toQString() + '/');
 
         QStringList newret;
         for(int i = 0; i < ret.size(); ++i) {
-            // Don't show files "internal" to Qt in Xcode
-            if (ret.at(i).startsWith(qtPrefix) || ret.at(i).startsWith(qtSrcPrefix))
+            // Don't show files "internal" to BobUI in Xcode
+            if (ret.at(i).startsWith(bobuiPrefix) || ret.at(i).startsWith(bobuiSrcPrefix))
                 continue;
 
             newret.append(ret.at(i));
@@ -539,7 +539,7 @@ bool ProjectBuilderMakefileGenerator::replaceLibrarySuffix(const QString &lib_fi
 }
 
 bool
-ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
+ProjectBuilderMakefileGenerator::writeMakeParts(BOBUIextStream &t)
 {
     ProStringList tmp;
 
@@ -557,14 +557,14 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
 
     //MAKE QMAKE equivelant
     if (!project->isActiveConfig("no_autoqmake")) {
-        QString mkfile = pbx_dir + Option::dir_sep + "qt_makeqmake.mak";
+        QString mkfile = pbx_dir + Option::dir_sep + "bobui_makeqmake.mak";
         QFile mkf(mkfile);
         if(mkf.open(QIODevice::WriteOnly | QIODevice::Text)) {
             writingUnixMakefileGenerator = true;
             debug_msg(1, "pbuilder: Creating file: %s", mkfile.toLatin1().constData());
-            QTextStream mkt(&mkf);
+            BOBUIextStream mkt(&mkf);
             writeHeader(mkt);
-            mkt << "QMAKE    = " << var("QMAKE_QMAKE") << Qt::endl;
+            mkt << "QMAKE    = " << var("QMAKE_QMAKE") << BobUI::endl;
             project->values("QMAKE_MAKE_QMAKE_EXTRA_COMMANDS")
                 << "@echo 'warning: Xcode project has been regenerated, custom settings have been lost. " \
                    "Use CONFIG+=no_autoqmake to prevent this behavior in the future, " \
@@ -582,7 +582,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
           << "\t\t\t" << writeSettings("files", ProStringList(), SettingsAsList, 4) << ";\n"
           << "\t\t\t" << writeSettings("isa", "PBXShellScriptBuildPhase", SettingsNoQuote) << ";\n"
           << "\t\t\t" << writeSettings("runOnlyForDeploymentPostprocessing", "0", SettingsNoQuote) << ";\n"
-          << "\t\t\t" << writeSettings("name", "Qt Qmake") << ";\n"
+          << "\t\t\t" << writeSettings("name", "BobUI Qmake") << ";\n"
           << "\t\t\t" << writeSettings("shellPath", "/bin/sh") << ";\n"
           << "\t\t\t" << writeSettings("shellScript", "make -C " + IoUtils::shellQuoteUnix(Option::output_dir)
                                                       + " -f " + IoUtils::shellQuoteUnix(mkfile)) << ";\n"
@@ -755,24 +755,24 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
 
     //PREPROCESS BUILDPHASE (just a makefile)
     {
-        QString mkfile = pbx_dir + Option::dir_sep + "qt_preprocess.mak";
+        QString mkfile = pbx_dir + Option::dir_sep + "bobui_preprocess.mak";
         QFile mkf(mkfile);
         ProStringList outputPaths;
         ProStringList inputPaths;
         if(mkf.open(QIODevice::WriteOnly | QIODevice::Text)) {
             writingUnixMakefileGenerator = true;
             debug_msg(1, "pbuilder: Creating file: %s", mkfile.toLatin1().constData());
-            QTextStream mkt(&mkf);
+            BOBUIextStream mkt(&mkf);
             writeHeader(mkt);
-            mkt << "MOC       = " << var("QMAKE_MOC") << Qt::endl;
-            mkt << "UIC       = " << var("QMAKE_UIC") << Qt::endl;
-            mkt << "LEX       = " << var("QMAKE_LEX") << Qt::endl;
-            mkt << "LEXFLAGS  = " << var("QMAKE_LEXFLAGS") << Qt::endl;
-            mkt << "YACC      = " << var("QMAKE_YACC") << Qt::endl;
-            mkt << "YACCFLAGS = " << var("QMAKE_YACCFLAGS") << Qt::endl;
+            mkt << "MOC       = " << var("QMAKE_MOC") << BobUI::endl;
+            mkt << "UIC       = " << var("QMAKE_UIC") << BobUI::endl;
+            mkt << "LEX       = " << var("QMAKE_LEX") << BobUI::endl;
+            mkt << "LEXFLAGS  = " << var("QMAKE_LEXFLAGS") << BobUI::endl;
+            mkt << "YACC      = " << var("QMAKE_YACC") << BobUI::endl;
+            mkt << "YACCFLAGS = " << var("QMAKE_YACCFLAGS") << BobUI::endl;
             mkt << "DEFINES       = "
                 << varGlue("PRL_EXPORT_DEFINES","-D"," -D"," ")
-                << varGlue("DEFINES","-D"," -D","") << Qt::endl;
+                << varGlue("DEFINES","-D"," -D","") << BobUI::endl;
             mkt << "INCPATH       =";
             {
                 const ProStringList &incs = project->values("INCLUDEPATH");
@@ -781,9 +781,9 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
             }
             if(!project->isEmpty("QMAKE_FRAMEWORKPATH_FLAGS"))
                mkt << " " << var("QMAKE_FRAMEWORKPATH_FLAGS");
-            mkt << Qt::endl;
-            mkt << "DEL_FILE  = " << var("QMAKE_DEL_FILE") << Qt::endl;
-            mkt << "MOVE      = " << var("QMAKE_MOVE") << Qt::endl << Qt::endl;
+            mkt << BobUI::endl;
+            mkt << "DEL_FILE  = " << var("QMAKE_DEL_FILE") << BobUI::endl;
+            mkt << "MOVE      = " << var("QMAKE_MOVE") << BobUI::endl << BobUI::endl;
             mkt << "preprocess: compilers\n";
             mkt << "clean preprocess_clean: compiler_clean\n\n";
             writeExtraTargets(mkt);
@@ -816,7 +816,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
                         }
                     }
                 }
-                mkt << Qt::endl;
+                mkt << BobUI::endl;
                 writeExtraCompilerTargets(mkt);
                 writingUnixMakefileGenerator = false;
             }
@@ -826,7 +826,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
         // Remove duplicates from build steps with "combine"
         outputPaths.removeDuplicates();
 
-        // Don't create cycles. We only have one qt_preprocess.mak which runs different compilers
+        // Don't create cycles. We only have one bobui_preprocess.mak which runs different compilers
         // whose inputs may depend on the output of another. The "compilers" step will run all
         // compilers anyway
         inputPaths.removeEach(outputPaths);
@@ -840,7 +840,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
           << "\t\t\t" << writeSettings("files", ProStringList(), SettingsAsList, 4) << ";\n"
           << "\t\t\t" << writeSettings("isa", "PBXShellScriptBuildPhase", SettingsNoQuote) << ";\n"
           << "\t\t\t" << writeSettings("runOnlyForDeploymentPostprocessing", "0", SettingsNoQuote) << ";\n"
-          << "\t\t\t" << writeSettings("name", "Qt Preprocessors") << ";\n"
+          << "\t\t\t" << writeSettings("name", "BobUI Preprocessors") << ";\n"
           << "\t\t\t" << writeSettings("inputPaths", inputPaths, SettingsAsList, 4) << ";\n"
           << "\t\t\t" << writeSettings("outputPaths", outputPaths, SettingsAsList, 4) << ";\n"
           << "\t\t\t" << writeSettings("shellPath", "/bin/sh") << ";\n"
@@ -1000,24 +1000,24 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
     }
     //SUBLIBS BUILDPHASE (just another makefile)
     if(!project->isEmpty("SUBLIBS")) {
-        QString mkfile = pbx_dir + Option::dir_sep + "qt_sublibs.mak";
+        QString mkfile = pbx_dir + Option::dir_sep + "bobui_sublibs.mak";
         QFile mkf(mkfile);
         if(mkf.open(QIODevice::WriteOnly | QIODevice::Text)) {
             writingUnixMakefileGenerator = true;
             debug_msg(1, "pbuilder: Creating file: %s", mkfile.toLatin1().constData());
-            QTextStream mkt(&mkf);
+            BOBUIextStream mkt(&mkf);
             writeHeader(mkt);
             mkt << "SUBLIBS= ";
             // ### This is missing the parametrization found in unixmake2.cpp
             tmp = project->values("SUBLIBS");
             for(int i = 0; i < tmp.size(); i++)
                 t << escapeFilePath("tmp/lib" + tmp[i] + ".a") << ' ';
-            t << Qt::endl << Qt::endl;
+            t << BobUI::endl << BobUI::endl;
             mkt << "sublibs: $(SUBLIBS)\n\n";
             tmp = project->values("SUBLIBS");
             for(int i = 0; i < tmp.size(); i++)
                 t << escapeFilePath("tmp/lib" + tmp[i] + ".a") + ":\n\t"
-                  << var(ProKey("MAKELIB" + tmp[i])) << Qt::endl << Qt::endl;
+                  << var(ProKey("MAKELIB" + tmp[i])) << BobUI::endl << BobUI::endl;
             mkt.flush();
             mkf.close();
             writingUnixMakefileGenerator = false;
@@ -1030,7 +1030,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
           << "\t\t\t" << writeSettings("files", ProStringList(), SettingsAsList, 4) << ";\n"
           << "\t\t\t" << writeSettings("isa", "PBXShellScriptBuildPhase", SettingsNoQuote) << ";\n"
           << "\t\t\t" << writeSettings("runOnlyForDeploymentPostprocessing", "0", SettingsNoQuote) << ";\n"
-          << "\t\t\t" << writeSettings("name", "Qt Sublibs") << ";\n"
+          << "\t\t\t" << writeSettings("name", "BobUI Sublibs") << ";\n"
           << "\t\t\t" << writeSettings("shellPath", "/bin/sh") << "\n"
           << "\t\t\t" << writeSettings("shellScript", "make -C " + IoUtils::shellQuoteUnix(Option::output_dir)
                                                       + " -f " + IoUtils::shellQuoteUnix(mkfile)) << ";\n"
@@ -1070,7 +1070,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
           << "\t\t\t" << writeSettings("outputPaths", outputPaths, SettingsAsList, 4) << ";\n"
           << "\t\t\t" << writeSettings("isa", "PBXShellScriptBuildPhase", SettingsNoQuote) << ";\n"
           << "\t\t\t" << writeSettings("runOnlyForDeploymentPostprocessing", "0", SettingsNoQuote) << ";\n"
-          << "\t\t\t" << writeSettings("name", "Qt Prelink") << ";\n"
+          << "\t\t\t" << writeSettings("name", "BobUI Prelink") << ";\n"
           << "\t\t\t" << writeSettings("shellPath", "/bin/sh") << ";\n"
           << "\t\t\t" << writeSettings("shellScript", project->values("QMAKE_PRE_LINK")) << ";\n"
           << "\t\t\t" << writeSettings("showEnvVarsInLog", "0") << ";\n"
@@ -1114,7 +1114,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
           << "\t\t\t" << writeSettings("inputPaths", ProStringList("$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)"), SettingsAsList, 4) << ";\n"
           << "\t\t\t" << writeSettings("isa", "PBXShellScriptBuildPhase", SettingsNoQuote) << ";\n"
           << "\t\t\t" << writeSettings("runOnlyForDeploymentPostprocessing", "0", SettingsNoQuote) << ";\n"
-          << "\t\t\t" << writeSettings("name", "Qt Postlink") << ";\n"
+          << "\t\t\t" << writeSettings("name", "BobUI Postlink") << ";\n"
           << "\t\t\t" << writeSettings("shellPath", "/bin/sh") << ";\n"
           << "\t\t\t" << writeSettings("shellScript", project->values("QMAKE_POST_LINK")) << ";\n"
           << "\t\t\t" << writeSettings("showEnvVarsInLog", "0") << ";\n"
@@ -1352,8 +1352,8 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
           << "\t\t\t" << writeSettings("buildConfigurationList", keyFor("QMAKE_PBX_BUILDCONFIG_LIST_TARGET"), SettingsNoQuote) << ";\n"
           << "\t\t\t" << writeSettings("isa", "PBXAggregateTarget", SettingsNoQuote) << ";\n"
           << "\t\t\t" << writeSettings("buildRules", ProStringList(), SettingsAsList) << ";\n"
-          << "\t\t\t" << writeSettings("productName", "Qt Preprocess") << ";\n"
-          << "\t\t\t" << writeSettings("name", "Qt Preprocess") << ";\n"
+          << "\t\t\t" << writeSettings("productName", "BobUI Preprocess") << ";\n"
+          << "\t\t\t" << writeSettings("name", "BobUI Preprocess") << ";\n"
           << "\t\t};\n";
 
         QString aggregate_target_dep_key = keyFor(pbx_dir + "QMAKE_PBX_AGGREGATE_TARGET_DEP");
@@ -1406,7 +1406,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
         t << "\t\t\t" << writeSettings("productInstallPath", project->first("DESTDIR")) << ";\n";
     t << "\t\t};\n";
 
-    // Test target for running Qt unit tests under XCTest
+    // Test target for running BobUI unit tests under XCTest
     if (project->isActiveConfig("testcase") && project->isActiveConfig("app_bundle")) {
         QString devNullFileReferenceKey = keyFor(pbx_dir + "QMAKE_PBX_DEV_NULL_FILE_REFERENCE");
         t << "\t\t" << devNullFileReferenceKey << " = {\n"
@@ -1445,7 +1445,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
             t << "\t\t" << testBundleBuildConfig << " = {\n"
               << "\t\t\t" << writeSettings("isa", "XCBuildConfiguration", SettingsNoQuote) << ";\n"
               << "\t\t\tbuildSettings = {\n"
-              << "\t\t\t\t" << writeSettings("INFOPLIST_FILE", project->first("QMAKE_XCODE_SPECDIR") + "/QtTest.plist") << ";\n"
+              << "\t\t\t\t" << writeSettings("INFOPLIST_FILE", project->first("QMAKE_XCODE_SPECDIR") + "/BobUITest.plist") << ";\n"
               << "\t\t\t\t" << writeSettings("OTHER_LDFLAGS", "") << ";\n"
               << "\t\t\t\t" << writeSettings("TEST_HOST", testHost) << ";\n"
               << "\t\t\t\t" << writeSettings("DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym") << ";\n"
@@ -1487,7 +1487,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
           << "\t\t\t" << writeSettings("productType", "com.apple.product-type.bundle.unit-test") << ";\n"
           << "\t\t\t" << writeSettings("isa", "PBXNativeTarget", SettingsNoQuote) << ";\n"
           << "\t\t\t" << writeSettings("productReference", testBundleReferenceKey) << ";\n"
-          << "\t\t\t" << writeSettings("name", "Qt Test") << ";\n"
+          << "\t\t\t" << writeSettings("name", "BobUI Test") << ";\n"
           << "\t\t};\n";
 
         QLatin1String testTargetID("TestTargetID");
@@ -1588,7 +1588,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
                         plist = fileFixify(specdir() + QDir::separator() + "Info.plist." + project->first("TEMPLATE"), FileFixifyBackwards);
                         QFile plist_in_file(plist);
                         if (plist_in_file.open(QIODevice::ReadOnly)) {
-                            QTextStream plist_in(&plist_in_file);
+                            BOBUIextStream plist_in(&plist_in_file);
                             QString plist_in_text = plist_in.readAll();
                             plist_in_text.replace(QLatin1String("@ICON@"),
                               (project->isEmpty("ICON") ? QString("") : project->first("ICON").toQString().section(Option::dir_sep, -1)));
@@ -1621,7 +1621,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
                             plist_in_text.replace(QLatin1String("${IOS_LAUNCH_SCREEN}"), launchScreen);
                             QFile plist_out_file(Option::output_dir + "/Info.plist");
                             if (plist_out_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                                QTextStream plist_out(&plist_out_file);
+                                BOBUIextStream plist_out(&plist_out_file);
                                 plist_out << plist_in_text;
                                 t << "\t\t\t\t" << writeSettings("INFOPLIST_FILE", "Info.plist") << ";\n";
                             } else {
@@ -1645,7 +1645,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
                     t << "\t\t\t\t" << writeSettings("SYMROOT", ".xcode") << ";\n";
 
                     // Then we set the configuration build dir instead, so that the
-                    // final build artifacts end up in the place Qt Creator expects.
+                    // final build artifacts end up in the place BobUI Creator expects.
                     // The disadvantage of using this over SYMROOT is that Xcode will
                     // fail to archive projects that override this variable.
                     t << "\t\t\t\t" << writeSettings("CONFIGURATION_BUILD_DIR",
@@ -1734,7 +1734,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
                                                      SettingsAsList, 6) << ";\n";
                 }
                 const ProStringList &archs = !project->values("QMAKE_XCODE_ARCHS").isEmpty() ?
-                                                project->values("QMAKE_XCODE_ARCHS") : project->values("QT_ARCH");
+                                                project->values("QMAKE_XCODE_ARCHS") : project->values("BOBUI_ARCH");
                 if (!archs.isEmpty())
                     t << "\t\t\t\t" << writeSettings("ARCHS", archs) << ";\n";
                 if (!project->isEmpty("OBJECTS_DIR"))
@@ -1815,7 +1815,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
             if (defaultSchemeFile.open(QIODevice::ReadOnly)
                 && outputSchemeFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
 
-                QTextStream defaultSchemeStream(&defaultSchemeFile);
+                BOBUIextStream defaultSchemeStream(&defaultSchemeFile);
                 QString schemeData = defaultSchemeStream.readAll();
 
                 schemeData.replace(QLatin1String("@QMAKE_ORIG_TARGET@"), target);
@@ -1823,7 +1823,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
                 schemeData.replace(QLatin1String("@TEST_BUNDLE_PBX_KEY@"), keyFor("QMAKE_TEST_BUNDLE_REFERENCE"));
                 schemeData.replace(QLatin1String("@QMAKE_RELATIVE_PBX_DIR@"), fileFixify(pbx_dir));
 
-                QTextStream outputSchemeStream(&outputSchemeFile);
+                BOBUIextStream outputSchemeStream(&outputSchemeFile);
                 outputSchemeStream << schemeData;
 
                 wroteCustomScheme = true;
@@ -1906,7 +1906,7 @@ ProjectBuilderMakefileGenerator::keyFor(const QString &block)
 #endif
     QString ret;
     if(!keys.contains(block)) {
-        ret = qtSha1(block.toUtf8()).left(24).toUpper();
+        ret = bobuiSha1(block.toUtf8()).left(24).toUpper();
         keys.insert(block, ret);
     } else {
         ret = keys[block];
@@ -2059,4 +2059,4 @@ ProjectBuilderMakefileGenerator::inhibitMakeDirOutPath(const ProKey &path) const
     return path == "OBJECTS_DIR";
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

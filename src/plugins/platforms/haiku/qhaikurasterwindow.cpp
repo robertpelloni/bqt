@@ -1,5 +1,5 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qhaikurasterwindow.h"
 
@@ -10,13 +10,13 @@
 
 #include <qpa/qwindowsysteminterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_METATYPE(QEvent::Type)
-Q_DECLARE_METATYPE(Qt::MouseButtons)
-Q_DECLARE_METATYPE(Qt::MouseEventSource)
-Q_DECLARE_METATYPE(Qt::KeyboardModifiers)
-Q_DECLARE_METATYPE(Qt::Orientation)
+Q_DECLARE_METATYPE(BobUI::MouseButtons)
+Q_DECLARE_METATYPE(BobUI::MouseEventSource)
+Q_DECLARE_METATYPE(BobUI::KeyboardModifiers)
+Q_DECLARE_METATYPE(BobUI::Orientation)
 
 HaikuViewProxy::HaikuViewProxy(BWindow *window, QObject *parent)
     : QObject(parent)
@@ -41,17 +41,17 @@ void HaikuViewProxy::MessageReceived(BMessage *message)
                 BPoint localPos;
                 uint32 keyState = 0;
                 GetMouse(&localPos, &keyState);
-                const Qt::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
+                const BobUI::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
 
                 const BPoint globalPos = ConvertToScreen(localPos);
                 const QPoint globalPosition = QPoint(globalPos.x, globalPos.y);
                 const QPoint localPosition = QPoint(localPos.x, localPos.y);
 
                 if (deltaX != 0)
-                    Q_EMIT wheelEvent(localPosition, globalPosition, (deltaX * -120), Qt::Horizontal, keyboardModifiers);
+                    Q_EMIT wheelEvent(localPosition, globalPosition, (deltaX * -120), BobUI::Horizontal, keyboardModifiers);
 
                 if (deltaY != 0)
-                    Q_EMIT wheelEvent(localPosition, globalPosition, (deltaY * -120), Qt::Vertical, keyboardModifiers);
+                    Q_EMIT wheelEvent(localPosition, globalPosition, (deltaY * -120), BobUI::Vertical, keyboardModifiers);
              }
              break;
         }
@@ -75,9 +75,9 @@ void HaikuViewProxy::MouseDown(BPoint localPos)
     uint32 keyState = 0;
     GetMouse(&dummyPos, &keyState);
 
-    const Qt::MouseButtons mouseButtons = keyStateToMouseButtons(keyState);
-    const Qt::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
-    const Qt::MouseEventSource source = Qt::MouseEventNotSynthesized;
+    const BobUI::MouseButtons mouseButtons = keyStateToMouseButtons(keyState);
+    const BobUI::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
+    const BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized;
 
     const BPoint globalPos = ConvertToScreen(localPos);
     const QPoint globalPosition = QPoint(globalPos.x, globalPos.y);
@@ -92,9 +92,9 @@ void HaikuViewProxy::MouseUp(BPoint localPos)
     uint32 keyState = 0;
     GetMouse(&dummyPos, &keyState);
 
-    const Qt::MouseButtons mouseButtons = keyStateToMouseButtons(keyState);
-    const Qt::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
-    const Qt::MouseEventSource source = Qt::MouseEventNotSynthesized;
+    const BobUI::MouseButtons mouseButtons = keyStateToMouseButtons(keyState);
+    const BobUI::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
+    const BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized;
 
     const BPoint globalPos = ConvertToScreen(localPos);
     const QPoint globalPosition = QPoint(globalPos.x, globalPos.y);
@@ -112,9 +112,9 @@ void HaikuViewProxy::MouseMoved(BPoint pos, uint32 code, const BMessage *dragMes
             uint32 keyState = 0;
             GetMouse(&dummyPos, &keyState);
 
-            const Qt::MouseButtons mouseButtons = keyStateToMouseButtons(keyState);
-            const Qt::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
-            const Qt::MouseEventSource source = Qt::MouseEventNotSynthesized;
+            const BobUI::MouseButtons mouseButtons = keyStateToMouseButtons(keyState);
+            const BobUI::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
+            const BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized;
 
             const BPoint globalPos = ConvertToScreen(pos);
             const QPoint globalPosition = QPoint(globalPos.x, globalPos.y);
@@ -144,29 +144,29 @@ void HaikuViewProxy::KeyUp(const char*, int32)
     handleKeyEvent(QEvent::KeyRelease, Window()->CurrentMessage());
 }
 
-Qt::MouseButtons HaikuViewProxy::keyStateToMouseButtons(uint32 keyState) const
+BobUI::MouseButtons HaikuViewProxy::keyStateToMouseButtons(uint32 keyState) const
 {
-    Qt::MouseButtons mouseButtons(Qt::NoButton);
+    BobUI::MouseButtons mouseButtons(BobUI::NoButton);
     if (keyState & B_PRIMARY_MOUSE_BUTTON)
-        mouseButtons |= Qt::LeftButton;
+        mouseButtons |= BobUI::LeftButton;
     if (keyState & B_SECONDARY_MOUSE_BUTTON)
-        mouseButtons |= Qt::RightButton;
+        mouseButtons |= BobUI::RightButton;
     if (keyState & B_TERTIARY_MOUSE_BUTTON)
-        mouseButtons |= Qt::MiddleButton;
+        mouseButtons |= BobUI::MiddleButton;
 
     return mouseButtons;
 }
 
-Qt::KeyboardModifiers HaikuViewProxy::keyStateToModifiers(uint32 keyState) const
+BobUI::KeyboardModifiers HaikuViewProxy::keyStateToModifiers(uint32 keyState) const
 {
-    Qt::KeyboardModifiers modifiers(Qt::NoModifier);
+    BobUI::KeyboardModifiers modifiers(BobUI::NoModifier);
 
     if (keyState & B_SHIFT_KEY)
-        modifiers |= Qt::ShiftModifier;
+        modifiers |= BobUI::ShiftModifier;
     if (keyState & B_CONTROL_KEY)
-        modifiers |= Qt::AltModifier;
+        modifiers |= BobUI::AltModifier;
     if (keyState & B_COMMAND_KEY)
-        modifiers |= Qt::ControlModifier;
+        modifiers |= BobUI::ControlModifier;
 
     return modifiers;
 }
@@ -188,7 +188,7 @@ void HaikuViewProxy::handleKeyEvent(QEvent::Type type, BMessage *message)
         }
     }
 
-    const Qt::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
+    const BobUI::KeyboardModifiers keyboardModifiers = keyStateToModifiers(modifiers());
 
     Q_EMIT keyEvent(type, code, keyboardModifiers, text);
 }
@@ -198,18 +198,18 @@ QHaikuRasterWindow::QHaikuRasterWindow(QWindow *window)
     : QHaikuWindow(window)
 {
     qRegisterMetaType<QEvent::Type>();
-    qRegisterMetaType<Qt::MouseButtons>();
-    qRegisterMetaType<Qt::MouseEventSource>();
-    qRegisterMetaType<Qt::KeyboardModifiers>();
-    qRegisterMetaType<Qt::Orientation>();
+    qRegisterMetaType<BobUI::MouseButtons>();
+    qRegisterMetaType<BobUI::MouseEventSource>();
+    qRegisterMetaType<BobUI::KeyboardModifiers>();
+    qRegisterMetaType<BobUI::Orientation>();
 
     HaikuViewProxy *haikuView = new HaikuViewProxy(m_window);
-    connect(haikuView, SIGNAL(mouseEvent(QPoint,QPoint,Qt::MouseButtons,Qt::KeyboardModifiers,Qt::MouseEventSource)),
-            this, SLOT(haikuMouseEvent(QPoint,QPoint,Qt::MouseButtons,Qt::KeyboardModifiers,Qt::MouseEventSource)));
-    connect(haikuView, SIGNAL(wheelEvent(QPoint,QPoint,int,Qt::Orientation,Qt::KeyboardModifiers)),
-            this, SLOT(haikuWheelEvent(QPoint,QPoint,int,Qt::Orientation,Qt::KeyboardModifiers)));
-    connect(haikuView, SIGNAL(keyEvent(QEvent::Type,int,Qt::KeyboardModifiers,QString)),
-            this, SLOT(haikuKeyEvent(QEvent::Type,int,Qt::KeyboardModifiers,QString)));
+    connect(haikuView, SIGNAL(mouseEvent(QPoint,QPoint,BobUI::MouseButtons,BobUI::KeyboardModifiers,BobUI::MouseEventSource)),
+            this, SLOT(haikuMouseEvent(QPoint,QPoint,BobUI::MouseButtons,BobUI::KeyboardModifiers,BobUI::MouseEventSource)));
+    connect(haikuView, SIGNAL(wheelEvent(QPoint,QPoint,int,BobUI::Orientation,BobUI::KeyboardModifiers)),
+            this, SLOT(haikuWheelEvent(QPoint,QPoint,int,BobUI::Orientation,BobUI::KeyboardModifiers)));
+    connect(haikuView, SIGNAL(keyEvent(QEvent::Type,int,BobUI::KeyboardModifiers,QString)),
+            this, SLOT(haikuKeyEvent(QEvent::Type,int,BobUI::KeyboardModifiers,QString)));
     connect(haikuView, SIGNAL(enteredView()), this, SLOT(haikuEnteredView()));
     connect(haikuView, SIGNAL(exitedView()), this, SLOT(haikuExitedView()));
     connect(haikuView, SIGNAL(drawRequest(QRect)), this, SLOT(haikuDrawRequest(QRect)));
@@ -237,4 +237,4 @@ BView* QHaikuRasterWindow::nativeViewHandle() const
     return m_view;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

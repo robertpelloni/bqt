@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qsystemlibrary_p.h"
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/private/wcharhelpers_win_p.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/private/wcharhelpers_win_p.h>
 
 /*!
 
     \internal
     \class QSystemLibrary
-    \inmodule QtCore
+    \inmodule BobUICore
 
     The purpose of this class is to load only libraries that are located in
     well-known and trusted locations on the filesystem. It does not suffer from
@@ -35,11 +35,11 @@
     Order" document on MSDN.
 */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_BOOTSTRAPPED)
 extern QString qAppFileName();
 #endif
 
@@ -65,13 +65,13 @@ HINSTANCE QSystemLibrary::load(const wchar_t *libraryName, bool onlySystemDirect
 
     QStringList searchOrder;
 
-#if !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_BOOTSTRAPPED)
     searchOrder << QFileInfo(qAppFileName()).path();
 #endif
     searchOrder << qSystemDirectory();
 
     const QString PATH(QLatin1StringView(qgetenv("PATH")));
-    searchOrder << PATH.split(u';', Qt::SkipEmptyParts);
+    searchOrder << PATH.split(u';', BobUI::SkipEmptyParts);
 
     const QString fileName = QString::fromWCharArray(libraryName);
 
@@ -82,11 +82,11 @@ HINSTANCE QSystemLibrary::load(const wchar_t *libraryName, bool onlySystemDirect
             fullPathAttempt.append(u'\\');
         }
         fullPathAttempt.append(fileName);
-        HINSTANCE inst = ::LoadLibrary(qt_castToWchar(fullPathAttempt));
+        HINSTANCE inst = ::LoadLibrary(bobui_castToWchar(fullPathAttempt));
         if (inst != nullptr)
             return inst;
     }
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

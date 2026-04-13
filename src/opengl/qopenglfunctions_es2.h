@@ -1,18 +1,18 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLVERSIONFUNCTIONS_ES2_H
 #define QOPENGLVERSIONFUNCTIONS_ES2_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#if QT_CONFIG(opengles2) || defined(Q_QDOC)
+#if BOBUI_CONFIG(opengles2) || defined(Q_QDOC)
 
-#include <QtOpenGL/QOpenGLVersionProfile>
-#include <QtOpenGL/QOpenGLVersionFunctions>
-#include <QtGui/qopenglcontext.h>
+#include <BobUIOpenGL/QOpenGLVersionProfile>
+#include <BobUIOpenGL/QOpenGLVersionFunctions>
+#include <BobUIGui/qopenglcontext.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLFunctions_ES2Private;
 
@@ -889,8 +889,8 @@ inline void QOpenGLFunctions_ES2::glViewport(GLint x, GLint y, GLsizei width, GL
     ::glViewport(x, y, width, height);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(opengles2)
+#endif // BOBUI_CONFIG(opengles2)
 
 #endif

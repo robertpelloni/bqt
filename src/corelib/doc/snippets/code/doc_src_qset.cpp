@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore>
+#include <BobUICore>
 #include <iostream>
 
 using namespace std;
@@ -104,7 +104,7 @@ void snippets_5_12()
         //! [10]
         QSet<QString> set;
         //...
-        const auto predicate = [](const QString &s) { return s.compare("Jeanette", Qt::CaseInsensitive) == 0; };
+        const auto predicate = [](const QString &s) { return s.compare("Jeanette", BobUI::CaseInsensitive) == 0; };
         QSet<QString>::iterator it = std::find_if(set.begin(), set.end(), predicate);
         if (it != set.end())
             cout << "Found Jeanette" << endl;
@@ -125,7 +125,7 @@ void snippets_5_12()
         //! [12]
         QSet<QString> set;
         //...
-        const auto predicate = [](const QString &s) { return s.compare("Jeanette", Qt::CaseInsensitive) == 0; };
+        const auto predicate = [](const QString &s) { return s.compare("Jeanette", BobUI::CaseInsensitive) == 0; };
         QSet<QString>::const_iterator it = std::find_if(set.cbegin(), set.cend(), predicate);
         if (it != set.constEnd())
             cout << "Found Jeanette" << endl;

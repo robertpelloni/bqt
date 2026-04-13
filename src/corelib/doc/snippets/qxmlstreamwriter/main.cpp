@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QCoreApplication>
 #include <QFile>
@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
     stream.writeAttribute("folded", "no");
 //! [write element]
     stream.writeStartElement("bookmark");
-    stream.writeAttribute("href", "http://qt-project.org/");
-    stream.writeTextElement("title", "Qt Project");
+    stream.writeAttribute("href", "http://bobui-project.org/");
+    stream.writeTextElement("title", "BobUI Project");
     stream.writeEndElement(); // bookmark
 //! [write element]
     stream.writeEndElement(); // folder

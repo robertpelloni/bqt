@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIALOG_H
 #define QDIALOG_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_REQUIRE_CONFIG(dialog);
+BOBUI_REQUIRE_CONFIG(dialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPushButton;
@@ -25,7 +25,7 @@ class Q_WIDGETS_EXPORT QDialog : public QWidget
     Q_PROPERTY(bool modal READ isModal WRITE setModal)
 
 public:
-    explicit QDialog(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit QDialog(QWidget *parent = nullptr, BobUI::WindowFlags f = BobUI::WindowFlags());
     ~QDialog();
 
     enum DialogCode { Rejected, Accepted };
@@ -57,13 +57,13 @@ public Q_SLOTS:
     virtual void reject();
 
 protected:
-    QDialog(QDialogPrivate &, QWidget *parent, Qt::WindowFlags f = Qt::WindowFlags());
+    QDialog(QDialogPrivate &, QWidget *parent, BobUI::WindowFlags f = BobUI::WindowFlags());
 
     void keyPressEvent(QKeyEvent *) override;
     void closeEvent(QCloseEvent *) override;
     void showEvent(QShowEvent *) override;
     void resizeEvent(QResizeEvent *) override;
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *) override;
 #endif
     bool eventFilter(QObject *, QEvent *) override;
@@ -73,6 +73,6 @@ private:
     Q_DISABLE_COPY(QDialog)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDIALOG_H

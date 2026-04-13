@@ -1,48 +1,48 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
 // Copyright (C) 2014 Governikus GmbH & Co. KG.
 // Copyright (C) 2016 Richard J. Moore <rich@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:cryptography
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:cryptography
 
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qssldiffiehellmanparameters.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qssldiffiehellmanparameters.h>
 
 #include "qsslsocket_openssl_symbols_p.h"
 #include "qsslcontext_openssl_p.h"
-#include "qtlsbackend_openssl_p.h"
-#include "qtlskey_openssl_p.h"
+#include "bobuilsbackend_openssl_p.h"
+#include "bobuilskey_openssl_p.h"
 #include "qopenssl_p.h"
 
-#include <QtNetwork/private/qssl_p.h>
-#include <QtNetwork/private/qsslsocket_p.h>
-#include <QtNetwork/private/qtlsbackend_p.h>
+#include <BobUINetwork/private/qssl_p.h>
+#include <BobUINetwork/private/qsslsocket_p.h>
+#include <BobUINetwork/private/bobuilsbackend_p.h>
 
-#include <QtNetwork/private/qssldiffiehellmanparameters_p.h>
+#include <BobUINetwork/private/qssldiffiehellmanparameters_p.h>
 
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_GLOBAL_STATIC(bool, forceSecurityLevel)
 
-namespace QTlsPrivate
+namespace BOBUIlsPrivate
 {
-// These callback functions are defined in qtls_openssl.cpp.
+// These callback functions are defined in bobuils_openssl.cpp.
 int q_X509Callback(int ok, X509_STORE_CTX *ctx);
 int q_X509CallbackDirect(int ok, X509_STORE_CTX *ctx);
 
-#if QT_CONFIG(ocsp)
-int qt_OCSP_status_server_callback(SSL *ssl, void *);
+#if BOBUI_CONFIG(ocsp)
+int bobui_OCSP_status_server_callback(SSL *ssl, void *);
 #endif // ocsp
 
 #ifdef TLS1_3_VERSION
 int q_ssl_sess_set_new_cb(SSL *context, SSL_SESSION *session);
 #endif // TLS1_3_VERSION
 
-} // namespace QTlsPrivate
+} // namespace BOBUIlsPrivate
 
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
 // defined in qdtls_openssl.cpp:
 namespace dtlscallbacks
 {
@@ -66,15 +66,15 @@ qssloptions QSslContext::setupOpenSslOptions(QSsl::SslProtocol protocol, QSsl::S
 {
     qssloptions options;
     switch (protocol) {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     case QSsl::TlsV1_0OrLater:
         options = SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3;
         break;
     case QSsl::TlsV1_1OrLater:
         options = SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 | SSL_OP_NO_TLSv1;
         break;
-QT_WARNING_POP
+BOBUI_WARNING_POP
     case QSsl::SecureProtocols:
     case QSsl::TlsV1_2OrLater:
         options = SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 | SSL_OP_NO_TLSv1 | SSL_OP_NO_TLSv1_1;
@@ -313,9 +313,9 @@ QString QSslContext::errorString() const
 void QSslContext::setGenericPrivateKey(QSslContext *sslContext,
                                        const QSslConfiguration &configuration)
 {
-    auto qtKey = QTlsBackend::backend<QTlsPrivate::TlsKeyOpenSSL>(configuration.d->privateKey);
-    Q_ASSERT(qtKey);
-    sslContext->pkey = qtKey->genericKey;
+    auto bobuiKey = BOBUIlsBackend::backend<BOBUIlsPrivate::TlsKeyOpenSSL>(configuration.d->privateKey);
+    Q_ASSERT(bobuiKey);
+    sslContext->pkey = bobuiKey->genericKey;
     Q_ASSERT(sslContext->pkey);
     q_EVP_PKEY_up_ref(sslContext->pkey);
 }
@@ -334,14 +334,14 @@ void QSslContext::initSslContext(QSslContext *sslContext, QSslSocket::SslMode mo
     bool isDtls = false;
 init_context:
     switch (sslContext->sslConfiguration.protocol()) {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     case QSsl::DtlsV1_0:
     case QSsl::DtlsV1_0OrLater:
-QT_WARNING_POP
+BOBUI_WARNING_POP
     case QSsl::DtlsV1_2:
     case QSsl::DtlsV1_2OrLater:
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
         isDtls = true;
         sslContext->ctx = q_SSL_CTX_new(client ? q_DTLS_client_method() : q_DTLS_server_method());
 #else // dtls
@@ -373,7 +373,7 @@ QT_WARNING_POP
         }
 
         sslContext->errorStr = QSslSocket::tr("Error creating SSL context (%1)").arg(
-            unsupportedProtocol ? QSslSocket::tr("unsupported protocol") : QTlsBackendOpenSSL::getErrorsFromOpenSsl()
+            unsupportedProtocol ? QSslSocket::tr("unsupported protocol") : BOBUIlsBackendOpenSSL::getErrorsFromOpenSsl()
         );
         sslContext->errorCode = QSslError::UnspecifiedError;
         return;
@@ -384,7 +384,7 @@ QT_WARNING_POP
         q_SSL_CTX_set_security_level(sslContext->ctx, 1);
 
     const long anyVersion =
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
                             isDtls ? DTLS_ANY_VERSION : TLS_ANY_VERSION;
 #else
                             TLS_ANY_VERSION;
@@ -393,8 +393,8 @@ QT_WARNING_POP
     long maxVersion = anyVersion;
 
     switch (sslContext->sslConfiguration.protocol()) {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     case QSsl::TlsV1_0:
         minVersion = TLS1_VERSION;
         maxVersion = TLS1_VERSION;
@@ -403,7 +403,7 @@ QT_WARNING_DISABLE_DEPRECATED
         minVersion = TLS1_1_VERSION;
         maxVersion = TLS1_1_VERSION;
         break;
-QT_WARNING_POP
+BOBUI_WARNING_POP
     case QSsl::TlsV1_2:
         minVersion = TLS1_2_VERSION;
         maxVersion = TLS1_2_VERSION;
@@ -420,8 +420,8 @@ QT_WARNING_POP
         break;
     // Ranges:
     case QSsl::AnyProtocol:
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     case QSsl::TlsV1_0OrLater:
         minVersion = TLS1_VERSION;
         maxVersion = 0;
@@ -430,14 +430,14 @@ QT_WARNING_DISABLE_DEPRECATED
         minVersion = TLS1_1_VERSION;
         maxVersion = 0;
         break;
-QT_WARNING_POP
+BOBUI_WARNING_POP
     case QSsl::SecureProtocols:
     case QSsl::TlsV1_2OrLater:
         minVersion = TLS1_2_VERSION;
         maxVersion = 0;
         break;
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     case QSsl::DtlsV1_0:
         minVersion = DTLS1_VERSION;
         maxVersion = DTLS1_VERSION;
@@ -446,7 +446,7 @@ QT_WARNING_DISABLE_DEPRECATED
         minVersion = DTLS1_VERSION;
         maxVersion = 0;
         break;
-QT_WARNING_POP
+BOBUI_WARNING_POP
     case QSsl::DtlsV1_2:
         minVersion = DTLS1_2_VERSION;
         maxVersion = DTLS1_2_VERSION;
@@ -511,13 +511,13 @@ QT_WARNING_POP
     // Initialize ciphers
     QList<QSslCipher> ciphers = sslContext->sslConfiguration.ciphers();
     if (ciphers.isEmpty())
-        ciphers = isDtls ? QTlsBackend::defaultDtlsCiphers() : QTlsBackend::defaultCiphers();
+        ciphers = isDtls ? BOBUIlsBackend::defaultDtlsCiphers() : BOBUIlsBackend::defaultCiphers();
 
     const QByteArray preTls13Ciphers = filterCiphers(ciphers, false);
 
     if (preTls13Ciphers.size()) {
         if (!q_SSL_CTX_set_cipher_list(sslContext->ctx, preTls13Ciphers.data())) {
-            sslContext->errorStr = QSslSocket::tr("Invalid or empty cipher list (%1)").arg(QTlsBackendOpenSSL::getErrorsFromOpenSsl());
+            sslContext->errorStr = QSslSocket::tr("Invalid or empty cipher list (%1)").arg(BOBUIlsBackendOpenSSL::getErrorsFromOpenSsl());
             sslContext->errorCode = QSslError::UnspecifiedError;
             return;
         }
@@ -527,7 +527,7 @@ QT_WARNING_POP
 #ifdef TLS1_3_VERSION
     if (tls13Ciphers.size()) {
         if (!q_SSL_CTX_set_ciphersuites(sslContext->ctx, tls13Ciphers.data())) {
-            sslContext->errorStr = QSslSocket::tr("Invalid or empty cipher list (%1)").arg(QTlsBackendOpenSSL::getErrorsFromOpenSsl());
+            sslContext->errorStr = QSslSocket::tr("Invalid or empty cipher list (%1)").arg(BOBUIlsBackendOpenSSL::getErrorsFromOpenSsl());
             sslContext->errorCode = QSslError::UnspecifiedError;
             return;
         }
@@ -576,9 +576,9 @@ QT_WARNING_POP
         }
 #endif // OPENSSL_VERSION_MAJOR
         if (success != 1) {
-            const auto qtErrors = QTlsBackendOpenSSL::getErrorsFromOpenSsl();
+            const auto bobuiErrors = BOBUIlsBackendOpenSSL::getErrorsFromOpenSsl();
             qCWarning(lcTlsBackend) << "An error encountered while to set root certificates location:"
-                              << qtErrors;
+                              << bobuiErrors;
         }
     }
 
@@ -592,7 +592,7 @@ QT_WARNING_POP
 
         // Load certificate
         if (!q_SSL_CTX_use_certificate(sslContext->ctx, (X509 *)sslContext->sslConfiguration.localCertificate().handle())) {
-            sslContext->errorStr = QSslSocket::tr("Error loading local certificate, %1").arg(QTlsBackendOpenSSL::getErrorsFromOpenSsl());
+            sslContext->errorStr = QSslSocket::tr("Error loading local certificate, %1").arg(BOBUIlsBackendOpenSSL::getErrorsFromOpenSsl());
             sslContext->errorCode = QSslError::UnspecifiedError;
             return;
         }
@@ -639,14 +639,14 @@ QT_WARNING_POP
             sslContext->pkey = nullptr; // Don't free the private key, it belongs to QSslKey
 
         if (!q_SSL_CTX_use_PrivateKey(sslContext->ctx, pkey)) {
-            sslContext->errorStr = QSslSocket::tr("Error loading private key, %1").arg(QTlsBackendOpenSSL::getErrorsFromOpenSsl());
+            sslContext->errorStr = QSslSocket::tr("Error loading private key, %1").arg(BOBUIlsBackendOpenSSL::getErrorsFromOpenSsl());
             sslContext->errorCode = QSslError::UnspecifiedError;
             return;
         }
 
         // Check if the certificate matches the private key.
         if (!q_SSL_CTX_check_private_key(sslContext->ctx)) {
-            sslContext->errorStr = QSslSocket::tr("Private key does not certify public key, %1").arg(QTlsBackendOpenSSL::getErrorsFromOpenSsl());
+            sslContext->errorStr = QSslSocket::tr("Private key does not certify public key, %1").arg(BOBUIlsBackendOpenSSL::getErrorsFromOpenSsl());
             sslContext->errorCode = QSslError::UnspecifiedError;
             return;
         }
@@ -669,13 +669,13 @@ QT_WARNING_POP
         q_SSL_CTX_set_verify(sslContext->ctx, SSL_VERIFY_NONE, nullptr);
     } else {
         auto verificationCallback =
-        #if QT_CONFIG(dtls)
+        #if BOBUI_CONFIG(dtls)
                                             isDtls ? dtlscallbacks::q_X509DtlsCallback :
         #endif // dtls
-                                            QTlsPrivate::q_X509Callback;
+                                            BOBUIlsPrivate::q_X509Callback;
 
         if (!isDtls && configuration.handshakeMustInterruptOnError())
-            verificationCallback = QTlsPrivate::q_X509CallbackDirect;
+            verificationCallback = BOBUIlsPrivate::q_X509CallbackDirect;
 
         auto verificationMode = SSL_VERIFY_PEER;
         if (!isDtls && sslContext->sslConfiguration.missingCertificateIsFatal())
@@ -687,13 +687,13 @@ QT_WARNING_POP
 #ifdef TLS1_3_VERSION
     // NewSessionTicket callback:
     if (mode == QSslSocket::SslClientMode && !isDtls) {
-        q_SSL_CTX_sess_set_new_cb(sslContext->ctx, QTlsPrivate::q_ssl_sess_set_new_cb);
+        q_SSL_CTX_sess_set_new_cb(sslContext->ctx, BOBUIlsPrivate::q_ssl_sess_set_new_cb);
         q_SSL_CTX_set_session_cache_mode(sslContext->ctx, SSL_SESS_CACHE_CLIENT);
     }
 
 #endif // TLS1_3_VERSION
 
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
     // DTLS cookies:
     if (mode == QSslSocket::SslServerMode && isDtls && configuration.dtlsCookieVerificationEnabled()) {
         q_SSL_CTX_set_cookie_generate_cb(sslContext->ctx, dtlscallbacks::q_generate_cookie_callback);
@@ -753,7 +753,7 @@ QT_WARNING_POP
         for (const auto &sslCurve : qcurves)
             curves.push_back(sslCurve.id);
         if (!q_SSL_CTX_ctrl(sslContext->ctx, SSL_CTRL_SET_CURVES, long(curves.size()), &curves[0])) {
-            sslContext->errorStr = msgErrorSettingEllipticCurves(QTlsBackendOpenSSL::getErrorsFromOpenSsl());
+            sslContext->errorStr = msgErrorSettingEllipticCurves(BOBUIlsBackendOpenSSL::getErrorsFromOpenSsl());
             sslContext->errorCode = QSslError::UnspecifiedError;
             return;
         }
@@ -769,13 +769,13 @@ void QSslContext::applyBackendConfig(QSslContext *sslContext)
     if (conf.isEmpty())
         return;
 
-#if QT_CONFIG(ocsp)
-    auto ocspResponsePos = conf.find("Qt-OCSP-response");
+#if BOBUI_CONFIG(ocsp)
+    auto ocspResponsePos = conf.find("BobUI-OCSP-response");
     if (ocspResponsePos != conf.end()) {
         // This is our private, undocumented configuration option, existing only for
         // the purpose of testing OCSP status responses. We don't even check this
         // callback was set. If no - the test must fail.
-        q_SSL_CTX_set_tlsext_status_cb(sslContext->ctx, QTlsPrivate::qt_OCSP_status_server_callback);
+        q_SSL_CTX_set_tlsext_status_cb(sslContext->ctx, BOBUIlsPrivate::bobui_OCSP_status_server_callback);
         if (conf.size() == 1)
             return;
     }
@@ -787,7 +787,7 @@ void QSslContext::applyBackendConfig(QSslContext *sslContext)
         q_SSL_CONF_CTX_set_flags(cctx.data(), SSL_CONF_FLAG_FILE);
 
         for (auto i = conf.constBegin(); i != conf.constEnd(); ++i) {
-            if (i.key() == "Qt-OCSP-response") // This never goes to SSL_CONF_cmd().
+            if (i.key() == "BobUI-OCSP-response") // This never goes to SSL_CONF_cmd().
                 continue;
 
             if (!i.value().canConvert(QMetaType(QMetaType::QByteArray))) {
@@ -830,4 +830,4 @@ void QSslContext::applyBackendConfig(QSslContext *sslContext)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

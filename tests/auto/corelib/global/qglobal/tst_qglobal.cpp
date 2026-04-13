@@ -1,36 +1,36 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#undef QT_NO_FOREACH // this file tests Q_FOREACH!
+#undef BOBUI_NO_FOREACH // this file tests Q_FOREACH!
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QPair>
 #include <QSysInfo>
 #include <QLatin1String>
 #include <QString>
-#include <QtVersion>
-#include <QtCore/qttypetraits.h>
+#include <BobUIVersion>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <cmath>
 #include <limits>
-#include <QtCore/qxptype_traits.h>
+#include <BobUICore/qxptype_traits.h>
 
 // Check that <type_traits> works for q(u)int128; if any of these trigger,
-// adjust the ifdef'ery in qtypes.h to exclude builds with broken lib support.
-#ifdef QT_SUPPORTS_INT128
+// adjust the ifdef'ery in bobuiypes.h to exclude builds with broken lib support.
+#ifdef BOBUI_SUPPORTS_INT128
 static_assert(std::is_signed_v<qint128>);
 static_assert(std::is_integral_v<qint128>);
 static_assert(std::is_integral_v<quint128>);
-static_assert(QtPrivate::is_standard_or_extended_integer_type_v<qint128>);
-static_assert(QtPrivate::is_standard_or_extended_integer_type_v<quint128>);
+static_assert(BobUIPrivate::is_standard_or_extended_integer_type_v<qint128>);
+static_assert(BobUIPrivate::is_standard_or_extended_integer_type_v<quint128>);
 static_assert(std::numeric_limits<qint128>::is_signed);
 static_assert(std::numeric_limits<qint128>::is_specialized);
 static_assert(std::numeric_limits<quint128>::is_specialized);
 static_assert((std::numeric_limits<qint128>::max)() == Q_INT128_MAX);
 static_assert((std::numeric_limits<quint128>::max)() == Q_UINT128_MAX);
-#endif // QT_SUPPORTS_INT128
+#endif // BOBUI_SUPPORTS_INT128
 
 template <typename T>
 using AdlSwappableTest = decltype(swap(std::declval<T&>(), std::declval<T&>()));
@@ -38,7 +38,7 @@ using AdlSwappableTest = decltype(swap(std::declval<T&>(), std::declval<T&>()));
 template <typename T>
 constexpr bool q_is_adl_swappable_v = qxp::is_detected_v<AdlSwappableTest, T>;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //
 // Check Q_DECLARE_SHARED
@@ -81,7 +81,7 @@ Q_DECLARE_SHARED_NS(Discworld::AnkhMorpork, Leonardo)
 
 #undef MAKE_CLASS
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class tst_QGlobal: public QObject
 {
@@ -93,7 +93,7 @@ private slots:
     void for_each();
     void qassert();
     void qpresume();
-    void qtry();
+    void bobuiry();
     void checkptr();
     void qstaticassert();
     void qConstructorFunction();
@@ -119,9 +119,9 @@ private slots:
 
 extern "C" {        // functions in qglobal.c
 void tst_GlobalTypes();
-int tst_QtVersion();
+int tst_BobUIVersion();
 const char *tst_qVersion();
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
 qint128 tst_qint128_min();
 qint128 tst_qint128_max();
 quint128 tst_quint128_max();
@@ -132,9 +132,9 @@ quint128 tst_quint128_max();
 void tst_QGlobal::cMode()
 {
     tst_GlobalTypes();
-    QCOMPARE(tst_QtVersion(), QT_VERSION);
+    QCOMPARE(tst_BobUIVersion(), BOBUI_VERSION);
 
-#ifndef QT_NAMESPACE
+#ifndef BOBUI_NAMESPACE
     QCOMPARE(tst_qVersion(), qVersion());
 #endif
 }
@@ -279,18 +279,18 @@ void tst_QGlobal::qpresume()
     QCOMPARE(presumedValue("Hello World"), 'H');
 }
 
-void tst_QGlobal::qtry()
+void tst_QGlobal::bobuiry()
 {
     int i = 0;
-    QT_TRY {
+    BOBUI_TRY {
         i = 1;
-        QT_THROW(42);
+        BOBUI_THROW(42);
         i = 2;
-    } QT_CATCH(int) {
+    } BOBUI_CATCH(int) {
         QCOMPARE(i, 1);
         i = 7;
     }
-#ifdef QT_NO_EXCEPTIONS
+#ifdef BOBUI_NO_EXCEPTIONS
     QCOMPARE(i, 2);
 #else
     QCOMPARE(i, 7);
@@ -299,11 +299,11 @@ void tst_QGlobal::qtry()
     // check propper if/else scoping
     i = 0;
     if (true) {
-        QT_TRY {
+        BOBUI_TRY {
             i = 2;
-            QT_THROW(42);
+            BOBUI_THROW(42);
             i = 4;
-        } QT_CATCH(int) {
+        } BOBUI_CATCH(int) {
             QCOMPARE(i, 2);
             i = 4;
         }
@@ -314,11 +314,11 @@ void tst_QGlobal::qtry()
 
     i = 0;
     if (false) {
-        QT_TRY {
+        BOBUI_TRY {
             i = 2;
-            QT_THROW(42);
+            BOBUI_THROW(42);
             i = 4;
-        } QT_CATCH(int) {
+        } BOBUI_CATCH(int) {
             QCOMPARE(i, 2);
             i = 2;
         }
@@ -331,11 +331,11 @@ void tst_QGlobal::qtry()
     if (false) {
         i = 42;
     } else {
-        QT_TRY {
+        BOBUI_TRY {
             i = 2;
-            QT_THROW(42);
+            BOBUI_THROW(42);
             i = 4;
-        } QT_CATCH(int) {
+        } BOBUI_CATCH(int) {
             QCOMPARE(i, 2);
             i = 4;
         }
@@ -466,7 +466,7 @@ void tst_QGlobal::qCoreAppStartupFunction()
 {
     qStartupFunctionValue = 0;
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     QCoreApplication app(argc, argv);
     QCOMPARE(qStartupFunctionValue, 124);
 }
@@ -481,27 +481,27 @@ void tst_QGlobal::qCoreAppStartupFunctionRestart()
 
 void tst_QGlobal::qDeclareSharedMarksTheTypeRelocatable()
 {
-    static_assert(!QTypeInfo<QT_PREPEND_NAMESPACE(NotQDeclareShared)>::isRelocatable);
-    static_assert( QTypeInfo<QT_PREPEND_NAMESPACE(Terry)>::isRelocatable);
-    static_assert( QTypeInfo<QT_PREPEND_NAMESPACE(Discworld::Librarian)>::isRelocatable);
-    static_assert( QTypeInfo<QT_PREPEND_NAMESPACE(Discworld::Baggage)>::isRelocatable);
-    static_assert( QTypeInfo<QT_PREPEND_NAMESPACE(Discworld::AnkhMorpork::Vetinari)>::isRelocatable);
-    static_assert( QTypeInfo<QT_PREPEND_NAMESPACE(Discworld::AnkhMorpork::Leonardo)>::isRelocatable);
-    static_assert( QTypeInfo<QT_PREPEND_NAMESPACE(Discworld::AnkhMorpork::CityWatch::Vimes)>::isRelocatable);
+    static_assert(!BOBUIypeInfo<BOBUI_PREPEND_NAMESPACE(NotQDeclareShared)>::isRelocatable);
+    static_assert( BOBUIypeInfo<BOBUI_PREPEND_NAMESPACE(Terry)>::isRelocatable);
+    static_assert( BOBUIypeInfo<BOBUI_PREPEND_NAMESPACE(Discworld::Librarian)>::isRelocatable);
+    static_assert( BOBUIypeInfo<BOBUI_PREPEND_NAMESPACE(Discworld::Baggage)>::isRelocatable);
+    static_assert( BOBUIypeInfo<BOBUI_PREPEND_NAMESPACE(Discworld::AnkhMorpork::Vetinari)>::isRelocatable);
+    static_assert( BOBUIypeInfo<BOBUI_PREPEND_NAMESPACE(Discworld::AnkhMorpork::Leonardo)>::isRelocatable);
+    static_assert( BOBUIypeInfo<BOBUI_PREPEND_NAMESPACE(Discworld::AnkhMorpork::CityWatch::Vimes)>::isRelocatable);
 }
 
 void tst_QGlobal::qDeclareSharedMakesTheTypeAdlSwappable()
 {
-    static_assert(!q_is_adl_swappable_v<QT_PREPEND_NAMESPACE(NotQDeclareShared)>);
-    static_assert( q_is_adl_swappable_v<QT_PREPEND_NAMESPACE(Terry)>);
-    static_assert( q_is_adl_swappable_v<QT_PREPEND_NAMESPACE(Discworld::Librarian)>);
-    static_assert( q_is_adl_swappable_v<QT_PREPEND_NAMESPACE(Discworld::Baggage)>);
-    static_assert( q_is_adl_swappable_v<QT_PREPEND_NAMESPACE(Discworld::AnkhMorpork::Vetinari)>);
-    static_assert( q_is_adl_swappable_v<QT_PREPEND_NAMESPACE(Discworld::AnkhMorpork::Leonardo)>);
-    static_assert( q_is_adl_swappable_v<QT_PREPEND_NAMESPACE(Discworld::AnkhMorpork::CityWatch::Vimes)>);
+    static_assert(!q_is_adl_swappable_v<BOBUI_PREPEND_NAMESPACE(NotQDeclareShared)>);
+    static_assert( q_is_adl_swappable_v<BOBUI_PREPEND_NAMESPACE(Terry)>);
+    static_assert( q_is_adl_swappable_v<BOBUI_PREPEND_NAMESPACE(Discworld::Librarian)>);
+    static_assert( q_is_adl_swappable_v<BOBUI_PREPEND_NAMESPACE(Discworld::Baggage)>);
+    static_assert( q_is_adl_swappable_v<BOBUI_PREPEND_NAMESPACE(Discworld::AnkhMorpork::Vetinari)>);
+    static_assert( q_is_adl_swappable_v<BOBUI_PREPEND_NAMESPACE(Discworld::AnkhMorpork::Leonardo)>);
+    static_assert( q_is_adl_swappable_v<BOBUI_PREPEND_NAMESPACE(Discworld::AnkhMorpork::CityWatch::Vimes)>);
 
     #define CHECK(Class) do { \
-        using C = QT_PREPEND_NAMESPACE(Class); \
+        using C = BOBUI_PREPEND_NAMESPACE(Class); \
         C lhs("lhs"); \
         C rhs("rhs"); \
         QCOMPARE_EQ(lhs.s, "lhs"); \
@@ -558,7 +558,7 @@ void tst_QGlobal::integerForSize()
     static_assert(sizeof(QIntegerForSize<2>::Signed) == 2);
     static_assert(sizeof(QIntegerForSize<4>::Signed) == 4);
     static_assert(sizeof(QIntegerForSize<8>::Signed) == 8);
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     static_assert(sizeof(QIntegerForSize<16>::Signed) == 16);
 #endif
 
@@ -566,33 +566,33 @@ void tst_QGlobal::integerForSize()
     static_assert(sizeof(QIntegerForSize<2>::Unsigned) == 2);
     static_assert(sizeof(QIntegerForSize<4>::Unsigned) == 4);
     static_assert(sizeof(QIntegerForSize<8>::Unsigned) == 8);
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     static_assert(sizeof(QIntegerForSize<16>::Unsigned) == 16);
 #endif
 }
 
 void tst_QGlobal::int128Literals()
 {
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
 # if defined(__GLIBCXX__) && defined(__STRICT_ANSI__) && \
     (_GLIBCXX_RELEASE < 10 || \
     _GLIBCXX_RELEASE == 10 && __GLIBCXX__ < 20201112L /*gcc commit 8eb9a45e87bdb81cb44948c651edee846c622a0f*/)
     // -ansi/-std=c++NN instead of gnu++NN
     // breaks <type_traits> on libstdc++ <= 10.2; fixed in 10.3+
-#   define QTBUG_119901_MAYBE_FAIL QEXPECT_FAIL("", "QTBUG-119901", Continue)
+#   define BOBUIBUG_119901_MAYBE_FAIL QEXPECT_FAIL("", "BOBUIBUG-119901", Continue)
 # else
-#   define QTBUG_119901_MAYBE_FAIL do {} while (false)
+#   define BOBUIBUG_119901_MAYBE_FAIL do {} while (false)
 # endif
 #define COMPARE_EQ(lhs, rhs, Expected128) do { \
         constexpr auto lhs_ = lhs; \
         static_assert(std::is_same_v<std::remove_cv_t<decltype(lhs_)>, Expected128>); \
         QCOMPARE_EQ(lhs_, rhs); \
     } while (0)
-    QTBUG_119901_MAYBE_FAIL;
+    BOBUIBUG_119901_MAYBE_FAIL;
     COMPARE_EQ(Q_INT128_MIN, std::numeric_limits<qint128>::min(), qint128);
-    QTBUG_119901_MAYBE_FAIL;
+    BOBUIBUG_119901_MAYBE_FAIL;
     COMPARE_EQ(Q_INT128_MAX, std::numeric_limits<qint128>::max(), qint128);
-    QTBUG_119901_MAYBE_FAIL;
+    BOBUIBUG_119901_MAYBE_FAIL;
     COMPARE_EQ(Q_UINT128_MAX, std::numeric_limits<quint128>::max(), quint128);
     QCOMPARE_EQ(tst_qint128_min(), Q_INT128_MIN);
     QCOMPARE_EQ(tst_qint128_max(), Q_INT128_MAX);
@@ -645,7 +645,7 @@ void tst_QGlobal::int128Literals()
             // the literal, but called on the result of the literal.
             constexpr auto i = Q_INT128_C(-170141183460469231731687303715884105727); // 128-bit MIN + 1
             static_assert(std::is_same_v<decltype(i), const qint128>);
-            QTBUG_119901_MAYBE_FAIL;
+            BOBUIBUG_119901_MAYBE_FAIL;
             QCOMPARE_EQ(i, std::numeric_limits<qint128>::min() + 1);
         }
         {
@@ -653,9 +653,9 @@ void tst_QGlobal::int128Literals()
             constexpr auto u = Q_UINT128_C(340282366920938463463374607431768211455); // UMAX
             static_assert(std::is_same_v<decltype(i), const qint128>);
             static_assert(std::is_same_v<decltype(u), const quint128>);
-            QTBUG_119901_MAYBE_FAIL;
+            BOBUIBUG_119901_MAYBE_FAIL;
             QCOMPARE_EQ(i, std::numeric_limits<qint128>::max());
-            QTBUG_119901_MAYBE_FAIL;
+            BOBUIBUG_119901_MAYBE_FAIL;
             QCOMPARE_EQ(u, std::numeric_limits<quint128>::max());
             QCOMPARE_EQ(u, Q_UINT128_C(-1));
         }
@@ -675,9 +675,9 @@ void tst_QGlobal::int128Literals()
             constexpr auto u = Q_UINT128_C(0b1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111'1111);
             static_assert(std::is_same_v<decltype(i), const qint128>);
             static_assert(std::is_same_v<decltype(u), const quint128>);
-            QTBUG_119901_MAYBE_FAIL;
+            BOBUIBUG_119901_MAYBE_FAIL;
             QCOMPARE_EQ(i, std::numeric_limits<qint128>::max());
-            QTBUG_119901_MAYBE_FAIL;
+            BOBUIBUG_119901_MAYBE_FAIL;
             QCOMPARE_EQ(u, std::numeric_limits<quint128>::max());
             QCOMPARE_EQ(u, Q_UINT128_C(-0b1));
         }
@@ -701,9 +701,9 @@ void tst_QGlobal::int128Literals()
             constexpr auto u = Q_UINT128_C(0377'7777'7777'7777'7777'7777'7777'7777'7777'7777'7777);
             static_assert(std::is_same_v<decltype(i), const qint128>);
             static_assert(std::is_same_v<decltype(u), const quint128>);
-            QTBUG_119901_MAYBE_FAIL;
+            BOBUIBUG_119901_MAYBE_FAIL;
             QCOMPARE_EQ(i, std::numeric_limits<qint128>::max());
-            QTBUG_119901_MAYBE_FAIL;
+            BOBUIBUG_119901_MAYBE_FAIL;
             QCOMPARE_EQ(u, std::numeric_limits<quint128>::max());
             QCOMPARE_EQ(u, Q_UINT128_C(-01));
         }
@@ -727,15 +727,15 @@ void tst_QGlobal::int128Literals()
             constexpr auto u = Q_UINT128_C(0xFFFF'FFFF'FFFF'FFFF'FFFF'FFFF'FFFF'FFFF);
             static_assert(std::is_same_v<decltype(i), const qint128>);
             static_assert(std::is_same_v<decltype(u), const quint128>);
-            QTBUG_119901_MAYBE_FAIL;
+            BOBUIBUG_119901_MAYBE_FAIL;
             QCOMPARE_EQ(i, std::numeric_limits<qint128>::max());
-            QTBUG_119901_MAYBE_FAIL;
+            BOBUIBUG_119901_MAYBE_FAIL;
             QCOMPARE_EQ(u, std::numeric_limits<quint128>::max());
             QCOMPARE_EQ(Q_UINT128_C(-1), u);
         }
     #undef CHECK
     }
-#undef QTBUG_119901_MAYBE_FAIL
+#undef BOBUIBUG_119901_MAYBE_FAIL
 #undef COMPARE_EQ
 #else
     QSKIP("This test requires 128-bit integer support enabled in the compiler.");
@@ -900,13 +900,13 @@ void tst_QGlobal::testqMinMax()
 
 void tst_QGlobal::qRoundFloats_data()
 {
-    QTest::addColumn<float>("actual");
-    QTest::addColumn<float>("expected");
+    BOBUIest::addColumn<float>("actual");
+    BOBUIest::addColumn<float>("expected");
 
-    QTest::newRow("round half") << 0.5f << 1.0f;
-    QTest::newRow("round negative half") << -0.5f << -1.0f;
-    QTest::newRow("round negative") << -1.4f << -1.0f;
-    QTest::newRow("round largest representable float less than 0.5") << std::nextafter(0.5f, 0.0f) << 0.0f;
+    BOBUIest::newRow("round half") << 0.5f << 1.0f;
+    BOBUIest::newRow("round negative half") << -0.5f << -1.0f;
+    BOBUIest::newRow("round negative") << -1.4f << -1.0f;
+    BOBUIest::newRow("round largest representable float less than 0.5") << std::nextafter(0.5f, 0.0f) << 0.0f;
 }
 
 void tst_QGlobal::qRoundFloats() {
@@ -929,13 +929,13 @@ void tst_QGlobal::qRoundFloats() {
 }
 
 void tst_QGlobal::qRoundDoubles_data() {
-    QTest::addColumn<double>("actual");
-    QTest::addColumn<double>("expected");
+    BOBUIest::addColumn<double>("actual");
+    BOBUIest::addColumn<double>("expected");
 
-    QTest::newRow("round half") << 0.5 << 1.0;
-    QTest::newRow("round negative half") << -0.5 << -1.0;
-    QTest::newRow("round negative") << -1.4 << -1.0;
-    QTest::newRow("round largest representable double less than 0.5") << std::nextafter(0.5, 0.0) << 0.0;
+    BOBUIest::newRow("round half") << 0.5 << 1.0;
+    BOBUIest::newRow("round negative half") << -0.5 << -1.0;
+    BOBUIest::newRow("round negative") << -1.4 << -1.0;
+    BOBUIest::newRow("round largest representable double less than 0.5") << std::nextafter(0.5, 0.0) << 0.0;
 }
 
 void tst_QGlobal::qRoundDoubles() {
@@ -1034,13 +1034,13 @@ void tst_QGlobal::tagStructDefinitions()
 {
     {
         // predefined:
-        static_assert(std::is_same_v<decltype(QtPrivate::Deprecated), const QtPrivate::Deprecated_t>);
-        [[maybe_unused]] constexpr auto tag = QtPrivate::Deprecated;
-        static_assert(std::is_same_v<decltype(tag), const QtPrivate::Deprecated_t>);
+        static_assert(std::is_same_v<decltype(BobUIPrivate::Deprecated), const BobUIPrivate::Deprecated_t>);
+        [[maybe_unused]] constexpr auto tag = BobUIPrivate::Deprecated;
+        static_assert(std::is_same_v<decltype(tag), const BobUIPrivate::Deprecated_t>);
     }
     {
         // self-defined:
-        QT_DEFINE_TAG(MyTag);
+        BOBUI_DEFINE_TAG(MyTag);
         static_assert(std::is_same_v<decltype(MyTag), const MyTag_t>);
         [[maybe_unused]] constexpr auto tag = MyTag;
         static_assert(std::is_same_v<decltype(tag), const MyTag_t>);
@@ -1063,55 +1063,55 @@ void tst_QGlobal::CXX20_constexpr_dtor()
 #endif
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Compile-time typeinfo tests
 struct Complex1
 {
     ~Complex1();
 };
-static_assert(QTypeInfo<Complex1>::isComplex);
-static_assert(!QTypeInfo<Complex1>::isRelocatable);
+static_assert(BOBUIypeInfo<Complex1>::isComplex);
+static_assert(!BOBUIypeInfo<Complex1>::isRelocatable);
 
 struct Complex2
 {
     Complex2(Complex2 &&);
 };
-static_assert(QTypeInfo<Complex2>::isComplex);
-static_assert(!QTypeInfo<Complex2>::isRelocatable);
+static_assert(BOBUIypeInfo<Complex2>::isComplex);
+static_assert(!BOBUIypeInfo<Complex2>::isRelocatable);
 
 struct Complex3
 {
     Complex3(int);
 };
-static_assert(QTypeInfo<Complex3>::isComplex);
-static_assert(QTypeInfo<Complex3>::isRelocatable);
+static_assert(BOBUIypeInfo<Complex3>::isComplex);
+static_assert(BOBUIypeInfo<Complex3>::isRelocatable);
 
 struct Relocatable1
 {
     ~Relocatable1();
 };
 Q_DECLARE_TYPEINFO(Relocatable1, Q_RELOCATABLE_TYPE);
-static_assert(QTypeInfo<Relocatable1>::isComplex);
-static_assert(QTypeInfo<Relocatable1>::isRelocatable);
+static_assert(BOBUIypeInfo<Relocatable1>::isComplex);
+static_assert(BOBUIypeInfo<Relocatable1>::isRelocatable);
 
 struct Relocatable2
 {
     Relocatable2(int);
 };
 Q_DECLARE_TYPEINFO(Relocatable2, Q_RELOCATABLE_TYPE);
-static_assert(QTypeInfo<Relocatable2>::isComplex);
-static_assert(QTypeInfo<Relocatable2>::isRelocatable);
+static_assert(BOBUIypeInfo<Relocatable2>::isComplex);
+static_assert(BOBUIypeInfo<Relocatable2>::isRelocatable);
 
 struct Trivial1
 {
     int x[42];
 };
-static_assert(!QTypeInfo<Trivial1>::isComplex);
-static_assert(QTypeInfo<Trivial1>::isRelocatable);
+static_assert(!BOBUIypeInfo<Trivial1>::isComplex);
+static_assert(BOBUIypeInfo<Trivial1>::isRelocatable);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_APPLESS_MAIN(tst_QGlobal)
+BOBUIEST_APPLESS_MAIN(tst_QGlobal)
 #include "expansion_to_defined_check.h"
 #include "tst_qglobal.moc"

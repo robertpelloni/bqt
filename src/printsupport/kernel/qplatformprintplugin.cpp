@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qplatformprintplugin.h"
 #include "qplatformprintersupport.h"
@@ -9,7 +9,7 @@
 #include <qcoreapplication.h>
 #include <qdebug.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 #if defined(Q_OS_MACOS)
 Q_IMPORT_PLUGIN(QCocoaPrinterSupportPlugin)
@@ -17,12 +17,12 @@ Q_IMPORT_PLUGIN(QCocoaPrinterSupportPlugin)
 Q_IMPORT_PLUGIN(QWindowsPrinterSupportPlugin)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QPlatformPrinterSupportFactoryInterface_iid, "/printsupport"_L1, Qt::CaseInsensitive))
+    (QPlatformPrinterSupportFactoryInterface_iid, "/printsupport"_L1, BobUI::CaseInsensitive))
 
 QPlatformPrinterSupportPlugin::QPlatformPrinterSupportPlugin(QObject *parent)
     : QObject(parent)
@@ -54,8 +54,8 @@ QPlatformPrinterSupport *QPlatformPrinterSupportPlugin::get()
     if (!printerSupport) {
         const QMultiMap<int, QString> keyMap = loader()->keyMap();
         QMultiMap<int, QString>::const_iterator it = keyMap.cbegin();
-        if (!qEnvironmentVariableIsEmpty("QT_PRINTER_MODULE")) {
-            QString module = qEnvironmentVariable("QT_PRINTER_MODULE");
+        if (!qEnvironmentVariableIsEmpty("BOBUI_PRINTER_MODULE")) {
+            QString module = qEnvironmentVariable("BOBUI_PRINTER_MODULE");
             QMultiMap<int, QString>::const_iterator it2 = std::find_if(keyMap.cbegin(), keyMap.cend(), [module](const QString &value){ return value == module; });
             if (it2 == keyMap.cend())
                 qWarning() << "Unable to load printer plugin" << module;
@@ -70,7 +70,7 @@ QPlatformPrinterSupport *QPlatformPrinterSupportPlugin::get()
     return printerSupport;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformprintplugin.cpp"
 

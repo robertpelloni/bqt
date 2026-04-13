@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOMPLETER_H
 #define QCOMPLETER_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qrect.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qrect.h>
 
-QT_REQUIRE_CONFIG(completer);
+BOBUI_REQUIRE_CONFIG(completer);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCompleterPrivate;
 class QAbstractItemView;
@@ -26,12 +26,12 @@ class Q_WIDGETS_EXPORT QCompleter : public QObject
     Q_OBJECT
     Q_PROPERTY(QString completionPrefix READ completionPrefix WRITE setCompletionPrefix)
     Q_PROPERTY(ModelSorting modelSorting READ modelSorting WRITE setModelSorting)
-    Q_PROPERTY(Qt::MatchFlags filterMode READ filterMode WRITE setFilterMode)
+    Q_PROPERTY(BobUI::MatchFlags filterMode READ filterMode WRITE setFilterMode)
     Q_PROPERTY(CompletionMode completionMode READ completionMode WRITE setCompletionMode)
     Q_PROPERTY(int completionColumn READ completionColumn WRITE setCompletionColumn)
     Q_PROPERTY(int completionRole READ completionRole WRITE setCompletionRole)
     Q_PROPERTY(int maxVisibleItems READ maxVisibleItems WRITE setMaxVisibleItems)
-    Q_PROPERTY(Qt::CaseSensitivity caseSensitivity READ caseSensitivity WRITE setCaseSensitivity)
+    Q_PROPERTY(BobUI::CaseSensitivity caseSensitivity READ caseSensitivity WRITE setCaseSensitivity)
     Q_PROPERTY(bool wrapAround READ wrapAround WRITE setWrapAround)
 
 public:
@@ -51,7 +51,7 @@ public:
 
     QCompleter(QObject *parent = nullptr);
     QCompleter(QAbstractItemModel *model, QObject *parent = nullptr);
-#if QT_CONFIG(stringlistmodel)
+#if BOBUI_CONFIG(stringlistmodel)
     QCompleter(const QStringList& completions, QObject *parent = nullptr);
 #endif
     ~QCompleter() override;
@@ -65,14 +65,14 @@ public:
     void setCompletionMode(CompletionMode mode);
     CompletionMode completionMode() const;
 
-    void setFilterMode(Qt::MatchFlags filterMode);
-    Qt::MatchFlags filterMode() const;
+    void setFilterMode(BobUI::MatchFlags filterMode);
+    BobUI::MatchFlags filterMode() const;
 
     QAbstractItemView *popup() const;
     void setPopup(QAbstractItemView *popup);
 
-    void setCaseSensitivity(Qt::CaseSensitivity caseSensitivity);
-    Qt::CaseSensitivity caseSensitivity() const;
+    void setCaseSensitivity(BobUI::CaseSensitivity caseSensitivity);
+    BobUI::CaseSensitivity caseSensitivity() const;
 
     void setModelSorting(ModelSorting sorting);
     ModelSorting modelSorting() const;
@@ -128,6 +128,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_fileSystemModelDirectoryLoaded(const QString&))
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMPLETER_H

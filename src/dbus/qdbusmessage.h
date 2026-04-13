@@ -1,16 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSMESSAGE_H
 #define QDBUSMESSAGE_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
 #include <BobUIDBus/qdbuserror.h>
+<<<<<<< HEAD
 #include <QtCore/qlist.h>
 #include <QtCore/qvariant.h>
+=======
+#include <BobUICore/qlist.h>
+#include <BobUICore/qvariant.h>
+>>>>>>> origin/dev
 
-#if !defined(QT_NO_DBUS) && !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_NO_DBUS) && !defined(BOBUI_BOOTSTRAPPED)
 
 #if defined(Q_OS_WIN) && defined(interface)
 #  undef interface
@@ -37,7 +42,7 @@ public:
     QDBusMessage &operator=(const QDBusMessage &other);
     ~QDBusMessage();
 
-    void swap(QDBusMessage &other) noexcept { qt_ptr_swap(d_ptr, other.d_ptr); }
+    void swap(QDBusMessage &other) noexcept { bobui_ptr_swap(d_ptr, other.d_ptr); }
 
     static QDBusMessage createSignal(const QString &path, const QString &interface,
                                      const QString &name);
@@ -92,16 +97,16 @@ private:
 };
 Q_DECLARE_SHARED(QDBusMessage)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_DBUS_EXPORT QDebug operator<<(QDebug, const QDBusMessage &);
 #endif
 
 BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QDBusMessage, Q_DBUS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMessage, Q_DBUS_EXPORT)
 
 #else
 class Q_DBUS_EXPORT QDBusMessage {}; // dummy class for moc
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif
 

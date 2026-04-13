@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // Test that the size of the saved state bytearray does not change due to moving a
 // toolbar from one area to another. It should stay the same size as the first time
@@ -7,7 +7,7 @@
 
 #include <QApplication>
 #include <QMainWindow>
-#include <QToolBar>
+#include <BOBUIoolBar>
 #include <QPushButton>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -19,16 +19,16 @@ class MainWindow : public QMainWindow
 public:
     MainWindow() : QMainWindow()
     {
-        auto *tb = new QToolBar(this);
+        auto *tb = new BOBUIoolBar(this);
         tb->setObjectName("Toolbar");
         tb->addAction("Test action");
         tb->addAction("Test action");
-        addToolBar(Qt::TopToolBarArea, tb);
-        auto *movableTb = new QToolBar(this);
+        addToolBar(BobUI::TopToolBarArea, tb);
+        auto *movableTb = new BOBUIoolBar(this);
         movableTb->setObjectName("Movable Toolbar");
         movableTb->addAction("Test action");
         movableTb->addAction("Test action");
-        addToolBar(Qt::TopToolBarArea, movableTb);
+        addToolBar(BobUI::TopToolBarArea, movableTb);
         auto *widget = new QWidget;
         auto *vbox = new QVBoxLayout;
         auto *label = new QLabel;

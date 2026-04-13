@@ -203,8 +203,8 @@ Project_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 Project_SOURCE_DIR:STATIC=C:/Users/hyper/workspace/bobui/tests/auto/corelib
 
-//The directory containing a CMake configuration file for Qt6BuildInternals.
-Qt6BuildInternals_DIR:PATH=Qt6BuildInternals_DIR-NOTFOUND
+//The directory containing a CMake configuration file for BobUI6BuildInternals.
+BobUI6BuildInternals_DIR:PATH=BobUI6BuildInternals_DIR-NOTFOUND
 
 //Value Computed by CMake
 tst_qapplicationstatic_BINARY_DIR:STATIC=C:/Users/hyper/workspace/bobui/tests/auto/corelib/build_output/kernel/qapplicationstatic

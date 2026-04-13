@@ -26,7 +26,7 @@ QMAKE_MAKE = "$${SETENV_PFX}MAKEFLAGS=$$SETENV_SFX $$QMAKE_MAKE"
 QMAKE_PERSIST_LOG = false
 QMAKE_PERSISTED_LOG =
 
-defineTest(qtLog) {
+defineTest(bobuiLog) {
     write_file($$QMAKE_CONFIG_LOG, 1, append)
     $$QMAKE_CONFIG_VERBOSE: for (l, 1): log("$$l$$escape_expand(\\n)")
     $$QMAKE_PERSIST_LOG {
@@ -35,21 +35,21 @@ defineTest(qtLog) {
     }
 }
 
-defineTest(qtPersistLog) {
+defineTest(bobuiPersistLog) {
     QMAKE_PERSIST_LOG = true
     QMAKE_PERSISTED_LOG =
     export(QMAKE_PERSIST_LOG)
     export(QMAKE_PERSISTED_LOG)
 }
 
-defineReplace(qtPersistedLog) {
+defineReplace(bobuiPersistedLog) {
     QMAKE_PERSIST_LOG = false
     export(QMAKE_PERSIST_LOG)
     return($$QMAKE_PERSISTED_LOG)
 }
 
-defineTest(qtRunLoggedCommand) {
-    qtLog("+ $$1")
+defineTest(bobuiRunLoggedCommand) {
+    bobuiLog("+ $$1")
 
     !equals(3, false): \
         1 = "( $$1 ) 2>&1"
@@ -57,7 +57,7 @@ defineTest(qtRunLoggedCommand) {
     lg =
     for (l, output): \
         lg += "> $$l"
-    qtLog($$lg)
+    bobuiLog($$lg)
     !isEmpty(2) {
         $$2 = $$output
         export($$2)

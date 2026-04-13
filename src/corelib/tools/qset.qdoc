@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QSet
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSet class is a template class that provides a hash-table-based set.
     \compares equality
 
@@ -12,7 +12,7 @@
     \reentrant
 
 
-    QSet<T> is one of Qt's generic \l{container classes}, where \a T
+    QSet<T> is one of BobUI's generic \l{container classes}, where \a T
     specifies the type of values stored in the set. It stores values in
     an unspecified order and provides very fast lookup of the values.
     Internally, QSet<T> is implemented as a QHash.
@@ -88,7 +88,7 @@
     initializer list \a list.
 */
 
-/*! \fn template <class T> template <typename InputIterator, QtPrivate::IfIsInputIterator<InputIterator> = true> QSet<T>::QSet(InputIterator first, InputIterator last)
+/*! \fn template <class T> template <typename InputIterator, BobUIPrivate::IfIsInputIterator<InputIterator> = true> QSet<T>::QSet(InputIterator first, InputIterator last)
     \since 5.14
 
     Constructs a set with the contents in the iterator range [\a first, \a last).
@@ -377,13 +377,13 @@
     \typedef QSet::Iterator
     \since 4.2
 
-    Qt-style synonym for QSet::iterator.
+    BobUI-style synonym for QSet::iterator.
 */
 
 /*!
     \typedef QSet::ConstIterator
 
-    Qt-style synonym for QSet::const_iterator.
+    BobUI-style synonym for QSet::const_iterator.
 */
 
 /*!
@@ -604,7 +604,7 @@
 
 /*!
     \class QSet::iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.2
     \brief The QSet::iterator class provides an STL-style non-const iterator for QSet.
 
@@ -655,7 +655,7 @@
 
 /*!
     \class QSet::const_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSet::const_iterator class provides an STL-style const iterator for QSet.
     \since 4.2
 
@@ -861,7 +861,7 @@
 
     This function requires the value type to implement \c operator<<().
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 /*!
@@ -872,7 +872,7 @@
 
     This function requires the value type to implement \c operator>>().
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 /*!

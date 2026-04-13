@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \group painting
@@ -8,7 +8,7 @@
 
     \brief Classes that provide support for painting.
 
-    See also this introduction to the \l{coordsys.html}{Qt coordinate system.}
+    See also this introduction to the \l{coordsys.html}{BobUI coordinate system.}
 */
 
 /*!
@@ -23,12 +23,12 @@
     \page paintsystem.html
     \title Paint System
     \brief A system for painting on the screen or on print devices using the same API
-    \ingroup qt-graphics
+    \ingroup bobui-graphics
     \ingroup frameworks-technologies
-    \ingroup qt-basic-concepts
+    \ingroup bobui-basic-concepts
 
 
-    Qt's paint system provides a unified and flexible framework for
+    BobUI's paint system provides a unified and flexible framework for
     rendering graphics on various surfaces, such as on-screen widgets,
     images, and printed pages. It is primarily built around the QPainter,
     QPaintDevice, and QPaintEngine classes.
@@ -86,7 +86,7 @@
     \row \li \b Widget
 
     The QWidget class is the base class of user interface
-    elements in the \l {Qt Widgets} module. It receives mouse, keyboard
+    elements in the \l {BobUI Widgets} module. It receives mouse, keyboard
     and other events from the window system, and paints a
     representation of itself on the screen.
 
@@ -113,20 +113,20 @@
     through QPainter functions or by converting the QPixmap to a
     QImage.
 
-    To optimize drawing with QPixmap, Qt provides the QPixmapCache
+    To optimize drawing with QPixmap, BobUI provides the QPixmapCache
     class which can be used to store temporary pixmaps that are
     expensive to generate without using more storage space than the
     cache limit.
 
-    Qt also provides the QBitmap convenience class, inheriting
+    BobUI also provides the QBitmap convenience class, inheriting
     QPixmap. QBitmap guarantees monochrome (1-bit depth) pixmaps, and
     is mainly used for creating custom QCursor and QBrush objects,
     constructing QRegion objects.
 
     \row \li \b {OpenGL Paint Device}
 
-    As mentioned previously, Qt is offering classes that makes it easy
-    to use OpenGL in Qt applications. For example, the QOpenGLPaintDevice
+    As mentioned previously, BobUI is offering classes that makes it easy
+    to use OpenGL in BobUI applications. For example, the QOpenGLPaintDevice
     enables the OpenGL API for rendering with QPainter.
 
     \row \li \b {Picture}
@@ -138,7 +138,7 @@
     different devices (for example svg, pdf, ps, printer and screen)
     looking the same.
 
-    Qt provides the QPicture::load() and QPicture::save() functions
+    BobUI provides the QPicture::load() and QPicture::save() functions
     as well as streaming operators for loading and saving pictures.
 
 
@@ -170,13 +170,13 @@
     drawing GUI programs require. It can draw everything from simple
     graphical primitives (represented by the QPoint, QLine, QRect,
     QRegion and QPolygon classes) to complex shapes like vector
-    paths. In Qt vector paths are represented by the QPainterPath
+    paths. In BobUI vector paths are represented by the QPainterPath
     class. QPainterPath provides a container for painting operations,
     enabling graphical shapes to be constructed and reused.
 
     \table 100%
     \row
-    \li \image paintsystem-painterpath.png {Qt logo}
+    \li \image paintsystem-painterpath.png {BobUI logo}
     \li \b QPainterPath
 
     A painter path is an object composed of lines and curves. For
@@ -203,9 +203,9 @@
 
     QPainter can also draw aligned text and pixmaps.
 
-    When drawing text, the font is specified using the QFont class. Qt
+    When drawing text, the font is specified using the QFont class. BobUI
     will use the font with the specified attributes, or if no matching
-    font exists, Qt will use the closest matching installed font. The
+    font exists, BobUI will use the closest matching installed font. The
     attributes of the font that is actually used can be retrieved
     using the QFontInfo class. In addition, the QFontMetrics class
     provides the font measurements, and the QFontDatabase class
@@ -214,7 +214,7 @@
 
     Normally, QPainter draws in a "natural" coordinate system, but it
     is able to perform view and world transformations using the
-    QTransform class. For more information, see \l {Coordinate
+    BOBUIransform class. For more information, see \l {Coordinate
     System}, which also describes the rendering process, i.e. the
     relation between the logical representation and the rendered
     pixels, and the benefits of anti-aliased painting.
@@ -242,16 +242,16 @@
     Shapes are filled using the QBrush class. A brush is defined
     by its color and its style (i.e. its fill pattern).
 
-    Any color in Qt is represented by the QColor class which supports
+    Any color in BobUI is represented by the QColor class which supports
     the RGB, HSV and CMYK color models. QColor also support
     alpha-blended outlining and filling (specifying the transparency
     effect), and the class is platform and device independent. For more
     information, see the QColor class documentation.
 
-    The available fill patterns are described by the Qt::BrushStyle
+    The available fill patterns are described by the BobUI::BrushStyle
     enum. These include basic patterns spanning from uniform color to
     very sparse pattern, various line combinations, gradient fills and
-    textures. Qt provides the QGradient class to define custom
+    textures. BobUI provides the QGradient class to define custom
     gradient fills, while texture patterns are specified using the
     QPixmap class.
 
@@ -267,7 +267,7 @@
     \image paintsystem-gradients.png {Illustration that shows three
            different supported ways gradients can be used}
 
-    Qt currently supports three types of gradient fills: Linear
+    BobUI currently supports three types of gradient fills: Linear
     gradients interpolate colors between start and end points, radial
     gradients interpolate colors between a focal point and end points
     on a circle surrounding it, and conical gradients interpolate
@@ -284,12 +284,12 @@
 
     The most common way to read images is through QImage and QPixmap's
     constructors, or by calling the QImage::load() and QPixmap::load()
-    functions. In addition, Qt provides the QImageReader class which
+    functions. In addition, BobUI provides the QImageReader class which
     gives more control over the process. Depending on the underlying
     support in the image format, the functions provided by the class
     can save memory and speed up loading of images.
 
-    Likewise, Qt provides the QImageWriter class which supports
+    Likewise, BobUI provides the QImageWriter class which supports
     setting format specific options, such as the gamma level,
     compression level and quality, prior to storing the image. If you
     do not need such options, you can use QImage::save() or
@@ -311,18 +311,18 @@
 
     The QImageReader and QImageWriter classes rely on the
     QImageIOHandler class which is the common image I/O interface for
-    all image formats in Qt. QImageIOHandler objects are used
+    all image formats in BobUI. QImageIOHandler objects are used
     internally by QImageReader and QImageWriter to add support for
-    different image formats to Qt.
+    different image formats to BobUI.
 
     A list of the supported file formats are available through the
     QImageReader::supportedImageFormats() and
-    QImageWriter::supportedImageFormats() functions. Qt supports
+    QImageWriter::supportedImageFormats() functions. BobUI supports
     several file formats by default, and in addition new formats can
     be added as plugins. The currently supported formats are listed in
     the QImageReader and QImageWriter class documentation.
 
-    Qt's plugin mechanism can also be used to write a custom image
+    BobUI's plugin mechanism can also be used to write a custom image
     format handler. This is done by deriving from the QImageIOHandler
     class, and creating a QImageIOPlugin object which is a factory for
     creating QImageIOHandler objects. When the plugin is installed,

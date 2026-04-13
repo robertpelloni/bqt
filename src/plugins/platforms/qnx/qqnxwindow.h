@@ -1,5 +1,5 @@
 // Copyright (C) 2011 - 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXWINDOW_H
 #define QQNXWINDOW_H
@@ -7,16 +7,16 @@
 #include <qpa/qplatformwindow.h>
 #include "qqnxabstractcover.h"
 
-#include <QtCore/QScopedPointer>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QScopedPointer>
+#include <BobUICore/QLoggingCategory>
 
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
 #include <EGL/egl.h>
 #endif
 
 #include <screen/screen.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaWindow);
 
@@ -53,7 +53,7 @@ public:
     void raise() override;
     void lower() override;
     void requestActivateWindow() override;
-    void setWindowState(Qt::WindowStates state) override;
+    void setWindowState(BobUI::WindowStates state) override;
     void setExposed(bool exposed);
 
     void propagateSizeHints() override;
@@ -113,7 +113,7 @@ private:
     bool m_exposed;
     bool m_foreign;
     QRect m_unmaximizedGeometry;
-    Qt::WindowStates m_windowState;
+    BobUI::WindowStates m_windowState;
 
     // Group name of window group headed by this window
     QByteArray m_windowGroupName;
@@ -131,6 +131,6 @@ private:
     };
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXWINDOW_H

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page coordsys.html
     \title Coordinate System
-    \ingroup qt-graphics
+    \ingroup bobui-graphics
     \ingroup best-practices
     \brief Information about the coordinate system used by the paint
     system.
 
     The coordinate system is controlled by the QPainter
     class. Together with the QPaintDevice and QPaintEngine classes,
-    QPainter form the basis of Qt's painting system, Arthur. QPainter
+    QPainter form the basis of BobUI's painting system, Arthur. QPainter
     is used to perform drawing operations, QPaintDevice is an
     abstraction of a two-dimensional space that can be painted on
     using a QPainter, and QPaintEngine provides the interface that the
@@ -182,7 +182,7 @@
     a point in the plane to another point.
 
     If you need the same transformations over and over, you can also
-    use QTransform objects and the QPainter::worldTransform() and
+    use BOBUIransform objects and the QPainter::worldTransform() and
     QPainter::setWorldTransform() functions. You can at any time save the
     QPainter's transformation matrix by calling the QPainter::save()
     function which saves the matrix on an internal stack. The
@@ -265,7 +265,7 @@
     \endtable
 
     For more information about the transformation matrix, see the
-    QTransform documentation.
+    BOBUIransform documentation.
 
     \section1 Window-Viewport Conversion
 
@@ -338,7 +338,7 @@
     \omit
     \section1 Related Classes
 
-    Qt's paint system, Arthur, is primarily based on the QPainter,
+    BobUI's paint system, Arthur, is primarily based on the QPainter,
     QPaintDevice, and QPaintEngine classes:
 
     \table
@@ -353,14 +353,14 @@
     \li QPaintDevice
     \li
     The QPaintDevice class is the base class of objects that can be
-    painted. Qt provides several devices: QWidget, QImage, QPixmap,
+    painted. BobUI provides several devices: QWidget, QImage, QPixmap,
     QPrinter and QPicture, and other devices can also be defined by
     subclassing QPaintDevice.
     \row
     \li QPaintEngine
     \li
     The QPaintEngine class provides an abstract definition of how
-    QPainter draws to a given device on a given platform.  Qt 4
+    QPainter draws to a given device on a given platform.  BobUI 4
     provides several premade implementations of QPaintEngine for the
     different painter backends we support; it provides one paint
     engine for each supported window system and painting
@@ -368,18 +368,18 @@
     \endtable
 
     The 2D transformations of the coordinate system are specified
-    using the QTransform class:
+    using the BOBUIransform class:
 
     \table
     \header \li Class \li Description
     \row
-    \li QTransform
+    \li BOBUIransform
     \li
-    A 3 x 3 transformation matrix. Use QTransform to rotate, shear,
+    A 3 x 3 transformation matrix. Use BOBUIransform to rotate, shear,
     scale, or translate the coordinate system.
     \endtable
 
-    In addition Qt provides several graphics primitive classes. Some
+    In addition BobUI provides several graphics primitive classes. Some
     of these classes exist in two versions: an \c{int}-based version
     and a \c{qreal}-based version. For these, the \c qreal version's
     name is suffixed with an \c F.
@@ -389,7 +389,7 @@
     \row
     \li \l{QPoint}(\l{QPointF}{F})
     \li
-    A single 2D point in the coordinate system. Most functions in Qt
+    A single 2D point in the coordinate system. Most functions in BobUI
     that deal with points can accept either a QPoint, a QPointF, two
     \c{int}s, or two \c{qreal}s.
     \row

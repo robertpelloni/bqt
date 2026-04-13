@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef FREEZETABLEWIDGET_H
 #define FREEZETABLEWIDGET_H
 
-#include <QTableView>
+#include <BOBUIableView>
 
 //! [Widget definition]
-class FreezeTableWidget : public QTableView {
+class FreezeTableWidget : public BOBUIableView {
      Q_OBJECT
 
 public:
@@ -17,11 +17,11 @@ public:
 
 protected:
       void resizeEvent(QResizeEvent *event) override;
-      QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers) override;
+      QModelIndex moveCursor(CursorAction cursorAction, BobUI::KeyboardModifiers modifiers) override;
       void scrollTo (const QModelIndex & index, ScrollHint hint = EnsureVisible) override;
 
 private:
-      QTableView *frozenTableView;
+      BOBUIableView *frozenTableView;
       void init();
       void updateFrozenTableGeometry();
 

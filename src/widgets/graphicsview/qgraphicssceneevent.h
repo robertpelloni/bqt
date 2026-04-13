@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSSCENEEVENT_H
 #define QGRAPHICSSCENEEVENT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qcoreevent.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qrect.h>
-#include <QtGui/qpolygon.h>
-#include <QtCore/qset.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qcoreevent.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qrect.h>
+#include <BobUIGui/qpolygon.h>
+#include <BobUICore/qset.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 class QPointF;
@@ -59,14 +59,14 @@ public:
     QPoint screenPos() const;
     void setScreenPos(const QPoint &pos);
 
-    QPointF buttonDownPos(Qt::MouseButton button) const;
-    void setButtonDownPos(Qt::MouseButton button, const QPointF &pos);
+    QPointF buttonDownPos(BobUI::MouseButton button) const;
+    void setButtonDownPos(BobUI::MouseButton button, const QPointF &pos);
 
-    QPointF buttonDownScenePos(Qt::MouseButton button) const;
-    void setButtonDownScenePos(Qt::MouseButton button, const QPointF &pos);
+    QPointF buttonDownScenePos(BobUI::MouseButton button) const;
+    void setButtonDownScenePos(BobUI::MouseButton button, const QPointF &pos);
 
-    QPoint buttonDownScreenPos(Qt::MouseButton button) const;
-    void setButtonDownScreenPos(Qt::MouseButton button, const QPoint &pos);
+    QPoint buttonDownScreenPos(BobUI::MouseButton button) const;
+    void setButtonDownScreenPos(BobUI::MouseButton button, const QPoint &pos);
 
     QPointF lastPos() const;
     void setLastPos(const QPointF &pos);
@@ -77,20 +77,20 @@ public:
     QPoint lastScreenPos() const;
     void setLastScreenPos(const QPoint &pos);
 
-    Qt::MouseButtons buttons() const;
-    void setButtons(Qt::MouseButtons buttons);
+    BobUI::MouseButtons buttons() const;
+    void setButtons(BobUI::MouseButtons buttons);
 
-    Qt::MouseButton button() const;
-    void setButton(Qt::MouseButton button);
+    BobUI::MouseButton button() const;
+    void setButton(BobUI::MouseButton button);
 
-    Qt::KeyboardModifiers modifiers() const;
-    void setModifiers(Qt::KeyboardModifiers modifiers);
+    BobUI::KeyboardModifiers modifiers() const;
+    void setModifiers(BobUI::KeyboardModifiers modifiers);
 
-    Qt::MouseEventSource source() const;
-    void setSource(Qt::MouseEventSource source);
+    BobUI::MouseEventSource source() const;
+    void setSource(BobUI::MouseEventSource source);
 
-    Qt::MouseEventFlags flags() const;
-    void setFlags(Qt::MouseEventFlags);
+    BobUI::MouseEventFlags flags() const;
+    void setFlags(BobUI::MouseEventFlags);
 
 private:
     Q_DECLARE_PRIVATE(QGraphicsSceneMouseEvent)
@@ -113,20 +113,20 @@ public:
     QPoint screenPos() const;
     void setScreenPos(const QPoint &pos);
 
-    Qt::MouseButtons buttons() const;
-    void setButtons(Qt::MouseButtons buttons);
+    BobUI::MouseButtons buttons() const;
+    void setButtons(BobUI::MouseButtons buttons);
 
-    Qt::KeyboardModifiers modifiers() const;
-    void setModifiers(Qt::KeyboardModifiers modifiers);
+    BobUI::KeyboardModifiers modifiers() const;
+    void setModifiers(BobUI::KeyboardModifiers modifiers);
 
     int delta() const;
     void setDelta(int delta);
 
-    Qt::Orientation orientation() const;
-    void setOrientation(Qt::Orientation orientation);
+    BobUI::Orientation orientation() const;
+    void setOrientation(BobUI::Orientation orientation);
 
-    Qt::ScrollPhase phase() const;
-    void setPhase(Qt::ScrollPhase scrollPhase);
+    BobUI::ScrollPhase phase() const;
+    void setPhase(BobUI::ScrollPhase scrollPhase);
 
     QPoint pixelDelta() const;
     void setPixelDelta(QPoint delta);
@@ -157,8 +157,8 @@ public:
     QPoint screenPos() const;
     void setScreenPos(const QPoint &pos);
 
-    Qt::KeyboardModifiers modifiers() const;
-    void setModifiers(Qt::KeyboardModifiers modifiers);
+    BobUI::KeyboardModifiers modifiers() const;
+    void setModifiers(BobUI::KeyboardModifiers modifiers);
 
     Reason reason() const;
     void setReason(Reason reason);
@@ -193,8 +193,8 @@ public:
     QPoint lastScreenPos() const;
     void setLastScreenPos(const QPoint &pos);
 
-    Qt::KeyboardModifiers modifiers() const;
-    void setModifiers(Qt::KeyboardModifiers modifiers);
+    BobUI::KeyboardModifiers modifiers() const;
+    void setModifiers(BobUI::KeyboardModifiers modifiers);
 
 private:
     Q_DECLARE_PRIVATE(QGraphicsSceneHoverEvent)
@@ -235,21 +235,21 @@ public:
     QPoint screenPos() const;
     void setScreenPos(const QPoint &pos);
 
-    Qt::MouseButtons buttons() const;
-    void setButtons(Qt::MouseButtons buttons);
+    BobUI::MouseButtons buttons() const;
+    void setButtons(BobUI::MouseButtons buttons);
 
-    Qt::KeyboardModifiers modifiers() const;
-    void setModifiers(Qt::KeyboardModifiers modifiers);
+    BobUI::KeyboardModifiers modifiers() const;
+    void setModifiers(BobUI::KeyboardModifiers modifiers);
 
-    Qt::DropActions possibleActions() const;
-    void setPossibleActions(Qt::DropActions actions);
+    BobUI::DropActions possibleActions() const;
+    void setPossibleActions(BobUI::DropActions actions);
 
-    Qt::DropAction proposedAction() const;
-    void setProposedAction(Qt::DropAction action);
+    BobUI::DropAction proposedAction() const;
+    void setProposedAction(BobUI::DropAction action);
     void acceptProposedAction();
 
-    Qt::DropAction dropAction() const;
-    void setDropAction(Qt::DropAction action);
+    BobUI::DropAction dropAction() const;
+    void setDropAction(BobUI::DropAction action);
 
     QWidget *source() const;
     void setSource(QWidget *source);
@@ -294,10 +294,10 @@ public:
     void setNewPos(const QPointF &pos);
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug, const QGraphicsSceneEvent *);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

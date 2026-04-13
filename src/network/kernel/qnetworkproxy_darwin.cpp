@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trusted-data
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trusted-data
 
 #include "qnetworkproxy.h"
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 
 #include <CFNetwork/CFNetwork.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <SystemConfiguration/SystemConfiguration.h>
 
-#include <QtCore/QRegularExpression>
-#include <QtCore/QStringList>
-#include <QtCore/QUrl>
-#include <QtCore/qendian.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qsystemdetection.h>
+#include <BobUICore/QRegularExpression>
+#include <BobUICore/QStringList>
+#include <BobUICore/QUrl>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qsystemdetection.h>
 #include "private/qcore_mac_p.h"
 
 /*
@@ -42,9 +42,9 @@
  *
  */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static bool isHostExcluded(CFDictionaryRef dict, const QString &host)
 {
@@ -84,7 +84,7 @@ static bool isHostExcluded(CFDictionaryRef dict, const QString &host)
             return true;        // excluded
         } else {
             // do wildcard matching
-            auto rx = QRegularExpression::fromWildcard(entry, Qt::CaseInsensitive);
+            auto rx = QRegularExpression::fromWildcard(entry, BobUI::CaseInsensitive);
             if (rx.match(host).hasMatch())
                 return true;
         }
@@ -182,8 +182,8 @@ void proxyAutoConfigCallback(void *client, CFArrayRef proxylist, CFErrorRef erro
 QCFType<CFStringRef> stringByAddingPercentEscapes(CFStringRef originalPath)
 {
     Q_ASSERT(originalPath);
-    const auto qtPath = QString::fromCFString(originalPath);
-    const auto escaped = QString::fromUtf8(QUrl(qtPath).toEncoded());
+    const auto bobuiPath = QString::fromCFString(originalPath);
+    const auto escaped = QString::fromUtf8(QUrl(bobuiPath).toEncoded());
     return escaped.toCFString();
 }
 
@@ -265,7 +265,7 @@ QList<QNetworkProxy> macQueryInternal(const QNetworkProxyQuery &query)
             pacCtx.release = NULL;
             pacCtx.copyDescription = NULL;
 
-            static CFStringRef pacRunLoopMode = CFSTR("qtPACRunLoopMode");
+            static CFStringRef pacRunLoopMode = CFSTR("bobuiPACRunLoopMode");
 
             QCFType<CFRunLoopSourceRef> pacRunLoopSource = CFNetworkExecuteProxyAutoConfigurationURL(pacUrl, targetURL, &proxyAutoConfigCallback, &pacCtx);
             CFRunLoopAddSource(CFRunLoopGetCurrent(), pacRunLoopSource, pacRunLoopMode);
@@ -292,7 +292,7 @@ QList<QNetworkProxy> macQueryInternal(const QNetworkProxyQuery &query)
     // try the protocol-specific proxy
     const QString protocol = query.protocolTag();
     QNetworkProxy protocolSpecificProxy;
-    if (protocol.compare("http"_L1, Qt::CaseInsensitive) == 0) {
+    if (protocol.compare("http"_L1, BobUI::CaseInsensitive) == 0) {
         protocolSpecificProxy =
             proxyFromDictionary(dict, QNetworkProxy::HttpProxy,
                                 kCFNetworkProxiesHTTPEnable,
@@ -319,13 +319,13 @@ QList<QNetworkProxy> macQueryInternal(const QNetworkProxyQuery &query)
     }
 #else
     bool isHttps = false;
-    if (protocol.compare("ftp"_L1, Qt::CaseInsensitive) == 0) {
+    if (protocol.compare("ftp"_L1, BobUI::CaseInsensitive) == 0) {
         protocolSpecificProxy =
             proxyFromDictionary(dict, QNetworkProxy::FtpCachingProxy,
                                 kCFNetworkProxiesFTPEnable,
                                 kCFNetworkProxiesFTPProxy,
                                 kCFNetworkProxiesFTPPort);
-    } else if (protocol.compare("https"_L1, Qt::CaseInsensitive) == 0) {
+    } else if (protocol.compare("https"_L1, BobUI::CaseInsensitive) == 0) {
         isHttps = true;
         protocolSpecificProxy =
             proxyFromDictionary(dict, QNetworkProxy::HttpProxy,
@@ -372,6 +372,6 @@ QList<QNetworkProxy> QNetworkProxyFactory::systemProxyForQuery(const QNetworkPro
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_NETWORKPROXY
+#endif // BOBUI_NO_NETWORKPROXY

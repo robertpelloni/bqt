@@ -1,26 +1,26 @@
 // Copyright (C) 2014 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Sean Harmer <sean.harmer@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglvertexarrayobject.h"
 
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/qthread.h>
-#include <QtGui/qopenglcontext.h>
-#include <QtGui/qoffscreensurface.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUIGui/qopenglcontext.h>
+#include <BobUIGui/qoffscreensurface.h>
+#include <BobUIGui/qguiapplication.h>
 
-#include <QtOpenGL/QOpenGLVersionFunctionsFactory>
+#include <BobUIOpenGL/QOpenGLVersionFunctionsFactory>
 
-#if !QT_CONFIG(opengles2)
-#  include <QtOpenGL/qopenglfunctions_3_0.h>
-#  include <QtOpenGL/qopenglfunctions_3_2_core.h>
+#if !BOBUI_CONFIG(opengles2)
+#  include <BobUIOpenGL/qopenglfunctions_3_0.h>
+#  include <BobUIOpenGL/qopenglfunctions_3_2_core.h>
 #endif
 
 #include <private/qopenglcontext_p.h>
 #include <private/qopenglextensions_p.h>
 #include <private/qopenglvertexarrayobject_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLFunctions_3_0;
 class QOpenGLFunctions_3_2_Core;
@@ -60,26 +60,26 @@ void QOpenGLVertexArrayObjectHelper::initializeFromContext(QOpenGLContext *conte
             IsVertexArray = extra->f.IsVertexArray;
             tryARB = false;
         } else if (context->hasExtension(QByteArrayLiteral("GL_OES_vertex_array_object"))) {
-            GenVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_GenVertexArrays_t>(context->getProcAddress("glGenVertexArraysOES"));
-            DeleteVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_DeleteVertexArrays_t>(context->getProcAddress("glDeleteVertexArraysOES"));
-            BindVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_BindVertexArray_t>(context->getProcAddress("glBindVertexArrayOES"));
-            IsVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_IsVertexArray_t>(context->getProcAddress("glIsVertexArrayOES"));
+            GenVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_GenVertexArrays_t>(context->getProcAddress("glGenVertexArraysOES"));
+            DeleteVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_DeleteVertexArrays_t>(context->getProcAddress("glDeleteVertexArraysOES"));
+            BindVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_BindVertexArray_t>(context->getProcAddress("glBindVertexArrayOES"));
+            IsVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_IsVertexArray_t>(context->getProcAddress("glIsVertexArrayOES"));
             tryARB = false;
         }
     } else if (context->hasExtension(QByteArrayLiteral("GL_APPLE_vertex_array_object")) &&
                !context->hasExtension(QByteArrayLiteral("GL_ARB_vertex_array_object"))) {
-        GenVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_GenVertexArrays_t>(context->getProcAddress("glGenVertexArraysAPPLE"));
-        DeleteVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_DeleteVertexArrays_t>(context->getProcAddress("glDeleteVertexArraysAPPLE"));
-        BindVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_BindVertexArray_t>(context->getProcAddress("glBindVertexArrayAPPLE"));
-        IsVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_IsVertexArray_t>(context->getProcAddress("glIsVertexArrayAPPLE"));
+        GenVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_GenVertexArrays_t>(context->getProcAddress("glGenVertexArraysAPPLE"));
+        DeleteVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_DeleteVertexArrays_t>(context->getProcAddress("glDeleteVertexArraysAPPLE"));
+        BindVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_BindVertexArray_t>(context->getProcAddress("glBindVertexArrayAPPLE"));
+        IsVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_IsVertexArray_t>(context->getProcAddress("glIsVertexArrayAPPLE"));
         tryARB = false;
     }
 
     if (tryARB && context->hasExtension(QByteArrayLiteral("GL_ARB_vertex_array_object"))) {
-        GenVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_GenVertexArrays_t>(context->getProcAddress("glGenVertexArrays"));
-        DeleteVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_DeleteVertexArrays_t>(context->getProcAddress("glDeleteVertexArrays"));
-        BindVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_BindVertexArray_t>(context->getProcAddress("glBindVertexArray"));
-        IsVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::qt_IsVertexArray_t>(context->getProcAddress("glIsVertexArray"));
+        GenVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_GenVertexArrays_t>(context->getProcAddress("glGenVertexArrays"));
+        DeleteVertexArrays = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_DeleteVertexArrays_t>(context->getProcAddress("glDeleteVertexArrays"));
+        BindVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_BindVertexArray_t>(context->getProcAddress("glBindVertexArray"));
+        IsVertexArray = reinterpret_cast<QOpenGLVertexArrayObjectHelper::bobui_IsVertexArray_t>(context->getProcAddress("glIsVertexArray"));
     }
 }
 
@@ -119,7 +119,7 @@ public:
     } vaoFuncsType;
 
     QOpenGLContext *context;
-    QThread *guiThread;
+    BOBUIhread *guiThread;
 };
 
 bool QOpenGLVertexArrayObjectPrivate::create()
@@ -156,7 +156,7 @@ bool QOpenGLVertexArrayObjectPrivate::create()
         vaoFuncs.core_3_0 = nullptr;
         vaoFuncsType = NotSupported;
         QSurfaceFormat format = ctx->format();
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
         if (format.version() >= std::pair(3,2)) {
             vaoFuncs.core_3_2 = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_2_Core>(ctx);
             vaoFuncsType = Core_3_2;
@@ -195,7 +195,7 @@ void QOpenGLVertexArrayObjectPrivate::destroy()
         // Before going through the effort of creating an offscreen surface
         // check that we are on the GUI thread because otherwise many platforms
         // will not able to create that offscreen surface.
-        if (QThread::currentThread() != guiThread) {
+        if (BOBUIhread::currentThread() != guiThread) {
             ctx = nullptr;
         } else {
             // Cannot just make the current surface current again with another context.
@@ -221,7 +221,7 @@ void QOpenGLVertexArrayObjectPrivate::destroy()
 
     if (vao && ctx) {
         switch (vaoFuncsType) {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
         case Core_3_2:
             vaoFuncs.core_3_2->glDeleteVertexArrays(1, &vao);
             break;
@@ -258,7 +258,7 @@ void QOpenGLVertexArrayObjectPrivate::_q_contextAboutToBeDestroyed()
 void QOpenGLVertexArrayObjectPrivate::bind()
 {
     switch (vaoFuncsType) {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     case Core_3_2:
         vaoFuncs.core_3_2->glBindVertexArray(vao);
         break;
@@ -279,7 +279,7 @@ void QOpenGLVertexArrayObjectPrivate::bind()
 void QOpenGLVertexArrayObjectPrivate::release()
 {
     switch (vaoFuncsType) {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     case Core_3_2:
         vaoFuncs.core_3_2->glBindVertexArray(0);
         break;
@@ -301,7 +301,7 @@ void QOpenGLVertexArrayObjectPrivate::release()
 /*!
     \class QOpenGLVertexArrayObject
     \brief The QOpenGLVertexArrayObject class wraps an OpenGL Vertex Array Object.
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
     \since 5.1
     \ingroup painting-3D
 
@@ -319,7 +319,7 @@ void QOpenGLVertexArrayObjectPrivate::release()
     OpenGL with QOpenGLContext::surfaceFormat() and check for the presence of extensions
     with QOpenGLContext::hasExtension().
 
-    As with the other Qt OpenGL classes, QOpenGLVertexArrayObject has a create()
+    As with the other BobUI OpenGL classes, QOpenGLVertexArrayObject has a create()
     function to create the underlying OpenGL object. This is to allow the developer to
     ensure that there is a valid current OpenGL context at the time.
 
@@ -459,7 +459,7 @@ void QOpenGLVertexArrayObject::release()
     \class QOpenGLVertexArrayObject::Binder
     \brief The QOpenGLVertexArrayObject::Binder class is a convenience class to help
     with the binding and releasing of OpenGL Vertex Array Objects.
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
     \reentrant
     \since 5.1
     \ingroup painting-3D
@@ -512,6 +512,6 @@ void QOpenGLVertexArrayObject::release()
     \sa release()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopenglvertexarrayobject.cpp"

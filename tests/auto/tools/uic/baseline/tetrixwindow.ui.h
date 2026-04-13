@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'tetrixwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,17 +9,17 @@
 #ifndef TETRIXWINDOW_H
 #define TETRIXWINDOW_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLCDNumber>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QLCDNumber>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 #include "tetrixboard.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_TetrixWindow
 {
@@ -62,7 +62,7 @@ public:
         gridLayout->setObjectName("gridLayout");
         startButton = new QPushButton(TetrixWindow);
         startButton->setObjectName("startButton");
-        startButton->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        startButton->setFocusPolicy(BobUI::FocusPolicy::NoFocus);
 
         gridLayout->addWidget(startButton, 4, 0, 1, 1);
 
@@ -74,13 +74,13 @@ public:
 
         linesRemovedLabel = new QLabel(TetrixWindow);
         linesRemovedLabel->setObjectName("linesRemovedLabel");
-        linesRemovedLabel->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter);
+        linesRemovedLabel->setAlignment(BobUI::AlignmentFlag::AlignBottom|BobUI::AlignmentFlag::AlignHCenter);
 
         gridLayout->addWidget(linesRemovedLabel, 2, 2, 1, 1);
 
         pauseButton = new QPushButton(TetrixWindow);
         pauseButton->setObjectName("pauseButton");
-        pauseButton->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        pauseButton->setFocusPolicy(BobUI::FocusPolicy::NoFocus);
 
         gridLayout->addWidget(pauseButton, 5, 2, 1, 1);
 
@@ -92,7 +92,7 @@ public:
 
         board = new TetrixBoard(TetrixWindow);
         board->setObjectName("board");
-        board->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        board->setFocusPolicy(BobUI::FocusPolicy::StrongFocus);
         board->setFrameShape(QFrame::Shape::Panel);
         board->setFrameShadow(QFrame::Shadow::Sunken);
 
@@ -100,13 +100,13 @@ public:
 
         levelLabel = new QLabel(TetrixWindow);
         levelLabel->setObjectName("levelLabel");
-        levelLabel->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter);
+        levelLabel->setAlignment(BobUI::AlignmentFlag::AlignBottom|BobUI::AlignmentFlag::AlignHCenter);
 
         gridLayout->addWidget(levelLabel, 2, 0, 1, 1);
 
         nextLabel = new QLabel(TetrixWindow);
         nextLabel->setObjectName("nextLabel");
-        nextLabel->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter);
+        nextLabel->setAlignment(BobUI::AlignmentFlag::AlignBottom|BobUI::AlignmentFlag::AlignHCenter);
 
         gridLayout->addWidget(nextLabel, 0, 0, 1, 1);
 
@@ -118,7 +118,7 @@ public:
 
         scoreLabel = new QLabel(TetrixWindow);
         scoreLabel->setObjectName("scoreLabel");
-        scoreLabel->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter);
+        scoreLabel->setAlignment(BobUI::AlignmentFlag::AlignBottom|BobUI::AlignmentFlag::AlignHCenter);
 
         gridLayout->addWidget(scoreLabel, 0, 2, 1, 1);
 
@@ -126,13 +126,13 @@ public:
         nextPieceLabel->setObjectName("nextPieceLabel");
         nextPieceLabel->setFrameShape(QFrame::Shape::Box);
         nextPieceLabel->setFrameShadow(QFrame::Shadow::Raised);
-        nextPieceLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        nextPieceLabel->setAlignment(BobUI::AlignmentFlag::AlignCenter);
 
         gridLayout->addWidget(nextPieceLabel, 1, 0, 1, 1);
 
         quitButton = new QPushButton(TetrixWindow);
         quitButton->setObjectName("quitButton");
-        quitButton->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        quitButton->setFocusPolicy(BobUI::FocusPolicy::NoFocus);
 
         gridLayout->addWidget(quitButton, 4, 2, 1, 1);
 
@@ -164,6 +164,6 @@ namespace Ui {
     class TetrixWindow: public Ui_TetrixWindow {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // TETRIXWINDOW_H

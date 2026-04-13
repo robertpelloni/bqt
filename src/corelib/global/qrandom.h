@@ -1,11 +1,11 @@
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:cryptography
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:cryptography
 
 #ifndef QRANDOM_H
 #define QRANDOM_H
 
-#include <QtCore/qalgorithms.h>
+#include <BobUICore/qalgorithms.h>
 #include <algorithm>    // for std::generate
 #include <random>       // for std::mt19937
 
@@ -16,7 +16,7 @@
 #  undef max
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRandomGenerator
 {
@@ -187,7 +187,7 @@ private:
     struct InitialRandomData {
         quintptr data[16 / sizeof(quintptr)];
     };
-    friend InitialRandomData qt_initial_random_value() noexcept;
+    friend InitialRandomData bobui_initial_random_value() noexcept;
     friend class QRandomGenerator64;
     struct SystemGenerator;
     struct SystemAndGlobalGenerators;
@@ -285,6 +285,6 @@ QRandomGenerator QRandomGenerator::securelySeeded()
     return QRandomGenerator64::securelySeeded();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRANDOM_H

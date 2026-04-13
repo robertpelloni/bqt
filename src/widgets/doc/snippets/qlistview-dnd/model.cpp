@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 /*
   model.cpp
@@ -7,7 +7,7 @@
   A simple model that uses a QStringList as its data source.
 */
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "model.h"
 
@@ -19,7 +19,7 @@ DragDropListModel::DragDropListModel(const QStringList &strings,
 
 //! [0]
 bool DragDropListModel::canDropMimeData(const QMimeData *data,
-    Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+    BobUI::DropAction action, int row, int column, const QModelIndex &parent) const
 {
     Q_UNUSED(action);
     Q_UNUSED(row);
@@ -37,12 +37,12 @@ bool DragDropListModel::canDropMimeData(const QMimeData *data,
 
 //! [1]
 bool DragDropListModel::dropMimeData(const QMimeData *data,
-    Qt::DropAction action, int row, int column, const QModelIndex &parent)
+    BobUI::DropAction action, int row, int column, const QModelIndex &parent)
 {
     if (!canDropMimeData(data, action, row, column, parent))
         return false;
 
-    if (action == Qt::IgnoreAction)
+    if (action == BobUI::IgnoreAction)
         return true;
     //! [1]
 
@@ -90,14 +90,14 @@ bool DragDropListModel::dropMimeData(const QMimeData *data,
 //! [6]
 
 //! [7]
-Qt::ItemFlags DragDropListModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags DragDropListModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags defaultFlags = QStringListModel::flags(index);
+    BobUI::ItemFlags defaultFlags = QStringListModel::flags(index);
 
     if (index.isValid())
-        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+        return BobUI::ItemIsDragEnabled | BobUI::ItemIsDropEnabled | defaultFlags;
     else
-        return Qt::ItemIsDropEnabled | defaultFlags;
+        return BobUI::ItemIsDropEnabled | defaultFlags;
 }
 //! [7]
 
@@ -111,7 +111,7 @@ QMimeData *DragDropListModel::mimeData(const QModelIndexList &indexes) const
 
     for (const QModelIndex &index : indexes) {
         if (index.isValid()) {
-            QString text = data(index, Qt::DisplayRole).toString();
+            QString text = data(index, BobUI::DisplayRole).toString();
             stream << text;
         }
     }
@@ -131,8 +131,8 @@ QStringList DragDropListModel::mimeTypes() const
 //! [9]
 
 //! [10]
-Qt::DropActions DragDropListModel::supportedDropActions() const
+BobUI::DropActions DragDropListModel::supportedDropActions() const
 {
-    return Qt::CopyAction | Qt::MoveAction;
+    return BobUI::CopyAction | BobUI::MoveAction;
 }
 //! [10]

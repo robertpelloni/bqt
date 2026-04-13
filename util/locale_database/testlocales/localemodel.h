@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 #ifndef LOCALEMODEL_H
 #define LOCALEMODEL_H
 
@@ -14,16 +14,16 @@ public:
     LocaleModel(QObject *parent = nullptr);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    QVariant headerData(int section, BobUI::Orientation orientation,
+                        int role = BobUI::DisplayRole ) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
     bool setData(const QModelIndex &index, const QVariant &value,
-                 int role = Qt::EditRole) override;
+                 int role = BobUI::EditRole) override;
 private:
     QList<QVariant> m_data_list;
 };

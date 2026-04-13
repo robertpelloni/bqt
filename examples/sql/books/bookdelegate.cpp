@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "bookdelegate.h"
 
 #include <QMouseEvent>
 #include <QPainter>
 #include <QSpinBox>
-#include <QTableView>
+#include <BOBUIableView>
 
 BookDelegate::BookDelegate(int ratingColumn, QObject *parent)
     : QSqlRelationalDelegate(parent), ratingColumn(ratingColumn)
@@ -24,7 +24,7 @@ void BookDelegate::paint(QPainter *painter,
                               option.palette.color(QPalette::Highlight));
         }
 
-        const int rating = index.data(Qt::DisplayRole).toInt();
+        const int rating = index.data(BobUI::DisplayRole).toInt();
         const int height = qMin(option.rect.height(), iconDimension);
         const int width = height;
         // add cellPadding / 2 to center the stars in the cell

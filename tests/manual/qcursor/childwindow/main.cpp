@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
+#include <BobUIGui>
 
 class CursorWindow : public QRasterWindow
 {
@@ -10,7 +10,7 @@ public:
     :m_cursor(cursor)
     ,m_color(color)
     {
-        if (cursor.shape() == Qt::ArrowCursor)
+        if (cursor.shape() == BobUI::ArrowCursor)
             unsetCursor();
         else
             setCursor(cursor);
@@ -26,7 +26,7 @@ public:
     {
         // Toggle cursor
         QCursor newCursor = (cursor().shape() == m_cursor.shape()) ? QCursor() : m_cursor;
-        if (newCursor.shape() == Qt::ArrowCursor)
+        if (newCursor.shape() == BobUI::ArrowCursor)
             unsetCursor();
         else
             setCursor(newCursor);
@@ -44,16 +44,16 @@ int main(int argc, char **argv)
     // Test child windows with set cursors. Create parent window and
     // two child windows. Click window to toggle cursor.
 
-    CursorWindow w1((QCursor(Qt::SizeVerCursor)), QColor(Qt::blue).darker());
+    CursorWindow w1((QCursor(BobUI::SizeVerCursor)), QColor(BobUI::blue).darker());
     w1.resize(200, 200);
     w1.show();
 
-    CursorWindow w2((QCursor(Qt::OpenHandCursor)), QColor(Qt::red).darker());
+    CursorWindow w2((QCursor(BobUI::OpenHandCursor)), QColor(BobUI::red).darker());
     w2.setParent(&w1);
     w2.setGeometry(0, 0, 100, 100);
     w2.show();
 
-    CursorWindow w3((QCursor(Qt::IBeamCursor)), QColor(Qt::green).darker());
+    CursorWindow w3((QCursor(BobUI::IBeamCursor)), QColor(BobUI::green).darker());
     w3.setParent(&w1);
     w3.setGeometry(100, 100, 100, 100);
     w3.show();

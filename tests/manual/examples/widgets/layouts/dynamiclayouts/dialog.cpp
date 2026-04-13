@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "dialog.h"
 
@@ -28,7 +28,7 @@ void Dialog::buttonsOrientationChanged(int index)
     mainLayout->setSizeConstraint(QLayout::SetNoConstraint);
     setMinimumSize(0, 0);
 
-    Qt::Orientation orientation = Qt::Orientation(
+    BobUI::Orientation orientation = BobUI::Orientation(
             buttonsOrientationComboBox->itemData(index).toInt());
 
     if (orientation == buttonBox->orientation())
@@ -42,7 +42,7 @@ void Dialog::buttonsOrientationChanged(int index)
     buttonBox->setOrientation(orientation);
     QSize newSizeHint = buttonBox->sizeHint() + QSize(spacing, spacing);
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         mainLayout->addWidget(buttonBox, 2, 0);
         resize(size() + QSize(-oldSizeHint.width(), newSizeHint.height()));
     } else {
@@ -104,8 +104,8 @@ void Dialog::createOptionsGroupBox()
     buttonsOrientationLabel = new QLabel(tr("Orientation of buttons:"));
 
     buttonsOrientationComboBox = new QComboBox;
-    buttonsOrientationComboBox->addItem(tr("Horizontal"), Qt::Horizontal);
-    buttonsOrientationComboBox->addItem(tr("Vertical"), Qt::Vertical);
+    buttonsOrientationComboBox->addItem(tr("Horizontal"), BobUI::Horizontal);
+    buttonsOrientationComboBox->addItem(tr("Vertical"), BobUI::Vertical);
 
     connect(buttonsOrientationComboBox,
             &QComboBox::currentIndexChanged,

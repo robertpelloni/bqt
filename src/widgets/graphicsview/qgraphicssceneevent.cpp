@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsSceneEvent
@@ -8,9 +8,9 @@
     graphics view related events.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    When a QGraphicsView receives Qt mouse, keyboard, and drag and
+    When a QGraphicsView receives BobUI mouse, keyboard, and drag and
     drop events (QMouseEvent, QKeyEvent, QDragEvent, etc.), it
     translates them into instances of QGraphicsSceneEvent subclasses
     and forwards them to the QGraphicsScene it displays. The scene
@@ -50,7 +50,7 @@
            in the graphics view framework.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     When a QGraphicsView receives a QMouseEvent, it translates it to a
     QGraphicsSceneMouseEvent. The event is then forwarded to the
@@ -77,7 +77,7 @@
     graphics view framework.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \l{QWheelEvent}{QWheelEvent}s received by a QGraphicsView are translated
     into QGraphicsSceneWheelEvents; it translates the QWheelEvent::globalPos()
@@ -94,7 +94,7 @@
            menu events in the graphics view framework.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A QContextMenuEvent received by a QGraphicsView is translated
     into a QGraphicsSceneContextMenuEvent. The
@@ -126,7 +126,7 @@
            in the graphics view framework.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     When a QGraphicsView receives a QHoverEvent event, it translates
     it into QGraphicsSceneHoverEvent. The event is then forwarded to
@@ -142,7 +142,7 @@
            tooltip is requested.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     When a QGraphicsView receives a QEvent of type
     QEvent::ToolTip, it creates a QGraphicsSceneHelpEvent, which is
@@ -167,7 +167,7 @@
            drag and drop in the graphics view framework.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QGraphicsView inherits the drag and drop functionality provided
     by QWidget. When it receives a drag and drop event, it translates
@@ -192,7 +192,7 @@
     resizing in the graphics view framework.
     \since 4.4
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A QGraphicsWidget sends itself a QGraphicsSceneResizeEvent immediately
     when its geometry changes.
@@ -209,7 +209,7 @@
     moving in the graphics view framework.
     \since 4.4
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A QGraphicsWidget sends itself a QGraphicsSceneMoveEvent immediately when
     its local position changes. The delivery is implemented as part of
@@ -224,20 +224,20 @@
 
 #include "qgraphicssceneevent.h"
 
-#ifndef QT_NO_DEBUG_STREAM
-#include <QtCore/qdebug.h>
+#ifndef BOBUI_NO_DEBUG_STREAM
+#include <BobUICore/qdebug.h>
 #include <private/qdebug_p.h>
 #endif
-#include <QtCore/qmap.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qsize.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qsize.h>
+#include <BobUICore/qstring.h>
 #include "qgraphicsview.h"
 #include "qgraphicsitem.h"
-#include <QtWidgets/qgesture.h>
+#include <BobUIWidgets/qgesture.h>
 #include <private/qevent_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsSceneEventPrivate
 {
@@ -330,7 +330,7 @@ class QGraphicsSceneMouseEventPrivate : public QGraphicsSceneEventPrivate
     Q_DECLARE_PUBLIC(QGraphicsSceneMouseEvent)
 public:
     inline QGraphicsSceneMouseEventPrivate()
-        : button(Qt::NoButton), source(Qt::MouseEventNotSynthesized)
+        : button(BobUI::NoButton), source(BobUI::MouseEventNotSynthesized)
     { }
 
     QPointF pos;
@@ -339,14 +339,14 @@ public:
     QPointF lastPos;
     QPointF lastScenePos;
     QPoint lastScreenPos;
-    QMap<Qt::MouseButton, QPointF> buttonDownPos;
-    QMap<Qt::MouseButton, QPointF> buttonDownScenePos;
-    QMap<Qt::MouseButton, QPoint> buttonDownScreenPos;
-    Qt::MouseButton button;
-    Qt::MouseButtons buttons;
-    Qt::KeyboardModifiers modifiers;
-    Qt::MouseEventSource source;
-    Qt::MouseEventFlags flags;
+    QMap<BobUI::MouseButton, QPointF> buttonDownPos;
+    QMap<BobUI::MouseButton, QPointF> buttonDownScenePos;
+    QMap<BobUI::MouseButton, QPoint> buttonDownScreenPos;
+    BobUI::MouseButton button;
+    BobUI::MouseButtons buttons;
+    BobUI::KeyboardModifiers modifiers;
+    BobUI::MouseEventSource source;
+    BobUI::MouseEventFlags flags;
 };
 
 /*!
@@ -432,7 +432,7 @@ void QGraphicsSceneMouseEvent::setScreenPos(const QPoint &pos)
 
     \sa buttonDownScenePos(), buttonDownScreenPos(), pos()
 */
-QPointF QGraphicsSceneMouseEvent::buttonDownPos(Qt::MouseButton button) const
+QPointF QGraphicsSceneMouseEvent::buttonDownPos(BobUI::MouseButton button) const
 {
     Q_D(const QGraphicsSceneMouseEvent);
     return d->buttonDownPos.value(button);
@@ -441,7 +441,7 @@ QPointF QGraphicsSceneMouseEvent::buttonDownPos(Qt::MouseButton button) const
 /*!
     \internal
 */
-void QGraphicsSceneMouseEvent::setButtonDownPos(Qt::MouseButton button, const QPointF &pos)
+void QGraphicsSceneMouseEvent::setButtonDownPos(BobUI::MouseButton button, const QPointF &pos)
 {
     Q_D(QGraphicsSceneMouseEvent);
     d->buttonDownPos.insert(button, pos);
@@ -453,7 +453,7 @@ void QGraphicsSceneMouseEvent::setButtonDownPos(Qt::MouseButton button, const QP
 
     \sa buttonDownPos(), buttonDownScreenPos(), scenePos()
 */
-QPointF QGraphicsSceneMouseEvent::buttonDownScenePos(Qt::MouseButton button) const
+QPointF QGraphicsSceneMouseEvent::buttonDownScenePos(BobUI::MouseButton button) const
 {
     Q_D(const QGraphicsSceneMouseEvent);
     return d->buttonDownScenePos.value(button);
@@ -462,7 +462,7 @@ QPointF QGraphicsSceneMouseEvent::buttonDownScenePos(Qt::MouseButton button) con
 /*!
     \internal
 */
-void QGraphicsSceneMouseEvent::setButtonDownScenePos(Qt::MouseButton button, const QPointF &pos)
+void QGraphicsSceneMouseEvent::setButtonDownScenePos(BobUI::MouseButton button, const QPointF &pos)
 {
     Q_D(QGraphicsSceneMouseEvent);
     d->buttonDownScenePos.insert(button, pos);
@@ -474,7 +474,7 @@ void QGraphicsSceneMouseEvent::setButtonDownScenePos(Qt::MouseButton button, con
 
     \sa screenPos(), buttonDownPos(), buttonDownScenePos()
 */
-QPoint QGraphicsSceneMouseEvent::buttonDownScreenPos(Qt::MouseButton button) const
+QPoint QGraphicsSceneMouseEvent::buttonDownScreenPos(BobUI::MouseButton button) const
 {
     Q_D(const QGraphicsSceneMouseEvent);
     return d->buttonDownScreenPos.value(button);
@@ -483,7 +483,7 @@ QPoint QGraphicsSceneMouseEvent::buttonDownScreenPos(Qt::MouseButton button) con
 /*!
     \internal
 */
-void QGraphicsSceneMouseEvent::setButtonDownScreenPos(Qt::MouseButton button, const QPoint &pos)
+void QGraphicsSceneMouseEvent::setButtonDownScreenPos(BobUI::MouseButton button, const QPoint &pos)
 {
     Q_D(QGraphicsSceneMouseEvent);
     d->buttonDownScreenPos.insert(button, pos);
@@ -562,7 +562,7 @@ void QGraphicsSceneMouseEvent::setLastScreenPos(const QPoint &pos)
 
     \sa button(), modifiers()
 */
-Qt::MouseButtons QGraphicsSceneMouseEvent::buttons() const
+BobUI::MouseButtons QGraphicsSceneMouseEvent::buttons() const
 {
     Q_D(const QGraphicsSceneMouseEvent);
     return d->buttons;
@@ -571,7 +571,7 @@ Qt::MouseButtons QGraphicsSceneMouseEvent::buttons() const
 /*!
     \internal
 */
-void QGraphicsSceneMouseEvent::setButtons(Qt::MouseButtons buttons)
+void QGraphicsSceneMouseEvent::setButtons(BobUI::MouseButtons buttons)
 {
     Q_D(QGraphicsSceneMouseEvent);
     d->buttons = buttons;
@@ -582,7 +582,7 @@ void QGraphicsSceneMouseEvent::setButtons(Qt::MouseButtons buttons)
 
     \sa buttons(), modifiers()
 */
-Qt::MouseButton QGraphicsSceneMouseEvent::button() const
+BobUI::MouseButton QGraphicsSceneMouseEvent::button() const
 {
     Q_D(const QGraphicsSceneMouseEvent);
     return d->button;
@@ -591,7 +591,7 @@ Qt::MouseButton QGraphicsSceneMouseEvent::button() const
 /*!
     \internal
 */
-void QGraphicsSceneMouseEvent::setButton(Qt::MouseButton button)
+void QGraphicsSceneMouseEvent::setButton(BobUI::MouseButton button)
 {
     Q_D(QGraphicsSceneMouseEvent);
     d->button = button;
@@ -603,7 +603,7 @@ void QGraphicsSceneMouseEvent::setButton(Qt::MouseButton button)
 
     \sa buttons(), button()
 */
-Qt::KeyboardModifiers QGraphicsSceneMouseEvent::modifiers() const
+BobUI::KeyboardModifiers QGraphicsSceneMouseEvent::modifiers() const
 {
     Q_D(const QGraphicsSceneMouseEvent);
     return d->modifiers;
@@ -616,12 +616,12 @@ Qt::KeyboardModifiers QGraphicsSceneMouseEvent::modifiers() const
 
   The mouse event source can be used to distinguish between genuine
   and artificial mouse events. The latter are events that are
-  synthesized from touch events by the operating system or Qt itself.
+  synthesized from touch events by the operating system or BobUI itself.
 
-  \sa Qt::MouseEventSource
+  \sa BobUI::MouseEventSource
   \sa QMouseEvent::source()
  */
-Qt::MouseEventSource QGraphicsSceneMouseEvent::source() const
+BobUI::MouseEventSource QGraphicsSceneMouseEvent::source() const
 {
     Q_D(const QGraphicsSceneMouseEvent);
     return d->source;
@@ -631,7 +631,7 @@ Qt::MouseEventSource QGraphicsSceneMouseEvent::source() const
     \since 5.4
     \internal
  */
-void QGraphicsSceneMouseEvent::setSource(Qt::MouseEventSource source)
+void QGraphicsSceneMouseEvent::setSource(BobUI::MouseEventSource source)
 {
     Q_D(QGraphicsSceneMouseEvent);
     d->source = source;
@@ -644,10 +644,10 @@ void QGraphicsSceneMouseEvent::setSource(Qt::MouseEventSource source)
 
      The mouse event flags provide additional information about a mouse event.
 
-     \sa Qt::MouseEventFlag
+     \sa BobUI::MouseEventFlag
      \sa QMouseEvent::flags()
  */
-Qt::MouseEventFlags QGraphicsSceneMouseEvent::flags() const
+BobUI::MouseEventFlags QGraphicsSceneMouseEvent::flags() const
 {
     Q_D(const QGraphicsSceneMouseEvent);
     return d->flags;
@@ -657,7 +657,7 @@ Qt::MouseEventFlags QGraphicsSceneMouseEvent::flags() const
     \since 5.4
     \internal
  */
-void QGraphicsSceneMouseEvent::setFlags(Qt::MouseEventFlags flags)
+void QGraphicsSceneMouseEvent::setFlags(BobUI::MouseEventFlags flags)
 {
     Q_D(QGraphicsSceneMouseEvent);
     d->flags = flags;
@@ -666,7 +666,7 @@ void QGraphicsSceneMouseEvent::setFlags(Qt::MouseEventFlags flags)
 /*!
     \internal
 */
-void QGraphicsSceneMouseEvent::setModifiers(Qt::KeyboardModifiers modifiers)
+void QGraphicsSceneMouseEvent::setModifiers(BobUI::KeyboardModifiers modifiers)
 {
     Q_D(QGraphicsSceneMouseEvent);
     d->modifiers = modifiers;
@@ -682,11 +682,11 @@ public:
     QPointF scenePos;
     QPoint screenPos;
     QPoint pixelDelta;
-    Qt::MouseButtons buttons;
-    Qt::KeyboardModifiers modifiers;
+    BobUI::MouseButtons buttons;
+    BobUI::KeyboardModifiers modifiers;
     int delta = 0;
-    Qt::Orientation orientation = Qt::Horizontal;
-    Qt::ScrollPhase scrollPhase = Qt::NoScrollPhase;
+    BobUI::Orientation orientation = BobUI::Horizontal;
+    BobUI::ScrollPhase scrollPhase = BobUI::NoScrollPhase;
     bool inverted = false;
 };
 
@@ -776,7 +776,7 @@ void QGraphicsSceneWheelEvent::setScreenPos(const QPoint &pos)
 
     \sa modifiers()
 */
-Qt::MouseButtons QGraphicsSceneWheelEvent::buttons() const
+BobUI::MouseButtons QGraphicsSceneWheelEvent::buttons() const
 {
     Q_D(const QGraphicsSceneWheelEvent);
     return d->buttons;
@@ -785,7 +785,7 @@ Qt::MouseButtons QGraphicsSceneWheelEvent::buttons() const
 /*!
     \internal
 */
-void QGraphicsSceneWheelEvent::setButtons(Qt::MouseButtons buttons)
+void QGraphicsSceneWheelEvent::setButtons(BobUI::MouseButtons buttons)
 {
     Q_D(QGraphicsSceneWheelEvent);
     d->buttons = buttons;
@@ -797,7 +797,7 @@ void QGraphicsSceneWheelEvent::setButtons(Qt::MouseButtons buttons)
 
     \sa buttons()
 */
-Qt::KeyboardModifiers QGraphicsSceneWheelEvent::modifiers() const
+BobUI::KeyboardModifiers QGraphicsSceneWheelEvent::modifiers() const
 {
     Q_D(const QGraphicsSceneWheelEvent);
     return d->modifiers;
@@ -806,7 +806,7 @@ Qt::KeyboardModifiers QGraphicsSceneWheelEvent::modifiers() const
 /*!
     \internal
 */
-void QGraphicsSceneWheelEvent::setModifiers(Qt::KeyboardModifiers modifiers)
+void QGraphicsSceneWheelEvent::setModifiers(BobUI::KeyboardModifiers modifiers)
 {
     Q_D(QGraphicsSceneWheelEvent);
     d->modifiers = modifiers;
@@ -839,7 +839,7 @@ void QGraphicsSceneWheelEvent::setDelta(int delta)
 /*!
     Returns the wheel orientation.
 */
-Qt::Orientation QGraphicsSceneWheelEvent::orientation() const
+BobUI::Orientation QGraphicsSceneWheelEvent::orientation() const
 {
     Q_D(const QGraphicsSceneWheelEvent);
     return d->orientation;
@@ -848,7 +848,7 @@ Qt::Orientation QGraphicsSceneWheelEvent::orientation() const
 /*!
     \internal
 */
-void QGraphicsSceneWheelEvent::setOrientation(Qt::Orientation orientation)
+void QGraphicsSceneWheelEvent::setOrientation(BobUI::Orientation orientation)
 {
     Q_D(QGraphicsSceneWheelEvent);
     d->orientation = orientation;
@@ -861,7 +861,7 @@ void QGraphicsSceneWheelEvent::setOrientation(Qt::Orientation orientation)
 
     \sa QWheelEvent::phase
 */
-Qt::ScrollPhase QGraphicsSceneWheelEvent::phase() const
+BobUI::ScrollPhase QGraphicsSceneWheelEvent::phase() const
 {
     Q_D(const QGraphicsSceneWheelEvent);
     return d->scrollPhase;
@@ -870,7 +870,7 @@ Qt::ScrollPhase QGraphicsSceneWheelEvent::phase() const
 /*!
     \internal
 */
-void QGraphicsSceneWheelEvent::setPhase(Qt::ScrollPhase scrollPhase)
+void QGraphicsSceneWheelEvent::setPhase(BobUI::ScrollPhase scrollPhase)
 {
     Q_D(QGraphicsSceneWheelEvent);
     d->scrollPhase = scrollPhase;
@@ -930,7 +930,7 @@ class QGraphicsSceneContextMenuEventPrivate : public QGraphicsSceneEventPrivate
     QPointF pos;
     QPointF scenePos;
     QPoint screenPos;
-    Qt::KeyboardModifiers modifiers;
+    BobUI::KeyboardModifiers modifiers;
     QGraphicsSceneContextMenuEvent::Reason reason = QGraphicsSceneContextMenuEvent::Other;
 };
 
@@ -1029,7 +1029,7 @@ void QGraphicsSceneContextMenuEvent::setScreenPos(const QPoint &pos)
 /*!
     Returns the keyboard modifiers in use when the context menu was requested.
 */
-Qt::KeyboardModifiers QGraphicsSceneContextMenuEvent::modifiers() const
+BobUI::KeyboardModifiers QGraphicsSceneContextMenuEvent::modifiers() const
 {
     Q_D(const QGraphicsSceneContextMenuEvent);
     return d->modifiers;
@@ -1041,7 +1041,7 @@ Qt::KeyboardModifiers QGraphicsSceneContextMenuEvent::modifiers() const
     Sets the keyboard modifiers associated with the context menu to the \a
     modifiers specified.
 */
-void QGraphicsSceneContextMenuEvent::setModifiers(Qt::KeyboardModifiers modifiers)
+void QGraphicsSceneContextMenuEvent::setModifiers(BobUI::KeyboardModifiers modifiers)
 {
     Q_D(QGraphicsSceneContextMenuEvent);
     d->modifiers = modifiers;
@@ -1079,7 +1079,7 @@ public:
     QPointF lastPos;
     QPointF lastScenePos;
     QPoint lastScreenPos;
-    Qt::KeyboardModifiers modifiers;
+    BobUI::KeyboardModifiers modifiers;
 };
 
 /*!
@@ -1249,19 +1249,19 @@ void QGraphicsSceneHoverEvent::setLastScreenPos(const QPoint &pos)
 
     Returns the keyboard modifiers at the moment the hover event was sent.
 */
-Qt::KeyboardModifiers QGraphicsSceneHoverEvent::modifiers() const
+BobUI::KeyboardModifiers QGraphicsSceneHoverEvent::modifiers() const
 {
     Q_D(const QGraphicsSceneHoverEvent);
     return d->modifiers;
 }
 
 /*!
-    \fn void QGraphicsSceneHoverEvent::setModifiers(Qt::KeyboardModifiers modifiers)
+    \fn void QGraphicsSceneHoverEvent::setModifiers(BobUI::KeyboardModifiers modifiers)
     \internal
 
     Sets the modifiers for the current hover event to \a modifiers.
 */
-void QGraphicsSceneHoverEvent::setModifiers(Qt::KeyboardModifiers modifiers)
+void QGraphicsSceneHoverEvent::setModifiers(BobUI::KeyboardModifiers modifiers)
 {
     Q_D(QGraphicsSceneHoverEvent);
     d->modifiers = modifiers;
@@ -1352,11 +1352,11 @@ public:
     QPointF pos;
     QPointF scenePos;
     QPoint screenPos;
-    Qt::MouseButtons buttons;
-    Qt::KeyboardModifiers modifiers;
-    Qt::DropActions possibleActions;
-    Qt::DropAction proposedAction;
-    Qt::DropAction dropAction;
+    BobUI::MouseButtons buttons;
+    BobUI::KeyboardModifiers modifiers;
+    BobUI::DropActions possibleActions;
+    BobUI::DropAction proposedAction;
+    BobUI::DropAction dropAction;
     QWidget *source;
     const QMimeData *mimeData;
 };
@@ -1455,13 +1455,13 @@ void QGraphicsSceneDragDropEvent::setScreenPos(const QPoint &pos)
 }
 
 /*!
-    Returns a Qt::MouseButtons value indicating which buttons
+    Returns a BobUI::MouseButtons value indicating which buttons
     were pressed on the mouse when this mouse event was
     generated.
 
-    \sa Qt::MouseButtons
+    \sa BobUI::MouseButtons
 */
-Qt::MouseButtons QGraphicsSceneDragDropEvent::buttons() const
+BobUI::MouseButtons QGraphicsSceneDragDropEvent::buttons() const
 {
     Q_D(const QGraphicsSceneDragDropEvent);
     return d->buttons;
@@ -1472,9 +1472,9 @@ Qt::MouseButtons QGraphicsSceneDragDropEvent::buttons() const
     Sets the mouse buttons that were pressed when the event was
     created to \a buttons.
 
-    \sa Qt::MouseButtons, buttons()
+    \sa BobUI::MouseButtons, buttons()
 */
-void QGraphicsSceneDragDropEvent::setButtons(Qt::MouseButtons buttons)
+void QGraphicsSceneDragDropEvent::setButtons(BobUI::MouseButtons buttons)
 {
     Q_D(QGraphicsSceneDragDropEvent);
     d->buttons = buttons;
@@ -1484,9 +1484,9 @@ void QGraphicsSceneDragDropEvent::setButtons(Qt::MouseButtons buttons)
     Returns the keyboard modifiers that were pressed when the drag
     and drop event was created.
 
-    \sa Qt::KeyboardModifiers
+    \sa BobUI::KeyboardModifiers
 */
-Qt::KeyboardModifiers QGraphicsSceneDragDropEvent::modifiers() const
+BobUI::KeyboardModifiers QGraphicsSceneDragDropEvent::modifiers() const
 {
     Q_D(const QGraphicsSceneDragDropEvent);
     return d->modifiers;
@@ -1497,10 +1497,10 @@ Qt::KeyboardModifiers QGraphicsSceneDragDropEvent::modifiers() const
     Sets the keyboard modifiers that were pressed when the event
     was created to \a modifiers.
 
-    \sa Qt::KeyboardModifiers, modifiers()
+    \sa BobUI::KeyboardModifiers, modifiers()
 */
 
-void QGraphicsSceneDragDropEvent::setModifiers(Qt::KeyboardModifiers modifiers)
+void QGraphicsSceneDragDropEvent::setModifiers(BobUI::KeyboardModifiers modifiers)
 {
     Q_D(QGraphicsSceneDragDropEvent);
     d->modifiers = modifiers;
@@ -1510,10 +1510,10 @@ void QGraphicsSceneDragDropEvent::setModifiers(Qt::KeyboardModifiers modifiers)
     Returns the possible drop actions that the drag and
     drop can result in.
 
-    \sa Qt::DropActions
+    \sa BobUI::DropActions
 */
 
-Qt::DropActions QGraphicsSceneDragDropEvent::possibleActions() const
+BobUI::DropActions QGraphicsSceneDragDropEvent::possibleActions() const
 {
     Q_D(const QGraphicsSceneDragDropEvent);
     return d->possibleActions;
@@ -1524,9 +1524,9 @@ Qt::DropActions QGraphicsSceneDragDropEvent::possibleActions() const
     Sets the possible drop actions that the drag can
     result in to \a actions.
 
-    \sa Qt::DropActions, possibleActions()
+    \sa BobUI::DropActions, possibleActions()
 */
-void QGraphicsSceneDragDropEvent::setPossibleActions(Qt::DropActions actions)
+void QGraphicsSceneDragDropEvent::setPossibleActions(BobUI::DropActions actions)
 {
     Q_D(QGraphicsSceneDragDropEvent);
     d->possibleActions = actions;
@@ -1537,10 +1537,10 @@ void QGraphicsSceneDragDropEvent::setPossibleActions(Qt::DropActions actions)
     The action must be one of the possible actions as defined by
     \c possibleActions().
 
-    \sa Qt::DropAction, possibleActions()
+    \sa BobUI::DropAction, possibleActions()
 */
 
-Qt::DropAction QGraphicsSceneDragDropEvent::proposedAction() const
+BobUI::DropAction QGraphicsSceneDragDropEvent::proposedAction() const
 {
     Q_D(const QGraphicsSceneDragDropEvent);
     return d->proposedAction;
@@ -1549,13 +1549,13 @@ Qt::DropAction QGraphicsSceneDragDropEvent::proposedAction() const
 /*!
     \internal
     Sets the proposed action to \a action. The proposed action
-    is a Qt::DropAction that is one of the possible actions as
+    is a BobUI::DropAction that is one of the possible actions as
     given by \c possibleActions().
 
-    \sa proposedAction(), Qt::DropAction, possibleActions()
+    \sa proposedAction(), BobUI::DropAction, possibleActions()
 */
 
-void QGraphicsSceneDragDropEvent::setProposedAction(Qt::DropAction action)
+void QGraphicsSceneDragDropEvent::setProposedAction(BobUI::DropAction action)
 {
     Q_D(QGraphicsSceneDragDropEvent);
     d->proposedAction = action;
@@ -1586,7 +1586,7 @@ void QGraphicsSceneDragDropEvent::acceptProposedAction()
     \sa setDropAction(), acceptProposedAction()
 */
 
-Qt::DropAction QGraphicsSceneDragDropEvent::dropAction() const
+BobUI::DropAction QGraphicsSceneDragDropEvent::dropAction() const
 {
     Q_D(const QGraphicsSceneDragDropEvent);
     return d->dropAction;
@@ -1602,7 +1602,7 @@ Qt::DropAction QGraphicsSceneDragDropEvent::dropAction() const
 
     \sa dropAction(), accept(), possibleActions()
 */
-void QGraphicsSceneDragDropEvent::setDropAction(Qt::DropAction action)
+void QGraphicsSceneDragDropEvent::setDropAction(BobUI::DropAction action)
 {
     Q_D(QGraphicsSceneDragDropEvent);
     d->dropAction = action;
@@ -1782,16 +1782,16 @@ void QGraphicsSceneMoveEvent::setNewPos(const QPointF &pos)
     d->newPos = pos;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 template <class Event>
 static inline void formatPositions(QDebug &debug, const Event *event)
 {
     debug << ", pos=";
-    QtDebugUtils::formatQPoint(debug, event->pos());
+    BobUIDebugUtils::formatQPoint(debug, event->pos());
     debug << ", scenePos=";
-    QtDebugUtils::formatQPoint(debug, event->scenePos());
+    BobUIDebugUtils::formatQPoint(debug, event->scenePos());
     debug << ", screenPos=";
-    QtDebugUtils::formatQPoint(debug, event->screenPos());
+    BobUIDebugUtils::formatQPoint(debug, event->screenPos());
 }
 
 QDebug operator<<(QDebug debug, const QGraphicsSceneEvent *event)
@@ -1808,29 +1808,29 @@ QDebug operator<<(QDebug debug, const QGraphicsSceneEvent *event)
     case QEvent::GraphicsSceneMouseRelease:
     case QEvent::GraphicsSceneMouseDoubleClick: {
         const QGraphicsSceneMouseEvent *me = static_cast<const QGraphicsSceneMouseEvent *>(event);
-        const Qt::MouseButton button = me->button();
-        const Qt::MouseButtons buttons = me->buttons();
+        const BobUI::MouseButton button = me->button();
+        const BobUI::MouseButtons buttons = me->buttons();
         debug << "QGraphicsSceneMouseEvent(";
-        QtDebugUtils::formatQEnum(debug, type);
+        BobUIDebugUtils::formatQEnum(debug, type);
         if (type != QEvent::GraphicsSceneMouseMove) {
             debug << ", ";
-            QtDebugUtils::formatQEnum(debug, button);
+            BobUIDebugUtils::formatQEnum(debug, button);
         }
         if (buttons && button != buttons) {
             debug << ", buttons=";
-            QtDebugUtils::formatQFlags(debug, buttons);
+            BobUIDebugUtils::formatQFlags(debug, buttons);
         }
-        QtDebugUtils::formatNonNullQFlags(debug, ", ", me->modifiers());
+        BobUIDebugUtils::formatNonNullQFlags(debug, ", ", me->modifiers());
         formatPositions(debug, me);
-        QtDebugUtils::formatNonNullQEnum(debug, ", ", me->source());
-        QtDebugUtils::formatNonNullQFlags(debug, ", flags=", me->flags());
+        BobUIDebugUtils::formatNonNullQEnum(debug, ", ", me->source());
+        BobUIDebugUtils::formatNonNullQFlags(debug, ", flags=", me->flags());
         debug << ')';
     }
         break;
     case QEvent::GraphicsSceneContextMenu: {
         const QGraphicsSceneContextMenuEvent *ce = static_cast<const QGraphicsSceneContextMenuEvent *>(event);
         debug << "QGraphicsSceneContextMenuEvent(reason=" << ce->reason();
-        QtDebugUtils::formatNonNullQFlags(debug, ", ", ce->modifiers());
+        BobUIDebugUtils::formatNonNullQFlags(debug, ", ", ce->modifiers());
         formatPositions(debug, ce);
         debug << ')';
     }
@@ -1850,20 +1850,20 @@ QDebug operator<<(QDebug debug, const QGraphicsSceneEvent *event)
     case QEvent::GraphicsSceneDrop: {
         const QGraphicsSceneDragDropEvent *de = static_cast<const QGraphicsSceneDragDropEvent *>(event);
         debug << "QGraphicsSceneDragDropEvent(proposedAction=";
-        QtDebugUtils::formatQEnum(debug, de->proposedAction());
+        BobUIDebugUtils::formatQEnum(debug, de->proposedAction());
         debug << ", possibleActions=";
-        QtDebugUtils::formatQFlags(debug, de->possibleActions());
+        BobUIDebugUtils::formatQFlags(debug, de->possibleActions());
         debug << ", source=" << de->source();
-        QtDebugUtils::formatNonNullQFlags(debug, ", buttons=", de->buttons());
-        QtDebugUtils::formatNonNullQFlags(debug, ", ", de->modifiers());
+        BobUIDebugUtils::formatNonNullQFlags(debug, ", buttons=", de->buttons());
+        BobUIDebugUtils::formatNonNullQFlags(debug, ", ", de->modifiers());
         formatPositions(debug, de);
     }
         break;
     case QEvent::GraphicsSceneWheel: {
         const QGraphicsSceneWheelEvent *we = static_cast<const QGraphicsSceneWheelEvent *>(event);
         debug << "QGraphicsSceneWheelEvent(";
-        QtDebugUtils::formatNonNullQFlags(debug, ", buttons=", we->buttons());
-        QtDebugUtils::formatNonNullQFlags(debug, ", ", we->modifiers());
+        BobUIDebugUtils::formatNonNullQFlags(debug, ", buttons=", we->buttons());
+        BobUIDebugUtils::formatNonNullQFlags(debug, ", ", we->modifiers());
         formatPositions(debug, we);
         debug << ')';
     }
@@ -1873,6 +1873,6 @@ QDebug operator<<(QDebug debug, const QGraphicsSceneEvent *event)
     }
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

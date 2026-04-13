@@ -2,7 +2,7 @@
 #define OMNISEQUENCER_H
 
 #include <QObject>
-#include <QTimer>
+#include <BOBUIimer>
 
 class OmniSequencer : public QObject {
     Q_OBJECT
@@ -33,7 +33,7 @@ private:
     int m_bpm;
     bool m_isPlaying;
     int m_currentStep;
-    QTimer m_timer;
+    BOBUIimer m_timer;
 };
 
 #endif // OMNISEQUENCER_H

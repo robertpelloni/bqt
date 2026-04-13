@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandwindowmanagerintegration_p.h"
 #include "qwaylandscreen_p.h"
@@ -8,29 +8,29 @@
 #include "qwaylandshellsurface_p.h"
 
 #include <stdint.h>
-#include <QtCore/QEvent>
-#include <QtCore/QHash>
-#include <QtCore/QUrl>
+#include <BobUICore/QEvent>
+#include <BobUICore/QHash>
+#include <BobUICore/QUrl>
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qplatformwindow.h>
-#include <QtGui/QtEvents>
-#include <QtGui/QGuiApplication>
+#include <BobUIGui/BobUIEvents>
+#include <BobUIGui/QGuiApplication>
 
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandWindowManagerIntegration::QWaylandWindowManagerIntegration(QWaylandDisplay *waylandDisplay,
                                                                    uint id, uint version)
-    : QtWayland::qt_windowmanager(waylandDisplay->object(), id, version)
+    : BobUIWayland::bobui_windowmanager(waylandDisplay->object(), id, version)
 {
 }
 
 QWaylandWindowManagerIntegration::~QWaylandWindowManagerIntegration()
 {
-    qt_windowmanager_destroy(object());
+    bobui_windowmanager_destroy(object());
 }
 
 bool QWaylandWindowManagerIntegration::showIsFullScreen() const
@@ -64,4 +64,4 @@ void QWaylandWindowManagerIntegration::openUrl(const QUrl &url)
 }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,7 +1,7 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNATIVESOCKETENGINE_P_P_H
 #define QNATIVESOCKETENGINE_P_P_H
@@ -10,7 +10,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -28,7 +28,7 @@
 #  include <mswsock.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_OS_WIN
 
@@ -61,7 +61,7 @@ typedef INT (WSAAPI *LPFN_WSASENDMSG)(SOCKET s, LPWSAMSG lpMsg, DWORD dwFlags,
 #  endif // !WSAID_WSASENDMSG
 #endif // Q_OS_WIN
 
-union qt_sockaddr {
+union bobui_sockaddr {
     sockaddr a;
     sockaddr_in a4;
     sockaddr_in6 a6;
@@ -130,7 +130,7 @@ public:
     bool nativeBind(const QHostAddress &address, quint16 port);
     bool nativeListen(int backlog);
     qintptr nativeAccept();
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
     bool nativeJoinMulticastGroup(const QHostAddress &groupAddress,
                                   const QNetworkInterface &iface);
     bool nativeLeaveMulticastGroup(const QHostAddress &groupAddress,
@@ -160,7 +160,7 @@ public:
         Sets \a address and \a port in the \a aa sockaddr structure and the size in \a sockAddrSize.
         The address \a is converted to IPv6 if the current socket protocol is also IPv6.
      */
-    void setPortAndAddress(quint16 port, const QHostAddress &address, qt_sockaddr *aa, QT_SOCKLEN_T *sockAddrSize)
+    void setPortAndAddress(quint16 port, const QHostAddress &address, bobui_sockaddr *aa, BOBUI_SOCKLEN_T *sockAddrSize)
     {
         switch (socketProtocol) {
         case QHostAddress::IPv6Protocol:
@@ -185,6 +185,6 @@ public:
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNATIVESOCKETENGINE_P_P_H

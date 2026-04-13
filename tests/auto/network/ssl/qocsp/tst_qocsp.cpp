@@ -1,27 +1,27 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include "../shared/qopenssl_symbols.h"
 
-#include <QtNetwork/qsslcertificate.h>
-#include <QtNetwork/qocspresponse.h>
-#include <QtNetwork/qtcpserver.h>
-#include <QtNetwork/qsslerror.h>
-#include <QtNetwork/qsslkey.h>
-#include <QtNetwork/qssl.h>
+#include <BobUINetwork/qsslcertificate.h>
+#include <BobUINetwork/qocspresponse.h>
+#include <BobUINetwork/bobuicpserver.h>
+#include <BobUINetwork/qsslerror.h>
+#include <BobUINetwork/qsslkey.h>
+#include <BobUINetwork/qssl.h>
 
-#include <QtCore/qsharedpointer.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qdir.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qdir.h>
 
 #include <openssl/ocsp.h>
 
@@ -33,14 +33,14 @@ using namespace std::chrono_literals;
 // NOTE: the word 'subject' in the code below means the subject of a status request,
 // so in general it's our peer's certificate we are asking about.
 
-using SslError = QT_PREPEND_NAMESPACE(QSslError);
-using VectorOfErrors = QT_PREPEND_NAMESPACE(QList<SslError>);
-using Latin1String = QT_PREPEND_NAMESPACE(QLatin1String);
+using SslError = BOBUI_PREPEND_NAMESPACE(QSslError);
+using VectorOfErrors = BOBUI_PREPEND_NAMESPACE(QList<SslError>);
+using Latin1String = BOBUI_PREPEND_NAMESPACE(QLatin1String);
 
 Q_DECLARE_METATYPE(SslError)
 Q_DECLARE_METATYPE(Latin1String)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 
@@ -261,7 +261,7 @@ QByteArray OcspResponder::responseToDer(OCSP_RESPONSE *response)
     if (derSize <= 0)
         return {};
 
-    QByteArray derData(derSize, Qt::Uninitialized);
+    QByteArray derData(derSize, BobUI::Uninitialized);
     unsigned char *pData = reinterpret_cast<unsigned char *>(derData.data());
     const int serializedSize = q_i2d_OCSP_RESPONSE(response, &pData);
     if (serializedSize != derSize)
@@ -270,8 +270,8 @@ QByteArray OcspResponder::responseToDer(OCSP_RESPONSE *response)
     return derData;
 }
 
-// The QTcpServer capable of sending OCSP status responses.
-class OcspServer : public QTcpServer
+// The BOBUIcpServer capable of sending OCSP status responses.
+class OcspServer : public BOBUIcpServer
 {
     Q_OBJECT
 
@@ -305,7 +305,7 @@ OcspServer::OcspServer(const CertificateChain &serverChain, const QSslKey &priva
 
 void OcspServer::configureResponse(const QByteArray &responseDer)
 {
-    serverConfig.setBackendConfigurationOption("Qt-OCSP-response", responseDer);
+    serverConfig.setBackendConfigurationOption("BobUI-OCSP-response", responseDer);
 }
 
 QString OcspServer::hostName() const
@@ -386,10 +386,10 @@ private:
     static QString certDirPath;
 
     void (QSslSocket::*tlsErrorsSignal)(const QList<QSslError> &) = &QSslSocket::sslErrors;
-    void (QTestEventLoop::*exitLoopSlot)() = &QTestEventLoop::exitLoop;
+    void (BOBUIestEventLoop::*exitLoopSlot)() = &BOBUIestEventLoop::exitLoop;
 
     static constexpr auto HandshakeTimeout = 500ms;
-    QTestEventLoop loop;
+    BOBUIestEventLoop loop;
 
     std::vector<QSslError::SslError> ocspErrorCodes = {QSslError::OcspNoResponseFound,
                                                        QSslError::OcspMalformedRequest,
@@ -431,7 +431,7 @@ void tst_QOcsp::initTestCase()
     if (QSslSocket::activeBackend() != QStringLiteral("openssl"))
         QSKIP("This test requires the OpenSSL backend");
 
-    if (!qt_auto_test_resolve_OpenSSL_symbols())
+    if (!bobui_auto_test_resolve_OpenSSL_symbols())
         QSKIP("Failed to resolve OpenSSL symbols required by this test");
 
     certDirPath = QFileInfo(QFINDTESTDATA("certs")).absolutePath();
@@ -501,19 +501,19 @@ void tst_QOcsp::connectSelfSigned()
 
 void tst_QOcsp::badStatus_data()
 {
-    QTest::addColumn<int>("responseStatus");
-    QTest::addColumn<int>("certificateStatus");
-    QTest::addColumn<QSslError>("expectedError");
+    BOBUIest::addColumn<int>("responseStatus");
+    BOBUIest::addColumn<int>("certificateStatus");
+    BOBUIest::addColumn<QSslError>("expectedError");
 
-    QTest::addRow("malformed-request") << OCSP_RESPONSE_STATUS_MALFORMEDREQUEST << 1 << QSslError(QSslError::OcspMalformedRequest);
-    QTest::addRow("internal-error") << OCSP_RESPONSE_STATUS_INTERNALERROR << 2 << QSslError(QSslError::OcspInternalError);
-    QTest::addRow("try-later") << OCSP_RESPONSE_STATUS_TRYLATER << 3 << QSslError(QSslError::OcspTryLater);
-    QTest::addRow("signed-request-require") << OCSP_RESPONSE_STATUS_SIGREQUIRED << 2 << QSslError(QSslError::OcspSigRequred);
-    QTest::addRow("unauthorized-request") << OCSP_RESPONSE_STATUS_UNAUTHORIZED << 1 <<QSslError(QSslError::OcspUnauthorized);
+    BOBUIest::addRow("malformed-request") << OCSP_RESPONSE_STATUS_MALFORMEDREQUEST << 1 << QSslError(QSslError::OcspMalformedRequest);
+    BOBUIest::addRow("internal-error") << OCSP_RESPONSE_STATUS_INTERNALERROR << 2 << QSslError(QSslError::OcspInternalError);
+    BOBUIest::addRow("try-later") << OCSP_RESPONSE_STATUS_TRYLATER << 3 << QSslError(QSslError::OcspTryLater);
+    BOBUIest::addRow("signed-request-require") << OCSP_RESPONSE_STATUS_SIGREQUIRED << 2 << QSslError(QSslError::OcspSigRequred);
+    BOBUIest::addRow("unauthorized-request") << OCSP_RESPONSE_STATUS_UNAUTHORIZED << 1 <<QSslError(QSslError::OcspUnauthorized);
 
-    QTest::addRow("certificate-revoked") << OCSP_RESPONSE_STATUS_SUCCESSFUL << V_OCSP_CERTSTATUS_REVOKED
+    BOBUIest::addRow("certificate-revoked") << OCSP_RESPONSE_STATUS_SUCCESSFUL << V_OCSP_CERTSTATUS_REVOKED
                                          << QSslError(QSslError::CertificateRevoked);
-    QTest::addRow("status-unknown") << OCSP_RESPONSE_STATUS_SUCCESSFUL << V_OCSP_CERTSTATUS_UNKNOWN
+    BOBUIest::addRow("status-unknown") << OCSP_RESPONSE_STATUS_SUCCESSFUL << V_OCSP_CERTSTATUS_UNKNOWN
                                     << QSslError(QSslError::OcspStatusUnknown);
 }
 
@@ -604,12 +604,12 @@ void tst_QOcsp::malformedResponse()
 
 void tst_QOcsp::expiredResponse_data()
 {
-    QTest::addColumn<long>("beforeNow");
-    QTest::addColumn<long>("afterNow");
+    BOBUIest::addColumn<long>("beforeNow");
+    BOBUIest::addColumn<long>("afterNow");
 
-    QTest::addRow("expired") << -2000L << -1000L;
-    QTest::addRow("not-valid-yet") << 5000L << 10000L;
-    QTest::addRow("next-before-this") << -1000L << -2000L;
+    BOBUIest::addRow("expired") << -2000L << -1000L;
+    BOBUIest::addRow("not-valid-yet") << 5000L << 10000L;
+    BOBUIest::addRow("next-before-this") << -1000L << -2000L;
 }
 
 void tst_QOcsp::expiredResponse()
@@ -673,15 +673,15 @@ void tst_QOcsp::noNextUpdate()
 
 void tst_QOcsp::wrongCertificateInResponse_data()
 {
-    QTest::addColumn<QLatin1String>("respChainName");
-    QTest::addColumn<QLatin1String>("respKeyName");
-    QTest::addColumn<QLatin1String>("wrongChainName");
+    BOBUIest::addColumn<QLatin1String>("respChainName");
+    BOBUIest::addColumn<QLatin1String>("respKeyName");
+    BOBUIest::addColumn<QLatin1String>("wrongChainName");
 
-    QTest::addRow("same-CA-wrong-subject") << QLatin1String("ca1.crt") << QLatin1String("ca1.key")
+    BOBUIest::addRow("same-CA-wrong-subject") << QLatin1String("ca1.crt") << QLatin1String("ca1.key")
                                            << QLatin1String("alice.crt");
-    QTest::addRow("wrong-CA-same-subject") << QLatin1String("ss1.crt") << QLatin1String("ss1-private.key")
+    BOBUIest::addRow("wrong-CA-same-subject") << QLatin1String("ss1.crt") << QLatin1String("ss1-private.key")
                                            << QLatin1String("alice.crt");
-    QTest::addRow("wrong-CA-wrong-subject") << QLatin1String("ss1.crt") << QLatin1String("ss1-private.key")
+    BOBUIest::addRow("wrong-CA-wrong-subject") << QLatin1String("ss1.crt") << QLatin1String("ss1-private.key")
                                             << QLatin1String("ss1.crt");
 }
 
@@ -809,8 +809,8 @@ CertificateChain tst_QOcsp::subjectToChain(const CertificateChain &chain)
     return CertificateChain() << chain[0];
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_MAIN(tst_QOcsp)
+BOBUIEST_MAIN(tst_QOcsp)
 
 #include "tst_qocsp.moc"

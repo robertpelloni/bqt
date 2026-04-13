@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../shared/examplefw.h"
 #include <QImage>
@@ -69,9 +69,9 @@ void Window::customInit()
     d.initialUpdates = m_r->nextResourceUpdateBatch();
 
     QImage imgWhiteText(256, 256, QImage::Format_RGBA8888);
-    imgWhiteText.fill(Qt::blue);
+    imgWhiteText.fill(BobUI::blue);
     QPainter p(&imgWhiteText);
-    p.setPen(Qt::white);
+    p.setPen(BobUI::white);
     p.drawText(10, 10, "Slice 2:\nWhite text on blue background");
     p.end();
 
@@ -80,9 +80,9 @@ void Window::customInit()
     d.initialUpdates->uploadTexture(d.tex, uploadSlice2);
 
     QImage imgYellowText(256, 256, QImage::Format_RGBA8888);
-    imgYellowText.fill(Qt::green);
+    imgYellowText.fill(BobUI::green);
     p.begin(&imgYellowText);
-    p.setPen(Qt::yellow);
+    p.setPen(BobUI::yellow);
     p.drawText(10, 10, "Slice 0: Yellow text on green background");
     p.end();
 

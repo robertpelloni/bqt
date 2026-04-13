@@ -1,15 +1,15 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore>
-#include <QtWidgets>
-#include <QtTest>
+#include <BobUICore>
+#include <BobUIWidgets>
+#include <BobUITest>
 
 #include <Foundation/Foundation.h>
 
-#if defined(Q_OS_MACOS) && defined(QT_BUILD_INTERNAL)
+#if defined(Q_OS_MACOS) && defined(BOBUI_BUILD_INTERNAL)
 #include <private/qcore_mac_p.h>
-Q_CONSTRUCTOR_FUNCTION(qt_mac_ensureResponsible);
+Q_CONSTRUCTOR_FUNCTION(bobui_mac_ensureResponsible);
 #endif
 
 class tst_SandboxedFileAccess : public QObject
@@ -72,7 +72,7 @@ void tst_SandboxedFileAccess::initTestCase()
 
     m_widget = new QWidget;
     m_widget->show();
-    QVERIFY(QTest::qWaitForWindowExposed(m_widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_widget));
 }
 
 void tst_SandboxedFileAccess::cleanupTestCase()
@@ -106,10 +106,10 @@ void tst_SandboxedFileAccess::alwaysAccessibleLocations()
 
 void tst_SandboxedFileAccess::standardPaths_data()
 {
-    QTest::addColumn<QStandardPaths::StandardLocation>("location");
+    BOBUIest::addColumn<QStandardPaths::StandardLocation>("location");
     auto standardLocations = QMetaEnum::fromType<QStandardPaths::StandardLocation>();
     for (int i = 0; i < standardLocations.keyCount(); ++i)
-        QTest::newRow(standardLocations.key(i)) << QStandardPaths::StandardLocation(standardLocations.value(i));
+        BOBUIest::newRow(standardLocations.key(i)) << QStandardPaths::StandardLocation(standardLocations.value(i));
 }
 
 void tst_SandboxedFileAccess::standardPaths()
@@ -129,7 +129,7 @@ void tst_SandboxedFileAccess::standardPaths()
 #if !defined(Q_OS_MACOS)
     QEXPECT_FAIL("HomeLocation", "The sandbox root is not writable on iOS", Abort);
 #endif
-    writeFile(writableLocation + QString("/test-writable-file-%1.txt").arg(QTest::currentDataTag()));
+    writeFile(writableLocation + QString("/test-writable-file-%1.txt").arg(BOBUIest::currentDataTag()));
 }
 
 void tst_SandboxedFileAccess::readSingleFile()
@@ -379,12 +379,12 @@ void tst_SandboxedFileAccess::fileOpenEvent()
 #endif
     label.show();
 
-    QTRY_VERIFY_WITH_TIMEOUT(!openEventFilter.fileName.isNull(), 30s);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(!openEventFilter.fileName.isNull(), 30s);
     label.setText("Got file: " + openEventFilter.fileName);
 
     readFile(openEventFilter.fileName);
 
-    QTest::qWait(3000);
+    BOBUIest::qWait(3000);
 }
 
 QString tst_SandboxedFileAccess::getFileName(QFileDialog::AcceptMode acceptMode, QFileDialog::FileMode fileMode,
@@ -412,8 +412,8 @@ int main(int argc, char** argv)
     // Run tests with QApp running
     int testExecResult = 0;
     QMetaObject::invokeMethod(&testObject, [&]{
-        testExecResult = QTest::qExec(&testObject, argc, argv);
-    }, Qt::QueuedConnection);
+        testExecResult = BOBUIest::qExec(&testObject, argc, argv);
+    }, BobUI::QueuedConnection);
 
     [[maybe_unused]] int appExecResult = app.exec();
     return testExecResult;

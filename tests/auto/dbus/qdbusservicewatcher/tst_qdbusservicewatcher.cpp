@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 #include <QSignalSpy>
-#include <QTestEventLoop>
+#include <BOBUIestEventLoop>
 #include <QDBusConnection>
 #include <QDBusServiceWatcher>
 
@@ -54,28 +54,28 @@ QString tst_QDBusServiceWatcher::generateServiceName() {
 
 void tst_QDBusServiceWatcher::watchForCreation_data()
 {
-    QTest::addColumn<QString>("watchedName");
-    QTest::addColumn<QString>("registeredName");
+    BOBUIest::addColumn<QString>("watchedName");
+    BOBUIest::addColumn<QString>("registeredName");
 
     //com.example.TestService5 matches com.example.TestService5
     QString name = generateServiceName();
-    QTest::newRow("normal") << name << name;
+    BOBUIest::newRow("normal") << name << name;
 
     //com.example* matches com.example.TestService5
     name = generateServiceName();
-    QTest::newRow("wildcard") << "com.example*" << name;
+    BOBUIest::newRow("wildcard") << "com.example*" << name;
 
     //com.example.TestService5* matches com.example.TestService5
     name = generateServiceName();
-    QTest::newRow("wildcard_exact") << name+"*" << name;
+    BOBUIest::newRow("wildcard_exact") << name+"*" << name;
 
     //com.example.TestService5* matches com.example.TestService5.Foo
     name = generateServiceName();
-    QTest::newRow("wildcard_subdomain") << name+"*" << name + ".Foo";
+    BOBUIest::newRow("wildcard_subdomain") << name+"*" << name + ".Foo";
 
     //com.example.TestService5* matches com.example.TestService5.Foo.Bar
     name = generateServiceName();
-    QTest::newRow("wildcard_subsubdomain") << name+"*" << name + ".Foo.Bar";
+    BOBUIest::newRow("wildcard_subsubdomain") << name+"*" << name + ".Foo.Bar";
 }
 
 void tst_QDBusServiceWatcher::watchForCreation()
@@ -91,13 +91,13 @@ void tst_QDBusServiceWatcher::watchForCreation()
     QSignalSpy spyR(&watcher, SIGNAL(serviceRegistered(QString)));
     QSignalSpy spyU(&watcher, SIGNAL(serviceUnregistered(QString)));
     QSignalSpy spyO(&watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)));
-    QTestEventLoop::instance().connect(&watcher, SIGNAL(serviceRegistered(QString)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(&watcher, SIGNAL(serviceRegistered(QString)), SLOT(exitLoop()));
 
     // register a name
     QVERIFY(con.registerService(registeredName));
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 1);
     QCOMPARE(spyR.at(0).at(0).toString(), registeredName);
@@ -119,8 +119,8 @@ void tst_QDBusServiceWatcher::watchForCreation()
     // and register again
     QVERIFY(con.registerService(registeredName));
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 1);
     QCOMPARE(spyR.at(0).at(0).toString(), registeredName);
@@ -152,7 +152,7 @@ void tst_QDBusServiceWatcher::watchForDisappearance()
     QSignalSpy spyR(&watcher, SIGNAL(serviceRegistered(QString)));
     QSignalSpy spyU(&watcher, SIGNAL(serviceUnregistered(QString)));
     QSignalSpy spyO(&watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)));
-    QTestEventLoop::instance().connect(&watcher, SIGNAL(serviceUnregistered(QString)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(&watcher, SIGNAL(serviceUnregistered(QString)), SLOT(exitLoop()));
 
     // register a name
     QVERIFY(con.registerService(registeredName));
@@ -160,8 +160,8 @@ void tst_QDBusServiceWatcher::watchForDisappearance()
     // unregister it:
     con.unregisterService(registeredName);
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 0);
 
@@ -189,13 +189,13 @@ void tst_QDBusServiceWatcher::watchForDisappearanceUniqueConnection()
     QSignalSpy spyR(&watcher, SIGNAL(serviceRegistered(QString)));
     QSignalSpy spyU(&watcher, SIGNAL(serviceUnregistered(QString)));
     QSignalSpy spyO(&watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)));
-    QTestEventLoop::instance().connect(&watcher, SIGNAL(serviceUnregistered(QString)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(&watcher, SIGNAL(serviceUnregistered(QString)), SLOT(exitLoop()));
 
     // unregister it:
     QDBusConnection::disconnectFromBus("session2");
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 0);
 
@@ -226,13 +226,13 @@ void tst_QDBusServiceWatcher::watchForOwnerChange()
     QSignalSpy spyR(&watcher, SIGNAL(serviceRegistered(QString)));
     QSignalSpy spyU(&watcher, SIGNAL(serviceUnregistered(QString)));
     QSignalSpy spyO(&watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)));
-    QTestEventLoop::instance().connect(&watcher, SIGNAL(serviceRegistered(QString)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(&watcher, SIGNAL(serviceRegistered(QString)), SLOT(exitLoop()));
 
     // register a name
     QVERIFY(con.registerService(registeredName));
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 1);
     QCOMPARE(spyR.at(0).at(0).toString(), registeredName);
@@ -254,8 +254,8 @@ void tst_QDBusServiceWatcher::watchForOwnerChange()
     // and register again
     QVERIFY(con.registerService(registeredName));
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 1);
     QCOMPARE(spyR.at(0).at(0).toString(), registeredName);
@@ -290,13 +290,13 @@ void tst_QDBusServiceWatcher::modeChange()
     QSignalSpy spyR(&watcher, SIGNAL(serviceRegistered(QString)));
     QSignalSpy spyU(&watcher, SIGNAL(serviceUnregistered(QString)));
     QSignalSpy spyO(&watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)));
-    QTestEventLoop::instance().connect(&watcher, SIGNAL(serviceRegistered(QString)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(&watcher, SIGNAL(serviceRegistered(QString)), SLOT(exitLoop()));
 
     // register a name
     QVERIFY(con.registerService(registeredName));
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 1);
     QCOMPARE(spyR.at(0).at(0).toString(), registeredName);
@@ -317,9 +317,9 @@ void tst_QDBusServiceWatcher::modeChange()
     // unregister it:
     con.unregisterService(registeredName);
 
-    QTestEventLoop::instance().connect(&watcher, SIGNAL(serviceUnregistered(QString)), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().connect(&watcher, SIGNAL(serviceUnregistered(QString)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 0);
 
@@ -349,8 +349,8 @@ void tst_QDBusServiceWatcher::disconnectedConnection()
 
 void tst_QDBusServiceWatcher::setConnection_data()
 {
-    QTest::addColumn<QString>("serviceName");
-    QTest::newRow("normal") << generateServiceName();
+    BOBUIest::addColumn<QString>("serviceName");
+    BOBUIest::newRow("normal") << generateServiceName();
 }
 
 void tst_QDBusServiceWatcher::setConnection()
@@ -364,7 +364,7 @@ void tst_QDBusServiceWatcher::setConnection()
 
     QSignalSpy spyR(&watcher, SIGNAL(serviceRegistered(QString)));
     QSignalSpy spyU(&watcher, SIGNAL(serviceUnregistered(QString)));
-    QTestEventLoop::instance().connect(&watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(&watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)), SLOT(exitLoop()));
 
     // move to the session bus
     con = QDBusConnection::sessionBus();
@@ -374,8 +374,8 @@ void tst_QDBusServiceWatcher::setConnection()
     // register a name
     QVERIFY(con.registerService(serviceName));
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 1);
     QCOMPARE(spyR.at(0).at(0).toString(), serviceName);
@@ -397,8 +397,8 @@ void tst_QDBusServiceWatcher::setConnection()
 
     QDBusConnection::disconnectFromBus("system2");
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spyR.size(), 0);
 
@@ -455,24 +455,24 @@ void tst_QDBusServiceWatcher::bindingsAutomated()
 
     QDBusServiceWatcher watcher(serviceName, con, QDBusServiceWatcher::WatchForRegistration);
 
-    QTestPrivate::testReadWritePropertyBasics<QDBusServiceWatcher, QStringList>(
+    BOBUIestPrivate::testReadWritePropertyBasics<QDBusServiceWatcher, QStringList>(
             watcher,
             QStringList() << "foo" << "bar",
             QStringList() << "bar" << "foo",
             "watchedServices");
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QDBusServiceWatcher::watchedServices");
         return;
     }
 
-    QTestPrivate::testReadWritePropertyBasics<QDBusServiceWatcher,
+    BOBUIestPrivate::testReadWritePropertyBasics<QDBusServiceWatcher,
                                               QFlags<QDBusServiceWatcher::WatchModeFlag>>(
             watcher, QDBusServiceWatcher::WatchForUnregistration,
             QDBusServiceWatcher::WatchForRegistration, "watchMode");
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QDBusServiceWatcher::watchMode");
         return;
     }
 }
-QTEST_MAIN(tst_QDBusServiceWatcher)
+BOBUIEST_MAIN(tst_QDBusServiceWatcher)
 #include "tst_qdbusservicewatcher.moc"

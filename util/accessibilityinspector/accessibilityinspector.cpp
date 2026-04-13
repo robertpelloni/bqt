@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "accessibilityinspector.h"
 
@@ -7,7 +7,7 @@
 #include "optionswidget.h"
 #include "accessibilityscenemanager.h"
 
-#include <QtDeclarative/QtDeclarative>
+#include <BobUIDeclarative/BobUIDeclarative>
 
 void MouseInterceptingGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -101,8 +101,8 @@ void AccessibilityInspector::inspectWindow(QWindow *window)
 
     previousUpdateHandler = QAccessible::installUpdateHandler(accessibilityUpdateHandler);
 
-    QTimer::singleShot(100, sceneManager, SLOT(populateAccessibilityScene()));
-    QTimer::singleShot(100, sceneManager, SLOT(populateAccessibilityTreeScene()));
+    BOBUIimer::singleShot(100, sceneManager, SLOT(populateAccessibilityScene()));
+    BOBUIimer::singleShot(100, sceneManager, SLOT(populateAccessibilityTreeScene()));
 
     QSettings settings;
     accessibilityView->restoreGeometry(settings.value("accessiblityGeometry").toByteArray());

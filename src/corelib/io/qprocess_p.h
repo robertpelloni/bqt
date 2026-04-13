@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 #ifndef QPROCESS_P_H
 #define QPROCESS_P_H
@@ -10,29 +10,29 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtCore/qprocess.h"
-#include "QtCore/qstringlist.h"
-#include "QtCore/qhash.h"
-#include "QtCore/qmap.h"
-#include "QtCore/qshareddata.h"
-#include "QtCore/qdeadlinetimer.h"
+#include "BobUICore/qprocess.h"
+#include "BobUICore/qstringlist.h"
+#include "BobUICore/qhash.h"
+#include "BobUICore/qmap.h"
+#include "BobUICore/qshareddata.h"
+#include "BobUICore/qdeadlinetimer.h"
 #include "private/qiodevice_p.h"
 
-QT_REQUIRE_CONFIG(processenvironment);
+BOBUI_REQUIRE_CONFIG(processenvironment);
 
 #ifdef Q_OS_UNIX
-#include <QtCore/private/qorderedmutexlocker_p.h>
+#include <BobUICore/private/qorderedmutexlocker_p.h>
 #endif
 
 #ifdef Q_OS_WIN
-#include "QtCore/qt_windows.h"
+#include "BobUICore/bobui_windows.h"
 typedef HANDLE Q_PIPE;
 #define INVALID_Q_PIPE INVALID_HANDLE_VALUE
 #else
@@ -40,7 +40,7 @@ typedef int Q_PIPE;
 #define INVALID_Q_PIPE -1
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSocketNotifier;
 class QWindowsPipeReader;
@@ -54,14 +54,14 @@ public:
     QProcEnvKey() {}
     explicit QProcEnvKey(const QString &other) : QString(other) {}
     QProcEnvKey(const QProcEnvKey &other) : QString(other) {}
-    bool operator==(const QProcEnvKey &other) const { return !compare(other, Qt::CaseInsensitive); }
+    bool operator==(const QProcEnvKey &other) const { return !compare(other, BobUI::CaseInsensitive); }
 };
 
 inline bool operator<(const QProcEnvKey &a, const QProcEnvKey &b)
 {
     // On windows use case-insensitive ordering because that is how Windows needs the environment
     // block sorted (https://msdn.microsoft.com/en-us/library/windows/desktop/ms682009(v=vs.85).aspx)
-    return a.compare(b, Qt::CaseInsensitive) < 0;
+    return a.compare(b, BobUI::CaseInsensitive) < 0;
 }
 
 Q_DECLARE_TYPEINFO(QProcEnvKey, Q_RELOCATABLE_TYPE);
@@ -195,7 +195,7 @@ template<> Q_INLINE_TEMPLATE void QSharedDataPointer<QProcessEnvironmentPrivate>
     d.reset(x);
 }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 
 class QProcessPrivate : public QIODevicePrivate
 {
@@ -348,8 +348,8 @@ public:
     { return environment.d.constData(); }
 };
 
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPROCESS_P_H

@@ -1,22 +1,22 @@
 load(default_pre)
 
 build_pass:armeabi-v7a {
-    QT_ARCH = armeabi-v7a
+    BOBUI_ARCH = armeabi-v7a
 } else:build_pass:arm64-v8a {
-    QT_ARCH = arm64-v8a
+    BOBUI_ARCH = arm64-v8a
 } else:build_pass:x86 {
-    QT_ARCH = x86
+    BOBUI_ARCH = x86
 } else:build_pass:x86_64 {
-    QT_ARCH = x86_64
+    BOBUI_ARCH = x86_64
 } else:count(ALL_ANDROID_ABIS, 1) {
-    QT_ARCH = $$ALL_ANDROID_ABIS
-    CONFIG += single_android_abi $$QT_ARCH
+    BOBUI_ARCH = $$ALL_ANDROID_ABIS
+    CONFIG += single_android_abi $$BOBUI_ARCH
 } else {
     # default architecture
-    QT_ARCH = arm64-v8a
+    BOBUI_ARCH = arm64-v8a
 }
 
-DEFAULT_ANDROID_TARGET_ARCH=$${QT_ARCH}
+DEFAULT_ANDROID_TARGET_ARCH=$${BOBUI_ARCH}
 
 ANDROID_TARGET_ARCH = $$(ANDROID_TARGET_ARCH)
 isEmpty(ANDROID_TARGET_ARCH): ANDROID_TARGET_ARCH = $$DEFAULT_ANDROID_TARGET_ARCH
@@ -71,9 +71,9 @@ QMAKE_STRIP             =
 #$${CROSS_COMPILE}strip
 
 
-equals(QT_ARCH, x86): CROSS_COMPILE = $$NDK_LLVM_PATH/bin/i686-linux-android-
-else: equals(QT_ARCH, x86_64): CROSS_COMPILE = $$NDK_LLVM_PATH/bin/x86_64-linux-android-
-else: equals(QT_ARCH, arm64-v8a): CROSS_COMPILE = $$NDK_LLVM_PATH/bin/aarch64-linux-android-
+equals(BOBUI_ARCH, x86): CROSS_COMPILE = $$NDK_LLVM_PATH/bin/i686-linux-android-
+else: equals(BOBUI_ARCH, x86_64): CROSS_COMPILE = $$NDK_LLVM_PATH/bin/x86_64-linux-android-
+else: equals(BOBUI_ARCH, arm64-v8a): CROSS_COMPILE = $$NDK_LLVM_PATH/bin/aarch64-linux-android-
 else: CROSS_COMPILE = $$NDK_LLVM_PATH/bin/arm-linux-androideabi-
 
 QMAKE_LFLAGS            =

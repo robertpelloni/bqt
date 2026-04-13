@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef XMLOUTPUT_H
 #define XMLOUTPUT_H
 
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qstack.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class XmlOutput
 {
@@ -42,7 +42,7 @@ public:
         tCDATA              // <![CDATA[ ... ]]>
     };
 
-    XmlOutput(QTextStream &file, ConverstionType type = XMLConversion);
+    XmlOutput(BOBUIextStream &file, ConverstionType type = XMLConversion);
     ~XmlOutput();
 
     // Settings
@@ -92,7 +92,7 @@ private:
     void addData(const QString &data);
 
     // Data
-    QTextStream &xmlFile;
+    BOBUIextStream &xmlFile;
     QString indent;
 
     QString currentIndent;
@@ -201,6 +201,6 @@ inline XmlOutput::xml_output cdata(const QString &text)
     return XmlOutput::xml_output(XmlOutput::tCDATA, text, QString());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // XMLOUTPUT_H

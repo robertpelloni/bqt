@@ -1,20 +1,20 @@
 // Copyright (C) 2021 Ilya Fedin <fedin-ilja2010@ya.ru>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtNetwork/private/qnetworkinformation_p.h>
+#include <BobUINetwork/private/qnetworkinformation_p.h>
 
-#include <QtCore/qglobal.h>
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/private/qobject_p.h>
 
 #include <gio/gio.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECLARE_LOGGING_CATEGORY(lcNetInfoGlib)
-Q_LOGGING_CATEGORY(lcNetInfoGlib, "qt.network.info.glib");
+Q_LOGGING_CATEGORY(lcNetInfoGlib, "bobui.network.info.glib");
 
 namespace {
 QNetworkInformation::Reachability reachabilityFromGNetworkConnectivity(GNetworkConnectivity connectivity)
@@ -143,6 +143,6 @@ void QGlibNetworkInformationBackend::updateMetered(QGlibNetworkInformationBacken
     backend->setMetered(g_network_monitor_get_network_metered(backend->networkMonitor));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qglibnetworkinformationbackend.moc"

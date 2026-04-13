@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS       = analogclock.h
 SOURCES       = analogclock.cpp \
@@ -7,5 +7,5 @@ SOURCES       = analogclock.cpp \
 QMAKE_PROJECT_NAME = widgets_analogclock
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/analogclock
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/analogclock
 INSTALLS += target

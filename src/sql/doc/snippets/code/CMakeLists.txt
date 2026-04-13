@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 add_library(code_snippets OBJECT
     doc_src_sql-driver.cpp
@@ -11,6 +11,6 @@ add_library(code_snippets OBJECT
 )
 
 target_link_libraries(code_snippets PRIVATE
-    Qt::Core
-    Qt::Sql
+    BobUI::Core
+    BobUI::Sql
 )

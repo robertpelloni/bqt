@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qjpeghandler_p.h"
 
@@ -15,7 +15,7 @@
 #include <qvariant.h>
 #include <private/qicc_p.h>
 #include <private/qsimd_p.h>
-#include <private/qimage_p.h>   // for qt_getImageText
+#include <private/qimage_p.h>   // for bobui_getImageText
 
 #include <stdio.h>      // jpeglib needs this to be pre-included
 #include <setjmp.h>
@@ -33,14 +33,14 @@ extern "C" {
 #endif
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcJpeg, "qt.gui.imageio.jpeg")
+Q_LOGGING_CATEGORY(lcJpeg, "bobui.gui.imageio.jpeg")
 
-QT_WARNING_DISABLE_GCC("-Wclobbered")
+BOBUI_WARNING_DISABLE_GCC("-Wclobbered")
 
-Q_GUI_EXPORT void QT_FASTCALL qt_convert_rgb888_to_rgb32(quint32 *dst, const uchar *src, int len);
-typedef void (QT_FASTCALL *Rgb888ToRgb32Converter)(quint32 *dst, const uchar *src, int len);
+Q_GUI_EXPORT void BOBUI_FASTCALL bobui_convert_rgb888_to_rgb32(quint32 *dst, const uchar *src, int len);
+typedef void (BOBUI_FASTCALL *Rgb888ToRgb32Converter)(quint32 *dst, const uchar *src, int len);
 
 struct my_error_mgr : public jpeg_error_mgr {
     jmp_buf setjmp_buffer;
@@ -79,11 +79,11 @@ public:
 
 extern "C" {
 
-static void qt_init_source(j_decompress_ptr)
+static void bobui_init_source(j_decompress_ptr)
 {
 }
 
-static boolean qt_fill_input_buffer(j_decompress_ptr cinfo)
+static boolean bobui_fill_input_buffer(j_decompress_ptr cinfo)
 {
     my_jpeg_source_mgr* src = (my_jpeg_source_mgr*)cinfo->src;
     qint64 num_read = 0;
@@ -107,7 +107,7 @@ static boolean qt_fill_input_buffer(j_decompress_ptr cinfo)
     return TRUE;
 }
 
-static void qt_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
+static void bobui_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
 {
     my_jpeg_source_mgr* src = (my_jpeg_source_mgr*)cinfo->src;
 
@@ -120,8 +120,8 @@ static void qt_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
     if (num_bytes > 0) {
         while (num_bytes > (long) src->bytes_in_buffer) {  // Should not happen in case of memDevice
             num_bytes -= (long) src->bytes_in_buffer;
-            (void) qt_fill_input_buffer(cinfo);
-            /* note we assume that qt_fill_input_buffer will never return false,
+            (void) bobui_fill_input_buffer(cinfo);
+            /* note we assume that bobui_fill_input_buffer will never return false,
             * so suspension need not be handled.
             */
         }
@@ -130,7 +130,7 @@ static void qt_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
     }
 }
 
-static void qt_term_source(j_decompress_ptr cinfo)
+static void bobui_term_source(j_decompress_ptr cinfo)
 {
     my_jpeg_source_mgr* src = (my_jpeg_source_mgr*)cinfo->src;
     if (!src->device->isSequential())
@@ -141,11 +141,11 @@ static void qt_term_source(j_decompress_ptr cinfo)
 
 inline my_jpeg_source_mgr::my_jpeg_source_mgr(QIODevice *device)
 {
-    jpeg_source_mgr::init_source = qt_init_source;
-    jpeg_source_mgr::fill_input_buffer = qt_fill_input_buffer;
-    jpeg_source_mgr::skip_input_data = qt_skip_input_data;
+    jpeg_source_mgr::init_source = bobui_init_source;
+    jpeg_source_mgr::fill_input_buffer = bobui_fill_input_buffer;
+    jpeg_source_mgr::skip_input_data = bobui_skip_input_data;
     jpeg_source_mgr::resync_to_restart = jpeg_resync_to_restart;
-    jpeg_source_mgr::term_source = qt_term_source;
+    jpeg_source_mgr::term_source = bobui_term_source;
     this->device = device;
     memDevice = qobject_cast<QBuffer *>(device);
     bytes_in_buffer = 0;
@@ -396,7 +396,7 @@ static bool read_jpeg_image(QImage *outImage,
         }
 
         if (scaledSize.isValid() && scaledSize != clip.size()) {
-            *outImage = outImage->scaled(scaledSize, Qt::IgnoreAspectRatio, quality >= HIGH_QUALITY_THRESHOLD ? Qt::SmoothTransformation : Qt::FastTransformation);
+            *outImage = outImage->scaled(scaledSize, BobUI::IgnoreAspectRatio, quality >= HIGH_QUALITY_THRESHOLD ? BobUI::SmoothTransformation : BobUI::FastTransformation);
         }
 
         if (!scaledClipRect.isEmpty())
@@ -421,11 +421,11 @@ public:
 
 extern "C" {
 
-static void qt_init_destination(j_compress_ptr)
+static void bobui_init_destination(j_compress_ptr)
 {
 }
 
-static boolean qt_empty_output_buffer(j_compress_ptr cinfo)
+static boolean bobui_empty_output_buffer(j_compress_ptr cinfo)
 {
     my_jpeg_destination_mgr* dest = (my_jpeg_destination_mgr*)cinfo->dest;
 
@@ -439,7 +439,7 @@ static boolean qt_empty_output_buffer(j_compress_ptr cinfo)
     return TRUE;
 }
 
-static void qt_term_destination(j_compress_ptr cinfo)
+static void bobui_term_destination(j_compress_ptr cinfo)
 {
     my_jpeg_destination_mgr* dest = (my_jpeg_destination_mgr*)cinfo->dest;
     qint64 n = max_buf - dest->free_in_buffer;
@@ -453,9 +453,9 @@ static void qt_term_destination(j_compress_ptr cinfo)
 
 inline my_jpeg_destination_mgr::my_jpeg_destination_mgr(QIODevice *device)
 {
-    jpeg_destination_mgr::init_destination = qt_init_destination;
-    jpeg_destination_mgr::empty_output_buffer = qt_empty_output_buffer;
-    jpeg_destination_mgr::term_destination = qt_term_destination;
+    jpeg_destination_mgr::init_destination = bobui_init_destination;
+    jpeg_destination_mgr::empty_output_buffer = bobui_empty_output_buffer;
+    jpeg_destination_mgr::term_destination = bobui_term_destination;
     this->device = device;
     next_output_byte = buffer;
     free_in_buffer = max_buf;
@@ -465,7 +465,7 @@ static constexpr int maxMarkerSize = 65533;
 
 static inline void set_text(const QImage &image, j_compress_ptr cinfo, const QString &description)
 {
-    const QMap<QString, QString> text = qt_getImageText(image, description);
+    const QMap<QString, QString> text = bobui_getImageText(image, description);
     for (auto it = text.begin(), end = text.end(); it != end; ++it) {
         QByteArray comment = it.key().toUtf8();
         if (!comment.isEmpty())
@@ -754,7 +754,7 @@ public:
 
     QJpegHandlerPrivate(QJpegHandler *qq)
         : quality(75), transformation(QImageIOHandler::TransformationNone), iod_src(nullptr),
-          rgb888ToRgb32ConverterPtr(qt_convert_rgb888_to_rgb32), state(Ready), optimize(false), progressive(false), q(qq)
+          rgb888ToRgb32ConverterPtr(bobui_convert_rgb888_to_rgb32), state(Ready), optimize(false), progressive(false), q(qq)
     {}
 
     ~QJpegHandlerPrivate()
@@ -920,7 +920,7 @@ static int getExifOrientation(QByteArray &exifData)
     return -1;
 }
 
-static QImageIOHandler::Transformations exif2Qt(int exifOrientation)
+static QImageIOHandler::Transformations exif2BobUI(int exifOrientation)
 {
     switch (exifOrientation) {
     case 1: // normal
@@ -980,7 +980,7 @@ bool QJpegHandlerPrivate::readJpegHeader(QIODevice *device)
 
             for (jpeg_saved_marker_ptr marker = info.marker_list; marker != nullptr; marker = marker->next) {
                 if (marker->marker == JPEG_COM) {
-#ifndef QT_NO_IMAGEIO_TEXT_LOADING
+#ifndef BOBUI_NO_IMAGEIO_TEXT_LOADING
                     QString key, value;
                     QString s = QString::fromUtf8((const char *)marker->data, marker->data_length);
                     int index = s.indexOf(QLatin1String(": "));
@@ -1010,7 +1010,7 @@ bool QJpegHandlerPrivate::readJpegHeader(QIODevice *device)
                 // Exif data present
                 int exifOrientation = getExifOrientation(exifData);
                 if (exifOrientation > 0)
-                    transformation = exif2Qt(exifOrientation);
+                    transformation = exif2BobUI(exifOrientation);
             }
 
             state = ReadHeader;
@@ -1052,9 +1052,9 @@ bool QJpegHandlerPrivate::read(QImage *image)
     return false;
 }
 
-Q_GUI_EXPORT void QT_FASTCALL qt_convert_rgb888_to_rgb32_neon(quint32 *dst, const uchar *src, int len);
-Q_GUI_EXPORT void QT_FASTCALL qt_convert_rgb888_to_rgb32_ssse3(quint32 *dst, const uchar *src, int len);
-extern "C" void qt_convert_rgb888_to_rgb32_mips_dspr2_asm(quint32 *dst, const uchar *src, int len);
+Q_GUI_EXPORT void BOBUI_FASTCALL bobui_convert_rgb888_to_rgb32_neon(quint32 *dst, const uchar *src, int len);
+Q_GUI_EXPORT void BOBUI_FASTCALL bobui_convert_rgb888_to_rgb32_ssse3(quint32 *dst, const uchar *src, int len);
+extern "C" void bobui_convert_rgb888_to_rgb32_mips_dspr2_asm(quint32 *dst, const uchar *src, int len);
 
 QJpegHandler::QJpegHandler()
     : d(new QJpegHandlerPrivate(this))
@@ -1062,20 +1062,20 @@ QJpegHandler::QJpegHandler()
 #if defined(__ARM_NEON__)
     // from qimage_neon.cpp
     if (qCpuHasFeature(NEON))
-        d->rgb888ToRgb32ConverterPtr = qt_convert_rgb888_to_rgb32_neon;
+        d->rgb888ToRgb32ConverterPtr = bobui_convert_rgb888_to_rgb32_neon;
 #endif
 
-#if defined(QT_COMPILER_SUPPORTS_SSSE3)
+#if defined(BOBUI_COMPILER_SUPPORTS_SSSE3)
     // from qimage_ssse3.cpps
     if (qCpuHasFeature(SSSE3)) {
-        d->rgb888ToRgb32ConverterPtr = qt_convert_rgb888_to_rgb32_ssse3;
+        d->rgb888ToRgb32ConverterPtr = bobui_convert_rgb888_to_rgb32_ssse3;
     }
-#endif // QT_COMPILER_SUPPORTS_SSSE3
-#if defined(QT_COMPILER_SUPPORTS_MIPS_DSPR2)
+#endif // BOBUI_COMPILER_SUPPORTS_SSSE3
+#if defined(BOBUI_COMPILER_SUPPORTS_MIPS_DSPR2)
     if (qCpuHasFeature(DSPR2)) {
-        d->rgb888ToRgb32ConverterPtr = qt_convert_rgb888_to_rgb32_mips_dspr2_asm;
+        d->rgb888ToRgb32ConverterPtr = bobui_convert_rgb888_to_rgb32_mips_dspr2_asm;
     }
-#endif // QT_COMPILER_SUPPORTS_DSPR2
+#endif // BOBUI_COMPILER_SUPPORTS_DSPR2
 }
 
 QJpegHandler::~QJpegHandler()
@@ -1116,7 +1116,7 @@ bool QJpegHandler::read(QImage *image)
     return d->read(image);
 }
 
-extern void qt_imageTransform(QImage &src, QImageIOHandler::Transformations orient);
+extern void bobui_imageTransform(QImage &src, QImageIOHandler::Transformations orient);
 
 bool QJpegHandler::write(const QImage &image)
 {
@@ -1124,7 +1124,7 @@ bool QJpegHandler::write(const QImage &image)
     if (d->transformation != QImageIOHandler::TransformationNone) {
         // We don't support writing EXIF headers so apply the transform to the data.
         QImage img = image;
-        qt_imageTransform(img, d->transformation);
+        bobui_imageTransform(img, d->transformation);
         return write_jpeg_image(img, device(), d->quality, d->description, d->optimize, d->progressive, invertCMYK);
     }
     return write_jpeg_image(image, device(), d->quality, d->description, d->optimize, d->progressive, invertCMYK);
@@ -1232,4 +1232,4 @@ void QJpegHandler::setOption(ImageOption option, const QVariant &value)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

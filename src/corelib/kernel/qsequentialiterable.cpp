@@ -1,21 +1,21 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qiterable_impl.h>
-#include <QtCore/qsequentialiterable.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qiterable_impl.h>
+#include <BobUICore/qsequentialiterable.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_DEPRECATED_SINCE(6, 15)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 /*!
     \class QSequentialIterable
     \deprecated [6.15] Use QMetaSequence::Iterable instead.
     \since 5.2
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSequentialIterable class is an iterable interface for a container in a QVariant.
 
     This class allows several methods of accessing the values of a container held within
@@ -72,7 +72,7 @@ QT_WARNING_DISABLE_DEPRECATED
  */
 void QSequentialIterable::addValue(const QVariant &value, Position position)
 {
-    QtPrivate::QVariantTypeCoercer coercer;
+    BobUIPrivate::QVariantTypeCoercer coercer;
     const void *valuePtr = coercer.coerce(value, metaContainer().valueMetaType());
 
     switch (position) {
@@ -147,7 +147,7 @@ QVariant QSequentialIterable::at(qsizetype idx) const
 */
 void QSequentialIterable::set(qsizetype idx, const QVariant &value)
 {
-    QtPrivate::QVariantTypeCoercer coercer;
+    BobUIPrivate::QVariantTypeCoercer coercer;
     const void *dataPtr = coercer.coerce(value, metaContainer().valueMetaType());
 
     const QMetaSequence meta = metaContainer();
@@ -211,7 +211,7 @@ QVariantPointer<QSequentialIterator> QSequentialIterator::operator->() const
 */
 QVariant QSequentialConstIterator::operator*() const
 {
-    return QtIterablePrivate::retrieveElement(metaContainer().valueMetaType(), [this](void *dataPtr) {
+    return BobUIIterablePrivate::retrieveElement(metaContainer().valueMetaType(), [this](void *dataPtr) {
         metaContainer().valueAtConstIterator(constIterator(), dataPtr);
     });
 }
@@ -224,7 +224,7 @@ QVariantConstPointer QSequentialConstIterator::operator->() const
     return QVariantConstPointer(operator*());
 }
 
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 15)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

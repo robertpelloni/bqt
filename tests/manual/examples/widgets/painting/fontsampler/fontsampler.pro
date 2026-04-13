@@ -1,6 +1,6 @@
-QT += widgets
-requires(qtConfig(combobox))
-qtHaveModule(printsupport): QT += printsupport
+BOBUI += widgets
+requires(bobuiConfig(combobox))
+bobuiHaveModule(printsupport): BOBUI += printsupport
 
 FORMS     = mainwindowbase.ui
 HEADERS   = mainwindow.h
@@ -8,5 +8,5 @@ SOURCES   = main.cpp \
             mainwindow.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/fontsampler
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/painting/fontsampler
 INSTALLS += target

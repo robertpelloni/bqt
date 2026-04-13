@@ -1,4 +1,4 @@
 SOURCES += main.cpp
-QT = core core-private
+BOBUI = core core-private
 CONFIG += console
-DEFINES += QT_FORCE_ASSERTS
+DEFINES += BOBUI_FORCE_ASSERTS

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPLATFORMINTEGRATION_COCOA_H
 #define QPLATFORMINTEGRATION_COCOA_H
@@ -13,25 +13,25 @@
 #include "qcocoaclipboard.h"
 #include "qcocoadrag.h"
 #include "qcocoaservices.h"
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include "qcocoavulkaninstance.h"
 #endif
 #include "qcocoawindowmanager.h"
 
-#include <QtCore/QScopedPointer>
+#include <BobUICore/QScopedPointer>
 #include <qpa/qplatformintegration.h>
-#include <QtGui/private/qcoretextfontdatabase_p.h>
-#ifndef QT_NO_OPENGL
-#  include <QtGui/private/qopenglcontext_p.h>
+#include <BobUIGui/private/qcoretextfontdatabase_p.h>
+#ifndef BOBUI_NO_OPENGL
+#  include <BobUIGui/private/qopenglcontext_p.h>
 #endif
-#include <QtGui/private/qapplekeymapper_p.h>
+#include <BobUIGui/private/qapplekeymapper_p.h>
 
 Q_FORWARD_DECLARE_OBJC_CLASS(NSToolbar);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaIntegration : public QObject, public QPlatformIntegration
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     , public QNativeInterface::Private::QCocoaGLIntegration
 #endif
 {
@@ -52,7 +52,7 @@ public:
     QPlatformWindow *createPlatformWindow(QWindow *window) const override;
     QPlatformWindow *createForeignWindow(QWindow *window, WId nativeHandle) const override;
     QPlatformOffscreenSurface *createPlatformOffscreenSurface(QOffscreenSurface *surface) const override;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
     QOpenGLContext *createOpenGLContext(NSOpenGLContext *, QOpenGLContext *shareContext) const override;
 #endif
@@ -60,22 +60,22 @@ public:
 
     QAbstractEventDispatcher *createEventDispatcher() const override;
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QPlatformVulkanInstance *createPlatformVulkanInstance(QVulkanInstance *instance) const override;
     QCocoaVulkanInstance *getCocoaVulkanInstance() const;
 #endif
 
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
     QPlatformSessionManager *createPlatformSessionManager(const QString &id, const QString &key) const override;
 #endif
 
     QCoreTextFontDatabase *fontDatabase() const override;
     QCocoaNativeInterface *nativeInterface() const override;
     QPlatformInputContext *inputContext() const override;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QCocoaAccessibility *accessibility() const override;
 #endif
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QCocoaClipboard *clipboard() const override;
 #endif
     QCocoaDrag *drag() const override;
@@ -103,11 +103,11 @@ private:
     QScopedPointer<QCoreTextFontDatabase> mFontDb;
 
     QScopedPointer<QPlatformInputContext> mInputContext;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QScopedPointer<QCocoaAccessibility> mAccessibility;
 #endif
     QScopedPointer<QPlatformTheme> mPlatformTheme;
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QCocoaClipboard  *mCocoaClipboard;
 #endif
     QScopedPointer<QCocoaDrag> mCocoaDrag;
@@ -115,7 +115,7 @@ private:
     mutable QScopedPointer<QCocoaServices> mServices;
     QScopedPointer<QAppleKeyMapper> mKeyboardMapper;
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     mutable QCocoaVulkanInstance *mCocoaVulkanInstance = nullptr;
 #endif
 
@@ -126,7 +126,7 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QCocoaIntegration::Options)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

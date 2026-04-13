@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QHash>
 #include <QMainWindow>
-#include <QTextDocumentFragment>
+#include <BOBUIextDocumentFragment>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAction;
-class QTextDocument;
-class QTextEdit;
+class BOBUIextDocument;
+class BOBUIextEdit;
 
 class MainWindow : public QMainWindow
 {
@@ -31,10 +31,10 @@ private:
     QAction *printAction = nullptr;
     QAction *pdfPrintAction = nullptr;
     QString currentFile;
-    QTextEdit *editor = nullptr;
-    QTextDocument *document = nullptr;
+    BOBUIextEdit *editor = nullptr;
+    BOBUIextDocument *document = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

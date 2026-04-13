@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'installdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,20 +9,20 @@
 #ifndef INSTALLDIALOG_H
 #define INSTALLDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QProgressBar>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QToolButton>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QProgressBar>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIoolButton>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_InstallDialog
 {
@@ -36,7 +36,7 @@ public:
     QSpacerItem *spacerItem;
     QLabel *label_4;
     QLineEdit *pathLineEdit;
-    QToolButton *browseButton;
+    BOBUIoolButton *browseButton;
     QFrame *line;
     QLabel *statusLabel;
     QProgressBar *progressBar;
@@ -87,7 +87,7 @@ public:
 
         gridLayout->addWidget(pathLineEdit, 5, 1, 1, 2);
 
-        browseButton = new QToolButton(InstallDialog);
+        browseButton = new BOBUIoolButton(InstallDialog);
         browseButton->setObjectName("browseButton");
 
         gridLayout->addWidget(browseButton, 5, 3, 1, 1);
@@ -107,7 +107,7 @@ public:
         progressBar = new QProgressBar(InstallDialog);
         progressBar->setObjectName("progressBar");
         progressBar->setValue(0);
-        progressBar->setOrientation(Qt::Orientation::Horizontal);
+        progressBar->setOrientation(BobUI::Orientation::Horizontal);
 
         gridLayout->addWidget(progressBar, 7, 2, 1, 3);
 
@@ -135,6 +135,6 @@ namespace Ui {
     class InstallDialog: public Ui_InstallDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // INSTALLDIALOG_H

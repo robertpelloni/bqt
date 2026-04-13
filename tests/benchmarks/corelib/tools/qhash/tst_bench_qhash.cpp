@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_bench_qhash.h"
 
@@ -9,7 +9,7 @@
 #include <QString>
 #include <QStringList>
 #include <QUuid>
-#include <QTest>
+#include <BOBUIest>
 
 static constexpr quint64 RandomSeed32 = 1045982819;
 static constexpr quint64 RandomSeed64 = qHashMulti(0, RandomSeed32, RandomSeed32);
@@ -22,10 +22,10 @@ private slots:
     void initTestCase();
     void qhash_current_data() { data(); }
     void qhash_current() { qhash_template<QString>(); }
-    void qhash_qt50_data() { data(); }
-    void qhash_qt50() { qhash_template<Qt50String>(); }
-    void qhash_qt4_data() { data(); }
-    void qhash_qt4() { qhash_template<Qt4String>(); }
+    void qhash_bobui50_data() { data(); }
+    void qhash_bobui50() { qhash_template<BobUI50String>(); }
+    void qhash_bobui4_data() { data(); }
+    void qhash_bobui4() { qhash_template<BobUI4String>(); }
     void qhash_javaString_data() { data(); }
     void qhash_javaString() { qhash_template<JavaString>(); }
 
@@ -33,10 +33,10 @@ private slots:
     void hashing_current() { hashing_template<QString>(); }
     void hashing_qbytearray_data() { data(); }
     void hashing_qbytearray() { hashing_template<QByteArray>(); }
-    void hashing_qt50_data() { data(); }
-    void hashing_qt50()  { hashing_template<Qt50String>(); }
-    void hashing_qt4_data() { data(); }
-    void hashing_qt4() { hashing_template<Qt4String>(); }
+    void hashing_bobui50_data() { data(); }
+    void hashing_bobui50()  { hashing_template<BobUI50String>(); }
+    void hashing_bobui4_data() { data(); }
+    void hashing_bobui4() { hashing_template<BobUI4String>(); }
     void hashing_javaString_data() { data(); }
     void hashing_javaString() { hashing_template<JavaString>(); }
 
@@ -123,12 +123,12 @@ void tst_QHash::initTestCase()
 
 void tst_QHash::data()
 {
-    QTest::addColumn<QStringList>("items");
-    QTest::newRow("paths-small") << smallFilePaths;
-    QTest::newRow("uuids-list") << uuids;
-    QTest::newRow("longstrings-list") << longstrings;
-    QTest::newRow("dictionary") << dict;
-    QTest::newRow("numbers") << numbers;
+    BOBUIest::addColumn<QStringList>("items");
+    BOBUIest::newRow("paths-small") << smallFilePaths;
+    BOBUIest::newRow("uuids-list") << uuids;
+    BOBUIest::newRow("longstrings-list") << longstrings;
+    BOBUIest::newRow("dictionary") << dict;
+    BOBUIest::newRow("numbers") << numbers;
 }
 
 template <typename Str> void tst_QHash::qhash_template()
@@ -175,6 +175,6 @@ template <typename Str, size_t Seed> void tst_QHash::hashing_template()
     }
 }
 
-QTEST_MAIN(tst_QHash)
+BOBUIEST_MAIN(tst_QHash)
 
 #include "tst_bench_qhash.moc"

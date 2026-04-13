@@ -1,32 +1,32 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
 // Copyright (C) 2014 Keith Gardner <kreios4004@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
-#include <QtCore/qversionnumber.h>
-#include <QtCore/qhash.h>
-#include <QtCore/private/qlocale_tools_p.h>
-#include <QtCore/qcollator.h>
+#include <BobUICore/qversionnumber.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/private/qlocale_tools_p.h>
+#include <BobUICore/qcollator.h>
 
-#ifndef QT_NO_DATASTREAM
-#  include <QtCore/qdatastream.h>
+#ifndef BOBUI_NO_DATASTREAM
+#  include <BobUICore/qdatastream.h>
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
-#  include <QtCore/qdebug.h>
+#ifndef BOBUI_NO_DEBUG_STREAM
+#  include <BobUICore/qdebug.h>
 #endif
 
 #include <algorithm>
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QVersionNumber)
+BOBUI_IMPL_METATYPE_EXTERN(QVersionNumber)
 
 /*!
     \class QVersionNumber
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.6
     \brief The QVersionNumber class contains a version number with an arbitrary
            number of segments.
@@ -88,7 +88,7 @@ QT_IMPL_METATYPE_EXTERN(QVersionNumber)
 
     Constructs a version number from the span specified by \a args.
 
-    \note In Qt versions prior to 6.8, QVersionNumber could only be constructed
+    \note In BobUI versions prior to 6.8, QVersionNumber could only be constructed
     from QList, QVarLenthArray or std::initializer_list.
 */
 
@@ -435,7 +435,7 @@ QString QVersionNumber::toString() const
 
     \snippet qversionnumber/main.cpp 3-latin1-1
 
-    \note In versions prior to Qt 6.4, this function was overloaded for QString,
+    \note In versions prior to BobUI 6.4, this function was overloaded for QString,
     QLatin1StringView and QStringView instead, and \a suffixIndex was an \c{int*}.
 
     \sa isNull()
@@ -477,13 +477,13 @@ static QVersionNumber from_string(q_no_char8_t::QUtf8StringView string, qsizetyp
 }
 
 // in qstring.cpp
-extern void qt_to_latin1(uchar *dst, const char16_t *uc, qsizetype len);
+extern void bobui_to_latin1(uchar *dst, const char16_t *uc, qsizetype len);
 
 static QVersionNumber from_string(QStringView string, qsizetype *suffixIndex)
 {
     QVarLengthArray<char> copy;
     copy.resize(string.size());
-    qt_to_latin1(reinterpret_cast<uchar*>(copy.data()), string.utf16(), string.size());
+    bobui_to_latin1(reinterpret_cast<uchar*>(copy.data()), string.utf16(), string.size());
     return from_string(QLatin1StringView(copy.data(), copy.size()), suffixIndex);
 }
 
@@ -528,7 +528,7 @@ void QVersionNumber::SegmentStorage::setVector(int len, int maj, int min, int mi
     }
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
    \fn  QDataStream& operator<<(QDataStream &out,
                                 const QVersionNumber &version)
@@ -561,7 +561,7 @@ QDataStream& operator>>(QDataStream &in, QVersionNumber &version)
 }
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QVersionNumber &version)
 {
     QDebugStateSaver saver(debug);
@@ -580,4 +580,4 @@ size_t qHash(const QVersionNumber &key, size_t seed)
     return qHashRange(key.begin(), key.end(), seed);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

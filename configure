@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2016 The Qt Company Ltd.
+# Copyright (C) 2016 The BobUI Company Ltd.
 # Copyright (C) 2016 Intel Corporation.
 # SPDX-License-Identifier: BSD-3-Clause
 
@@ -30,7 +30,7 @@ checkTopLevelBuild()
         outpathPrefix="$outpathPrefix/.."
     else
         if [ -f ../.qmake.super ]; then
-            echo >&2 "ERROR: You cannot configure qtbase separately within a top-level build."
+            echo >&2 "ERROR: You cannot configure bobuibase separately within a top-level build."
             exit 1
         fi
     fi
@@ -81,7 +81,7 @@ while [ "$#" -gt 0 ]; do
         VAR=`echo $1 | sed 's,^--\(.*\),\1,'`
         VAL=yes
         ;;
-    #General options, including Qt style yes options
+    #General options, including BobUI style yes options
     -*)
         VAR=`echo $1 | sed 's,^-\(.*\),\1,'`
         VAL="yes"
@@ -117,7 +117,7 @@ if [ "$OPT_HELP" = "yes" ]; then
     if [ -n "$CFG_TOPLEVEL" ]; then
         IFS='
 '
-        for i in $relpathMangled/qt*/config_help.txt; do
+        for i in $relpathMangled/bobui*/config_help.txt; do
             if [ x"$i" != x"$relpath/config_help.txt" ]; then
                 echo
                 cat "$i"
@@ -146,13 +146,13 @@ if [ -z "$optfile" ]; then   # only write optfile if not currently redoing
 
     for arg in "$@"; do echo \"$arg\" >> "$opttmpfilepath"; done
 
-    cmake -DIN_FILE="${opttmpfilepath}" -DOUT_FILE="${optfilepath}" -DIGNORE_ARGS=-top-level -P "${relpath}/cmake/QtWriteArgsFile.cmake"
+    cmake -DIN_FILE="${opttmpfilepath}" -DOUT_FILE="${optfilepath}" -DIGNORE_ARGS=-top-level -P "${relpath}/cmake/BobUIWriteArgsFile.cmake"
 else
     # Rewriting config.opt into config.opt.in anyway. Allows for direct manipulation of config.opt
     > "$opttmpfilepath"
     for arg in `cat $optfile`; do echo \"$arg\" >> "$opttmpfilepath"; done
 
-    cmake -DIN_FILE="${opttmpfilepath}" -DREDO_FILE="${redotmpfilepath}" -DOUT_FILE="${redofilepath}" -DIGNORE_ARGS=-top-level -P "${relpath}/cmake/QtWriteArgsFile.cmake"
+    cmake -DIN_FILE="${opttmpfilepath}" -DREDO_FILE="${redotmpfilepath}" -DOUT_FILE="${redofilepath}" -DIGNORE_ARGS=-top-level -P "${relpath}/cmake/BobUIWriteArgsFile.cmake"
     optfilepath=${redofilepath}
     fresh_requested_arg=-DFRESH_REQUESTED=TRUE
 fi
@@ -163,6 +163,6 @@ if [ -n "$CFG_TOPLEVEL" ]; then
     cd ..
 fi
 
-exec cmake "-DOPTFILE=${optfilepath}" ${top_level_arg} ${fresh_requested_arg} -P "${relpath}/cmake/QtProcessConfigureArgs.cmake"
+exec cmake "-DOPTFILE=${optfilepath}" ${top_level_arg} ${fresh_requested_arg} -P "${relpath}/cmake/BobUIProcessConfigureArgs.cmake"
 
 IFS=$SAVED_IFS

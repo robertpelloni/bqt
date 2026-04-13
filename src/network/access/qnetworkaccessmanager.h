@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKACCESSMANAGER_H
 #define QNETWORKACCESSMANAGER_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtCore/QString>
-#include <QtCore/QList>
-#include <QtCore/QObject>
-#ifndef QT_NO_SSL
-#include <QtNetwork/QSslConfiguration>
-#include <QtNetwork/QSslPreSharedKeyAuthenticator>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUICore/QString>
+#include <BobUICore/QList>
+#include <BobUICore/QObject>
+#ifndef BOBUI_NO_SSL
+#include <BobUINetwork/QSslConfiguration>
+#include <BobUINetwork/QSslPreSharedKeyAuthenticator>
 #endif
-Q_MOC_INCLUDE(<QtNetwork/QSslError>)
+Q_MOC_INCLUDE(<BobUINetwork/QSslError>)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIODevice;
 class QAbstractNetworkCache;
@@ -59,7 +59,7 @@ public:
 
     void clearConnectionCache();
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     QNetworkProxy proxy() const;
     void setProxy(const QNetworkProxy &proxy);
     QNetworkProxyFactory *proxyFactory() const;
@@ -101,13 +101,13 @@ public:
     QNetworkReply *sendCustomRequest(const QNetworkRequest &request, const QByteArray &verb, QIODevice *data = nullptr);
     QNetworkReply *sendCustomRequest(const QNetworkRequest &request, const QByteArray &verb, const QByteArray &data);
 
-#if QT_CONFIG(http) || defined(Q_OS_WASM)
+#if BOBUI_CONFIG(http) || defined(Q_OS_WASM)
     QNetworkReply *post(const QNetworkRequest &request, QHttpMultiPart *multiPart);
     QNetworkReply *put(const QNetworkRequest &request, QHttpMultiPart *multiPart);
     QNetworkReply *sendCustomRequest(const QNetworkRequest &request, const QByteArray &verb, QHttpMultiPart *multiPart);
 #endif
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void connectToHostEncrypted(const QString &hostName, quint16 port = 443,
                                 const QSslConfiguration &sslConfiguration = QSslConfiguration::defaultConfiguration());
     void connectToHostEncrypted(const QString &hostName, quint16 port,
@@ -122,9 +122,9 @@ public:
     bool autoDeleteReplies() const;
     void setAutoDeleteReplies(bool autoDelete);
 
-    QT_NETWORK_INLINE_SINCE(6, 8)
+    BOBUI_NETWORK_INLINE_SINCE(6, 8)
     int transferTimeout() const;
-    QT_NETWORK_INLINE_SINCE(6, 8)
+    BOBUI_NETWORK_INLINE_SINCE(6, 8)
     void setTransferTimeout(int timeout);
 
     std::chrono::milliseconds transferTimeoutAsDuration() const;
@@ -132,12 +132,12 @@ public:
                             QNetworkRequest::DefaultTransferTimeout);
 
 Q_SIGNALS:
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 #endif
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
     void finished(QNetworkReply *reply);
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void encrypted(QNetworkReply *reply);
     void sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
     void preSharedKeyAuthenticationRequired(QNetworkReply *reply, QSslPreSharedKeyAuthenticator *authenticator);
@@ -161,12 +161,12 @@ private:
 #endif
     Q_DECLARE_PRIVATE(QNetworkAccessManager)
     Q_PRIVATE_SLOT(d_func(), void _q_replySslErrors(QList<QSslError>))
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     Q_PRIVATE_SLOT(d_func(), void _q_replyPreSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator*))
 #endif
 };
 
-#if QT_NETWORK_INLINE_IMPL_SINCE(6, 8)
+#if BOBUI_NETWORK_INLINE_IMPL_SINCE(6, 8)
 int QNetworkAccessManager::transferTimeout() const
 {
     return int(transferTimeoutAsDuration().count());
@@ -178,6 +178,6 @@ void QNetworkAccessManager::setTransferTimeout(int timeout)
 }
 #endif // INLINE_SINCE 6.8
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

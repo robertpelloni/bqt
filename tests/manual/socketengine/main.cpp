@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDebug>
-#include <qtest.h>
-#include <QTest>
-#include <QtNetwork/qnetworkreply.h>
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkaccessmanager.h>
-#include <QtNetwork>
+#include <bobuiest.h>
+#include <BOBUIest>
+#include <BobUINetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkaccessmanager.h>
+#include <BobUINetwork>
 #include <QDebug>
 #include <private/qabstractsocketengine_p.h>
 #include <cstdio>

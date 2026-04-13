@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qwindowsfontdatabasebase_p.h"
 #include "qwindowsfontdatabase_p.h"
 
-#include <QtCore/QThreadStorage>
-#include <QtCore/QtEndian>
+#include <BobUICore/BOBUIhreadStorage>
+#include <BobUICore/BobUIEndian>
 
-#if QT_CONFIG(directwrite)
-#  if QT_CONFIG(directwrite3)
+#if BOBUI_CONFIG(directwrite)
+#  if BOBUI_CONFIG(directwrite3)
 #    include <dwrite_3.h>
 #  else
 #    include <dwrite_2.h>
@@ -20,9 +20,9 @@
 
 #include <utility> // for std::pair
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Helper classes for creating font engines directly from font data
 namespace {
@@ -266,7 +266,7 @@ QString QWindowsFontDatabaseBase::EmbeddedFont::changeFamilyName(const QString &
     return oldFamilyName;
 }
 
-#if QT_CONFIG(directwrite) && QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(directwrite) && BOBUI_CONFIG(direct2d)
 
 namespace {
     class DirectWriteFontFileStream: public IDWriteFontFileStream
@@ -557,7 +557,7 @@ QWindowsFontEngineData::~QWindowsFontEngineData()
     if (hdc)
         DeleteDC(hdc);
 
-#if QT_CONFIG(directwrite) && QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(directwrite) && BOBUI_CONFIG(direct2d)
     if (directWriteGdiInterop)
         directWriteGdiInterop->Release();
     if (directWriteFactory)
@@ -574,7 +574,7 @@ QWindowsFontDatabaseBase::~QWindowsFontDatabaseBase()
 }
 
 typedef QSharedPointer<QWindowsFontEngineData> QWindowsFontEngineDataPtr;
-typedef QThreadStorage<QWindowsFontEngineDataPtr> FontEngineThreadLocalData;
+typedef BOBUIhreadStorage<QWindowsFontEngineDataPtr> FontEngineThreadLocalData;
 Q_GLOBAL_STATIC(FontEngineThreadLocalData, fontEngineThreadLocalData)
 
 QSharedPointer<QWindowsFontEngineData> QWindowsFontDatabaseBase::data()
@@ -591,7 +591,7 @@ QSharedPointer<QWindowsFontEngineData> QWindowsFontDatabaseBase::data()
 
 bool QWindowsFontDatabaseBase::init(QSharedPointer<QWindowsFontEngineData> d)
 {
-#if QT_CONFIG(directwrite) && QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(directwrite) && BOBUI_CONFIG(direct2d)
     if (!d->directWriteFactory) {
         createDirectWriteFactory(&d->directWriteFactory);
         if (!d->directWriteFactory)
@@ -610,13 +610,13 @@ bool QWindowsFontDatabaseBase::init(QSharedPointer<QWindowsFontEngineData> d)
     return true;
 }
 
-#if QT_CONFIG(directwrite) && QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(directwrite) && BOBUI_CONFIG(direct2d)
 void QWindowsFontDatabaseBase::createDirectWriteFactory(IDWriteFactory **factory)
 {
     *factory = nullptr;
     IUnknown *result = nullptr;
 
-#  if QT_CONFIG(directwrite3)
+#  if BOBUI_CONFIG(directwrite3)
     qCDebug(lcQpaFonts) << "Trying to create IDWriteFactory6";
     DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory6), &result);
 
@@ -759,7 +759,7 @@ QFont QWindowsFontDatabaseBase::LOGFONT_to_QFont(const LOGFONT& logFont, int ver
     return qFont;
 }
 
-// ### fixme Qt 6 (QTBUG-58610): See comment at QWindowsFontDatabase::systemDefaultFont()
+// ### fixme BobUI 6 (BOBUIBUG-58610): See comment at QWindowsFontDatabase::systemDefaultFont()
 HFONT QWindowsFontDatabaseBase::systemFont()
 {
     static const auto stock_sysfont =
@@ -769,7 +769,7 @@ HFONT QWindowsFontDatabaseBase::systemFont()
 
 QFont QWindowsFontDatabaseBase::systemDefaultFont()
 {
-    // Qt 6: Obtain default GUI font (typically "Segoe UI, 9pt", see QTBUG-58610)
+    // BobUI 6: Obtain default GUI font (typically "Segoe UI, 9pt", see BOBUIBUG-58610)
     NONCLIENTMETRICS ncm = {};
     ncm.cbSize = sizeof(ncm);
     SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, 0, defaultVerticalDPI());
@@ -780,12 +780,12 @@ QFont QWindowsFontDatabaseBase::systemDefaultFont()
 
 void QWindowsFontDatabaseBase::invalidate()
 {
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     m_fontFileLoader.reset(nullptr);
 #endif
 }
 
-#if QT_CONFIG(directwrite) && QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(directwrite) && BOBUI_CONFIG(direct2d)
 IDWriteFontFace *QWindowsFontDatabaseBase::createDirectWriteFace(const QByteArray &fontData)
 {
     QList<IDWriteFontFace *> faces = createDirectWriteFaces(fontData, QString{}, false);
@@ -832,7 +832,7 @@ QList<IDWriteFontFace *> QWindowsFontDatabaseBase::createDirectWriteFaces(const 
         return ret;
     }
 
-#if QT_CONFIG(directwrite3)
+#if BOBUI_CONFIG(directwrite3)
     IDWriteFactory5 *factory5 = nullptr;
     if (queryVariations && SUCCEEDED(fontEngineData->directWriteFactory->QueryInterface(__uuidof(IDWriteFactory5),
                                                                                         reinterpret_cast<void **>(&factory5)))) {
@@ -902,7 +902,7 @@ QFontEngine *QWindowsFontDatabaseBase::fontEngine(const QByteArray &fontData, qr
 {
     QFontEngine *fontEngine = nullptr;
 
-#if QT_CONFIG(directwrite) && QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(directwrite) && BOBUI_CONFIG(direct2d)
     QSharedPointer<QWindowsFontEngineData> fontEngineData = data();
     if (fontEngineData->directWriteFactory == nullptr)
         return nullptr;
@@ -1045,7 +1045,7 @@ QStringList QWindowsFontDatabaseBase::extraTryFontsForFamily(const QString &fami
         const QStringList families = QFontDatabase::families();
         const char **tf = tryFonts;
         while (tf && *tf) {
-            // QTBUG-31689, family might be an English alias for a localized font name.
+            // BOBUIBUG-31689, family might be an English alias for a localized font name.
             const QString family = QString::fromLatin1(*tf);
             if (families.contains(family) || QFontDatabase::hasFamily(family))
                 result << family;
@@ -1076,4 +1076,4 @@ QFontDef QWindowsFontDatabaseBase::sanitizeRequest(QFontDef request) const
     return req;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

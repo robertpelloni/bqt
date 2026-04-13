@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtwasmtestlib.h>
-#include <QtCore>
-#include <QtNetwork>
+#include <bobuiwasmtestlib.h>
+#include <BobUICore>
+#include <BobUINetwork>
 
 const int socketWait = 1000;
 const QString hostName = "localhost";
@@ -19,13 +19,13 @@ private slots:
     void echoMultipleSockets();
     void remoteClose();
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     void thread_echo();
     void thread_remoteClose();
     void thread_echoMultipleSockets();
 #endif
 
-#ifdef QT_HAVE_EMSCRIPTEN_ASYNCIFY
+#ifdef BOBUI_HAVE_EMSCRIPTEN_ASYNCIFY
     void asyncify_echo();
     void asyncify_remoteClose();
 #endif
@@ -53,7 +53,7 @@ public:
 
         if (itsTheFinalDeref) {
             delete this;
-            QtWasmTest::completeTestFunction();
+            BobUIWasmTest::completeTestFunction();
         }
     }
 private:
@@ -63,18 +63,18 @@ private:
     int counter = 0;
 };
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 
-class TestThread : public QThread
+class TestThread : public BOBUIhread
 {
 public:
-    static QThread *create(std::function<void()> started, std::function<void()> finished)
+    static BOBUIhread *create(std::function<void()> started, std::function<void()> finished)
     {
         TestThread *thread = new TestThread();
-        connect(thread, &QThread::started, [started]() {
+        connect(thread, &BOBUIhread::started, [started]() {
             started();
         });
-        connect(thread, &QThread::finished, [thread, finished]() {
+        connect(thread, &BOBUIhread::finished, [thread, finished]() {
             finished();
             thread->deleteLater();
         });
@@ -87,7 +87,7 @@ public:
 
 void blockingEchoTest()
 {
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
     socket.connectToHost(hostName, port);
     if (!socket.waitForConnected(socketWait))
         qFatal("socket connect error");
@@ -108,7 +108,7 @@ void blockingEchoTest()
 
 void blockingRemoteClose()
 {
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
 
     qDebug() << "## connectToHost";
     socket.connectToHost(hostName, port);
@@ -132,7 +132,7 @@ void blockingRemoteClose()
 // Verify that sending one echo command and receiving the reply works
 void SockifySocketsTest::echo()
 {
-    QTcpSocket *socket = new QTcpSocket();
+    BOBUIcpSocket *socket = new BOBUIcpSocket();
     socket->connectToHost(hostName, port);
 
     QByteArray message = "Hello, echo server!";
@@ -151,7 +151,7 @@ void SockifySocketsTest::echo()
             socket->disconnectFromHost();
             socket->deleteLater();
             delete reply;
-            QtWasmTest::completeTestFunction(match ? QtWasmTest::TestResult::Pass : QtWasmTest::TestResult::Fail, std::string());
+            BobUIWasmTest::completeTestFunction(match ? BobUIWasmTest::TestResult::Pass : BobUIWasmTest::TestResult::Fail, std::string());
         }
     });
 }
@@ -160,7 +160,7 @@ void SockifySocketsTest::echoMultipleMessages()
 {
     const int count = 20;
 
-    QTcpSocket *socket = new QTcpSocket();
+    BOBUIcpSocket *socket = new BOBUIcpSocket();
     socket->connectToHost(hostName, port);
     QByteArray message = "Hello, echo server!";
 
@@ -186,7 +186,7 @@ void SockifySocketsTest::echoMultipleMessages()
             socket->disconnectFromHost();
             socket->deleteLater();
             delete receivedReply;
-            QtWasmTest::completeTestFunction();
+            BobUIWasmTest::completeTestFunction();
         }
     });
 }
@@ -201,7 +201,7 @@ void SockifySocketsTest::echoMultipleSockets()
     for (int i = 0; i < connections; ++i) {
         guard->ref();
 
-        QTcpSocket *socket = new QTcpSocket();
+        BOBUIcpSocket *socket = new BOBUIcpSocket();
         socket->connectToHost(hostName, port);
 
         QObject::connect(socket, &QAbstractSocket::connected, [socket, message]() {
@@ -223,7 +223,7 @@ void SockifySocketsTest::echoMultipleSockets()
 
 void SockifySocketsTest::remoteClose()
 {
-    QTcpSocket *socket = new QTcpSocket();
+    BOBUIcpSocket *socket = new BOBUIcpSocket();
     socket->connectToHost(hostName, port);
     QObject::connect(socket, &QAbstractSocket::connected, [socket]() {
         socket->write("close;");
@@ -232,21 +232,21 @@ void SockifySocketsTest::remoteClose()
     QObject::connect(socket, &QAbstractSocket::disconnected, [socket]() {
         qDebug() << "disconnected";
         socket->deleteLater();
-        QtWasmTest::completeTestFunction();
+        BobUIWasmTest::completeTestFunction();
     });
 }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 
 void SockifySocketsTest::thread_echo()
 {
     auto started = []() {
         blockingEchoTest();
-        QThread::currentThread()->quit();
+        BOBUIhread::currentThread()->quit();
     };
 
     auto finished = [](){
-        QtWasmTest::completeTestFunction();
+        BobUIWasmTest::completeTestFunction();
     };
 
     TestThread::create(started, finished);
@@ -262,7 +262,7 @@ void SockifySocketsTest::thread_echoMultipleSockets()
         guard->ref();
         auto started = [](){
             blockingEchoTest();
-            QThread::currentThread()->quit();
+            BOBUIhread::currentThread()->quit();
         };
 
         auto finished = [guard](){
@@ -279,11 +279,11 @@ void SockifySocketsTest::thread_remoteClose()
 {
     auto started = [](){
         blockingRemoteClose();
-        QThread::currentThread()->quit();
+        BOBUIhread::currentThread()->quit();
     };
 
     auto finished = [](){
-        QtWasmTest::completeTestFunction();
+        BobUIWasmTest::completeTestFunction();
     };
 
     TestThread::create(started, finished);
@@ -291,19 +291,19 @@ void SockifySocketsTest::thread_remoteClose()
 
 #endif
 
-#ifdef QT_HAVE_EMSCRIPTEN_ASYNCIFY
+#ifdef BOBUI_HAVE_EMSCRIPTEN_ASYNCIFY
 
 // Post an event to the main thread and asyncify wait for it
 void SockifySocketsTest::asyncify_echo()
 {
     blockingEchoTest();
-    QtWasmTest::completeTestFunction();
+    BobUIWasmTest::completeTestFunction();
 }
 
 void SockifySocketsTest::asyncify_remoteClose()
 {
     blockingRemoteClose();
-    QtWasmTest::completeTestFunction();
+    BobUIWasmTest::completeTestFunction();
 }
 
 #endif
@@ -311,7 +311,7 @@ void SockifySocketsTest::asyncify_remoteClose()
 int main(int argc, char **argv)
 {
     auto testObject = std::make_shared<SockifySocketsTest>();
-    QtWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
+    BobUIWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
     return 0;
 }
 

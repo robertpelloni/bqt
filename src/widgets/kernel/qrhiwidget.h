@@ -1,13 +1,13 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRHIWIDGET_H
 #define QRHIWIDGET_H
 
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRhiWidgetPrivate;
 class QRhi;
@@ -27,7 +27,7 @@ class Q_WIDGETS_EXPORT QRhiWidget : public QWidget
     QDOC_PROPERTY(bool autoRenderTarget READ isAutoRenderTargetEnabled WRITE setAutoRenderTarget)
 
 public:
-    explicit QRhiWidget(QWidget *parent = nullptr, Qt::WindowFlags f = {});
+    explicit QRhiWidget(QWidget *parent = nullptr, BobUI::WindowFlags f = {});
     ~QRhiWidget() override;
 
     enum class Api {
@@ -70,7 +70,7 @@ public:
     QImage grabFramebuffer() const;
 
 protected:
-    explicit QRhiWidget(QRhiWidgetPrivate &dd, QWidget *parent = nullptr, Qt::WindowFlags f = {});
+    explicit QRhiWidget(QRhiWidgetPrivate &dd, QWidget *parent = nullptr, BobUI::WindowFlags f = {});
 
     bool isAutoRenderTargetEnabled() const;
     void setAutoRenderTarget(bool enabled);
@@ -99,6 +99,6 @@ Q_SIGNALS:
     void mirrorVerticallyChanged(bool enabled);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

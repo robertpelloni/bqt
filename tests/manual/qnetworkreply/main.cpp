@@ -1,25 +1,25 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 // This file contains benchmarks for QNetworkReply functions.
 
 #include <QDebug>
-#include <qtest.h>
-#include <QTest>
-#include <QtTest/qtesteventloop.h>
-#include <QtNetwork/qnetworkreply.h>
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkaccessmanager.h>
-#include <QtNetwork/qsslconfiguration.h>
-#include <QtNetwork/qhttpmultipart.h>
-#include <QtNetwork/qauthenticator.h>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonArray>
-#include <QtCore/QJsonObject>
+#include <bobuiest.h>
+#include <BOBUIest>
+#include <BobUITest/bobuiesteventloop.h>
+#include <BobUINetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkaccessmanager.h>
+#include <BobUINetwork/qsslconfiguration.h>
+#include <BobUINetwork/qhttpmultipart.h>
+#include <BobUINetwork/qauthenticator.h>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QJsonArray>
+#include <BobUICore/QJsonObject>
 #include "../../auto/network-settings.h"
 
-#if defined(QT_BUILD_INTERNAL) && !defined(QT_NO_SSL)
+#if defined(BOBUI_BUILD_INTERNAL) && !defined(BOBUI_NO_SSL)
 #include "private/qsslsocket_p.h"
 #endif
 
@@ -39,7 +39,7 @@ private slots:
     void proxyAuthentication_data();
     void proxyAuthentication();
     void authentication();
-    void npnWithEmptyList(); // QTBUG-40714
+    void npnWithEmptyList(); // BOBUIBUG-40714
 
 protected slots:
     void spdyReplyFinished(); // only used by spdyMultipleRequestsPerHost test
@@ -62,7 +62,7 @@ class HttpReceiver : public QObject
         QVERIFY(bytesPerSec < BANDWIDTH_LIMIT_BYTES*1.05);
         QVERIFY(bytesPerSec > BANDWIDTH_LIMIT_BYTES*0.95);
         timer->stop();
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
     }
     void readyReadSlot() {
     }
@@ -71,29 +71,29 @@ class HttpReceiver : public QObject
     }
     void startTimer() {
         stopwatch.start();
-        timer = new QTimer(this);
+        timer = new BOBUIimer(this);
         QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timeoutSlot()));
         timer->start(1000);
     }
 protected:
-    QTimer *timer;
+    BOBUIimer *timer;
     QElapsedTimer stopwatch;
 };
 
 void tst_qnetworkreply::initTestCase()
 {
     qRegisterMetaType<QNetworkReply *>(); // for QSignalSpy
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 }
 
 void tst_qnetworkreply::limiting_data()
 {
-    QTest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<QUrl>("url");
 
-    QTest::newRow("HTTP") << QUrl("http://" + QtNetworkSettings::serverName() + "/mediumfile");
-#ifndef QT_NO_SSL
-    QTest::newRow("HTTP+SSL") << QUrl("https://" + QtNetworkSettings::serverName() + "/mediumfile");
+    BOBUIest::newRow("HTTP") << QUrl("http://" + BobUINetworkSettings::serverName() + "/mediumfile");
+#ifndef BOBUI_NO_SSL
+    BOBUIest::newRow("HTTP+SSL") << QUrl("https://" + BobUINetworkSettings::serverName() + "/mediumfile");
 #endif
 
 }
@@ -117,22 +117,22 @@ void tst_qnetworkreply::limiting()
     receiver.startTimer();
 
     // event loop
-    QTestEventLoop::instance().enterLoop(TIME_ESTIMATION_SECONDS + 20);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(TIME_ESTIMATION_SECONDS + 20);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 }
 
 void tst_qnetworkreply::setSslConfiguration_data()
 {
-    QTest::addColumn<QUrl>("url");
-    QTest::addColumn<bool>("works");
+    BOBUIest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<bool>("works");
 
-    QTest::newRow("codereview.qt-project.org") << QUrl("https://codereview.qt-project.org") << true;
-    QTest::newRow("test-server") << QUrl("https://" + QtNetworkSettings::serverName() + "/") << false;
+    BOBUIest::newRow("codereview.bobui-project.org") << QUrl("https://codereview.bobui-project.org") << true;
+    BOBUIest::newRow("test-server") << QUrl("https://" + BobUINetworkSettings::serverName() + "/") << false;
 }
 
 void tst_qnetworkreply::setSslConfiguration()
 {
-#ifdef QT_NO_SSL
+#ifdef BOBUI_NO_SSL
     QSKIP("SSL is not enabled.");
 #else
     QFETCH(QUrl, url);
@@ -142,10 +142,10 @@ void tst_qnetworkreply::setSslConfiguration()
     request.setSslConfiguration(conf);
     QNetworkAccessManager manager;
     reply = manager.get(request);
-    QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(15);
-    QVERIFY(!QTestEventLoop::instance().timeout());
-#ifdef QT_BUILD_INTERNAL
+    QObject::connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(15);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
+#ifdef BOBUI_BUILD_INTERNAL
     QFETCH(bool, works);
     bool rootCertLoadingAllowed = QSslSocketPrivate::rootCertOnDemandLoadingSupported();
 #if defined(Q_OS_LINUX)
@@ -161,7 +161,7 @@ void tst_qnetworkreply::setSslConfiguration()
         QCOMPARE(reply->error(), QNetworkReply::SslHandshakeFailedError);
     }
 #endif
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 }
 
 QHttpMultiPart *tst_qnetworkreply::createFacebookMultiPart(const QByteArray &accessToken)
@@ -232,10 +232,10 @@ QHttpMultiPart *tst_qnetworkreply::createFacebookMultiPart(const QByteArray &acc
 
 void tst_qnetworkreply::uploadToFacebook()
 {
-    QByteArray accessToken = qgetenv("QT_FACEBOOK_ACCESS_TOKEN");
+    QByteArray accessToken = qgetenv("BOBUI_FACEBOOK_ACCESS_TOKEN");
     if (accessToken.isEmpty())
-        QSKIP("This test requires the QT_FACEBOOK_ACCESS_TOKEN environment variable to be set. "
-              "Do something like 'export QT_FACEBOOK_ACCESS_TOKEN=MyAccessToken'");
+        QSKIP("This test requires the BOBUI_FACEBOOK_ACCESS_TOKEN environment variable to be set. "
+              "Do something like 'export BOBUI_FACEBOOK_ACCESS_TOKEN=MyAccessToken'");
 
     QElapsedTimer timer;
     QNetworkAccessManager manager;
@@ -245,10 +245,10 @@ void tst_qnetworkreply::uploadToFacebook()
 
     QNetworkReply *reply = manager.post(request, multiPart);
     multiPart->setParent(reply);
-    QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(120);
+    QObject::connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(120);
     qint64 elapsed = timer.elapsed();
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     qDebug() << "reply finished after" << elapsed / 1000.0 << "seconds";
     QCOMPARE(reply->error(), QNetworkReply::NoError);
 
@@ -272,15 +272,15 @@ void tst_qnetworkreply::spdyReplyFinished()
     finishedCount++;
 
     if (finishedCount == 12)
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_qnetworkreply::proxyAuthentication_data()
 {
-    QTest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<QUrl>("url");
 
-    QTest::newRow("http://www.google.com") << QUrl("http://www.google.com");
-    QTest::newRow("https://www.google.com") << QUrl("https://www.google.com");
+    BOBUIest::newRow("http://www.google.com") << QUrl("http://www.google.com");
+    BOBUIest::newRow("https://www.google.com") << QUrl("https://www.google.com");
 }
 
 void tst_qnetworkreply::proxyAuthentication()
@@ -289,18 +289,18 @@ void tst_qnetworkreply::proxyAuthentication()
     QNetworkRequest request(url);
     QNetworkAccessManager manager;
 
-    QByteArray proxyHostName = qgetenv("QT_PROXY_HOST");
-    QByteArray proxyPort = qgetenv("QT_PROXY_PORT");
-    QByteArray proxyUser = qgetenv("QT_PROXY_USER");
-    QByteArray proxyPassword = qgetenv("QT_PROXY_PASSWORD");
+    QByteArray proxyHostName = qgetenv("BOBUI_PROXY_HOST");
+    QByteArray proxyPort = qgetenv("BOBUI_PROXY_PORT");
+    QByteArray proxyUser = qgetenv("BOBUI_PROXY_USER");
+    QByteArray proxyPassword = qgetenv("BOBUI_PROXY_PASSWORD");
     if (proxyHostName.isEmpty() || proxyPort.isEmpty() || proxyUser.isEmpty()
             || proxyPassword.isEmpty())
-        QSKIP("This test requires the QT_PROXY_* environment variables to be set. "
+        QSKIP("This test requires the BOBUI_PROXY_* environment variables to be set. "
               "Do something like:\n"
-              "export QT_PROXY_HOST=myNTLMHost\n"
-              "export QT_PROXY_PORT=8080\n"
-              "export QT_PROXY_USER='myDomain\\myUser'\n"
-              "export QT_PROXY_PASSWORD=myPassword\n");
+              "export BOBUI_PROXY_HOST=myNTLMHost\n"
+              "export BOBUI_PROXY_PORT=8080\n"
+              "export BOBUI_PROXY_USER='myDomain\\myUser'\n"
+              "export BOBUI_PROXY_PASSWORD=myPassword\n");
 
     QNetworkProxy proxy(QNetworkProxy::HttpProxy);
     proxy.setHostName(proxyHostName);
@@ -311,9 +311,9 @@ void tst_qnetworkreply::proxyAuthentication()
     manager.setProxy(proxy);
 
     reply = manager.get(request);
-    QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(15);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QObject::connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(15);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QCOMPARE(reply->error(), QNetworkReply::NoError);
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     QVERIFY(statusCode >= 200 && statusCode < 400);
@@ -322,21 +322,21 @@ void tst_qnetworkreply::proxyAuthentication()
 void tst_qnetworkreply::authenticationRequiredSlot(QNetworkReply *,
                                                    QAuthenticator *authenticator)
 {
-    QString authUser = QString::fromLocal8Bit(qgetenv("QT_AUTH_USER"));
-    QString authPassword = QString::fromLocal8Bit(qgetenv("QT_AUTH_PASSWORD"));
+    QString authUser = QString::fromLocal8Bit(qgetenv("BOBUI_AUTH_USER"));
+    QString authPassword = QString::fromLocal8Bit(qgetenv("BOBUI_AUTH_PASSWORD"));
     authenticator->setUser(authUser);
     authenticator->setPassword(authPassword);
 }
 
 void tst_qnetworkreply::authentication()
 {
-    QByteArray authUrl = qgetenv("QT_AUTH_URL");
+    QByteArray authUrl = qgetenv("BOBUI_AUTH_URL");
     if (authUrl.isEmpty())
-        QSKIP("This test requires the QT_AUTH_* environment variables to be set. "
+        QSKIP("This test requires the BOBUI_AUTH_* environment variables to be set. "
               "Do something like:\n"
-              "export QT_AUTH_URL='http://myUrl.com/myPath'\n"
-              "export QT_AUTH_USER='myDomain\\myUser'\n"
-              "export QT_AUTH_PASSWORD=myPassword\n");
+              "export BOBUI_AUTH_URL='http://myUrl.com/myPath'\n"
+              "export BOBUI_AUTH_USER='myDomain\\myUser'\n"
+              "export BOBUI_AUTH_PASSWORD=myPassword\n");
 
     QUrl url(QString::fromLocal8Bit(authUrl));
     QNetworkRequest request(url);
@@ -344,17 +344,17 @@ void tst_qnetworkreply::authentication()
     QObject::connect(&manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
                      this, SLOT(authenticationRequiredSlot(QNetworkReply*,QAuthenticator*)));
     reply = manager.get(request);
-    QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(15);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QObject::connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(15);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY2(reply->error() == QNetworkReply::NoError, reply->errorString().toLocal8Bit());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     QVERIFY(statusCode >= 200 && statusCode < 400);
 }
 
-void tst_qnetworkreply::npnWithEmptyList() // QTBUG-40714
+void tst_qnetworkreply::npnWithEmptyList() // BOBUIBUG-40714
 {
-#if defined(QT_BUILD_INTERNAL) && !defined(QT_NO_SSL) && OPENSSL_VERSION_NUMBER >= 0x1000100fL && !defined(OPENSSL_NO_TLSEXT) && !defined(OPENSSL_NO_NEXTPROTONEG)
+#if defined(BOBUI_BUILD_INTERNAL) && !defined(BOBUI_NO_SSL) && OPENSSL_VERSION_NUMBER >= 0x1000100fL && !defined(OPENSSL_NO_TLSEXT) && !defined(OPENSSL_NO_NEXTPROTONEG)
 
     // The server does not send a list of Next Protocols, so we test
     // that we continue anyhow and it works
@@ -364,10 +364,10 @@ void tst_qnetworkreply::npnWithEmptyList() // QTBUG-40714
     QUrl url(QStringLiteral("https://www.ossifrage.net/"));
     QNetworkRequest request(url);
     QNetworkReply *reply = m_manager.get(request);
-    QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    QObject::connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
-    QTestEventLoop::instance().enterLoop(15);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(15);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     QVERIFY(statusCode == 200);
@@ -375,10 +375,10 @@ void tst_qnetworkreply::npnWithEmptyList() // QTBUG-40714
     QCOMPARE(reply->sslConfiguration().nextProtocolNegotiationStatus(),
              QSslConfiguration::NextProtocolNegotiationUnsupported);
 #else
-    QSKIP("Qt built withouth OpenSSL, or the OpenSSL version is too old");
-#endif // defined(QT_BUILD_INTERNAL) && !defined(QT_NO_SSL) ...
+    QSKIP("BobUI built withouth OpenSSL, or the OpenSSL version is too old");
+#endif // defined(BOBUI_BUILD_INTERNAL) && !defined(BOBUI_NO_SSL) ...
 }
 
-QTEST_MAIN(tst_qnetworkreply)
+BOBUIEST_MAIN(tst_qnetworkreply)
 
 #include "main.moc"

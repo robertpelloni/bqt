@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdbusargument.h"
 #include "qdbusargument_p.h"
@@ -14,17 +14,17 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qrect.h>
-#include <qtimezone.h>
+#include <bobuiimezone.h>
 #include <qvariant.h>
 
 #include "qdbusmetatype_p.h"
 #include "qdbusutil_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QDBusArgument)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusArgument)
 
 QDBusArgumentPrivate::~QDBusArgumentPrivate()
 {
@@ -88,7 +88,7 @@ bool QDBusArgumentPrivate::checkWrite(QDBusArgumentPrivate *&d)
         return true;
     }
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     qFatal("QDBusArgument: write from a read-only object");
 #else
     qWarning("QDBusArgument: write from a read-only object");
@@ -103,7 +103,7 @@ bool QDBusArgumentPrivate::checkRead(QDBusArgumentPrivate *d)
     if (d->direction == Direction::Demarshalling)
         return true;
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     qFatal("QDBusArgument: read from a write-only object");
 #else
     qWarning("QDBusArgument: read from a write-only object");
@@ -140,10 +140,10 @@ bool QDBusArgumentPrivate::checkReadAndDetach(QDBusArgumentPrivate *&d)
     The class is used to send arguments over D-Bus to remote
     applications and to receive them back. D-Bus offers an extensible
     type system, based on a few primitive types and associations of
-    them. See the \l {qdbustypesystem.html}{Qt D-Bus Type System} page
+    them. See the \l {qdbustypesystem.html}{BobUI D-Bus Type System} page
     for more information on the type system.
 
-    QDBusArgument is the central class in the Qt D-Bus type system,
+    QDBusArgument is the central class in the BobUI D-Bus type system,
     providing functions to marshall and demarshall the primitive
     types. The compound types are then created by association of one
     or more of the primitive types in arrays, dictionaries or
@@ -151,7 +151,7 @@ bool QDBusArgumentPrivate::checkReadAndDetach(QDBusArgumentPrivate *&d)
 
     The following example illustrates how a structure containing an
     integer and a string can be constructed using the \l
-    {qdbustypesystem.html}{Qt D-Bus type system}:
+    {qdbustypesystem.html}{BobUI D-Bus type system}:
 
     \snippet code/src_qdbus_qdbusargument.cpp 0-0
     \codeline
@@ -195,9 +195,9 @@ bool QDBusArgumentPrivate::checkReadAndDetach(QDBusArgumentPrivate *&d)
 
     In this example, both the \c{operator<<} and the \c{operator>>}
     functions may produce a different number of reads/writes. This can
-    confuse the Qt D-Bus type system and should be avoided.
+    confuse the BobUI D-Bus type system and should be avoided.
 
-    \sa QDBusAbstractInterface, {qdbustypesystem.html}{The Qt D-Bus type
+    \sa QDBusAbstractInterface, {qdbustypesystem.html}{The BobUI D-Bus type
     system}, {usingadaptors.html}{Using Adaptors}, qdbus_cast()
 */
 
@@ -470,7 +470,7 @@ QDBusArgument &QDBusArgument::operator<<(const QDBusUnixFileDescriptor &arg)
     Appends the primitive value \a arg of type \c{VARIANT} to the D-Bus stream.
 
     A D-Bus variant type can contain any type, including other
-    variants. It is similar to the Qt QVariant type.
+    variants. It is similar to the BobUI QVariant type.
 */
 QDBusArgument &QDBusArgument::operator<<(const QDBusVariant &arg)
 {
@@ -486,9 +486,9 @@ QDBusArgument &QDBusArgument::operator<<(const QDBusVariant &arg)
 
     QStringList and QByteArray are the only two non-primitive types
     that are supported directly by QDBusArgument because of their
-    widespread usage in Qt applications.
+    widespread usage in BobUI applications.
 
-    Other arrays are supported through compound types in Qt D-Bus.
+    Other arrays are supported through compound types in BobUI D-Bus.
 */
 QDBusArgument &QDBusArgument::operator<<(const QStringList &arg)
 {
@@ -504,9 +504,9 @@ QDBusArgument &QDBusArgument::operator<<(const QStringList &arg)
 
     QStringList and QByteArray are the only two non-primitive types
     that are supported directly by QDBusArgument because of their
-    widespread usage in Qt applications.
+    widespread usage in BobUI applications.
 
-    Other arrays are supported through compound types in Qt D-Bus.
+    Other arrays are supported through compound types in BobUI D-Bus.
 */
 QDBusArgument &QDBusArgument::operator<<(const QByteArray &arg)
 {
@@ -745,7 +745,7 @@ const QDBusArgument &QDBusArgument::operator>>(QDBusUnixFileDescriptor &arg) con
     D-Bus stream.
 
     A D-Bus variant type can contain any type, including other
-    variants. It is similar to the Qt QVariant type.
+    variants. It is similar to the BobUI QVariant type.
 
     In case the variant contains a type not directly supported by
     QDBusArgument, the value of the returned QDBusVariant will contain
@@ -766,9 +766,9 @@ const QDBusArgument &QDBusArgument::operator>>(QDBusVariant &arg) const
 
     QStringList and QByteArray are the only two non-primitive types
     that are supported directly by QDBusArgument because of their
-    widespread usage in Qt applications.
+    widespread usage in BobUI applications.
 
-    Other arrays are supported through compound types in Qt D-Bus.
+    Other arrays are supported through compound types in BobUI D-Bus.
 */
 const QDBusArgument &QDBusArgument::operator>>(QStringList &arg) const
 {
@@ -784,9 +784,9 @@ const QDBusArgument &QDBusArgument::operator>>(QStringList &arg) const
 
     QStringList and QByteArray are the only two non-primitive types
     that are supported directly by QDBusArgument because of their
-    widespread usage in Qt applications.
+    widespread usage in BobUI applications.
 
-    Other arrays are supported through compound types in Qt D-Bus.
+    Other arrays are supported through compound types in BobUI D-Bus.
 */
 const QDBusArgument &QDBusArgument::operator>>(QByteArray &arg) const
 {
@@ -837,9 +837,9 @@ void QDBusArgument::endStructure()
     \snippet code/src_qdbus_qdbusargument.cpp 6
 
     If the type you want to marshall is a QList or any of the
-    Qt's \l {Container Classes} that take one template parameter,
+    BobUI's \l {Container Classes} that take one template parameter,
     you need not declare an \c{operator<<} function for it, since
-    Qt D-Bus provides generic templates to do the job of marshalling
+    BobUI D-Bus provides generic templates to do the job of marshalling
     the data. The same applies for STL's sequence containers, such
     as \c {std::list}, \c {std::vector}, etc.
 
@@ -866,7 +866,7 @@ void QDBusArgument::endArray()
 /*!
     Opens a new D-Bus map suitable for
     appending elements. Maps are containers that associate one entry
-    (the key) to another (the value), such as Qt's QMap or QHash. The
+    (the key) to another (the value), such as BobUI's QMap or QHash. The
     ids of the map's key and value meta types must be passed in \a keyMetaType
     and \a valueMetaType respectively.
 
@@ -877,7 +877,7 @@ void QDBusArgument::endArray()
 
     You usually don't need to provide an \c{operator<<} or \c{operator>>}
     function for associative containers such as QHash or std::map,
-    since Qt D-Bus provides generic templates to do the job of marshalling
+    since BobUI D-Bus provides generic templates to do the job of marshalling
     the data.
 
     \sa endMap(), beginStructure(), beginArray(), beginMapEntry()
@@ -965,8 +965,8 @@ void QDBusArgument::endStructure() const
     \snippet code/src_qdbus_qdbusargument.cpp 9
 
     If the type you want to demarshall is a QList or any of the
-    Qt's \l {Container Classes} that take one template parameter, you
-    need not declare an \c{operator>>} function for it, since Qt D-Bus
+    BobUI's \l {Container Classes} that take one template parameter, you
+    need not declare an \c{operator>>} function for it, since BobUI D-Bus
     provides generic templates to do the job of demarshalling the data.
     The same applies for STL's sequence containers, such as \c {std::list},
     \c {std::vector}, etc.
@@ -1001,7 +1001,7 @@ void QDBusArgument::endArray() const
     \snippet code/src_qdbus_qdbusargument.cpp 10
 
     If the type you want to demarshall is a QMap or QHash, you need not
-    declare an \c{operator>>} function for it, since Qt D-Bus provides
+    declare an \c{operator>>} function for it, since BobUI D-Bus provides
     generic templates to do the job of demarshalling the data.
 
     \sa endMap(), beginStructure(), beginArray(), beginMapEntry()
@@ -1136,7 +1136,7 @@ QDBusArgument &operator<<(QDBusArgument &a, const QDate &date)
     return a;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &a, QTime &time)
+const QDBusArgument &operator>>(const QDBusArgument &a, BOBUIime &time)
 {
     int h, m, s, ms;
     a.beginStructure();
@@ -1144,13 +1144,13 @@ const QDBusArgument &operator>>(const QDBusArgument &a, QTime &time)
     a.endStructure();
 
     if (h < 0)
-        time = QTime();
+        time = BOBUIime();
     else
         time.setHMS(h, m, s, ms);
     return a;
 }
 
-QDBusArgument &operator<<(QDBusArgument &a, const QTime &time)
+QDBusArgument &operator<<(QDBusArgument &a, const BOBUIime &time)
 {
     a.beginStructure();
     if (time.isValid())
@@ -1164,25 +1164,25 @@ QDBusArgument &operator<<(QDBusArgument &a, const QTime &time)
 const QDBusArgument &operator>>(const QDBusArgument &a, QDateTime &dt)
 {
     QDate date;
-    QTime time;
+    BOBUIime time;
     int timespec;
 
     a.beginStructure();
     a >> date >> time >> timespec;
     a.endStructure();
 
-    switch (Qt::TimeSpec(timespec)) {
-    case Qt::TimeZone:
+    switch (BobUI::TimeSpec(timespec)) {
+    case BobUI::TimeZone:
         qWarning("Restoring zoned date-time without zone info");
         Q_FALLTHROUGH(); // Treat as local time.
-    case Qt::LocalTime:
+    case BobUI::LocalTime:
         dt = QDateTime(date, time);
         break;
-    case Qt::OffsetFromUTC:
+    case BobUI::OffsetFromUTC:
         qWarning("Restoring date-time without its offset");
         Q_FALLTHROUGH(); // Use zero offset
-    case Qt::UTC:
-        dt = QDateTime(date, time, QTimeZone::UTC);
+    case BobUI::UTC:
+        dt = QDateTime(date, time, BOBUIimeZone::UTC);
         break;
     }
     return a;
@@ -1191,12 +1191,12 @@ const QDBusArgument &operator>>(const QDBusArgument &a, QDateTime &dt)
 QDBusArgument &operator<<(QDBusArgument &a, const QDateTime &dt)
 {
     // TODO: Only viable for UTC and LocalTime
-    if (Q_UNLIKELY(dt.timeSpec() != Qt::UTC && dt.timeSpec() != Qt::LocalTime)) {
+    if (Q_UNLIKELY(dt.timeSpec() != BobUI::UTC && dt.timeSpec() != BobUI::LocalTime)) {
         qWarning() << "Serializing a date-time with unsupported time-spec" << dt.timeSpec();
         // Coerce to a supported timespec. When a time-zone is the current
         // system zone, local time is suitable; so map all time-zones to local,
         // plain offsets to UTC.
-        return a << (dt.timeSpec() == Qt::OffsetFromUTC ? dt.toUTC() : dt.toLocalTime());
+        return a << (dt.timeSpec() == BobUI::OffsetFromUTC ? dt.toUTC() : dt.toLocalTime());
     }
     a.beginStructure();
     a << dt.date() << dt.time() << int(dt.timeSpec());
@@ -1370,4 +1370,4 @@ QDBusArgument &operator<<(QDBusArgument &a, const QLineF &line)
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

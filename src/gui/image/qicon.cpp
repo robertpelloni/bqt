@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2015 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qicon.h"
 #include "qicon_p.h"
@@ -11,7 +11,7 @@
 #include "private/qiconloader_p.h"
 #include "qpainter.h"
 #include "qfileinfo.h"
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 #include <qmimedatabase.h>
 #include <qmimetype.h>
 #endif
@@ -28,10 +28,10 @@
 #include "private/qoffsetstringarray_p.h"
 #include "qpa/qplatformtheme.h"
 
-#ifndef QT_NO_ICON
-QT_BEGIN_NAMESPACE
+#ifndef BOBUI_NO_ICON
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 // Convenience class providing a bool read() function.
 namespace {
 class ImageReader
@@ -109,23 +109,23 @@ static int nextSerialNumCounter()
     return 1 + serial.fetchAndAddRelaxed(1);
 }
 
-static void qt_cleanup_icon_cache();
+static void bobui_cleanup_icon_cache();
 namespace {
     struct IconCache : public QCache<QString, QIcon>
     {
         IconCache()
         {
             // ### note: won't readd if QApplication is re-created!
-            qAddPostRoutine(qt_cleanup_icon_cache);
+            qAddPostRoutine(bobui_cleanup_icon_cache);
         }
     };
 }
 
-Q_GLOBAL_STATIC(IconCache, qtIconCache)
+Q_GLOBAL_STATIC(IconCache, bobuiIconCache)
 
-static void qt_cleanup_icon_cache()
+static void bobui_cleanup_icon_cache()
 {
-    qtIconCache()->clear();
+    bobuiIconCache()->clear();
 }
 
 QIconPrivate::QIconPrivate(QIconEngine *e)
@@ -138,7 +138,7 @@ QIconPrivate::QIconPrivate(QIconEngine *e)
 
 void QIconPrivate::clearIconCache()
 {
-    qt_cleanup_icon_cache();
+    bobui_cleanup_icon_cache();
 }
 
 /*! \internal
@@ -354,7 +354,7 @@ QPixmap QPixmapIconEngine::scaledPixmap(const QSize &size, QIcon::Mode mode, QIc
 
     const auto actualSize = adjustSize(size * scale, pm.size());
     const auto calculatedDpr = QIconPrivate::pixmapDevicePixelRatio(scale, size, actualSize);
-    QString key = "qt_"_L1
+    QString key = "bobui_"_L1
                   % HexString<quint64>(pm.cacheKey())
                   % HexString<quint8>(pe->mode)
                   % HexString<quint64>(QGuiApplication::palette().cacheKey())
@@ -376,7 +376,7 @@ QPixmap QPixmapIconEngine::scaledPixmap(const QSize &size, QIcon::Mode mode, QIc
 
     if (!QPixmapCache::find(key % HexString<quint8>(mode), &pm)) {
         if (pm.size() != actualSize)
-            pm = pm.scaled(actualSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            pm = pm.scaled(actualSize, BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
         if (pe->mode != mode && mode != QIcon::Normal) {
             QPixmap generated = pm;
             if (QGuiApplication *guiApp = qobject_cast<QGuiApplication *>(qApp))
@@ -477,7 +477,7 @@ void QPixmapIconEngine::addFile(const QString &fileName, const QSize &size, QIco
         }
         return;
     }
-    // Special case for reading Windows ".ico" files. Historically (QTBUG-39287),
+    // Special case for reading Windows ".ico" files. Historically (BOBUIBUG-39287),
     // these files may contain low-resolution images. As this information is lost,
     // ICOReader sets the original format as an image text key value. Read all matching
     // images into a list trying to find the highest quality per size.
@@ -563,9 +563,9 @@ bool QPixmapIconEngine::write(QDataStream &out) const
 }
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, iceLoader,
-    (QIconEngineFactoryInterface_iid, "/iconengines"_L1, Qt::CaseInsensitive))
+    (QIconEngineFactoryInterface_iid, "/iconengines"_L1, BobUI::CaseInsensitive))
 
-QFactoryLoader *qt_iconEngineFactoryLoader()
+QFactoryLoader *bobui_iconEngineFactoryLoader()
 {
     return iceLoader();
 }
@@ -579,10 +579,10 @@ QFactoryLoader *qt_iconEngineFactoryLoader()
 
   \ingroup painting
   \ingroup shared
-  \inmodule QtGui
+  \inmodule BobUIGui
 
   A QIcon can generate smaller, larger, active, and disabled pixmaps
-  from the set of pixmaps it is given. Such pixmaps are used by Qt
+  from the set of pixmaps it is given. Such pixmaps are used by BobUI
   UI components to show an icon representing a particular action.
 
   \section1 Creating an icon from image files
@@ -592,13 +592,13 @@ QFactoryLoader *qt_iconEngineFactoryLoader()
 
   \snippet code/src_gui_image_qicon.cpp 0
 
-  QIcon can store several images for different states, and Qt will
+  QIcon can store several images for different states, and BobUI will
   select the image that is the closest match for the action's current
   state.
 
   \snippet code/src_gui_image_qicon.cpp addFile
 
-  Qt will generate the required icon styles and sizes when needed,
+  BobUI will generate the required icon styles and sizes when needed,
   e.g. the pixmap for the QIcon::Disabled state might be generated by
   graying out one of the provided pixmaps.
 
@@ -616,7 +616,7 @@ QFactoryLoader *qt_iconEngineFactoryLoader()
   \section1 Creating an icon from a theme or icon library
 
   The most convenient way to construct an icon is by using the
-  \l{QIcon::}{fromTheme()} factory function. Qt implements access to
+  \l{QIcon::}{fromTheme()} factory function. BobUI implements access to
   the native icon library on platforms that support the
   \l {Freedesktop Icon Theme Specification}.
 
@@ -624,17 +624,17 @@ QFactoryLoader *qt_iconEngineFactoryLoader()
   their own icon library. See below for an example theme description
   and the corresponding directory structure for the image files.
 
-  Since Qt 6.7, Qt also provides access to the native icon library on macOS,
-  iOS, and Windows 10 and 11. On Android, Qt can access icons from the Material
+  Since BobUI 6.7, BobUI also provides access to the native icon library on macOS,
+  iOS, and Windows 10 and 11. On Android, BobUI can access icons from the Material
   design system as long as the
   \l{https://github.com/google/material-design-icons/tree/master/font}
   {MaterialIcons-Regular} font is available on the system, or bundled
-  as a resource at \c{:/qt-project.org/icons/MaterialIcons-Regular.ttf}
+  as a resource at \c{:/bobui-project.org/icons/MaterialIcons-Regular.ttf}
   with the application.
 
   \snippet code/src_gui_image_qicon.cpp fromTheme
 
-  Since Qt 6.9, Qt can generate icons from named glyphs in an available icon
+  Since BobUI 6.9, BobUI can generate icons from named glyphs in an available icon
   font. Set the \l{QIcon::themeName()}{theme name} to the family name of the
   font, and use \l{QIcon::}{fromTheme()} with the name of the glyph.
 
@@ -653,7 +653,7 @@ QFactoryLoader *qt_iconEngineFactoryLoader()
 
   Icon engines differ in the way they handle and render icons. The
   default pixmap-based engine only deals with fixed images, while the
-  QtSvg module provides an icon engine that can re-render the provided
+  BobUISvg module provides an icon engine that can re-render the provided
   vector graphics files at the requested size for better quality. The
   theme icon engines will typically only provide images from native
   platform icon library, and ignore any added files or pixmaps.
@@ -663,13 +663,13 @@ QFactoryLoader *qt_iconEngineFactoryLoader()
   icons. With QIconEnginePlugin it is possible to register different
   icon engines for different file suffixes, making it possible for
   third parties to provide additional icon engines to those included
-  with Qt.
+  with BobUI.
 
   \section1 Using QIcon in the User Interface
 
   If you write your own widgets that have an option to set a small
   pixmap, consider allowing a QIcon to be set for that pixmap.  The
-  Qt class QToolButton is an example of such a widget.
+  BobUI class BOBUIoolButton is an example of such a widget.
 
   Provide a method to set a QIcon, and paint the QIcon with
   \l{QIcon::}{paint}, choosing the appropriate parameters based
@@ -694,7 +694,7 @@ QFactoryLoader *qt_iconEngineFactoryLoader()
   QIcons generated from the native icon library, or from an icon font, use the
   same glyph for both the \c On and \c Off states of the icon. Applications can
   change the icon depending on the state of the respective UI control or action.
-  In a Qt Quick application, this can be done with a binding.
+  In a BobUI Quick application, this can be done with a binding.
 
   \snippet code/src_gui_image_qicon.qml iconFont
 
@@ -709,7 +709,7 @@ QFactoryLoader *qt_iconEngineFactoryLoader()
   automatically be rendered in the appropriate resolution.
 
   When providing your own image files via \l addFile(), then QIcon will
-  use Qt's \l {High Resolution Versions of Images}{"@nx" high DPI syntax}.
+  use BobUI's \l {High Resolution Versions of Images}{"@nx" high DPI syntax}.
   This is useful if you have your own custom directory structure and do not
   use follow \l {Freedesktop Icon Theme Specification}.
 
@@ -929,8 +929,8 @@ QPixmap QIcon::pixmap(const QSize &size, Mode mode, State state) const
 
   \note The requested devicePixelRatio might not match the returned one. This delays the
   scaling of the QPixmap until it is drawn later on.
-  \note Prior to Qt 6.8 this function wronlgy passed the device dependent pixmap size to
-  QIconEngine::scaledPixmap(), since Qt 6.8 it's the device independent size (not scaled
+  \note Prior to BobUI 6.8 this function wronlgy passed the device dependent pixmap size to
+  QIconEngine::scaledPixmap(), since BobUI 6.8 it's the device independent size (not scaled
   with the \a devicePixelRatio).
 
   \sa  actualSize(), paint()
@@ -952,7 +952,7 @@ QPixmap QIcon::pixmap(const QSize &size, qreal devicePixelRatio, Mode mode, Stat
     return pixmap;
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
   \since 5.1
   \deprecated [6.0] Use pixmap(size, devicePixelRatio) instead.
@@ -1000,7 +1000,7 @@ QSize QIcon::actualSize(const QSize &size, Mode mode, State state) const
     return actualSize / d->pixmapDevicePixelRatio(devicePixelRatio, size, actualSize);
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
   \since 5.1
   \deprecated [6.0] Use actualSize(size) instead.
@@ -1036,7 +1036,7 @@ QSize QIcon::actualSize(QWindow *window, const QSize &size, Mode mode, State sta
 
     \sa actualSize(), pixmap()
 */
-void QIcon::paint(QPainter *painter, const QRect &rect, Qt::Alignment alignment, Mode mode, State state) const
+void QIcon::paint(QPainter *painter, const QRect &rect, BobUI::Alignment alignment, Mode mode, State state) const
 {
     if (!d || !painter)
         return;
@@ -1048,13 +1048,13 @@ void QIcon::paint(QPainter *painter, const QRect &rect, Qt::Alignment alignment,
     int y = rect.y();
     int w = size.width();
     int h = size.height();
-    if ((alignment & Qt::AlignVCenter) == Qt::AlignVCenter)
+    if ((alignment & BobUI::AlignVCenter) == BobUI::AlignVCenter)
         y += rect.size().height()/2 - h/2;
-    else if ((alignment & Qt::AlignBottom) == Qt::AlignBottom)
+    else if ((alignment & BobUI::AlignBottom) == BobUI::AlignBottom)
         y += rect.size().height() - h;
-    if ((alignment & Qt::AlignRight) == Qt::AlignRight)
+    if ((alignment & BobUI::AlignRight) == BobUI::AlignRight)
         x += rect.size().width() - w;
-    else if ((alignment & Qt::AlignHCenter) == Qt::AlignHCenter)
+    else if ((alignment & BobUI::AlignHCenter) == BobUI::AlignHCenter)
         x += rect.size().width()/2 - w/2;
     QRect alignedRect(x, y, w, h);
 
@@ -1062,7 +1062,7 @@ void QIcon::paint(QPainter *painter, const QRect &rect, Qt::Alignment alignment,
 }
 
 /*!
-    \fn void QIcon::paint(QPainter *painter, int x, int y, int w, int h, Qt::Alignment alignment,
+    \fn void QIcon::paint(QPainter *painter, int x, int y, int w, int h, BobUI::Alignment alignment,
                           Mode mode, State state) const
 
     \overload
@@ -1165,7 +1165,7 @@ static QIconEngine *iconEngineFromSuffix(const QString &fileName, const QString 
     the suffix \c @2x on the base name), it is automatically loaded
     and added with the \e{device pixel ratio} set to a value of 2.
     This can be disabled by setting the environment variable
-    \c QT_HIGHDPI_DISABLE_2X_IMAGE_LOADING (see QImageReader).
+    \c BOBUI_HIGHDPI_DISABLE_2X_IMAGE_LOADING (see QImageReader).
 
     \note When you add a non-empty filename to a QIcon, the icon becomes
     non-null, even if the file doesn't exist or points to a corrupt file.
@@ -1182,7 +1182,7 @@ void QIcon::addFile(const QString &fileName, const QSize &size, Mode mode, State
 
         QFileInfo info(fileName);
         QString suffix = info.suffix();
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
         if (suffix.isEmpty())
             suffix = QMimeDatabase().mimeTypeForFile(info).preferredSuffix(); // determination from contents
 #endif // mimetype
@@ -1201,7 +1201,7 @@ void QIcon::addFile(const QString &fileName, const QSize &size, Mode mode, State
     QVarLengthArray<int, 4> devicePixelRatios;
     const auto screens = qApp->screens();
     for (const auto *screen : screens) {
-        const auto dpr = qCeil(screen->devicePixelRatio()); // qt_findAtNxFile only supports integer values
+        const auto dpr = qCeil(screen->devicePixelRatio()); // bobui_findAtNxFile only supports integer values
         if (dpr >= 1 && !devicePixelRatios.contains(dpr))
             devicePixelRatios.push_back(dpr);
     }
@@ -1210,7 +1210,7 @@ void QIcon::addFile(const QString &fileName, const QSize &size, Mode mode, State
     for (const auto dpr : std::as_const(devicePixelRatios)) {
         if (dpr >= sourceDevicePixelRatio)
             continue;
-        const QString atNxFileName = qt_findAtNxFile(fileName, dpr, &sourceDevicePixelRatio);
+        const QString atNxFileName = bobui_findAtNxFile(fileName, dpr, &sourceDevicePixelRatio);
         if (atNxFileName != fileName)
             d->engine->addFile(atNxFileName, size, mode, state);
     }
@@ -1414,14 +1414,14 @@ void QIcon::setFallbackThemeName(const QString &name)
 QIcon QIcon::fromTheme(const QString &name)
 {
 
-    if (QIcon *cachedIcon = qtIconCache()->object(name))
+    if (QIcon *cachedIcon = bobuiIconCache()->object(name))
         return *cachedIcon;
 
     if (QDir::isAbsolutePath(name))
         return QIcon(name);
 
-    QIcon icon(new QThemeIconEngine(name));
-    qtIconCache()->insert(name, new QIcon(icon));
+    QIcon icon(new BOBUIhemeIconEngine(name));
+    bobuiIconCache()->insert(name, new QIcon(icon));
     return icon;
 }
 
@@ -1905,7 +1905,7 @@ bool QIcon::isMask() const
 /*****************************************************************************
   QIcon stream functions
  *****************************************************************************/
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QIcon &icon)
     \relates QIcon
@@ -1918,14 +1918,14 @@ bool QIcon::isMask() const
 
 QDataStream &operator<<(QDataStream &s, const QIcon &icon)
 {
-    if (s.version() >= QDataStream::Qt_4_3) {
+    if (s.version() >= QDataStream::BobUI_4_3) {
         if (icon.isNull()) {
             s << QString();
         } else {
             s << icon.d->engine->key();
             icon.d->engine->write(s);
         }
-    } else if (s.version() == QDataStream::Qt_4_2) {
+    } else if (s.version() == QDataStream::BobUI_4_2) {
         if (icon.isNull()) {
             s << 0;
         } else {
@@ -1956,15 +1956,15 @@ QDataStream &operator<<(QDataStream &s, const QIcon &icon)
 
 QDataStream &operator>>(QDataStream &s, QIcon &icon)
 {
-    if (s.version() >= QDataStream::Qt_4_3) {
+    if (s.version() >= QDataStream::BobUI_4_3) {
         icon = QIcon();
         QString key;
         s >> key;
         if (key == "QPixmapIconEngine"_L1) {
             icon.d = new QIconPrivate(new QPixmapIconEngine);
             icon.d->engine->read(s);
-        } else if (key == "QIconLoaderEngine"_L1 || key == "QThemeIconEngine"_L1) {
-            icon.d = new QIconPrivate(new QThemeIconEngine);
+        } else if (key == "QIconLoaderEngine"_L1 || key == "BOBUIhemeIconEngine"_L1) {
+            icon.d = new QIconPrivate(new BOBUIhemeIconEngine);
             icon.d->engine->read(s);
         } else {
             const int index = iceLoader()->indexOf(key);
@@ -1977,7 +1977,7 @@ QDataStream &operator>>(QDataStream &s, QIcon &icon)
                 } // instance
             } // index
         }
-    } else if (s.version() == QDataStream::Qt_4_2) {
+    } else if (s.version() == QDataStream::BobUI_4_2) {
         icon = QIcon();
         int num_entries;
         QPixmap pm;
@@ -2006,9 +2006,9 @@ QDataStream &operator>>(QDataStream &s, QIcon &icon)
     return s;
 }
 
-#endif //QT_NO_DATASTREAM
+#endif //BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QIcon &i)
 {
     QDebugStateSaver saver(dbg);
@@ -2021,7 +2021,7 @@ QDebug operator<<(QDebug dbg, const QIcon &i)
         if (!i.name().isEmpty())
             dbg << i.name() << ',';
         dbg << "availableSizes[normal,Off]=" << i.availableSizes()
-            << ",cacheKey=" << Qt::showbase << Qt::hex << i.cacheKey() << Qt::dec << Qt::noshowbase;
+            << ",cacheKey=" << BobUI::showbase << BobUI::hex << i.cacheKey() << BobUI::dec << BobUI::noshowbase;
     }
     dbg << ')';
     return dbg;
@@ -2050,7 +2050,7 @@ QDebug operator<<(QDebug dbg, const QIcon &i)
     \a sourceDevicePixelRatio will be set to the value of N if the argument is
     not \nullptr
 */
-QString qt_findAtNxFile(const QString &baseFileName, qreal targetDevicePixelRatio,
+QString bobui_findAtNxFile(const QString &baseFileName, qreal targetDevicePixelRatio,
                         qreal *sourceDevicePixelRatio)
 {
     if (sourceDevicePixelRatio)
@@ -2058,7 +2058,7 @@ QString qt_findAtNxFile(const QString &baseFileName, qreal targetDevicePixelRati
     if (targetDevicePixelRatio <= 1.0)
         return baseFileName;
 
-    static bool disableNxImageLoading = !qEnvironmentVariableIsEmpty("QT_HIGHDPI_DISABLE_2X_IMAGE_LOADING");
+    static bool disableNxImageLoading = !qEnvironmentVariableIsEmpty("BOBUI_HIGHDPI_DISABLE_2X_IMAGE_LOADING");
     if (disableNxImageLoading)
         return baseFileName;
 
@@ -2086,5 +2086,5 @@ QString qt_findAtNxFile(const QString &baseFileName, qreal targetDevicePixelRati
     return baseFileName;
 }
 
-QT_END_NAMESPACE
-#endif //QT_NO_ICON
+BOBUI_END_NAMESPACE
+#endif //BOBUI_NO_ICON

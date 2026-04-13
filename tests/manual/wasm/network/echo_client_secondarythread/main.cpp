@@ -1,8 +1,8 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore>
-#include <QtNetwork>
+#include <BobUICore>
+#include <BobUINetwork>
 
 int main(int argc, char **argv) {
 
@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     auto echo = [hostName, port]() {
         qDebug() << "Connecting to" << hostName << port;
 
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         socket.connectToHost(hostName, port);
         bool connected = socket.waitForConnected(3000);
         if (!connected) {
@@ -40,8 +40,8 @@ int main(int argc, char **argv) {
         qDebug() << "Disconnected";
     };
 
-    QThread thread;
-    QObject::connect(&thread, &QThread::started, [echo](){
+    BOBUIhread thread;
+    QObject::connect(&thread, &BOBUIhread::started, [echo](){
         echo();
     });
     thread.start();

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include <qvalidator.h>
@@ -33,26 +33,26 @@ Q_DECLARE_METATYPE(QValidator::State);
 
 void tst_QDoubleValidator::validateThouSep_data()
 {
-    QTest::addColumn<QString>("localeName");
-    QTest::addColumn<QString>("value");
-    QTest::addColumn<bool>("rejectGroupSeparator");
-    QTest::addColumn<QValidator::State>("result");
+    BOBUIest::addColumn<QString>("localeName");
+    BOBUIest::addColumn<QString>("value");
+    BOBUIest::addColumn<bool>("rejectGroupSeparator");
+    BOBUIest::addColumn<QValidator::State>("result");
 
-    QTest::newRow("1,000C") << "C" << QString("1,000") << false << ACC;
-    QTest::newRow("1,000.1C") << "C" << QString("1,000.1") << false << ACC;
-    QTest::newRow("1,000.1C_reject") << "C" << QString("1,000.1") << true << INV;
-    QTest::newRow("1.000C") << "C" << QString("1.000") << false << ACC;
+    BOBUIest::newRow("1,000C") << "C" << QString("1,000") << false << ACC;
+    BOBUIest::newRow("1,000.1C") << "C" << QString("1,000.1") << false << ACC;
+    BOBUIest::newRow("1,000.1C_reject") << "C" << QString("1,000.1") << true << INV;
+    BOBUIest::newRow("1.000C") << "C" << QString("1.000") << false << ACC;
 
-    QTest::newRow("1,000de") << "de" << QString("1,000") << false << ACC;
-    QTest::newRow("1.000de") << "de" << QString("1.000") << false << ACC;
+    BOBUIest::newRow("1,000de") << "de" << QString("1,000") << false << ACC;
+    BOBUIest::newRow("1.000de") << "de" << QString("1.000") << false << ACC;
 
-    QTest::newRow(".C") << "C" << QString(".") << false << ITM;
-    QTest::newRow(".de") << "de" << QString(".") << false << INV;
-    QTest::newRow("1.000,1de") << "de" << QString("1.000,1") << false << ACC;
-    QTest::newRow("1.000,1de_reject") << "de" << QString("1.000,1") << true << INV;
-    QTest::newRow(",C") << "C" << QString(",") << false << INV;
-    QTest::newRow(",de") << "de" << QString(",") << false << ITM;
-    QTest::newRow("1,23") << "en_AU" << QString("1,00") << false << ITM;
+    BOBUIest::newRow(".C") << "C" << QString(".") << false << ITM;
+    BOBUIest::newRow(".de") << "de" << QString(".") << false << INV;
+    BOBUIest::newRow("1.000,1de") << "de" << QString("1.000,1") << false << ACC;
+    BOBUIest::newRow("1.000,1de_reject") << "de" << QString("1.000,1") << true << INV;
+    BOBUIest::newRow(",C") << "C" << QString(",") << false << INV;
+    BOBUIest::newRow(",de") << "de" << QString(",") << false << ITM;
+    BOBUIest::newRow("1,23") << "en_AU" << QString("1,00") << false << ITM;
 }
 
 void tst_QDoubleValidator::validateThouSep()
@@ -75,149 +75,149 @@ void tst_QDoubleValidator::validateThouSep()
 
 void tst_QDoubleValidator::validate_data()
 {
-    QTest::addColumn<QString>("localeName");
-    QTest::addColumn<double>("minimum");
-    QTest::addColumn<double>("maximum");
-    QTest::addColumn<int>("decimals");
-    QTest::addColumn<QString>("value");
-    QTest::addColumn<QValidator::State>("scientific_state");
-    QTest::addColumn<QValidator::State>("standard_state");
+    BOBUIest::addColumn<QString>("localeName");
+    BOBUIest::addColumn<double>("minimum");
+    BOBUIest::addColumn<double>("maximum");
+    BOBUIest::addColumn<int>("decimals");
+    BOBUIest::addColumn<QString>("value");
+    BOBUIest::addColumn<QValidator::State>("scientific_state");
+    BOBUIest::addColumn<QValidator::State>("standard_state");
 
-    QTest::newRow("data0")  << "C" << 0.0 << 100.0 << 1 << QString("50.0") << ACC << ACC;
-    QTest::newRow("data1")  << "C" << 00.0 << 100.0 << 1 << QString("500.0") << ITM << ITM;
-    QTest::newRow("data1a")  << "C" << 00.0 << 100.0 << 1 << QString("5001.0") << ITM << INV;
-    QTest::newRow("data2")  << "C" << 00.0 << 100.0 << 1 << QString("-35.0") << INV << INV;
-    QTest::newRow("data3")  << "C" << 00.0 << 100.0 << 1 << QString("a") << INV << INV;
-    QTest::newRow("data4")  << "C" << 0.0 << 100.0 << 1 << QString("-") << INV << INV;
-    QTest::newRow("data5")  << "C" << 0.0 << 100.0 << 1 << QString("100.0") << ACC << ACC;
-    QTest::newRow("data6")  << "C" << -100.0 << 100.0 << 1 << QString("-") << ITM << ITM;
-    QTest::newRow("data7")  << "C" << -100.0 << 100.0 << 1 << QString("-500.0") << ITM << ITM;
-    QTest::newRow("data8")  << "C" << -100.0 << 100.0 << 1 << QString("-100") << ACC << ACC;
-    QTest::newRow("data9")  << "C" << -100.0 << -10.0 << 1 << QString("10") << ITM << ITM;
-    QTest::newRow("data10") << "C" << 0.3 << 0.5 << 5 << QString("0.34567") << ACC << ACC;
-    QTest::newRow("data11") << "C" << -0.3 << -0.5 << 5 << QString("-0.345678") << INV << INV;
-    QTest::newRow("data12") << "C" << -0.32 << 0.32 << 1 << QString("0") << ACC << ACC;
-    QTest::newRow("data13") << "C" << 0.0 << 100.0 << 1 << QString("3456a") << INV << INV;
-    QTest::newRow("data14") << "C" << -100.0 << 100.0 << 1 << QString("-3456a") << INV << INV;
-    QTest::newRow("data15") << "C" << -100.0 << 100.0 << 1 << QString("a-3456") << INV << INV;
-    QTest::newRow("data16") << "C" << -100.0 << 100.0 << 1 << QString("a-3456a") << INV << INV;
-    QTest::newRow("data17") << "C" << 1229.0 << 1231.0 << 0 << QString("123e") << ITM << INV;
-    QTest::newRow("data18") << "C" << 1229.0 << 1231.0 << 0 << QString("123e+") << ITM << INV;
-    QTest::newRow("data19") << "C" << 1229.0 << 1231.0 << 0 << QString("123e+1") << ACC << INV;
-    QTest::newRow("data20") << "C" << 12290.0 << 12310.0 << 0 << QString("123e+2") << ACC << INV;
-    QTest::newRow("data21") << "C" << 12.290 << 12.310 << 2 << QString("123e-") << ITM << INV;
-    QTest::newRow("data22") << "C" << 12.290 << 12.310 << 2 << QString("123e-1") << ACC << INV;
-    QTest::newRow("data23") << "C" << 1.2290 << 1.2310 << 3 << QString("123e-2") << ACC << INV;
-    QTest::newRow("data24") << "C" << 1229.0 << 1231.0 << 0 << QString("123E") << ITM << INV;
-    QTest::newRow("data25") << "C" << 1229.0 << 1231.0 << 0 << QString("123E+") << ITM << INV;
-    QTest::newRow("data26") << "C" << 1229.0 << 1231.0 << 0 << QString("123E+1") << ACC << INV;
-    QTest::newRow("data27") << "C" << 12290.0 << 12310.0 << 0 << QString("123E+2") << ACC << INV;
-    QTest::newRow("data28") << "C" << 12.290 << 12.310 << 2 << QString("123E-") << ITM << INV;
-    QTest::newRow("data29") << "C" << 12.290 << 12.310 << 2 << QString("123E-1") << ACC << INV;
-    QTest::newRow("data30") << "C" << 1.2290 << 1.2310 << 3 << QString("123E-2") << ACC << INV;
-    QTest::newRow("data31") << "C" << 1.2290 << 1.2310 << 3 << QString("e") << ITM << INV;
-    QTest::newRow("data32") << "C" << 1.2290 << 1.2310 << 3 << QString("e+") << ITM << INV;
-    QTest::newRow("data33") << "C" << 1.2290 << 1.2310 << 3 << QString("e+1") << ITM << INV;
-    QTest::newRow("data34") << "C" << 1.2290 << 1.2310 << 3 << QString("e-") << ITM << INV;
-    QTest::newRow("data35") << "C" << 1.2290 << 1.2310 << 3 << QString("e-1") << ITM << INV;
-    QTest::newRow("data36") << "C" << 1.2290 << 1.2310 << 3 << QString("E") << ITM << INV;
-    QTest::newRow("data37") << "C" << 1.2290 << 1.2310 << 3 << QString("E+") << ITM << INV;
-    QTest::newRow("data38") << "C" << 1.2290 << 1.2310 << 3 << QString("E+1") << ITM << INV;
-    QTest::newRow("data39") << "C" << 1.2290 << 1.2310 << 3 << QString("E-") << ITM << INV;
-    QTest::newRow("data40") << "C" << 1.2290 << 1.2310 << 3 << QString("E-1") << ITM << INV;
-    QTest::newRow("data41") << "C" << -100.0 << 100.0 << 0 << QString("10e") << ITM << INV;
-    QTest::newRow("data42") << "C" << -100.0 << 100.0 << 0 << QString("10e+") << ITM << INV;
-    QTest::newRow("data43") << "C" << 0.01 << 0.09 << 2 << QString("0") << ITM << ITM;
-    QTest::newRow("data44") << "C" << 0.0 << 10.0 << 1 << QString("11") << ITM << ITM;
-    QTest::newRow("data45") << "C" << 0.0 << 10.0 << 2 << QString("11") << ITM << ITM;
-    QTest::newRow("data46")  << "C" << 0.0 << 100.0 << 0 << QString("0.") << ACC << ACC;
-    QTest::newRow("data47")  << "C" << 0.0 << 100.0 << 0 << QString("0.0") << INV << INV;
-    QTest::newRow("data48")  << "C" << 0.0 << 100.0 << 1 << QString("0.0") << ACC << ACC;
-    QTest::newRow("data49")  << "C" << 0.0 << 100.0 << 0 << QString(".") << ITM << ITM;
-    QTest::newRow("data50")  << "C" << 0.0 << 100.0 << 1 << QString(".") << ITM << ITM;
-    QTest::newRow("data51")  << "C" << 0.0 << 2.0 << 2 << QString("9.99") << ITM << ITM;
-    QTest::newRow("data52")  << "C" << 100.0 << 200.0 << 4 << QString("999.9999") << ITM << ITM;
-    QTest::newRow("data53")  << "C" << 0.0 << 2.0 << 2 << QString("9.9999") << INV << INV;
-    QTest::newRow("data54")  << "C" << 100.0 << 200.0 << 4 << QString("9999.9999") << ITM << INV;
-    QTest::newRow("data55") << "C" << 1229.0 << 1231.0 << -1 << QString("123E") << ITM << INV;
-    QTest::newRow("data56") << "C" << 1229.0 << 1231.0 << -1 << QString("123E+") << ITM << INV;
-    QTest::newRow("data57") << "C" << 1229.0 << 1231.0 << -1 << QString("123E+1") << ACC << INV;
-    QTest::newRow("data58") << "C" << 0.0 << 100.0 << -1 << QString("0.0") << ACC << ACC;
-    QTest::newRow("overlong") << "C" << 0.0 << 99.9 << 2 << QString("1234.0") << ITM << INV;
+    BOBUIest::newRow("data0")  << "C" << 0.0 << 100.0 << 1 << QString("50.0") << ACC << ACC;
+    BOBUIest::newRow("data1")  << "C" << 00.0 << 100.0 << 1 << QString("500.0") << ITM << ITM;
+    BOBUIest::newRow("data1a")  << "C" << 00.0 << 100.0 << 1 << QString("5001.0") << ITM << INV;
+    BOBUIest::newRow("data2")  << "C" << 00.0 << 100.0 << 1 << QString("-35.0") << INV << INV;
+    BOBUIest::newRow("data3")  << "C" << 00.0 << 100.0 << 1 << QString("a") << INV << INV;
+    BOBUIest::newRow("data4")  << "C" << 0.0 << 100.0 << 1 << QString("-") << INV << INV;
+    BOBUIest::newRow("data5")  << "C" << 0.0 << 100.0 << 1 << QString("100.0") << ACC << ACC;
+    BOBUIest::newRow("data6")  << "C" << -100.0 << 100.0 << 1 << QString("-") << ITM << ITM;
+    BOBUIest::newRow("data7")  << "C" << -100.0 << 100.0 << 1 << QString("-500.0") << ITM << ITM;
+    BOBUIest::newRow("data8")  << "C" << -100.0 << 100.0 << 1 << QString("-100") << ACC << ACC;
+    BOBUIest::newRow("data9")  << "C" << -100.0 << -10.0 << 1 << QString("10") << ITM << ITM;
+    BOBUIest::newRow("data10") << "C" << 0.3 << 0.5 << 5 << QString("0.34567") << ACC << ACC;
+    BOBUIest::newRow("data11") << "C" << -0.3 << -0.5 << 5 << QString("-0.345678") << INV << INV;
+    BOBUIest::newRow("data12") << "C" << -0.32 << 0.32 << 1 << QString("0") << ACC << ACC;
+    BOBUIest::newRow("data13") << "C" << 0.0 << 100.0 << 1 << QString("3456a") << INV << INV;
+    BOBUIest::newRow("data14") << "C" << -100.0 << 100.0 << 1 << QString("-3456a") << INV << INV;
+    BOBUIest::newRow("data15") << "C" << -100.0 << 100.0 << 1 << QString("a-3456") << INV << INV;
+    BOBUIest::newRow("data16") << "C" << -100.0 << 100.0 << 1 << QString("a-3456a") << INV << INV;
+    BOBUIest::newRow("data17") << "C" << 1229.0 << 1231.0 << 0 << QString("123e") << ITM << INV;
+    BOBUIest::newRow("data18") << "C" << 1229.0 << 1231.0 << 0 << QString("123e+") << ITM << INV;
+    BOBUIest::newRow("data19") << "C" << 1229.0 << 1231.0 << 0 << QString("123e+1") << ACC << INV;
+    BOBUIest::newRow("data20") << "C" << 12290.0 << 12310.0 << 0 << QString("123e+2") << ACC << INV;
+    BOBUIest::newRow("data21") << "C" << 12.290 << 12.310 << 2 << QString("123e-") << ITM << INV;
+    BOBUIest::newRow("data22") << "C" << 12.290 << 12.310 << 2 << QString("123e-1") << ACC << INV;
+    BOBUIest::newRow("data23") << "C" << 1.2290 << 1.2310 << 3 << QString("123e-2") << ACC << INV;
+    BOBUIest::newRow("data24") << "C" << 1229.0 << 1231.0 << 0 << QString("123E") << ITM << INV;
+    BOBUIest::newRow("data25") << "C" << 1229.0 << 1231.0 << 0 << QString("123E+") << ITM << INV;
+    BOBUIest::newRow("data26") << "C" << 1229.0 << 1231.0 << 0 << QString("123E+1") << ACC << INV;
+    BOBUIest::newRow("data27") << "C" << 12290.0 << 12310.0 << 0 << QString("123E+2") << ACC << INV;
+    BOBUIest::newRow("data28") << "C" << 12.290 << 12.310 << 2 << QString("123E-") << ITM << INV;
+    BOBUIest::newRow("data29") << "C" << 12.290 << 12.310 << 2 << QString("123E-1") << ACC << INV;
+    BOBUIest::newRow("data30") << "C" << 1.2290 << 1.2310 << 3 << QString("123E-2") << ACC << INV;
+    BOBUIest::newRow("data31") << "C" << 1.2290 << 1.2310 << 3 << QString("e") << ITM << INV;
+    BOBUIest::newRow("data32") << "C" << 1.2290 << 1.2310 << 3 << QString("e+") << ITM << INV;
+    BOBUIest::newRow("data33") << "C" << 1.2290 << 1.2310 << 3 << QString("e+1") << ITM << INV;
+    BOBUIest::newRow("data34") << "C" << 1.2290 << 1.2310 << 3 << QString("e-") << ITM << INV;
+    BOBUIest::newRow("data35") << "C" << 1.2290 << 1.2310 << 3 << QString("e-1") << ITM << INV;
+    BOBUIest::newRow("data36") << "C" << 1.2290 << 1.2310 << 3 << QString("E") << ITM << INV;
+    BOBUIest::newRow("data37") << "C" << 1.2290 << 1.2310 << 3 << QString("E+") << ITM << INV;
+    BOBUIest::newRow("data38") << "C" << 1.2290 << 1.2310 << 3 << QString("E+1") << ITM << INV;
+    BOBUIest::newRow("data39") << "C" << 1.2290 << 1.2310 << 3 << QString("E-") << ITM << INV;
+    BOBUIest::newRow("data40") << "C" << 1.2290 << 1.2310 << 3 << QString("E-1") << ITM << INV;
+    BOBUIest::newRow("data41") << "C" << -100.0 << 100.0 << 0 << QString("10e") << ITM << INV;
+    BOBUIest::newRow("data42") << "C" << -100.0 << 100.0 << 0 << QString("10e+") << ITM << INV;
+    BOBUIest::newRow("data43") << "C" << 0.01 << 0.09 << 2 << QString("0") << ITM << ITM;
+    BOBUIest::newRow("data44") << "C" << 0.0 << 10.0 << 1 << QString("11") << ITM << ITM;
+    BOBUIest::newRow("data45") << "C" << 0.0 << 10.0 << 2 << QString("11") << ITM << ITM;
+    BOBUIest::newRow("data46")  << "C" << 0.0 << 100.0 << 0 << QString("0.") << ACC << ACC;
+    BOBUIest::newRow("data47")  << "C" << 0.0 << 100.0 << 0 << QString("0.0") << INV << INV;
+    BOBUIest::newRow("data48")  << "C" << 0.0 << 100.0 << 1 << QString("0.0") << ACC << ACC;
+    BOBUIest::newRow("data49")  << "C" << 0.0 << 100.0 << 0 << QString(".") << ITM << ITM;
+    BOBUIest::newRow("data50")  << "C" << 0.0 << 100.0 << 1 << QString(".") << ITM << ITM;
+    BOBUIest::newRow("data51")  << "C" << 0.0 << 2.0 << 2 << QString("9.99") << ITM << ITM;
+    BOBUIest::newRow("data52")  << "C" << 100.0 << 200.0 << 4 << QString("999.9999") << ITM << ITM;
+    BOBUIest::newRow("data53")  << "C" << 0.0 << 2.0 << 2 << QString("9.9999") << INV << INV;
+    BOBUIest::newRow("data54")  << "C" << 100.0 << 200.0 << 4 << QString("9999.9999") << ITM << INV;
+    BOBUIest::newRow("data55") << "C" << 1229.0 << 1231.0 << -1 << QString("123E") << ITM << INV;
+    BOBUIest::newRow("data56") << "C" << 1229.0 << 1231.0 << -1 << QString("123E+") << ITM << INV;
+    BOBUIest::newRow("data57") << "C" << 1229.0 << 1231.0 << -1 << QString("123E+1") << ACC << INV;
+    BOBUIest::newRow("data58") << "C" << 0.0 << 100.0 << -1 << QString("0.0") << ACC << ACC;
+    BOBUIest::newRow("overlong") << "C" << 0.0 << 99.9 << 2 << QString("1234.0") << ITM << INV;
 
-    QTest::newRow("data_de0")  << "de" << 0.0 << 100.0 << 1 << QString("50,0") << ACC << ACC;
-    QTest::newRow("data_de1")  << "de" << 00.0 << 100.0 << 1 << QString("500,0") << ITM << ITM;
-    QTest::newRow("data_de1a")  << "de" << 00.0 << 100.0 << 1 << QString("5001,0") << ITM << INV;
-    QTest::newRow("data_de0C")  << "de" << 0.0 << 100.0 << 1 << QString("50,0") << ACC << ACC;
-    QTest::newRow("data_de1C")  << "de" << 00.0 << 100.0 << 1 << QString("500,0") << ITM << ITM;
-    QTest::newRow("data_de1aC")  << "de" << 00.0 << 100.0 << 1 << QString("5001,0") << ITM << INV;
-    QTest::newRow("data_de2")  << "de" << 00.0 << 100.0 << 1 << QString("-35,0") << INV << INV;
-    QTest::newRow("data_de3")  << "de" << 00.0 << 100.0 << 1 << QString("a") << INV << INV;
-    QTest::newRow("data_de4")  << "de" << 0.0 << 100.0 << 1 << QString("-") << INV << INV;
-    QTest::newRow("data_de5")  << "de" << 0.0 << 100.0 << 1 << QString("100,0") << ACC << ACC;
-    QTest::newRow("data_de6")  << "de" << -100.0 << 100.0 << 1 << QString("-") << ITM << ITM;
-    QTest::newRow("data_de7")  << "de" << -100.0 << 100.0 << 1 << QString("-500,0") << ITM << ITM;
-    QTest::newRow("data_de8")  << "de" << -100.0 << 100.0 << 1 << QString("-100") << ACC << ACC;
-    QTest::newRow("data_de9")  << "de" << -100.0 << -10.0 << 1 << QString("10") << ITM << ITM;
-    QTest::newRow("data_de10") << "de" << 0.3 << 0.5 << 5 << QString("0,34567") << ACC << ACC;
-    QTest::newRow("data_de11") << "de" << -0.3 << -0.5 << 5 << QString("-0,345678") << INV << INV;
-    QTest::newRow("data_de12") << "de" << -0.32 << 0.32 << 1 << QString("0") << ACC << ACC;
-    QTest::newRow("data_de13") << "de" << 0.0 << 100.0 << 1 << QString("3456a") << INV << INV;
-    QTest::newRow("data_de14") << "de" << -100.0 << 100.0 << 1 << QString("-3456a") << INV << INV;
-    QTest::newRow("data_de15") << "de" << -100.0 << 100.0 << 1 << QString("a-3456") << INV << INV;
-    QTest::newRow("data_de16") << "de" << -100.0 << 100.0 << 1 << QString("a-3456a") << INV << INV;
-    QTest::newRow("data_de17") << "de" << 1229.0 << 1231.0 << 0 << QString("123e") << ITM << INV;
-    QTest::newRow("data_de18") << "de" << 1229.0 << 1231.0 << 0 << QString("123e+") << ITM << INV;
-    QTest::newRow("data_de19") << "de" << 1229.0 << 1231.0 << 0 << QString("123e+1") << ACC << INV;
-    QTest::newRow("data_de20") << "de" << 12290.0 << 12310.0 << 0 << QString("123e+2") << ACC << INV;
-    QTest::newRow("data_de21") << "de" << 12.290 << 12.310 << 2 << QString("123e-") << ITM << INV;
-    QTest::newRow("data_de22") << "de" << 12.290 << 12.310 << 2 << QString("123e-1") << ACC << INV;
-    QTest::newRow("data_de23") << "de" << 1.2290 << 1.2310 << 3 << QString("123e-2") << ACC << INV;
-    QTest::newRow("data_de24") << "de" << 1229.0 << 1231.0 << 0 << QString("123E") << ITM << INV;
-    QTest::newRow("data_de25") << "de" << 1229.0 << 1231.0 << 0 << QString("123E+") << ITM << INV;
-    QTest::newRow("data_de26") << "de" << 1229.0 << 1231.0 << 0 << QString("123E+1") << ACC << INV;
-    QTest::newRow("data_de27") << "de" << 12290.0 << 12310.0 << 0 << QString("123E+2") << ACC << INV;
-    QTest::newRow("data_de28") << "de" << 12.290 << 12.310 << 2 << QString("123E-") << ITM << INV;
-    QTest::newRow("data_de29") << "de" << 12.290 << 12.310 << 2 << QString("123E-1") << ACC << INV;
-    QTest::newRow("data_de30") << "de" << 1.2290 << 1.2310 << 3 << QString("123E-2") << ACC << INV;
-    QTest::newRow("data_de31") << "de" << 1.2290 << 1.2310 << 3 << QString("e") << ITM << INV;
-    QTest::newRow("data_de32") << "de" << 1.2290 << 1.2310 << 3 << QString("e+") << ITM << INV;
-    QTest::newRow("data_de33") << "de" << 1.2290 << 1.2310 << 3 << QString("e+1") << ITM << INV;
-    QTest::newRow("data_de34") << "de" << 1.2290 << 1.2310 << 3 << QString("e-") << ITM << INV;
-    QTest::newRow("data_de35") << "de" << 1.2290 << 1.2310 << 3 << QString("e-1") << ITM << INV;
-    QTest::newRow("data_de36") << "de" << 1.2290 << 1.2310 << 3 << QString("E") << ITM << INV;
-    QTest::newRow("data_de37") << "de" << 1.2290 << 1.2310 << 3 << QString("E+") << ITM << INV;
-    QTest::newRow("data_de38") << "de" << 1.2290 << 1.2310 << 3 << QString("E+1") << ITM << INV;
-    QTest::newRow("data_de39") << "de" << 1.2290 << 1.2310 << 3 << QString("E-") << ITM << INV;
-    QTest::newRow("data_de40") << "de" << 1.2290 << 1.2310 << 3 << QString("E-1") << ITM << INV;
-    QTest::newRow("data_de41") << "de" << -100.0 << 100.0 << 0 << QString("10e") << ITM << INV;
-    QTest::newRow("data_de42") << "de" << -100.0 << 100.0 << 0 << QString("10e+") << ITM << INV;
-    QTest::newRow("data_de43") << "de" << 0.01 << 0.09 << 2 << QString("0") << ITM << ITM;
-    QTest::newRow("data_de44") << "de" << 0.0 << 10.0 << 1 << QString("11") << ITM << ITM;
-    QTest::newRow("data_de45") << "de" << 0.0 << 10.0 << 2 << QString("11") << ITM << ITM;
-    QTest::newRow("data_de46") << "de" << 0.0 << 2.0 << 2 << QString("9,99") << ITM << ITM;
-    QTest::newRow("data_de47") << "de" << 100.0 << 200.0 << 4 << QString("999,9999") << ITM << ITM;
-    QTest::newRow("data_de48") << "de" << 0.0 << 2.0 << 2 << QString("9,9999") << INV << INV;
-    QTest::newRow("data_de49") << "de" << 100.0 << 200.0 << 4 << QString("9999,9999") << ITM << INV;
+    BOBUIest::newRow("data_de0")  << "de" << 0.0 << 100.0 << 1 << QString("50,0") << ACC << ACC;
+    BOBUIest::newRow("data_de1")  << "de" << 00.0 << 100.0 << 1 << QString("500,0") << ITM << ITM;
+    BOBUIest::newRow("data_de1a")  << "de" << 00.0 << 100.0 << 1 << QString("5001,0") << ITM << INV;
+    BOBUIest::newRow("data_de0C")  << "de" << 0.0 << 100.0 << 1 << QString("50,0") << ACC << ACC;
+    BOBUIest::newRow("data_de1C")  << "de" << 00.0 << 100.0 << 1 << QString("500,0") << ITM << ITM;
+    BOBUIest::newRow("data_de1aC")  << "de" << 00.0 << 100.0 << 1 << QString("5001,0") << ITM << INV;
+    BOBUIest::newRow("data_de2")  << "de" << 00.0 << 100.0 << 1 << QString("-35,0") << INV << INV;
+    BOBUIest::newRow("data_de3")  << "de" << 00.0 << 100.0 << 1 << QString("a") << INV << INV;
+    BOBUIest::newRow("data_de4")  << "de" << 0.0 << 100.0 << 1 << QString("-") << INV << INV;
+    BOBUIest::newRow("data_de5")  << "de" << 0.0 << 100.0 << 1 << QString("100,0") << ACC << ACC;
+    BOBUIest::newRow("data_de6")  << "de" << -100.0 << 100.0 << 1 << QString("-") << ITM << ITM;
+    BOBUIest::newRow("data_de7")  << "de" << -100.0 << 100.0 << 1 << QString("-500,0") << ITM << ITM;
+    BOBUIest::newRow("data_de8")  << "de" << -100.0 << 100.0 << 1 << QString("-100") << ACC << ACC;
+    BOBUIest::newRow("data_de9")  << "de" << -100.0 << -10.0 << 1 << QString("10") << ITM << ITM;
+    BOBUIest::newRow("data_de10") << "de" << 0.3 << 0.5 << 5 << QString("0,34567") << ACC << ACC;
+    BOBUIest::newRow("data_de11") << "de" << -0.3 << -0.5 << 5 << QString("-0,345678") << INV << INV;
+    BOBUIest::newRow("data_de12") << "de" << -0.32 << 0.32 << 1 << QString("0") << ACC << ACC;
+    BOBUIest::newRow("data_de13") << "de" << 0.0 << 100.0 << 1 << QString("3456a") << INV << INV;
+    BOBUIest::newRow("data_de14") << "de" << -100.0 << 100.0 << 1 << QString("-3456a") << INV << INV;
+    BOBUIest::newRow("data_de15") << "de" << -100.0 << 100.0 << 1 << QString("a-3456") << INV << INV;
+    BOBUIest::newRow("data_de16") << "de" << -100.0 << 100.0 << 1 << QString("a-3456a") << INV << INV;
+    BOBUIest::newRow("data_de17") << "de" << 1229.0 << 1231.0 << 0 << QString("123e") << ITM << INV;
+    BOBUIest::newRow("data_de18") << "de" << 1229.0 << 1231.0 << 0 << QString("123e+") << ITM << INV;
+    BOBUIest::newRow("data_de19") << "de" << 1229.0 << 1231.0 << 0 << QString("123e+1") << ACC << INV;
+    BOBUIest::newRow("data_de20") << "de" << 12290.0 << 12310.0 << 0 << QString("123e+2") << ACC << INV;
+    BOBUIest::newRow("data_de21") << "de" << 12.290 << 12.310 << 2 << QString("123e-") << ITM << INV;
+    BOBUIest::newRow("data_de22") << "de" << 12.290 << 12.310 << 2 << QString("123e-1") << ACC << INV;
+    BOBUIest::newRow("data_de23") << "de" << 1.2290 << 1.2310 << 3 << QString("123e-2") << ACC << INV;
+    BOBUIest::newRow("data_de24") << "de" << 1229.0 << 1231.0 << 0 << QString("123E") << ITM << INV;
+    BOBUIest::newRow("data_de25") << "de" << 1229.0 << 1231.0 << 0 << QString("123E+") << ITM << INV;
+    BOBUIest::newRow("data_de26") << "de" << 1229.0 << 1231.0 << 0 << QString("123E+1") << ACC << INV;
+    BOBUIest::newRow("data_de27") << "de" << 12290.0 << 12310.0 << 0 << QString("123E+2") << ACC << INV;
+    BOBUIest::newRow("data_de28") << "de" << 12.290 << 12.310 << 2 << QString("123E-") << ITM << INV;
+    BOBUIest::newRow("data_de29") << "de" << 12.290 << 12.310 << 2 << QString("123E-1") << ACC << INV;
+    BOBUIest::newRow("data_de30") << "de" << 1.2290 << 1.2310 << 3 << QString("123E-2") << ACC << INV;
+    BOBUIest::newRow("data_de31") << "de" << 1.2290 << 1.2310 << 3 << QString("e") << ITM << INV;
+    BOBUIest::newRow("data_de32") << "de" << 1.2290 << 1.2310 << 3 << QString("e+") << ITM << INV;
+    BOBUIest::newRow("data_de33") << "de" << 1.2290 << 1.2310 << 3 << QString("e+1") << ITM << INV;
+    BOBUIest::newRow("data_de34") << "de" << 1.2290 << 1.2310 << 3 << QString("e-") << ITM << INV;
+    BOBUIest::newRow("data_de35") << "de" << 1.2290 << 1.2310 << 3 << QString("e-1") << ITM << INV;
+    BOBUIest::newRow("data_de36") << "de" << 1.2290 << 1.2310 << 3 << QString("E") << ITM << INV;
+    BOBUIest::newRow("data_de37") << "de" << 1.2290 << 1.2310 << 3 << QString("E+") << ITM << INV;
+    BOBUIest::newRow("data_de38") << "de" << 1.2290 << 1.2310 << 3 << QString("E+1") << ITM << INV;
+    BOBUIest::newRow("data_de39") << "de" << 1.2290 << 1.2310 << 3 << QString("E-") << ITM << INV;
+    BOBUIest::newRow("data_de40") << "de" << 1.2290 << 1.2310 << 3 << QString("E-1") << ITM << INV;
+    BOBUIest::newRow("data_de41") << "de" << -100.0 << 100.0 << 0 << QString("10e") << ITM << INV;
+    BOBUIest::newRow("data_de42") << "de" << -100.0 << 100.0 << 0 << QString("10e+") << ITM << INV;
+    BOBUIest::newRow("data_de43") << "de" << 0.01 << 0.09 << 2 << QString("0") << ITM << ITM;
+    BOBUIest::newRow("data_de44") << "de" << 0.0 << 10.0 << 1 << QString("11") << ITM << ITM;
+    BOBUIest::newRow("data_de45") << "de" << 0.0 << 10.0 << 2 << QString("11") << ITM << ITM;
+    BOBUIest::newRow("data_de46") << "de" << 0.0 << 2.0 << 2 << QString("9,99") << ITM << ITM;
+    BOBUIest::newRow("data_de47") << "de" << 100.0 << 200.0 << 4 << QString("999,9999") << ITM << ITM;
+    BOBUIest::newRow("data_de48") << "de" << 0.0 << 2.0 << 2 << QString("9,9999") << INV << INV;
+    BOBUIest::newRow("data_de49") << "de" << 100.0 << 200.0 << 4 << QString("9999,9999") << ITM << INV;
 
     // using default QDoubleValidator parameters for initialization
-    QTest::newRow("inf") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("inf") << INV << INV;
-    QTest::newRow("+inf") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("+inf") << INV << INV;
-    QTest::newRow("-inf") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("-inf") << INV << INV;
-    QTest::newRow("nan") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("nan") << INV << INV;
-    QTest::newRow("+nan") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("+nan") << INV << INV;
-    QTest::newRow("-nan") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("-nan") << INV << INV;
+    BOBUIest::newRow("inf") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("inf") << INV << INV;
+    BOBUIest::newRow("+inf") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("+inf") << INV << INV;
+    BOBUIest::newRow("-inf") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("-inf") << INV << INV;
+    BOBUIest::newRow("nan") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("nan") << INV << INV;
+    BOBUIest::newRow("+nan") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("+nan") << INV << INV;
+    BOBUIest::newRow("-nan") << "C" << -HUGE_VAL << HUGE_VAL << 1000 << QString("-nan") << INV << INV;
 
     QString arabicNum;
     arabicNum += QChar(1633); // "18.4" in arabic
     arabicNum += QChar(1640);
     arabicNum += QChar(1643);
     arabicNum += QChar(1636);
-    QTest::newRow("arabic") << "ar" << 0.0 << 20.0 << 2 << arabicNum << ACC << ACC;
+    BOBUIest::newRow("arabic") << "ar" << 0.0 << 20.0 << 2 << arabicNum << ACC << ACC;
 
     // Confim no fallback to C locale
-    QTest::newRow("data_C1") << "de" << 0.0 << 1000.0 << 2 << QString("1.000,00") << ACC << ACC;
-    QTest::newRow("data_C2") << "de" << 0.0 << 1000.0 << 2 << QString("1,000.00") << INV << INV;
+    BOBUIest::newRow("data_C1") << "de" << 0.0 << 1000.0 << 2 << QString("1.000,00") << ACC << ACC;
+    BOBUIest::newRow("data_C2") << "de" << 0.0 << 1000.0 << 2 << QString("1,000.00") << INV << INV;
 }
 
 void tst_QDoubleValidator::validate()
@@ -244,36 +244,36 @@ void tst_QDoubleValidator::validate()
 
 void tst_QDoubleValidator::zeroPaddedExponent_data()
 {
-    QTest::addColumn<double>("minimum");
-    QTest::addColumn<double>("maximum");
-    QTest::addColumn<int>("decimals");
-    QTest::addColumn<QString>("value");
-    QTest::addColumn<bool>("rejectZeroPaddedExponent");
-    QTest::addColumn<QValidator::State>("state");
+    BOBUIest::addColumn<double>("minimum");
+    BOBUIest::addColumn<double>("maximum");
+    BOBUIest::addColumn<int>("decimals");
+    BOBUIest::addColumn<QString>("value");
+    BOBUIest::addColumn<bool>("rejectZeroPaddedExponent");
+    BOBUIest::addColumn<QValidator::State>("state");
 
-    QTest::newRow("data01") << 1229.0  << 1231.0  << 0 << QString("123e+1") << false << ACC;
-    QTest::newRow("data02") << 12290.0 << 12310.0 << 0 << QString("123e2")  << false << ACC;
-    QTest::newRow("data03") << 12.290  << 12.310  << 2 << QString("123e-")  << false << ITM;
-    QTest::newRow("data04") << 12.290  << 12.310  << 2 << QString("123e-1") << false << ACC;
-    QTest::newRow("data05") << 1.2290  << 1.2310  << 3 << QString("123e-2") << false << ACC;
+    BOBUIest::newRow("data01") << 1229.0  << 1231.0  << 0 << QString("123e+1") << false << ACC;
+    BOBUIest::newRow("data02") << 12290.0 << 12310.0 << 0 << QString("123e2")  << false << ACC;
+    BOBUIest::newRow("data03") << 12.290  << 12.310  << 2 << QString("123e-")  << false << ITM;
+    BOBUIest::newRow("data04") << 12.290  << 12.310  << 2 << QString("123e-1") << false << ACC;
+    BOBUIest::newRow("data05") << 1.2290  << 1.2310  << 3 << QString("123e-2") << false << ACC;
 
-    QTest::newRow("data11") << 1229.0  << 1231.0  << 0 << QString("123e+1") << true << ACC;
-    QTest::newRow("data12") << 12290.0 << 12310.0 << 0 << QString("123e2")  << true << ACC;
-    QTest::newRow("data13") << 12.290  << 12.310  << 2 << QString("123e-")  << true << ITM;
-    QTest::newRow("data14") << 12.290  << 12.310  << 2 << QString("123e-1") << true << ACC;
-    QTest::newRow("data15") << 1.2290  << 1.2310  << 3 << QString("123e-2") << true << ACC;
+    BOBUIest::newRow("data11") << 1229.0  << 1231.0  << 0 << QString("123e+1") << true << ACC;
+    BOBUIest::newRow("data12") << 12290.0 << 12310.0 << 0 << QString("123e2")  << true << ACC;
+    BOBUIest::newRow("data13") << 12.290  << 12.310  << 2 << QString("123e-")  << true << ITM;
+    BOBUIest::newRow("data14") << 12.290  << 12.310  << 2 << QString("123e-1") << true << ACC;
+    BOBUIest::newRow("data15") << 1.2290  << 1.2310  << 3 << QString("123e-2") << true << ACC;
 
-    QTest::newRow("data21") << 1229.0  << 1231.0  << 0 << QString("123e+01") << false << ACC;
-    QTest::newRow("data22") << 12290.0 << 12310.0 << 0 << QString("123e02")  << false << ACC;
-    QTest::newRow("data23") << 12.290  << 12.310  << 2 << QString("123e-0")  << false << ITM;
-    QTest::newRow("data24") << 12.290  << 12.310  << 2 << QString("123e-01") << false << ACC;
-    QTest::newRow("data25") << 1.2290  << 1.2310  << 3 << QString("123e-02") << false << ACC;
+    BOBUIest::newRow("data21") << 1229.0  << 1231.0  << 0 << QString("123e+01") << false << ACC;
+    BOBUIest::newRow("data22") << 12290.0 << 12310.0 << 0 << QString("123e02")  << false << ACC;
+    BOBUIest::newRow("data23") << 12.290  << 12.310  << 2 << QString("123e-0")  << false << ITM;
+    BOBUIest::newRow("data24") << 12.290  << 12.310  << 2 << QString("123e-01") << false << ACC;
+    BOBUIest::newRow("data25") << 1.2290  << 1.2310  << 3 << QString("123e-02") << false << ACC;
 
-    QTest::newRow("data31") << 1229.0  << 1231.0  << 0 << QString("123e+01") << true << INV;
-    QTest::newRow("data32") << 12290.0 << 12310.0 << 0 << QString("123e02")  << true << INV;
-    QTest::newRow("data33") << 12.290  << 12.310  << 2 << QString("123e-0")  << true << INV;
-    QTest::newRow("data34") << 12.290  << 12.310  << 2 << QString("123e-01") << true << INV;
-    QTest::newRow("data35") << 1.2290  << 1.2310  << 3 << QString("123e-02") << true << INV;
+    BOBUIest::newRow("data31") << 1229.0  << 1231.0  << 0 << QString("123e+01") << true << INV;
+    BOBUIest::newRow("data32") << 12290.0 << 12310.0 << 0 << QString("123e02")  << true << INV;
+    BOBUIest::newRow("data33") << 12.290  << 12.310  << 2 << QString("123e-0")  << true << INV;
+    BOBUIest::newRow("data34") << 12.290  << 12.310  << 2 << QString("123e-01") << true << INV;
+    BOBUIest::newRow("data35") << 1.2290  << 1.2310  << 3 << QString("123e-02") << true << INV;
 
 }
 
@@ -406,217 +406,217 @@ void tst_QDoubleValidator::fixup()
 
 void tst_QDoubleValidator::fixup_data()
 {
-    QTest::addColumn<QString>("localeName");
-    QTest::addColumn<QDoubleValidator::Notation>("notation");
-    QTest::addColumn<int>("decimals");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("output");
+    BOBUIest::addColumn<QString>("localeName");
+    BOBUIest::addColumn<QDoubleValidator::Notation>("notation");
+    BOBUIest::addColumn<int>("decimals");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("output");
 
     // C locale uses '.' as decimal point and ',' as grouping separator.
     // C locale does not group digits by default.
-    QTest::newRow("C standard no digit grouping")
+    BOBUIest::newRow("C standard no digit grouping")
             << "C" << QDoubleValidator::StandardNotation << -1 << "12.345"
             << "12.345";
-    QTest::newRow("C standard with digit grouping")
+    BOBUIest::newRow("C standard with digit grouping")
             << "C" << QDoubleValidator::StandardNotation << -1 << "-12,345.678"
             << "-12345.678";
-    QTest::newRow("C standard with invalid digit grouping")
+    BOBUIest::newRow("C standard with invalid digit grouping")
             << "C" << QDoubleValidator::StandardNotation << -1 << "1,234,5.678"
             << "12345.678";
-    QTest::newRow("C standard with invalid group size")
+    BOBUIest::newRow("C standard with invalid group size")
             << "C" << QDoubleValidator::StandardNotation << 2 << "-12,34.678"
             << "-1234.68";
-    QTest::newRow("C standard truncate decimals")
+    BOBUIest::newRow("C standard truncate decimals")
             << "C" << QDoubleValidator::StandardNotation << -1
             << "1.23456789012345678901234567890"
             << "1.2345678901234567";
-    QTest::newRow("C standard skip trailing zeroes")
+    BOBUIest::newRow("C standard skip trailing zeroes")
             << "C" << QDoubleValidator::StandardNotation << -1 << "1,234.5670000"
             << "1234.567";
-    QTest::newRow("C standard zero value")
+    BOBUIest::newRow("C standard zero value")
             << "C" << QDoubleValidator::StandardNotation << -1 << "0.0"
             << "0";
-    QTest::newRow("C standard scientific value")
+    BOBUIest::newRow("C standard scientific value")
             << "C" << QDoubleValidator::StandardNotation << -1 << "1.23e-2"
             << "1.23e-2";
-    QTest::newRow("C standard no fractional part")
+    BOBUIest::newRow("C standard no fractional part")
             << "C" << QDoubleValidator::StandardNotation << -1 << "-1,234"
             << "-1234";
 
-    QTest::newRow("C scientific no digit grouping")
+    BOBUIest::newRow("C scientific no digit grouping")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "0.98765e2"
             << "9.8765e+01";
-    QTest::newRow("C scientific with digit grouping")
+    BOBUIest::newRow("C scientific with digit grouping")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "-1,234.98765E-4"
             << "-1.23498765E-01";
-    QTest::newRow("C scientific with invalid digit grouping")
+    BOBUIest::newRow("C scientific with invalid digit grouping")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "12,34.98765e2"
             << "1.23498765e+05";
-    QTest::newRow("C scientific with invalid group size")
+    BOBUIest::newRow("C scientific with invalid group size")
             << "C" << QDoubleValidator::ScientificNotation << 2 << "-12,34.98765e2"
             << "-1.23e+05";
-    QTest::newRow("C scientific truncate decimals")
+    BOBUIest::newRow("C scientific truncate decimals")
             << "C" << QDoubleValidator::ScientificNotation << -1
             << "1.23456789012345678901234567890E5"
             << "1.2345678901234567E+05";
-    QTest::newRow("C scientific skip trailing zeroes")
+    BOBUIest::newRow("C scientific skip trailing zeroes")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "1,234.5670000e3"
             << "1.234567e+06";
-    QTest::newRow("C scientific zero value")
+    BOBUIest::newRow("C scientific zero value")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "0.0"
             << "0e+00";
-    QTest::newRow("C scientific standard value")
+    BOBUIest::newRow("C scientific standard value")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "12.345"
             << "1.2345e+01";
-    QTest::newRow("C scientific no fractional part")
+    BOBUIest::newRow("C scientific no fractional part")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "1,234e2"
             << "1.234e+05";
-    QTest::newRow("C scientific negative no fractional part")
+    BOBUIest::newRow("C scientific negative no fractional part")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "-1,234e2"
             << "-1.234e+05";
-    QTest::newRow("C scientific no fractional and exponent")
+    BOBUIest::newRow("C scientific no fractional and exponent")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "1,234"
             << "1.234e+03";
-    QTest::newRow("C scientific negative no fractional and exponent")
+    BOBUIest::newRow("C scientific negative no fractional and exponent")
             << "C" << QDoubleValidator::ScientificNotation << -1 << "-1,234"
             << "-1.234e+03";
 
     // en locale uses '.' as decimal point and ',' as grouping separator.
     // en locale groups digits by default. 'E' is used in scientific notation.
-    QTest::newRow("en standard no digit grouping")
+    BOBUIest::newRow("en standard no digit grouping")
             << "en" << QDoubleValidator::StandardNotation << -1 << "-12.345"
             << "-12.345";
-    QTest::newRow("en standard with digit grouping")
+    BOBUIest::newRow("en standard with digit grouping")
             << "en" << QDoubleValidator::StandardNotation << -1 << "12,345.678"
             << "12,345.678";
-    QTest::newRow("en standard with invalid digit grouping")
+    BOBUIest::newRow("en standard with invalid digit grouping")
             << "en" << QDoubleValidator::StandardNotation << -1 << "-1,234,5.678"
             << "-12,345.678";
-    QTest::newRow("en standard with invalid group size")
+    BOBUIest::newRow("en standard with invalid group size")
             << "en" << QDoubleValidator::StandardNotation << 2 << "12,34.678"
             << "1,234.68";
-    QTest::newRow("en standard no fractional part")
+    BOBUIest::newRow("en standard no fractional part")
             << "en" << QDoubleValidator::StandardNotation << -1 << "-12,34"
             << "-1,234";
 
-    QTest::newRow("en scientific no digit grouping")
+    BOBUIest::newRow("en scientific no digit grouping")
             << "en" << QDoubleValidator::ScientificNotation << -1 << "-0.98765e2"
             << "-9.8765e+01";
-    QTest::newRow("en scientific with digit grouping")
+    BOBUIest::newRow("en scientific with digit grouping")
             << "en" << QDoubleValidator::ScientificNotation << -1 << "1,234.98765E-4"
             << "1.23498765E-01";
-    QTest::newRow("en scientific with invalid digit grouping")
+    BOBUIest::newRow("en scientific with invalid digit grouping")
             << "en" << QDoubleValidator::ScientificNotation << -1 << "-12,34.98765e2"
             << "-1.23498765e+05";
-    QTest::newRow("en scientific with invalid group size")
+    BOBUIest::newRow("en scientific with invalid group size")
             << "en" << QDoubleValidator::ScientificNotation << 2 << "12,34.98765E2"
             << "1.23E+05";
-    QTest::newRow("en scientific no fractional part")
+    BOBUIest::newRow("en scientific no fractional part")
             << "en" << QDoubleValidator::ScientificNotation << -1 << "12,34e2"
             << "1.234e+05";
-    QTest::newRow("en scientific negative no fractional part")
+    BOBUIest::newRow("en scientific negative no fractional part")
             << "en" << QDoubleValidator::ScientificNotation << -1 << "-12,34E2"
             << "-1.234E+05";
-    QTest::newRow("en scientific no fractional and exponent")
+    BOBUIest::newRow("en scientific no fractional and exponent")
             << "en" << QDoubleValidator::ScientificNotation << -1 << "1,234"
             << "1.234E+03";
-    QTest::newRow("en scientific negative no fractional and exponent")
+    BOBUIest::newRow("en scientific negative no fractional and exponent")
             << "en" << QDoubleValidator::ScientificNotation << -1 << "-1,234"
             << "-1.234E+03";
 
     // de locale uses ',' as decimal point and '.' as grouping separator.
     // de locale groups digits by default. 'E' is used in scientific notation.
-    QTest::newRow("de standard no digit grouping")
+    BOBUIest::newRow("de standard no digit grouping")
             << "de" << QDoubleValidator::StandardNotation << -1 << "12,345"
             << "12,345";
-    QTest::newRow("de standard with digit grouping")
+    BOBUIest::newRow("de standard with digit grouping")
             << "de" << QDoubleValidator::StandardNotation << -1 << "-12.345,678"
             << "-12.345,678";
-    QTest::newRow("de standard with invalid digit grouping")
+    BOBUIest::newRow("de standard with invalid digit grouping")
             << "de" << QDoubleValidator::StandardNotation << -1 << "1.234.5,678"
             << "12.345,678";
-    QTest::newRow("de standard with invalid group size")
+    BOBUIest::newRow("de standard with invalid group size")
             << "de" << QDoubleValidator::StandardNotation << 2 << "-12.34,678"
             << "-1.234,68";
-    QTest::newRow("de standard no fractional part")
+    BOBUIest::newRow("de standard no fractional part")
             << "de" << QDoubleValidator::StandardNotation << -1 << "12.34" << "1.234";
 
-    QTest::newRow("de scientific no digit grouping")
+    BOBUIest::newRow("de scientific no digit grouping")
             << "de" << QDoubleValidator::ScientificNotation << -1 << "0,98765e2"
             << "9,8765e+01";
-    QTest::newRow("de scientific with digit grouping")
+    BOBUIest::newRow("de scientific with digit grouping")
             << "de" << QDoubleValidator::ScientificNotation << -1 << "-1.234,98765E-4"
             << "-1,23498765E-01";
-    QTest::newRow("de scientific with invalid digit grouping")
+    BOBUIest::newRow("de scientific with invalid digit grouping")
             << "de" << QDoubleValidator::ScientificNotation << -1 << "12.34,98765e2"
             << "1,23498765e+05";
-    QTest::newRow("de scientific with invalid group size")
+    BOBUIest::newRow("de scientific with invalid group size")
             << "de" << QDoubleValidator::ScientificNotation << 2 << "-12.34,98765E2"
             << "-1,23E+05";
-    QTest::newRow("de scientific no fractional part")
+    BOBUIest::newRow("de scientific no fractional part")
             << "de" << QDoubleValidator::ScientificNotation << -1 << "1.234e2"
             << "1,234e+05";
-    QTest::newRow("de scientific negative no fractional part")
+    BOBUIest::newRow("de scientific negative no fractional part")
             << "de" << QDoubleValidator::ScientificNotation << -1 << "-1.234E2"
             << "-1,234E+05";
-    QTest::newRow("de scientific no fractional and exponent")
+    BOBUIest::newRow("de scientific no fractional and exponent")
             << "de" << QDoubleValidator::ScientificNotation << -1 << "12.34"
             << "1,234E+03";
-    QTest::newRow("de scientific negative no fractional and exponent")
+    BOBUIest::newRow("de scientific negative no fractional and exponent")
             << "de" << QDoubleValidator::ScientificNotation << -1 << "-12.34"
             << "-1,234E+03";
 
     // es locale uses ',' as decimal point and '.' as grouping separator.
     // It doesn't apply grouping unless the the next-to-least significant group
     // has more than one digit in it.
-    QTest::newRow("es standard no digit grouping")
+    BOBUIest::newRow("es standard no digit grouping")
             << "es" << QDoubleValidator::StandardNotation << -1 << "1234,567" << "1234,567";
-    QTest::newRow("es standard with digit grouping")
+    BOBUIest::newRow("es standard with digit grouping")
             << "es" << QDoubleValidator::StandardNotation << -1 << "-12.345,678" << "-12.345,678";
-    QTest::newRow("es standard with invalid group size")
+    BOBUIest::newRow("es standard with invalid group size")
             << "es" << QDoubleValidator::StandardNotation << -1 << "1.234.5,678" << "12.345,678";
-    QTest::newRow("es standard with invalid digit grouping")
+    BOBUIest::newRow("es standard with invalid digit grouping")
             << "es" << QDoubleValidator::StandardNotation << 2 << "-1.234,678" << "-1234,68";
-    QTest::newRow("es standard big with invalid digit grouping")
+    BOBUIest::newRow("es standard big with invalid digit grouping")
             << "es" << QDoubleValidator::StandardNotation << 2 << "-1234.678,9" << "-1.234.678,9";
-    QTest::newRow("es standard no fractional part")
+    BOBUIest::newRow("es standard no fractional part")
             << "es" << QDoubleValidator::StandardNotation << -1 << "12.34" << "1234";
 
     // hi locale uses '.' as decimal point and ',' as grouping separator.
     // The rightmost group is of three digits, all the others contain two
     // digits.
-    QTest::newRow("hi standard no digit grouping")
+    BOBUIest::newRow("hi standard no digit grouping")
             << "hi" << QDoubleValidator::StandardNotation << -1 << "123456.78"
             << "1,23,456.78";
-    QTest::newRow("hi standard with digit grouping")
+    BOBUIest::newRow("hi standard with digit grouping")
             << "hi" << QDoubleValidator::StandardNotation << -1 << "-12,345.678"
             << "-12,345.678";
-    QTest::newRow("hi standard with invalid digit grouping")
+    BOBUIest::newRow("hi standard with invalid digit grouping")
             << "hi" << QDoubleValidator::StandardNotation << -1 << "12,34,56.78"
             << "1,23,456.78";
-    QTest::newRow("hi standard no fractional part")
+    BOBUIest::newRow("hi standard no fractional part")
             << "hi" << QDoubleValidator::StandardNotation << -1 << "-12,345,6"
             << "-1,23,456";
 
-    QTest::newRow("hi scientific no digit grouping")
+    BOBUIest::newRow("hi scientific no digit grouping")
             << "hi" << QDoubleValidator::ScientificNotation << -1 << "-0.123e-2"
             << "-1.23e-03";
-    QTest::newRow("hi scientific with digit grouping")
+    BOBUIest::newRow("hi scientific with digit grouping")
             << "hi" << QDoubleValidator::ScientificNotation << -1 << "12,345.678E-2"
             << "1.2345678E+02";
-    QTest::newRow("hi scientific with invalid digit grouping")
+    BOBUIest::newRow("hi scientific with invalid digit grouping")
             << "hi" << QDoubleValidator::ScientificNotation << -1 << "-1,23,45.678e-2"
             << "-1.2345678e+02";
-    QTest::newRow("hi scientific no fractional part")
+    BOBUIest::newRow("hi scientific no fractional part")
             << "hi" << QDoubleValidator::ScientificNotation << -1 << "1,23,456E2"
             << "1.23456E+07";
-    QTest::newRow("hi scientific negative no fractional part")
+    BOBUIest::newRow("hi scientific negative no fractional part")
             << "hi" << QDoubleValidator::ScientificNotation << -1 << "-1,23,456e2"
             << "-1.23456e+07";
-    QTest::newRow("hi scientific no fractional and exponent")
+    BOBUIest::newRow("hi scientific no fractional and exponent")
             << "hi" << QDoubleValidator::ScientificNotation << -1 << "1,234,56"
             << "1.23456E+05";
-    QTest::newRow("hi scientific negative no fractional and exponent")
+    BOBUIest::newRow("hi scientific negative no fractional and exponent")
             << "hi" << QDoubleValidator::ScientificNotation << -1 << "-1,234,56"
             << "-1.23456E+05";
 }
@@ -649,105 +649,105 @@ void tst_QDoubleValidator::setRangeOverloads()
 
 void tst_QDoubleValidator::setRangeOverloads_data()
 {
-    QTest::addColumn<QDoubleValidator::Notation>("notation");
-    QTest::addColumn<int>("initialDecimals");
-    QTest::addColumn<double>("minimum");
-    QTest::addColumn<double>("maximum");
-    QTest::addColumn<int>("updatedDecimals");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QValidator::State>("initDecimalsState");
-    QTest::addColumn<QValidator::State>("updDecimalsState");
+    BOBUIest::addColumn<QDoubleValidator::Notation>("notation");
+    BOBUIest::addColumn<int>("initialDecimals");
+    BOBUIest::addColumn<double>("minimum");
+    BOBUIest::addColumn<double>("maximum");
+    BOBUIest::addColumn<int>("updatedDecimals");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QValidator::State>("initDecimalsState");
+    BOBUIest::addColumn<QValidator::State>("updDecimalsState");
 
-    QTest::newRow("scientific, 0 digits after point")
+    BOBUIest::newRow("scientific, 0 digits after point")
             << QDoubleValidator::ScientificNotation << -1 << -100.0 << 100.0 << 0
             << QString("1e1") << ACC << ACC;
-    QTest::newRow("scientific, 1 digits after point")
+    BOBUIest::newRow("scientific, 1 digits after point")
             << QDoubleValidator::ScientificNotation << -1 << -100.0 << 100.0 << 0
             << QString("1.2e1") << ACC << INV;
-    QTest::newRow("scientific, 3 digits after point, demand fewer")
+    BOBUIest::newRow("scientific, 3 digits after point, demand fewer")
             << QDoubleValidator::ScientificNotation << 3 << -100.0 << 100.0 << 1
             << QString("10.234e-1") << ACC << INV;
-    QTest::newRow("scientific, 3 digits after point, not in range")
+    BOBUIest::newRow("scientific, 3 digits after point, not in range")
             << QDoubleValidator::ScientificNotation << 3 << -100.0 << 100.0 << 5
             << QString("1.234e3") << ITM << ITM;
-    QTest::newRow("standard, 0 digits after point")
+    BOBUIest::newRow("standard, 0 digits after point")
             << QDoubleValidator::StandardNotation << -1 << -100.0 << 100.0 << 0
             << QString("12.") << ACC << ACC;
-    QTest::newRow("standard, 2 digits after point")
+    BOBUIest::newRow("standard, 2 digits after point")
             << QDoubleValidator::StandardNotation << -1 << -100.0 << 100.0 << 1
             << QString("12.34") << ACC << INV;
-    QTest::newRow("standard, 2 digits after point, not in range")
+    BOBUIest::newRow("standard, 2 digits after point, not in range")
             << QDoubleValidator::StandardNotation << -1 << -100.0 << 100.0 << 1
             << QString("123.45") << ITM << INV;
-    QTest::newRow("standard, 5 digits after point")
+    BOBUIest::newRow("standard, 5 digits after point")
             << QDoubleValidator::StandardNotation << 5 << -100.0 << 100.0 << 3
             << QString("12.34567") << ACC << INV;
 }
 
 void tst_QDoubleValidator::validateIntEquiv_data()
 {
-    QTest::addColumn<double>("minimum");
-    QTest::addColumn<double>("maximum");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QValidator::State>("state");
+    BOBUIest::addColumn<double>("minimum");
+    BOBUIest::addColumn<double>("maximum");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QValidator::State>("state");
 
-    QTest::newRow("1.1") << 0.0 << 10.0 << QString("") << ITM;
-    QTest::newRow("1.2") << 10.0 << 0.0 << QString("") << ITM;
+    BOBUIest::newRow("1.1") << 0.0 << 10.0 << QString("") << ITM;
+    BOBUIest::newRow("1.2") << 10.0 << 0.0 << QString("") << ITM;
 
-    QTest::newRow("2.1") << 0.0 << 10.0 << QString("-") << INV;
-    QTest::newRow("2.2") << 0.0 << 10.0 << QString("-0") << INV;
-    QTest::newRow("2.3") << -10.0 << -1.0 << QString("+") << INV;
-    QTest::newRow("2.4") << -10.0 << 10.0 << QString("-") << ITM;
-    QTest::newRow("2.5") << -10.0 << 10.0 << QString("+") << ITM;
-    QTest::newRow("2.5a") << -10.0 << -9.0 << QString("+") << INV;
-    QTest::newRow("2.6") << -10.0 << 10.0 << QString("+0") << ACC;
-    QTest::newRow("2.7") << -10.0 << 10.0 << QString("+1") << ACC;
-    QTest::newRow("2.8") << -10.0 << 10.0 << QString("+-") << INV;
-    QTest::newRow("2.9") << -10.0 << 10.0 << QString("-+") << INV;
+    BOBUIest::newRow("2.1") << 0.0 << 10.0 << QString("-") << INV;
+    BOBUIest::newRow("2.2") << 0.0 << 10.0 << QString("-0") << INV;
+    BOBUIest::newRow("2.3") << -10.0 << -1.0 << QString("+") << INV;
+    BOBUIest::newRow("2.4") << -10.0 << 10.0 << QString("-") << ITM;
+    BOBUIest::newRow("2.5") << -10.0 << 10.0 << QString("+") << ITM;
+    BOBUIest::newRow("2.5a") << -10.0 << -9.0 << QString("+") << INV;
+    BOBUIest::newRow("2.6") << -10.0 << 10.0 << QString("+0") << ACC;
+    BOBUIest::newRow("2.7") << -10.0 << 10.0 << QString("+1") << ACC;
+    BOBUIest::newRow("2.8") << -10.0 << 10.0 << QString("+-") << INV;
+    BOBUIest::newRow("2.9") << -10.0 << 10.0 << QString("-+") << INV;
 
-    QTest::newRow("3.1") << 0.0 << 10.0 << QString("12345678901234567890") << INV;
-    QTest::newRow("3.2") << 0.0 << 10.0 << QString("-12345678901234567890") << INV;
-    QTest::newRow("3.3") << 0.0 << 10.0 << QString("000000000000000000000") << ACC;
-    QTest::newRow("3.4") << 1.0 << 10.0 << QString("000000000000000000000") << ITM;
-    QTest::newRow("3.5") << 0.0 << 10.0 << QString("-000000000000000000000") << INV;
-    QTest::newRow("3.6") << -10.0 << -1.0 << QString("-000000000000000000000") << ITM;
-    QTest::newRow("3.7") << -10.0 << -1.0 << QString("-0000000000000000000001") << ACC;
+    BOBUIest::newRow("3.1") << 0.0 << 10.0 << QString("12345678901234567890") << INV;
+    BOBUIest::newRow("3.2") << 0.0 << 10.0 << QString("-12345678901234567890") << INV;
+    BOBUIest::newRow("3.3") << 0.0 << 10.0 << QString("000000000000000000000") << ACC;
+    BOBUIest::newRow("3.4") << 1.0 << 10.0 << QString("000000000000000000000") << ITM;
+    BOBUIest::newRow("3.5") << 0.0 << 10.0 << QString("-000000000000000000000") << INV;
+    BOBUIest::newRow("3.6") << -10.0 << -1.0 << QString("-000000000000000000000") << ITM;
+    BOBUIest::newRow("3.7") << -10.0 << -1.0 << QString("-0000000000000000000001") << ACC;
 
-    QTest::newRow("4.1") << 0.0 << 10.0 << QString(" ") << INV;
-    QTest::newRow("4.2") << 0.0 << 10.0 << QString(" 1") << INV;
-    QTest::newRow("4.3") << 0.0 << 10.0 << QString("1 ") << INV;
-    QTest::newRow("4.4") << 0.0 << 10.0 << QString("1.0") << INV;
-    QTest::newRow("4.5") << 0.0 << 10.0 << QString("0.1") << INV;
-    QTest::newRow("4.6") << 0.0 << 10.0 << QString(".1") << INV;
-    QTest::newRow("4.7") << 0.0 << 10.0 << QString("-1.0") << INV;
+    BOBUIest::newRow("4.1") << 0.0 << 10.0 << QString(" ") << INV;
+    BOBUIest::newRow("4.2") << 0.0 << 10.0 << QString(" 1") << INV;
+    BOBUIest::newRow("4.3") << 0.0 << 10.0 << QString("1 ") << INV;
+    BOBUIest::newRow("4.4") << 0.0 << 10.0 << QString("1.0") << INV;
+    BOBUIest::newRow("4.5") << 0.0 << 10.0 << QString("0.1") << INV;
+    BOBUIest::newRow("4.6") << 0.0 << 10.0 << QString(".1") << INV;
+    BOBUIest::newRow("4.7") << 0.0 << 10.0 << QString("-1.0") << INV;
 
-    QTest::newRow("5.1a") << 6.0 << 8.0 << QString("5") << ITM;
-    QTest::newRow("5.1b") << 6.0 << 8.0 << QString("56") << INV;
-    QTest::newRow("5.2") << 6.0 << 8.0 << QString("7") << ACC;
-    QTest::newRow("5.3a") << 6.0 << 8.0 << QString("9") << ITM;
-    QTest::newRow("5.3b") << 6.0 << 8.0 << QString("-") << INV;
-    QTest::newRow("5.4a") << -8.0 << -6.0 << QString("+") << INV;
-    QTest::newRow("5.4b") << -8.0 << -6.0 << QString("+5") << INV;
-    QTest::newRow("5.4c") << -8.0 << -6.0 << QString("-5") << ITM;
-    QTest::newRow("5.5") << -8.0 << -6.0 << QString("-7") << ACC;
-    QTest::newRow("5.6") << -8.0 << -6.0 << QString("-9") << ITM;
-    QTest::newRow("5.7") << -8.0 << -6.0 << QString("5") << ITM;
-    QTest::newRow("5.8") << -8.0 << -6.0 << QString("7") << ITM;
-    QTest::newRow("5.9") << -8.0 << -6.0 << QString("9") << ITM;
-    QTest::newRow("5.10") << -6.0 << 8.0 << QString("-5") << ACC;
-    QTest::newRow("5.11") << -6.0 << 8.0 << QString("5") << ACC;
-    QTest::newRow("5.12") << -6.0 << 8.0 << QString("-7") << ITM;
-    QTest::newRow("5.13") << -6.0 << 8.0 << QString("7") << ACC;
-    QTest::newRow("5.14") << -6.0 << 8.0 << QString("-9") << ITM;
-    QTest::newRow("5.15") << -6.0 << 8.0 << QString("9") << ITM;
+    BOBUIest::newRow("5.1a") << 6.0 << 8.0 << QString("5") << ITM;
+    BOBUIest::newRow("5.1b") << 6.0 << 8.0 << QString("56") << INV;
+    BOBUIest::newRow("5.2") << 6.0 << 8.0 << QString("7") << ACC;
+    BOBUIest::newRow("5.3a") << 6.0 << 8.0 << QString("9") << ITM;
+    BOBUIest::newRow("5.3b") << 6.0 << 8.0 << QString("-") << INV;
+    BOBUIest::newRow("5.4a") << -8.0 << -6.0 << QString("+") << INV;
+    BOBUIest::newRow("5.4b") << -8.0 << -6.0 << QString("+5") << INV;
+    BOBUIest::newRow("5.4c") << -8.0 << -6.0 << QString("-5") << ITM;
+    BOBUIest::newRow("5.5") << -8.0 << -6.0 << QString("-7") << ACC;
+    BOBUIest::newRow("5.6") << -8.0 << -6.0 << QString("-9") << ITM;
+    BOBUIest::newRow("5.7") << -8.0 << -6.0 << QString("5") << ITM;
+    BOBUIest::newRow("5.8") << -8.0 << -6.0 << QString("7") << ITM;
+    BOBUIest::newRow("5.9") << -8.0 << -6.0 << QString("9") << ITM;
+    BOBUIest::newRow("5.10") << -6.0 << 8.0 << QString("-5") << ACC;
+    BOBUIest::newRow("5.11") << -6.0 << 8.0 << QString("5") << ACC;
+    BOBUIest::newRow("5.12") << -6.0 << 8.0 << QString("-7") << ITM;
+    BOBUIest::newRow("5.13") << -6.0 << 8.0 << QString("7") << ACC;
+    BOBUIest::newRow("5.14") << -6.0 << 8.0 << QString("-9") << ITM;
+    BOBUIest::newRow("5.15") << -6.0 << 8.0 << QString("9") << ITM;
 
-    QTest::newRow("6.1") << 100.0 << 102.0 << QString("11") << ITM;
-    QTest::newRow("6.2") << 100.0 << 102.0 << QString("-11") << INV;
+    BOBUIest::newRow("6.1") << 100.0 << 102.0 << QString("11") << ITM;
+    BOBUIest::newRow("6.2") << 100.0 << 102.0 << QString("-11") << INV;
 
-    QTest::newRow("7.1") << 0.0 << 10.0 << QString("100") << INV;
-    QTest::newRow("7.2") << 0.0 << -10.0 << QString("100") << INV;
-    QTest::newRow("7.3") << 0.0 << -10.0 << QString("-100") << INV;
-    QTest::newRow("7.4") << -100.0 << 10.0 << QString("100") << ITM;
+    BOBUIest::newRow("7.1") << 0.0 << 10.0 << QString("100") << INV;
+    BOBUIest::newRow("7.2") << 0.0 << -10.0 << QString("100") << INV;
+    BOBUIest::newRow("7.3") << 0.0 << -10.0 << QString("-100") << INV;
+    BOBUIest::newRow("7.4") << -100.0 << 10.0 << QString("100") << ITM;
 }
 
 void tst_QDoubleValidator::validateIntEquiv()
@@ -768,5 +768,5 @@ void tst_QDoubleValidator::validateIntEquiv()
     QCOMPARE(dv.validate(input, dummy), state);
 }
 
-QTEST_APPLESS_MAIN(tst_QDoubleValidator)
+BOBUIEST_APPLESS_MAIN(tst_QDoubleValidator)
 #include "tst_qdoublevalidator.moc"

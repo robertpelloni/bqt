@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <private/qhighdpiscaling_p.h>
 #include <qpa/qplatformscreen.h>
 #include <qpa/qplatformnativeinterface.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QStringView>
 #include <QSignalSpy>
 
-Q_LOGGING_CATEGORY(lcTests, "qt.gui.tests")
+Q_LOGGING_CATEGORY(lcTests, "bobui.gui.tests")
 
 class tst_QHighDpi: public QObject
 {
@@ -38,11 +38,11 @@ private slots:
     void screenDpiAndDpr();
     void screenDpiChange();
     void screenDpiChangeWithWindow();
-    void environment_QT_SCALE_FACTOR();
-    void environment_QT_SCREEN_SCALE_FACTORS_data();
-    void environment_QT_SCREEN_SCALE_FACTORS();
-    void environment_QT_USE_PHYSICAL_DPI();
-    void environment_QT_SCALE_FACTOR_ROUNDING_POLICY();
+    void environment_BOBUI_SCALE_FACTOR();
+    void environment_BOBUI_SCREEN_SCALE_FACTORS_data();
+    void environment_BOBUI_SCREEN_SCALE_FACTORS();
+    void environment_BOBUI_USE_PHYSICAL_DPI();
+    void environment_BOBUI_SCALE_FACTOR_ROUNDING_POLICY();
     void application_setScaleFactorRoundingPolicy();
     void screenAt_data();
     void screenAt();
@@ -110,7 +110,7 @@ QJsonArray tst_QHighDpi::createStandardScreens(const QList<qreal> &dpiValues)
 QGuiApplication *tst_QHighDpi::createOffscreenApplication(const QByteArray &jsonConfig)
 {
     // Write offscreen platform config file
-    QFile configFile(QLatin1String("qt-offscreen-test-config.json"));
+    QFile configFile(QLatin1String("bobui-offscreen-test-config.json"));
     if (!configFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
     configFile.resize(0); // truncate
     if (configFile.write(jsonConfig) == -1)
@@ -162,15 +162,15 @@ void tst_QHighDpi::initTestCase()
 void tst_QHighDpi::standardScreenDpiTestData()
 {
     // We run each test under different DPI configurations, each with three screens:
-    QTest::addColumn<QList<qreal>>("dpiValues");
+    BOBUIest::addColumn<QList<qreal>>("dpiValues");
     // Standard-DPI sanity check
-    QTest::newRow("96") << QList<qreal> { 96, 96, 96 };
+    BOBUIest::newRow("96") << QList<qreal> { 96, 96, 96 };
     // 2x high DPI
-    QTest::newRow("192") << QList<qreal> { 192, 192, 192 };
+    BOBUIest::newRow("192") << QList<qreal> { 192, 192, 192 };
     // Mixed desktop DPI (1.5x, 1.75x, 2x)
-    QTest::newRow("144-168-192") << QList<qreal> { 144, 168, 192 };
+    BOBUIest::newRow("144-168-192") << QList<qreal> { 144, 168, 192 };
     // Densities from Android's DisplayMetrics docs, normalized to base 96 DPI
-    QTest::newRow("240-252-360") << QList<qreal> { 400./160 * 96, 420./160 * 96, 600./160 * 96 };
+    BOBUIest::newRow("240-252-360") << QList<qreal> { 400./160 * 96, 420./160 * 96, 600./160 * 96 };
 }
 
 void tst_QHighDpi::setOffscreenConfiguration(const QJsonObject &configuration)
@@ -195,10 +195,10 @@ void tst_QHighDpi::cleanup()
 {
     // Some test functions set environment variables. Unset them here,
     // in order to avoid getting confusing follow-on errors on test failures.
-    qunsetenv("QT_SCALE_FACTOR");
-    qunsetenv("QT_SCREEN_SCALE_FACTORS");
-    qunsetenv("QT_USE_PHYSICAL_DPI");
-    qunsetenv("QT_SCALE_FACTOR_ROUNDING_POLICY");
+    qunsetenv("BOBUI_SCALE_FACTOR");
+    qunsetenv("BOBUI_SCREEN_SCALE_FACTORS");
+    qunsetenv("BOBUI_USE_PHYSICAL_DPI");
+    qunsetenv("BOBUI_SCALE_FACTOR_ROUNDING_POLICY");
 }
 
 void tst_QHighDpi::qhighdpiscaling_data()
@@ -260,7 +260,7 @@ void tst_QHighDpi::screenDpiChange()
     // Set new DPI
     int newDpi = 192;
     QJsonValue config = offscreenConfiguration();
-    // API defect until Qt 7, so go indirectly via CBOR
+    // API defect until BobUI 7, so go indirectly via CBOR
     QCborMap map = QCborMap::fromJsonObject(config.toObject());
     map[QLatin1String("screens")][0][QLatin1String("logicalDpi")] = newDpi;
     map[QLatin1String("screens")][1][QLatin1String("logicalDpi")] = newDpi;
@@ -315,16 +315,16 @@ void tst_QHighDpi::screenDpiChangeWithWindow()
     }
 }
 
-void tst_QHighDpi::environment_QT_SCALE_FACTOR()
+void tst_QHighDpi::environment_BOBUI_SCALE_FACTOR()
 {
     qreal factor = 3.1415;
-    qputenv("QT_SCALE_FACTOR", std::to_string(factor));
+    qputenv("BOBUI_SCALE_FACTOR", std::to_string(factor));
 
     QList<qreal> dpiValues { 96, 144, 192 };
     std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(dpiValues));
     int i = 0;
     for (QScreen *screen : app->screens()) {
-        // Verify that QT_SCALE_FACTOR applies as a multiplicative factor.
+        // Verify that BOBUI_SCALE_FACTOR applies as a multiplicative factor.
         qreal expextedDpr = (dpiValues[i] / standardBaseDpi) * factor;
         ++i;
         QCOMPARE(screen->devicePixelRatio(), expextedDpr);
@@ -334,36 +334,36 @@ void tst_QHighDpi::environment_QT_SCALE_FACTOR()
     }
 }
 
-void tst_QHighDpi::environment_QT_SCREEN_SCALE_FACTORS_data()
+void tst_QHighDpi::environment_BOBUI_SCREEN_SCALE_FACTORS_data()
 {
-    QTest::addColumn<QList<qreal>>("platformScreenDpi"); // The to-be-overridden values
-    QTest::addColumn<QByteArray>("environment");
-    QTest::addColumn<QList<qreal>>("expectedDprValues");
+    BOBUIest::addColumn<QList<qreal>>("platformScreenDpi"); // The to-be-overridden values
+    BOBUIest::addColumn<QByteArray>("environment");
+    BOBUIest::addColumn<QList<qreal>>("expectedDprValues");
 
     QList<qreal> platformScreenDpi { 192, 216, 240 };
     QList<qreal> fromPlatformScreenDpr { 2, 2.25, 2.5 };
     QList<qreal> fromEnvironmentDpr { 1, 1.5, 2 };
 
     // Correct env. variable values.
-    QTest::newRow("list") << platformScreenDpi << QByteArray("1;1.5;2") << fromEnvironmentDpr;
-    QTest::newRow("names") << platformScreenDpi << QByteArray("screen#1=1.5;screen#0=1;screen#2=2") << fromEnvironmentDpr;
+    BOBUIest::newRow("list") << platformScreenDpi << QByteArray("1;1.5;2") << fromEnvironmentDpr;
+    BOBUIest::newRow("names") << platformScreenDpi << QByteArray("screen#1=1.5;screen#0=1;screen#2=2") << fromEnvironmentDpr;
 
     // Various broken env. variable values. Should not crash,
     // and should not change the DPR.
-    QTest::newRow("empty") << platformScreenDpi << QByteArray("") << fromPlatformScreenDpr;
-    QTest::newRow("bogus-1") << platformScreenDpi << QByteArray("foo=bar") << fromPlatformScreenDpr;
-    QTest::newRow("bogus-2") << platformScreenDpi << QByteArray("fo0==2;;=;==;=3") << fromPlatformScreenDpr;
+    BOBUIest::newRow("empty") << platformScreenDpi << QByteArray("") << fromPlatformScreenDpr;
+    BOBUIest::newRow("bogus-1") << platformScreenDpi << QByteArray("foo=bar") << fromPlatformScreenDpr;
+    BOBUIest::newRow("bogus-2") << platformScreenDpi << QByteArray("fo0==2;;=;==;=3") << fromPlatformScreenDpr;
 }
 
-void tst_QHighDpi::environment_QT_SCREEN_SCALE_FACTORS()
+void tst_QHighDpi::environment_BOBUI_SCREEN_SCALE_FACTORS()
 {
     QFETCH(QList<qreal>, platformScreenDpi);
     QFETCH(QByteArray, environment);
     QFETCH(QList<qreal>, expectedDprValues);
 
-    qputenv("QT_SCREEN_SCALE_FACTORS", environment);
+    qputenv("BOBUI_SCREEN_SCALE_FACTORS", environment);
 
-    // Verify that setting QT_SCREEN_SCALE_FACTORS overrides the from-platform-screen-DPI DPR.
+    // Verify that setting BOBUI_SCREEN_SCALE_FACTORS overrides the from-platform-screen-DPI DPR.
     {
         std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(platformScreenDpi));
         int i = 0;
@@ -377,8 +377,8 @@ void tst_QHighDpi::environment_QT_SCREEN_SCALE_FACTORS()
         }
     }
 
-    // Verify that setHighDpiScaleFactorRoundingPolicy applies to QT_SCREEN_SCALE_FACTORS as well
-    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
+    // Verify that setHighDpiScaleFactorRoundingPolicy applies to BOBUI_SCREEN_SCALE_FACTORS as well
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(BobUI::HighDpiScaleFactorRoundingPolicy::Round);
     {
         std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(platformScreenDpi));
         int i = 0;
@@ -390,9 +390,9 @@ void tst_QHighDpi::environment_QT_SCREEN_SCALE_FACTORS()
     }
 }
 
-void tst_QHighDpi::environment_QT_USE_PHYSICAL_DPI()
+void tst_QHighDpi::environment_BOBUI_USE_PHYSICAL_DPI()
 {
-    qputenv("QT_USE_PHYSICAL_DPI", "1");
+    qputenv("BOBUI_USE_PHYSICAL_DPI", "1");
 
     QList<qreal> dpiValues { 96, 144, 192 };
     std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(dpiValues));
@@ -415,25 +415,25 @@ void tst_QHighDpi::environment_QT_USE_PHYSICAL_DPI()
     }
 }
 
-void tst_QHighDpi::environment_QT_SCALE_FACTOR_ROUNDING_POLICY()
+void tst_QHighDpi::environment_BOBUI_SCALE_FACTOR_ROUNDING_POLICY()
 {
     QList<qreal> dpiValues { 96, 144, 192 };
 
-    qputenv("QT_SCALE_FACTOR_ROUNDING_POLICY", "PassThrough");
+    qputenv("BOBUI_SCALE_FACTOR_ROUNDING_POLICY", "PassThrough");
     {
         std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(dpiValues));
         for (int i = 0; i < dpiValues.size(); ++i)
             QCOMPARE(app->screens()[i]->devicePixelRatio(), dpiValues[i] / qreal(96));
     }
 
-    qputenv("QT_SCALE_FACTOR_ROUNDING_POLICY", "Round");
+    qputenv("BOBUI_SCALE_FACTOR_ROUNDING_POLICY", "Round");
     {
         std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(dpiValues));
         for (int i = 0; i < dpiValues.size(); ++i)
             QCOMPARE(app->screens()[i]->devicePixelRatio(), qRound(dpiValues[i] / qreal(96)));
     }
 
-    qunsetenv("QT_SCALE_FACTOR_ROUNDING_POLICY");
+    qunsetenv("BOBUI_SCALE_FACTOR_ROUNDING_POLICY");
     {
         std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(dpiValues));
         for (int i = 0; i < dpiValues.size(); ++i)
@@ -444,14 +444,14 @@ void tst_QHighDpi::environment_QT_SCALE_FACTOR_ROUNDING_POLICY()
 void tst_QHighDpi::application_setScaleFactorRoundingPolicy()
 {
     QList<qreal> dpiValues { 96, 144, 192 };
-    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(BobUI::HighDpiScaleFactorRoundingPolicy::Round);
     {
         std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(dpiValues));
         for (int i = 0; i < dpiValues.size(); ++i)
             QCOMPARE(app->screens()[i]->devicePixelRatio(), qRound(dpiValues[i] / qreal(96)));
     }
 
-    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(BobUI::HighDpiScaleFactorRoundingPolicy::PassThrough);
     {
         std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(dpiValues));
         for (int i = 0; i < dpiValues.size(); ++i)
@@ -459,8 +459,8 @@ void tst_QHighDpi::application_setScaleFactorRoundingPolicy()
     }
 
     // Verify that environment overrides app setting
-    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
-    qputenv("QT_SCALE_FACTOR_ROUNDING_POLICY", "PassThrough");
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(BobUI::HighDpiScaleFactorRoundingPolicy::Round);
+    qputenv("BOBUI_SCALE_FACTOR_ROUNDING_POLICY", "PassThrough");
     {
         std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(dpiValues));
         for (int i = 0; i < dpiValues.size(); ++i)
@@ -473,7 +473,7 @@ void tst_QHighDpi::minimumDpr()
     QList<qreal> dpiValues { 40, 60, 95 };
     std::unique_ptr<QGuiApplication> app(createStandardOffscreenApp(dpiValues));
     for (QScreen *screen : app->screens()) {
-        // Qt does not currently support DPR values < 1. Make sure
+        // BobUI does not currently support DPR values < 1. Make sure
         // the minimum DPR value is 1, also when the screen reports
         // a low DPI.
         QCOMPARE(screen->devicePixelRatio(), 1);
@@ -482,10 +482,10 @@ void tst_QHighDpi::minimumDpr()
     }
 }
 
-QT_BEGIN_NAMESPACE
-extern int qt_defaultDpiX();
-extern int qt_defaultDpiY();
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+extern int bobui_defaultDpiX();
+extern int bobui_defaultDpiY();
+BOBUI_END_NAMESPACE
 
 void tst_QHighDpi::noscreens()
 {
@@ -495,10 +495,10 @@ void tst_QHighDpi::noscreens()
 
     QCOMPARE(qApp->devicePixelRatio(), 1);
 
-    // Test calling qt_defaultDpiX/Y: These may be called early during QGuiApplication
+    // Test calling bobui_defaultDpiX/Y: These may be called early during QGuiApplication
     // initialization, before the platform plugin has created screen objects. They
     // should then 1) not crash and 2) return some default value.
-    QCOMPARE(qt_defaultDpiX(), qt_defaultDpiY());
+    QCOMPARE(bobui_defaultDpiX(), bobui_defaultDpiY());
 }
 
 void tst_QHighDpi::screenAt_data()
@@ -533,7 +533,7 @@ void tst_QHighDpi::screenAt()
         QCOMPARE(app->screenAt(screen->geometry().topLeft() + QPoint(0, -1)), nullptr);
         QCOMPARE(app->screenAt(screen->geometry().bottomRight() + QPoint(0, +1)), nullptr);
 
-        // check the "gaps" created by Qt::AA_EnableHighDpiScaling: no screen there
+        // check the "gaps" created by BobUI::AA_EnableHighDpiScaling: no screen there
         if (dpi > 96) {
             QCOMPARE(app->screenAt(screen->geometry().topLeft() + QPoint(-1, 0)), nullptr);
             QCOMPARE(app->screenAt(screen->geometry().bottomRight() + QPoint(1, 0)), nullptr);
@@ -714,13 +714,13 @@ void tst_QHighDpi::mouseEvents()
         topLevelWindow.setPosition(screen->geometry().center());
         topLevelWindow.show();
 
-        QTest::mouseClick(&topLevelWindow, Qt::LeftButton, Qt::KeyboardModifiers(), mouseTestPoint);
+        BOBUIest::mouseClick(&topLevelWindow, BobUI::LeftButton, BobUI::KeyboardModifiers(), mouseTestPoint);
         MousePressTestWindow childWindow(&topLevelWindow);
         childWindow.m_mouseTestPoint = mouseTestPoint;
         childWindow.resize(QSize(20, 20));
         childWindow.setPosition(QPoint(15, 15));
         childWindow.show();
-        QTest::mouseClick(&childWindow, Qt::LeftButton, Qt::KeyboardModifiers(), mouseTestPoint);
+        BOBUIest::mouseClick(&childWindow, BobUI::LeftButton, BobUI::KeyboardModifiers(), mouseTestPoint);
     }
 
     // Verify mouse event coordinates for a window spanning screen 0 and screen 1
@@ -739,9 +739,9 @@ void tst_QHighDpi::mouseEvents()
     QCOMPARE(app->screenAt(window.mapToGlobal(screen1Point)), app->screens()[1]);
 
     window.m_mouseTestPoint = screen0Point;
-    QTest::mouseClick(&window, Qt::LeftButton, Qt::KeyboardModifiers(), screen0Point);
+    BOBUIest::mouseClick(&window, BobUI::LeftButton, BobUI::KeyboardModifiers(), screen0Point);
     window.m_mouseTestPoint = screen1Point;
-    QTest::mouseClick(&window, Qt::LeftButton, Qt::KeyboardModifiers(), screen1Point);
+    BOBUIest::mouseClick(&window, BobUI::LeftButton, BobUI::KeyboardModifiers(), screen1Point);
 }
 
 void tst_QHighDpi::mouseVelocity_data()
@@ -781,7 +781,7 @@ void tst_QHighDpi::mouseVelocity()
     };
 
     // Verify velocity direction and sign on each screen
-    // FYI: Turn on the qt.pointer.velocity logging category to see how it's calculated
+    // FYI: Turn on the bobui.pointer.velocity logging category to see how it's calculated
     for (QScreen *screen : app->screens()) {
         MouseVelocityTestWindow topLevelWindow;
         topLevelWindow.resize(QSize(120, 120));
@@ -799,16 +799,16 @@ void tst_QHighDpi::mouseVelocity()
                 // move closer to p, decelerating, to get the velocity down to a small value
                 for (int i = 0; i < 12; ++i) {
                     endP += (p - endP) / 4;
-                    QTest::mouseMove(&topLevelWindow, endP, 3 * i);
+                    BOBUIest::mouseMove(&topLevelWindow, endP, 3 * i);
                 }
                 qCDebug(lcTests) << "beginning drag with dx" << xDelta << "dy" << yDelta;
-                QTest::mouseMove(&topLevelWindow, p, 10);
-                QTest::mousePress(&topLevelWindow, Qt::LeftButton, {}, p);
+                BOBUIest::mouseMove(&topLevelWindow, p, 10);
+                BOBUIest::mousePress(&topLevelWindow, BobUI::LeftButton, {}, p);
                 QVERIFY(qAbs(topLevelWindow.velocity.x()) < 50);
                 QVERIFY(qAbs(topLevelWindow.velocity.y()) < 50);
                 for (int i = 0; i < 4; ++i) {
                     p += QPoint(xDelta, yDelta);
-                    QTest::mouseMove(&topLevelWindow, p, 10);
+                    BOBUIest::mouseMove(&topLevelWindow, p, 10);
                     if (xDelta) {
                         // same sign and decent magnitude:
                         // 10 px in 10 ms =~ 1000 px / second; should be in logical coordinates on any screen
@@ -829,7 +829,7 @@ void tst_QHighDpi::mouseVelocity()
                     minVx = qMin(topLevelWindow.velocity.x(), minVx);
                     minVy = qMin(topLevelWindow.velocity.y(), minVy);
                 }
-                QTest::mouseRelease(&topLevelWindow, Qt::LeftButton, {}, p);
+                BOBUIest::mouseRelease(&topLevelWindow, BobUI::LeftButton, {}, p);
                 endP = p; // QED
             }
         }
@@ -889,4 +889,4 @@ void tst_QHighDpi::setScreenFactorEmits()
 }
 
 #include "tst_qhighdpi.moc"
-QTEST_APPLESS_MAIN(tst_QHighDpi);
+BOBUIEST_APPLESS_MAIN(tst_QHighDpi);

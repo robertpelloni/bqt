@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // This file is included from qnsview.mm, and only used to organize the code
 
@@ -87,14 +87,14 @@ static bool sendAsShortcut(const KeyEvent &keyEvent, QWindow *window)
 
         QObject *focusObject = m_platformWindow ? m_platformWindow->window()->focusObject() : nullptr;
         if (m_sendKeyEvent && focusObject) {
-            if (auto queryResult = queryInputMethod(focusObject, Qt::ImHints)) {
-                auto hints = static_cast<Qt::InputMethodHints>(queryResult.value(Qt::ImHints).toUInt());
+            if (auto queryResult = queryInputMethod(focusObject, BobUI::ImHints)) {
+                auto hints = static_cast<BobUI::InputMethodHints>(queryResult.value(BobUI::ImHints).toUInt());
 
                 // Make sure we send dead keys and the next key to the input method for composition
                 const bool isDeadKey = !nsevent.characters.length;
-                const bool ignoreHidden = (hints & Qt::ImhHiddenText) && !isDeadKey && !m_lastKeyDead;
+                const bool ignoreHidden = (hints & BobUI::ImhHiddenText) && !isDeadKey && !m_lastKeyDead;
 
-                if (!(hints & Qt::ImhDigitsOnly || hints & Qt::ImhFormattedNumbersOnly || ignoreHidden)) {
+                if (!(hints & BobUI::ImhDigitsOnly || hints & BobUI::ImhFormattedNumbersOnly || ignoreHidden)) {
                     // Pass the key event to the input method, and assume it handles the event,
                     // unless we explicit set m_sendKeyEvent to deliver as a normal key event.
                     m_sendKeyEvent = false;
@@ -152,12 +152,12 @@ static bool sendAsShortcut(const KeyEvent &keyEvent, QWindow *window)
 
     const bool accepted = [self handleKeyEvent:nsevent];
 
-    // When Qt is used to implement a plugin for a native application we
+    // When BobUI is used to implement a plugin for a native application we
     // want to propagate unhandled events to other native views. However,
-    // Qt does not always set the accepted state correctly (in particular
+    // BobUI does not always set the accepted state correctly (in particular
     // for return key events), so do this for plugin applications only
     // to prevent incorrect forwarding in the general case.
-    const bool shouldPropagate = QCoreApplication::testAttribute(Qt::AA_PluginApplication) && !accepted;
+    const bool shouldPropagate = QCoreApplication::testAttribute(BobUI::AA_PluginApplication) && !accepted;
 
     // Track keyDown acceptance/forward state for later acceptance of the keyUp.
     if (!shouldPropagate)
@@ -174,8 +174,8 @@ static bool sendAsShortcut(const KeyEvent &keyEvent, QWindow *window)
 
     const bool keyUpAccepted = [self handleKeyEvent:nsevent];
 
-    // Propagate the keyUp if neither Qt accepted it nor the corresponding KeyDown was
-    // accepted. Qt text controls will often not use and ignore keyUp events, but we
+    // Propagate the keyUp if neither BobUI accepted it nor the corresponding KeyDown was
+    // accepted. BobUI text controls will often not use and ignore keyUp events, but we
     // want to avoid propagating unmatched keyUps.
     const bool keyDownAccepted = m_acceptedKeyDowns.remove(nsevent.keyCode);
     if (!keyUpAccepted && !keyDownAccepted)
@@ -198,7 +198,7 @@ static bool sendAsShortcut(const KeyEvent &keyEvent, QWindow *window)
     }
 
     // Send Command+Key_Period and Escape as normal keypresses so that
-    // the key sequence is delivered through Qt. That way clients can
+    // the key sequence is delivered through BobUI. That way clients can
     // intercept the shortcut and override its effect.
     [self handleKeyEvent:currentEvent];
 }
@@ -216,31 +216,31 @@ static bool sendAsShortcut(const KeyEvent &keyEvent, QWindow *window)
     NSEventModifierFlags newModifiers = lastKnownModifiers ^ keyEvent.nativeModifiers;
     m_lastKnownModifiers = keyEvent.nativeModifiers;
 
-    static constexpr std::tuple<NSEventModifierFlags, Qt::Key> modifierMap[] = {
-        { NSEventModifierFlagShift, Qt::Key_Shift },
-        { NSEventModifierFlagControl, Qt::Key_Meta },
-        { NSEventModifierFlagCommand, Qt::Key_Control },
-        { NSEventModifierFlagOption, Qt::Key_Alt },
-        { NSEventModifierFlagCapsLock, Qt::Key_CapsLock }
+    static constexpr std::tuple<NSEventModifierFlags, BobUI::Key> modifierMap[] = {
+        { NSEventModifierFlagShift, BobUI::Key_Shift },
+        { NSEventModifierFlagControl, BobUI::Key_Meta },
+        { NSEventModifierFlagCommand, BobUI::Key_Control },
+        { NSEventModifierFlagOption, BobUI::Key_Alt },
+        { NSEventModifierFlagCapsLock, BobUI::Key_CapsLock }
     };
 
-    for (auto [macModifier, qtKey] : modifierMap) {
+    for (auto [macModifier, bobuiKey] : modifierMap) {
         if (!(newModifiers & macModifier))
             continue;
 
         // FIXME: Use QAppleKeyMapper helper
-        if (qApp->testAttribute(Qt::AA_MacDontSwapCtrlAndMeta)) {
-            if (qtKey == Qt::Key_Meta)
-                qtKey = Qt::Key_Control;
-            else if (qtKey == Qt::Key_Control)
-                qtKey = Qt::Key_Meta;
+        if (qApp->testAttribute(BobUI::AA_MacDontSwapCtrlAndMeta)) {
+            if (bobuiKey == BobUI::Key_Meta)
+                bobuiKey = BobUI::Key_Control;
+            else if (bobuiKey == BobUI::Key_Control)
+                bobuiKey = BobUI::Key_Meta;
         }
 
         KeyEvent modifierEvent = keyEvent;
         modifierEvent.type = lastKnownModifiers & macModifier
                            ? QEvent::KeyRelease : QEvent::KeyPress;
 
-        modifierEvent.key = qtKey;
+        modifierEvent.key = bobuiKey;
 
         // FIXME: Shouldn't this be based on lastKnownModifiers?
         modifierEvent.modifiers ^= QAppleKeyMapper::fromCocoaModifiers(macModifier);
@@ -254,7 +254,7 @@ static bool sendAsShortcut(const KeyEvent &keyEvent, QWindow *window)
     }
 }
 
-#if QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
+#if BOBUI_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
 - (void)contextMenuKeyDown:(NSEvent *)nsevent
 {
     qCDebug(lcQpaKeys) << "Handling context menu key down for" << nsevent;
@@ -275,7 +275,7 @@ static bool sendAsShortcut(const KeyEvent &keyEvent, QWindow *window)
 
 @end
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // -------------------------------------------------------------------------
 
@@ -362,4 +362,4 @@ QDebug operator<<(QDebug debug, const KeyEvent &e)
     return debug;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

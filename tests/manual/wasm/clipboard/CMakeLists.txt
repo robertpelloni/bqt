@@ -1,30 +1,30 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## clipboard Binary:
 #####################################################################
 
-qt_internal_add_manual_test(clipboard
+bobui_internal_add_manual_test(clipboard
     GUI
     SOURCES
         main.cpp
         mainwindow.cpp mainwindow.h mainwindow.ui
     NO_PCH_SOURCES
-        main.cpp # undef QT_NO_FOREACH
+        main.cpp # undef BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Core
+        BobUI::Gui
+        BobUI::Widgets
     ENABLE_AUTOGEN_TOOLS
         uic
 )
 # Resources:
 set(data_resource_files
-    "data/qticon64.png"
+    "data/bobuiicon64.png"
 )
 
-qt_internal_add_resource(clipboard "data"
+bobui_internal_add_resource(clipboard "data"
     PREFIX
         "/"
     FILES
@@ -34,7 +34,7 @@ qt_internal_add_resource(clipboard "data"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(clipboard CONDITION (QT_MAJOR_VERSION GREATER 4)
+bobui_internal_extend_target(clipboard CONDITION (BOBUI_MAJOR_VERSION GREATER 4)
     LIBRARIES
-        Qt::Widgets
+        BobUI::Widgets
 )

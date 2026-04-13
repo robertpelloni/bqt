@@ -1,11 +1,11 @@
 // Copyright (C) 2021 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QObject>
 #include <QScopeGuard>
 #include <QSharedPointer>
-#include <QTest>
+#include <BOBUIest>
 
 #include <atomic>
 #include <memory>
@@ -180,6 +180,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_QSharedPointer)
+BOBUIEST_MAIN(tst_QSharedPointer)
 
 #include "tst_bench_shared_ptr.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 /*!
     \since 4.5
@@ -25,7 +25,7 @@
     only the name of the file, similar to how QDir::entryList() works. You can
     also call fileInfo() to get a QFileInfo for the current entry.
 
-    Unlike Qt's container iterators, QFileSystemIterator is uni-directional (i.e.,
+    Unlike BobUI's container iterators, QFileSystemIterator is uni-directional (i.e.,
     you cannot iterate directories in reverse order) and does not allow random
     access.
 
@@ -54,13 +54,13 @@
 #include "qfilesystemiterator.h"
 
 #include <QDebug>
-#include <QtCore/qset.h>
-#include <QtCore/qstack.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qstack.h>
+#include <BobUICore/qvariant.h>
 #include <qplatformdefs.h>
 
 #ifdef Q_OS_WIN
-#   include <qt_windows.h>
+#   include <bobui_windows.h>
 #else
 #   include <sys/stat.h>
 #   include <sys/types.h>
@@ -68,7 +68,7 @@
 #   include <errno.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QDirIteratorTest {
 
@@ -315,8 +315,8 @@ bool QFileSystemIteratorPrivate::advanceHelper()
     QByteArray ba = m_dirPaths.top();
     ba += '/';
     ba += name;
-    QT_STATBUF st;
-    QT_LSTAT(ba.constData(), &st);
+    BOBUI_STATBUF st;
+    BOBUI_LSTAT(ba.constData(), &st);
 
     if (S_ISDIR(st.st_mode)) {
         pushSubDirectory(ba);
@@ -383,14 +383,14 @@ bool QFileSystemIteratorPrivate::matchesFilters(const QAbstractFileEngineIterato
     const bool includeHidden = (filters & QDir::Hidden);
     const bool includeSystem = (filters & QDir::System);
 
-#ifndef QT_NO_REGEXP
+#ifndef BOBUI_NO_REGEXP
     // Prepare name filters
     QList<QRegExp> regexps;
     bool hasNameFilters = !nameFilters.isEmpty() && !(nameFilters.contains(QLatin1String("*")));
     if (hasNameFilters) {
         for (int i = 0; i < nameFilters.size(); ++i) {
             regexps << QRegExp(nameFilters.at(i),
-                               (filters & QDir::CaseSensitive) ? Qt::CaseSensitive : Qt::CaseInsensitive,
+                               (filters & QDir::CaseSensitive) ? BobUI::CaseSensitive : BobUI::CaseInsensitive,
                                QRegExp::Wildcard);
         }
     }
@@ -405,7 +405,7 @@ bool QFileSystemIteratorPrivate::matchesFilters(const QAbstractFileEngineIterato
     QFileInfo fi = it->currentFileInfo();
     QString filePath = it->currentFilePath();
 
-#ifndef QT_NO_REGEXP
+#ifndef BOBUI_NO_REGEXP
     // Pass all entries through name filters, except dirs if the AllDirs
     // filter is passed.
     if (hasNameFilters && !((filters & QDir::AllDirs) && fi.isDir())) {
@@ -642,4 +642,4 @@ QString QFileSystemIterator::path() const
 
 } // QDirIteratorTest::
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

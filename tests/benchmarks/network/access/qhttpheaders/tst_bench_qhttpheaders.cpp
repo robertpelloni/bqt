@@ -1,12 +1,12 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/qhttpheaders.h>
+#include <BobUINetwork/qhttpheaders.h>
 
-#include <QtCore/qstring.h>
-#include <QTest>
+#include <BobUICore/qstring.h>
+#include <BOBUIest>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QHttpHeaders : public QObject
 {
@@ -43,21 +43,21 @@ private:
 
     void setupBasicEnumData()
     {
-        QTest::addColumn<WKH>("name");
-        QTest::addColumn<bool>("exists");
+        BOBUIest::addColumn<WKH>("name");
+        BOBUIest::addColumn<bool>("exists");
 
-        QTest::newRow("Nonexistent enum") << WKH::CDNLoop << false;
-        QTest::newRow("Existent enum") << WKH::Accept << true;
+        BOBUIest::newRow("Nonexistent enum") << WKH::CDNLoop << false;
+        BOBUIest::newRow("Existent enum") << WKH::Accept << true;
     }
 
     void setupBasicStringData()
     {
-        QTest::addColumn<QString>("name");
-        QTest::addColumn<bool>("exists");
+        BOBUIest::addColumn<QString>("name");
+        BOBUIest::addColumn<bool>("exists");
 
-        QTest::newRow("Nonexistent string") << "cdn-loop" << false;
-        QTest::newRow("Existent wellknown string") << "accept" << true;
-        QTest::newRow("Existent custom string") << "customheader" << true;
+        BOBUIest::newRow("Nonexistent string") << "cdn-loop" << false;
+        BOBUIest::newRow("Existent wellknown string") << "accept" << true;
+        BOBUIest::newRow("Existent custom string") << "customheader" << true;
     }
 
     const QString customNameLowCase = u"customm-name"_s; // Not a typo, same length as knownName
@@ -125,11 +125,11 @@ void tst_QHttpHeaders::append_enum()
 
 void tst_QHttpHeaders::append_string_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::newRow("Custom lowcase string") << customNameLowCase;
-    QTest::newRow("WellKnown lowcase string") << knownNameLowCase;
-    QTest::newRow("Custom mixcase string") << customNameMixCase;
-    QTest::newRow("WellKnown mixcase string") << knownNameMixCase;
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::newRow("Custom lowcase string") << customNameLowCase;
+    BOBUIest::newRow("WellKnown lowcase string") << knownNameLowCase;
+    BOBUIest::newRow("Custom mixcase string") << customNameMixCase;
+    BOBUIest::newRow("WellKnown mixcase string") << knownNameMixCase;
 }
 
 void tst_QHttpHeaders::append_string()
@@ -261,6 +261,6 @@ void tst_QHttpHeaders::removeAll_string()
     QVERIFY(!headers.contains(name));
 }
 
-QTEST_MAIN(tst_QHttpHeaders)
+BOBUIEST_MAIN(tst_QHttpHeaders)
 
 #include "tst_bench_qhttpheaders.moc"

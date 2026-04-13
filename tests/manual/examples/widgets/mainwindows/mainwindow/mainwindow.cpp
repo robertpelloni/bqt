@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "colorswatch.h"
@@ -10,7 +10,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QFile>
 #include <QDataStream>
 #include <QFileDialog>
@@ -23,13 +23,13 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QPushButton>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QDebug>
 
 static const char message[] =
-    "<p><b>Qt Main Window Example</b></p>"
+    "<p><b>BobUI Main Window Example</b></p>"
 
-    "<p>This is a demonstration of the QMainWindow, QToolBar and "
+    "<p>This is a demonstration of the QMainWindow, BOBUIoolBar and "
     "QDockWidget classes.</p>"
 
     "<p>The tool bar and dock widgets can be dragged around and rearranged "
@@ -47,14 +47,14 @@ static const char message[] =
 Q_DECLARE_METATYPE(QDockWidget::DockWidgetFeatures)
 
 MainWindow::MainWindow(const CustomSizeHintMap &customSizeHints,
-                       QWidget *parent, Qt::WindowFlags flags)
+                       QWidget *parent, BobUI::WindowFlags flags)
     : QMainWindow(parent, flags)
 {
     Q_UNUSED(message);
     setObjectName("MainWindow");
-    setWindowTitle("Qt Main Window Example");
+    setWindowTitle("BobUI Main Window Example");
 
-    QTextEdit *center = new QTextEdit(this);
+    BOBUIextEdit *center = new BOBUIextEdit(this);
     center->setReadOnly(true);
     center->setMinimumSize(400, 205);
     setCentralWidget(center);
@@ -146,8 +146,8 @@ void MainWindow::setupMenuBar()
     QAction *aboutAct = aboutMenu->addAction(tr("&About"), this, &MainWindow::about);
     aboutAct->setStatusTip(tr("Show the application's About box"));
 
-    QAction *aboutQtAct = aboutMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
+    QAction *aboutBobUIAct = aboutMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
+    aboutBobUIAct->setStatusTip(tr("Show the BobUI library's About box"));
 }
 
 void MainWindow::setDockOptions()
@@ -243,7 +243,7 @@ void MainWindow::loadLayout()
 }
 
 static QAction *addCornerAction(const QString &text, QMainWindow *mw, QMenu *menu, QActionGroup *group,
-                                Qt::Corner c, Qt::DockWidgetArea a)
+                                BobUI::Corner c, BobUI::DockWidgetArea a)
 {
     QAction *result = menu->addAction(text, mw, [=]() { mw->setCorner(c, a); });
     result->setCheckable(true);
@@ -258,61 +258,61 @@ void MainWindow::setupDockWidgets(const CustomSizeHintMap &customSizeHints)
     QMenu *cornerMenu = dockWidgetMenu->addMenu(tr("Top left corner"));
     QActionGroup *group = new QActionGroup(this);
     group->setExclusive(true);
-    QAction *cornerAction = addCornerAction(tr("Top dock area"), this, cornerMenu, group, Qt::TopLeftCorner, Qt::TopDockWidgetArea);
+    QAction *cornerAction = addCornerAction(tr("Top dock area"), this, cornerMenu, group, BobUI::TopLeftCorner, BobUI::TopDockWidgetArea);
     cornerAction->setChecked(true);
-    addCornerAction(tr("Left dock area"), this, cornerMenu, group, Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+    addCornerAction(tr("Left dock area"), this, cornerMenu, group, BobUI::TopLeftCorner, BobUI::LeftDockWidgetArea);
 
     cornerMenu = dockWidgetMenu->addMenu(tr("Top right corner"));
     group = new QActionGroup(this);
     group->setExclusive(true);
-    cornerAction = addCornerAction(tr("Top dock area"), this, cornerMenu, group, Qt::TopRightCorner, Qt::TopDockWidgetArea);
+    cornerAction = addCornerAction(tr("Top dock area"), this, cornerMenu, group, BobUI::TopRightCorner, BobUI::TopDockWidgetArea);
     cornerAction->setChecked(true);
-    addCornerAction(tr("Right dock area"), this, cornerMenu, group, Qt::TopRightCorner, Qt::RightDockWidgetArea);
+    addCornerAction(tr("Right dock area"), this, cornerMenu, group, BobUI::TopRightCorner, BobUI::RightDockWidgetArea);
 
     cornerMenu = dockWidgetMenu->addMenu(tr("Bottom left corner"));
     group = new QActionGroup(this);
     group->setExclusive(true);
-    cornerAction = addCornerAction(tr("Bottom dock area"), this, cornerMenu, group, Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
+    cornerAction = addCornerAction(tr("Bottom dock area"), this, cornerMenu, group, BobUI::BottomLeftCorner, BobUI::BottomDockWidgetArea);
     cornerAction->setChecked(true);
-    addCornerAction(tr("Left dock area"), this, cornerMenu, group, Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    addCornerAction(tr("Left dock area"), this, cornerMenu, group, BobUI::BottomLeftCorner, BobUI::LeftDockWidgetArea);
 
     cornerMenu = dockWidgetMenu->addMenu(tr("Bottom right corner"));
     group = new QActionGroup(this);
     group->setExclusive(true);
-    cornerAction = addCornerAction(tr("Bottom dock area"), this, cornerMenu, group, Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
+    cornerAction = addCornerAction(tr("Bottom dock area"), this, cornerMenu, group, BobUI::BottomRightCorner, BobUI::BottomDockWidgetArea);
     cornerAction->setChecked(true);
-    addCornerAction(tr("Right dock area"), this, cornerMenu, group, Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+    addCornerAction(tr("Right dock area"), this, cornerMenu, group, BobUI::BottomRightCorner, BobUI::RightDockWidgetArea);
 
     dockWidgetMenu->addSeparator();
 
     static const struct Set {
         const char * name;
         uint flags;
-        Qt::DockWidgetArea area;
+        BobUI::DockWidgetArea area;
     } sets [] = {
 #ifndef Q_OS_MAC
-        { "Black", 0, Qt::LeftDockWidgetArea },
+        { "Black", 0, BobUI::LeftDockWidgetArea },
 #else
-        { "Black", Qt::Drawer, Qt::LeftDockWidgetArea },
+        { "Black", BobUI::Drawer, BobUI::LeftDockWidgetArea },
 #endif
-        { "White", 0, Qt::RightDockWidgetArea },
-        { "Red", 0, Qt::TopDockWidgetArea },
-        { "Green", 0, Qt::TopDockWidgetArea },
-        { "Blue", 0, Qt::BottomDockWidgetArea },
-        { "Yellow", 0, Qt::BottomDockWidgetArea }
+        { "White", 0, BobUI::RightDockWidgetArea },
+        { "Red", 0, BobUI::TopDockWidgetArea },
+        { "Green", 0, BobUI::TopDockWidgetArea },
+        { "Blue", 0, BobUI::BottomDockWidgetArea },
+        { "Yellow", 0, BobUI::BottomDockWidgetArea }
     };
     const int setCount = sizeof(sets) / sizeof(Set);
 
-    const QIcon qtIcon(QPixmap(":/res/qt.png"));
+    const QIcon bobuiIcon(QPixmap(":/res/bobui.png"));
     for (int i = 0; i < setCount; ++i) {
-        ColorSwatch *swatch = new ColorSwatch(tr(sets[i].name), this, Qt::WindowFlags(sets[i].flags));
+        ColorSwatch *swatch = new ColorSwatch(tr(sets[i].name), this, BobUI::WindowFlags(sets[i].flags));
         if (i % 2)
-            swatch->setWindowIcon(qtIcon);
+            swatch->setWindowIcon(bobuiIcon);
         if (qstrcmp(sets[i].name, "Blue") == 0) {
             BlueTitleBar *titlebar = new BlueTitleBar(swatch);
             swatch->setTitleBarWidget(titlebar);
             connect(swatch, &QDockWidget::topLevelChanged, titlebar, &BlueTitleBar::updateMask);
-            connect(swatch, &QDockWidget::featuresChanged, titlebar, &BlueTitleBar::updateMask, Qt::QueuedConnection);
+            connect(swatch, &QDockWidget::featuresChanged, titlebar, &BlueTitleBar::updateMask, BobUI::QueuedConnection);
         }
 
         QString name = QString::fromLatin1(sets[i].name);
@@ -334,10 +334,10 @@ void MainWindow::setupDockWidgets(const CustomSizeHintMap &customSizeHints)
 
 void MainWindow::switchLayoutDirection()
 {
-    if (layoutDirection() == Qt::LeftToRight)
-        QApplication::setLayoutDirection(Qt::RightToLeft);
+    if (layoutDirection() == BobUI::LeftToRight)
+        QApplication::setLayoutDirection(BobUI::RightToLeft);
     else
-        QApplication::setLayoutDirection(Qt::LeftToRight);
+        QApplication::setLayoutDirection(BobUI::LeftToRight);
 }
 
 class CreateDockWidgetDialog : public QDialog
@@ -346,7 +346,7 @@ public:
     explicit CreateDockWidgetDialog(QWidget *parent = nullptr);
 
     QString enteredObjectName() const { return m_objectName->text(); }
-    Qt::DockWidgetArea location() const;
+    BobUI::DockWidgetArea location() const;
 
 private:
     QLineEdit *m_objectName;
@@ -359,7 +359,7 @@ CreateDockWidgetDialog::CreateDockWidgetDialog(QWidget *parent)
     , m_location(new QComboBox(this))
 {
     setWindowTitle(tr("Add Dock Widget"));
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags() & ~BobUI::WindowContextHelpButtonHint);
     QGridLayout *layout = new QGridLayout(this);
 
     layout->addWidget(new QLabel(tr("Object name:")), 0, 0);
@@ -380,17 +380,17 @@ CreateDockWidgetDialog::CreateDockWidgetDialog(QWidget *parent)
     layout->addWidget(buttonBox, 2, 0, 1, 2);
 }
 
-Qt::DockWidgetArea CreateDockWidgetDialog::location() const
+BobUI::DockWidgetArea CreateDockWidgetDialog::location() const
 {
     switch (m_location->currentIndex()) {
-        case 0: return Qt::TopDockWidgetArea;
-        case 1: return Qt::LeftDockWidgetArea;
-        case 2: return Qt::RightDockWidgetArea;
-        case 3: return Qt::BottomDockWidgetArea;
+        case 0: return BobUI::TopDockWidgetArea;
+        case 1: return BobUI::LeftDockWidgetArea;
+        case 2: return BobUI::RightDockWidgetArea;
+        case 3: return BobUI::BottomDockWidgetArea;
         default:
             break;
     }
-    return Qt::NoDockWidgetArea;
+    return BobUI::NoDockWidgetArea;
 }
 
 void MainWindow::createDockWidget()
@@ -403,14 +403,14 @@ void MainWindow::createDockWidget()
     const QString name = dialog.enteredObjectName();
     dw->setObjectName(name);
     dw->setWindowTitle(name);
-    dw->setWidget(new QTextEdit);
+    dw->setWidget(new BOBUIextEdit);
 
-    Qt::DockWidgetArea area = dialog.location();
+    BobUI::DockWidgetArea area = dialog.location();
     switch (area) {
-        case Qt::LeftDockWidgetArea:
-        case Qt::RightDockWidgetArea:
-        case Qt::TopDockWidgetArea:
-        case Qt::BottomDockWidgetArea:
+        case BobUI::LeftDockWidgetArea:
+        case BobUI::RightDockWidgetArea:
+        case BobUI::TopDockWidgetArea:
+        case BobUI::BottomDockWidgetArea:
             addDockWidget(area, dw);
             break;
         default:

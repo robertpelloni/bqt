@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QWidget>
 #include <QPainter>
@@ -15,8 +15,8 @@ public:
     StaticWidget(QWidget *parent = nullptr)
     :QWidget(parent)
     {
-        setAttribute(Qt::WA_StaticContents);
-        setAttribute(Qt::WA_OpaquePaintEvent);
+        setAttribute(BobUI::WA_StaticContents);
+        setAttribute(BobUI::WA_OpaquePaintEvent);
            hue = 200;
         pressed = false;
     }
@@ -81,7 +81,7 @@ public:
             p.fillRect(e->rect(), QColor::fromHsv(100, 255, color));
         else
             p.fillRect(e->rect(), QColor::fromHsv(hue, 255, color));
-        p.setPen(QPen(QColor(Qt::white)));
+        p.setPen(QPen(QColor(BobUI::white)));
 
         for (int y = e->rect().top(); y <= e->rect().bottom() + 1; ++y) {
             if (y % 20 == 0)

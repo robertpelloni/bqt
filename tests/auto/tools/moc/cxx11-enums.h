@@ -1,9 +1,9 @@
 // Copyright (C) 2011 Olivier Goffart.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef CXX11_ENUMS_H
 #define CXX11_ENUMS_H
-#include <QtCore/QObject>
+#include <BobUICore/QObject>
 
 class CXX11Enums
 {

@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkreplydataimpl_p.h"
 #include "private/qdataurl_p.h"
-#include <QtCore/QCoreApplication>
-#include <QtCore/QMetaObject>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QMetaObject>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QNetworkReplyDataImplPrivate::QNetworkReplyDataImplPrivate()
     : QNetworkReplyPrivate()
@@ -42,23 +42,23 @@ QNetworkReplyDataImpl::QNetworkReplyDataImpl(QObject *parent, const QNetworkRequ
         h.replaceOrAppend(QHttpHeaders::WellKnownHeader::ContentLength, QByteArray::number(size));
         setHeaders(std::move(h));
 
-        QMetaObject::invokeMethod(this, "metaDataChanged", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "metaDataChanged", BobUI::QueuedConnection);
 
         d->decodedData.setData(payload);
         d->decodedData.open(QIODevice::ReadOnly);
 
-        QMetaObject::invokeMethod(this, "downloadProgress", Qt::QueuedConnection,
+        QMetaObject::invokeMethod(this, "downloadProgress", BobUI::QueuedConnection,
                                   Q_ARG(qint64,size), Q_ARG(qint64, size));
-        QMetaObject::invokeMethod(this, "readyRead", Qt::QueuedConnection);
-        QMetaObject::invokeMethod(this, "finished", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "readyRead", BobUI::QueuedConnection);
+        QMetaObject::invokeMethod(this, "finished", BobUI::QueuedConnection);
     } else {
         // something wrong with this URI
         const QString msg = QCoreApplication::translate("QNetworkAccessDataBackend",
                                                         "Invalid URI: %1").arg(url.toString());
         setError(QNetworkReply::ProtocolFailure, msg);
-        QMetaObject::invokeMethod(this, "errorOccurred", Qt::QueuedConnection,
+        QMetaObject::invokeMethod(this, "errorOccurred", BobUI::QueuedConnection,
                                   Q_ARG(QNetworkReply::NetworkError, QNetworkReply::ProtocolFailure));
-        QMetaObject::invokeMethod(this, "finished", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "finished", BobUI::QueuedConnection);
     }
 }
 
@@ -104,7 +104,7 @@ qint64 QNetworkReplyDataImpl::readData(char *data, qint64 maxlen)
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkreplydataimpl_p.cpp"
 

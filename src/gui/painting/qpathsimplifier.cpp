@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpathsimplifier_p.h"
 
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qalgorithms.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qalgorithms.h>
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 #  include <private/qopengl_p.h>
 #endif
 #include <private/qrbtree_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define Q_FIXED_POINT_SCALE 256
 #define Q_TRIANGULATE_END_OF_POLYGON quint32(-1)
@@ -214,7 +214,7 @@ class PathSimplifier
 {
 public:
     PathSimplifier(const QVectorPath &path, QDataBuffer<QPoint> &vertices,
-                   QDataBuffer<quint32> &indices, const QTransform &matrix);
+                   QDataBuffer<quint32> &indices, const BOBUIransform &matrix);
 
 private:
     struct Element;
@@ -309,12 +309,12 @@ private:
         Type type;
         Element *element;
     };
-    friend class QTypeInfo<Event>;
+    friend class BOBUIypeInfo<Event>;
 
     typedef QRBTree<Element *>::Node RBNode;
     typedef BoundingVolumeHierarchy::Node BVHNode;
 
-    void initElements(const QVectorPath &path, const QTransform &matrix);
+    void initElements(const QVectorPath &path, const BOBUIransform &matrix);
     void removeIntersections();
     bool connectElements();
     void fillIndices();
@@ -458,7 +458,7 @@ inline void PathSimplifier::Element::flip()
 }
 
 PathSimplifier::PathSimplifier(const QVectorPath &path, QDataBuffer<QPoint> &vertices,
-                               QDataBuffer<quint32> &indices, const QTransform &matrix)
+                               QDataBuffer<quint32> &indices, const BOBUIransform &matrix)
     : m_elements(0)
     , m_points(&vertices)
     , m_indices(&indices)
@@ -479,7 +479,7 @@ PathSimplifier::PathSimplifier(const QVectorPath &path, QDataBuffer<QPoint> &ver
     }
 }
 
-void PathSimplifier::initElements(const QVectorPath &path, const QTransform &matrix)
+void PathSimplifier::initElements(const QVectorPath &path, const BOBUIransform &matrix)
 {
     m_hints = path.hints();
     int pathElementCount = path.elementCount();
@@ -859,7 +859,7 @@ bool PathSimplifier::connectElements()
             }
         }
     }
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     for (int i = 0; i < m_elements.size(); ++i) {
         const Element *element = m_elements.at(i);
         Q_ASSERT(element->next == nullptr || element->next->previous == element);
@@ -1634,18 +1634,18 @@ void PathSimplifier::sortEvents(Event *events, int count)
 }
 
 void qSimplifyPath(const QVectorPath &path, QDataBuffer<QPoint> &vertices,
-                   QDataBuffer<quint32> &indices, const QTransform &matrix)
+                   QDataBuffer<quint32> &indices, const BOBUIransform &matrix)
 {
     PathSimplifier(path, vertices, indices, matrix);
 }
 
 void qSimplifyPath(const QPainterPath &path, QDataBuffer<QPoint> &vertices,
-                   QDataBuffer<quint32> &indices, const QTransform &matrix)
+                   QDataBuffer<quint32> &indices, const BOBUIransform &matrix)
 {
-    qSimplifyPath(qtVectorPathForPath(path), vertices, indices, matrix);
+    qSimplifyPath(bobuiVectorPathForPath(path), vertices, indices, matrix);
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #undef Q_FIXED_POINT_SCALE

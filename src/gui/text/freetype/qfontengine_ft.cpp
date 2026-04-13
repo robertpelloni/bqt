@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdir.h"
 #include "qmetatype.h"
-#include "qtextstream.h"
+#include "bobuiextstream.h"
 #include "qvariant.h"
 #include "qfontengine_ft_p.h"
 #include "private/qfontdatabase_p.h"
@@ -13,16 +13,16 @@
 #include <qguiapplication.h>
 #include <qscreen.h>
 #include <qpa/qplatformscreen.h>
-#include <QtCore/QUuid>
-#include <QtCore/QLoggingCategory>
-#include <QtGui/QPainterPath>
+#include <BobUICore/QUuid>
+#include <BobUICore/QLoggingCategory>
+#include <BobUIGui/QPainterPath>
 
-#ifndef QT_NO_FREETYPE
+#ifndef BOBUI_NO_FREETYPE
 
 #include "qfile.h"
 #include "qfileinfo.h"
 #include <qscopedvaluerollback.h>
-#include "qthreadstorage.h"
+#include "bobuihreadstorage.h"
 #include <qmath.h>
 #include <qendian.h>
 #include <private/qcolrpaintgraphrenderer_p.h>
@@ -48,17 +48,17 @@
 #include FT_FONT_FORMATS_H
 #endif
 
-#ifdef QT_LINUXBASE
+#ifdef BOBUI_LINUXBASE
 #include FT_ERRORS_H
 #endif
 
-#if !defined(QT_MAX_CACHED_GLYPH_SIZE)
-#  define QT_MAX_CACHED_GLYPH_SIZE 64
+#if !defined(BOBUI_MAX_CACHED_GLYPH_SIZE)
+#  define BOBUI_MAX_CACHED_GLYPH_SIZE 64
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define FLOOR(x)    ((x) & -64)
 #define CEIL(x)     (((x)+63) & -64)
@@ -91,13 +91,13 @@ static const QFontEngine::HintStyle ftInitialDefaultHintStyle =
 
 // -------------------------- Freetype support ------------------------------
 
-class QtFreetypeData
+class BobUIFreetypeData
 {
 public:
-    QtFreetypeData()
+    BobUIFreetypeData()
         : library(nullptr)
     { }
-    ~QtFreetypeData();
+    ~BobUIFreetypeData();
 
     struct FaceStyle {
         QString faceFileName;
@@ -115,7 +115,7 @@ public:
     QHash<FaceStyle, int> faceIndices;
 };
 
-QtFreetypeData::~QtFreetypeData()
+BobUIFreetypeData::~BobUIFreetypeData()
 {
     for (auto iter = faces.cbegin(); iter != faces.cend(); ++iter) {
         iter.value()->cleanup();
@@ -135,23 +135,23 @@ QtFreetypeData::~QtFreetypeData()
     library = nullptr;
 }
 
-inline bool operator==(const QtFreetypeData::FaceStyle &style1, const QtFreetypeData::FaceStyle &style2)
+inline bool operator==(const BobUIFreetypeData::FaceStyle &style1, const BobUIFreetypeData::FaceStyle &style2)
 {
     return style1.faceFileName == style2.faceFileName && style1.styleName == style2.styleName;
 }
 
-inline size_t qHash(const QtFreetypeData::FaceStyle &style, size_t seed)
+inline size_t qHash(const BobUIFreetypeData::FaceStyle &style, size_t seed)
 {
     return qHashMulti(seed, style.faceFileName, style.styleName);
 }
 
-Q_GLOBAL_STATIC(QThreadStorage<QtFreetypeData *>, theFreetypeData)
+Q_GLOBAL_STATIC(BOBUIhreadStorage<BobUIFreetypeData *>, theFreetypeData)
 
-QtFreetypeData *qt_getFreetypeData()
+BobUIFreetypeData *bobui_getFreetypeData()
 {
-    QtFreetypeData *&freetypeData = theFreetypeData()->localData();
+    BobUIFreetypeData *&freetypeData = theFreetypeData()->localData();
     if (!freetypeData)
-        freetypeData = new QtFreetypeData;
+        freetypeData = new BobUIFreetypeData;
     if (!freetypeData->library) {
         FT_Init_FreeType(&freetypeData->library);
 #if defined(FT_FONT_FORMATS_H)
@@ -163,9 +163,9 @@ QtFreetypeData *qt_getFreetypeData()
     return freetypeData;
 }
 
-FT_Library qt_getFreetype()
+FT_Library bobui_getFreetype()
 {
-    QtFreetypeData *freetypeData = qt_getFreetypeData();
+    BobUIFreetypeData *freetypeData = bobui_getFreetypeData();
     Q_ASSERT(freetypeData->library);
     return freetypeData->library;
 }
@@ -209,7 +209,7 @@ bool QFreetypeFace::isScalableBitmap() const
 #endif
 }
 
-extern QByteArray qt_fontdata_from_index(int);
+extern QByteArray bobui_fontdata_from_index(int);
 
 /*
  * One font file can contain more than one font (bold/italic for example)
@@ -224,7 +224,7 @@ QFreetypeFace *QFreetypeFace::getFace(const QFontEngine::FaceId &face_id,
     if (face_id.filename.isEmpty() && fontData.isEmpty())
         return nullptr;
 
-    QtFreetypeData *freetypeData = qt_getFreetypeData();
+    BobUIFreetypeData *freetypeData = bobui_getFreetypeData();
 
     // Purge any stale face that is now ready to be deleted
     for (auto it = freetypeData->staleFaces.constBegin(); it != freetypeData->staleFaces.constEnd(); ) {
@@ -270,7 +270,7 @@ QFreetypeFace *QFreetypeFace::getFace(const QFontEngine::FaceId &face_id,
                 QByteArray idx = face_id.filename;
                 idx.remove(0, strlen(prefix)); // remove ':qmemoryfonts/'
                 bool ok = false;
-                newFreetype->fontData = qt_fontdata_from_index(idx.toInt(&ok));
+                newFreetype->fontData = bobui_fontdata_from_index(idx.toInt(&ok));
                 if (!ok)
                     newFreetype->fontData = QByteArray();
             } else if (!QFileInfo(fileName).isNativePath()) {
@@ -285,7 +285,7 @@ QFreetypeFace *QFreetypeFace::getFace(const QFontEngine::FaceId &face_id,
         }
 
         FT_Int major, minor, patch;
-        FT_Library_Version(qt_getFreetype(), &major, &minor, &patch);
+        FT_Library_Version(bobui_getFreetype(), &major, &minor, &patch);
         const bool goodVersion = major > 2 || (major == 2 && minor > 13) || (major == 2 && minor == 13 && patch > 2);
 
         if (!newFreetype->fontData.isEmpty()) {
@@ -376,7 +376,7 @@ QFreetypeFace *QFreetypeFace::getFace(const QFontEngine::FaceId &face_id,
                     FT_Set_Var_Design_Coordinates(face, var->num_axis, coords.data());
                 }
 
-                FT_Done_MM_Var(qt_getFreetype(), var);
+                FT_Done_MM_Var(bobui_getFreetype(), var);
             }
 
             FT_Done_Face(tmpFace);
@@ -429,12 +429,12 @@ QFreetypeFace *QFreetypeFace::getFace(const QFontEngine::FaceId &face_id,
 
         FT_Set_Charmap(newFreetype->face, newFreetype->unicode_map);
 
-        QT_TRY {
+        BOBUI_TRY {
             freetypeData->faces.insert(face_id, newFreetype.get());
-        } QT_CATCH(...) {
+        } BOBUI_CATCH(...) {
             newFreetype.release()->release(face_id);
             // we could return null in principle instead of throwing
-            QT_RETHROW;
+            BOBUI_RETHROW;
         }
         freetype = newFreetype.release();
         freetype->ref.ref();
@@ -446,7 +446,7 @@ void QFreetypeFace::cleanup()
 {
     hbFace.reset();
     if (mm_var)
-        FT_Done_MM_Var(qt_getFreetype(), mm_var);
+        FT_Done_MM_Var(bobui_getFreetype(), mm_var);
     mm_var = nullptr;
     FT_Done_Face(face);
     face = nullptr;
@@ -462,7 +462,7 @@ void QFreetypeFace::release(const QFontEngine::FaceId &face_id)
     // later. While we are at it, we also purge all left over faces which are only referenced
     // from the cache.
     if (face && ref.loadRelaxed() == 1) {
-        QtFreetypeData *freetypeData = qt_getFreetypeData();
+        BobUIFreetypeData *freetypeData = bobui_getFreetypeData();
 
         for (auto it = freetypeData->staleFaces.constBegin(); it != freetypeData->staleFaces.constEnd(); ) {
             if ((*it)->ref.loadRelaxed() == 1) {
@@ -503,7 +503,7 @@ void QFreetypeFace::release(const QFontEngine::FaceId &face_id)
 
 static int computeFaceIndex(const QString &faceFileName, const QString &styleName)
 {
-    FT_Library library = qt_getFreetype();
+    FT_Library library = bobui_getFreetype();
 
     int faceIndex = 0;
     int numFaces = 0;
@@ -513,7 +513,7 @@ static int computeFaceIndex(const QString &faceFileName, const QString &styleNam
 
         FT_Error error = FT_New_Face(library, faceFileName.toUtf8().constData(), faceIndex, &face);
         if (error != FT_Err_Ok) {
-            qDebug() << "FT_New_Face failed for face index" << faceIndex << ':' << Qt::hex << error;
+            qDebug() << "FT_New_Face failed for face index" << faceIndex << ':' << BobUI::hex << error;
             break;
         }
 
@@ -532,10 +532,10 @@ static int computeFaceIndex(const QString &faceFileName, const QString &styleNam
 
 int QFreetypeFace::getFaceIndexByStyleName(const QString &faceFileName, const QString &styleName)
 {
-    QtFreetypeData *freetypeData = qt_getFreetypeData();
+    BobUIFreetypeData *freetypeData = bobui_getFreetypeData();
 
     // Try to get from cache
-    QtFreetypeData::FaceStyle faceStyle(faceFileName, styleName);
+    BobUIFreetypeData::FaceStyle faceStyle(faceFileName, styleName);
     int faceIndex = freetypeData->faceIndices.value(faceStyle, -1);
 
     if (faceIndex >= 0)
@@ -602,7 +602,7 @@ void QFreetypeFace::computeSize(const QFontDef &fontDef, int *xsize, int *ysize,
             *outline_drawing = false;
         else
 #endif
-            *outline_drawing = (*xsize > (QT_MAX_CACHED_GLYPH_SIZE<<6) || *ysize > (QT_MAX_CACHED_GLYPH_SIZE<<6));
+            *outline_drawing = (*xsize > (BOBUI_MAX_CACHED_GLYPH_SIZE<<6) || *ysize > (BOBUI_MAX_CACHED_GLYPH_SIZE<<6));
     }
 }
 
@@ -668,7 +668,7 @@ static void scaleOutline(FT_Face face, FT_GlyphSlot g, FT_Fixed x_scale, FT_Fixe
     }
 }
 
-#define GLYPH2PATH_DEBUG QT_NO_QDEBUG_MACRO // qDebug
+#define GLYPH2PATH_DEBUG BOBUI_NO_QDEBUG_MACRO // qDebug
 void QFreetypeFace::addGlyphToPath(FT_Face face, FT_GlyphSlot g, const QFixedPoint &point, QPainterPath *path, FT_Fixed x_scale, FT_Fixed y_scale)
 {
     const qreal factor = 1/64.;
@@ -761,7 +761,7 @@ void QFreetypeFace::addGlyphToPath(FT_Face face, FT_GlyphSlot g, const QFixedPoi
     }
 }
 
-extern void qt_addBitmapToPath(qreal x0, qreal y0, const uchar *image_data, int bpl, int w, int h, QPainterPath *path);
+extern void bobui_addBitmapToPath(qreal x0, qreal y0, const uchar *image_data, int bpl, int w, int h, QPainterPath *path);
 
 void QFreetypeFace::addBitmapToPath(FT_GlyphSlot slot, const QFixedPoint &point, QPainterPath *path)
 {
@@ -770,7 +770,7 @@ void QFreetypeFace::addBitmapToPath(FT_GlyphSlot slot, const QFixedPoint &point,
         return;
 
     QPointF cp = point.toPointF();
-    qt_addBitmapToPath(cp.x() + TRUNC(slot->metrics.horiBearingX), cp.y() - TRUNC(slot->metrics.horiBearingY),
+    bobui_addBitmapToPath(cp.x() + TRUNC(slot->metrics.horiBearingX), cp.y() - TRUNC(slot->metrics.horiBearingY),
                        slot->bitmap.buffer, slot->bitmap.pitch, slot->bitmap.width, slot->bitmap.rows, path);
 }
 
@@ -838,7 +838,7 @@ QFontEngineFT *QFontEngineFT::create(const QFontDef &fontDef, FaceId faceId, con
         return nullptr;
     }
 
-    engine->setQtDefaultHintStyle(static_cast<QFont::HintingPreference>(fontDef.hintingPreference));
+    engine->setBobUIDefaultHintStyle(static_cast<QFont::HintingPreference>(fontDef.hintingPreference));
     return engine.release();
 }
 
@@ -892,7 +892,7 @@ QFontEngineFT *QFontEngineFT::create(const QByteArray &fontData,
     }
 
     fe->updateFamilyNameAndStyle();
-    fe->setQtDefaultHintStyle(static_cast<QFont::HintingPreference>(fontDef.hintingPreference));
+    fe->setBobUIDefaultHintStyle(static_cast<QFont::HintingPreference>(fontDef.hintingPreference));
 
     return fe;
 }
@@ -918,7 +918,7 @@ QFontEngineFT::QFontEngineFT(const QFontDef &fd)
     lcdFilterType = (int)((quintptr) FT_LCD_FILTER_DEFAULT);
     defaultFormat = Format_None;
     embeddedbitmap = false;
-    const QByteArray env = qgetenv("QT_NO_FT_CACHE");
+    const QByteArray env = qgetenv("BOBUI_NO_FT_CACHE");
     cacheEnabled = env.isEmpty() || env.toInt() == 0;
     m_subPixelPositionCount = 4;
     forceAutoHint = false;
@@ -993,7 +993,7 @@ bool QFontEngineFT::init(FaceId faceId, bool antialias, GlyphFormat format,
     PS_FontInfoRec psrec;
     // don't assume that type1 fonts are symbol fonts by default
     if (FT_Get_PS_Font_Info(freetype->face, &psrec) == FT_Err_Ok) {
-        symbol = !fontDef.families.isEmpty() && bool(fontDef.families.constFirst().contains("symbol"_L1, Qt::CaseInsensitive));
+        symbol = !fontDef.families.isEmpty() && bool(fontDef.families.constFirst().contains("symbol"_L1, BobUI::CaseInsensitive));
     }
 
     freetype->computeSize(fontDef, &xsize, &ysize, &defaultGlyphSet.outline_drawing, &scalableBitmapScaleFactor);
@@ -1006,16 +1006,16 @@ bool QFontEngineFT::init(FaceId faceId, bool antialias, GlyphFormat format,
 #endif
         ) {
         bool isItalic = calculateActualItalic(freetype, face, faceId);
-        bool fake_oblique = (fontDef.style != QFont::StyleNormal) && !isItalic && !qEnvironmentVariableIsSet("QT_NO_SYNTHESIZED_ITALIC");
+        bool fake_oblique = (fontDef.style != QFont::StyleNormal) && !isItalic && !qEnvironmentVariableIsSet("BOBUI_NO_SYNTHESIZED_ITALIC");
         if (fake_oblique)
             obliquen = true;
         FT_Set_Transform(face, &matrix, nullptr);
         freetype->matrix = matrix;
         // fake bold
-        if ((fontDef.weight >= QFont::Bold) && !(face->style_flags & FT_STYLE_FLAG_BOLD) && !FT_IS_FIXED_WIDTH(face)  && !qEnvironmentVariableIsSet("QT_NO_SYNTHESIZED_BOLD")) {
+        if ((fontDef.weight >= QFont::Bold) && !(face->style_flags & FT_STYLE_FLAG_BOLD) && !FT_IS_FIXED_WIDTH(face)  && !qEnvironmentVariableIsSet("BOBUI_NO_SYNTHESIZED_BOLD")) {
             FT_UShort actualWeight = calculateActualWeight(freetype, face, faceId);
             if (actualWeight < 700 &&
-                (fontDef.pixelSize < 64 || qEnvironmentVariableIsSet("QT_NO_SYNTHESIZED_BOLD_LIMIT"))) {
+                (fontDef.pixelSize < 64 || qEnvironmentVariableIsSet("BOBUI_NO_SYNTHESIZED_BOLD_LIMIT"))) {
                 embolden = true;
             }
         }
@@ -1077,7 +1077,7 @@ bool QFontEngineFT::init(FaceId faceId, bool antialias, GlyphFormat format,
     const char *fmt = FT_Get_Font_Format(face);
     if (fmt && qstrncmp(fmt, "CFF", 4) == 0) {
         FT_Bool no_stem_darkening = true;
-        FT_Error err = FT_Property_Get(qt_getFreetype(), "cff", "no-stem-darkening", &no_stem_darkening);
+        FT_Error err = FT_Property_Get(bobui_getFreetype(), "cff", "no-stem-darkening", &no_stem_darkening);
         if (err == FT_Err_Ok)
             stemDarkeningDriver = !no_stem_darkening;
         else
@@ -1104,7 +1104,7 @@ bool QFontEngineFT::init(FaceId faceId, bool antialias, GlyphFormat format,
     return true;
 }
 
-void QFontEngineFT::setQtDefaultHintStyle(QFont::HintingPreference hintingPreference)
+void QFontEngineFT::setBobUIDefaultHintStyle(QFont::HintingPreference hintingPreference)
 {
     switch (hintingPreference) {
     case QFont::PreferNoHinting:
@@ -1212,7 +1212,7 @@ static inline void transformBoundingBox(int *left, int *top, int *right, int *bo
 #if defined(QFONTENGINE_FT_SUPPORT_COLRV1)
 #define FROM_FIXED_16_16(value) (value / 65536.0)
 
-static inline QTransform FTAffineToQTransform(const FT_Affine23 &matrix)
+static inline BOBUIransform FTAffineToBOBUIransform(const FT_Affine23 &matrix)
 {
     qreal m11 = FROM_FIXED_16_16(matrix.xx);
     qreal m21 = -FROM_FIXED_16_16(matrix.xy);
@@ -1221,7 +1221,7 @@ static inline QTransform FTAffineToQTransform(const FT_Affine23 &matrix)
     qreal dx = FROM_FIXED_16_16(matrix.dx);
     qreal dy = -FROM_FIXED_16_16(matrix.dy);
 
-    return QTransform(m11, m12, m21, m22, dx, dy);
+    return BOBUIransform(m11, m12, m21, m22, dx, dy);
 }
 
 bool QFontEngineFT::traverseColr1(FT_OpaquePaint opaquePaint,
@@ -1262,12 +1262,12 @@ bool QFontEngineFT::traverseColr1(FT_OpaquePaint opaquePaint,
                || paint.format == FT_COLR_PAINTFORMAT_TRANSLATE
                || paint.format == FT_COLR_PAINTFORMAT_ROTATE
                || paint.format == FT_COLR_PAINTFORMAT_SKEW) {
-        QTransform xform;
+        BOBUIransform xform;
 
         FT_OpaquePaint nextPaint;
         switch (paint.format) {
         case FT_COLR_PAINTFORMAT_TRANSFORM:
-            xform = FTAffineToQTransform(paint.u.transform.affine);
+            xform = FTAffineToBOBUIransform(paint.u.transform.affine);
             nextPaint = paint.u.transform.paint;
             break;
         case FT_COLR_PAINTFORMAT_SCALE:
@@ -1641,7 +1641,7 @@ QFontEngineFT::Glyph *QFontEngineFT::loadColrv1Glyph(QGlyphSet *set,
     FT_Matrix matrix;
     FT_Vector delta;
     FT_Get_Transform(face, &matrix, &delta);
-    QTransform originalXform(FROM_FIXED_16_16(matrix.xx), -FROM_FIXED_16_16(matrix.yx),
+    BOBUIransform originalXform(FROM_FIXED_16_16(matrix.xx), -FROM_FIXED_16_16(matrix.yx),
                              -FROM_FIXED_16_16(matrix.xy), FROM_FIXED_16_16(matrix.yy),
                              FROM_FIXED_16_16(delta.x), FROM_FIXED_16_16(delta.y));
 
@@ -1695,7 +1695,7 @@ QFontEngineFT::Glyph *QFontEngineFT::loadColrv1Glyph(QGlyphSet *set,
         colrv1_bounds_cache = designCoordinateBounds;
     }
 
-    QTransform initialTransform;
+    BOBUIransform initialTransform;
     initialTransform.scale(fontDef.pixelSize / face->units_per_EM,
                            fontDef.pixelSize / face->units_per_EM);
     QRect bounds = initialTransform.mapRect(designCoordinateBounds);
@@ -2216,7 +2216,7 @@ void QFontEngineFT::doKerning(QGlyphLayout *g, QFontEngine::ShaperFlags flags) c
     QFontEngine::doKerning(g, flags);
 }
 
-static inline FT_Matrix QTransformToFTMatrix(const QTransform &matrix)
+static inline FT_Matrix BOBUIransformToFTMatrix(const BOBUIransform &matrix)
 {
     FT_Matrix m;
 
@@ -2228,9 +2228,9 @@ static inline FT_Matrix QTransformToFTMatrix(const QTransform &matrix)
     return m;
 }
 
-QFontEngineFT::QGlyphSet *QFontEngineFT::TransformedGlyphSets::findSet(const QTransform &matrix, const QFontDef &fontDef)
+QFontEngineFT::QGlyphSet *QFontEngineFT::TransformedGlyphSets::findSet(const BOBUIransform &matrix, const QFontDef &fontDef)
 {
-    FT_Matrix m = QTransformToFTMatrix(matrix);
+    FT_Matrix m = BOBUIransformToFTMatrix(matrix);
 
     int i = 0;
     for (; i < nSets; ++i) {
@@ -2258,7 +2258,7 @@ QFontEngineFT::QGlyphSet *QFontEngineFT::TransformedGlyphSets::findSet(const QTr
     QGlyphSet *gs = sets[0];
     gs->clear();
     gs->transformationMatrix = m;
-    gs->outline_drawing = fontDef.pixelSize * fontDef.pixelSize * qAbs(matrix.determinant()) > QT_MAX_CACHED_GLYPH_SIZE * QT_MAX_CACHED_GLYPH_SIZE;
+    gs->outline_drawing = fontDef.pixelSize * fontDef.pixelSize * qAbs(matrix.determinant()) > BOBUI_MAX_CACHED_GLYPH_SIZE * BOBUI_MAX_CACHED_GLYPH_SIZE;
     Q_ASSERT(gs != nullptr);
 
     return gs;
@@ -2275,14 +2275,14 @@ void QFontEngineFT::TransformedGlyphSets::moveToFront(int i)
 }
 
 
-QFontEngineFT::QGlyphSet *QFontEngineFT::loadGlyphSet(const QTransform &matrix)
+QFontEngineFT::QGlyphSet *QFontEngineFT::loadGlyphSet(const BOBUIransform &matrix)
 {
-    if (matrix.type() > QTransform::TxShear || !cacheEnabled)
+    if (matrix.type() > BOBUIransform::TxShear || !cacheEnabled)
         return nullptr;
 
     // FT_Set_Transform only supports scalable fonts
     if (!FT_IS_SCALABLE(freetype->face))
-        return matrix.type() <= QTransform::TxTranslate ? &defaultGlyphSet : nullptr;
+        return matrix.type() <= BOBUIransform::TxTranslate ? &defaultGlyphSet : nullptr;
 
     return transformedGlyphSets.findSet(matrix, fontDef);
 }
@@ -2317,12 +2317,12 @@ void QFontEngineFT::getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_me
     unlockFace();
 }
 
-bool QFontEngineFT::supportsTransformation(const QTransform &transform) const
+bool QFontEngineFT::supportsTransformation(const BOBUIransform &transform) const
 {
-    return transform.type() <= QTransform::TxRotate;
+    return transform.type() <= BOBUIransform::TxRotate;
 }
 
-void QFontEngineFT::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs, QPainterPath *path, QTextItem::RenderFlags flags)
+void QFontEngineFT::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs, QPainterPath *path, BOBUIextItem::RenderFlags flags)
 {
     if (!glyphs.numGlyphs)
         return;
@@ -2332,7 +2332,7 @@ void QFontEngineFT::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyph
     } else {
         QVarLengthArray<QFixedPoint> positions;
         QVarLengthArray<glyph_t> positioned_glyphs;
-        QTransform matrix;
+        BOBUIransform matrix;
         matrix.translate(x, y);
         getGlyphPositions(glyphs, matrix, flags, positioned_glyphs, positions);
 
@@ -2347,7 +2347,7 @@ void QFontEngineFT::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyph
 }
 
 void QFontEngineFT::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int numGlyphs,
-                                    QPainterPath *path, QTextItem::RenderFlags)
+                                    QPainterPath *path, BOBUIextItem::RenderFlags)
 {
     FT_Face face = lockFace(Unscaled);
 
@@ -2509,9 +2509,9 @@ QFixed QFontEngineFT::scaledBitmapMetrics(QFixed m) const
     return m * scalableBitmapScaleFactor;
 }
 
-glyph_metrics_t QFontEngineFT::scaledBitmapMetrics(const glyph_metrics_t &m, const QTransform &t) const
+glyph_metrics_t QFontEngineFT::scaledBitmapMetrics(const glyph_metrics_t &m, const BOBUIransform &t) const
 {
-    QTransform trans;
+    BOBUIransform trans;
     trans.setMatrix(t.m11(), t.m12(), t.m13(),
                     t.m21(), t.m22(), t.m23(),
                     0, 0, t.m33());
@@ -2631,7 +2631,7 @@ glyph_metrics_t QFontEngineFT::boundingBox(const QGlyphLayout &glyphs)
         unlockFace();
 
     if (isScalableBitmap())
-        overall = scaledBitmapMetrics(overall, QTransform());
+        overall = scaledBitmapMetrics(overall, BOBUIransform());
     return overall;
 }
 
@@ -2673,18 +2673,18 @@ glyph_metrics_t QFontEngineFT::boundingBox(glyph_t glyph)
         unlockFace();
 
     if (isScalableBitmap())
-        overall = scaledBitmapMetrics(overall, QTransform());
+        overall = scaledBitmapMetrics(overall, BOBUIransform());
     return overall;
 }
 
-glyph_metrics_t QFontEngineFT::boundingBox(glyph_t glyph, const QTransform &matrix)
+glyph_metrics_t QFontEngineFT::boundingBox(glyph_t glyph, const BOBUIransform &matrix)
 {
     return alphaMapBoundingBox(glyph, QFixedPoint(), matrix, QFontEngine::Format_None);
 }
 
 glyph_metrics_t QFontEngineFT::alphaMapBoundingBox(glyph_t glyph,
                                                    const QFixedPoint &subPixelPosition,
-                                                   const QTransform &matrix,
+                                                   const BOBUIransform &matrix,
                                                    QFontEngine::GlyphFormat format)
 {
     // When rendering glyphs into a cache via the alphaMap* functions, we disable
@@ -2692,7 +2692,7 @@ glyph_metrics_t QFontEngineFT::alphaMapBoundingBox(glyph_t glyph,
     // need to do the same here.
 
     const bool needsImageTransform = !FT_IS_SCALABLE(freetype->face)
-            && matrix.type() > QTransform::TxTranslate;
+            && matrix.type() > BOBUIransform::TxTranslate;
     if (needsImageTransform && format == QFontEngine::Format_Mono)
         format = QFontEngine::Format_A8;
     Glyph *g = loadGlyphFor(glyph, subPixelPosition, format, matrix, QColor(), true, true);
@@ -2752,14 +2752,14 @@ static inline QImage alphaMapFromGlyphData(QFontEngineFT::Glyph *glyph, QFontEng
 
     QImage img(static_cast<const uchar *>(glyph->data), glyph->width, glyph->height, bytesPerLine, format);
     if (format == QImage::Format_Mono)
-        img.setColor(1, QColor(Qt::white).rgba());  // Expands color table to 2 items; item 0 set to transparent.
+        img.setColor(1, QColor(BobUI::white).rgba());  // Expands color table to 2 items; item 0 set to transparent.
     return img;
 }
 
 QFontEngine::Glyph *QFontEngineFT::glyphData(glyph_t glyphIndex,
                                              const QFixedPoint &subPixelPosition,
                                              QFontEngine::GlyphFormat neededFormat,
-                                             const QTransform &t)
+                                             const BOBUIransform &t)
 {
     Q_ASSERT(cacheEnabled);
 
@@ -2777,7 +2777,7 @@ QFontEngine::Glyph *QFontEngineFT::glyphData(glyph_t glyphIndex,
     return glyph;
 }
 
-static inline bool is2dRotation(const QTransform &t)
+static inline bool is2dRotation(const BOBUIransform &t)
 {
     return qFuzzyCompare(t.m11(), t.m22()) && qFuzzyCompare(t.m12(), -t.m21())
         && qFuzzyCompare(t.m11()*t.m22() - t.m12()*t.m21(), qreal(1.0));
@@ -2786,7 +2786,7 @@ static inline bool is2dRotation(const QTransform &t)
 QFontEngineFT::Glyph *QFontEngineFT::loadGlyphFor(glyph_t g,
                                                   const QFixedPoint &subPixelPosition,
                                                   GlyphFormat format,
-                                                  const QTransform &t,
+                                                  const BOBUIransform &t,
                                                   QColor color,
                                                   bool fetchBoundingBox,
                                                   bool disableOutlineDrawing)
@@ -2798,12 +2798,12 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyphFor(glyph_t g,
     Glyph *glyph = glyphSet != nullptr ? glyphSet->getGlyph(g, subPixelPosition) : nullptr;
     if (!glyph || glyph->format != format || (!fetchBoundingBox && !glyph->data)) {
         QScopedValueRollback<HintStyle> saved_default_hint_style(default_hint_style);
-        if (t.type() >= QTransform::TxScale && !is2dRotation(t))
+        if (t.type() >= BOBUIransform::TxScale && !is2dRotation(t))
             default_hint_style = HintNone; // disable hinting if the glyphs are transformed
 
         lockFace();
         FT_Matrix m = this->matrix;
-        FT_Matrix ftMatrix = glyphSet != nullptr ? glyphSet->transformationMatrix : QTransformToFTMatrix(t);
+        FT_Matrix ftMatrix = glyphSet != nullptr ? glyphSet->transformationMatrix : BOBUIransformToFTMatrix(t);
         FT_Matrix_Multiply(&ftMatrix, &m);
         freetype->matrix = m;
         glyph = loadGlyph(glyphSet, g, subPixelPosition, color, format, false, disableOutlineDrawing);
@@ -2815,22 +2815,22 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyphFor(glyph_t g,
 
 QImage QFontEngineFT::alphaMapForGlyph(glyph_t g, const QFixedPoint &subPixelPosition)
 {
-    return alphaMapForGlyph(g, subPixelPosition, QTransform());
+    return alphaMapForGlyph(g, subPixelPosition, BOBUIransform());
 }
 
 QImage QFontEngineFT::alphaMapForGlyph(glyph_t g,
                                        const QFixedPoint &subPixelPosition,
-                                       const QTransform &t)
+                                       const BOBUIransform &t)
 {
     const bool needsImageTransform = !FT_IS_SCALABLE(freetype->face)
-            && t.type() > QTransform::TxTranslate;
+            && t.type() > BOBUIransform::TxTranslate;
     const GlyphFormat neededFormat = antialias || needsImageTransform ? Format_A8 : Format_Mono;
 
     Glyph *glyph = loadGlyphFor(g, subPixelPosition, neededFormat, t, QColor(), false, true);
 
     QImage img = alphaMapFromGlyphData(glyph, neededFormat);
     if (needsImageTransform)
-        img = img.transformed(t, Qt::FastTransformation);
+        img = img.transformed(t, BobUI::FastTransformation);
     else
         img = img.copy();
 
@@ -2842,13 +2842,13 @@ QImage QFontEngineFT::alphaMapForGlyph(glyph_t g,
 
 QImage QFontEngineFT::alphaRGBMapForGlyph(glyph_t g,
                                           const QFixedPoint &subPixelPosition,
-                                          const QTransform &t)
+                                          const BOBUIransform &t)
 {
-    if (t.type() > QTransform::TxRotate)
+    if (t.type() > BOBUIransform::TxRotate)
         return QFontEngine::alphaRGBMapForGlyph(g, subPixelPosition, t);
 
     const bool needsImageTransform = !FT_IS_SCALABLE(freetype->face)
-                                     && t.type() > QTransform::TxTranslate;
+                                     && t.type() > BOBUIransform::TxTranslate;
 
 
     const GlyphFormat neededFormat = Format_A32;
@@ -2857,7 +2857,7 @@ QImage QFontEngineFT::alphaRGBMapForGlyph(glyph_t g,
 
     QImage img = alphaMapFromGlyphData(glyph, neededFormat);
     if (needsImageTransform)
-        img = img.transformed(t, Qt::FastTransformation);
+        img = img.transformed(t, BobUI::FastTransformation);
     else
         img = img.copy();
 
@@ -2872,7 +2872,7 @@ QImage QFontEngineFT::alphaRGBMapForGlyph(glyph_t g,
 
 QImage QFontEngineFT::bitmapForGlyph(glyph_t g,
                                      const QFixedPoint &subPixelPosition,
-                                     const QTransform &t,
+                                     const BOBUIransform &t,
                                      const QColor &color)
 {
     Glyph *glyph = loadGlyphFor(g, subPixelPosition, defaultFormat, t, color);
@@ -2886,10 +2886,10 @@ QImage QFontEngineFT::bitmapForGlyph(glyph_t g,
         img = QImage(glyph->data, glyph->width, glyph->height, QImage::Format_Mono).copy();
 
     if (!img.isNull() && (scalableBitmapScaleFactor != 1 || (!t.isIdentity() && !isSmoothlyScalable))) {
-        QTransform trans(t);
+        BOBUIransform trans(t);
         const qreal scaleFactor = scalableBitmapScaleFactor.toReal();
         trans.scale(scaleFactor, scaleFactor);
-        img = img.transformed(trans, Qt::SmoothTransformation);
+        img = img.transformed(trans, BobUI::SmoothTransformation);
     }
 
     if (!cacheEnabled && glyph != &emptyGlyph)
@@ -3055,7 +3055,7 @@ QFontEngine *QFontEngineFT::cloneWithSize(qreal pixelSize) const
     }
 }
 
-Qt::HANDLE QFontEngineFT::handle() const
+BobUI::HANDLE QFontEngineFT::handle() const
 {
     return non_locked_face();
 }
@@ -3065,6 +3065,6 @@ QList<QFontVariableAxis> QFontEngineFT::variableAxes() const
     return freetype->variableAxes();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_FREETYPE
+#endif // BOBUI_NO_FREETYPE

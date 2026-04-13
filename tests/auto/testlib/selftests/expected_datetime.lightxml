@@ -1,14 +1,14 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="dateTime">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datetime/tst_datetime.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datetime/tst_datetime.cpp" line="0">
       <Description><![CDATA[Compared values are not the same
    Actual   (local): 2000/05/03 04:03:04.000[UTC+00:02]
    Expected (utc)  : 2000/05/03 04:03:04.000[UTC]]]></Description>
@@ -19,13 +19,13 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[empty urls]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datetime/tst_datetime.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datetime/tst_datetime.cpp" line="0">
       <DataTag><![CDATA[empty rhs]]></DataTag>
       <Description><![CDATA[Compared values are not the same
    Actual   (operandA): http://example.com
    Expected (operandB): Invalid URL: ]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datetime/tst_datetime.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datetime/tst_datetime.cpp" line="0">
       <DataTag><![CDATA[empty lhs]]></DataTag>
       <Description><![CDATA[Compared values are not the same
    Actual   (operandA): Invalid URL: 

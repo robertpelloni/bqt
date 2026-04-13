@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'chatmainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,33 +9,33 @@
 #ifndef CHATMAINWINDOW_H
 #define CHATMAINWINDOW_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QTextBrowser>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QAction>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QMenu>
+#include <BobUIWidgets/QMenuBar>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QStatusBar>
+#include <BobUIWidgets/BOBUIextBrowser>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_ChatMainWindow
 {
 public:
     QAction *actionQuit;
-    QAction *actionAboutQt;
+    QAction *actionAboutBobUI;
     QAction *actionChangeNickname;
     QWidget *centralwidget;
     QHBoxLayout *hboxLayout;
     QVBoxLayout *vboxLayout;
-    QTextBrowser *chatHistory;
+    BOBUIextBrowser *chatHistory;
     QHBoxLayout *hboxLayout1;
     QLabel *label;
     QLineEdit *messageLineEdit;
@@ -52,8 +52,8 @@ public:
         ChatMainWindow->resize(800, 600);
         actionQuit = new QAction(ChatMainWindow);
         actionQuit->setObjectName("actionQuit");
-        actionAboutQt = new QAction(ChatMainWindow);
-        actionAboutQt->setObjectName("actionAboutQt");
+        actionAboutBobUI = new QAction(ChatMainWindow);
+        actionAboutBobUI->setObjectName("actionAboutBobUI");
         actionChangeNickname = new QAction(ChatMainWindow);
         actionChangeNickname->setObjectName("actionChangeNickname");
         centralwidget = new QWidget(ChatMainWindow);
@@ -74,7 +74,7 @@ public:
         vboxLayout->setContentsMargins(0, 0, 0, 0);
 #endif
         vboxLayout->setObjectName("vboxLayout");
-        chatHistory = new QTextBrowser(centralwidget);
+        chatHistory = new BOBUIextBrowser(centralwidget);
         chatHistory->setObjectName("chatHistory");
         chatHistory->setAcceptDrops(false);
         chatHistory->setAcceptRichText(true);
@@ -125,15 +125,15 @@ public:
         statusbar = new QStatusBar(ChatMainWindow);
         statusbar->setObjectName("statusbar");
         ChatMainWindow->setStatusBar(statusbar);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(messageLineEdit);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
         QWidget::setTabOrder(chatHistory, messageLineEdit);
         QWidget::setTabOrder(messageLineEdit, sendButton);
 
         menubar->addAction(menuFile->menuAction());
         menubar->addAction(menuQuit->menuAction());
-        menuQuit->addAction(actionAboutQt);
+        menuQuit->addAction(actionAboutBobUI);
         menuFile->addAction(actionChangeNickname);
         menuFile->addSeparator();
         menuFile->addAction(actionQuit);
@@ -147,26 +147,26 @@ public:
 
     void retranslateUi(QMainWindow *ChatMainWindow)
     {
-        ChatMainWindow->setWindowTitle(QCoreApplication::translate("ChatMainWindow", "Qt D-Bus Chat", nullptr));
+        ChatMainWindow->setWindowTitle(QCoreApplication::translate("ChatMainWindow", "BobUI D-Bus Chat", nullptr));
         actionQuit->setText(QCoreApplication::translate("ChatMainWindow", "Quit", nullptr));
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         actionQuit->setShortcut(QCoreApplication::translate("ChatMainWindow", "Ctrl+Q", nullptr));
-#endif // QT_CONFIG(shortcut)
-        actionAboutQt->setText(QCoreApplication::translate("ChatMainWindow", "About Qt...", nullptr));
+#endif // BOBUI_CONFIG(shortcut)
+        actionAboutBobUI->setText(QCoreApplication::translate("ChatMainWindow", "About BobUI...", nullptr));
         actionChangeNickname->setText(QCoreApplication::translate("ChatMainWindow", "Change nickname...", nullptr));
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         actionChangeNickname->setShortcut(QCoreApplication::translate("ChatMainWindow", "Ctrl+N", nullptr));
-#endif // QT_CONFIG(shortcut)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(shortcut)
+#if BOBUI_CONFIG(tooltip)
         chatHistory->setToolTip(QCoreApplication::translate("ChatMainWindow", "Messages sent and received from other users", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         label->setText(QCoreApplication::translate("ChatMainWindow", "Message:", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         sendButton->setToolTip(QCoreApplication::translate("ChatMainWindow", "Sends a message to other people", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(whatsthis)
         sendButton->setWhatsThis(QString());
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         sendButton->setText(QCoreApplication::translate("ChatMainWindow", "Send", nullptr));
         menuQuit->setTitle(QCoreApplication::translate("ChatMainWindow", "Help", nullptr));
         menuFile->setTitle(QCoreApplication::translate("ChatMainWindow", "File", nullptr));
@@ -178,6 +178,6 @@ namespace Ui {
     class ChatMainWindow: public Ui_ChatMainWindow {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // CHATMAINWINDOW_H

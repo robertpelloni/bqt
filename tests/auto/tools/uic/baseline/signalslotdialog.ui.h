@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'signalslotdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,19 +9,19 @@
 #ifndef SIGNALSLOTDIALOG_H
 #define SIGNALSLOTDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QListView>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QListView>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_SignalSlotDialogClass
 {
@@ -31,15 +31,15 @@ public:
     QVBoxLayout *vboxLayout1;
     QListView *slotListView;
     QHBoxLayout *hboxLayout;
-    QToolButton *addSlotButton;
-    QToolButton *removeSlotButton;
+    BOBUIoolButton *addSlotButton;
+    BOBUIoolButton *removeSlotButton;
     QSpacerItem *spacerItem;
     QGroupBox *signalGroupBox;
     QVBoxLayout *vboxLayout2;
     QListView *signalListView;
     QHBoxLayout *hboxLayout1;
-    QToolButton *addSignalButton;
-    QToolButton *removeSignalButton;
+    BOBUIoolButton *addSignalButton;
+    BOBUIoolButton *removeSignalButton;
     QSpacerItem *spacerItem1;
     QDialogButtonBox *buttonBox;
 
@@ -66,12 +66,12 @@ public:
         hboxLayout = new QHBoxLayout();
         hboxLayout->setSpacing(6);
         hboxLayout->setObjectName("hboxLayout");
-        addSlotButton = new QToolButton(slotGroupBox);
+        addSlotButton = new BOBUIoolButton(slotGroupBox);
         addSlotButton->setObjectName("addSlotButton");
 
         hboxLayout->addWidget(addSlotButton);
 
-        removeSlotButton = new QToolButton(slotGroupBox);
+        removeSlotButton = new BOBUIoolButton(slotGroupBox);
         removeSlotButton->setObjectName("removeSlotButton");
 
         hboxLayout->addWidget(removeSlotButton);
@@ -100,12 +100,12 @@ public:
         hboxLayout1 = new QHBoxLayout();
         hboxLayout1->setSpacing(6);
         hboxLayout1->setObjectName("hboxLayout1");
-        addSignalButton = new QToolButton(signalGroupBox);
+        addSignalButton = new BOBUIoolButton(signalGroupBox);
         addSignalButton->setObjectName("addSignalButton");
 
         hboxLayout1->addWidget(addSignalButton);
 
-        removeSignalButton = new QToolButton(signalGroupBox);
+        removeSignalButton = new BOBUIoolButton(signalGroupBox);
         removeSignalButton->setObjectName("removeSignalButton");
 
         hboxLayout1->addWidget(removeSignalButton);
@@ -136,22 +136,22 @@ public:
     {
         SignalSlotDialogClass->setWindowTitle(QCoreApplication::translate("SignalSlotDialogClass", "Signals and slots", nullptr));
         slotGroupBox->setTitle(QCoreApplication::translate("SignalSlotDialogClass", "Slots", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         addSlotButton->setToolTip(QCoreApplication::translate("SignalSlotDialogClass", "Add", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         addSlotButton->setText(QCoreApplication::translate("SignalSlotDialogClass", "...", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         removeSlotButton->setToolTip(QCoreApplication::translate("SignalSlotDialogClass", "Delete", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         removeSlotButton->setText(QCoreApplication::translate("SignalSlotDialogClass", "...", nullptr));
         signalGroupBox->setTitle(QCoreApplication::translate("SignalSlotDialogClass", "Signals", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         addSignalButton->setToolTip(QCoreApplication::translate("SignalSlotDialogClass", "Add", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         addSignalButton->setText(QCoreApplication::translate("SignalSlotDialogClass", "...", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         removeSignalButton->setToolTip(QCoreApplication::translate("SignalSlotDialogClass", "Delete", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         removeSignalButton->setText(QCoreApplication::translate("SignalSlotDialogClass", "...", nullptr));
     } // retranslateUi
 
@@ -161,6 +161,6 @@ namespace Ui {
     class SignalSlotDialogClass: public Ui_SignalSlotDialogClass {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // SIGNALSLOTDIALOG_H

@@ -1,18 +1,18 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 
-#ifndef QTEST_THROW_ON_FAIL
-# error This test requires QTEST_THROW_ON_FAIL being active.
+#ifndef BOBUIEST_THROW_ON_FAIL
+# error This test requires BOBUIEST_THROW_ON_FAIL being active.
 #endif
 
 #include <qabstractproxymodel.h>
 #include <QItemSelection>
 #include <qstandarditemmodel.h>
 
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qscopeguard.h>
 
 class tst_QAbstractProxyModel : public QObject
 {
@@ -85,7 +85,7 @@ void tst_QAbstractProxyModel::qabstractproxymodel()
     SubQAbstractProxyModel model;
     model.data(QModelIndex());
     model.flags(QModelIndex());
-    model.headerData(0, Qt::Vertical, 0);
+    model.headerData(0, BobUI::Vertical, 0);
     model.itemData(QModelIndex());
     model.mapFromSource(QModelIndex());
     model.mapSelectionFromSource(QItemSelection());
@@ -99,13 +99,13 @@ void tst_QAbstractProxyModel::qabstractproxymodel()
 
 void tst_QAbstractProxyModel::data_data()
 {
-    QTest::addColumn<QModelIndex>("proxyIndex");
-    QTest::addColumn<int>("role");
-    QTest::addColumn<QVariant>("data");
-    QTest::newRow("null") << QModelIndex() << 0 << QVariant();
+    BOBUIest::addColumn<QModelIndex>("proxyIndex");
+    BOBUIest::addColumn<int>("role");
+    BOBUIest::addColumn<QVariant>("data");
+    BOBUIest::newRow("null") << QModelIndex() << 0 << QVariant();
 }
 
-// public QVariant data(QModelIndex const& proxyIndex, int role = Qt::DisplayRole) const
+// public QVariant data(QModelIndex const& proxyIndex, int role = BobUI::DisplayRole) const
 void tst_QAbstractProxyModel::data()
 {
     QFETCH(QModelIndex, proxyIndex);
@@ -116,41 +116,41 @@ void tst_QAbstractProxyModel::data()
     QCOMPARE(model.data(proxyIndex, role), data);
 }
 
-Q_DECLARE_METATYPE(Qt::ItemFlags)
+Q_DECLARE_METATYPE(BobUI::ItemFlags)
 void tst_QAbstractProxyModel::flags_data()
 {
-    QTest::addColumn<QModelIndex>("index");
-    QTest::addColumn<Qt::ItemFlags>("flags");
-    QTest::newRow("null") << QModelIndex() << Qt::ItemFlags{};
+    BOBUIest::addColumn<QModelIndex>("index");
+    BOBUIest::addColumn<BobUI::ItemFlags>("flags");
+    BOBUIest::newRow("null") << QModelIndex() << BobUI::ItemFlags{};
 }
 
-// public Qt::ItemFlags flags(QModelIndex const& index) const
+// public BobUI::ItemFlags flags(QModelIndex const& index) const
 void tst_QAbstractProxyModel::flags()
 {
     QFETCH(QModelIndex, index);
-    QFETCH(Qt::ItemFlags, flags);
+    QFETCH(BobUI::ItemFlags, flags);
 
     SubQAbstractProxyModel model;
     QCOMPARE(model.flags(index), flags);
 }
 
-Q_DECLARE_METATYPE(Qt::Orientation)
-Q_DECLARE_METATYPE(Qt::ItemDataRole)
+Q_DECLARE_METATYPE(BobUI::Orientation)
+Q_DECLARE_METATYPE(BobUI::ItemDataRole)
 void tst_QAbstractProxyModel::headerData_data()
 {
-    QTest::addColumn<int>("section");
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::addColumn<Qt::ItemDataRole>("role");
-    QTest::addColumn<QVariant>("headerData");
-    QTest::newRow("null") << 0 << Qt::Vertical << Qt::UserRole << QVariant();
+    BOBUIest::addColumn<int>("section");
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::addColumn<BobUI::ItemDataRole>("role");
+    BOBUIest::addColumn<QVariant>("headerData");
+    BOBUIest::newRow("null") << 0 << BobUI::Vertical << BobUI::UserRole << QVariant();
 }
 
-// public QVariant headerData(int section, Qt::Orientation orientation, int role) const
+// public QVariant headerData(int section, BobUI::Orientation orientation, int role) const
 void tst_QAbstractProxyModel::headerData()
 {
     QFETCH(int, section);
-    QFETCH(Qt::Orientation, orientation);
-    QFETCH(Qt::ItemDataRole, role);
+    QFETCH(BobUI::Orientation, orientation);
+    QFETCH(BobUI::ItemDataRole, role);
     QFETCH(QVariant, headerData);
 
     SubQAbstractProxyModel model;
@@ -219,7 +219,7 @@ void tst_QAbstractProxyModel::headerDataInBounds()
 
     for (int i = 0; i < proxy.columnCount(); ++i) {
         QString expected = QString("Col%1").arg(i + 1);
-        QCOMPARE(proxy.headerData(i, Qt::Horizontal).toString(), expected);
+        QCOMPARE(proxy.headerData(i, BobUI::Horizontal).toString(), expected);
     }
 
     qsim.appendRow({
@@ -232,14 +232,14 @@ void tst_QAbstractProxyModel::headerDataInBounds()
 
     QCOMPARE(proxy.rowCount(), 1);
     QCOMPARE(proxy.columnCount(), 5);
-    QTRY_COMPARE(headerDataChangedSpy.size(), 1);
-    QCOMPARE(headerDataChangedSpy[0][0].value<Qt::Orientation>(), Qt::Horizontal);
+    BOBUIRY_COMPARE(headerDataChangedSpy.size(), 1);
+    QCOMPARE(headerDataChangedSpy[0][0].value<BobUI::Orientation>(), BobUI::Horizontal);
     QCOMPARE(headerDataChangedSpy[0][1].value<int>(), 0);
     QCOMPARE(headerDataChangedSpy[0][2].value<int>(), 4);
 
     for (int i = 0; i < proxy.columnCount(); ++i) {
         QString expected = QString("Col%1").arg(proxy.columnCount() - i);
-        QCOMPARE(proxy.headerData(i, Qt::Horizontal).toString(), expected);
+        QCOMPARE(proxy.headerData(i, BobUI::Horizontal).toString(), expected);
     }
 
     qsim.appendRow({
@@ -255,7 +255,7 @@ void tst_QAbstractProxyModel::headerDataInBounds()
 
     for (int i = 0; i < proxy.columnCount(); ++i) {
         QString expected = QString("Col%1").arg(proxy.columnCount() - i);
-        QCOMPARE(proxy.headerData(i, Qt::Horizontal).toString(), expected);
+        QCOMPARE(proxy.headerData(i, BobUI::Horizontal).toString(), expected);
     }
 
     QVERIFY(qsim.removeRows(0, 1));
@@ -266,30 +266,30 @@ void tst_QAbstractProxyModel::headerDataInBounds()
 
     for (int i = 0; i < proxy.columnCount(); ++i) {
         QString expected = QString("Col%1").arg(proxy.columnCount() - i);
-        QCOMPARE(proxy.headerData(i, Qt::Horizontal).toString(), expected);
+        QCOMPARE(proxy.headerData(i, BobUI::Horizontal).toString(), expected);
     }
 
     QVERIFY(qsim.removeRows(0, 1));
 
     QCOMPARE(proxy.rowCount(), 0);
     QCOMPARE(proxy.columnCount(), 5);
-    QTRY_COMPARE(headerDataChangedSpy.size(), 2);
-    QCOMPARE(headerDataChangedSpy[1][0].value<Qt::Orientation>(), Qt::Horizontal);
+    BOBUIRY_COMPARE(headerDataChangedSpy.size(), 2);
+    QCOMPARE(headerDataChangedSpy[1][0].value<BobUI::Orientation>(), BobUI::Horizontal);
     QCOMPARE(headerDataChangedSpy[1][1].value<int>(), 0);
     QCOMPARE(headerDataChangedSpy[1][2].value<int>(), 4);
 
     for (int i = 0; i < proxy.columnCount(); ++i) {
         QString expected = QString("Col%1").arg(i + 1);
-        QCOMPARE(proxy.headerData(i, Qt::Horizontal).toString(), expected);
+        QCOMPARE(proxy.headerData(i, BobUI::Horizontal).toString(), expected);
     }
 }
 
 void tst_QAbstractProxyModel::itemData_data()
 {
-    QTest::addColumn<QModelIndex>("index");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<QModelIndex>("index");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("null") << QModelIndex() << 0;
+    BOBUIest::newRow("null") << QModelIndex() << 0;
 }
 
 // public QMap<int,QVariant> itemData(QModelIndex const& index) const
@@ -303,9 +303,9 @@ void tst_QAbstractProxyModel::itemData()
 
 void tst_QAbstractProxyModel::mapFromSource_data()
 {
-    QTest::addColumn<QModelIndex>("sourceIndex");
-    QTest::addColumn<QModelIndex>("mapFromSource");
-    QTest::newRow("null") << QModelIndex() << QModelIndex();
+    BOBUIest::addColumn<QModelIndex>("sourceIndex");
+    BOBUIest::addColumn<QModelIndex>("mapFromSource");
+    BOBUIest::newRow("null") << QModelIndex() << QModelIndex();
 }
 
 // public QModelIndex mapFromSource(QModelIndex const& sourceIndex) const
@@ -320,10 +320,10 @@ void tst_QAbstractProxyModel::mapFromSource()
 
 void tst_QAbstractProxyModel::mapSelectionFromSource_data()
 {
-    QTest::addColumn<QItemSelection>("selection");
-    QTest::addColumn<QItemSelection>("mapSelectionFromSource");
-    QTest::newRow("null") << QItemSelection() << QItemSelection();
-    QTest::newRow("empty") << QItemSelection(QModelIndex(), QModelIndex()) << QItemSelection(QModelIndex(), QModelIndex());
+    BOBUIest::addColumn<QItemSelection>("selection");
+    BOBUIest::addColumn<QItemSelection>("mapSelectionFromSource");
+    BOBUIest::newRow("null") << QItemSelection() << QItemSelection();
+    BOBUIest::newRow("empty") << QItemSelection(QModelIndex(), QModelIndex()) << QItemSelection(QModelIndex(), QModelIndex());
 }
 
 // public QItemSelection mapSelectionFromSource(QItemSelection const& selection) const
@@ -338,10 +338,10 @@ void tst_QAbstractProxyModel::mapSelectionFromSource()
 
 void tst_QAbstractProxyModel::mapSelectionToSource_data()
 {
-    QTest::addColumn<QItemSelection>("selection");
-    QTest::addColumn<QItemSelection>("mapSelectionToSource");
-    QTest::newRow("null") << QItemSelection() << QItemSelection();
-    QTest::newRow("empty") << QItemSelection(QModelIndex(), QModelIndex()) << QItemSelection(QModelIndex(), QModelIndex());
+    BOBUIest::addColumn<QItemSelection>("selection");
+    BOBUIest::addColumn<QItemSelection>("mapSelectionToSource");
+    BOBUIest::newRow("null") << QItemSelection() << QItemSelection();
+    BOBUIest::newRow("empty") << QItemSelection(QModelIndex(), QModelIndex()) << QItemSelection(QModelIndex(), QModelIndex());
 }
 
 // public QItemSelection mapSelectionToSource(QItemSelection const& selection) const
@@ -356,9 +356,9 @@ void tst_QAbstractProxyModel::mapSelectionToSource()
 
 void tst_QAbstractProxyModel::mapToSource_data()
 {
-    QTest::addColumn<QModelIndex>("proxyIndex");
-    QTest::addColumn<QModelIndex>("mapToSource");
-    QTest::newRow("null") << QModelIndex() << QModelIndex();
+    BOBUIest::addColumn<QModelIndex>("proxyIndex");
+    BOBUIest::addColumn<QModelIndex>("mapToSource");
+    BOBUIest::newRow("null") << QModelIndex() << QModelIndex();
 }
 
 // public QModelIndex mapToSource(QModelIndex const& proxyIndex) const
@@ -404,8 +404,8 @@ void tst_QAbstractProxyModel::setSourceModel()
 
 void tst_QAbstractProxyModel::submit_data()
 {
-    QTest::addColumn<bool>("submit");
-    QTest::newRow("null") << true;
+    BOBUIest::addColumn<bool>("submit");
+    BOBUIest::newRow("null") << true;
 }
 
 // public bool submit()
@@ -421,7 +421,7 @@ class StandardItemModelWithCustomRoleNames : public QStandardItemModel
 {
 public:
     enum CustomRole {
-        CustomRole1 = Qt::UserRole,
+        CustomRole1 = BobUI::UserRole,
         CustomRole2
     };
 
@@ -438,7 +438,7 @@ class AnotherStandardItemModelWithCustomRoleNames : public QStandardItemModel
 {
 public:
     enum CustomRole {
-        AnotherCustomRole1 = Qt::UserRole + 10,  // Different to StandardItemModelWithCustomRoleNames::CustomRole1
+        AnotherCustomRole1 = BobUI::UserRole + 10,  // Different to StandardItemModelWithCustomRoleNames::CustomRole1
         AnotherCustomRole2
     };
 
@@ -598,8 +598,8 @@ class StandardItemModelWithCustomDragAndDrop : public QStandardItemModel
 {
 public:
     QStringList mimeTypes() const override { return QStringList() << QStringLiteral("foo/mimetype"); }
-    Qt::DropActions supportedDragActions() const override { return Qt::CopyAction | Qt::LinkAction; }
-    Qt::DropActions supportedDropActions() const override { return Qt::MoveAction; }
+    BobUI::DropActions supportedDragActions() const override { return BobUI::CopyAction | BobUI::LinkAction; }
+    BobUI::DropActions supportedDropActions() const override { return BobUI::MoveAction; }
 };
 
 void tst_QAbstractProxyModel::testDragAndDrop()
@@ -625,24 +625,24 @@ void tst_QAbstractProxyModel::sourceModelBinding()
         });
     lhs = "model";
     rhs = "model";
-    QTestPrivate::testReadWritePropertyBasics<SubQAbstractProxyModel, QAbstractItemModel *>(
+    BOBUIestPrivate::testReadWritePropertyBasics<SubQAbstractProxyModel, QAbstractItemModel *>(
             proxy, &model1, &model2, "sourceModel");
 
     proxy.setSourceModel(&model2);
     lhs = "model";
     rhs = "nullptr";
-    QTestPrivate::testReadWritePropertyBasics<SubQAbstractProxyModel, QAbstractItemModel *>(
+    BOBUIestPrivate::testReadWritePropertyBasics<SubQAbstractProxyModel, QAbstractItemModel *>(
             proxy, &model1, nullptr, "sourceModel");
 
     proxy.setSourceModel(&model1);
     lhs = "nullptr";
     rhs = "model";
-    QTestPrivate::testReadWritePropertyBasics<SubQAbstractProxyModel, QAbstractItemModel *>(
+    BOBUIestPrivate::testReadWritePropertyBasics<SubQAbstractProxyModel, QAbstractItemModel *>(
             proxy, nullptr, &model2, "sourceModel");
 
     printOnFailure.dismiss();
 }
 
-QTEST_MAIN(tst_QAbstractProxyModel)
+BOBUIEST_MAIN(tst_QAbstractProxyModel)
 #include "tst_qabstractproxymodel.moc"
 

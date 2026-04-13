@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QWidget>
 #include <QAbstractButton>
@@ -11,7 +11,7 @@
 
 int main(int argc, char *argv[])
 {
-    QT_REQUIRE_VERSION(argc, argv, "4.0.2")
+    BOBUI_REQUIRE_VERSION(argc, argv, "4.0.2")
 
     QApplication app(argc, argv);
     //...

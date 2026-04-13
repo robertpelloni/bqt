@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMWINDOW_H
 #define QWASMWINDOW_H
@@ -13,7 +13,7 @@
 #include "qwasmwindowtreenode.h"
 #include "qwasmevent.h"
 
-#include <QtCore/private/qstdweb_p.h>
+#include <BobUICore/private/qstdweb_p.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatformwindow_p.h>
@@ -23,7 +23,7 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qstdweb {
 class EventCallback;
@@ -46,7 +46,7 @@ public:
 
     static QWasmWindow *fromWindow(const QWindow *window);
     QWasmWindow *transientParent() const;
-    Qt::WindowFlags windowFlags() const;
+    BobUI::WindowFlags windowFlags() const;
     bool isModal() const;
     QSurfaceFormat format() const override;
 
@@ -79,8 +79,8 @@ public:
     qreal devicePixelRatio() const override;
     void requestUpdate() override;
     void requestActivateWindow() override;
-    void setWindowFlags(Qt::WindowFlags flags) override;
-    void setWindowState(Qt::WindowStates state) override;
+    void setWindowFlags(BobUI::WindowFlags flags) override;
+    void setWindowState(BobUI::WindowStates state) override;
     void setWindowTitle(const QString &title) override;
     void setWindowIcon(const QIcon &icon) override;
     bool setKeyboardGrabEnabled(bool) override { return false; }
@@ -152,9 +152,9 @@ private:
     bool deliverPointerEvent(const PointerEvent &event);
     void handleWheelEvent(const emscripten::val &event);
     bool processWheel(const WheelEvent &event);
-    Qt::WindowFlags fixTopLevelWindowFlags(Qt::WindowFlags) const;
-    bool shouldBeAboveTransientParentFlags(Qt::WindowFlags flags) const;
-    QWasmWindowStack<>::PositionPreference positionPreferenceFromWindowFlags(Qt::WindowFlags) const;
+    BobUI::WindowFlags fixTopLevelWindowFlags(BobUI::WindowFlags) const;
+    bool shouldBeAboveTransientParentFlags(BobUI::WindowFlags flags) const;
+    QWasmWindowStack<>::PositionPreference positionPreferenceFromWindowFlags(BobUI::WindowFlags) const;
 
     QWasmCompositor *m_compositor = nullptr;
     QWasmBackingStore *m_backingStore = nullptr;
@@ -206,10 +206,10 @@ private:
     QWasmEventHandler m_copyCallback;
     QWasmEventHandler m_pasteCallback;
 
-    Qt::WindowStates m_state = Qt::WindowNoState;
-    Qt::WindowStates m_previousWindowState = Qt::WindowNoState;
+    BobUI::WindowStates m_state = BobUI::WindowNoState;
+    BobUI::WindowStates m_previousWindowState = BobUI::WindowNoState;
 
-    Qt::WindowFlags m_flags = Qt::Widget;
+    BobUI::WindowFlags m_flags = BobUI::Widget;
 
     QPoint m_lastPointerMovePoint;
 
@@ -220,8 +220,8 @@ private:
     long m_requestAnimationFrameId = -1;
     friend class QWasmCompositor;
     friend class QWasmEventTranslator;
-    bool windowIsPopupType(Qt::WindowFlags flags) const;
+    bool windowIsPopupType(BobUI::WindowFlags flags) const;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QWASMWINDOW_H

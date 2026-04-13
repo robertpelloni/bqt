@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef CPPGENERATOR_H
 #define CPPGENERATOR_H
@@ -33,8 +33,8 @@ public:
   void setWarningsAreErrors (bool e) { warnings_are_errors = e; }
 
 private:
-  void generateDecl (QTextStream &out);
-  void generateImpl (QTextStream &out);
+  void generateDecl (BOBUIextStream &out);
+  void generateImpl (BOBUIextStream &out);
 
   QString debugInfoProt() const;
   QString copyrightHeader() const;

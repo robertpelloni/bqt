@@ -1,13 +1,13 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qglobal.h"
 #include "qjalalicalendar_p.h"
 #include "qjalalicalendar_data_p.h"
 #include "qcalendarmath_p.h"
-#include <QtCore/qmath.h>
+#include <BobUICore/qmath.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QRoundingDown;
 
@@ -42,7 +42,7 @@ qint64 firstDayOfYear(int year, int cycleNo)
     \internal
 
     \class QJalaliCalendar
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QJalaliCalendar class provides Jalali (Hijri Shamsi) calendar
     system implementation.
 
@@ -170,12 +170,12 @@ int QJalaliCalendar::daysInMonth(int month, int year) const
 
 const QCalendarLocale *QJalaliCalendar::localeMonthIndexData() const
 {
-    return QtPrivate::Jalali::locale_data;
+    return BobUIPrivate::Jalali::locale_data;
 }
 
 const char16_t *QJalaliCalendar::localeMonthData() const
 {
-    return QtPrivate::Jalali::months_data;
+    return BobUIPrivate::Jalali::months_data;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

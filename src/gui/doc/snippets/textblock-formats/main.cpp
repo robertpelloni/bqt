@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
 QString tr(const char *text)
 {
@@ -13,12 +13,12 @@ int main_textblock_formats(int argc, char *argv[])
     QApplication app(argc, argv);
 
 //! [0]
-    QTextEdit *editor = new QTextEdit();
-    QTextCursor cursor(editor->textCursor());
+    BOBUIextEdit *editor = new BOBUIextEdit();
+    BOBUIextCursor cursor(editor->textCursor());
 //! [0]
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
 
-    QTextBlockFormat blockFormat = cursor.blockFormat();
+    BOBUIextBlockFormat blockFormat = cursor.blockFormat();
     blockFormat.setTopMargin(4);
     blockFormat.setLeftMargin(4);
     blockFormat.setRightMargin(4);
@@ -32,7 +32,7 @@ int main_textblock_formats(int argc, char *argv[])
     cursor.insertBlock();
 
 //! [1]
-    QTextBlockFormat backgroundFormat = blockFormat;
+    BOBUIextBlockFormat backgroundFormat = blockFormat;
     backgroundFormat.setBackground(QColor("lightGray"));
 
     cursor.setBlockFormat(backgroundFormat);
@@ -42,8 +42,8 @@ int main_textblock_formats(int argc, char *argv[])
 
     cursor.insertBlock();
 
-    QTextBlockFormat rightAlignedFormat = blockFormat;
-    rightAlignedFormat.setAlignment(Qt::AlignRight);
+    BOBUIextBlockFormat rightAlignedFormat = blockFormat;
+    rightAlignedFormat.setAlignment(BobUI::AlignRight);
 
     cursor.setBlockFormat(rightAlignedFormat);
     cursor.insertText(tr("The alignment of the text within a block is "
@@ -53,8 +53,8 @@ int main_textblock_formats(int argc, char *argv[])
 
     cursor.insertBlock();
 
-    QTextBlockFormat paragraphFormat = blockFormat;
-    paragraphFormat.setAlignment(Qt::AlignJustify);
+    BOBUIextBlockFormat paragraphFormat = blockFormat;
+    paragraphFormat.setAlignment(BobUI::AlignJustify);
     paragraphFormat.setTextIndent(32);
 
     cursor.setBlockFormat(paragraphFormat);
@@ -64,8 +64,8 @@ int main_textblock_formats(int argc, char *argv[])
 
     cursor.insertBlock();
 
-    QTextBlockFormat reverseFormat = blockFormat;
-    reverseFormat.setAlignment(Qt::AlignJustify);
+    BOBUIextBlockFormat reverseFormat = blockFormat;
+    reverseFormat.setAlignment(BobUI::AlignJustify);
     reverseFormat.setTextIndent(32);
 
     cursor.setBlockFormat(reverseFormat);

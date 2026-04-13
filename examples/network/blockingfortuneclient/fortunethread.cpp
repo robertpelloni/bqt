@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtNetwork>
+#include <BobUINetwork>
 
 #include "fortunethread.h"
 
 FortuneThread::FortuneThread(QObject *parent)
-    : QThread(parent), quit(false)
+    : BOBUIhread(parent), quit(false)
 {
 }
 
@@ -51,7 +51,7 @@ void FortuneThread::run()
 //! [7]
         const int Timeout = 5 * 1000;
 
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         socket.connectToHost(serverName, serverPort);
 //! [6] //! [8]
 
@@ -62,7 +62,7 @@ void FortuneThread::run()
 //! [8] //! [11]
 
         QDataStream in(&socket);
-        in.setVersion(QDataStream::Qt_6_5);
+        in.setVersion(QDataStream::BobUI_6_5);
         QString fortune;
 //! [11] //! [12]
 

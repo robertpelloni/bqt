@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeventloop.h"
 
@@ -10,16 +10,16 @@
 
 #include "qobject_p.h"
 #include "qeventloop_p.h"
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEventLoopPrivate::~QEventLoopPrivate()
     = default;
 
 /*!
     \class QEventLoop
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QEventLoop class provides a means of entering and leaving an event loop.
 
     At any time, you can create a QEventLoop object and call exec()
@@ -67,7 +67,7 @@ QEventLoop::QEventLoop(QObject *parent)
     : QObject(*new QEventLoopPrivate, parent)
 {
     Q_D(QEventLoop);
-    QThreadData *threadData = d->threadData.loadRelaxed();
+    BOBUIhreadData *threadData = d->threadData.loadRelaxed();
     if (!QCoreApplication::instanceExists() && threadData->requiresCoreApplication) {
         qWarning("QEventLoop: Cannot be used without QCoreApplication");
     } else {
@@ -132,8 +132,8 @@ int QEventLoop::exec(ProcessEventsFlags flags)
     Q_D(QEventLoop);
     auto threadData = d->threadData.loadRelaxed();
 
-    //we need to protect from race condition with QThread::exit
-    QMutexLocker locker(&static_cast<QThreadPrivate *>(QObjectPrivate::get(threadData->thread.loadAcquire()))->mutex);
+    //we need to protect from race condition with BOBUIhread::exit
+    QMutexLocker locker(&static_cast<BOBUIhreadPrivate *>(QObjectPrivate::get(threadData->thread.loadAcquire()))->mutex);
     if (threadData->quitNow)
         return -1;
 
@@ -162,9 +162,9 @@ int QEventLoop::exec(ProcessEventsFlags flags)
         ~LoopReference()
         {
             if (exceptionCaught) {
-                qWarning("Qt has caught an exception thrown from an event handler. Throwing\n"
-                         "exceptions from an event handler is not supported in Qt.\n"
-                         "You must not let any exception whatsoever propagate through Qt code.");
+                qWarning("BobUI has caught an exception thrown from an event handler. Throwing\n"
+                         "exceptions from an event handler is not supported in BobUI.\n"
+                         "You must not let any exception whatsoever propagate through BobUI code.");
             }
             locker.relock();
             auto threadData = d->threadData.loadRelaxed();
@@ -315,17 +315,17 @@ void QEventLoop::quit()
 
 // If any of these trigger, the Type bits will interfere with the pointer values:
 static_assert(alignof(QEventLoop) >= 4);
-static_assert(alignof(QThread) >= 4);
+static_assert(alignof(BOBUIhread) >= 4);
 static_assert(alignof(QCoreApplication) >= 4);
 
 /*!
     \class QEventLoopLocker
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QEventLoopLocker class provides a means to quit an event loop when it is no longer needed.
     \since 5.0
 
     The QEventLoopLocker operates on particular objects - either a QCoreApplication
-    instance, a QEventLoop instance or a QThread instance.
+    instance, a QEventLoop instance or a BOBUIhread instance.
 
     This makes it possible to, for example, run a batch of jobs with an event loop
     and exit that event loop after the last job is finished. That is accomplished
@@ -371,11 +371,11 @@ QEventLoopLocker::QEventLoopLocker(QEventLoop *loop) noexcept
 /*!
     Creates an event locker operating on the \a thread.
 
-    This particular QThread will quit when there are no more QEventLoopLockers operating on it.
+    This particular BOBUIhread will quit when there are no more QEventLoopLockers operating on it.
 
-    \sa QThread::quit()
+    \sa BOBUIhread::quit()
  */
-QEventLoopLocker::QEventLoopLocker(QThread *thread) noexcept
+QEventLoopLocker::QEventLoopLocker(BOBUIhread *thread) noexcept
     : QEventLoopLocker{thread, Type::Thread}
 {
 
@@ -387,7 +387,7 @@ QEventLoopLocker::QEventLoopLocker(QThread *thread) noexcept
 
     Move-constructs an event-loop locker from \a other. \a other will have a
     no-op destructor, while responsibility for preventing the
-    QEventLoop/QThread/QCoreApplication from quitting is transferred to the new
+    QEventLoop/BOBUIhread/QCoreApplication from quitting is transferred to the new
     object.
 */
 
@@ -397,7 +397,7 @@ QEventLoopLocker::QEventLoopLocker(QThread *thread) noexcept
 
     Move-assigns this event-loop locker from \a other. \a other will have a
     no-op destructor, while responsibility for preventing the
-    QEventLoop/QThread/QCoreApplication from quitting is transferred to this
+    QEventLoop/BOBUIhread/QCoreApplication from quitting is transferred to this
     object.
 */
 
@@ -445,12 +445,12 @@ void QEventLoopLocker::visit(Func f) const
         return;
     switch (type()) {
     case Type::EventLoop:   return f(static_cast<QEventLoop *>(ptr));
-    case Type::Thread:      return f(static_cast<QThread *>(ptr));
+    case Type::Thread:      return f(static_cast<BOBUIhread *>(ptr));
     case Type::Application: return f(static_cast<QCoreApplication *>(ptr));
     }
     Q_UNREACHABLE();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeventloop.cpp"

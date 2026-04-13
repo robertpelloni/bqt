@@ -1,23 +1,23 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QJNITYPES_H
 #define QJNITYPES_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 #if defined(Q_QDOC) || defined(Q_OS_ANDROID)
 
-#include <QtCore/qjnitypes_impl.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qjniarray.h>
+#include <BobUICore/qjnitypes_impl.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qjniarray.h>
 
 #if 0
-// This is needed for generating the QtJniTypes forward header
-#pragma qt_class(QtJniTypes)
+// This is needed for generating the BobUIJniTypes forward header
+#pragma bobui_class(BobUIJniTypes)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define Q_DECLARE_JNI_TYPE_HELPER(Type)                         \
 struct Type##Tag { explicit Type##Tag() = default; };           \
@@ -25,14 +25,14 @@ using Type = JObject<Type##Tag>;                                \
 
 // internal - Q_DECLARE_JNI_CLASS is the public macro
 #define Q_DECLARE_JNI_TYPE(Type, Signature)                     \
-namespace QtJniTypes {                                          \
+namespace BobUIJniTypes {                                          \
 Q_DECLARE_JNI_TYPE_HELPER(Type)                                 \
 }                                                               \
 template<>                                                      \
-struct ::QtJniTypes::Traits<QtJniTypes::Type##Tag> {            \
+struct ::BobUIJniTypes::Traits<BobUIJniTypes::Type##Tag> {            \
     static constexpr auto signature()                           \
     {                                                           \
-        constexpr QtJniTypes::CTString sig(Signature);          \
+        constexpr BobUIJniTypes::CTString sig(Signature);          \
         static_assert((sig.startsWith('L') || sig.startsWith("[L"))    \
                     && sig.endsWith(';'),                       \
                     "Type signature needs to start with 'L' or" \
@@ -46,16 +46,16 @@ Q_DECLARE_JNI_TYPE_HELPER(Type)                                 \
 
 #define Q_DECLARE_JNI_CLASS_SPECIALIZATION_2(Type, Signature)   \
 template<>                                                      \
-struct QtJniTypes::Traits<QtJniTypes::Type##Tag> {              \
+struct BobUIJniTypes::Traits<BobUIJniTypes::Type##Tag> {              \
     static constexpr auto className()                           \
     {                                                           \
-        return QtJniTypes::CTString(Signature);                 \
+        return BobUIJniTypes::CTString(Signature);                 \
     }                                                           \
     static constexpr auto signature()                           \
     {                                                           \
-        return QtJniTypes::CTString("L")                        \
+        return BobUIJniTypes::CTString("L")                        \
             + className()                                       \
-            + QtJniTypes::CTString(";");                        \
+            + BobUIJniTypes::CTString(";");                        \
     }                                                           \
 };                                                              \
 
@@ -125,24 +125,24 @@ Q_DECLARE_JNI_CLASS_8(NS1, NS2, NS3, NS4, NS5, NS6, NS7, Type)  \
         #NS0 "/" #NS1 "/" #NS2 "/" #NS3 "/" #NS4 "/" #NS5 "/" #NS6 "/" #NS7 "/" #Type)
 
 #define Q_DECLARE_JNI_CLASS(...)                                \
-namespace QtJniTypes {                                          \
-QT_OVERLOADED_MACRO(Q_DECLARE_JNI_CLASS, __VA_ARGS__)           \
+namespace BobUIJniTypes {                                          \
+BOBUI_OVERLOADED_MACRO(Q_DECLARE_JNI_CLASS, __VA_ARGS__)           \
 }                                                               \
-QT_OVERLOADED_MACRO(Q_DECLARE_JNI_CLASS_SPECIALIZATION, __VA_ARGS__)
+BOBUI_OVERLOADED_MACRO(Q_DECLARE_JNI_CLASS_SPECIALIZATION, __VA_ARGS__)
 
 // Macros for native methods
 
-namespace QtJniMethods {
+namespace BobUIJniMethods {
 namespace Detail {
 // A helper to forward the call to the registered function (with JNI types
 // as arguments) to the real function, using the type conversion implemented in
 // QJniObject::LocalFrame::convertTo/FromJni. This is needed because we want to
-// write functions that take Qt-style arguments (QJniObject, declared types,
+// write functions that take BobUI-style arguments (QJniObject, declared types,
 // QList etc), while Java can only call functions that take jobjects.
 template <typename Arg>
 struct JNITypeForArgImpl
 {
-    using JNIType = decltype(QtJniTypes::Traits<Arg>::convertToJni(nullptr, {}));
+    using JNIType = decltype(BobUIJniTypes::Traits<Arg>::convertToJni(nullptr, {}));
     static Arg fromVarArg(JNIType t) // JNIType is always POD
     {
         // Special case: if convertToJni doesn't do anything, don't do anything
@@ -151,7 +151,7 @@ struct JNITypeForArgImpl
         if constexpr (std::is_same_v<JNIType, Arg>) {
             return t;
         } else {
-            return QtJniTypes::Traits<Arg>::convertFromJni(t);
+            return BobUIJniTypes::Traits<Arg>::convertFromJni(t);
         }
     }
 };
@@ -159,7 +159,7 @@ struct JNITypeForArgImpl
 template <typename Arg>
 using JNITypeForArg = typename JNITypeForArgImpl<std::decay_t<Arg>>::JNIType;
 } // namespace Detail
-} // namespace QtJniMethods
+} // namespace BobUIJniMethods
 
 // Declaring a JNI method results in a struct with a template function call() that
 // gets instantiated with the return type and arguments of the declared method,
@@ -170,13 +170,13 @@ using JNITypeForArg = typename JNITypeForArgImpl<std::decay_t<Arg>>::JNIType;
 struct Method##_##Postfix {                                                                 \
 template<typename Ret, typename JType, typename... Args>                                    \
 JNICALL static                                                                              \
-Ret call(JNIEnv *env, JType thiz, QtJniMethods::Detail::JNITypeForArg<Args> ...args)        \
+Ret call(JNIEnv *env, JType thiz, BobUIJniMethods::Detail::JNITypeForArg<Args> ...args)        \
 {                                                                                           \
-    return Method(env, thiz, QtJniMethods::Detail::JNITypeForArgImpl<                       \
+    return Method(env, thiz, BobUIJniMethods::Detail::JNITypeForArgImpl<                       \
                                                 std::decay_t<Args>>::fromVarArg(args)...    \
                  );                                                                         \
 }                                                                                           \
-static constexpr auto signature = QtJniTypes::nativeMethodSignature(Method);                \
+static constexpr auto signature = BobUIJniTypes::nativeMethodSignature(Method);                \
 template<typename Ret, typename JType, typename ...Args>                                    \
 static constexpr JNINativeMethod makeJNIMethod(Ret(*)(JNIEnv *, JType, Args...))            \
 {                                                                                           \
@@ -188,30 +188,30 @@ static constexpr JNINativeMethod makeJNIMethod(Ret(*)(JNIEnv *, JType, Args...))
 };                                                                                          \
 
 #define Q_DECLARE_JNI_NATIVE_METHOD(...)                                        \
-    QT_OVERLOADED_MACRO(QT_DECLARE_JNI_NATIVE_METHOD, __VA_ARGS__)              \
+    BOBUI_OVERLOADED_MACRO(BOBUI_DECLARE_JNI_NATIVE_METHOD, __VA_ARGS__)              \
 
-#define QT_DECLARE_JNI_NATIVE_METHOD_2(Method, Name)                            \
-namespace QtJniMethods {                                                        \
+#define BOBUI_DECLARE_JNI_NATIVE_METHOD_2(Method, Name)                            \
+namespace BobUIJniMethods {                                                        \
 Q_DECLARE_JNI_NATIVE_METHOD_HELPER(Method, Helper, Name)                        \
 }                                                                               \
 
-#define QT_DECLARE_JNI_NATIVE_METHOD_1(Method)                                  \
-    QT_DECLARE_JNI_NATIVE_METHOD_2(Method, Method)                              \
+#define BOBUI_DECLARE_JNI_NATIVE_METHOD_1(Method)                                  \
+    BOBUI_DECLARE_JNI_NATIVE_METHOD_2(Method, Method)                              \
 
 #define Q_JNI_NATIVE_METHOD(Method)                                             \
-    QtJniMethods::Method##_Helper::makeJNIMethod(QT_PREPEND_NAMESPACE(Method))
+    BobUIJniMethods::Method##_Helper::makeJNIMethod(BOBUI_PREPEND_NAMESPACE(Method))
 
 #define Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(...)                                   \
-    QT_OVERLOADED_MACRO(QT_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE, __VA_ARGS__)         \
+    BOBUI_OVERLOADED_MACRO(BOBUI_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE, __VA_ARGS__)         \
 
-#define QT_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(Method, Name)                       \
-    Q_DECLARE_JNI_NATIVE_METHOD_HELPER(Method, QtJniMethod, Name)                           \
+#define BOBUI_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(Method, Name)                       \
+    Q_DECLARE_JNI_NATIVE_METHOD_HELPER(Method, BobUIJniMethod, Name)                           \
 
-#define QT_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_1(Method)                             \
-    QT_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(Method, Method)                         \
+#define BOBUI_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_1(Method)                             \
+    BOBUI_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(Method, Method)                         \
 
 #define Q_JNI_NATIVE_SCOPED_METHOD(Method, Scope)                                           \
-    Scope::Method##_QtJniMethod::makeJNIMethod(Scope::Method)
+    Scope::Method##_BobUIJniMethod::makeJNIMethod(Scope::Method)
 
 // Classes for value types
 Q_DECLARE_JNI_CLASS(String, "java/lang/String")
@@ -238,9 +238,9 @@ Q_DECLARE_JNI_CLASS(ContentResolver, "android/content/ContentResolver");
 Q_DECLARE_JNI_CLASS(Activity, "android/app/Activity");
 Q_DECLARE_JNI_CLASS(Service, "android/app/Service");
 
-#define QT_DECLARE_JNI_CLASS_STANDARD_TYPES
+#define BOBUI_DECLARE_JNI_CLASS_STANDARD_TYPES
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // defined(Q_QDOC) || defined(Q_OS_ANDROID)
 

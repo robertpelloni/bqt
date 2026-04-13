@@ -1,52 +1,52 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "complexwidgets_p.h"
 
 #include <qaccessible.h>
 #include <qapplication.h>
 #include <qevent.h>
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 #include <qheaderview.h>
 #endif
-#if QT_CONFIG(tabbar)
-#include <qtabbar.h>
-#include <private/qtabbar_p.h>
+#if BOBUI_CONFIG(tabbar)
+#include <bobuiabbar.h>
+#include <private/bobuiabbar_p.h>
 #endif
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
 #include <qcombobox.h>
 #endif
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 #include <qlineedit.h>
 #endif
 #include <qstyle.h>
 #include <qstyleoption.h>
-#if QT_CONFIG(tooltip)
-#include <qtooltip.h>
+#if BOBUI_CONFIG(tooltip)
+#include <bobuiooltip.h>
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #include <qwhatsthis.h>
 #endif
 #include <QAbstractScrollArea>
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
 #include <QScrollArea>
 #endif
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
 #include <QScrollBar>
 #endif
 #include <QDebug>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#include <QtGui/private/qaccessiblehelper_p.h>
+#include <BobUIGui/private/qaccessiblehelper_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QString qt_accHotKey(const QString &text);
+QString bobui_accHotKey(const QString &text);
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 /*!
   \class QAccessibleTabBar
   \brief The QAccessibleTabBar class implements the QAccessibleInterface for tab bars.
@@ -58,7 +58,7 @@ QString qt_accHotKey(const QString &text);
 class QAccessibleTabButton: public QAccessibleInterface, public QAccessibleActionInterface
 {
 public:
-    QAccessibleTabButton(QTabBar *parent, int index)
+    QAccessibleTabButton(BOBUIabBar *parent, int index)
         : m_parent(parent), m_index(index)
     {}
 
@@ -116,17 +116,17 @@ public:
         case QAccessible::Name:
             str = m_parent->accessibleTabName(m_index);
             if (str.isEmpty())
-                str = qt_accStripAmp(m_parent->tabText(m_index));
+                str = bobui_accStripAmp(m_parent->tabText(m_index));
             break;
         case QAccessible::Accelerator:
-            str = qt_accHotKey(m_parent->tabText(m_index));
+            str = bobui_accHotKey(m_parent->tabText(m_index));
             break;
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         case QAccessible::Description:
             str = m_parent->tabToolTip(m_index);
             break;
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         case QAccessible::Help:
             str = m_parent->tabWhatsThis(m_index);
             break;
@@ -164,7 +164,7 @@ public:
     int index() const { return m_index; }
 
 private:
-    QPointer<QTabBar> m_parent;
+    QPointer<BOBUIabBar> m_parent;
     int m_index;
 
 };
@@ -192,10 +192,10 @@ void *QAccessibleTabBar::interface_cast(QAccessible::InterfaceType t)
     return QAccessibleWidgetV2::interface_cast(t);
 }
 
-/*! Returns the QTabBar. */
-QTabBar *QAccessibleTabBar::tabBar() const
+/*! Returns the BOBUIabBar. */
+BOBUIabBar *QAccessibleTabBar::tabBar() const
 {
-    return qobject_cast<QTabBar*>(object());
+    return qobject_cast<BOBUIabBar*>(object());
 }
 
 QAccessibleInterface* QAccessibleTabBar::focusChild() const
@@ -257,14 +257,14 @@ int QAccessibleTabBar::childCount() const
 QString QAccessibleTabBar::text(QAccessible::Text t) const
 {
     if (t == QAccessible::Name) {
-        const QTabBar *tBar = tabBar();
+        const BOBUIabBar *tBar = tabBar();
         int idx = tBar->currentIndex();
         QString str = tBar->accessibleTabName(idx);
         if (str.isEmpty())
-            str = qt_accStripAmp(tBar->tabText(idx));
+            str = bobui_accStripAmp(tBar->tabText(idx));
         return str;
     } else if (t == QAccessible::Accelerator) {
-        return qt_accHotKey(tabBar()->tabText(tabBar()->currentIndex()));
+        return bobui_accHotKey(tabBar()->tabText(tabBar()->currentIndex()));
     }
     return QString();
 }
@@ -323,9 +323,9 @@ bool QAccessibleTabBar::clear()
     return false;
 }
 
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
 /*!
   \class QAccessibleComboBox
   \brief The QAccessibleComboBox class implements the QAccessibleInterface for editable and read-only combo boxes.
@@ -422,9 +422,9 @@ QString QAccessibleComboBox::text(QAccessible::Text t) const
             else
                 str = cBox->currentText();
             break;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         case QAccessible::Accelerator:
-            str = QKeySequence(Qt::Key_Down).toString(QKeySequence::NativeText);
+            str = QKeySequence(BobUI::Key_Down).toString(QKeySequence::NativeText);
             break;
 #endif
         default:
@@ -493,9 +493,9 @@ QStringList QAccessibleComboBox::keyBindingsForAction(const QString &/*actionNam
     return QStringList();
 }
 
-#endif // QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(combobox)
 
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
 // ======================= QAccessibleAbstractScrollArea =======================
 QAccessibleAbstractScrollArea::QAccessibleAbstractScrollArea(QWidget *widget)
     : QAccessibleWidgetV2(widget, QAccessible::Client)
@@ -589,9 +589,9 @@ QAccessibleAbstractScrollArea::elementType(QWidget *widget) const
         return Self;
     if (widget == abstractScrollArea()->viewport())
         return Viewport;
-    if (widget->objectName() == "qt_scrollarea_hcontainer"_L1)
+    if (widget->objectName() == "bobui_scrollarea_hcontainer"_L1)
         return HorizontalContainer;
-    if (widget->objectName() == "qt_scrollarea_vcontainer"_L1)
+    if (widget->objectName() == "bobui_scrollarea_vcontainer"_L1)
         return VerticalContainer;
     if (widget == abstractScrollArea()->cornerWidget())
         return CornerWidget;
@@ -610,8 +610,8 @@ QAccessibleScrollArea::QAccessibleScrollArea(QWidget *widget)
 {
     Q_ASSERT(qobject_cast<QScrollArea *>(widget));
 }
-#endif // QT_CONFIG(scrollarea)
+#endif // BOBUI_CONFIG(scrollarea)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

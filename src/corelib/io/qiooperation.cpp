@@ -1,16 +1,16 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qiooperation_p.h"
 #include "qiooperation_p_p.h"
 
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/private/qrandomaccessasyncfile_p_p.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/private/qrandomaccessasyncfile_p_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QIOOperationPrivate::QIOOperationPrivate(QtPrivate::QIOOperationDataStorage *storage)
+QIOOperationPrivate::QIOOperationPrivate(BobUIPrivate::QIOOperationDataStorage *storage)
     : dataStorage(storage)
 {
     Q_ASSERT(storage);
@@ -180,4 +180,4 @@ QIOVectoredWriteOperation::QIOVectoredWriteOperation(QIOOperationPrivate &dd, QO
     Q_ASSERT(dd.dataStorage->containsWriteSpans());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

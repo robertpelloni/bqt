@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QtGui>
+#include <BobUIWidgets>
+#include <BobUIGui>
 
 //! [0]
 class MyStylePlugin : public QStylePlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "mystyleplugin.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.QStyleFactoryInterface" FILE "mystyleplugin.json")
 public:
     MyStylePlugin(QObject *parent = nullptr);
 

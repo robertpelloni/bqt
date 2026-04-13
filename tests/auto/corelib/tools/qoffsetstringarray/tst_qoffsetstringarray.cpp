@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <private/qoffsetstringarray_p.h>
 
@@ -161,8 +161,8 @@ void tst_QOffsetStringArray::contains()
     std::string l2 = "level - 2"; // make sure we don't compare pointer values
     QVERIFY( messages.contains(l2));
     QByteArray L4 = "Level - 4";
-    QVERIFY( messages.contains(L4, Qt::CaseInsensitive));
-    QVERIFY(!messages.contains(L4, Qt::CaseSensitive));
+    QVERIFY( messages.contains(L4, BobUI::CaseInsensitive));
+    QVERIFY(!messages.contains(L4, BobUI::CaseSensitive));
 
     QVERIFY(!utf8Messages.contains(u8""));
     QVERIFY( utf8Messages.contains(u8"level - 0"));
@@ -171,17 +171,17 @@ void tst_QOffsetStringArray::contains()
     QVERIFY( utf8Messages.contains(u8l2));
 #endif
     QUtf8StringView u8l4 = u8"Level - 4";
-    QVERIFY( utf8Messages.contains(u8l4, Qt::CaseInsensitive));
-    QVERIFY(!utf8Messages.contains(u8l4, Qt::CaseSensitive));
+    QVERIFY( utf8Messages.contains(u8l4, BobUI::CaseInsensitive));
+    QVERIFY(!utf8Messages.contains(u8l4, BobUI::CaseSensitive));
 
     QVERIFY(!utf16Messages.contains(u""));
     QVERIFY( utf16Messages.contains(u"level - 0"));
     std::u16string ul2 = u"level - 2"; // make sure we don't compare pointer values
     QVERIFY( utf16Messages.contains(ul2));
     QString ul4 = "Level - 4";
-    QVERIFY( utf16Messages.contains(ul4, Qt::CaseInsensitive));
-    QVERIFY(!utf16Messages.contains(ul4, Qt::CaseSensitive));
+    QVERIFY( utf16Messages.contains(ul4, BobUI::CaseInsensitive));
+    QVERIFY(!utf16Messages.contains(ul4, BobUI::CaseSensitive));
 }
 
-QTEST_APPLESS_MAIN(tst_QOffsetStringArray)
+BOBUIEST_APPLESS_MAIN(tst_QOffsetStringArray)
 #include "tst_qoffsetstringarray.moc"

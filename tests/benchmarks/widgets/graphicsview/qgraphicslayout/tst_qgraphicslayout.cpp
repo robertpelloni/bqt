@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QGraphicsLayout>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
@@ -22,13 +22,13 @@ private slots:
 class RectWidget : public QGraphicsWidget
 {
 public:
-    RectWidget(QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = { }) : QGraphicsWidget(parent, wFlags), setGeometryCalls(0) {}
+    RectWidget(QGraphicsItem *parent = nullptr, BobUI::WindowFlags wFlags = { }) : QGraphicsWidget(parent, wFlags), setGeometryCalls(0) {}
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override
     {
         Q_UNUSED(option);
         Q_UNUSED(widget);
-        painter->drawRoundedRect(rect(), 25, 25, Qt::RelativeSize);
+        painter->drawRoundedRect(rect(), 25, 25, BobUI::RelativeSize);
         painter->drawLine(rect().topLeft(), rect().bottomRight());
         painter->drawLine(rect().bottomLeft(), rect().topRight());
     }
@@ -63,7 +63,7 @@ void tst_QGraphicsLayout::invalidate()
     QGraphicsView *view = new QGraphicsView(scene);
     QMap<RectWidget*, QRectF> *setGeometryCalls = new QMap<RectWidget*, QRectF>;
 
-    RectWidget *window = new RectWidget(0, Qt::Window);
+    RectWidget *window = new RectWidget(0, BobUI::Window);
     window->setGeometryCalls = setGeometryCalls;
     window->setData(0, QString(QChar('a')));
 
@@ -85,7 +85,7 @@ void tst_QGraphicsLayout::invalidate()
 
     view->show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view));
 
     // ...then measure...
 
@@ -111,6 +111,6 @@ void tst_QGraphicsLayout::invalidate()
     delete setGeometryCalls;
 }
 
-QTEST_MAIN(tst_QGraphicsLayout)
+BOBUIEST_MAIN(tst_QGraphicsLayout)
 
 #include "tst_qgraphicslayout.moc"

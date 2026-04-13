@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSTYLEHINTS_P_H
 #define QSTYLEHINTS_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -21,7 +21,7 @@
 #include "qstylehints.h"
 #include "qaccessibilityhints.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStyleHintsPrivate : public QObjectPrivate
 {
@@ -43,8 +43,8 @@ public:
     int m_touchDoubleTapDistance = -1;
     int m_toolTipWakeUpDelay = 700;
 
-    Qt::ColorScheme colorScheme() const { return m_colorScheme; }
-    void updateColorScheme(Qt::ColorScheme colorScheme);
+    BobUI::ColorScheme colorScheme() const { return m_colorScheme; }
+    void updateColorScheme(BobUI::ColorScheme colorScheme);
     void update(const QPlatformTheme *theme);
 
     QAccessibilityHints *accessibilityHints() const;
@@ -52,10 +52,10 @@ public:
     static QStyleHintsPrivate *get(QStyleHints *q);
 
 private:
-    Qt::ColorScheme m_colorScheme = Qt::ColorScheme::Unknown;
+    BobUI::ColorScheme m_colorScheme = BobUI::ColorScheme::Unknown;
     QAccessibilityHints* m_accessibilityHints = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

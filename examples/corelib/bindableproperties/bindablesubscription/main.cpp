@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "../shared/subscriptionwindow.h"
 #include "bindablesubscription.h"
@@ -14,7 +14,7 @@
 #include <QSpinBox>
 #include <QString>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 int main(int argc, char *argv[])
 {

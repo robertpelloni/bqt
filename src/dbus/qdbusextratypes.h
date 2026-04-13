@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSEXTRATYPES_H
 #define QDBUSEXTRATYPES_H
@@ -8,11 +8,17 @@
 // define some useful types for D-Bus
 
 #include <BobUIDBus/bobuidbusglobal.h>
+<<<<<<< HEAD
 #include <QtCore/qvariant.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qhashfunctions.h>
+=======
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qhashfunctions.h>
+>>>>>>> origin/dev
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
@@ -39,7 +45,7 @@ public:
     operator QVariant() const;
 
 private:
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     Q_DBUS_EXPORT friend QDebug operator<<(QDebug, const QDBusObjectPath &);
 #endif
     void doCheck();
@@ -157,9 +163,9 @@ inline bool operator==(const QDBusVariant &v1, const QDBusVariant &v2)
 
 BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QDBusVariant, Q_DBUS_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusObjectPath, Q_DBUS_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusSignature, Q_DBUS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusVariant, Q_DBUS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusObjectPath, Q_DBUS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusSignature, Q_DBUS_EXPORT)
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "xbelreader.h"
@@ -10,25 +10,25 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QStatusBar>
-#include <QTreeWidget>
+#include <BOBUIreeWidget>
 
 #include <QAction>
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #  include <QClipboard>
 #endif
 #include <QDesktopServices>
 #include <QApplication>
 #include <QScreen>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [0]
-MainWindow::MainWindow() : treeWidget(new QTreeWidget)
+MainWindow::MainWindow() : treeWidget(new BOBUIreeWidget)
 {
     treeWidget->header()->setSectionResizeMode(QHeaderView::Stretch);
     treeWidget->setHeaderLabels(QStringList{tr("Title"), tr("Location")});
-#if QT_CONFIG(clipboard) && QT_CONFIG(contextmenu)
-    treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+#if BOBUI_CONFIG(clipboard) && BOBUI_CONFIG(contextmenu)
+    treeWidget->setContextMenuPolicy(BobUI::CustomContextMenu);
     connect(treeWidget, &QWidget::customContextMenuRequested,
             this, &MainWindow::onCustomContextMenuRequested);
 #endif
@@ -45,10 +45,10 @@ MainWindow::MainWindow() : treeWidget(new QTreeWidget)
 //! [0]
 
 //! [1]
-#if QT_CONFIG(clipboard) && QT_CONFIG(contextmenu)
+#if BOBUI_CONFIG(clipboard) && BOBUI_CONFIG(contextmenu)
 void MainWindow::onCustomContextMenuRequested(const QPoint &pos)
 {
-    const QTreeWidgetItem *item = treeWidget->itemAt(pos);
+    const BOBUIreeWidgetItem *item = treeWidget->itemAt(pos);
     if (!item)
         return;
     const QString url = item->text(1);
@@ -61,7 +61,7 @@ void MainWindow::onCustomContextMenuRequested(const QPoint &pos)
     else if (action == openAction)
         QDesktopServices::openUrl(QUrl(url));
 }
-#endif // QT_CONFIG(clipboard) && QT_CONFIG(contextmenu)
+#endif // BOBUI_CONFIG(clipboard) && BOBUI_CONFIG(contextmenu)
 //! [1]
 
 //! [2]
@@ -81,7 +81,7 @@ void MainWindow::createMenus()
 
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(tr("&About"), this, &MainWindow::about);
-    helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
+    helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
 }
 //! [2]
 
@@ -145,7 +145,7 @@ void MainWindow::saveAs()
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About QXmlStream Bookmarks"),
-                       tr("The <b>QXmlStream Bookmarks</b> example demonstrates how to use Qt's "
+                       tr("The <b>QXmlStream Bookmarks</b> example demonstrates how to use BobUI's "
                           "QXmlStream classes to read and write XML documents."));
 }
 //! [5]

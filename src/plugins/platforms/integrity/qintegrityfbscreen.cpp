@@ -1,11 +1,11 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qintegrityfbscreen.h"
-#include <QtFbSupport/private/qfbcursor_p.h>
-#include <QtFbSupport/private/qfbwindow_p.h>
-#include <QtCore/QRegularExpression>
-#include <QtGui/QPainter>
+#include <BobUIFbSupport/private/qfbcursor_p.h>
+#include <BobUIFbSupport/private/qfbwindow_p.h>
+#include <BobUICore/QRegularExpression>
+#include <BobUIGui/QPainter>
 
 #include <qimage.h>
 #include <qdebug.h>
@@ -13,9 +13,9 @@
 #include <INTEGRITY.h>
 #include <memory_region.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QImage::Format determineFormat(const FBInfo *fbinfo)
 {
@@ -210,5 +210,5 @@ QPixmap QIntegrityFbScreen::grabWindow(WId wid, int x, int y, int width, int hei
     return QPixmap();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

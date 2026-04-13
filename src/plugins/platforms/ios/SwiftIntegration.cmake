@@ -1,4 +1,4 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 set(CMAKE_Swift_COMPILER_TARGET arm64-apple-xros)
@@ -14,10 +14,10 @@ if("${CMAKE_Swift_COMPILER_VERSION}" VERSION_LESS 5.9)
   message(FATAL_ERROR "Swift 5.9 required for C++ interoperability")
 endif()
 
-get_target_property(QT_CORE_INCLUDES Qt6::Core INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(QT_GUI_INCLUDES Qt6::Gui INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(QT_CORE_PRIVATE_INCLUDES Qt6::CorePrivate INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(QT_GUI_PRIVATE_INCLUDES Qt6::GuiPrivate INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(BOBUI_CORE_INCLUDES BobUI6::Core INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(BOBUI_GUI_INCLUDES BobUI6::Gui INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(BOBUI_CORE_PRIVATE_INCLUDES BobUI6::CorePrivate INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(BOBUI_GUI_PRIVATE_INCLUDES BobUI6::GuiPrivate INTERFACE_INCLUDE_DIRECTORIES)
 
 set(target QIOSIntegrationPluginSwift)
 # Swift library
@@ -29,10 +29,10 @@ set_target_properties(${target} PROPERTIES
     Swift_MODULE_NAME ${target})
 target_include_directories(${target} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${QT_CORE_INCLUDES}"
-    "${QT_GUI_INCLUDES}"
-    "${QT_CORE_PRIVATE_INCLUDES}"
-    "${QT_GUI_PRIVATE_INCLUDES}"
+    "${BOBUI_CORE_INCLUDES}"
+    "${BOBUI_GUI_INCLUDES}"
+    "${BOBUI_CORE_PRIVATE_INCLUDES}"
+    "${BOBUI_GUI_PRIVATE_INCLUDES}"
 
 )
 target_compile_options(${target} PRIVATE
@@ -41,19 +41,19 @@ target_compile_options(${target} PRIVATE
 
 # Swift to C++ bridging header
 set(SWIFT_BRIDGING_HEADER "${CMAKE_CURRENT_BINARY_DIR}/qiosswiftintegration.h")
-list(TRANSFORM QT_CORE_INCLUDES PREPEND "-I")
-list(TRANSFORM QT_GUI_INCLUDES PREPEND "-I")
-list(TRANSFORM QT_CORE_PRIVATE_INCLUDES PREPEND "-I")
-list(TRANSFORM QT_GUI_PRIVATE_INCLUDES PREPEND "-I")
+list(TRANSFORM BOBUI_CORE_INCLUDES PREPEND "-I")
+list(TRANSFORM BOBUI_GUI_INCLUDES PREPEND "-I")
+list(TRANSFORM BOBUI_CORE_PRIVATE_INCLUDES PREPEND "-I")
+list(TRANSFORM BOBUI_GUI_PRIVATE_INCLUDES PREPEND "-I")
 add_custom_command(
     COMMAND
       ${CMAKE_Swift_COMPILER} -frontend -typecheck
       ${SWIFT_SOURCES}
       -I ${CMAKE_CURRENT_SOURCE_DIR}
-      ${QT_CORE_INCLUDES}
-      ${QT_GUI_INCLUDES}
-      ${QT_CORE_PRIVATE_INCLUDES}
-      ${QT_GUI_PRIVATE_INCLUDES}
+      ${BOBUI_CORE_INCLUDES}
+      ${BOBUI_GUI_INCLUDES}
+      ${BOBUI_CORE_PRIVATE_INCLUDES}
+      ${BOBUI_GUI_PRIVATE_INCLUDES}
       -sdk ${CMAKE_OSX_SYSROOT}
       -module-name ${target}
       -cxx-interoperability-mode=default

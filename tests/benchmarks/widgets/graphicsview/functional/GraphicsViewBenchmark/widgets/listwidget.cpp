@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QGraphicsSceneResizeEvent>
 #include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
-#include <QTimer>
+#include <BOBUIimer>
 #include "listwidget.h"
 
 ListWidget::ListWidget(QGraphicsWidget * parent)
   : GvbWidget(parent),
-    m_layout(new QGraphicsLinearLayout(Qt::Vertical)),
+    m_layout(new QGraphicsLinearLayout(BobUI::Vertical)),
     m_listView(new SimpleListView(this))
 {
     //listView->setViewport(listView->content());
@@ -23,7 +23,7 @@ ListWidget::ListWidget(QGraphicsWidget * parent)
 
     m_scroller.setScrollable(m_listView);
     m_listView->installEventFilter(&m_scroller);
-    m_listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_listView->setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
 }
 
 ListWidget::~ListWidget()

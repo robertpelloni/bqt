@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore>
-#include <QtNetwork>
+#include <BobUICore>
+#include <BobUINetwork>
 
 const int timeout = 60 * 1000;
 
@@ -10,13 +10,13 @@ int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
 
-    QTcpServer server;
-    QObject::connect(&server, &QTcpServer::newConnection, [&server](){
+    BOBUIcpServer server;
+    QObject::connect(&server, &BOBUIcpServer::newConnection, [&server](){
         qDebug() << "new connection";
 
         QByteArray *receiveBuffer = new QByteArray();
 
-        QTcpSocket *socket = server.nextPendingConnection();
+        BOBUIcpSocket *socket = server.nextPendingConnection();
         QObject::connect(socket, &QIODevice::readyRead, [socket, receiveBuffer](){
 
             // This implements a very simple command protocol, where the server

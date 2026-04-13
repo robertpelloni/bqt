@@ -1,6 +1,6 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOAPRINTDEVICE_H
 #define QCOCOAPRINTDEVICE_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
@@ -19,16 +19,16 @@
 #include <qpa/qplatformprintdevice.h>
 #include <private/qglobal_p.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
-#include <QtCore/qhash.h>
+#include <BobUICore/qhash.h>
 #include <ApplicationServices/ApplicationServices.h>
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
 #include <cups/ppd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaPrintDevice : public QPlatformPrintDevice
 {
@@ -67,7 +67,7 @@ protected:
     void loadOutputBins() const override;
     void loadDuplexModes() const override;
     void loadColorModes() const override;
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     void loadMimeTypes() const override;
 #endif
 
@@ -87,7 +87,7 @@ private:
     mutable QHash<QString, QMarginsF> m_printableMargins;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 #endif // QCOCOAPRINTDEVICE_H

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QException>
-#include <QtConcurrent>
+#include <BobUIConcurrent>
 
 namespace FirstMyException
 {
@@ -32,7 +32,7 @@ void example(QList <int> &list)
 {
     //! [1]
     try  {
-        QtConcurrent::blockingMap(list, throwFunction); // throwFunction throws MyException
+        BobUIConcurrent::blockingMap(list, throwFunction); // throwFunction throws MyException
     } catch (MyException &e) {
         // handle exception
     }
@@ -52,7 +52,7 @@ void wrapInFunction()
 {
     //! [4]
     try {
-        auto f = QtConcurrent::run([] { throw MyException {}; });
+        auto f = BobUIConcurrent::run([] { throw MyException {}; });
         // ...
     } catch (const QUnhandledException &e) {
         try {

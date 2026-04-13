@@ -1,20 +1,20 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(accessibility)
 
 #include "qwindowsuiautils.h"
 #include "qwindowscontext.h"
 #include "qwindowswindow.h"
 
-#include <QtGui/qwindow.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 #include <qpa/qplatforminputcontextfactory_p.h>
 
 #include <cmath>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QWindowsUiAutomation {
 
@@ -48,7 +48,7 @@ QWindow *windowForAccessible(const QAccessibleInterface *accessible)
 }
 
 // Returns the native window handle associated with the element, if any.
-// Usually it will be NULL, as Qt5 by default uses alien widgets with no native windows.
+// Usually it will be NULL, as BobUI5 by default uses alien widgets with no native windows.
 HWND hwndForAccessible(const QAccessibleInterface *accessible)
 {
     if (QWindow *window = accessible->window()) {
@@ -159,10 +159,10 @@ long roleToControlTypeId(QAccessible::Role role)
 
     long controlType = mapping.value(role, UIA_CustomControlTypeId);
 
-    // The native OSK should be disabled if the Qt OSK is in use,
+    // The native OSK should be disabled if the BobUI OSK is in use,
     // or if disabled via application attribute.
     static bool imModuleEmpty = QPlatformInputContextFactory::requested().isEmpty();
-    bool nativeVKDisabled = QCoreApplication::testAttribute(Qt::AA_DisableNativeVirtualKeyboard);
+    bool nativeVKDisabled = QCoreApplication::testAttribute(BobUI::AA_DisableNativeVirtualKeyboard);
 
     // If we want to disable the native OSK auto-showing
     // we have to report text fields as non-editable.
@@ -182,6 +182,6 @@ bool isTextUnitSeparator(TextUnit unit, const QChar &ch)
 } // namespace QWindowsUiAutomation
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

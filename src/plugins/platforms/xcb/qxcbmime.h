@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
-#include <QtGui/private/qinternalmimedata_p.h>
+#include <BobUIGui/private/qinternalmimedata_p.h>
 
-#include <QtGui/QClipboard>
+#include <BobUIGui/QClipboard>
 
 #include "qxcbintegration.h"
 #include "qxcbconnection.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbMime : public QInternalMimeData {
     Q_OBJECT
@@ -29,4 +29,4 @@ public:
                                         const QList<xcb_atom_t> &atoms, bool *hasUtf8);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

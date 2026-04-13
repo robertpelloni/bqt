@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 class tst_BenchlibCounting : public QObject
 {
@@ -34,11 +34,11 @@ void tst_BenchlibCounting::failingBenchmark()
     };
 }
 
-QTEST_MAIN_WRAPPER(tst_BenchlibCounting,
+BOBUIEST_MAIN_WRAPPER(tst_BenchlibCounting,
     std::vector<const char*> args(argv, argv + argc);
     args.push_back("-eventcounter");
     argc = int(args.size());
     argv = const_cast<char**>(&args[0]);
-    QTEST_MAIN_SETUP())
+    BOBUIEST_MAIN_SETUP())
 
 #include "tst_benchlibcounting.moc"

@@ -1,11 +1,11 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page graphicsview.html
     \title Graphics View Framework
-    \ingroup qt-graphics
-    \ingroup qt-basic-concepts
+    \ingroup bobui-graphics
+    \ingroup bobui-basic-concepts
 
     \brief An overview of the Graphics View framework for interactive 2D
     graphics.
@@ -29,13 +29,13 @@
     fast item discovery, and as a result of this, it can visualize large
     scenes in real-time, even with millions of items.
 
-    Graphics View was introduced in Qt 4.2, replacing its predecessor,
+    Graphics View was introduced in BobUI 4.2, replacing its predecessor,
     QCanvas.
 
     \section1 The Graphics View Architecture
 
       Graphics View provides an item-based approach to model-view programming,
-      much like InterView's convenience classes QTableView, QTreeView and
+      much like InterView's convenience classes BOBUIableView, BOBUIreeView and
       QListView. Several views can observe a single scene, and the scene
       contains items of varying geometric shapes.
 
@@ -166,7 +166,7 @@
       one pixel on the screen.
 
       \note The inverted Y-axis coordinate system (where \c y grows upwards)
-      is unsupported as Graphics Views uses Qt's coordinate system.
+      is unsupported as Graphics Views uses BobUI's coordinate system.
 
       There are three effective coordinate systems in play in Graphics View:
       Item coordinates, scene coordinates, and view coordinates. To simplify
@@ -302,7 +302,7 @@
 
         \snippet graphicsview/graphicsview_snippet.cpp 2
 
-        The slots could be connected to \l{QToolButton}{QToolButtons} with
+        The slots could be connected to \l{BOBUIoolButton}{BOBUIoolButtons} with
         \l{QAbstractButton::autoRepeat}{autoRepeat} enabled.
 
         QGraphicsView keeps the center of the view aligned when you transform
@@ -335,7 +335,7 @@
 
         When the source and target areas' sizes do not match, the source
         contents are stretched to fit into the target area. By passing a
-        Qt::AspectRatioMode to the rendering function you are using, you can
+        BobUI::AspectRatioMode to the rendering function you are using, you can
         choose to maintain or ignore the aspect ratio of the scene when the
         contents are stretched.
 
@@ -403,7 +403,7 @@
         animations with incremental steps in QObject::timerEvent().
 
         A third option, which is mostly available for compatibility with
-        QCanvas in Qt 3, is to \e advance the scene by calling
+        QCanvas in BobUI 3, is to \e advance the scene by calling
         QGraphicsScene::advance(), which in turn calls
         QGraphicsItem::advance().
 
@@ -435,7 +435,7 @@
 
       \section2 Widgets and Layouts
 
-        Qt 4.4 introduced support for geometry and layout-aware items through
+        BobUI 4.4 introduced support for geometry and layout-aware items through
         QGraphicsWidget. This special base item is similar to QWidget, but
         unlike QWidget, it doesn't inherit from QPaintDevice; rather from
         QGraphicsItem instead. This allows you to write complete widgets with
@@ -462,9 +462,9 @@
           and attributes, but not all. You should refer to QGraphicsWidget's
           class documentation for a complete overview of what is and what is
           not supported. For example, you can create decorated windows by
-          passing the Qt::Window window flag to QGraphicsWidget's constructor,
-          but Graphics View currently doesn't support the Qt::Sheet and
-          Qt::Drawer flags that are common on \macos.
+          passing the BobUI::Window window flag to QGraphicsWidget's constructor,
+          but Graphics View currently doesn't support the BobUI::Sheet and
+          BobUI::Drawer flags that are common on \macos.
 
         \section3 QGraphicsLayout
 
@@ -480,7 +480,7 @@
 
           Graphics View provides seamless support for embedding any widget
           into the scene. You can embed simple widgets, such as QLineEdit or
-          QPushButton, complex widgets such as QTabWidget, and even complete
+          QPushButton, complex widgets such as BOBUIabWidget, and even complete
           main windows. To embed your widget to the scene, simply call
           QGraphicsScene::addWidget(), or create an instance of
           QGraphicsProxyWidget to embed your widget manually.

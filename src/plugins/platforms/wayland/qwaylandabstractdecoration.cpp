@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Robin Burchell <robin.burchell@viroteck.net>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandabstractdecoration_p.h"
 
@@ -10,11 +10,11 @@
 #include "qwaylandinputdevice_p.h"
 #include "qwaylandscreen_p.h"
 
-#include <QtGui/QImage>
+#include <BobUIGui/QImage>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandAbstractDecorationPrivate : public QObjectPrivate
 {
@@ -30,7 +30,7 @@ public:
     bool m_isDirty = true;
     QImage m_decorationContentImage;
 
-    Qt::MouseButtons m_mouseButtons = Qt::NoButton;
+    BobUI::MouseButtons m_mouseButtons = BobUI::NoButton;
 };
 
 QWaylandAbstractDecorationPrivate::QWaylandAbstractDecorationPrivate()
@@ -89,9 +89,9 @@ const QImage &QWaylandAbstractDecoration::contentImage()
         const qreal bufferScale = waylandWindow()->scale();
         const QSize imageSize = waylandWindow()->surfaceSize() * bufferScale;
         d->m_decorationContentImage = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
-        // Only scale by buffer scale, not QT_SCALE_FACTOR etc.
+        // Only scale by buffer scale, not BOBUI_SCALE_FACTOR etc.
         d->m_decorationContentImage.setDevicePixelRatio(bufferScale);
-        d->m_decorationContentImage.fill(Qt::transparent);
+        d->m_decorationContentImage.fill(BobUI::transparent);
         this->paint(&d->m_decorationContentImage);
 
         QRegion damage = marginsRegion(waylandWindow()->surfaceSize(), waylandWindow()->frameMargins());
@@ -110,27 +110,27 @@ void QWaylandAbstractDecoration::update()
     d->m_isDirty = true;
 }
 
-void QWaylandAbstractDecoration::setMouseButtons(Qt::MouseButtons mb)
+void QWaylandAbstractDecoration::setMouseButtons(BobUI::MouseButtons mb)
 {
     Q_D(QWaylandAbstractDecoration);
     d->m_mouseButtons = mb;
 }
 
-void QWaylandAbstractDecoration::startResize(QWaylandInputDevice *inputDevice, Qt::Edges edges, Qt::MouseButtons buttons)
+void QWaylandAbstractDecoration::startResize(QWaylandInputDevice *inputDevice, BobUI::Edges edges, BobUI::MouseButtons buttons)
 {
     Q_D(QWaylandAbstractDecoration);
     if (isLeftClicked(buttons) && d->m_wayland_window->shellSurface()) {
         d->m_wayland_window->shellSurface()->resize(inputDevice, edges);
-        inputDevice->removeMouseButtonFromState(Qt::LeftButton);
+        inputDevice->removeMouseButtonFromState(BobUI::LeftButton);
     }
 }
 
-void QWaylandAbstractDecoration::startMove(QWaylandInputDevice *inputDevice, Qt::MouseButtons buttons)
+void QWaylandAbstractDecoration::startMove(QWaylandInputDevice *inputDevice, BobUI::MouseButtons buttons)
 {
     Q_D(QWaylandAbstractDecoration);
     if (isLeftClicked(buttons) && d->m_wayland_window->shellSurface()) {
         d->m_wayland_window->shellSurface()->move(inputDevice);
-        inputDevice->removeMouseButtonFromState(Qt::LeftButton);
+        inputDevice->removeMouseButtonFromState(BobUI::LeftButton);
     }
 }
 
@@ -141,22 +141,22 @@ void QWaylandAbstractDecoration::showWindowMenu(QWaylandInputDevice *inputDevice
         s->showWindowMenu(inputDevice);
 }
 
-bool QWaylandAbstractDecoration::isLeftClicked(Qt::MouseButtons newMouseButtonState)
+bool QWaylandAbstractDecoration::isLeftClicked(BobUI::MouseButtons newMouseButtonState)
 {
     Q_D(QWaylandAbstractDecoration);
-    return !(d->m_mouseButtons & Qt::LeftButton) && (newMouseButtonState & Qt::LeftButton);
+    return !(d->m_mouseButtons & BobUI::LeftButton) && (newMouseButtonState & BobUI::LeftButton);
 }
 
-bool QWaylandAbstractDecoration::isRightClicked(Qt::MouseButtons newMouseButtonState)
+bool QWaylandAbstractDecoration::isRightClicked(BobUI::MouseButtons newMouseButtonState)
 {
     Q_D(QWaylandAbstractDecoration);
-    return !(d->m_mouseButtons & Qt::RightButton) && (newMouseButtonState & Qt::RightButton);
+    return !(d->m_mouseButtons & BobUI::RightButton) && (newMouseButtonState & BobUI::RightButton);
 }
 
-bool QWaylandAbstractDecoration::isLeftReleased(Qt::MouseButtons newMouseButtonState)
+bool QWaylandAbstractDecoration::isLeftReleased(BobUI::MouseButtons newMouseButtonState)
 {
     Q_D(QWaylandAbstractDecoration);
-    return (d->m_mouseButtons & Qt::LeftButton) && !(newMouseButtonState & Qt::LeftButton);
+    return (d->m_mouseButtons & BobUI::LeftButton) && !(newMouseButtonState & BobUI::LeftButton);
 }
 
 bool QWaylandAbstractDecoration::isDirty() const
@@ -179,6 +179,6 @@ QWaylandWindow *QWaylandAbstractDecoration::waylandWindow() const
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandabstractdecoration_p.cpp"

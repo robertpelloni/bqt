@@ -389,10 +389,10 @@
                 ]
             },
             {
-                "className": "ExplicitOverrideControlFinalQt",
+                "className": "ExplicitOverrideControlFinalBobUI",
                 "lineNumber": 39,
                 "object": true,
-                "qualifiedClassName": "ExplicitOverrideControlFinalQt",
+                "qualifiedClassName": "ExplicitOverrideControlFinalBobUI",
                 "slots": [
                     {
                         "access": "private",
@@ -521,10 +521,10 @@
                 ]
             },
             {
-                "className": "ExplicitOverrideControlOverrideQt",
+                "className": "ExplicitOverrideControlOverrideBobUI",
                 "lineNumber": 105,
                 "object": true,
-                "qualifiedClassName": "ExplicitOverrideControlOverrideQt",
+                "qualifiedClassName": "ExplicitOverrideControlOverrideBobUI",
                 "slots": [
                     {
                         "access": "private",
@@ -609,10 +609,10 @@
                 ]
             },
             {
-                "className": "ExplicitOverrideControlFinalQtOverrideQt",
+                "className": "ExplicitOverrideControlFinalBobUIOverrideBobUI",
                 "lineNumber": 149,
                 "object": true,
-                "qualifiedClassName": "ExplicitOverrideControlFinalQtOverrideQt",
+                "qualifiedClassName": "ExplicitOverrideControlFinalBobUIOverrideBobUI",
                 "slots": [
                     {
                         "access": "private",
@@ -743,12 +743,12 @@
         ],
         "hashes": {
             "ExplicitOverrideControlBase": "0$PFsRqLGh0wP5gfqwF9CVeUi9EVU",
-            "ExplicitOverrideControlFinalCxx11": "0$RQTN9wEJCVZ1N4IcieHs2LuRKY8",
+            "ExplicitOverrideControlFinalCxx11": "0$RBOBUIN9wEJCVZ1N4IcieHs2LuRKY8",
             "ExplicitOverrideControlFinalCxx11OverrideCxx11": "0$ZEBCUhi5oEGiDVdmoqD+x4n1KJk",
-            "ExplicitOverrideControlFinalQt": "0$GuS6YD8Kcf/9KyehmFsrmDWW42M",
-            "ExplicitOverrideControlFinalQtOverrideQt": "0$q48mSBftA2LJFVSB4uqTmKs2gOc",
+            "ExplicitOverrideControlFinalBobUI": "0$GuS6YD8Kcf/9KyehmFsrmDWW42M",
+            "ExplicitOverrideControlFinalBobUIOverrideBobUI": "0$q48mSBftA2LJFVSB4uqTmKs2gOc",
             "ExplicitOverrideControlOverrideCxx11": "0$he1BJyFAtIcrEf74bZY1d54aCbc",
-            "ExplicitOverrideControlOverrideQt": "0$dWQ+iDw9oKEYXiSgy2izIISyRMg",
+            "ExplicitOverrideControlOverrideBobUI": "0$dWQ+iDw9oKEYXiSgy2izIISyRMg",
             "ExplicitOverrideControlSealed": "0$3nq5psg7nFNDlPnBpaYraCr3CHQ",
             "ExplicitOverrideControlSealedOverride": "0$I7ySe3SgUSARroswRh74wJoZkkA"
         },
@@ -758,11 +758,11 @@
     {
         "classes": [
             {
-                "className": "FinalTestClassQt",
+                "className": "FinalTestClassBobUI",
                 "final": true,
                 "lineNumber": 15,
                 "object": true,
-                "qualifiedClassName": "FinalTestClassQt",
+                "qualifiedClassName": "FinalTestClassBobUI",
                 "superClasses": [
                     {
                         "access": "public",
@@ -771,11 +771,11 @@
                 ]
             },
             {
-                "className": "ExportedFinalTestClassQt",
+                "className": "ExportedFinalTestClassBobUI",
                 "final": true,
                 "lineNumber": 24,
                 "object": true,
-                "qualifiedClassName": "ExportedFinalTestClassQt",
+                "qualifiedClassName": "ExportedFinalTestClassBobUI",
                 "superClasses": [
                     {
                         "access": "public",
@@ -784,11 +784,11 @@
                 ]
             },
             {
-                "className": "ExportedFinalTestClassQtX",
+                "className": "ExportedFinalTestClassBobUIX",
                 "final": true,
                 "lineNumber": 32,
                 "object": true,
-                "qualifiedClassName": "ExportedFinalTestClassQtX",
+                "qualifiedClassName": "ExportedFinalTestClassBobUIX",
                 "superClasses": [
                     {
                         "access": "public",
@@ -878,12 +878,12 @@
         "hashes": {
             "ExportedFinalTestClassCpp11": "0$eUEIDQi+/lB9KOjB+oul4rZe9xE",
             "ExportedFinalTestClassCpp11X": "0$g03sLKAEeX8BLjKjFsG3MMfunaY",
-            "ExportedFinalTestClassQt": "0$fYFeeRSmEnokVTW4eIiCU6PR5HM",
-            "ExportedFinalTestClassQtX": "0$7+xgvb70xVV3Xot9q7FhSm8mUew",
+            "ExportedFinalTestClassBobUI": "0$fYFeeRSmEnokVTW4eIiCU6PR5HM",
+            "ExportedFinalTestClassBobUIX": "0$7+xgvb70xVV3Xot9q7FhSm8mUew",
             "ExportedSealedTestClass": "0$jzcARHlbTm1whxXOtg9edtN1ctg",
             "ExportedSealedTestClassX": "0$tEmYiad6hqJMlGaCnNc2GhZtDgM",
             "FinalTestClassCpp11": "0$Opb/8DnbfVjpH2CZvHo9Rv93iV8",
-            "FinalTestClassQt": "0$DtnHOKRNbQ5Y3QbO5AeLM4qYDW0",
+            "FinalTestClassBobUI": "0$DtnHOKRNbQ5Y3QbO5AeLM4qYDW0",
             "SealedTestClass": "0$VUU19XJgT+KhqRBlwQmXkd0yVgQ"
         },
         "inputFile": "cxx11-final-classes.h",
@@ -1748,7 +1748,7 @@
                 "className": "Base",
                 "lineNumber": 10,
                 "object": true,
-                "qualifiedClassName": "QTBUG_101141::Base",
+                "qualifiedClassName": "BOBUIBUG_101141::Base",
                 "superClasses": [
                     {
                         "access": "public",
@@ -1760,19 +1760,19 @@
                 "className": "Derived",
                 "lineNumber": 14,
                 "object": true,
-                "qualifiedClassName": "QTBUG_101141::Derived",
+                "qualifiedClassName": "BOBUIBUG_101141::Derived",
                 "superClasses": [
                     {
                         "access": "public",
-                        "fullyQualifiedName": "QTBUG_101141::Base",
+                        "fullyQualifiedName": "BOBUIBUG_101141::Base",
                         "name": "Base"
                     }
                 ]
             }
         ],
         "hashes": {
-            "QTBUG_101141::Base": "0$U366MOIqv3M+uAirFGzc/YkYdoA",
-            "QTBUG_101141::Derived": "0$RhyA1CgCTHJhP+oLRVIDYv85oNQ"
+            "BOBUIBUG_101141::Base": "0$U366MOIqv3M+uAirFGzc/YkYdoA",
+            "BOBUIBUG_101141::Derived": "0$RhyA1CgCTHJhP+oLRVIDYv85oNQ"
         },
         "inputFile": "namespaced-base-class.h",
         "outputRevision": 69
@@ -2047,7 +2047,7 @@
                         "access": "public",
                         "index": 1,
                         "lineNumber": 109,
-                        "name": "signalQTBUG55853",
+                        "name": "signalBOBUIBUG55853",
                         "returnType": "void"
                     }
                 ],
@@ -2597,7 +2597,7 @@
             }
         ],
         "hashes": {
-            "InvokableBeforeInline": "0$t5nSESnZz1Liw62inFXd2SZTQTg",
+            "InvokableBeforeInline": "0$t5nSESnZz1Liw62inFXd2SZTBOBUIg",
             "InvokableBeforeReturnType": "0$q7unyP9EifVhdxdSVIaFweQMDs4"
         },
         "inputFile": "qinvokable.h",
@@ -2679,7 +2679,7 @@
             }
         ],
         "hashes": {
-            "TestQPrivateSlots": "0$akM0QTpV2o3AF3v6YBUh+iY1NsM"
+            "TestQPrivateSlots": "0$akM0BOBUIpV2o3AF3v6YBUh+iY1NsM"
         },
         "inputFile": "qprivateslots.h",
         "outputRevision": 69
@@ -2701,13 +2701,13 @@
                 ],
                 "gadget": true,
                 "lineNumber": 10,
-                "qualifiedClassName": "QTBUG_35657::A"
+                "qualifiedClassName": "BOBUIBUG_35657::A"
             }
         ],
         "hashes": {
-            "QTBUG_35657::A": "0$ExnqnOcM0keSitP69QEKBZXt4Es"
+            "BOBUIBUG_35657::A": "0$ExnqnOcM0keSitP69QEKBZXt4Es"
         },
-        "inputFile": "qtbug-35657-gadget.h",
+        "inputFile": "bobuibug-35657-gadget.h",
         "outputRevision": 69
     },
     {
@@ -2734,7 +2734,7 @@
                         "virtual": false
                     }
                 ],
-                "qualifiedClassName": "QTBUG_35657::B",
+                "qualifiedClassName": "BOBUIBUG_35657::B",
                 "superClasses": [
                     {
                         "access": "public",
@@ -2744,7 +2744,7 @@
             }
         ],
         "hashes": {
-            "QTBUG_35657::B": "0$87m3VpcM2/d4skOyD6CagCHib00"
+            "BOBUIBUG_35657::B": "0$87m3VpcM2/d4skOyD6CagCHib00"
         },
         "inputFile": "related-metaobjects-in-gadget.h",
         "outputRevision": 69
@@ -2766,7 +2766,7 @@
                 ],
                 "lineNumber": 10,
                 "object": true,
-                "qualifiedClassName": "QTBUG_2151::A",
+                "qualifiedClassName": "BOBUIBUG_2151::A",
                 "superClasses": [
                     {
                         "access": "public",
@@ -2796,7 +2796,7 @@
                         "virtual": false
                     }
                 ],
-                "qualifiedClassName": "QTBUG_2151::B",
+                "qualifiedClassName": "BOBUIBUG_2151::B",
                 "superClasses": [
                     {
                         "access": "public",
@@ -2806,8 +2806,8 @@
             }
         ],
         "hashes": {
-            "QTBUG_2151::A": "0$wwzOwB54lloQnRalZ9IiAf2oCII",
-            "QTBUG_2151::B": "0$9hWmRWFLal27FkUg8QRPzYpgsnI"
+            "BOBUIBUG_2151::A": "0$wwzOwB54lloQnRalZ9IiAf2oCII",
+            "BOBUIBUG_2151::B": "0$9hWmRWFLal27FkUg8QRPzYpgsnI"
         },
         "inputFile": "related-metaobjects-in-namespaces.h",
         "outputRevision": 69
@@ -3487,7 +3487,7 @@
             }
         ],
         "hashes": {
-            "SlotsWithVoidTemplateTest": "0$/08YvkDzSSJmzKO0L6t3PWzQTpA"
+            "SlotsWithVoidTemplateTest": "0$/08YvkDzSSJmzKO0L6t3PWzBOBUIpA"
         },
         "inputFile": "slots-with-void-template.h",
         "outputRevision": 69
@@ -3758,7 +3758,7 @@
                         "lineNumber": 27,
                         "name": "myTPInvokable1",
                         "returnType": "void",
-                        "tag": "QT_TECH_PREVIEW_API"
+                        "tag": "BOBUI_TECH_PREVIEW_API"
                     },
                     {
                         "access": "public",
@@ -3766,7 +3766,7 @@
                         "lineNumber": 28,
                         "name": "myTPInvokable2",
                         "returnType": "void",
-                        "tag": "QT_TECH_PREVIEW_API"
+                        "tag": "BOBUI_TECH_PREVIEW_API"
                     }
                 ],
                 "object": true,
@@ -3803,7 +3803,7 @@
                         "lineNumber": 39,
                         "name": "myTPSignal",
                         "returnType": "void",
-                        "tag": "QT_TECH_PREVIEW_API"
+                        "tag": "BOBUI_TECH_PREVIEW_API"
                     }
                 ],
                 "slots": [
@@ -3820,7 +3820,7 @@
                         "lineNumber": 43,
                         "name": "myTPSlot",
                         "returnType": "void",
-                        "tag": "QT_TECH_PREVIEW_API"
+                        "tag": "BOBUI_TECH_PREVIEW_API"
                     }
                 ],
                 "superClasses": [
@@ -3832,7 +3832,7 @@
             }
         ],
         "hashes": {
-            "MyTechPreviewObject": "0$m2YUGRZgF2OOXQtnAiFcczcw+0A"
+            "MyTechPreviewObject": "0$m2YUGRZgF2OOXBobUInAiFcczcw+0A"
         },
         "inputFile": "tech-preview.h",
         "outputRevision": 69
@@ -3992,7 +3992,7 @@
             }
         ],
         "hashes": {
-            "WithOverride": "0$dKpX/UA07Owp7D1wOQTtBUySaAU",
+            "WithOverride": "0$dKpX/UA07Owp7D1wOBOBUItBUySaAU",
             "WithVirtual": "0$xUxsxEv1GXliAEGjde3GwF91OkE"
         },
         "inputFile": "virtualAndOverride.h",

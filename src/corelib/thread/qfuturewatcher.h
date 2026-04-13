@@ -1,16 +1,16 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFUTUREWATCHER_H
 #define QFUTUREWATCHER_H
 
-#include <QtCore/qfuture.h>
-#include <QtCore/qobject.h>
+#include <BobUICore/qfuture.h>
+#include <BobUICore/qobject.h>
 
-QT_REQUIRE_CONFIG(future);
+BOBUI_REQUIRE_CONFIG(future);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QEvent;
@@ -34,8 +34,8 @@ public:
     bool isFinished() const;
     bool isRunning() const;
     bool isCanceled() const;
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use isSuspending() or isSuspended() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use isSuspending() or isSuspended() instead.")
     bool isPaused() const;
 #endif
     bool isSuspending() const;
@@ -51,8 +51,8 @@ Q_SIGNALS:
     void started();
     void finished();
     void canceled();
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use suspending() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use suspending() instead.")
     void paused();
 #endif
     void suspending();
@@ -71,14 +71,14 @@ public Q_SLOTS:
     void resume();
     void toggleSuspended();
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use setSuspended() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use setSuspended() instead.")
     void setPaused(bool paused);
 
-    QT_DEPRECATED_VERSION_X_6_0("Use suspend() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use suspend() instead.")
     void pause();
 
-    QT_DEPRECATED_VERSION_X_6_0("Use toggleSuspended() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use toggleSuspended() instead.")
     void togglePaused();
 #endif
 
@@ -110,10 +110,10 @@ public:
     QFuture<T> future() const
     { return m_future; }
 
-    template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     T result() const { return m_future.result(); }
 
-    template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     T resultAt(int index) const { return m_future.resultAt(index); }
 
 #ifdef Q_QDOC
@@ -126,7 +126,7 @@ public:
     bool isFinished() const;
     bool isRunning() const;
     bool isCanceled() const;
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     bool isPaused() const;
 #endif
     bool isSuspending() const;
@@ -140,7 +140,7 @@ Q_SIGNALS:
     void started();
     void finished();
     void canceled();
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     void paused();
 #endif
     void suspending();
@@ -158,11 +158,11 @@ public Q_SLOTS:
     void suspend();
     void resume();
     void toggleSuspended();
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     void setPaused(bool paused);
     void pause();
     void togglePaused();
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 #endif // Q_QDOC
 
@@ -183,6 +183,6 @@ Q_INLINE_TEMPLATE void QFutureWatcher<T>::setFuture(const QFuture<T> &_future)
     connectOutputInterface();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFUTUREWATCHER_H

@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsglobal_p.h"
-#include <QtGui/QSurface>
-#include <QtGui/private/qeglconvenience_p.h>
-#include <QtGui/private/qeglpbuffer_p.h>
+#include <BobUIGui/QSurface>
+#include <BobUIGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglpbuffer_p.h>
 
 #include "qeglfscontext_p.h"
 #include "qeglfswindow_p.h"
 #include "qeglfshooks_p.h"
 #include "qeglfscursor_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSContext::QEglFSContext(const QSurfaceFormat &format, QPlatformOpenGLContext *share, EGLDisplay display,
                              EGLConfig *config)
     : QEGLPlatformContext(format, share, display, config,
-                          qt_egl_device_integration()->supportsSurfacelessContexts() ? Flags() : QEGLPlatformContext::NoSurfaceless)
+                          bobui_egl_device_integration()->supportsSurfacelessContexts() ? Flags() : QEGLPlatformContext::NoSurfaceless)
 {
 }
 
@@ -39,11 +39,11 @@ EGLSurface QEglFSContext::eglSurfaceForPlatformSurface(QPlatformSurface *surface
 
 EGLSurface QEglFSContext::createTemporaryOffscreenSurface()
 {
-    if (qt_egl_device_integration()->supportsPBuffers())
+    if (bobui_egl_device_integration()->supportsPBuffers())
         return QEGLPlatformContext::createTemporaryOffscreenSurface();
 
     if (!m_tempWindow) {
-        m_tempWindow = qt_egl_device_integration()->createNativeOffscreenWindow(format());
+        m_tempWindow = bobui_egl_device_integration()->createNativeOffscreenWindow(format());
         if (!m_tempWindow) {
             qWarning("QEglFSContext: Failed to create temporary native window");
             return EGL_NO_SURFACE;
@@ -55,11 +55,11 @@ EGLSurface QEglFSContext::createTemporaryOffscreenSurface()
 
 void QEglFSContext::destroyTemporaryOffscreenSurface(EGLSurface surface)
 {
-    if (qt_egl_device_integration()->supportsPBuffers()) {
+    if (bobui_egl_device_integration()->supportsPBuffers()) {
         QEGLPlatformContext::destroyTemporaryOffscreenSurface(surface);
     } else {
         eglDestroySurface(eglDisplay(), surface);
-        qt_egl_device_integration()->destroyNativeWindow(m_tempWindow);
+        bobui_egl_device_integration()->destroyNativeWindow(m_tempWindow);
         m_tempWindow = 0;
     }
 }
@@ -85,9 +85,9 @@ void QEglFSContext::swapBuffers(QPlatformSurface *surface)
         }
     }
 
-    qt_egl_device_integration()->waitForVSync(surface);
+    bobui_egl_device_integration()->waitForVSync(surface);
     QEGLPlatformContext::swapBuffers(surface);
-    qt_egl_device_integration()->presentBuffer(surface);
+    bobui_egl_device_integration()->presentBuffer(surface);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,7 +1,7 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qglobalstatic.h>
+#include <BobUICore/qglobalstatic.h>
 #include "qwasmglobal_p.h"
 
 namespace qwasmglobal {
@@ -23,7 +23,7 @@ namespace {
 
 void runOnMainThread(std::function<void(void)> fn)
 {
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     runTaskOnMainThread<void>(fn, proxyingQueue());
 #else
     runTaskOnMainThread<void>(fn);
@@ -42,7 +42,7 @@ void runAsync(std::function<void(void)> fn)
 void runOnMainThreadAsync(std::function<void(void)> fn)
 {
     void *context = new std::function<void(void)>(fn);
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     if (!emscripten_is_main_runtime_thread()) {
         proxyingQueue()->proxyAsync(emscripten_main_runtime_thread_id(), [context]{
             trampoline(context);

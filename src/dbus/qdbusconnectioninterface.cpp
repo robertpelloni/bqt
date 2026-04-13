@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusconnectioninterface.h"
 
-#include <QtCore/QByteArray>
-#include <QtCore/QList>
-#include <QtCore/QMap>
-#include <QtCore/QMetaMethod>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QVariant>
-#include <QtCore/QDebug>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QList>
+#include <BobUICore/QMap>
+#include <BobUICore/QMetaMethod>
+#include <BobUICore/QString>
+#include <BobUICore/QStringList>
+#include <BobUICore/QVariant>
+#include <BobUICore/QDebug>
 
 #include "qdbusutil_p.h"          // for the DBUS_* constants
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*
  * Implementation of interface class QDBusConnectionInterface
@@ -426,4 +426,4 @@ BOBUI_END_NAMESPACE
 
 #include "moc_qdbusconnectioninterface.cpp"
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

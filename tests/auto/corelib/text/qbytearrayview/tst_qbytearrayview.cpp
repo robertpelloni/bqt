@@ -1,11 +1,11 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../qstringview/arrays_of_unknown_bounds.h"
 
 #include <QByteArrayView>
 
-#include <QTest>
+#include <BOBUIest>
 
 // for negative testing (can't convert from)
 #include <deque>
@@ -300,7 +300,7 @@ void tst_QByteArrayView::constExpr() const
         constexpr std::string_view sv = bv;
         static_assert(sv.size() == bv.size());
         static_assert(sv.data() == bv.data());
-#ifdef AMBIGUOUS_CALL // QTBUG-108805
+#ifdef AMBIGUOUS_CALL // BOBUIBUG-108805
         static_assert(sv == bv);
         static_assert(bv == sv);
 #endif
@@ -310,7 +310,7 @@ void tst_QByteArrayView::constExpr() const
         static_assert(!bv2.empty());
         static_assert(bv2.size() == 5);
     }
-#if !defined(Q_CC_GNU_ONLY) || !defined(QT_SANITIZE_UNDEFINED)
+#if !defined(Q_CC_GNU_ONLY) || !defined(BOBUI_SANITIZE_UNDEFINED)
     // Below checks are disabled because of a compilation issue with GCC and
     // -fsanitize=undefined. See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=71962.
     {
@@ -332,7 +332,7 @@ void tst_QByteArrayView::constExpr() const
 
         constexpr std::string_view sv = bv;
         static_assert(bv.size() == sv.size());
-#ifdef AMBIGUOUS_CALL // QTBUG-108805
+#ifdef AMBIGUOUS_CALL // BOBUIBUG-108805
         static_assert(bv == sv);
         static_assert(sv == bv);
 #endif
@@ -359,7 +359,7 @@ void tst_QByteArrayView::constExpr() const
 
         constexpr std::string_view sv = bv;
         static_assert(bv.size() == sv.size());
-#ifdef AMBIGUOUS_CALL // QTBUG-108805
+#ifdef AMBIGUOUS_CALL // BOBUIBUG-108805
         static_assert(bv == sv);
         static_assert(sv == bv);
 #endif
@@ -567,7 +567,7 @@ namespace help {
 template <typename T>
 size_t size(const T &t) { return size_t(t.size()); }
 template <typename T>
-size_t size(const T *t) { return QtPrivate::lengthHelperPointer(t); }
+size_t size(const T *t) { return BobUIPrivate::lengthHelperPointer(t); }
 
 template <typename T>
 decltype(auto)             cbegin(const T &t) { return t.begin(); }
@@ -607,9 +607,9 @@ void tst_QByteArrayView::conversionTests(Data data) const
                 return v1 == v2;
         };
         QVERIFY(std::equal(help::cbegin(data), help::cend(data),
-                           QT_MAKE_CHECKED_ARRAY_ITERATOR(bv.cbegin(), bv.size()), compare));
+                           BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(bv.cbegin(), bv.size()), compare));
         QVERIFY(std::equal(help::cbegin(data), help::cend(data),
-                           QT_MAKE_CHECKED_ARRAY_ITERATOR(bv.begin(), bv.size()), compare));
+                           BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(bv.begin(), bv.size()), compare));
         QVERIFY(std::equal(help::crbegin(data), help::crend(data), bv.crbegin(), compare));
         QVERIFY(std::equal(help::crbegin(data), help::crend(data), bv.rbegin(), compare));
         QCOMPARE(bv, data);
@@ -743,14 +743,14 @@ void tst_QByteArrayView::compare() const
 {
     QByteArrayView alpha = "original";
 
-    QVERIFY(alpha.compare("original", Qt::CaseSensitive) == 0);
-    QVERIFY(alpha.compare("Original", Qt::CaseSensitive) > 0);
-    QVERIFY(alpha.compare("Original", Qt::CaseInsensitive) == 0);
+    QVERIFY(alpha.compare("original", BobUI::CaseSensitive) == 0);
+    QVERIFY(alpha.compare("Original", BobUI::CaseSensitive) > 0);
+    QVERIFY(alpha.compare("Original", BobUI::CaseInsensitive) == 0);
     QByteArrayView beta = "unoriginal";
-    QVERIFY(alpha.compare(beta, Qt::CaseInsensitive) < 0);
+    QVERIFY(alpha.compare(beta, BobUI::CaseInsensitive) < 0);
     beta = "Unoriginal";
-    QVERIFY(alpha.compare(beta, Qt::CaseInsensitive) < 0);
-    QVERIFY(alpha.compare(beta, Qt::CaseSensitive) > 0);
+    QVERIFY(alpha.compare(beta, BobUI::CaseInsensitive) < 0);
+    QVERIFY(alpha.compare(beta, BobUI::CaseSensitive) > 0);
 }
 
 void tst_QByteArrayView::std_stringview_conversion()
@@ -778,5 +778,5 @@ void tst_QByteArrayView::std_stringview_conversion()
     QCOMPARE(sv, std::string_view("Hello\0world", 12));
 }
 
-QTEST_APPLESS_MAIN(tst_QByteArrayView)
+BOBUIEST_APPLESS_MAIN(tst_QByteArrayView)
 #include "tst_qbytearrayview.moc"

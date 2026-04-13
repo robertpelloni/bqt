@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWINDOWCONTAINER_H
 #define QWINDOWCONTAINER_H
@@ -9,17 +9,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowContainerPrivate;
 
@@ -29,7 +29,7 @@ class Q_WIDGETS_EXPORT QWindowContainer : public QWidget
     Q_DECLARE_PRIVATE(QWindowContainer)
 
 public:
-    explicit QWindowContainer(QWindow *embeddedWindow, QWidget *parent = nullptr, Qt::WindowFlags f = { });
+    explicit QWindowContainer(QWindow *embeddedWindow, QWidget *parent = nullptr, BobUI::WindowFlags f = { });
     ~QWindowContainer();
     Q_INVOKABLE QWindow *containedWindow() const;
     QSize minimumSizeHint() const override;
@@ -45,6 +45,6 @@ protected:
     bool eventFilter(QObject *, QEvent *ev) override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWCONTAINER_H

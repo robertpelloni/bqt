@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtTest/qsignalspy.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/qsignalspy.h>
 
-#include <QtWidgets/qtableview.h>
+#include <BobUIWidgets/bobuiableview.h>
 
-#include <QtSql/qsqldriver.h>
-#include <QtSql/qsqldatabase.h>
-#include <QtSql/qsqlerror.h>
-#include <QtSql/qsqlfield.h>
-#include <QtSql/qsqlquery.h>
-#include <QtSql/qsqlrecord.h>
-#include <QtSql/qsqlquerymodel.h>
+#include <BobUISql/qsqldriver.h>
+#include <BobUISql/qsqldatabase.h>
+#include <BobUISql/qsqlerror.h>
+#include <BobUISql/qsqlfield.h>
+#include <BobUISql/qsqlquery.h>
+#include <BobUISql/qsqlrecord.h>
+#include <BobUISql/qsqlquerymodel.h>
 
-#include <QtCore/qsortfilterproxymodel.h>
+#include <BobUICore/qsortfilterproxymodel.h>
 
 #include "../../kernel/qsqldatabase/tst_databases.h"
 
-Q_DECLARE_METATYPE(Qt::Orientation)
+Q_DECLARE_METATYPE(BobUI::Orientation)
 
 class tst_QSqlQueryModel : public QObject
 {
@@ -58,7 +58,7 @@ private slots:
 
     void task_180617();
     void task_180617_data() { generic_data(); }
-    void task_QTBUG_4963_setHeaderDataWithProxyModel();
+    void task_BOBUIBUG_4963_setHeaderDataWithProxyModel();
     void refresh_data() { generic_data(); }
     void refresh();
     void refreshWithBoundValues_data() { generic_data(); }
@@ -177,9 +177,9 @@ void tst_QSqlQueryModel::generic_data(const QString& engine)
 {
     if ( dbs.fillTestTable(engine) == 0 ) {
         if(engine.isEmpty())
-           QSKIP( "No database drivers are available in this Qt configuration");
+           QSKIP( "No database drivers are available in this BobUI configuration");
         else
-           QSKIP( (QString("No database drivers of type %1 are available in this Qt configuration").arg(engine)).toLocal8Bit());
+           QSKIP( (QString("No database drivers of type %1 are available in this BobUI configuration").arg(engine)).toLocal8Bit());
     }
 }
 
@@ -296,10 +296,10 @@ void tst_QSqlQueryModel::insertColumn()
     QCOMPARE(model.data(model.index(0, 2)).toInt(), 1);
     QCOMPARE(model.data(model.index(0, 3)), QVariant());
 
-    QCOMPARE(model.headerData(0, Qt::Horizontal).toString(), idColumn);
-    QCOMPARE(model.headerData(1, Qt::Horizontal).toString(), nameColumn);
-    QCOMPARE(model.headerData(2, Qt::Horizontal).toString(), titleColumn);
-    QCOMPARE(model.headerData(3, Qt::Horizontal).toString(), QString("4"));
+    QCOMPARE(model.headerData(0, BobUI::Horizontal).toString(), idColumn);
+    QCOMPARE(model.headerData(1, BobUI::Horizontal).toString(), nameColumn);
+    QCOMPARE(model.headerData(2, BobUI::Horizontal).toString(), titleColumn);
+    QCOMPARE(model.headerData(3, BobUI::Horizontal).toString(), QString("4"));
 
     QVERIFY(model.insertColumn(1));
 
@@ -320,11 +320,11 @@ void tst_QSqlQueryModel::insertColumn()
     QCOMPARE(model.data(model.index(0, 3)).toInt(), 1);
     QCOMPARE(model.data(model.index(0, 4)), QVariant());
 
-    QCOMPARE(model.headerData(0, Qt::Horizontal).toString(), idColumn);
-    QCOMPARE(model.headerData(1, Qt::Horizontal).toString(), QString("2"));
-    QCOMPARE(model.headerData(2, Qt::Horizontal).toString(), nameColumn);
-    QCOMPARE(model.headerData(3, Qt::Horizontal).toString(), titleColumn);
-    QCOMPARE(model.headerData(4, Qt::Horizontal).toString(), QString("5"));
+    QCOMPARE(model.headerData(0, BobUI::Horizontal).toString(), idColumn);
+    QCOMPARE(model.headerData(1, BobUI::Horizontal).toString(), QString("2"));
+    QCOMPARE(model.headerData(2, BobUI::Horizontal).toString(), nameColumn);
+    QCOMPARE(model.headerData(3, BobUI::Horizontal).toString(), titleColumn);
+    QCOMPARE(model.headerData(4, BobUI::Horizontal).toString(), QString("5"));
 
     QVERIFY(!model.insertColumn(-1));
     QVERIFY(!model.insertColumn(100));
@@ -368,13 +368,13 @@ void tst_QSqlQueryModel::insertColumn()
     QCOMPARE(model.record().field(5).name(), QString());
     QCOMPARE(model.record().field(6).name(), QString());
 
-    QCOMPARE(model.headerData(0, Qt::Horizontal).toString(), QString("1"));
-    QCOMPARE(model.headerData(1, Qt::Horizontal).toString(), idColumn);
-    QCOMPARE(model.headerData(2, Qt::Horizontal).toString(), QString("3"));
-    QCOMPARE(model.headerData(3, Qt::Horizontal).toString(), nameColumn);
-    QCOMPARE(model.headerData(4, Qt::Horizontal).toString(), titleColumn);
-    QCOMPARE(model.headerData(5, Qt::Horizontal).toString(), QString("6"));
-    QCOMPARE(model.headerData(6, Qt::Horizontal).toString(), QString("7"));
+    QCOMPARE(model.headerData(0, BobUI::Horizontal).toString(), QString("1"));
+    QCOMPARE(model.headerData(1, BobUI::Horizontal).toString(), idColumn);
+    QCOMPARE(model.headerData(2, BobUI::Horizontal).toString(), QString("3"));
+    QCOMPARE(model.headerData(3, BobUI::Horizontal).toString(), nameColumn);
+    QCOMPARE(model.headerData(4, BobUI::Horizontal).toString(), titleColumn);
+    QCOMPARE(model.headerData(5, BobUI::Horizontal).toString(), QString("6"));
+    QCOMPARE(model.headerData(6, BobUI::Horizontal).toString(), QString("7"));
 }
 
 void tst_QSqlQueryModel::record()
@@ -417,28 +417,28 @@ void tst_QSqlQueryModel::setHeaderData()
 
     QSqlQueryModel model;
 
-    QVERIFY(!model.setHeaderData(5, Qt::Vertical, "foo"));
-    QVERIFY(model.headerData(5, Qt::Vertical).isValid());
+    QVERIFY(!model.setHeaderData(5, BobUI::Vertical, "foo"));
+    QVERIFY(model.headerData(5, BobUI::Vertical).isValid());
 
     model.setQuery(QSqlQuery("select * from " + qTableName("test", __FILE__, db), db));
 
-    qRegisterMetaType<Qt::Orientation>("Qt::Orientation");
-    QSignalSpy spy(&model, SIGNAL(headerDataChanged(Qt::Orientation,int,int)));
-    QVERIFY(model.setHeaderData(2, Qt::Horizontal, "bar"));
-    QCOMPARE(model.headerData(2, Qt::Horizontal).toString(), QString("bar"));
+    qRegisterMetaType<BobUI::Orientation>("BobUI::Orientation");
+    QSignalSpy spy(&model, SIGNAL(headerDataChanged(BobUI::Orientation,int,int)));
+    QVERIFY(model.setHeaderData(2, BobUI::Horizontal, "bar"));
+    QCOMPARE(model.headerData(2, BobUI::Horizontal).toString(), QString("bar"));
     QCOMPARE(spy.size(), 1);
-    QCOMPARE(qvariant_cast<Qt::Orientation>(spy.value(0).value(0)), Qt::Horizontal);
+    QCOMPARE(qvariant_cast<BobUI::Orientation>(spy.value(0).value(0)), BobUI::Horizontal);
     QCOMPARE(spy.value(0).value(1).toInt(), 2);
     QCOMPARE(spy.value(0).value(2).toInt(), 2);
 
-    QVERIFY(!model.setHeaderData(7, Qt::Horizontal, "foo", Qt::ToolTipRole));
-    QVERIFY(!model.headerData(7, Qt::Horizontal, Qt::ToolTipRole).isValid());
+    QVERIFY(!model.setHeaderData(7, BobUI::Horizontal, "foo", BobUI::ToolTipRole));
+    QVERIFY(!model.headerData(7, BobUI::Horizontal, BobUI::ToolTipRole).isValid());
 
     bool isToUpper = (dbType == QSqlDriver::Interbase) || (dbType == QSqlDriver::Oracle) || (dbType == QSqlDriver::DB2);
-    QCOMPARE(model.headerData(0, Qt::Horizontal).toString(), isToUpper ? QString("ID") : QString("id"));
-    QCOMPARE(model.headerData(1, Qt::Horizontal).toString(), isToUpper ? QString("NAME") : QString("name"));
-    QCOMPARE(model.headerData(2, Qt::Horizontal).toString(), QString("bar"));
-    QVERIFY(model.headerData(3, Qt::Horizontal).isValid());
+    QCOMPARE(model.headerData(0, BobUI::Horizontal).toString(), isToUpper ? QString("ID") : QString("id"));
+    QCOMPARE(model.headerData(1, BobUI::Horizontal).toString(), isToUpper ? QString("NAME") : QString("name"));
+    QCOMPARE(model.headerData(2, BobUI::Horizontal).toString(), QString("bar"));
+    QVERIFY(model.headerData(3, BobUI::Horizontal).isValid());
 }
 
 void tst_QSqlQueryModel::fetchMore()
@@ -487,7 +487,7 @@ void tst_QSqlQueryModel::withSortFilterProxyModel()
     QSortFilterProxyModel proxy;
     proxy.setSourceModel(&model);
 
-    QTableView view;
+    BOBUIableView view;
     view.setModel(&proxy);
 
     QSignalSpy modelAboutToBeResetSpy(&model, SIGNAL(modelAboutToBeReset()));
@@ -496,7 +496,7 @@ void tst_QSqlQueryModel::withSortFilterProxyModel()
     model.setQuery(QSqlQuery("SELECT * FROM " + qTableName("test3", __FILE__, db), db));
     view.scrollToBottom();
 
-    QTestEventLoop::instance().enterLoop(1);
+    BOBUIestEventLoop::instance().enterLoop(1);
 
     QCOMPARE(proxy.rowCount(), 511);
 
@@ -591,7 +591,7 @@ public:
         QCOMPARE(gotReset, true);
     }
 
-    void testClear() // QTBUG-49404: Basic test whether clear() emits signals.
+    void testClear() // BOBUIBUG-49404: Basic test whether clear() emits signals.
     {
         gotAboutToBeReset = gotReset = false;
         clear();
@@ -629,7 +629,7 @@ void tst_QSqlQueryModel::task_180617()
     CHECK_DATABASE(db);
     const QString test3(qTableName("test3", __FILE__, db));
 
-    QTableView view;
+    BOBUIableView view;
     QCOMPARE(view.columnAt(0), -1);
     QCOMPARE(view.rowAt(0), -1);
 
@@ -654,12 +654,12 @@ void tst_QSqlQueryModel::task_180617()
     QCOMPARE(view.rowAt(0), -1);
 }
 
-void tst_QSqlQueryModel::task_QTBUG_4963_setHeaderDataWithProxyModel()
+void tst_QSqlQueryModel::task_BOBUIBUG_4963_setHeaderDataWithProxyModel()
 {
     QSqlQueryModel plainModel;
     QSortFilterProxyModel proxyModel;
     proxyModel.setSourceModel(&plainModel);
-    QVERIFY(!plainModel.setHeaderData(0, Qt::Horizontal, QObject::tr("ID")));
+    QVERIFY(!plainModel.setHeaderData(0, BobUI::Horizontal, QObject::tr("ID")));
     // And it should not crash.
 }
 
@@ -719,5 +719,5 @@ void tst_QSqlQueryModel::refreshWithBoundValues()
 
 
 
-QTEST_MAIN(tst_QSqlQueryModel)
+BOBUIEST_MAIN(tst_QSqlQueryModel)
 #include "tst_qsqlquerymodel.moc"

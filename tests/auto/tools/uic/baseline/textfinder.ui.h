@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'textfinder.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,18 +9,18 @@
 #ifndef TEXTFINDER_H
 #define TEXTFINDER_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIextEdit>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Form
 {
@@ -30,7 +30,7 @@ public:
     QLineEdit *lineEdit;
     QLabel *searchLabel;
     QPushButton *findButton;
-    QTextEdit *textEdit;
+    BOBUIextEdit *textEdit;
     QSpacerItem *spacerItem;
 
     void setupUi(QWidget *Form)
@@ -72,7 +72,7 @@ public:
 
         vboxLayout->addLayout(gridLayout);
 
-        textEdit = new QTextEdit(Form);
+        textEdit = new BOBUIextEdit(Form);
         textEdit->setObjectName("textEdit");
 
         vboxLayout->addWidget(textEdit);
@@ -81,9 +81,9 @@ public:
 
         vboxLayout->addItem(spacerItem);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         searchLabel->setBuddy(lineEdit);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(Form);
         QObject::connect(lineEdit, &QLineEdit::returnPressed, findButton, qOverload<>(&QPushButton::animateClick));
@@ -104,6 +104,6 @@ namespace Ui {
     class Form: public Ui_Form {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // TEXTFINDER_H

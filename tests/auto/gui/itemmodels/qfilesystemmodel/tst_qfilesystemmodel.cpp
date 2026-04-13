@@ -1,35 +1,35 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QTemporaryFile>
+#include <BOBUIemporaryFile>
 #include <QLoggingCategory>
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 #include <private/qfilesystemmodel_p.h>
 #endif
 #include <QFileSystemModel>
 #include <QFileIconProvider>
-#include <QTreeView>
+#include <BOBUIreeView>
 #include <QHeaderView>
 #include <QStandardPaths>
-#include <QTime>
+#include <BOBUIime>
 #include <QStyle>
-#include <QtGlobal>
-#include <QTemporaryDir>
+#include <BobUIGlobal>
+#include <BOBUIemporaryDir>
 #include <QAbstractItemModelTester>
 #if defined(Q_OS_WIN)
-# include <qt_windows.h> // for SetFileAttributes
+# include <bobui_windows.h> // for SetFileAttributes
 #endif
 #include <private/qfileinfo_p.h>
 #include <private/qfilesystemengine_p.h>
 
 #include <algorithm>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono;
 
 #define WAITTIME 1000
@@ -45,14 +45,14 @@ using namespace std::chrono;
                 *timedOut = false; \
                 break; \
             } \
-            QTest::qWait(step); \
+            BOBUIest::qWait(step); \
         } \
     } while(0)
 
 Q_DECLARE_METATYPE(QDir::Filters)
 Q_DECLARE_METATYPE(QFileDevice::Permissions)
 
-Q_LOGGING_CATEGORY(lcFileSystemModel, "qt.widgets.tests.qfilesystemmodel")
+Q_LOGGING_CATEGORY(lcFileSystemModel, "bobui.widgets.tests.qfilesystemmodel")
 
 class tst_QFileSystemModel : public QObject {
   Q_OBJECT
@@ -129,7 +129,7 @@ protected:
 
 private:
     QString flatDirTestPath;
-    QTemporaryDir m_tempDir;
+    BOBUIemporaryDir m_tempDir;
 };
 
 void tst_QFileSystemModel::cleanup()
@@ -199,7 +199,7 @@ void tst_QFileSystemModel::rootPath()
     }
     root = model->setRootPath(documentPath);
 
-    QTRY_VERIFY(model->rowCount(root) >= 0);
+    BOBUIRY_VERIFY(model->rowCount(root) >= 0);
     QCOMPARE(model->rootPath(), QString(documentPath));
     QCOMPARE(rootChanged.size(), oldRootPath == model->rootPath() ? 0 : 1);
     QCOMPARE(model->rootDirectory().absolutePath(), documentPath);
@@ -208,7 +208,7 @@ void tst_QFileSystemModel::rootPath()
     int oldCount = rootChanged.size();
     oldRootPath = model->rootPath();
     root = model->setRootPath(documentPath + QLatin1String("/."));
-    QTRY_VERIFY(model->rowCount(root) >= 0);
+    BOBUIRY_VERIFY(model->rowCount(root) >= 0);
     QCOMPARE(model->rootPath(), documentPath);
     QCOMPARE(rootChanged.size(), oldRootPath == model->rootPath() ? oldCount : oldCount + 1);
     QCOMPARE(model->rootDirectory().absolutePath(), documentPath);
@@ -218,14 +218,14 @@ void tst_QFileSystemModel::rootPath()
         oldCount = rootChanged.size();
         oldRootPath = model->rootPath();
         root = model->setRootPath(documentPath + QLatin1String("/.."));
-        QTRY_VERIFY(model->rowCount(root) >= 0);
+        BOBUIRY_VERIFY(model->rowCount(root) >= 0);
         QCOMPARE(model->rootPath(), newdir.path());
         QCOMPARE(rootChanged.size(), oldCount + 1);
         QCOMPARE(model->rootDirectory().absolutePath(), newdir.path());
     }
 
 #ifdef Q_OS_WIN
-    // check case insensitive root node on windows, tests QTBUG-71701
+    // check case insensitive root node on windows, tests BOBUIBUG-71701
     QModelIndex index = model->setRootPath(uR"(\\localhost\c$)"_s);
     QVERIFY(index.isValid());
     QCOMPARE(model->rootPath(), u"//localhost/c$"_s);
@@ -246,24 +246,24 @@ void tst_QFileSystemModel::readOnly()
     QAbstractItemModelTester tester(model.get());
     tester.setUseFetchMore(false);
     QCOMPARE(model->isReadOnly(), true);
-    QTemporaryFile file(flatDirTestPath + QStringLiteral("/XXXXXX.dat"));
+    BOBUIemporaryFile file(flatDirTestPath + QStringLiteral("/XXXXXX.dat"));
     QVERIFY2(file.open(), qPrintable(file.errorString()));
     const QString fileName = file.fileName();
     file.close();
 
     const QFileInfo fileInfo(fileName);
-    QTRY_VERIFY(QDir(flatDirTestPath).entryInfoList().contains(fileInfo));
+    BOBUIRY_VERIFY(QDir(flatDirTestPath).entryInfoList().contains(fileInfo));
     QModelIndex root = model->setRootPath(flatDirTestPath);
 
-    QTRY_VERIFY(model->rowCount(root) > 0);
+    BOBUIRY_VERIFY(model->rowCount(root) > 0);
 
     // ItemIsEditable should change, ItemNeverHasChildren should not change
-    QVERIFY(!(model->flags(model->index(fileName)) & Qt::ItemIsEditable));
-    QVERIFY(model->flags(model->index(fileName)) & Qt::ItemNeverHasChildren);
+    QVERIFY(!(model->flags(model->index(fileName)) & BobUI::ItemIsEditable));
+    QVERIFY(model->flags(model->index(fileName)) & BobUI::ItemNeverHasChildren);
     model->setReadOnly(false);
     QCOMPARE(model->isReadOnly(), false);
-    QVERIFY(model->flags(model->index(fileName)) & Qt::ItemIsEditable);
-    QVERIFY(model->flags(model->index(fileName)) & Qt::ItemNeverHasChildren);
+    QVERIFY(model->flags(model->index(fileName)) & BobUI::ItemIsEditable);
+    QVERIFY(model->flags(model->index(fileName)) & BobUI::ItemNeverHasChildren);
 }
 
 class CustomFileIconProvider : public QFileIconProvider
@@ -428,12 +428,12 @@ void tst_QFileSystemModel::rowCount()
 
 void tst_QFileSystemModel::rowsInserted_data()
 {
-    QTest::addColumn<int>("count");
-    QTest::addColumn<Qt::SortOrder>("ascending");
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::addColumn<BobUI::SortOrder>("ascending");
     for (int i = 0; i < 4; ++i) {
         const QByteArray iB = QByteArray::number(i);
-        QTest::newRow(("Qt::AscendingOrder " + iB).constData()) << i << Qt::AscendingOrder;
-        QTest::newRow(("Qt::DescendingOrder " + iB).constData()) << i << Qt::DescendingOrder;
+        BOBUIest::newRow(("BobUI::AscendingOrder " + iB).constData()) << i << BobUI::AscendingOrder;
+        BOBUIest::newRow(("BobUI::DescendingOrder " + iB).constData()) << i << BobUI::DescendingOrder;
     }
 }
 
@@ -452,7 +452,7 @@ void tst_QFileSystemModel::rowsInserted()
     QModelIndex root = prepareTestModelRoot(model.data(), tmp);
     QVERIFY(root.isValid());
 
-    QFETCH(Qt::SortOrder, ascending);
+    QFETCH(BobUI::SortOrder, ascending);
     QFETCH(int, count);
     model->sort(0, ascending);
 
@@ -463,7 +463,7 @@ void tst_QFileSystemModel::rowsInserted()
     for (int i = 0; i < count; ++i)
         files.append(QLatin1Char('c') + QString::number(i));
     QVERIFY(createFiles(model.data(), tmp, files, 5));
-    QTRY_COMPARE(model->rowCount(root), oldCount + count);
+    BOBUIRY_COMPARE(model->rowCount(root), oldCount + count);
     int totalRowsInserted = 0;
     for (int i = 0; i < spy0.size(); ++i) {
         int start = spy0[i].value(1).toInt();
@@ -471,8 +471,8 @@ void tst_QFileSystemModel::rowsInserted()
         totalRowsInserted += end - start + 1;
     }
     QCOMPARE(totalRowsInserted, count);
-    const QString expected = ascending == Qt::AscendingOrder ? QStringLiteral("j") : QStringLiteral("b");
-    QTRY_COMPARE(lastEntry(root), expected);
+    const QString expected = ascending == BobUI::AscendingOrder ? QStringLiteral("j") : QStringLiteral("b");
+    BOBUIRY_COMPARE(lastEntry(root), expected);
 
     if (spy0.size() > 0) {
         if (count == 0)
@@ -485,13 +485,13 @@ void tst_QFileSystemModel::rowsInserted()
     QVERIFY(createFiles(model.data(), tmp, QStringList(".hidden_file"), 5 + count));
 
     if (count != 0)
-        QTRY_VERIFY(spy0.size() >= 1);
+        BOBUIRY_VERIFY(spy0.size() >= 1);
     else
-        QTRY_COMPARE(spy0.size(), 0);
+        BOBUIRY_COMPARE(spy0.size(), 0);
     if (count != 0)
-        QTRY_VERIFY(spy1.size() >= 1);
+        BOBUIRY_VERIFY(spy1.size() >= 1);
     else
-        QTRY_COMPARE(spy1.size(), 0);
+        BOBUIRY_COMPARE(spy1.size(), 0);
 }
 
 void tst_QFileSystemModel::rowsRemoved_data()
@@ -509,7 +509,7 @@ void tst_QFileSystemModel::rowsRemoved()
     QVERIFY(root.isValid());
 
     QFETCH(int, count);
-    QFETCH(Qt::SortOrder, ascending);
+    QFETCH(BobUI::SortOrder, ascending);
     model->sort(0, ascending);
 
     QSignalSpy spy0(model.data(), &QAbstractItemModel::rowsRemoved);
@@ -541,7 +541,7 @@ void tst_QFileSystemModel::rowsRemoved()
         QDir tmpLister(tmp);
         qCDebug(lcFileSystemModel) << tmpLister.entryList();
     }
-    QTRY_COMPARE(model->rowCount(root), oldCount - count);
+    BOBUIRY_COMPARE(model->rowCount(root), oldCount - count);
 
     QVERIFY(QFile::exists(tmp + QLatin1String("/.a")));
     QVERIFY(QFile::remove(tmp + QLatin1String("/.a")));
@@ -573,7 +573,7 @@ void tst_QFileSystemModel::dataChanged()
     QVERIFY(root.isValid());
 
     QFETCH(int, count);
-    QFETCH(Qt::SortOrder, ascending);
+    QFETCH(BobUI::SortOrder, ascending);
     model->sort(0, ascending);
 
     QSignalSpy spy(model.data(), &QAbstractItemModel::dataChanged);
@@ -582,45 +582,45 @@ void tst_QFileSystemModel::dataChanged()
         files.append(model->index(i, 0, root).data().toString());
     createFiles(model.data(), tmp, files);
 
-    QTest::qWait(WAITTIME);
+    BOBUIest::qWait(WAITTIME);
 
     if (count != 0) QVERIFY(spy.size() >= 1); else QCOMPARE(spy.size(), 0);
 }
 
 void tst_QFileSystemModel::filters_data()
 {
-    QTest::addColumn<QStringList>("files");
-    QTest::addColumn<QStringList>("dirs");
-    QTest::addColumn<QDir::Filters>("dirFilters");
-    QTest::addColumn<QStringList>("nameFilters");
-    QTest::addColumn<int>("rowCount");
+    BOBUIest::addColumn<QStringList>("files");
+    BOBUIest::addColumn<QStringList>("dirs");
+    BOBUIest::addColumn<QDir::Filters>("dirFilters");
+    BOBUIest::addColumn<QStringList>("nameFilters");
+    BOBUIest::addColumn<int>("rowCount");
 
     const QStringList abcList{QLatin1String("a"), QLatin1String("b"), QLatin1String("c")};
     const QStringList zList{QLatin1String("Z")};
 
-    QTest::newRow("no dirs") << abcList << QStringList() << QDir::Filters(QDir::Dirs) << QStringList() << 2;
-    QTest::newRow("no dirs - dot") << abcList << QStringList() << (QDir::Dirs | QDir::NoDot) << QStringList() << 1;
-    QTest::newRow("no dirs - dotdot") << abcList << QStringList() << (QDir::Dirs | QDir::NoDotDot) << QStringList() << 1;
-    QTest::newRow("no dirs - dotanddotdot") << abcList << QStringList() << (QDir::Dirs | QDir::NoDotAndDotDot) << QStringList() << 0;
-    QTest::newRow("one dir - dot") << abcList << zList << (QDir::Dirs | QDir::NoDot) << QStringList() << 2;
-    QTest::newRow("one dir - dotdot") << abcList << zList << (QDir::Dirs | QDir::NoDotDot) << QStringList() << 2;
-    QTest::newRow("one dir - dotanddotdot") << abcList << zList << (QDir::Dirs | QDir::NoDotAndDotDot) << QStringList() << 1;
-    QTest::newRow("one dir") << abcList << zList << QDir::Filters(QDir::Dirs) << QStringList() << 3;
-    QTest::newRow("no dir + hidden") << abcList << QStringList() << (QDir::Dirs | QDir::Hidden) << QStringList() << 2;
-    QTest::newRow("dir+hid+files") << abcList << QStringList() <<
+    BOBUIest::newRow("no dirs") << abcList << QStringList() << QDir::Filters(QDir::Dirs) << QStringList() << 2;
+    BOBUIest::newRow("no dirs - dot") << abcList << QStringList() << (QDir::Dirs | QDir::NoDot) << QStringList() << 1;
+    BOBUIest::newRow("no dirs - dotdot") << abcList << QStringList() << (QDir::Dirs | QDir::NoDotDot) << QStringList() << 1;
+    BOBUIest::newRow("no dirs - dotanddotdot") << abcList << QStringList() << (QDir::Dirs | QDir::NoDotAndDotDot) << QStringList() << 0;
+    BOBUIest::newRow("one dir - dot") << abcList << zList << (QDir::Dirs | QDir::NoDot) << QStringList() << 2;
+    BOBUIest::newRow("one dir - dotdot") << abcList << zList << (QDir::Dirs | QDir::NoDotDot) << QStringList() << 2;
+    BOBUIest::newRow("one dir - dotanddotdot") << abcList << zList << (QDir::Dirs | QDir::NoDotAndDotDot) << QStringList() << 1;
+    BOBUIest::newRow("one dir") << abcList << zList << QDir::Filters(QDir::Dirs) << QStringList() << 3;
+    BOBUIest::newRow("no dir + hidden") << abcList << QStringList() << (QDir::Dirs | QDir::Hidden) << QStringList() << 2;
+    BOBUIest::newRow("dir+hid+files") << abcList << QStringList() <<
                          (QDir::Dirs | QDir::Files | QDir::Hidden) << QStringList() << 5;
-    QTest::newRow("dir+file+hid-dot .A") << abcList << QStringList{QLatin1String(".A")} <<
+    BOBUIest::newRow("dir+file+hid-dot .A") << abcList << QStringList{QLatin1String(".A")} <<
                          (QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot) << QStringList() << 4;
-    QTest::newRow("dir+files+hid+dot A") << abcList << QStringList{QLatin1String("AFolder")} <<
+    BOBUIest::newRow("dir+files+hid+dot A") << abcList << QStringList{QLatin1String("AFolder")} <<
                          (QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot) << QStringList{QLatin1String("A*")} << 2;
-    QTest::newRow("dir+files+hid+dot+cas1") << abcList << zList <<
+    BOBUIest::newRow("dir+files+hid+dot+cas1") << abcList << zList <<
                          (QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot | QDir::CaseSensitive) << zList << 1;
-    QTest::newRow("dir+files+hid+dot+cas2") << abcList << zList <<
+    BOBUIest::newRow("dir+files+hid+dot+cas2") << abcList << zList <<
                          (QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot | QDir::CaseSensitive) << QStringList{QLatin1String("a")} << 1;
-    QTest::newRow("dir+files+hid+dot+cas+alldir") << abcList << zList <<
+    BOBUIest::newRow("dir+files+hid+dot+cas+alldir") << abcList << zList <<
                          (QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot | QDir::CaseSensitive | QDir::AllDirs) << zList << 1;
 
-    QTest::newRow("case sensitive") << QStringList{QLatin1String("Antiguagdb"), QLatin1String("Antiguamtd"),
+    BOBUIest::newRow("case sensitive") << QStringList{QLatin1String("Antiguagdb"), QLatin1String("Antiguamtd"),
         QLatin1String("Antiguamtp"), QLatin1String("afghanistangdb"), QLatin1String("afghanistanmtd")}
         << QStringList() << QDir::Filters(QDir::Files) << QStringList() << 5;
 }
@@ -645,7 +645,7 @@ void tst_QFileSystemModel::filters()
     model->setFilter(dirFilters);
 
     QVERIFY(createFiles(model.data(), tmp, files, 0, dirs));
-    QTRY_COMPARE(model->rowCount(root), rowCount);
+    BOBUIRY_COMPARE(model->rowCount(root), rowCount);
 
     // Make sure that we do what QDir does
     QDir xFactor(tmp);
@@ -681,13 +681,13 @@ void tst_QFileSystemModel::filters()
         QVERIFY(QFile::setPermissions(fileName3, QFile::ExeOwner));
 
         model->setFilter((QDir::Files | QDir::Readable));
-        QTRY_COMPARE(model->rowCount(root), 1);
+        BOBUIRY_COMPARE(model->rowCount(root), 1);
 
         model->setFilter((QDir::Files | QDir::Writable));
-        QTRY_COMPARE(model->rowCount(root), 1);
+        BOBUIRY_COMPARE(model->rowCount(root), 1);
 
         model->setFilter((QDir::Files | QDir::Executable));
-        QTRY_COMPARE(model->rowCount(root), 1);
+        BOBUIRY_COMPARE(model->rowCount(root), 1);
 
         // reset permissions
         QVERIFY(QFile::setPermissions(fileName1, originalPermissions));
@@ -708,26 +708,26 @@ void tst_QFileSystemModel::showFilesOnly()
     const auto subdir = u"sub_directory"_s;
     QVERIFY(createFiles(&model, tmp, files, 0, {subdir}));
 
-    // The model changes asynchronously when we run the event loop in the QTRY_...
+    // The model changes asynchronously when we run the event loop in the BOBUIRY_...
     // macros, so the root index returned by an earlier call to setRootPath might
     // become invalid. Make sure we use a fresh one for each iteration.
 
-    // QTBUG-74471
+    // BOBUIBUG-74471
     // WHAT: setting the root path of the model to a dir with some files and a subdir
-    QTRY_COMPARE(model.rowCount(model.setRootPath(tmp)), files.size() + 1);
+    BOBUIRY_COMPARE(model.rowCount(model.setRootPath(tmp)), files.size() + 1);
 
     // Change the model to only show files
     model.setFilter(QDir::Files);
-    QTRY_COMPARE(model.rowCount(model.setRootPath(tmp)), files.size());
+    BOBUIRY_COMPARE(model.rowCount(model.setRootPath(tmp)), files.size());
 
     // WHEN: setting the root path to a subdir
     QModelIndex subIndex = model.setRootPath(tmp + u'/' + subdir);
-    QTRY_COMPARE(model.rowCount(subIndex), 0);
+    BOBUIRY_COMPARE(model.rowCount(subIndex), 0);
 
     // THEN: setting the root path to the previous (parent) dir, the model should
     // still only show files.
     // Doubling the default timeout (5s) as this test to fails on macos on the CI
-    QTRY_COMPARE_WITH_TIMEOUT(model.rowCount(model.setRootPath(tmp)), files.size(), 10s);
+    BOBUIRY_COMPARE_WITH_TIMEOUT(model.rowCount(model.setRootPath(tmp)), files.size(), 10s);
 }
 
 void tst_QFileSystemModel::nameFilters()
@@ -744,34 +744,34 @@ void tst_QFileSystemModel::nameFilters()
     QString tmp = flatDirTestPath;
     QVERIFY(createFiles(model.data(), tmp, list));
     QModelIndex root = model->setRootPath(tmp);
-    QTRY_COMPARE(model->rowCount(root), 3);
+    BOBUIRY_COMPARE(model->rowCount(root), 3);
 
     QStringList filters;
     filters << "a" << "b";
     model->setNameFilters(filters);
-    QTRY_COMPARE(model->rowCount(root), 2);
+    BOBUIRY_COMPARE(model->rowCount(root), 2);
 }
 void tst_QFileSystemModel::setData_data()
 {
-    QTest::addColumn<QString>("subdirName");
-    QTest::addColumn<QStringList>("files");
-    QTest::addColumn<QString>("oldFileName");
-    QTest::addColumn<QString>("newFileName");
-    QTest::addColumn<bool>("success");
-    /*QTest::newRow("outside current dir") << (QStringList() << "a" << "b" << "c")
+    BOBUIest::addColumn<QString>("subdirName");
+    BOBUIest::addColumn<QStringList>("files");
+    BOBUIest::addColumn<QString>("oldFileName");
+    BOBUIest::addColumn<QString>("newFileName");
+    BOBUIest::addColumn<bool>("success");
+    /*BOBUIest::newRow("outside current dir") << (QStringList() << "a" << "b" << "c")
               << flatDirTestPath + '/' + "a"
               << QDir::temp().absolutePath() + '/' + "a"
               << false;
     */
 
     const QStringList abcList{QLatin1String("a"), QLatin1String("b"), QLatin1String("c")};
-    QTest::newRow("in current dir")
+    BOBUIest::newRow("in current dir")
               << QString()
               << abcList
               << "a"
               << "d"
               << true;
-    QTest::newRow("in subdir")
+    BOBUIest::newRow("in subdir")
               << "s"
               << abcList
               << "a"
@@ -803,7 +803,7 @@ void tst_QFileSystemModel::setData()
         tmpIdx = model->index(tmp);
         model->fetchMore(tmpIdx);
     }
-    QTRY_COMPARE(model->rowCount(tmpIdx), files.size());
+    BOBUIRY_COMPARE(model->rowCount(tmpIdx), files.size());
 
     QModelIndex idx = model->index(tmp + '/' + oldFileName);
     QCOMPARE(idx.isValid(), true);
@@ -825,7 +825,7 @@ void tst_QFileSystemModel::setData()
         QCOMPARE(arguments.at(2).toString(), newFileName);
         QCOMPARE(QFile::rename(tmp + '/' + newFileName, tmp + '/' + oldFileName), true);
     }
-    QTRY_COMPARE(model->rowCount(tmpIdx), files.size());
+    BOBUIRY_COMPARE(model->rowCount(tmpIdx), files.size());
     // cleanup
     if (!subdirName.isEmpty())
         QVERIFY(QDir(tmp).removeRecursively());
@@ -833,20 +833,20 @@ void tst_QFileSystemModel::setData()
 
 void tst_QFileSystemModel::sortPersistentIndex()
 {
-    QTemporaryFile file(flatDirTestPath + QStringLiteral("/XXXXXX.dat"));
+    BOBUIemporaryFile file(flatDirTestPath + QStringLiteral("/XXXXXX.dat"));
     QVERIFY2(file.open(), qPrintable(file.errorString()));
     const QFileInfo fileInfo(file.fileName());
     file.close();
-    QTRY_VERIFY(QDir(flatDirTestPath).entryInfoList().contains(fileInfo));
+    BOBUIRY_VERIFY(QDir(flatDirTestPath).entryInfoList().contains(fileInfo));
     QScopedPointer<QFileSystemModel> model(new QFileSystemModel);
     QAbstractItemModelTester tester(model.get());
     tester.setUseFetchMore(false);
     QModelIndex root = model->setRootPath(flatDirTestPath);
-    QTRY_VERIFY(model->rowCount(root) > 0);
+    BOBUIRY_VERIFY(model->rowCount(root) > 0);
 
     QPersistentModelIndex idx = model->index(0, 1, root);
-    model->sort(0, Qt::AscendingOrder);
-    model->sort(0, Qt::DescendingOrder);
+    model->sort(0, BobUI::AscendingOrder);
+    model->sort(0, BobUI::DescendingOrder);
     QVERIFY(idx.column() != 0);
 }
 
@@ -858,9 +858,9 @@ class MyFriendFileSystemModel : public QFileSystemModel
 
 void tst_QFileSystemModel::sort_data()
 {
-    QTest::addColumn<bool>("fileDialogMode");
-    QTest::newRow("standard usage") << false;
-    QTest::newRow("QFileDialog usage") << true;
+    BOBUIest::addColumn<bool>("fileDialogMode");
+    BOBUIest::newRow("standard usage") << false;
+    BOBUIest::newRow("QFileDialog usage") << true;
 }
 
 void tst_QFileSystemModel::sort()
@@ -868,13 +868,13 @@ void tst_QFileSystemModel::sort()
     QFETCH(bool, fileDialogMode);
 
     QScopedPointer<MyFriendFileSystemModel> myModel(new MyFriendFileSystemModel);
-    QTreeView tree;
-    tree.setWindowTitle(QTest::currentTestFunction());
+    BOBUIreeView tree;
+    tree.setWindowTitle(BOBUIest::currentTestFunction());
 
-    if (fileDialogMode && QTestPrivate::isRunningArmOnX86())
-        QSKIP("Crashes in QEMU. QTBUG-70572");
+    if (fileDialogMode && BOBUIestPrivate::isRunningArmOnX86())
+        QSKIP("Crashes in QEMU. BOBUIBUG-70572");
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     if (fileDialogMode)
         myModel->d_func()->disableRecursiveSort = true;
 #endif
@@ -886,13 +886,13 @@ void tst_QFileSystemModel::sort()
     //but if we sort by size descending it will be the first
     QFile tempFile(dirPath + "/plop2.txt");
     QVERIFY(tempFile.open(QIODevice::WriteOnly | QIODevice::Text));
-    QTextStream out(&tempFile);
+    BOBUIextStream out(&tempFile);
     out << "The magic number is: " << 49 << "\n";
     tempFile.close();
 
     QFile tempFile2(dirPath + "/plop.txt");
     QVERIFY(tempFile2.open(QIODevice::WriteOnly | QIODevice::Text));
-    QTextStream out2(&tempFile2);
+    BOBUIextStream out2(&tempFile2);
     out2 << "The magic number is : " << 49 << " but i write some stuff in the file \n";
     tempFile2.close();
 
@@ -902,8 +902,8 @@ void tst_QFileSystemModel::sort()
     tree.setModel(myModel.data());
     tree.show();
     tree.resize(800, 800);
-    QVERIFY(QTest::qWaitForWindowExposed(&tree));
-    tree.header()->setSortIndicator(1, Qt::DescendingOrder);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&tree));
+    tree.header()->setSortIndicator(1, BobUI::DescendingOrder);
     tree.header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     QStringList dirsToOpen;
     do {
@@ -920,7 +920,7 @@ void tst_QFileSystemModel::sort()
     expectedOrder << tempFile2.fileName() << tempFile.fileName() << dirPath + QChar('/') + ".." << dirPath + QChar('/') + ".";
 
     if (fileDialogMode) {
-        QTRY_COMPARE(myModel->rowCount(parent), expectedOrder.size());
+        BOBUIRY_COMPARE(myModel->rowCount(parent), expectedOrder.size());
         // File dialog Mode means sub trees are not sorted, only the current root.
         // There's no way we can check that the sub tree is "not sorted"; just check if it
         // has the same contents of the expected list
@@ -937,7 +937,7 @@ void tst_QFileSystemModel::sort()
     } else {
         for(int i = 0; i < myModel->rowCount(parent); ++i)
         {
-            QTRY_COMPARE(dirPath + QChar('/') + myModel->index(i, 1, parent).data(QFileSystemModel::FileNameRole).toString(), expectedOrder.at(i));
+            BOBUIRY_COMPARE(dirPath + QChar('/') + myModel->index(i, 1, parent).data(QFileSystemModel::FileNameRole).toString(), expectedOrder.at(i));
         }
     }
 }
@@ -955,7 +955,7 @@ void tst_QFileSystemModel::mkdir()
     if (bestatic.exists()) {
         if (!bestatic.rmdir(newFolderPath))
             qWarning() << "unable to remove" << newFolderPath;
-        QTest::qWait(WAITTIME);
+        BOBUIest::qWait(WAITTIME);
     }
     model->mkdir(tmpDir, "NewFoldermkdirtest3");
     model->mkdir(tmpDir, "NewFoldermkdirtest5");
@@ -977,7 +977,7 @@ void tst_QFileSystemModel::deleteFile()
     if (newFile.exists()) {
         if (!newFile.remove())
             qWarning() << "unable to remove" << newFilePath;
-        QTest::qWait(WAITTIME);
+        BOBUIest::qWait(WAITTIME);
     }
     if (!newFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qWarning() << "unable to create" << newFilePath;
@@ -994,11 +994,11 @@ void tst_QFileSystemModel::deleteFile()
 
 void tst_QFileSystemModel::deleteDirectory()
 {
-    // QTBUG-65683: Verify that directories can be removed recursively despite
+    // BOBUIBUG-65683: Verify that directories can be removed recursively despite
     // file system watchers being active on them or their sub-directories (Windows).
     // Create a temporary directory, a nested directory and expand a treeview
     // to show them to ensure watcher creation. Then delete the directory.
-    QTemporaryDir dirToBeDeleted(flatDirTestPath + QStringLiteral("/deleteDirectory-XXXXXX"));
+    BOBUIemporaryDir dirToBeDeleted(flatDirTestPath + QStringLiteral("/deleteDirectory-XXXXXX"));
     QVERIFY(dirToBeDeleted.isValid());
     const QString dirToBeDeletedPath = dirToBeDeleted.path();
     const QString nestedTestDir = QStringLiteral("test");
@@ -1011,8 +1011,8 @@ void tst_QFileSystemModel::deleteDirectory()
 
     QFileSystemModel model;
     const QModelIndex rootIndex = model.setRootPath(flatDirTestPath);
-    QTreeView treeView;
-    treeView.setWindowTitle(QTest::currentTestFunction());
+    BOBUIreeView treeView;
+    treeView.setWindowTitle(BOBUIest::currentTestFunction());
     treeView.setModel(&model);
     treeView.setRootIndex(rootIndex);
 
@@ -1024,7 +1024,7 @@ void tst_QFileSystemModel::deleteDirectory()
     treeView.setExpanded(nestedTestDirIndex, true);
 
     treeView.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&treeView));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&treeView));
 
     QVERIFY(model.remove(dirToBeDeletedPathIndex));
     dirToBeDeleted.setAutoRemove(false);
@@ -1065,14 +1065,14 @@ void tst_QFileSystemModel::caseSensitivity()
 
     QFileInfo tmpInfo(tmp);
     auto *tmpInfoPriv = QFileInfoPrivate::get(&tmpInfo);
-    if (!qt_isCaseSensitive(tmpInfoPriv->fileEntry, tmpInfoPriv->metaData)) {
+    if (!bobui_isCaseSensitive(tmpInfoPriv->fileEntry, tmpInfoPriv->metaData)) {
         // Verify that files can be accessed by paths with fLipPeD case.
         for (int i = 0; i < paths.size(); ++i) {
             const QModelIndex normalCaseIndex = indexes.at(i);
             const QModelIndex flippedCaseIndex = model->index(flipCase(paths.at(i)));
 #if !defined(Q_OS_WIN)
             QEXPECT_FAIL("", "QFileSystemModelNodePathKey is hard-coded to be case"
-                " sensitive on non-Windows and case-insensitive on Windows (QTBUG-31103)", Abort);
+                " sensitive on non-Windows and case-insensitive on Windows (BOBUIBUG-31103)", Abort);
 #endif
             QCOMPARE(normalCaseIndex, flippedCaseIndex);
         }
@@ -1081,10 +1081,10 @@ void tst_QFileSystemModel::caseSensitivity()
 
 void tst_QFileSystemModel::drives_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::newRow("current") << QDir::currentPath();
-    QTest::newRow("slash") << "/";
-    QTest::newRow("My Computer") << "My Computer";
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::newRow("current") << QDir::currentPath();
+    BOBUIest::newRow("slash") << "/";
+    BOBUIest::newRow("My Computer") << "My Computer";
 }
 
 void tst_QFileSystemModel::drives()
@@ -1099,7 +1099,7 @@ void tst_QFileSystemModel::drives()
         if (driveRoot.exists())
             driveCount++;
     }
-    QTRY_COMPARE(model.rowCount(), driveCount);
+    BOBUIRY_COMPARE(model.rowCount(), driveCount);
 }
 
 void tst_QFileSystemModel::dirsBeforeFiles()
@@ -1109,7 +1109,7 @@ void tst_QFileSystemModel::dirsBeforeFiles()
         QDebug(&message).noquote() << "Unexpected sort order at #" << row << ':' << left << right;
         return message.toLocal8Bit();
     };
-    QTemporaryDir testDir(flatDirTestPath);
+    BOBUIemporaryDir testDir(flatDirTestPath);
     QVERIFY2(testDir.isValid(), qPrintable(testDir.errorString()));
     QDir dir(testDir.path());
 
@@ -1127,7 +1127,7 @@ void tst_QFileSystemModel::dirsBeforeFiles()
     tester.setUseFetchMore(false);
     QModelIndex root = model->setRootPath(dir.absolutePath());
     // Wait for model to be notified by the file system watcher
-    QTRY_COMPARE(model->rowCount(root), 2 * itemCount);
+    BOBUIRY_COMPARE(model->rowCount(root), 2 * itemCount);
     // sort explicitly - dirs before files (except on macOS), and then by name
     model->sort(0);
     // Ensure that no file occurs before any directory (see QFileSystemModelSorter):
@@ -1144,14 +1144,14 @@ void tst_QFileSystemModel::dirsBeforeFiles()
 
 void tst_QFileSystemModel::roleNames_data()
 {
-    QTest::addColumn<int>("role");
-    QTest::addColumn<QByteArray>("roleName");
-    QTest::newRow("decoration") << int(Qt::DecorationRole) << QByteArray("fileIcon");
-    QTest::newRow("display") << int(Qt::DisplayRole) << QByteArray("display");
-    QTest::newRow("fileIcon") << int(QFileSystemModel::FileIconRole) << QByteArray("fileIcon");
-    QTest::newRow("filePath") << int(QFileSystemModel::FilePathRole) << QByteArray("filePath");
-    QTest::newRow("fileName") << int(QFileSystemModel::FileNameRole) << QByteArray("fileName");
-    QTest::newRow("filePermissions") << int(QFileSystemModel::FilePermissions) << QByteArray("filePermissions");
+    BOBUIest::addColumn<int>("role");
+    BOBUIest::addColumn<QByteArray>("roleName");
+    BOBUIest::newRow("decoration") << int(BobUI::DecorationRole) << QByteArray("fileIcon");
+    BOBUIest::newRow("display") << int(BobUI::DisplayRole) << QByteArray("display");
+    BOBUIest::newRow("fileIcon") << int(QFileSystemModel::FileIconRole) << QByteArray("fileIcon");
+    BOBUIest::newRow("filePath") << int(QFileSystemModel::FilePathRole) << QByteArray("filePath");
+    BOBUIest::newRow("fileName") << int(QFileSystemModel::FileNameRole) << QByteArray("fileName");
+    BOBUIest::newRow("filePermissions") << int(QFileSystemModel::FilePermissions) << QByteArray("filePermissions");
 }
 
 void tst_QFileSystemModel::roleNames()
@@ -1177,8 +1177,8 @@ static inline QByteArray permissionRowName(bool readOnly, int permission)
 
 void tst_QFileSystemModel::permissions_data()
 {
-    QTest::addColumn<QFileDevice::Permissions>("permissions");
-    QTest::addColumn<bool>("readOnly");
+    BOBUIest::addColumn<QFileDevice::Permissions>("permissions");
+    BOBUIest::addColumn<bool>("readOnly");
 
     static const int permissions[] = {
         QFile::WriteOwner,
@@ -1186,12 +1186,12 @@ void tst_QFileSystemModel::permissions_data()
         QFile::WriteOwner|QFile::ReadOwner,
     };
     for (int permission : permissions) {
-        QTest::newRow(permissionRowName(false, permission).constData()) << QFileDevice::Permissions(permission) << false;
-        QTest::newRow(permissionRowName(true, permission).constData()) << QFileDevice::Permissions(permission) << true;
+        BOBUIest::newRow(permissionRowName(false, permission).constData()) << QFileDevice::Permissions(permission) << false;
+        BOBUIest::newRow(permissionRowName(true, permission).constData()) << QFileDevice::Permissions(permission) << true;
     }
 }
 
-void tst_QFileSystemModel::permissions() // checks QTBUG-20503
+void tst_QFileSystemModel::permissions() // checks BOBUIBUG-20503
 {
     QFETCH(QFileDevice::Permissions, permissions);
     QFETCH(bool, readOnly);
@@ -1211,7 +1211,7 @@ void tst_QFileSystemModel::permissions() // checks QTBUG-20503
 
     QCOMPARE(model->isReadOnly(), readOnly);
 
-    QTRY_COMPARE(model->rowCount(root), 1);
+    BOBUIRY_COMPARE(model->rowCount(root), 1);
 
     const QFile::Permissions modelPermissions = model->permissions(model->index(0, 0, root));
     const QFile::Permissions modelFileInfoPermissions = model->fileInfo(model->index(0, 0, root)).permissions();
@@ -1228,7 +1228,7 @@ void tst_QFileSystemModel::doNotUnwatchOnFailedRmdir()
 
     QFileSystemModel model;
 
-    const QTemporaryDir tempDir(tmp + '/' + QStringLiteral("doNotUnwatchOnFailedRmdir-XXXXXX"));
+    const BOBUIemporaryDir tempDir(tmp + '/' + QStringLiteral("doNotUnwatchOnFailedRmdir-XXXXXX"));
     QVERIFY(tempDir.isValid());
 
     const QModelIndex rootIndex = model.setRootPath(tempDir.path());
@@ -1248,7 +1248,7 @@ void tst_QFileSystemModel::doNotUnwatchOnFailedRmdir()
     }
 
     // the model must now detect this second file
-    QTRY_COMPARE(model.rowCount(rootIndex), 2);
+    BOBUIRY_COMPARE(model.rowCount(rootIndex), 2);
 }
 
 static QSet<QString> fileListUnderIndex(const QFileSystemModel *model, const QModelIndex &parent)
@@ -1280,11 +1280,11 @@ void tst_QFileSystemModel::specialFiles()
     const QModelIndex rootIndex = model.setRootPath(QStringLiteral("/dev/"));
     const QString testFileName = QStringLiteral("null");
 
-    QTRY_VERIFY(fileListUnderIndex(&model, rootIndex).contains(testFileName));
+    BOBUIRY_VERIFY(fileListUnderIndex(&model, rootIndex).contains(testFileName));
 
     model.setFilter(QDir::AllEntries | QDir::Hidden);
 
-    QTRY_VERIFY(!fileListUnderIndex(&model, rootIndex).contains(testFileName));
+    BOBUIRY_VERIFY(!fileListUnderIndex(&model, rootIndex).contains(testFileName));
 }
 
 void tst_QFileSystemModel::fileInfo()
@@ -1308,8 +1308,8 @@ void tst_QFileSystemModel::fileInfo()
 
 void tst_QFileSystemModel::pathWithTrailingSpace_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("foundAs");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("foundAs");
 
     static constexpr bool windows =
 #ifdef Q_OS_WIN
@@ -1320,23 +1320,23 @@ void tst_QFileSystemModel::pathWithTrailingSpace_data()
     // Cover the various cases as documented at
     // https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/file-folder-name-whitespace-characters
 
-    QTest::addRow("trailing space") << "space "
+    BOBUIest::addRow("trailing space") << "space "
         << (windows ? "space" : "space ");
-    QTest::addRow("leading space") << " leadingspace"
+    BOBUIest::addRow("leading space") << " leadingspace"
         << (windows ? "leadingspace" : " leadingspace");
-    QTest::addRow("trailing dot") << "dot."
+    BOBUIest::addRow("trailing dot") << "dot."
         << (windows ? "dot" : "dot.");
-    QTest::addRow("leading dot") << ".dot" << ".dot";
+    BOBUIest::addRow("leading dot") << ".dot" << ".dot";
 
-    QTest::addRow("spacedot .") << "spacedot ."
+    BOBUIest::addRow("spacedot .") << "spacedot ."
         << (windows ? "spacedot" : "spacedot .");
-    QTest::addRow("dotspace. ") << "dotspace. "
+    BOBUIest::addRow("dotspace. ") << "dotspace. "
         << (windows ? "dotspace" : "dotspace. ");
-    QTest::addRow("invisible") << "      "
+    BOBUIest::addRow("invisible") << "      "
         << (windows ? "" : "      ");
 
-    QTest::addRow("leading 0x3000") << "\u3000-x3000" << "\u3000-x3000";
-    QTest::addRow("trailing 0x3000") << "x3000-\u3000" << "x3000-\u3000";
+    BOBUIest::addRow("leading 0x3000") << "\u3000-x3000" << "\u3000-x3000";
+    BOBUIest::addRow("trailing 0x3000") << "x3000-\u3000" << "x3000-\u3000";
 }
 
 void tst_QFileSystemModel::pathWithTrailingSpace()
@@ -1346,7 +1346,7 @@ void tst_QFileSystemModel::pathWithTrailingSpace()
 
     const bool validInput = !foundAs.isEmpty();
 
-    QTemporaryDir temp;
+    BOBUIemporaryDir temp;
 
     QFileSystemModel model;
     model.setReadOnly(false);
@@ -1369,8 +1369,8 @@ void tst_QFileSystemModel::pathWithTrailingSpace()
 
     const QPersistentModelIndex newFolder = model.mkdir(rootIndex, "New Folder");
     QVERIFY(newFolder.isValid());
-    QVERIFY(model.flags(newFolder) & Qt::ItemIsEditable);
-    QCOMPARE(model.setData(newFolder, input, Qt::EditRole), validInput);
+    QVERIFY(model.flags(newFolder) & BobUI::ItemIsEditable);
+    QCOMPARE(model.setData(newFolder, input, BobUI::EditRole), validInput);
     if (validInput) {
         const QModelIndex renamedIndex = model.index(absoluteInput);
         QVERIFY(renamedIndex.isValid());
@@ -1386,7 +1386,7 @@ void tst_QFileSystemModel::correctFileInfoForDriveRootPath()
     QCOMPARE(drive.length(), 2);
 
     // Obtaining the drive root path's file info must not result in the current directory's file
-    // info (QTBUG-133746)
+    // info (BOBUIBUG-133746)
     const QString slashDrive = drive + u'/';
     const QString backslashDrive = drive + u'\\';
     QFileSystemModel model;
@@ -1409,6 +1409,6 @@ void tst_QFileSystemModel::correctFileInfoForDriveRootPath()
 }
 #endif
 
-QTEST_MAIN(tst_QFileSystemModel)
+BOBUIEST_MAIN(tst_QFileSystemModel)
 #include "tst_qfilesystemmodel.moc"
 

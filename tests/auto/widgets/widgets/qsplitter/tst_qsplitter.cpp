@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include <qapplication.h>
 #include <qsplitter.h>
 #include <qstyle.h>
 #include <qfile.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qlayout.h>
 #include <qabstractscrollarea.h>
 #include <qgraphicsview.h>
 #include <qmdiarea.h>
 #include <qscrollarea.h>
-#include <qtextedit.h>
-#include <qtreeview.h>
+#include <bobuiextedit.h>
+#include <bobuireeview.h>
 #include <qlabel.h>
 #include <qdialog.h>
 #include <qscreen.h>
 #include <qproxystyle.h>
 #include <qdebug.h> // for file error messages
 
-QT_FORWARD_DECLARE_CLASS(QSplitter)
-QT_FORWARD_DECLARE_CLASS(QWidget)
+BOBUI_FORWARD_DECLARE_CLASS(QSplitter)
+BOBUI_FORWARD_DECLARE_CLASS(QWidget)
 class tst_QSplitter : public QObject
 {
     Q_OBJECT
@@ -66,9 +66,9 @@ private slots:
     void task187373_addAbstractScrollAreas();
     void task187373_addAbstractScrollAreas_data();
     void task169702_sizes();
-    void taskQTBUG_4101_ensureOneNonCollapsedWidget_data();
-    void taskQTBUG_4101_ensureOneNonCollapsedWidget();
-    void taskQTBUG_102249_moveNonPressed();
+    void taskBOBUIBUG_4101_ensureOneNonCollapsedWidget_data();
+    void taskBOBUIBUG_4101_ensureOneNonCollapsedWidget();
+    void taskBOBUIBUG_102249_moveNonPressed();
     void setLayout();
     void autoAdd();
 
@@ -106,7 +106,7 @@ tst_QSplitter::~tst_QSplitter()
 
 void tst_QSplitter::initTestCase()
 {
-    splitter = new QSplitter(Qt::Horizontal);
+    splitter = new QSplitter(BobUI::Horizontal);
     w1 = new QWidget;
     w2 = new QWidget;
     splitter->addWidget(w1);
@@ -167,23 +167,23 @@ void tst_QSplitter::setSizes()
     }
     splitter->setChildrenCollapsible(childrenCollapse);
     splitter->setSizes(splitterSizes);
-    QTEST(splitter->sizes(), "expectedSizes");
+    BOBUIEST(splitter->sizes(), "expectedSizes");
 }
 
 void tst_QSplitter::setSizes_data()
 {
-    QTest::addColumn<IntList>("minimumSizes");
-    QTest::addColumn<IntList>("splitterSizes");
-    QTest::addColumn<IntList>("expectedSizes");
-    QTest::addColumn<IntList>("collapsibleStates");
-    QTest::addColumn<bool>("childrenCollapse");
+    BOBUIest::addColumn<IntList>("minimumSizes");
+    BOBUIest::addColumn<IntList>("splitterSizes");
+    BOBUIest::addColumn<IntList>("expectedSizes");
+    BOBUIest::addColumn<IntList>("collapsibleStates");
+    BOBUIest::addColumn<bool>("childrenCollapse");
 
     QFile file(QFINDTESTDATA("setSizes3.dat"));
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "Can't open file, reason:" << file.errorString();
         return;
     }
-    QTextStream ts(&file);
+    BOBUIextStream ts(&file);
     ts.setIntegerBase(10);
 
     QString dataName;
@@ -208,7 +208,7 @@ void tst_QSplitter::setSizes_data()
         ts >> i1 >> i2 >> i3;
         collapsibleStates << i1 << i2 << i3;
         ts >> childrenCollapse;
-        QTest::newRow(dataName.toLocal8Bit()) << minimumSizes << splitterSizes << expectedSizes << collapsibleStates << bool(childrenCollapse);
+        BOBUIest::newRow(dataName.toLocal8Bit()) << minimumSizes << splitterSizes << expectedSizes << collapsibleStates << bool(childrenCollapse);
         ts.skipWhiteSpace();
     }
 }
@@ -224,8 +224,8 @@ void tst_QSplitter::saveAndRestoreState()
     splitter->setSizes(initialSizes);
     QApplication::instance()->sendPostedEvents();
 
-    QSplitter *splitter2 = new QSplitter(splitter->orientation() == Qt::Horizontal ?
-                                         Qt::Vertical : Qt::Horizontal);
+    QSplitter *splitter2 = new QSplitter(splitter->orientation() == BobUI::Horizontal ?
+                                         BobUI::Vertical : BobUI::Horizontal);
     for (int i = 0; i < splitter->count(); ++i) {
         splitter2->addWidget(new QWidget());
     }
@@ -259,7 +259,7 @@ void tst_QSplitter::saveAndRestoreState()
 
 void tst_QSplitter::saveAndRestoreStateOfNotYetShownSplitter()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QSplitter *spl = new QSplitter;
@@ -271,7 +271,7 @@ void tst_QSplitter::saveAndRestoreStateOfNotYetShownSplitter()
     QByteArray ba = spl->saveState();
     spl->restoreState(ba);
     spl->show();
-    QVERIFY(QTest::qWaitForWindowActive(spl));
+    QVERIFY(BOBUIest::qWaitForWindowActive(spl));
 
     QCOMPARE(l1->geometry().isValid(), true);
     QCOMPARE(l2->geometry().isValid(), true);
@@ -316,20 +316,20 @@ void tst_QSplitter::saveAndRestoreHandleWidth()
 
 void tst_QSplitter::saveState_data()
 {
-    QTest::addColumn<IntList>("initialSizes");
-    QTest::addColumn<bool>("hideWidget1");
-    QTest::addColumn<bool>("hideWidget2");
-    QTest::addColumn<QByteArray>("finalBa");
+    BOBUIest::addColumn<IntList>("initialSizes");
+    BOBUIest::addColumn<bool>("hideWidget1");
+    BOBUIest::addColumn<bool>("hideWidget2");
+    BOBUIest::addColumn<QByteArray>("finalBa");
 
-    QTest::newRow("ok0") << (IntList() << 200 << 200) << bool(false) << bool(false) << QByteArray("[200,200]");
-    QTest::newRow("ok1") << (IntList() << 300 << 100) << bool(false) << bool(false) << QByteArray("[300,100]");
-    QTest::newRow("ok2") << (IntList() << 100 << 300) << bool(false) << bool(false) << QByteArray("[100,300]");
-    QTest::newRow("ok3") << (IntList() << 200 << 200) << bool(false) << bool(true) << QByteArray("[200,H]");
-    QTest::newRow("ok4") << (IntList() << 200 << 200) << bool(true) << bool(false) << QByteArray("[H,200]");
-    QTest::newRow("ok5") << (IntList() << 200 << 200) << bool(false) << bool(false) << QByteArray("[200,200]");
-    QTest::newRow("ok6") << (IntList() << 200 << 200) << bool(false) << bool(false) << QByteArray("[200,200]");
-    QTest::newRow("ok7") << (IntList() << 200 << 200) << bool(false) << bool(false) << QByteArray("[200,200]");
-    QTest::newRow("ok8") << (IntList() << 200 << 200) << bool(true) << bool(true) << QByteArray("[H,H]");
+    BOBUIest::newRow("ok0") << (IntList() << 200 << 200) << bool(false) << bool(false) << QByteArray("[200,200]");
+    BOBUIest::newRow("ok1") << (IntList() << 300 << 100) << bool(false) << bool(false) << QByteArray("[300,100]");
+    BOBUIest::newRow("ok2") << (IntList() << 100 << 300) << bool(false) << bool(false) << QByteArray("[100,300]");
+    BOBUIest::newRow("ok3") << (IntList() << 200 << 200) << bool(false) << bool(true) << QByteArray("[200,H]");
+    BOBUIest::newRow("ok4") << (IntList() << 200 << 200) << bool(true) << bool(false) << QByteArray("[H,200]");
+    BOBUIest::newRow("ok5") << (IntList() << 200 << 200) << bool(false) << bool(false) << QByteArray("[200,200]");
+    BOBUIest::newRow("ok6") << (IntList() << 200 << 200) << bool(false) << bool(false) << QByteArray("[200,200]");
+    BOBUIest::newRow("ok7") << (IntList() << 200 << 200) << bool(false) << bool(false) << QByteArray("[200,200]");
+    BOBUIest::newRow("ok8") << (IntList() << 200 << 200) << bool(true) << bool(true) << QByteArray("[H,H]");
 }
 
 void tst_QSplitter::addWidget()
@@ -511,27 +511,27 @@ void tst_QSplitter::insertWidget()
 
 void tst_QSplitter::setStretchFactor_data()
 {
-    QTest::addColumn<int>("orientation");
-    QTest::addColumn<int>("widgetIndex");
-    QTest::addColumn<int>("stretchFactor");
-    QTest::addColumn<int>("expectedHStretch");
-    QTest::addColumn<int>("expectedVStretch");
+    BOBUIest::addColumn<int>("orientation");
+    BOBUIest::addColumn<int>("widgetIndex");
+    BOBUIest::addColumn<int>("stretchFactor");
+    BOBUIest::addColumn<int>("expectedHStretch");
+    BOBUIest::addColumn<int>("expectedVStretch");
 
-    QTest::newRow("ok01") << int(Qt::Horizontal) << 1 << 2 << 2 << 2;
-    QTest::newRow("ok02") << int(Qt::Horizontal) << 2 << 0 << 0 << 0;
-    QTest::newRow("ok03") << int(Qt::Horizontal) << 3 << 1 << 1 << 1;
-    QTest::newRow("ok04") << int(Qt::Horizontal) << 0 << 7 << 7 << 7;
-    QTest::newRow("ok05") << int(Qt::Vertical) << 0 << 0 << 0 << 0;
-    QTest::newRow("ok06") << int(Qt::Vertical) << 1 << 1 << 1 << 1;
-    QTest::newRow("ok07") << int(Qt::Vertical) << 2 << 2 << 2 << 2;
-    QTest::newRow("ok08") << int(Qt::Vertical) << 3 << 5 << 5 << 5;
-    QTest::newRow("ok09") << int(Qt::Vertical) << -1 << 5 << 0 << 0;
+    BOBUIest::newRow("ok01") << int(BobUI::Horizontal) << 1 << 2 << 2 << 2;
+    BOBUIest::newRow("ok02") << int(BobUI::Horizontal) << 2 << 0 << 0 << 0;
+    BOBUIest::newRow("ok03") << int(BobUI::Horizontal) << 3 << 1 << 1 << 1;
+    BOBUIest::newRow("ok04") << int(BobUI::Horizontal) << 0 << 7 << 7 << 7;
+    BOBUIest::newRow("ok05") << int(BobUI::Vertical) << 0 << 0 << 0 << 0;
+    BOBUIest::newRow("ok06") << int(BobUI::Vertical) << 1 << 1 << 1 << 1;
+    BOBUIest::newRow("ok07") << int(BobUI::Vertical) << 2 << 2 << 2 << 2;
+    BOBUIest::newRow("ok08") << int(BobUI::Vertical) << 3 << 5 << 5 << 5;
+    BOBUIest::newRow("ok09") << int(BobUI::Vertical) << -1 << 5 << 0 << 0;
 }
 
 void tst_QSplitter::setStretchFactor()
 {
     QFETCH(int, orientation);
-    Qt::Orientation orient = Qt::Orientation(orientation);
+    BobUI::Orientation orient = BobUI::Orientation(orientation);
     QSplitter split(orient);
     QWidget *w = new QWidget;
     split.addWidget(w);
@@ -553,34 +553,34 @@ void tst_QSplitter::setStretchFactor()
     split.setStretchFactor(widgetIndex, stretchFactor);
     if (w)
         sp = w->sizePolicy();
-    QTEST(sp.horizontalStretch(), "expectedHStretch");
-    QTEST(sp.verticalStretch(), "expectedVStretch");
+    BOBUIEST(sp.horizontalStretch(), "expectedHStretch");
+    BOBUIEST(sp.verticalStretch(), "expectedVStretch");
 }
 
 void tst_QSplitter::testShowHide_data()
 {
-    QTest::addColumn<bool>("hideWidget1");
-    QTest::addColumn<bool>("hideWidget2");
-    QTest::addColumn<QList<int> >("finalValues");
-    QTest::addColumn<bool>("handleVisible");
+    BOBUIest::addColumn<bool>("hideWidget1");
+    BOBUIest::addColumn<bool>("hideWidget2");
+    BOBUIest::addColumn<QList<int> >("finalValues");
+    BOBUIest::addColumn<bool>("handleVisible");
 
-    QSplitter *split = new QSplitter(Qt::Horizontal);
-    QTest::newRow("hideNone") << false << false << (QList<int>() << 200 << 200) << true;
-    QTest::newRow("hide2") << false << true << (QList<int>() << 400 + split->handleWidth() << 0) << false;
-    QTest::newRow("hide1") << true << false << (QList<int>() << 0 << 400 + split->handleWidth()) << false;
-    QTest::newRow("hideall") << true << true << (QList<int>() << 0 << 0) << false;
+    QSplitter *split = new QSplitter(BobUI::Horizontal);
+    BOBUIest::newRow("hideNone") << false << false << (QList<int>() << 200 << 200) << true;
+    BOBUIest::newRow("hide2") << false << true << (QList<int>() << 400 + split->handleWidth() << 0) << false;
+    BOBUIest::newRow("hide1") << true << false << (QList<int>() << 0 << 400 + split->handleWidth()) << false;
+    BOBUIest::newRow("hideall") << true << true << (QList<int>() << 0 << 0) << false;
     delete split;
 }
 
 void tst_QSplitter::testShowHide()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(bool, hideWidget1);
     QFETCH(bool, hideWidget2);
 
-    QSplitter *split = new QSplitter(Qt::Horizontal);
+    QSplitter *split = new QSplitter(BobUI::Horizontal);
 
     QWidget topLevel;
     QWidget widget(&topLevel);
@@ -594,16 +594,16 @@ void tst_QSplitter::testShowHide()
     lay->addWidget(split);
     widget.setLayout(lay);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowActive(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&topLevel));
 
     widget.hide();
     split->widget(0)->setHidden(hideWidget1);
     split->widget(1)->setHidden(hideWidget2);
     widget.show();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
-    QTEST(split->sizes(), "finalValues");
-    QTEST(split->handle(1)->isVisible(), "handleVisible");
+    BOBUIEST(split->sizes(), "finalValues");
+    BOBUIEST(split->handle(1)->isVisible(), "handleVisible");
 }
 
 void tst_QSplitter::testRemoval()
@@ -618,7 +618,7 @@ void tst_QSplitter::testRemoval()
     split.addWidget(new QWidget);
     split.addWidget(new QWidget);
     split.show();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QCOMPARE(split.handle(0)->isVisible(), false);
     QSplitterHandle *handle = split.handle(1);
@@ -689,21 +689,21 @@ public:
 
 void tst_QSplitter::replaceWidget_data()
 {
-    QTest::addColumn<int>("index");
-    QTest::addColumn<bool>("visible");
-    QTest::addColumn<bool>("collapsed");
+    BOBUIest::addColumn<int>("index");
+    BOBUIest::addColumn<bool>("visible");
+    BOBUIest::addColumn<bool>("collapsed");
 
-    QTest::newRow("negative index") << -1 << true << false;
-    QTest::newRow("index too large") << 80 << true << false;
-    QTest::newRow("visible, not collapsed") << 3 << true << false;
-    QTest::newRow("visible, collapsed") << 3 << true << true;
-    QTest::newRow("not visible, not collapsed") << 3 << false << false;
-    QTest::newRow("not visible, collapsed") << 3 << false << true;
+    BOBUIest::newRow("negative index") << -1 << true << false;
+    BOBUIest::newRow("index too large") << 80 << true << false;
+    BOBUIest::newRow("visible, not collapsed") << 3 << true << false;
+    BOBUIest::newRow("visible, collapsed") << 3 << true << true;
+    BOBUIest::newRow("not visible, not collapsed") << 3 << false << false;
+    BOBUIest::newRow("not visible, collapsed") << 3 << false << true;
 }
 
 void tst_QSplitter::replaceWidget()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(int, index);
@@ -721,11 +721,11 @@ void tst_QSplitter::replaceWidget()
     }
     sp.setWindowTitle(QString::asprintf("index %d, visible %d, collapsed %d", index, visible, collapsed));
     sp.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&sp));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&sp));
 
     // Configure splitter
     QWidget *oldWidget = sp.widget(index);
-    QTest::qWait(100); // Make sure we record the right original size (after the window manager adds the frame)
+    BOBUIest::qWait(100); // Make sure we record the right original size (after the window manager adds the frame)
     const QRect oldGeom = oldWidget ? oldWidget->geometry() : QRect();
     if (oldWidget) {
         // Collapse first, then hide, if necessary
@@ -738,7 +738,7 @@ void tst_QSplitter::replaceWidget()
     }
 
     // Replace widget
-    QTest::qWait(100); // Flush event queue
+    BOBUIest::qWait(100); // Flush event queue
     const QList<int> sizes = sp.sizes();
     // Shorter label: The important thing is to ensure we can set
     // the same size on the new widget. Because of QLabel's sizing
@@ -750,7 +750,7 @@ void tst_QSplitter::replaceWidget()
     ef.installEventFilter();
     const QWidget *res = sp.replaceWidget(index, newWidget);
     std::unique_ptr<const QWidget> reaper{res};
-    QTest::qWait(100); // Give visibility and resizing some time
+    BOBUIest::qWait(100); // Give visibility and resizing some time
 
     // Check
     if (index < 0 || index >= count) {
@@ -767,8 +767,8 @@ void tst_QSplitter::replaceWidget()
         QVERIFY(!res->isVisible());
         const int expectedResizeCount = visible ? 1 : 0; // new widget only
         const int expectedPaintCount = visible && !collapsed ? 2 : 0; // splitter and new widget
-        QTRY_COMPARE(ef.resizeCount, expectedResizeCount);
-        QTRY_COMPARE(ef.paintCount, expectedPaintCount);
+        BOBUIRY_COMPARE(ef.resizeCount, expectedResizeCount);
+        BOBUIRY_COMPARE(ef.paintCount, expectedPaintCount);
         QCOMPARE(newWidget->parentWidget(), &sp);
         QCOMPARE(newWidget->isVisible(), visible);
         if (visible && !collapsed)
@@ -781,13 +781,13 @@ void tst_QSplitter::replaceWidget()
 
 void tst_QSplitter::replaceWidgetWithSplitterChild_data()
 {
-    QTest::addColumn<int>("srcIndex");
-    QTest::addColumn<int>("dstIndex");
+    BOBUIest::addColumn<int>("srcIndex");
+    BOBUIest::addColumn<int>("dstIndex");
 
-    QTest::newRow("replace with null widget") << -2 << 3;
-    QTest::newRow("replace with itself") << 3 << 3;
-    QTest::newRow("replace with sibling, after recalc") << 1 << 4;
-    QTest::newRow("replace with sibling, before recalc") << -1 << 4;
+    BOBUIest::newRow("replace with null widget") << -2 << 3;
+    BOBUIest::newRow("replace with itself") << 3 << 3;
+    BOBUIest::newRow("replace with sibling, after recalc") << 1 << 4;
+    BOBUIest::newRow("replace with sibling, before recalc") << -1 << 4;
 }
 
 void tst_QSplitter::replaceWidgetWithSplitterChild()
@@ -804,25 +804,25 @@ void tst_QSplitter::replaceWidgetWithSplitterChild()
         QLabel *w = new QLabel(QString::asprintf("WIDGET #%d", i));
         sp.addWidget(w);
     }
-    sp.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1Char(' ') + QLatin1String(QTest::currentDataTag()));
+    sp.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1Char(' ') + QLatin1String(BOBUIest::currentDataTag()));
     sp.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&sp));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&sp));
 
-    QTest::qWait(100); // Flush event queue before new widget creation
+    BOBUIest::qWait(100); // Flush event queue before new widget creation
     const QList<int> sizes = sp.sizes();
     QWidget *sibling = srcIndex == -1 ? (new QLabel("<b>NEW</b>", &sp)) : sp.widget(srcIndex);
 
     EventCounterSpy ef(&sp);
     ef.installEventFilter();
     const QWidget *res = sp.replaceWidget(dstIndex, sibling);
-    QTest::qWait(100); // Give visibility and resizing some time
+    BOBUIest::qWait(100); // Give visibility and resizing some time
 
     QVERIFY(!res);
     if (srcIndex == -1) {
         // Create and replace before recalc. The sibling is scheduled to be
         // added after replaceWidget(), when QSplitter receives a child event.
-        QTRY_VERIFY(ef.resizeCount > 0);
-        QTRY_VERIFY(ef.paintCount > 0);
+        BOBUIRY_VERIFY(ef.resizeCount > 0);
+        BOBUIRY_VERIFY(ef.paintCount > 0);
         QCOMPARE(sp.count(), count + 1);
         QCOMPARE(sp.sizes().mid(0, count), sizes);
         QCOMPARE(sp.sizes().last(), sibling->width());
@@ -837,13 +837,13 @@ void tst_QSplitter::replaceWidgetWithSplitterChild()
 
 void tst_QSplitter::replaceWidgetWhileHidden_data()
 {
-    QTest::addColumn<bool>("splitterVisible");
-    QTest::addColumn<bool>("widgetVisible");
+    BOBUIest::addColumn<bool>("splitterVisible");
+    BOBUIest::addColumn<bool>("widgetVisible");
 
-    QTest::addRow("visibleToVisible") << true << true;
-    QTest::addRow("hiddenToVisible") << true << false;
-    QTest::addRow("visibleToHidden") << false << true;
-    QTest::addRow("hiddenToHidden") << false << false;
+    BOBUIest::addRow("visibleToVisible") << true << true;
+    BOBUIest::addRow("hiddenToVisible") << true << false;
+    BOBUIest::addRow("visibleToHidden") << false << true;
+    BOBUIest::addRow("hiddenToHidden") << false << false;
 }
 
 void tst_QSplitter::replaceWidgetWhileHidden()
@@ -858,20 +858,20 @@ void tst_QSplitter::replaceWidgetWhileHidden()
 
     if (splitterVisible) {
         splitter.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&splitter));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&splitter));
     }
     QWidget *newWidget = new QLabel("Three");
     if (!widgetVisible)
         newWidget->hide();
 
-    const bool wasExplicitHide = !widgetVisible && newWidget->testAttribute(Qt::WA_WState_ExplicitShowHide);
+    const bool wasExplicitHide = !widgetVisible && newWidget->testAttribute(BobUI::WA_WState_ExplicitShowHide);
     const std::unique_ptr<QWidget> reaper{splitter.replaceWidget(1, newWidget)};
 
-    QCOMPARE(!widgetVisible && newWidget->testAttribute(Qt::WA_WState_ExplicitShowHide), wasExplicitHide);
+    QCOMPARE(!widgetVisible && newWidget->testAttribute(BobUI::WA_WState_ExplicitShowHide), wasExplicitHide);
 
     if (!splitterVisible) {
         splitter.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&splitter));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&splitter));
     }
     QCOMPARE(widgetVisible, newWidget->isVisible());
 }
@@ -883,18 +883,18 @@ void tst_QSplitter::handleMinimumWidth()
     split.addWidget(new QLabel("Number Too"));
 
     split.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&split));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&split));
     for (int i = 0; i < 10; i++) {
         split.setHandleWidth(i);
-        QTest::qWait(100); // resizing
+        BOBUIest::qWait(100); // resizing
         QCOMPARE(split.handle(1)->width(), qMax(4 + (i & 1), i));
     }
 
-    split.setOrientation(Qt::Vertical);
-    QTest::qWait(100);
+    split.setOrientation(BobUI::Vertical);
+    BOBUIest::qWait(100);
     for (int i = 0; i < 10; i++) {
         split.setHandleWidth(i);
-        QTest::qWait(100); // resizing
+        BOBUIest::qWait(100); // resizing
         QCOMPARE(split.handle(1)->height(), qMax(4 + (i & 1), i));
     }
 }
@@ -912,22 +912,22 @@ void tst_QSplitter::rubberBandNotInSplitter()
 
 void tst_QSplitter::task187373_addAbstractScrollAreas_data()
 {
-    QTest::addColumn<QByteArray>("className");
-    QTest::addColumn<bool>("addInConstructor");
-    QTest::addColumn<bool>("addOutsideConstructor");
+    BOBUIest::addColumn<QByteArray>("className");
+    BOBUIest::addColumn<bool>("addInConstructor");
+    BOBUIest::addColumn<bool>("addOutsideConstructor");
 
     QList<QByteArray> classNames{
         "QGraphicsView",
         "QMdiArea",
         "QScrollArea",
-        "QTextEdit",
-        "QTreeView"
+        "BOBUIextEdit",
+        "BOBUIreeView"
     };
 
     for (const auto &className : std::as_const(classNames)) {
-        QTest::newRow(qPrintable(className + " 1")) << className << false << true;
-        QTest::newRow(qPrintable(className + " 2")) << className << true << false;
-        QTest::newRow(qPrintable(className + " 3")) << className << true << true;
+        BOBUIest::newRow(qPrintable(className + " 1")) << className << false << true;
+        BOBUIest::newRow(qPrintable(className + " 2")) << className << true << false;
+        BOBUIest::newRow(qPrintable(className + " 3")) << className << true << true;
     }
 }
 
@@ -940,10 +940,10 @@ static QAbstractScrollArea *task187373_createScrollArea(
         return new QMdiArea(addInConstructor ? splitter : 0);
     if (className == "QScrollArea")
         return new QScrollArea(addInConstructor ? splitter : 0);
-    if (className == "QTextEdit")
-        return new QTextEdit(addInConstructor ? splitter : 0);
-    if (className == "QTreeView")
-        return new QTreeView(addInConstructor ? splitter : 0);
+    if (className == "BOBUIextEdit")
+        return new BOBUIextEdit(addInConstructor ? splitter : 0);
+    if (className == "BOBUIreeView")
+        return new BOBUIreeView(addInConstructor ? splitter : 0);
     return 0;
 }
 
@@ -963,18 +963,18 @@ void tst_QSplitter::task187373_addAbstractScrollAreas()
     if (addOutsideConstructor)
         splitter.addWidget(w);
 
-    QTRY_VERIFY(w->isVisible());
+    BOBUIRY_VERIFY(w->isVisible());
     QVERIFY(!w->isHidden());
     QVERIFY(w->viewport()->isVisible());
     QVERIFY(!w->viewport()->isHidden());
 }
 
-//! A simple QTextEdit which can switch between two different size states
-class MyTextEdit : public QTextEdit
+//! A simple BOBUIextEdit which can switch between two different size states
+class MyTextEdit : public BOBUIextEdit
 {
     public:
         MyTextEdit(const QString & text, QWidget* parent = NULL)
-            : QTextEdit(text, parent) ,  m_iFactor(1)
+            : BOBUIextEdit(text, parent) ,  m_iFactor(1)
         {
             setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
         }
@@ -991,18 +991,18 @@ class MyTextEdit : public QTextEdit
 
 void tst_QSplitter::task169702_sizes()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget topLevel;
     // Create two nested (non-collapsible) splitters
-    QSplitter* outerSplitter = new QSplitter(Qt::Vertical, &topLevel);
+    QSplitter* outerSplitter = new QSplitter(BobUI::Vertical, &topLevel);
     outerSplitter->setChildrenCollapsible(false);
-    QSplitter* splitter = new QSplitter(Qt::Horizontal, outerSplitter);
+    QSplitter* splitter = new QSplitter(BobUI::Horizontal, outerSplitter);
     splitter->setChildrenCollapsible(false);
 
     // populate the outer splitter
-    outerSplitter->addWidget(new QTextEdit("Foo"));
+    outerSplitter->addWidget(new BOBUIextEdit("Foo"));
     outerSplitter->addWidget(splitter);
     outerSplitter->setStretchFactor(0, 1);
     outerSplitter->setStretchFactor(1, 0);
@@ -1010,28 +1010,28 @@ void tst_QSplitter::task169702_sizes()
     // populate the inner splitter
     MyTextEdit* testW = new MyTextEdit("TextEdit with size restriction");
     splitter->addWidget(testW);
-    splitter->addWidget(new QTextEdit("Bar"));
+    splitter->addWidget(new BOBUIextEdit("Bar"));
 
     outerSplitter->setGeometry(100, 100, 500, 500);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowActive(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&topLevel));
 
     testW->m_iFactor++;
     testW->updateGeometry();
 
     //Make sure the minimimSizeHint is respected
-    QTRY_COMPARE(testW->size().height(), testW->minimumSizeHint().height());
+    BOBUIRY_COMPARE(testW->size().height(), testW->minimumSizeHint().height());
 }
 
-void tst_QSplitter::taskQTBUG_4101_ensureOneNonCollapsedWidget_data()
+void tst_QSplitter::taskBOBUIBUG_4101_ensureOneNonCollapsedWidget_data()
 {
-    QTest::addColumn<bool>("testingHide");
+    BOBUIest::addColumn<bool>("testingHide");
 
-    QTest::newRow("last non collapsed hidden") << true;
-    QTest::newRow("last non collapsed deleted") << false;
+    BOBUIest::newRow("last non collapsed hidden") << true;
+    BOBUIest::newRow("last non collapsed deleted") << false;
 }
 
-void tst_QSplitter::taskQTBUG_4101_ensureOneNonCollapsedWidget()
+void tst_QSplitter::taskBOBUIBUG_4101_ensureOneNonCollapsedWidget()
 {
     QFETCH(bool, testingHide);
 
@@ -1039,7 +1039,7 @@ void tst_QSplitter::taskQTBUG_4101_ensureOneNonCollapsedWidget()
     QLabel *l = nullptr;
     for (int i = 0; i < 5; ++i) {
         l = new QLabel(QString("Label ") + QChar('A' + i));
-        l->setAlignment(Qt::AlignCenter);
+        l->setAlignment(BobUI::AlignCenter);
         s.addWidget(l);
         s.moveSplitter(0, i);  // Collapse all the labels except the last one.
     }
@@ -1049,10 +1049,10 @@ void tst_QSplitter::taskQTBUG_4101_ensureOneNonCollapsedWidget()
         l->hide();
     else
         delete l;
-    QTRY_VERIFY(s.sizes().at(0) > 0);
+    BOBUIRY_VERIFY(s.sizes().at(0) > 0);
 }
 
-void tst_QSplitter::taskQTBUG_102249_moveNonPressed()
+void tst_QSplitter::taskBOBUIBUG_102249_moveNonPressed()
 {
     QSplitter s;
     s.setOpaqueResize(true);
@@ -1064,8 +1064,8 @@ void tst_QSplitter::taskQTBUG_102249_moveNonPressed()
     QPointF posOutOfWidget = QPointF(30, 30);
     QMouseEvent me(QEvent::MouseMove,
                    posOutOfWidget, s.mapToGlobal(posOutOfWidget),
-                   Qt::NoButton, Qt::MouseButtons(Qt::LeftButton),
-                   Qt::NoModifier);
+                   BobUI::NoButton, BobUI::MouseButtons(BobUI::LeftButton),
+                   BobUI::NoModifier);
     qApp->sendEvent(s.handle(0), &me);
     QCOMPARE(spyMove.size(), 0);
 }
@@ -1074,7 +1074,7 @@ void tst_QSplitter::setLayout()
 {
     QSplitter splitter;
     QVBoxLayout layout;
-    QTest::ignoreMessage(QtWarningMsg, "Adding a QLayout to a QSplitter is not supported.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Adding a QLayout to a QSplitter is not supported.");
     splitter.setLayout(&layout);
     // It will work, but we don't recommend it...
     QCOMPARE(splitter.layout(), &layout);
@@ -1087,21 +1087,21 @@ void tst_QSplitter::autoAdd()
     splitter.setMinimumSize(QSize(200, 200));
     splitter.move(QGuiApplication::primaryScreen()->availableGeometry().center() - QPoint(100, 100));
     splitter.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&splitter));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&splitter));
     // Constructing a child widget on the splitter should
     // automatically add and show it.
     QWidget *childWidget = new QWidget(&splitter);
     QCOMPARE(splitter.count(), 1);
-    QTRY_VERIFY(childWidget->isVisible());
+    BOBUIRY_VERIFY(childWidget->isVisible());
     // Deleting should automatically remove it
     delete childWidget;
     QCOMPARE(splitter.count(), 0);
-    // QTBUG-40132, top level windows should not be affected by this.
+    // BOBUIBUG-40132, top level windows should not be affected by this.
     QDialog *dialog = new QDialog(&splitter);
     QCOMPARE(splitter.count(), 0);
     QCoreApplication::processEvents();
     QVERIFY(!dialog->isVisible());
 }
 
-QTEST_MAIN(tst_QSplitter)
+BOBUIEST_MAIN(tst_QSplitter)
 #include "tst_qsplitter.moc"

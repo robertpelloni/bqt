@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGLYPHRUN_H
 #define QGLYPHRUN_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qpoint.h>
-#include <QtGui/qrawfont.h>
-#include <QtCore/qshareddata.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qpoint.h>
+#include <BobUIGui/qrawfont.h>
+#include <BobUICore/qshareddata.h>
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QGlyphRunPrivate;
@@ -30,7 +30,7 @@ public:
 
     QGlyphRun();
     QGlyphRun(const QGlyphRun &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QGlyphRun)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QGlyphRun)
     QGlyphRun &operator=(const QGlyphRun &other);
     ~QGlyphRun();
 
@@ -84,7 +84,7 @@ public:
 
 private:
     friend class QGlyphRunPrivate;
-    friend class QTextLine;
+    friend class BOBUIextLine;
 
     QGlyphRun operator+(const QGlyphRun &other) const;
     QGlyphRun &operator+=(const QGlyphRun &other);
@@ -95,8 +95,8 @@ private:
 
 Q_DECLARE_SHARED(QGlyphRun)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 
 #endif // QGLYPHRUN_H

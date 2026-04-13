@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKREPLY_H
 #define QNETWORKREPLY_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/QIODevice>
-#include <QtCore/QString>
-#include <QtCore/QVariant>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/QIODevice>
+#include <BobUICore/QString>
+#include <BobUICore/QVariant>
 
-#include <QtNetwork/QNetworkRequest>
-#include <QtNetwork/QNetworkAccessManager>
+#include <BobUINetwork/QNetworkRequest>
+#include <BobUINetwork/QNetworkAccessManager>
 
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QUrl;
@@ -100,12 +100,12 @@ public:
     QVariant header(QNetworkRequest::KnownHeaders header) const;
 
     // raw headers:
-#if QT_NETWORK_REMOVED_SINCE(6, 7)
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 7)
     bool hasRawHeader(const QByteArray &headerName) const;
 #endif
     bool hasRawHeader(QAnyStringView headerName) const;
     QList<QByteArray> rawHeaderList() const;
-#if QT_NETWORK_REMOVED_SINCE(6, 7)
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 7)
     QByteArray rawHeader(const QByteArray &headerName) const;
 #endif
     QByteArray rawHeader(QAnyStringView headerName) const;
@@ -117,7 +117,7 @@ public:
     // attributes
     QVariant attribute(QNetworkRequest::Attribute code) const;
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     QSslConfiguration sslConfiguration() const;
     void setSslConfiguration(const QSslConfiguration &configuration);
     void ignoreSslErrors(const QList<QSslError> &errors);
@@ -133,7 +133,7 @@ Q_SIGNALS:
     void metaDataChanged();
     void finished();
     void errorOccurred(QNetworkReply::NetworkError);
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     void encrypted();
     void sslErrors(const QList<QSslError> &errors);
     void preSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator *authenticator);
@@ -161,7 +161,7 @@ protected:
     void setWellKnownHeader(QHttpHeaders::WellKnownHeader name, QByteArrayView value);
     void setAttribute(QNetworkRequest::Attribute code, const QVariant &value);
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     virtual void sslConfigurationImplementation(QSslConfiguration &) const;
     virtual void setSslConfigurationImplementation(const QSslConfiguration &);
     virtual void ignoreSslErrorsImplementation(const QList<QSslError> &);
@@ -171,9 +171,9 @@ private:
     Q_DECLARE_PRIVATE(QNetworkReply)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QNetworkReply::NetworkError,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QNetworkReply::NetworkError,
                                QNetworkReply__NetworkError, Q_NETWORK_EXPORT)
 
 #endif

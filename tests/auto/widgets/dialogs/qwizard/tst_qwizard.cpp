@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <QFont>
-#include <QTest>
+#include <BOBUIest>
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QList>
 #include <QPushButton>
-#include <QToolButton>
+#include <BOBUIoolButton>
 #include <QVBoxLayout>
 #include <QWizard>
-#include <QTreeWidget>
+#include <BOBUIreeWidget>
 #include <QScreen>
 #include <QSignalSpy>
 #include <QOperatingSystemVersion>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 #include <memory>
 
@@ -77,9 +77,9 @@ private slots:
     void task177022_setFixedSize();
     void task248107_backButton();
     void task255350_fieldObjectDestroyed();
-    void taskQTBUG_25691_fieldObjectDestroyed2();
-#if QT_CONFIG(shortcut)
-    void taskQTBUG_46894_nextButtonShortcut();
+    void taskBOBUIBUG_25691_fieldObjectDestroyed2();
+#if BOBUI_CONFIG(shortcut)
+    void taskBOBUIBUG_46894_nextButtonShortcut();
 #endif
     /*
         Things that could be added:
@@ -313,7 +313,7 @@ void tst_QWizard::setButtonLayout()
 
     // Check that the buttons are in the right order on screen.
     for (int pass = 0; pass < 2; ++pass) {
-        wizard.setLayoutDirection(pass == 0 ? Qt::LeftToRight : Qt::RightToLeft);
+        wizard.setLayoutDirection(pass == 0 ? BobUI::LeftToRight : BobUI::RightToLeft);
         qApp->processEvents();
 
         int sign = (pass == 0) ? +1 : -1;
@@ -343,14 +343,14 @@ void tst_QWizard::setButtonLayout()
 
 void tst_QWizard::setButton()
 {
-    QPointer<QToolButton> toolButton = new QToolButton;
+    QPointer<BOBUIoolButton> toolButton = new BOBUIoolButton;
 
     QWizard wizard;
     wizard.setWizardStyle(QWizard::ClassicStyle);
     wizard.setButton(QWizard::NextButton, toolButton);
     wizard.setButton(QWizard::CustomButton2, new QCheckBox("Kustom 2"));
 
-    QVERIFY(qobject_cast<QToolButton *>(wizard.button(QWizard::NextButton)));
+    QVERIFY(qobject_cast<BOBUIoolButton *>(wizard.button(QWizard::NextButton)));
     QVERIFY(qobject_cast<QCheckBox *>(wizard.button(QWizard::CustomButton2)));
     QVERIFY(qobject_cast<QPushButton *>(wizard.button(QWizard::CustomButton1)));
 
@@ -370,16 +370,16 @@ void tst_QWizard::setButton()
 void tst_QWizard::setTitleFormatEtc()
 {
     QWizard wizard;
-    QCOMPARE(wizard.titleFormat(), Qt::AutoText);
-    QCOMPARE(wizard.subTitleFormat(), Qt::AutoText);
+    QCOMPARE(wizard.titleFormat(), BobUI::AutoText);
+    QCOMPARE(wizard.subTitleFormat(), BobUI::AutoText);
 
-    wizard.setTitleFormat(Qt::RichText);
-    QCOMPARE(wizard.titleFormat(), Qt::RichText);
-    QCOMPARE(wizard.subTitleFormat(), Qt::AutoText);
+    wizard.setTitleFormat(BobUI::RichText);
+    QCOMPARE(wizard.titleFormat(), BobUI::RichText);
+    QCOMPARE(wizard.subTitleFormat(), BobUI::AutoText);
 
-    wizard.setSubTitleFormat(Qt::PlainText);
-    QCOMPARE(wizard.titleFormat(), Qt::RichText);
-    QCOMPARE(wizard.subTitleFormat(), Qt::PlainText);
+    wizard.setSubTitleFormat(BobUI::PlainText);
+    QCOMPARE(wizard.titleFormat(), BobUI::RichText);
+    QCOMPARE(wizard.subTitleFormat(), BobUI::PlainText);
 }
 
 void tst_QWizard::setPixmap()
@@ -504,7 +504,7 @@ void tst_QWizard::setDefaultProperty()
 
     wizard.setDefaultProperty("QWidget", "enabled", 0); // less specific, i.e. ignored
     page->registerField("edit4", page->edit4);
-    QTest::ignoreMessage(QtWarningMsg,"QWizard::setField: Couldn't write to property 'customProperty'");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QWizard::setField: Couldn't write to property 'customProperty'");
     wizard.setDefaultProperty("QLineEdit", "customProperty", 0);
     page->registerField("edit4bis", page->edit4);
 
@@ -582,7 +582,7 @@ void tst_QWizard::addPage()
     arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toInt(), N + 52);
 
-    QTest::ignoreMessage(QtWarningMsg,"QWizard::setPage: Cannot insert null page");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QWizard::setPage: Cannot insert null page");
     wizard.addPage(0); // generates a warning
     QCOMPARE(spy.size(), 0);
     delete parent;
@@ -609,7 +609,7 @@ void tst_QWizard::setPage()
     QCOMPARE(wizard.nextId(), -1);
 
     page = new QWizardPage(parent);
-    QTest::ignoreMessage(QtWarningMsg,"QWizard::setPage: Cannot insert page with ID -1");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QWizard::setPage: Cannot insert page with ID -1");
     wizard.setPage(-1, page);   // gives a warning and does nothing
     QCOMPARE(spy.size(), 0);
     QVERIFY(!wizard.page(-2));
@@ -771,7 +771,7 @@ void tst_QWizard::setStartId()
     wizard.setPage(INT_MAX, new QWizardPage);
     QCOMPARE(wizard.startId(), INT_MIN);
 
-    QTest::ignoreMessage(QtWarningMsg,"QWizard::setStartId: Invalid page ID 123");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QWizard::setStartId: Invalid page ID 123");
     wizard.setStartId(123);
     QCOMPARE(wizard.startId(), INT_MIN);
 
@@ -1000,7 +1000,7 @@ void tst_QWizard::setOption_IgnoreSubTitles()
 
     wizard1.show();
     wizard2.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&wizard2));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&wizard2));
 
     // Check that subtitles are shown when they should (i.e.,
     // they're set and IgnoreSubTitles is off).
@@ -1067,7 +1067,7 @@ void tst_QWizard::setOption_IgnoreSubTitles()
 void tst_QWizard::setOption_ExtendedWatermarkPixmap()
 {
     QPixmap watermarkPixmap(200, 400);
-    watermarkPixmap.fill(Qt::black);
+    watermarkPixmap.fill(BobUI::black);
 
     QWizard wizard1;
     wizard1.setButtonLayout(QList<QWizard::WizardButton>() << QWizard::CancelButton);
@@ -1459,7 +1459,7 @@ void tst_QWizard::setOption_CancelButtonOnLeft()
         int sign = (i == 0) ? +1 : -1;
 
         QWizard wizard;
-        wizard.setLayoutDirection(i == 0 ? Qt::LeftToRight : Qt::RightToLeft);
+        wizard.setLayoutDirection(i == 0 ? BobUI::LeftToRight : BobUI::RightToLeft);
         wizard.setOption(QWizard::NoCancelButton, false);
         wizard.setOption(QWizard::CancelButtonOnLeft, true);
         wizard.setOption(QWizard::NoBackButtonOnStartPage, false);
@@ -1523,7 +1523,7 @@ void tst_QWizard::setOption_HelpButtonOnRight()
         int sign = (i == 0) ? +1 : -1;
 
         QWizard wizard;
-        wizard.setLayoutDirection(i == 0 ? Qt::LeftToRight : Qt::RightToLeft);
+        wizard.setLayoutDirection(i == 0 ? BobUI::LeftToRight : BobUI::RightToLeft);
         wizard.setOption(QWizard::HaveHelpButton, true);
         wizard.setOption(QWizard::HelpButtonOnRight, false);
         wizard.setOption(QWizard::NoBackButtonOnStartPage, false);
@@ -1557,7 +1557,7 @@ void tst_QWizard::setOption_HaveCustomButtonX()
         for (int j = 0; j < 2; ++j) {
             for (int k = 0; k < 2; ++k) {
                 QWizard wizard;
-                wizard.setLayoutDirection(Qt::LeftToRight);
+                wizard.setLayoutDirection(BobUI::LeftToRight);
                 wizard.addPage(new QWizardPage);
                 wizard.addPage(new QWizardPage);
                 wizard.show();
@@ -1721,7 +1721,7 @@ public:
     void createTestRows()
     {
         for (int i = 0; i < combinations.size(); ++i) {
-            QTest::newRow((name.toLatin1() + ", row " + QByteArray::number(i)).constData())
+            BOBUIest::newRow((name.toLatin1() + ", row " + QByteArray::number(i)).constData())
                 << (i == 0) << (type == Equality) << combinations.at(i);
             ++nRows_;
         }
@@ -1854,9 +1854,9 @@ class CombinationsTestData
 public:
     CombinationsTestData()
     {
-        QTest::addColumn<bool>("ref");
-        QTest::addColumn<bool>("testEquality");
-        QTest::addColumn<QList<std::shared_ptr<Operation>>>("operations");
+        BOBUIest::addColumn<bool>("ref");
+        BOBUIest::addColumn<bool>("testEquality");
+        BOBUIest::addColumn<QList<std::shared_ptr<Operation>>>("operations");
 #define SETPAGE(page) pageOps[page]
 #define SETSTYLE(style) styleOps[style]
 #define OPT(option, on) OptionInfo::instance().operation(option, on)
@@ -2081,7 +2081,7 @@ void tst_QWizard::combinations()
     QFETCH(const QList<std::shared_ptr<Operation>>, operations);
 
     TestWizard wizard;
-#if !defined(QT_NO_STYLE_WINDOWSVISTA)
+#if !defined(BOBUI_NO_STYLE_WINDOWSVISTA)
     if (wizard.wizardStyle() == QWizard::AeroStyle)
         return; // ### TODO: passes/fails in a unpredictable way, so disable for now
 #endif
@@ -2279,7 +2279,7 @@ void tst_QWizard::setWizardStyle()
     const bool styleHintMatch =
         wizard.wizardStyle() ==
         QWizard::WizardStyle(wizard.style()->styleHint(QStyle::SH_WizardStyle, 0, &wizard));
-#if !defined(QT_NO_STYLE_WINDOWSVISTA)
+#if !defined(BOBUI_NO_STYLE_WINDOWSVISTA)
     QVERIFY(styleHintMatch || wizard.wizardStyle() == QWizard::AeroStyle);
 #else
     QVERIFY(styleHintMatch);
@@ -2441,18 +2441,18 @@ void tst_QWizard::sideWidget()
 
 void tst_QWizard::objectNames_data()
 {
-    QTest::addColumn<QWizard::WizardButton>("wizardButton");
-    QTest::addColumn<QString>("buttonName");
+    BOBUIest::addColumn<QWizard::WizardButton>("wizardButton");
+    BOBUIest::addColumn<QString>("buttonName");
 
-    QTest::newRow("BackButton")    << QWizard::BackButton    << QStringLiteral("__qt__passive_wizardbutton0");
-    QTest::newRow("NextButton")    << QWizard::NextButton    << QStringLiteral("__qt__passive_wizardbutton1");
-    QTest::newRow("CommitButton")  << QWizard::CommitButton  << QStringLiteral("qt_wizard_commit");
-    QTest::newRow("FinishButton")  << QWizard::FinishButton  << QStringLiteral("qt_wizard_finish");
-    QTest::newRow("CancelButton")  << QWizard::CancelButton  << QStringLiteral("qt_wizard_cancel");
-    QTest::newRow("HelpButton")    << QWizard::HelpButton    << QStringLiteral("__qt__passive_wizardbutton5");
-    QTest::newRow("CustomButton1") << QWizard::CustomButton1 << QStringLiteral("__qt__passive_wizardbutton6");
-    QTest::newRow("CustomButton2") << QWizard::CustomButton2 << QStringLiteral("__qt__passive_wizardbutton7");
-    QTest::newRow("CustomButton3") << QWizard::CustomButton3 << QStringLiteral("__qt__passive_wizardbutton8");
+    BOBUIest::newRow("BackButton")    << QWizard::BackButton    << QStringLiteral("__bobui__passive_wizardbutton0");
+    BOBUIest::newRow("NextButton")    << QWizard::NextButton    << QStringLiteral("__bobui__passive_wizardbutton1");
+    BOBUIest::newRow("CommitButton")  << QWizard::CommitButton  << QStringLiteral("bobui_wizard_commit");
+    BOBUIest::newRow("FinishButton")  << QWizard::FinishButton  << QStringLiteral("bobui_wizard_finish");
+    BOBUIest::newRow("CancelButton")  << QWizard::CancelButton  << QStringLiteral("bobui_wizard_cancel");
+    BOBUIest::newRow("HelpButton")    << QWizard::HelpButton    << QStringLiteral("__bobui__passive_wizardbutton5");
+    BOBUIest::newRow("CustomButton1") << QWizard::CustomButton1 << QStringLiteral("__bobui__passive_wizardbutton6");
+    BOBUIest::newRow("CustomButton2") << QWizard::CustomButton2 << QStringLiteral("__bobui__passive_wizardbutton7");
+    BOBUIest::newRow("CustomButton3") << QWizard::CustomButton3 << QStringLiteral("__bobui__passive_wizardbutton8");
 }
 
 void tst_QWizard::objectNames()
@@ -2514,7 +2514,7 @@ class WizardPage_task183550 : public QWizardPage
 public:
     WizardPage_task183550(QWidget *parent = nullptr)
         : QWizardPage(parent)
-        , treeWidget(new QTreeWidget)
+        , treeWidget(new BOBUIreeWidget)
         , verticalPolicy(QSizePolicy::MinimumExpanding) {}
     void enableVerticalExpansion() { verticalPolicy = QSizePolicy::MinimumExpanding; }
     void disableVerticalExpansion() { verticalPolicy = QSizePolicy::Preferred; }
@@ -2522,7 +2522,7 @@ public:
     int treeWidgetSizeHintHeight() const { return treeWidget->sizeHint().height(); }
 
 private:
-    QTreeWidget *treeWidget;
+    BOBUIreeWidget *treeWidget;
     QSizePolicy::Policy verticalPolicy;
 
     void initializePage() override
@@ -2533,7 +2533,7 @@ private:
             delete treeWidget;
 
         QLayout *layout_ = new QVBoxLayout(this);
-        layout_->addWidget(treeWidget = new QTreeWidget);
+        layout_->addWidget(treeWidget = new BOBUIreeWidget);
 
         QSizePolicy policy = sizePolicy();
         policy.setVerticalPolicy(verticalPolicy);
@@ -2597,7 +2597,7 @@ void tst_QWizard::task161658_alignments()
     int idx = wizard.addPage(&page);
     wizard.setStartId(idx);
     wizard.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&wizard));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&wizard));
 
     const auto subtitleLabels = wizard.findChildren<QLabel *>();
     for (QLabel *subtitleLabel : subtitleLabels) {
@@ -2630,7 +2630,7 @@ void tst_QWizard::task177022_setFixedSize()
     QCOMPARE(wiz.maximumHeight(), height);
 
     wiz.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&wiz));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&wiz));
 
     QCOMPARE(wiz.size(), QSize(width, height));
     QCOMPARE(wiz.minimumWidth(), width);
@@ -2639,7 +2639,7 @@ void tst_QWizard::task177022_setFixedSize()
     QCOMPARE(wiz.maximumHeight(), height);
 
     wiz.next();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QCOMPARE(wiz.size(), QSize(width, height));
     QCOMPARE(wiz.minimumWidth(), width);
     QCOMPARE(wiz.minimumHeight(), height);
@@ -2663,26 +2663,26 @@ void tst_QWizard::task248107_backButton()
     wizard.addPage(&page4);
 
     wizard.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&wizard));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&wizard));
 
     QCOMPARE(wizard.currentPage(), &page1);
 
-    QTest::mouseClick(wizard.button(QWizard::NextButton), Qt::LeftButton);
+    BOBUIest::mouseClick(wizard.button(QWizard::NextButton), BobUI::LeftButton);
     QCOMPARE(wizard.currentPage(), &page2);
 
-    QTest::mouseClick(wizard.button(QWizard::NextButton), Qt::LeftButton);
+    BOBUIest::mouseClick(wizard.button(QWizard::NextButton), BobUI::LeftButton);
     QCOMPARE(wizard.currentPage(), &page3);
 
-    QTest::mouseClick(wizard.button(QWizard::NextButton), Qt::LeftButton);
+    BOBUIest::mouseClick(wizard.button(QWizard::NextButton), BobUI::LeftButton);
     QCOMPARE(wizard.currentPage(), &page4);
 
-    QTest::mouseClick(wizard.button(QWizard::BackButton), Qt::LeftButton);
+    BOBUIest::mouseClick(wizard.button(QWizard::BackButton), BobUI::LeftButton);
     QCOMPARE(wizard.currentPage(), &page3);
 
-    QTest::mouseClick(wizard.button(QWizard::BackButton), Qt::LeftButton);
+    BOBUIest::mouseClick(wizard.button(QWizard::BackButton), BobUI::LeftButton);
     QCOMPARE(wizard.currentPage(), &page2);
 
-    QTest::mouseClick(wizard.button(QWizard::BackButton), Qt::LeftButton);
+    BOBUIest::mouseClick(wizard.button(QWizard::BackButton), BobUI::LeftButton);
     QCOMPARE(wizard.currentPage(), &page1);
 }
 
@@ -2707,33 +2707,33 @@ void tst_QWizard::task255350_fieldObjectDestroyed()
     delete page;
 }
 
-// Global taskQTBUG_25691_fieldObjectDestroyed2 is defined in
+// Global taskBOBUIBUG_25691_fieldObjectDestroyed2 is defined in
 // tst_qwizard_2.cpp to avoid cluttering up this file with
 // the QWizardPage subclasses, etc. required to complete this
 // test.
-void taskQTBUG_25691_fieldObjectDestroyed2(void);
-void tst_QWizard::taskQTBUG_25691_fieldObjectDestroyed2()
+void taskBOBUIBUG_25691_fieldObjectDestroyed2(void);
+void tst_QWizard::taskBOBUIBUG_25691_fieldObjectDestroyed2()
 {
-    ::taskQTBUG_25691_fieldObjectDestroyed2();
+    ::taskBOBUIBUG_25691_fieldObjectDestroyed2();
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
-void tst_QWizard::taskQTBUG_46894_nextButtonShortcut()
+void tst_QWizard::taskBOBUIBUG_46894_nextButtonShortcut()
 {
     for (int i = 0; i < QWizard::NStyles; ++i) {
         QWizard wizard;
         QWizard::WizardStyle style = static_cast<QWizard::WizardStyle>(i);
         wizard.setWizardStyle(style);
         wizard.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&wizard));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&wizard));
 
         QCOMPARE(wizard.button(QWizard::NextButton)->shortcut(),
                  QKeySequence::mnemonic(wizard.button(QWizard::NextButton)->text()));
     }
 }
 
-/* setCurrentId(int) method was added in QTBUG99488 */
+/* setCurrentId(int) method was added in BOBUIBUG99488 */
 void tst_QWizard::changePages()
 {
     QWizard wizard;
@@ -2746,7 +2746,7 @@ void tst_QWizard::changePages()
     }
 
     wizard.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&wizard));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&wizard));
 
     // Verify default page
     QCOMPARE(wizard.currentPage(), pages.at(0));
@@ -2757,7 +2757,7 @@ void tst_QWizard::changePages()
     QVERIFY(wizard.currentId() == 0);
 
     // Test illegal page
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "QWizard::setCurrentId: No such page: 5");
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "QWizard::setCurrentId: No such page: 5");
     wizard.setCurrentId(5);
     QCOMPARE(wizard.currentId(), 0);
 
@@ -2772,7 +2772,7 @@ void tst_QWizard::changePages()
     }
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
-QTEST_MAIN(tst_QWizard)
+BOBUIEST_MAIN(tst_QWizard)
 #include "tst_qwizard.moc"

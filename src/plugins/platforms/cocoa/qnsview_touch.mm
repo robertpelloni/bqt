@@ -1,10 +1,10 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // This file is included from qnsview.mm, and only used to organize the code
 
-Q_STATIC_LOGGING_CATEGORY(lcQpaTouch, "qt.qpa.input.touch")
+Q_STATIC_LOGGING_CATEGORY(lcQpaTouch, "bobui.qpa.input.touch")
 
 @implementation QNSView (Touch)
 
@@ -13,7 +13,7 @@ Q_STATIC_LOGGING_CATEGORY(lcQpaTouch, "qt.qpa.input.touch")
     if (!m_platformWindow)
         return true;
 
-    // QtWidgets expects single-point touch events, QtDeclarative does not.
+    // BobUIWidgets expects single-point touch events, BobUIDeclarative does not.
     // Until there is an API we solve this by looking at the window class type.
     return m_platformWindow->window()->inherits("QWidgetWindow");
 }
@@ -25,7 +25,7 @@ Q_STATIC_LOGGING_CATEGORY(lcQpaTouch, "qt.qpa.input.touch")
 
     const NSTimeInterval timestamp = [event timestamp];
     const QList<QWindowSystemInterface::TouchPoint> points = QCocoaTouch::getCurrentTouchPointList(event, [self shouldSendSingleTouch]);
-    qCDebug(lcQpaTouch) << "touchesBeganWithEvent" << points << "from device" << Qt::hex << [event deviceID];
+    qCDebug(lcQpaTouch) << "touchesBeganWithEvent" << points << "from device" << BobUI::hex << [event deviceID];
     QWindowSystemInterface::handleTouchEvent<QWindowSystemInterface::SynchronousDelivery>(
         m_platformWindow->window(), timestamp * 1000,
         QCocoaTouch::getTouchDevice(QInputDevice::DeviceType::TouchPad, [event deviceID]),
@@ -43,7 +43,7 @@ Q_STATIC_LOGGING_CATEGORY(lcQpaTouch, "qt.qpa.input.touch")
     nativeDrag->setLastInputEvent(event, self);
 
     const QList<QWindowSystemInterface::TouchPoint> points = QCocoaTouch::getCurrentTouchPointList(event, [self shouldSendSingleTouch]);
-    qCDebug(lcQpaTouch) << "touchesMovedWithEvent" << points << "from device" << Qt::hex << [event deviceID];
+    qCDebug(lcQpaTouch) << "touchesMovedWithEvent" << points << "from device" << BobUI::hex << [event deviceID];
     QWindowSystemInterface::handleTouchEvent<QWindowSystemInterface::SynchronousDelivery>(
         m_platformWindow->window(), timestamp * 1000,
         QCocoaTouch::getTouchDevice(QInputDevice::DeviceType::TouchPad, [event deviceID]),
@@ -61,7 +61,7 @@ Q_STATIC_LOGGING_CATEGORY(lcQpaTouch, "qt.qpa.input.touch")
     nativeDrag->setLastInputEvent(event, self);
 
     const QList<QWindowSystemInterface::TouchPoint> points = QCocoaTouch::getCurrentTouchPointList(event, [self shouldSendSingleTouch]);
-    qCDebug(lcQpaTouch) << "touchesEndedWithEvent" << points << "from device" << Qt::hex << [event deviceID];
+    qCDebug(lcQpaTouch) << "touchesEndedWithEvent" << points << "from device" << BobUI::hex << [event deviceID];
     QWindowSystemInterface::handleTouchEvent<QWindowSystemInterface::SynchronousDelivery>(
         m_platformWindow->window(), timestamp * 1000,
         QCocoaTouch::getTouchDevice(QInputDevice::DeviceType::TouchPad, [event deviceID]),
@@ -79,7 +79,7 @@ Q_STATIC_LOGGING_CATEGORY(lcQpaTouch, "qt.qpa.input.touch")
     nativeDrag->setLastInputEvent(event, self);
 
     const QList<QWindowSystemInterface::TouchPoint> points = QCocoaTouch::getCurrentTouchPointList(event, [self shouldSendSingleTouch]);
-    qCDebug(lcQpaTouch) << "touchesCancelledWithEvent" << points << "from device" << Qt::hex << [event deviceID];
+    qCDebug(lcQpaTouch) << "touchesCancelledWithEvent" << points << "from device" << BobUI::hex << [event deviceID];
     QWindowSystemInterface::handleTouchEvent<QWindowSystemInterface::SynchronousDelivery>(
         m_platformWindow->window(), timestamp * 1000,
         QCocoaTouch::getTouchDevice(QInputDevice::DeviceType::TouchPad, [event deviceID]),

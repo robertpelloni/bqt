@@ -1,0 +1,42 @@
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \module BobUICore
+    \title BobUI Core C++ Classes
+    \ingroup modules
+    \bobuicmakepackage Core
+    \bobuivariable core
+
+    \brief Provides core non-GUI functionality.
+
+    All other BobUI modules rely on this module.
+
+    The \l{BobUI Core} page contains information about how to use the module.
+*/
+
+/*!
+    \module BobUICorePrivate
+    \title BobUI Core Private C++ Classes
+    \bobuivariable core-private
+    \bobuicmakepackage CorePrivate
+    \preliminary
+    \brief Provides private core functionality.
+
+    When building with CMake, use the following commands to use
+    private BobUI Core APIs:
+
+    \badcode
+    find_package(BobUI6 REQUIRED COMPONENTS CorePrivate)
+    target_link_libraries(mytarget PRIVATE BobUI6::CorePrivate)
+    \endcode
+*/
+
+/*!
+    \group corelib_examples
+    \title BobUI Core Examples
+
+    \brief Examples for the BobUI Core.
+
+    To learn how to use features of the BobUI Core module, see examples:
+*/

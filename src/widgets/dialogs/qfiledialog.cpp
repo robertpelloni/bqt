@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qvariant.h>
 #include <private/qwidgetitemdata_p.h>
@@ -13,25 +13,25 @@
 #include <qaction.h>
 #include <qactiongroup.h>
 #include <qheaderview.h>
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include <qshortcut.h>
 #endif
 #include <qgridlayout.h>
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <qmenu.h>
 #endif
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
 #include <qmessagebox.h>
 #endif
 #include <stdlib.h>
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 #include <qsettings.h>
 #endif
 #include <qdebug.h>
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 #include <qmimedatabase.h>
 #endif
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include <qregularexpression.h>
 #endif
 #include <qapplication.h>
@@ -41,7 +41,7 @@
 #include <pwd.h>
 #include <unistd.h> // for pathconf() on OS X
 #elif defined(Q_OS_WIN)
-#  include <QtCore/qt_windows.h>
+#  include <BobUICore/bobui_windows.h>
 #endif
 #if defined(Q_OS_WASM)
 #include <private/qwasmlocalfileaccess_p.h>
@@ -49,9 +49,9 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_GLOBAL_STATIC(QUrl, lastVisitedDir)
 
@@ -59,7 +59,7 @@ Q_GLOBAL_STATIC(QUrl, lastVisitedDir)
   \class QFileDialog
   \brief Provides a dialog that allows users to select files or directories.
   \ingroup standard-dialogs
-  \inmodule QtWidgets
+  \inmodule BobUIWidgets
 
   The QFileDialog class enables users to browse the file system and select one
   or more files or directories.
@@ -149,9 +149,9 @@ Q_GLOBAL_STATIC(QUrl, lastVisitedDir)
   may return \c null. Also, not all platforms display file dialogs with a title
   bar, so the caption text may not be visible.
 
-  To force the use of the Qt widget-based dialog, set the
+  To force the use of the BobUI widget-based dialog, set the
   \l DontUseNativeDialog option or the
-  \l{Qt::AA_DontUseNativeDialogs}{AA_DontUseNativeDialogs} application
+  \l{BobUI::AA_DontUseNativeDialogs}{AA_DontUseNativeDialogs} application
   attribute.
 
   \sa QDir, QFileInfo, QFile, QColorDialog, QFontDialog, {Standard Dialogs Example}
@@ -213,10 +213,10 @@ Q_GLOBAL_STATIC(QUrl, lastVisitedDir)
     It is furthermore not used on macOS for native file dialogs.
 
     \value DontUseNativeDialog Don't use a platform-native file dialog,
-    but the widget-based one provided by Qt.\br
+    but the widget-based one provided by BobUI.\br
     By default, a native file dialog is shown unless you use a subclass
     of QFileDialog that contains the Q_OBJECT macro, the global
-    \l{Qt::}{AA_DontUseNativeDialogs} application attribute is set, or the platform
+    \l{BobUI::}{AA_DontUseNativeDialogs} application attribute is set, or the platform
     does not have a native dialog of the type that you require.\br
     For the option to be effective, you must set it before changing
     other properties of the dialog, or showing the dialog.
@@ -232,7 +232,7 @@ Q_GLOBAL_STATIC(QUrl, lastVisitedDir)
     Setting this will enable the
     \l{QAbstractFileIconProvider::}{DontUseCustomDirectoryIcons}
     option in \l{iconProvider()}.\br
-    This enum value was added in Qt 5.2.
+    This enum value was added in BobUI 5.2.
 
     \sa options, testOption
 */
@@ -327,19 +327,19 @@ Q_GLOBAL_STATIC(QUrl, lastVisitedDir)
   This signal is emitted when the user selects a \a filter.
 */
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include <QMetaEnum>
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include <qshortcut.h>
 #endif
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 /*!
-    \fn QFileDialog::QFileDialog(QWidget *parent, Qt::WindowFlags flags)
+    \fn QFileDialog::QFileDialog(QWidget *parent, BobUI::WindowFlags flags)
 
     Constructs a file dialog with the given \a parent and widget \a flags.
 */
-QFileDialog::QFileDialog(QWidget *parent, Qt::WindowFlags f)
+QFileDialog::QFileDialog(QWidget *parent, BobUI::WindowFlags f)
     : QDialog(*new QFileDialogPrivate, parent, f)
 {
     Q_D(QFileDialog);
@@ -386,7 +386,7 @@ QFileDialog::QFileDialog(const QFileDialogArgs &args)
 QFileDialog::~QFileDialog()
 {
     Q_D(QFileDialog);
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     d->saveSettings();
 #endif
     if (QPlatformFileDialogHelper *platformHelper = d->platformFileDialogHelper()) {
@@ -440,7 +440,7 @@ QByteArray QFileDialog::saveState() const
     int version = 4;
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_0);
+    stream.setVersion(QDataStream::BobUI_5_0);
 
     stream << qint32(QFileDialogMagic);
     stream << qint32(version);
@@ -474,7 +474,7 @@ bool QFileDialog::restoreState(const QByteArray &state)
     Q_D(QFileDialog);
     QByteArray sd = state;
     QDataStream stream(&sd, QIODevice::ReadOnly);
-    stream.setVersion(QDataStream::Qt_5_0);
+    stream.setVersion(QDataStream::BobUI_5_0);
     if (stream.atEnd())
         return false;
     QStringList history;
@@ -525,7 +525,7 @@ void QFileDialog::changeEvent(QEvent *e)
 
 QFileDialogPrivate::QFileDialogPrivate()
     :
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
         proxyModel(nullptr),
 #endif
         model(nullptr),
@@ -674,13 +674,13 @@ void QFileDialogPrivate::retranslateStrings()
 
     QList<QAction*> actions = qFileDialogUi->treeView->header()->actions();
     QAbstractItemModel *abstractModel = model;
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
     if (proxyModel)
         abstractModel = proxyModel;
 #endif
     const int total = qMin(abstractModel->columnCount(QModelIndex()), int(actions.size() + 1));
     for (int i = 1; i < total; ++i) {
-        actions.at(i - 1)->setText(QFileDialog::tr("Show ") + abstractModel->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString());
+        actions.at(i - 1)->setText(QFileDialog::tr("Show ") + abstractModel->headerData(i, BobUI::Horizontal, BobUI::DisplayRole).toString());
     }
 
     /* MENU ACTIONS */
@@ -710,8 +710,8 @@ bool QFileDialogPrivate::canBeNativeDialog() const
     const QDialog * const q = static_cast<const QDialog*>(q_ptr);
     if (nativeDialogInUse)
         return true;
-    if (QCoreApplication::testAttribute(Qt::AA_DontUseNativeDialogs)
-        || q->testAttribute(Qt::WA_DontShowOnScreen)
+    if (QCoreApplication::testAttribute(BobUI::AA_DontUseNativeDialogs)
+        || q->testAttribute(BobUI::WA_DontShowOnScreen)
         || (options->options() & QFileDialog::DontUseNativeDialog)) {
         return false;
     }
@@ -877,16 +877,16 @@ void QFileDialogPrivate::setVisible(bool visible)
         if (setNativeDialogVisible(visible)){
             // Set WA_DontShowOnScreen so that QDialogPrivate::setVisible(visible) below
             // updates the state correctly, but skips showing the non-native version:
-            q->setAttribute(Qt::WA_DontShowOnScreen);
-#if QT_CONFIG(fscompleter)
+            q->setAttribute(BobUI::WA_DontShowOnScreen);
+#if BOBUI_CONFIG(fscompleter)
             // So the completer doesn't try to complete and therefore show a popup
             if (!nativeDialogInUse)
                 completer->setModel(nullptr);
 #endif
         } else if (visible) {
             createWidgets();
-            q->setAttribute(Qt::WA_DontShowOnScreen, false);
-#if QT_CONFIG(fscompleter)
+            q->setAttribute(BobUI::WA_DontShowOnScreen, false);
+#if BOBUI_CONFIG(fscompleter)
             if (!nativeDialogInUse) {
                 if (proxyModel != nullptr)
                     completer->setModel(proxyModel);
@@ -932,7 +932,7 @@ void QFileDialogPrivate::goToUrl(const QUrl &url)
         For this to be enabled, the Info.plist assigned to QMAKE_INFO_PLIST in the
         project file must contain the key \c NSPhotoLibraryUsageDescription. See
         Info.plist documentation from Apple for more information regarding this key.
-        This feature was added in Qt 5.5.
+        This feature was added in BobUI 5.5.
 */
 void QFileDialog::setDirectory(const QString &directory)
 {
@@ -957,9 +957,9 @@ void QFileDialog::setDirectory(const QString &directory)
         return;
     QModelIndex root = d->model->setRootPath(newDirectory);
     if (!d->nativeDialogInUse) {
-        d->qFileDialogUi->newFolderButton->setEnabled(d->model->flags(root) & Qt::ItemIsDropEnabled);
+        d->qFileDialogUi->newFolderButton->setEnabled(d->model->flags(root) & BobUI::ItemIsDropEnabled);
         if (root != d->rootIndex()) {
-#if QT_CONFIG(fscompleter)
+#if BOBUI_CONFIG(fscompleter)
             if (directory.endsWith(u'/'))
                 d->completer->setCompletionPrefix(newDirectory);
             else
@@ -996,7 +996,7 @@ QDir QFileDialog::directory() const
     \c clsid:374DE290-123F-4565-9164-39C4925E467B denotes the download
     location. For a complete list of possible values, see the MSDN documentation on
     \l{https://docs.microsoft.com/en-us/windows/win32/shell/knownfolderid}{KNOWNFOLDERID}.
-    This feature was added in Qt 5.5.
+    This feature was added in BobUI 5.5.
 
     \sa QUuid
     \since 5.2
@@ -1032,7 +1032,7 @@ QUrl QFileDialog::directoryUrl() const
         return QUrl::fromLocalFile(directory().absolutePath());
 }
 
-// FIXME Qt 5.4: Use upcoming QVolumeInfo class to determine this information?
+// FIXME BobUI 5.4: Use upcoming QVolumeInfo class to determine this information?
 static inline bool isCaseSensitiveFileSystem(const QString &path)
 {
     Q_UNUSED(path);
@@ -1053,7 +1053,7 @@ static inline QString fileFromPath(const QString &rootPath, QString path)
 {
     if (!QFileInfo(path).isAbsolute())
         return path;
-    if (path.startsWith(rootPath, isCaseSensitiveFileSystem(rootPath) ? Qt::CaseSensitive : Qt::CaseInsensitive))
+    if (path.startsWith(rootPath, isCaseSensitiveFileSystem(rootPath) ? BobUI::CaseSensitive : BobUI::CaseInsensitive))
         path.remove(0, rootPath.size());
 
     if (path.isEmpty())
@@ -1160,7 +1160,7 @@ static QString homeDirFromPasswdEntry(const QString &path, const QByteArray &use
 #endif // defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD) && !defined(Q_OS_WASM)
 }
 
-Q_AUTOTEST_EXPORT QString qt_tildeExpansion(const QString &path)
+Q_AUTOTEST_EXPORT QString bobui_tildeExpansion(const QString &path)
 {
     if (!path.startsWith(u'~'))
         return path;
@@ -1203,7 +1203,7 @@ QStringList QFileDialogPrivate::typedFiles() const
         if (QFile::exists(prefix + editText))
             files << editText;
         else
-            files << qt_tildeExpansion(editText);
+            files << bobui_tildeExpansion(editText);
 #else
         files << editText;
         Q_UNUSED(q);
@@ -1221,7 +1221,7 @@ QStringList QFileDialogPrivate::typedFiles() const
             if (QFile::exists(prefix + token))
                 files << token;
             else
-                files << qt_tildeExpansion(token);
+                files << bobui_tildeExpansion(token);
 #else
             files << toInternal(tokens.at(i));
 #endif
@@ -1269,7 +1269,7 @@ QStringList QFileDialogPrivate::addDefaultSuffixToFiles(const QStringList &files
         if (info.isAbsolute()) {
             files.append(name);
         } else {
-            // at this point the path should only have Qt path separators.
+            // at this point the path should only have BobUI path separators.
             // This check is needed since we might be at the root directory
             // and on Windows it already ends with slash.
             QString path = rootPath();
@@ -1353,7 +1353,7 @@ QList<QUrl> QFileDialog::selectedUrls() const
     Makes a list of filters from ;;-separated text.
     Used by the mac and windows implementations
 */
-QStringList qt_make_filter_list(const QString &filter)
+QStringList bobui_make_filter_list(const QString &filter)
 {
     if (filter.isEmpty())
         return QStringList();
@@ -1382,16 +1382,16 @@ QStringList qt_make_filter_list(const QString &filter)
 */
 void QFileDialog::setNameFilter(const QString &filter)
 {
-    setNameFilters(qt_make_filter_list(filter));
+    setNameFilters(bobui_make_filter_list(filter));
 }
 
 
 /*
     Strip the filters by removing the details, e.g. (*.*).
 */
-QStringList qt_strip_filters(const QStringList &filters)
+QStringList bobui_strip_filters(const QStringList &filters)
 {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QStringList strippedFilters;
     static const QRegularExpression r(QString::fromLatin1(QPlatformFileDialogHelper::filterRegExp));
     strippedFilters.reserve(filters.size());
@@ -1444,7 +1444,7 @@ void QFileDialog::setNameFilters(const QStringList &filters)
         return;
 
     if (testOption(HideNameFilterDetails))
-        d->qFileDialogUi->fileTypeCombo->addItems(qt_strip_filters(cleanedFilters));
+        d->qFileDialogUi->fileTypeCombo->addItems(bobui_strip_filters(cleanedFilters));
     else
         d->qFileDialogUi->fileTypeCombo->addItems(cleanedFilters);
 
@@ -1476,7 +1476,7 @@ void QFileDialog::selectNameFilter(const QString &filter)
     }
     int i = -1;
     if (testOption(HideNameFilterDetails)) {
-        const QStringList filters = qt_strip_filters(qt_make_filter_list(filter));
+        const QStringList filters = bobui_strip_filters(bobui_make_filter_list(filter));
         if (!filters.isEmpty())
             i = d->qFileDialogUi->fileTypeCombo->findText(filters.first());
     } else {
@@ -1540,7 +1540,7 @@ void QFileDialog::setFilter(QDir::Filters filters)
     d->showHiddenAction->setChecked((filters & QDir::Hidden));
 }
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 
 static QString nameFilterForMime(const QString &mimeType)
 {
@@ -1634,14 +1634,14 @@ QString QFileDialog::selectedMimeTypeFilter() const
     if (!d->usingWidgets())
         mimeTypeFilter = d->selectedMimeTypeFilter_sys();
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     if (mimeTypeFilter.isNull() && !d->options->mimeTypeFilters().isEmpty()) {
         const auto nameFilter = selectedNameFilter();
         const auto mimeTypes = d->options->mimeTypeFilters();
         for (const auto &mimeType: mimeTypes) {
             QString filter = nameFilterForMime(mimeType);
             if (testOption(HideNameFilterDetails))
-                filter = qt_strip_filters({ filter }).constFirst();
+                filter = bobui_strip_filters({ filter }).constFirst();
             if (filter == nameFilter) {
                 mimeTypeFilter = mimeType;
                 break;
@@ -1749,7 +1749,7 @@ void QFileDialog::setAcceptMode(QFileDialog::AcceptMode mode)
     Q_D(QFileDialog);
     d->options->setAcceptMode(static_cast<QFileDialogOptions::AcceptMode>(mode));
     // clear WA_DontShowOnScreen so that d->canBeNativeDialog() doesn't return false incorrectly
-    setAttribute(Qt::WA_DontShowOnScreen, false);
+    setAttribute(BobUI::WA_DontShowOnScreen, false);
     if (!d->usingWidgets())
         return;
     QDialogButtonBox::StandardButton button = (mode == AcceptOpen ? QDialogButtonBox::Open : QDialogButtonBox::Save);
@@ -2083,7 +2083,7 @@ QString QFileDialog::labelText(DialogLabel label) const
     dialog does not show a title bar.
 
     On Windows the dialog spins a blocking modal event loop that does not
-    dispatch any QTimers, and if \a parent is not \nullptr then it positions
+    dispatch any BOBUIimers, and if \a parent is not \nullptr then it positions
     the dialog just below the parent's title bar.
 
     On Unix/X11, the normal behavior of the file dialog is to resolve and
@@ -2132,7 +2132,7 @@ QString QFileDialog::getOpenFileName(QWidget *parent,
 
     When possible, this static function uses the native file dialog and
     not a QFileDialog. On platforms that don't support selecting remote
-    files, Qt will allow to select only local files.
+    files, BobUI will allow to select only local files.
 
     \sa getOpenFileName(), getOpenFileUrls(), getSaveFileUrl(), getExistingDirectoryUrl()
     \since 5.2
@@ -2192,7 +2192,7 @@ QUrl QFileDialog::getOpenFileUrl(QWidget *parent,
     dialog does not show a title bar.
 
     On Windows the dialog spins a blocking modal event loop that does not
-    dispatch any QTimers, and if \a parent is not \nullptr then it positions
+    dispatch any BOBUIimers, and if \a parent is not \nullptr then it positions
     the dialog just below the parent's title bar.
 
     On Unix/X11, the normal behavior of the file dialog is to resolve and
@@ -2244,7 +2244,7 @@ QStringList QFileDialog::getOpenFileNames(QWidget *parent,
 
     When possible, this static function uses the native file dialog and
     not a QFileDialog. On platforms that don't support selecting remote
-    files, Qt will allow to select only local files.
+    files, BobUI will allow to select only local files.
 
     \sa getOpenFileNames(), getOpenFileUrl(), getSaveFileUrl(), getExistingDirectoryUrl()
     \since 5.2
@@ -2281,11 +2281,11 @@ QList<QUrl> QFileDialog::getOpenFileUrls(QWidget *parent,
     This is a convenience static function that returns the content of a file
     selected by the user.
 
-    Use this function to access local files on Qt for WebAssembly, if the web sandbox
+    Use this function to access local files on BobUI for WebAssembly, if the web sandbox
     restricts file access. Its implementation enables displaying a native file dialog in
     the browser, where the user selects a file based on the \a nameFilter parameter.
 
-    \a parent is ignored on Qt for WebAssembly. Pass \a parent on other platforms, to make
+    \a parent is ignored on BobUI for WebAssembly. Pass \a parent on other platforms, to make
     the popup a child of another widget. If the platform doesn't support native file
     dialogs, the function falls back to QFileDialog.
 
@@ -2332,7 +2332,7 @@ void QFileDialog::getOpenFileContent(const QString &nameFilter, const std::funct
     QFileDialog *dialog = new QFileDialog(parent);
     dialog->setFileMode(QFileDialog::ExistingFile);
     dialog->setNameFilter(nameFilter);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setAttribute(BobUI::WA_DeleteOnClose);
 
     auto fileSelected = [=](const QString &fileName) {
         QByteArray fileContent;
@@ -2354,11 +2354,11 @@ void QFileDialog::getOpenFileContent(const QString &nameFilter, const std::funct
     a file name and location chosen by the user. \a fileNameHint can be provided to
     suggest a file name to the user.
 
-    Use this function to save content to local files on Qt for WebAssembly, if the web sandbox
+    Use this function to save content to local files on BobUI for WebAssembly, if the web sandbox
     restricts file access. Its implementation enables displaying a native file dialog in the
     browser, where the user specifies an output file based on the \a fileNameHint argument.
 
-    \a parent is ignored on Qt for WebAssembly. Pass \a parent on other platforms, to make
+    \a parent is ignored on BobUI for WebAssembly. Pass \a parent on other platforms, to make
     the popup a child of another widget. If the platform doesn't support native file
     dialogs, the function falls back to QFileDialog.
 
@@ -2387,7 +2387,7 @@ void QFileDialog::saveFileContent(const QByteArray &fileContent, const QString &
     };
 
     connect(dialog, &QFileDialog::fileSelected, dialog, fileSelected);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setAttribute(BobUI::WA_DeleteOnClose);
     dialog->open();
 #endif
 }
@@ -2424,7 +2424,7 @@ void QFileDialog::saveFileContent(const QByteArray &fileContent, const QString &
     native file dialog and not a QFileDialog.
 
     On Windows the dialog spins a blocking modal event loop that does not
-    dispatch any QTimers, and if \a parent is not \nullptr then it
+    dispatch any BOBUIimers, and if \a parent is not \nullptr then it
     positions the dialog just below the parent's title bar. On \macos, with its
     native file dialog, the filter argument is ignored.
 
@@ -2474,7 +2474,7 @@ QString QFileDialog::getSaveFileName(QWidget *parent,
 
     When possible, this static function uses the native file dialog and
     not a QFileDialog. On platforms that don't support selecting remote
-    files, Qt will allow to select only local files.
+    files, BobUI will allow to select only local files.
 
     \sa getSaveFileName(), getOpenFileUrl(), getOpenFileUrls(), getExistingDirectoryUrl()
     \since 5.2
@@ -2531,7 +2531,7 @@ QUrl QFileDialog::getSaveFileUrl(QWidget *parent,
     native file dialog and not a QFileDialog. However, the native Windows file
     dialog does not support displaying files in the directory chooser. You need
     to pass the \l{QFileDialog::}{DontUseNativeDialog} option, or set the global
-    \l{Qt::}{AA_DontUseNativeDialogs} application attribute to display files using a
+    \l{BobUI::}{AA_DontUseNativeDialogs} application attribute to display files using a
     QFileDialog.
 
     Note that the \macos native file dialog does not show a title bar.
@@ -2543,7 +2543,7 @@ QUrl QFileDialog::getSaveFileUrl(QWidget *parent,
     symlinks as regular directories.
 
     On Windows, the dialog spins a blocking modal event loop that does not
-    dispatch any QTimers, and if \a parent is not \nullptr then it positions
+    dispatch any BOBUIimers, and if \a parent is not \nullptr then it positions
     the dialog just below the parent's title bar.
 
     \sa getOpenFileName(), getOpenFileNames(), getSaveFileName()
@@ -2584,7 +2584,7 @@ QString QFileDialog::getExistingDirectory(QWidget *parent,
 
     When possible, this static function uses the native file dialog and
     not a QFileDialog. On platforms that don't support selecting remote
-    files, Qt allows to select only local files.
+    files, BobUI allows to select only local files.
 
     \sa getExistingDirectory(), getOpenFileUrl(), getOpenFileUrls(), getSaveFileUrl()
     \since 5.2
@@ -2609,7 +2609,7 @@ QUrl QFileDialog::getExistingDirectoryUrl(QWidget *parent,
     return QUrl();
 }
 
-inline static QUrl _qt_get_directory(const QUrl &url, const QFileInfo &local)
+inline static QUrl _bobui_get_directory(const QUrl &url, const QFileInfo &local)
 {
     if (url.isLocalFile()) {
         QFileInfo info = local;
@@ -2626,10 +2626,10 @@ inline static QUrl _qt_get_directory(const QUrl &url, const QFileInfo &local)
     }
 }
 
-inline static void _qt_init_lastVisited() {
-#if QT_CONFIG(settings)
+inline static void _bobui_init_lastVisited() {
+#if BOBUI_CONFIG(settings)
     if (lastVisitedDir()->isEmpty()) {
-        QSettings settings(QSettings::UserScope, u"QtProject"_s);
+        QSettings settings(QSettings::UserScope, u"BobUIProject"_s);
         const QString &lastVisisted = settings.value("FileDialog/lastVisited", QString()).toString();
         *lastVisitedDir() = QUrl::fromLocalFile(lastVisisted);
     }
@@ -2645,12 +2645,12 @@ QFileDialogArgs::QFileDialogArgs(const QUrl &url)
     const QFileInfo local(url.toLocalFile());
     // Get the initial directory URL
     if (!url.isEmpty())
-        directory = _qt_get_directory(url, local);
+        directory = _bobui_get_directory(url, local);
     if (directory.isEmpty()) {
-        _qt_init_lastVisited();
+        _bobui_init_lastVisited();
         const QUrl lastVisited = *lastVisitedDir();
         if (lastVisited != url)
-            directory = _qt_get_directory(lastVisited, QFileInfo());
+            directory = _bobui_get_directory(lastVisited, QFileInfo());
     }
     if (directory.isEmpty())
         directory = QUrl::fromLocalFile(QDir::currentPath());
@@ -2690,7 +2690,7 @@ void QFileDialog::done(int result)
 
 bool QFileDialogPrivate::itemAlreadyExists(const QString &fileName)
 {
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
     Q_Q(QFileDialog);
     const QString msg = QFileDialog::tr("%1 already exists.\nDo you want to replace it?").arg(fileName);
     using B = QMessageBox;
@@ -2702,7 +2702,7 @@ bool QFileDialogPrivate::itemAlreadyExists(const QString &fileName)
 
 void QFileDialogPrivate::itemNotFound(const QString &fileName, QFileDialog::FileMode mode)
 {
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
     Q_Q(QFileDialog);
     const QString message = mode == QFileDialog::Directory
             ? QFileDialog::tr("%1\nDirectory not found.\n"
@@ -2711,7 +2711,7 @@ void QFileDialogPrivate::itemNotFound(const QString &fileName, QFileDialog::File
                               "correct file name was given.");
 
     QMessageBox::warning(q, q->windowTitle(), message.arg(fileName));
-#endif // QT_CONFIG(messagebox)
+#endif // BOBUI_CONFIG(messagebox)
 }
 
 /*!
@@ -2811,11 +2811,11 @@ void QFileDialog::accept()
     }
 }
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 void QFileDialogPrivate::saveSettings()
 {
     Q_Q(QFileDialog);
-    QSettings settings(QSettings::UserScope, u"QtProject"_s);
+    QSettings settings(QSettings::UserScope, u"BobUIProject"_s);
     settings.beginGroup("FileDialog");
 
     if (usingWidgets()) {
@@ -2832,13 +2832,13 @@ void QFileDialogPrivate::saveSettings()
     settings.setValue("lastVisited", lastVisitedDir()->toString());
     const QMetaEnum &viewModeMeta = q->metaObject()->enumerator(q->metaObject()->indexOfEnumerator("ViewMode"));
     settings.setValue("viewMode", QLatin1StringView(viewModeMeta.key(q->viewMode())));
-    settings.setValue("qtVersion", QT_VERSION_STR ""_L1);
+    settings.setValue("bobuiVersion", BOBUI_VERSION_STR ""_L1);
 }
 
 bool QFileDialogPrivate::restoreFromSettings()
 {
     Q_Q(QFileDialog);
-    QSettings settings(QSettings::UserScope, u"QtProject"_s);
+    QSettings settings(QSettings::UserScope, u"BobUIProject"_s);
     if (!settings.childGroups().contains("FileDialog"_L1))
         return false;
     settings.beginGroup("FileDialog");
@@ -2903,7 +2903,7 @@ bool QFileDialogPrivate::restoreWidgetState(QStringList &history, int splitterPo
 
     QList<QAction*> actions = headerView->actions();
     QAbstractItemModel *abstractModel = model;
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
     if (proxyModel)
         abstractModel = proxyModel;
 #endif
@@ -2941,12 +2941,12 @@ void QFileDialogPrivate::init(const QFileDialogArgs &args)
     else
         q->selectUrl(args.directory);
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     // Try to restore from the FileDialog settings group; if it fails, fall back
     // to the pre-5.5 QByteArray serialized settings.
     if (!restoreFromSettings()) {
-        const QSettings settings(QSettings::UserScope, u"QtProject"_s);
-        q->restoreState(settings.value("Qt/filedialog").toByteArray());
+        const QSettings settings(QSettings::UserScope, u"BobUIProject"_s);
+        q->restoreState(settings.value("BobUI/filedialog").toByteArray());
     }
 #endif
 
@@ -2976,13 +2976,13 @@ void QFileDialogPrivate::createWidgets()
     // This function is sometimes called late (e.g as a fallback from setVisible). In that case we
     // need to ensure that the following UI code (setupUI in particular) doesn't reset any explicitly
     // set window state or geometry.
-    QSize preSize = q->testAttribute(Qt::WA_Resized) ? q->size() : QSize();
-    Qt::WindowStates preState = q->windowState();
+    QSize preSize = q->testAttribute(BobUI::WA_Resized) ? q->size() : QSize();
+    BobUI::WindowStates preState = q->windowState();
 
     model = new QFileSystemModel(q);
     model->setIconProvider(&defaultIconProvider);
     model->setFilter(options->filter());
-    model->setObjectName("qt_filesystem_model"_L1);
+    model->setObjectName("bobui_filesystem_model"_L1);
     if (QPlatformFileDialogHelper *helper = platformFileDialogHelper())
         model->setNameFilterDisables(helper->defaultNameFilterDisables());
     else
@@ -3019,15 +3019,15 @@ void QFileDialogPrivate::createWidgets()
     qFileDialogUi->lookInCombo->setDuplicatesEnabled(false);
 
     // filename
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     qFileDialogUi->fileNameLabel->setBuddy(qFileDialogUi->fileNameEdit);
 #endif
-#if QT_CONFIG(fscompleter)
+#if BOBUI_CONFIG(fscompleter)
     completer = new QFSCompleter(model, q);
     qFileDialogUi->fileNameEdit->setCompleter(completer);
-#endif // QT_CONFIG(fscompleter)
+#endif // BOBUI_CONFIG(fscompleter)
 
-    qFileDialogUi->fileNameEdit->setInputMethodHints(Qt::ImhNoPredictiveText);
+    qFileDialogUi->fileNameEdit->setInputMethodHints(BobUI::ImhNoPredictiveText);
 
     QObjectPrivate::connect(qFileDialogUi->fileNameEdit, &QLineEdit::textChanged,
                             this, &QFileDialogPrivate::autoCompleteFileName);
@@ -3051,7 +3051,7 @@ void QFileDialogPrivate::createWidgets()
                             this, &QFileDialogPrivate::enterDirectory);
     QObjectPrivate::connect(qFileDialogUi->listView, &QAbstractItemView::customContextMenuRequested,
                             this, &QFileDialogPrivate::showContextMenu);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     QShortcut *shortcut = new QShortcut(QKeySequence::Delete, qFileDialogUi->listView);
     QObjectPrivate::connect(shortcut, &QShortcut::activated,
                             this, &QFileDialogPrivate::deleteCurrent);
@@ -3065,7 +3065,7 @@ void QFileDialogPrivate::createWidgets()
     treeHeader->resizeSection(1, fm.horizontalAdvance("128.88 GB"_L1));
     treeHeader->resizeSection(2, fm.horizontalAdvance("mp3Folder"_L1));
     treeHeader->resizeSection(3, fm.horizontalAdvance("10/29/81 02:02PM"_L1));
-    treeHeader->setContextMenuPolicy(Qt::ActionsContextMenu);
+    treeHeader->setContextMenuPolicy(BobUI::ActionsContextMenu);
 
     QActionGroup *showActionGroup = new QActionGroup(q);
     showActionGroup->setExclusive(false);
@@ -3073,7 +3073,7 @@ void QFileDialogPrivate::createWidgets()
                             this, &QFileDialogPrivate::showHeader);
 
     QAbstractItemModel *abstractModel = model;
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
     if (proxyModel)
         abstractModel = proxyModel;
 #endif
@@ -3091,7 +3091,7 @@ void QFileDialogPrivate::createWidgets()
                             this, &QFileDialogPrivate::enterDirectory);
     QObjectPrivate::connect(qFileDialogUi->treeView, &QAbstractItemView::customContextMenuRequested,
                             this, &QFileDialogPrivate::showContextMenu);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     shortcut = new QShortcut(QKeySequence::Delete, qFileDialogUi->treeView);
     QObjectPrivate::connect(shortcut, &QShortcut::activated,
                             this, &QFileDialogPrivate::deleteCurrent);
@@ -3108,12 +3108,12 @@ void QFileDialogPrivate::createWidgets()
     createToolButtons();
     createMenuActions();
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     // Try to restore from the FileDialog settings group; if it fails, fall back
     // to the pre-5.5 QByteArray serialized settings.
     if (!restoreFromSettings()) {
-        const QSettings settings(QSettings::UserScope, u"QtProject"_s);
-        q->restoreState(settings.value("Qt/filedialog").toByteArray());
+        const QSettings settings(QSettings::UserScope, u"BobUIProject"_s);
+        q->restoreState(settings.value("BobUI/filedialog").toByteArray());
     }
 #endif
 
@@ -3125,7 +3125,7 @@ void QFileDialogPrivate::createWidgets()
     if (!options->sidebarUrls().isEmpty())
         q->setSidebarUrls(options->sidebarUrls());
     q->setDirectoryUrl(options->initialDirectory());
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     if (!options->mimeTypeFilters().isEmpty())
         q->setMimeTypeFilters(options->mimeTypeFilters());
     else
@@ -3155,7 +3155,7 @@ void QFileDialogPrivate::showHeader(QAction *action)
                                                         !action->isChecked());
 }
 
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
 /*!
     Sets the model for the views to the given \a proxyModel.  This is useful if you
     want to modify the underlying model; for example, to add columns, filter
@@ -3189,7 +3189,7 @@ void QFileDialog::setProxyModel(QAbstractProxyModel *proxyModel)
         proxyModel->setSourceModel(d->model);
         d->qFileDialogUi->listView->setModel(d->proxyModel);
         d->qFileDialogUi->treeView->setModel(d->proxyModel);
-#if QT_CONFIG(fscompleter)
+#if BOBUI_CONFIG(fscompleter)
         d->completer->setModel(d->proxyModel);
         d->completer->proxyModel = d->proxyModel;
 #endif
@@ -3199,7 +3199,7 @@ void QFileDialog::setProxyModel(QAbstractProxyModel *proxyModel)
         d->proxyModel = nullptr;
         d->qFileDialogUi->listView->setModel(d->model);
         d->qFileDialogUi->treeView->setModel(d->model);
-#if QT_CONFIG(fscompleter)
+#if BOBUI_CONFIG(fscompleter)
         d->completer->setModel(d->model);
         d->completer->sourceModel = d->model;
         d->completer->proxyModel = nullptr;
@@ -3230,7 +3230,7 @@ QAbstractProxyModel *QFileDialog::proxyModel() const
     Q_D(const QFileDialog);
     return d->proxyModel;
 }
-#endif // QT_CONFIG(proxymodel)
+#endif // BOBUI_CONFIG(proxymodel)
 
 /*!
     \internal
@@ -3294,8 +3294,8 @@ void QFileDialogPrivate::createMenuActions()
     Q_Q(QFileDialog);
 
     QAction *goHomeAction =  new QAction(q);
-#ifndef QT_NO_SHORTCUT
-    goHomeAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_H);
+#ifndef BOBUI_NO_SHORTCUT
+    goHomeAction->setShortcut(BobUI::CTRL | BobUI::SHIFT | BobUI::Key_H);
 #endif
     QObjectPrivate::connect(goHomeAction, &QAction::triggered,
                             this, &QFileDialogPrivate::goHome);
@@ -3304,9 +3304,9 @@ void QFileDialogPrivate::createMenuActions()
     // ### TODO add Desktop & Computer actions
 
     QAction *goToParent =  new QAction(q);
-    goToParent->setObjectName("qt_goto_parent_action"_L1);
-#ifndef QT_NO_SHORTCUT
-    goToParent->setShortcut(Qt::CTRL | Qt::Key_Up);
+    goToParent->setObjectName("bobui_goto_parent_action"_L1);
+#ifndef BOBUI_NO_SHORTCUT
+    goToParent->setShortcut(BobUI::CTRL | BobUI::Key_Up);
 #endif
     QObjectPrivate::connect(goToParent, &QAction::triggered,
                             this, &QFileDialogPrivate::navigateToParent);
@@ -3314,24 +3314,24 @@ void QFileDialogPrivate::createMenuActions()
 
     renameAction = new QAction(q);
     renameAction->setEnabled(false);
-    renameAction->setObjectName("qt_rename_action"_L1);
+    renameAction->setObjectName("bobui_rename_action"_L1);
     QObjectPrivate::connect(renameAction, &QAction::triggered,
                             this, &QFileDialogPrivate::renameCurrent);
 
     deleteAction = new QAction(q);
     deleteAction->setEnabled(false);
-    deleteAction->setObjectName("qt_delete_action"_L1);
+    deleteAction->setObjectName("bobui_delete_action"_L1);
     QObjectPrivate::connect(deleteAction, &QAction::triggered,
                             this, &QFileDialogPrivate::deleteCurrent);
 
     showHiddenAction = new QAction(q);
-    showHiddenAction->setObjectName("qt_show_hidden_action"_L1);
+    showHiddenAction->setObjectName("bobui_show_hidden_action"_L1);
     showHiddenAction->setCheckable(true);
     QObjectPrivate::connect(showHiddenAction, &QAction::triggered,
                             this, &QFileDialogPrivate::showHidden);
 
     newFolderAction = new QAction(q);
-    newFolderAction->setObjectName("qt_new_folder_action"_L1);
+    newFolderAction->setObjectName("bobui_new_folder_action"_L1);
     QObjectPrivate::connect(newFolderAction, &QAction::triggered,
                             this, &QFileDialogPrivate::createDirectory);
 }
@@ -3517,7 +3517,7 @@ void QFileDialogPrivate::showDetailsView()
 */
 void QFileDialogPrivate::showContextMenu(const QPoint &position)
 {
-#if !QT_CONFIG(menu)
+#if !BOBUI_CONFIG(menu)
     Q_UNUSED(position);
 #else
     Q_Q(QFileDialog);
@@ -3530,7 +3530,7 @@ void QFileDialogPrivate::showContextMenu(const QPoint &position)
     index = mapToSource(index.sibling(index.row(), 0));
 
     QMenu *menu = new QMenu(view);
-    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu->setAttribute(BobUI::WA_DeleteOnClose);
 
     if (index.isValid()) {
         // file context menu
@@ -3549,7 +3549,7 @@ void QFileDialogPrivate::showContextMenu(const QPoint &position)
     }
     menu->popup(view->viewport()->mapToGlobal(position));
 
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 }
 
 /*!
@@ -3596,7 +3596,7 @@ void QFileDialogPrivate::deleteCurrent()
         QString filePath = index.data(QFileSystemModel::FilePathRole).toString();
 
         QFile::Permissions p(index.parent().data(QFileSystemModel::FilePermissions).toInt());
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
         Q_Q(QFileDialog);
         if (!(p & QFile::WriteUser) && (QMessageBox::warning(q_func(), QFileDialog::tr("Delete"),
                                     QFileDialog::tr("'%1' is write protected.\nDo you want to delete it anyway?")
@@ -3616,11 +3616,11 @@ void QFileDialogPrivate::deleteCurrent()
 #else
         if (!(p & QFile::WriteUser))
             return;
-#endif // QT_CONFIG(messagebox)
+#endif // BOBUI_CONFIG(messagebox)
 
         if (model->isDir(index) && !model->fileInfo(index).isSymLink()) {
             if (!removeDirectory(filePath)) {
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
             QMessageBox::warning(q, q->windowTitle(),
                                 QFileDialog::tr("Could not delete directory."));
 #endif
@@ -3789,8 +3789,8 @@ void QFileDialogPrivate::enterDirectory(const QModelIndex &index)
     } else {
         // Do not accept when shift-clicking to multi-select a file in environments with single-click-activation (KDE)
         if ((!q->style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick, nullptr, qFileDialogUi->treeView)
-             || q->fileMode() != QFileDialog::ExistingFiles || !(QGuiApplication::keyboardModifiers() & Qt::CTRL))
-            && index.model()->flags(index) & Qt::ItemIsEnabled) {
+             || q->fileMode() != QFileDialog::ExistingFiles || !(QGuiApplication::keyboardModifiers() & BobUI::CTRL))
+            && index.model()->flags(index) & BobUI::ItemIsEnabled) {
             q->accept();
         }
     }
@@ -3804,9 +3804,9 @@ void QFileDialogPrivate::enterDirectory(const QModelIndex &index)
 */
 void QFileDialogPrivate::goToDirectory(const QString &path)
 {
-    enum { UrlRole = Qt::UserRole + 1 };
+    enum { UrlRole = BobUI::UserRole + 1 };
 
- #if QT_CONFIG(messagebox)
+ #if BOBUI_CONFIG(messagebox)
     Q_Q(QFileDialog);
 #endif
     QModelIndex index = qFileDialogUi->lookInCombo->model()->index(qFileDialogUi->lookInCombo->currentIndex(),
@@ -3825,12 +3825,12 @@ void QFileDialogPrivate::goToDirectory(const QString &path)
 
     if (dir.exists() || path2.isEmpty() || path2 == model->myComputer().toString()) {
         enterDirectory(index);
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
     } else {
         QString message = QFileDialog::tr("%1\nDirectory not found.\nPlease verify the "
                                           "correct directory name was given.");
         QMessageBox::warning(q, q->windowTitle(), message.arg(path2));
-#endif // QT_CONFIG(messagebox)
+#endif // BOBUI_CONFIG(messagebox)
     }
 }
 
@@ -3986,7 +3986,7 @@ void QFileDialogPrivate::nativeEnterDirectory(const QUrl &directory)
 */
 bool QFileDialogPrivate::itemViewKeyboardEvent(QKeyEvent *event) {
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     Q_Q(QFileDialog);
     if (event->matches(QKeySequence::Cancel)) {
         q->reject();
@@ -3994,16 +3994,16 @@ bool QFileDialogPrivate::itemViewKeyboardEvent(QKeyEvent *event) {
     }
 #endif
     switch (event->key()) {
-    case Qt::Key_Backspace:
+    case BobUI::Key_Backspace:
         navigateToParent();
         return true;
-    case Qt::Key_Back:
-#ifdef QT_KEYPAD_NAVIGATION
+    case BobUI::Key_Back:
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (QApplicationPrivate::keypadNavigationEnabled())
             return false;
 #endif
-    case Qt::Key_Left:
-        if (event->key() == Qt::Key_Back || event->modifiers() == Qt::AltModifier) {
+    case BobUI::Key_Left:
+        if (event->key() == BobUI::Key_Back || event->modifiers() == BobUI::AltModifier) {
             navigateBackward();
             return true;
         }
@@ -4069,8 +4069,8 @@ void QFileDialogComboBox::showPopup()
         model()->setData(idx, QFileDialog::tr("Recent Places"));
         QStandardItemModel *m = qobject_cast<QStandardItemModel*>(model());
         if (m) {
-            Qt::ItemFlags flags = m->flags(idx);
-            flags &= ~Qt::ItemIsEnabled;
+            BobUI::ItemFlags flags = m->flags(idx);
+            flags &= ~BobUI::ItemIsEnabled;
             m->item(idx.row(), idx.column())->setFlags(flags);
         }
         urlModel->addUrls(urls, -1, false);
@@ -4093,7 +4093,7 @@ void QFileDialogComboBox::paintEvent(QPaintEvent *)
     QRect editRect = style()->subControlRect(QStyle::CC_ComboBox, &opt,
                                                 QStyle::SC_ComboBoxEditField, this);
     int size = editRect.width() - opt.iconSize.width() - 4;
-    opt.currentText = opt.fontMetrics.elidedText(opt.currentText, Qt::ElideMiddle, size);
+    opt.currentText = opt.fontMetrics.elidedText(opt.currentText, BobUI::ElideMiddle, size);
     painter.drawComplexControl(QStyle::CC_ComboBox, opt);
 
     // draw the icon and text
@@ -4107,8 +4107,8 @@ void QFileDialogListView::setFileDialogPrivate(QFileDialogPrivate *d_pointer)
     setWrapping(true);
     setResizeMode(QListView::Adjust);
     setEditTriggers(QAbstractItemView::EditKeyPressed);
-    setContextMenuPolicy(Qt::CustomContextMenu);
-#if QT_CONFIG(draganddrop)
+    setContextMenuPolicy(BobUI::CustomContextMenu);
+#if BOBUI_CONFIG(draganddrop)
     setDragDropMode(QAbstractItemView::InternalMove);
 #endif
 }
@@ -4121,12 +4121,12 @@ QSize QFileDialogListView::sizeHint() const
 
 void QFileDialogListView::keyPressEvent(QKeyEvent *e)
 {
-#ifdef QT_KEYPAD_NAVIGATION
-    if (QApplication::navigationMode() == Qt::NavigationModeKeypadDirectional) {
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    if (QApplication::navigationMode() == BobUI::NavigationModeKeypadDirectional) {
         QListView::keyPressEvent(e);
         return;
     }
-#endif // QT_KEYPAD_NAVIGATION
+#endif // BOBUI_KEYPAD_NAVIGATION
 
     if (!d_ptr->itemViewKeyboardEvent(e))
         QListView::keyPressEvent(e);
@@ -4140,27 +4140,27 @@ void QFileDialogTreeView::setFileDialogPrivate(QFileDialogPrivate *d_pointer)
     setRootIsDecorated(false);
     setItemsExpandable(false);
     setSortingEnabled(true);
-    header()->setSortIndicator(0, Qt::AscendingOrder);
+    header()->setSortIndicator(0, BobUI::AscendingOrder);
     header()->setStretchLastSection(false);
-    setTextElideMode(Qt::ElideMiddle);
+    setTextElideMode(BobUI::ElideMiddle);
     setEditTriggers(QAbstractItemView::EditKeyPressed);
-    setContextMenuPolicy(Qt::CustomContextMenu);
-#if QT_CONFIG(draganddrop)
+    setContextMenuPolicy(BobUI::CustomContextMenu);
+#if BOBUI_CONFIG(draganddrop)
     setDragDropMode(QAbstractItemView::InternalMove);
 #endif
 }
 
 void QFileDialogTreeView::keyPressEvent(QKeyEvent *e)
 {
-#ifdef QT_KEYPAD_NAVIGATION
-    if (QApplication::navigationMode() == Qt::NavigationModeKeypadDirectional) {
-        QTreeView::keyPressEvent(e);
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    if (QApplication::navigationMode() == BobUI::NavigationModeKeypadDirectional) {
+        BOBUIreeView::keyPressEvent(e);
         return;
     }
-#endif // QT_KEYPAD_NAVIGATION
+#endif // BOBUI_KEYPAD_NAVIGATION
 
     if (!d_ptr->itemViewKeyboardEvent(e))
-        QTreeView::keyPressEvent(e);
+        BOBUIreeView::keyPressEvent(e);
     e->accept();
 }
 
@@ -4173,7 +4173,7 @@ QSize QFileDialogTreeView::sizeHint() const
 
 /*!
     \class QFileDialogLineEdit
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 
@@ -4183,24 +4183,24 @@ QSize QFileDialogTreeView::sizeHint() const
 */
 void QFileDialogLineEdit::keyPressEvent(QKeyEvent *e)
 {
-#ifdef QT_KEYPAD_NAVIGATION
-    if (QApplication::navigationMode() == Qt::NavigationModeKeypadDirectional) {
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    if (QApplication::navigationMode() == BobUI::NavigationModeKeypadDirectional) {
         QLineEdit::keyPressEvent(e);
         return;
     }
-#endif // QT_KEYPAD_NAVIGATION
+#endif // BOBUI_KEYPAD_NAVIGATION
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     int key = e->key();
 #endif
     QLineEdit::keyPressEvent(e);
-#if QT_CONFIG(shortcut)
-    if (!e->matches(QKeySequence::Cancel) && key != Qt::Key_Back)
+#if BOBUI_CONFIG(shortcut)
+    if (!e->matches(QKeySequence::Cancel) && key != BobUI::Key_Back)
 #endif
         e->accept();
 }
 
-#if QT_CONFIG(fscompleter)
+#if BOBUI_CONFIG(fscompleter)
 
 QString QFSCompleter::pathFromIndex(const QModelIndex &index) const
 {
@@ -4241,7 +4241,7 @@ QStringList QFSCompleter::splitPath(const QString &path) const
         doubleSlash.clear();
 #elif defined(Q_OS_UNIX)
     {
-        QString tildeExpanded = qt_tildeExpansion(pathCopy);
+        QString tildeExpanded = bobui_tildeExpansion(pathCopy);
         if (tildeExpanded != pathCopy) {
             QFileSystemModel *dirModel;
             if (proxyModel)
@@ -4255,7 +4255,7 @@ QStringList QFSCompleter::splitPath(const QString &path) const
 #endif
 
 #if defined(Q_OS_WIN)
-    QStringList parts = pathCopy.split(sep, Qt::SkipEmptyParts);
+    QStringList parts = pathCopy.split(sep, BobUI::SkipEmptyParts);
     if (!doubleSlash.isEmpty() && !parts.isEmpty())
         parts[0].prepend(doubleSlash);
     if (pathCopy.endsWith(sep))
@@ -4296,9 +4296,9 @@ QStringList QFSCompleter::splitPath(const QString &path) const
     return parts;
 }
 
-#endif // QT_CONFIG(completer)
+#endif // BOBUI_CONFIG(completer)
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfiledialog.cpp"

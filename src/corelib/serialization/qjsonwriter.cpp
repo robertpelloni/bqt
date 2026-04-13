@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <cmath>
 #include <qlocale.h>
@@ -11,7 +11,7 @@
 #include <private/qnumeric_p.h>
 #include <private/qcborvalue_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QJsonPrivate;
 
@@ -26,7 +26,7 @@ static inline uchar hexdig(uint u)
 static QByteArray escapedString(QStringView s)
 {
     // give it a minimum size to ensure the resize() below always adds enough space
-    QByteArray ba(qMax(s.size(), 16), Qt::Uninitialized);
+    QByteArray ba(qMax(s.size(), 16), BobUI::Uninitialized);
 
     auto ba_const_start = [&]() { return reinterpret_cast<const uchar *>(ba.constData()); };
     uchar *cursor = reinterpret_cast<uchar *>(const_cast<char *>(ba.constData()));
@@ -109,7 +109,7 @@ static void valueContentToJson(const QCborValue &v, QByteArray &json, int indent
         break;
     case QCborValue::Double: {
         const double d = v.toDouble();
-        if (qt_is_finite(d))
+        if (bobui_is_finite(d))
             json += QByteArray::number(d, 'g', QLocale::FloatingPointShortest);
         else
             json += "null"; // +INF || -INF || NaN (see RFC4627#section2.4)
@@ -218,4 +218,4 @@ void Writer::valueToJson(const QCborValue &v, QByteArray &json, int indent, bool
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

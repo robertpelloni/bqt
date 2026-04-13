@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef MSVC_OBJECTMODEL_H
 #define MSVC_OBJECTMODEL_H
@@ -15,7 +15,7 @@
 #include <qmap.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum DotNET {
     NETUnknown = 0,
@@ -828,10 +828,10 @@ public:
     VCPreLinkEventTool();
 };
 
-class VCWinDeployQtTool : public VCToolBase
+class VCWinDeployBobUITool : public VCToolBase
 {
 public:
-    VCWinDeployQtTool() {}
+    VCWinDeployBobUITool() {}
 
 protected:
     bool parseOption(const char *) override { return false; }
@@ -885,7 +885,7 @@ public:
     VCDeploymentTool        deployment;
     VCPreLinkEventTool      preLink;
     VCResourceCompilerTool  resource;
-    VCWinDeployQtTool       windeployqt;
+    VCWinDeployBobUITool       windeploybobui;
 };
 
 struct VCFilterFile
@@ -899,11 +899,11 @@ struct VCFilterFile
     QString                 file;
 };
 
-#ifndef QT_NO_DEBUG_OUTPUT
+#ifndef BOBUI_NO_DEBUG_OUTPUT
 inline QDebug operator<<(QDebug dbg, const VCFilterFile &p)
 {
     dbg.nospace() << "VCFilterFile(file(" << p.file
-                  << ") excludeFromBuild(" << p.excludeFromBuild << "))" << Qt::endl;
+                  << ") excludeFromBuild(" << p.excludeFromBuild << "))" << BobUI::endl;
     return dbg.space();
 }
 #endif
@@ -1132,7 +1132,7 @@ public:
     virtual void write(XmlOutput &, const VCResourceCompilerTool &);
     virtual void write(XmlOutput &, const VCEventTool &);
     virtual void write(XmlOutput &, const VCDeploymentTool &);
-    virtual void write(XmlOutput &, const VCWinDeployQtTool &);
+    virtual void write(XmlOutput &, const VCWinDeployBobUITool &);
     virtual void write(XmlOutput &, const VCConfiguration &);
     virtual void write(XmlOutput &, VCFilter &);
 
@@ -1145,6 +1145,6 @@ private:
     friend class FlatNode;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // MSVC_OBJECTMODEL_H

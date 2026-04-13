@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #ifndef QCUPSJOBWIDGET_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // to version without notice, or even be removed.
 //
@@ -17,17 +17,17 @@
 //
 //
 
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
 #include <private/qcups_p.h>
 
-QT_REQUIRE_CONFIG(cupsjobwidget);
+BOBUI_REQUIRE_CONFIG(cupsjobwidget);
 
 #include <ui_qcupsjobwidget.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QString;
-class QTime;
+class BOBUIime;
 class QPrinter;
 class QPrintDevice;
 
@@ -47,9 +47,9 @@ private Q_SLOTS:
 
 private:
 
-    void setJobHold(QCUPSSupport::JobHoldUntil jobHold = QCUPSSupport::NoHold, QTime holdUntilTime = QTime());
+    void setJobHold(QCUPSSupport::JobHoldUntil jobHold = QCUPSSupport::NoHold, BOBUIime holdUntilTime = BOBUIime());
     QCUPSSupport::JobHoldUntil jobHold() const;
-    QTime jobHoldTime() const;
+    BOBUIime jobHoldTime() const;
 
     void setJobBilling(const QString &jobBilling = QString());
     QString jobBilling() const;
@@ -80,6 +80,6 @@ private:
     Q_DISABLE_COPY_MOVE(QCupsJobWidget)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif  // QCUPSJOBWIDGET_P_H

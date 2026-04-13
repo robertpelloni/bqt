@@ -1,25 +1,25 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qcoreapplication_platform.h>
+#include <BobUICore/qcoreapplication_platform.h>
 
-#include <QtCore/private/qnativeinterface_p.h>
-#include <QtCore/private/qjnihelpers_p.h>
-#include <QtCore/qjniobject.h>
-#if QT_CONFIG(future) && !defined(QT_NO_QOBJECT)
-#include <QtCore/qfuture.h>
-#include <QtCore/qfuturewatcher.h>
-#include <QtCore/qpromise.h>
-#include <QtCore/qtimer.h>
-#include <QtCore/qthreadpool.h>
+#include <BobUICore/private/qnativeinterface_p.h>
+#include <BobUICore/private/qjnihelpers_p.h>
+#include <BobUICore/qjniobject.h>
+#if BOBUI_CONFIG(future) && !defined(BOBUI_NO_QOBJECT)
+#include <BobUICore/qfuture.h>
+#include <BobUICore/qfuturewatcher.h>
+#include <BobUICore/qpromise.h>
+#include <BobUICore/bobuiimer.h>
+#include <BobUICore/bobuihreadpool.h>
 #include <deque>
 #include <memory>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(future) && !defined(QT_NO_QOBJECT)
-static const char qtNativeClassName[] = "org/qtproject/qt/android/QtNative";
+#if BOBUI_CONFIG(future) && !defined(BOBUI_NO_QOBJECT)
+static const char bobuiNativeClassName[] = "org/bobuiproject/bobui/android/BobUINative";
 
 struct PendingRunnable {
     std::function<QVariant()> function;
@@ -38,25 +38,25 @@ Q_CONSTINIT static QBasicMutex g_pendingRunnablesMutex;
 
     Accessed through QCoreApplication::nativeInterface().
 
-    \inmodule QtCore
+    \inmodule BobUICore
     \inheaderfile QCoreApplication
     \ingroup native-interfaces
     \ingroup native-interfaces-qcoreapplication
 */
-QT_DEFINE_NATIVE_INTERFACE(QAndroidApplication);
+BOBUI_DEFINE_NATIVE_INTERFACE(QAndroidApplication);
 
 /*!
     \fn QJniObject QNativeInterface::QAndroidApplication::context()
 
-    Returns the Android context as a \c QtJniTypes::Context. The context
+    Returns the Android context as a \c BobUIJniTypes::Context. The context
     is an \c Activity if the most recently started activity object is valid.
     Otherwise, the context is a \c Service.
 
     \since 6.2
 */
-QtJniTypes::Context QNativeInterface::QAndroidApplication::context()
+BobUIJniTypes::Context QNativeInterface::QAndroidApplication::context()
 {
-    return QtAndroidPrivate::context();
+    return BobUIAndroidPrivate::context();
 }
 
 /*!
@@ -69,7 +69,7 @@ QtJniTypes::Context QNativeInterface::QAndroidApplication::context()
 */
 bool QNativeInterface::QAndroidApplication::isActivityContext()
 {
-    return QtAndroidPrivate::activity().isValid();
+    return BobUIAndroidPrivate::activity().isValid();
 }
 
 /*!
@@ -81,7 +81,7 @@ bool QNativeInterface::QAndroidApplication::isActivityContext()
 */
 int QNativeInterface::QAndroidApplication::sdkVersion()
 {
-    return QtAndroidPrivate::androidSdkVersion();
+    return BobUIAndroidPrivate::androidSdkVersion();
 }
 
 /*!
@@ -95,7 +95,7 @@ int QNativeInterface::QAndroidApplication::sdkVersion()
 */
 void QNativeInterface::QAndroidApplication::hideSplashScreen(int duration)
 {
-    QtAndroidPrivate::activity().callMethod<void>("hideSplashScreen", duration);
+    BobUIAndroidPrivate::activity().callMethod<void>("hideSplashScreen", duration);
 }
 
 /*!
@@ -158,7 +158,7 @@ void QNativeInterface::QAndroidApplication::hideSplashScreen(int duration)
 
     \since 6.2
 */
-#if QT_CONFIG(future) && !defined(QT_NO_QOBJECT)
+#if BOBUI_CONFIG(future) && !defined(BOBUI_NO_QOBJECT)
 QFuture<QVariant> QNativeInterface::QAndroidApplication::runOnAndroidMainThread(
                                                     const std::function<QVariant()> &runnable,
                                                     const QDeadlineTimer timeout)
@@ -168,9 +168,9 @@ QFuture<QVariant> QNativeInterface::QAndroidApplication::runOnAndroidMainThread(
     promise->start();
 
     if (!timeout.isForever()) {
-        QThreadPool::globalInstance()->start([=]() mutable {
+        BOBUIhreadPool::globalInstance()->start([=]() mutable {
             QEventLoop loop;
-            QTimer::singleShot(timeout.remainingTime(), &loop, [&]() {
+            BOBUIimer::singleShot(timeout.remainingTime(), &loop, [&]() {
                 future.cancel();
                 promise->finish();
                 loop.quit();
@@ -186,11 +186,11 @@ QFuture<QVariant> QNativeInterface::QAndroidApplication::runOnAndroidMainThread(
             watcher.setFuture(future);
 
             // we're going to sleep, make sure we don't block
-            // QThreadPool::globalInstance():
+            // BOBUIhreadPool::globalInstance():
 
-            QThreadPool::globalInstance()->releaseThread();
+            BOBUIhreadPool::globalInstance()->releaseThread();
             const auto sg = qScopeGuard([] {
-               QThreadPool::globalInstance()->reserveThread();
+               BOBUIhreadPool::globalInstance()->reserveThread();
             });
             loop.exec();
         });
@@ -204,7 +204,7 @@ QFuture<QVariant> QNativeInterface::QAndroidApplication::runOnAndroidMainThread(
 #endif
     locker.unlock();
 
-    QJniObject::callStaticMethod<void>(qtNativeClassName,
+    QJniObject::callStaticMethod<void>(bobuiNativeClassName,
                                        "runPendingCppRunnablesOnAndroidThread",
                                        "()V");
     return future;
@@ -231,14 +231,14 @@ static void runPendingCppRunnables(JNIEnv */*env*/, jobject /*obj*/)
 }
 #endif
 
-bool QtAndroidPrivate::registerNativeInterfaceNatives(QJniEnvironment &env)
+bool BobUIAndroidPrivate::registerNativeInterfaceNatives(QJniEnvironment &env)
 {
-#if QT_CONFIG(future) && !defined(QT_NO_QOBJECT)
+#if BOBUI_CONFIG(future) && !defined(BOBUI_NO_QOBJECT)
     const JNINativeMethod methods = {"runPendingCppRunnables", "()V", (void *)runPendingCppRunnables};
-    return env.registerNativeMethods(qtNativeClassName, &methods, 1);
+    return env.registerNativeMethods(bobuiNativeClassName, &methods, 1);
 #else
     return true;
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsdirect2dpaintengine.h"
 #include "qwindowsdirect2dplatformpixmap.h"
@@ -9,22 +9,22 @@
 #include "qwindowsdirect2dbitmap.h"
 #include "qwindowsdirect2ddevicecontext.h"
 
-#include <QtGui/private/qwindowsfontdatabase_p.h>
+#include <BobUIGui/private/qwindowsfontdatabase_p.h>
 #include "qwindowsintegration.h"
 
-#include <QtCore/qmath.h>
-#include <QtCore/qstack.h>
-#include <QtCore/qsettings.h>
-#include <QtCore/private/qcomptr_p.h>
-#include <QtGui/private/qpaintengine_p.h>
-#include <QtGui/private/qtextengine_p.h>
-#include <QtGui/private/qfontengine_p.h>
-#include <QtGui/private/qstatictext_p.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qstack.h>
+#include <BobUICore/qsettings.h>
+#include <BobUICore/private/qcomptr_p.h>
+#include <BobUIGui/private/qpaintengine_p.h>
+#include <BobUIGui/private/bobuiextengine_p.h>
+#include <BobUIGui/private/qfontengine_p.h>
+#include <BobUIGui/private/qstatictext_p.h>
 
 #include <d2d1_1.h>
 #include <dwrite_1.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // The enum values below are set as tags on the device context
 // in the various draw methods. When EndDraw is called the device context
@@ -64,7 +64,7 @@ static const qreal MAGICAL_ALIASING_OFFSET = 0.5;
 
 #define D2D_TAG(tag) d->dc()->SetTags(tag, tag)
 
-Q_GUI_EXPORT QImage qt_imageForBrush(int brushStyle, bool invert);
+Q_GUI_EXPORT QImage bobui_imageForBrush(int brushStyle, bool invert);
 
 static inline ID2D1Factory1 *factory()
 {
@@ -77,7 +77,7 @@ static inline D2D1_MATRIX_3X2_F transformFromLine(const QLineF &line, qreal penW
     const qreal angle = -qDegreesToRadians(line.angle());
     const qreal sinA = qSin(angle);
     const qreal cosA = qCos(angle);
-    QTransform transform = QTransform::fromTranslate(line.p1().x() + dashOffset * cosA + sinA * halfWidth,
+    BOBUIransform transform = BOBUIransform::fromTranslate(line.p1().x() + dashOffset * cosA + sinA * halfWidth,
                                                      line.p1().y() + dashOffset * sinA - cosA * halfWidth);
     transform.rotateRadians(angle);
     return to_d2d_matrix_3x2_f(transform);
@@ -302,7 +302,7 @@ public:
             return D2D1_LAYER_OPTIONS1_INITIALIZE_FROM_BACKGROUND;
     }
 
-    void updateTransform(const QTransform &transform)
+    void updateTransform(const BOBUIransform &transform)
     {
         dc()->SetTransform(to_d2d_matrix_3x2_f(transform));
     }
@@ -323,7 +323,7 @@ public:
             D2D_RECT_F rect = {0, 0, 0, 0};
             dc()->PushAxisAlignedClip(rect, antialiasMode());
             pushedClips.push(AxisAlignedClip);
-        } else if (path.isRect() && (q->state()->matrix.type() <= QTransform::TxScale)) {
+        } else if (path.isRect() && (q->state()->matrix.type() <= BOBUIransform::TxScale)) {
             const qreal * const points = path.points();
             D2D_RECT_F rect = {
                 FLOAT(points[0]), // left
@@ -375,17 +375,17 @@ public:
             replayClipOperations();
     }
 
-    void clip(const QVectorPath &path, Qt::ClipOperation operation)
+    void clip(const QVectorPath &path, BobUI::ClipOperation operation)
     {
         switch (operation) {
-        case Qt::NoClip:
+        case BobUI::NoClip:
             clearClips();
             break;
-        case Qt::ReplaceClip:
+        case BobUI::ReplaceClip:
             clearClips();
             pushClip(path);
             break;
-        case Qt::IntersectClip:
+        case BobUI::IntersectClip:
             pushClip(path);
             break;
         }
@@ -466,7 +466,7 @@ public:
         pen.reset();
         pen.qpen = newPen;
 
-        if (newPen.style() == Qt::NoPen)
+        if (newPen.style() == BobUI::NoPen)
             return;
 
         pen.brush = to_d2d_brush(newPen.brush(), &pen.emulate);
@@ -478,32 +478,32 @@ public:
         D2D1_STROKE_STYLE_PROPERTIES1 props = {};
 
         switch (newPen.capStyle()) {
-        case Qt::SquareCap:
+        case BobUI::SquareCap:
             props.startCap = props.endCap = props.dashCap = D2D1_CAP_STYLE_SQUARE;
             break;
-        case Qt::RoundCap:
+        case BobUI::RoundCap:
             props.startCap = props.endCap = props.dashCap = D2D1_CAP_STYLE_ROUND;
             break;
-        case Qt::FlatCap:
+        case BobUI::FlatCap:
         default:
             props.startCap = props.endCap = props.dashCap = D2D1_CAP_STYLE_FLAT;
             break;
         }
 
         switch (newPen.joinStyle()) {
-        case Qt::BevelJoin:
+        case BobUI::BevelJoin:
             props.lineJoin = D2D1_LINE_JOIN_BEVEL;
             break;
-        case Qt::RoundJoin:
+        case BobUI::RoundJoin:
             props.lineJoin = D2D1_LINE_JOIN_ROUND;
             break;
-        case Qt::MiterJoin:
+        case BobUI::MiterJoin:
         default:
             props.lineJoin = D2D1_LINE_JOIN_MITER;
             break;
         }
 
-        props.miterLimit = FLOAT(newPen.miterLimit() * qreal(2.0)); // D2D and Qt miter specs differ
+        props.miterLimit = FLOAT(newPen.miterLimit() * qreal(2.0)); // D2D and BobUI miter specs differ
         props.dashOffset = FLOAT(newPen.dashOffset());
 
         if (newPen.widthF() == 0)
@@ -514,14 +514,14 @@ public:
             props.transformType = D2D1_STROKE_TRANSFORM_TYPE_NORMAL;
 
         switch (newPen.style()) {
-        case Qt::SolidLine:
+        case BobUI::SolidLine:
             props.dashStyle = D2D1_DASH_STYLE_SOLID;
             break;
 
-        case Qt::DotLine:
-        case Qt::DashDotLine:
-        case Qt::DashDotDotLine:
-            // Try and match Qt's raster engine in output as closely as possible
+        case BobUI::DotLine:
+        case BobUI::DashDotLine:
+        case BobUI::DashDotDotLine:
+            // Try and match BobUI's raster engine in output as closely as possible
             if (newPen.widthF() <= 1.0)
                 props.startCap = props.endCap = props.dashCap = D2D1_CAP_STYLE_FLAT;
 
@@ -580,10 +580,10 @@ public:
         *needsEmulation = false;
 
         switch (newBrush.style()) {
-        case Qt::NoBrush:
+        case BobUI::NoBrush:
             break;
 
-        case Qt::SolidPattern:
+        case BobUI::SolidPattern:
         {
             ComPtr<ID2D1SolidColorBrush> solid;
 
@@ -599,19 +599,19 @@ public:
         }
             break;
 
-        case Qt::Dense1Pattern:
-        case Qt::Dense2Pattern:
-        case Qt::Dense3Pattern:
-        case Qt::Dense4Pattern:
-        case Qt::Dense5Pattern:
-        case Qt::Dense6Pattern:
-        case Qt::Dense7Pattern:
-        case Qt::HorPattern:
-        case Qt::VerPattern:
-        case Qt::CrossPattern:
-        case Qt::BDiagPattern:
-        case Qt::FDiagPattern:
-        case Qt::DiagCrossPattern:
+        case BobUI::Dense1Pattern:
+        case BobUI::Dense2Pattern:
+        case BobUI::Dense3Pattern:
+        case BobUI::Dense4Pattern:
+        case BobUI::Dense5Pattern:
+        case BobUI::Dense6Pattern:
+        case BobUI::Dense7Pattern:
+        case BobUI::HorPattern:
+        case BobUI::VerPattern:
+        case BobUI::CrossPattern:
+        case BobUI::BDiagPattern:
+        case BobUI::FDiagPattern:
+        case BobUI::DiagCrossPattern:
         {
             ComPtr<ID2D1BitmapBrush1> bitmapBrush;
             D2D1_BITMAP_BRUSH_PROPERTIES1 bitmapBrushProperties = {
@@ -620,14 +620,14 @@ public:
                 interpolationMode()
             };
 
-            QImage brushImg = qt_imageForBrush(newBrush.style(), false);
+            QImage brushImg = bobui_imageForBrush(newBrush.style(), false);
             brushImg.setColor(0, newBrush.color().rgba());
             brushImg.setColor(1, qRgba(0, 0, 0, 0));
 
             QWindowsDirect2DBitmap bitmap;
-            bool success = bitmap.fromImage(brushImg, Qt::AutoColor);
+            bool success = bitmap.fromImage(brushImg, BobUI::AutoColor);
             if (!success) {
-                qWarning("%s: Could not create Direct2D bitmap from Qt pattern brush image", __FUNCTION__);
+                qWarning("%s: Could not create Direct2D bitmap from BobUI pattern brush image", __FUNCTION__);
                 break;
             }
 
@@ -635,17 +635,17 @@ public:
                                          bitmapBrushProperties,
                                          &bitmapBrush);
             if (FAILED(hr)) {
-                qWarning("%s: Could not create Direct2D bitmap brush for Qt pattern brush: %#lx", __FUNCTION__, hr);
+                qWarning("%s: Could not create Direct2D bitmap brush for BobUI pattern brush: %#lx", __FUNCTION__, hr);
                 break;
             }
 
             hr = bitmapBrush.As(&result);
             if (FAILED(hr))
-                qWarning("%s: Could not convert Direct2D bitmap brush for Qt pattern brush: %#lx", __FUNCTION__, hr);
+                qWarning("%s: Could not convert Direct2D bitmap brush for BobUI pattern brush: %#lx", __FUNCTION__, hr);
         }
             break;
 
-        case Qt::LinearGradientPattern:
+        case BobUI::LinearGradientPattern:
             if (newBrush.gradient()->spread() != QGradient::PadSpread) {
                 *needsEmulation = true;
             } else {
@@ -683,7 +683,7 @@ public:
             }
             break;
 
-        case Qt::RadialGradientPattern:
+        case BobUI::RadialGradientPattern:
             if (newBrush.gradient()->spread() != QGradient::PadSpread) {
                 *needsEmulation = true;
             } else {
@@ -721,11 +721,11 @@ public:
             }
             break;
 
-        case Qt::ConicalGradientPattern:
+        case BobUI::ConicalGradientPattern:
             *needsEmulation = true;
             break;
 
-        case Qt::TexturePattern:
+        case BobUI::TexturePattern:
         {
             ComPtr<ID2D1BitmapBrush1> bitmapBrush;
             D2D1_BITMAP_BRUSH_PROPERTIES1 bitmapBrushProperties = {
@@ -920,7 +920,7 @@ public:
         const bool isPolygon = path.shape() == QVectorPath::PolygonHint && path.elementCount() >= 3;
         const bool implicitClose = isPolygon && (path.hints() & QVectorPath::ImplicitClose);
         const bool skipJoin = !isPolygon // Non-polygons don't require joins
-                || (pen.qpen.joinStyle() == Qt::MiterJoin && qFuzzyIsNull(pen.qpen.miterLimit()));
+                || (pen.qpen.joinStyle() == BobUI::MiterJoin && qFuzzyIsNull(pen.qpen.miterLimit()));
         const qreal *points = path.points();
         const int lastElement = path.elementCount() - (implicitClose ? 1 : 2);
         qreal dashOffset = 0;
@@ -1055,7 +1055,7 @@ bool QWindowsDirect2DPaintEngine::begin(QPaintDevice * pdev)
         QPainterPath p;
         p.addRegion(systemClip());
 
-        ComPtr<ID2D1PathGeometry1> geometry = d->vectorPathToID2D1PathGeometry(qtVectorPathForPath(p));
+        ComPtr<ID2D1PathGeometry1> geometry = d->vectorPathToID2D1PathGeometry(bobuiVectorPathForPath(p));
         if (!geometry)
             return false;
 
@@ -1132,7 +1132,7 @@ void QWindowsDirect2DPaintEngine::setState(QPainterState *s)
 void QWindowsDirect2DPaintEngine::draw(const QVectorPath &path)
 {
     const QBrush &brush = state()->brush;
-    if (qbrush_style(brush) != Qt::NoBrush) {
+    if (qbrush_style(brush) != BobUI::NoBrush) {
         if (emulationRequired(BrushEmulation))
             rasterFill(path, brush);
         else
@@ -1140,7 +1140,7 @@ void QWindowsDirect2DPaintEngine::draw(const QVectorPath &path)
     }
 
     const QPen &pen = state()->pen;
-    if (qpen_style(pen) != Qt::NoPen && qbrush_style(qpen_brush(pen)) != Qt::NoBrush) {
+    if (qpen_style(pen) != BobUI::NoPen && qbrush_style(qpen_brush(pen)) != BobUI::NoBrush) {
         if (emulationRequired(PenEmulation))
             QPaintEngineEx::stroke(path, pen);
         else
@@ -1194,7 +1194,7 @@ void QWindowsDirect2DPaintEngine::stroke(const QVectorPath &path, const QPen &pe
     d->stroke(path);
 }
 
-void QWindowsDirect2DPaintEngine::clip(const QVectorPath &path, Qt::ClipOperation op)
+void QWindowsDirect2DPaintEngine::clip(const QVectorPath &path, BobUI::ClipOperation op)
 {
     Q_D(QWindowsDirect2DPaintEngine);
     d->clip(path, op);
@@ -1402,7 +1402,7 @@ void QWindowsDirect2DPaintEngine::drawEllipse(const QRect &r)
 }
 
 void QWindowsDirect2DPaintEngine::drawImage(const QRectF &rectangle, const QImage &image,
-                                            const QRectF &sr, Qt::ImageConversionFlags flags)
+                                            const QRectF &sr, BobUI::ImageConversionFlags flags)
 {
     Q_D(QWindowsDirect2DPaintEngine);
     D2D_TAG(D2DDebugDrawImageTag);
@@ -1438,7 +1438,7 @@ void QWindowsDirect2DPaintEngine::drawPixmap(const QRectF &r,
         };
         const QVectorPath vp(points, 4, nullptr, QVectorPath::RectangleHint);
         QBrush brush(sr.isValid() ? pm.copy(sr.toRect()) : pm);
-        brush.setTransform(QTransform::fromTranslate(r.x(), r.y()));
+        brush.setTransform(BOBUIransform::fromTranslate(r.x(), r.y()));
         rasterFill(vp, brush);
         return;
     }
@@ -1536,7 +1536,7 @@ void QWindowsDirect2DPaintEngine::drawStaticTextItem(QStaticTextItem *staticText
         // This looks  a little funky because the positions are precalculated
         glyphAdvances[i] = 0;
         glyphOffsets[i].advanceOffset = FLOAT(staticTextItem->glyphPositions[i].x.toReal());
-        // Qt and Direct2D seem to disagree on the direction of the ascender offset...
+        // BobUI and Direct2D seem to disagree on the direction of the ascender offset...
         glyphOffsets[i].ascenderOffset = FLOAT(staticTextItem->glyphPositions[i].y.toReal() * -1);
     }
 
@@ -1550,12 +1550,12 @@ void QWindowsDirect2DPaintEngine::drawStaticTextItem(QStaticTextItem *staticText
                     false);
 }
 
-void QWindowsDirect2DPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
+void QWindowsDirect2DPaintEngine::drawTextItem(const QPointF &p, const BOBUIextItem &textItem)
 {
     Q_D(QWindowsDirect2DPaintEngine);
     D2D_TAG(D2DDebugDrawTextItemTag);
 
-    const auto &ti = static_cast<const QTextItemInt &>(textItem);
+    const auto &ti = static_cast<const BOBUIextItemInt &>(textItem);
     if (ti.glyphs.numGlyphs == 0)
         return;
 
@@ -1587,7 +1587,7 @@ void QWindowsDirect2DPaintEngine::drawTextItem(const QPointF &p, const QTextItem
         glyphOffsets[i].ascenderOffset = FLOAT(ti.glyphs.offsets[i].y.toReal());
     }
 
-    const bool rtl = (ti.flags & QTextItem::RightToLeft);
+    const bool rtl = (ti.flags & BOBUIextItem::RightToLeft);
     const QPointF offset(rtl ? ti.width.toReal() : 0, 0);
 
     d->drawGlyphRun(to_d2d_point_2f(p + offset),
@@ -1632,7 +1632,7 @@ void QWindowsDirect2DPaintEngine::rasterFill(const QVectorPath &path, const QBru
             d->fallbackImage = d->bitmap->toImage();
         } else {
             d->fallbackImage = QImage(d->bitmap->size(), QImage::Format_ARGB32_Premultiplied);
-            d->fallbackImage.fill(Qt::transparent);
+            d->fallbackImage.fill(BobUI::transparent);
         }
     }
 
@@ -1685,7 +1685,7 @@ void QWindowsDirect2DPaintEngine::rasterFill(const QVectorPath &path, const QBru
 
         if (!d->flags.testFlag(EmulateComposition)) { // Emulated fallback will be flattened in end()
             d->updateClipEnabled(false);
-            d->updateTransform(QTransform());
+            d->updateTransform(BOBUIransform());
             drawImage(img.rect(), img, img.rect());
             d->fallbackImage = QImage();
             transformChanged();
@@ -1809,4 +1809,4 @@ void QWindowsDirect2DPaintEngineSuspender::resume()
     d_ptr.reset();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

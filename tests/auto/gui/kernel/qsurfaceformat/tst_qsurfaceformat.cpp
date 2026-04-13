@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qsurfaceformat.h>
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_QSurfaceFormat: public QObject
 {
@@ -16,29 +16,29 @@ private slots:
 
 void tst_QSurfaceFormat::versionCheck_data()
 {
-    QTest::addColumn<int>("formatMajor");
-    QTest::addColumn<int>("formatMinor");
-    QTest::addColumn<int>("compareMajor");
-    QTest::addColumn<int>("compareMinor");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<int>("formatMajor");
+    BOBUIest::addColumn<int>("formatMinor");
+    BOBUIest::addColumn<int>("compareMajor");
+    BOBUIest::addColumn<int>("compareMinor");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("lower major, lower minor")
+    BOBUIest::newRow("lower major, lower minor")
         << 3 << 2 << 2 << 1 << true;
-    QTest::newRow("lower major, same minor")
+    BOBUIest::newRow("lower major, same minor")
         << 3 << 2 << 2 << 2 << true;
-    QTest::newRow("lower major, greater minor")
+    BOBUIest::newRow("lower major, greater minor")
         << 3 << 2 << 2 << 3 << true;
-    QTest::newRow("same major, lower minor")
+    BOBUIest::newRow("same major, lower minor")
         << 3 << 2 << 3 << 1 << true;
-    QTest::newRow("same major, same minor")
+    BOBUIest::newRow("same major, same minor")
         << 3 << 2 << 3 << 2 << true;
-    QTest::newRow("same major, greater minor")
+    BOBUIest::newRow("same major, greater minor")
         << 3 << 2 << 3 << 3 << false;
-    QTest::newRow("greater major, lower minor")
+    BOBUIest::newRow("greater major, lower minor")
         << 3 << 2 << 4 << 1 << false;
-    QTest::newRow("greater major, same minor")
+    BOBUIest::newRow("greater major, same minor")
         << 3 << 2 << 4 << 2 << false;
-    QTest::newRow("greater major, greater minor")
+    BOBUIest::newRow("greater major, greater minor")
         << 3 << 2 << 4 << 3 << false;
 }
 
@@ -61,4 +61,4 @@ void tst_QSurfaceFormat::versionCheck()
 }
 
 #include <tst_qsurfaceformat.moc>
-QTEST_MAIN(tst_QSurfaceFormat);
+BOBUIEST_MAIN(tst_QSurfaceFormat);

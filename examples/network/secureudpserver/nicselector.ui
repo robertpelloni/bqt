@@ -39,7 +39,7 @@
      <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>BobUI::Vertical</enum>
        </property>
        <property name="sizeType">
         <enum>QSizePolicy::Fixed</enum>
@@ -79,7 +79,7 @@
      <item>
       <spacer name="verticalSpacer_2">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>BobUI::Vertical</enum>
        </property>
        <property name="sizeType">
         <enum>QSizePolicy::Fixed</enum>
@@ -97,7 +97,7 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>BobUI::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>

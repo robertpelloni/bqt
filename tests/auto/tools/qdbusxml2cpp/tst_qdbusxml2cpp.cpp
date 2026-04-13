@@ -1,10 +1,10 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QLibraryInfo>
-#include <QtCore/QProcess>
-#include <QtCore/QRegularExpression>
+#include <BobUICore/QProcess>
+#include <BobUICore/QRegularExpression>
 
 // We just need the DBUS_TYPE_* constants, so use our own copy
 #include "../../../../src/dbus/dbus_minimal_p.h"
@@ -131,20 +131,20 @@ static void checkTwoFiles(const QString &headerName, const QString &sourceName, 
 
 void tst_qdbusxml2cpp::initTestCase_data()
 {
-    QTest::addColumn<int>("outputMode");
-    QTest::addColumn<QString>("commandLineArg");
-    QTest::newRow("interface") << int(Interface) << "-p";
-    QTest::newRow("adaptor") << int(Adaptor) << "-a";
+    BOBUIest::addColumn<int>("outputMode");
+    BOBUIest::addColumn<QString>("commandLineArg");
+    BOBUIest::newRow("interface") << int(Interface) << "-p";
+    BOBUIest::newRow("adaptor") << int(Adaptor) << "-a";
 }
 
 void tst_qdbusxml2cpp::process_data()
 {
-    QTest::addColumn<QString>("xmlSnippet");
-    QTest::addColumn<QRegularExpression>("interfaceSearch");
-    QTest::addColumn<QRegularExpression>("adaptorSearch");
+    BOBUIest::addColumn<QString>("xmlSnippet");
+    BOBUIest::addColumn<QRegularExpression>("interfaceSearch");
+    BOBUIest::addColumn<QRegularExpression>("adaptorSearch");
 
     // -- class info --
-    QTest::newRow("classinfo")
+    BOBUIest::newRow("classinfo")
             << ""
             << QRegularExpression("staticInterfaceName\\(\\)\\s+"
                                   "{ return \"local\\.name\\.is\\.not\\.important\"\\; }")
@@ -155,29 +155,29 @@ void tst_qdbusxml2cpp::process_data()
         QRegularExpression rx(QString("\\bQ_PROPERTY\\(%1 PropertyIsPresent "
                                                       "READ propertyIsPresent WRITE setPropertyIsPresent\\b")
                                               .arg(basicTypeList[i].cppType));
-        QTest::newRow(QByteArray("property-") + basicTypeList[i].dbusType)
+        BOBUIest::newRow(QByteArray("property-") + basicTypeList[i].dbusType)
                 << QString("<property type=\"%1\" name=\"PropertyIsPresent\" access=\"readwrite\" />")
                    .arg(basicTypeList[i].dbusType)
                 << rx << rx;
     }
 
-    QTest::newRow("property-readonly-multi")
+    BOBUIest::newRow("property-readonly-multi")
             << "<property type=\"i\" name=\"Value\" access=\"read\"></property>"
             << QRegularExpression("\\bQ_PROPERTY\\(int Value READ value(?! WRITE)")
             << QRegularExpression("\\bQ_PROPERTY\\(int Value READ value(?! WRITE)");
-    QTest::newRow("property-readonly")
+    BOBUIest::newRow("property-readonly")
             << "<property type=\"i\" name=\"Value\" access=\"read\" />"
             << QRegularExpression("\\bQ_PROPERTY\\(int Value READ value(?! WRITE)")
             << QRegularExpression("\\bQ_PROPERTY\\(int Value READ value(?! WRITE)");
-    QTest::newRow("property-writeonly")
+    BOBUIest::newRow("property-writeonly")
             << "<property type=\"i\" name=\"Value\" access=\"write\" />"
             << QRegularExpression("\\bQ_PROPERTY\\(int Value WRITE setValue\\b")
             << QRegularExpression("\\bQ_PROPERTY\\(int Value WRITE setValue\\b");
 
-    QTest::newRow("property-getter-setter")
+    BOBUIest::newRow("property-getter-setter")
             << "<property type=\"b\" name=\"Enabled\" access=\"readwrite\">"
-               "<annotation name=\"org.qtproject.QtDBus.PropertyGetter\" value=\"wasEnabled\" />"
-               "<annotation name=\"org.qtproject.QtDBus.PropertySetter\" value=\"setEnabledFlag\" />"
+               "<annotation name=\"org.bobuiproject.BobUIDBus.PropertyGetter\" value=\"wasEnabled\" />"
+               "<annotation name=\"org.bobuiproject.BobUIDBus.PropertySetter\" value=\"setEnabledFlag\" />"
                "</property>"
             << QRegularExpression("\\bQ_PROPERTY\\(bool Enabled READ wasEnabled WRITE setEnabledFlag\\b.*"
                                   "\\bbool wasEnabled\\(\\) const.*" // no semi-colon
@@ -186,16 +186,16 @@ void tst_qdbusxml2cpp::process_data()
                                   "\\bbool wasEnabled\\(\\) const;.*" // has semi-colon
                                   "\\bvoid setEnabledFlag\\(bool", QRegularExpression::DotMatchesEverythingOption);
 
-    QTest::newRow("property-complex")
+    BOBUIest::newRow("property-complex")
             << "<property type=\"(ii)\" name=\"Position\" access=\"readwrite\">"
-               "<annotation name=\"org.qtproject.QtDBus.QtTypeName\" value=\"Point\"/>"
+               "<annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName\" value=\"Point\"/>"
                "</property>"
             << QRegularExpression("\\bQ_PROPERTY\\(Point Position READ position WRITE setPosition\\b")
             << QRegularExpression("\\bQ_PROPERTY\\(Point Position READ position WRITE setPosition\\b");
 
     // -- methods --
     for (int i = 0; i < basicTypeCount; ++i) {
-        QTest::newRow(QByteArray("method-") + basicTypeList[i].dbusType)
+        BOBUIest::newRow(QByteArray("method-") + basicTypeList[i].dbusType)
                 << QString("<method name=\"Method\">"
                            "<arg type=\"%1\" direction=\"out\"/>"
                            "<arg type=\"%1\" direction=\"in\"/>"
@@ -209,22 +209,22 @@ void tst_qdbusxml2cpp::process_data()
                                       .arg(basicTypeList[i].cppType), QRegularExpression::DotMatchesEverythingOption);
     }
 
-    QTest::newRow("method-name")
+    BOBUIest::newRow("method-name")
         << "<method name=\"Method\">"
             "<arg type=\"s\" direction=\"in\"/>"
-            "<annotation name=\"org.qtproject.QtDBus.MethodName\" value=\"MethodRenamed\" />"
+            "<annotation name=\"org.bobuiproject.BobUIDBus.MethodName\" value=\"MethodRenamed\" />"
             "</method>"
         << QRegularExpression("Q_SLOTS:.*QDBusPendingReply<> MethodRenamed\\(const QString &\\w*",
                                 QRegularExpression::DotMatchesEverythingOption)
         << QRegularExpression("Q_SLOTS:.*void MethodRenamed\\(const QString &\\w*",
                                 QRegularExpression::DotMatchesEverythingOption);
 
-    QTest::newRow("method-complex")
+    BOBUIest::newRow("method-complex")
             << "<method name=\"Method\">"
                "<arg type=\"(dd)\" direction=\"in\"/>"
                "<arg type=\"(ii)\" direction=\"out\"/>"
-               "<annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"Point\"/>"
-               "<annotation name=\"org.qtproject.QtDBus.QtTypeName.In0\" value=\"PointF\"/>"
+               "<annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"Point\"/>"
+               "<annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\" value=\"PointF\"/>"
                "</method>"
             << QRegularExpression("Q_SLOTS:.*\\bQDBusPendingReply<Point> Method\\(PointF ",
                                   QRegularExpression::DotMatchesEverythingOption)
@@ -233,7 +233,7 @@ void tst_qdbusxml2cpp::process_data()
                                   ".*Point out0{};",
                                   QRegularExpression::DotMatchesEverythingOption);
 
-    QTest::newRow("method-ss")
+    BOBUIest::newRow("method-ss")
             << "<method name=\"Method\">"
                "<arg type=\"s\" direction=\"in\"/>"
                "<arg type=\"s\" direction=\"in\"/>"
@@ -246,7 +246,7 @@ void tst_qdbusxml2cpp::process_data()
             << QRegularExpression("Q_SLOTS:.*QString Method\\(const QString &\\w*, const QString &\\w*, QString &",
                                   QRegularExpression::DotMatchesEverythingOption);
 
-    QTest::newRow("method-deprecated-0out")
+    BOBUIest::newRow("method-deprecated-0out")
             << "<method name=\"Method\">"
                "<annotation name=\"org.freedesktop.DBus.Deprecated\" value=\"true\"/>"
                "</method>"
@@ -255,7 +255,7 @@ void tst_qdbusxml2cpp::process_data()
             << QRegularExpression("Q_SLOTS:.*\n\\s*void Method\\(\\)",  // no Q_DECL_DEPRECATED
                                   QRegularExpression::DotMatchesEverythingOption);
 
-    QTest::newRow("method-deprecated-2out")
+    BOBUIest::newRow("method-deprecated-2out")
             << "<method name=\"Method\">"
                "<annotation name=\"org.freedesktop.DBus.Deprecated\" value=\"true\"/>"
                "<arg type=\"s\" direction=\"out\"/>"
@@ -267,7 +267,7 @@ void tst_qdbusxml2cpp::process_data()
             << QRegularExpression("Q_SLOTS:.*\n\\s*QString Method\\(QString &", // no Q_DECL_DEPRECATED
                                   QRegularExpression::DotMatchesEverythingOption);
 
-    QTest::newRow("method-noreply")
+    BOBUIest::newRow("method-noreply")
             << "<method name=\"Method\">"
                "<annotation name=\"org.freedesktop.DBus.Method.NoReply\" value=\"true\"/>"
                "</method>"
@@ -276,7 +276,7 @@ void tst_qdbusxml2cpp::process_data()
             << QRegularExpression("Q_SLOTS:.*Q_NOREPLY void Method\\(",
                                   QRegularExpression::DotMatchesEverythingOption);
 
-    QTest::newRow("method-deprecated-noreply")
+    BOBUIest::newRow("method-deprecated-noreply")
             << "<method name=\"Method\">"
                "<annotation name=\"org.freedesktop.DBus.Method.NoReply\" value=\"true\"/>"
                "<annotation name=\"org.freedesktop.DBus.Deprecated\" value=\"true\"/>"
@@ -291,7 +291,7 @@ void tst_qdbusxml2cpp::process_data()
         QRegularExpression rx(QString("Q_SIGNALS:.*\\bvoid Signal\\((const )?%1\\b")
                               .arg(basicTypeList[i].cppType),
                               QRegularExpression::DotMatchesEverythingOption);
-        QTest::newRow(QByteArray("signal-") + basicTypeList[i].dbusType)
+        BOBUIest::newRow(QByteArray("signal-") + basicTypeList[i].dbusType)
                 << QString("<signal name=\"Signal\">"
                            "<arg type=\"%1\"/>"
                            "</signal>")
@@ -301,14 +301,14 @@ void tst_qdbusxml2cpp::process_data()
 
     QRegularExpression rx(R"(Q_SIGNALS:.*\b\Qvoid Signal(const QVariantMap &map);\E)",
                           QRegularExpression::DotMatchesEverythingOption);
-    QTest::newRow("signal-complex")
+    BOBUIest::newRow("signal-complex")
             << R"(<signal name="Signal">
                     <arg type="a{sv}" name="map"/>
-                    <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QVariantMap"/>"
+                    <annotation name="org.bobuiproject.BobUIDBus.BobUITypeName.Out0" value="QVariantMap"/>"
                   </signal>)"
             << rx << rx;
 
-    QTest::newRow("signal-deprecated")
+    BOBUIest::newRow("signal-deprecated")
             << R"(<signal name="Signal">
                     <annotation name="org.freedesktop.DBus.Deprecated" value="true"/>
                   </signal>)"
@@ -330,7 +330,7 @@ void tst_qdbusxml2cpp::process()
     QProcess process;
     QStringList flags = {"-", "-N"};
     runTool(process, xmlSnippet.toLatin1(), flags);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     QByteArray errOutput = process.readAllStandardError();
     QVERIFY2(errOutput.isEmpty(), errOutput);
@@ -347,11 +347,11 @@ void tst_qdbusxml2cpp::process()
 
 void tst_qdbusxml2cpp::includeStyle_data()
 {
-    QTest::addColumn<bool>("isGlobal");
-    QTest::addColumn<QByteArray>("expected");
+    BOBUIest::addColumn<bool>("isGlobal");
+    BOBUIest::addColumn<QByteArray>("expected");
 
-    QTest::newRow("localInclude") <<  false << QByteArray("#include \"test.hpp\"");
-    QTest::newRow("globalInclude") <<  true << QByteArray("#include <test.hpp>");
+    BOBUIest::newRow("localInclude") <<  false << QByteArray("#include \"test.hpp\"");
+    BOBUIest::newRow("globalInclude") <<  true << QByteArray("#include <test.hpp>");
 }
 
 void tst_qdbusxml2cpp::includeStyle()
@@ -375,37 +375,37 @@ void tst_qdbusxml2cpp::includeStyle()
 
 void tst_qdbusxml2cpp::missingAnnotation_data()
 {
-    QTest::addColumn<QString>("xmlSnippet");
-    QTest::addColumn<QString>("annotationName");
-    QTest::addColumn<QString>("location");
+    BOBUIest::addColumn<QString>("xmlSnippet");
+    BOBUIest::addColumn<QString>("annotationName");
+    BOBUIest::addColumn<QString>("location");
 
-    QTest::newRow("property")
+    BOBUIest::newRow("property")
             << R"(<property type="%1" name="name" access="readwrite"/>)"
-            << "org.qtproject.QtDBus.QtTypeName"
+            << "org.bobuiproject.BobUIDBus.BobUITypeName"
             << "7:2";
-    QTest::newRow("method-in")
+    BOBUIest::newRow("method-in")
             << R"(<method name="Method">
                     <arg type="%1" name="name" direction="in"/>
                   </method>)"
-            << "org.qtproject.QtDBus.QtTypeName.In0"
+            << "org.bobuiproject.BobUIDBus.BobUITypeName.In0"
             << "8:22";
-    QTest::newRow("method-out")
+    BOBUIest::newRow("method-out")
             << R"(<method name="Method">
                     <arg type="%1" name="name" direction="out"/>
                   </method>)"
-            << "org.qtproject.QtDBus.QtTypeName.Out0"
+            << "org.bobuiproject.BobUIDBus.BobUITypeName.Out0"
             << "8:22";
-    QTest::newRow("signal")
+    BOBUIest::newRow("signal")
             << R"(<signal name="Signal">
                     <arg type="%1" name="name"/>
                   </signal>)"
-            << "org.qtproject.QtDBus.QtTypeName.Out0"
+            << "org.bobuiproject.BobUIDBus.BobUITypeName.Out0"
             << "8:22";
-    QTest::newRow("signal-out")
+    BOBUIest::newRow("signal-out")
             << R"(<signal name="Signal">
                     <arg type="%1" name="name" direction="out"/>
                   </signal>)"
-            << "org.qtproject.QtDBus.QtTypeName.Out0"
+            << "org.bobuiproject.BobUIDBus.BobUITypeName.Out0"
             << "8:22";
 }
 
@@ -419,7 +419,7 @@ void tst_qdbusxml2cpp::missingAnnotation()
     QProcess process;
     QStringList flags = {"-", "-N"};
     runTool(process, xmlSnippet.arg(type).toLatin1(),flags);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     // it must have failed
     QString errOutput = QString::fromLatin1(process.readAllStandardError().trimmed());
@@ -436,21 +436,21 @@ void tst_qdbusxml2cpp::missingAnnotation()
 
 void tst_qdbusxml2cpp::includeMoc_data()
 {
-    QTest::addColumn<QString>("filenames");
-    QTest::addColumn<QByteArray>("expected");
-    QTest::addColumn<QByteArray>("warning");
+    BOBUIest::addColumn<QString>("filenames");
+    BOBUIest::addColumn<QByteArray>("expected");
+    BOBUIest::addColumn<QByteArray>("warning");
 
-    QTest::newRow("combined-h") << "foo.h" << QByteArray("#include \"foo.moc\"") << QByteArray("");
-    QTest::newRow("combined-cpp") << "foo.cpp" << QByteArray("#include \"foo.moc\"") << QByteArray("");
-    QTest::newRow("combined-cc") << "foo.cc" << QByteArray("#include \"foo.moc\"") << QByteArray("");
-    QTest::newRow("without extension") << "foo" << QByteArray("#include \"moc_foo.cpp\"") << QByteArray("");
-    QTest::newRow("cpp-only") << ":foo.cpp" << QByteArray("#include \"moc_foo.cpp\"")
+    BOBUIest::newRow("combined-h") << "foo.h" << QByteArray("#include \"foo.moc\"") << QByteArray("");
+    BOBUIest::newRow("combined-cpp") << "foo.cpp" << QByteArray("#include \"foo.moc\"") << QByteArray("");
+    BOBUIest::newRow("combined-cc") << "foo.cc" << QByteArray("#include \"foo.moc\"") << QByteArray("");
+    BOBUIest::newRow("without extension") << "foo" << QByteArray("#include \"moc_foo.cpp\"") << QByteArray("");
+    BOBUIest::newRow("cpp-only") << ":foo.cpp" << QByteArray("#include \"moc_foo.cpp\"")
                               << QByteArray("warning: no header name is provided, assuming it to be \"foo.h\"");
-    QTest::newRow("header-and-cpp") << "foo_h.h:foo.cpp" << QByteArray("#include \"moc_foo_h.cpp\"") << QByteArray("");
+    BOBUIest::newRow("header-and-cpp") << "foo_h.h:foo.cpp" << QByteArray("#include \"moc_foo_h.cpp\"") << QByteArray("");
 
-    QTest::newRow("combined-cpp with dots") << "foo.bar.cpp" << QByteArray("#include \"foo.bar.moc\"") << QByteArray("");
-    QTest::newRow("without extension with dots") << "foo.bar" << QByteArray("#include \"moc_foo.bar.cpp\"") << QByteArray("");
-    QTest::newRow("header-and-cpp with dots") << "foo.bar_h.h:foo.bar.cpp" << QByteArray("#include \"moc_foo.bar_h.cpp\"") << QByteArray("");
+    BOBUIest::newRow("combined-cpp with dots") << "foo.bar.cpp" << QByteArray("#include \"foo.bar.moc\"") << QByteArray("");
+    BOBUIest::newRow("without extension with dots") << "foo.bar" << QByteArray("#include \"moc_foo.bar.cpp\"") << QByteArray("");
+    BOBUIest::newRow("header-and-cpp with dots") << "foo.bar_h.h:foo.bar.cpp" << QByteArray("#include \"moc_foo.bar_h.cpp\"") << QByteArray("");
 }
 
 void tst_qdbusxml2cpp::includeMoc()
@@ -490,10 +490,10 @@ void tst_qdbusxml2cpp::includeMoc()
 
 void tst_qdbusxml2cpp::customNamespace_data()
 {
-    QTest::addColumn<QByteArray>("namesp");
+    BOBUIest::addColumn<QByteArray>("namesp");
 
-    QTest::newRow("simple") << QByteArray("lancetest");
-    QTest::newRow("double") << QByteArray("lance::test");
+    BOBUIest::newRow("simple") << QByteArray("lancetest");
+    BOBUIest::newRow("double") << QByteArray("lance::test");
 }
 
 void tst_qdbusxml2cpp::customNamespace()
@@ -533,6 +533,6 @@ void tst_qdbusxml2cpp::customNamespace()
     }
 }
 
-QTEST_MAIN(tst_qdbusxml2cpp)
+BOBUIEST_MAIN(tst_qdbusxml2cpp)
 
 #include "tst_qdbusxml2cpp.moc"

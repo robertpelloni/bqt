@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qvariant.h>
 
@@ -26,9 +26,9 @@ void tst_QGuiVariantNoApplication::variantWithoutApplication()
 {
     QVariant v = QString("red");
 
-    QCOMPARE(qvariant_cast<QColor>(v), QColor(Qt::red));
+    QCOMPARE(qvariant_cast<QColor>(v), QColor(BobUI::red));
 }
 
 
-QTEST_APPLESS_MAIN(tst_QGuiVariantNoApplication)
+BOBUIEST_APPLESS_MAIN(tst_QGuiVariantNoApplication)
 #include "main.moc"

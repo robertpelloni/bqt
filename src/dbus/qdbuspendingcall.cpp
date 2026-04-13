@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbuspendingcall.h"
 #include "qdbuspendingcall_p.h"
@@ -14,11 +14,11 @@
 #include <private/qobject_p.h>
 #include <private/qlocking_p.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QDBusPendingCall
@@ -96,7 +96,7 @@ using namespace Qt::StringLiterals;
 void QDBusPendingCallWatcherHelper::add(QDBusPendingCallWatcher *watcher)
 {
     connect(this, &QDBusPendingCallWatcherHelper::finished, watcher,
-            [watcher] { Q_EMIT watcher->finished(watcher); }, Qt::QueuedConnection);
+            [watcher] { Q_EMIT watcher->finished(watcher); }, BobUI::QueuedConnection);
 }
 
 QDBusPendingCallPrivate::~QDBusPendingCallPrivate()
@@ -199,7 +199,7 @@ void QDBusPendingCallPrivate::checkReceivedSignature()
 
 void QDBusPendingCallPrivate::waitForFinished()
 {
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
 
     if (replyMessage.type() != QDBusMessage::InvalidMessage)
         return;                 // already finished
@@ -212,7 +212,7 @@ void QDBusPendingCallPrivate::waitForFinishedWithGui()
     QEventLoop loop;
 
     {
-        const auto locker = qt_scoped_lock(mutex);
+        const auto locker = bobui_scoped_lock(mutex);
         if (replyMessage.type() != QDBusMessage::InvalidMessage)
             return; // already finished
 
@@ -268,7 +268,7 @@ QDBusPendingCall::~QDBusPendingCall()
     // d deleted by QExplicitlySharedDataPointer
 }
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QDBusPendingCallPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QDBusPendingCallPrivate)
 
 /*!
     \fn QDBusPendingCall &QDBusPendingCall::operator=(QDBusPendingCall &&other)
@@ -337,7 +337,7 @@ bool QDBusPendingCall::isFinished() const
     if (!d)
         return true; // considered finished
 
-    const auto locker = qt_scoped_lock(d->mutex);
+    const auto locker = bobui_scoped_lock(d->mutex);
     return d->replyMessage.type() != QDBusMessage::InvalidMessage;
 }
 
@@ -359,7 +359,7 @@ bool QDBusPendingCall::isValid() const
 {
     if (!d)
         return false;
-    const auto locker = qt_scoped_lock(d->mutex);
+    const auto locker = bobui_scoped_lock(d->mutex);
     return d->replyMessage.type() == QDBusMessage::ReplyMessage;
 }
 
@@ -376,7 +376,7 @@ bool QDBusPendingCall::isError() const
 {
     if (!d)
         return true; // considered finished and an error
-    const auto locker = qt_scoped_lock(d->mutex);
+    const auto locker = bobui_scoped_lock(d->mutex);
     return d->replyMessage.type() == QDBusMessage::ErrorMessage;
 }
 
@@ -391,7 +391,7 @@ bool QDBusPendingCall::isError() const
 QDBusError QDBusPendingCall::error() const
 {
     if (d) {
-        const auto locker = qt_scoped_lock(d->mutex);
+        const auto locker = bobui_scoped_lock(d->mutex);
         return QDBusError(d->replyMessage);
     }
 
@@ -416,7 +416,7 @@ QDBusMessage QDBusPendingCall::reply() const
 {
     if (!d)
         return QDBusMessage::createError(error());
-    const auto locker = qt_scoped_lock(d->mutex);
+    const auto locker = bobui_scoped_lock(d->mutex);
     return d->replyMessage;
 }
 
@@ -495,14 +495,14 @@ QDBusPendingCallWatcher::QDBusPendingCallWatcher(const QDBusPendingCall &call, Q
     : QObject(parent), QDBusPendingCall(call)
 {
     if (d) {                    // QDBusPendingCall::d
-        const auto locker = qt_scoped_lock(d->mutex);
+        const auto locker = bobui_scoped_lock(d->mutex);
         if (!d->watcherHelper) {
             d->watcherHelper = new QDBusPendingCallWatcherHelper;
             if (d->replyMessage.type() != QDBusMessage::InvalidMessage) {
                 // cause a signal emission anyways
                 QMetaObject::invokeMethod(d->watcherHelper,
                                           &QDBusPendingCallWatcherHelper::finished,
-                                          Qt::QueuedConnection);
+                                          BobUI::QueuedConnection);
             }
         }
         d->watcherHelper->add(this);
@@ -542,6 +542,6 @@ BOBUI_END_NAMESPACE
 
 #include "moc_qdbuspendingcall_p.cpp"
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 
 #include "moc_qdbuspendingcall.cpp"

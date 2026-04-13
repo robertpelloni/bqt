@@ -1,9 +1,9 @@
 // Copyright (C) 2015 Konstantin Ritt <ritt.ks@gmail.com>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsystemsemaphore.h"
 #include "qsystemsemaphore_p.h"
@@ -12,7 +12,7 @@
 #include <qfile.h>
 #include <qcoreapplication.h>
 
-#if QT_CONFIG(posix_sem)
+#if BOBUI_CONFIG(posix_sem)
 
 #include <sys/types.h>
 #include <fcntl.h>
@@ -21,9 +21,9 @@
 #ifdef Q_OS_UNIX
 #  include "private/qcore_unix_p.h"
 #else
-#  define QT_EINTR_LOOP_VAL(var, val, cmd)       \
+#  define BOBUI_EINTR_LOOP_VAL(var, val, cmd)       \
     (void)var; var = cmd
-#  define QT_EINTR_LOOP(var, cmd)    QT_EINTR_LOOP_VAL(var, -1, cmd)
+#  define BOBUI_EINTR_LOOP(var, cmd)    BOBUI_EINTR_LOOP_VAL(var, -1, cmd)
 #endif
 
 // OpenBSD 4.2 doesn't define EIDRM, see BUGS section:
@@ -32,9 +32,9 @@
 #define EIDRM EINVAL
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 bool QSystemSemaphorePosix::runtimeSupportCheck()
 {
@@ -140,7 +140,7 @@ bool QSystemSemaphorePosix::modifySemaphore(QSystemSemaphorePrivate *self, int c
                 // rollback changes to preserve the SysV semaphore behavior
                 for ( ; cnt < count; ++cnt) {
                     int res;
-                    QT_EINTR_LOOP(res, ::sem_wait(semaphore));
+                    BOBUI_EINTR_LOOP(res, ::sem_wait(semaphore));
                 }
                 return false;
             }
@@ -148,7 +148,7 @@ bool QSystemSemaphorePosix::modifySemaphore(QSystemSemaphorePrivate *self, int c
         } while (cnt > 0);
     } else {
         int res;
-        QT_EINTR_LOOP(res, ::sem_wait(semaphore));
+        BOBUI_EINTR_LOOP(res, ::sem_wait(semaphore));
         if (res == -1) {
             // If the semaphore was removed be nice and create it and then modifySemaphore again
             if (errno == EINVAL || errno == EIDRM) {
@@ -167,6 +167,6 @@ bool QSystemSemaphorePosix::modifySemaphore(QSystemSemaphorePrivate *self, int c
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(posix_sem)
+#endif // BOBUI_CONFIG(posix_sem)

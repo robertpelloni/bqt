@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QMainWindow>
@@ -13,9 +13,9 @@ int main( int argc, char ** argv )
 {
     QApplication a( argc, argv );
 
-    QCoreApplication::setApplicationName("Qt QOpenGLWidget Example");
-    QCoreApplication::setOrganizationName("QtProject");
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setApplicationName("BobUI QOpenGLWidget Example");
+    QCoreApplication::setOrganizationName("BobUIProject");
+    QCoreApplication::setApplicationVersion(BOBUI_VERSION_STR);
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::applicationName());
     parser.addHelpOption();

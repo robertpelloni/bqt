@@ -1,4 +1,4 @@
-/* dummy stylesheet to reproduce QTBUG-100433 for QToolButton
+/* dummy stylesheet to reproduce BOBUIBUG-100433 for BOBUIoolButton
 QDummyView {
     alternate-background-color: yellow;
 }

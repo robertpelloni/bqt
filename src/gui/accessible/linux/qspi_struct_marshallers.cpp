@@ -1,35 +1,35 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qspi_struct_marshallers_p.h"
 
 #include <atspi/atspi-constants.h>
-#include <QtCore/qdebug.h>
-#include <QtDBus/qdbusmetatype.h>
+#include <BobUICore/qdebug.h>
+#include <BobUIDBus/qdbusmetatype.h>
 
 #include "qspiaccessiblebridge_p.h"
 
-#if QT_CONFIG(accessibility)
-QT_BEGIN_NAMESPACE
+#if BOBUI_CONFIG(accessibility)
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QSpiIntList)
-QT_IMPL_METATYPE_EXTERN(QSpiUIntList)
-QT_IMPL_METATYPE_EXTERN(QSpiObjectReference)
-QT_IMPL_METATYPE_EXTERN(QSpiObjectReferenceArray)
-QT_IMPL_METATYPE_EXTERN(QSpiAccessibleCacheItem)
-QT_IMPL_METATYPE_EXTERN(QSpiAccessibleCacheArray)
-QT_IMPL_METATYPE_EXTERN(QSpiAction)
-QT_IMPL_METATYPE_EXTERN(QSpiActionArray)
-QT_IMPL_METATYPE_EXTERN(QSpiEventListener)
-QT_IMPL_METATYPE_EXTERN(QSpiEventListenerArray)
-QT_IMPL_METATYPE_EXTERN(QSpiRelationArrayEntry)
-QT_IMPL_METATYPE_EXTERN(QSpiRelationArray)
-QT_IMPL_METATYPE_EXTERN(QSpiTextRange)
-QT_IMPL_METATYPE_EXTERN(QSpiTextRangeList)
-QT_IMPL_METATYPE_EXTERN(QSpiAttributeSet)
-QT_IMPL_METATYPE_EXTERN(QSpiDeviceEvent)
-QT_IMPL_METATYPE_EXTERN(QSpiMatchRule)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiIntList)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiUIntList)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiObjectReference)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiObjectReferenceArray)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiAccessibleCacheItem)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiAccessibleCacheArray)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiAction)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiActionArray)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiEventListener)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiEventListenerArray)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiRelationArrayEntry)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiRelationArray)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiTextRange)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiTextRangeList)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiAttributeSet)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiDeviceEvent)
+BOBUI_IMPL_METATYPE_EXTERN(QSpiMatchRule)
 
 QSpiObjectReference::QSpiObjectReference()
     : path(QDBusObjectPath(ATSPI_DBUS_PATH_NULL))
@@ -231,5 +231,5 @@ void qSpiInitializeStructTypes()
     qDBusRegisterMetaType<QSpiRelationArray>();
 }
 
-QT_END_NAMESPACE
-#endif // QT_CONFIG(accessibility)
+BOBUI_END_NAMESPACE
+#endif // BOBUI_CONFIG(accessibility)

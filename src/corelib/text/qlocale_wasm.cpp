@@ -1,6 +1,6 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qlocale_p.h"
 
@@ -9,9 +9,9 @@
 #include <string>
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
 
 namespace {
 
@@ -20,10 +20,10 @@ QStringList navigatorLanguages()
     using emscripten::val;
     const val navigator = val::global("navigator");
     const auto languages = emscripten::vecFromJSArray<std::string>(navigator["languages"]);
-    QStringList qtLanguages;
+    QStringList bobuiLanguages;
     for (const std::string& language : languages)
-        qtLanguages.append(QString::fromStdString(language));
-    return qtLanguages;
+        bobuiLanguages.append(QString::fromStdString(language));
+    return bobuiLanguages;
 }
 
 }
@@ -50,6 +50,6 @@ QLocale QSystemLocale::fallbackLocale() const
     return QLocale(languages[0]);
 }
 
-#endif // QT_NO_SYSTEMLOCALE
+#endif // BOBUI_NO_SYSTEMLOCALE
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

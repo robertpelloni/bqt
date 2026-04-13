@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QSet>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QPainter>
-#include <QtGui/QImage>
+#include <BOBUIest>
+#include <BobUICore/QSet>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/QImage>
 
 #include <qstatictext.h>
 #include <qpaintengine.h>
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 #include <private/qstatictext_p.h>
 #endif
 
@@ -21,7 +21,7 @@ static inline QImage blankSquare()
     // a "blank" square; we compare against in our testfunctions to verify
     // that we have actually painted something
     QPixmap pm(1000, 1000);
-    pm.fill(Qt::white);
+    pm.fill(BobUI::white);
     return pm.toImage();
 }
 
@@ -59,16 +59,16 @@ private slots:
     void setPenRichText();
     void richTextOverridesPen();
 
-    void unprintableCharacter_qtbug12614();
+    void unprintableCharacter_bobuibug12614();
 
-#ifdef QT_BUILD_INTERNAL
-    void underlinedColor_qtbug20159();
+#ifdef BOBUI_BUILD_INTERNAL
+    void underlinedColor_bobuibug20159();
     void textDocumentColor();
 #endif
 
     void multiLine();
 
-    void size_qtbug65836();
+    void size_bobuibug65836();
 
 private:
     bool supportsTransformations() const;
@@ -87,20 +87,20 @@ void tst_QStaticText::copyConstructor()
 {
     QStaticText text(QLatin1String("My text"));
 
-    QTextOption textOption(Qt::AlignRight);
+    BOBUIextOption textOption(BobUI::AlignRight);
     text.setTextOption(textOption);
 
     text.setPerformanceHint(QStaticText::AggressiveCaching);
     text.setTextWidth(123.456);
-    text.setTextFormat(Qt::PlainText);
+    text.setTextFormat(BobUI::PlainText);
 
     QStaticText copiedText(text);
     copiedText.setText(QLatin1String("Other text"));
 
-    QCOMPARE(copiedText.textOption().alignment(), Qt::AlignRight);
+    QCOMPARE(copiedText.textOption().alignment(), BobUI::AlignRight);
     QCOMPARE(copiedText.performanceHint(), QStaticText::AggressiveCaching);
     QCOMPARE(copiedText.textWidth(), 123.456);
-    QCOMPARE(copiedText.textFormat(), Qt::PlainText);
+    QCOMPARE(copiedText.textFormat(), BobUI::PlainText);
 
     QStaticText otherCopiedText(copiedText);
     otherCopiedText.setTextWidth(789);
@@ -111,10 +111,10 @@ void tst_QStaticText::copyConstructor()
 Q_DECLARE_METATYPE(QStaticText::PerformanceHint)
 void tst_QStaticText::drawToPoint_data()
 {
-    QTest::addColumn<QStaticText::PerformanceHint>("performanceHint");
+    BOBUIest::addColumn<QStaticText::PerformanceHint>("performanceHint");
 
-    QTest::newRow("Moderate caching") << QStaticText::ModerateCaching;
-    QTest::newRow("Aggressive caching") << QStaticText::AggressiveCaching;
+    BOBUIest::newRow("Moderate caching") << QStaticText::ModerateCaching;
+    BOBUIest::newRow("Aggressive caching") << QStaticText::AggressiveCaching;
 }
 
 void tst_QStaticText::drawToPoint()
@@ -122,18 +122,18 @@ void tst_QStaticText::drawToPoint()
     QFETCH(QStaticText::PerformanceHint, performanceHint);
 
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.drawText(11, 12, "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
         text.setPerformanceHint(performanceHint);
         p.drawStaticText(QPointF(11, 12 - QFontMetricsF(p.font()).ascent()), text);
     }
@@ -144,10 +144,10 @@ void tst_QStaticText::drawToPoint()
 
 void tst_QStaticText::drawToRect_data()
 {
-    QTest::addColumn<QStaticText::PerformanceHint>("performanceHint");
+    BOBUIest::addColumn<QStaticText::PerformanceHint>("performanceHint");
 
-    QTest::newRow("Moderate caching") << QStaticText::ModerateCaching;
-    QTest::newRow("Aggressive caching") << QStaticText::AggressiveCaching;
+    BOBUIest::newRow("Moderate caching") << QStaticText::ModerateCaching;
+    BOBUIest::newRow("Aggressive caching") << QStaticText::AggressiveCaching;
 }
 
 void tst_QStaticText::drawToRect()
@@ -155,21 +155,21 @@ void tst_QStaticText::drawToRect()
     QFETCH(QStaticText::PerformanceHint, performanceHint);
 
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.drawText(QRectF(11, 12, 10, 500), "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
         text.setTextWidth(10),
         p.setClipRect(QRectF(11, 12, 10, 500));
         text.setPerformanceHint(performanceHint);
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
         p.drawStaticText(QPointF(11, 12), text);
     }
 
@@ -184,15 +184,15 @@ void tst_QStaticText::drawToRect()
 
 void tst_QStaticText::compareToDrawText_data()
 {
-    QTest::addColumn<QFont>("font");
+    BOBUIest::addColumn<QFont>("font");
 
-    QTest::newRow("default") << QFont();
+    BOBUIest::newRow("default") << QFont();
     QFont sansserif; sansserif.setStyleHint(QFont::SansSerif);
     QFont serif; serif.setStyleHint(QFont::Serif);
     QFont monospace; monospace.setStyleHint(QFont::Monospace);
-    QTest::newRow("sans-serif") << QFont(sansserif.defaultFamily());
-    QTest::newRow("serif") << QFont(serif.defaultFamily());
-    QTest::newRow("monospace") << QFont(monospace.defaultFamily());
+    BOBUIest::newRow("sans-serif") << QFont(sansserif.defaultFamily());
+    BOBUIest::newRow("serif") << QFont(serif.defaultFamily());
+    BOBUIest::newRow("monospace") << QFont(monospace.defaultFamily());
 }
 
 void tst_QStaticText::compareToDrawText()
@@ -200,7 +200,7 @@ void tst_QStaticText::compareToDrawText()
     QFETCH(QFont, font);
 
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.setFont(font);
@@ -208,26 +208,26 @@ void tst_QStaticText::compareToDrawText()
     }
 
     QPixmap imageDrawStaticPlainText(1000, 1000);
-    imageDrawStaticPlainText.fill(Qt::white);
+    imageDrawStaticPlainText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticPlainText);
         p.setFont(font);
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
         text.setTextWidth(10),
         p.setClipRect(QRectF(11, 12, 30, 500));
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
         p.drawStaticText(QPointF(11, 12), text);
     }
 
     QPixmap imageDrawStaticRichText(1000, 1000);
-    imageDrawStaticRichText.fill(Qt::white);
+    imageDrawStaticRichText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticRichText);
         p.setFont(font);
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
         text.setTextWidth(10),
         p.setClipRect(QRectF(11, 12, 30, 500));
-        text.setTextFormat(Qt::RichText);
+        text.setTextFormat(BobUI::RichText);
         p.drawStaticText(QPointF(11, 12), text);
     }
 
@@ -244,13 +244,13 @@ void tst_QStaticText::compareToDrawText()
 
 void tst_QStaticText::prepareToCorrectData()
 {
-    QTransform transform;
+    BOBUIransform transform;
     transform.scale(2.0, 2.0);
     transform.translate(100, 10);
-    transform.rotate(90, Qt::ZAxis);
+    transform.rotate(90, BobUI::ZAxis);
 
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.setTransform(transform);
@@ -258,13 +258,13 @@ void tst_QStaticText::prepareToCorrectData()
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
         p.setTransform(transform);
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
         text.prepare(transform, p.font());
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
         p.drawStaticText(QPointF(11, 12  - QFontMetricsF(p.font()).ascent()), text);
     }
 
@@ -282,24 +282,24 @@ void tst_QStaticText::prepareToCorrectData()
 
 void tst_QStaticText::prepareToWrongData()
 {
-    QTransform transform;
+    BOBUIransform transform;
     transform.scale(2.0, 2.0);
-    transform.rotate(90, Qt::ZAxis);
+    transform.rotate(90, BobUI::ZAxis);
 
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.drawText(11, 12, "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
         text.prepare(transform, p.font());
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
         p.drawStaticText(QPointF(11, 12  - QFontMetricsF(p.font()).ascent()), text);
     }
 
@@ -315,7 +315,7 @@ void tst_QStaticText::setFont()
     font.setPointSize(28);
 
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.drawText(QRectF(0, 0, 1000, 1000), 0, "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
@@ -325,13 +325,13 @@ void tst_QStaticText::setFont()
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
 
         QStaticText text;
         text.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
 
         p.drawStaticText(0, 0, text);
 
@@ -351,14 +351,14 @@ void tst_QStaticText::setFont()
 void tst_QStaticText::setTextWidth()
 {
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.drawText(QRectF(11, 12, 10, 500), "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
@@ -374,7 +374,7 @@ void tst_QStaticText::setTextWidth()
 void tst_QStaticText::translatedPainter()
 {
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.translate(100, 200);
@@ -383,13 +383,13 @@ void tst_QStaticText::translatedPainter()
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
         p.translate(100, 200);
 
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
 
         p.drawStaticText(QPointF(11, 12 - QFontMetricsF(p.font()).ascent()), text);
     }
@@ -408,7 +408,7 @@ bool tst_QStaticText::supportsTransformations() const
 void tst_QStaticText::rotatedPainter()
 {
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.rotate(30.0);
@@ -416,10 +416,10 @@ void tst_QStaticText::rotatedPainter()
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
 
         QPainter p(&imageDrawStaticText);
         p.rotate(30.0);
@@ -441,7 +441,7 @@ void tst_QStaticText::rotatedPainter()
 void tst_QStaticText::scaledPainter()
 {
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.scale(2.0, 0.2);
@@ -450,13 +450,13 @@ void tst_QStaticText::scaledPainter()
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
         p.scale(2.0, 0.2);
 
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
 
         p.drawStaticText(QPointF(11, 12 - QFontMetricsF(p.font()).ascent()), text);
     }
@@ -470,11 +470,11 @@ void tst_QStaticText::scaledPainter()
 
 void tst_QStaticText::projectedPainter()
 {
-    QTransform transform;
-    transform.rotate(90, Qt::XAxis);
+    BOBUIransform transform;
+    transform.rotate(90, BobUI::XAxis);
 
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.setTransform(transform);
@@ -483,13 +483,13 @@ void tst_QStaticText::projectedPainter()
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
         p.setTransform(transform);
 
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
 
         p.drawStaticText(QPointF(11, 12 - QFontMetricsF(p.font()).ascent()), text);
     }
@@ -500,7 +500,7 @@ void tst_QStaticText::projectedPainter()
 void tst_QStaticText::transformationChanged()
 {
     QPixmap imageDrawText(1000, 1000);
-    imageDrawText.fill(Qt::white);
+    imageDrawText.fill(BobUI::white);
     {
         QPainter p(&imageDrawText);
         p.rotate(33.0);
@@ -513,14 +513,14 @@ void tst_QStaticText::transformationChanged()
     }
 
     QPixmap imageDrawStaticText(1000, 1000);
-    imageDrawStaticText.fill(Qt::white);
+    imageDrawStaticText.fill(BobUI::white);
     {
         QPainter p(&imageDrawStaticText);
         p.rotate(33.0);
         p.scale(0.5, 0.7);
 
         QStaticText text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-        text.setTextFormat(Qt::PlainText);
+        text.setTextFormat(BobUI::PlainText);
 
         p.drawStaticText(QPointF(0, 0), text);
 
@@ -543,25 +543,25 @@ void tst_QStaticText::transformationChanged()
 void tst_QStaticText::plainTextVsRichText()
 {
     QPixmap imagePlainText(1000, 1000);
-    imagePlainText.fill(Qt::white);
+    imagePlainText.fill(BobUI::white);
     {
         QPainter p(&imagePlainText);
 
         QStaticText staticText;
         staticText.setText("FOObar");
-        staticText.setTextFormat(Qt::PlainText);
+        staticText.setTextFormat(BobUI::PlainText);
 
         p.drawStaticText(10, 10, staticText);
     }
 
     QPixmap imageRichText(1000, 1000);
-    imageRichText.fill(Qt::white);
+    imageRichText.fill(BobUI::white);
     {
         QPainter p(&imageRichText);
 
         QStaticText staticText;
         staticText.setText("<html><body>FOObar</body></html>");
-        staticText.setTextFormat(Qt::RichText);
+        staticText.setTextFormat(BobUI::RichText);
 
         p.drawStaticText(10, 10, staticText);
     }
@@ -576,7 +576,7 @@ void tst_QStaticText::plainTextVsRichText()
 }
 
 static bool checkPixels(const QImage &image,
-                        Qt::GlobalColor expectedColor1, Qt::GlobalColor expectedColor2,
+                        BobUI::GlobalColor expectedColor1, BobUI::GlobalColor expectedColor2,
                         QByteArray *errorMessage)
 {
     const QRgb expectedRgb1 = QColor(expectedColor1).rgba();
@@ -588,7 +588,7 @@ static bool checkPixels(const QImage &image,
             if (pixel != expectedRgb1 && pixel != expectedRgb2) {
                 QString message;
                 QDebug(&message) << "Color mismatch in image" << image
-                    << "at" << x << ',' << y << ':' << Qt::showbase << Qt::hex << pixel
+                    << "at" << x << ',' << y << ':' << BobUI::showbase << BobUI::hex << pixel
                     << "(expected: " << expectedRgb1 << ',' << expectedRgb2 << ')';
                 *errorMessage = message.toLocal8Bit();
                 return false;
@@ -600,12 +600,12 @@ static bool checkPixels(const QImage &image,
 
 void tst_QStaticText::setPenPlainText_data()
 {
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
-    QTest::newRow("argb32pm") << QImage::Format_ARGB32_Premultiplied;
-    QTest::newRow("rgb32") << QImage::Format_RGB32;
-    QTest::newRow("rgba8888pm") << QImage::Format_RGBA8888_Premultiplied;
-    QTest::newRow("rgbx8888") << QImage::Format_RGBX8888;
+    BOBUIest::newRow("argb32pm") << QImage::Format_ARGB32_Premultiplied;
+    BOBUIest::newRow("rgb32") << QImage::Format_RGB32;
+    BOBUIest::newRow("rgba8888pm") << QImage::Format_RGBA8888_Premultiplied;
+    BOBUIest::newRow("rgbx8888") << QImage::Format_RGBX8888;
 }
 
 void tst_QStaticText::setPenPlainText()
@@ -617,19 +617,19 @@ void tst_QStaticText::setPenPlainText()
 
     QFontMetricsF fm(font);
     QImage image(qCeil(fm.horizontalAdvance("XXXXX")), qCeil(fm.height()), format);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
     {
         QPainter p(&image);
         p.setFont(font);
-        p.setPen(Qt::yellow);
+        p.setPen(BobUI::yellow);
 
         QStaticText staticText("XXXXX");
-        staticText.setTextFormat(Qt::PlainText);
+        staticText.setTextFormat(BobUI::PlainText);
         p.drawStaticText(0, 0, staticText);
     }
 
     QByteArray errorMessage;
-    QVERIFY2(checkPixels(image, Qt::yellow, Qt::white, &errorMessage),
+    QVERIFY2(checkPixels(image, BobUI::yellow, BobUI::white, &errorMessage),
              errorMessage.constData());
 }
 
@@ -640,20 +640,20 @@ void tst_QStaticText::setPenRichText()
 
     QFontMetricsF fm(font);
     QPixmap image(qCeil(fm.horizontalAdvance("XXXXX")), qCeil(fm.height()));
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
     {
         QPainter p(&image);
         p.setFont(font);
-        p.setPen(Qt::green);
+        p.setPen(BobUI::green);
 
         QStaticText staticText;
         staticText.setText("<html><body>XXXXX</body></html>");
-        staticText.setTextFormat(Qt::RichText);
+        staticText.setTextFormat(BobUI::RichText);
         p.drawStaticText(0, 0, staticText);
     }
 
     QByteArray errorMessage;
-    QVERIFY2(checkPixels(image.toImage(), Qt::green, Qt::white, &errorMessage),
+    QVERIFY2(checkPixels(image.toImage(), BobUI::green, BobUI::white, &errorMessage),
              errorMessage.constData());
 }
 
@@ -664,24 +664,24 @@ void tst_QStaticText::richTextOverridesPen()
 
     QFontMetricsF fm(font);
     QPixmap image(qCeil(fm.horizontalAdvance("XXXXX")), qCeil(fm.height()));
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
     {
         QPainter p(&image);
         p.setFont(font);
-        p.setPen(Qt::green);
+        p.setPen(BobUI::green);
 
         QStaticText staticText;
         staticText.setText("<html><body><font color=\"#ff0000\">XXXXX</font></body></html>");
-        staticText.setTextFormat(Qt::RichText);
+        staticText.setTextFormat(BobUI::RichText);
         p.drawStaticText(0, 0, staticText);
     }
 
     QByteArray errorMessage;
-    QVERIFY2(checkPixels(image.toImage(), Qt::red, Qt::white, &errorMessage),
+    QVERIFY2(checkPixels(image.toImage(), BobUI::red, BobUI::white, &errorMessage),
              errorMessage.constData());
 }
 
-void tst_QStaticText::unprintableCharacter_qtbug12614()
+void tst_QStaticText::unprintableCharacter_bobuibug12614()
 {
     QString s(QChar(0x200B)); // U+200B, ZERO WIDTH SPACE
 
@@ -690,8 +690,8 @@ void tst_QStaticText::unprintableCharacter_qtbug12614()
     QVERIFY(staticText.size().isValid()); // Force layout. Should not crash.
 }
 
-#ifdef QT_BUILD_INTERNAL
-void tst_QStaticText::underlinedColor_qtbug20159()
+#ifdef BOBUI_BUILD_INTERNAL
+void tst_QStaticText::underlinedColor_bobuibug20159()
 {
     QString multiScriptText;
     multiScriptText += QChar(0x0410); // Cyrillic 'A'
@@ -702,7 +702,7 @@ void tst_QStaticText::underlinedColor_qtbug20159()
     QFont font;
     font.setUnderline(true);
 
-    staticText.prepare(QTransform(), font);
+    staticText.prepare(BOBUIransform(), font);
 
     QStaticTextPrivate *d = QStaticTextPrivate::get(&staticText);
     QCOMPARE(d->itemCount, 2);
@@ -715,7 +715,7 @@ void tst_QStaticText::underlinedColor_qtbug20159()
 void tst_QStaticText::textDocumentColor()
 {
     QStaticText staticText("A<font color=\"red\">B</font>");
-    staticText.setTextFormat(Qt::RichText);
+    staticText.setTextFormat(BobUI::RichText);
     staticText.prepare();
 
     QStaticTextPrivate *d = QStaticTextPrivate::get(&staticText);
@@ -725,14 +725,14 @@ void tst_QStaticText::textDocumentColor()
     QVERIFY(!d->items[0].color.isValid());
     QVERIFY(d->items[1].color.isValid());
 
-    QCOMPARE(d->items[1].color, QColor(Qt::red));
+    QCOMPARE(d->items[1].color, QColor(BobUI::red));
 }
 #endif
 
 class TestPaintEngine: public QPaintEngine
 {
 public:
-    void drawTextItem(const QPointF &p, const QTextItem &) override
+    void drawTextItem(const QPointF &p, const BOBUIextItem &) override
     {
         differentVerticalPositions.insert(qRound(p.y()));
     }
@@ -782,7 +782,7 @@ void tst_QStaticText::multiLine()
     QCOMPARE(paintEngine->differentVerticalPositions.size(), 2);
 }
 
-void tst_QStaticText::size_qtbug65836()
+void tst_QStaticText::size_bobuibug65836()
 {
     const QString text = QLatin1String("Lorem ipsum dolor sit amet, "
                                         "consectetur adipiscing elit.");
@@ -791,33 +791,33 @@ void tst_QStaticText::size_qtbug65836()
 
     {
         QStaticText st1(text);
-        st1.setTextFormat(Qt::PlainText);
-        st1.prepare(QTransform(), font);
+        st1.setTextFormat(BobUI::PlainText);
+        st1.prepare(BOBUIransform(), font);
 
         QStaticText st2(text);
-        st2.setTextFormat(Qt::RichText);
-        QTextOption opt;
-        opt.setWrapMode(QTextOption::NoWrap);
+        st2.setTextFormat(BobUI::RichText);
+        BOBUIextOption opt;
+        opt.setWrapMode(BOBUIextOption::NoWrap);
         st2.setTextOption(opt);
-        st2.prepare(QTransform(), font);
+        st2.prepare(BOBUIransform(), font);
 
         QCOMPARE(st1.size(), st2.size());
     }
 
     {
         QStaticText st1(text);
-        st1.setTextFormat(Qt::PlainText);
+        st1.setTextFormat(BobUI::PlainText);
         st1.setTextWidth(10.0);
-        st1.prepare(QTransform(), font);
+        st1.prepare(BOBUIransform(), font);
 
         QStaticText st2(text);
-        st2.setTextFormat(Qt::RichText);
+        st2.setTextFormat(BobUI::RichText);
         st2.setTextWidth(10.0);
-        st2.prepare(QTransform(), font);
+        st2.prepare(BOBUIransform(), font);
 
         QCOMPARE(st1.size(), st2.size());
     }
 }
 
-QTEST_MAIN(tst_QStaticText)
+BOBUIEST_MAIN(tst_QStaticText)
 #include "tst_qstatictext.moc"

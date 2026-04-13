@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += gui-private widgets
+BOBUI += gui-private widgets
 
 SOURCES = \
     multiwindow_threaded.cpp \

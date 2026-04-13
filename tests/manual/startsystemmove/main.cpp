@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
+#include <BobUIGui>
 
 constexpr qreal border = 20;
 
@@ -21,15 +21,15 @@ protected:
 
 void Window::resizeOrMove(const QPointF &p)
 {
-    Qt::Edges edges;
+    BobUI::Edges edges;
     if (p.x() > width() - border)
-        edges |= Qt::RightEdge;
+        edges |= BobUI::RightEdge;
     if (p.x() < border)
-        edges |= Qt::LeftEdge;
+        edges |= BobUI::LeftEdge;
     if (p.y() < border)
-        edges |= Qt::TopEdge;
+        edges |= BobUI::TopEdge;
     if (p.y() > height() - border)
-        edges |= Qt::BottomEdge;
+        edges |= BobUI::BottomEdge;
 
     if (edges != 0) {
         qDebug() << "startSystemResize" << edges;
@@ -55,11 +55,11 @@ bool Window::event(QEvent *event)
         return true;
     case QEvent::TouchUpdate:
         qDebug() << "Touch update";
-        resizeOrMove(static_cast<QTouchEvent *>(event)->points().first().position());
+        resizeOrMove(static_cast<BOBUIouchEvent *>(event)->points().first().position());
         return true;
     case QEvent::TouchBegin:
         qDebug() << "Touch begin";
-        resizeOrMove(static_cast<QTouchEvent *>(event)->points().first().position());
+        resizeOrMove(static_cast<BOBUIouchEvent *>(event)->points().first().position());
         return true;
     case QEvent::TouchEnd:
         qDebug() << "Touch end";
@@ -77,7 +77,7 @@ void Window::paintEvent(QPaintEvent *event)
     QRect innerRect = fullRect.marginsRemoved(QMargins(border, border, border, border));
     painter.fillRect(fullRect, QGradient::WarmFlame);
     painter.fillRect(innerRect, QGradient::NightFade);
-    painter.drawText(QRectF(0, 0, width(), height()), Qt::AlignCenter, QStringLiteral("Click mouse or touch to move window\nDrag along the sides to resize."));
+    painter.drawText(QRectF(0, 0, width(), height()), BobUI::AlignCenter, QStringLiteral("Click mouse or touch to move window\nDrag along the sides to resize."));
 }
 
 int main(int argc, char **argv)

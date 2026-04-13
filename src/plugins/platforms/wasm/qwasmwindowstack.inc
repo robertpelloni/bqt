@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMWINDOWSTACK_INC
 #define QWASMWINDOWSTACK_INC
@@ -338,12 +338,12 @@ Window *QWasmWindowStack<Window>::topWindow() const
 }
 
 template <typename Window>
-bool QWasmWindowStack<Window>::shouldBeAboveTransientParentFlags(Qt::WindowFlags flags) const
+bool QWasmWindowStack<Window>::shouldBeAboveTransientParentFlags(BobUI::WindowFlags flags) const
 {
-    if (flags.testFlag(Qt::Tool) ||
-        flags.testFlag(Qt::SplashScreen) ||
-        flags.testFlag(Qt::ToolTip) ||
-        flags.testFlag(Qt::Popup))
+    if (flags.testFlag(BobUI::Tool) ||
+        flags.testFlag(BobUI::SplashScreen) ||
+        flags.testFlag(BobUI::ToolTip) ||
+        flags.testFlag(BobUI::Popup))
     {
         return true;
     }

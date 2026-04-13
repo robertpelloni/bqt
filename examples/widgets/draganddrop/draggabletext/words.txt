@@ -1,4 +1,4 @@
-Qt
+BobUI
 Academy
 is
 where
@@ -7,7 +7,7 @@ begin
 your
 journey
 into
-Qt
+BobUI
 It
 is
 a

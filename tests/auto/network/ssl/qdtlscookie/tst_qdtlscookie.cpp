@@ -1,33 +1,33 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 
 #include "../shared/tlshelpers.h"
 
-#include <QtNetwork/qhostaddress.h>
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qudpsocket.h>
-#include <QtNetwork/qdtls.h>
+#include <BobUINetwork/qhostaddress.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qudpsocket.h>
+#include <BobUINetwork/qdtls.h>
 
-#include <QtCore/qcryptographichash.h>
-#include <QtCore/qsharedpointer.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qtimer.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qcryptographichash.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/bobuiimer.h>
+#include <BobUICore/qdebug.h>
 
 #include <utility>
 #include <vector>
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define STOP_ON_FAILURE \
-    if (QTest::currentTestFailed()) \
+    if (BOBUIest::currentTestFailed()) \
         return;
 
 class tst_QDtlsCookie : public QObject
@@ -77,7 +77,7 @@ private:
     QHostAddress serverAddress;
     quint16 serverPort = 0;
 
-    QTestEventLoop testLoop;
+    BOBUIestEventLoop testLoop;
     static constexpr auto HandshakeTimeout = 500ms;
 
     QDtlsClientVerifier listener;
@@ -91,7 +91,7 @@ private:
 
     QUdpSocket noiseMaker;
     QHostAddress spammerAddress;
-    QTimer noiseTimer;
+    BOBUIimer noiseTimer;
     quint16 spammerPort = 0;
     const int noiseTimeoutMS = 5;
 
@@ -100,7 +100,7 @@ private:
     unsigned clientsToWait = 0;
     unsigned clientsToAdd = 0;
     std::vector<ValidClient> dtlsClients;
-    QTimer spawnTimer;
+    BOBUIimer spawnTimer;
 };
 
 QHostAddress tst_QDtlsCookie::toNonAny(const QHostAddress &addr)
@@ -158,28 +158,28 @@ void tst_QDtlsCookie::construction()
 
 void tst_QDtlsCookie::validateParameters_data()
 {
-    QTest::addColumn<bool>("invalidSocket");
-    QTest::addColumn<bool>("emptyDatagram");
-    QTest::addColumn<int>("addressType");
+    BOBUIest::addColumn<bool>("invalidSocket");
+    BOBUIest::addColumn<bool>("emptyDatagram");
+    BOBUIest::addColumn<int>("addressType");
 
-    QTest::addRow("socket") << true << false << int(ValidAddress);
-    QTest::addRow("dgram") << false << true << int(ValidAddress);
-    QTest::addRow("addr(invalid)") << false << false << int(NullAddress);
-    QTest::addRow("addr(broadcast)") << false << false << int(BroadcastAddress);
-    QTest::addRow("addr(multicast)") << false << false << int(MulticastAddress);
+    BOBUIest::addRow("socket") << true << false << int(ValidAddress);
+    BOBUIest::addRow("dgram") << false << true << int(ValidAddress);
+    BOBUIest::addRow("addr(invalid)") << false << false << int(NullAddress);
+    BOBUIest::addRow("addr(broadcast)") << false << false << int(BroadcastAddress);
+    BOBUIest::addRow("addr(multicast)") << false << false << int(MulticastAddress);
 
-    QTest::addRow("socket-dgram") << true << true << int(ValidAddress);
-    QTest::addRow("socket-dgram-addr(invalid)") << true << true << int(NullAddress);
-    QTest::addRow("socket-dgram-addr(broadcast)") << true << true << int(BroadcastAddress);
-    QTest::addRow("socket-dgram-addr(multicast)") << true << true << int(MulticastAddress);
+    BOBUIest::addRow("socket-dgram") << true << true << int(ValidAddress);
+    BOBUIest::addRow("socket-dgram-addr(invalid)") << true << true << int(NullAddress);
+    BOBUIest::addRow("socket-dgram-addr(broadcast)") << true << true << int(BroadcastAddress);
+    BOBUIest::addRow("socket-dgram-addr(multicast)") << true << true << int(MulticastAddress);
 
-    QTest::addRow("dgram-addr(invalid)") << false << true << int(NullAddress);
-    QTest::addRow("dgram-addr(broadcast)") << false << true << int(BroadcastAddress);
-    QTest::addRow("dgram-addr(multicast)") << false << true << int(MulticastAddress);
+    BOBUIest::addRow("dgram-addr(invalid)") << false << true << int(NullAddress);
+    BOBUIest::addRow("dgram-addr(broadcast)") << false << true << int(BroadcastAddress);
+    BOBUIest::addRow("dgram-addr(multicast)") << false << true << int(MulticastAddress);
 
-    QTest::addRow("socket-addr(invalid)") << true << false << int(NullAddress);
-    QTest::addRow("socket-addr(broadcast)") << true << false << int(BroadcastAddress);
-    QTest::addRow("socket-addr(multicast)") << true << false << int(MulticastAddress);
+    BOBUIest::addRow("socket-addr(invalid)") << true << false << int(NullAddress);
+    BOBUIest::addRow("socket-addr(broadcast)") << true << false << int(BroadcastAddress);
+    BOBUIest::addRow("socket-addr(multicast)") << true << false << int(MulticastAddress);
 }
 
 void tst_QDtlsCookie::validateParameters()
@@ -315,10 +315,10 @@ void tst_QDtlsCookie::verifyMultipleClients()
     connect(&serverSocket, &QUdpSocket::readyRead, this, &tst_QDtlsCookie::serverReadyRead);
 
     noiseTimer.setInterval(noiseTimeoutMS);
-    connect(&noiseTimer, &QTimer::timeout, this, &tst_QDtlsCookie::makeNoise);
+    connect(&noiseTimer, &BOBUIimer::timeout, this, &tst_QDtlsCookie::makeNoise);
 
     spawnTimer.setInterval(noiseTimeoutMS * 10);
-    connect(&spawnTimer, &QTimer::timeout, this, &tst_QDtlsCookie::spawnClients);
+    connect(&spawnTimer, &BOBUIimer::timeout, this, &tst_QDtlsCookie::spawnClients);
 
     noiseTimer.start();
     spawnTimer.start();
@@ -381,7 +381,7 @@ void tst_QDtlsCookie::serverReadyRead()
     quint16 clientPort = 0;
 
     receiveMessage(&serverSocket, &hello, &clientAddress, &clientPort);
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return testLoop.exitLoop();
 
     const bool ok = listener.verifyClient(&serverSocket, hello, clientAddress, clientPort);
@@ -421,7 +421,7 @@ void tst_QDtlsCookie::clientReadyRead()
 
     QByteArray response;
     receiveMessage(clientSocket, &response);
-    if (QTest::currentTestFailed() || !handshake->doHandshake(clientSocket, response))
+    if (BOBUIest::currentTestFailed() || !handshake->doHandshake(clientSocket, response))
         testLoop.exitLoop();
 }
 
@@ -467,8 +467,8 @@ void tst_QDtlsCookie::handleClientTimeout()
     handshake->handleTimeout(clientSocket);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_MAIN(tst_QDtlsCookie)
+BOBUIEST_MAIN(tst_QDtlsCookie)
 
 #include "tst_qdtlscookie.moc"

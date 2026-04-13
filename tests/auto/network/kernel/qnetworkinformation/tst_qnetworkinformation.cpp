@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/private/qnetworkinformation_p.h>
-#include <QtNetwork/qnetworkinformation.h>
-#include <QtTest/qtest.h>
-#include <QtTest/qsignalspy.h>
+#include <BobUINetwork/private/qnetworkinformation_p.h>
+#include <BobUINetwork/qnetworkinformation.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/qsignalspy.h>
 
 #include <limits>
 #include <memory>
@@ -251,5 +251,5 @@ void tst_QNetworkInformation::isMetered()
     QCOMPARE(spy.size(), 0);
 }
 
-QTEST_MAIN(tst_QNetworkInformation);
+BOBUIEST_MAIN(tst_QNetworkInformation);
 #include "tst_qnetworkinformation.moc"

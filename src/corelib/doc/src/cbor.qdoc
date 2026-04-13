@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \group cbor
-    \title CBOR Support in Qt
-    \ingroup qt-basic-concepts
-    \brief An overview of CBOR support in Qt.
+    \title CBOR Support in BobUI
+    \ingroup bobui-basic-concepts
+    \brief An overview of CBOR support in BobUI.
     \ingroup explanations-dataprocessingandio
 
     \ingroup frameworks-technologies
 
     \keyword CBOR
 
-    Qt provides support for dealing with CBOR data. CBOR is a binary format to
+    BobUI provides support for dealing with CBOR data. CBOR is a binary format to
     store data that has a superset of the types available in JSON, but is more
     compact.
 
-    The CBOR support in Qt provides an easy to use C++ API to parse,
+    The CBOR support in BobUI provides an easy to use C++ API to parse,
     modify and save CBOR data.
 
     More details about the CBOR data format can be found in \l {RFC 7049}.

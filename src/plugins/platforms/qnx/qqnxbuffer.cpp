@@ -1,18 +1,18 @@
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxglobal.h"
 
 #include "qqnxbuffer.h"
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 #include <errno.h>
 #include <sys/mman.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaScreenBuffer, "qt.qpa.screen.buffer");
+Q_LOGGING_CATEGORY(lcQpaScreenBuffer, "bobui.qpa.screen.buffer");
 
 QQnxBuffer::QQnxBuffer()
     : m_buffer(0)
@@ -107,4 +107,4 @@ void QQnxBuffer::invalidateInCache()
         qFatal(lcQpaScreenBuffer, "QQNX: failed to invalidate cache, errno=%d", errno);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

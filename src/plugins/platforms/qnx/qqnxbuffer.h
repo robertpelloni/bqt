@@ -1,15 +1,15 @@
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXBUFFER_H
 #define QQNXBUFFER_H
 
-#include <QtGui/QImage>
-#include <QtCore/QLoggingCategory>
+#include <BobUIGui/QImage>
+#include <BobUICore/QLoggingCategory>
 
 #include <screen/screen.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaScreenBuffer)
 
@@ -34,6 +34,6 @@ private:
     QImage m_image;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXBUFFER_H

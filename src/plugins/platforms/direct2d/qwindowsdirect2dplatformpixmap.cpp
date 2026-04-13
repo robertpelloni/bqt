@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsdirect2dcontext.h"
 #include "qwindowsdirect2dpaintdevice.h"
@@ -7,12 +7,12 @@
 #include "qwindowsdirect2dbitmap.h"
 #include "qwindowsdirect2dhelpers.h"
 
-#include <QtGui/qpainter.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qpaintdevice.h>
-#include <QtGui/qpaintengine.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/qpaintdevice.h>
+#include <BobUIGui/qpaintengine.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsDirect2DPlatformPixmapPrivate
 {
@@ -41,13 +41,13 @@ public:
     qreal devicePixelRatio = 1.0;
 };
 
-static int qt_d2dpixmap_serno = 0;
+static int bobui_d2dpixmap_serno = 0;
 
 QWindowsDirect2DPlatformPixmap::QWindowsDirect2DPlatformPixmap(PixelType pixelType)
     : QPlatformPixmap(pixelType, Direct2DClass)
     , d_ptr(new QWindowsDirect2DPlatformPixmapPrivate)
 {
-    setSerialNumber(qt_d2dpixmap_serno++);
+    setSerialNumber(bobui_d2dpixmap_serno++);
 }
 
 QWindowsDirect2DPlatformPixmap::QWindowsDirect2DPlatformPixmap(QPlatformPixmap::PixelType pixelType,
@@ -56,7 +56,7 @@ QWindowsDirect2DPlatformPixmap::QWindowsDirect2DPlatformPixmap(QPlatformPixmap::
     : QPlatformPixmap(pixelType, Direct2DClass)
     , d_ptr(new QWindowsDirect2DPlatformPixmapPrivate(bitmap, flags))
 {
-    setSerialNumber(qt_d2dpixmap_serno++);
+    setSerialNumber(bobui_d2dpixmap_serno++);
 
     is_null = false;
     w = bitmap->size().width();
@@ -85,7 +85,7 @@ void QWindowsDirect2DPlatformPixmap::resize(int width, int height)
 }
 
 void QWindowsDirect2DPlatformPixmap::fromImage(const QImage &image,
-                                               Qt::ImageConversionFlags flags)
+                                               BobUI::ImageConversionFlags flags)
 {
     Q_D(QWindowsDirect2DPlatformPixmap);
 
@@ -103,7 +103,7 @@ void QWindowsDirect2DPlatformPixmap::fromImage(const QImage &image,
 int QWindowsDirect2DPlatformPixmap::metric(QPaintDevice::PaintDeviceMetric metric) const
 {
     Q_D(const QWindowsDirect2DPlatformPixmap);
-    return qt_paint_device_metric(d->device.data(), metric);
+    return bobui_paint_device_metric(d->device.data(), metric);
 }
 
 void QWindowsDirect2DPlatformPixmap::fill(const QColor &color)
@@ -154,4 +154,4 @@ QWindowsDirect2DBitmap *QWindowsDirect2DPlatformPixmap::bitmap() const
     return d->bitmap;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

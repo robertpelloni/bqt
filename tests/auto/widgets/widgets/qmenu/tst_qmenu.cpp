@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 #include <qapplication.h>
 #include <private/qguiapplication_p.h>
 #include <QPushButton>
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QPlainTextEdit>
-#include <QToolBar>
-#include <QToolButton>
+#include <BOBUIoolBar>
+#include <BOBUIoolButton>
 #include <QStatusBar>
 #include <QListWidget>
 #include <QVBoxLayout>
@@ -23,19 +23,19 @@
 #include <qmenu.h>
 #include <qstyle.h>
 #include <QStyleHints>
-#include <QTimer>
+#include <BOBUIimer>
 #include <qdebug.h>
-#include <QToolTip>
+#include <BOBUIoolTip>
 #include <qpa/qplatformtheme.h>
 #include <qpa/qplatformintegration.h>
 
-#include <QtWidgets/private/qapplication_p.h>
-#include <QtWidgets/private/qmenu_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qmenu_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
-Q_DECLARE_METATYPE(Qt::Key);
-Q_DECLARE_METATYPE(Qt::KeyboardModifiers);
+Q_DECLARE_METATYPE(BobUI::Key);
+Q_DECLARE_METATYPE(BobUI::KeyboardModifiers);
 
 struct MenuMetrics {
     int fw;
@@ -91,38 +91,38 @@ private slots:
     void setFixedWidth();
     void deleteActionInTriggered();
     void pushButtonPopulateOnAboutToShow();
-    void QTBUG7907_submenus_autoselect();
-    void QTBUG7411_submenus_activate();
-    void QTBUG30595_rtl_submenu();
-    void QTBUG20403_nested_popup_on_shortcut_trigger();
-    void QTBUG47515_widgetActionEnterLeave();
-    void QTBUG_89082_actionTipsHide();
-    void QTBUG8122_widgetActionCrashOnClose();
+    void BOBUIBUG7907_submenus_autoselect();
+    void BOBUIBUG7411_submenus_activate();
+    void BOBUIBUG30595_rtl_submenu();
+    void BOBUIBUG20403_nested_popup_on_shortcut_trigger();
+    void BOBUIBUG47515_widgetActionEnterLeave();
+    void BOBUIBUG_89082_actionTipsHide();
+    void BOBUIBUG8122_widgetActionCrashOnClose();
     void widgetActionTriggerClosesMenu();
     void widgetActionContextMenu();
 
     void transientParent();
 
-    void QTBUG_10735_crashWithDialog();
+    void BOBUIBUG_10735_crashWithDialog();
 #ifdef Q_OS_MAC
-    void QTBUG_37933_ampersands_data();
-    void QTBUG_37933_ampersands();
+    void BOBUIBUG_37933_ampersands_data();
+    void BOBUIBUG_37933_ampersands();
 #else
     void click_while_dismissing_submenu();
 #endif
-    void QTBUG_56917_wideMenuSize();
-    void QTBUG_56917_wideMenuScreenNumber();
-    void QTBUG_56917_wideSubmenuScreenNumber();
+    void BOBUIBUG_56917_wideMenuSize();
+    void BOBUIBUG_56917_wideMenuScreenNumber();
+    void BOBUIBUG_56917_wideSubmenuScreenNumber();
     void menuSize_Scrolling_data();
     void menuSize_Scrolling();
     void tearOffMenuNotDisplayed();
-    void QTBUG_61039_menu_shortcuts();
+    void BOBUIBUG_61039_menu_shortcuts();
     void screenOrientationChangedCloseMenu();
     void deleteWhenTriggered();
 
     void nestedTearOffDetached();
     void closeMenuOnClickIfMouseHasntMoved();
-#if QT_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
+#if BOBUI_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
     void dontSelectDisabledActionByShortcut();
 #endif
 
@@ -170,9 +170,9 @@ void tst_QMenu::getSetCheck()
 tst_QMenu::tst_QMenu()
     : m_onStatusTipTimerExecuted(false)
 {
-    QApplication::setEffectEnabled(Qt::UI_FadeTooltip, false);
-    QApplication::setEffectEnabled(Qt::UI_AnimateMenu, false);
-    QApplication::setEffectEnabled(Qt::UI_AnimateTooltip, false);
+    QApplication::setEffectEnabled(BobUI::UI_FadeTooltip, false);
+    QApplication::setEffectEnabled(BobUI::UI_AnimateMenu, false);
+    QApplication::setEffectEnabled(BobUI::UI_AnimateTooltip, false);
 }
 
 void tst_QMenu::initTestCase()
@@ -316,14 +316,14 @@ void tst_QMenu::addActionsConnect()
         menu.addAction(args..., [&](bool b) { menu.setEnabled(b); });
         menu.addAction(args..., &menu, [&](bool b) { menu.setEnabled(b); });
 
-        menu.addAction(args..., &menu, SLOT(deleteLater()), Qt::QueuedConnection);
-        menu.addAction(args..., &menu, &QMenu::deleteLater, Qt::QueuedConnection);
-        // doesn't exist: menu.addAction(args..., testFunction0, Qt::QueuedConnection);
-        menu.addAction(args..., &menu, testFunction0, Qt::QueuedConnection);
-        // doesn't exist: menu.addAction(args..., testFunction1, Qt::QueuedConnection);
-        menu.addAction(args..., &menu, testFunction1, Qt::QueuedConnection);
-        // doesn't exist: menu.addAction(args..., [&](bool b) { menu.setEnabled(b); }, Qt::QueuedConnection);
-        menu.addAction(args..., &menu, [&](bool b) { menu.setEnabled(b); }, Qt::QueuedConnection);
+        menu.addAction(args..., &menu, SLOT(deleteLater()), BobUI::QueuedConnection);
+        menu.addAction(args..., &menu, &QMenu::deleteLater, BobUI::QueuedConnection);
+        // doesn't exist: menu.addAction(args..., testFunction0, BobUI::QueuedConnection);
+        menu.addAction(args..., &menu, testFunction0, BobUI::QueuedConnection);
+        // doesn't exist: menu.addAction(args..., testFunction1, BobUI::QueuedConnection);
+        menu.addAction(args..., &menu, testFunction1, BobUI::QueuedConnection);
+        // doesn't exist: menu.addAction(args..., [&](bool b) { menu.setEnabled(b); }, BobUI::QueuedConnection);
+        menu.addAction(args..., &menu, [&](bool b) { menu.setEnabled(b); }, BobUI::QueuedConnection);
     };
     const auto check1 = [&](auto &arg, auto &...args) {
         check(arg, args...);
@@ -341,13 +341,13 @@ void tst_QMenu::addActionsConnect()
 
     check1(text);
     check2(icon, text);
-#ifndef QT_NO_SHORTCUT
-    ImplicitlyConvertibleTo<QKeySequence> keySequence = {Qt::CTRL | Qt::Key_C};
+#ifndef BOBUI_NO_SHORTCUT
+    ImplicitlyConvertibleTo<QKeySequence> keySequence = {BobUI::CTRL | BobUI::Key_C};
     check2(text, keySequence);
     check3(icon, text, keySequence);
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
     menu.addAction(text, &menu, SLOT(deleteLater()), keySequence);
     menu.addAction(text, &menu, &QMenu::deleteLater, keySequence);
     menu.addAction(text, testFunction0, keySequence);
@@ -360,9 +360,9 @@ void tst_QMenu::addActionsConnect()
     menu.addAction(icon, text, &menu, testFunction0, keySequence);
     menu.addAction(icon, text, testFunction1, keySequence);
     menu.addAction(icon, text, &menu, testFunction1, keySequence);
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
-#endif // !QT_NO_SHORTCUT
+#endif // !BOBUI_NO_SHORTCUT
 }
 
 void tst_QMenu::mouseActivation()
@@ -375,12 +375,12 @@ void tst_QMenu::mouseActivation()
     menu.addAction("Menu Action");
     menu.move(topLevel.geometry().topRight() + QPoint(50, 0));
     menu.show();
-    QTest::mouseClick(&menu, Qt::LeftButton, {}, menu.rect().center(), 300);
+    BOBUIest::mouseClick(&menu, BobUI::LeftButton, {}, menu.rect().center(), 300);
     QVERIFY(!menu.isVisible());
 
     //context menus can always be accessed with right click except on windows
     menu.show();
-    QTest::mouseClick(&menu, Qt::RightButton, {}, menu.rect().center(), 300);
+    BOBUIest::mouseClick(&menu, BobUI::RightButton, {}, menu.rect().center(), 300);
     QVERIFY(!menu.isVisible());
 
 #ifdef Q_OS_WIN
@@ -393,55 +393,55 @@ void tst_QMenu::mouseActivation()
     menubar.show();
 
 
-    QTest::mouseClick(&menubar, Qt::LeftButton, {}, menubar.actionGeometry(action).center(), 300);
+    BOBUIest::mouseClick(&menubar, BobUI::LeftButton, {}, menubar.actionGeometry(action).center(), 300);
     QVERIFY(submenu.isVisible());
-    QTest::mouseClick(&submenu, Qt::LeftButton, {}, QPoint(5, 5), 300);
+    BOBUIest::mouseClick(&submenu, BobUI::LeftButton, {}, QPoint(5, 5), 300);
     QVERIFY(!submenu.isVisible());
 
-    QTest::mouseClick(&menubar, Qt::LeftButton, {}, menubar.actionGeometry(action).center(), 300);
+    BOBUIest::mouseClick(&menubar, BobUI::LeftButton, {}, menubar.actionGeometry(action).center(), 300);
     QVERIFY(submenu.isVisible());
-    QTest::mouseClick(&submenu, Qt::RightButton, {}, QPoint(5, 5), 300);
+    BOBUIest::mouseClick(&submenu, BobUI::RightButton, {}, QPoint(5, 5), 300);
     QVERIFY(submenu.isVisible());
 #endif
 }
 
 void tst_QMenu::keyboardNavigation_data()
 {
-    QTest::addColumn<Qt::Key>("key");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<int>("expected_action");
-    QTest::addColumn<int>("expected_menu");
-    QTest::addColumn<bool>("init");
-    QTest::addColumn<bool>("expected_activated");
-    QTest::addColumn<bool>("expected_highlighted");
+    BOBUIest::addColumn<BobUI::Key>("key");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<int>("expected_action");
+    BOBUIest::addColumn<int>("expected_menu");
+    BOBUIest::addColumn<bool>("init");
+    BOBUIest::addColumn<bool>("expected_activated");
+    BOBUIest::addColumn<bool>("expected_highlighted");
 
     //test up and down (order is important here)
-    QTest::newRow("data0") << Qt::Key(Qt::Key_Down) << Qt::KeyboardModifiers(Qt::NoModifier) << 0 << 0 << true << false << true;
-    QTest::newRow("data1") << Qt::Key(Qt::Key_Down) << Qt::KeyboardModifiers(Qt::NoModifier) << 2 << 0 << false << false << true; //skips the separator
-    QTest::newRow("data2") << Qt::Key(Qt::Key_Down) << Qt::KeyboardModifiers(Qt::NoModifier) << 3 << 0 << false << false << true;
+    BOBUIest::newRow("data0") << BobUI::Key(BobUI::Key_Down) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 0 << 0 << true << false << true;
+    BOBUIest::newRow("data1") << BobUI::Key(BobUI::Key_Down) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 2 << 0 << false << false << true; //skips the separator
+    BOBUIest::newRow("data2") << BobUI::Key(BobUI::Key_Down) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 3 << 0 << false << false << true;
 
     if (QApplication::style()->styleHint(QStyle::SH_Menu_AllowActiveAndDisabled))
-        QTest::newRow("data3_noMac") << Qt::Key(Qt::Key_Down) << Qt::KeyboardModifiers(Qt::NoModifier) << 4 << 0 << false << false << true;
+        BOBUIest::newRow("data3_noMac") << BobUI::Key(BobUI::Key_Down) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 4 << 0 << false << false << true;
     else
-        QTest::newRow("data3_Mac") << Qt::Key(Qt::Key_Down) << Qt::KeyboardModifiers(Qt::NoModifier) << 5 << 0 << false << false << true;
-    QTest::newRow("data4") << Qt::Key(Qt::Key_Up) << Qt::KeyboardModifiers(Qt::NoModifier) << 3 << 0 << false << false << true;
-    QTest::newRow("data5") << Qt::Key(Qt::Key_Up) << Qt::KeyboardModifiers(Qt::NoModifier) << 2 << 0 << false << false << true;
-    QTest::newRow("data6") << Qt::Key(Qt::Key_Right) << Qt::KeyboardModifiers(Qt::NoModifier) << 8 << 1 << false << false << true;
-    QTest::newRow("data7") << Qt::Key(Qt::Key_Down) << Qt::KeyboardModifiers(Qt::NoModifier) << 9 << 1 << false << false << true;
-    QTest::newRow("data8") << Qt::Key(Qt::Key_Escape) << Qt::KeyboardModifiers(Qt::NoModifier) << 2 << 0 << false << false << false;
-    QTest::newRow("data9") << Qt::Key(Qt::Key_Down) << Qt::KeyboardModifiers(Qt::NoModifier) << 3 << 0 << false << false<< true;
-    QTest::newRow("data10") << Qt::Key(Qt::Key_Return) << Qt::KeyboardModifiers(Qt::NoModifier) << 3 << 0 << false << true << false;
+        BOBUIest::newRow("data3_Mac") << BobUI::Key(BobUI::Key_Down) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 5 << 0 << false << false << true;
+    BOBUIest::newRow("data4") << BobUI::Key(BobUI::Key_Up) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 3 << 0 << false << false << true;
+    BOBUIest::newRow("data5") << BobUI::Key(BobUI::Key_Up) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 2 << 0 << false << false << true;
+    BOBUIest::newRow("data6") << BobUI::Key(BobUI::Key_Right) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 8 << 1 << false << false << true;
+    BOBUIest::newRow("data7") << BobUI::Key(BobUI::Key_Down) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 9 << 1 << false << false << true;
+    BOBUIest::newRow("data8") << BobUI::Key(BobUI::Key_Escape) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 2 << 0 << false << false << false;
+    BOBUIest::newRow("data9") << BobUI::Key(BobUI::Key_Down) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 3 << 0 << false << false<< true;
+    BOBUIest::newRow("data10") << BobUI::Key(BobUI::Key_Return) << BobUI::KeyboardModifiers(BobUI::NoModifier) << 3 << 0 << false << true << false;
 
-    if (QGuiApplication::platformName().compare(QLatin1String("xcb"), Qt::CaseInsensitive)) {
+    if (QGuiApplication::platformName().compare(QLatin1String("xcb"), BobUI::CaseInsensitive)) {
         // Test shortcuts.
-        QTest::newRow("shortcut0") << Qt::Key(Qt::Key_V) << Qt::KeyboardModifiers(Qt::AltModifier) << 5 << 0 << true << true << false;
+        BOBUIest::newRow("shortcut0") << BobUI::Key(BobUI::Key_V) << BobUI::KeyboardModifiers(BobUI::AltModifier) << 5 << 0 << true << true << false;
     }
 }
 
 void tst_QMenu::keyboardNavigation()
 {
-    QFETCH(Qt::Key, key);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::Key, key);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(int, expected_action);
     QFETCH(int, expected_menu);
     QFETCH(bool, init);
@@ -455,14 +455,14 @@ void tst_QMenu::keyboardNavigation()
         lastMenu->popup(QPoint(0, 0));
     }
 
-    QTest::keyClick(lastMenu, key, modifiers);
+    BOBUIest::keyClick(lastMenu, key, modifiers);
     if (expected_activated) {
 #ifdef Q_OS_MAC
-        QEXPECT_FAIL("shortcut0", "Shortcut navication fails, see QTBUG-23684", Continue);
+        QEXPECT_FAIL("shortcut0", "Shortcut navication fails, see BOBUIBUG-23684", Continue);
 #endif
         QCOMPARE(activated, builtins[expected_action]);
 #ifndef Q_OS_MAC
-        QEXPECT_FAIL("shortcut0", "QTBUG-22449: QMenu doesn't remove highlight if a menu item is activated by a shortcut", Abort);
+        QEXPECT_FAIL("shortcut0", "BOBUIBUG-22449: QMenu doesn't remove highlight if a menu item is activated by a shortcut", Abort);
 #endif
         QCOMPARE(menus[expected_menu]->activeAction(), nullptr);
     } else {
@@ -476,9 +476,9 @@ void tst_QMenu::keyboardNavigation()
 }
 
 #ifdef Q_OS_MAC
-QT_BEGIN_NAMESPACE
-extern bool qt_tab_all_widgets(); // from qapplication.cpp
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+extern bool bobui_tab_all_widgets(); // from qapplication.cpp
+BOBUI_END_NAMESPACE
 #endif
 
 void tst_QMenu::focus()
@@ -489,7 +489,7 @@ void tst_QMenu::focus()
     menu.addAction("Three");
 
 #ifdef Q_OS_MAC
-    if (!qt_tab_all_widgets())
+    if (!bobui_tab_all_widgets())
         QSKIP("Computer is currently set up to NOT tab to all widgets,"
              " this test assumes you can tab to all widgets");
 #endif
@@ -537,24 +537,24 @@ void tst_QMenu::overrideMenuAction()
 
     // On Mac and Windows CE, we need to create native key events to test menu
     // action activation, so skip this part of the test.
-#if QT_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
+#if BOBUI_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
     QAction *aQuit = new QAction("Quit", &w);
     aQuit->setShortcut(QKeySequence("Ctrl+X"));
     m->addAction(aQuit);
 
     w.show();
     w.setFocus();
-    QVERIFY(QTest::qWaitForWindowActive(&w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w));
     QVERIFY(w.hasFocus());
 
     //test of the action inside the menu
-    QTest::keyClick(&w, Qt::Key_X, Qt::ControlModifier);
-    QTRY_COMPARE(activated, aQuit);
+    BOBUIest::keyClick(&w, BobUI::Key_X, BobUI::ControlModifier);
+    BOBUIRY_COMPARE(activated, aQuit);
 
     //test if the menu still pops out
-    QTest::keyClick(&w, Qt::Key_F, Qt::AltModifier);
-    QTRY_VERIFY(m->isVisible());
-#endif // QT_CONFIG(shortcut) && !Q_OS_DARWIN
+    BOBUIest::keyClick(&w, BobUI::Key_F, BobUI::AltModifier);
+    BOBUIRY_VERIFY(m->isVisible());
+#endif // BOBUI_CONFIG(shortcut) && !Q_OS_DARWIN
 
     delete aFileMenu;
 
@@ -570,7 +570,7 @@ void tst_QMenu::statusTip()
     w.resize(300, 200);
     centerOnScreen(&w);
     connect(w.statusBar(), SIGNAL(messageChanged(QString)), SLOT(onStatusMessageChanged(QString)));; //creates the status bar
-    QToolBar tb;
+    BOBUIoolBar tb;
     QAction a("main action", &tb);
     a.setStatusTip("main action");
     QMenu m(&tb);
@@ -582,18 +582,18 @@ void tst_QMenu::statusTip()
 
     w.addToolBar(&tb);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     QRect rect1 = tb.actionGeometry(&a);
-    QToolButton *btn = qobject_cast<QToolButton*>(tb.childAt(rect1.center()));
+    BOBUIoolButton *btn = qobject_cast<BOBUIoolButton*>(tb.childAt(rect1.center()));
 
     QVERIFY(btn != nullptr);
 
     //because showMenu calls QMenu::exec, we need to use a singleshot
     //to continue the test
-    QTimer timer;
+    BOBUIimer timer;
     timer.setSingleShot(true);
-    connect(&timer, &QTimer::timeout, this, &tst_QMenu::onStatusTipTimer);
+    connect(&timer, &BOBUIimer::timeout, this, &tst_QMenu::onStatusTipTimer);
     timer.setInterval(200);
     timer.start();
     btn->showMenu();
@@ -607,7 +607,7 @@ void tst_QMenu::onStatusTipTimer()
     QMenu *menu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     QVERIFY(menu != 0);
     QVERIFY(menu->isVisible());
-    QTest::keyClick(menu, Qt::Key_Down);
+    BOBUIest::keyClick(menu, BobUI::Key_Down);
 
     //we store the statustip to press escape in any case
     //otherwise, if the test fails it blocks (never gets out of QMenu::exec
@@ -642,23 +642,23 @@ void tst_QMenu::widgetActionFocus()
     QVERIFY(l->currentItem());
     QCOMPARE(l->currentItem()->text(), QString("item1"));
 
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Down);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Down);
     QVERIFY(l->currentItem());
     QCOMPARE(l->currentItem()->text(), QString("item2"));
 
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Down);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Down);
     QVERIFY(m.hasFocus());
     QCOMPARE(m.activeAction(), menuitem1);
 
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Down);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Down);
     QVERIFY(m.hasFocus());
     QCOMPARE(m.activeAction(), menuitem2);
 
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Up);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Up);
     QVERIFY(m.hasFocus());
     QCOMPARE(m.activeAction(), menuitem1);
 
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Up);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Up);
     QVERIFY(l->hasFocus());
     QCOMPARE(m.activeAction(), (QAction *)wa);
 }
@@ -671,11 +671,11 @@ void tst_QMenu::widgetActionFocusReason()
         explicit FocusReasonWidget(QWidget *parent = nullptr)
             : QWidget(parent)
         {
-            setFocusPolicy(Qt::StrongFocus);
+            setFocusPolicy(BobUI::StrongFocus);
             // Give it some size so it doesn't skip over it.
             setFixedSize(QSize(10, 10));
         }
-        Qt::FocusReason focusInEventReason = Qt::NoFocusReason;
+        BobUI::FocusReason focusInEventReason = BobUI::NoFocusReason;
 
     protected:
         void focusInEvent(QFocusEvent *event) override
@@ -688,7 +688,7 @@ void tst_QMenu::widgetActionFocusReason()
     // test if the backtab/tab focus reason is correctly handled when going down and up.
     QWidget widget;
     widget.show();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
     QMenu *menu = new QMenu(&widget);
 
     auto *w = new FocusReasonWidget(menu);
@@ -705,25 +705,25 @@ void tst_QMenu::widgetActionFocusReason()
     QVERIFY(menu->isVisible());
     QVERIFY(!w->hasFocus());
 
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Down);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Down);
     QVERIFY(w->hasFocus());
-    QCOMPARE(w->focusInEventReason, Qt::TabFocusReason);
+    QCOMPARE(w->focusInEventReason, BobUI::TabFocusReason);
 
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Down);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Down);
     QVERIFY(!w->hasFocus());
 
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Up);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Up);
     QVERIFY(w->hasFocus());
-    QCOMPARE(w->focusInEventReason, Qt::BacktabFocusReason);
+    QCOMPARE(w->focusInEventReason, BobUI::BacktabFocusReason);
 
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Up);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Up);
     QVERIFY(!w->hasFocus());
 }
 
 static QMenu *getTornOffMenu()
 {
     for (QWidget *w : QApplication::allWidgets()) {
-        if (w->isVisible() && w->inherits("QTornOffMenu"))
+        if (w->isVisible() && w->inherits("BOBUIornOffMenu"))
             return static_cast<QMenu *>(w);
     }
     return nullptr;
@@ -747,16 +747,16 @@ void tst_QMenu::tearOff()
     centerOnScreen(&widget);
     widget.show();
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
     menu->popup(widget.geometry().topRight() + QPoint(50, 0));
-    QVERIFY(QTest::qWaitForWindowActive(menu.data()));
+    QVERIFY(BOBUIest::qWaitForWindowActive(menu.data()));
     QVERIFY(!menu->isTearOffMenuVisible());
 
     MenuMetrics mm(menu.data());
     const int tearOffOffset = mm.fw + mm.vmargin + mm.tearOffHeight / 2;
 
-    QTest::mouseClick(menu.data(), Qt::LeftButton, {}, QPoint(10, tearOffOffset), 10);
-    QTRY_VERIFY(menu->isTearOffMenuVisible());
+    BOBUIest::mouseClick(menu.data(), BobUI::LeftButton, {}, QPoint(10, tearOffOffset), 10);
+    BOBUIRY_VERIFY(menu->isTearOffMenuVisible());
     QPointer<QMenu> torn = getTornOffMenu();
     QVERIFY(torn);
     QVERIFY(torn->isVisible());
@@ -778,7 +778,7 @@ void tst_QMenu::tearOff()
     QVERIFY(!menu->isTearOffMenuVisible());
     QVERIFY(!torn->isVisible());
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     // Test under-mouse positioning
     menu->showTearOffMenu();
     torn = getTornOffMenu();
@@ -786,7 +786,7 @@ void tst_QMenu::tearOff()
     QVERIFY(torn->isVisible());
     QVERIFY(menu->isTearOffMenuVisible());
     // Some platforms include the window title bar in its geometry.
-    QTRY_COMPARE(torn->windowHandle()->position(), QCursor::pos());
+    BOBUIRY_COMPARE(torn->windowHandle()->position(), QCursor::pos());
 
     menu->hideTearOffMenu();
     QVERIFY(!menu->isTearOffMenuVisible());
@@ -800,8 +800,8 @@ void tst_QMenu::tearOff()
     QVERIFY(torn->isVisible());
     QVERIFY(menu->isTearOffMenuVisible());
     // Some platforms include the window title bar in its geometry.
-    QTRY_COMPARE(torn->windowHandle()->position(), pos);
-#endif // QT_NO_CURSOR
+    BOBUIRY_COMPARE(torn->windowHandle()->position(), pos);
+#endif // BOBUI_NO_CURSOR
 }
 
 void tst_QMenu::submenuTearOffDontClose()
@@ -826,27 +826,27 @@ void tst_QMenu::submenuTearOffDontClose()
     centerOnScreen(&widget);
     widget.show();
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
     // Show parent menu
     menu->popup(widget.geometry().topRight() + QPoint(50, 0));
-    QVERIFY(QTest::qWaitForWindowActive(menu));
+    QVERIFY(BOBUIest::qWaitForWindowActive(menu));
     // Then its submenu
     const QRect submenuRect = menu->actionGeometry(menu->actions().at(0));
     const QPoint submenuPos(submenuRect.topLeft() + QPoint(3, 3));
     // Move then click to avoid the submenu moves from causing it to close
-    QTest::mouseMove(menu, submenuPos, 100);
-    QTest::mouseClick(menu, Qt::LeftButton, {}, submenuPos, 100);
-    QVERIFY(QTest::qWaitFor([&]() { return submenu->window()->windowHandle(); }));
-    QVERIFY(QTest::qWaitForWindowActive(submenu));
+    BOBUIest::mouseMove(menu, submenuPos, 100);
+    BOBUIest::mouseClick(menu, BobUI::LeftButton, {}, submenuPos, 100);
+    QVERIFY(BOBUIest::qWaitFor([&]() { return submenu->window()->windowHandle(); }));
+    QVERIFY(BOBUIest::qWaitForWindowActive(submenu));
     // Make sure we enter the submenu frame directly on the tear-off area
-    QTest::mouseMove(submenu, QPoint(10, 3), 100);
+    BOBUIest::mouseMove(submenu, QPoint(10, 3), 100);
     if (submenu->style()->styleHint(QStyle::SH_Menu_SubMenuDontStartSloppyOnLeave)) {
         qWarning("Sloppy menu timer disabled by the style: %s", qPrintable(QApplication::style()->objectName()));
         // Submenu must get the enter event
-        QTRY_VERIFY(submenu->underMouse());
+        BOBUIRY_VERIFY(submenu->underMouse());
     } else {
         const int closeTimeout = submenu->style()->styleHint(QStyle::SH_Menu_SubMenuSloppyCloseTimeout);
-        QTest::qWait(closeTimeout + 100);
+        BOBUIest::qWait(closeTimeout + 100);
         // Menu must not disappear and it must get the enter event
         QVERIFY(submenu->isVisible());
         QVERIFY(submenu->underMouse());
@@ -856,7 +856,7 @@ void tst_QMenu::submenuTearOffDontClose()
 void tst_QMenu::layoutDirection()
 {
     QMainWindow win;
-    win.setLayoutDirection(Qt::RightToLeft);
+    win.setLayoutDirection(BobUI::RightToLeft);
     win.resize(300, 200);
     centerOnScreen(&win);
 
@@ -864,22 +864,22 @@ void tst_QMenu::layoutDirection()
     menu.addAction("foo");
     menu.move(win.geometry().topRight() + QPoint(50, 0));
     menu.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
-    QCOMPARE(menu.layoutDirection(), Qt::RightToLeft);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
+    QCOMPARE(menu.layoutDirection(), BobUI::RightToLeft);
     menu.close();
 
     menu.setParent(0);
     menu.move(win.geometry().topRight() + QPoint(50, 0));
     menu.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
     QCOMPARE(menu.layoutDirection(), QApplication::layoutDirection());
     menu.close();
 
     //now the menubar
     QAction *action = win.menuBar()->addMenu(&menu);
     win.menuBar()->setActiveAction(action);
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
-    QCOMPARE(menu.layoutDirection(), Qt::RightToLeft);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
+    QCOMPARE(menu.layoutDirection(), BobUI::RightToLeft);
 }
 
 void tst_QMenu::task208001_stylesheet()
@@ -918,7 +918,7 @@ void tst_QMenu::activeSubMenuPosition()
     QCOMPARE(sub->activeAction(), subAction);
 }
 
-// QTBUG-49588, QTBUG-48396: activeSubMenuPositionExec() is the same as
+// BOBUIBUG-49588, BOBUIBUG-48396: activeSubMenuPositionExec() is the same as
 // activeSubMenuPosition(), but uses QMenu::exec(), which produces a different
 // sequence of events. Verify that the sub menu is positioned to the right of the
 // main menu.
@@ -944,7 +944,7 @@ protected:
         QMenu::showEvent(e);
     }
 
-    void timerEvent(QTimerEvent *e) override
+    void timerEvent(BOBUIimerEvent *e) override
     {
         if (e->timerId() == m_timerId) {
             switch (m_timerTick++) {
@@ -968,7 +968,7 @@ private:
 void tst_QMenu::activeSubMenuPositionExec()
 {
 #ifdef Q_OS_ANDROID
-    // QTBUG-87424
+    // BOBUIBUG-87424
     QSKIP("Android: This hangs. Figure out why.");
 #endif
     SubMenuPositionExecMenu menu;
@@ -978,13 +978,13 @@ void tst_QMenu::activeSubMenuPositionExec()
 void tst_QMenu::task242454_sizeHint()
 {
 #ifdef Q_OS_ANDROID
-    // QTBUG-87424
+    // BOBUIBUG-87424
     QSKIP("Android: This hangs. Figure out why.");
 #endif
     QMenu menu;
     QString s = QLatin1String("foo\nfoo\nfoo\nfoo");
     menu.addAction(s);
-    QVERIFY(menu.sizeHint().width() > menu.fontMetrics().boundingRect(QRect(), Qt::TextSingleLine, s).width());
+    QVERIFY(menu.sizeHint().width() > menu.fontMetrics().boundingRect(QRect(), BobUI::TextSingleLine, s).width());
 }
 
 class Menu : public QMenu
@@ -1004,7 +1004,7 @@ void tst_QMenu::task176201_clear()
     QAction *action = menu.addAction("test");
     menu.connect(action, SIGNAL(triggered()), SLOT(clear()));
     menu.popup(QPoint());
-    QTest::mouseClick(&menu, Qt::LeftButton, {}, menu.rect().center());
+    BOBUIest::mouseClick(&menu, BobUI::LeftButton, {}, menu.rect().center());
 }
 
 void tst_QMenu::task250673_activeMultiColumnSubMenuPosition()
@@ -1112,7 +1112,7 @@ void tst_QMenu::task258920_mouseBorder()
     const QRect screenGeometry = QGuiApplication::primaryScreen()->availableGeometry();
     Menu258920 menu;
     QCursor::setPos(screenGeometry.topLeft());
-    if (!QTest::qWaitFor([screenGeometry]{ return QCursor::pos() == screenGeometry.topLeft(); }))
+    if (!BOBUIest::qWaitFor([screenGeometry]{ return QCursor::pos() == screenGeometry.topLeft(); }))
         QSKIP("Can't move cursor out of the way");
     // For styles which inherit from QWindowsStyle, styleHint(QStyle::SH_Menu_MouseTracking) is true.
     menu.setMouseTracking(true);
@@ -1120,17 +1120,17 @@ void tst_QMenu::task258920_mouseBorder()
 
     const QPoint center = screenGeometry.center();
     menu.popup(center);
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
     QRect actionRect = menu.actionGeometry(action);
     const QPoint actionCenter = actionRect.center();
-    QTest::mouseMove(&menu, actionCenter - QPoint(-10, 0));
-    QTest::mouseMove(&menu, actionCenter);
-    QTest::mouseMove(&menu, actionCenter + QPoint(10, 0));
-    QTRY_COMPARE(action, menu.activeAction());
+    BOBUIest::mouseMove(&menu, actionCenter - QPoint(-10, 0));
+    BOBUIest::mouseMove(&menu, actionCenter);
+    BOBUIest::mouseMove(&menu, actionCenter + QPoint(10, 0));
+    BOBUIRY_COMPARE(action, menu.activeAction());
     menu.painted = false;
-    QTest::mouseMove(&menu, QPoint(actionRect.center().x(), actionRect.bottom() + 1));
-    QTRY_COMPARE(static_cast<QAction*>(0), menu.activeAction());
-    QTRY_VERIFY(menu.painted);
+    BOBUIest::mouseMove(&menu, QPoint(actionRect.center().x(), actionRect.bottom() + 1));
+    BOBUIRY_COMPARE(static_cast<QAction*>(0), menu.activeAction());
+    BOBUIRY_VERIFY(menu.painted);
 }
 
 void tst_QMenu::setFixedWidth()
@@ -1190,7 +1190,7 @@ void tst_QMenu::pushButtonPopulateOnAboutToShow()
 #endif
 
     QPushButton b("Test PushButton");
-    b.setWindowFlags(Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint);
+    b.setWindowFlags(BobUI::FramelessWindowHint | BobUI::X11BypassWindowManagerHint);
 
     QMenu *buttonMenu= new PopulateOnAboutToShowTestMenu(&b);
     b.setMenu(buttonMenu);
@@ -1202,7 +1202,7 @@ void tst_QMenu::pushButtonPopulateOnAboutToShow()
     desiredGeometry.moveTopLeft(QPoint(screen.x() + 10, screen.bottom() - b.height() - 5));
 
     b.setGeometry(desiredGeometry);
-    QVERIFY(QTest::qWaitForWindowExposed(&b));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&b));
 
     if (b.geometry() != desiredGeometry) {
         // We are trying to put the button very close to the edge of the screen,
@@ -1214,22 +1214,22 @@ void tst_QMenu::pushButtonPopulateOnAboutToShow()
         QSKIP("Your window manager won't allow a window against the bottom of the screen");
     }
 
-    QTest::mouseClick(&b, Qt::LeftButton, Qt::NoModifier, b.rect().center());
-    QVERIFY(QTest::qWaitForWindowExposed(buttonMenu));
-    QTest::qWait(300);
+    BOBUIest::mouseClick(&b, BobUI::LeftButton, BobUI::NoModifier, b.rect().center());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(buttonMenu));
+    BOBUIest::qWait(300);
     buttonMenu->hide();
     QVERIFY2(!buttonMenu->geometry().intersects(b.geometry()), msgGeometryIntersects(buttonMenu->geometry(), b.geometry()));
 
     // note: we're assuming that, if we previously got the desired geometry, we'll get it here too
     b.move(10, screen.bottom()-buttonMenu->height()-5);
-    QTest::mouseClick(&b, Qt::LeftButton, Qt::NoModifier, b.rect().center());
-    QVERIFY(QTest::qWaitForWindowExposed(buttonMenu));
-    QTest::qWait(300);
+    BOBUIest::mouseClick(&b, BobUI::LeftButton, BobUI::NoModifier, b.rect().center());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(buttonMenu));
+    BOBUIest::qWait(300);
     buttonMenu->hide();
     QVERIFY2(!buttonMenu->geometry().intersects(b.geometry()), msgGeometryIntersects(buttonMenu->geometry(), b.geometry()));
 }
 
-void tst_QMenu::QTBUG7907_submenus_autoselect()
+void tst_QMenu::BOBUIBUG7907_submenus_autoselect()
 {
     QMenu menu("Test Menu");
     QMenu set1("Setting1");
@@ -1241,12 +1241,12 @@ void tst_QMenu::QTBUG7907_submenus_autoselect()
     menu.addMenu(&set2);
     centerOnScreen(&menu, QSize(120, 100));
     menu.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
-    QTest::mouseClick(&menu, Qt::LeftButton, Qt::NoModifier, QPoint(5,5) );
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
+    BOBUIest::mouseClick(&menu, BobUI::LeftButton, BobUI::NoModifier, QPoint(5,5) );
     QVERIFY(!subset.isVisible());
 }
 
-void tst_QMenu::QTBUG7411_submenus_activate()
+void tst_QMenu::BOBUIBUG7411_submenus_activate()
 {
     QMenu menu("Test Menu");
     QAction *act = menu.addAction("foo");
@@ -1256,40 +1256,40 @@ void tst_QMenu::QTBUG7411_submenus_activate()
     QAction *act1 = menu.addMenu(&sub1);
     centerOnScreen(&menu, QSize(120, 100));
     menu.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
     menu.setActiveAction(act);
-    QTest::keyPress(&menu, Qt::Key_Down);
+    BOBUIest::keyPress(&menu, BobUI::Key_Down);
     QCOMPARE(menu.activeAction(), act1);
     QVERIFY(!sub1.isVisible());
-    QTest::keyPress(&menu, Qt::Key_S);
-    QTRY_VERIFY(sub1.isVisible());
+    BOBUIest::keyPress(&menu, BobUI::Key_S);
+    BOBUIRY_VERIFY(sub1.isVisible());
 }
 
 static bool isPlatformWayland()
 {
-    return !QGuiApplication::platformName().compare(QLatin1String("wayland"), Qt::CaseInsensitive);
+    return !QGuiApplication::platformName().compare(QLatin1String("wayland"), BobUI::CaseInsensitive);
 }
 
-void tst_QMenu::QTBUG30595_rtl_submenu()
+void tst_QMenu::BOBUIBUG30595_rtl_submenu()
 {
     if (isPlatformWayland())
         QSKIP("Creating xdg_popups on Wayland requires real input events. Positions would be off.");
 
     QMenu menu("Test Menu");
-    menu.setLayoutDirection(Qt::RightToLeft);
+    menu.setLayoutDirection(BobUI::RightToLeft);
     QMenu sub("&sub");
     sub.addAction("bar");
     sub.setTitle("&sub");
     menu.addMenu(&sub);
     centerOnScreen(&menu, QSize(120, 40));
     menu.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
-    QTest::mouseClick(&menu, Qt::LeftButton, Qt::NoModifier, QPoint(5,5) );
-    QTRY_VERIFY(sub.isVisible());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
+    BOBUIest::mouseClick(&menu, BobUI::LeftButton, BobUI::NoModifier, QPoint(5,5) );
+    BOBUIRY_VERIFY(sub.isVisible());
     QVERIFY2(sub.pos().x() < menu.pos().x(), QByteArray::number(sub.pos().x()) + QByteArrayLiteral(" not less than ") + QByteArray::number(menu.pos().x()));
 }
 
-void tst_QMenu::QTBUG20403_nested_popup_on_shortcut_trigger()
+void tst_QMenu::BOBUIBUG20403_nested_popup_on_shortcut_trigger()
 {
     QMenu menu("Test Menu");
     QMenu sub1("&sub1");
@@ -1299,10 +1299,10 @@ void tst_QMenu::QTBUG20403_nested_popup_on_shortcut_trigger()
     menu.addMenu(&sub1);
     centerOnScreen(&menu, QSize(120, 100));
     menu.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
-    QTest::keyPress(&menu, Qt::Key_S);
-    QTest::qWait(100); // 20ms delay with previous behavior
-    QTRY_VERIFY(sub1.isVisible());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
+    BOBUIest::keyPress(&menu, BobUI::Key_S);
+    BOBUIest::qWait(100); // 20ms delay with previous behavior
+    BOBUIRY_VERIFY(sub1.isVisible());
     QVERIFY(!subsub1.isVisible());
 }
 
@@ -1322,24 +1322,24 @@ void tst_QMenu::click_while_dismissing_submenu()
     QSignalSpy spy(action, &QAction::triggered);
     QSignalSpy menuShownSpy(&sub, &QMenu::aboutToShow);
     QSignalSpy menuHiddenSpy(&sub, &QMenu::aboutToHide);
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
     QWindow *menuWindow = menu.windowHandle();
     QVERIFY(menuWindow);
     //go over the submenu, press, move and release over the top level action
     //this opens the submenu, move two times to emulate user interaction (d->motions > 0 in QMenu)
-    QTest::mouseMove(menuWindow, menu.rect().center() + QPoint(0,2));
-    QTest::mouseMove(menuWindow, menu.rect().center() + QPoint(1,3), 60);
+    BOBUIest::mouseMove(menuWindow, menu.rect().center() + QPoint(0,2));
+    BOBUIest::mouseMove(menuWindow, menu.rect().center() + QPoint(1,3), 60);
     QVERIFY(menuShownSpy.wait());
     QVERIFY(sub.isVisible());
-    QVERIFY(QTest::qWaitForWindowExposed(&sub));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&sub));
     //press over the submenu entry
-    QTest::mousePress(menuWindow, Qt::LeftButton, {}, menu.rect().center() + QPoint(0, 2), 300);
+    BOBUIest::mousePress(menuWindow, BobUI::LeftButton, {}, menu.rect().center() + QPoint(0, 2), 300);
     //move over the main action
-    QTest::mouseMove(menuWindow, menu.rect().center() - QPoint(0,2));
+    BOBUIest::mouseMove(menuWindow, menu.rect().center() - QPoint(0,2));
     QVERIFY(menuHiddenSpy.wait());
     //the submenu must have been hidden for the bug to be triggered
     QVERIFY(!sub.isVisible());
-    QTest::mouseRelease(menuWindow, Qt::LeftButton, {}, menu.rect().center() - QPoint(0, 2), 300);
+    BOBUIest::mouseRelease(menuWindow, BobUI::LeftButton, {}, menu.rect().center() - QPoint(0, 2), 300);
     QCOMPARE(spy.size(), 1);
 }
 #endif
@@ -1376,12 +1376,12 @@ public:
     int move, enter, leave;
 };
 
-void tst_QMenu::QTBUG47515_widgetActionEnterLeave()
+void tst_QMenu::BOBUIBUG47515_widgetActionEnterLeave()
 {
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
     if (QGuiApplication::platformName() == QLatin1String("cocoa"))
-        QSKIP("This test is meaningless on macOS, for additional info see QTBUG-63031");
+        QSKIP("This test is meaningless on macOS, for additional info see BOBUIBUG-63031");
 
     const QRect availableGeometry = QGuiApplication::primaryScreen()->availableGeometry();
     QRect geometry(QPoint(), availableGeometry.size() / 3);
@@ -1410,63 +1410,63 @@ void tst_QMenu::QTBUG47515_widgetActionEnterLeave()
     submenu->addAction(submenuAction);
 
     topLevel.show();
-    topLevel.setWindowTitle(QTest::currentTestFunction());
-    QVERIFY(QTest::qWaitForWindowActive(&topLevel));
+    topLevel.setWindowTitle(BOBUIest::currentTestFunction());
+    QVERIFY(BOBUIest::qWaitForWindowActive(&topLevel));
     QWindow *topLevelWindow = topLevel.windowHandle();
     QVERIFY(topLevelWindow);
 
     // Root menu: Click on menu bar to open menu1
     {
         const QPoint menuActionPos = menuBar->mapTo(&topLevel, menuBar->actionGeometry(menu->menuAction()).center());
-        QTest::mouseClick(topLevelWindow, Qt::LeftButton, Qt::KeyboardModifiers(), menuActionPos);
-        QVERIFY(QTest::qWaitForWindowExposed(menu));
+        BOBUIest::mouseClick(topLevelWindow, BobUI::LeftButton, BobUI::KeyboardModifiers(), menuActionPos);
+        QVERIFY(BOBUIest::qWaitForWindowExposed(menu));
 
         w1->enter = 0;
         w1->leave = 0;
         QPoint w1Center = topLevel.mapFromGlobal(w1->mapToGlobal(w1->rect().center()));
-        QTest::mouseMove(topLevelWindow, w1Center);
+        BOBUIest::mouseMove(topLevelWindow, w1Center);
         QVERIFY(w1->isVisible());
-        QTRY_COMPARE(w1->leave, 0);
-        QTRY_COMPARE(w1->enter, 1);
+        BOBUIRY_COMPARE(w1->leave, 0);
+        BOBUIRY_COMPARE(w1->enter, 1);
 
         // Check whether leave event is not delivered on mouse move
         w1->move = 0;
-        QTest::mouseMove(topLevelWindow, w1Center + QPoint(1, 1));
-        QTRY_COMPARE(w1->move, 1);
-        QTRY_COMPARE(w1->leave, 0);
-        QTRY_COMPARE(w1->enter, 1);
+        BOBUIest::mouseMove(topLevelWindow, w1Center + QPoint(1, 1));
+        BOBUIRY_COMPARE(w1->move, 1);
+        BOBUIRY_COMPARE(w1->leave, 0);
+        BOBUIRY_COMPARE(w1->enter, 1);
 
-        QTest::mouseMove(topLevelWindow, topLevel.mapFromGlobal(pointOutsideMenu));
-        QTRY_COMPARE(w1->leave, 1);
-        QTRY_COMPARE(w1->enter, 1);
+        BOBUIest::mouseMove(topLevelWindow, topLevel.mapFromGlobal(pointOutsideMenu));
+        BOBUIRY_COMPARE(w1->leave, 1);
+        BOBUIRY_COMPARE(w1->enter, 1);
     }
 
     // Submenu
     {
         menu->setActiveAction(nextMenuAct);
-        QVERIFY(QTest::qWaitForWindowExposed(submenu));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(submenu));
 
         QPoint w2Center = topLevel.mapFromGlobal(w2->mapToGlobal(w2->rect().center()));
-        QTest::mouseMove(topLevelWindow, w2Center);
+        BOBUIest::mouseMove(topLevelWindow, w2Center);
 
         QVERIFY(w2->isVisible());
-        QTRY_COMPARE(w2->leave, 0);
-        QTRY_COMPARE(w2->enter, 1);
+        BOBUIRY_COMPARE(w2->leave, 0);
+        BOBUIRY_COMPARE(w2->enter, 1);
 
         // Check whether leave event is not delivered on mouse move
         w2->move = 0;
-        QTest::mouseMove(topLevelWindow, w2Center + QPoint(1, 1));
-        QTRY_COMPARE(w2->move, 1);
-        QTRY_COMPARE(w2->leave, 0);
-        QTRY_COMPARE(w2->enter, 1);
+        BOBUIest::mouseMove(topLevelWindow, w2Center + QPoint(1, 1));
+        BOBUIRY_COMPARE(w2->move, 1);
+        BOBUIRY_COMPARE(w2->leave, 0);
+        BOBUIRY_COMPARE(w2->enter, 1);
 
-        QTest::mouseMove(topLevelWindow, topLevel.mapFromGlobal(pointOutsideMenu));
-        QTRY_COMPARE(w2->leave, 1);
-        QTRY_COMPARE(w2->enter, 1);
+        BOBUIest::mouseMove(topLevelWindow, topLevel.mapFromGlobal(pointOutsideMenu));
+        BOBUIRY_COMPARE(w2->leave, 1);
+        BOBUIRY_COMPARE(w2->enter, 1);
     }
 }
 
-void tst_QMenu::QTBUG_89082_actionTipsHide()
+void tst_QMenu::BOBUIBUG_89082_actionTipsHide()
 {
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
@@ -1484,7 +1484,7 @@ void tst_QMenu::QTBUG_89082_actionTipsHide()
     auto menuActTip = menu->actions().first();
     QString tipFullName = "actionTip-this-is-a-long-action-and-show-the-full-name-by-tip";
     QFontMetrics m_fm = QFontMetrics(QAction().font());
-    const QString &&elidedName = m_fm.elidedText(tipFullName, Qt::ElideRight, 50);
+    const QString &&elidedName = m_fm.elidedText(tipFullName, BobUI::ElideRight, 50);
     menuActTip->setText(elidedName);
     if (elidedName != tipFullName)
         menuActTip->setToolTip(tipFullName);
@@ -1492,13 +1492,13 @@ void tst_QMenu::QTBUG_89082_actionTipsHide()
     widget.resize(300, 200);
     centerOnScreen(&widget);
     widget.show();
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     QCursor::setPos(widget.screen()->availableGeometry().topLeft() + QPoint(10, 10));
 #endif
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
     menu->popup(widget.geometry().topRight() + QPoint(50, 0));
-    QVERIFY(QTest::qWaitForWindowExposed(menu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(menu));
     auto menuWindow = menu->windowHandle();
     QVERIFY(menuWindow != nullptr);
 
@@ -1514,22 +1514,22 @@ void tst_QMenu::QTBUG_89082_actionTipsHide()
     const QRect submenuRect5 = menu->actionGeometry(actionFive);
     const QPoint submenuPos5(submenuRect5.topLeft() + QPoint(10, 3));
 
-    QTest::mouseMove(menuWindow, submenuPos1);
-    QTest::mouseMove(menuWindow, submenuPos0); //show the tip
-    QTRY_COMPARE_WITH_TIMEOUT(QToolTip::text(), tipFullName, 1000);
+    BOBUIest::mouseMove(menuWindow, submenuPos1);
+    BOBUIest::mouseMove(menuWindow, submenuPos0); //show the tip
+    BOBUIRY_COMPARE_WITH_TIMEOUT(BOBUIoolTip::text(), tipFullName, 1000);
 
     //Move to the fifth action without prompting
-    QTest::mouseMove(menuWindow, submenuPos5);
+    BOBUIest::mouseMove(menuWindow, submenuPos5);
     //The previous tip was hidden, but now is a new tip to get text, So there should be no content
-    QTRY_COMPARE_WITH_TIMEOUT(QToolTip::text(), QString(), 1000);
+    BOBUIRY_COMPARE_WITH_TIMEOUT(BOBUIoolTip::text(), QString(), 1000);
 }
 
-void tst_QMenu::QTBUG8122_widgetActionCrashOnClose()
+void tst_QMenu::BOBUIBUG8122_widgetActionCrashOnClose()
 {
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
     if (QGuiApplication::platformName() == QLatin1String("cocoa"))
-        QSKIP("See QTBUG-63031");
+        QSKIP("See BOBUIBUG-63031");
 
     const QRect availableGeometry = QGuiApplication::primaryScreen()->availableGeometry();
     QRect geometry(QPoint(), availableGeometry.size() / 3);
@@ -1554,24 +1554,24 @@ void tst_QMenu::QTBUG8122_widgetActionCrashOnClose()
     QObject::connect(spinBox2, &QSpinBox::editingFinished, menu, &QMenu::hide);
 
     topLevel.show();
-    topLevel.setWindowTitle(QTest::currentTestFunction());
-    QVERIFY(QTest::qWaitForWindowActive(&topLevel));
+    topLevel.setWindowTitle(BOBUIest::currentTestFunction());
+    QVERIFY(BOBUIest::qWaitForWindowActive(&topLevel));
     QWindow *topLevelWindow = topLevel.windowHandle();
     QVERIFY(topLevelWindow);
 
     const QPoint menuActionPos = menuBar->mapTo(&topLevel, menuBar->actionGeometry(menu->menuAction()).center());
-    QTest::mouseClick(topLevelWindow, Qt::LeftButton, Qt::KeyboardModifiers(), menuActionPos);
-    QVERIFY(QTest::qWaitForWindowExposed(menu));
+    BOBUIest::mouseClick(topLevelWindow, BobUI::LeftButton, BobUI::KeyboardModifiers(), menuActionPos);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(menu));
 
     QPoint w1Center = topLevel.mapFromGlobal(spinBox1->mapToGlobal(spinBox1->rect().center()));
-    QTest::mouseClick(topLevelWindow, Qt::LeftButton, Qt::KeyboardModifiers(), w1Center);
+    BOBUIest::mouseClick(topLevelWindow, BobUI::LeftButton, BobUI::KeyboardModifiers(), w1Center);
     menu->setActiveAction(nextMenuAct);
-    QVERIFY(QTest::qWaitForWindowExposed(subMenu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(subMenu));
 
     QPoint w2Center = topLevel.mapFromGlobal(spinBox2->mapToGlobal(spinBox2->rect().center()));
-    QTest::mouseClick(topLevelWindow, Qt::LeftButton, Qt::KeyboardModifiers(), w2Center);
-    QTest::mouseMove(topLevelWindow, topLevel.mapFromGlobal(pointOutsideMenu));
-    QTRY_VERIFY(menu->isHidden());
+    BOBUIest::mouseClick(topLevelWindow, BobUI::LeftButton, BobUI::KeyboardModifiers(), w2Center);
+    BOBUIest::mouseMove(topLevelWindow, topLevel.mapFromGlobal(pointOutsideMenu));
+    BOBUIRY_VERIFY(menu->isHidden());
 }
 
 /*!
@@ -1634,7 +1634,7 @@ void tst_QMenu::widgetActionTriggerClosesMenu()
 
     menu.popup(QPoint(200,200));
     submenu.popup(QPoint(250,250));
-    if (!QTest::qWaitForWindowExposed(&menu) || !QTest::qWaitForWindowExposed(&submenu))
+    if (!BOBUIest::qWaitForWindowExposed(&menu) || !BOBUIest::qWaitForWindowExposed(&submenu))
         QSKIP("Failed to show menus, aborting test");
 
     regularAction.trigger();
@@ -1653,7 +1653,7 @@ void tst_QMenu::widgetActionTriggerClosesMenu()
     QCOMPARE(actionTriggered, &widgetAction);
 }
 
-void tst_QMenu::widgetActionContextMenu() // QTBUG-134757
+void tst_QMenu::widgetActionContextMenu() // BOBUIBUG-134757
 {
     QPushButton openButton("open");
     QMenu *menu = new QMenu(&openButton);
@@ -1668,17 +1668,17 @@ void tst_QMenu::widgetActionContextMenu() // QTBUG-134757
     layout->addWidget(&edit);
 
     openButton.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&openButton));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&openButton));
 
     // Click the QPushButton to open its menu
-    QTest::mouseClick(&openButton, Qt::LeftButton);
-    QVERIFY(QTest::qWaitForWindowExposed(&menuWidget));
+    BOBUIest::mouseClick(&openButton, BobUI::LeftButton);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menuWidget));
     QWindow *popupWindow = edit.window()->windowHandle();
     QVERIFY(popupWindow);
     QCOMPARE(QApplication::activePopupWidget(), menu);
 
     // Right-click the QPlainTextEdit to open its context menu
-    QTest::mouseClick(popupWindow, Qt::RightButton);
+    BOBUIest::mouseClick(popupWindow, BobUI::RightButton);
     QVERIFY(qobject_cast<QMenu *>(QApplication::activePopupWidget()));
     QCOMPARE_NE(QApplication::activePopupWidget(), menu);
 }
@@ -1711,13 +1711,13 @@ void tst_QMenu::transientParent()
     bookmarksAction->setMenu(bookmarksMenu);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window));
     QWindow *topLevel = window.windowHandle();
     QVERIFY(topLevel);
 
     // Show the standalone bookmarks menu. It should be a child of the main window.
     bookmarksMenu->popup(window.geometry().center());
-    QTRY_VERIFY(QTest::qWaitForWindowExposed(bookmarksMenu));
+    BOBUIRY_VERIFY(BOBUIest::qWaitForWindowExposed(bookmarksMenu));
     QVERIFY(bookmarksMenu->windowHandle());
     QCOMPARE(bookmarksMenu->windowHandle()->transientParent(), topLevel);
     bookmarksMenu->close();
@@ -1725,42 +1725,42 @@ void tst_QMenu::transientParent()
     // Show the bookmarks menu attached to the context menu. Even though the bookmarks menu is
     // a child of the main window, its transient parent will be the context menu.
     contextMenu->popup(window.geometry().center());
-    QTRY_VERIFY(QTest::qWaitForWindowExposed(contextMenu));
+    BOBUIRY_VERIFY(BOBUIest::qWaitForWindowExposed(contextMenu));
     QVERIFY(contextMenu->windowHandle());
     QCOMPARE(contextMenu->windowHandle()->transientParent(), topLevel);
 
     contextMenu->setActiveAction(bookmarksAction);
-    QTRY_VERIFY(QTest::qWaitForWindowExposed(bookmarksMenu));
+    BOBUIRY_VERIFY(BOBUIest::qWaitForWindowExposed(bookmarksMenu));
     QVERIFY(bookmarksMenu->windowHandle());
     QCOMPARE(bookmarksMenu->windowHandle()->transientParent(), contextMenu->windowHandle());
     contextMenu->close();
 
     // Show the standalone bookmarks menu. Its transient parent will be the main window again.
     bookmarksMenu->popup(window.geometry().center());
-    QTRY_VERIFY(QTest::qWaitForWindowExposed(bookmarksMenu));
+    BOBUIRY_VERIFY(BOBUIest::qWaitForWindowExposed(bookmarksMenu));
     QVERIFY(bookmarksMenu->windowHandle());
     QCOMPARE(bookmarksMenu->windowHandle()->transientParent(), topLevel);
     bookmarksMenu->close();
 
     // On Mac, we need to create native key events to test menu
     // action activation, so skip this part of the test.
-#if QT_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
+#if BOBUI_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
     window.setFocus();
-    QVERIFY(QTest::qWaitForWindowFocused(&window));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&window));
     QVERIFY(window.hasFocus());
 
-    QTest::keyPress(&window, Qt::Key_F, Qt::AltModifier);
-    QTRY_VERIFY(QTest::qWaitForWindowExposed(fileMenu));
+    BOBUIest::keyPress(&window, BobUI::Key_F, BobUI::AltModifier);
+    BOBUIRY_VERIFY(BOBUIest::qWaitForWindowExposed(fileMenu));
     QVERIFY(fileMenu->windowHandle());
     QCOMPARE(fileMenu->windowHandle()->transientParent(), topLevel);
-    QTest::keyRelease(fileMenu, Qt::Key_F, Qt::AltModifier);
+    BOBUIest::keyRelease(fileMenu, BobUI::Key_F, BobUI::AltModifier);
 
-    QTest::keyPress(fileMenu, Qt::Key_E, Qt::AltModifier);
-    QTRY_VERIFY(QTest::qWaitForWindowExposed(editMenu));
+    BOBUIest::keyPress(fileMenu, BobUI::Key_E, BobUI::AltModifier);
+    BOBUIRY_VERIFY(BOBUIest::qWaitForWindowExposed(editMenu));
     QVERIFY(editMenu->windowHandle());
     QCOMPARE(editMenu->windowHandle()->transientParent(), topLevel);
-    QTest::keyRelease(editMenu, Qt::Key_E, Qt::AltModifier);
-#endif // QT_CONFIG(shortcut) && !Q_OS_DARWIN
+    BOBUIest::keyRelease(editMenu, BobUI::Key_E, BobUI::AltModifier);
+#endif // BOBUI_CONFIG(shortcut) && !Q_OS_DARWIN
 }
 
 class MyMenu : public QMenu
@@ -1777,10 +1777,10 @@ public:
     {
         m_currentIndex = index;
         popup(QPoint());
-        QVERIFY(QTest::qWaitForWindowExposed(this));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(this));
         setActiveAction(dialogActions[index]);
-        QTimer::singleShot(500, this, SLOT(checkVisibility()));
-        QTest::keyClick(this, Qt::Key_Enter); //activation
+        BOBUIimer::singleShot(500, this, SLOT(checkVisibility()));
+        BOBUIest::keyClick(this, BobUI::Key_Enter); //activation
     }
 
 public slots:
@@ -1791,7 +1791,7 @@ public slots:
 
     void checkVisibility()
     {
-        QTRY_VERIFY(dialogs[m_currentIndex].isVisible());
+        BOBUIRY_VERIFY(dialogs[m_currentIndex].isVisible());
         if (m_currentIndex == 1) {
             QApplication::closeAllWindows(); //this is the end of the test
         }
@@ -1803,42 +1803,42 @@ private:
     int m_currentIndex;
 };
 
-void tst_QMenu::QTBUG_10735_crashWithDialog()
+void tst_QMenu::BOBUIBUG_10735_crashWithDialog()
 {
     MyMenu menu;
 
-    QTimer::singleShot(1000, &menu, SLOT(activateLastAction()));
+    BOBUIimer::singleShot(1000, &menu, SLOT(activateLastAction()));
     menu.activateAction(0);
 }
 
 #ifdef Q_OS_MAC
-void tst_QMenu::QTBUG_37933_ampersands_data()
+void tst_QMenu::BOBUIBUG_37933_ampersands_data()
 {
-    QTest::addColumn<QString>("title");
-    QTest::addColumn<QString>("visibleTitle");
-    QTest::newRow("simple") << QString("Test") << QString("Test");
-    QTest::newRow("ampersand") << QString("&Test") << QString("Test");
-    QTest::newRow("double_ampersand") << QString("&Test && more") << QString("Test & more");
-    QTest::newRow("ampersand_in_parentheses") << QString("Test(&T) (&&) more") << QString("Test (&) more");
-    QTest::newRow("ampersand_in_parentheses_after_space") << QString("Test (&T)") << QString("Test");
-    QTest::newRow("ampersand_in_parentheses_after_spaces") << QString("Test  (&T)") << QString("Test");
-    QTest::newRow("ampersand_in_parentheses_before_space") << QString("Test(&T) ") << QString("Test ");
-    QTest::newRow("only_ampersand_in_parentheses") << QString("(&T)") << QString("");
-    QTest::newRow("only_ampersand_in_parentheses_after_space") << QString(" (&T)") << QString("");
-    QTest::newRow("parentheses_after_space") << QString(" (Dummy)") << QString(" (Dummy)");
-    QTest::newRow("ampersand_after_space") << QString("About &Qt Project") << QString("About Qt Project");
+    BOBUIest::addColumn<QString>("title");
+    BOBUIest::addColumn<QString>("visibleTitle");
+    BOBUIest::newRow("simple") << QString("Test") << QString("Test");
+    BOBUIest::newRow("ampersand") << QString("&Test") << QString("Test");
+    BOBUIest::newRow("double_ampersand") << QString("&Test && more") << QString("Test & more");
+    BOBUIest::newRow("ampersand_in_parentheses") << QString("Test(&T) (&&) more") << QString("Test (&) more");
+    BOBUIest::newRow("ampersand_in_parentheses_after_space") << QString("Test (&T)") << QString("Test");
+    BOBUIest::newRow("ampersand_in_parentheses_after_spaces") << QString("Test  (&T)") << QString("Test");
+    BOBUIest::newRow("ampersand_in_parentheses_before_space") << QString("Test(&T) ") << QString("Test ");
+    BOBUIest::newRow("only_ampersand_in_parentheses") << QString("(&T)") << QString("");
+    BOBUIest::newRow("only_ampersand_in_parentheses_after_space") << QString(" (&T)") << QString("");
+    BOBUIest::newRow("parentheses_after_space") << QString(" (Dummy)") << QString(" (Dummy)");
+    BOBUIest::newRow("ampersand_after_space") << QString("About &BobUI Project") << QString("About BobUI Project");
 }
 
-void tst_qmenu_QTBUG_37933_ampersands();
+void tst_qmenu_BOBUIBUG_37933_ampersands();
 
-void tst_QMenu::QTBUG_37933_ampersands()
+void tst_QMenu::BOBUIBUG_37933_ampersands()
 {
     // external in .mm file
-    tst_qmenu_QTBUG_37933_ampersands();
+    tst_qmenu_BOBUIBUG_37933_ampersands();
 }
 #endif
 
-void tst_QMenu::QTBUG_56917_wideMenuSize()
+void tst_QMenu::BOBUIBUG_56917_wideMenuSize()
 {
     // menu shouldn't to take on full screen height when menu width is larger than screen width
     QMenu menu;
@@ -1847,12 +1847,12 @@ void tst_QMenu::QTBUG_56917_wideMenuSize()
     menu.addAction(longString);
     QSize menuSizeHint = menu.sizeHint();
     menu.popup(QPoint());
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
     QVERIFY(menu.isVisible());
     QVERIFY(menu.height() <= menuSizeHint.height());
 }
 
-void tst_QMenu::QTBUG_56917_wideMenuScreenNumber()
+void tst_QMenu::BOBUIBUG_56917_wideMenuScreenNumber()
 {
     if (QApplication::styleHints()->showIsFullScreen())
         QSKIP("The platform defaults to windows being fullscreen.");
@@ -1865,13 +1865,13 @@ void tst_QMenu::QTBUG_56917_wideMenuScreenNumber()
         QMenu menu;
         menu.addAction(longString);
         menu.popup(screen->geometry().center());
-        QVERIFY(QTest::qWaitForWindowExposed(&menu));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
         QVERIFY(menu.isVisible());
         QCOMPARE(QGuiApplication::screenAt(menu.pos()), screen);
     }
 }
 
-void tst_QMenu::QTBUG_56917_wideSubmenuScreenNumber()
+void tst_QMenu::BOBUIBUG_56917_wideSubmenuScreenNumber()
 {
     if (QApplication::styleHints()->showIsFullScreen())
         QSKIP("The platform defaults to windows being fullscreen.");
@@ -1886,11 +1886,11 @@ void tst_QMenu::QTBUG_56917_wideSubmenuScreenNumber()
         submenu.addAction(longString);
         QAction *action = menu.addMenu(&submenu);
         menu.popup(screen->geometry().center());
-        QVERIFY(QTest::qWaitForWindowExposed(&menu));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
         QVERIFY(menu.isVisible());
-        QTest::mouseClick(&menu, Qt::LeftButton, {}, menu.actionGeometry(action).center());
-        QTest::qWait(100);
-        QVERIFY(QTest::qWaitForWindowExposed(&submenu));
+        BOBUIest::mouseClick(&menu, BobUI::LeftButton, {}, menu.actionGeometry(action).center());
+        BOBUIest::qWait(100);
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&submenu));
         QVERIFY(submenu.isVisible());
         QCOMPARE(QGuiApplication::screenAt(submenu.pos()), screen);
     }
@@ -1898,44 +1898,44 @@ void tst_QMenu::QTBUG_56917_wideSubmenuScreenNumber()
 
 void tst_QMenu::menuSize_Scrolling_data()
 {
-    QTest::addColumn<int>("numItems");
-    QTest::addColumn<int>("topMargin");
-    QTest::addColumn<int>("bottomMargin");
-    QTest::addColumn<int>("leftMargin");
-    QTest::addColumn<int>("rightMargin");
-    QTest::addColumn<int>("topPadding");
-    QTest::addColumn<int>("bottomPadding");
-    QTest::addColumn<int>("leftPadding");
-    QTest::addColumn<int>("rightPadding");
-    QTest::addColumn<int>("border");
-    QTest::addColumn<bool>("scrollable");
-    QTest::addColumn<bool>("tearOff");
+    BOBUIest::addColumn<int>("numItems");
+    BOBUIest::addColumn<int>("topMargin");
+    BOBUIest::addColumn<int>("bottomMargin");
+    BOBUIest::addColumn<int>("leftMargin");
+    BOBUIest::addColumn<int>("rightMargin");
+    BOBUIest::addColumn<int>("topPadding");
+    BOBUIest::addColumn<int>("bottomPadding");
+    BOBUIest::addColumn<int>("leftPadding");
+    BOBUIest::addColumn<int>("rightPadding");
+    BOBUIest::addColumn<int>("border");
+    BOBUIest::addColumn<bool>("scrollable");
+    BOBUIest::addColumn<bool>("tearOff");
 
     // test data
     // a single column and non-scrollable menu with contents margins + border
-    QTest::newRow("data0") << 5 << 2 << 2 << 2 << 2 << 0 << 0 << 0 << 0 << 2 << false << false;
+    BOBUIest::newRow("data0") << 5 << 2 << 2 << 2 << 2 << 0 << 0 << 0 << 0 << 2 << false << false;
     // a single column and non-scrollable menu with paddings + border
-    QTest::newRow("data1") << 5 << 0 << 0 << 0 << 0 << 2 << 2 << 2 << 2 << 2 << false << false;
+    BOBUIest::newRow("data1") << 5 << 0 << 0 << 0 << 0 << 2 << 2 << 2 << 2 << 2 << false << false;
     // a single column and non-scrollable menu with contents margins + paddings + border
-    QTest::newRow("data2") << 5 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << false << false;
+    BOBUIest::newRow("data2") << 5 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << false << false;
     // a single column and non-scrollable menu with contents margins + paddings + border + tear-off
-    QTest::newRow("data3") << 5 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << false << true;
+    BOBUIest::newRow("data3") << 5 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << false << true;
     // a multi-column menu with contents margins + border
-    QTest::newRow("data4") << 80 << 2 << 2 << 2 << 2 << 0 << 0 << 0 << 0 << 2 << false << false;
+    BOBUIest::newRow("data4") << 80 << 2 << 2 << 2 << 2 << 0 << 0 << 0 << 0 << 2 << false << false;
     // a multi-column menu with paddings + border
-    QTest::newRow("data5") << 80 << 0  << 0 << 0 << 0 << 2 << 2 << 2 << 2 << 2 << false << false;
+    BOBUIest::newRow("data5") << 80 << 0  << 0 << 0 << 0 << 2 << 2 << 2 << 2 << 2 << false << false;
     // a multi-column menu with contents margins + paddings + border
-    QTest::newRow("data6") << 80 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << false << false;
+    BOBUIest::newRow("data6") << 80 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << false << false;
     // a multi-column menu with contents margins + paddings + border + tear-off
-    QTest::newRow("data7") << 80 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << false << true;
+    BOBUIest::newRow("data7") << 80 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << false << true;
     // a scrollable menu with contents margins + border
-    QTest::newRow("data8") << 80 << 2 << 2 << 2 << 2 << 0 << 0 << 0 << 0 << 2 << true << false;
+    BOBUIest::newRow("data8") << 80 << 2 << 2 << 2 << 2 << 0 << 0 << 0 << 0 << 2 << true << false;
     // a scrollable menu with paddings + border
-    QTest::newRow("data9") << 80 << 0 << 0 << 0 << 0 << 2 << 2 << 2 << 2 << 2 << true << false;
+    BOBUIest::newRow("data9") << 80 << 0 << 0 << 0 << 0 << 2 << 2 << 2 << 2 << 2 << true << false;
     // a scrollable menu with contents margins + paddings + border
-    QTest::newRow("data10") << 80 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << true << false;
+    BOBUIest::newRow("data10") << 80 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << true << false;
     // a scrollable menu with contents margins + paddings + border + tear-off
-    QTest::newRow("data11") << 80 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << true << true;
+    BOBUIest::newRow("data11") << 80 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << 2 << true << true;
 }
 
 void tst_QMenu::menuSize_Scrolling()
@@ -1985,9 +1985,9 @@ void tst_QMenu::menuSize_Scrolling()
             const QMargins cm = contentsMargins();
             QRect lastItem = actionGeometry(actions().at(actions().size() - 1));
             QSize s = size();
-            if (!QGuiApplication::platformName().compare(QLatin1String("minimal"), Qt::CaseInsensitive)
-                || !QGuiApplication::platformName().compare(QLatin1String("offscreen"), Qt::CaseInsensitive)) {
-                qWarning("Skipping test on minimal/offscreen platforms - QTBUG-73522");
+            if (!QGuiApplication::platformName().compare(QLatin1String("minimal"), BobUI::CaseInsensitive)
+                || !QGuiApplication::platformName().compare(QLatin1String("offscreen"), BobUI::CaseInsensitive)) {
+                qWarning("Skipping test on minimal/offscreen platforms - BOBUIBUG-73522");
                 QMenu::showEvent(e);
                 return;
             }
@@ -1998,7 +1998,7 @@ void tst_QMenu::menuSize_Scrolling()
 
         void init(const ContentsMargins &margins, const MenuPaddings &paddings, int border)
         {
-            setLayoutDirection(Qt::LeftToRight);
+            setLayoutDirection(BobUI::LeftToRight);
 
             setTearOffEnabled(m_tearOff);
             setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);
@@ -2039,28 +2039,28 @@ void tst_QMenu::menuSize_Scrolling()
     QFETCH(bool, scrollable);
     QFETCH(bool, tearOff);
 
-    qApp->setAttribute(Qt::AA_DontUseNativeMenuBar);
+    qApp->setAttribute(BobUI::AA_DontUseNativeMenuBar);
 
     TestMenu::ContentsMargins margins(leftMargin, topMargin, rightMargin, bottomMargin);
     TestMenu::MenuPaddings paddings(leftPadding, topPadding, rightPadding, bottomPadding);
     TestMenu menu(numItems, margins, paddings, border, scrollable, tearOff);
     menu.popup(QPoint(0,0));
     centerOnScreen(&menu);
-    QVERIFY(QTest::qWaitForWindowExposed(&menu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&menu));
 
     QList<QAction *> actions = menu.actions();
     QCOMPARE(actions.size(), numItems);
 
     MenuMetrics mm(&menu);
-    QTest::keyClick(&menu, Qt::Key_Home);
-    QTRY_COMPARE(menu.actionGeometry(actions.first()).y(), mm.fw + mm.vmargin + topMargin + (tearOff ? mm.tearOffHeight : 0));
+    BOBUIest::keyClick(&menu, BobUI::Key_Home);
+    BOBUIRY_COMPARE(menu.actionGeometry(actions.first()).y(), mm.fw + mm.vmargin + topMargin + (tearOff ? mm.tearOffHeight : 0));
     QCOMPARE(menu.actionGeometry(actions.first()).x(), mm.fw + mm.hmargin + leftMargin);
 
     if (!scrollable)
         return;
 
-    QTest::keyClick(&menu, Qt::Key_End);
-    QTRY_COMPARE(menu.actionGeometry(actions.last()).right(),
+    BOBUIest::keyClick(&menu, BobUI::Key_End);
+    BOBUIRY_COMPARE(menu.actionGeometry(actions.last()).right(),
                  menu.width() - mm.fw - mm.hmargin - leftMargin - 1);
     QCOMPARE(menu.actionGeometry(actions.last()).bottom(),
              menu.height() - mm.fw - mm.vmargin - bottomMargin - 1);
@@ -2083,16 +2083,16 @@ void tst_QMenu::tearOffMenuNotDisplayed()
     centerOnScreen(&widget);
     widget.show();
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
     menu->popup(widget.geometry().topRight() + QPoint(50, 0));
-    QVERIFY(QTest::qWaitForWindowActive(menu.data()));
+    QVERIFY(BOBUIest::qWaitForWindowActive(menu.data()));
     QVERIFY(!menu->isTearOffMenuVisible());
 
     MenuMetrics mm(menu.data());
     const int tearOffOffset = mm.fw + mm.vmargin + mm.tearOffHeight / 2;
 
-    QTest::mouseClick(menu.data(), Qt::LeftButton, {}, QPoint(10, tearOffOffset), 10);
-    QTRY_VERIFY(menu->isTearOffMenuVisible());
+    BOBUIest::mouseClick(menu.data(), BobUI::LeftButton, {}, QPoint(10, tearOffOffset), 10);
+    BOBUIRY_VERIFY(menu->isTearOffMenuVisible());
     QPointer<QMenu> torn = getTornOffMenu();
     QVERIFY(torn);
     QVERIFY(torn->isVisible());
@@ -2103,7 +2103,7 @@ void tst_QMenu::tearOffMenuNotDisplayed()
     QVERIFY(!torn->isVisible());
 }
 
-void tst_QMenu::QTBUG_61039_menu_shortcuts()
+void tst_QMenu::BOBUIBUG_61039_menu_shortcuts()
 {
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
@@ -2111,11 +2111,11 @@ void tst_QMenu::QTBUG_61039_menu_shortcuts()
     QObject reaper;
 
     QAction *actionKamen = new QAction("Action Kamen", &reaper);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     actionKamen->setShortcut(QKeySequence(QLatin1String("K")));
 #endif
     QAction *actionJoe = new QAction("Action Joe", &reaper);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     actionJoe->setShortcut(QKeySequence(QLatin1String("Ctrl+J")));
 #endif
 
@@ -2127,15 +2127,15 @@ void tst_QMenu::QTBUG_61039_menu_shortcuts()
     QWidget widget;
     widget.addAction(menu.menuAction());
     widget.show();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
 
     QSignalSpy actionKamenSpy(actionKamen, &QAction::triggered);
-    QTest::keyClick(&widget, Qt::Key_K);
-    QTRY_COMPARE(actionKamenSpy.size(), 1);
+    BOBUIest::keyClick(&widget, BobUI::Key_K);
+    BOBUIRY_COMPARE(actionKamenSpy.size(), 1);
 
     QSignalSpy actionJoeSpy(actionJoe, &QAction::triggered);
-    QTest::keyClick(&widget, Qt::Key_J, Qt::ControlModifier);
-    QTRY_COMPARE(actionJoeSpy.size(), 1);
+    BOBUIest::keyClick(&widget, BobUI::Key_J, BobUI::ControlModifier);
+    BOBUIRY_COMPARE(actionJoeSpy.size(), 1);
 }
 
 void tst_QMenu::screenOrientationChangedCloseMenu()
@@ -2144,19 +2144,19 @@ void tst_QMenu::screenOrientationChangedCloseMenu()
      menu.addAction("action1");
      menu.show();
 
-     QTRY_COMPARE(menu.isVisible(),true);
+     BOBUIRY_COMPARE(menu.isVisible(),true);
 
-     Qt::ScreenOrientation orientation = menu.screen()->orientation() == Qt::PortraitOrientation ? Qt::LandscapeOrientation : Qt::PortraitOrientation;
+     BobUI::ScreenOrientation orientation = menu.screen()->orientation() == BobUI::PortraitOrientation ? BobUI::LandscapeOrientation : BobUI::PortraitOrientation;
      QScreenOrientationChangeEvent event(menu.screen(), orientation);
      QCoreApplication::sendEvent(QCoreApplication::instance(), &event);
 
-     QTRY_COMPARE(menu.isVisible(),false);
+     BOBUIRY_COMPARE(menu.isVisible(),false);
 }
 
 /*
     Verify that deleting the menu in a slot connected to an
     action's triggered signal doesn't crash.
-    QTBUG-106718
+    BOBUIBUG-106718
 */
 void tst_QMenu::deleteWhenTriggered()
 {
@@ -2166,15 +2166,15 @@ void tst_QMenu::deleteWhenTriggered()
     });
     menu->popup(QGuiApplication::primaryScreen()->availableGeometry().center());
     menu->setActiveAction(action);
-    QTest::keyClick(menu, Qt::Key_Return);
-    QTRY_VERIFY(!menu);
+    BOBUIest::keyClick(menu, BobUI::Key_Return);
+    BOBUIRY_VERIFY(!menu);
 }
 
 /*
     QMenu uses the caused-stack to create the parent/child relationship
-    for tear-off menus. Since QTornOffMenu set the DeleteOnClose flag, closing a
+    for tear-off menus. Since BOBUIornOffMenu set the DeleteOnClose flag, closing a
     tear-off in the parent chain will result in a null-pointer in the caused-stack.
-    Verify that we don't crash when traversing the chain, as reported in QTBUG-112217.
+    Verify that we don't crash when traversing the chain, as reported in BOBUIBUG-112217.
 
     The test has to open the submenus by hovering of the menu action, otherwise
     the caused-stack remains empty and the issue doesn't reproduce. Due to QMenu's
@@ -2184,9 +2184,9 @@ void tst_QMenu::deleteWhenTriggered()
 */
 void tst_QMenu::nestedTearOffDetached()
 {
-    // Since QTornOffMenu is not declared in qmenuprivate.h we can't access the
+    // Since BOBUIornOffMenu is not declared in qmenuprivate.h we can't access the
     // object even through QMenuPrivate. So use an event filter to watch out for
-    // a QTornOffMenu showing.
+    // a BOBUIornOffMenu showing.
     class TearOffWatcher : public QObject
     {
     public:
@@ -2194,7 +2194,7 @@ void tst_QMenu::nestedTearOffDetached()
     protected:
         bool eventFilter(QObject *receiver, QEvent *event) override
         {
-            if (event->type() == QEvent::Show && receiver->inherits("QTornOffMenu"))
+            if (event->type() == QEvent::Show && receiver->inherits("BOBUIornOffMenu"))
                 tornOffMenu = qobject_cast<QMenu *>(receiver);
             return QObject::eventFilter(receiver, event);
         }
@@ -2215,49 +2215,49 @@ void tst_QMenu::nestedTearOffDetached()
     subSubMenu->setTearOffEnabled(true);
 
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     // open and tear off context menu
     menu->popup(widget.geometry().center());
-    QTest::mouseClick(menu, Qt::LeftButton, {}, QPoint(menu->width() / 2, tearOffOffset));
+    BOBUIest::mouseClick(menu, BobUI::LeftButton, {}, QPoint(menu->width() / 2, tearOffOffset));
 
     QMenu *menuTorn = watcher.tornOffMenu;
     watcher.tornOffMenu = nullptr;
     QVERIFY(menuTorn);
-    QVERIFY(QTest::qWaitForWindowExposed(menuTorn));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(menuTorn));
 
     // open second menu and tear-off
-    QTest::mouseMove(menuTorn, menuTorn->actionGeometry(subMenu->menuAction()).topLeft());
-    QTest::qWait(100);
-    QTest::mouseMove(menuTorn, menuTorn->actionGeometry(subMenu->menuAction()).center());
-    if (!QTest::qWaitFor([subMenu]{ return subMenu->isVisible(); }))
+    BOBUIest::mouseMove(menuTorn, menuTorn->actionGeometry(subMenu->menuAction()).topLeft());
+    BOBUIest::qWait(100);
+    BOBUIest::mouseMove(menuTorn, menuTorn->actionGeometry(subMenu->menuAction()).center());
+    if (!BOBUIest::qWaitFor([subMenu]{ return subMenu->isVisible(); }))
         QSKIP("Menu failed to show, skipping test");
 
-    QTest::mouseClick(subMenu, Qt::LeftButton, {}, QPoint(subMenu->width() / 2, tearOffOffset));
+    BOBUIest::mouseClick(subMenu, BobUI::LeftButton, {}, QPoint(subMenu->width() / 2, tearOffOffset));
     menuTorn = watcher.tornOffMenu;
     QVERIFY(menuTorn);
-    QVERIFY(QTest::qWaitForWindowExposed(menuTorn));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(menuTorn));
     // close the top level tear off
     menu->hideTearOffMenu();
     // open third menu and tear-off
-    QTest::mouseMove(menuTorn, menuTorn->actionGeometry(subSubMenu->menuAction()).topLeft());
-    QTest::qWait(100);
-    QTest::mouseMove(menuTorn, menuTorn->actionGeometry(subSubMenu->menuAction()).center());
-    QTRY_VERIFY(subSubMenu->isVisible());
-    QTest::mouseClick(subSubMenu, Qt::LeftButton, {}, QPoint(subSubMenu->width() / 2, tearOffOffset));
+    BOBUIest::mouseMove(menuTorn, menuTorn->actionGeometry(subSubMenu->menuAction()).topLeft());
+    BOBUIest::qWait(100);
+    BOBUIest::mouseMove(menuTorn, menuTorn->actionGeometry(subSubMenu->menuAction()).center());
+    BOBUIRY_VERIFY(subSubMenu->isVisible());
+    BOBUIest::mouseClick(subSubMenu, BobUI::LeftButton, {}, QPoint(subSubMenu->width() / 2, tearOffOffset));
 }
 
 /*!
     Test that a menu will close if you do a mouse click on top of
     it without having moved the mouse.
-    (QTBUG-128359).
+    (BOBUIBUG-128359).
 */
 void tst_QMenu::closeMenuOnClickIfMouseHasntMoved()
 {
     QWidget w;
     w.resize(100, 100);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     QMenu contextMenu;
     for (int i = 0; i < 5; ++i) {
@@ -2268,14 +2268,14 @@ void tst_QMenu::closeMenuOnClickIfMouseHasntMoved()
     const QPoint pos = w.rect().center();
     const QPoint globalPos = w.mapToGlobal(pos);
     // Move the mouse inside the window
-    QTest::mouseMove(&w, pos);
+    BOBUIest::mouseMove(&w, pos);
     // Move the menu a bit up, so that a menu item falls underneath the
-    // mouse (similar to the code attached to the bug report: QTBUG-128359).
+    // mouse (similar to the code attached to the bug report: BOBUIBUG-128359).
     contextMenu.popup(globalPos - QPoint(0, 20));
-    QVERIFY(QTest::qWaitForWindowExposed(&contextMenu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&contextMenu));
     // Do a mouse click without having moved the cursor. This
     // should close the menu, even if it's underneath the mouse.
-    QTest::mouseClick(&contextMenu, Qt::RightButton, {}, contextMenu.mapFromGlobal(pos));
+    BOBUIest::mouseClick(&contextMenu, BobUI::RightButton, {}, contextMenu.mapFromGlobal(pos));
 }
 
 void tst_QMenu::invisibleActions()
@@ -2286,7 +2286,7 @@ void tst_QMenu::invisibleActions()
 
     const QPoint globalPos = window.mapToGlobal(window.rect().center());
 
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
 
     QMenu contextMenu;
     QList<QAction *> actions;
@@ -2314,7 +2314,7 @@ void tst_QMenu::invisibleActions()
     QVERIFY(contextMenu.isVisible());
 }
 
-#if QT_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
+#if BOBUI_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
 void tst_QMenu::dontSelectDisabledActionByShortcut()
 {
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
@@ -2329,9 +2329,9 @@ void tst_QMenu::dontSelectDisabledActionByShortcut()
     QSignalSpy spy(second, &QAction::triggered);
     first->setDisabled(true);
     w.show();
-    QVERIFY(QTest::qWaitForWindowActive(&w));
-    QTest::keyClick(&w, Qt::Key_N, Qt::AltModifier);
-    QTest::keyClick(m, Qt::Key_O, Qt::NoModifier);
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w));
+    BOBUIest::keyClick(&w, BobUI::Key_N, BobUI::AltModifier);
+    BOBUIest::keyClick(m, BobUI::Key_O, BobUI::NoModifier);
     QCOMPARE(spy.count(), 1);
 }
 #endif
@@ -2351,11 +2351,11 @@ void tst_QMenu::execReturnsWidgetAction()
     menu.addAction("Last");
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window));
 
-    QTimer::singleShot(0, menuButton, &QPushButton::click);
+    BOBUIimer::singleShot(0, menuButton, &QPushButton::click);
     QCOMPARE(menu.exec(window.geometry().center()), widgetAction);
 }
 
-QTEST_MAIN(tst_QMenu)
+BOBUIEST_MAIN(tst_QMenu)
 #include "tst_qmenu.moc"

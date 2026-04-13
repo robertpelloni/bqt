@@ -1,5 +1,5 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXRASTERWINDOW_H
 #define QQNXRASTERWINDOW_H
@@ -7,7 +7,7 @@
 #include "qqnxwindow.h"
 #include "qqnxbuffer.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QQnxRasterWindow : public QQnxWindow
 {
@@ -44,6 +44,6 @@ private:
     QQnxBuffer m_buffers[MAX_BUFFER_COUNT];
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXRASTERWINDOW_H

@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfbscreen_p.h"
 #include "qfbcursor_p.h"
 #include "qfbwindow_p.h"
 #include "qfbbackingstore_p.h"
 
-#include <QtGui/QPainter>
-#include <QtCore/QCoreApplication>
+#include <BobUIGui/QPainter>
+#include <BobUICore/QCoreApplication>
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtCore/QDebug>
-#include <QtCore/QElapsedTimer>
+#include <BobUICore/QDebug>
+#include <BobUICore/QElapsedTimer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QFbScreen::QFbScreen()
     : mUpdatePending(false),
@@ -103,7 +103,7 @@ void QFbScreen::lower(QFbWindow *window)
 QWindow *QFbScreen::topWindow() const
 {
     for (QFbWindow *fbw : mWindowStack) {
-        if (fbw->window()->type() == Qt::Window || fbw->window()->type() == Qt::Dialog)
+        if (fbw->window()->type() == BobUI::Window || fbw->window()->type() == BobUI::Dialog)
             return fbw->window();
     }
     return nullptr;
@@ -181,7 +181,7 @@ QRegion QFbScreen::doRedraw()
             continue;
 
         mPainter->setCompositionMode(QPainter::CompositionMode_Source);
-        mPainter->fillRect(rect, mScreenImage.hasAlphaChannel() ? Qt::transparent : Qt::black);
+        mPainter->fillRect(rect, mScreenImage.hasAlphaChannel() ? BobUI::transparent : BobUI::black);
 
         for (int layerIndex = mWindowStack.size() - 1; layerIndex != -1; layerIndex--) {
             if (!mWindowStack[layerIndex]->window()->isVisible())
@@ -222,6 +222,6 @@ QFbScreen::Flags QFbScreen::flags() const
     return { };
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfbscreen_p.cpp"

@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -7,11 +7,11 @@
 #include <QMainWindow>
 #include <QProcess>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class FontEngineRenderer;
 

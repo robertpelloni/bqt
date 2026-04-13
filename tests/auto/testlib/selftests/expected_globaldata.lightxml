@@ -1,7 +1,7 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
   <Message type="qdebug" file="" line="0">
@@ -90,7 +90,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="skip">
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
       <DataTag><![CDATA[global=false]]></DataTag>
       <Description><![CDATA[skipping]]></Description>
     </Incident>
@@ -101,7 +101,7 @@
     <DataTag><![CDATA[global=false:local=false]]></DataTag>
     <Description><![CDATA[init skipLocal local=false]]></Description>
   </Message>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
       <DataTag><![CDATA[global=false:local=false]]></DataTag>
       <Description><![CDATA[skipping]]></Description>
     </Incident>
@@ -113,7 +113,7 @@
     <DataTag><![CDATA[global=false:local=true]]></DataTag>
     <Description><![CDATA[init skipLocal local=true]]></Description>
   </Message>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
       <DataTag><![CDATA[global=false:local=true]]></DataTag>
       <Description><![CDATA[skipping]]></Description>
     </Incident>
@@ -125,7 +125,7 @@
     <DataTag><![CDATA[global=true:local=false]]></DataTag>
     <Description><![CDATA[init skipLocal local=false]]></Description>
   </Message>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
       <DataTag><![CDATA[global=true:local=false]]></DataTag>
       <Description><![CDATA[skipping]]></Description>
     </Incident>
@@ -137,7 +137,7 @@
     <DataTag><![CDATA[global=true:local=true]]></DataTag>
     <Description><![CDATA[init skipLocal local=true]]></Description>
   </Message>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
       <DataTag><![CDATA[global=true:local=true]]></DataTag>
       <Description><![CDATA[skipping]]></Description>
     </Incident>
@@ -167,7 +167,7 @@
     <DataTag><![CDATA[global=false:local=true]]></DataTag>
     <Description><![CDATA[init skipSingle local=true]]></Description>
   </Message>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
       <DataTag><![CDATA[global=false:local=true]]></DataTag>
       <Description><![CDATA[Skipping]]></Description>
     </Incident>
@@ -179,7 +179,7 @@
     <DataTag><![CDATA[global=true:local=false]]></DataTag>
     <Description><![CDATA[init skipSingle local=false]]></Description>
   </Message>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp" line="0">
       <DataTag><![CDATA[global=true:local=false]]></DataTag>
       <Description><![CDATA[Skipping]]></Description>
     </Incident>

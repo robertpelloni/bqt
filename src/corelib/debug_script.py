@@ -1,5 +1,5 @@
-# Copyright (C) 2017 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2017 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 import os
 import sys
@@ -7,9 +7,9 @@ import imp
 
 from distutils.version import LooseVersion
 
-MODULE_NAME = 'qt'
+MODULE_NAME = 'bobui'
 
-debug = print if 'QT_LLDB_SUMMARY_PROVIDER_DEBUG' in os.environ \
+debug = print if 'BOBUI_LLDB_SUMMARY_PROVIDER_DEBUG' in os.environ \
     else lambda *a, **k: None
 
 def import_bridge(path, debugger, session_dict, reload_module=False):
@@ -18,7 +18,7 @@ def import_bridge(path, debugger, session_dict, reload_module=False):
 
     if sys.version_info[0] >= 3:
         sys.path.append(os.path.dirname(path))
-    debug(f"Loading source of Qt Creator bridge from '{path}'")
+    debug(f"Loading source of BobUI Creator bridge from '{path}'")
     bridge = imp.load_source(MODULE_NAME, path)
 
     if not hasattr(bridge, '__lldb_init_module'):
@@ -30,11 +30,11 @@ def import_bridge(path, debugger, session_dict, reload_module=False):
     session_dict[MODULE_NAME] = bridge
 
     # Initialize the module now that it's available globally
-    debug(f"Initializing Qt Creator bridge by calling __lldb_init_module(): {bridge}")
+    debug(f"Initializing BobUI Creator bridge by calling __lldb_init_module(): {bridge}")
     bridge.__lldb_init_module(debugger, session_dict)
 
-    if not debugger.GetCategory('Qt'):
-        debug("Could not find Qt debugger category. Qt Creator summary providers not loaded.")
+    if not debugger.GetCategory('BobUI'):
+        debug("Could not find BobUI debugger category. BobUI Creator summary providers not loaded.")
         # Summary provider failed for some reason
         del session_dict[MODULE_NAME]
         return None
@@ -43,14 +43,14 @@ def import_bridge(path, debugger, session_dict, reload_module=False):
     return bridge
 
 def __lldb_init_module(debugger, session_dict):
-    qtc_env_vars = ['QTC_DEBUGGER_PROCESS', 'QT_CREATOR_LLDB_PROCESS']
-    if any(v in os.environ for v in qtc_env_vars) and \
-        not 'QT_FORCE_LOAD_LLDB_SUMMARY_PROVIDER' in os.environ:
-        debug("Qt Creator lldb bridge not loaded because we're already in a debugging session.")
+    bobuic_env_vars = ['BOBUIC_DEBUGGER_PROCESS', 'BOBUI_CREATOR_LLDB_PROCESS']
+    if any(v in os.environ for v in bobuic_env_vars) and \
+        not 'BOBUI_FORCE_LOAD_LLDB_SUMMARY_PROVIDER' in os.environ:
+        debug("BobUI Creator lldb bridge not loaded because we're already in a debugging session.")
         return
 
     # Check if the module has already been imported globally. This ensures
-    # that the Qt Creator application search is only performed once per
+    # that the BobUI Creator application search is only performed once per
     # LLDB process invocation, while still reloading for each session.
     if MODULE_NAME in sys.modules:
         module = sys.modules[MODULE_NAME]
@@ -59,13 +59,13 @@ def __lldb_init_module(debugger, session_dict):
         bridge = import_bridge(module.__file__, debugger, session_dict,
             reload_module = True)
         if bridge:
-            debug("Qt summary providers successfully reloaded.")
+            debug("BobUI summary providers successfully reloaded.")
             return
         else:
-            print("Bridge reload failed. Trying to find other Qt Creator bridges.")
+            print("Bridge reload failed. Trying to find other BobUI Creator bridges.")
 
     versions = {}
-    for path in os.popen('mdfind kMDItemCFBundleIdentifier=org.qt-project.qtcreator'):
+    for path in os.popen('mdfind kMDItemCFBundleIdentifier=org.bobui-project.bobuicreator'):
         path = path.strip()
         file = open(os.path.join(path, 'Contents', 'Info.plist'), "rb")
 
@@ -85,19 +85,19 @@ def __lldb_init_module(debugger, session_dict):
         versions[version] = path
 
     if not len(versions):
-        print("Could not find Qt Creator installation. No Qt summary providers installed.")
+        print("Could not find BobUI Creator installation. No BobUI summary providers installed.")
         return
 
     for version in sorted(versions, key=LooseVersion, reverse=True):
         path = versions[version]
-        debug(f"Loading Qt summary providers from Creator Qt {version} in '{path}'")
+        debug(f"Loading BobUI summary providers from Creator BobUI {version} in '{path}'")
         bridge_path = '{}/Contents/Resources/debugger/lldbbridge.py'.format(path)
         bridge = import_bridge(bridge_path, debugger, session_dict)
         if bridge:
-            debug(f"Qt summary providers successfully loaded.")
+            debug(f"BobUI summary providers successfully loaded.")
             return
 
-    if 'QT_LLDB_SUMMARY_PROVIDER_DEBUG' not in os.environ:
-        print("Could not find any valid Qt Creator bridges with summary providers. "
-              "Launch lldb or Qt Creator with the QT_LLDB_SUMMARY_PROVIDER_DEBUG environment "
+    if 'BOBUI_LLDB_SUMMARY_PROVIDER_DEBUG' not in os.environ:
+        print("Could not find any valid BobUI Creator bridges with summary providers. "
+              "Launch lldb or BobUI Creator with the BOBUI_LLDB_SUMMARY_PROVIDER_DEBUG environment "
               "variable to debug.")

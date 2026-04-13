@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
 #include <QDomDocument>
 #include <QMetaType>
-#include <QTest>
+#include <BOBUIest>
 
 #define USE_PRIVATE_CODE
 #include "../qdbusmarshall/common.h"
@@ -48,59 +48,59 @@ void tst_QDBusXmlParser::initTestCase()
 
 void tst_QDBusXmlParser::parsing_data()
 {
-    QTest::addColumn<QString>("xmlData");
-    QTest::addColumn<int>("interfaceCount");
-    QTest::addColumn<int>("objectCount");
-    QTest::addColumn<int>("annotationCount");
-    QTest::addColumn<QStringList>("introspection");
+    BOBUIest::addColumn<QString>("xmlData");
+    BOBUIest::addColumn<int>("interfaceCount");
+    BOBUIest::addColumn<int>("objectCount");
+    BOBUIest::addColumn<int>("annotationCount");
+    BOBUIest::addColumn<QStringList>("introspection");
 
     QStringList introspection;
 
-    QTest::newRow("null") << QString() << 0 << 0 << 0 << introspection;
-    QTest::newRow("empty") << QString("") << 0 << 0 << 0 << introspection;
+    BOBUIest::newRow("null") << QString() << 0 << 0 << 0 << introspection;
+    BOBUIest::newRow("empty") << QString("") << 0 << 0 << 0 << introspection;
 
-    QTest::newRow("junk") << "<junk/>" << 0 << 0 << 0 << introspection;
-    QTest::newRow("interface-inside-junk") << "<junk><interface name=\"iface.iface1\" /></junk>"
+    BOBUIest::newRow("junk") << "<junk/>" << 0 << 0 << 0 << introspection;
+    BOBUIest::newRow("interface-inside-junk") << "<junk><interface name=\"iface.iface1\" /></junk>"
                                            << 0 << 0 << 0 << introspection;
-    QTest::newRow("object-inside-junk") << "<junk><node name=\"obj1\" /></junk>"
+    BOBUIest::newRow("object-inside-junk") << "<junk><node name=\"obj1\" /></junk>"
                                         << 0 << 0 << 0 << introspection;
 
-    QTest::newRow("zero-interfaces") << "<node/>" << 0 << 0 << 0 << introspection;
+    BOBUIest::newRow("zero-interfaces") << "<node/>" << 0 << 0 << 0 << introspection;
 
     introspection << "<interface name=\"iface.iface1\"/>";
-    QTest::newRow("one-interface") << "<node><interface name=\"iface.iface1\" /></node>"
+    BOBUIest::newRow("one-interface") << "<node><interface name=\"iface.iface1\" /></node>"
                                    << 1 << 0 << 0 << introspection;
     introspection.clear();
 
     introspection << "<interface name=\"iface.iface1\"/>"
                   << "<interface name=\"iface.iface2\"/>";
-    QTest::newRow("two-interfaces") << "<node><interface name=\"iface.iface1\" />"
+    BOBUIest::newRow("two-interfaces") << "<node><interface name=\"iface.iface1\" />"
                                        "<interface name=\"iface.iface2\" /></node>"
                                     << 2 << 0 << 0 << introspection;
     introspection.clear();
 
 
-    QTest::newRow("one-object") << "<node><node name=\"obj1\"/></node>"
+    BOBUIest::newRow("one-object") << "<node><node name=\"obj1\"/></node>"
                                 << 0 << 1 << 0 << introspection;
-    QTest::newRow("two-objects") << "<node><node name=\"obj1\"/><node name=\"obj2\"/></node>"
+    BOBUIest::newRow("two-objects") << "<node><node name=\"obj1\"/><node name=\"obj2\"/></node>"
                                  << 0 << 2 << 0 << introspection;
 
     introspection << "<interface name=\"iface.iface1\"/>";
-    QTest::newRow("i1o1") << "<node><interface name=\"iface.iface1\"/><node name=\"obj1\"/></node>"
+    BOBUIest::newRow("i1o1") << "<node><interface name=\"iface.iface1\"/><node name=\"obj1\"/></node>"
                           << 1 << 1 << 0 << introspection;
     introspection.clear();
 
     introspection << "<interface name=\"iface.iface1\">"
                      "  <annotation name=\"foo.testing\" value=\"nothing to see here\"/>"
                      "</interface>";
-    QTest::newRow("one-interface-annotated") << "<node><interface name=\"iface.iface1\">"
+    BOBUIest::newRow("one-interface-annotated") << "<node><interface name=\"iface.iface1\">"
                                                 "<annotation name=\"foo.testing\" value=\"nothing to see here\" />"
                                                 "</interface></node>" << 1 << 0 << 1 << introspection;
     introspection.clear();
 
 
     introspection << "<interface name=\"iface.iface1\"/>";
-    QTest::newRow("one-interface-docnamespace") << "<?xml version=\"1.0\" xmlns:doc=\"foo\" ?><node>"
+    BOBUIest::newRow("one-interface-docnamespace") << "<?xml version=\"1.0\" xmlns:doc=\"foo\" ?><node>"
                                                    "<interface name=\"iface.iface1\"><doc:something />"
                                                    "</interface></node>" << 1 << 0 << 0 << introspection;
     introspection.clear();
@@ -173,27 +173,27 @@ void tst_QDBusXmlParser::parsingWithDoctype()
 
 void tst_QDBusXmlParser::methods_data()
 {
-    QTest::addColumn<QString>("xmlDataFragment");
-    QTest::addColumn<MethodMap>("methodMap");
+    BOBUIest::addColumn<QString>("xmlDataFragment");
+    BOBUIest::addColumn<MethodMap>("methodMap");
 
     MethodMap map;
-    QTest::newRow("no-methods") << QString() << map;
+    BOBUIest::newRow("no-methods") << QString() << map;
 
     // one method without arguments
     QDBusIntrospection::Method method;
     method.name = "Foo";
     map << method;
-    QTest::newRow("one-method") << "<method name=\"Foo\"/>" << map;
+    BOBUIest::newRow("one-method") << "<method name=\"Foo\"/>" << map;
 
     // add another method without arguments
     method.name = "Bar";
     map << method;
-    QTest::newRow("two-methods") << "<method name=\"Foo\"/>"
+    BOBUIest::newRow("two-methods") << "<method name=\"Foo\"/>"
                                     "<method name=\"Bar\"/>"
                                  << map;
 
     // invert the order of the XML declaration
-    QTest::newRow("two-methods-inverse") << "<method name=\"Bar\"/>"
+    BOBUIest::newRow("two-methods-inverse") << "<method name=\"Bar\"/>"
                                             "<method name=\"Foo\"/>"
                                          << map;
 
@@ -201,7 +201,7 @@ void tst_QDBusXmlParser::methods_data()
     method.name = "Baz";
     addAnnotation(method.annotations, "foo.testing", "nothing to see here");
     map << method;
-    QTest::newRow("method-with-annotation") <<
+    BOBUIest::newRow("method-with-annotation") <<
         "<method name=\"Foo\"/>"
         "<method name=\"Bar\"/>"
         "<method name=\"Baz\"><annotation name=\"foo.testing\" value=\"nothing to see here\" /></method>"
@@ -214,7 +214,7 @@ void tst_QDBusXmlParser::methods_data()
     method.name = "Method";
     method.inputArgs << arg("s");
     map << method;
-    QTest::newRow("one-in") <<
+    BOBUIest::newRow("one-in") <<
         "<method name=\"Method\">"
         "<arg type=\"s\" direction=\"in\"/>"
         "</method>" << map;
@@ -223,7 +223,7 @@ void tst_QDBusXmlParser::methods_data()
     method.inputArgs << arg("v");
     map.clear();
     map << method;
-    QTest::newRow("two-in") <<
+    BOBUIest::newRow("two-in") <<
         "<method name=\"Method\">"
         "<arg type=\"s\" direction=\"in\"/>"
         "<arg type=\"v\" direction=\"in\"/>"
@@ -233,7 +233,7 @@ void tst_QDBusXmlParser::methods_data()
     method.inputArgs << arg("~", "invalid");
     map.clear();
     map << method;
-    QTest::newRow("two-in-one-invalid") <<
+    BOBUIest::newRow("two-in-one-invalid") <<
         "<method name=\"Method\">"
         "<arg type=\"s\" direction=\"in\"/>"
         "<arg type=\"v\" direction=\"in\"/>"
@@ -245,7 +245,7 @@ void tst_QDBusXmlParser::methods_data()
     method.outputArgs << arg("s");
     map.clear();
     map << method;
-    QTest::newRow("one-out") <<
+    BOBUIest::newRow("one-out") <<
         "<method name=\"Method\">"
         "<arg type=\"s\" direction=\"out\"/>"
         "</method>" << map;
@@ -254,7 +254,7 @@ void tst_QDBusXmlParser::methods_data()
     method.inputArgs << arg("s") << arg("v");
     map.clear();
     map << method;
-    QTest::newRow("two-in-one-out") <<
+    BOBUIest::newRow("two-in-one-out") <<
         "<method name=\"Method\">"
         "<arg type=\"s\" direction=\"in\"/>"
         "<arg type=\"v\" direction=\"in\"/>"
@@ -267,7 +267,7 @@ void tst_QDBusXmlParser::methods_data()
     method.inputArgs << arg("s", "foo");
     map.clear();
     map << method;
-    QTest::newRow("one-in-with-name") <<
+    BOBUIest::newRow("one-in-with-name") <<
         "<method name=\"Method\">"
         "<arg type=\"s\" name=\"foo\" direction=\"in\"/>"
         "</method>" << map;
@@ -276,7 +276,7 @@ void tst_QDBusXmlParser::methods_data()
     method.inputArgs << arg("i", "bar");
     map.clear();
     map << method;
-    QTest::newRow("two-in-with-name") <<
+    BOBUIest::newRow("two-in-with-name") <<
         "<method name=\"Method\">"
         "<arg type=\"s\" name=\"foo\" direction=\"in\"/>"
         "<arg type=\"i\" name=\"bar\" direction=\"in\"/>"
@@ -302,7 +302,7 @@ void tst_QDBusXmlParser::methods_data()
     method.name = "Method2";
     map << method;
 
-    QTest::newRow("complex") <<
+    BOBUIest::newRow("complex") <<
         "<method name=\"Method1\">"
         "<arg name=\"arg1\" type=\"s\" direction=\"in\"/>"
         "<arg name=\"arg2\" type=\"y\" direction=\"in\"/>"
@@ -341,27 +341,27 @@ void tst_QDBusXmlParser::methods()
 
 void tst_QDBusXmlParser::signals__data()
 {
-    QTest::addColumn<QString>("xmlDataFragment");
-    QTest::addColumn<SignalMap>("signalMap");
+    BOBUIest::addColumn<QString>("xmlDataFragment");
+    BOBUIest::addColumn<SignalMap>("signalMap");
 
     SignalMap map;
-    QTest::newRow("no-signals") << QString() << map;
+    BOBUIest::newRow("no-signals") << QString() << map;
 
     // one signal without arguments
     QDBusIntrospection::Signal signal;
     signal.name = "Foo";
     map << signal;
-    QTest::newRow("one-signal") << "<signal name=\"Foo\"/>" << map;
+    BOBUIest::newRow("one-signal") << "<signal name=\"Foo\"/>" << map;
 
     // add another signal without arguments
     signal.name = "Bar";
     map << signal;
-    QTest::newRow("two-signals") << "<signal name=\"Foo\"/>"
+    BOBUIest::newRow("two-signals") << "<signal name=\"Foo\"/>"
                                     "<signal name=\"Bar\"/>"
                                  << map;
 
     // invert the order of the XML declaration
-    QTest::newRow("two-signals-inverse") << "<signal name=\"Bar\"/>"
+    BOBUIest::newRow("two-signals-inverse") << "<signal name=\"Bar\"/>"
                                             "<signal name=\"Foo\"/>"
                                          << map;
 
@@ -369,7 +369,7 @@ void tst_QDBusXmlParser::signals__data()
     signal.name = "Baz";
     addAnnotation(signal.annotations, "foo.testing", "nothing to see here");
     map << signal;
-    QTest::newRow("signal-with-annotation") <<
+    BOBUIest::newRow("signal-with-annotation") <<
         "<signal name=\"Foo\"/>"
         "<signal name=\"Bar\"/>"
         "<signal name=\"Baz\"><annotation name=\"foo.testing\" value=\"nothing to see here\" /></signal>"
@@ -382,13 +382,13 @@ void tst_QDBusXmlParser::signals__data()
     signal.name = "Signal";
     map.clear();
     map << signal;
-    QTest::newRow("one-out") <<
+    BOBUIest::newRow("one-out") <<
         "<signal name=\"Signal\">"
         "<arg type=\"s\" direction=\"out\"/>"
         "</signal>" << map;
 
     // without saying which direction it is
-    QTest::newRow("one-out-no-direction") <<
+    BOBUIest::newRow("one-out-no-direction") <<
         "<signal name=\"Signal\">"
         "<arg type=\"s\"/>"
         "</signal>" << map;
@@ -397,7 +397,7 @@ void tst_QDBusXmlParser::signals__data()
     signal.outputArgs << arg("i", "bar");
     map.clear();
     map << signal;
-    QTest::newRow("two-out-with-name") <<
+    BOBUIest::newRow("two-out-with-name") <<
         "<signal name=\"Signal\">"
         "<arg type=\"s\" direction=\"out\"/>"
         "<arg type=\"i\" name=\"bar\"/>"
@@ -420,7 +420,7 @@ void tst_QDBusXmlParser::signals__data()
     signal.name = "Signal2";
     map << signal;
 
-    QTest::newRow("complex") <<
+    BOBUIest::newRow("complex") <<
         "<signal name=\"Signal1\">"
         "<arg type=\"as\" direction=\"out\"/>"
         "</signal>"
@@ -455,11 +455,11 @@ void tst_QDBusXmlParser::signals_()
 
 void tst_QDBusXmlParser::properties_data()
 {
-    QTest::addColumn<QString>("xmlDataFragment");
-    QTest::addColumn<PropertyMap>("propertyMap");
+    BOBUIest::addColumn<QString>("xmlDataFragment");
+    BOBUIest::addColumn<PropertyMap>("propertyMap");
 
     PropertyMap map;
-    QTest::newRow("no-signals") << QString() << map;
+    BOBUIest::newRow("no-signals") << QString() << map;
 
     // one readable signal
     QDBusIntrospection::Property prop;
@@ -467,19 +467,19 @@ void tst_QDBusXmlParser::properties_data()
     prop.type = "s";
     prop.access = QDBusIntrospection::Property::Read;
     map << prop;
-    QTest::newRow("one-readable") << "<property access=\"read\" type=\"s\" name=\"foo\" />" << map;
+    BOBUIest::newRow("one-readable") << "<property access=\"read\" type=\"s\" name=\"foo\" />" << map;
 
     // one writable signal
     prop.access = QDBusIntrospection::Property::Write;
     map.clear();
     map << prop;
-    QTest::newRow("one-writable") << "<property access=\"write\" type=\"s\" name=\"foo\"/>" << map;
+    BOBUIest::newRow("one-writable") << "<property access=\"write\" type=\"s\" name=\"foo\"/>" << map;
 
     // one read- & writable signal
     prop.access = QDBusIntrospection::Property::ReadWrite;
     map.clear();
     map << prop;
-    QTest::newRow("one-read-writable") << "<property access=\"readwrite\" type=\"s\" name=\"foo\"/>"
+    BOBUIest::newRow("one-read-writable") << "<property access=\"readwrite\" type=\"s\" name=\"foo\"/>"
                                        << map;
 
     // two, mixed properties
@@ -487,12 +487,12 @@ void tst_QDBusXmlParser::properties_data()
     prop.type = "i";
     prop.access = QDBusIntrospection::Property::Read;
     map << prop;
-    QTest::newRow("two-1") <<
+    BOBUIest::newRow("two-1") <<
         "<property access=\"readwrite\" type=\"s\" name=\"foo\"/>"
         "<property access=\"read\" type=\"i\" name=\"bar\"/>" << map;
 
     // invert the order of the declaration
-    QTest::newRow("two-2") <<
+    BOBUIest::newRow("two-2") <<
         "<property access=\"read\" type=\"i\" name=\"bar\"/>"
         "<property access=\"readwrite\" type=\"s\" name=\"foo\"/>" << map;
 
@@ -503,7 +503,7 @@ void tst_QDBusXmlParser::properties_data()
     addAnnotation(prop.annotations, "foo.annotation", "Hello, World");
     addAnnotation(prop.annotations, "foo.annotation2", "Goodbye, World");
     map << prop;
-    QTest::newRow("complex") <<
+    BOBUIest::newRow("complex") <<
         "<property access=\"read\" type=\"i\" name=\"bar\"/>"
         "<property access=\"write\" type=\"as\" name=\"baz\">"
         "<annotation name=\"foo.annotation\" value=\"Hello, World\" />"
@@ -512,7 +512,7 @@ void tst_QDBusXmlParser::properties_data()
         "<property access=\"readwrite\" type=\"s\" name=\"foo\"/>" << map;
 
     // and now change the order
-    QTest::newRow("complex2") <<
+    BOBUIest::newRow("complex2") <<
         "<property access=\"write\" type=\"as\" name=\"baz\">"
         "<annotation name=\"foo.annotation2\" value=\"Goodbye, World\" />"
         "<annotation name=\"foo.annotation\" value=\"Hello, World\" />"
@@ -543,6 +543,6 @@ void tst_QDBusXmlParser::properties()
     QCOMPARE(propertyMap, parsedMap);
 }
 
-QTEST_MAIN(tst_QDBusXmlParser)
+BOBUIEST_MAIN(tst_QDBusXmlParser)
 
 #include "tst_qdbusxmlparser.moc"

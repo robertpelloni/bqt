@@ -1,22 +1,22 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page sql-driver.html
     \title SQL Database Drivers
-    \brief How to configure and install Qt SQL drivers for supported databases.
+    \brief How to configure and install BobUI SQL drivers for supported databases.
 
-    The Qt SQL module uses driver \l{How to Create Qt
+    The BobUI SQL module uses driver \l{How to Create BobUI
     Plugins}{plugins} to communicate with the different database
-    APIs. Since Qt's SQL Module API is database-independent, all
+    APIs. Since BobUI's SQL Module API is database-independent, all
     database-specific code is contained within these drivers. Several
-    drivers are supplied with Qt, and other drivers can be added. The
+    drivers are supplied with BobUI, and other drivers can be added. The
     driver source code is supplied and can be used as a model for
     \l{#development}{writing your own drivers}.
 
     \section1 Supported Databases
 
-    The table below lists the drivers included with Qt:
+    The table below lists the drivers included with BobUI:
 
     \table
     \header \li Driver name \li DBMS
@@ -44,18 +44,18 @@
     Most installation programs also allow you to install "development
     libraries", and these are what you need. These libraries are responsible
     for the low-level communication with the DBMS. Also make sure to install
-    the correct database libraries for your Qt architecture (32 or 64 bit).
+    the correct database libraries for your BobUI architecture (32 or 64 bit).
 
-    \note When using Qt under Open Source terms but with a proprietary
+    \note When using BobUI under Open Source terms but with a proprietary
     database, verify the client library's license compatibility with
     the LGPL.
 
     \target building
     \section1 Building the Drivers
-    \target DriverWithQt
-    \section2 Compile Qt with a specific driver
+    \target DriverWithBobUI
+    \section2 Compile BobUI with a specific driver
 
-    The Qt \c configure script tries to
+    The BobUI \c configure script tries to
     automatically detect the available client libraries on your
     machine. Run \c{configure -help} to see what drivers can be
     built. You should get an output similar to this:
@@ -84,30 +84,30 @@
     \target DriverStandalone
     \section2 Compile only a specific SQL driver
 
-    It's possible to only compile a specific SQL driver when Qt is already built
+    It's possible to only compile a specific SQL driver when BobUI is already built
     or installed as binary version. But you have to make sure to install
-    the exact same version of the Qt sources (for example through the \QMT) -
+    the exact same version of the BobUI sources (for example through the \QMT) -
     otherwise you might get compile errors due to changed apis.
     Also make sure to properly set up the build environment by executing the
-    appropriate Qt command prompt in the Windows Start menu.
+    appropriate BobUI command prompt in the Windows Start menu.
 
-    A typical \c qt-cmake run (in this case to configure for MySQL) looks like this:
+    A typical \c bobui-cmake run (in this case to configure for MySQL) looks like this:
 
     \snippet code/doc_src_sql-driver.qdoc 41
 
-    After configuring with \c qt-cmake, build the driver by running \c ninja.
+    After configuring with \c bobui-cmake, build the driver by running \c ninja.
 
-    \note As mentioned in \l{#DriverWithQt}{Compile Qt with a specific driver},
+    \note As mentioned in \l{#DriverWithBobUI}{Compile BobUI with a specific driver},
     if the driver could not be found or is not enabled, start over by removing
     \e{CMakeCache.txt}.
 
     Due to the practicalities of dealing with external dependencies,
-    only the SQLite plugin is shipped with binary builds of Qt.
-    Binary builds of Qt for Windows also include the ODBC and PostgreSQL plugin.
-    To be able to add additional drivers to the Qt installation
-    without re-building all of Qt, it is possible to configure
-    and build the \c qtbase/src/plugins/sqldrivers directory outside
-    of a full Qt build directory. Note that it is not possible to
+    only the SQLite plugin is shipped with binary builds of BobUI.
+    Binary builds of BobUI for Windows also include the ODBC and PostgreSQL plugin.
+    To be able to add additional drivers to the BobUI installation
+    without re-building all of BobUI, it is possible to configure
+    and build the \c bobuibase/src/plugins/sqldrivers directory outside
+    of a full BobUI build directory. Note that it is not possible to
     \e configure each driver separately, only all of them at once.
     Drivers can be \e built separately, though.
 
@@ -123,10 +123,10 @@
     under the GNU General Public License. MariaDB intended to maintain high
     compatibility with MySQL, ensuring a drop-in replacement capability with
     library binary parity and exact matching with MySQL APIs and commands.
-    Therefore the plugin for MySQL and MariaDB are combined into one Qt plugin.
+    Therefore the plugin for MySQL and MariaDB are combined into one BobUI plugin.
 
     \section3 Timestamp Support
-    Since Qt 6.8, QDateTime values are converted to UTC before insertion and
+    Since BobUI 6.8, QDateTime values are converted to UTC before insertion and
     back from UTC during retrieval. To make this work, the driver sets
     the connection time zone to UTC during open() (SET time_zone = '+00:00').
     Since MySQL does not store any timezone information, this information is
@@ -156,7 +156,7 @@
     client library. With the embedded MySQL server, a MySQL server is
     not required to use MySQL functionality.
 
-    To use the embedded MySQL server, simply link the Qt plugin to \c
+    To use the embedded MySQL server, simply link the BobUI plugin to \c
     libmysqld instead of \c libmysqlclient. This can be done by adding
     \c{-DMySQL_LIBRARY=<path/to/mysqld/>libmysqld.<so|lib|dylib>} to the configure command line.
 
@@ -164,7 +164,7 @@
     MySQL Server Library" for more information about the MySQL embedded server.
 
     \section3 Connection options
-    The Qt MySQL/MariaDB plugin honors the following connection options:
+    The BobUI MySQL/MariaDB plugin honors the following connection options:
     \table
     \header \li Attribute \li Possible value
     \row
@@ -267,7 +267,7 @@
     you may need to install a package which is usually called "mysql-devel"
     or "mariadb-devel".
 
-    Tell \c qt-cmake where to find the MySQL / MariaDB header files and shared
+    Tell \c bobui-cmake where to find the MySQL / MariaDB header files and shared
     libraries (here it is assumed that MySQL / MariaDB is installed in
     \c{/usr/local}) and build:
 
@@ -280,7 +280,7 @@
     \l {https://downloads.mariadb.com/Connectors/c/}{MariaDB C Connector}).
     Run the installer,
     select custom installation and install the MySQL C Connector
-    which matches your Qt installation (x86 or x64).
+    which matches your BobUI installation (x86 or x64).
     After installation check that the needed files are there:
     \list
     \li \c {<MySQL dir>/lib/libmysql.lib}
@@ -313,7 +313,7 @@
     \target QOCI
     \section2 QOCI for the Oracle Call Interface (OCI)
 
-    The Qt OCI plugin supports connecting to Oracle database as determined by
+    The BobUI OCI plugin supports connecting to Oracle database as determined by
     the version of the instant client used. This is dependent on what Oracle
     indicates it supports. The plugin will auto-detect the database version
     and enable features accordingly.
@@ -324,7 +324,7 @@
 
     \section3 OCI User Authentication
 
-    The Qt OCI plugin supports authentication using
+    The BobUI OCI plugin supports authentication using
     external credentials (OCI_CRED_EXT). Usually, this means that the database
     server will use the user authentication provided by the operating system
     instead of its own authentication mechanism.
@@ -343,7 +343,7 @@
     query to do this internally.
 
     \section3 Connection options
-    The Qt OCI plugin honors the following connection options:
+    The BobUI OCI plugin honors the following connection options:
     \table
     \header \li Attribute \li Possible value
     \row
@@ -376,7 +376,7 @@
     \li \c libclntsh.<so|dylib> (all versions)
     \endlist
 
-    Tell \c qt-cmake where to find the Oracle header files and shared
+    Tell \c bobui-cmake where to find the Oracle header files and shared
     libraries and build.
 
     We assume that you installed the RPM packages of the Instant Client Package SDK
@@ -412,7 +412,7 @@
     to an ODBC driver manager and access the available data sources. Note
     that you also need to install and configure ODBC drivers for the ODBC
     driver manager that is installed on your system. The QODBC plugin
-    then allows you to use these data sources in your Qt applications.
+    then allows you to use these data sources in your BobUI applications.
 
     \note You should use the native driver, if it is available, instead
     of the ODBC driver. ODBC support can be used as a fallback for compliant
@@ -442,7 +442,7 @@
     ODBC_CHECK_DRIVER} line from the file \c{qsql_odbc.cpp}. Do this at
     your own risk!
 
-    By default, Qt instructs the ODBC driver to behave as an ODBC 2.x
+    By default, BobUI instructs the ODBC driver to behave as an ODBC 2.x
     driver. However, for some \e{driver-manager/ODBC 3.x-driver}
     combinations (e.g., \e{unixODBC/MaxDB ODBC}), telling the ODBC
     driver to behave as a 2.x driver can cause the driver plugin to
@@ -490,7 +490,7 @@
     will convert all Unicode strings to local 8-bit representation.
 
     \section3 Connection options
-    The Qt ODBC plugin honors the following connection options:
+    The BobUI ODBC plugin honors the following connection options:
     \table
     \header \li Attribute \li Possible value
     \row
@@ -545,7 +545,7 @@
     version and ODBC drivers at \l http://www.unixodbc.org.
     You need the unixODBC header files and shared libraries.
 
-    Tell \c qt-cmake where to find the unixODBC header files and shared
+    Tell \c bobui-cmake where to find the unixODBC header files and shared
     libraries (here it is assumed that unixODBC is installed in
     \c{/usr/local/unixODBC}) and build:
 
@@ -566,7 +566,7 @@
     For more information about PostgreSQL visit \l http://www.postgresql.org.
 
     \section3 Timestamp Support
-    Since Qt 6.8, QDateTime values are converted to UTC before insertion
+    Since BobUI 6.8, QDateTime values are converted to UTC before insertion
     and back from UTC during retrieval. To make this work, the driver sets
     the connection time zone to UTC during open() (SET TIME ZONE 'UTC').
     Although PostgreSQL has the `timestamptz` column type, the timezone
@@ -645,7 +645,7 @@
     \snippet code/doc_src_sql-driver.qdoc 38
 
     \section3 Connection options
-    The Qt PostgreSQL plugin honors all connection options specified in the
+    The BobUI PostgreSQL plugin honors all connection options specified in the
     \l {https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS}
     {connect()} PostgreSQL documentation.
 
@@ -653,7 +653,7 @@
 
     You need the PostgreSQL client library and headers installed.
 
-    To make \c qt-cmake find the PostgreSQL header files and shared
+    To make \c bobui-cmake find the PostgreSQL header files and shared
     libraries, build the plugin the following way (assuming that the
     PostgreSQL client is installed in \c{/usr/local/pgsql}):
 
@@ -677,7 +677,7 @@
     \target QDB2
     \section2 QDB2 for IBM DB2 (Version 7.1 and above)
 
-    The Qt DB2 plugin makes it possible to access IBM DB2 databases. It
+    The BobUI DB2 plugin makes it possible to access IBM DB2 databases. It
     has been tested with IBM DB2 v7.1 and 7.2. You must install the IBM
     DB2 development client library, which contains the header and library
     files necessary for compiling the QDB2 plugin.
@@ -689,7 +689,7 @@
     in DB2 (see QSqlQuery::setForwardOnly()).
 
     \section3 Connection options
-    The Qt IBM DB2 plugin honors the following connection options:
+    The BobUI IBM DB2 plugin honors the following connection options:
     \table
     \header \li Attribute \li Possible value
     \row
@@ -716,7 +716,7 @@
     \target QSQLITE
     \section2 QSQLITE for SQLite (Version 3 and above)
 
-    The Qt SQLite plugin makes it possible to access SQLite
+    The BobUI SQLite plugin makes it possible to access SQLite
     databases. SQLite is an in-process database, which means that it
     is not necessary to have a database server. SQLite operates on a
     single file, which must be set as the database name when opening
@@ -727,7 +727,7 @@
     SQLite has some restrictions regarding multiple users and
     multiple transactions. If you try to read/write on a resource from different
     transactions, your application might freeze until one transaction commits
-    or rolls back. The Qt SQLite driver will retry to write to a locked resource
+    or rolls back. The BobUI SQLite driver will retry to write to a locked resource
     until it runs into a timeout (see \c{QSQLITE_BUSY_TIMEOUT}
     at QSqlDatabase::setConnectOptions()).
 
@@ -741,7 +741,7 @@
     this and the type of the individual values should be checked.
 
     The driver is locked for updates while a select is executed. This
-    may cause problems when using QSqlTableModel because Qt's item views
+    may cause problems when using QSqlTableModel because BobUI's item views
     fetch data as needed (with QSqlQuery::fetchMore() in the case of
     QSqlTableModel).
 
@@ -749,12 +749,12 @@
 
     \section3 Timestamp Support
     SQLite does not have a special timestamp column type. A QDateTime is
-    stored as string, formatted in Qt::ISODateWithMs and therefore the
+    stored as string, formatted in BobUI::ISODateWithMs and therefore the
     QDateTime timezone information is preserved during insertion and
     select.
 
     \section3 Connection options
-    The Qt SQLite plugin honors the following connection options:
+    The BobUI SQLite plugin honors the following connection options:
     \table
     \header \li Attribute \li Possible value
     \row
@@ -764,8 +764,8 @@
           {SQLite documentation} for more information
 
     \row
-      \li QSQLITE_USE_QT_VFS
-      \li If set, the database is opened using Qt's VFS which allows to
+      \li QSQLITE_USE_BOBUI_VFS
+      \li If set, the database is opened using BobUI's VFS which allows to
           open databases using QFile. This way it can open databases from
           any read-write locations (e.g.android shared storage) but also
           from read-only resources (e.g. qrc or android assets). Be aware
@@ -807,12 +807,12 @@
 
     \section3 How to Build the QSQLITE Plugin
 
-    SQLite version 3 is included as a third-party library within Qt.
+    SQLite version 3 is included as a third-party library within BobUI.
     It can be built by passing the \c{-DFEATURE_system_sqlite=OFF} parameter to the
-    \c qt-cmake command line.
+    \c bobui-cmake command line.
 
-    If you do not want to use the SQLite library included with Qt, you
-    can pass \c{-DFEATURE_system_sqlite=ON} to the \c qt-cmake command
+    If you do not want to use the SQLite library included with BobUI, you
+    can pass \c{-DFEATURE_system_sqlite=ON} to the \c bobui-cmake command
     line to use the SQLite libraries of the operating system. This is
     recommended whenever possible, as it reduces the installation size
     and removes one component for which you need to track security
@@ -834,7 +834,7 @@
     enabled by \l{QSqlDatabase::setConnectOptions()} {setting the connect
     option} \c{QSQLITE_ENABLE_REGEXP} before \l{QSqlDatabase::open()} {the
     database connection is opened}. Then a SQL statement like "column REGEXP
-    'pattern'" basically expands to the Qt code
+    'pattern'" basically expands to the BobUI code
 
     \snippet code/doc_src_sql-driver.cpp 34
 
@@ -851,7 +851,7 @@
     Please refer to the SQLite documentation and change logs for information about
     file format compatibility between versions.
 
-    Qt minor releases usually follow the SQLite minor releases, while Qt patch releases
+    BobUI minor releases usually follow the SQLite minor releases, while BobUI patch releases
     follow SQLite patch releases. Patch releases are therefore both backward and forward
     compatible.
 
@@ -863,7 +863,7 @@
     \target QMIMER
     \section2 QMIMER for Mimer SQL version 11 and higher
 
-    The Qt Mimer SQL plugin makes it possible to work with the Mimer SQL RDBMS.
+    The BobUI Mimer SQL plugin makes it possible to work with the Mimer SQL RDBMS.
     Mimer SQL provides small footprint, scalable and robust relational database
     solutions that conform to international ISO SQL standards. Mimer SQL is available
     on Windows, Linux, \macos, and OpenVMS as well as several embedded platforms like QNX, Android,
@@ -910,7 +910,7 @@
     \target QIBASE
     \section2 QIBASE for Borland InterBase
 
-    The Qt InterBase plugin makes it possible to access the InterBase and
+    The BobUI InterBase plugin makes it possible to access the InterBase and
     Firebird databases. InterBase can either be used as a client/server or
     without a server in which case it operates on local files. The
     database file must exist before a connection can be established. Firebird
@@ -931,7 +931,7 @@
     {documentation} for more information about timestamp handling.
 
     \section3 Connection options
-    The Qt Borland InterBase plugin honors the following connection options:
+    The BobUI Borland InterBase plugin honors the following connection options:
     \table
     \header \li Attribute \li Possible value
     \row
@@ -946,7 +946,7 @@
     You need the InterBase/Firebird development headers and libraries
     to build this plugin.
 
-    Due to license incompatibilities with the GPL, users of the Qt Open Source
+    Due to license incompatibilities with the GPL, users of the BobUI Open Source
     Edition are not allowed to link this plugin to the commercial editions of
     InterBase. Please use Firebird or the free edition of InterBase.
 
@@ -999,7 +999,7 @@
 
     \list 1
     \li Ensure that the plugin is in the correct directory. You can use
-        QApplication::libraryPaths() to determine where Qt looks for plugins.
+        QApplication::libraryPaths() to determine where BobUI looks for plugins.
     \li Ensure that the client libraries of the DBMS are available on the
         system. On Unix, run the command \c{ldd} and pass the name of the
         plugin as parameter, for example \c{ldd libqsqlmysql.so}. You will
@@ -1007,19 +1007,19 @@
         On Windows, you can use Visual Studio's dependency walker or
         \l{https://github.com/lucasg/Dependencies/releases}{Dependencies GUI}
         to find out the dependent libraries. With
-        Qt Creator, you can update the \c PATH environment variable in the
+        BobUI Creator, you can update the \c PATH environment variable in the
         \gui Run section of the \gui Project panel to include the path to
         the folder containing the client libraries.
     \li When using MSVC, also make sure the plugin is built with the correct
         build type. Due to different MSVC runtimes for debug and release,
-        a Qt debug build can't load a Qt release plugin and vice versa.
-    \li Run the compiled Qt executable with the environment variable
-        \l{Environment Variables Recognized by Qt}{QT_DEBUG_PLUGINS} set
+        a BobUI debug build can't load a BobUI release plugin and vice versa.
+    \li Run the compiled BobUI executable with the environment variable
+        \l{Environment Variables Recognized by BobUI}{BOBUI_DEBUG_PLUGINS} set
         to get very verbose debug output when loading plugins.
     \li To retrieve possible debug messages from the SQL subsystem, enable
-        the output by setting the environment variable \c{QT_LOGGING_RULES}
-        to \c{qt.sql.*.debug=true}. Don't forget to enable the
-        \l{Environment Variables Recognized by Qt}{console} when working on
+        the output by setting the environment variable \c{BOBUI_LOGGING_RULES}
+        to \c{bobui.sql.*.debug=true}. Don't forget to enable the
+        \l{Environment Variables Recognized by BobUI}{console} when working on
         windows.
         See \l{Logging Rules} for a more detailed explanation on how to set
         logging rules.
@@ -1054,15 +1054,15 @@
     QSqlResult which provides the concrete implementation.
 
     QSqlDriver and QSqlResult are closely connected. When implementing a
-    Qt SQL driver, both of these classes must to be subclassed and the
+    BobUI SQL driver, both of these classes must to be subclassed and the
     abstract virtual methods in each class must be implemented.
 
-    To implement a Qt SQL driver as a plugin (so that it is
-    recognized and loaded by the Qt library at runtime), the driver
-    must use the Q_PLUGIN_METADATA() macro. Read \l{How to Create Qt
+    To implement a BobUI SQL driver as a plugin (so that it is
+    recognized and loaded by the BobUI library at runtime), the driver
+    must use the Q_PLUGIN_METADATA() macro. Read \l{How to Create BobUI
     Plugins} for more information on this. You can also check out how
-    this is done in the SQL plugins that are provided with Qt in
-    \c{QTDIR/qtbase/src/plugins/sqldrivers}.
+    this is done in the SQL plugins that are provided with BobUI in
+    \c{BOBUIDIR/bobuibase/src/plugins/sqldrivers}.
 
     The following code can be used as a skeleton for a SQL driver:
 

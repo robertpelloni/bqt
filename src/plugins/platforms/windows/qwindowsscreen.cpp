@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsscreen.h"
 #include "qwindowscontext.h"
@@ -9,22 +9,22 @@
 #include "qwindowstheme.h"
 #include "qwindowswindowclassregistry.h"
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-#include <QtCore/qsettings.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUICore/qsettings.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUIGui/qguiapplication.h>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtCore/private/qsystemerror_p.h>
-#include <QtGui/private/qedidparser_p.h>
+#include <BobUICore/private/qsystemerror_p.h>
+#include <BobUIGui/private/qedidparser_p.h>
 #include <private/qhighdpiscaling_p.h>
 #include <private/qwindowsfontdatabasebase_p.h>
 #include <private/qpixmap_win_p.h>
 #include <private/quniquehandle_p.h>
 
-#include <QtGui/qscreen.h>
+#include <BobUIGui/qscreen.h>
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
 #include <memory>
 #include <type_traits>
@@ -33,9 +33,9 @@
 #include <setupapi.h>
 #include <shellscalingapi.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static inline QDpi deviceDPI(HDC hdc)
 {
@@ -321,16 +321,16 @@ static bool monitorData(HMONITOR hMonitor, QWindowsScreenData *data)
         const auto &pathInfo = pathGroup[0];
         switch (pathInfo.targetInfo.rotation) {
         case DISPLAYCONFIG_ROTATION_IDENTITY:
-            data->orientation = Qt::LandscapeOrientation;
+            data->orientation = BobUI::LandscapeOrientation;
             break;
         case DISPLAYCONFIG_ROTATION_ROTATE90:
-            data->orientation = Qt::PortraitOrientation;
+            data->orientation = BobUI::PortraitOrientation;
             break;
         case DISPLAYCONFIG_ROTATION_ROTATE180:
-            data->orientation = Qt::InvertedLandscapeOrientation;
+            data->orientation = BobUI::InvertedLandscapeOrientation;
             break;
         case DISPLAYCONFIG_ROTATION_ROTATE270:
-            data->orientation = Qt::InvertedPortraitOrientation;
+            data->orientation = BobUI::InvertedPortraitOrientation;
             break;
         case DISPLAYCONFIG_ROTATION_FORCE_UINT32:
             Q_UNREACHABLE();
@@ -341,8 +341,8 @@ static bool monitorData(HMONITOR hMonitor, QWindowsScreenData *data)
                                 / pathInfo.targetInfo.refreshRate.Denominator;
     } else {
         data->orientation = data->geometry.height() > data->geometry.width()
-                          ? Qt::PortraitOrientation
-                          : Qt::LandscapeOrientation;
+                          ? BobUI::PortraitOrientation
+                          : BobUI::LandscapeOrientation;
     }
     // EnumDisplayMonitors (as opposed to EnumDisplayDevices) enumerates only
     // virtual desktop screens.
@@ -353,7 +353,7 @@ static bool monitorData(HMONITOR hMonitor, QWindowsScreenData *data)
 }
 
 // from monitorData, taking WindowsScreenDataList as LPARAM
-BOOL QT_WIN_CALLBACK monitorEnumCallback(HMONITOR hMonitor, HDC, LPRECT, LPARAM p)
+BOOL BOBUI_WIN_CALLBACK monitorEnumCallback(HMONITOR hMonitor, HDC, LPRECT, LPARAM p)
 {
     QWindowsScreenData data;
     if (monitorData(hMonitor, &data)) {
@@ -371,7 +371,7 @@ BOOL QT_WIN_CALLBACK monitorEnumCallback(HMONITOR hMonitor, HDC, LPRECT, LPARAM 
         // QWindowSystemInterface::handleScreenAdded() documentation specifies that first
         // added screen will be the primary screen, so order accordingly.
         // Note that the side effect of this policy is that there is no way to change primary
-        // screen reported by Qt, unless we want to delete all existing screens and add them
+        // screen reported by BobUI, unless we want to delete all existing screens and add them
         // again whenever primary screen changes.
         if (data.flags & QWindowsScreenData::PrimaryScreen)
             result->prepend(data);
@@ -388,7 +388,7 @@ static inline WindowsScreenDataList monitorData()
     return result;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 static QDebug operator<<(QDebug dbg, const QWindowsScreenData &d)
 {
     QDebugStateSaver saver(dbg);
@@ -410,7 +410,7 @@ static QDebug operator<<(QDebug dbg, const QWindowsScreenData &d)
         dbg << " lock screen";
     return dbg;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 /*!
     \class QWindowsScreen
@@ -421,7 +421,7 @@ static QDebug operator<<(QDebug dbg, const QWindowsScreenData &d)
 
 QWindowsScreen::QWindowsScreen(const QWindowsScreenData &data) :
     m_data(data)
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     , m_cursor(new QWindowsCursor(this))
 #endif
 {
@@ -455,8 +455,8 @@ QPixmap QWindowsScreen::grabWindow(WId window, int xIn, int yIn, int width, int 
         // so we need to recalculate them using the actual screen size we get from
         // EnumDisplaySettings api.
         const auto dpiAwareness = QWindowsContext::instance()->processDpiAwareness();
-        if (dpiAwareness != QtWindows::DpiAwareness::PerMonitor &&
-            dpiAwareness != QtWindows::DpiAwareness::PerMonitorVersion2) {
+        if (dpiAwareness != BobUIWindows::DpiAwareness::PerMonitor &&
+            dpiAwareness != BobUIWindows::DpiAwareness::PerMonitorVersion2) {
             MONITORINFOEX info = {};
             info.cbSize = sizeof(MONITORINFOEX);
             if (GetMonitorInfo(handle(), &info)) {
@@ -494,7 +494,7 @@ QPixmap QWindowsScreen::grabWindow(WId window, int xIn, int yIn, int width, int 
     SelectObject(bitmap_dc, null_bitmap);
     DeleteDC(bitmap_dc);
 
-    const QPixmap pixmap = qt_pixmapFromWinHBITMAP(bitmap);
+    const QPixmap pixmap = bobui_pixmapFromWinHBITMAP(bitmap);
 
     DeleteObject(bitmap);
     ReleaseDC(nullptr, display_dc);
@@ -615,23 +615,23 @@ QRect QWindowsScreen::virtualGeometry(const QPlatformScreen *screen) // cf QScre
     return result;
 }
 
-bool QWindowsScreen::setOrientationPreference(Qt::ScreenOrientation o)
+bool QWindowsScreen::setOrientationPreference(BobUI::ScreenOrientation o)
 {
     bool result = false;
     ORIENTATION_PREFERENCE orientationPreference = ORIENTATION_PREFERENCE_NONE;
     switch (o) {
-    case Qt::PrimaryOrientation:
+    case BobUI::PrimaryOrientation:
         break;
-    case Qt::PortraitOrientation:
+    case BobUI::PortraitOrientation:
         orientationPreference = ORIENTATION_PREFERENCE_PORTRAIT;
         break;
-    case Qt::LandscapeOrientation:
+    case BobUI::LandscapeOrientation:
         orientationPreference = ORIENTATION_PREFERENCE_LANDSCAPE;
         break;
-    case Qt::InvertedPortraitOrientation:
+    case BobUI::InvertedPortraitOrientation:
         orientationPreference = ORIENTATION_PREFERENCE_PORTRAIT_FLIPPED;
         break;
-    case Qt::InvertedLandscapeOrientation:
+    case BobUI::InvertedLandscapeOrientation:
         orientationPreference = ORIENTATION_PREFERENCE_LANDSCAPE_FLIPPED;
         break;
     }
@@ -639,25 +639,25 @@ bool QWindowsScreen::setOrientationPreference(Qt::ScreenOrientation o)
     return result;
 }
 
-Qt::ScreenOrientation QWindowsScreen::orientationPreference()
+BobUI::ScreenOrientation QWindowsScreen::orientationPreference()
 {
-    Qt::ScreenOrientation result = Qt::PrimaryOrientation;
+    BobUI::ScreenOrientation result = BobUI::PrimaryOrientation;
     ORIENTATION_PREFERENCE orientationPreference = ORIENTATION_PREFERENCE_NONE;
     if (GetDisplayAutoRotationPreferences(&orientationPreference)) {
         switch (orientationPreference) {
         case ORIENTATION_PREFERENCE_NONE:
             break;
         case ORIENTATION_PREFERENCE_LANDSCAPE:
-            result = Qt::LandscapeOrientation;
+            result = BobUI::LandscapeOrientation;
             break;
         case ORIENTATION_PREFERENCE_PORTRAIT:
-            result = Qt::PortraitOrientation;
+            result = BobUI::PortraitOrientation;
             break;
         case ORIENTATION_PREFERENCE_LANDSCAPE_FLIPPED:
-            result = Qt::InvertedLandscapeOrientation;
+            result = BobUI::InvertedLandscapeOrientation;
             break;
         case ORIENTATION_PREFERENCE_PORTRAIT_FLIPPED:
-            result = Qt::InvertedPortraitOrientation;
+            result = BobUI::InvertedPortraitOrientation;
             break;
         }
     }
@@ -703,7 +703,7 @@ QPlatformScreen::SubpixelAntialiasingType QWindowsScreen::subpixelAntialiasingTy
     \internal
 */
 
-LRESULT QT_WIN_CALLBACK qDisplayChangeObserverWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT BOBUI_WIN_CALLBACK qDisplayChangeObserverWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if (message == WM_DISPLAYCHANGE) {
         qCDebug(lcQpaScreen) << "Handling WM_DISPLAYCHANGE";
@@ -816,19 +816,19 @@ void QWindowsScreenManager::removeScreen(int index)
     QPlatformScreen *platformScreen = m_screens.takeAt(index);
     QScreen *screen = platformScreen->screen();
     QScreen *primaryScreen = QGuiApplication::primaryScreen();
-    // QTBUG-38650: When a screen is disconnected, Windows will automatically
+    // BOBUIBUG-38650: When a screen is disconnected, Windows will automatically
     // move the Window to another screen. This will trigger a geometry change
     // event, but unfortunately after the screen destruction signal. To prevent
-    // QtGui from automatically hiding the QWindow, pretend all Windows move to
+    // BobUIGui from automatically hiding the QWindow, pretend all Windows move to
     // the primary screen first (which is likely the correct, final screen).
-    // QTBUG-39320: Windows does not automatically move WS_EX_TOOLWINDOW (dock) windows;
+    // BOBUIBUG-39320: Windows does not automatically move WS_EX_TOOLWINDOW (dock) windows;
     // move those manually.
     if (screen != primaryScreen) {
         unsigned movedWindowCount = 0;
         const QWindowList tlws = QGuiApplication::topLevelWindows();
         for (QWindow *w : tlws) {
             if (w->screen() == screen && w->handle()) {
-                if (w->isVisible() && w->windowState() != Qt::WindowMinimized
+                if (w->isVisible() && w->windowState() != BobUI::WindowMinimized
                     && (QWindowsWindow::baseWindowOf(w)->exStyle() & WS_EX_TOOLWINDOW)) {
                     moveToVirtualScreen(w, primaryScreen);
                 } else {
@@ -865,7 +865,7 @@ bool QWindowsScreenManager::handleScreenChanges()
         }    // exists
     }        // for new screens.
     // Remove deleted ones but keep main monitors if we get only the
-    // temporary lock screen to avoid window recreation (QTBUG-33062).
+    // temporary lock screen to avoid window recreation (BOBUIBUG-33062).
     if (!lockScreen) {
         for (int i = m_screens.size() - 1; i >= 0; --i) {
             if (indexOfMonitor(newDataList, m_screens.at(i)->data().deviceName) == -1)
@@ -873,7 +873,7 @@ bool QWindowsScreenManager::handleScreenChanges()
         }     // for existing screens
     }     // not lock screen
     if (primaryScreenChanged) {
-        if (auto theme = QWindowsTheme::instance()) // QTBUG-85734/Wine
+        if (auto theme = QWindowsTheme::instance()) // BOBUIBUG-85734/Wine
             theme->refreshFonts();
     }
     return true;
@@ -923,4 +923,4 @@ const QWindowsScreen *QWindowsScreenManager::screenForRect(const RECT *rect) con
     return screenForMonitor(hMonitor);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

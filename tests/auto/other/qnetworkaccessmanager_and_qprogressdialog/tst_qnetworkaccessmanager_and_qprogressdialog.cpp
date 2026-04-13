@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtTest/qtesteventloop.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/bobuiesteventloop.h>
 
-#include <QtWidgets/qprogressdialog.h>
+#include <BobUIWidgets/qprogressdialog.h>
 
-#include <QtNetwork/qnetworkaccessmanager.h>
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkaccessmanager.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkreply.h>
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
 #include "../../network-settings.h"
 
@@ -35,20 +35,20 @@ public:
         progressDlg(this), netmanager(this)
     {
         progressDlg.setRange(1, 100);
-        QMetaObject::invokeMethod(this, "go", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "go", BobUI::QueuedConnection);
     }
     bool lateReadyRead;
     bool zeroCopy;
 public slots:
     void go()
     {
-        QNetworkRequest request(QUrl("http://" + QtNetworkSettings::httpServerName() + "/qtest/bigfile"));
+        QNetworkRequest request(QUrl("http://" + BobUINetworkSettings::httpServerName() + "/bobuiest/bigfile"));
         if (zeroCopy)
             request.setAttribute(QNetworkRequest::MaximumDownloadBufferSizeAttribute, 10*1024*1024);
 
         QNetworkReply *reply = netmanager.get(
                 QNetworkRequest(
-                QUrl("http://" + QtNetworkSettings::httpServerName() + "/qtest/bigfile")
+                QUrl("http://" + BobUINetworkSettings::httpServerName() + "/bobuiest/bigfile")
                 ));
         connect(reply, SIGNAL(downloadProgress(qint64,qint64)),
                 this, SLOT(dataReadProgress(qint64,qint64)));
@@ -76,7 +76,7 @@ public slots:
         QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
         lateReadyRead = false;
         reply->deleteLater();
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
     }
 
 private:
@@ -91,20 +91,20 @@ tst_QNetworkAccessManager_And_QProgressDialog::tst_QNetworkAccessManager_And_QPr
 
 void tst_QNetworkAccessManager_And_QProgressDialog::initTestCase()
 {
-#ifdef QT_TEST_SERVER
-    if (!QtNetworkSettings::verifyConnection(QtNetworkSettings::httpServerName(), 80))
+#ifdef BOBUI_TEST_SERVER
+    if (!BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpServerName(), 80))
         QSKIP("No network test server available");
 #else
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 #endif
 }
 
 void tst_QNetworkAccessManager_And_QProgressDialog::downloadCheck_data()
 {
-    QTest::addColumn<bool>("useZeroCopy");
-    QTest::newRow("with-zeroCopy") << true;
-    QTest::newRow("without-zeroCopy") << false;
+    BOBUIest::addColumn<bool>("useZeroCopy");
+    BOBUIest::newRow("with-zeroCopy") << true;
+    BOBUIest::newRow("without-zeroCopy") << false;
 }
 
 void tst_QNetworkAccessManager_And_QProgressDialog::downloadCheck()
@@ -115,16 +115,16 @@ void tst_QNetworkAccessManager_And_QProgressDialog::downloadCheck()
     widget.zeroCopy = useZeroCopy;
     widget.show();
     // run and exit on finished()
-    QTestEventLoop::instance().enterLoop(10);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(10);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     // run some more to catch the late readyRead() (or: to not catch it)
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(BOBUIestEventLoop::instance().timeout());
     // the following fails when a readyRead() was received after finished()
     QVERIFY(!widget.lateReadyRead);
 }
 
 
 
-QTEST_MAIN(tst_QNetworkAccessManager_And_QProgressDialog)
+BOBUIEST_MAIN(tst_QNetworkAccessManager_And_QProgressDialog)
 #include "tst_qnetworkaccessmanager_and_qprogressdialog.moc"

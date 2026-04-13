@@ -1,7 +1,7 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QString>
 
@@ -9,12 +9,12 @@
 struct QLatin1StringViewContainer {
     QLatin1StringView l1;
 };
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(QLatin1StringViewContainer, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 Q_DECLARE_METATYPE(QLatin1StringViewContainer)
 
-// QTBUG-112746
+// BOBUIBUG-112746
 namespace {
 extern const char string_array[];
 static void from_array_of_unknown_size()
@@ -148,7 +148,7 @@ void tst_QLatin1StringView::construction()
 void tst_QLatin1StringView::userDefinedLiterals()
 {
     {
-        using namespace Qt::StringLiterals;
+        using namespace BobUI::StringLiterals;
 
         auto str = "abcd"_L1;
         static_assert(std::is_same_v<decltype(str), QLatin1StringView>);
@@ -166,7 +166,7 @@ void tst_QLatin1StringView::userDefinedLiterals()
         QCOMPARE('\xE5'_L1, QLatin1Char('\xE5'));
     }
     {
-        using namespace Qt::Literals;
+        using namespace BobUI::Literals;
 
         auto str = "abcd"_L1;
         static_assert(std::is_same_v<decltype(str), QLatin1StringView>);
@@ -177,7 +177,7 @@ void tst_QLatin1StringView::userDefinedLiterals()
         QCOMPARE(ch, QLatin1Char('a'));
     }
     {
-        using namespace Qt;
+        using namespace BobUI;
 
         auto str = "abcd"_L1;
         static_assert(std::is_same_v<decltype(str), QLatin1StringView>);
@@ -339,20 +339,20 @@ void tst_QLatin1StringView::iterators()
     QVERIFY(std::equal(hello.begin(), hello.end(),
                        olleh.rbegin()));
     QVERIFY(std::equal(hello.rbegin(), hello.rend(),
-                       QT_MAKE_CHECKED_ARRAY_ITERATOR(olleh.begin(), olleh.size())));
+                       BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(olleh.begin(), olleh.size())));
 
     QVERIFY(std::equal(hello.cbegin(), hello.cend(),
                        olleh.rbegin()));
     QVERIFY(std::equal(hello.crbegin(), hello.crend(),
-                       QT_MAKE_CHECKED_ARRAY_ITERATOR(olleh.begin(), olleh.size())));
+                       BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(olleh.begin(), olleh.size())));
 }
 
 void tst_QLatin1StringView::relationalOperators_data()
 {
-    QTest::addColumn<QLatin1StringViewContainer>("lhs");
-    QTest::addColumn<int>("lhsOrderNumber");
-    QTest::addColumn<QLatin1StringViewContainer>("rhs");
-    QTest::addColumn<int>("rhsOrderNumber");
+    BOBUIest::addColumn<QLatin1StringViewContainer>("lhs");
+    BOBUIest::addColumn<int>("lhsOrderNumber");
+    BOBUIest::addColumn<QLatin1StringViewContainer>("rhs");
+    BOBUIest::addColumn<int>("rhsOrderNumber");
 
     struct Data {
         QLatin1StringView l1;
@@ -368,7 +368,7 @@ void tst_QLatin1StringView::relationalOperators_data()
     for (Data *lhs = data; lhs != data + sizeof data / sizeof *data; ++lhs) {
         for (Data *rhs = data; rhs != data + sizeof data / sizeof *data; ++rhs) {
             QLatin1StringViewContainer l = { lhs->l1 }, r = { rhs->l1 };
-            QTest::addRow("\"%s\" <> \"%s\"",
+            BOBUIest::addRow("\"%s\" <> \"%s\"",
                           lhs->l1.data() ? lhs->l1.data() : "nullptr",
                           rhs->l1.data() ? rhs->l1.data() : "nullptr")
                 << l << lhs->order << r << rhs->order;
@@ -403,11 +403,11 @@ void tst_QLatin1StringView::count()
     QCOMPARE(a.count('Z'), 0);
     QCOMPARE(a.count('E'), 3);
     QCOMPARE(a.count('F'), 2);
-    QCOMPARE(a.count('F', Qt::CaseInsensitive), 3);
+    QCOMPARE(a.count('F', BobUI::CaseInsensitive), 3);
     QCOMPARE(a.count(QLatin1StringView("FG")), 2);
-    QCOMPARE(a.count(QLatin1StringView("FG"), Qt::CaseInsensitive), 3);
-    QCOMPARE(a.count(QLatin1StringView(), Qt::CaseInsensitive), 16);
-    QCOMPARE(a.count(QLatin1StringView(""), Qt::CaseInsensitive), 16);
+    QCOMPARE(a.count(QLatin1StringView("FG"), BobUI::CaseInsensitive), 3);
+    QCOMPARE(a.count(QLatin1StringView(), BobUI::CaseInsensitive), 16);
+    QCOMPARE(a.count(QLatin1StringView(""), BobUI::CaseInsensitive), 16);
 
     QLatin1StringView nullStr;
     QCOMPARE(nullStr.count('A'), 0);
@@ -421,98 +421,98 @@ void tst_QLatin1StringView::count()
     QCOMPARE(emptyStr.count(QLatin1StringView()), 1);
     QCOMPARE(emptyStr.count(QLatin1StringView("")), 1);
 
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
     QCOMPARE("a\0b"_L1.count(QChar::SpecialCharacter::LineSeparator), 0);
 }
 
 void tst_QLatin1StringView::indexOf_data()
 {
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
 
-    QTest::addColumn<QLatin1StringView>("needle");
-    QTest::addColumn<QLatin1StringView>("haystack");
-    QTest::addColumn<int>("from");
-    QTest::addColumn<int>("indexCaseSensitive");
-    QTest::addColumn<int>("indexCaseInsensitive");
+    BOBUIest::addColumn<QLatin1StringView>("needle");
+    BOBUIest::addColumn<QLatin1StringView>("haystack");
+    BOBUIest::addColumn<int>("from");
+    BOBUIest::addColumn<int>("indexCaseSensitive");
+    BOBUIest::addColumn<int>("indexCaseInsensitive");
 
     // Should never trigger Boyer Moore algorithm
-    QTest::newRow("Single letter match start")
+    BOBUIest::newRow("Single letter match start")
             << QLatin1StringView("A") << QLatin1StringView("ABCDEF") << 0 << 0 << 0;
-    QTest::newRow("Single letter match second letter")
+    BOBUIest::newRow("Single letter match second letter")
             << QLatin1StringView("B") << QLatin1StringView("ABCDEF") << 0 << 1 << 1;
-    QTest::newRow("Single letter mismatch")
+    BOBUIest::newRow("Single letter mismatch")
             << QLatin1StringView("G") << QLatin1StringView("ABCDEF") << 0 << -1 << -1;
-    QTest::newRow("Single letter case sensitive start")
+    BOBUIest::newRow("Single letter case sensitive start")
             << QLatin1StringView("a") << QLatin1StringView("ABCDEF") << 0 << -1 << 0;
-    QTest::newRow("Single letter case sensitive end")
+    BOBUIest::newRow("Single letter case sensitive end")
             << QLatin1StringView("f") << QLatin1StringView("ABCDEF") << 0 << -1 << 5;
-    QTest::newRow("Single letter different match depending on case")
+    BOBUIest::newRow("Single letter different match depending on case")
             << QLatin1StringView("a") << QLatin1StringView("ABCabc") << 0 << 3 << 0;
-    QTest::newRow("Single letter different match depending on case from 2")
+    BOBUIest::newRow("Single letter different match depending on case from 2")
             << QLatin1StringView("a") << QLatin1StringView("ABCABCabc") << 2 << 6 << 3;
-    QTest::newRow("Single letter negative from")
+    BOBUIest::newRow("Single letter negative from")
             << QLatin1StringView("a") << QLatin1StringView("abcabc") << -3 << 3 << 3;
-    QTest::newRow("Single letter non-ASCII") // searching for "ø" in "Øø"
+    BOBUIest::newRow("Single letter non-ASCII") // searching for "ø" in "Øø"
             << "\xf8"_L1
             << "\xd8\xf8"_L1 << 0 << 1 << 0;
-    QTest::newRow("Single uppercase letter")
+    BOBUIest::newRow("Single uppercase letter")
             << QLatin1StringView("A") << QLatin1StringView("aA") << 0 << 1 << 0;
 
     // Might trigger Boyer Moore algorithm
-    QTest::newRow("Small match start")
+    BOBUIest::newRow("Small match start")
             << QLatin1StringView("ABC") << QLatin1StringView("ABCDEF") << 0 << 0 << 0;
-    QTest::newRow("Small match second letter")
+    BOBUIest::newRow("Small match second letter")
             << QLatin1StringView("BCD") << QLatin1StringView("ABCDEF") << 0 << 1 << 1;
-    QTest::newRow("Small mismatch")
+    BOBUIest::newRow("Small mismatch")
             << QLatin1StringView("EFG") << QLatin1StringView("ABCDEF") << 0 << -1 << -1;
-    QTest::newRow("Small case sensitive start")
+    BOBUIest::newRow("Small case sensitive start")
             << QLatin1StringView("abc") << QLatin1StringView("ABCDEF") << 0 << -1 << 0;
-    QTest::newRow("Small case sensitive end")
+    BOBUIest::newRow("Small case sensitive end")
             << QLatin1StringView("DEF") << QLatin1StringView("abcdef") << 0 << -1 << 3;
-    QTest::newRow("Small different match depending on case")
+    BOBUIest::newRow("Small different match depending on case")
             << QLatin1StringView("abcabc") << QLatin1StringView("!!ABCabcabcABC") << 0 << 5 << 2;
-    QTest::newRow("Small different match depending on case from 2")
+    BOBUIest::newRow("Small different match depending on case from 2")
             << QLatin1StringView("abcabc") << QLatin1StringView("ABCABCabcabcABC") << 2 << 6 << 3;
-    QTest::newRow("Small negative from") << QLatin1StringView("negative")
+    BOBUIest::newRow("Small negative from") << QLatin1StringView("negative")
                                          << QLatin1StringView("negativenegative") << -8 << 8 << 8;
-    QTest::newRow("Small non-ASCII") // searching for "løve" in "LØVEløve"
+    BOBUIest::newRow("Small non-ASCII") // searching for "løve" in "LØVEløve"
             << "l\xf8ve"_L1
             << "L\xd8VEl\xf8ve"_L1 << 0 << 4 << 0;
-    QTest::newRow("Small skip test")
+    BOBUIest::newRow("Small skip test")
             << QLatin1StringView("ABBB") << QLatin1StringView("ABABBB") << 0 << 2 << 2;
-    QTest::newRow("Small uppercase needle")
+    BOBUIest::newRow("Small uppercase needle")
             << QLatin1StringView("ABCDEF") << QLatin1StringView("abcdefABCDEF") << 0 << 6 << 0;
 
     // Should trigger Boyer Moore algorithm
-    QTest::newRow("Medium match start")
+    BOBUIest::newRow("Medium match start")
             << QLatin1StringView("ABCDEFGHIJKLMNOP")
             << QLatin1StringView("ABCDEFGHIJKLMNOPQRSTUVWXYZ") << 0 << 0 << 0;
-    QTest::newRow("Medium match second letter")
+    BOBUIest::newRow("Medium match second letter")
             << QLatin1StringView("BCDEFGHIJKLMNOPQ")
             << QLatin1StringView("ABCDEFGHIJKLMNOPQRSTUVWXYZ") << 0 << 1 << 1;
-    QTest::newRow("Medium mismatch")
+    BOBUIest::newRow("Medium mismatch")
             << QLatin1StringView("PONMLKJIHGFEDCBA")
             << QLatin1StringView("ABCDEFGHIJKLMNOPQRSTUVWXYZ") << 0 << -1 << -1;
-    QTest::newRow("Medium case sensitive start")
+    BOBUIest::newRow("Medium case sensitive start")
             << QLatin1StringView("abcdefghijklmnopq")
             << QLatin1StringView("ABCDEFGHIJKLMNOPQRSTUVWXYZ") << 0 << -1 << 0;
-    QTest::newRow("Medium case sensitive second letter")
+    BOBUIest::newRow("Medium case sensitive second letter")
             << QLatin1StringView("BCDEFGHIJKLMNOPQR")
             << QLatin1StringView("abcdefghijklmnopqrstuvxyz") << 0 << -1 << 1;
-    QTest::newRow("Medium different match depending on case")
+    BOBUIest::newRow("Medium different match depending on case")
             << QLatin1StringView("testingtesting")
             << QLatin1StringView("TESTINGtestingtestingTESTING") << 0 << 7 << 0;
-    QTest::newRow("Medium different match depending on case from 2")
+    BOBUIest::newRow("Medium different match depending on case from 2")
             << QLatin1StringView("testingtesting")
             << QLatin1StringView("TESTINGTESTINGtestingtestingTESTING") << 2 << 14 << 7;
-    QTest::newRow("Medium negative from")
+    BOBUIest::newRow("Medium negative from")
             << QLatin1StringView("abcdefghijklmnop")
             << QLatin1StringView("abcdefghijklmnopabcdefghijklmnop") << -16 << 16 << 16;
-    QTest::newRow("Medium non-ASCII") // searching for "dampfschiffahrtsgesellschaftskapitän"
+    BOBUIest::newRow("Medium non-ASCII") // searching for "dampfschiffahrtsgesellschaftskapitän"
             << "dampfschiffahrtsgesellschaftskapit\xe4n"_L1
             << "DAMPFSCHIFFAHRTSGESELLSCHAFTSKAPIT\xc4Ndampfschiffahrtsgesellschaftskapit\xe4n"_L1
             << 0 << 36 << 0;
-    QTest::newRow("Medium skip test") << QLatin1StringView("ABBBBBBBBBBBBBBB")
+    BOBUIest::newRow("Medium skip test") << QLatin1StringView("ABBBBBBBBBBBBBBB")
                                       << QLatin1StringView("ABABBBBBBBBBBBBBBB") << 0 << 2 << 2;
 }
 
@@ -523,33 +523,33 @@ void tst_QLatin1StringView::indexOf()
     QFETCH(int, from);
     QFETCH(int, indexCaseSensitive);
     QFETCH(int, indexCaseInsensitive);
-    QCOMPARE(haystack.indexOf(needle, from, Qt::CaseSensitive), (qsizetype)indexCaseSensitive);
-    QCOMPARE(haystack.indexOf(needle, from, Qt::CaseInsensitive), (qsizetype)indexCaseInsensitive);
+    QCOMPARE(haystack.indexOf(needle, from, BobUI::CaseSensitive), (qsizetype)indexCaseSensitive);
+    QCOMPARE(haystack.indexOf(needle, from, BobUI::CaseInsensitive), (qsizetype)indexCaseInsensitive);
 }
 
 void tst_QLatin1StringView::toUtf8_data()
 {
-    QTest::addColumn<QByteArray>("input");
-    QTest::newRow("null") << QByteArray();
-    QTest::newRow("empty") << QByteArray("");
+    BOBUIest::addColumn<QByteArray>("input");
+    BOBUIest::newRow("null") << QByteArray();
+    BOBUIest::newRow("empty") << QByteArray("");
 
     for (int i = 0; i < 256; ++i) {
         char c = i;
-        QTest::addRow("char-0x%02x", i) << QByteArray(1, c);
+        BOBUIest::addRow("char-0x%02x", i) << QByteArray(1, c);
     }
 
     QByteArray ba = "abcd";
     for (int i = 0; i < 6; ++i) {
-        QTest::addRow("ascii-%d", int(ba.size())) << ba;
+        BOBUIest::addRow("ascii-%d", int(ba.size())) << ba;
         ba += ba;
-        QTest::addRow("ascii-%d", int(ba.size()) - 1) << ba.left(ba.size() - 1);
+        BOBUIest::addRow("ascii-%d", int(ba.size()) - 1) << ba.left(ba.size() - 1);
     }
 
     ba = "\xe0""abcdef\xff";
     for (int i = 0; i < 6; ++i) {
-        QTest::addRow("nonascii-%d", int(ba.size())) << ba;
+        BOBUIest::addRow("nonascii-%d", int(ba.size())) << ba;
         ba += ba;
-        QTest::addRow("nonascii-%d", int(ba.size()) - 1) << ba.left(ba.size() - 1);
+        BOBUIest::addRow("nonascii-%d", int(ba.size()) - 1) << ba.left(ba.size() - 1);
     }
 }
 
@@ -564,6 +564,6 @@ void tst_QLatin1StringView::toUtf8()
     QCOMPARE(result, expected);
 }
 
-QTEST_APPLESS_MAIN(tst_QLatin1StringView)
+BOBUIEST_APPLESS_MAIN(tst_QLatin1StringView)
 
 #include "tst_qlatin1stringview.moc"

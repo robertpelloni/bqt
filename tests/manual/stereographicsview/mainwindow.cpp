@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
@@ -29,8 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
         rect.height() / 2 - initialSize.height() / 2,
         initialSize.width(),
         initialSize.height(),
-        QPen(Qt::magenta, 5),
-        Qt::blue);
+        QPen(BobUI::magenta, 5),
+        BobUI::blue);
 
     QPushButton *button = new QPushButton();
     button->setGeometry(QRect(rect.width() / 2 - 75, 100, 150, 50));
@@ -43,10 +43,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_label = new QLabel();
     m_label->setGeometry(QRect(rect.width() / 2 - 50, rect.height() - 100, 100, 50));
-    m_label->setAlignment(Qt::AlignCenter);
+    m_label->setAlignment(BobUI::AlignCenter);
     m_scene->addWidget(m_label);
 
-    QSlider *slider = new QSlider(Qt::Horizontal);
+    QSlider *slider = new QSlider(BobUI::Horizontal);
     slider->setGeometry(QRect(rect.width() / 2 - 100, rect.height() - 50, 200, 50));
     slider->setMinimum(10);
     slider->setMaximum(300);

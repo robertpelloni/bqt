@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qiosfileengineassetslibrary.h"
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
-#include <QtCore/QTimer>
-#include <QtCore/private/qcoreapplication_p.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qset.h>
-#include <QtCore/qthreadstorage.h>
-#include <QtCore/qfileselector.h>
-#include <QtCore/qpointer.h>
+#include <BobUICore/BOBUIimer>
+#include <BobUICore/private/qcoreapplication_p.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/bobuihreadstorage.h>
+#include <BobUICore/qfileselector.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-static QThreadStorage<QString> g_iteratorCurrentUrl;
-static QThreadStorage<QPointer<QIOSAssetData> > g_assetDataCache;
+static BOBUIhreadStorage<QString> g_iteratorCurrentUrl;
+static BOBUIhreadStorage<QPointer<QIOSAssetData> > g_assetDataCache;
 
 static const int kBufferSize = 10;
 static ALAsset *kNoAsset = nullptr;
@@ -40,7 +40,7 @@ static bool ensureAuthorizationDialogNotBlocked()
         // work around this, we create an event loop to that will complete the launch (return from the
         // applicationDidFinishLaunching callback). But this will only work if we're on the main thread.
         QEventLoop loop;
-        QTimer::singleShot(1, &loop, &QEventLoop::quit);
+        BOBUIimer::singleShot(1, &loop, &QEventLoop::quit);
         loop.exec();
     } else {
         NSLog(@"QIOSFileEngine: unable to show assets authorization dialog from non-gui thread before QApplication is executing.");
@@ -251,7 +251,7 @@ private:
 
 // -------------------------------------------------------------------------
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
 
 class QIOSFileEngineIteratorAssetsLibrary : public QAbstractFileEngineIterator
 {
@@ -437,7 +437,7 @@ void QIOSFileEngineAssetsLibrary::setFileName(const QString &file)
         m_assetUrl = "assets-library:/"_L1 + file.mid(index);
 }
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
 
 QAbstractFileEngine::IteratorUniquePtr
 QIOSFileEngineAssetsLibrary::beginEntryList(
@@ -446,6 +446,6 @@ QIOSFileEngineAssetsLibrary::beginEntryList(
     return std::make_unique<QIOSFileEngineIteratorAssetsLibrary>(path, filters, filterNames);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #ifndef QSSLCERTIFICATE_H
@@ -10,16 +10,16 @@
 #undef verify
 #endif
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qcryptographichash.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qshareddata.h>
-#include <QtNetwork/qssl.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qcryptographichash.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUINetwork/qssl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDateTime;
 class QIODevice;
@@ -32,7 +32,7 @@ class QSslCertificate;
 Q_NETWORK_EXPORT size_t qHash(const QSslCertificate &key, size_t seed = 0) noexcept;
 
 class QSslCertificatePrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR(QSslCertificatePrivate)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR(QSslCertificatePrivate)
 
 class Q_NETWORK_EXPORT QSslCertificate
 {
@@ -91,7 +91,7 @@ public:
     QMultiMap<QSsl::AlternativeNameEntryType, QString> subjectAlternativeNames() const;
     QDateTime effectiveDate() const;
     QDateTime expiryDate() const;
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     QSslKey publicKey() const;
 #endif
     QList<QSslCertificateExtension> extensions() const;
@@ -111,7 +111,7 @@ public:
     static QList<QSslCertificate> fromFile(
         const QString &filePath, QSsl::EncodingFormat format = QSsl::Pem);
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     static QList<QSslError> verify(const QList<QSslCertificate> &certificateChain, const QString &hostName = QString());
     static bool importPkcs12(QIODevice *device,
                              QSslKey *key, QSslCertificate *cert,
@@ -119,24 +119,24 @@ public:
                              const QByteArray &passPhrase=QByteArray());
 #endif
 
-    Qt::HANDLE handle() const;
+    BobUI::HANDLE handle() const;
 
 private:
     QExplicitlySharedDataPointer<QSslCertificatePrivate> d;
-    friend class QTlsBackend;
+    friend class BOBUIlsBackend;
 
     friend Q_NETWORK_EXPORT size_t qHash(const QSslCertificate &key, size_t seed) noexcept;
 };
 Q_DECLARE_SHARED(QSslCertificate)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QSslCertificate &certificate);
 Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, QSslCertificate::SubjectInfo info);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QSslCertificate, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QSslCertificate, Q_NETWORK_EXPORT)
 
 #endif

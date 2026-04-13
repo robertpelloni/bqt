@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcolortransform.h"
 #include "qcolortransform_p.h"
@@ -11,16 +11,16 @@
 #include "qcolortrc_p.h"
 #include "qcolortrclut_p.h"
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qmath.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qtransform.h>
-#include <QtCore/private/qsimd_p.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qmath.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/bobuiransform.h>
+#include <BobUICore/private/qsimd_p.h>
 
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QColorTransformPrivate::updateLutsIn() const
 {
@@ -78,7 +78,7 @@ void QColorTransformPrivate::updateLutsOut() const
 
     \ingroup painting
     \ingroup appearance
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     QColorTransform is an instantiation of a transformation between color spaces.
     It can be applied on color and pixels to convert them from one color space to
@@ -102,7 +102,7 @@ QColorTransform::QColorTransform(const QColorTransform &colorTransform) noexcept
 
 QColorTransform::~QColorTransform() = default;
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QColorTransformPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QColorTransformPrivate)
 
 /*!
     \since 6.4
@@ -2078,4 +2078,4 @@ bool QColorTransformPrivate::isIdentity() const
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

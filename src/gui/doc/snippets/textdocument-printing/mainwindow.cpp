@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include "mainwindow.h"
 
 #include <QMenu>
 #include <QMenuBar>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QFileDialog>
 #include <QPrinter>
 #include <QPrintDialog>
@@ -27,11 +27,11 @@ MainWindow::MainWindow()
 
     menuBar()->addMenu(fileMenu);
 
-    editor = new QTextEdit(this);
-    document = new QTextDocument(this);
+    editor = new BOBUIextEdit(this);
+    document = new BOBUIextDocument(this);
     editor->setDocument(document);
 
-    connect(editor, &QTextEdit::selectionChanged, this, &MainWindow::updateMenus);
+    connect(editor, &BOBUIextEdit::selectionChanged, this, &MainWindow::updateMenus);
 
     setCentralWidget(editor);
     setWindowTitle(tr("Text Document Writer"));
@@ -69,7 +69,7 @@ void MainWindow::openFile()
 void MainWindow::printFile()
 {
 //! [0]
-    QTextDocument *document = editor->document();
+    BOBUIextDocument *document = editor->document();
     QPrinter printer;
 
     QPrintDialog *dlg = new QPrintDialog(&printer, this);

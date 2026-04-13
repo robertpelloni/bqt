@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qaccessibilitylinux LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-if (NOT QT_FEATURE_accessibility OR NOT TARGET Qt::LinuxAccessibilitySupportPrivate
-        OR (QT_BUILD_STANDALONE_TESTS AND QT_WILL_INSTALL))
+if (NOT BOBUI_FEATURE_accessibility OR NOT TARGET BobUI::LinuxAccessibilitySupportPrivate
+        OR (BOBUI_BUILD_STANDALONE_TESTS AND BOBUI_WILL_INSTALL))
     return()
 endif()
 
@@ -16,17 +16,17 @@ endif()
 ## tst_qaccessibilitylinux Test:
 #####################################################################
 
-qt_internal_add_test(tst_qaccessibilitylinux
+bobui_internal_add_test(tst_qaccessibilitylinux
     SOURCES
         tst_qaccessibilitylinux.cpp
     DBUS_INTERFACE_SOURCES
         ../../../../src/platformsupport/linuxaccessibility/dbusxml/Bus.xml
     LIBRARIES
-        Qt::DBus
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::LinuxAccessibilitySupportPrivate
-        Qt::Widgets
+        BobUI::DBus
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::LinuxAccessibilitySupportPrivate
+        BobUI::Widgets
 )
 
 # require for struct_marshallers_p.h which is included dbus_interface.h

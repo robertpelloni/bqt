@@ -1,7 +1,7 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
 // Copyright (C) 2016 Samuel Gaist <samuel.gaist@edeltech.ch>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "regularexpressiondialog.h"
 
@@ -14,7 +14,7 @@
 #include <QMenu>
 #include <QSpinBox>
 #include <QPlainTextEdit>
-#include <QTreeWidget>
+#include <BOBUIreeWidget>
 
 #include <QAction>
 #include <QClipboard>
@@ -104,7 +104,7 @@ PatternLineEdit::PatternLineEdit(QWidget *parent) :
     connect(escapeSelectionAction, &QAction::triggered, this, &PatternLineEdit::escapeSelection);
     connect(copyToCodeAction, &QAction::triggered, this, &PatternLineEdit::copyToCode);
     connect(pasteFromCodeAction, &QAction::triggered, this, &PatternLineEdit::pasteFromCode);
-#if !QT_CONFIG(clipboard)
+#if !BOBUI_CONFIG(clipboard)
     copyToCodeAction->setEnabled(false);
     pasteFromCodeAction->setEnabled(false);
 #endif
@@ -123,14 +123,14 @@ void PatternLineEdit::escapeSelection()
 
 void PatternLineEdit::copyToCode()
 {
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QGuiApplication::clipboard()->setText(patternToCode(text()));
 #endif
 }
 
 void PatternLineEdit::pasteFromCode()
 {
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     setText(codeToPattern(QGuiApplication::clipboard()->text()));
 #endif
 }
@@ -138,7 +138,7 @@ void PatternLineEdit::pasteFromCode()
 void PatternLineEdit::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu *menu = createStandardContextMenu();
-    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu->setAttribute(BobUI::WA_DeleteOnClose);
     menu->addSeparator();
     escapeSelectionAction->setEnabled(hasSelectedText());
     menu->addAction(escapeSelectionAction);
@@ -161,7 +161,7 @@ DisplayLineEdit::DisplayLineEdit(QWidget *parent) : QLineEdit(parent)
     disabledPalette.setBrush(QPalette::Base, disabledPalette.brush(QPalette::Disabled, QPalette::Base));
     setPalette(disabledPalette);
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QAction *copyAction = new QAction(this);
     copyAction->setText(RegularExpressionDialog::tr("Copy to clipboard"));
     copyAction->setIcon(QIcon(QStringLiteral(":/images/copy.png")));
@@ -243,7 +243,7 @@ void RegularExpressionDialog::refresh()
 
     regularExpression.setPattern(pattern);
     if (!regularExpression.isValid()) {
-        setTextColor(patternLineEdit, Qt::red);
+        setTextColor(patternLineEdit, BobUI::red);
         regexpStatusLabel->setText(tr("Invalid: syntax error at position %1 (%2)")
                                    .arg(regularExpression.patternErrorOffset())
                                    .arg(regularExpression.errorString()));
@@ -290,11 +290,11 @@ void RegularExpressionDialog::refresh()
     while (iterator.hasNext()) {
         QRegularExpressionMatch match = iterator.next();
 
-        QTreeWidgetItem *matchDetailTopItem = new QTreeWidgetItem(matchDetailsTreeWidget);
+        BOBUIreeWidgetItem *matchDetailTopItem = new BOBUIreeWidgetItem(matchDetailsTreeWidget);
         matchDetailTopItem->setText(0, QString::number(i));
 
         for (int captureGroupIndex = 0; captureGroupIndex < capturingGroupsCount; ++captureGroupIndex) {
-            QTreeWidgetItem *matchDetailItem = new QTreeWidgetItem(matchDetailTopItem);
+            BOBUIreeWidgetItem *matchDetailItem = new BOBUIreeWidgetItem(matchDetailTopItem);
             matchDetailItem->setText(1, QString::number(captureGroupIndex));
             matchDetailItem->setText(2, match.captured(captureGroupIndex));
         }
@@ -310,7 +310,7 @@ void RegularExpressionDialog::refresh()
     for (int i = 0; i < namedCaptureGroups.size(); ++i) {
         const QString currentNamedCaptureGroup = namedCaptureGroups.at(i);
 
-        QTreeWidgetItem *namedGroupItem = new QTreeWidgetItem(namedGroupsTreeWidget);
+        BOBUIreeWidgetItem *namedGroupItem = new BOBUIreeWidgetItem(namedGroupsTreeWidget);
         namedGroupItem->setText(0, QString::number(i));
         namedGroupItem->setText(1, currentNamedCaptureGroup.isNull() ? tr("<no name>") : currentNamedCaptureGroup);
     }
@@ -459,9 +459,9 @@ QWidget *RegularExpressionDialog::setupInfoUi()
     QLabel *matchInfoLabel = new QLabel(tr("<h3>Match information</h3>"));
     layout->addRow(matchInfoLabel);
 
-    matchDetailsTreeWidget = new QTreeWidget;
+    matchDetailsTreeWidget = new BOBUIreeWidget;
     matchDetailsTreeWidget->setHeaderLabels(QStringList() << tr("Match index") << tr("Group index") << tr("Captured string"));
-    matchDetailsTreeWidget->setSizeAdjustPolicy(QTreeWidget::AdjustToContents);
+    matchDetailsTreeWidget->setSizeAdjustPolicy(BOBUIreeWidget::AdjustToContents);
     layout->addRow(tr("Match details:"), matchDetailsTreeWidget);
 
     layout->addRow(createHorizontalSeparator());
@@ -473,9 +473,9 @@ QWidget *RegularExpressionDialog::setupInfoUi()
     regexpStatusLabel->setWordWrap(true);
     layout->addRow(tr("Pattern status:"), regexpStatusLabel);
 
-    namedGroupsTreeWidget = new QTreeWidget;
+    namedGroupsTreeWidget = new BOBUIreeWidget;
     namedGroupsTreeWidget->setHeaderLabels(QStringList() << tr("Index") << tr("Named group"));
-    namedGroupsTreeWidget->setSizeAdjustPolicy(QTreeWidget::AdjustToContents);
+    namedGroupsTreeWidget->setSizeAdjustPolicy(BOBUIreeWidget::AdjustToContents);
     namedGroupsTreeWidget->setRootIsDecorated(false);
     layout->addRow(tr("Named groups:"), namedGroupsTreeWidget);
 

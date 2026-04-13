@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include <QApplication>
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 
 class tst_qapplication : public QObject
@@ -28,6 +28,6 @@ void tst_qapplication::ctor()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_qapplication)
+BOBUIEST_APPLESS_MAIN(tst_qapplication)
 
 #include "main.moc"

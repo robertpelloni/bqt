@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2021 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qwindowspipereader_p.h"
 #include <qcoreapplication.h>
 #include <QMutexLocker>
 #include <QPointer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const DWORD minReadBufferSize = 4096;
 
 /*!
     \class QWindowsPipeReader
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
 */
 QWindowsPipeReader::QWindowsPipeReader(QObject *parent)
@@ -516,6 +516,6 @@ bool QWindowsPipeReader::waitForNotification()
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwindowspipereader_p.cpp"

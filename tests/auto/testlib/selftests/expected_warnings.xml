@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCase name="tst_Warnings">
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
@@ -95,7 +95,7 @@
   <Message type="qwarn" file="" line="0">
     <Description><![CDATA[Ran out of space!]]></Description>
   </Message>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <Description><![CDATA[Received a warning that resulted in a failure:
 Ran out of cabbage!]]></Description>
     </Incident>
@@ -108,11 +108,11 @@ Ran out of cabbage!]]></Description>
   <Message type="qwarn" file="" line="0">
     <Description><![CDATA[nope]]></Description>
   </Message>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <Description><![CDATA[Received a warning that resulted in a failure:
 Ran out of biscuits!]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <Description><![CDATA[Received a warning that resulted in a failure:
 Running low on toothpaste!]]></Description>
     </Incident>
@@ -135,7 +135,7 @@ Running low on toothpaste!]]></Description>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testFailOnWarningsWithData">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <DataTag><![CDATA[warning1]]></DataTag>
       <Description><![CDATA[Received a warning that resulted in a failure:
 warning1]]></Description>
@@ -152,7 +152,7 @@ warning1]]></Description>
     <DataTag><![CDATA[warning2]]></DataTag>
     <Description><![CDATA[warning1]]></Description>
   </Message>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <DataTag><![CDATA[warning2]]></DataTag>
       <Description><![CDATA[Received a warning that resulted in a failure:
 warning2]]></Description>
@@ -169,7 +169,7 @@ warning2]]></Description>
     <DataTag><![CDATA[warning3]]></DataTag>
     <Description><![CDATA[warning2]]></Description>
   </Message>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <DataTag><![CDATA[warning3]]></DataTag>
       <Description><![CDATA[Received a warning that resulted in a failure:
 warning3]]></Description>
@@ -177,24 +177,24 @@ warning3]]></Description>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testFailOnWarningsFailInHelper">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <Description><![CDATA[This failure message should be printed but not cause the test to abort]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <Description><![CDATA[Received a warning that resulted in a failure:
 Ran out of cabbage!]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <Description><![CDATA[My cabbage! :(]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testFailOnWarningsThenSkip">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <Description><![CDATA[Received a warning that resulted in a failure:
 Ran out of cabbage!]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <Description><![CDATA[My cabbage! :(]]></Description>
     </Incident>
     <Duration msecs="0"/>
@@ -204,7 +204,7 @@ Ran out of cabbage!]]></Description>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testFailOnTemporaryObjectDestruction">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/warnings/tst_warnings.cpp" line="0">
       <Description><![CDATA[Received a warning that resulted in a failure:
 Running low on toothpaste!]]></Description>
     </Incident>

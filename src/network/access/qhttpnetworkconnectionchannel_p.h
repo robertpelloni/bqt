@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHTTPNETWORKCONNECTIONCHANNEL_H
 #define QHTTPNETWORKCONNECTIONCHANNEL_H
@@ -9,17 +9,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkreply.h>
-#include <QtNetwork/qabstractsocket.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkreply.h>
+#include <BobUINetwork/qabstractsocket.h>
 
 #include <private/qobject_p.h>
 #include <qauthenticator.h>
@@ -33,27 +33,27 @@
 #include <private/qhttpnetworkconnection_p.h>
 #include <private/qabstractprotocolhandler_p.h>
 
-#ifndef QT_NO_SSL
-#    include <QtNetwork/qsslsocket.h>
-#    include <QtNetwork/qsslerror.h>
-#    include <QtNetwork/qsslconfiguration.h>
+#ifndef BOBUI_NO_SSL
+#    include <BobUINetwork/qsslsocket.h>
+#    include <BobUINetwork/qsslerror.h>
+#    include <BobUINetwork/qsslconfiguration.h>
 #else
-#   include <QtNetwork/qtcpsocket.h>
+#   include <BobUINetwork/bobuicpsocket.h>
 #endif
-#if QT_CONFIG(localserver)
-#   include <QtNetwork/qlocalsocket.h>
+#if BOBUI_CONFIG(localserver)
+#   include <BobUINetwork/qlocalsocket.h>
 #endif
 
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <memory>
 #include <optional>
 #include <utility>
 
-QT_REQUIRE_CONFIG(http);
+BOBUI_REQUIRE_CONFIG(http);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHttpNetworkRequest;
 class QHttpNetworkReply;
@@ -100,7 +100,7 @@ public:
     std::unique_ptr<QAbstractProtocolHandler> protocolHandler;
     QMultiMap<int, HttpMessagePair> h2RequestsToSend;
     bool switchedToHttp2 = false;
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     bool ignoreAllSslErrors;
     QList<QSslError> ignoreSslErrorsList;
     std::optional<QSslConfiguration> sslConfiguration;
@@ -133,7 +133,7 @@ public:
     void setConnection(QHttpNetworkConnection *c);
     QPointer<QHttpNetworkConnection> connection;
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     QNetworkProxy proxy;
     void setProxy(const QNetworkProxy &networkProxy);
 #endif
@@ -169,18 +169,18 @@ public:
     void _q_readyRead(); // pending data to read
     void _q_disconnected(); // disconnected from host
     void _q_connected_abstract_socket(QAbstractSocket *socket);
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
     void _q_connected_local_socket(QLocalSocket *socket);
 #endif
     void _q_connected(); // start sending request
     void _q_error(QAbstractSocket::SocketError); // error from socket
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void _q_proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth); // from transparent proxy
 #endif
 
     void _q_uploadDataReadyRead();
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void _q_encrypted(); // start sending request (https)
     void _q_sslErrors(const QList<QSslError> &errors); // ssl errors from the socket
     void _q_preSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator*); // tls-psk auth necessary
@@ -190,6 +190,6 @@ public:
     friend class QHttpProtocolHandler;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

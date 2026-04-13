@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
@@ -16,17 +16,17 @@
 #ifndef QMULTITOUCH_MAC_P_H
 #define QMULTITOUCH_MAC_P_H
 
-#include <QtCore/qhash.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-#include <QtGui/qpointingdevice.h>
+#include <BobUIGui/qpointingdevice.h>
 
 #include <qpa/qwindowsysteminterface.h>
 
 Q_FORWARD_DECLARE_OBJC_CLASS(NSTouch);
-QT_FORWARD_DECLARE_OBJC_ENUM(NSTouchPhase, unsigned long);
+BOBUI_FORWARD_DECLARE_OBJC_ENUM(NSTouchPhase, unsigned long);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaTouch
 {
@@ -55,7 +55,7 @@ class QCocoaTouch
         static QEventPoint::State toTouchPointState(NSTouchPhase nsState);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMULTITOUCH_MAC_P_H
 

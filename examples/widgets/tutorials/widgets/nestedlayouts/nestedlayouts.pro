@@ -1,8 +1,8 @@
-QT += widgets
-requires(qtConfig(tableview))
+BOBUI += widgets
+requires(bobuiConfig(tableview))
 
 SOURCES = main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tutorials/widgets/nestedlayouts
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tutorials/widgets/nestedlayouts
 INSTALLS += target

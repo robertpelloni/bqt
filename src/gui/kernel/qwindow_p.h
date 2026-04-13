@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOW_P_H
 #define QWINDOW_P_H
@@ -8,27 +8,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/qscreen.h>
-#include <QtGui/qwindow.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/qscreen.h>
+#include <BobUIGui/qwindow.h>
 #include <qpa/qplatformwindow.h>
 
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qxpfunctional.h>
-#include <QtGui/qicon.h>
-#include <QtGui/qpalette.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qxpfunctional.h>
+#include <BobUIGui/qicon.h>
+#include <BobUIGui/qpalette.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QWindowPrivate : public QObjectPrivate
 {
@@ -46,7 +46,7 @@ public:
 
     void init(QWindow *parent, QScreen *targetScreen = nullptr);
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void setCursor(const QCursor *c = nullptr);
     bool applyCursor();
 #endif
@@ -84,7 +84,7 @@ public:
         Next,
         Prev
     };
-    virtual void setFocusToTarget(FocusTarget, Qt::FocusReason) {}
+    virtual void setFocusToTarget(FocusTarget, BobUI::FocusReason) {}
 
     virtual QRectF closestAcceptableGeometry(const QRectF &rect) const;
 
@@ -99,7 +99,7 @@ public:
 
     const QWindow *forwardToPopup(QEvent *event, const QWindow *activePopupOnPress);
 
-    bool isPopup() const { return (windowFlags & Qt::WindowType_Mask) == Qt::Popup; }
+    bool isPopup() const { return (windowFlags & BobUI::WindowType_Mask) == BobUI::Popup; }
     void setAutomaticPositionAndResizeEnabled(bool a)
     { positionAutomatic = resizeAutomatic = a; }
 
@@ -107,10 +107,10 @@ public:
 
     static QWindowPrivate *get(QWindow *window) { return window->d_func(); }
 
-    static Qt::WindowState effectiveState(Qt::WindowStates);
+    static BobUI::WindowState effectiveState(BobUI::WindowStates);
 
     QWindow::SurfaceType surfaceType = QWindow::RasterSurface;
-    Qt::WindowFlags windowFlags = Qt::Window;
+    BobUI::WindowFlags windowFlags = BobUI::Window;
     QWindow *parentWindow = nullptr;
     QPlatformWindow *platformWindow = nullptr;
     bool visible= false;
@@ -123,7 +123,7 @@ public:
     QIcon windowIcon;
     QRect geometry;
     qreal devicePixelRatio = 1.0;
-    Qt::WindowStates windowState = Qt::WindowNoState;
+    BobUI::WindowStates windowState = BobUI::WindowNoState;
     QWindow::Visibility visibility = QWindow::Hidden;
     bool resizeEventPending = true;
     bool receivedExpose = false;
@@ -134,7 +134,7 @@ public:
     // the QRollEffect widget) and is thus not cleared in setGeometry().
     // An alternative approach might be using -1,-1 as a default size.
     bool resizeAutomatic = true;
-    Qt::ScreenOrientation contentOrientation = Qt::PrimaryOrientation;
+    BobUI::ScreenOrientation contentOrientation = BobUI::PrimaryOrientation;
     qreal opacity= 1;
     QRegion mask;
 
@@ -143,7 +143,7 @@ public:
     QSize baseSize;
     QSize sizeIncrement;
 
-    Qt::WindowModality modality = Qt::NonModal;
+    BobUI::WindowModality modality = BobUI::NonModal;
     bool blockedByModalWindow = false;
 
     bool updateRequestPending = false;
@@ -152,19 +152,19 @@ public:
     QPointer<QWindow> transientParent;
     QPointer<QScreen> topLevelScreen;
 
-#ifndef QT_NO_CURSOR
-    QCursor cursor = {Qt::ArrowCursor};
+#ifndef BOBUI_NO_CURSOR
+    QCursor cursor = {BobUI::ArrowCursor};
     bool hasCursor = false;
 #endif
 
     QElapsedTimer lastComposeTime;
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QVulkanInstance *vulkanInstance = nullptr;
 #endif
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOW_P_H

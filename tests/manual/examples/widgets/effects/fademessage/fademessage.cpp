@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "fademessage.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 FadeMessage::FadeMessage(QWidget *parent): QGraphicsView(parent)
 {
     setScene(&m_scene);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
 
     setupScene();
 
@@ -38,7 +38,7 @@ void FadeMessage::togglePopup()
 void FadeMessage::setupScene()
 {
     QGraphicsRectItem *parent = m_scene.addRect(0, 0, 800, 600);
-    parent->setPen(Qt::NoPen);
+    parent->setPen(BobUI::NoPen);
     parent->setZValue(0);
 
     QGraphicsPixmapItem *bg = m_scene.addPixmap(QPixmap(":/background.jpg"));
@@ -60,15 +60,15 @@ void FadeMessage::setupScene()
     QFontMetrics fontMetrics(font);
     int fh = fontMetrics.height();
 
-    QString sceneText = "Qt Everywhere!";
+    QString sceneText = "BobUI Everywhere!";
     int sceneTextWidth = fontMetrics.horizontalAdvance(sceneText);
 
     QGraphicsRectItem *block = m_scene.addRect(50, 300, sceneTextWidth, fh + 3);
-    block->setPen(Qt::NoPen);
+    block->setPen(BobUI::NoPen);
     block->setBrush(QColor(102, 153, 51));
 
     QGraphicsTextItem *text = m_scene.addText(sceneText, font);
-    text->setDefaultTextColor(Qt::white);
+    text->setDefaultTextColor(BobUI::white);
     text->setPos(50, 300);
     block->setZValue(2);
     block->hide();

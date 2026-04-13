@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QUuid>
-#include <QTest>
+#include <BobUICore/QUuid>
+#include <BOBUIest>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <Foundation/Foundation.h>
@@ -13,22 +13,22 @@ void tst_QUuid_darwinTypes()
 {
     // QUuid <-> CFUUID
     {
-        const auto qtUuid = QUuid::fromString(QLatin1String("0f7169cc-5711-4af9-99d9-fecb2329fdef"));
-        const CFUUIDRef cfuuid = qtUuid.toCFUUID();
-        QCOMPARE(QUuid::fromCFUUID(cfuuid), qtUuid);
+        const auto bobuiUuid = QUuid::fromString(QLatin1String("0f7169cc-5711-4af9-99d9-fecb2329fdef"));
+        const CFUUIDRef cfuuid = bobuiUuid.toCFUUID();
+        QCOMPARE(QUuid::fromCFUUID(cfuuid), bobuiUuid);
         CFStringRef cfstring = CFUUIDCreateString(0, cfuuid);
-        QCOMPARE(QString::fromCFString(cfstring), qtUuid.toString().mid(1, 36).toUpper());
+        QCOMPARE(QString::fromCFString(cfstring), bobuiUuid.toString().mid(1, 36).toUpper());
         CFRelease(cfstring);
         CFRelease(cfuuid);
     }
     {
-        auto qtUuid = QUuid::fromString(QLatin1String("0f7169cc-5711-4af9-99d9-fecb2329fdef"));
-        const CFUUIDRef cfuuid = qtUuid.toCFUUID();
-        QUuid qtUuidCopy(qtUuid);
-        qtUuid = QUuid::fromString(QLatin1String("93eec131-13c5-4d13-aaea-e456b4c57efa")); // modify
-        QCOMPARE(QUuid::fromCFUUID(cfuuid), qtUuidCopy);
+        auto bobuiUuid = QUuid::fromString(QLatin1String("0f7169cc-5711-4af9-99d9-fecb2329fdef"));
+        const CFUUIDRef cfuuid = bobuiUuid.toCFUUID();
+        QUuid bobuiUuidCopy(bobuiUuid);
+        bobuiUuid = QUuid::fromString(QLatin1String("93eec131-13c5-4d13-aaea-e456b4c57efa")); // modify
+        QCOMPARE(QUuid::fromCFUUID(cfuuid), bobuiUuidCopy);
         CFStringRef cfstring = CFUUIDCreateString(0, cfuuid);
-        QCOMPARE(QString::fromCFString(cfstring), qtUuidCopy.toString().mid(1, 36).toUpper());
+        QCOMPARE(QString::fromCFString(cfstring), bobuiUuidCopy.toString().mid(1, 36).toUpper());
         CFRelease(cfstring);
         CFRelease(cfuuid);
     }
@@ -36,19 +36,19 @@ void tst_QUuid_darwinTypes()
     {
         QMacAutoReleasePool pool;
 
-        const auto qtUuid = QUuid::fromString(QLatin1String("0f7169cc-5711-4af9-99d9-fecb2329fdef"));
-        const NSUUID *nsuuid = qtUuid.toNSUUID();
-        QCOMPARE(QUuid::fromNSUUID(nsuuid), qtUuid);
-        QCOMPARE(QString::fromNSString([nsuuid UUIDString]), qtUuid.toString().mid(1, 36).toUpper());
+        const auto bobuiUuid = QUuid::fromString(QLatin1String("0f7169cc-5711-4af9-99d9-fecb2329fdef"));
+        const NSUUID *nsuuid = bobuiUuid.toNSUUID();
+        QCOMPARE(QUuid::fromNSUUID(nsuuid), bobuiUuid);
+        QCOMPARE(QString::fromNSString([nsuuid UUIDString]), bobuiUuid.toString().mid(1, 36).toUpper());
     }
     {
         QMacAutoReleasePool pool;
 
-        auto qtUuid = QUuid::fromString(QLatin1String("0f7169cc-5711-4af9-99d9-fecb2329fdef"));
-        const NSUUID *nsuuid = qtUuid.toNSUUID();
-        QUuid qtUuidCopy(qtUuid);
-        qtUuid = QUuid::fromString(QLatin1String("93eec131-13c5-4d13-aaea-e456b4c57efa")); // modify
-        QCOMPARE(QUuid::fromNSUUID(nsuuid), qtUuidCopy);
-        QCOMPARE(QString::fromNSString([nsuuid UUIDString]), qtUuidCopy.toString().mid(1, 36).toUpper());
+        auto bobuiUuid = QUuid::fromString(QLatin1String("0f7169cc-5711-4af9-99d9-fecb2329fdef"));
+        const NSUUID *nsuuid = bobuiUuid.toNSUUID();
+        QUuid bobuiUuidCopy(bobuiUuid);
+        bobuiUuid = QUuid::fromString(QLatin1String("93eec131-13c5-4d13-aaea-e456b4c57efa")); // modify
+        QCOMPARE(QUuid::fromNSUUID(nsuuid), bobuiUuidCopy);
+        QCOMPARE(QString::fromNSString([nsuuid UUIDString]), bobuiUuidCopy.toString().mid(1, 36).toUpper());
     }
 }

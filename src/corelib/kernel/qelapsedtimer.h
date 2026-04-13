@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QELAPSEDTIMER_H
 #define QELAPSEDTIMER_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qglobal.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qglobal.h>
 
 #include <chrono>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QElapsedTimer
 {
@@ -55,10 +55,10 @@ private:
     }
     Q_DECLARE_EQUALITY_COMPARABLE(QElapsedTimer)
 
-    friend Qt::strong_ordering compareThreeWay(const QElapsedTimer &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QElapsedTimer &lhs,
                                                const QElapsedTimer &rhs) noexcept
     {
-        return Qt::compareThreeWay(lhs.t1, rhs.t1);
+        return BobUI::compareThreeWay(lhs.t1, rhs.t1);
     }
 
 #if defined(__cpp_lib_three_way_comparison)
@@ -85,6 +85,6 @@ private:
     qint64 t2 = Q_INT64_C(0x8000000000000000);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QELAPSEDTIMER_H

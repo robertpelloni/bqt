@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## testProcessUniqueness Binary:
 #####################################################################
 
-qt_internal_add_executable(testProcessUniqueness
+bobui_internal_add_executable(testProcessUniqueness
     INSTALL_DIRECTORY "${INSTALL_TESTSDIR}/tst_quuid/testProcessUniqueness"
     OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/"
     SOURCES

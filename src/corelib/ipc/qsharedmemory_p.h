@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSHAREDMEMORY_P_H
 #define QSHAREDMEMORY_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,25 +18,25 @@
 
 #include "qsharedmemory.h"
 
-#include <QtCore/qstring.h>
+#include <BobUICore/qstring.h>
 
-#if QT_CONFIG(sharedmemory)
+#if BOBUI_CONFIG(sharedmemory)
 #include "qsystemsemaphore.h"
-#include "qtipccommon_p.h"
+#include "bobuiipccommon_p.h"
 #include "private/qobject_p.h"
 
-#if QT_CONFIG(posix_shm)
+#if BOBUI_CONFIG(posix_shm)
 #  include <sys/mman.h>
 #endif
-#if QT_CONFIG(sysv_shm)
+#if BOBUI_CONFIG(sysv_shm)
 #  include <sys/shm.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSharedMemoryPrivate;
 
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
 /*!
   Helper class
   */
@@ -54,10 +54,10 @@ public:
         : q_sm{std::exchange(other.q_sm, nullptr)}
     {}
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSharedMemoryLocker)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSharedMemoryLocker)
 
     void swap(QSharedMemoryLocker &other) noexcept
-    { qt_ptr_swap(q_sm, other.q_sm); }
+    { bobui_ptr_swap(q_sm, other.q_sm); }
 
     inline ~QSharedMemoryLocker()
     {
@@ -79,12 +79,12 @@ private:
 
     QSharedMemory *q_sm;
 };
-#endif // QT_CONFIG(systemsemaphore)
+#endif // BOBUI_CONFIG(systemsemaphore)
 
 class QSharedMemoryPosix
 {
 public:
-    static constexpr bool Enabled = QT_CONFIG(posix_shm);
+    static constexpr bool Enabled = BOBUI_CONFIG(posix_shm);
     static bool supports(QNativeIpcKey::Type type)
     { return type == QNativeIpcKey::Type::PosixRealtime; }
     static bool runtimeSupportCheck();
@@ -101,12 +101,12 @@ public:
 class QSharedMemorySystemV
 {
 public:
-    static constexpr bool Enabled = QT_CONFIG(sysv_shm);
+    static constexpr bool Enabled = BOBUI_CONFIG(sysv_shm);
     static bool supports(QNativeIpcKey::Type type)
     { return quint16(type) <= 0xff; }
     static bool runtimeSupportCheck();
 
-#if QT_CONFIG(sysv_shm)
+#if BOBUI_CONFIG(sysv_shm)
     key_t handle(QSharedMemoryPrivate *self);
     bool cleanHandle(QSharedMemoryPrivate *self);
     bool create(QSharedMemoryPrivate *self, qsizetype size);
@@ -133,13 +133,13 @@ public:
     static bool supports(QNativeIpcKey::Type type)
     { return type == QNativeIpcKey::Type::Windows; }
 
-    Qt::HANDLE handle(QSharedMemoryPrivate *self);
+    BobUI::HANDLE handle(QSharedMemoryPrivate *self);
     bool cleanHandle(QSharedMemoryPrivate *self);
     bool create(QSharedMemoryPrivate *self, qsizetype size);
     bool attach(QSharedMemoryPrivate *self, QSharedMemory::AccessMode mode);
     bool detach(QSharedMemoryPrivate *self);
 
-    Qt::HANDLE hand = nullptr;
+    BobUI::HANDLE hand = nullptr;
 };
 
 class Q_AUTOTEST_EXPORT QSharedMemoryPrivate : public QObjectPrivate
@@ -155,7 +155,7 @@ public:
     qsizetype size = 0;
     QNativeIpcKey nativeKey;
     QString errorString;
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
     using SemaphoreAccessMode = QSystemSemaphore::AccessMode;
     QSystemSemaphore systemSemaphore{ QNativeIpcKey() };
     bool lockedByMe = false;
@@ -171,7 +171,7 @@ public:
         QSharedMemorySystemV sysv;
         QSharedMemoryWin32 win32;
     };
-    QtIpcCommon::IpcStorageVariant<&Backend::posix, &Backend::sysv, &Backend::win32> backend;
+    BobUIIpcCommon::IpcStorageVariant<&Backend::posix, &Backend::sysv, &Backend::win32> backend;
 
     void constructBackend();
     void destructBackend();
@@ -208,7 +208,7 @@ public:
     void setUnixErrorString(QLatin1StringView function);
     void setWindowsErrorString(QLatin1StringView function);
 
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
     bool tryLocker(QSharedMemoryLocker *locker, const QString &function) {
         if (!locker->lock()) {
             errorString = QSharedMemory::tr("%1: unable to lock").arg(function);
@@ -218,12 +218,12 @@ public:
         return true;
     }
     QNativeIpcKey semaphoreNativeKey() const;
-#endif // QT_CONFIG(systemsemaphore)
+#endif // BOBUI_CONFIG(systemsemaphore)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(sharedmemory)
+#endif // BOBUI_CONFIG(sharedmemory)
 
 #endif // QSHAREDMEMORY_P_H
 

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtGui>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIGui>
 
 #include "valgrind/callgrind.h"
 
@@ -43,11 +43,11 @@ int main(int argc, char *argv[])
     QGraphicsScene scene(-150, -150, 300, 300);
     scene.setItemIndexMethod(QGraphicsScene::NoIndex);
 
-    QGraphicsRectItem *item = scene.addRect(-50, -50, 100, 100, QPen(Qt::NoPen), QBrush(Qt::blue));
+    QGraphicsRectItem *item = scene.addRect(-50, -50, 100, 100, QPen(BobUI::NoPen), QBrush(BobUI::blue));
     item->setFlag(QGraphicsItem::ItemIsMovable);
 
     for (int i = 0; i < atoi(argv[1]); ++i) {
-        QGraphicsRectItem *child = scene.addRect(-5, -5, 10, 10, QPen(Qt::NoPen), QBrush(Qt::blue));
+        QGraphicsRectItem *child = scene.addRect(-5, -5, 10, 10, QPen(BobUI::NoPen), QBrush(BobUI::blue));
         child->setPos(-50 + QRandomGenerator::global()->bounded(100), -50 + QRandomGenerator::global()->bounded(100));
         child->setParentItem(item);
     }

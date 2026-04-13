@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKREPLYHTTPIMPL_P_H
 #define QNETWORKREPLYHTTPIMPL_P_H
@@ -9,43 +9,43 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 #include "qnetworkrequest.h"
 #include "qnetworkreply.h"
 
-#include "QtCore/qpointer.h"
-#include "QtCore/qdatetime.h"
-#include "QtCore/qsharedpointer.h"
-#include "QtCore/qtimer.h"
+#include "BobUICore/qpointer.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qsharedpointer.h"
+#include "BobUICore/bobuiimer.h"
 #include "qatomic.h"
 
-#include <QtNetwork/QNetworkCacheMetaData>
+#include <BobUINetwork/QNetworkCacheMetaData>
 #include <private/qhttpnetworkrequest_p.h>
 #include <private/qnetworkreply_p.h>
-#include <QtNetwork/QNetworkProxy>
+#include <BobUINetwork/QNetworkProxy>
 
-#ifndef QT_NO_SSL
-#include <QtNetwork/QSslConfiguration>
+#ifndef BOBUI_NO_SSL
+#include <BobUINetwork/QSslConfiguration>
 
 #include <memory>
 #endif
 
-Q_MOC_INCLUDE(<QtNetwork/QAuthenticator>)
+Q_MOC_INCLUDE(<BobUINetwork/QAuthenticator>)
 
 #include <private/qdecompresshelper_p.h>
 
 #include <memory>
 
-QT_REQUIRE_CONFIG(http);
+BOBUI_REQUIRE_CONFIG(http);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIODevice;
 
@@ -82,13 +82,13 @@ public:
     Q_PRIVATE_SLOT(d_func(), void replyDownloadProgressSlot(qint64,qint64))
     Q_PRIVATE_SLOT(d_func(), void httpAuthenticationRequired(const QHttpNetworkRequest &, QAuthenticator *))
     Q_PRIVATE_SLOT(d_func(), void httpError(QNetworkReply::NetworkError, const QString &))
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     Q_PRIVATE_SLOT(d_func(), void replyEncrypted())
     Q_PRIVATE_SLOT(d_func(), void replySslErrors(const QList<QSslError> &, bool *, QList<QSslError> *))
     Q_PRIVATE_SLOT(d_func(), void replySslConfigurationChanged(const QSslConfiguration&))
     Q_PRIVATE_SLOT(d_func(), void replyPreSharedKeyAuthenticationRequiredSlot(QSslPreSharedKeyAuthenticator *))
 #endif
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     Q_PRIVATE_SLOT(d_func(), void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth))
 #endif
 
@@ -102,7 +102,7 @@ public:
     Q_PRIVATE_SLOT(d_func(), void onRedirected(const QUrl &, int, int))
     Q_PRIVATE_SLOT(d_func(), void followRedirect())
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 protected:
     void ignoreSslErrors() override;
     void ignoreSslErrorsImplementation(const QList<QSslError> &errors) override;
@@ -193,7 +193,7 @@ public:
 
 
     QUrl urlForLastAuthentication;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     QNetworkProxy lastProxyAuthentication;
 #endif
 
@@ -209,7 +209,7 @@ public:
     // data (potentially receiving bytes that don't end up in the final output):
     qint64 lastReadyReadEmittedSize = 0;
 
-    QTimer *transferTimeout;
+    BOBUIimer *transferTimeout;
 
     // Only used when the "zero copy" style is used.
     // Please note that the whole "zero copy" download buffer API is private right now. Do not use it.
@@ -223,7 +223,7 @@ public:
     std::shared_ptr<QAtomicInt> pendingDownloadProgressEmissions;
 
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     std::unique_ptr<QSslConfiguration> sslConfiguration;
     bool pendingIgnoreAllSslErrors;
     QList<QSslError> pendingIgnoreSslErrorsList;
@@ -253,13 +253,13 @@ public:
     void replyDownloadProgressSlot(qint64,qint64);
     void httpAuthenticationRequired(const QHttpNetworkRequest &request, QAuthenticator *auth);
     void httpError(QNetworkReply::NetworkError error, const QString &errorString);
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void replyEncrypted();
     void replySslErrors(const QList<QSslError> &, bool *, QList<QSslError> *);
     void replySslConfigurationChanged(const QSslConfiguration &newSslConfiguration);
     void replyPreSharedKeyAuthenticationRequiredSlot(QSslPreSharedKeyAuthenticator *);
 #endif
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth);
 #endif
 
@@ -274,6 +274,6 @@ public:
     Q_DECLARE_PUBLIC(QNetworkReplyHttpImpl)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

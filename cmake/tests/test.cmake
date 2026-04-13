@@ -1,8 +1,8 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # FAKE moc-ing:
-set(QT_MOCSCANNER /usr/bin/true)
+set(BOBUI_MOCSCANNER /usr/bin/true)
 
 # Fake mocscanner run.
 # The files passed in after MOC will be reported to be in need of moc-ing,
@@ -52,6 +52,6 @@ function(test_include_directory target path)
     endif()
 endfunction()
 
-# Add Core and Qt::Core libraries:
+# Add Core and BobUI::Core libraries:
 add_library(Core SHARED "${CMAKE_CURRENT_LIST_DIR}/empty.cpp")
-add_library(Qt::Core ALIAS Core)
+add_library(BobUI::Core ALIAS Core)

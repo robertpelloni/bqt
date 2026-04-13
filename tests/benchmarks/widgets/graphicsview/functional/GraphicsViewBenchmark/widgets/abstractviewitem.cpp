@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "abstractviewitem.h"
 
@@ -45,7 +45,7 @@ void AbstractViewItem::setModelIndex(const QModelIndex &index)
 }
 
 /*virtual*/
-QSizeF AbstractViewItem::effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF AbstractViewItem::effectiveSizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     return GvbWidget::effectiveSizeHint(which, constraint);
 }

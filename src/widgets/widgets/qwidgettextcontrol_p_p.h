@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGETTEXTCONTROL_P_P_H
 #define QWIDGETTEXTCONTROL_P_P_H
@@ -9,29 +9,29 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtGui/qtextdocumentfragment.h"
-#include "QtGui/qtextcursor.h"
-#include "QtGui/qtextformat.h"
-#include "QtGui/qtextobject.h"
-#if QT_CONFIG(menu)
-#include "QtWidgets/qmenu.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIGui/bobuiextdocumentfragment.h"
+#include "BobUIGui/bobuiextcursor.h"
+#include "BobUIGui/bobuiextformat.h"
+#include "BobUIGui/bobuiextobject.h"
+#if BOBUI_CONFIG(menu)
+#include "BobUIWidgets/qmenu.h"
 #endif
-#include "QtGui/qabstracttextdocumentlayout.h"
-#include "QtCore/qbasictimer.h"
-#include "QtCore/qpointer.h"
+#include "BobUIGui/qabstracttextdocumentlayout.h"
+#include "BobUICore/qbasictimer.h"
+#include "BobUICore/qpointer.h"
 #include "private/qobject_p.h"
 
-QT_REQUIRE_CONFIG(widgettextcontrol);
+BOBUI_REQUIRE_CONFIG(widgettextcontrol);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 class QAbstractScrollArea;
@@ -55,31 +55,31 @@ public:
 
     void createAutoBulletList();
 
-    void init(Qt::TextFormat format = Qt::RichText, const QString &text = QString(),
-              QTextDocument *document = nullptr);
-    void setContent(Qt::TextFormat format = Qt::RichText, const QString &text = QString(),
-                    QTextDocument *document = nullptr);
+    void init(BobUI::TextFormat format = BobUI::RichText, const QString &text = QString(),
+              BOBUIextDocument *document = nullptr);
+    void setContent(BobUI::TextFormat format = BobUI::RichText, const QString &text = QString(),
+                    BOBUIextDocument *document = nullptr);
     void startDrag();
 
     void paste(const QMimeData *source);
 
     void setCursorPosition(const QPointF &pos);
-    void setCursorPosition(int pos, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor);
+    void setCursorPosition(int pos, BOBUIextCursor::MoveMode mode = BOBUIextCursor::MoveAnchor);
 
     void repaintCursor();
     inline void repaintSelection()
-    { repaintOldAndNewSelection(QTextCursor()); }
-    void repaintOldAndNewSelection(const QTextCursor &oldSelection);
+    { repaintOldAndNewSelection(BOBUIextCursor()); }
+    void repaintOldAndNewSelection(const BOBUIextCursor &oldSelection);
 
     void selectionChanged(bool forceEmitSelectionChanged = false);
 
     void _q_updateCurrentCharFormatAndSelection();
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void setClipboardSelection();
 #endif
 
-    void _q_emitCursorPosChanged(const QTextCursor &someCursor);
+    void _q_emitCursorPosChanged(const BOBUIextCursor &someCursor);
     void _q_contentsChanged(int from, int charsRemoved, int charsAdded);
 
     void setCursorVisible(bool visible);
@@ -93,51 +93,51 @@ public:
 
     void _q_setCursorAfterUndoRedo(int undoPosition, int charsAdded, int charsRemoved);
 
-    QRectF cursorRectPlusUnicodeDirectionMarkers(const QTextCursor &cursor) const;
+    QRectF cursorRectPlusUnicodeDirectionMarkers(const BOBUIextCursor &cursor) const;
     QRectF rectForPosition(int position) const;
-    QRectF selectionRect(const QTextCursor &cursor) const;
+    QRectF selectionRect(const BOBUIextCursor &cursor) const;
     inline QRectF selectionRect() const
     { return selectionRect(this->cursor); }
 
-    QString anchorForCursor(const QTextCursor &anchor) const;
+    QString anchorForCursor(const BOBUIextCursor &anchor) const;
 
     void keyPressEvent(QKeyEvent *e);
-    void mousePressEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos,
-                         Qt::KeyboardModifiers modifiers,
-                         Qt::MouseButtons buttons,
+    void mousePressEvent(QEvent *e, BobUI::MouseButton button, const QPointF &pos,
+                         BobUI::KeyboardModifiers modifiers,
+                         BobUI::MouseButtons buttons,
                          const QPoint &globalPos);
-    void mouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos,
-                        Qt::KeyboardModifiers modifiers,
-                        Qt::MouseButtons buttons,
+    void mouseMoveEvent(QEvent *e, BobUI::MouseButton button, const QPointF &pos,
+                        BobUI::KeyboardModifiers modifiers,
+                        BobUI::MouseButtons buttons,
                         const QPoint &globalPos);
-    void mouseReleaseEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos,
-                           Qt::KeyboardModifiers modifiers,
-                           Qt::MouseButtons buttons,
+    void mouseReleaseEvent(QEvent *e, BobUI::MouseButton button, const QPointF &pos,
+                           BobUI::KeyboardModifiers modifiers,
+                           BobUI::MouseButtons buttons,
                            const QPoint &globalPos);
-    void mouseDoubleClickEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos,
-                               Qt::KeyboardModifiers modifiers,
-                               Qt::MouseButtons buttons,
+    void mouseDoubleClickEvent(QEvent *e, BobUI::MouseButton button, const QPointF &pos,
+                               BobUI::KeyboardModifiers modifiers,
+                               BobUI::MouseButtons buttons,
                                const QPoint &globalPos);
-    bool sendMouseEventToInputContext(QEvent *e,  QEvent::Type eventType, Qt::MouseButton button,
+    bool sendMouseEventToInputContext(QEvent *e,  QEvent::Type eventType, BobUI::MouseButton button,
                                       const QPointF &pos,
-                                      Qt::KeyboardModifiers modifiers,
-                                      Qt::MouseButtons buttons,
+                                      BobUI::KeyboardModifiers modifiers,
+                                      BobUI::MouseButtons buttons,
                                       const QPoint &globalPos);
     void contextMenuEvent(const QPoint &screenPos, const QPointF &docPos, QWidget *contextWidget);
     void focusEvent(QFocusEvent *e);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     void editFocusEvent(QEvent *e);
 #endif
     bool dragEnterEvent(QEvent *e, const QMimeData *mimeData);
     void dragLeaveEvent();
     bool dragMoveEvent(QEvent *e, const QMimeData *mimeData, const QPointF &pos);
-    bool dropEvent(const QMimeData *mimeData, const QPointF &pos, Qt::DropAction dropAction, QObject *source);
+    bool dropEvent(const QMimeData *mimeData, const QPointF &pos, BobUI::DropAction dropAction, QObject *source);
 
     void inputMethodEvent(QInputMethodEvent *);
 
     void activateLinkUnderCursor(QString href = QString());
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     void showToolTip(const QPoint &globalPos, const QPointF &pos, QWidget *contextWidget);
 #endif
 
@@ -145,18 +145,18 @@ public:
     void commitPreedit();
 
     void insertParagraphSeparator();
-    void append(const QString &text, Qt::TextFormat format = Qt::AutoText);
+    void append(const QString &text, BobUI::TextFormat format = BobUI::AutoText);
 
-    QTextDocument *doc;
+    BOBUIextDocument *doc;
     bool cursorOn;
     bool cursorVisible;
-    QTextCursor cursor;
+    BOBUIextCursor cursor;
     bool cursorIsFocusIndicator;
-    QTextCharFormat lastCharFormat;
+    BOBUIextCharFormat lastCharFormat;
 
-    QTextCursor dndFeedbackCursor;
+    BOBUIextCursor dndFeedbackCursor;
 
-    Qt::TextInteractionFlags interactionFlags;
+    BobUI::TextInteractionFlags interactionFlags;
 
     QBasicTimer cursorBlinkTimer;
     QBasicTimer trippleClickTimer;
@@ -175,8 +175,8 @@ public:
 
     bool ignoreAutomaticScrollbarAdjustement;
 
-    QTextCursor selectedWordOnDoubleClick;
-    QTextCursor selectedBlockOnTrippleClick;
+    BOBUIextCursor selectedWordOnDoubleClick;
+    BOBUIextCursor selectedBlockOnTrippleClick;
 
     bool overwriteMode;
     bool acceptRichText;
@@ -188,14 +188,14 @@ public:
 
     QPalette palette;
     bool hasFocus;
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     bool hasEditFocus;
 #endif
     bool isEnabled;
 
     QString highlightedAnchor; // Anchor below cursor
     QString anchorOnMousePress;
-    QTextBlock blockWithMarkerUnderMouse;
+    BOBUIextBlock blockWithMarkerUnderMouse;
     bool hadSelectionOnMousePress;
 
     bool ignoreUnusedNavigationEvents;
@@ -205,10 +205,10 @@ public:
 
     QString linkToCopy;
     void _q_copyLink();
-    void _q_updateBlock(const QTextBlock &);
+    void _q_updateBlock(const BOBUIextBlock &);
     void _q_documentLayoutChanged();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWidgetTextControl_P_H

@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtWidgets/qgraphicsanchorlayout.h>
-#include <QtWidgets/qgraphicswidget.h>
+#include <BobUIWidgets/qgraphicsanchorlayout.h>
+#include <BobUIWidgets/qgraphicswidget.h>
 
-#include <QtCore/qmetatype.h>
-#include <QtCore/qlibraryinfo.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qlibraryinfo.h>
 
 #include <private/qgraphicsanchorlayout_p.h>
 
@@ -31,9 +31,9 @@ public:
 
     void setAnchor(
         QGraphicsLayoutItem *startItem,
-        Qt::AnchorPoint startEdge,
+        BobUI::AnchorPoint startEdge,
         QGraphicsLayoutItem *endItem,
-        Qt::AnchorPoint endEdge,
+        BobUI::AnchorPoint endEdge,
         qreal value)
         {
             QGraphicsAnchor *anchor = addAnchor( startItem, startEdge, endItem, endEdge);
@@ -58,9 +58,9 @@ public:
 
     void removeAnchor(
         QGraphicsLayoutItem *startItem,
-        Qt::AnchorPoint startEdge,
+        BobUI::AnchorPoint startEdge,
         QGraphicsLayoutItem *endItem,
-        Qt::AnchorPoint endEdge)
+        BobUI::AnchorPoint endEdge)
         {
             delete QGraphicsAnchorLayout::anchor(startItem, startEdge, endItem, endEdge);
         }
@@ -71,8 +71,8 @@ public:
 struct BasicLayoutTestData
 {
     inline BasicLayoutTestData(
-        int index1, Qt::AnchorPoint edge1,
-        int index2, Qt::AnchorPoint edge2,
+        int index1, BobUI::AnchorPoint edge1,
+        int index2, BobUI::AnchorPoint edge2,
         qreal distance)
         : firstIndex(index1), firstEdge(edge1),
           secondIndex(index2), secondEdge(edge2),
@@ -81,9 +81,9 @@ struct BasicLayoutTestData
         }
 
     int firstIndex;
-    Qt::AnchorPoint firstEdge;
+    BobUI::AnchorPoint firstEdge;
     int secondIndex;
-    Qt::AnchorPoint secondEdge;
+    BobUI::AnchorPoint secondEdge;
     qreal spacing;
 };
 
@@ -141,17 +141,17 @@ public:
         }
 
 protected:
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
 };
 
-QSizeF TestWidget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF TestWidget::sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     Q_UNUSED( constraint );
-    if (which == Qt::MinimumSize) {
+    if (which == BobUI::MinimumSize) {
         return QSizeF(5,5);
     }
 
-    if (which == Qt::PreferredSize) {
+    if (which == BobUI::PreferredSize) {
         return QSizeF(50,50);
     }
 
@@ -223,16 +223,16 @@ void tst_QGraphicsAnchorLayout1::testCount()
     QVERIFY( layout->count() == 0 );
 
     TestWidget *widget1 = new TestWidget();
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 1);
     QCOMPARE( layout->count(), 1 );
 
     // adding one more anchor for already added widget should not increase the count
-    layout->setAnchor(layout, Qt::AnchorRight, widget1, Qt::AnchorRight, 1);
+    layout->setAnchor(layout, BobUI::AnchorRight, widget1, BobUI::AnchorRight, 1);
     QCOMPARE( layout->count(), 1 );
 
     // create one more widget and attach with anchor layout
     TestWidget *widget2 = new TestWidget();
-    layout->setAnchor(layout, Qt::AnchorLeft, widget2, Qt::AnchorLeft, 1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget2, BobUI::AnchorLeft, 1);
     QCOMPARE( layout->count(), 2 );
 
     widget->setLayout(layout);
@@ -245,11 +245,11 @@ void tst_QGraphicsAnchorLayout1::testRemoveAt()
     QVERIFY( layout->count() == 0 );
 
     TestWidget *widget1 = new TestWidget();
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 2);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 2);
     QVERIFY( layout->count() == 1 );
 
     TestWidget *widget2 = new TestWidget();
-    layout->setAnchor(widget2, Qt::AnchorLeft, layout, Qt::AnchorLeft, 0.1);
+    layout->setAnchor(widget2, BobUI::AnchorLeft, layout, BobUI::AnchorLeft, 0.1);
     QVERIFY( layout->count() == 2 );
 
     layout->removeAt(0);
@@ -273,11 +273,11 @@ void tst_QGraphicsAnchorLayout1::testRemoveItem()
     QCOMPARE( layout->count(), 0 );
 
     TestWidget *widget1 = new TestWidget();
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 2);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 2);
     QCOMPARE( layout->count(), 1 );
 
     TestWidget *widget2 = new TestWidget();
-    layout->setAnchor(layout, Qt::AnchorLeft, widget2, Qt::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget2, BobUI::AnchorLeft, 0.1);
     QCOMPARE( layout->count(), 2 );
 
     layout->removeItem(0);
@@ -310,10 +310,10 @@ void tst_QGraphicsAnchorLayout1::testItemAt()
     TestWidget *widget3 = new TestWidget();
     TestWidget *widget4 = new TestWidget();
 
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 0.1);
-    layout->setAnchor(layout, Qt::AnchorLeft, widget2, Qt::AnchorLeft, 0.1);
-    layout->setAnchor(layout, Qt::AnchorLeft, widget3, Qt::AnchorLeft, 0.1);
-    layout->setAnchor(layout, Qt::AnchorLeft, widget4, Qt::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget2, BobUI::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget3, BobUI::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget4, BobUI::AnchorLeft, 0.1);
 
     QVERIFY( layout->itemAt(0) == widget1 );
 
@@ -340,12 +340,12 @@ void tst_QGraphicsAnchorLayout1::testIndexOf()
 
     QCOMPARE( layout->indexOf(widget1), -1 );
 
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 0.1);
-    layout->setAnchor(layout, Qt::AnchorLeft, widget2, Qt::AnchorLeft, 0.1);
-    layout->setAnchor(layout, Qt::AnchorLeft, widget3, Qt::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget2, BobUI::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget3, BobUI::AnchorLeft, 0.1);
 
     QCOMPARE( layout->indexOf(widget4), -1 );
-    layout->setAnchor(layout, Qt::AnchorLeft, widget4, Qt::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget4, BobUI::AnchorLeft, 0.1);
 
     QCOMPARE( layout->count(), 4 );
     for (int i = 0; i < layout->count(); ++i) {
@@ -369,61 +369,61 @@ void tst_QGraphicsAnchorLayout1::testAddAndRemoveAnchor()
     TestWidget *widget4 = new TestWidget();
     TestWidget *widget5 = new TestWidget();
 
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 0.1);
-    layout->setAnchor(layout, Qt::AnchorLeft, widget2, Qt::AnchorLeft, 0.5);
-    layout->setAnchor(layout, Qt::AnchorLeft, widget3, Qt::AnchorLeft, 10);
-    layout->setAnchor(layout, Qt::AnchorLeft, widget4, Qt::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget2, BobUI::AnchorLeft, 0.5);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget3, BobUI::AnchorLeft, 10);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget4, BobUI::AnchorLeft, 0.1);
     QCOMPARE( layout->count(), 4 );
 
     // test setting invalid anchors
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor NULL items");
-    layout->setAnchor(0, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 1);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor NULL items");
-    layout->setAnchor(layout, Qt::AnchorLeft, 0, Qt::AnchorLeft, 1);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor NULL items");
+    layout->setAnchor(0, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 1);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor NULL items");
+    layout->setAnchor(layout, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 1);
     QCOMPARE( layout->count(), 4 );
 
     // test removing invalid anchors
-    layout->removeAnchor(widget4, Qt::AnchorRight, widget1, Qt::AnchorRight);
+    layout->removeAnchor(widget4, BobUI::AnchorRight, widget1, BobUI::AnchorRight);
 
     // anchor one horizontal edge with vertical edge. it should not add this widget as a child
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor edges of different orientations");
-    layout->setAnchor(layout, Qt::AnchorLeft, widget5, Qt::AnchorTop, 10);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor edges of different orientations");
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget5, BobUI::AnchorTop, 10);
     QCOMPARE( layout->count(), 4 );
 
     // anchor two edges of a widget (to define width / height)
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-    layout->setAnchor(widget5, Qt::AnchorLeft, widget5, Qt::AnchorRight, 10);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+    layout->setAnchor(widget5, BobUI::AnchorLeft, widget5, BobUI::AnchorRight, 10);
     // QCOMPARE( layout->count(), 5 );
     QCOMPARE( layout->count(), 4 );
 
     // anchor yet new widget properly
-    layout->setAnchor(layout, Qt::AnchorRight, widget5, Qt::AnchorRight, 20 );
+    layout->setAnchor(layout, BobUI::AnchorRight, widget5, BobUI::AnchorRight, 20 );
     QCOMPARE( layout->count(), 5 );
 
     // remove anchor for widget1. widget1 should be removed from layout since the
     // last anchor was removed.
-    layout->removeAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft);
+    layout->removeAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft);
 
     QCOMPARE( layout->count(), 4 );
     QVERIFY( !widget1->parentLayoutItem() );
 
     // test that item is not removed from layout if other anchors remain set
-    layout->setAnchor(widget2, Qt::AnchorLeft, widget3, Qt::AnchorRight, 10);
-    layout->removeAnchor(layout, Qt::AnchorLeft, widget2, Qt::AnchorLeft);
+    layout->setAnchor(widget2, BobUI::AnchorLeft, widget3, BobUI::AnchorRight, 10);
+    layout->removeAnchor(layout, BobUI::AnchorLeft, widget2, BobUI::AnchorLeft);
     QCOMPARE( layout->count(), 4 );
 
     // remove all the anchors
-    layout->removeAnchor(widget2, Qt::AnchorLeft, widget3, Qt::AnchorRight);
-    layout->removeAnchor(layout, Qt::AnchorLeft, widget3, Qt::AnchorLeft);
-    layout->removeAnchor(layout, Qt::AnchorLeft, widget4, Qt::AnchorLeft);
-    layout->removeAnchor(widget5, Qt::AnchorLeft, widget5, Qt::AnchorRight);
-    layout->removeAnchor(layout, Qt::AnchorRight, widget5, Qt::AnchorRight);
+    layout->removeAnchor(widget2, BobUI::AnchorLeft, widget3, BobUI::AnchorRight);
+    layout->removeAnchor(layout, BobUI::AnchorLeft, widget3, BobUI::AnchorLeft);
+    layout->removeAnchor(layout, BobUI::AnchorLeft, widget4, BobUI::AnchorLeft);
+    layout->removeAnchor(widget5, BobUI::AnchorLeft, widget5, BobUI::AnchorRight);
+    layout->removeAnchor(layout, BobUI::AnchorRight, widget5, BobUI::AnchorRight);
 
     QCOMPARE( layout->count(), 0 );
 
     // set one anchor "another way round" to get full coverage for "removeAnchor"
-    layout->setAnchor(widget1, Qt::AnchorLeft, layout, Qt::AnchorLeft, 0.1);
-    layout->removeAnchor(widget1, Qt::AnchorLeft, layout, Qt::AnchorLeft);
+    layout->setAnchor(widget1, BobUI::AnchorLeft, layout, BobUI::AnchorLeft, 0.1);
+    layout->removeAnchor(widget1, BobUI::AnchorLeft, layout, BobUI::AnchorLeft);
 
     QCOMPARE( layout->count(), 0 );
 
@@ -457,10 +457,10 @@ void tst_QGraphicsAnchorLayout1::testIsValid()
 
     TestWidget *widget1 = new TestWidget();
 
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 0.1);
-    layout->setAnchor(layout, Qt::AnchorTop, widget1, Qt::AnchorTop, 0.1);
-    layout->setAnchor(widget1, Qt::AnchorRight, layout, Qt::AnchorRight, 0.1);
-    layout->setAnchor(widget1, Qt::AnchorBottom, layout, Qt::AnchorBottom, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorTop, widget1, BobUI::AnchorTop, 0.1);
+    layout->setAnchor(widget1, BobUI::AnchorRight, layout, BobUI::AnchorRight, 0.1);
+    layout->setAnchor(widget1, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 0.1);
 
     widget->setLayout(layout);
 
@@ -482,12 +482,12 @@ void tst_QGraphicsAnchorLayout1::testIsValid()
 
     TestWidget *widget1 = new TestWidget();
 
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 0.1);
-    layout->setAnchor(layout, Qt::AnchorTop, widget1, Qt::AnchorTop, 0.1);
-    layout->setAnchor(widget1, Qt::AnchorRight, layout, Qt::AnchorRight, 0.1);
-    layout->setAnchor(widget1, Qt::AnchorBottom, layout, Qt::AnchorBottom, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorTop, widget1, BobUI::AnchorTop, 0.1);
+    layout->setAnchor(widget1, BobUI::AnchorRight, layout, BobUI::AnchorRight, 0.1);
+    layout->setAnchor(widget1, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 0.1);
 
-    layout->setAnchor(widget1, Qt::AnchorTop, layout, Qt::AnchorBottom, 10);
+    layout->setAnchor(widget1, BobUI::AnchorTop, layout, BobUI::AnchorBottom, 10);
 
     widget->setLayout(layout);
 
@@ -505,12 +505,12 @@ void tst_QGraphicsAnchorLayout1::testIsValid()
     TestWidget *widget2 = new TestWidget();
 
     // Vertically the layout has floating items. Therefore, we have a conflict
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 0.1);
-    layout->setAnchor(layout, Qt::AnchorRight, widget1, Qt::AnchorRight, -0.1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorRight, widget1, BobUI::AnchorRight, -0.1);
 
     // Horizontally the layout has floating items. Therefore, we have a conflict
-    layout->setAnchor(layout, Qt::AnchorTop, widget2, Qt::AnchorTop, 0.1);
-    layout->setAnchor(layout, Qt::AnchorBottom, widget2, Qt::AnchorBottom, -0.1);
+    layout->setAnchor(layout, BobUI::AnchorTop, widget2, BobUI::AnchorTop, 0.1);
+    layout->setAnchor(layout, BobUI::AnchorBottom, widget2, BobUI::AnchorBottom, -0.1);
 
     widget->setLayout(layout);
 
@@ -525,7 +525,7 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
     // One widget, setLayout before defining layouts
     {
     if (QLibraryInfo::isDebugBuild())
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsLayout::addChildLayoutItem: QGraphicsWidget \"\""
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsLayout::addChildLayoutItem: QGraphicsWidget \"\""
                                            " in wrong parent; moved to correct parent");
     QGraphicsWidget *widget = new QGraphicsWidget;
     TheAnchorLayout *layout = new TheAnchorLayout();
@@ -533,10 +533,10 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
 
     TestWidget *widget1 = new TestWidget();
 
-    layout->setAnchor(layout, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 1);
-    layout->setAnchor(layout, Qt::AnchorTop, widget1, Qt::AnchorTop, 1);
-    layout->setAnchor(widget1, Qt::AnchorRight, layout, Qt::AnchorRight, 1);
-    layout->setAnchor(widget1, Qt::AnchorBottom, layout, Qt::AnchorBottom, 1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 1);
+    layout->setAnchor(layout, BobUI::AnchorTop, widget1, BobUI::AnchorTop, 1);
+    layout->setAnchor(widget1, BobUI::AnchorRight, layout, BobUI::AnchorRight, 1);
+    layout->setAnchor(widget1, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 1);
     widget->setGeometry(QRectF(0,0,100,100));
     QCOMPARE(widget1->geometry(), QRectF(1,1,98,98));
     delete widget1;
@@ -546,7 +546,7 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
     // One widget, layout inside layout, layout inside layout inside layout
     {
     if (QLibraryInfo::isDebugBuild())
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsLayout::addChildLayoutItem: QGraphicsWidget \"\""
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsLayout::addChildLayoutItem: QGraphicsWidget \"\""
                                            " in wrong parent; moved to correct parent");
     QGraphicsWidget *widget = new QGraphicsWidget;
     TheAnchorLayout *layout = new TheAnchorLayout();
@@ -554,35 +554,35 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
 
     TheAnchorLayout *layout1 = new TheAnchorLayout();
     TestWidget *widget1 = new TestWidget();
-    layout1->setAnchor(layout1, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 1);
-    layout1->setAnchor(layout1, Qt::AnchorTop, widget1, Qt::AnchorTop, 1);
-    layout1->setAnchor(widget1, Qt::AnchorRight, layout1, Qt::AnchorRight, 1);
-    layout1->setAnchor(widget1, Qt::AnchorBottom, layout1, Qt::AnchorBottom, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorTop, widget1, BobUI::AnchorTop, 1);
+    layout1->setAnchor(widget1, BobUI::AnchorRight, layout1, BobUI::AnchorRight, 1);
+    layout1->setAnchor(widget1, BobUI::AnchorBottom, layout1, BobUI::AnchorBottom, 1);
 
     TheAnchorLayout *layout2 = new TheAnchorLayout();
     TestWidget *widget2 = new TestWidget();
-    layout2->setAnchor(layout2, Qt::AnchorLeft, widget2, Qt::AnchorLeft, 1);
-    layout2->setAnchor(layout2, Qt::AnchorTop, widget2, Qt::AnchorTop, 1);
-    layout2->setAnchor(widget2, Qt::AnchorRight, layout2, Qt::AnchorRight, 1);
-    layout2->setAnchor(widget2, Qt::AnchorBottom, layout2, Qt::AnchorBottom, 1);
+    layout2->setAnchor(layout2, BobUI::AnchorLeft, widget2, BobUI::AnchorLeft, 1);
+    layout2->setAnchor(layout2, BobUI::AnchorTop, widget2, BobUI::AnchorTop, 1);
+    layout2->setAnchor(widget2, BobUI::AnchorRight, layout2, BobUI::AnchorRight, 1);
+    layout2->setAnchor(widget2, BobUI::AnchorBottom, layout2, BobUI::AnchorBottom, 1);
 
-    layout1->setAnchor(layout1, Qt::AnchorLeft, layout2, Qt::AnchorLeft, 1);
-    layout1->setAnchor(layout1, Qt::AnchorTop, layout2, Qt::AnchorTop, 1);
-    layout1->setAnchor(layout2, Qt::AnchorRight, layout1, Qt::AnchorRight, 1);
-    layout1->setAnchor(layout2, Qt::AnchorBottom, layout1, Qt::AnchorBottom, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorLeft, layout2, BobUI::AnchorLeft, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorTop, layout2, BobUI::AnchorTop, 1);
+    layout1->setAnchor(layout2, BobUI::AnchorRight, layout1, BobUI::AnchorRight, 1);
+    layout1->setAnchor(layout2, BobUI::AnchorBottom, layout1, BobUI::AnchorBottom, 1);
 
-    layout->setAnchor(layout, Qt::AnchorLeft, layout1, Qt::AnchorLeft, 1);
-    layout->setAnchor(layout, Qt::AnchorTop, layout1, Qt::AnchorTop, 1);
-    layout->setAnchor(layout1, Qt::AnchorRight, layout, Qt::AnchorRight, 1);
-    layout->setAnchor(layout1, Qt::AnchorBottom, layout, Qt::AnchorBottom, 1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, layout1, BobUI::AnchorLeft, 1);
+    layout->setAnchor(layout, BobUI::AnchorTop, layout1, BobUI::AnchorTop, 1);
+    layout->setAnchor(layout1, BobUI::AnchorRight, layout, BobUI::AnchorRight, 1);
+    layout->setAnchor(layout1, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 1);
 
     // remove and add again to improve test coverage.
     layout->removeItem(layout1);
 
-    layout->setAnchor(layout, Qt::AnchorLeft, layout1, Qt::AnchorLeft, 1);
-    layout->setAnchor(layout, Qt::AnchorTop, layout1, Qt::AnchorTop, 1);
-    layout->setAnchor(layout1, Qt::AnchorRight, layout, Qt::AnchorRight, 1);
-    layout->setAnchor(layout1, Qt::AnchorBottom, layout, Qt::AnchorBottom, 1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, layout1, BobUI::AnchorLeft, 1);
+    layout->setAnchor(layout, BobUI::AnchorTop, layout1, BobUI::AnchorTop, 1);
+    layout->setAnchor(layout1, BobUI::AnchorRight, layout, BobUI::AnchorRight, 1);
+    layout->setAnchor(layout1, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 1);
 
     widget->setGeometry(QRectF(0,0,100,100));
     QCOMPARE(widget1->geometry(), QRectF(2,2,96,96));
@@ -598,15 +598,15 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
     TheAnchorLayout *layout1 = new TheAnchorLayout();
 
     TestWidget *widget1 = new TestWidget();
-    layout1->setAnchor(layout1, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 1);
-    layout1->setAnchor(layout1, Qt::AnchorTop, widget1, Qt::AnchorTop, 1);
-    layout1->setAnchor(widget1, Qt::AnchorRight, layout1, Qt::AnchorRight, 1);
-    layout1->setAnchor(widget1, Qt::AnchorBottom, layout1, Qt::AnchorBottom, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorTop, widget1, BobUI::AnchorTop, 1);
+    layout1->setAnchor(widget1, BobUI::AnchorRight, layout1, BobUI::AnchorRight, 1);
+    layout1->setAnchor(widget1, BobUI::AnchorBottom, layout1, BobUI::AnchorBottom, 1);
 
-    layout->setAnchor(layout, Qt::AnchorLeft, layout1, Qt::AnchorLeft, 1);
-    layout->setAnchor(layout, Qt::AnchorTop, layout1, Qt::AnchorTop, 1);
-    layout->setAnchor(layout1, Qt::AnchorRight, layout, Qt::AnchorRight, 1);
-    layout->setAnchor(layout1, Qt::AnchorBottom, layout, Qt::AnchorBottom, 1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, layout1, BobUI::AnchorLeft, 1);
+    layout->setAnchor(layout, BobUI::AnchorTop, layout1, BobUI::AnchorTop, 1);
+    layout->setAnchor(layout1, BobUI::AnchorRight, layout, BobUI::AnchorRight, 1);
+    layout->setAnchor(layout1, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 1);
 
     widget->setLayout(layout);
     widget->setGeometry(QRectF(0,0,100,100));
@@ -629,42 +629,42 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
     TestWidget *widget0 = new TestWidget();
 
     // widget0 to layout0
-    layout0->setAnchor(layout0, Qt::AnchorLeft, widget0, Qt::AnchorLeft, 1);
-    layout0->setAnchor(layout0, Qt::AnchorTop, widget0, Qt::AnchorTop, 1);
-    layout0->setAnchor(widget0, Qt::AnchorRight, layout0, Qt::AnchorRight, 1);
-    layout0->setAnchor(widget0, Qt::AnchorBottom, layout0, Qt::AnchorBottom, 1);
+    layout0->setAnchor(layout0, BobUI::AnchorLeft, widget0, BobUI::AnchorLeft, 1);
+    layout0->setAnchor(layout0, BobUI::AnchorTop, widget0, BobUI::AnchorTop, 1);
+    layout0->setAnchor(widget0, BobUI::AnchorRight, layout0, BobUI::AnchorRight, 1);
+    layout0->setAnchor(widget0, BobUI::AnchorBottom, layout0, BobUI::AnchorBottom, 1);
 
     // layout0 to layout
-    layout->setAnchor(layout, Qt::AnchorLeft, layout0, Qt::AnchorLeft, 1);
-    layout->setAnchor(layout, Qt::AnchorTop, layout0, Qt::AnchorTop, 1);
-    layout->setAnchor(layout0, Qt::AnchorRight, layout, Qt::AnchorRight, 50);
-    layout->setAnchor(layout0, Qt::AnchorBottom, layout, Qt::AnchorBottom, 1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, layout0, BobUI::AnchorLeft, 1);
+    layout->setAnchor(layout, BobUI::AnchorTop, layout0, BobUI::AnchorTop, 1);
+    layout->setAnchor(layout0, BobUI::AnchorRight, layout, BobUI::AnchorRight, 50);
+    layout->setAnchor(layout0, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 1);
 
     // widget1 to layout1
-    layout1->setAnchor(layout1, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 1);
-    layout1->setAnchor(layout1, Qt::AnchorTop, widget1, Qt::AnchorTop, 1);
-    layout1->setAnchor(widget1, Qt::AnchorRight, layout1, Qt::AnchorRight, 1);
-    layout1->setAnchor(widget1, Qt::AnchorBottom, layout1, Qt::AnchorBottom, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorTop, widget1, BobUI::AnchorTop, 1);
+    layout1->setAnchor(widget1, BobUI::AnchorRight, layout1, BobUI::AnchorRight, 1);
+    layout1->setAnchor(widget1, BobUI::AnchorBottom, layout1, BobUI::AnchorBottom, 1);
 
     // layout1 to layout
-    layout->setAnchor(layout, Qt::AnchorLeft, layout1, Qt::AnchorLeft, 1);
-    layout->setAnchor(layout, Qt::AnchorTop, layout1, Qt::AnchorTop, 1);
-    layout->setAnchor(layout1, Qt::AnchorRight, layout, Qt::AnchorRight, 50);
-    layout->setAnchor(layout1, Qt::AnchorBottom, layout, Qt::AnchorBottom, 1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, layout1, BobUI::AnchorLeft, 1);
+    layout->setAnchor(layout, BobUI::AnchorTop, layout1, BobUI::AnchorTop, 1);
+    layout->setAnchor(layout1, BobUI::AnchorRight, layout, BobUI::AnchorRight, 50);
+    layout->setAnchor(layout1, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 1);
 
     TheAnchorLayout *layout2 = new TheAnchorLayout();
 
     // layout2 to layout
-    layout->setAnchor(layout, Qt::AnchorLeft, layout2, Qt::AnchorLeft, 50);
-    layout->setAnchor(layout, Qt::AnchorTop, layout2, Qt::AnchorTop, 1);
-    layout->setAnchor(layout2, Qt::AnchorRight, layout, Qt::AnchorRight, 1);
-    layout->setAnchor(layout2, Qt::AnchorBottom, layout, Qt::AnchorBottom, 1);
+    layout->setAnchor(layout, BobUI::AnchorLeft, layout2, BobUI::AnchorLeft, 50);
+    layout->setAnchor(layout, BobUI::AnchorTop, layout2, BobUI::AnchorTop, 1);
+    layout->setAnchor(layout2, BobUI::AnchorRight, layout, BobUI::AnchorRight, 1);
+    layout->setAnchor(layout2, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 1);
 
     // transfer widget1 to layout2
-    layout2->setAnchor(layout2, Qt::AnchorLeft, widget1, Qt::AnchorLeft, 1);
-    layout2->setAnchor(layout2, Qt::AnchorTop, widget1, Qt::AnchorTop, 1);
-    layout2->setAnchor(widget1, Qt::AnchorRight, layout2, Qt::AnchorRight, 1);
-    layout2->setAnchor(widget1, Qt::AnchorBottom, layout2, Qt::AnchorBottom, 1);
+    layout2->setAnchor(layout2, BobUI::AnchorLeft, widget1, BobUI::AnchorLeft, 1);
+    layout2->setAnchor(layout2, BobUI::AnchorTop, widget1, BobUI::AnchorTop, 1);
+    layout2->setAnchor(widget1, BobUI::AnchorRight, layout2, BobUI::AnchorRight, 1);
+    layout2->setAnchor(widget1, BobUI::AnchorBottom, layout2, BobUI::AnchorBottom, 1);
 
     widget->setGeometry(QRectF(0,0,100,100));
     QCOMPARE(widget1->geometry(), QRectF(51,2,47,96));
@@ -681,10 +681,10 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
     TestWidget *childWidget = new TestWidget();
 
     // childWidget to layout1
-    layout1->setAnchor(layout1, Qt::AnchorLeft, childWidget, Qt::AnchorLeft, 1);
-    layout1->setAnchor(layout1, Qt::AnchorTop, childWidget, Qt::AnchorTop, 1);
-    layout1->setAnchor(childWidget, Qt::AnchorRight, layout1, Qt::AnchorRight, 1);
-    layout1->setAnchor(childWidget, Qt::AnchorBottom, layout1, Qt::AnchorBottom, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorLeft, childWidget, BobUI::AnchorLeft, 1);
+    layout1->setAnchor(layout1, BobUI::AnchorTop, childWidget, BobUI::AnchorTop, 1);
+    layout1->setAnchor(childWidget, BobUI::AnchorRight, layout1, BobUI::AnchorRight, 1);
+    layout1->setAnchor(childWidget, BobUI::AnchorBottom, layout1, BobUI::AnchorBottom, 1);
 
     widget1->setGeometry(QRectF(0,0,100,100));
     QCOMPARE(childWidget->geometry(), QRectF(1,1,98,98));
@@ -694,10 +694,10 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
     widget2->setLayout(layout2);
 
     // childWidget to layout2
-    layout2->setAnchor(layout2, Qt::AnchorLeft, childWidget, Qt::AnchorLeft, 1);
-    layout2->setAnchor(layout2, Qt::AnchorTop, childWidget, Qt::AnchorTop, 1);
-    layout2->setAnchor(childWidget, Qt::AnchorRight, layout2, Qt::AnchorRight, 1);
-    layout2->setAnchor(childWidget, Qt::AnchorBottom, layout2, Qt::AnchorBottom, 1);
+    layout2->setAnchor(layout2, BobUI::AnchorLeft, childWidget, BobUI::AnchorLeft, 1);
+    layout2->setAnchor(layout2, BobUI::AnchorTop, childWidget, BobUI::AnchorTop, 1);
+    layout2->setAnchor(childWidget, BobUI::AnchorRight, layout2, BobUI::AnchorRight, 1);
+    layout2->setAnchor(childWidget, BobUI::AnchorBottom, layout2, BobUI::AnchorBottom, 1);
 
     QGraphicsWidget *widget3 = new QGraphicsWidget;
     QGraphicsWidget *widget4 = new QGraphicsWidget;
@@ -705,10 +705,10 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
     widget4->setParentItem(widget3);
 
     // widget4 to layout2
-    layout2->setAnchor(layout2, Qt::AnchorLeft, widget4, Qt::AnchorLeft, 1);
-    layout2->setAnchor(layout2, Qt::AnchorTop, widget4, Qt::AnchorTop, 1);
-    layout2->setAnchor(widget4, Qt::AnchorRight, layout2, Qt::AnchorRight, 1);
-    layout2->setAnchor(widget4, Qt::AnchorBottom, layout2, Qt::AnchorBottom, 1);
+    layout2->setAnchor(layout2, BobUI::AnchorLeft, widget4, BobUI::AnchorLeft, 1);
+    layout2->setAnchor(layout2, BobUI::AnchorTop, widget4, BobUI::AnchorTop, 1);
+    layout2->setAnchor(widget4, BobUI::AnchorRight, layout2, BobUI::AnchorRight, 1);
+    layout2->setAnchor(widget4, BobUI::AnchorBottom, layout2, BobUI::AnchorBottom, 1);
 
     widget2->setGeometry(QRectF(0,0,100,100));
     QCOMPARE(childWidget->geometry(), QRectF(1,1,98,98));
@@ -727,9 +727,9 @@ void tst_QGraphicsAnchorLayout1::testSpecialCases()
 
 void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<BasicLayoutTestDataList>("data");
-    QTest::addColumn<BasicLayoutTestResultList>("result");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<BasicLayoutTestDataList>("data");
+    BOBUIest::addColumn<BasicLayoutTestResultList>("result");
 
     typedef BasicLayoutTestData BasicData;
     typedef BasicLayoutTestResult BasicResult;
@@ -740,17 +740,17 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 20)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 30)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 40)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 20)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 30)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 40)
             ;
 
         theResult
             << BasicResult(0, QRectF(20, 10, 150, 50) )
             ;
 
-        QTest::newRow("One, simple") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("One, simple") << QSizeF(200, 100) << theData << theResult;
     }
 
     // One widget, duplicates
@@ -759,22 +759,22 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 20)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 30)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 40)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 20)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 30)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 40)
 
-            << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 0)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorRight, 0)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 0)
+            << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 0)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorRight, 0)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 0)
             ;
 
         theResult
             << BasicResult(0, QRectF(0, 0, 200, 100) )
             ;
 
-        QTest::newRow("One, duplicates") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("One, duplicates") << QSizeF(200, 100) << theData << theResult;
     }
 
     // One widget, mixed
@@ -783,17 +783,17 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorBottom, 80)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorRight, 150)
-            << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorRight, 150)
-            << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorBottom, 80)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorBottom, 80)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, 150)
+            << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorRight, 150)
+            << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorBottom, 80)
             ;
 
         theResult
             << BasicResult(0, QRectF(50, 20, 100, 60) )
             ;
 
-        QTest::newRow("One, mixed") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("One, mixed") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets (same layout), different ordering
@@ -802,15 +802,15 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
 
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorLeft, 10)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 10)
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 10)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
             ;
 
         theResult
@@ -818,7 +818,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(10, 10, 180, 80) )
             ;
 
-        QTest::newRow("Two, orderings") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, orderings") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, duplicate anchors
@@ -827,19 +827,19 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 30)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 20)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 30)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 20)
 
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorLeft, 10)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 10)
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(1, Qt::AnchorTop, -1, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorRight, 1, Qt::AnchorRight, 0)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 10)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(1, BobUI::AnchorTop, -1, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorRight, 1, BobUI::AnchorRight, 0)
             ;
 
         theResult
@@ -847,7 +847,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(10, 0, 190, 90) )
             ;
 
-        QTest::newRow("Two, duplicates") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, duplicates") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, mixed
@@ -856,15 +856,15 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorBottom, 90)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorRight, 190)
-            << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorRight, 190)
-            << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorBottom, 90)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorBottom, 90)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, 190)
+            << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorRight, 190)
+            << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorBottom, 90)
 
-            << BasicData(1, Qt::AnchorTop, -1, Qt::AnchorBottom, 20)
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorLeft, 10)
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorRight, 20)
+            << BasicData(1, BobUI::AnchorTop, -1, BobUI::AnchorBottom, 20)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorRight, 20)
             ;
 
         theResult
@@ -872,7 +872,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(10, 80, 10, 10) )
             ;
 
-        QTest::newRow("Two, mixed") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, mixed") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, 1 horizontal connection, first completely defined
@@ -881,15 +881,15 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 180)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 180)
 
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorLeft, 10)
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 10)
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 20)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorLeft, 10)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 10)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 20)
             ;
 
         theResult
@@ -897,7 +897,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(30, 10, 160, 70) )
             ;
 
-        QTest::newRow("Two, 1h connected") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, 1h connected") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, 2 horizontal connections, first completely defined
@@ -906,20 +906,20 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 180)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 180)
 
             // ### QGAL is not sensible to the argument order in this case
             //     To achieve the desired result we must explicitly set a negative
             //     spacing.
-            // << BasicData(0, Qt::AnchorLeft, 1, Qt::AnchorRight, 100)
-            << BasicData(0, Qt::AnchorLeft, 1, Qt::AnchorRight, -100)
+            // << BasicData(0, BobUI::AnchorLeft, 1, BobUI::AnchorRight, 100)
+            << BasicData(0, BobUI::AnchorLeft, 1, BobUI::AnchorRight, -100)
 
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorLeft, 30)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 10)
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 20)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorLeft, 30)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 10)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 20)
             ;
 
         theResult
@@ -927,7 +927,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(50, 10, 60, 70) )
             ;
 
-        QTest::newRow("Two, 2h connected") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, 2h connected") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, 1 vertical connection, first completely defined
@@ -936,15 +936,15 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 180)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 180)
 
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorLeft, 30)
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(0, Qt::AnchorTop, 1, Qt::AnchorTop, 10)
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 20)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 30)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(0, BobUI::AnchorTop, 1, BobUI::AnchorTop, 10)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 20)
             ;
 
         theResult
@@ -952,7 +952,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(30, 20, 160, 60) )
             ;
 
-        QTest::newRow("Two, 1v connected") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, 1v connected") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, 2 vertical connections, first completely defined
@@ -961,15 +961,15 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 180)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 180)
 
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorLeft, 30)
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(0, Qt::AnchorTop, 1, Qt::AnchorTop, 10)
-            << BasicData(1, Qt::AnchorBottom, 0, Qt::AnchorBottom, 20)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 30)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(0, BobUI::AnchorTop, 1, BobUI::AnchorTop, 10)
+            << BasicData(1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, 20)
             ;
 
         theResult
@@ -977,7 +977,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(30, 20, 160, 50) )
             ;
 
-        QTest::newRow("Two, 2v connected") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, 2v connected") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, 1 horizontal and 1 vertical connection, first completely defined
@@ -986,15 +986,15 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 180)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 180)
 
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorLeft, 80)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorRight, 100)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 10)
-            << BasicData(1, Qt::AnchorBottom, 0, Qt::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 80)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorRight, 100)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 10)
+            << BasicData(1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, 10)
             ;
 
         theResult
@@ -1002,7 +1002,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(80, 10, 40, 70) )
             ;
 
-        QTest::newRow("Two, 1h+1v connected") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, 1h+1v connected") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, 2 horizontal and 2 vertical connections, first completely defined
@@ -1011,15 +1011,15 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 180)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 180)
 
-            << BasicData(0, Qt::AnchorLeft, 1, Qt::AnchorLeft, 80)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorRight, 100)
-            << BasicData(0, Qt::AnchorTop, 1, Qt::AnchorTop, 10)
-            << BasicData(1, Qt::AnchorBottom, 0, Qt::AnchorBottom, 10)
+            << BasicData(0, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 80)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorRight, 100)
+            << BasicData(0, BobUI::AnchorTop, 1, BobUI::AnchorTop, 10)
+            << BasicData(1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, 10)
             ;
 
         theResult
@@ -1027,7 +1027,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(90, 20, 30, 60) )
             ;
 
-        QTest::newRow("Two, 2h+2v connected") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, 2h+2v connected") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, 2 horizontal and 2 vertical connections, dependent on each other.
@@ -1036,15 +1036,15 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorRight, 150)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(0, Qt::AnchorBottom, 1, Qt::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorRight, 150)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(0, BobUI::AnchorBottom, 1, BobUI::AnchorBottom, 10)
 
-            << BasicData(0, Qt::AnchorLeft, 1, Qt::AnchorLeft, 90)
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(0, Qt::AnchorTop, 1, Qt::AnchorTop, 10)
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 20)
+            << BasicData(0, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 90)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(0, BobUI::AnchorTop, 1, BobUI::AnchorTop, 10)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 20)
             ;
 
         theResult
@@ -1052,7 +1052,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(100, 20, 90, 60) )
             ;
 
-        QTest::newRow("Two, 2h+2v connected2") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, 2h+2v connected2") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, connected, overlapping
@@ -1061,18 +1061,18 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            // << BasicData(1, Qt::AnchorLeft, 0, Qt::AnchorRight, 30)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            // << BasicData(1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, 30)
             // ### QGAL has different semantics and assumes right edges are always
             //     to the left of left edges. Thus we need the minus sign here.
-            << BasicData(1, Qt::AnchorLeft, 0, Qt::AnchorRight, -30)
-            << BasicData(0, Qt::AnchorBottom, 1, Qt::AnchorBottom, 40)
+            << BasicData(1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, -30)
+            << BasicData(0, BobUI::AnchorBottom, 1, BobUI::AnchorBottom, 40)
 
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorLeft, 40)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 20)
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 40)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 20)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
             ;
 
         theResult
@@ -1080,15 +1080,15 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout_data()
             << BasicResult(1, QRectF(40, 20, 150, 70) )
             ;
 
-        QTest::newRow("Two, connected overlapping") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, connected overlapping") << QSizeF(200, 100) << theData << theResult;
     }
 }
 
 void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<BasicLayoutTestDataList>("data");
-    QTest::addColumn<BasicLayoutTestResultList>("result");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<BasicLayoutTestDataList>("data");
+    BOBUIest::addColumn<BasicLayoutTestResultList>("result");
 
     typedef BasicLayoutTestData BasicData;
     typedef BasicLayoutTestResult BasicResult;
@@ -1106,15 +1106,15 @@ void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
         //      has no effect in this case.
 
         theData
-            // << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorTop, -10)
-            // << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorLeft, -20)
-            // << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorRight, -30)
-            // << BasicData(-1, Qt::AnchorBottom, 0, Qt::AnchorBottom, -40)
+            // << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorTop, -10)
+            // << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorLeft, -20)
+            // << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorRight, -30)
+            // << BasicData(-1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, -40)
 
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, -10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, -20)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, -30)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, -40)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, -10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, -20)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, -30)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, -40)
 
             ;
 
@@ -1123,7 +1123,7 @@ void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
             << BasicResult(0, QRectF(-20, -10, 250, 150) )
             ;
 
-        QTest::newRow("One, simple (n)") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("One, simple (n)") << QSizeF(200, 100) << theData << theResult;
     }
 
     // One widget, duplicates, negative spacing
@@ -1132,15 +1132,15 @@ void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorTop, -20)
-            << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorLeft, -20)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorRight, -30)
-            << BasicData(-1, Qt::AnchorBottom, 0, Qt::AnchorBottom, -40)
+            << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorTop, -20)
+            << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorLeft, -20)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorRight, -30)
+            << BasicData(-1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, -40)
 
-            << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorTop, -10)
-            << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorLeft, -10)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorRight, -10)
-            << BasicData(-1, Qt::AnchorBottom, 0, Qt::AnchorBottom, -10)
+            << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorTop, -10)
+            << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorLeft, -10)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorRight, -10)
+            << BasicData(-1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, -10)
             ;
 
         theResult
@@ -1149,7 +1149,7 @@ void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
             << BasicResult(0, QRectF(-10, -10, 220, 120) )
             ;
 
-        QTest::newRow("One, duplicates (n)") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("One, duplicates (n)") << QSizeF(200, 100) << theData << theResult;
     }
 
     // One widget, mixed, negative spacing
@@ -1162,22 +1162,22 @@ void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
             //     item are handled as to make sure the item is _outside_ the
             //     layout.
             //     To keep it inside, one _must_ use positive spacings.
-            // << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorTop, -80)
-            // << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorLeft, -150)
-            // << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorLeft, -150)
-            // << BasicData(-1, Qt::AnchorBottom, 0, Qt::AnchorTop, -80)
+            // << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorTop, -80)
+            // << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorLeft, -150)
+            // << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorLeft, -150)
+            // << BasicData(-1, BobUI::AnchorBottom, 0, BobUI::AnchorTop, -80)
 
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorTop, 80)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorLeft, 150)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorLeft, 150)
-            << BasicData(-1, Qt::AnchorBottom, 0, Qt::AnchorTop, 80)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorTop, 80)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorLeft, 150)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorLeft, 150)
+            << BasicData(-1, BobUI::AnchorBottom, 0, BobUI::AnchorTop, 80)
             ;
 
         theResult
             << BasicResult(0, QRectF(50, 20, 100, 60) )
             ;
 
-        QTest::newRow("One, mixed (n)") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("One, mixed (n)") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, 1 horizontal connection, first completely defined, negative spacing
@@ -1186,25 +1186,25 @@ void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            // << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorTop, -10)
-            // << BasicData(-1, Qt::AnchorBottom, 0, Qt::AnchorBottom, -10)
-            // << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorLeft, -10)
-            // << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorRight, -180)
+            // << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorTop, -10)
+            // << BasicData(-1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, -10)
+            // << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorLeft, -10)
+            // << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorRight, -180)
 
-            // << BasicData(1, Qt::AnchorLeft, 0, Qt::AnchorRight, -10)
-            // << BasicData(-1, Qt::AnchorRight, 1, Qt::AnchorRight, -10)
-            // << BasicData(1, Qt::AnchorTop, -1, Qt::AnchorTop, -10)
-            // << BasicData(-1, Qt::AnchorBottom, 1, Qt::AnchorBottom, -20)
+            // << BasicData(1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, -10)
+            // << BasicData(-1, BobUI::AnchorRight, 1, BobUI::AnchorRight, -10)
+            // << BasicData(1, BobUI::AnchorTop, -1, BobUI::AnchorTop, -10)
+            // << BasicData(-1, BobUI::AnchorBottom, 1, BobUI::AnchorBottom, -20)
 
-            << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorTop, -10)
-            << BasicData(-1, Qt::AnchorBottom, 0, Qt::AnchorBottom, -10)
-            << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorLeft, -10)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorRight, 180)
+            << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorTop, -10)
+            << BasicData(-1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, -10)
+            << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorLeft, -10)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorRight, 180)
 
-            << BasicData(1, Qt::AnchorLeft, 0, Qt::AnchorRight, -10)
-            << BasicData(-1, Qt::AnchorRight, 1, Qt::AnchorRight, -10)
-            << BasicData(1, Qt::AnchorTop, -1, Qt::AnchorTop, -10)
-            << BasicData(-1, Qt::AnchorBottom, 1, Qt::AnchorBottom, -20)
+            << BasicData(1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, -10)
+            << BasicData(-1, BobUI::AnchorRight, 1, BobUI::AnchorRight, -10)
+            << BasicData(1, BobUI::AnchorTop, -1, BobUI::AnchorTop, -10)
+            << BasicData(-1, BobUI::AnchorBottom, 1, BobUI::AnchorBottom, -20)
 
             ;
 
@@ -1216,7 +1216,7 @@ void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
             << BasicResult(1, QRectF(10, -10, 200, 130) )
             ;
 
-        QTest::newRow("Two, 1h connected (n)") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, 1h connected (n)") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Basic case - two widgets, 2 horizontal and 2 vertical connections, dependent on each other, negative spacing
@@ -1225,15 +1225,15 @@ void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorLeft, -10)
-            << BasicData(1, Qt::AnchorRight, 0, Qt::AnchorRight, -150)
-            << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorTop, -10)
-            << BasicData(1, Qt::AnchorBottom, 0, Qt::AnchorBottom, -10)
+            << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorLeft, -10)
+            << BasicData(1, BobUI::AnchorRight, 0, BobUI::AnchorRight, -150)
+            << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorTop, -10)
+            << BasicData(1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, -10)
 
-            << BasicData(1, Qt::AnchorLeft, 0, Qt::AnchorLeft, -90)
-            << BasicData(-1, Qt::AnchorRight, 1, Qt::AnchorRight, -10)
-            << BasicData(1, Qt::AnchorTop, 0, Qt::AnchorTop, -10)
-            << BasicData(-1, Qt::AnchorBottom, 1, Qt::AnchorBottom, -20)
+            << BasicData(1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, -90)
+            << BasicData(-1, BobUI::AnchorRight, 1, BobUI::AnchorRight, -10)
+            << BasicData(1, BobUI::AnchorTop, 0, BobUI::AnchorTop, -10)
+            << BasicData(-1, BobUI::AnchorBottom, 1, BobUI::AnchorBottom, -20)
             ;
 
         theResult
@@ -1243,15 +1243,15 @@ void tst_QGraphicsAnchorLayout1::testNegativeSpacing_data()
             << BasicResult(1, QRectF(80, 0, 130, 120) )
             ;
 
-        QTest::newRow("Two, 2h+2v connected2 (n)") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Two, 2h+2v connected2 (n)") << QSizeF(200, 100) << theData << theResult;
     }
 }
 
 void tst_QGraphicsAnchorLayout1::testMixedSpacing_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<BasicLayoutTestDataList>("data");
-    QTest::addColumn<BasicLayoutTestResultList>("result");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<BasicLayoutTestDataList>("data");
+    BOBUIest::addColumn<BasicLayoutTestResultList>("result");
 
     typedef BasicLayoutTestData BasicData;
     typedef BasicLayoutTestResult BasicResult;
@@ -1262,16 +1262,16 @@ void tst_QGraphicsAnchorLayout1::testMixedSpacing_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorLeft, -50)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 50)
-            << BasicData(1, Qt::AnchorRight, 0, Qt::AnchorRight, 15)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorLeft, -50)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 50)
+            << BasicData(1, BobUI::AnchorRight, 0, BobUI::AnchorRight, 15)
 
-            // << BasicData(1, Qt::AnchorTop, 0, Qt::AnchorBottom, 5)
-            << BasicData(1, Qt::AnchorTop, 0, Qt::AnchorBottom, -5)
-            << BasicData(0, Qt::AnchorLeft, 1, Qt::AnchorLeft, -10)
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 20)
-            << BasicData(-1, Qt::AnchorBottom, 1, Qt::AnchorBottom, -5)
+            // << BasicData(1, BobUI::AnchorTop, 0, BobUI::AnchorBottom, 5)
+            << BasicData(1, BobUI::AnchorTop, 0, BobUI::AnchorBottom, -5)
+            << BasicData(0, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, -10)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 20)
+            << BasicData(-1, BobUI::AnchorBottom, 1, BobUI::AnchorBottom, -5)
             ;
 
         theResult
@@ -1281,7 +1281,7 @@ void tst_QGraphicsAnchorLayout1::testMixedSpacing_data()
             << BasicResult(1, QRectF(-60, 45, 140, 60) )
             ;
 
-        QTest::newRow("Two, partial overlap") << QSizeF(100, 100) << theData << theResult;
+        BOBUIest::newRow("Two, partial overlap") << QSizeF(100, 100) << theData << theResult;
     }
 
     // Two widgets, complete overlapping
@@ -1290,15 +1290,15 @@ void tst_QGraphicsAnchorLayout1::testMixedSpacing_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 5)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorRight, 0)
-            << BasicData(0, Qt::AnchorTop, 1, Qt::AnchorTop, 0)
-            << BasicData(1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 25)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 5)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorRight, 0)
+            << BasicData(0, BobUI::AnchorTop, 1, BobUI::AnchorTop, 0)
+            << BasicData(1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 25)
 
-            << BasicData(1, Qt::AnchorBottom, 0, Qt::AnchorBottom, 0)
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 5)
-            << BasicData(1, Qt::AnchorLeft, -1, Qt::AnchorRight, 50)
-            << BasicData(-1, Qt::AnchorRight, 1, Qt::AnchorRight, -10)
+            << BasicData(1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, 0)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 5)
+            << BasicData(1, BobUI::AnchorLeft, -1, BobUI::AnchorRight, 50)
+            << BasicData(-1, BobUI::AnchorRight, 1, BobUI::AnchorRight, -10)
             ;
 
         theResult
@@ -1306,7 +1306,7 @@ void tst_QGraphicsAnchorLayout1::testMixedSpacing_data()
             << BasicResult(1, QRectF(40, 5, 60, 35) )
             ;
 
-        QTest::newRow("Two, complete overlap") << QSizeF(90, 45) << theData << theResult;
+        BOBUIest::newRow("Two, complete overlap") << QSizeF(90, 45) << theData << theResult;
     }
 
     // Five widgets, v shaped, edges shared
@@ -1316,36 +1316,36 @@ void tst_QGraphicsAnchorLayout1::testMixedSpacing_data()
 
         theData
             // edges shared
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorLeft, 0)
-            << BasicData(1, Qt::AnchorRight, 2, Qt::AnchorLeft, 0)
-            << BasicData(2, Qt::AnchorRight, 3, Qt::AnchorLeft, 0)
-            << BasicData(3, Qt::AnchorRight, 4, Qt::AnchorLeft, 0)
-            << BasicData(1, Qt::AnchorBottom, 2, Qt::AnchorTop, 0)
-            << BasicData(0, Qt::AnchorBottom, 1, Qt::AnchorTop, 0)
-            << BasicData(3, Qt::AnchorBottom, 2, Qt::AnchorTop, 0)
-            << BasicData(4, Qt::AnchorBottom, 3, Qt::AnchorTop, 0)
-            << BasicData(0, Qt::AnchorBottom, 4, Qt::AnchorBottom, 0)
-            << BasicData(1, Qt::AnchorBottom, 3, Qt::AnchorBottom, 0)
-            << BasicData(0, Qt::AnchorTop, 4, Qt::AnchorTop, 0)
-            << BasicData(1, Qt::AnchorTop, 3, Qt::AnchorTop, 0)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorLeft, 0)
+            << BasicData(1, BobUI::AnchorRight, 2, BobUI::AnchorLeft, 0)
+            << BasicData(2, BobUI::AnchorRight, 3, BobUI::AnchorLeft, 0)
+            << BasicData(3, BobUI::AnchorRight, 4, BobUI::AnchorLeft, 0)
+            << BasicData(1, BobUI::AnchorBottom, 2, BobUI::AnchorTop, 0)
+            << BasicData(0, BobUI::AnchorBottom, 1, BobUI::AnchorTop, 0)
+            << BasicData(3, BobUI::AnchorBottom, 2, BobUI::AnchorTop, 0)
+            << BasicData(4, BobUI::AnchorBottom, 3, BobUI::AnchorTop, 0)
+            << BasicData(0, BobUI::AnchorBottom, 4, BobUI::AnchorBottom, 0)
+            << BasicData(1, BobUI::AnchorBottom, 3, BobUI::AnchorBottom, 0)
+            << BasicData(0, BobUI::AnchorTop, 4, BobUI::AnchorTop, 0)
+            << BasicData(1, BobUI::AnchorTop, 3, BobUI::AnchorTop, 0)
 
             // margins
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 5)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 5)
-            << BasicData(2, Qt::AnchorBottom, -1, Qt::AnchorBottom, 5)
-            // << BasicData(-1, Qt::AnchorRight, 4, Qt::AnchorRight, -5)
-            << BasicData(-1, Qt::AnchorRight, 4, Qt::AnchorRight, 5)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 5)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 5)
+            << BasicData(2, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 5)
+            // << BasicData(-1, BobUI::AnchorRight, 4, BobUI::AnchorRight, -5)
+            << BasicData(-1, BobUI::AnchorRight, 4, BobUI::AnchorRight, 5)
 
             // additional details for exact size determination easily
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorLeft, 25)
-            << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorRight, 50)
-            // << BasicData(-1, Qt::AnchorRight, 3, Qt::AnchorRight, -25)
-            // << BasicData(-1, Qt::AnchorRight, 2, Qt::AnchorRight, -50)
-            << BasicData(-1, Qt::AnchorRight, 3, Qt::AnchorRight, 25)
-            << BasicData(-1, Qt::AnchorRight, 2, Qt::AnchorRight, 50)
-            << BasicData(-1, Qt::AnchorTop, 3, Qt::AnchorBottom, 50)
-            // << BasicData(-1, Qt::AnchorBottom, 3, Qt::AnchorTop, -50)
-            << BasicData(-1, Qt::AnchorBottom, 3, Qt::AnchorTop, 50)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 25)
+            << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorRight, 50)
+            // << BasicData(-1, BobUI::AnchorRight, 3, BobUI::AnchorRight, -25)
+            // << BasicData(-1, BobUI::AnchorRight, 2, BobUI::AnchorRight, -50)
+            << BasicData(-1, BobUI::AnchorRight, 3, BobUI::AnchorRight, 25)
+            << BasicData(-1, BobUI::AnchorRight, 2, BobUI::AnchorRight, 50)
+            << BasicData(-1, BobUI::AnchorTop, 3, BobUI::AnchorBottom, 50)
+            // << BasicData(-1, BobUI::AnchorBottom, 3, BobUI::AnchorTop, -50)
+            << BasicData(-1, BobUI::AnchorBottom, 3, BobUI::AnchorTop, 50)
 
             ;
 
@@ -1357,7 +1357,7 @@ void tst_QGraphicsAnchorLayout1::testMixedSpacing_data()
             << BasicResult(4, QRectF(100,5,20,20))
             ;
 
-        QTest::newRow("Five, V shape") << QSizeF(125, 75) << theData << theResult;
+        BOBUIest::newRow("Five, V shape") << QSizeF(125, 75) << theData << theResult;
     }
 
     // ### The behavior is different in QGraphicsAnchorLayout. What happens here is
@@ -1373,14 +1373,14 @@ void tst_QGraphicsAnchorLayout1::testMixedSpacing_data()
         BasicLayoutTestResultList theResult;
 
         theData
-                << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 50)
-                << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 50)
+                << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 50)
+                << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 50)
                 ;
         theResult
                 << BasicResult(0, QRectF(0,0,0,0))
                 ;
 
-        QTest::newRow("One widget, unsolvable") << QSizeF(10, 10) << theData << theResult;
+        BOBUIest::newRow("One widget, unsolvable") << QSizeF(10, 10) << theData << theResult;
     }
 
     // Two widgets, one has fixed size
@@ -1389,28 +1389,28 @@ void tst_QGraphicsAnchorLayout1::testMixedSpacing_data()
         BasicLayoutTestResultList theResult;
 
         theData
-                << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 50)
-                << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 50)
+                << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 50)
+                << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 50)
             // not supported, use sizePolicy instead
-            // << BasicData(0, Qt::AnchorLeft, 0, Qt::AnchorRight, 50)
+            // << BasicData(0, BobUI::AnchorLeft, 0, BobUI::AnchorRight, 50)
 
-                << BasicData(-1, Qt::AnchorLeft, 1, Qt::AnchorLeft, 50)
-                << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 50)
+                << BasicData(-1, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 50)
+                << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 50)
                 ;
         theResult
                 << BasicResult(0, QRectF(50,0,50,50))
                 << BasicResult(1, QRectF(50,0,50,50))
                 ;
 
-        QTest::newRow("Two widgets, one has fixed size") << QSizeF(150, 150) << theData << theResult;
+        BOBUIest::newRow("Two widgets, one has fixed size") << QSizeF(150, 150) << theData << theResult;
     }
 }
 
 void tst_QGraphicsAnchorLayout1::testMulti_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<BasicLayoutTestDataList>("data");
-    QTest::addColumn<BasicLayoutTestResultList>("result");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<BasicLayoutTestDataList>("data");
+    BOBUIest::addColumn<BasicLayoutTestResultList>("result");
 
     typedef BasicLayoutTestData BasicData;
     typedef BasicLayoutTestResult BasicResult;
@@ -1423,19 +1423,19 @@ void tst_QGraphicsAnchorLayout1::testMulti_data()
         const int n = 30;
         for ( int i = 0 ; i < n; i++ ) {
             theData
-                << BasicData(-1, Qt::AnchorTop, i, Qt::AnchorTop, 20)
-                << BasicData(-1, Qt::AnchorLeft, i, Qt::AnchorLeft, 10)
-                // << BasicData(-1, Qt::AnchorBottom, i, Qt::AnchorBottom, -40)
-                // << BasicData(-1, Qt::AnchorRight, i, Qt::AnchorRight, -30);
-                << BasicData(-1, Qt::AnchorBottom, i, Qt::AnchorBottom, 40)
-                << BasicData(-1, Qt::AnchorRight, i, Qt::AnchorRight, 30);
+                << BasicData(-1, BobUI::AnchorTop, i, BobUI::AnchorTop, 20)
+                << BasicData(-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, 10)
+                // << BasicData(-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -40)
+                // << BasicData(-1, BobUI::AnchorRight, i, BobUI::AnchorRight, -30);
+                << BasicData(-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, 40)
+                << BasicData(-1, BobUI::AnchorRight, i, BobUI::AnchorRight, 30);
 
             theResult
                 << BasicResult(i, QRectF(10, 20, 160, 40) );
         }
 
 
-        QTest::newRow("Overlapping multi") << QSizeF(200, 100) << theData << theResult;
+        BOBUIest::newRow("Overlapping multi") << QSizeF(200, 100) << theData << theResult;
     }
 
     // Multiple widgets, linear order
@@ -1456,30 +1456,30 @@ void tst_QGraphicsAnchorLayout1::testMulti_data()
             if ( i == 0 ) {
                 // First item
                 theData
-                    << BasicData(-1, Qt::AnchorTop, i, Qt::AnchorTop, verticalStep)
-                    << BasicData(-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    << BasicData(i+1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    << BasicData(i+1, Qt::AnchorRight, i, Qt::AnchorRight, -horizontalStep);
+                    << BasicData(-1, BobUI::AnchorTop, i, BobUI::AnchorTop, verticalStep)
+                    << BasicData(-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    << BasicData(i+1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    << BasicData(i+1, BobUI::AnchorRight, i, BobUI::AnchorRight, -horizontalStep);
 
             } else if ( i == n-1 ) {
                 // Last item
                 theData
-                    << BasicData(i-1, Qt::AnchorTop, i, Qt::AnchorTop, verticalStep)
-                    << BasicData(i-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    << BasicData(-1, Qt::AnchorBottom, i, Qt::AnchorBottom, verticalStep)
-                    << BasicData(-1, Qt::AnchorRight, i, Qt::AnchorRight, horizontalStep);
-                    // << BasicData(-1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    // << BasicData(-1, Qt::AnchorRight, i, Qt::AnchorRight, -horizontalStep);
+                    << BasicData(i-1, BobUI::AnchorTop, i, BobUI::AnchorTop, verticalStep)
+                    << BasicData(i-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    << BasicData(-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, verticalStep)
+                    << BasicData(-1, BobUI::AnchorRight, i, BobUI::AnchorRight, horizontalStep);
+                    // << BasicData(-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    // << BasicData(-1, BobUI::AnchorRight, i, BobUI::AnchorRight, -horizontalStep);
 
             } else {
                 // items in the middle
                 theData
-                    << BasicData(i-1, Qt::AnchorTop, i, Qt::AnchorTop, verticalStep)
-                    << BasicData(i-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    << BasicData(i+1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    << BasicData(i+1, Qt::AnchorRight, i, Qt::AnchorRight, -horizontalStep);
-                    // << BasicData(i+1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    // << BasicData(i+1, Qt::AnchorRight, i, Qt::AnchorRight, -horizontalStep);
+                    << BasicData(i-1, BobUI::AnchorTop, i, BobUI::AnchorTop, verticalStep)
+                    << BasicData(i-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    << BasicData(i+1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    << BasicData(i+1, BobUI::AnchorRight, i, BobUI::AnchorRight, -horizontalStep);
+                    // << BasicData(i+1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    // << BasicData(i+1, BobUI::AnchorRight, i, BobUI::AnchorRight, -horizontalStep);
 
             }
 
@@ -1491,7 +1491,7 @@ void tst_QGraphicsAnchorLayout1::testMulti_data()
         if (sizeof(qreal) == 4) {
             qDebug("Linear multi: Skipping! (qreal has too little precision, result will be wrong)");
         } else {
-            QTest::newRow("Linear multi") << QSizeF(width, height) << theData << theResult;
+            BOBUIest::newRow("Linear multi") << QSizeF(width, height) << theData << theResult;
         }
     }
 
@@ -1513,41 +1513,41 @@ void tst_QGraphicsAnchorLayout1::testMulti_data()
             if ( i == 0 ) {
                 // First item
                 theData
-                    << BasicData(-1, Qt::AnchorTop, i, Qt::AnchorTop, verticalStep)
-                    << BasicData(-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    << BasicData(i+1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    << BasicData(i, Qt::AnchorRight, i+1, Qt::AnchorRight, horizontalStep);
+                    << BasicData(-1, BobUI::AnchorTop, i, BobUI::AnchorTop, verticalStep)
+                    << BasicData(-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    << BasicData(i+1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    << BasicData(i, BobUI::AnchorRight, i+1, BobUI::AnchorRight, horizontalStep);
 
             } else if ( i == n-1 ) {
                 // Last item
                 theData
-                    << BasicData(i-1, Qt::AnchorTop, i, Qt::AnchorTop, -verticalStep)
-                    << BasicData(i-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    << BasicData(i-1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    << BasicData(i, Qt::AnchorRight, -1, Qt::AnchorRight, horizontalStep);
+                    << BasicData(i-1, BobUI::AnchorTop, i, BobUI::AnchorTop, -verticalStep)
+                    << BasicData(i-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    << BasicData(i-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    << BasicData(i, BobUI::AnchorRight, -1, BobUI::AnchorRight, horizontalStep);
             } else if ( i == ((n-1)/2) ) {
                 // midway
                 theData
-                    << BasicData(i-1, Qt::AnchorTop, i, Qt::AnchorTop, verticalStep)
-                    << BasicData(i-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    // << BasicData(-1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    << BasicData(-1, Qt::AnchorBottom, i, Qt::AnchorBottom, verticalStep)
-                    << BasicData(i, Qt::AnchorRight, i+1, Qt::AnchorRight, horizontalStep);
+                    << BasicData(i-1, BobUI::AnchorTop, i, BobUI::AnchorTop, verticalStep)
+                    << BasicData(i-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    // << BasicData(-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    << BasicData(-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, verticalStep)
+                    << BasicData(i, BobUI::AnchorRight, i+1, BobUI::AnchorRight, horizontalStep);
             } else if ( i < ((n-1)/2) ) {
                 // before midway - going down
                 theData
-                    << BasicData(i-1, Qt::AnchorTop, i, Qt::AnchorTop, verticalStep)
-                    << BasicData(i-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    << BasicData(i+1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    << BasicData(i, Qt::AnchorRight, i+1, Qt::AnchorRight, horizontalStep);
+                    << BasicData(i-1, BobUI::AnchorTop, i, BobUI::AnchorTop, verticalStep)
+                    << BasicData(i-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    << BasicData(i+1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    << BasicData(i, BobUI::AnchorRight, i+1, BobUI::AnchorRight, horizontalStep);
 
             } else {
                 // after midway - going up
                 theData
-                    << BasicData(i-1, Qt::AnchorTop, i, Qt::AnchorTop, -verticalStep)
-                    << BasicData(i-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    << BasicData(i-1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    << BasicData(i, Qt::AnchorRight, i+1, Qt::AnchorRight, horizontalStep);
+                    << BasicData(i-1, BobUI::AnchorTop, i, BobUI::AnchorTop, -verticalStep)
+                    << BasicData(i-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    << BasicData(i-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    << BasicData(i, BobUI::AnchorRight, i+1, BobUI::AnchorRight, horizontalStep);
 
             }
 
@@ -1565,7 +1565,7 @@ void tst_QGraphicsAnchorLayout1::testMulti_data()
         if (sizeof(qreal) == 4) {
             qDebug("V multi: Skipping! (qreal has too little precision, result will be wrong)");
         } else {
-            QTest::newRow("V multi") << QSizeF(width, height) << theData << theResult;
+            BOBUIest::newRow("V multi") << QSizeF(width, height) << theData << theResult;
         }
     }
 
@@ -1587,37 +1587,37 @@ void tst_QGraphicsAnchorLayout1::testMulti_data()
             if ( i%d == 0 ) {
                 // left side item
                 theData
-                    << BasicData(-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    << BasicData(i+1, Qt::AnchorRight, i, Qt::AnchorRight, -horizontalStep);
+                    << BasicData(-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    << BasicData(i+1, BobUI::AnchorRight, i, BobUI::AnchorRight, -horizontalStep);
             } else if ( (i+1)%d == 0 ) {
                 // rigth side item
                 theData
-                    << BasicData(i-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    // << BasicData(-1, Qt::AnchorRight, i, Qt::AnchorRight, -horizontalStep);
-                    << BasicData(-1, Qt::AnchorRight, i, Qt::AnchorRight, horizontalStep);
+                    << BasicData(i-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    // << BasicData(-1, BobUI::AnchorRight, i, BobUI::AnchorRight, -horizontalStep);
+                    << BasicData(-1, BobUI::AnchorRight, i, BobUI::AnchorRight, horizontalStep);
             } else {
                 // horizontal middle
                 theData
-                    << BasicData(i-1, Qt::AnchorLeft, i, Qt::AnchorLeft, horizontalStep)
-                    << BasicData(i+1, Qt::AnchorRight, i, Qt::AnchorRight, -horizontalStep);
+                    << BasicData(i-1, BobUI::AnchorLeft, i, BobUI::AnchorLeft, horizontalStep)
+                    << BasicData(i+1, BobUI::AnchorRight, i, BobUI::AnchorRight, -horizontalStep);
             }
 
             if ( i < d ) {
                 // top line
                 theData
-                    << BasicData(-1, Qt::AnchorTop, i, Qt::AnchorTop, verticalStep)
-                    << BasicData(i+d, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep);
+                    << BasicData(-1, BobUI::AnchorTop, i, BobUI::AnchorTop, verticalStep)
+                    << BasicData(i+d, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep);
             } else if ( i >= (d-1)*d ){
                 // bottom line
                 theData
-                    << BasicData(i-d, Qt::AnchorTop, i, Qt::AnchorTop, verticalStep)
-                    // << BasicData(-1, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep)
-                    << BasicData(-1, Qt::AnchorBottom, i, Qt::AnchorBottom, verticalStep);
+                    << BasicData(i-d, BobUI::AnchorTop, i, BobUI::AnchorTop, verticalStep)
+                    // << BasicData(-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep)
+                    << BasicData(-1, BobUI::AnchorBottom, i, BobUI::AnchorBottom, verticalStep);
             } else {
                 // vertical middle
                 theData
-                    << BasicData(i-d, Qt::AnchorTop, i, Qt::AnchorTop, verticalStep)
-                    << BasicData(i+d, Qt::AnchorBottom, i, Qt::AnchorBottom, -verticalStep);
+                    << BasicData(i-d, BobUI::AnchorTop, i, BobUI::AnchorTop, verticalStep)
+                    << BasicData(i+d, BobUI::AnchorBottom, i, BobUI::AnchorBottom, -verticalStep);
             }
 
             theResult
@@ -1627,7 +1627,7 @@ void tst_QGraphicsAnchorLayout1::testMulti_data()
         if (sizeof(qreal) == 4) {
             qDebug("Grid multi: Skipping! (qreal has too little precision, result will be wrong)");
         } else {
-            QTest::newRow("Grid multi") << QSizeF(200, 100) << theData << theResult;
+            BOBUIest::newRow("Grid multi") << QSizeF(200, 100) << theData << theResult;
         }
     }
 }
@@ -1707,7 +1707,7 @@ void tst_QGraphicsAnchorLayout1::testBasicLayout()
     }
 
     // Test mirrored mode
-    widget->setLayoutDirection(Qt::RightToLeft);
+    widget->setLayoutDirection(BobUI::RightToLeft);
     layout->activate();
     // Validate
     for (int j = 0; j < result.size(); ++j) {
@@ -1747,9 +1747,9 @@ void tst_QGraphicsAnchorLayout1::testMulti()
 
 void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<BasicLayoutTestDataList>("data");
-    QTest::addColumn<BasicLayoutTestResultList>("result");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<BasicLayoutTestDataList>("data");
+    BOBUIest::addColumn<BasicLayoutTestResultList>("result");
 
     typedef BasicLayoutTestData BasicData;
     typedef BasicLayoutTestResult BasicResult;
@@ -1760,16 +1760,16 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            // << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorHorizontalCenter, -10)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorHorizontalCenter, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorRight, 15)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorVerticalCenter, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 5);
+            // << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorHorizontalCenter, -10)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorHorizontalCenter, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, 15)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorVerticalCenter, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 5);
 
         theResult
             << BasicResult(0, QRectF(5, 5, 10, 10) );
 
-        QTest::newRow("center, basic") << QSizeF(20, 20) << theData << theResult;
+        BOBUIest::newRow("center, basic") << QSizeF(20, 20) << theData << theResult;
     }
 
     // Basic center case, with invalid (shouldn't affect on result)
@@ -1778,27 +1778,27 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            // << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorHorizontalCenter, -10)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorHorizontalCenter, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorRight, 15)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorVerticalCenter, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 5)
+            // << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorHorizontalCenter, -10)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorHorizontalCenter, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, 15)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorVerticalCenter, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 5)
 
             // bogus definitions
-            << BasicData(0, Qt::AnchorHorizontalCenter, -1, Qt::AnchorBottom, 5)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 1, Qt::AnchorVerticalCenter, 5)
-            << BasicData(0, Qt::AnchorVerticalCenter, -1, Qt::AnchorRight, 5)
-            << BasicData(0, Qt::AnchorVerticalCenter, 0, Qt::AnchorVerticalCenter, 666)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, 999)
-            << BasicData(0, Qt::AnchorLeft, 0, Qt::AnchorLeft, 333)
-            << BasicData(-1, Qt::AnchorRight, -1, Qt::AnchorRight, 222)
-            << BasicData(0, Qt::AnchorTop, 0, Qt::AnchorTop, 111)
-            << BasicData(0, Qt::AnchorBottom, 0, Qt::AnchorBottom, 444);
+            << BasicData(0, BobUI::AnchorHorizontalCenter, -1, BobUI::AnchorBottom, 5)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorVerticalCenter, 5)
+            << BasicData(0, BobUI::AnchorVerticalCenter, -1, BobUI::AnchorRight, 5)
+            << BasicData(0, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorVerticalCenter, 666)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, 999)
+            << BasicData(0, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 333)
+            << BasicData(-1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 222)
+            << BasicData(0, BobUI::AnchorTop, 0, BobUI::AnchorTop, 111)
+            << BasicData(0, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, 444);
 
         theResult
             << BasicResult(0, QRectF(5, 5, 10, 10) );
 
-        QTest::newRow("center, basic with invalid") << QSizeF(20, 20) << theData << theResult;
+        BOBUIest::newRow("center, basic with invalid") << QSizeF(20, 20) << theData << theResult;
     }
 
     // Basic center case 2
@@ -1807,16 +1807,16 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, 0)
-            // Not supported << BasicData(0, Qt::AnchorHorizontalCenter, 0, Qt::AnchorRight, 5)
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorRight, 5)
-            << BasicData(-1, Qt::AnchorVerticalCenter, 0, Qt::AnchorVerticalCenter, 0)
-            << BasicData(-1, Qt::AnchorVerticalCenter, 0, Qt::AnchorTop, -5);
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, 0)
+            // Not supported << BasicData(0, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorRight, 5)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorRight, 5)
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorVerticalCenter, 0)
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorTop, -5);
 
         theResult
             << BasicResult(0, QRectF(5, 5, 10, 10) );
 
-        QTest::newRow("center, basic 2") << QSizeF(20, 20) << theData << theResult;
+        BOBUIest::newRow("center, basic 2") << QSizeF(20, 20) << theData << theResult;
     }
 
     // Basic center case, overrides
@@ -1825,21 +1825,21 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, 10)
-            << BasicData(-1, Qt::AnchorVerticalCenter, 0, Qt::AnchorVerticalCenter, 20)
-            << BasicData(0, Qt::AnchorHorizontalCenter, -1, Qt::AnchorHorizontalCenter, 30)
-            << BasicData(0, Qt::AnchorVerticalCenter, -1, Qt::AnchorVerticalCenter, 40)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, 10)
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorVerticalCenter, 20)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, -1, BobUI::AnchorHorizontalCenter, 30)
+            << BasicData(0, BobUI::AnchorVerticalCenter, -1, BobUI::AnchorVerticalCenter, 40)
             // actual data:
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, 0)
-            << BasicData(-1, Qt::AnchorVerticalCenter, 0, Qt::AnchorVerticalCenter, 0)
-            // << BasicData(0, Qt::AnchorHorizontalCenter, 0, Qt::AnchorRight, 5)
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorRight, 5)
-            << BasicData(-1, Qt::AnchorVerticalCenter, 0, Qt::AnchorTop, -5);
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, 0)
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorVerticalCenter, 0)
+            // << BasicData(0, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorRight, 5)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorRight, 5)
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorTop, -5);
 
         theResult
             << BasicResult(0, QRectF(5, 5, 10, 10) );
 
-        QTest::newRow("center, overrides") << QSizeF(20, 20) << theData << theResult;
+        BOBUIest::newRow("center, overrides") << QSizeF(20, 20) << theData << theResult;
     }
 
     // Two nested
@@ -1848,20 +1848,20 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorLeft, 0)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorBottom, 0, Qt::AnchorBottom, 0)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorRight, 0)
-            << BasicData(0, Qt::AnchorVerticalCenter, 1, Qt::AnchorTop, 0)
-            << BasicData(0, Qt::AnchorLeft, 1, Qt::AnchorLeft, 0)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorRight, 0)
-            << BasicData(0, Qt::AnchorBottom, 1, Qt::AnchorBottom, 0);
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorLeft, 0)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, 0)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorRight, 0)
+            << BasicData(0, BobUI::AnchorVerticalCenter, 1, BobUI::AnchorTop, 0)
+            << BasicData(0, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 0)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorRight, 0)
+            << BasicData(0, BobUI::AnchorBottom, 1, BobUI::AnchorBottom, 0);
 
         theResult
             << BasicResult(0, QRectF(20, 0, 20, 40))
             << BasicResult(1, QRectF(20, 20, 20, 20));
 
-        QTest::newRow("center, two nested") << QSizeF(40, 40) << theData << theResult;
+        BOBUIest::newRow("center, two nested") << QSizeF(40, 40) << theData << theResult;
     }
 
     // Two overlap
@@ -1871,35 +1871,35 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
 
         // theData
         //     // horizontal
-        //     << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 20)
-        //     << BasicData(0, Qt::AnchorHorizontalCenter, 1, Qt::AnchorLeft, 0)
-        //     << BasicData(1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorRight, -5)
-        //     << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-        //     << BasicData(0, Qt::AnchorHorizontalCenter, 0, Qt::AnchorRight, 10)
+        //     << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 20)
+        //     << BasicData(0, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorLeft, 0)
+        //     << BasicData(1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorRight, -5)
+        //     << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+        //     << BasicData(0, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorRight, 10)
         //     // vertical is pretty much same as horizontal, just roles swapped
-        //     << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 20)
-        //     << BasicData(1, Qt::AnchorVerticalCenter, 0, Qt::AnchorTop, 0)
-        //     << BasicData(0, Qt::AnchorVerticalCenter, 1, Qt::AnchorBottom, -5)
-        //     << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 10)
-        //     << BasicData(1, Qt::AnchorVerticalCenter, 1, Qt::AnchorBottom, 10);
+        //     << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 20)
+        //     << BasicData(1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorTop, 0)
+        //     << BasicData(0, BobUI::AnchorVerticalCenter, 1, BobUI::AnchorBottom, -5)
+        //     << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 10)
+        //     << BasicData(1, BobUI::AnchorVerticalCenter, 1, BobUI::AnchorBottom, 10);
 
         theData
             // horizontal
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 20)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 1, Qt::AnchorLeft, 0)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorHorizontalCenter, 5)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorRight, 20)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 20)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorLeft, 0)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorHorizontalCenter, 5)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorRight, 20)
             // vertical
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 20)
-            << BasicData(1, Qt::AnchorVerticalCenter, 0, Qt::AnchorTop, 0)
-            << BasicData(1, Qt::AnchorBottom, 0, Qt::AnchorVerticalCenter, 5)
-            << BasicData(1, Qt::AnchorBottom, 0, Qt::AnchorBottom, 20);
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 20)
+            << BasicData(1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorTop, 0)
+            << BasicData(1, BobUI::AnchorBottom, 0, BobUI::AnchorVerticalCenter, 5)
+            << BasicData(1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, 20);
 
         theResult
             << BasicResult(0, QRectF(20, 30, 20, 30))
             << BasicResult(1, QRectF(30, 20, 30, 20));
 
-        QTest::newRow("center, two overlap") << QSizeF(70, 70) << theData << theResult;
+        BOBUIest::newRow("center, two overlap") << QSizeF(70, 70) << theData << theResult;
     }
 
     // Three
@@ -1908,28 +1908,28 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 0)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 2, Qt::AnchorHorizontalCenter, 75)
-            << BasicData(1, Qt::AnchorRight, 2, Qt::AnchorLeft, 10)
-            << BasicData(1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, -30)
-            << BasicData(2, Qt::AnchorRight, -1, Qt::AnchorRight, 0)
-            << BasicData(1, Qt::AnchorLeft, 1, Qt::AnchorRight, 30)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 0)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 2, BobUI::AnchorHorizontalCenter, 75)
+            << BasicData(1, BobUI::AnchorRight, 2, BobUI::AnchorLeft, 10)
+            << BasicData(1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, -30)
+            << BasicData(2, BobUI::AnchorRight, -1, BobUI::AnchorRight, 0)
+            << BasicData(1, BobUI::AnchorLeft, 1, BobUI::AnchorRight, 30)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorLeft, 10)
 
-            << BasicData(1, Qt::AnchorTop, -1, Qt::AnchorTop, 0)
-            << BasicData(1, Qt::AnchorVerticalCenter, 0, Qt::AnchorVerticalCenter, 35)
-            << BasicData(1, Qt::AnchorVerticalCenter, 2, Qt::AnchorVerticalCenter, 15)
-            << BasicData(1, Qt::AnchorBottom, 2, Qt::AnchorTop, 5)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 0)
-            << BasicData(2, Qt::AnchorBottom, 0, Qt::AnchorTop, 5)
-            << BasicData(0, Qt::AnchorTop, 0, Qt::AnchorBottom, 20);
+            << BasicData(1, BobUI::AnchorTop, -1, BobUI::AnchorTop, 0)
+            << BasicData(1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorVerticalCenter, 35)
+            << BasicData(1, BobUI::AnchorVerticalCenter, 2, BobUI::AnchorVerticalCenter, 15)
+            << BasicData(1, BobUI::AnchorBottom, 2, BobUI::AnchorTop, 5)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 0)
+            << BasicData(2, BobUI::AnchorBottom, 0, BobUI::AnchorTop, 5)
+            << BasicData(0, BobUI::AnchorTop, 0, BobUI::AnchorBottom, 20);
 
         theResult
             << BasicResult(0, QRectF(0, 30, 10, 20))
             << BasicResult(1, QRectF(20, 0, 30, 10))
             << BasicResult(2, QRectF(60, 15, 40, 10));
 
-        QTest::newRow("center, three") << QSizeF(100, 50) << theData << theResult;
+        BOBUIest::newRow("center, three") << QSizeF(100, 50) << theData << theResult;
     }
 
     // Two, parent center
@@ -1939,21 +1939,21 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
 
         theData
             // vertical is pretty much same as horizontal, just roles swapped
-            << BasicData(-1, Qt::AnchorVerticalCenter, 1, Qt::AnchorVerticalCenter, -15)
-            << BasicData(-1, Qt::AnchorVerticalCenter, 0, Qt::AnchorVerticalCenter, 10)
-            << BasicData(-1, Qt::AnchorBottom, 0, Qt::AnchorBottom, 0)
-            << BasicData(1, Qt::AnchorTop, 0, Qt::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 1, BobUI::AnchorVerticalCenter, -15)
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorVerticalCenter, 10)
+            << BasicData(-1, BobUI::AnchorBottom, 0, BobUI::AnchorBottom, 0)
+            << BasicData(1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 0)
             // horizontal
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, -15)
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 1, Qt::AnchorHorizontalCenter, 10)
-            << BasicData(-1, Qt::AnchorRight, 1, Qt::AnchorRight, 0)
-            << BasicData(0, Qt::AnchorLeft, 1, Qt::AnchorLeft, 0);
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, -15)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorHorizontalCenter, 10)
+            << BasicData(-1, BobUI::AnchorRight, 1, BobUI::AnchorRight, 0)
+            << BasicData(0, BobUI::AnchorLeft, 1, BobUI::AnchorLeft, 0);
 
         theResult
             << BasicResult(0, QRectF(20, 20, 30, 80))
             << BasicResult(1, QRectF(20, 20, 80, 30));
 
-        QTest::newRow("center, parent") << QSizeF(100, 100) << theData << theResult;
+        BOBUIest::newRow("center, parent") << QSizeF(100, 100) << theData << theResult;
     }
 
     // Two, parent center 2
@@ -1962,23 +1962,23 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            // << BasicData(1, Qt::AnchorLeft, -1, Qt::AnchorHorizontalCenter, 15)
-            << BasicData(1, Qt::AnchorLeft, -1, Qt::AnchorHorizontalCenter, -15)
-            << BasicData(1, Qt::AnchorRight, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, -1, Qt::AnchorRight, 5)
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 1, Qt::AnchorRight, -5)
+            // << BasicData(1, BobUI::AnchorLeft, -1, BobUI::AnchorHorizontalCenter, 15)
+            << BasicData(1, BobUI::AnchorLeft, -1, BobUI::AnchorHorizontalCenter, -15)
+            << BasicData(1, BobUI::AnchorRight, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, -1, BobUI::AnchorRight, 5)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorRight, -5)
             // vertical
-            << BasicData(0, Qt::AnchorVerticalCenter, 1, Qt::AnchorVerticalCenter, 20)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 10)
-            << BasicData(0, Qt::AnchorBottom, 1, Qt::AnchorBottom, 20)
-            << BasicData(0, Qt::AnchorTop, 1, Qt::AnchorTop, 20)
-            << BasicData(0, Qt::AnchorBottom, 1, Qt::AnchorTop, 10);
+            << BasicData(0, BobUI::AnchorVerticalCenter, 1, BobUI::AnchorVerticalCenter, 20)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 10)
+            << BasicData(0, BobUI::AnchorBottom, 1, BobUI::AnchorBottom, 20)
+            << BasicData(0, BobUI::AnchorTop, 1, BobUI::AnchorTop, 20)
+            << BasicData(0, BobUI::AnchorBottom, 1, BobUI::AnchorTop, 10);
 
         theResult
             << BasicResult(0, QRectF(30, 10, 15, 10))
             << BasicResult(1, QRectF(10, 30, 10, 10));
 
-        QTest::newRow("center, parent 2") << QSizeF(50, 50) << theData << theResult;
+        BOBUIest::newRow("center, parent 2") << QSizeF(50, 50) << theData << theResult;
     }
 
     // Two, parent center 3
@@ -1987,45 +1987,45 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorRight, -5)
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 1, Qt::AnchorLeft, 5)
-            // << BasicData(0, Qt::AnchorLeft, 1, Qt::AnchorRight, 100)
-            << BasicData(0, Qt::AnchorLeft, 1, Qt::AnchorRight, -100)
-            << BasicData(0, Qt::AnchorLeft, -1, Qt::AnchorLeft, 0)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorRight, -5)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorLeft, 5)
+            // << BasicData(0, BobUI::AnchorLeft, 1, BobUI::AnchorRight, 100)
+            << BasicData(0, BobUI::AnchorLeft, 1, BobUI::AnchorRight, -100)
+            << BasicData(0, BobUI::AnchorLeft, -1, BobUI::AnchorLeft, 0)
 
             // vertical
-            << BasicData(0, Qt::AnchorVerticalCenter, 1, Qt::AnchorVerticalCenter, 55)
-            << BasicData(0, Qt::AnchorTop, -1, Qt::AnchorTop, 0)
-            << BasicData(1, Qt::AnchorBottom, -1, Qt::AnchorBottom, 0)
-            << BasicData(0, Qt::AnchorBottom, 1, Qt::AnchorTop, 10)
-            // << BasicData(0, Qt::AnchorTop, 0, Qt::AnchorBottom, 45)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorBottom, 45)
+            << BasicData(0, BobUI::AnchorVerticalCenter, 1, BobUI::AnchorVerticalCenter, 55)
+            << BasicData(0, BobUI::AnchorTop, -1, BobUI::AnchorTop, 0)
+            << BasicData(1, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 0)
+            << BasicData(0, BobUI::AnchorBottom, 1, BobUI::AnchorTop, 10)
+            // << BasicData(0, BobUI::AnchorTop, 0, BobUI::AnchorBottom, 45)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorBottom, 45)
             ;
 
         theResult
             << BasicResult(0, QRectF(0, 0, 45, 45))
             << BasicResult(1, QRectF(55, 55, 45, 45));
 
-        QTest::newRow("center, parent 3") << QSizeF(100, 100) << theData << theResult;
+        BOBUIest::newRow("center, parent 3") << QSizeF(100, 100) << theData << theResult;
     }
 
 }
 
 void tst_QGraphicsAnchorLayout1::testCenterAnchors()
 {
-    if (strcmp(QTest::currentDataTag(), "center, basic with invalid") == 0) {
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor edges of different orientations");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor edges of different orientations");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor edges of different orientations");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-    } else if (strcmp(QTest::currentDataTag(), "center, three") == 0) {
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+    if (strcmp(BOBUIest::currentDataTag(), "center, basic with invalid") == 0) {
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor edges of different orientations");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor edges of different orientations");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor edges of different orientations");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+    } else if (strcmp(BOBUIest::currentDataTag(), "center, three") == 0) {
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
     }
 
     // use the same frame
@@ -2034,10 +2034,10 @@ void tst_QGraphicsAnchorLayout1::testCenterAnchors()
 
 void tst_QGraphicsAnchorLayout1::testRemoveCenterAnchor_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<BasicLayoutTestDataList>("data");
-    QTest::addColumn<BasicLayoutTestDataList>("removeData");
-    QTest::addColumn<BasicLayoutTestResultList>("result");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<BasicLayoutTestDataList>("data");
+    BOBUIest::addColumn<BasicLayoutTestDataList>("removeData");
+    BOBUIest::addColumn<BasicLayoutTestResultList>("result");
 
     typedef BasicLayoutTestData BasicData;
     typedef BasicLayoutTestResult BasicResult;
@@ -2048,26 +2048,26 @@ void tst_QGraphicsAnchorLayout1::testRemoveCenterAnchor_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            // << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorHorizontalCenter, -10)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorHorizontalCenter, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorRight, 15)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorVerticalCenter, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 5)
+            // << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorHorizontalCenter, -10)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorHorizontalCenter, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, 15)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorVerticalCenter, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 5)
 
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 1, Qt::AnchorHorizontalCenter, 66)
-            << BasicData(1, Qt::AnchorVerticalCenter, -1, Qt::AnchorVerticalCenter, 99)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 1, Qt::AnchorHorizontalCenter, 33)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorHorizontalCenter, 66)
+            << BasicData(1, BobUI::AnchorVerticalCenter, -1, BobUI::AnchorVerticalCenter, 99)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorHorizontalCenter, 33)
             ;
 
         theRemoveData
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 1, Qt::AnchorHorizontalCenter, 0)
-            << BasicData(1, Qt::AnchorVerticalCenter, -1, Qt::AnchorVerticalCenter, 0)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 1, Qt::AnchorHorizontalCenter, 0);
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorHorizontalCenter, 0)
+            << BasicData(1, BobUI::AnchorVerticalCenter, -1, BobUI::AnchorVerticalCenter, 0)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorHorizontalCenter, 0);
 
         theResult
             << BasicResult(0, QRectF(5, 5, 10, 10) );
 
-        QTest::newRow("remove, center, basic") << QSizeF(20, 20) << theData
+        BOBUIest::newRow("remove, center, basic") << QSizeF(20, 20) << theData
             << theRemoveData << theResult;
     }
 
@@ -2077,40 +2077,40 @@ void tst_QGraphicsAnchorLayout1::testRemoveCenterAnchor_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 0)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 2, Qt::AnchorHorizontalCenter, 75)
-            << BasicData(1, Qt::AnchorRight, 2, Qt::AnchorLeft, 10)
-            << BasicData(1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, -30)
-            << BasicData(2, Qt::AnchorRight, -1, Qt::AnchorRight, 0)
-            << BasicData(1, Qt::AnchorLeft, 1, Qt::AnchorRight, 30)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 0)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 2, BobUI::AnchorHorizontalCenter, 75)
+            << BasicData(1, BobUI::AnchorRight, 2, BobUI::AnchorLeft, 10)
+            << BasicData(1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, -30)
+            << BasicData(2, BobUI::AnchorRight, -1, BobUI::AnchorRight, 0)
+            << BasicData(1, BobUI::AnchorLeft, 1, BobUI::AnchorRight, 30)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorLeft, 10)
 
             // extra:
-            << BasicData(-1, Qt::AnchorVerticalCenter, 0, Qt::AnchorVerticalCenter, 66)
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, 33)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, 55)
-            << BasicData(1, Qt::AnchorVerticalCenter, 1, Qt::AnchorVerticalCenter, 55)
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorVerticalCenter, 66)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, 33)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, 55)
+            << BasicData(1, BobUI::AnchorVerticalCenter, 1, BobUI::AnchorVerticalCenter, 55)
 
-            << BasicData(1, Qt::AnchorTop, -1, Qt::AnchorTop, 0)
-            << BasicData(1, Qt::AnchorVerticalCenter, 0, Qt::AnchorVerticalCenter, 35)
-            << BasicData(1, Qt::AnchorVerticalCenter, 2, Qt::AnchorVerticalCenter, 15)
-            << BasicData(1, Qt::AnchorBottom, 2, Qt::AnchorTop, 5)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 0)
-            << BasicData(2, Qt::AnchorBottom, 0, Qt::AnchorTop, 5)
-            << BasicData(0, Qt::AnchorTop, 0, Qt::AnchorBottom, 20);
+            << BasicData(1, BobUI::AnchorTop, -1, BobUI::AnchorTop, 0)
+            << BasicData(1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorVerticalCenter, 35)
+            << BasicData(1, BobUI::AnchorVerticalCenter, 2, BobUI::AnchorVerticalCenter, 15)
+            << BasicData(1, BobUI::AnchorBottom, 2, BobUI::AnchorTop, 5)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 0)
+            << BasicData(2, BobUI::AnchorBottom, 0, BobUI::AnchorTop, 5)
+            << BasicData(0, BobUI::AnchorTop, 0, BobUI::AnchorBottom, 20);
 
         theRemoveData
-            << BasicData(-1, Qt::AnchorVerticalCenter, 0, Qt::AnchorVerticalCenter, 66)
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, 33)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, 55)
-            << BasicData(1, Qt::AnchorVerticalCenter, 1, Qt::AnchorVerticalCenter, 55);
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 0, BobUI::AnchorVerticalCenter, 66)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, 33)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, 55)
+            << BasicData(1, BobUI::AnchorVerticalCenter, 1, BobUI::AnchorVerticalCenter, 55);
 
         theResult
             << BasicResult(0, QRectF(0, 30, 10, 20))
             << BasicResult(1, QRectF(20, 0, 30, 10))
             << BasicResult(2, QRectF(60, 15, 40, 10));
 
-        QTest::newRow("remove, center, three") << QSizeF(100, 50) << theData << theRemoveData << theResult;
+        BOBUIest::newRow("remove, center, three") << QSizeF(100, 50) << theData << theRemoveData << theResult;
     }
 
     // add edge (item0,edge0,item1,edge1), remove (item1,edge1,item0,edge0)
@@ -2120,31 +2120,31 @@ void tst_QGraphicsAnchorLayout1::testRemoveCenterAnchor_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            // << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorHorizontalCenter, -10)
-            << BasicData(-1, Qt::AnchorRight, 0, Qt::AnchorHorizontalCenter, 10)
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorRight, 15)
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorVerticalCenter, 10)
-            << BasicData(0, Qt::AnchorBottom, -1, Qt::AnchorBottom, 5)
+            // << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorHorizontalCenter, -10)
+            << BasicData(-1, BobUI::AnchorRight, 0, BobUI::AnchorHorizontalCenter, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorRight, 15)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorVerticalCenter, 10)
+            << BasicData(0, BobUI::AnchorBottom, -1, BobUI::AnchorBottom, 5)
 
-            << BasicData(-1, Qt::AnchorHorizontalCenter, 1, Qt::AnchorHorizontalCenter, 66)
-            << BasicData(1, Qt::AnchorVerticalCenter, -1, Qt::AnchorVerticalCenter, 99)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 1, Qt::AnchorHorizontalCenter, 33)
-            << BasicData(0, Qt::AnchorLeft, 0, Qt::AnchorRight, 22)
-            << BasicData(0, Qt::AnchorTop, 0, Qt::AnchorBottom, 11)
+            << BasicData(-1, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorHorizontalCenter, 66)
+            << BasicData(1, BobUI::AnchorVerticalCenter, -1, BobUI::AnchorVerticalCenter, 99)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 1, BobUI::AnchorHorizontalCenter, 33)
+            << BasicData(0, BobUI::AnchorLeft, 0, BobUI::AnchorRight, 22)
+            << BasicData(0, BobUI::AnchorTop, 0, BobUI::AnchorBottom, 11)
             ;
 
         theRemoveData
-            << BasicData(1, Qt::AnchorHorizontalCenter, -1, Qt::AnchorHorizontalCenter, 0)
-            << BasicData(-1, Qt::AnchorVerticalCenter, 1, Qt::AnchorVerticalCenter, 0)
-            << BasicData(1, Qt::AnchorHorizontalCenter, 0, Qt::AnchorHorizontalCenter, 0)
-            << BasicData(0, Qt::AnchorRight, 0, Qt::AnchorLeft, 0)
-            << BasicData(0, Qt::AnchorBottom, 0, Qt::AnchorTop, 0)
+            << BasicData(1, BobUI::AnchorHorizontalCenter, -1, BobUI::AnchorHorizontalCenter, 0)
+            << BasicData(-1, BobUI::AnchorVerticalCenter, 1, BobUI::AnchorVerticalCenter, 0)
+            << BasicData(1, BobUI::AnchorHorizontalCenter, 0, BobUI::AnchorHorizontalCenter, 0)
+            << BasicData(0, BobUI::AnchorRight, 0, BobUI::AnchorLeft, 0)
+            << BasicData(0, BobUI::AnchorBottom, 0, BobUI::AnchorTop, 0)
             ;
 
         theResult
             << BasicResult(0, QRectF(5, 5, 10, 10) );
 
-        QTest::newRow("remove, center, basic 2") << QSizeF(20, 20) << theData
+        BOBUIest::newRow("remove, center, basic 2") << QSizeF(20, 20) << theData
             << theRemoveData << theResult;
     }
 
@@ -2152,14 +2152,14 @@ void tst_QGraphicsAnchorLayout1::testRemoveCenterAnchor_data()
 
 void tst_QGraphicsAnchorLayout1::testRemoveCenterAnchor()
 {
-    if (strcmp(QTest::currentDataTag(), "remove, center, three") == 0) {
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-    } else if (strcmp(QTest::currentDataTag(), "remove, center, basic 2") == 0) {
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+    if (strcmp(BOBUIest::currentDataTag(), "remove, center, three") == 0) {
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+    } else if (strcmp(BOBUIest::currentDataTag(), "remove, center, basic 2") == 0) {
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): Cannot anchor the item to itself");
     }
 
     QFETCH(QSizeF, size);
@@ -2226,118 +2226,118 @@ void tst_QGraphicsAnchorLayout1::testRemoveCenterAnchor()
 
 void tst_QGraphicsAnchorLayout1::testSingleSizePolicy_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<QSizePolicy>("policy");
-    QTest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<QSizePolicy>("policy");
+    BOBUIest::addColumn<bool>("valid");
 
 // FIXED
     {
         QSizePolicy sizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-        QTest::newRow("single size policy: fixed ok") << QSizeF(70, 70) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: fixed ok") << QSizeF(70, 70) << sizePolicy << true;
     }
 /*
     {
         QSizePolicy sizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-        QTest::newRow("single size policy: fixed too big") << QSizeF(100, 100) << sizePolicy << false;
+        BOBUIest::newRow("single size policy: fixed too big") << QSizeF(100, 100) << sizePolicy << false;
     }
 
     {
         QSizePolicy sizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-        QTest::newRow("single size policy: fixed too small") << QSizeF(50, 50) << sizePolicy << false;
+        BOBUIest::newRow("single size policy: fixed too small") << QSizeF(50, 50) << sizePolicy << false;
     }
 */
 // MINIMUM
     {
         QSizePolicy sizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-        QTest::newRow("single size policy: minimum bigger ok") << QSizeF(100, 100) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: minimum bigger ok") << QSizeF(100, 100) << sizePolicy << true;
     }
 
     {
         QSizePolicy sizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-        QTest::newRow("single size policy: minimum limit ok") << QSizeF(70, 70) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: minimum limit ok") << QSizeF(70, 70) << sizePolicy << true;
     }
 /*
     {
         QSizePolicy sizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-        QTest::newRow("single size policy: minimum too small") << QSizeF(50, 50) << sizePolicy << false;
+        BOBUIest::newRow("single size policy: minimum too small") << QSizeF(50, 50) << sizePolicy << false;
     }
 */
 // MAXIMUM
     {
         QSizePolicy sizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
-        QTest::newRow("single size policy: maximum small ok") << QSizeF(50, 50) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: maximum small ok") << QSizeF(50, 50) << sizePolicy << true;
     }
 
     {
         QSizePolicy sizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
-        QTest::newRow("single size policy: maximum limit ok") << QSizeF(70, 70) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: maximum limit ok") << QSizeF(70, 70) << sizePolicy << true;
     }
 /*
     {
         QSizePolicy sizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
-        QTest::newRow("single size policy: maximum bigger fail") << QSizeF(100, 100) << sizePolicy << false;
+        BOBUIest::newRow("single size policy: maximum bigger fail") << QSizeF(100, 100) << sizePolicy << false;
     }
 */
 // PREFERRED
     {
         QSizePolicy sizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        QTest::newRow("single size policy: preferred bigger ok") << QSizeF(100, 100) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: preferred bigger ok") << QSizeF(100, 100) << sizePolicy << true;
     }
 
     {
         QSizePolicy sizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        QTest::newRow("single size policy: preferred smaller ok") << QSizeF(50, 50)  << sizePolicy << true;
+        BOBUIest::newRow("single size policy: preferred smaller ok") << QSizeF(50, 50)  << sizePolicy << true;
     }
 /*
     {
         QSizePolicy sizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        QTest::newRow("single size policy: preferred too big") << QSizeF(700, 700) << sizePolicy << false;
+        BOBUIest::newRow("single size policy: preferred too big") << QSizeF(700, 700) << sizePolicy << false;
     }
 
     {
         QSizePolicy sizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        QTest::newRow("single size policy: preferred too small") << QSizeF(21, 21) << sizePolicy << false;
+        BOBUIest::newRow("single size policy: preferred too small") << QSizeF(21, 21) << sizePolicy << false;
     }
 */
 // MINIMUMEXPANDING
 
     {
         QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
-        QTest::newRow("single size policy: min.expanding bigger ok") << QSizeF(100, 100) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: min.expanding bigger ok") << QSizeF(100, 100) << sizePolicy << true;
     }
 
     {
         QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
-        QTest::newRow("single size policy: min.expanding limit ok") << QSizeF(70, 70) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: min.expanding limit ok") << QSizeF(70, 70) << sizePolicy << true;
     }
 
     /*{
         QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
-        QTest::newRow("single size policy: min.expanding too small") << QSizeF(50, 50) << sizePolicy << false;
+        BOBUIest::newRow("single size policy: min.expanding too small") << QSizeF(50, 50) << sizePolicy << false;
     }*/
 
 // EXPANDING
 
     {
         QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-        QTest::newRow("single size policy: expanding bigger ok") << QSizeF(100, 100) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: expanding bigger ok") << QSizeF(100, 100) << sizePolicy << true;
     }
 
     {
         QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-        QTest::newRow("single size policy: expanding smaller ok") << QSizeF(50, 50)  << sizePolicy << true;
+        BOBUIest::newRow("single size policy: expanding smaller ok") << QSizeF(50, 50)  << sizePolicy << true;
     }
 
  // IGNORED
 
     {
         QSizePolicy sizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
-        QTest::newRow("single size policy: ignored bigger ok") << QSizeF(100, 100) << sizePolicy << true;
+        BOBUIest::newRow("single size policy: ignored bigger ok") << QSizeF(100, 100) << sizePolicy << true;
     }
 
     {
         QSizePolicy sizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
-        QTest::newRow("single size policy: ignored smaller ok") << QSizeF(50, 50)  << sizePolicy << true;
+        BOBUIest::newRow("single size policy: ignored smaller ok") << QSizeF(50, 50)  << sizePolicy << true;
     }
 }
 
@@ -2353,10 +2353,10 @@ void tst_QGraphicsAnchorLayout1::testSingleSizePolicy()
     TestWidget *childWidget = new TestWidget;
 
     // set anchors
-    layout->setAnchor( layout, Qt::AnchorLeft, childWidget, Qt::AnchorLeft, 10 );
-    layout->setAnchor( childWidget, Qt::AnchorRight, layout, Qt::AnchorRight, 10 );
-    layout->setAnchor( layout, Qt::AnchorTop, childWidget, Qt::AnchorTop, 10 );
-    layout->setAnchor( childWidget, Qt::AnchorBottom, layout, Qt::AnchorBottom, 10 );
+    layout->setAnchor( layout, BobUI::AnchorLeft, childWidget, BobUI::AnchorLeft, 10 );
+    layout->setAnchor( childWidget, BobUI::AnchorRight, layout, BobUI::AnchorRight, 10 );
+    layout->setAnchor( layout, BobUI::AnchorTop, childWidget, BobUI::AnchorTop, 10 );
+    layout->setAnchor( childWidget, BobUI::AnchorBottom, layout, BobUI::AnchorBottom, 10 );
 
     widget.setLayout( layout );
 
@@ -2373,10 +2373,10 @@ void tst_QGraphicsAnchorLayout1::testSingleSizePolicy()
 void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
 {
     // tests only horizontal direction
-    QTest::addColumn<QSizePolicy>("policy1");
-    QTest::addColumn<QSizePolicy>("policy2");
-    QTest::addColumn<qreal>("width1");
-    QTest::addColumn<qreal>("width2");
+    BOBUIest::addColumn<QSizePolicy>("policy1");
+    BOBUIest::addColumn<QSizePolicy>("policy2");
+    BOBUIest::addColumn<qreal>("width1");
+    BOBUIest::addColumn<qreal>("width2");
 
     // layout size always 100x100 and size hints for items are 5<50<500
     // gabs: 10-item1-10-item2-10
@@ -2386,7 +2386,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Preferred, QSizePolicy::Preferred );
         const qreal width1 = 50;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: fixed-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: fixed-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     {
@@ -2394,7 +2394,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Preferred, QSizePolicy::Preferred );
         const qreal width1 = 50;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: minimum-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: minimum-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     {
@@ -2402,7 +2402,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Preferred, QSizePolicy::Preferred );
         const qreal width1 = 35;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: maximum-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: maximum-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     {
@@ -2410,7 +2410,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Preferred, QSizePolicy::Preferred );
         const qreal width1 = 35;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: preferred-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: preferred-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     {
@@ -2418,7 +2418,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Preferred, QSizePolicy::Preferred );
         const qreal width1 = 50;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: min.expanding-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: min.expanding-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     {
@@ -2426,7 +2426,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Preferred, QSizePolicy::Preferred );
         const qreal width1 = 35;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: expanding-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: expanding-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     // QGAL handling of ignored flag is different
@@ -2436,7 +2436,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Preferred, QSizePolicy::Preferred );
         const qreal width1 = 35;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: ignored-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: ignored-preferred") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     /*{
@@ -2444,7 +2444,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Fixed, QSizePolicy::Fixed );
         const qreal width1 = -1;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: fixed-fixed invalid") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: fixed-fixed invalid") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }*/
 
     /*{
@@ -2452,7 +2452,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Fixed, QSizePolicy::Fixed );
         const qreal width1 = -1;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: minimum-fixed invalid") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: minimum-fixed invalid") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }*/
 
     {
@@ -2460,7 +2460,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Fixed, QSizePolicy::Fixed );
         const qreal width1 = 20;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: maximum-fixed") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: maximum-fixed") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     {
@@ -2468,7 +2468,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Fixed, QSizePolicy::Fixed );
         const qreal width1 = 20;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: preferred-fixed") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: preferred-fixed") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     /*{
@@ -2476,7 +2476,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Fixed, QSizePolicy::Fixed );
         const qreal width1 = -1;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: min.expanding-fixed invalid") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: min.expanding-fixed invalid") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }*/
 
     {
@@ -2484,7 +2484,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Fixed, QSizePolicy::Fixed );
         const qreal width1 = 20;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: expanding-fixed") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: expanding-fixed") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 
     {
@@ -2492,7 +2492,7 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy_data()
         QSizePolicy sizePolicy2( QSizePolicy::Fixed, QSizePolicy::Fixed );
         const qreal width1 = 20;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("double size policy: ignored-fixed") << sizePolicy1 << sizePolicy2 << width1 << width2;
+        BOBUIest::newRow("double size policy: ignored-fixed") << sizePolicy1 << sizePolicy2 << width1 << width2;
     }
 }
 
@@ -2510,9 +2510,9 @@ void tst_QGraphicsAnchorLayout1::testDoubleSizePolicy()
     TestWidget *childWidget2 = new TestWidget;
 
     // set anchors
-    layout->setAnchor( layout, Qt::AnchorLeft, childWidget1, Qt::AnchorLeft, 10 );
-    layout->setAnchor( childWidget1, Qt::AnchorRight, childWidget2, Qt::AnchorLeft, 10 );
-    layout->setAnchor( childWidget2, Qt::AnchorRight, layout, Qt::AnchorRight, 10 );
+    layout->setAnchor( layout, BobUI::AnchorLeft, childWidget1, BobUI::AnchorLeft, 10 );
+    layout->setAnchor( childWidget1, BobUI::AnchorRight, childWidget2, BobUI::AnchorLeft, 10 );
+    layout->setAnchor( childWidget2, BobUI::AnchorRight, layout, BobUI::AnchorRight, 10 );
 
     widget.setLayout( layout );
 
@@ -2539,76 +2539,76 @@ Q_DECLARE_METATYPE(SizeHintArray)
 void tst_QGraphicsAnchorLayout1::testSizeDistribution_data()
 {
     // tests only horizontal direction
-    QTest::addColumn<SizeHintArray>("sizeHints1");
-    QTest::addColumn<SizeHintArray>("sizeHints2");
-    QTest::addColumn<qreal>("width1");
-    QTest::addColumn<qreal>("width2");
+    BOBUIest::addColumn<SizeHintArray>("sizeHints1");
+    BOBUIest::addColumn<SizeHintArray>("sizeHints2");
+    BOBUIest::addColumn<qreal>("width1");
+    BOBUIest::addColumn<qreal>("width2");
 
     // layout size always 100x100 and size policy for items is preferred-preferred
     // gabs: 10-item1-10-item2-10
 
     {
         SizeHintArray sizeHints1;
-        sizeHints1.insert( Qt::MinimumSize, 30 );
-        sizeHints1.insert( Qt::PreferredSize, 35 );
-        sizeHints1.insert( Qt::MaximumSize, 40 );
+        sizeHints1.insert( BobUI::MinimumSize, 30 );
+        sizeHints1.insert( BobUI::PreferredSize, 35 );
+        sizeHints1.insert( BobUI::MaximumSize, 40 );
 
         SizeHintArray sizeHints2;
-        sizeHints2.insert( Qt::MinimumSize, 5 );
-        sizeHints2.insert( Qt::PreferredSize, 35 );
-        sizeHints2.insert( Qt::MaximumSize, 300 );
+        sizeHints2.insert( BobUI::MinimumSize, 5 );
+        sizeHints2.insert( BobUI::PreferredSize, 35 );
+        sizeHints2.insert( BobUI::MaximumSize, 300 );
 
         const qreal width1 = 35;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("size distribution: preferred equal") << sizeHints1 << sizeHints2 << width1 << width2;
+        BOBUIest::newRow("size distribution: preferred equal") << sizeHints1 << sizeHints2 << width1 << width2;
     }
 
     {
         SizeHintArray sizeHints1;
-        sizeHints1.insert( Qt::MinimumSize, 0 );
-        sizeHints1.insert( Qt::PreferredSize, 20 );
-        sizeHints1.insert( Qt::MaximumSize, 100 );
+        sizeHints1.insert( BobUI::MinimumSize, 0 );
+        sizeHints1.insert( BobUI::PreferredSize, 20 );
+        sizeHints1.insert( BobUI::MaximumSize, 100 );
 
         SizeHintArray sizeHints2;
-        sizeHints2.insert( Qt::MinimumSize, 0 );
-        sizeHints2.insert( Qt::PreferredSize, 50 );
-        sizeHints2.insert( Qt::MaximumSize, 100 );
+        sizeHints2.insert( BobUI::MinimumSize, 0 );
+        sizeHints2.insert( BobUI::PreferredSize, 50 );
+        sizeHints2.insert( BobUI::MaximumSize, 100 );
 
         const qreal width1 = 20;
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("size distribution: preferred non-equal") << sizeHints1 << sizeHints2 << width1 << width2;
+        BOBUIest::newRow("size distribution: preferred non-equal") << sizeHints1 << sizeHints2 << width1 << width2;
     }
 
     {
         SizeHintArray sizeHints1;
-        sizeHints1.insert( Qt::MinimumSize, 0 );
-        sizeHints1.insert( Qt::PreferredSize, 40 );
-        sizeHints1.insert( Qt::MaximumSize, 100 );
+        sizeHints1.insert( BobUI::MinimumSize, 0 );
+        sizeHints1.insert( BobUI::PreferredSize, 40 );
+        sizeHints1.insert( BobUI::MaximumSize, 100 );
 
         SizeHintArray sizeHints2;
-        sizeHints2.insert( Qt::MinimumSize, 0 );
-        sizeHints2.insert( Qt::PreferredSize, 60 );
-        sizeHints2.insert( Qt::MaximumSize, 100 );
+        sizeHints2.insert( BobUI::MinimumSize, 0 );
+        sizeHints2.insert( BobUI::PreferredSize, 60 );
+        sizeHints2.insert( BobUI::MaximumSize, 100 );
 
         const qreal width1 = 28; // got from manual calculation
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("size distribution: below preferred") << sizeHints1 << sizeHints2 << width1 << width2;
+        BOBUIest::newRow("size distribution: below preferred") << sizeHints1 << sizeHints2 << width1 << width2;
     }
 
     {
         SizeHintArray sizeHints1;
-        sizeHints1.insert( Qt::MinimumSize, 0 );
-        sizeHints1.insert( Qt::PreferredSize, 10 );
-        sizeHints1.insert( Qt::MaximumSize, 100 );
+        sizeHints1.insert( BobUI::MinimumSize, 0 );
+        sizeHints1.insert( BobUI::PreferredSize, 10 );
+        sizeHints1.insert( BobUI::MaximumSize, 100 );
 
         SizeHintArray sizeHints2;
-        sizeHints2.insert( Qt::MinimumSize, 0 );
-        sizeHints2.insert( Qt::PreferredSize, 40 );
-        sizeHints2.insert( Qt::MaximumSize, 100 );
+        sizeHints2.insert( BobUI::MinimumSize, 0 );
+        sizeHints2.insert( BobUI::PreferredSize, 40 );
+        sizeHints2.insert( BobUI::MaximumSize, 100 );
 
         const qreal width1 = 22; // got from manual calculation
         const qreal width2 = 100-10-10-10-width1;
-        QTest::newRow("size distribution: above preferred") << sizeHints1 << sizeHints2 << width1 << width2;
+        BOBUIest::newRow("size distribution: above preferred") << sizeHints1 << sizeHints2 << width1 << width2;
     }
 
 }
@@ -2621,10 +2621,10 @@ void tst_QGraphicsAnchorLayout1::testSizeDistribution()
     QFETCH(qreal, width2);
 
     // sanity-check the test data - MinimumSize <= PreferredSize <= MaximumSize
-    QVERIFY( sizeHints1.value( Qt::MinimumSize ) <= sizeHints1.value( Qt::PreferredSize ) );
-    QVERIFY( sizeHints1.value( Qt::PreferredSize ) <= sizeHints1.value( Qt::MaximumSize ) );
-    QVERIFY( sizeHints2.value( Qt::MinimumSize ) <= sizeHints2.value( Qt::PreferredSize ) );
-    QVERIFY( sizeHints2.value( Qt::PreferredSize ) <= sizeHints2.value( Qt::MaximumSize ) );
+    QVERIFY( sizeHints1.value( BobUI::MinimumSize ) <= sizeHints1.value( BobUI::PreferredSize ) );
+    QVERIFY( sizeHints1.value( BobUI::PreferredSize ) <= sizeHints1.value( BobUI::MaximumSize ) );
+    QVERIFY( sizeHints2.value( BobUI::MinimumSize ) <= sizeHints2.value( BobUI::PreferredSize ) );
+    QVERIFY( sizeHints2.value( BobUI::PreferredSize ) <= sizeHints2.value( BobUI::MaximumSize ) );
 
     // create objects
     QGraphicsWidget widget;
@@ -2633,20 +2633,20 @@ void tst_QGraphicsAnchorLayout1::testSizeDistribution()
     TestWidget *childWidget2 = new TestWidget;
 
     // set anchors
-    layout->setAnchor( layout, Qt::AnchorLeft, childWidget1, Qt::AnchorLeft, 10 );
-    layout->setAnchor( childWidget1, Qt::AnchorRight, childWidget2, Qt::AnchorLeft, 10 );
-    layout->setAnchor( childWidget2, Qt::AnchorRight, layout, Qt::AnchorRight, 10 );
+    layout->setAnchor( layout, BobUI::AnchorLeft, childWidget1, BobUI::AnchorLeft, 10 );
+    layout->setAnchor( childWidget1, BobUI::AnchorRight, childWidget2, BobUI::AnchorLeft, 10 );
+    layout->setAnchor( childWidget2, BobUI::AnchorRight, layout, BobUI::AnchorRight, 10 );
 
     widget.setLayout( layout );
 
     // set test case specific: size hints
-    childWidget1->setMinimumWidth( sizeHints1.value( Qt::MinimumSize ) );
-    childWidget1->setPreferredWidth( sizeHints1.value( Qt::PreferredSize ) );
-    childWidget1->setMaximumWidth( sizeHints1.value( Qt::MaximumSize ) );
+    childWidget1->setMinimumWidth( sizeHints1.value( BobUI::MinimumSize ) );
+    childWidget1->setPreferredWidth( sizeHints1.value( BobUI::PreferredSize ) );
+    childWidget1->setMaximumWidth( sizeHints1.value( BobUI::MaximumSize ) );
 
-    childWidget2->setMinimumWidth( sizeHints2.value( Qt::MinimumSize ) );
-    childWidget2->setPreferredWidth( sizeHints2.value( Qt::PreferredSize ) );
-    childWidget2->setMaximumWidth( sizeHints2.value( Qt::MaximumSize ) );
+    childWidget2->setMinimumWidth( sizeHints2.value( BobUI::MinimumSize ) );
+    childWidget2->setPreferredWidth( sizeHints2.value( BobUI::PreferredSize ) );
+    childWidget2->setMaximumWidth( sizeHints2.value( BobUI::MaximumSize ) );
 
     widget.setGeometry( QRectF( QPoint(0,0), QSize( 100,100 ) ) );
 
@@ -2677,11 +2677,11 @@ void tst_QGraphicsAnchorLayout1::testSizeHint()
         TheAnchorLayout *layout = new TheAnchorLayout();
 
 
-        layout->setAnchor(layout, Qt::AnchorLeft, widget[0], Qt::AnchorLeft, 0 );
-        layout->setAnchor(layout, Qt::AnchorRight, widget[0], Qt::AnchorRight, 0 );
+        layout->setAnchor(layout, BobUI::AnchorLeft, widget[0], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(layout, BobUI::AnchorRight, widget[0], BobUI::AnchorRight, 0 );
 
-        layout->setAnchor(layout, Qt::AnchorTop, widget[0], Qt::AnchorTop, 0 );
-        layout->setAnchor(layout, Qt::AnchorBottom, widget[0], Qt::AnchorBottom, 0 );
+        layout->setAnchor(layout, BobUI::AnchorTop, widget[0], BobUI::AnchorTop, 0 );
+        layout->setAnchor(layout, BobUI::AnchorBottom, widget[0], BobUI::AnchorBottom, 0 );
 
         QCOMPARE( layout->minimumSize(), widget[0]->minimumSize() );
         QCOMPARE( layout->preferredSize(), widget[0]->preferredSize() );
@@ -2696,13 +2696,13 @@ void tst_QGraphicsAnchorLayout1::testSizeHint()
         TheAnchorLayout *layout = new TheAnchorLayout();
 
 
-        layout->setAnchor(layout, Qt::AnchorLeft, widget[0], Qt::AnchorLeft, 10 );
-        // layout->setAnchor(layout, Qt::AnchorRight, widget[0], Qt::AnchorRight, -10 );
-        layout->setAnchor(layout, Qt::AnchorRight, widget[0], Qt::AnchorRight, 10 );
+        layout->setAnchor(layout, BobUI::AnchorLeft, widget[0], BobUI::AnchorLeft, 10 );
+        // layout->setAnchor(layout, BobUI::AnchorRight, widget[0], BobUI::AnchorRight, -10 );
+        layout->setAnchor(layout, BobUI::AnchorRight, widget[0], BobUI::AnchorRight, 10 );
 
-        layout->setAnchor(layout, Qt::AnchorTop, widget[0], Qt::AnchorTop, 10 );
-        // layout->setAnchor(layout, Qt::AnchorBottom, widget[0], Qt::AnchorBottom, -10 );
-        layout->setAnchor(layout, Qt::AnchorBottom, widget[0], Qt::AnchorBottom, 10 );
+        layout->setAnchor(layout, BobUI::AnchorTop, widget[0], BobUI::AnchorTop, 10 );
+        // layout->setAnchor(layout, BobUI::AnchorBottom, widget[0], BobUI::AnchorBottom, -10 );
+        layout->setAnchor(layout, BobUI::AnchorBottom, widget[0], BobUI::AnchorBottom, 10 );
 
         QCOMPARE( layout->minimumSize(), widget[0]->minimumSize() + QSizeF( 20, 20 ) );
         QCOMPARE( layout->preferredSize(), widget[0]->preferredSize() + QSizeF( 20, 20 ) );
@@ -2716,12 +2716,12 @@ void tst_QGraphicsAnchorLayout1::testSizeHint()
         TheAnchorLayout *layout = new TheAnchorLayout();
 
 
-        layout->setAnchor(layout, Qt::AnchorLeft, widget[0], Qt::AnchorLeft, 0 );
-        layout->setAnchor(layout, Qt::AnchorTop, widget[0], Qt::AnchorTop, 0 );
-        layout->setAnchor(layout, Qt::AnchorBottom, widget[0], Qt::AnchorBottom, 0 );
+        layout->setAnchor(layout, BobUI::AnchorLeft, widget[0], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(layout, BobUI::AnchorTop, widget[0], BobUI::AnchorTop, 0 );
+        layout->setAnchor(layout, BobUI::AnchorBottom, widget[0], BobUI::AnchorBottom, 0 );
 
-        layout->setAnchor(widget[0], Qt::AnchorRight, widget[1], Qt::AnchorLeft, 0 );
-        layout->setAnchor(widget[1], Qt::AnchorRight, layout, Qt::AnchorRight, 0 );
+        layout->setAnchor(widget[0], BobUI::AnchorRight, widget[1], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(widget[1], BobUI::AnchorRight, layout, BobUI::AnchorRight, 0 );
 
 
         QCOMPARE( layout->minimumSize(), widget[0]->minimumSize() + QSizeF( widget[1]->minimumWidth(), 0 ) );
@@ -2736,15 +2736,15 @@ void tst_QGraphicsAnchorLayout1::testSizeHint()
         TheAnchorLayout *layout = new TheAnchorLayout();
 
 
-        layout->setAnchor(layout, Qt::AnchorLeft, widget[0], Qt::AnchorLeft, 0 );
-        layout->setAnchor(layout, Qt::AnchorTop, widget[0], Qt::AnchorTop, 0 );
-        layout->setAnchor(layout, Qt::AnchorBottom, widget[0], Qt::AnchorBottom, 0 );
-        layout->setAnchor(layout, Qt::AnchorRight, widget[0], Qt::AnchorRight, 0 );
+        layout->setAnchor(layout, BobUI::AnchorLeft, widget[0], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(layout, BobUI::AnchorTop, widget[0], BobUI::AnchorTop, 0 );
+        layout->setAnchor(layout, BobUI::AnchorBottom, widget[0], BobUI::AnchorBottom, 0 );
+        layout->setAnchor(layout, BobUI::AnchorRight, widget[0], BobUI::AnchorRight, 0 );
 
-        layout->setAnchor(layout, Qt::AnchorLeft, widget[1], Qt::AnchorLeft, 0 );
-        layout->setAnchor(layout, Qt::AnchorTop, widget[1], Qt::AnchorTop, 0 );
-        layout->setAnchor(layout, Qt::AnchorBottom, widget[1], Qt::AnchorBottom, 0 );
-        layout->setAnchor(layout, Qt::AnchorRight, widget[1], Qt::AnchorRight, 0 );
+        layout->setAnchor(layout, BobUI::AnchorLeft, widget[1], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(layout, BobUI::AnchorTop, widget[1], BobUI::AnchorTop, 0 );
+        layout->setAnchor(layout, BobUI::AnchorBottom, widget[1], BobUI::AnchorBottom, 0 );
+        layout->setAnchor(layout, BobUI::AnchorRight, widget[1], BobUI::AnchorRight, 0 );
 
         QCOMPARE( layout->minimumSize(), widget[0]->minimumSize() );
         QCOMPARE( layout->preferredSize(), widget[0]->preferredSize() );
@@ -2758,15 +2758,15 @@ void tst_QGraphicsAnchorLayout1::testSizeHint()
         TheAnchorLayout *layout = new TheAnchorLayout();
 
 
-        layout->setAnchor(layout, Qt::AnchorLeft, widget[0], Qt::AnchorLeft, 0 );
-        layout->setAnchor(layout, Qt::AnchorTop, widget[0], Qt::AnchorTop, 0 );
-        layout->setAnchor(layout, Qt::AnchorBottom, widget[0], Qt::AnchorBottom, 0 );
+        layout->setAnchor(layout, BobUI::AnchorLeft, widget[0], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(layout, BobUI::AnchorTop, widget[0], BobUI::AnchorTop, 0 );
+        layout->setAnchor(layout, BobUI::AnchorBottom, widget[0], BobUI::AnchorBottom, 0 );
 
-        layout->setAnchor(widget[0], Qt::AnchorRight, widget[1], Qt::AnchorLeft, 0 );
-        layout->setAnchor(widget[1], Qt::AnchorRight, widget[2], Qt::AnchorLeft, 0 );
-        layout->setAnchor(widget[2], Qt::AnchorRight, widget[3], Qt::AnchorLeft, 0 );
-        layout->setAnchor(widget[3], Qt::AnchorRight, widget[4], Qt::AnchorLeft, 0 );
-        layout->setAnchor(widget[4], Qt::AnchorRight, layout, Qt::AnchorRight, 0 );
+        layout->setAnchor(widget[0], BobUI::AnchorRight, widget[1], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(widget[1], BobUI::AnchorRight, widget[2], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(widget[2], BobUI::AnchorRight, widget[3], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(widget[3], BobUI::AnchorRight, widget[4], BobUI::AnchorLeft, 0 );
+        layout->setAnchor(widget[4], BobUI::AnchorRight, layout, BobUI::AnchorRight, 0 );
 
 
         QCOMPARE( layout->minimumSize(), widget[0]->minimumSize() +
@@ -2800,10 +2800,10 @@ void tst_QGraphicsAnchorLayout1::testSizeHint()
 
 void tst_QGraphicsAnchorLayout1::testComplexCases_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<BasicLayoutTestDataList>("data");
-    QTest::addColumn<AnchorItemSizeHintList>("sizehint");
-    QTest::addColumn<BasicLayoutTestResultList>("result");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<BasicLayoutTestDataList>("data");
+    BOBUIest::addColumn<AnchorItemSizeHintList>("sizehint");
+    BOBUIest::addColumn<BasicLayoutTestResultList>("result");
 
     typedef BasicLayoutTestData BasicData;
     typedef BasicLayoutTestResult BasicResult;
@@ -2816,16 +2816,16 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
         BasicLayoutTestResultList theResult2;
 
         theData
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, 2, Qt::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, 2, BobUI::AnchorLeft, 10)
 
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(2, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(2, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
 
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorTop, 2, Qt::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 2, BobUI::AnchorTop, 0)
          ;
 
         theSizeHint
@@ -2845,8 +2845,8 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
             << BasicResult(2, QRectF(80, 0, 60, 50) )
             ;
 
-        QTest::newRow("Three, the same sizehint(1)") << QSizeF(90, 50) << theData << theSizeHint << theResult1;
-        QTest::newRow("Three, the same sizehint(2)") << QSizeF(150, 50) << theData << theSizeHint << theResult2;
+        BOBUIest::newRow("Three, the same sizehint(1)") << QSizeF(90, 50) << theData << theSizeHint << theResult1;
+        BOBUIest::newRow("Three, the same sizehint(2)") << QSizeF(150, 50) << theData << theSizeHint << theResult2;
     }
 
     // Three widgets, serial is bigger
@@ -2856,16 +2856,16 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, 2, Qt::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, 2, BobUI::AnchorLeft, 10)
 
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(2, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(2, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
 
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorTop, 2, Qt::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 2, BobUI::AnchorTop, 0)
          ;
 
         theSizeHint
@@ -2879,7 +2879,7 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
             << BasicResult(1, QRectF(90, 0, 35, 50) )
             << BasicResult(2, QRectF(90, 0, 35, 50) );
 
-        QTest::newRow("Three, serial is bigger") << QSizeF(135, 50) << theData << theSizeHint << theResult;
+        BOBUIest::newRow("Three, serial is bigger") << QSizeF(135, 50) << theData << theSizeHint << theResult;
 
         // theResult
         //     << BasicResult(0, QRectF(10, 0, 80, 50) )
@@ -2887,7 +2887,7 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
         //     << BasicResult(2, QRectF(100, 0, 60, 50) )
         // ;
 
-        // QTest::newRow("Three, serial is bigger") << QSizeF(170, 50) << theData << theSizeHint << theResult;
+        // BOBUIest::newRow("Three, serial is bigger") << QSizeF(170, 50) << theData << theSizeHint << theResult;
     }
 
 
@@ -2898,16 +2898,16 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, 2, Qt::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, 2, BobUI::AnchorLeft, 10)
 
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(2, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(2, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
 
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorTop, 2, Qt::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 2, BobUI::AnchorTop, 0)
          ;
 
         theSizeHint
@@ -2934,7 +2934,7 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
             << BasicResult(2, QRectF(60, 0, 80, 50) )
             ;
 
-        QTest::newRow("Three, parallel is bigger") << QSizeF(150, 50) << theData << theSizeHint << theResult;
+        BOBUIest::newRow("Three, parallel is bigger") << QSizeF(150, 50) << theData << theSizeHint << theResult;
 
         // #ifdef PREFERRED_IS_AVERAGE
         //         theResult
@@ -2943,7 +2943,7 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
         //             << BasicResult(2, QRectF(70, 0, 75, 50) )
         //             ;
 
-        //         QTest::newRow("Three, parallel is bigger") << QSizeF(155, 50) << theData << theSizeHint << theResult;
+        //         BOBUIest::newRow("Three, parallel is bigger") << QSizeF(155, 50) << theData << theSizeHint << theResult;
         // #else
         //         theResult
         //             << BasicResult(0, QRectF(10, 0, 50, 50) )
@@ -2951,7 +2951,7 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
         //             << BasicResult(2, QRectF(70, 0, 60.66666666666666, 50) )
         //             ;
 
-        //         QTest::newRow("Three, parallel is bigger") << QSizeF(146.66666666666666, 50) << theData << theSizeHint << theResult;
+        //         BOBUIest::newRow("Three, parallel is bigger") << QSizeF(146.66666666666666, 50) << theData << theSizeHint << theResult;
         // #endif
     }
 
@@ -2962,16 +2962,16 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
         BasicLayoutTestResultList theResult;
 
         theData
-            << BasicData(-1, Qt::AnchorLeft, 0, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorRight, 1, Qt::AnchorLeft, 10)
-            << BasicData(0, Qt::AnchorHorizontalCenter, 2, Qt::AnchorLeft, 10)
+            << BasicData(-1, BobUI::AnchorLeft, 0, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorRight, 1, BobUI::AnchorLeft, 10)
+            << BasicData(0, BobUI::AnchorHorizontalCenter, 2, BobUI::AnchorLeft, 10)
 
-            << BasicData(1, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
-            << BasicData(2, Qt::AnchorRight, -1, Qt::AnchorRight, 10)
+            << BasicData(1, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
+            << BasicData(2, BobUI::AnchorRight, -1, BobUI::AnchorRight, 10)
 
-            << BasicData(-1, Qt::AnchorTop, 0, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorTop, 1, Qt::AnchorTop, 0)
-            << BasicData(-1, Qt::AnchorTop, 2, Qt::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 0, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 1, BobUI::AnchorTop, 0)
+            << BasicData(-1, BobUI::AnchorTop, 2, BobUI::AnchorTop, 0)
          ;
 
         theSizeHint
@@ -2987,7 +2987,7 @@ void tst_QGraphicsAnchorLayout1::testComplexCases_data()
 
             ;
 
-        QTest::newRow("Three, the same sizehint, one center anchor") << QSizeF(110, 50) << theData << theSizeHint << theResult;
+        BOBUIest::newRow("Three, the same sizehint, one center anchor") << QSizeF(110, 50) << theData << theSizeHint << theResult;
     }
 }
 
@@ -3051,7 +3051,7 @@ void tst_QGraphicsAnchorLayout1::testComplexCases()
     }
 
     // Test mirrored mode
-    widget->setLayoutDirection(Qt::RightToLeft);
+    widget->setLayoutDirection(BobUI::RightToLeft);
     layout->activate();
     // Validate
     for (int j = 0; j < result.size(); ++j) {
@@ -3070,7 +3070,7 @@ void tst_QGraphicsAnchorLayout1::testComplexCases()
 #endif //TEST_COMPLEX_CASES
 
 
-QTEST_MAIN(tst_QGraphicsAnchorLayout1)
+BOBUIEST_MAIN(tst_QGraphicsAnchorLayout1)
 #include "tst_qgraphicsanchorlayout1.moc"
 //-----------------------------------------------------------------------------
 

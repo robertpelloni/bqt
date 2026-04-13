@@ -1,9 +1,9 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QOpenGLContext>
 #include <QSurfaceFormat>
 #include <QWidget>
-#include <QtOpenGL/QOpenGLDebugLogger>
+#include <BobUIOpenGL/QOpenGLDebugLogger>
 
 namespace src_gui_opengl_qopengldebug {
 struct LogHandler : public QObject

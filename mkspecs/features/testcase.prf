@@ -1,12 +1,12 @@
 !have_target: return()
 
-# qt_build_config.prf disables execptions for all Qt modules which don't
+# bobui_build_config.prf disables execptions for all BobUI modules which don't
 # explicitly turn it on again, while the qmake default is to build with
 # exceptions. As we want tests to be built like 3rd party applications,
-# qt_build_config tells us to re-enable exceptions here.
+# bobui_build_config tells us to re-enable exceptions here.
 testcase_exceptions: CONFIG += exceptions
 
-# Set in qt_build_config.prf
+# Set in bobui_build_config.prf
 testcase_no_bundle: CONFIG -= app_bundle
 
 # cmdline may have been specified and not processed yet
@@ -36,17 +36,17 @@ else: type = check
 $${type}.files =
 $${type}.path = .
 
-# Make sure we explicitly load the debug version of the Qt libraries if needed
+# Make sure we explicitly load the debug version of the BobUI libraries if needed
 macos {
     dyld_image_suffix.name = DYLD_IMAGE_SUFFIX
-    dyld_image_suffix.value = $$qtPlatformTargetSuffix()
-    QT_TOOL_ENV += dyld_image_suffix
+    dyld_image_suffix.value = $$bobuiPlatformTargetSuffix()
+    BOBUI_TOOL_ENV += dyld_image_suffix
 }
 
 # Add environment for non-installed builds. Do this first, so the
 # 'make' variable expansions don't end up in a batch file/script.
-QT_TOOL_NAME = target
-qtAddTargetEnv($${type}.commands, QT)
+BOBUI_TOOL_NAME = target
+bobuiAddTargetEnv($${type}.commands, BOBUI)
 
 # If the test ends up in a different directory, we should cd to that directory.
 TESTRUN_CWD = $$DESTDIR
@@ -65,8 +65,8 @@ debug_and_release:debug_and_release_target {
 android: isEmpty($(TESTRUNNER)) {
     build_pass|single_android_abi {
         APK_PATH = $$shell_path($$OUT_PWD/android-build/$${TARGET}.apk)
-        qtPrepareTool(ANDROIDTESTRUNNER, androidtestrunner)
-        qtPrepareTool(ANDROIDDEPLOYQT, androiddeployqt)
+        bobuiPrepareTool(ANDROIDTESTRUNNER, androidtestrunner)
+        bobuiPrepareTool(ANDROIDDEPLOYBOBUI, androiddeploybobui)
         isEmpty(ANDROID_DEPLOYMENT_SETTINGS_FILE): ANDROID_DEPLOYMENT_SETTINGS_FILE = $$OUT_PWD/android-$$TARGET-deployment-settings.json
         contains(QMAKE_HOST.os, Windows): extension = .exe
         $${type}.commands  = $$ANDROIDTESTRUNNER --path \"$$OUT_PWD/android-build\"
@@ -129,7 +129,7 @@ isEmpty(BUILDS)|build_pass {
     # so that each test has its own directory for testdata etc.
     #
     TEST_FOLDER = $$basename(_PRO_FILE_PWD_)
-    target.path = $$[QT_INSTALL_TESTS]/$$TEST_FOLDER
+    target.path = $$[BOBUI_INSTALL_TESTS]/$$TEST_FOLDER
     INSTALLS += target
 }
 
@@ -146,9 +146,9 @@ isEmpty(BUILDS)|build_pass {
     #
     # ... will result in:
     #
-    #   /usr/lib/qt5/tests/tst_qxmlreader/tst_qxmlreader
-    #   /usr/lib/qt5/tests/tst_qxmlreader/testdata/test1.xml
-    #   /usr/lib/qt5/tests/tst_qxmlreader/testdata/test2.xml
+    #   /usr/lib/bobui5/tests/tst_qxmlreader/tst_qxmlreader
+    #   /usr/lib/bobui5/tests/tst_qxmlreader/testdata/test1.xml
+    #   /usr/lib/bobui5/tests/tst_qxmlreader/testdata/test2.xml
     #   ...
     #
     for(file, TESTDATA) {
@@ -168,8 +168,8 @@ isEmpty(BUILDS)|build_pass {
         #  TARGET   = ../tst_qprocess
         #  TESTDATA = ../thing1 ../thing2
         #
-        # The testdata should end up at $$[QT_INSTALL_TESTS]/tst_qprocess/thing1,
-        # rather than $$[QT_INSTALL_TESTS]/tst_qprocess/../thing1.
+        # The testdata should end up at $$[BOBUI_INSTALL_TESTS]/tst_qprocess/thing1,
+        # rather than $$[BOBUI_INSTALL_TESTS]/tst_qprocess/../thing1.
         #
         # Note that this does not guarantee the same relative path between test binary
         # and testdata in the build and install tree, but should cover most cases.
@@ -207,8 +207,8 @@ isEmpty(BUILDS)|build_pass {
     #
     # Resulting in the test helpers being installed to:
     #
-    #   $$[QT_INSTALL_TESTS]/$$TARGET/some/helper1
-    #   $$[QT_INSTALL_TESTS]/$$TARGET/some/helper2
+    #   $$[BOBUI_INSTALL_TESTS]/$$TARGET/some/helper1
+    #   $$[BOBUI_INSTALL_TESTS]/$$TARGET/some/helper2
     #
     win32: extension = .exe
     for(test_helper, TEST_HELPER_INSTALLS) {

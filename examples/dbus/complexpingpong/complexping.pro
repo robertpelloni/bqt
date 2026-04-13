@@ -1,8 +1,8 @@
-QT -= gui
-QT += dbus
+BOBUI -= gui
+BOBUI += dbus
 
 HEADERS += complexping.h ping-common.h
 SOURCES += complexping.cpp
 
-target.path = $$[QT_INSTALL_EXAMPLES]/dbus/complexpingpong
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/dbus/complexpingpong
 INSTALLS += target

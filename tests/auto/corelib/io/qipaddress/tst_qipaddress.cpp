@@ -1,11 +1,11 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #define _CRT_SECURE_NO_WARNINGS 1
 
-#include <QtCore/QString>
-#include <QTest>
-#include <QtCore/private/qipaddress_p.h>
+#include <BobUICore/QString>
+#include <BOBUIest>
+#include <BobUICore/private/qipaddress_p.h>
 
 #ifdef __GLIBC__
 #include <sys/socket.h>
@@ -64,8 +64,8 @@ struct Ip6
 };
 Q_DECLARE_METATYPE(Ip6)
 
-QT_BEGIN_NAMESPACE
-namespace QTest {
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
     template<>
     char *toString(const Ip6 &ip6)
     {
@@ -82,51 +82,51 @@ namespace QTest {
         return qstrdup(buf);
     }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void tst_QIpAddress::parseIp4_data()
 {
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<QIPAddressUtils::IPv4Address>("ip");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<QIPAddressUtils::IPv4Address>("ip");
 
     // valid strings
-    QTest::newRow("0.0.0.0") << "0.0.0.0" << 0u;
-    QTest::newRow("10.0.0.1") << "10.0.0.1" << 0x0a000001u;
-    QTest::newRow("127.0.0.1") << "127.0.0.1" << 0x7f000001u;
-    QTest::newRow("172.16.0.1") << "172.16.0.1" << 0xac100001u;
-    QTest::newRow("172.16.16.1") << "172.16.16.1" << 0xac101001u;
-    QTest::newRow("172.16.16.16") << "172.16.16.16" << 0xac101010u;
-    QTest::newRow("192.168.0.1") << "192.168.0.1" << 0xc0a80001u;
-    QTest::newRow("192.168.16.1") << "192.168.16.1" << 0xc0a81001u;
-    QTest::newRow("192.168.16.16") << "192.168.16.16" << 0xc0a81010u;
-    QTest::newRow("192.168.192.1") << "192.168.192.1" << 0xc0a8c001u;
-    QTest::newRow("192.168.192.16") << "192.168.192.16" << 0xc0a8c010u;
-    QTest::newRow("192.168.192.255") << "192.168.192.255" << 0xc0a8c0ffu;
-    QTest::newRow("224.0.0.1") << "224.0.0.1" << 0xe0000001u;
-    QTest::newRow("239.255.255.255") << "239.255.255.255" << 0xefffffffu;
-    QTest::newRow("255.255.255.255") << "255.255.255.255" << uint(-1);
+    BOBUIest::newRow("0.0.0.0") << "0.0.0.0" << 0u;
+    BOBUIest::newRow("10.0.0.1") << "10.0.0.1" << 0x0a000001u;
+    BOBUIest::newRow("127.0.0.1") << "127.0.0.1" << 0x7f000001u;
+    BOBUIest::newRow("172.16.0.1") << "172.16.0.1" << 0xac100001u;
+    BOBUIest::newRow("172.16.16.1") << "172.16.16.1" << 0xac101001u;
+    BOBUIest::newRow("172.16.16.16") << "172.16.16.16" << 0xac101010u;
+    BOBUIest::newRow("192.168.0.1") << "192.168.0.1" << 0xc0a80001u;
+    BOBUIest::newRow("192.168.16.1") << "192.168.16.1" << 0xc0a81001u;
+    BOBUIest::newRow("192.168.16.16") << "192.168.16.16" << 0xc0a81010u;
+    BOBUIest::newRow("192.168.192.1") << "192.168.192.1" << 0xc0a8c001u;
+    BOBUIest::newRow("192.168.192.16") << "192.168.192.16" << 0xc0a8c010u;
+    BOBUIest::newRow("192.168.192.255") << "192.168.192.255" << 0xc0a8c0ffu;
+    BOBUIest::newRow("224.0.0.1") << "224.0.0.1" << 0xe0000001u;
+    BOBUIest::newRow("239.255.255.255") << "239.255.255.255" << 0xefffffffu;
+    BOBUIest::newRow("255.255.255.255") << "255.255.255.255" << uint(-1);
 
     // still valid but unusual
-    QTest::newRow("000.000.000.000") << "000.000.000.000" << 0u;
-    QTest::newRow("000001.000002.000000003.000000000004") << "000001.000002.000000003.000000000004" << 0x01020304u;
+    BOBUIest::newRow("000.000.000.000") << "000.000.000.000" << 0u;
+    BOBUIest::newRow("000001.000002.000000003.000000000004") << "000001.000002.000000003.000000000004" << 0x01020304u;
 
     // octals:
-    QTest::newRow("012.0250.0377.0377") << "012.0250.0377.0377" << 0x0aa8ffffu;
-    QTest::newRow("0000000000012.00000000000250.000000000000377.0000000000000000000000000000000000000377")
+    BOBUIest::newRow("012.0250.0377.0377") << "012.0250.0377.0377" << 0x0aa8ffffu;
+    BOBUIest::newRow("0000000000012.00000000000250.000000000000377.0000000000000000000000000000000000000377")
             << "0000000000012.00000000000250.000000000000377.0000000000000000000000000000000000000377" << 0x0aa8ffffu;
 
     // hex:
-    QTest::newRow("0xa.0xa.0x7f.0xff") << "0xa.0xa.0x7f.0xff" << 0x0a0a7fffu;
+    BOBUIest::newRow("0xa.0xa.0x7f.0xff") << "0xa.0xa.0x7f.0xff" << 0x0a0a7fffu;
 
     // dots missing, less than 255:
-    QTest::newRow("1.2.3") << "1.2.3" << 0x01020003u;
-    QTest::newRow("1.2") << "1.2" << 0x01000002u;
-    QTest::newRow("1") << "1" << 1u;
+    BOBUIest::newRow("1.2.3") << "1.2.3" << 0x01020003u;
+    BOBUIest::newRow("1.2") << "1.2" << 0x01000002u;
+    BOBUIest::newRow("1") << "1" << 1u;
 
     // dots missing, more than 255, no overwrite
-    QTest::newRow("1.2.257") << "1.2.257" << 0x01020101u;
-    QTest::newRow("1.0x010101") << "1.0x010101" << 0x01010101u;
-    QTest::newRow("2130706433") << "2130706433" << 0x7f000001u;
+    BOBUIest::newRow("1.2.257") << "1.2.257" << 0x01020101u;
+    BOBUIest::newRow("1.0x010101") << "1.0x010101" << 0x01010101u;
+    BOBUIest::newRow("2130706433") << "2130706433" << 0x7f000001u;
 }
 
 void tst_QIpAddress::parseIp4()
@@ -151,54 +151,54 @@ void tst_QIpAddress::parseIp4()
 
 void tst_QIpAddress::invalidParseIp4_data()
 {
-    QTest::addColumn<QString>("data");
+    BOBUIest::addColumn<QString>("data");
 
     // too many dots
-    QTest::newRow(".") << ".";
-    QTest::newRow("..") << "..";
-    QTest::newRow("...") << "...";
-    QTest::newRow("....") << "....";
-    QTest::newRow(".1.2.3") << ".1.2.3";
-    QTest::newRow("1.") << "1.";
-    QTest::newRow("1.2.") << "1.2.";
-    QTest::newRow("1.2.3.") << "1.2.3.";
-    QTest::newRow("1.2.3.4.") << "1.2.3.4.";
-    QTest::newRow("1.2.3..4") << "1.2.3..4";
+    BOBUIest::newRow(".") << ".";
+    BOBUIest::newRow("..") << "..";
+    BOBUIest::newRow("...") << "...";
+    BOBUIest::newRow("....") << "....";
+    BOBUIest::newRow(".1.2.3") << ".1.2.3";
+    BOBUIest::newRow("1.") << "1.";
+    BOBUIest::newRow("1.2.") << "1.2.";
+    BOBUIest::newRow("1.2.3.") << "1.2.3.";
+    BOBUIest::newRow("1.2.3.4.") << "1.2.3.4.";
+    BOBUIest::newRow("1.2.3..4") << "1.2.3..4";
 
     // octet more than 255
-    QTest::newRow("2.2.2.257") << "2.2.2.257";
-    QTest::newRow("2.2.257.2") << "2.2.257.2";
-    QTest::newRow("2.257.2.2") << "2.257.2.2";
-    QTest::newRow("257.2.2.2") << "257.2.2.2";
+    BOBUIest::newRow("2.2.2.257") << "2.2.2.257";
+    BOBUIest::newRow("2.2.257.2") << "2.2.257.2";
+    BOBUIest::newRow("2.257.2.2") << "2.257.2.2";
+    BOBUIest::newRow("257.2.2.2") << "257.2.2.2";
 
     // number more than field available
-    QTest::newRow("2.2.0x01010101") << "2.2.0x01010101";
-    QTest::newRow("2.0x01010101") << "2.0x01010101";
-    QTest::newRow("4294967296") << "4294967296";
+    BOBUIest::newRow("2.2.0x01010101") << "2.2.0x01010101";
+    BOBUIest::newRow("2.0x01010101") << "2.0x01010101";
+    BOBUIest::newRow("4294967296") << "4294967296";
 
     // bad octals
-    QTest::newRow("09") << "09";
+    BOBUIest::newRow("09") << "09";
 
     // bad hex
-    QTest::newRow("0x1g") << "0x1g";
+    BOBUIest::newRow("0x1g") << "0x1g";
 
     // negative numbers
-    QTest::newRow("-1") << "-1";
-    QTest::newRow("-1.1") << "-1.1";
-    QTest::newRow("1.-1") << "1.-1";
-    QTest::newRow("1.1.1.-1") << "1.1.1.-1";
-    QTest::newRow("300-05") << "300-05";
-    QTest::newRow("127.-1") << "127.-1";
-    QTest::newRow("-127-10") << "-127-10";
-    QTest::newRow("198.-16") << "198-16";
-    QTest::newRow("-127.-0.") << "-127.-0.";
+    BOBUIest::newRow("-1") << "-1";
+    BOBUIest::newRow("-1.1") << "-1.1";
+    BOBUIest::newRow("1.-1") << "1.-1";
+    BOBUIest::newRow("1.1.1.-1") << "1.1.1.-1";
+    BOBUIest::newRow("300-05") << "300-05";
+    BOBUIest::newRow("127.-1") << "127.-1";
+    BOBUIest::newRow("-127-10") << "-127-10";
+    BOBUIest::newRow("198.-16") << "198-16";
+    BOBUIest::newRow("-127.-0.") << "-127.-0.";
 
     // letters
-    QTest::newRow("abc") << "abc";
-    QTest::newRow("localhost") << "localhost";
-    QTest::newRow("1.2.3a.4") << "1.2.3a.4";
-    QTest::newRow("a.2.3.4") << "a.2.3.4";
-    QTest::newRow("1.2.3.4a") << "1.2.3.4a";
+    BOBUIest::newRow("abc") << "abc";
+    BOBUIest::newRow("localhost") << "localhost";
+    BOBUIest::newRow("1.2.3a.4") << "1.2.3a.4";
+    BOBUIest::newRow("a.2.3.4") << "a.2.3.4";
+    BOBUIest::newRow("1.2.3.4a") << "1.2.3.4a";
 }
 
 void tst_QIpAddress::invalidParseIp4()
@@ -223,14 +223,14 @@ void tst_QIpAddress::invalidParseIp4()
 
 void tst_QIpAddress::ip4ToString_data()
 {
-    QTest::addColumn<QIPAddressUtils::IPv4Address>("ip");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QIPAddressUtils::IPv4Address>("ip");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("0.0.0.0") << 0u << "0.0.0.0";
-    QTest::newRow("1.2.3.4") << 0x01020304u << "1.2.3.4";
-    QTest::newRow("127.0.0.1") << 0x7f000001u << "127.0.0.1";
-    QTest::newRow("111.222.33.44") << 0x6fde212cu << "111.222.33.44";
-    QTest::newRow("255.255.255.255") << 0xffffffffu << "255.255.255.255";
+    BOBUIest::newRow("0.0.0.0") << 0u << "0.0.0.0";
+    BOBUIest::newRow("1.2.3.4") << 0x01020304u << "1.2.3.4";
+    BOBUIest::newRow("127.0.0.1") << 0x7f000001u << "127.0.0.1";
+    BOBUIest::newRow("111.222.33.44") << 0x6fde212cu << "111.222.33.44";
+    BOBUIest::newRow("255.255.255.255") << 0xffffffffu << "255.255.255.255";
 }
 
 void tst_QIpAddress::ip4ToString()
@@ -252,75 +252,75 @@ void tst_QIpAddress::ip4ToString()
 void tst_QIpAddress::parseIp6_data()
 {
     qRegisterMetaType<Ip6>();
-    QTest::addColumn<QString>("address");
-    QTest::addColumn<Ip6>("expected");
+    BOBUIest::addColumn<QString>("address");
+    BOBUIest::addColumn<Ip6>("expected");
 
     // 7 colons, no ::
-    QTest::newRow("0:0:0:0:0:0:0:0") << "0:0:0:0:0:0:0:0" << Ip6(0,0,0,0,0,0,0,0);
-    QTest::newRow("0:0:0:0:0:0:0:1") << "0:0:0:0:0:0:0:1" << Ip6(0,0,0,0,0,0,0,1);
-    QTest::newRow("0:0:0:0:0:0:1:1") << "0:0:0:0:0:0:1:1" << Ip6(0,0,0,0,0,0,1,1);
-    QTest::newRow("0:0:0:0:0:0:0:103") << "0:0:0:0:0:0:0:103" << Ip6(0,0,0,0,0,0,0,0x103);
-    QTest::newRow("1:2:3:4:5:6:7:8") << "1:2:3:4:5:6:7:8" << Ip6(1,2,3,4,5,6,7,8);
-    QTest::newRow("ffee:ddcc:bbaa:9988:7766:5544:3322:1100")
+    BOBUIest::newRow("0:0:0:0:0:0:0:0") << "0:0:0:0:0:0:0:0" << Ip6(0,0,0,0,0,0,0,0);
+    BOBUIest::newRow("0:0:0:0:0:0:0:1") << "0:0:0:0:0:0:0:1" << Ip6(0,0,0,0,0,0,0,1);
+    BOBUIest::newRow("0:0:0:0:0:0:1:1") << "0:0:0:0:0:0:1:1" << Ip6(0,0,0,0,0,0,1,1);
+    BOBUIest::newRow("0:0:0:0:0:0:0:103") << "0:0:0:0:0:0:0:103" << Ip6(0,0,0,0,0,0,0,0x103);
+    BOBUIest::newRow("1:2:3:4:5:6:7:8") << "1:2:3:4:5:6:7:8" << Ip6(1,2,3,4,5,6,7,8);
+    BOBUIest::newRow("ffee:ddcc:bbaa:9988:7766:5544:3322:1100")
             << "ffee:ddcc:bbaa:9988:7766:5544:3322:1100"
             << Ip6(0xffee, 0xddcc, 0xbbaa, 0x9988, 0x7766, 0x5544, 0x3322, 0x1100);
 
     // double-colon
-    QTest::newRow("::1:2:3:4:5:6:7") << "::1:2:3:4:5:6:7" << Ip6(0,1,2,3,4,5,6,7);
-    QTest::newRow("1:2:3:4:5:6:7::") << "1:2:3:4:5:6:7::" << Ip6(1,2,3,4,5,6,7,0);
+    BOBUIest::newRow("::1:2:3:4:5:6:7") << "::1:2:3:4:5:6:7" << Ip6(0,1,2,3,4,5,6,7);
+    BOBUIest::newRow("1:2:3:4:5:6:7::") << "1:2:3:4:5:6:7::" << Ip6(1,2,3,4,5,6,7,0);
 
-    QTest::newRow("1::2:3:4:5:6:7") << "1::2:3:4:5:6:7" << Ip6(1,0,2,3,4,5,6,7);
-    QTest::newRow("1:2::3:4:5:6:7") << "1:2::3:4:5:6:7" << Ip6(1,2,0,3,4,5,6,7);
-    QTest::newRow("1:2:3::4:5:6:7") << "1:2:3::4:5:6:7" << Ip6(1,2,3,0,4,5,6,7);
-    QTest::newRow("1:2:3:4::5:6:7") << "1:2:3:4::5:6:7" << Ip6(1,2,3,4,0,5,6,7);
-    QTest::newRow("1:2:3:4:5::6:7") << "1:2:3:4:5::6:7" << Ip6(1,2,3,4,5,0,6,7);
-    QTest::newRow("1:2:3:4:5:6::7") << "1:2:3:4:5:6::7" << Ip6(1,2,3,4,5,6,0,7);
+    BOBUIest::newRow("1::2:3:4:5:6:7") << "1::2:3:4:5:6:7" << Ip6(1,0,2,3,4,5,6,7);
+    BOBUIest::newRow("1:2::3:4:5:6:7") << "1:2::3:4:5:6:7" << Ip6(1,2,0,3,4,5,6,7);
+    BOBUIest::newRow("1:2:3::4:5:6:7") << "1:2:3::4:5:6:7" << Ip6(1,2,3,0,4,5,6,7);
+    BOBUIest::newRow("1:2:3:4::5:6:7") << "1:2:3:4::5:6:7" << Ip6(1,2,3,4,0,5,6,7);
+    BOBUIest::newRow("1:2:3:4:5::6:7") << "1:2:3:4:5::6:7" << Ip6(1,2,3,4,5,0,6,7);
+    BOBUIest::newRow("1:2:3:4:5:6::7") << "1:2:3:4:5:6::7" << Ip6(1,2,3,4,5,6,0,7);
 
-    QTest::newRow("::1:2:3:4:5:6") << "::1:2:3:4:5:6" << Ip6(0,0,1,2,3,4,5,6);
-    QTest::newRow("1:2:3:4:5:6::") << "1:2:3:4:5:6::" << Ip6(1,2,3,4,5,6,0,0);
+    BOBUIest::newRow("::1:2:3:4:5:6") << "::1:2:3:4:5:6" << Ip6(0,0,1,2,3,4,5,6);
+    BOBUIest::newRow("1:2:3:4:5:6::") << "1:2:3:4:5:6::" << Ip6(1,2,3,4,5,6,0,0);
 
-    QTest::newRow("1::2:3:4:5:6") << "1::2:3:4:5:6" << Ip6(1,0,0,2,3,4,5,6);
-    QTest::newRow("1:2::3:4:5:6") << "1:2::3:4:5:6" << Ip6(1,2,0,0,3,4,5,6);
-    QTest::newRow("1:2:3::4:5:6") << "1:2:3::4:5:6" << Ip6(1,2,3,0,0,4,5,6);
-    QTest::newRow("1:2:3:4::5:6") << "1:2:3:4::5:6" << Ip6(1,2,3,4,0,0,5,6);
-    QTest::newRow("1:2:3:4:5::6") << "1:2:3:4:5::6" << Ip6(1,2,3,4,5,0,0,6);
+    BOBUIest::newRow("1::2:3:4:5:6") << "1::2:3:4:5:6" << Ip6(1,0,0,2,3,4,5,6);
+    BOBUIest::newRow("1:2::3:4:5:6") << "1:2::3:4:5:6" << Ip6(1,2,0,0,3,4,5,6);
+    BOBUIest::newRow("1:2:3::4:5:6") << "1:2:3::4:5:6" << Ip6(1,2,3,0,0,4,5,6);
+    BOBUIest::newRow("1:2:3:4::5:6") << "1:2:3:4::5:6" << Ip6(1,2,3,4,0,0,5,6);
+    BOBUIest::newRow("1:2:3:4:5::6") << "1:2:3:4:5::6" << Ip6(1,2,3,4,5,0,0,6);
 
-    QTest::newRow("::1:2:3:4:5") << "::1:2:3:4:5" << Ip6(0,0,0,1,2,3,4,5);
-    QTest::newRow("1:2:3:4:5::") << "1:2:3:4:5::" << Ip6(1,2,3,4,5,0,0,0);
+    BOBUIest::newRow("::1:2:3:4:5") << "::1:2:3:4:5" << Ip6(0,0,0,1,2,3,4,5);
+    BOBUIest::newRow("1:2:3:4:5::") << "1:2:3:4:5::" << Ip6(1,2,3,4,5,0,0,0);
 
-    QTest::newRow("1::2:3:4:5") << "1::2:3:4:5" << Ip6(1,0,0,0,2,3,4,5);
-    QTest::newRow("1:2::3:4:5") << "1:2::3:4:5" << Ip6(1,2,0,0,0,3,4,5);
-    QTest::newRow("1:2:3::4:5") << "1:2:3::4:5" << Ip6(1,2,3,0,0,0,4,5);
-    QTest::newRow("1:2:3:4::5") << "1:2:3:4::5" << Ip6(1,2,3,4,0,0,0,5);
+    BOBUIest::newRow("1::2:3:4:5") << "1::2:3:4:5" << Ip6(1,0,0,0,2,3,4,5);
+    BOBUIest::newRow("1:2::3:4:5") << "1:2::3:4:5" << Ip6(1,2,0,0,0,3,4,5);
+    BOBUIest::newRow("1:2:3::4:5") << "1:2:3::4:5" << Ip6(1,2,3,0,0,0,4,5);
+    BOBUIest::newRow("1:2:3:4::5") << "1:2:3:4::5" << Ip6(1,2,3,4,0,0,0,5);
 
-    QTest::newRow("::1:2:3:4") << "::1:2:3:4" << Ip6(0,0,0,0,1,2,3,4);
-    QTest::newRow("1:2:3:4::") << "1:2:3:4::" << Ip6(1,2,3,4,0,0,0,0);
+    BOBUIest::newRow("::1:2:3:4") << "::1:2:3:4" << Ip6(0,0,0,0,1,2,3,4);
+    BOBUIest::newRow("1:2:3:4::") << "1:2:3:4::" << Ip6(1,2,3,4,0,0,0,0);
 
-    QTest::newRow("1::2:3:4") << "1::2:3:4" << Ip6(1,0,0,0,0,2,3,4);
-    QTest::newRow("1:2::3:4") << "1:2::3:4" << Ip6(1,2,0,0,0,0,3,4);
-    QTest::newRow("1:2:3::4") << "1:2:3::4" << Ip6(1,2,3,0,0,0,0,4);
+    BOBUIest::newRow("1::2:3:4") << "1::2:3:4" << Ip6(1,0,0,0,0,2,3,4);
+    BOBUIest::newRow("1:2::3:4") << "1:2::3:4" << Ip6(1,2,0,0,0,0,3,4);
+    BOBUIest::newRow("1:2:3::4") << "1:2:3::4" << Ip6(1,2,3,0,0,0,0,4);
 
-    QTest::newRow("::1:2:3") << "::1:2:3" << Ip6(0,0,0,0,0,1,2,3);
-    QTest::newRow("1:2:3::") << "1:2:3::" << Ip6(1,2,3,0,0,0,0,0);
+    BOBUIest::newRow("::1:2:3") << "::1:2:3" << Ip6(0,0,0,0,0,1,2,3);
+    BOBUIest::newRow("1:2:3::") << "1:2:3::" << Ip6(1,2,3,0,0,0,0,0);
 
-    QTest::newRow("1::2:3") << "1::2:3" << Ip6(1,0,0,0,0,0,2,3);
-    QTest::newRow("1:2::3") << "1:2::3" << Ip6(1,2,0,0,0,0,0,3);
+    BOBUIest::newRow("1::2:3") << "1::2:3" << Ip6(1,0,0,0,0,0,2,3);
+    BOBUIest::newRow("1:2::3") << "1:2::3" << Ip6(1,2,0,0,0,0,0,3);
 
-    QTest::newRow("::1:2") << "::1:2" << Ip6(0,0,0,0,0,0,1,2);
-    QTest::newRow("1:2::") << "1:2::" << Ip6(1,2,0,0,0,0,0,0);
+    BOBUIest::newRow("::1:2") << "::1:2" << Ip6(0,0,0,0,0,0,1,2);
+    BOBUIest::newRow("1:2::") << "1:2::" << Ip6(1,2,0,0,0,0,0,0);
 
-    QTest::newRow("1::2") << "1::2" << Ip6(1,0,0,0,0,0,0,2);
+    BOBUIest::newRow("1::2") << "1::2" << Ip6(1,0,0,0,0,0,0,2);
 
-    QTest::newRow("::1") << "::1" << Ip6(0,0,0,0,0,0,0,1);
-    QTest::newRow("1::") << "1::" << Ip6(1,0,0,0,0,0,0,0);
+    BOBUIest::newRow("::1") << "::1" << Ip6(0,0,0,0,0,0,0,1);
+    BOBUIest::newRow("1::") << "1::" << Ip6(1,0,0,0,0,0,0,0);
 
-    QTest::newRow("::") << "::" << Ip6(0,0,0,0,0,0,0,0);
+    BOBUIest::newRow("::") << "::" << Ip6(0,0,0,0,0,0,0,0);
 
     // embedded IPv4
-    QTest::newRow("1:2:3:4:5:6:10.0.16.1") << "1:2:3:4:5:6:10.0.16.1" << Ip6(1,2,3,4,5,6,0xa00,0x1001);
-    QTest::newRow("1::10.0.16.1") << "1::10.0.16.1" << Ip6(1,0,0,0,0,0,0xa00,0x1001);
-    QTest::newRow("::10.0.16.1") << "::10.0.16.1" << Ip6(0,0,0,0,0,0,0xa00,0x1001);
-    QTest::newRow("::0.0.0.0") << "::0.0.0.0" << Ip6(0,0,0,0,0,0,0,0);
+    BOBUIest::newRow("1:2:3:4:5:6:10.0.16.1") << "1:2:3:4:5:6:10.0.16.1" << Ip6(1,2,3,4,5,6,0xa00,0x1001);
+    BOBUIest::newRow("1::10.0.16.1") << "1::10.0.16.1" << Ip6(1,0,0,0,0,0,0xa00,0x1001);
+    BOBUIest::newRow("::10.0.16.1") << "::10.0.16.1" << Ip6(0,0,0,0,0,0,0xa00,0x1001);
+    BOBUIest::newRow("::0.0.0.0") << "::0.0.0.0" << Ip6(0,0,0,0,0,0,0,0);
 }
 
 void tst_QIpAddress::parseIp6()
@@ -343,69 +343,69 @@ void tst_QIpAddress::parseIp6()
 
 void tst_QIpAddress::invalidParseIp6_data()
 {
-    QTest::addColumn<QString>("address");
+    BOBUIest::addColumn<QString>("address");
 
     // too many colons
-    QTest::newRow("0:0:0:0::0:0:0:0") << "0:0:0:0::0:0:0:0";
-    QTest::newRow("0:::") << "0:::"; QTest::newRow(":::0") << ":::0";
-    QTest::newRow("16:::::::::::::::::::::::") << "16:::::::::::::::::::::::";
+    BOBUIest::newRow("0:0:0:0::0:0:0:0") << "0:0:0:0::0:0:0:0";
+    BOBUIest::newRow("0:::") << "0:::"; BOBUIest::newRow(":::0") << ":::0";
+    BOBUIest::newRow("16:::::::::::::::::::::::") << "16:::::::::::::::::::::::";
 
     // non-hex
-    QTest::newRow("a:b:c:d:e:f:g:h") << "a:b:c:d:e:f:g:h";
+    BOBUIest::newRow("a:b:c:d:e:f:g:h") << "a:b:c:d:e:f:g:h";
 
     // too big number
-    QTest::newRow("0:0:0:0:0:0:0:10103") << "0:0:0:0:0:0:0:10103";
+    BOBUIest::newRow("0:0:0:0:0:0:0:10103") << "0:0:0:0:0:0:0:10103";
 
     // too many zeroes
-    QTest::newRow("0:0:0:0:0:0:0:00103") << "0:0:0:0:0:0:0:00103";
+    BOBUIest::newRow("0:0:0:0:0:0:0:00103") << "0:0:0:0:0:0:0:00103";
 
     // too short
-    QTest::newRow("0:0:0:0:0:0:0:") << "0:0:0:0:0:0:0:";
-    QTest::newRow("0:0:0:0:0:0:0") << "0:0:0:0:0:0:0";
-    QTest::newRow("0:0:0:0:0:0:") << "0:0:0:0:0:0:";
-    QTest::newRow("0:0:0:0:0:0") << "0:0:0:0:0:0";
-    QTest::newRow("0:0:0:0:0:") << "0:0:0:0:0:";
-    QTest::newRow("0:0:0:0:0") << "0:0:0:0:0";
-    QTest::newRow("0:0:0:0:") << "0:0:0:0:";
-    QTest::newRow("0:0:0:0") << "0:0:0:0";
-    QTest::newRow("0:0:0:") << "0:0:0:";
-    QTest::newRow("0:0:0") << "0:0:0";
-    QTest::newRow("0:0:") << "0:0:";
-    QTest::newRow("0:0") << "0:0";
-    QTest::newRow("0:") << "0:";
-    QTest::newRow("0") << "0";
-    QTest::newRow(":0") << ":0";
-    QTest::newRow(":0:0") << ":0:0";
-    QTest::newRow(":0:0:0") << ":0:0:0";
-    QTest::newRow(":0:0:0:0") << ":0:0:0:0";
-    QTest::newRow(":0:0:0:0:0") << ":0:0:0:0:0";
-    QTest::newRow(":0:0:0:0:0:0") << ":0:0:0:0:0:0";
-    QTest::newRow(":0:0:0:0:0:0:0") << ":0:0:0:0:0:0:0";
+    BOBUIest::newRow("0:0:0:0:0:0:0:") << "0:0:0:0:0:0:0:";
+    BOBUIest::newRow("0:0:0:0:0:0:0") << "0:0:0:0:0:0:0";
+    BOBUIest::newRow("0:0:0:0:0:0:") << "0:0:0:0:0:0:";
+    BOBUIest::newRow("0:0:0:0:0:0") << "0:0:0:0:0:0";
+    BOBUIest::newRow("0:0:0:0:0:") << "0:0:0:0:0:";
+    BOBUIest::newRow("0:0:0:0:0") << "0:0:0:0:0";
+    BOBUIest::newRow("0:0:0:0:") << "0:0:0:0:";
+    BOBUIest::newRow("0:0:0:0") << "0:0:0:0";
+    BOBUIest::newRow("0:0:0:") << "0:0:0:";
+    BOBUIest::newRow("0:0:0") << "0:0:0";
+    BOBUIest::newRow("0:0:") << "0:0:";
+    BOBUIest::newRow("0:0") << "0:0";
+    BOBUIest::newRow("0:") << "0:";
+    BOBUIest::newRow("0") << "0";
+    BOBUIest::newRow(":0") << ":0";
+    BOBUIest::newRow(":0:0") << ":0:0";
+    BOBUIest::newRow(":0:0:0") << ":0:0:0";
+    BOBUIest::newRow(":0:0:0:0") << ":0:0:0:0";
+    BOBUIest::newRow(":0:0:0:0:0") << ":0:0:0:0:0";
+    BOBUIest::newRow(":0:0:0:0:0:0") << ":0:0:0:0:0:0";
+    BOBUIest::newRow(":0:0:0:0:0:0:0") << ":0:0:0:0:0:0:0";
 
     // IPv4
-    QTest::newRow("1.2.3.4") << "1.2.3.4";
+    BOBUIest::newRow("1.2.3.4") << "1.2.3.4";
 
     // embedded IPv4 in the wrong position
-    QTest::newRow("1.2.3.4::") << "1.2.3.4::";
-    QTest::newRow("f:1.2.3.4::") << "f:1.2.3.4::";
-    QTest::newRow("f:e:d:c:b:1.2.3.4:0") << "f:e:d:c:b:1.2.3.4:0";
+    BOBUIest::newRow("1.2.3.4::") << "1.2.3.4::";
+    BOBUIest::newRow("f:1.2.3.4::") << "f:1.2.3.4::";
+    BOBUIest::newRow("f:e:d:c:b:1.2.3.4:0") << "f:e:d:c:b:1.2.3.4:0";
 
     // bad embedded IPv4
-    QTest::newRow("::1.2.3") << "::1.2.3";
-    QTest::newRow("::1.2.257") << "::1.2.257";
-    QTest::newRow("::1.2") << "::1.2";
-    QTest::newRow("::0250.0x10101") << "::0250.0x10101";
-    QTest::newRow("::1.2.3.0250") << "::1.2.3.0250";
-    QTest::newRow("::1.2.3.0xff") << "::1.2.3.0xff";
-    QTest::newRow("::1.2.3.07") << "::1.2.3.07";
-    QTest::newRow("::1.2.3.010") << "::1.2.3.010";
+    BOBUIest::newRow("::1.2.3") << "::1.2.3";
+    BOBUIest::newRow("::1.2.257") << "::1.2.257";
+    BOBUIest::newRow("::1.2") << "::1.2";
+    BOBUIest::newRow("::0250.0x10101") << "::0250.0x10101";
+    BOBUIest::newRow("::1.2.3.0250") << "::1.2.3.0250";
+    BOBUIest::newRow("::1.2.3.0xff") << "::1.2.3.0xff";
+    BOBUIest::newRow("::1.2.3.07") << "::1.2.3.07";
+    BOBUIest::newRow("::1.2.3.010") << "::1.2.3.010";
 
     // separated by something else
-    QTest::newRow("1.2.3.4.5.6.7.8") << "1.2.3.4.5.6.7.8";
-    QTest::newRow("1,2,3,4,5,6,7,8") << "1,2,3,4,5,6,7,8";
-    QTest::newRow("1..2") << "1..2";
-    QTest::newRow("1:.2") << "1:.2";
-    QTest::newRow("1.:2") << "1.:2";
+    BOBUIest::newRow("1.2.3.4.5.6.7.8") << "1.2.3.4.5.6.7.8";
+    BOBUIest::newRow("1,2,3,4,5,6,7,8") << "1,2,3,4,5,6,7,8";
+    BOBUIest::newRow("1..2") << "1..2";
+    BOBUIest::newRow("1:.2") << "1:.2";
+    BOBUIest::newRow("1.:2") << "1.:2";
 }
 
 void tst_QIpAddress::invalidParseIp6()
@@ -428,35 +428,35 @@ void tst_QIpAddress::invalidParseIp6()
 void tst_QIpAddress::ip6ToString_data()
 {
     qRegisterMetaType<Ip6>();
-    QTest::addColumn<Ip6>("ip");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<Ip6>("ip");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("1:2:3:4:5:6:7:8") << Ip6(1,2,3,4,5,6,7,8) << "1:2:3:4:5:6:7:8";
-    QTest::newRow("1:2:3:4:5:6:7:88") << Ip6(1,2,3,4,5,6,7,0x88) << "1:2:3:4:5:6:7:88";
-    QTest::newRow("1:2:3:4:5:6:7:888") << Ip6(1,2,3,4,5,6,7,0x888) << "1:2:3:4:5:6:7:888";
-    QTest::newRow("1:2:3:4:5:6:7:8888") << Ip6(1,2,3,4,5,6,7,0x8888) << "1:2:3:4:5:6:7:8888";
-    QTest::newRow("1:2:3:4:5:6:7:8880") << Ip6(1,2,3,4,5,6,7,0x8880) << "1:2:3:4:5:6:7:8880";
-    QTest::newRow("1:2:3:4:5:6:7:8808") << Ip6(1,2,3,4,5,6,7,0x8808) << "1:2:3:4:5:6:7:8808";
-    QTest::newRow("1:2:3:4:5:6:7:8088") << Ip6(1,2,3,4,5,6,7,0x8088) << "1:2:3:4:5:6:7:8088";
+    BOBUIest::newRow("1:2:3:4:5:6:7:8") << Ip6(1,2,3,4,5,6,7,8) << "1:2:3:4:5:6:7:8";
+    BOBUIest::newRow("1:2:3:4:5:6:7:88") << Ip6(1,2,3,4,5,6,7,0x88) << "1:2:3:4:5:6:7:88";
+    BOBUIest::newRow("1:2:3:4:5:6:7:888") << Ip6(1,2,3,4,5,6,7,0x888) << "1:2:3:4:5:6:7:888";
+    BOBUIest::newRow("1:2:3:4:5:6:7:8888") << Ip6(1,2,3,4,5,6,7,0x8888) << "1:2:3:4:5:6:7:8888";
+    BOBUIest::newRow("1:2:3:4:5:6:7:8880") << Ip6(1,2,3,4,5,6,7,0x8880) << "1:2:3:4:5:6:7:8880";
+    BOBUIest::newRow("1:2:3:4:5:6:7:8808") << Ip6(1,2,3,4,5,6,7,0x8808) << "1:2:3:4:5:6:7:8808";
+    BOBUIest::newRow("1:2:3:4:5:6:7:8088") << Ip6(1,2,3,4,5,6,7,0x8088) << "1:2:3:4:5:6:7:8088";
 
-    QTest::newRow("1:2:3:4:5:6:7:0") << Ip6(1,2,3,4,5,6,7,0) << "1:2:3:4:5:6:7:0";
-    QTest::newRow("0:1:2:3:4:5:6:7") << Ip6(0,1,2,3,4,5,6,7) << "0:1:2:3:4:5:6:7";
+    BOBUIest::newRow("1:2:3:4:5:6:7:0") << Ip6(1,2,3,4,5,6,7,0) << "1:2:3:4:5:6:7:0";
+    BOBUIest::newRow("0:1:2:3:4:5:6:7") << Ip6(0,1,2,3,4,5,6,7) << "0:1:2:3:4:5:6:7";
 
-    QTest::newRow("1:2:3:4:5:6::") << Ip6(1,2,3,4,5,6,0,0) << "1:2:3:4:5:6::";
-    QTest::newRow("::1:2:3:4:5:6") << Ip6(0,0,1,2,3,4,5,6) << "::1:2:3:4:5:6";
-    QTest::newRow("1:0:0:2::3") << Ip6(1,0,0,2,0,0,0,3) << "1:0:0:2::3";
-    QTest::newRow("1:::2:0:0:3") << Ip6(1,0,0,0,2,0,0,3) << "1::2:0:0:3";
-    QTest::newRow("1::2:0:0:0") << Ip6(1,0,0,0,2,0,0,0) << "1::2:0:0:0";
-    QTest::newRow("0:0:0:1::") << Ip6(0,0,0,1,0,0,0,0) << "0:0:0:1::";
-    QTest::newRow("::1:0:0:0") << Ip6(0,0,0,0,1,0,0,0) << "::1:0:0:0";
-    QTest::newRow("ff02::1") << Ip6(0xff02,0,0,0,0,0,0,1) << "ff02::1";
-    QTest::newRow("1::1") << Ip6(1,0,0,0,0,0,0,1) << "1::1";
-    QTest::newRow("::1") << Ip6(0,0,0,0,0,0,0,1) << "::1";
-    QTest::newRow("1::") << Ip6(1,0,0,0,0,0,0,0) << "1::";
-    QTest::newRow("::") << Ip6(0,0,0,0,0,0,0,0) << "::";
+    BOBUIest::newRow("1:2:3:4:5:6::") << Ip6(1,2,3,4,5,6,0,0) << "1:2:3:4:5:6::";
+    BOBUIest::newRow("::1:2:3:4:5:6") << Ip6(0,0,1,2,3,4,5,6) << "::1:2:3:4:5:6";
+    BOBUIest::newRow("1:0:0:2::3") << Ip6(1,0,0,2,0,0,0,3) << "1:0:0:2::3";
+    BOBUIest::newRow("1:::2:0:0:3") << Ip6(1,0,0,0,2,0,0,3) << "1::2:0:0:3";
+    BOBUIest::newRow("1::2:0:0:0") << Ip6(1,0,0,0,2,0,0,0) << "1::2:0:0:0";
+    BOBUIest::newRow("0:0:0:1::") << Ip6(0,0,0,1,0,0,0,0) << "0:0:0:1::";
+    BOBUIest::newRow("::1:0:0:0") << Ip6(0,0,0,0,1,0,0,0) << "::1:0:0:0";
+    BOBUIest::newRow("ff02::1") << Ip6(0xff02,0,0,0,0,0,0,1) << "ff02::1";
+    BOBUIest::newRow("1::1") << Ip6(1,0,0,0,0,0,0,1) << "1::1";
+    BOBUIest::newRow("::1") << Ip6(0,0,0,0,0,0,0,1) << "::1";
+    BOBUIest::newRow("1::") << Ip6(1,0,0,0,0,0,0,0) << "1::";
+    BOBUIest::newRow("::") << Ip6(0,0,0,0,0,0,0,0) << "::";
 
-    QTest::newRow("::1.2.3.4") << Ip6(0,0,0,0,0,0,0x102,0x304) << "::1.2.3.4";
-    QTest::newRow("::ffff:1.2.3.4") << Ip6(0,0,0,0,0,0xffff,0x102,0x304) << "::ffff:1.2.3.4";
+    BOBUIest::newRow("::1.2.3.4") << Ip6(0,0,0,0,0,0,0x102,0x304) << "::1.2.3.4";
+    BOBUIest::newRow("::ffff:1.2.3.4") << Ip6(0,0,0,0,0,0xffff,0x102,0x304) << "::ffff:1.2.3.4";
 }
 
 void tst_QIpAddress::ip6ToString()
@@ -478,6 +478,6 @@ void tst_QIpAddress::ip6ToString()
     QCOMPARE(result, expected);
 }
 
-QTEST_APPLESS_MAIN(tst_QIpAddress)
+BOBUIEST_APPLESS_MAIN(tst_QIpAddress)
 
 #include "tst_qipaddress.moc"

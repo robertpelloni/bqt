@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSPROXYWIDGET_H
 #define QGRAPHICSPROXYWIDGET_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qgraphicswidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qgraphicswidget.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsProxyWidgetPrivate;
 
@@ -18,7 +18,7 @@ class Q_WIDGETS_EXPORT QGraphicsProxyWidget : public QGraphicsWidget
 {
     Q_OBJECT
 public:
-    QGraphicsProxyWidget(QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = Qt::WindowFlags());
+    QGraphicsProxyWidget(QGraphicsItem *parent = nullptr, BobUI::WindowFlags wFlags = BobUI::WindowFlags());
     ~QGraphicsProxyWidget();
 
     void setWidget(QWidget *widget);
@@ -46,11 +46,11 @@ protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 #endif
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
     void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
@@ -67,7 +67,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QGraphicsSceneWheelEvent *event) override;
 #endif
 
@@ -78,10 +78,10 @@ protected:
     void focusOutEvent(QFocusEvent *event) override;
     bool focusNextPrevChild(bool next) override;
 
-    QVariant inputMethodQuery(Qt::InputMethodQuery query) const override;
+    QVariant inputMethodQuery(BobUI::InputMethodQuery query) const override;
     void inputMethodEvent(QInputMethodEvent *event) override;
 
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
     void resizeEvent(QGraphicsSceneResizeEvent *event) override;
 
 protected Q_SLOTS:
@@ -97,6 +97,6 @@ private:
     friend class QGraphicsItem;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

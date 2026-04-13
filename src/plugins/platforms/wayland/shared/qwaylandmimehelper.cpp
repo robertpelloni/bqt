@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandmimehelper_p.h"
 #include <QImage>
@@ -8,7 +8,7 @@
 #include <QBuffer>
 #include <QImageWriter>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QByteArray QWaylandMimeHelper::getByteArray(QMimeData *mimeData, const QString &mimeType)
 {
@@ -16,7 +16,7 @@ QByteArray QWaylandMimeHelper::getByteArray(QMimeData *mimeData, const QString &
     if (mimeType == QLatin1String("text/plain")) {
         content = mimeData->text().toUtf8();
     } else if (mimeData->hasImage()
-               && (mimeType == QLatin1String("application/x-qt-image")
+               && (mimeType == QLatin1String("application/x-bobui-image")
                    || mimeType.startsWith(QLatin1String("image/")))) {
         QImage image = qvariant_cast<QImage>(mimeData->imageData());
         if (!image.isNull()) {
@@ -46,4 +46,4 @@ QByteArray QWaylandMimeHelper::getByteArray(QMimeData *mimeData, const QString &
     return content;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

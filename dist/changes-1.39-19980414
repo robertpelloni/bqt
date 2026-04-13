@@ -52,7 +52,7 @@ src/kernel/qpsprn.cpp    2.13  agulbra  +4 -4
 
 src/moc/moc.pro    1.9  warwick  +1 -1
 
-  include qt include
+  include bobui include
 
 
 extensions/opengl/src/qgl.pro    1.9  warwick  +1 -1
@@ -134,7 +134,7 @@ src/kernel/qwidget.h    2.48  warwick  +3 -1
   Generalize isEnabledToTLW and isVisibleToTLW
 
 
-src/widgets/qtablevw.cpp    2.44  warwick  +8 -28
+src/widgets/bobuiablevw.cpp    2.44  warwick  +8 -28
 
   Propagate palette changes to scrollbars.
   Combine common code.

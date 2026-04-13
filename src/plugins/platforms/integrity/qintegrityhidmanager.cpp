@@ -1,5 +1,5 @@
 // Copyright (C) 2015 Green Hills Software
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qintegrityhidmanager.h"
 #include <QList>
@@ -8,7 +8,7 @@
 #include <qpa/qwindowsysteminterface.h>
 #include <device/hiddriver.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class IntNotifier
 {
@@ -45,7 +45,7 @@ private:
     HIDDriver *driver;
     HIDHandle handle;
     QPoint currentPos;
-    Qt::MouseButtons buttons;
+    BobUI::MouseButtons buttons;
 };
 
 class HIDDriverHandler : IntNotifier
@@ -148,21 +148,21 @@ void HIDDeviceHandler::process_event()
             switch (event.index) {
             case HID_BUTTON_LEFT:
                 if (event.value)
-                    buttons |= Qt::LeftButton;
+                    buttons |= BobUI::LeftButton;
                 else
-                    buttons &= ~Qt::LeftButton;
+                    buttons &= ~BobUI::LeftButton;
                 break;
             case HID_BUTTON_MIDDLE:
                 if (event.value)
-                    buttons |= Qt::MiddleButton;
+                    buttons |= BobUI::MiddleButton;
                 else
-                    buttons &= ~Qt::MiddleButton;
+                    buttons &= ~BobUI::MiddleButton;
                 break;
             case HID_BUTTON_RIGHT:
                 if (event.value)
-                    buttons |= Qt::RightButton;
+                    buttons |= BobUI::RightButton;
                 else
-                    buttons &= ~Qt::RightButton;
+                    buttons &= ~BobUI::RightButton;
                 break;
             default:
                 /* ignore the rest for now */
@@ -208,7 +208,7 @@ void QIntegrityHIDManager::run()
 }
 
 QIntegrityHIDManager::QIntegrityHIDManager(const QString &key, const QString &spec, QObject *parent)
-    : QThread(parent)
+    : BOBUIhread(parent)
 {
     start();
 }
@@ -219,4 +219,4 @@ QIntegrityHIDManager::~QIntegrityHIDManager()
     qDeleteAll(m_drivers);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <QApplication>
 #include <QMessageBox>
-#include <QTest>
+#include <BOBUIest>
 #include <QSplashScreen>
 #include <QScrollBar>
 #include <QProgressDialog>
 #include <QSpinBox>
 #include <QScreen>
-#include <QTestEventLoop>
-#include <QTimer>
+#include <BOBUIestEventLoop>
+#include <BOBUIimer>
 
 #include <guitest.h>
 
@@ -58,14 +58,14 @@ void tst_MacGui::scrollbarPainting()
 
     QScrollBar horizontalScrollbar(&colorWidget);
     horizontalScrollbar.move(30, 10);
-    horizontalScrollbar.setOrientation(Qt::Horizontal);
+    horizontalScrollbar.setOrientation(BobUI::Horizontal);
     scrollBarSize = horizontalScrollbar.sizeHint();
     scrollBarSize.setWidth(200);
     horizontalScrollbar.resize(scrollBarSize);
 
     colorWidget.show();
     colorWidget.raise();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QPixmap pixmap = grabWindowContents(&colorWidget);
 
@@ -89,12 +89,12 @@ void tst_MacGui::dummy()
     QAccessibleInterface *interface = wn.find(QAccessible::Name, "OK", box);
     QVERIFY(interface);
     const int delay = 1000;
-    clickLater(interface, Qt::LeftButton, delay);
+    clickLater(interface, BobUI::LeftButton, delay);
 
     // Show dialog and enter event loop.
     connect(wn.getWidget(interface), SIGNAL(clicked()), SLOT(exitLoopSlot()));
     const int timeout = 4;
-    QTestEventLoop::instance().enterLoop(timeout);
+    BOBUIestEventLoop::instance().enterLoop(timeout);
 }
 
 /*
@@ -107,23 +107,23 @@ void tst_MacGui::splashScreenModality()
     splash.show();
 
     QMessageBox box;
-    //box.setWindowFlags(box.windowFlags() | Qt::WindowStaysOnTopHint);
+    //box.setWindowFlags(box.windowFlags() | BobUI::WindowStaysOnTopHint);
     box.setText("accessible?");
     box.show();
 
-    QSKIP("QTBUG-35169");
+    QSKIP("BOBUIBUG-35169");
 
     // Find the "OK" button and schedule a press.
     QAccessibleInterface *interface = wn.find(QAccessible::Name, "OK", &box);
     QVERIFY(interface);
     const int delay = 1000;
-    clickLater(interface, Qt::LeftButton, delay);
+    clickLater(interface, BobUI::LeftButton, delay);
 
     // Show dialog and enter event loop.
     connect(wn.getWidget(interface), SIGNAL(clicked()), SLOT(exitLoopSlot()));
     const int timeout = 4;
-    QTestEventLoop::instance().enterLoop(timeout);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(timeout);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 }
 
 /*
@@ -143,14 +143,14 @@ void tst_MacGui::nonModalOrder()
     // The child window needs to be a dialog, as only subclasses of NSPanel
     // are allowed to override worksWhenModal, which is needed to mark the
     // transient child as working within the modal session of the parent.
-    child.setWindowFlags(Qt::Window | Qt::Dialog);
+    child.setWindowFlags(BobUI::Window | BobUI::Dialog);
     child.resize(400, 400);
     child.move(100, 100);
 
-    QTimer::singleShot(0, [&]{
-        QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    BOBUIimer::singleShot(0, [&]{
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
         child.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&child));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&child));
         QCOMPARE(QApplication::widgetAt(child.mapToGlobal(QPoint(100, 100))), &child);
         dialog.close();
     });
@@ -169,19 +169,19 @@ void tst_MacGui::spinBoxArrowButtons()
     QSpinBox spinBox2(&colorWidget);
     spinBox2.move(0, 100);
     colorWidget.show();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     // Grab an unfocused spin box.
     const QImage noFocus = grabWindowContents(&colorWidget).toImage();
 
     // Set focus by clicking the less button.
     QAccessibleInterface *lessInterface = wn.find(QAccessible::Name, "Less", &spinBox);
-    QEXPECT_FAIL("", "QTBUG-26372", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-26372", Abort);
     QVERIFY(lessInterface);
     const int delay = 500;
-    clickLater(lessInterface, Qt::LeftButton, delay);
+    clickLater(lessInterface, BobUI::LeftButton, delay);
     const int timeout = 1;
-    QTestEventLoop::instance().enterLoop(timeout);
+    BOBUIestEventLoop::instance().enterLoop(timeout);
 
     // Grab a focused spin box.
     const QImage focus = grabWindowContents(&colorWidget).toImage();
@@ -193,6 +193,6 @@ void tst_MacGui::spinBoxArrowButtons()
     QCOMPARE(noFocus.copy(compareRect), focus.copy(compareRect));
 }
 
-QTEST_MAIN(tst_MacGui)
+BOBUIEST_MAIN(tst_MacGui)
 #include "tst_macgui.moc"
 

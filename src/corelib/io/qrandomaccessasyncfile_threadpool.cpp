@@ -1,24 +1,24 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qrandomaccessasyncfile_p_p.h"
 
 #include "qiooperation_p.h"
 #include "qiooperation_p_p.h"
 
-#include <QtCore/qfuture.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qthreadpool.h>
+#include <BobUICore/qfuture.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/bobuihreadpool.h>
 
-QT_REQUIRE_CONFIG(thread);
-QT_REQUIRE_CONFIG(future);
+BOBUI_REQUIRE_CONFIG(thread);
+BOBUI_REQUIRE_CONFIG(future);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 
-// We cannot use Q_GLOBAL_STATIC(QThreadPool, foo) because the Windows
+// We cannot use Q_GLOBAL_STATIC(BOBUIhreadPool, foo) because the Windows
 // implementation raises a qWarning in its destructor when used as a global
 // static, and this warning leads to a crash on Windows CI. Cannot reproduce
 // the crash locally, so cannot really fix the issue :(
@@ -32,7 +32,7 @@ public:
         QMutexLocker locker(&m_mutex);
         if (m_refCount == 0) {
             Q_ASSERT(!m_pool);
-            m_pool = new QThreadPool;
+            m_pool = new BOBUIhreadPool;
         }
         ++m_refCount;
     }
@@ -47,7 +47,7 @@ public:
         }
     }
 
-    QThreadPool *operator()()
+    BOBUIhreadPool *operator()()
     {
         QMutexLocker locker(&m_mutex);
         Q_ASSERT(m_refCount > 0);
@@ -56,7 +56,7 @@ public:
 
 private:
     QBasicMutex m_mutex;
-    QThreadPool *m_pool = nullptr;
+    BOBUIhreadPool *m_pool = nullptr;
     quint64 m_refCount = 0;
 };
 
@@ -108,7 +108,7 @@ QRandomAccessAsyncFileThreadPoolBackend::open(const QString &path, QIODeviceBase
         m_fileState = FileState::OpenPending;
     }
 
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage();
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage();
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->type = QIOOperation::Type::Open;
@@ -159,7 +159,7 @@ qint64 QRandomAccessAsyncFileThreadPoolBackend::size() const
 
 QIOOperation *QRandomAccessAsyncFileThreadPoolBackend::flush()
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage();
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage();
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->type = QIOOperation::Type::Flush;
@@ -174,7 +174,7 @@ QIOReadOperation *QRandomAccessAsyncFileThreadPoolBackend::read(qint64 offset, q
 {
     QByteArray array;
     array.resizeForOverwrite(maxSize);
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(std::move(array));
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(std::move(array));
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -189,7 +189,7 @@ QIOReadOperation *QRandomAccessAsyncFileThreadPoolBackend::read(qint64 offset, q
 QIOWriteOperation *
 QRandomAccessAsyncFileThreadPoolBackend::write(qint64 offset, const QByteArray &data)
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(data);
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(data);
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -204,7 +204,7 @@ QRandomAccessAsyncFileThreadPoolBackend::write(qint64 offset, const QByteArray &
 QIOWriteOperation *
 QRandomAccessAsyncFileThreadPoolBackend::write(qint64 offset, QByteArray &&data)
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(std::move(data));
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(std::move(data));
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -220,7 +220,7 @@ QIOVectoredReadOperation *
 QRandomAccessAsyncFileThreadPoolBackend::readInto(qint64 offset, QSpan<std::byte> buffer)
 {
     auto *dataStorage =
-            new QtPrivate::QIOOperationDataStorage(QSpan<const QSpan<std::byte>>{buffer});
+            new BobUIPrivate::QIOOperationDataStorage(QSpan<const QSpan<std::byte>>{buffer});
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -236,7 +236,7 @@ QIOVectoredWriteOperation *
 QRandomAccessAsyncFileThreadPoolBackend::writeFrom(qint64 offset, QSpan<const std::byte> buffer)
 {
     auto *dataStorage =
-            new QtPrivate::QIOOperationDataStorage(QSpan<const QSpan<const std::byte>>{buffer});
+            new BobUIPrivate::QIOOperationDataStorage(QSpan<const QSpan<const std::byte>>{buffer});
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -251,7 +251,7 @@ QRandomAccessAsyncFileThreadPoolBackend::writeFrom(qint64 offset, QSpan<const st
 QIOVectoredReadOperation *
 QRandomAccessAsyncFileThreadPoolBackend::readInto(qint64 offset, QSpan<const QSpan<std::byte>> buffers)
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(buffers);
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(buffers);
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -266,7 +266,7 @@ QRandomAccessAsyncFileThreadPoolBackend::readInto(qint64 offset, QSpan<const QSp
 QIOVectoredWriteOperation *
 QRandomAccessAsyncFileThreadPoolBackend::writeFrom(qint64 offset, QSpan<const QSpan<const std::byte>> buffers)
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(buffers);
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(buffers);
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -344,7 +344,7 @@ void QRandomAccessAsyncFileThreadPoolBackend::executeNextOperation()
             case QIOOperation::Type::Unknown:
                 Q_ASSERT_X(false, "executeNextOperation", "Operation of type Unknown!");
                 // For release builds - directly complete the operation
-                m_watcher.setFuture(QtFuture::makeReadyValueFuture(OperationResult{}));
+                m_watcher.setFuture(BobUIFuture::makeReadyValueFuture(OperationResult{}));
                 operationComplete();
                 break;
             }
@@ -386,7 +386,7 @@ void QRandomAccessAsyncFileThreadPoolBackend::processBufferAt(qsizetype idx)
         };
 
         QFuture<OperationResult> f =
-                QtFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), op);
+                BobUIFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), op);
         m_watcher.setFuture(f);
     } else if (priv->type == QIOOperation::Type::Write) {
         qint64 size = -1;
@@ -413,7 +413,7 @@ void QRandomAccessAsyncFileThreadPoolBackend::processBufferAt(qsizetype idx)
         };
 
         QFuture<OperationResult> f =
-                QtFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), op);
+                BobUIFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), op);
         m_watcher.setFuture(f);
     }
 }
@@ -439,7 +439,7 @@ void QRandomAccessAsyncFileThreadPoolBackend::processFlush()
     };
 
     QFuture<OperationResult> f =
-            QtFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), op);
+            BobUIFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), op);
     m_watcher.setFuture(f);
 }
 
@@ -466,9 +466,9 @@ void QRandomAccessAsyncFileThreadPoolBackend::processOpen()
                 result.error = QIOOperation::Error::Open;
             return result;
         };
-        f = QtFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), op);
+        f = BobUIFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), op);
     } else {
-        f = QtFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), [] {
+        f = BobUIFuture::makeReadyVoidFuture().then(asyncFileThreadPool(), [] {
             return QRandomAccessAsyncFileThreadPoolBackend::OperationResult{0, QIOOperation::Error::Open};
         });
     }
@@ -554,4 +554,4 @@ void QRandomAccessAsyncFileThreadPoolBackend::operationComplete()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

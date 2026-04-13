@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoutlinemapper_p.h"
 
@@ -10,7 +10,7 @@
 
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define qreal_to_fixed_26_6(f) (qRound(f * 64))
 
@@ -40,11 +40,11 @@ static const QRectF boundingRect(const QPointF *points, int pointCount)
 void QOutlineMapper::setClipRect(QRect clipRect)
 {
     auto limitCoords = [](QRect r) {
-        const QRect limitRect(QPoint(-QT_RASTER_COORD_LIMIT, -QT_RASTER_COORD_LIMIT),
-                              QPoint(QT_RASTER_COORD_LIMIT, QT_RASTER_COORD_LIMIT));
+        const QRect limitRect(QPoint(-BOBUI_RASTER_COORD_LIMIT, -BOBUI_RASTER_COORD_LIMIT),
+                              QPoint(BOBUI_RASTER_COORD_LIMIT, BOBUI_RASTER_COORD_LIMIT));
         r &= limitRect;
-        r.setWidth(qMin(r.width(), QT_RASTER_COORD_LIMIT));
-        r.setHeight(qMin(r.height(), QT_RASTER_COORD_LIMIT));
+        r.setWidth(qMin(r.width(), BOBUI_RASTER_COORD_LIMIT));
+        r.setHeight(qMin(r.height(), BOBUI_RASTER_COORD_LIMIT));
         return r;
     };
 
@@ -56,7 +56,7 @@ void QOutlineMapper::setClipRect(QRect clipRect)
 }
 
 void QOutlineMapper::curveTo(const QPointF &cp1, const QPointF &cp2, const QPointF &ep) {
-#ifdef QT_DEBUG_CONVERT
+#ifdef BOBUI_DEBUG_CONVERT
     printf("QOutlineMapper::curveTo() (%f, %f)\n", ep.x(), ep.y());
 #endif
 
@@ -84,11 +84,11 @@ void QOutlineMapper::curveTo(const QPointF &cp1, const QPointF &cp2, const QPoin
 }
 
 
-QT_FT_Outline *QOutlineMapper::convertPath(const QPainterPath &path)
+BOBUI_FT_Outline *QOutlineMapper::convertPath(const QPainterPath &path)
 {
     Q_ASSERT(!path.isEmpty());
     int elmCount = path.elementCount();
-#ifdef QT_DEBUG_CONVERT
+#ifdef BOBUI_DEBUG_CONVERT
     printf("QOutlineMapper::convertPath(), size=%d\n", elmCount);
 #endif
     beginOutline(path.fillRule());
@@ -122,14 +122,14 @@ QT_FT_Outline *QOutlineMapper::convertPath(const QPainterPath &path)
     return outline();
 }
 
-QT_FT_Outline *QOutlineMapper::convertPath(const QVectorPath &path)
+BOBUI_FT_Outline *QOutlineMapper::convertPath(const QVectorPath &path)
 {
     int count = path.elementCount();
 
-#ifdef QT_DEBUG_CONVERT
+#ifdef BOBUI_DEBUG_CONVERT
     printf("QOutlineMapper::convertPath(VP), size=%d\n", count);
 #endif
-    beginOutline(path.hasWindingFill() ? Qt::WindingFill : Qt::OddEvenFill);
+    beginOutline(path.hasWindingFill() ? BobUI::WindingFill : BobUI::OddEvenFill);
 
     if (path.elements()) {
         // TODO: if we do closing of subpaths in convertElements instead we
@@ -188,7 +188,7 @@ void QOutlineMapper::endOutline()
     // Transform the outline
     if (m_transform.isIdentity()) {
         // Nothing to do
-    } else if (m_transform.type() < QTransform::TxProject) {
+    } else if (m_transform.type() < BOBUIransform::TxProject) {
         for (int i = 0; i < m_elements.size(); ++i)
             elements[i] = m_transform.map(elements[i]);
     } else {
@@ -196,12 +196,12 @@ void QOutlineMapper::endOutline()
                              m_element_types.size() ? m_element_types.data() : nullptr);
         QPainterPath path = vp.convertToPainterPath();
         path = m_transform.map(path);
-        if (!(m_outline.flags & QT_FT_OUTLINE_EVEN_ODD_FILL))
-            path.setFillRule(Qt::WindingFill);
+        if (!(m_outline.flags & BOBUI_FT_OUTLINE_EVEN_ODD_FILL))
+            path.setFillRule(BobUI::WindingFill);
         if (path.isEmpty()) {
             m_valid = false;
         } else {
-            QTransform oldTransform = m_transform;
+            BOBUIransform oldTransform = m_transform;
             m_transform.reset();
             convertPath(path);
             m_transform = oldTransform;
@@ -211,14 +211,14 @@ void QOutlineMapper::endOutline()
 
     controlPointRect = boundingRect(elements, m_elements.size());
 
-#ifdef QT_DEBUG_CONVERT
+#ifdef BOBUI_DEBUG_CONVERT
     printf(" - control point rect (%.2f, %.2f) %.2f x %.2f, clip=(%d,%d, %dx%d)\n",
            controlPointRect.x(), controlPointRect.y(),
            controlPointRect.width(), controlPointRect.height(),
            m_clip_rect.x(), m_clip_rect.y(), m_clip_rect.width(), m_clip_rect.height());
 #endif
 
-    // Avoid rasterizing outside cliprect: faster, and ensures coords < QT_RASTER_COORD_LIMIT
+    // Avoid rasterizing outside cliprect: faster, and ensures coords < BOBUI_RASTER_COORD_LIMIT
     if (!m_in_clip_elements && !m_clip_trigger_rect.contains(controlPointRect)) {
         clipElements(elements, elementTypes(), m_elements.size());
     } else {
@@ -238,39 +238,39 @@ void QOutlineMapper::convertElements(const QPointF *elements,
             switch (*types) {
             case QPainterPath::MoveToElement:
                 {
-                    QT_FT_Vector pt_fixed = { qreal_to_fixed_26_6(e->x()),
+                    BOBUI_FT_Vector pt_fixed = { qreal_to_fixed_26_6(e->x()),
                                               qreal_to_fixed_26_6(e->y()) };
                     if (i != 0)
                         m_contours << m_points.size() - 1;
                     m_points << pt_fixed;
-                    m_tags <<  QT_FT_CURVE_TAG_ON;
+                    m_tags <<  BOBUI_FT_CURVE_TAG_ON;
                 }
                 break;
 
             case QPainterPath::LineToElement:
                 {
-                    QT_FT_Vector pt_fixed = { qreal_to_fixed_26_6(e->x()),
+                    BOBUI_FT_Vector pt_fixed = { qreal_to_fixed_26_6(e->x()),
                                               qreal_to_fixed_26_6(e->y()) };
                     m_points << pt_fixed;
-                    m_tags << QT_FT_CURVE_TAG_ON;
+                    m_tags << BOBUI_FT_CURVE_TAG_ON;
                 }
                 break;
 
             case QPainterPath::CurveToElement:
                 {
-                    QT_FT_Vector cp1_fixed = { qreal_to_fixed_26_6(e->x()),
+                    BOBUI_FT_Vector cp1_fixed = { qreal_to_fixed_26_6(e->x()),
                                                qreal_to_fixed_26_6(e->y()) };
                     ++e;
-                    QT_FT_Vector cp2_fixed = { qreal_to_fixed_26_6((e)->x()),
+                    BOBUI_FT_Vector cp2_fixed = { qreal_to_fixed_26_6((e)->x()),
                                                qreal_to_fixed_26_6((e)->y()) };
                     ++e;
-                    QT_FT_Vector ep_fixed = { qreal_to_fixed_26_6((e)->x()),
+                    BOBUI_FT_Vector ep_fixed = { qreal_to_fixed_26_6((e)->x()),
                                               qreal_to_fixed_26_6((e)->y()) };
 
                     m_points << cp1_fixed << cp2_fixed << ep_fixed;
-                    m_tags << QT_FT_CURVE_TAG_CUBIC
-                           << QT_FT_CURVE_TAG_CUBIC
-                           << QT_FT_CURVE_TAG_ON;
+                    m_tags << BOBUI_FT_CURVE_TAG_CUBIC
+                           << BOBUI_FT_CURVE_TAG_CUBIC
+                           << BOBUI_FT_CURVE_TAG_ON;
 
                     types += 2;
                     i += 2;
@@ -287,10 +287,10 @@ void QOutlineMapper::convertElements(const QPointF *elements,
         const QPointF *last = elements + element_count;
         const QPointF *e = elements;
         while (e < last) {
-            QT_FT_Vector pt_fixed = { qreal_to_fixed_26_6(e->x()),
+            BOBUI_FT_Vector pt_fixed = { qreal_to_fixed_26_6(e->x()),
                                       qreal_to_fixed_26_6(e->y()) };
             m_points << pt_fixed;
-            m_tags << QT_FT_CURVE_TAG_ON;
+            m_tags << BOBUI_FT_CURVE_TAG_ON;
             ++e;
         }
     }
@@ -305,7 +305,7 @@ void QOutlineMapper::convertElements(const QPointF *elements,
     m_outline.tags = m_tags.data();
     m_outline.contours = m_contours.data();
 
-#ifdef QT_DEBUG_CONVERT
+#ifdef BOBUI_DEBUG_CONVERT
     printf("QOutlineMapper::endOutline\n");
 
     printf(" - contours: %d\n", m_outline.n_contours);
@@ -335,8 +335,8 @@ void QOutlineMapper::clipElements(const QPointF *elements,
 
     QPainterPath path;
 
-    if (!(m_outline.flags & QT_FT_OUTLINE_EVEN_ODD_FILL))
-        path.setFillRule(Qt::WindingFill);
+    if (!(m_outline.flags & BOBUI_FT_OUTLINE_EVEN_ODD_FILL))
+        path.setFillRule(BobUI::WindingFill);
 
     if (types) {
         for (int i=0; i<element_count; ++i) {
@@ -369,11 +369,11 @@ void QOutlineMapper::clipElements(const QPointF *elements,
     if (clippedPath.isEmpty()) {
         m_valid = false;
     } else {
-        QTransform oldTransform = m_transform;
+        BOBUIransform oldTransform = m_transform;
         m_transform.reset();
         convertPath(clippedPath);
         m_transform = oldTransform;
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

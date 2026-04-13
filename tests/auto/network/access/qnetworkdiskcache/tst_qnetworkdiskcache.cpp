@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/QtNetwork>
-#include <QTest>
-#include <QTestEventLoop>
+#include <BobUINetwork/BobUINetwork>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <qnetworkdiskcache.h>
 #include <qrandom.h>
 
@@ -38,8 +38,8 @@ private slots:
     void data();
     void metaData();
     void remove();
-    void accessAfterRemove(); // QTBUG-17400
-    void setCookieHeader(); // QTBUG-41514
+    void accessAfterRemove(); // BOBUIBUG-17400
+    void setCookieHeader(); // BOBUIBUG-41514
     void setCacheDirectory_data();
     void setCacheDirectory();
     void updateMetaData();
@@ -57,7 +57,7 @@ private slots:
     void crashWhenParentingCache();
 
 private:
-    QTemporaryDir tempDir;
+    BOBUIemporaryDir tempDir;
     QUrl url; // used by accessAfterRemove(), setCookieHeader()
     QNetworkDiskCache *diskCache; // used by accessAfterRemove()
     QNetworkAccessManager *manager; // used by setCookieHeader()
@@ -65,11 +65,11 @@ private:
 
 // FIXME same as in tst_qnetworkreply.cpp .. could be unified
 // Does not work for POST/PUT!
-class MiniHttpServer: public QTcpServer
+class MiniHttpServer: public BOBUIcpServer
 {
     Q_OBJECT
 public:
-    QTcpSocket *client; // always the last one that was received
+    BOBUIcpSocket *client; // always the last one that was received
     QByteArray dataToTransmit;
     QByteArray receivedData;
     bool doClose;
@@ -283,7 +283,7 @@ void tst_QNetworkDiskCache::clear()
     QCOMPARE(countFiles(cacheDirectory).size(), NUM_SUBDIRECTORIES + 2);
 
     // don't delete files that it didn't create
-    QTemporaryFile file(cacheDirectory + "/XXXXXX");
+    BOBUIemporaryFile file(cacheDirectory + "/XXXXXX");
     if (file.open()) {
         file.fileName();    // make sure it exists with a name
         QCOMPARE(countFiles(cacheDirectory).size(), NUM_SUBDIRECTORIES + 3);
@@ -295,9 +295,9 @@ void tst_QNetworkDiskCache::clear()
 Q_DECLARE_METATYPE(QNetworkCacheMetaData)
 void tst_QNetworkDiskCache::data_data()
 {
-    QTest::addColumn<QNetworkCacheMetaData>("data");
+    BOBUIest::addColumn<QNetworkCacheMetaData>("data");
 
-    QTest::newRow("null") << QNetworkCacheMetaData();
+    BOBUIest::newRow("null") << QNetworkCacheMetaData();
 
     QUrl url(EXAMPLE_URL);
     QNetworkCacheMetaData metaData;
@@ -305,7 +305,7 @@ void tst_QNetworkDiskCache::data_data()
     QNetworkCacheMetaData::RawHeaderList headers;
     headers.append(QNetworkCacheMetaData::RawHeader("type", "bin"));
     metaData.setRawHeaders(headers);
-    QTest::newRow("non-null") << metaData;
+    BOBUIest::newRow("non-null") << metaData;
 }
 
 // public QIODevice* data(QUrl const& url)
@@ -360,7 +360,7 @@ void tst_QNetworkDiskCache::remove()
     QCOMPARE(countFiles(cacheDirectory).size(), NUM_SUBDIRECTORIES + 2);
 }
 
-void tst_QNetworkDiskCache::accessAfterRemove() // QTBUG-17400
+void tst_QNetworkDiskCache::accessAfterRemove() // BOBUIBUG-17400
 {
     QByteArray data("HTTP/1.1 200 OK\r\n"
                     "Content-Length: 1\r\n"
@@ -380,10 +380,10 @@ void tst_QNetworkDiskCache::accessAfterRemove() // QTBUG-17400
 
     QNetworkReply *reply = manager->get(request);
     connect(reply, SIGNAL(readyRead()), this, SLOT(accessAfterRemoveReadyReadSlot()));
-    connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     reply->deleteLater();
     manager->deleteLater();
@@ -394,7 +394,7 @@ void tst_QNetworkDiskCache::accessAfterRemoveReadyReadSlot()
     diskCache->remove(url); // this used to cause a crash later on
 }
 
-void tst_QNetworkDiskCache::setCookieHeader() // QTBUG-41514
+void tst_QNetworkDiskCache::setCookieHeader() // BOBUIBUG-41514
 {
     SubQNetworkDiskCache *cache = new SubQNetworkDiskCache();
     url = QUrl("http://localhost:4/cookieTest.html");   // hopefully no one is running an HTTP server on port 4
@@ -416,10 +416,10 @@ void tst_QNetworkDiskCache::setCookieHeader() // QTBUG-41514
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
     QNetworkReply  *reply = manager->get(request);
     connect(reply, SIGNAL(metaDataChanged()), this, SLOT(setCookieHeaderMetaDataChangedSlot()));
-    connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(reply->error(), QNetworkReply::NoError);
 
@@ -435,10 +435,10 @@ void tst_QNetworkDiskCache::setCookieHeaderMetaDataChangedSlot()
 
 void tst_QNetworkDiskCache::setCacheDirectory_data()
 {
-    QTest::addColumn<QString>("cacheDir");
-    QTest::newRow("null") << QString();
+    BOBUIest::addColumn<QString>("cacheDir");
+    BOBUIest::newRow("null") << QString();
     QDir dir("foo");
-    QTest::newRow("foo") << dir.absolutePath() + QString("/");
+    BOBUIest::newRow("foo") << dir.absolutePath() + QString("/");
 }
 
 // public void setCacheDirectory(QString const& cacheDir)
@@ -486,7 +486,7 @@ void tst_QNetworkDiskCache::fileMetaData()
         }
     }
 
-    QTemporaryFile file(cacheDirectory + "/qt_temp.XXXXXX");
+    BOBUIemporaryFile file(cacheDirectory + "/bobui_temp.XXXXXX");
     if (file.open()) {
         QNetworkCacheMetaData metaData = cache.call_fileMetaData(file.fileName());
         QVERIFY(!metaData.isValid());
@@ -509,7 +509,7 @@ void tst_QNetworkDiskCache::expire()
     QCOMPARE(max, limit);
     for (int i = 0; i < 10; ++i) {
         if (i % 3 == 0)
-            QTest::qWait(2000);
+            BOBUIest::qWait(2000);
         QNetworkCacheMetaData m;
         m.setUrl(QUrl("http://localhost:4/" + QString::number(i)));
         QIODevice *d = cache.prepare(m);
@@ -539,9 +539,9 @@ void tst_QNetworkDiskCache::expire()
 
 void tst_QNetworkDiskCache::oldCacheVersionFile_data()
 {
-    QTest::addColumn<int>("pass");
-    QTest::newRow("0") << 0;
-    QTest::newRow("1") << 1;
+    BOBUIest::addColumn<int>("pass");
+    BOBUIest::newRow("0") << 0;
+    BOBUIest::newRow("1") << 1;
 }
 
 void tst_QNetworkDiskCache::oldCacheVersionFile()
@@ -554,7 +554,7 @@ void tst_QNetworkDiskCache::oldCacheVersionFile()
     if (pass == 0) {
         QString name;
         {
-        QTemporaryFile file(cache.cacheDirectory() + "/XXXXXX.d");
+        BOBUIemporaryFile file(cache.cacheDirectory() + "/XXXXXX.d");
         file.setAutoRemove(false);
         QVERIFY2(file.open(), qPrintable(file.errorString()));
         QDataStream out(&file);
@@ -595,11 +595,11 @@ void tst_QNetworkDiskCache::oldCacheVersionFile()
 
 void tst_QNetworkDiskCache::streamVersion_data()
 {
-    QTest::addColumn<int>("version");
-    QTest::newRow("Qt 5.1") << int(QDataStream::Qt_5_1);
+    BOBUIest::addColumn<int>("version");
+    BOBUIest::newRow("BobUI 5.1") << int(QDataStream::BobUI_5_1);
     QDataStream ds;
-    QTest::newRow("current") << ds.version();
-    QTest::newRow("higher than current") << ds.version() + 1;
+    BOBUIest::newRow("current") << ds.version();
+    BOBUIest::newRow("higher than current") << ds.version() + 1;
 }
 
 void tst_QNetworkDiskCache::streamVersion()
@@ -662,12 +662,12 @@ void tst_QNetworkDiskCache::streamVersion()
     }
 }
 
-class Runner : public QThread
+class Runner : public BOBUIhread
 {
 
 public:
     Runner(const QString& cachePath)
-        : QThread()
+        : BOBUIhread()
         , other(0)
         , cachePath(cachePath)
     {}
@@ -784,9 +784,9 @@ void tst_QNetworkDiskCache::crashWhenParentingCache()
     QNetworkReply *reply = manager->get(request); // new reply is parented to qnam
 
     // wait for readyRead of reply!
-    connect(reply, SIGNAL(readyRead()), &QTestEventLoop::instance(), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    connect(reply, SIGNAL(readyRead()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     delete manager; // crashed before..
 }
@@ -796,7 +796,7 @@ void tst_QNetworkDiskCache::sync()
     // This tests would be a nice to have, but is currently not supported.
     return;
 
-    QTime midnight(0, 0, 0);
+    BOBUIime midnight(0, 0, 0);
     Runner reader(tempDir.path());
     reader.dt = QDateTime::currentDateTime();
     reader.write = false;
@@ -814,6 +814,6 @@ void tst_QNetworkDiskCache::sync()
     reader.wait();
 }
 
-QTEST_MAIN(tst_QNetworkDiskCache)
+BOBUIEST_MAIN(tst_QNetworkDiskCache)
 #include "tst_qnetworkdiskcache.moc"
 

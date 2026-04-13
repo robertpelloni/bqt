@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlayout.h"
 #include "private/qlayoutengine_p.h"
@@ -13,7 +13,7 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //#define QLAYOUT_EXTRA_DEBUG
 
@@ -137,7 +137,7 @@ void qGeomCalc(QList<QLayoutStruct> &chain, int start, int count, int pos, int s
     } else if (space < cHint + sumSpacing) {
         /*
           Less space than smartSizeHint(), but more than minimumSize.
-          Currently take space equally from each, as in Qt 2.x.
+          Currently take space equally from each, as in BobUI 2.x.
           Commented-out lines will give more space to stretchier
           items.
         */
@@ -353,35 +353,35 @@ Q_WIDGETS_EXPORT QSize qSmartMinSize(const QWidget *w)
 
 Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QSize &sizeHint,
                                  const QSize &minSize, const QSize &maxSize,
-                                 const QSizePolicy &sizePolicy, Qt::Alignment align)
+                                 const QSizePolicy &sizePolicy, BobUI::Alignment align)
 {
-    if (align & Qt::AlignHorizontal_Mask && align & Qt::AlignVertical_Mask)
+    if (align & BobUI::AlignHorizontal_Mask && align & BobUI::AlignVertical_Mask)
         return QSize(QLAYOUTSIZE_MAX, QLAYOUTSIZE_MAX);
     QSize s = maxSize;
     QSize hint = sizeHint.expandedTo(minSize);
-    if (s.width() == QWIDGETSIZE_MAX && !(align & Qt::AlignHorizontal_Mask))
+    if (s.width() == QWIDGETSIZE_MAX && !(align & BobUI::AlignHorizontal_Mask))
         if (!(sizePolicy.horizontalPolicy() & QSizePolicy::GrowFlag))
             s.setWidth(hint.width());
 
-    if (s.height() == QWIDGETSIZE_MAX && !(align & Qt::AlignVertical_Mask))
+    if (s.height() == QWIDGETSIZE_MAX && !(align & BobUI::AlignVertical_Mask))
         if (!(sizePolicy.verticalPolicy() & QSizePolicy::GrowFlag))
             s.setHeight(hint.height());
 
-    if (align & Qt::AlignHorizontal_Mask)
+    if (align & BobUI::AlignHorizontal_Mask)
         s.setWidth(QLAYOUTSIZE_MAX);
-    if (align & Qt::AlignVertical_Mask)
+    if (align & BobUI::AlignVertical_Mask)
         s.setHeight(QLAYOUTSIZE_MAX);
     return s;
 }
 
-Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QWidgetItem *i, Qt::Alignment align)
+Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QWidgetItem *i, BobUI::Alignment align)
 {
     QWidget *w = i->widget();
     return qSmartMaxSize(w->sizeHint().expandedTo(w->minimumSizeHint()), w->minimumSize(), w->maximumSize(),
                             w->sizePolicy(), align);
 }
 
-Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QWidget *w, Qt::Alignment align)
+Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QWidget *w, BobUI::Alignment align)
 {
     return qSmartMaxSize(w->sizeHint().expandedTo(w->minimumSizeHint()), w->minimumSize(), w->maximumSize(),
                             w->sizePolicy(), align);
@@ -400,4 +400,4 @@ Q_WIDGETS_EXPORT int qSmartSpacing(const QLayout *layout, QStyle::PixelMetric pm
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

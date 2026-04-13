@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLUGINLOADER_H
 #define QPLUGINLOADER_H
 
-#include <QtCore/qglobal.h>
-#if QT_CONFIG(library)
-#include <QtCore/qlibrary.h>
+#include <BobUICore/qglobal.h>
+#if BOBUI_CONFIG(library)
+#include <BobUICore/qlibrary.h>
 #endif
-#include <QtCore/qplugin.h>
+#include <BobUICore/qplugin.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 
 class QLibraryPrivate;
 class QJsonObject;
@@ -60,8 +60,8 @@ public:
     static QList<QStaticPlugin> staticPlugins();
 };
 
-#endif // QT_CONFIG(library)
+#endif // BOBUI_CONFIG(library)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLUGINLOADER_H

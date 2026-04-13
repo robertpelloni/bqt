@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPROPERTYTESTHELPER_P_H
 #define QPROPERTYTESTHELPER_P_H
@@ -8,26 +8,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/QObject>
-#include <QtCore/QProperty>
-#include <QtTest/QSignalSpy>
-#include <QTest>
+#include <BobUICore/QObject>
+#include <BobUICore/QProperty>
+#include <BobUITest/QSignalSpy>
+#include <BOBUIest>
 #include <private/qglobal_p.h>
 
 #include <cstdio>
 #include <memory>
 #include <optional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTestPrivate {
+namespace BOBUIestPrivate {
 
 #ifdef Q_OS_VXWORKS
 template <typename T>
@@ -69,7 +69,7 @@ using OptionalWrapper = std::optional<T>;
 
     The error message is close to the one provided by the \l QCOMPARE() macro.
     Specifically the implementation is taken from the \c formatFailMessage()
-    function, which is defined in the \c qtestresult.cpp file.
+    function, which is defined in the \c bobuiestresult.cpp file.
 */
 #define QPROPERTY_TEST_COMPARISON_HELPER(actual, expected, comparator, represent)                  \
     do {                                                                                           \
@@ -77,7 +77,7 @@ using OptionalWrapper = std::optional<T>;
         const auto qprop_tst_cmp_hlp_act = std::unique_ptr<char[]>(represent(actual)); \
         const auto qprop_tst_cmp_hlp_exp = std::unique_ptr<char[]>(represent(expected)); \
         QVERIFY2(comparator(actual, expected), \
-                 QTest::Internal::formatPropertyTestHelperFailure(qprop_tst_cmp_hlp_buf, \
+                 BOBUIest::Internal::formatPropertyTestHelperFailure(qprop_tst_cmp_hlp_buf, \
                                                                   sizeof qprop_tst_cmp_hlp_buf, \
                                                                   qprop_tst_cmp_hlp_act.get(), \
                                                                   qprop_tst_cmp_hlp_exp.get(), \
@@ -98,7 +98,7 @@ using OptionalWrapper = std::optional<T>;
     was set will be vacuous.
 
     By default \c {operator==()} is used to compare values of the property and
-    \c {QTest::toString()} is used to generate proper error messages.
+    \c {BOBUIest::toString()} is used to generate proper error messages.
 
     If such comparison is not supported for \c PropertyType, or the comparison
     it supports is not appropriate to this property, a custom \a comparator can
@@ -107,7 +107,7 @@ using OptionalWrapper = std::optional<T>;
     Apart from that, a custom \a represent callback can also be specified to
     generate a string representation of \c PropertyType. If supplied, it must
     allocate its returned string using \c {new char[]}, so that it can be used
-    in place of \l {QTest::toString()}.
+    in place of \l {BOBUIest::toString()}.
 
     The \a helperConstructor method is used to create another instance of
     \c TestedClass. This instance is used to test for binding loops. By default,
@@ -119,7 +119,7 @@ using OptionalWrapper = std::optional<T>;
 
     \note Any test calling this method will need to call
     \code
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
     \endcode
     after doing so, if there is any later code in the test. If testing several
@@ -133,7 +133,7 @@ void testReadWritePropertyBasics(
         std::function<bool(const PropertyType &, const PropertyType &)> comparator =
                 [](const PropertyType &lhs, const PropertyType &rhs) { return lhs == rhs; },
         std::function<char *(const PropertyType &)> represent =
-                [](const PropertyType &val) { return QTest::toString(val); },
+                [](const PropertyType &val) { return BOBUIest::toString(val); },
         std::function<std::unique_ptr<TestedClass>(void)> helperConstructor =
                 []() { return std::make_unique<TestedClass>(); })
 {
@@ -155,7 +155,7 @@ void testReadWritePropertyBasics(
     QVERIFY2(metaProperty.isBindable() && metaProperty.isWritable(),
              "Preconditions not met for " + QByteArray(propertyName));
 
-    QTestPrivate::OptionalWrapper<QSignalSpy> spy = std::nullopt;
+    BOBUIestPrivate::OptionalWrapper<QSignalSpy> spy = std::nullopt;
     if (metaProperty.hasNotifySignal())
         spy.emplace(&instance, metaProperty.notifySignal());
 
@@ -169,7 +169,7 @@ void testReadWritePropertyBasics(
     QUntypedBindable bindable = metaProperty.bindable(&instance);
 
     // Bind to the object's property (using both lambda and
-    // Qt:makePropertyBinding).
+    // BobUI:makePropertyBinding).
     QProperty<PropertyType> propObserver(changed);
     propObserver.setBinding(bindable.makeBinding());
     QPROPERTY_TEST_COMPARISON_HELPER(propObserver.value(), initial, comparator, represent);
@@ -188,7 +188,7 @@ void testReadWritePropertyBasics(
     // Bind object's property to other property
     QProperty<PropertyType> propSetter(initial);
     QVERIFY(!bindable.hasBinding());
-    bindable.setBinding(Qt::makePropertyBinding(propSetter));
+    bindable.setBinding(BobUI::makePropertyBinding(propSetter));
 
     QVERIFY(bindable.hasBinding());
     QPROPERTY_TEST_COMPARISON_HELPER(
@@ -261,7 +261,7 @@ void testReadWritePropertyBasics(
     testReadWritePropertyBasics<TestedClass, PropertyType>(
             instance, initial, changed, propertyName,
             [](const PropertyType &lhs, const PropertyType &rhs) { return lhs == rhs; },
-            [](const PropertyType &val) { return QTest::toString(val); },
+            [](const PropertyType &val) { return BOBUIest::toString(val); },
             helperConstructor);
 }
 
@@ -287,7 +287,7 @@ void testReadWritePropertyBasics(
     directly. The default value is 'true'.
 
     By default \c {operator==()} is used to compare values of the property and
-    \c {QTest::toString()} is used to generate proper error messages.
+    \c {BOBUIest::toString()} is used to generate proper error messages.
 
     If such comparison is not supported for \c PropertyType, or the comparison
     it supports is not appropriate to this property, a custom \a comparator can
@@ -296,7 +296,7 @@ void testReadWritePropertyBasics(
     Apart from that, a custom \a represent callback can also be specified to
     generate a string representation of \c PropertyType. If supplied, it must
     allocate its returned string using \c {new char[]}, so that it can be used
-    in place of \l {QTest::toString()}.
+    in place of \l {BOBUIest::toString()}.
 
     The \a helperConstructor method is used to create another instance of
     \c TestedClass. This instance is used to test for binding loops. By default,
@@ -308,7 +308,7 @@ void testReadWritePropertyBasics(
 
     \note Any test calling this method will need to call
     \code
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
     \endcode
     after doing so, if there is any later code in the test. If testing several
@@ -324,7 +324,7 @@ void testWriteOncePropertyBasics(
         std::function<bool(const PropertyType &, const PropertyType &)> comparator =
                 [](const PropertyType &lhs, const PropertyType &rhs) { return lhs == rhs; },
         std::function<char *(const PropertyType &)> represent =
-                [](const PropertyType &val) { return QTest::toString(val); },
+                [](const PropertyType &val) { return BOBUIest::toString(val); },
         std::function<std::unique_ptr<TestedClass>(void)> helperConstructor =
                 []() { return std::make_unique<TestedClass>(); })
 {
@@ -348,7 +348,7 @@ void testWriteOncePropertyBasics(
 
     QUntypedBindable bindable = metaProperty.bindable(&instance);
 
-    QTestPrivate::OptionalWrapper<QSignalSpy> spy = std::nullopt;
+    BOBUIestPrivate::OptionalWrapper<QSignalSpy> spy = std::nullopt;
     if (metaProperty.hasNotifySignal())
         spy.emplace(&instance, metaProperty.notifySignal());
 
@@ -366,12 +366,12 @@ void testWriteOncePropertyBasics(
     std::unique_ptr<TestedClass> helperObj = helperConstructor();
     QProperty<PropertyType> propSetter(changed); // if the helperConstructor() returns nullptr
     const QPropertyBinding<PropertyType> binding = helperObj
-            ? Qt::makePropertyBinding([&]() {
+            ? BobUI::makePropertyBinding([&]() {
                   QObject *obj = static_cast<QObject *>(helperObj.get());
                   obj->setProperty(propertyName, QVariant::fromValue(changed));
                   return obj->property(propertyName).template value<PropertyType>();
               })
-            : Qt::makePropertyBinding(propSetter);
+            : BobUI::makePropertyBinding(propSetter);
     bindable.setBinding(binding);
     QVERIFY(bindable.hasBinding());
 
@@ -414,7 +414,7 @@ void testWriteOncePropertyBasics(
     testWriteOncePropertyBasics<TestedClass, PropertyType>(
             instance, prior, changed, propertyName, bindingPreservedOnWrite,
             [](const PropertyType &lhs, const PropertyType &rhs) { return lhs == rhs; },
-            [](const PropertyType &val) { return QTest::toString(val); },
+            [](const PropertyType &val) { return BOBUIest::toString(val); },
             helperConstructor);
 }
 
@@ -432,7 +432,7 @@ void testWriteOncePropertyBasics(
     to \a changed.
 
     By default \c {operator==()} is used to compare values of the property and
-    \c {QTest::toString()} is used to generate proper error messages.
+    \c {BOBUIest::toString()} is used to generate proper error messages.
 
     If such comparison is not supported for \c PropertyType, or the comparison
     it supports is not appropriate to this property, a custom \a comparator can
@@ -441,11 +441,11 @@ void testWriteOncePropertyBasics(
     Apart from that, a custom \a represent callback can also be specified to
     generate a string representation of \c PropertyType. If supplied, it must
     allocate its returned string using \c {new char[]}, so that it can be used
-    in place of \l {QTest::toString()}.
+    in place of \l {BOBUIest::toString()}.
 
     \note Any test calling this method will need to call
     \code
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
     \endcode
     after doing so, if there is any later code in the test. If testing several
@@ -460,7 +460,7 @@ void testReadOnlyPropertyBasics(
         std::function<bool(const PropertyType &, const PropertyType &)> comparator =
                 [](const PropertyType &lhs, const PropertyType &rhs) { return lhs == rhs; },
         std::function<char *(const PropertyType &)> represent =
-                [](const PropertyType &val) { return QTest::toString(val); })
+                [](const PropertyType &val) { return BOBUIest::toString(val); })
 {
     // get the property
     const QMetaObject *metaObject = instance.metaObject();
@@ -482,7 +482,7 @@ void testReadOnlyPropertyBasics(
 
     QUntypedBindable bindable = metaProperty.bindable(&instance);
 
-    QTestPrivate::OptionalWrapper<QSignalSpy> spy = std::nullopt;
+    BOBUIestPrivate::OptionalWrapper<QSignalSpy> spy = std::nullopt;
     if (metaProperty.hasNotifySignal())
         spy.emplace(&instance, metaProperty.notifySignal());
 
@@ -493,7 +493,7 @@ void testReadOnlyPropertyBasics(
     // Check that attempting to bind this read-only property to another property has no effect:
     QProperty<PropertyType> propSetter(initial);
     QVERIFY(!bindable.hasBinding());
-    bindable.setBinding(Qt::makePropertyBinding(propSetter));
+    bindable.setBinding(BobUI::makePropertyBinding(propSetter));
     QVERIFY(!bindable.hasBinding());
     propSetter.setValue(changed);
     QPROPERTY_TEST_COMPARISON_HELPER(
@@ -519,8 +519,8 @@ void testReadOnlyPropertyBasics(
         QCOMPARE(spy->size(), 1);
 }
 
-} // namespace QTestPrivate
+} // namespace BOBUIestPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPROPERTYTESTHELPER_P_H

@@ -30,7 +30,7 @@
 
 #include "md5.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static void
 byteSwap(UWORD32 *buf, unsigned words)
@@ -244,4 +244,4 @@ MD5Transform(UWORD32 buf[4], UWORD32 const in[16])
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

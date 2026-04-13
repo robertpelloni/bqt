@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef COMPLEXWIDGETS_H
 #define COMPLEXWIDGETS_H
@@ -8,33 +8,33 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtCore/qpointer.h>
-#include <QtWidgets/qaccessiblewidget.h>
-#if QT_CONFIG(itemviews)
-#include <QtWidgets/qabstractitemview.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUICore/qpointer.h>
+#include <BobUIWidgets/qaccessiblewidget.h>
+#if BOBUI_CONFIG(itemviews)
+#include <BobUIWidgets/qabstractitemview.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 class QAbstractButton;
 class QHeaderView;
-class QTabBar;
+class BOBUIabBar;
 class QComboBox;
-class QTitleBar;
+class BOBUIitleBar;
 class QAbstractScrollArea;
 class QScrollArea;
 
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
 class QAccessibleAbstractScrollArea : public QAccessibleWidgetV2
 {
 public:
@@ -67,9 +67,9 @@ class QAccessibleScrollArea : public QAccessibleAbstractScrollArea
 public:
     explicit QAccessibleScrollArea(QWidget *widget);
 };
-#endif // QT_CONFIG(scrollarea)
+#endif // BOBUI_CONFIG(scrollarea)
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 class QAccessibleTabBar : public QAccessibleWidgetV2, public QAccessibleSelectionInterface
 {
 public:
@@ -96,12 +96,12 @@ public:
     bool clear() override;
 
 protected:
-    QTabBar *tabBar() const;
+    BOBUIabBar *tabBar() const;
     mutable QHash<int, QAccessible::Id> m_childInterfaces;
 };
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
 class QAccessibleComboBox : public QAccessibleWidgetV2
 {
 public:
@@ -126,10 +126,10 @@ public:
 protected:
     QComboBox *comboBox() const;
 };
-#endif // QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(combobox)
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // COMPLEXWIDGETS_H

@@ -1,32 +1,32 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QABSTRACTITEMMODELTESTER_H
 #define QABSTRACTITEMMODELTESTER_H
 
-#include <QtCore/QObject>
-#include <QtTest/qttestglobal.h>
-#include <QtCore/QAbstractItemModel>
-#include <QtCore/QVariant>
+#include <BobUICore/QObject>
+#include <BobUITest/bobuitestglobal.h>
+#include <BobUICore/QAbstractItemModel>
+#include <BobUICore/QVariant>
 
-#ifdef QT_GUI_LIB
-#include <QtGui/QFont>
-#include <QtGui/QColor>
-#include <QtGui/QBrush>
-#include <QtGui/QPixmap>
-#include <QtGui/QImage>
-#include <QtGui/QIcon>
+#ifdef BOBUI_GUI_LIB
+#include <BobUIGui/QFont>
+#include <BobUIGui/QColor>
+#include <BobUIGui/QBrush>
+#include <BobUIGui/QPixmap>
+#include <BobUIGui/QImage>
+#include <BobUIGui/QIcon>
 #endif
 
-QT_REQUIRE_CONFIG(itemmodeltester);
+BOBUI_REQUIRE_CONFIG(itemmodeltester);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractItemModel;
 class QAbstractItemModelTester;
 class QAbstractItemModelTesterPrivate;
 
-namespace QTestPrivate {
+namespace BOBUIestPrivate {
 inline bool testDataGuiRoles(QAbstractItemModelTester *tester);
 }
 
@@ -37,7 +37,7 @@ class Q_TESTLIB_EXPORT QAbstractItemModelTester : public QObject
 
 public:
     enum class FailureReportingMode {
-        QtTest,
+        BobUITest,
         Warning,
         Fatal
     };
@@ -53,6 +53,6 @@ private:
     bool verify(bool statement, const char *statementStr, const char *description, const char *file, int line);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTITEMMODELTESTER_H

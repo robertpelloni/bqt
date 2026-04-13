@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "cppwritedeclaration.h"
 #include "cppwriteinitialization.h"
@@ -9,15 +9,15 @@
 #include "databaseinfo.h"
 #include "customwidgetsinfo.h"
 
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
-    void openNameSpaces(const QStringList &namespaceList, QTextStream &output)
+    void openNameSpaces(const QStringList &namespaceList, BOBUIextStream &output)
     {
         for (const QString &n : namespaceList) {
             if (!n.isEmpty())
@@ -25,7 +25,7 @@ namespace {
         }
     }
 
-    void closeNameSpaces(const QStringList &namespaceList, QTextStream &output) {
+    void closeNameSpaces(const QStringList &namespaceList, BOBUIextStream &output) {
         for (auto it = namespaceList.rbegin(), end = namespaceList.rend(); it != end; ++it) {
             if (!it->isEmpty())
                 output << "} // namespace " << *it << "\n";
@@ -60,16 +60,16 @@ void WriteDeclaration::acceptUI(DomUI *node)
         namespaceList.removeLast();
     }
 
-    // This is a bit of the hack but covers the cases Qt in/without namespaces
+    // This is a bit of the hack but covers the cases BobUI in/without namespaces
     // and User defined classes in/without namespaces. The "strange" case
-    // is a User using Qt-in-namespace having his own classes not in a namespace.
+    // is a User using BobUI-in-namespace having his own classes not in a namespace.
     // In this case the generated Ui helper classes will also end up in
-    // the Qt namespace (which is harmless, but not "pretty")
-    const bool needsMacro = m_option.qtNamespace &&
+    // the BobUI namespace (which is harmless, but not "pretty")
+    const bool needsMacro = m_option.bobuiNamespace &&
             (namespaceList.isEmpty() || namespaceList.at(0) == "qdesigner_internal"_L1);
 
     if (needsMacro)
-        m_output << "QT_BEGIN_NAMESPACE\n\n";
+        m_output << "BOBUI_BEGIN_NAMESPACE\n\n";
 
     openNameSpaces(namespaceList, m_output);
 
@@ -115,7 +115,7 @@ void WriteDeclaration::acceptUI(DomUI *node)
     }
 
     if (needsMacro)
-        m_output << "QT_END_NAMESPACE\n\n";
+        m_output << "BOBUI_END_NAMESPACE\n\n";
 }
 
 void WriteDeclaration::acceptWidget(DomWidget *node)
@@ -168,4 +168,4 @@ void WriteDeclaration::acceptButtonGroup(const DomButtonGroup *buttonGroup)
 
 } // namespace CPP
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

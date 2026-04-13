@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "treemodel.h"
 #include "treeitem.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [0]
 TreeModel::TreeModel(const QStringList &headers, const QString &data, QObject *parent)
@@ -36,7 +36,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return {};
 
-    if (role != Qt::DisplayRole && role != Qt::EditRole)
+    if (role != BobUI::DisplayRole && role != BobUI::EditRole)
         return {};
 
     TreeItem *item = getItem(index);
@@ -45,12 +45,12 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 }
 
 //! [3]
-Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return Qt::NoItemFlags;
+        return BobUI::NoItemFlags;
 
-    return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
+    return BobUI::ItemIsEditable | QAbstractItemModel::flags(index);
 }
 //! [3]
 
@@ -65,10 +65,10 @@ TreeItem *TreeModel::getItem(const QModelIndex &index) const
 }
 //! [4]
 
-QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
+QVariant TreeModel::headerData(int section, BobUI::Orientation orientation,
                                int role) const
 {
-    return (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+    return (orientation == BobUI::Horizontal && role == BobUI::DisplayRole)
         ? rootItem->data(section) : QVariant{};
 }
 
@@ -167,22 +167,22 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
 bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role != Qt::EditRole)
+    if (role != BobUI::EditRole)
         return false;
 
     TreeItem *item = getItem(index);
     bool result = item->setData(index.column(), value);
 
     if (result)
-        emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+        emit dataChanged(index, index, {BobUI::DisplayRole, BobUI::EditRole});
 
     return result;
 }
 
-bool TreeModel::setHeaderData(int section, Qt::Orientation orientation,
+bool TreeModel::setHeaderData(int section, BobUI::Orientation orientation,
                               const QVariant &value, int role)
 {
-    if (role != Qt::EditRole || orientation != Qt::Horizontal)
+    if (role != BobUI::EditRole || orientation != BobUI::Horizontal)
         return false;
 
     const bool result = rootItem->setData(section, value);
@@ -211,7 +211,7 @@ void TreeModel::setupModelData(const QList<QStringView> &lines)
         const QStringView lineData = line.sliced(position).trimmed();
         if (!lineData.isEmpty()) {
             // Read the column data from the rest of the line.
-            const auto columnStrings = lineData.split(u'\t', Qt::SkipEmptyParts);
+            const auto columnStrings = lineData.split(u'\t', BobUI::SkipEmptyParts);
             QVariantList columnData;
             columnData.reserve(columnStrings.count());
             for (const auto &columnString : columnStrings)

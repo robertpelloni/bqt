@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLBUFFER_H
 #define QOPENGLBUFFER_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#include <QtGui/qopengl.h>
+#include <BobUIGui/qopengl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QOpenGLBufferPrivate;
@@ -34,10 +34,10 @@ public:
     ~QOpenGLBuffer();
 
     QOpenGLBuffer &operator=(const QOpenGLBuffer &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QOpenGLBuffer)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QOpenGLBuffer)
 
     void swap(QOpenGLBuffer &other) noexcept
-    { return qt_ptr_swap(d_ptr, other.d_ptr); }
+    { return bobui_ptr_swap(d_ptr, other.d_ptr); }
 
     enum UsagePattern
     {
@@ -108,8 +108,8 @@ Q_DECLARE_SHARED(QOpenGLBuffer)
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QOpenGLBuffer::RangeAccessFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif

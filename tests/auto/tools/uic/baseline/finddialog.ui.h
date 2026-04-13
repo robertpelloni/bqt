@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'finddialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,20 +16,20 @@
 #ifndef FINDDIALOG_H
 #define FINDDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_FindDialog
 {
@@ -149,9 +149,9 @@ public:
 
         hboxLayout->addLayout(vboxLayout1);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         findWhat->setBuddy(led);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
         QWidget::setTabOrder(led, findNxt);
         QWidget::setTabOrder(findNxt, cancel);
         QWidget::setTabOrder(cancel, comments);
@@ -171,38 +171,38 @@ public:
     void retranslateUi(QDialog *FindDialog)
     {
         FindDialog->setWindowTitle(QCoreApplication::translate("FindDialog", "Find", nullptr));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         FindDialog->setWhatsThis(QCoreApplication::translate("FindDialog", "This window allows you to search for some text in the translation source file.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         findWhat->setText(QCoreApplication::translate("FindDialog", "&Find what:", nullptr));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         led->setWhatsThis(QCoreApplication::translate("FindDialog", "Type in the text to search for.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         groupBox->setTitle(QCoreApplication::translate("FindDialog", "Options", nullptr));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         sourceText->setWhatsThis(QCoreApplication::translate("FindDialog", "Source texts are searched when checked.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         sourceText->setText(QCoreApplication::translate("FindDialog", "&Source texts", nullptr));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         translations->setWhatsThis(QCoreApplication::translate("FindDialog", "Translations are searched when checked.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         translations->setText(QCoreApplication::translate("FindDialog", "&Translations", nullptr));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         matchCase->setWhatsThis(QCoreApplication::translate("FindDialog", "Texts such as 'TeX' and 'tex' are considered as different when checked.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         matchCase->setText(QCoreApplication::translate("FindDialog", "&Match case", nullptr));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         comments->setWhatsThis(QCoreApplication::translate("FindDialog", "Comments and contexts are searched when checked.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         comments->setText(QCoreApplication::translate("FindDialog", "&Comments", nullptr));
         ignoreAccelerators->setText(QCoreApplication::translate("FindDialog", "Ignore &accelerators", nullptr));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         findNxt->setWhatsThis(QCoreApplication::translate("FindDialog", "Click here to find the next occurrence of the text you typed in.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         findNxt->setText(QCoreApplication::translate("FindDialog", "Find Next", nullptr));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         cancel->setWhatsThis(QCoreApplication::translate("FindDialog", "Click here to close this window.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         cancel->setText(QCoreApplication::translate("FindDialog", "Cancel", nullptr));
     } // retranslateUi
 
@@ -212,6 +212,6 @@ namespace Ui {
     class FindDialog: public Ui_FindDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // FINDDIALOG_H

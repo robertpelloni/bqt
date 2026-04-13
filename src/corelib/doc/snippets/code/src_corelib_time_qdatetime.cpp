@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QDate>
-#include <QTime>
-#include <QTimeZone>
+#include <BOBUIime>
+#include <BOBUIimeZone>
 #include <chrono>
 #include <iostream>
 
@@ -53,8 +53,8 @@ void examples()
 
     {
         //! [5]
-        QTime n(14, 0, 0);                // n == 14:00:00
-        QTime t;
+        BOBUIime n(14, 0, 0);                // n == 14:00:00
+        BOBUIime t;
         t = n.addSecs(70);                // t == 14:01:10
         t = n.addSecs(-70);               // t == 13:58:50
         t = n.addSecs(10 * 60 * 60 + 5);  // t == 00:00:05
@@ -64,28 +64,28 @@ void examples()
 
     {
         //! [6]
-        QTime time = QTime::fromString("1mm12car00", "m'mm'hcarss");
+        BOBUIime time = BOBUIime::fromString("1mm12car00", "m'mm'hcarss");
         // time is 12:01.00
         //! [6]
     }
 
     {
         //! [7]
-        QTime time = QTime::fromString("00:710", "hh:ms"); // invalid
+        BOBUIime time = BOBUIime::fromString("00:710", "hh:ms"); // invalid
         //! [7]
     }
 
     {
         //! [8]
-        QTime time = QTime::fromString("1.30", "m.s");
+        BOBUIime time = BOBUIime::fromString("1.30", "m.s");
         // time is 00:01:30.000
         //! [8]
     }
 
     {
         //! [9]
-        QTime::isValid(21, 10, 30); // returns true
-        QTime::isValid(22, 5,  62); // returns false
+        BOBUIime::isValid(21, 10, 30); // returns true
+        BOBUIime::isValid(22, 5,  62); // returns false
         //! [9]
     }
 
@@ -99,9 +99,9 @@ void examples()
 
     {
         //! [12]
-        QTime time1 = QTime::fromString("131", "HHh");
+        BOBUIime time1 = BOBUIime::fromString("131", "HHh");
         // time1 is 13:00:00
-        QTime time2 = QTime::fromString("1apA", "1amAM");
+        BOBUIime time2 = BOBUIime::fromString("1apA", "1amAM");
         // time2 is 01:00:00
 
         QDateTime dateTime2 = QDateTime::fromString("M1d1y9800:01:02",
@@ -127,12 +127,12 @@ void examples()
 
     {
         //! [15]
-        QDateTime startDate(QDate(2012, 7, 6), QTime(8, 30, 0));
-        QDateTime endDate(QDate(2012, 7, 7), QTime(16, 30, 0));
+        QDateTime startDate(QDate(2012, 7, 6), BOBUIime(8, 30, 0));
+        QDateTime endDate(QDate(2012, 7, 7), BOBUIime(16, 30, 0));
         qDebug() << "Days from startDate to endDate: " << startDate.daysTo(endDate);
 
-        startDate = QDateTime(QDate(2012, 7, 6), QTime(23, 55, 0));
-        endDate = QDateTime(QDate(2012, 7, 7), QTime(0, 5, 0));
+        startDate = QDateTime(QDate(2012, 7, 6), BOBUIime(23, 55, 0));
+        endDate = QDateTime(QDate(2012, 7, 7), BOBUIime(0, 5, 0));
         qDebug() << "Days from startDate to endDate: " << startDate.daysTo(endDate);
 
         qSwap(startDate, endDate); // Make endDate before startDate.
@@ -140,17 +140,17 @@ void examples()
         //! [15]
     }
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
     {
         //! [16]
         QDateTime local(QDateTime::currentDateTime());
-        QDateTime UTC(local.toTimeSpec(Qt::UTC));
+        QDateTime UTC(local.toTimeSpec(BobUI::UTC));
         qDebug() << "Local time is:" << local;
         qDebug() << "UTC time is:" << UTC;
         qDebug() << "No difference between times:" << local.secsTo(UTC);
         //! [16]
     }
-#endif // QT_DEPRECATED_SINCE(6, 9)
+#endif // BOBUI_DEPRECATED_SINCE(6, 9)
 
     {
         //! [17]
@@ -172,20 +172,20 @@ void examples()
         //! [18]
     }
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
     {
         //! [19]
         QDateTime local(QDateTime::currentDateTime());
         qDebug() << "Local time is:" << local;
 
         QDateTime UTC(local);
-        UTC.setTimeSpec(Qt::UTC);
+        UTC.setTimeSpec(BobUI::UTC);
         qDebug() << "UTC time is:" << UTC;
 
         qDebug() << "There are" << local.secsTo(UTC) << "seconds difference between the datetimes.";
         //! [19]
     }
-#endif // QT_DEPRECATED_SINCE(6, 9)
+#endif // BOBUI_DEPRECATED_SINCE(6, 9)
 
 #if defined(__cpp_lib_crono) && __cpp_lib_crono > 201907L
     {
@@ -216,7 +216,7 @@ void examples()
     {
         //! [23]
         QDateTime local(QDateTime::currentDateTime());
-        QDateTime UTC(local.toTimeZone(QTimeZone::UTC));
+        QDateTime UTC(local.toTimeZone(BOBUIimeZone::UTC));
         qDebug() << "Local time is:" << local;
         qDebug() << "UTC time is:" << UTC;
         qDebug() << "No difference between times represented:" << local.secsTo(UTC);

@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDCOLORMANAGEMENT_H
 #define QWAYLANDCOLORMANAGEMENT_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -22,13 +22,13 @@
 
 #include "qwayland-color-management-v1.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class ImageDescription;
 
-class ColorManager : public QObject, public QtWayland::wp_color_manager_v1
+class ColorManager : public QObject, public BobUIWayland::wp_color_manager_v1
 {
     Q_OBJECT
 public:
@@ -48,8 +48,8 @@ public:
     ~ColorManager() override;
 
     Features supportedFeatures() const;
-    bool supportsNamedPrimary(QtWayland::wp_color_manager_v1::primaries primaries) const;
-    bool supportsTransferFunction(QtWayland::wp_color_manager_v1::transfer_function transferFunction) const;
+    bool supportsNamedPrimary(BobUIWayland::wp_color_manager_v1::primaries primaries) const;
+    bool supportsTransferFunction(BobUIWayland::wp_color_manager_v1::transfer_function transferFunction) const;
 
     std::unique_ptr<ImageDescription> createImageDescription(const QColorSpace &colorspace);
 
@@ -59,11 +59,11 @@ private:
     void wp_color_manager_v1_supported_tf_named(uint32_t transferFunction) override;
 
     Features mFeatures;
-    QList<QtWayland::wp_color_manager_v1::primaries> mPrimaries;
-    QList<QtWayland::wp_color_manager_v1::transfer_function> mTransferFunctions;
+    QList<BobUIWayland::wp_color_manager_v1::primaries> mPrimaries;
+    QList<BobUIWayland::wp_color_manager_v1::transfer_function> mTransferFunctions;
 };
 
-class ImageDescriptionInfo : public QObject, public QtWayland::wp_image_description_info_v1
+class ImageDescriptionInfo : public QObject, public BobUIWayland::wp_image_description_info_v1
 {
     Q_OBJECT
 public:
@@ -97,7 +97,7 @@ private:
     void wp_image_description_info_v1_target_luminance(uint32_t min_lum, uint32_t max_lum) override;
 };
 
-class ImageDescription : public QObject, public QtWayland::wp_image_description_v1
+class ImageDescription : public QObject, public BobUIWayland::wp_image_description_v1
 {
     Q_OBJECT
 public:
@@ -111,7 +111,7 @@ private:
     void wp_image_description_v1_ready(uint32_t identity) override;
 };
 
-class ColorManagementFeedback : public QObject, public QtWayland::wp_color_management_surface_feedback_v1
+class ColorManagementFeedback : public QObject, public BobUIWayland::wp_color_management_surface_feedback_v1
 {
     Q_OBJECT
 public:
@@ -131,7 +131,7 @@ private:
 
 };
 
-class ColorManagementSurface : public QObject, public QtWayland::wp_color_management_surface_v1
+class ColorManagementSurface : public QObject, public BobUIWayland::wp_color_management_surface_v1
 {
     Q_OBJECT
 public:
@@ -143,6 +143,6 @@ public:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

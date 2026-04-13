@@ -1,32 +1,32 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QIMAGE_H
 #define QIMAGE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qrgb.h>
-#include <QtGui/qpaintdevice.h>
-#include <QtGui/qpixelformat.h>
-#include <QtGui/qtransform.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qbytearrayview.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qrgb.h>
+#include <BobUIGui/qpaintdevice.h>
+#include <BobUIGui/qpixelformat.h>
+#include <BobUIGui/bobuiransform.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qbytearrayview.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qcontainerfwd.h>
 
 #if defined(Q_OS_DARWIN) || defined(Q_QDOC)
 Q_FORWARD_DECLARE_MUTABLE_CG_TYPE(CGImage);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QColorSpace;
 class QColorTransform;
 class QIODevice;
-class QTransform;
+class BOBUIransform;
 class QVariant;
 
 struct QImageData;
@@ -90,7 +90,7 @@ public:
     QImage(uchar *data, int width, int height, qsizetype bytesPerLine, Format format, QImageCleanupFunction cleanupFunction = nullptr, void *cleanupInfo = nullptr);
     QImage(const uchar *data, int width, int height, qsizetype bytesPerLine, Format format, QImageCleanupFunction cleanupFunction = nullptr, void *cleanupInfo = nullptr);
 
-#ifndef QT_NO_IMAGEFORMAT_XPM
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
     explicit QImage(const char * const xpm[]);
 #endif
     explicit QImage(const QString &fileName, const char *format = nullptr);
@@ -102,9 +102,9 @@ public:
     ~QImage();
 
     QImage &operator=(const QImage &);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QImage)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QImage)
     void swap(QImage &other) noexcept
-    { qt_ptr_swap(d, other.d); }
+    { bobui_ptr_swap(d, other.d); }
 
     bool isNull() const;
 
@@ -122,9 +122,9 @@ public:
 
     Format format() const;
 
-    [[nodiscard]] QImage convertToFormat(Format f, Qt::ImageConversionFlags flags = Qt::AutoColor) const &
+    [[nodiscard]] QImage convertToFormat(Format f, BobUI::ImageConversionFlags flags = BobUI::AutoColor) const &
     { return convertToFormat_helper(f, flags); }
-    [[nodiscard]] QImage convertToFormat(Format f, Qt::ImageConversionFlags flags = Qt::AutoColor) &&
+    [[nodiscard]] QImage convertToFormat(Format f, BobUI::ImageConversionFlags flags = BobUI::AutoColor) &&
     {
         if (convertToFormat_inplace(f, flags))
             return std::move(*this);
@@ -132,14 +132,14 @@ public:
             return convertToFormat_helper(f, flags);
     }
     [[nodiscard]] QImage convertToFormat(Format f, const QList<QRgb> &colorTable,
-                                         Qt::ImageConversionFlags flags = Qt::AutoColor) const;
+                                         BobUI::ImageConversionFlags flags = BobUI::AutoColor) const;
 
     bool reinterpretAsFormat(Format f);
-    [[nodiscard]] QImage convertedTo(Format f, Qt::ImageConversionFlags flags = Qt::AutoColor) const &
+    [[nodiscard]] QImage convertedTo(Format f, BobUI::ImageConversionFlags flags = BobUI::AutoColor) const &
     { return convertToFormat(f, flags); }
-    [[nodiscard]] QImage convertedTo(Format f, Qt::ImageConversionFlags flags = Qt::AutoColor) &&
+    [[nodiscard]] QImage convertedTo(Format f, BobUI::ImageConversionFlags flags = BobUI::AutoColor) &&
     { return convertToFormat(f, flags); }
-    void convertTo(Format f, Qt::ImageConversionFlags flags = Qt::AutoColor);
+    void convertTo(Format f, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
 
     int width() const;
     int height() const;
@@ -195,34 +195,34 @@ public:
 
     void fill(uint pixel);
     void fill(const QColor &color);
-    void fill(Qt::GlobalColor color);
+    void fill(BobUI::GlobalColor color);
 
 
     bool hasAlphaChannel() const;
     void setAlphaChannel(const QImage &alphaChannel);
-    [[nodiscard]] QImage createAlphaMask(Qt::ImageConversionFlags flags = Qt::AutoColor) const;
-#ifndef QT_NO_IMAGE_HEURISTIC_MASK
+    [[nodiscard]] QImage createAlphaMask(BobUI::ImageConversionFlags flags = BobUI::AutoColor) const;
+#ifndef BOBUI_NO_IMAGE_HEURISTIC_MASK
     [[nodiscard]] QImage createHeuristicMask(bool clipTight = true) const;
 #endif
-    [[nodiscard]] QImage createMaskFromColor(QRgb color, Qt::MaskMode mode = Qt::MaskInColor) const;
+    [[nodiscard]] QImage createMaskFromColor(QRgb color, BobUI::MaskMode mode = BobUI::MaskInColor) const;
 
-    [[nodiscard]] QImage scaled(int w, int h, Qt::AspectRatioMode aspectMode = Qt::IgnoreAspectRatio,
-                                Qt::TransformationMode mode = Qt::FastTransformation) const
+    [[nodiscard]] QImage scaled(int w, int h, BobUI::AspectRatioMode aspectMode = BobUI::IgnoreAspectRatio,
+                                BobUI::TransformationMode mode = BobUI::FastTransformation) const
     { return scaled(QSize(w, h), aspectMode, mode); }
-    [[nodiscard]] QImage scaled(const QSize &s, Qt::AspectRatioMode aspectMode = Qt::IgnoreAspectRatio,
-                                Qt::TransformationMode mode = Qt::FastTransformation) const;
-    [[nodiscard]] QImage scaledToWidth(int w, Qt::TransformationMode mode = Qt::FastTransformation) const;
-    [[nodiscard]] QImage scaledToHeight(int h, Qt::TransformationMode mode = Qt::FastTransformation) const;
-    [[nodiscard]] QImage transformed(const QTransform &matrix, Qt::TransformationMode mode = Qt::FastTransformation) const;
-    static QTransform trueMatrix(const QTransform &, int w, int h);
-#if QT_DEPRECATED_SINCE(6, 13)
-    QT_DEPRECATED_VERSION_X_6_13("Use flipped(Qt::Orientations) instead")
+    [[nodiscard]] QImage scaled(const QSize &s, BobUI::AspectRatioMode aspectMode = BobUI::IgnoreAspectRatio,
+                                BobUI::TransformationMode mode = BobUI::FastTransformation) const;
+    [[nodiscard]] QImage scaledToWidth(int w, BobUI::TransformationMode mode = BobUI::FastTransformation) const;
+    [[nodiscard]] QImage scaledToHeight(int h, BobUI::TransformationMode mode = BobUI::FastTransformation) const;
+    [[nodiscard]] QImage transformed(const BOBUIransform &matrix, BobUI::TransformationMode mode = BobUI::FastTransformation) const;
+    static BOBUIransform trueMatrix(const BOBUIransform &, int w, int h);
+#if BOBUI_DEPRECATED_SINCE(6, 13)
+    BOBUI_DEPRECATED_VERSION_X_6_13("Use flipped(BobUI::Orientations) instead")
     [[nodiscard]] QImage mirrored(bool horizontally = false, bool vertically = true) const &
     { return mirrored_helper(horizontally, vertically); }
-    QT_DEPRECATED_VERSION_X_6_13("Use flipped(Qt::Orientations) instead")
+    BOBUI_DEPRECATED_VERSION_X_6_13("Use flipped(BobUI::Orientations) instead")
     [[nodiscard]] QImage mirrored(bool horizontally = false, bool vertically = true) &&
     { mirrored_inplace(horizontally, vertically); return std::move(*this); }
-    QT_DEPRECATED_VERSION_X_6_13("Use flip(Qt::Orientations) instead")
+    BOBUI_DEPRECATED_VERSION_X_6_13("Use flip(BobUI::Orientations) instead")
     void mirror(bool horizontally = false, bool vertically = true)
     { mirrored_inplace(horizontally, vertically); }
 #endif
@@ -230,12 +230,12 @@ public:
     { return rgbSwapped_helper(); }
     [[nodiscard]] QImage rgbSwapped() &&
     { rgbSwapped_inplace(); return std::move(*this); }
-    [[nodiscard]] QImage flipped(Qt::Orientations orient = Qt::Vertical) const &
-    { return mirrored_helper(orient.testFlag(Qt::Horizontal), orient.testFlag(Qt::Vertical)); }
-    [[nodiscard]] QImage flipped(Qt::Orientations orient = Qt::Vertical) &&
-    { mirrored_inplace(orient.testFlag(Qt::Horizontal), orient.testFlag(Qt::Vertical)); return std::move(*this); }
-    void flip(Qt::Orientations orient = Qt::Vertical)
-    { mirrored_inplace(orient.testFlag(Qt::Horizontal), orient.testFlag(Qt::Vertical)); }
+    [[nodiscard]] QImage flipped(BobUI::Orientations orient = BobUI::Vertical) const &
+    { return mirrored_helper(orient.testFlag(BobUI::Horizontal), orient.testFlag(BobUI::Vertical)); }
+    [[nodiscard]] QImage flipped(BobUI::Orientations orient = BobUI::Vertical) &&
+    { mirrored_inplace(orient.testFlag(BobUI::Horizontal), orient.testFlag(BobUI::Vertical)); return std::move(*this); }
+    void flip(BobUI::Orientations orient = BobUI::Vertical)
+    { mirrored_inplace(orient.testFlag(BobUI::Horizontal), orient.testFlag(BobUI::Vertical)); }
     void rgbSwap()
     { rgbSwapped_inplace(); }
     void invertPixels(InvertMode = InvertRgb);
@@ -243,33 +243,33 @@ public:
     QColorSpace colorSpace() const;
     [[nodiscard]] QImage convertedToColorSpace(const QColorSpace &colorSpace) const;
     [[nodiscard]] QImage convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format,
-                                               Qt::ImageConversionFlags flags = Qt::AutoColor) const &;
+                                               BobUI::ImageConversionFlags flags = BobUI::AutoColor) const &;
     [[nodiscard]] QImage convertedToColorSpace(const QColorSpace &colorSpace, QImage::Format format,
-                                               Qt::ImageConversionFlags flags = Qt::AutoColor) &&;
+                                               BobUI::ImageConversionFlags flags = BobUI::AutoColor) &&;
     void convertToColorSpace(const QColorSpace &colorSpace);
-    void convertToColorSpace(const QColorSpace &colorSpace, QImage::Format format, Qt::ImageConversionFlags flags = Qt::AutoColor);
+    void convertToColorSpace(const QColorSpace &colorSpace, QImage::Format format, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
     void setColorSpace(const QColorSpace &colorSpace);
 
     QImage colorTransformed(const QColorTransform &transform) const &;
-    QImage colorTransformed(const QColorTransform &transform, QImage::Format format, Qt::ImageConversionFlags flags = Qt::AutoColor) const &;
+    QImage colorTransformed(const QColorTransform &transform, QImage::Format format, BobUI::ImageConversionFlags flags = BobUI::AutoColor) const &;
     QImage colorTransformed(const QColorTransform &transform) &&;
-    QImage colorTransformed(const QColorTransform &transform, QImage::Format format, Qt::ImageConversionFlags flags = Qt::AutoColor) &&;
+    QImage colorTransformed(const QColorTransform &transform, QImage::Format format, BobUI::ImageConversionFlags flags = BobUI::AutoColor) &&;
     void applyColorTransform(const QColorTransform &transform);
-    void applyColorTransform(const QColorTransform &transform, QImage::Format format, Qt::ImageConversionFlags flags = Qt::AutoColor);
+    void applyColorTransform(const QColorTransform &transform, QImage::Format format, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
 
     bool load(QIODevice *device, const char *format);
     bool load(const QString &fileName, const char *format = nullptr);
     bool loadFromData(QByteArrayView data, const char *format = nullptr);
-    bool loadFromData(const uchar *buf, int len, const char *format = nullptr); // ### Qt 7: qsizetype
-    bool loadFromData(const QByteArray &data, const char *format = nullptr) // ### Qt 7: drop
+    bool loadFromData(const uchar *buf, int len, const char *format = nullptr); // ### BobUI 7: qsizetype
+    bool loadFromData(const QByteArray &data, const char *format = nullptr) // ### BobUI 7: drop
     { return loadFromData(QByteArrayView(data), format); }
 
     bool save(const QString &fileName, const char *format = nullptr, int quality = -1) const;
     bool save(QIODevice *device, const char *format = nullptr, int quality = -1) const;
 
     static QImage fromData(QByteArrayView data, const char *format = nullptr);
-    static QImage fromData(const uchar *data, int size, const char *format = nullptr); // ### Qt 7: qsizetype
-    static QImage fromData(const QByteArray &data, const char *format = nullptr)  // ### Qt 7: drop
+    static QImage fromData(const uchar *data, int size, const char *format = nullptr); // ### BobUI 7: qsizetype
+    static QImage fromData(const QByteArray &data, const char *format = nullptr)  // ### BobUI 7: drop
     { return fromData(QByteArrayView(data), format); }
 
     qint64 cacheKey() const;
@@ -309,8 +309,8 @@ protected:
     QImage rgbSwapped_helper() const;
     void mirrored_inplace(bool horizontal, bool vertical);
     void rgbSwapped_inplace();
-    QImage convertToFormat_helper(Format format, Qt::ImageConversionFlags flags) const;
-    bool convertToFormat_inplace(Format format, Qt::ImageConversionFlags flags);
+    QImage convertToFormat_helper(Format format, BobUI::ImageConversionFlags flags) const;
+    bool convertToFormat_inplace(Format format, BobUI::ImageConversionFlags flags);
     QImage smoothScaled(int w, int h) const;
 
     void detachMetadata(bool invalidateCache = false);
@@ -341,16 +341,16 @@ inline void QImage::setPixelColor(const QPoint &pt, const QColor &c) { setPixelC
 
 // QImage stream functions
 
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QImage &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QImage &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QImage &);
 #endif
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIMAGE_H

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qiosapplicationdelegate.h"
 
@@ -14,9 +14,9 @@
 
 #include <qpa/qplatformintegration.h>
 
-#include <QtCore/QtCore>
+#include <BobUICore/BobUICore>
 
-#include <QtCore/private/qdarwinsecurityscopedfileengine_p.h>
+#include <BobUICore/private/qdarwinsecurityscopedfileengine_p.h>
 
 @interface QIOSWindowSceneDelegate : NSObject<UIWindowSceneDelegate>
 @property (nullable, nonatomic, strong) UIWindow *window;
@@ -114,7 +114,7 @@
     QIOSServices *iosServices = static_cast<QIOSServices *>(iosIntegration->services());
 
     for (UIOpenURLContext *urlContext in URLContexts) {
-        QUrl url = qt_apple_urlFromPossiblySecurityScopedURL(urlContext.URL);
+        QUrl url = bobui_apple_urlFromPossiblySecurityScopedURL(urlContext.URL);
         if (url.isLocalFile())
             QWindowSystemInterface::handleFileOpenEvent(url);
         else

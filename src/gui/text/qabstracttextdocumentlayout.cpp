@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qabstracttextdocumentlayout.h>
-#include <qtextformat.h>
-#include "qtextdocument_p.h"
-#include "qtextengine_p.h"
-#include "qtextlist.h"
+#include <bobuiextformat.h>
+#include "bobuiextdocument_p.h"
+#include "bobuiextengine_p.h"
+#include "bobuiextlist.h"
 
 #include "qabstracttextdocumentlayout_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QAbstractTextDocumentLayoutPrivate::~QAbstractTextDocumentLayoutPrivate()
 {
 }
 
-QTextObjectInterface::~QTextObjectInterface()
+BOBUIextObjectInterface::~BOBUIextObjectInterface()
 {
 }
 
@@ -24,48 +24,48 @@ QTextObjectInterface::~QTextObjectInterface()
     \reentrant
 
     \brief The QAbstractTextDocumentLayout class is an abstract base
-    class used to implement custom layouts for QTextDocuments.
-    \inmodule QtGui
+    class used to implement custom layouts for BOBUIextDocuments.
+    \inmodule BobUIGui
 
     \ingroup richtext-processing
 
-    The standard layout provided by Qt can handle simple word processing
+    The standard layout provided by BobUI can handle simple word processing
     including inline images, lists and tables.
 
     Some applications, e.g., a word processor or a DTP application might need
-    more features than the ones provided by Qt's layout engine, in which case
+    more features than the ones provided by BobUI's layout engine, in which case
     you can subclass QAbstractTextDocumentLayout to provide custom layout
     behavior for your text documents.
 
     An instance of the QAbstractTextDocumentLayout subclass can be installed
-    on a QTextDocument object with the
-    \l{QTextDocument::}{setDocumentLayout()} function.
+    on a BOBUIextDocument object with the
+    \l{BOBUIextDocument::}{setDocumentLayout()} function.
 
-    You can insert custom objects into a QTextDocument; see the
-    QTextObjectInterface class description for details.
+    You can insert custom objects into a BOBUIextDocument; see the
+    BOBUIextObjectInterface class description for details.
 
-    \sa QTextObjectInterface
+    \sa BOBUIextObjectInterface
 */
 
 /*!
-    \class QTextObjectInterface
-    \brief The QTextObjectInterface class allows drawing of
-           custom text objects in \l{QTextDocument}s.
+    \class BOBUIextObjectInterface
+    \brief The BOBUIextObjectInterface class allows drawing of
+           custom text objects in \l{BOBUIextDocument}s.
     \since 4.5
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     A text object describes the structure of one or more elements in a
     text document; for instance, images imported from HTML are
     implemented using text objects. A text object knows how to lay out
     and draw its elements when a document is being rendered.
 
-    Qt allows custom text objects to be inserted into a document by
-    registering a custom \l{QTextCharFormat::objectType()}{object
-    type} with QTextCharFormat. A QTextObjectInterface must also be
+    BobUI allows custom text objects to be inserted into a document by
+    registering a custom \l{BOBUIextCharFormat::objectType()}{object
+    type} with BOBUIextCharFormat. A BOBUIextObjectInterface must also be
     implemented for this type and be
     \l{QAbstractTextDocumentLayout::registerHandler()}{registered}
     with the QAbstractTextDocumentLayout of the document. When the
-    object type is encountered while rendering a QTextDocument, the
+    object type is encountered while rendering a BOBUIextDocument, the
     intrinsicSize() and drawObject() functions of the interface are
     called.
 
@@ -74,44 +74,44 @@ QTextObjectInterface::~QTextObjectInterface()
 
     \list
         \li Choose an \a objectType. The \a objectType is an integer with a
-            value greater or equal to QTextFormat::UserObject.
-         \li Create a QTextCharFormat object and set the object type to the
+            value greater or equal to BOBUIextFormat::UserObject.
+         \li Create a BOBUIextCharFormat object and set the object type to the
             chosen type using the setObjectType() function.
-         \li Implement the QTextObjectInterface class.
+         \li Implement the BOBUIextObjectInterface class.
          \li Call QAbstractTextDocumentLayout::registerHandler() with an instance of your
-            QTextObjectInterface subclass to register your object type.
+            BOBUIextObjectInterface subclass to register your object type.
          \li Insert QChar::ObjectReplacementCharacter with the aforementioned
-            QTextCharFormat of the chosen object type into the document.
-            As mentioned, the functions of QTextObjectInterface
-            \l{QTextObjectInterface::}{intrinsicSize()} and
-            \l{QTextObjectInterface::}{drawObject()} will then be called with the
-            QTextFormat as parameter whenever the replacement character is
+            BOBUIextCharFormat of the chosen object type into the document.
+            As mentioned, the functions of BOBUIextObjectInterface
+            \l{BOBUIextObjectInterface::}{intrinsicSize()} and
+            \l{BOBUIextObjectInterface::}{drawObject()} will then be called with the
+            BOBUIextFormat as parameter whenever the replacement character is
             encountered.
     \endlist
 
     A class implementing a text object needs to inherit both QObject
-    and QTextObjectInterface. QObject must be the first class
+    and BOBUIextObjectInterface. QObject must be the first class
     inherited. For instance:
 
-    \snippet qtextobject/textobjectinterface.h 0
+    \snippet bobuiextobject/textobjectinterface.h 0
 
-    The data of a text object is usually stored in the QTextCharFormat
-    using QTextCharFormat::setProperty(), and then retrieved with
-    QTextCharFormat::property().
+    The data of a text object is usually stored in the BOBUIextCharFormat
+    using BOBUIextCharFormat::setProperty(), and then retrieved with
+    BOBUIextCharFormat::property().
 
     \warning Copy and Paste operations ignore custom text objects.
 
-    \sa QTextCharFormat, QTextLayout
+    \sa BOBUIextCharFormat, BOBUIextLayout
 */
 
 /*!
-    \fn QTextObjectInterface::~QTextObjectInterface()
+    \fn BOBUIextObjectInterface::~BOBUIextObjectInterface()
 
-    Destroys this QTextObjectInterface.
+    Destroys this BOBUIextObjectInterface.
 */
 
 /*!
-    \fn virtual QSizeF QTextObjectInterface::intrinsicSize(QTextDocument *doc, int posInDocument, const QTextFormat &format) = 0
+    \fn virtual QSizeF BOBUIextObjectInterface::intrinsicSize(BOBUIextDocument *doc, int posInDocument, const BOBUIextFormat &format) = 0
 
     The intrinsicSize() function returns the size of the text object
     represented by \a format in the given document (\a doc) at the
@@ -124,7 +124,7 @@ QTextObjectInterface::~QTextObjectInterface()
 */
 
 /*!
-    \fn virtual void QTextObjectInterface::drawObject(QPainter *painter, const QRectF &rect, QTextDocument *doc, int posInDocument, const QTextFormat &format) = 0
+    \fn virtual void BOBUIextObjectInterface::drawObject(QPainter *painter, const QRectF &rect, BOBUIextDocument *doc, int posInDocument, const BOBUIextFormat &format) = 0
 
     Draws this text object using the specified \a painter.
 
@@ -148,7 +148,7 @@ QTextObjectInterface::~QTextObjectInterface()
 */
 
 /*!
-   \fn void QAbstractTextDocumentLayout::updateBlock(const QTextBlock &block)
+   \fn void QAbstractTextDocumentLayout::updateBlock(const BOBUIextBlock &block)
    \since 4.4
 
    This signal is emitted when the specified \a block has been updated.
@@ -200,7 +200,7 @@ QTextObjectInterface::~QTextObjectInterface()
     This information can be used by display widgets to update their scroll bars
     correctly.
 
-    \sa documentSizeChanged(), QTextDocument::pageSize
+    \sa documentSizeChanged(), BOBUIextDocument::pageSize
 */
 
 /*!
@@ -210,7 +210,7 @@ QTextObjectInterface::~QTextObjectInterface()
 */
 
 /*!
-    \fn int QAbstractTextDocumentLayout::hitTest(const QPointF &point, Qt::HitTestAccuracy accuracy) const
+    \fn int QAbstractTextDocumentLayout::hitTest(const QPointF &point, BobUI::HitTestAccuracy accuracy) const
 
     Returns the cursor position for the given \a point with the specified
     \a accuracy. Returns -1 if no valid cursor position was found.
@@ -242,11 +242,11 @@ QTextObjectInterface::~QTextObjectInterface()
     implementation of this function would have to do the following:
 
     \list
-        \li Determine the list of changed \l{QTextBlock}(s) using the parameters
+        \li Determine the list of changed \l{BOBUIextBlock}(s) using the parameters
             provided.
-        \li Each QTextBlock object's corresponding QTextLayout object needs to
-            be processed. You can access the \l{QTextBlock}'s layout using the
-            QTextBlock::layout() function. This processing should take the
+        \li Each BOBUIextBlock object's corresponding BOBUIextLayout object needs to
+            be processed. You can access the \l{BOBUIextBlock}'s layout using the
+            BOBUIextBlock::layout() function. This processing should take the
             document's page size into consideration.
         \li If the total number of pages changed, the pageCountChanged() signal
             should be emitted.
@@ -256,18 +256,18 @@ QTextObjectInterface::~QTextObjectInterface()
             in the layout that require repainting.
     \endlist
 
-    \sa QTextLayout
+    \sa BOBUIextLayout
 */
 
 /*!
     \class QAbstractTextDocumentLayout::PaintContext
     \reentrant
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAbstractTextDocumentLayout::PaintContext class is a convenience
     class defining the parameters used when painting a document's layout.
 
-    A paint context is used when rendering custom layouts for QTextDocuments
+    A paint context is used when rendering custom layouts for BOBUIextDocuments
     with the QAbstractTextDocumentLayout::draw() function. It is specified by
     a \l {cursorPosition}{cursor position}, \l {palette}{default text color},
     \l clip rectangle and a collection of \l selections.
@@ -327,13 +327,13 @@ QTextObjectInterface::~QTextObjectInterface()
 /*!
     \class QAbstractTextDocumentLayout::Selection
     \reentrant
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QAbstractTextDocumentLayout::Selection class is a convenience
     class defining the parameters of a selection.
 
     A selection can be used to specify a part of a document that should be
-    highlighted when drawing custom layouts for QTextDocuments with the
+    highlighted when drawing custom layouts for BOBUIextDocuments with the
     QAbstractTextDocumentLayout::draw() function. It is specified using
     \l cursor and a \l format.
 
@@ -345,7 +345,7 @@ QTextObjectInterface::~QTextObjectInterface()
 
     \brief the format of the selection
 
-    The default value is QTextFormat::InvalidFormat.
+    The default value is BOBUIextFormat::InvalidFormat.
 */
 
 /*!
@@ -358,7 +358,7 @@ QTextObjectInterface::~QTextObjectInterface()
 /*!
     Creates a new text document layout for the given \a document.
 */
-QAbstractTextDocumentLayout::QAbstractTextDocumentLayout(QTextDocument *document)
+QAbstractTextDocumentLayout::QAbstractTextDocumentLayout(BOBUIextDocument *document)
     : QObject(*new QAbstractTextDocumentLayoutPrivate, document)
 {
     Q_D(QAbstractTextDocumentLayout);
@@ -368,7 +368,7 @@ QAbstractTextDocumentLayout::QAbstractTextDocumentLayout(QTextDocument *document
 /*!
     \internal
 */
-QAbstractTextDocumentLayout::QAbstractTextDocumentLayout(QAbstractTextDocumentLayoutPrivate &p, QTextDocument *document)
+QAbstractTextDocumentLayout::QAbstractTextDocumentLayout(QAbstractTextDocumentLayoutPrivate &p, BOBUIextDocument *document)
     :QObject(p, document)
 {
     Q_D(QAbstractTextDocumentLayout);
@@ -395,14 +395,14 @@ void QAbstractTextDocumentLayout::registerHandler(int objectType, QObject *compo
 {
     Q_D(QAbstractTextDocumentLayout);
 
-    QTextObjectInterface *iface = qobject_cast<QTextObjectInterface *>(component);
+    BOBUIextObjectInterface *iface = qobject_cast<BOBUIextObjectInterface *>(component);
     if (!iface)
         return; // ### print error message on terminal?
 
     QObjectPrivate::connect(component, &QObject::destroyed, d,
                             &QAbstractTextDocumentLayoutPrivate::_q_handlerDestroyed);
 
-    QTextObjectHandler h;
+    BOBUIextObjectHandler h;
     h.iface = iface;
     h.component = component;
     d->handlers.insert(objectType, h);
@@ -430,11 +430,11 @@ void QAbstractTextDocumentLayout::unregisterHandler(int objectType, QObject *com
 /*!
     Returns a handler for objects of the given \a objectType.
 */
-QTextObjectInterface *QAbstractTextDocumentLayout::handlerForObject(int objectType) const
+BOBUIextObjectInterface *QAbstractTextDocumentLayout::handlerForObject(int objectType) const
 {
     Q_D(const QAbstractTextDocumentLayout);
 
-    QTextObjectHandler handler = d->handlers.value(objectType);
+    BOBUIextObjectHandler handler = d->handlers.value(objectType);
     if (!handler.component)
         return nullptr;
 
@@ -449,16 +449,16 @@ QTextObjectInterface *QAbstractTextDocumentLayout::handlerForObject(int objectTy
 
     The default implementation resizes the \a item to the size returned by
     the object handler's intrinsicSize() function. This function is called only
-    within Qt. Subclasses can reimplement this function to customize the
+    within BobUI. Subclasses can reimplement this function to customize the
     resizing of inline objects.
 */
-void QAbstractTextDocumentLayout::resizeInlineObject(QTextInlineObject item, int posInDocument, const QTextFormat &format)
+void QAbstractTextDocumentLayout::resizeInlineObject(BOBUIextInlineObject item, int posInDocument, const BOBUIextFormat &format)
 {
     Q_D(QAbstractTextDocumentLayout);
 
-    QTextCharFormat f = format.toCharFormat();
+    BOBUIextCharFormat f = format.toCharFormat();
     Q_ASSERT(f.isValid());
-    QTextObjectHandler handler = d->handlers.value(f.objectType());
+    BOBUIextObjectHandler handler = d->handlers.value(f.objectType());
     if (!handler.component)
         return;
 
@@ -474,12 +474,12 @@ void QAbstractTextDocumentLayout::resizeInlineObject(QTextInlineObject item, int
     \a posInDocument specifies the position of the object within the document.
 
     The default implementation does nothing. This function is called only
-    within Qt. Subclasses can reimplement this function to customize the
+    within BobUI. Subclasses can reimplement this function to customize the
     position of inline objects.
 
     \sa drawInlineObject()
 */
-void QAbstractTextDocumentLayout::positionInlineObject(QTextInlineObject item, int posInDocument, const QTextFormat &format)
+void QAbstractTextDocumentLayout::positionInlineObject(BOBUIextInlineObject item, int posInDocument, const BOBUIextFormat &format)
 {
     Q_UNUSED(item);
     Q_UNUSED(posInDocument);
@@ -487,7 +487,7 @@ void QAbstractTextDocumentLayout::positionInlineObject(QTextInlineObject item, i
 }
 
 /*!
-    \fn void QAbstractTextDocumentLayout::drawInlineObject(QPainter *painter, const QRectF &rect, QTextInlineObject object, int posInDocument, const QTextFormat &format)
+    \fn void QAbstractTextDocumentLayout::drawInlineObject(QPainter *painter, const QRectF &rect, BOBUIextInlineObject object, int posInDocument, const BOBUIextFormat &format)
 
     This function is called to draw the inline object, \a object, with the
     given \a painter within the rectangle specified by \a rect using the
@@ -496,20 +496,20 @@ void QAbstractTextDocumentLayout::positionInlineObject(QTextInlineObject item, i
     \a posInDocument specifies the position of the object within the document.
 
     The default implementation calls drawObject() on the object handlers. This
-    function is called only within Qt. Subclasses can reimplement this function
+    function is called only within BobUI. Subclasses can reimplement this function
     to customize the drawing of inline objects.
 
     \sa draw()
 */
-void QAbstractTextDocumentLayout::drawInlineObject(QPainter *p, const QRectF &rect, QTextInlineObject item,
-                                                   int posInDocument, const QTextFormat &format)
+void QAbstractTextDocumentLayout::drawInlineObject(QPainter *p, const QRectF &rect, BOBUIextInlineObject item,
+                                                   int posInDocument, const BOBUIextFormat &format)
 {
     Q_UNUSED(item);
     Q_D(QAbstractTextDocumentLayout);
 
-    QTextCharFormat f = format.toCharFormat();
+    BOBUIextCharFormat f = format.toCharFormat();
     Q_ASSERT(f.isValid());
-    QTextObjectHandler handler = d->handlers.value(f.objectType());
+    BOBUIextObjectHandler handler = d->handlers.value(f.objectType());
     if (!handler.component)
         return;
 
@@ -533,18 +533,18 @@ void QAbstractTextDocumentLayoutPrivate::_q_handlerDestroyed(QObject *obj)
 */
 int QAbstractTextDocumentLayout::formatIndex(int pos)
 {
-    QTextDocumentPrivate *pieceTable = QTextDocumentPrivate::get(qobject_cast<QTextDocument *>(parent()));
+    BOBUIextDocumentPrivate *pieceTable = BOBUIextDocumentPrivate::get(qobject_cast<BOBUIextDocument *>(parent()));
     return pieceTable->find(pos).value()->format;
 }
 
 /*!
-    \fn QTextCharFormat QAbstractTextDocumentLayout::format(int position)
+    \fn BOBUIextCharFormat QAbstractTextDocumentLayout::format(int position)
 
     Returns the character format that is applicable at the given \a position.
 */
-QTextCharFormat QAbstractTextDocumentLayout::format(int pos)
+BOBUIextCharFormat QAbstractTextDocumentLayout::format(int pos)
 {
-    QTextDocumentPrivate *pieceTable = QTextDocumentPrivate::get(qobject_cast<QTextDocument *>(parent()));
+    BOBUIextDocumentPrivate *pieceTable = BOBUIextDocumentPrivate::get(qobject_cast<BOBUIextDocument *>(parent()));
     int idx = pieceTable->find(pos).value()->format;
     return pieceTable->formatCollection()->charFormat(idx);
 }
@@ -554,7 +554,7 @@ QTextCharFormat QAbstractTextDocumentLayout::format(int pos)
 /*!
     Returns the text document that this layout is operating on.
 */
-QTextDocument *QAbstractTextDocumentLayout::document() const
+BOBUIextDocument *QAbstractTextDocumentLayout::document() const
 {
     Q_D(const QAbstractTextDocumentLayout);
     return d->document;
@@ -568,7 +568,7 @@ QTextDocument *QAbstractTextDocumentLayout::document() const
 */
 QString QAbstractTextDocumentLayout::anchorAt(const QPointF& pos) const
 {
-    QTextCharFormat fmt = formatAt(pos).toCharFormat();
+    BOBUIextCharFormat fmt = formatAt(pos).toCharFormat();
     return fmt.anchorHref();
 }
 
@@ -580,7 +580,7 @@ QString QAbstractTextDocumentLayout::anchorAt(const QPointF& pos) const
 */
 QString QAbstractTextDocumentLayout::imageAt(const QPointF &pos) const
 {
-    QTextImageFormat fmt = formatAt(pos).toImageFormat();
+    BOBUIextImageFormat fmt = formatAt(pos).toImageFormat();
     return fmt.name();
 }
 
@@ -589,18 +589,18 @@ QString QAbstractTextDocumentLayout::imageAt(const QPointF &pos) const
 
     Returns the text format at the given position \a pos.
 */
-QTextFormat QAbstractTextDocumentLayout::formatAt(const QPointF &pos) const
+BOBUIextFormat QAbstractTextDocumentLayout::formatAt(const QPointF &pos) const
 {
-    int cursorPos = hitTest(pos, Qt::ExactHit);
+    int cursorPos = hitTest(pos, BobUI::ExactHit);
     if (cursorPos == -1)
-        return QTextFormat();
+        return BOBUIextFormat();
 
     // compensate for preedit in the hit text block
-    QTextBlock block = document()->firstBlock();
+    BOBUIextBlock block = document()->firstBlock();
     while (block.isValid()) {
         QRectF blockBr = blockBoundingRect(block);
         if (blockBr.contains(pos)) {
-            QTextLayout *layout = block.layout();
+            BOBUIextLayout *layout = block.layout();
             int relativeCursorPos = cursorPos - block.position();
             const int preeditLength = layout ? layout->preeditAreaText().size() : 0;
             if (preeditLength > 0 && relativeCursorPos > layout->preeditAreaPosition())
@@ -610,24 +610,24 @@ QTextFormat QAbstractTextDocumentLayout::formatAt(const QPointF &pos) const
         block = block.next();
     }
 
-    const QTextDocumentPrivate *pieceTable = QTextDocumentPrivate::get(qobject_cast<const QTextDocument *>(parent()));
-    QTextDocumentPrivate::FragmentIterator it = pieceTable->find(cursorPos);
+    const BOBUIextDocumentPrivate *pieceTable = BOBUIextDocumentPrivate::get(qobject_cast<const BOBUIextDocument *>(parent()));
+    BOBUIextDocumentPrivate::FragmentIterator it = pieceTable->find(cursorPos);
     return pieceTable->formatCollection()->format(it->format);
 }
 
 /*!
     \since 5.14
 
-    Returns the block (probably a list item) whose \l{QTextBlockFormat::marker()}{marker}
+    Returns the block (probably a list item) whose \l{BOBUIextBlockFormat::marker()}{marker}
     is found at the given position \a pos.
 */
-QTextBlock QAbstractTextDocumentLayout::blockWithMarkerAt(const QPointF &pos) const
+BOBUIextBlock QAbstractTextDocumentLayout::blockWithMarkerAt(const QPointF &pos) const
 {
-    QTextBlock block = document()->firstBlock();
+    BOBUIextBlock block = document()->firstBlock();
     while (block.isValid()) {
-        if (block.blockFormat().marker() != QTextBlockFormat::MarkerType::NoMarker) {
+        if (block.blockFormat().marker() != BOBUIextBlockFormat::MarkerType::NoMarker) {
             QRectF blockBr = blockBoundingRect(block);
-            QTextBlockFormat blockFmt = block.blockFormat();
+            BOBUIextBlockFormat blockFmt = block.blockFormat();
             QFontMetrics fm(block.charFormat().font());
             qreal totalIndent = blockFmt.indent() + blockFmt.leftMargin() + blockFmt.textIndent();
             if (block.textList())
@@ -636,23 +636,23 @@ QTextBlock QAbstractTextDocumentLayout::blockWithMarkerAt(const QPointF &pos) co
             if (adjustedBr.contains(pos)) {
                 //qDebug() << "hit block" << block.text() << blockBr << adjustedBr << "marker" << block.blockFormat().marker()
                 //         << "font" << block.charFormat().font() << "adj" << lineHeight << totalIndent;
-                if (block.blockFormat().hasProperty(QTextFormat::BlockMarker))
+                if (block.blockFormat().hasProperty(BOBUIextFormat::BlockMarker))
                     return block;
             }
         }
         block = block.next();
     }
-    return QTextBlock();
+    return BOBUIextBlock();
 }
 
 /*!
-    \fn QRectF QAbstractTextDocumentLayout::frameBoundingRect(QTextFrame *frame) const
+    \fn QRectF QAbstractTextDocumentLayout::frameBoundingRect(BOBUIextFrame *frame) const
 
     Returns the bounding rectangle of \a frame.
 */
 
 /*!
-    \fn QRectF QAbstractTextDocumentLayout::blockBoundingRect(const QTextBlock &block) const
+    \fn QRectF QAbstractTextDocumentLayout::blockBoundingRect(const BOBUIextBlock &block) const
 
     Returns the bounding rectangle of \a block.
 */
@@ -680,6 +680,6 @@ QPaintDevice *QAbstractTextDocumentLayout::paintDevice() const
     return d->paintDevice;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstracttextdocumentlayout.cpp"

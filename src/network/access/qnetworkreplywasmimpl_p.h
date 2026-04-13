@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKREPLYWASMIMPL_H
 #define QNETWORKREPLYWASMIMPL_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
@@ -20,9 +20,9 @@
 #include "qnetworkreply_p.h"
 #include "qnetworkaccessmanager.h"
 
-#include <QtCore/qfile.h>
+#include <BobUICore/qfile.h>
 
-#include <private/qtnetworkglobal_p.h>
+#include <private/bobuinetworkglobal_p.h>
 #include <private/qabstractfileengine_p.h>
 
 #include <emscripten.h>
@@ -31,7 +31,7 @@
 #include <memory>
 #include <mutex>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIODevice;
 
@@ -142,6 +142,6 @@ public:
     Q_DECLARE_PUBLIC(QNetworkReplyWasmImpl)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNETWORKREPLYWASMIMPL_H

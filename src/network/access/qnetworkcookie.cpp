@@ -1,37 +1,37 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qnetworkcookie.h"
 #include "qnetworkcookie_p.h"
 
 #include "qnetworkreply.h"
-#include "QtCore/qbytearray.h"
-#include "QtCore/qdatetime.h"
-#include "QtCore/qdebug.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qlocale.h"
-#include <QtCore/qregularexpression.h>
-#include "QtCore/qstring.h"
-#include "QtCore/qstringlist.h"
-#include "QtCore/qtimezone.h"
-#include "QtCore/qurl.h"
-#include "QtNetwork/qhostaddress.h"
+#include "BobUICore/qbytearray.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qdebug.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qlocale.h"
+#include <BobUICore/qregularexpression.h>
+#include "BobUICore/qstring.h"
+#include "BobUICore/qstringlist.h"
+#include "BobUICore/bobuiimezone.h"
+#include "BobUICore/qurl.h"
+#include "BobUINetwork/qhostaddress.h"
 #include "private/qobject_p.h"
 
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN(QNetworkCookie)
+BOBUI_IMPL_METATYPE_EXTERN(QNetworkCookie)
 
 /*!
     \class QNetworkCookie
     \since 4.4
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief The QNetworkCookie class holds one network cookie.
 
@@ -465,11 +465,11 @@ QByteArrayView sameSiteToRawString(QNetworkCookie::SameSite samesite) noexcept
 
 QNetworkCookie::SameSite sameSiteFromRawString(QByteArrayView str) noexcept
 {
-    if (str.compare(sameSiteNone(), Qt::CaseInsensitive) == 0)
+    if (str.compare(sameSiteNone(), BobUI::CaseInsensitive) == 0)
         return QNetworkCookie::SameSite::None;
-    if (str.compare(sameSiteLax(), Qt::CaseInsensitive) == 0)
+    if (str.compare(sameSiteLax(), BobUI::CaseInsensitive) == 0)
         return QNetworkCookie::SameSite::Lax;
-    if (str.compare(sameSiteStrict(), Qt::CaseInsensitive) == 0)
+    if (str.compare(sameSiteStrict(), BobUI::CaseInsensitive) == 0)
         return QNetworkCookie::SameSite::Strict;
     return QNetworkCookie::SameSite::Default;
 }
@@ -629,7 +629,7 @@ static bool checkStaticArray(int &val, QByteArrayView dateString, int at, const 
 */
 static QDateTime parseDateString(QByteArrayView dateString)
 {
-    QTime time;
+    BOBUIime time;
     // placeholders for values when we are not sure it is a year, month or day
     int unknown[3] = {-1, -1, -1};
     int month = -1;
@@ -731,7 +731,7 @@ static QDateTime parseDateString(QByteArrayView dateString)
                 if (h < 12 && !ampm.isEmpty())
                     if (ampm == "pm"_L1)
                         h += 12;
-                time = QTime(h, m, s, ms);
+                time = BOBUIime(h, m, s, ms);
 #ifdef PARSEDATESTRINGDEBUG
                 qDebug() << "Time:" << match.capturedTexts() << match.capturedLength();
 #endif
@@ -912,7 +912,7 @@ static QDateTime parseDateString(QByteArrayView dateString)
     if (!date.isValid())
         date = QDate(day + y2k, month, year);
 
-    QDateTime dateTime(date, time, QTimeZone::UTC);
+    QDateTime dateTime(date, time, BOBUIimeZone::UTC);
 
     if (zoneOffset != -1)
         dateTime = dateTime.addSecs(zoneOffset);
@@ -932,7 +932,7 @@ static QDateTime parseDateString(QByteArrayView dateString)
     cookie that is parsed.
 
     \sa toRawForm()
-    \note In Qt versions prior to 6.7, this function took QByteArray only.
+    \note In BobUI versions prior to 6.7, this function took QByteArray only.
 */
 QList<QNetworkCookie> QNetworkCookie::parseCookies(QByteArrayView cookieString)
 {
@@ -978,7 +978,7 @@ QList<QNetworkCookie> QNetworkCookiePrivate::parseSetCookieHeaderLine(QByteArray
                 // new field in the cookie
                 field = nextField(cookieString, position, false);
 
-                if (field.first.compare("expires", Qt::CaseInsensitive) == 0) {
+                if (field.first.compare("expires", BobUI::CaseInsensitive) == 0) {
                     position -= field.second.size();
                     int end;
                     for (end = position; end < length; ++end)
@@ -991,7 +991,7 @@ QList<QNetworkCookie> QNetworkCookiePrivate::parseSetCookieHeaderLine(QByteArray
                     if (dt.isValid())
                         cookie.setExpirationDate(dt);
                     //if unparsed, ignore the attribute but not the whole cookie (RFC6265 section 5.2.1)
-                } else if (field.first.compare("domain", Qt::CaseInsensitive) == 0) {
+                } else if (field.first.compare("domain", BobUI::CaseInsensitive) == 0) {
                     QByteArrayView rawDomain = field.second;
                     //empty domain should be ignored (RFC6265 section 5.2.3)
                     if (!rawDomain.isEmpty()) {
@@ -1012,7 +1012,7 @@ QList<QNetworkCookie> QNetworkCookiePrivate::parseSetCookieHeaderLine(QByteArray
                             return result;
                         }
                     }
-                } else if (field.first.compare("max-age", Qt::CaseInsensitive) == 0) {
+                } else if (field.first.compare("max-age", BobUI::CaseInsensitive) == 0) {
                     bool ok = false;
                     int secs = field.second.toInt(&ok);
                     if (ok) {
@@ -1024,7 +1024,7 @@ QList<QNetworkCookie> QNetworkCookiePrivate::parseSetCookieHeaderLine(QByteArray
                         }
                     }
                     //if unparsed, ignore the attribute but not the whole cookie (RFC6265 section 5.2.2)
-                } else if (field.first.compare("path", Qt::CaseInsensitive) == 0) {
+                } else if (field.first.compare("path", BobUI::CaseInsensitive) == 0) {
                     if (field.second.startsWith('/')) {
                         // ### we should treat cookie paths as an octet sequence internally
                         // However RFC6265 says we should assume UTF-8 for presentation as a string
@@ -1034,11 +1034,11 @@ QList<QNetworkCookie> QNetworkCookiePrivate::parseSetCookieHeaderLine(QByteArray
                         // and also IETF test case path0030 which has valid and empty path in the same cookie
                         cookie.setPath(QString());
                     }
-                } else if (field.first.compare("secure", Qt::CaseInsensitive) == 0) {
+                } else if (field.first.compare("secure", BobUI::CaseInsensitive) == 0) {
                     cookie.setSecure(true);
-                } else if (field.first.compare("httponly", Qt::CaseInsensitive) == 0) {
+                } else if (field.first.compare("httponly", BobUI::CaseInsensitive) == 0) {
                     cookie.setHttpOnly(true);
-                } else if (field.first.compare("samesite", Qt::CaseInsensitive) == 0) {
+                } else if (field.first.compare("samesite", BobUI::CaseInsensitive) == 0) {
                     cookie.setSameSitePolicy(sameSiteFromRawString(field.second));
                 } else {
                     // ignore unknown fields in the cookie (RFC6265 section 5.2, rule 6)
@@ -1062,7 +1062,7 @@ QList<QNetworkCookie> QNetworkCookiePrivate::parseSetCookieHeaderLine(QByteArray
 */
 void QNetworkCookie::normalize(const QUrl &url)
 {
-    // don't do path checking. See QTBUG-5815
+    // don't do path checking. See BOBUIBUG-5815
     if (d->path.isEmpty()) {
         QString pathAndFileName = url.path();
         QString defaultPath = pathAndFileName.left(pathAndFileName.lastIndexOf(u'/') + 1);
@@ -1087,7 +1087,7 @@ void QNetworkCookie::normalize(const QUrl &url)
     }
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug s, const QNetworkCookie &cookie)
 {
     QDebugStateSaver saver(s);
@@ -1097,6 +1097,6 @@ QDebug operator<<(QDebug s, const QNetworkCookie &cookie)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkcookie.cpp"

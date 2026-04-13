@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "../include/mainwindow.h"
 
@@ -70,14 +70,14 @@ void MainWindow::setupListItems()
 void MainWindow::sortAscending()
 {
     //! [4]
-    listWidget->sortItems(Qt::AscendingOrder);
+    listWidget->sortItems(BobUI::AscendingOrder);
     //! [4]
 }
 
 void MainWindow::sortDescending()
 {
     //! [5]
-    listWidget->sortItems(Qt::DescendingOrder);
+    listWidget->sortItems(BobUI::DescendingOrder);
     //! [5]
 }
 

@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qspiapplicationadaptor_p.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtDBus/qdbuspendingreply.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIDBus/qdbuspendingreply.h>
 #include <qdebug.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "deviceeventcontroller_adaptor.h"
 #include "atspi/atspi-constants.h"
 
@@ -18,9 +18,9 @@
 
 //#define KEYBOARD_DEBUG
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QSpiApplicationAdaptor
@@ -79,45 +79,45 @@ bool QSpiApplicationAdaptor::eventFilter(QObject *target, QEvent *event)
 
         de.timestamp = QDateTime::currentMSecsSinceEpoch();
 
-        if (keyEvent->key() == Qt::Key_Tab)
+        if (keyEvent->key() == BobUI::Key_Tab)
             de.text = QStringLiteral("Tab");
-        else if (keyEvent->key() == Qt::Key_Backtab)
+        else if (keyEvent->key() == BobUI::Key_Backtab)
             de.text = QStringLiteral("Backtab");
-        else if (keyEvent->key() == Qt::Key_Control)
+        else if (keyEvent->key() == BobUI::Key_Control)
             de.text = QStringLiteral("Control_L");
-        else if (keyEvent->key() == Qt::Key_Left)
-            de.text = (keyEvent->modifiers() & Qt::KeypadModifier) ? QStringLiteral("KP_Left") : QStringLiteral("Left");
-        else if (keyEvent->key() == Qt::Key_Right)
-            de.text = (keyEvent->modifiers() & Qt::KeypadModifier) ? QStringLiteral("KP_Right") : QStringLiteral("Right");
-        else if (keyEvent->key() == Qt::Key_Up)
-            de.text = (keyEvent->modifiers() & Qt::KeypadModifier) ? QStringLiteral("KP_Up") : QStringLiteral("Up");
-        else if (keyEvent->key() == Qt::Key_Down)
-            de.text = (keyEvent->modifiers() & Qt::KeypadModifier) ? QStringLiteral("KP_Down") : QStringLiteral("Down");
-        else if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)
+        else if (keyEvent->key() == BobUI::Key_Left)
+            de.text = (keyEvent->modifiers() & BobUI::KeypadModifier) ? QStringLiteral("KP_Left") : QStringLiteral("Left");
+        else if (keyEvent->key() == BobUI::Key_Right)
+            de.text = (keyEvent->modifiers() & BobUI::KeypadModifier) ? QStringLiteral("KP_Right") : QStringLiteral("Right");
+        else if (keyEvent->key() == BobUI::Key_Up)
+            de.text = (keyEvent->modifiers() & BobUI::KeypadModifier) ? QStringLiteral("KP_Up") : QStringLiteral("Up");
+        else if (keyEvent->key() == BobUI::Key_Down)
+            de.text = (keyEvent->modifiers() & BobUI::KeypadModifier) ? QStringLiteral("KP_Down") : QStringLiteral("Down");
+        else if (keyEvent->key() == BobUI::Key_Enter || keyEvent->key() == BobUI::Key_Return)
             de.text = QStringLiteral("Return");
-        else if (keyEvent->key() == Qt::Key_Backspace)
+        else if (keyEvent->key() == BobUI::Key_Backspace)
             de.text = QStringLiteral("BackSpace");
-        else if (keyEvent->key() == Qt::Key_Delete)
+        else if (keyEvent->key() == BobUI::Key_Delete)
             de.text = QStringLiteral("Delete");
-        else if (keyEvent->key() == Qt::Key_PageUp)
-            de.text = (keyEvent->modifiers() & Qt::KeypadModifier) ? QStringLiteral("KP_Page_Up") : QStringLiteral("Page_Up");
-        else if (keyEvent->key() == Qt::Key_PageDown)
-            de.text = (keyEvent->modifiers() & Qt::KeypadModifier) ? QStringLiteral("KP_Page_Up") : QStringLiteral("Page_Down");
-        else if (keyEvent->key() == Qt::Key_Home)
-            de.text = (keyEvent->modifiers() & Qt::KeypadModifier) ? QStringLiteral("KP_Home") : QStringLiteral("Home");
-        else if (keyEvent->key() == Qt::Key_End)
-            de.text = (keyEvent->modifiers() & Qt::KeypadModifier) ? QStringLiteral("KP_End") : QStringLiteral("End");
-        else if (keyEvent->key() == Qt::Key_Clear && (keyEvent->modifiers() & Qt::KeypadModifier))
+        else if (keyEvent->key() == BobUI::Key_PageUp)
+            de.text = (keyEvent->modifiers() & BobUI::KeypadModifier) ? QStringLiteral("KP_Page_Up") : QStringLiteral("Page_Up");
+        else if (keyEvent->key() == BobUI::Key_PageDown)
+            de.text = (keyEvent->modifiers() & BobUI::KeypadModifier) ? QStringLiteral("KP_Page_Up") : QStringLiteral("Page_Down");
+        else if (keyEvent->key() == BobUI::Key_Home)
+            de.text = (keyEvent->modifiers() & BobUI::KeypadModifier) ? QStringLiteral("KP_Home") : QStringLiteral("Home");
+        else if (keyEvent->key() == BobUI::Key_End)
+            de.text = (keyEvent->modifiers() & BobUI::KeypadModifier) ? QStringLiteral("KP_End") : QStringLiteral("End");
+        else if (keyEvent->key() == BobUI::Key_Clear && (keyEvent->modifiers() & BobUI::KeypadModifier))
             de.text = QStringLiteral("KP_Begin"); // Key pad 5
-        else if (keyEvent->key() == Qt::Key_Escape)
+        else if (keyEvent->key() == BobUI::Key_Escape)
             de.text = QStringLiteral("Escape");
-        else if (keyEvent->key() == Qt::Key_Space)
+        else if (keyEvent->key() == BobUI::Key_Space)
             de.text = QStringLiteral("space");
-        else if (keyEvent->key() == Qt::Key_CapsLock)
+        else if (keyEvent->key() == BobUI::Key_CapsLock)
             de.text = QStringLiteral("Caps_Lock");
-        else if (keyEvent->key() == Qt::Key_NumLock)
+        else if (keyEvent->key() == BobUI::Key_NumLock)
             de.text = QStringLiteral("Num_Lock");
-        else if (keyEvent->key() == Qt::Key_Insert)
+        else if (keyEvent->key() == BobUI::Key_Insert)
             de.text = QStringLiteral("Insert");
         else
             de.text = keyEvent->text();
@@ -127,20 +127,20 @@ bool QSpiApplicationAdaptor::eventFilter(QObject *target, QEvent *event)
         de.isText = !de.text.isEmpty();
 
         de.modifiers = 0;
-        if ((keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->key() != Qt::Key_Shift))
+        if ((keyEvent->modifiers() & BobUI::ShiftModifier) && (keyEvent->key() != BobUI::Key_Shift))
             de.modifiers |= 1 << ATSPI_MODIFIER_SHIFT;
 #ifdef XCB_MOD_MASK_LOCK
         if (QGuiApplication::platformName().startsWith("xcb"_L1)) {
-            // TODO rather introduce Qt::CapslockModifier into KeyboardModifier
+            // TODO rather introduce BobUI::CapslockModifier into KeyboardModifier
             if (keyEvent->nativeModifiers() & XCB_MOD_MASK_LOCK )
                 de.modifiers |= 1 << ATSPI_MODIFIER_SHIFTLOCK;
         }
 #endif
-        if ((keyEvent->modifiers() & Qt::ControlModifier) && (keyEvent->key() != Qt::Key_Control))
+        if ((keyEvent->modifiers() & BobUI::ControlModifier) && (keyEvent->key() != BobUI::Key_Control))
             de.modifiers |= 1 << ATSPI_MODIFIER_CONTROL;
-        if ((keyEvent->modifiers() & Qt::AltModifier) && (keyEvent->key() != Qt::Key_Alt))
+        if ((keyEvent->modifiers() & BobUI::AltModifier) && (keyEvent->key() != BobUI::Key_Alt))
             de.modifiers |= 1 << ATSPI_MODIFIER_ALT;
-        if ((keyEvent->modifiers() & Qt::MetaModifier) && (keyEvent->key() != Qt::Key_Meta))
+        if ((keyEvent->modifiers() & BobUI::MetaModifier) && (keyEvent->key() != BobUI::Key_Meta))
             de.modifiers |= 1 << ATSPI_MODIFIER_META;
 
 #ifdef KEYBOARD_DEBUG
@@ -207,8 +207,8 @@ void QSpiApplicationAdaptor::notifyKeyboardListenerError(const QDBusError& error
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qspiapplicationadaptor_p.cpp"
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

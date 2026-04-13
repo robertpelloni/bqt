@@ -1,22 +1,22 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QCBORSTREAMWRITER_H
 #define QCBORSTREAMWRITER_H
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qcborcommon.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qstringview.h>
-#ifndef QT_BOOTSTRAPPED
-#include <QtCore/qfloat16.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qcborcommon.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringview.h>
+#ifndef BOBUI_BOOTSTRAPPED
+#include <BobUICore/qfloat16.h>
 #endif
 
 #include <memory>
 
-QT_REQUIRE_CONFIG(cborstreamwriter);
+BOBUI_REQUIRE_CONFIG(cborstreamwriter);
 
 /* X11 headers use these values too, but as defines */
 #if defined(False) && defined(True)
@@ -24,7 +24,7 @@ QT_REQUIRE_CONFIG(cborstreamwriter);
 #  undef False
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIODevice;
 
@@ -43,7 +43,7 @@ public:
     void append(quint64 u);
     void append(qint64 i);
     void append(QCborNegativeInteger n);
-#if !QT_CORE_REMOVED_SINCE(6, 10)   // wasn't a template until 6.10
+#if !BOBUI_CORE_REMOVED_SINCE(6, 10)   // wasn't a template until 6.10
     Q_WEAK_OVERLOAD
 #endif
     void append(const QByteArray &ba)       { appendByteString(ba.constData(), ba.size()); }
@@ -55,7 +55,7 @@ public:
     void append(QCborKnownTags tag)         { append(QCborTag(tag)); }
     void append(QCborSimpleType st);
     void append(std::nullptr_t)             { append(QCborSimpleType::Null); }
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     void append(qfloat16 f);
 #endif
     void append(float f);
@@ -74,7 +74,7 @@ public:
     void append(int i)      { append(qint64(i)); }
     void append(uint u)     { append(quint64(u)); }
 #endif
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
     void append(const char *str, qsizetype size = -1)
     { appendTextString(str, (str && size == -1)  ? int(strlen(str)) : size); }
 #endif
@@ -92,6 +92,6 @@ private:
     std::unique_ptr<QCborStreamWriterPrivate> d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCBORSTREAMWRITER_H

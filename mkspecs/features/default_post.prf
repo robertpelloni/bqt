@@ -2,7 +2,7 @@
 
 contains(TEMPLATE, ".*(lib|app)"):CONFIG += have_target
 
-!have_target:!force_qt: CONFIG -= qt
+!have_target:!force_bobui: CONFIG -= bobui
 
 load(resolve_config)
 
@@ -20,11 +20,11 @@ target_dir_part = $$dirname(TARGET)
     DESTDIR = $$clean_path($$DESTDIR)
 }
 
-QT_BREAKPAD_ROOT_PATH = $$(QT_BREAKPAD_ROOT_PATH)
-!isEmpty(QT_BREAKPAD_ROOT_PATH): \   # quick test first whether requested ...
+BOBUI_BREAKPAD_ROOT_PATH = $$(BOBUI_BREAKPAD_ROOT_PATH)
+!isEmpty(BOBUI_BREAKPAD_ROOT_PATH): \   # quick test first whether requested ...
         !static:release:have_target: \   # is it applicable?
         !contains(TARGET, .*phony_target.*): \   # monster hack, you don't really see this here, right? ;)
-        system($$QT_BREAKPAD_ROOT_PATH/qtbreakpadsymbols --breakpad-exists) {    # do we really have it?
+        system($$BOBUI_BREAKPAD_ROOT_PATH/bobuibreakpadsymbols --breakpad-exists) {    # do we really have it?
     CONFIG += breakpad force_debug_info
     CONFIG -= no_debug_info separate_debug_info
 }
@@ -117,7 +117,7 @@ breakpad {
     PROJECTPATH = $$shell_quote($$system_path($$OUT_PWD))
 
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK = $$QMAKE_POST_LINK$$escape_expand(\\n\\t)
-    QMAKE_POST_LINK = $$QMAKE_POST_LINK$$quote($${QT_BREAKPAD_ROOT_PATH}$${QMAKE_DIR_SEP}qtbreakpadsymbols $$DEBUGFILENAME $$PROJECTPATH)
+    QMAKE_POST_LINK = $$QMAKE_POST_LINK$$quote($${BOBUI_BREAKPAD_ROOT_PATH}$${QMAKE_DIR_SEP}bobuibreakpadsymbols $$DEBUGFILENAME $$PROJECTPATH)
     !isEmpty(QMAKE_STRIP):QMAKE_POST_LINK = $$QMAKE_POST_LINK$$escape_expand(\\n\\t)$$quote($$QMAKE_STRIP $$DEBUGFILENAME)
 }
 
@@ -127,9 +127,9 @@ c++23: CONFIG += c++2b
 c++latest: CONFIG *= c++2c c++2b c++2a c++1z c++14 c++11
 
 !c++1z:!c++2a:!c++2b:!c++2c {
-    # Qt requires C++17
-    QT_COMPILER_STDCXX_no_L = $$replace(QT_COMPILER_STDCXX, "L$", "")
-    !greaterThan(QT_COMPILER_STDCXX_no_L, 201402): CONFIG += c++1z
+    # BobUI requires C++17
+    BOBUI_COMPILER_STDCXX_no_L = $$replace(BOBUI_COMPILER_STDCXX, "L$", "")
+    !greaterThan(BOBUI_COMPILER_STDCXX_no_L, 201402): CONFIG += c++1z
 }
 c++1z|c++2a|c++2b|c++2c {
     # Disable special compiler flags for host builds

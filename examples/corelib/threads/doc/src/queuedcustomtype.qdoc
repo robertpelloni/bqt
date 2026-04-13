@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example threads/queuedcustomtype
     \examplecategory {Data Processing & I/O}
     \title Queued Custom Type
-    \ingroup qtconcurrent-mtexamples
+    \ingroup bobuiconcurrent-mtexamples
     \ingroup corelib_examples
 
     \brief The Queued Custom Type example shows how to send custom types between
@@ -86,7 +86,7 @@
     setting up the thread's internal state and cleaning up when it is destroyed.
 
     Processing is started with the \c processImage() function, which calls the
-    \c RenderThread class's reimplementation of the QThread::run() function:
+    \c RenderThread class's reimplementation of the BOBUIhread::run() function:
 
     \snippet threads/queuedcustomtype/renderthread.cpp processing the image (start)
 
@@ -127,6 +127,6 @@
     communication or need to create and destroy objects of the custom type
     at run-time.
 
-    More information on using custom types with Qt can be found in the
-    \l{Creating Custom Qt Types} document.
+    More information on using custom types with BobUI can be found in the
+    \l{Creating Custom BobUI Types} document.
 */

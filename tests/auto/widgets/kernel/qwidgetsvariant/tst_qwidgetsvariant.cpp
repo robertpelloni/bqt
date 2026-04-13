@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qvariant.h>
 
@@ -38,11 +38,11 @@ private slots:
 
 void tst_QWidgetsVariant::constructor_invalid_data()
 {
-    QTest::addColumn<uint>("typeId");
+    BOBUIest::addColumn<uint>("typeId");
 
-    QTest::newRow("LastGuiType + 1") << uint(QMetaType::LastGuiType + 1);
+    BOBUIest::newRow("LastGuiType + 1") << uint(QMetaType::LastGuiType + 1);
     QVERIFY(!QMetaType::isRegistered(QMetaType::LastGuiType + 1));
-    QTest::newRow("LastWidgetsType + 1") << uint(QMetaType::LastWidgetsType + 1);
+    BOBUIest::newRow("LastWidgetsType + 1") << uint(QMetaType::LastWidgetsType + 1);
     QVERIFY(!QMetaType::isRegistered(QMetaType::LastWidgetsType + 1));
 }
 
@@ -51,13 +51,13 @@ void tst_QWidgetsVariant::constructor_invalid()
 
     QFETCH(uint, typeId);
     {
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type, type id:"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type, type id:"));
         QVariant variant{QMetaType(typeId)};
         QVERIFY(!variant.isValid());
         QCOMPARE(variant.userType(), int(QMetaType::UnknownType));
     }
     {
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type, type id:"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type, type id:"));
         QVariant variant(QMetaType(typeId), nullptr);
         QVERIFY(!variant.isValid());
         QCOMPARE(variant.userType(), int(QMetaType::UnknownType));
@@ -83,7 +83,7 @@ void tst_QWidgetsVariant::canConvert_data()
 
 
     var = QVariant::fromValue(QSizePolicy());
-    QTest::newRow("SizePolicy")
+    BOBUIest::newRow("SizePolicy")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N;
 
 #undef N
@@ -100,10 +100,10 @@ void tst_QWidgetsVariant::canConvert()
 
 void tst_QWidgetsVariant::writeToReadFromDataStream_data()
 {
-    QTest::addColumn<QVariant>("writeVariant");
-    QTest::addColumn<bool>("isNull");
+    BOBUIest::addColumn<QVariant>("writeVariant");
+    BOBUIest::addColumn<bool>("isNull");
 
-    QTest::newRow( "sizepolicy_valid" ) << QVariant::fromValue( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) ) << false;
+    BOBUIest::newRow( "sizepolicy_valid" ) << QVariant::fromValue( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) ) << false;
 }
 
 void tst_QWidgetsVariant::writeToReadFromDataStream()
@@ -129,16 +129,16 @@ public:
 
 void tst_QWidgetsVariant::qvariant_cast_QObject_data()
 {
-    QTest::addColumn<QVariant>("data");
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<QVariant>("data");
+    BOBUIest::addColumn<bool>("success");
 
     QWidget *widget = new QWidget;
     widget->setObjectName(QString::fromLatin1("Hello"));
-    QTest::newRow("from QWidget") << QVariant::fromValue(widget) << true;
+    BOBUIest::newRow("from QWidget") << QVariant::fromValue(widget) << true;
 
     CustomQWidget *customWidget = new CustomQWidget;
     customWidget->setObjectName(QString::fromLatin1("Hello"));
-    QTest::newRow("from Derived QWidget") << QVariant::fromValue(customWidget) << true;
+    BOBUIest::newRow("from Derived QWidget") << QVariant::fromValue(customWidget) << true;
 }
 
 void tst_QWidgetsVariant::qvariant_cast_QObject()
@@ -187,13 +187,13 @@ void tst_QWidgetsVariant::qvariant_cast_QObject_derived()
 
 void tst_QWidgetsVariant::debugStream_data()
 {
-    QTest::addColumn<QVariant>("variant");
-    QTest::addColumn<int>("typeId");
+    BOBUIest::addColumn<QVariant>("variant");
+    BOBUIest::addColumn<int>("typeId");
     for (int id = QMetaType::LastGuiType + 1; id < QMetaType::User; ++id) {
         const char *tagName = QMetaType(id).name();
         if (!tagName)
             continue;
-        QTest::newRow(tagName) << QVariant(QMetaType(id)) << id;
+        BOBUIest::newRow(tagName) << QVariant(QMetaType(id)) << id;
     }
 }
 
@@ -237,5 +237,5 @@ void tst_QWidgetsVariant::implicitConstruction()
 #undef FOR_EACH_WIDGETS_CLASS
 }
 
-QTEST_MAIN(tst_QWidgetsVariant)
+BOBUIEST_MAIN(tst_QWidgetsVariant)
 #include "tst_qwidgetsvariant.moc"

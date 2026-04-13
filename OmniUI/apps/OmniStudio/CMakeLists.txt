@@ -5,7 +5,7 @@ project(OmniStudio LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Qml Quick)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Widgets Qml Quick)
 
 include_directories(../../core/include)
 # We point to the local deps folder for the mock JUCE headers
@@ -57,7 +57,7 @@ add_executable(OmniStudio
 )
 
 target_link_libraries(OmniStudio PRIVATE
-    Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Qml Qt6::Quick
+    BobUI6::Core BobUI6::Gui BobUI6::Widgets BobUI6::Qml BobUI6::Quick
 )
 <<<<<<< HEAD
 =======

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLTABLEMODEL_P_H
 #define QSQLTABLEMODEL_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qsql*model.h .  This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtSql/private/qtsqlglobal_p.h>
+#include <BobUISql/private/bobuisqlglobal_p.h>
 #include "private/qsqlquerymodel_p.h"
-#include "QtSql/qsqlindex.h"
-#include "QtCore/qmap.h"
+#include "BobUISql/qsqlindex.h"
+#include "BobUICore/qmap.h"
 
-QT_REQUIRE_CONFIG(sqlmodel);
+BOBUI_REQUIRE_CONFIG(sqlmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_AUTOTEST_EXPORT QSqlTableModelPrivate: public QSqlQueryModelPrivate
 {
@@ -32,7 +32,7 @@ class Q_AUTOTEST_EXPORT QSqlTableModelPrivate: public QSqlQueryModelPrivate
 public:
     QSqlTableModelPrivate()
         : sortColumn(-1),
-          sortOrder(Qt::AscendingOrder),
+          sortOrder(BobUI::AscendingOrder),
           strategy(QSqlTableModel::OnRowChange),
           busyInsertingRows(false)
     {}
@@ -52,7 +52,7 @@ public:
     QSqlDatabase db;
 
     int sortColumn;
-    Qt::SortOrder sortOrder;
+    BobUI::SortOrder sortOrder;
 
     QSqlTableModel::EditStrategy strategy;
     bool busyInsertingRows;
@@ -154,6 +154,6 @@ public:
     CacheMap cache;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLTABLEMODEL_P_H

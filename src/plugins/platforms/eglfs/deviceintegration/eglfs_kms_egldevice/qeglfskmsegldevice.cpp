@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsegldevice.h"
 #include "qeglfskmsegldevicescreen.h"
@@ -7,9 +7,9 @@
 #include "private/qeglfsintegration_p.h"
 #include "private/qeglfscursor_p.h"
 
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSKmsEglDevice::QEglFSKmsEglDevice(QEglFSKmsEglDeviceIntegration *devInt, QKmsScreenConfig *screenConfig, const QString &path)
     : QEglFSKmsDevice(screenConfig, path),
@@ -27,7 +27,7 @@ bool QEglFSKmsEglDevice::open()
     if (devicePath().compare("drm-nvdc") == 0)
         fd = drmOpen(devicePath().toLocal8Bit().constData(), nullptr);
     else
-        fd = qt_safe_open(devicePath().toLocal8Bit().constData(), O_RDWR);
+        fd = bobui_safe_open(devicePath().toLocal8Bit().constData(), O_RDWR);
     if (Q_UNLIKELY(fd < 0))
         qFatal("Could not open DRM (NV) device");
 
@@ -54,7 +54,7 @@ void *QEglFSKmsEglDevice::nativeDisplay() const
 QPlatformScreen *QEglFSKmsEglDevice::createScreen(const QKmsOutput &output)
 {
     QEglFSKmsScreen *screen = new QEglFSKmsEglDeviceScreen(this, output);
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     if (!m_globalCursor && !screenConfig()->separateScreens()) {
         qCDebug(qLcEglfsKmsDebug, "Creating new global mouse cursor");
         m_globalCursor = new QEglFSCursor(screen);
@@ -72,4 +72,4 @@ void QEglFSKmsEglDevice::destroyGlobalCursor()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

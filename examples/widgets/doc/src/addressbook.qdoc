@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example itemviews/addressbook
@@ -27,7 +27,7 @@
 
     \image addressbook-classes.png {Address book main classes and elements}
 
-    The \c AddressWidget class is a QTabWidget subclass that is used
+    The \c AddressWidget class is a BOBUIabWidget subclass that is used
     to manipulate the 10 tabs displayed in the example: the 9
     alphabet group tabs and an instance of \c NewAddressTab.
     The \c NewAddressTab class is a subclass of QWidget that
@@ -40,7 +40,7 @@
     the standard model/view API to access data. It holds a list of
     added contacts.
     However, this data is not all visible in a single tab. Instead,
-    QTableView is used to provide 9 different views of the same
+    BOBUIableView is used to provide 9 different views of the same
     data, according to the alphabet groups.
 
     QSortFilterProxyModel is the class responsible for filtering
@@ -132,9 +132,9 @@
 
     \snippet itemviews/addressbook/tablemodel.cpp 7
 
-    We set the Qt::ItemIsEditable flag because we want to allow the
+    We set the BobUI::ItemIsEditable flag because we want to allow the
     \c TableModel to be edited. Although for this example we don't
-    use the editing features of the QTableView object, we enable
+    use the editing features of the BOBUIableView object, we enable
     them here so that we can reuse the model in other programs.
 
     The last function in \c {TableModel}, \c getContacts() returns the
@@ -155,11 +155,11 @@
 
     \snippet itemviews/addressbook/addresswidget.h 0
 
-    \c AddressWidget extends QTabWidget in order to hold 10 tabs
+    \c AddressWidget extends BOBUIabWidget in order to hold 10 tabs
     (\c NewAddressTab and the 9 alphabet group tabs) and also
     manipulates \c table, the \c TableModel object, \c proxyModel,
     the QSortFilterProxyModel object that we use to filter the
-    entries, and \c tableView, the QTableView object.
+    entries, and \c tableView, the BOBUIableView object.
 
 
     \section1 AddressWidget Class Implementation
@@ -181,11 +181,11 @@
     corresponding proxy model's \l{QSortFilterProxyModel::}{sort()}
     function.
 
-    Each table view's \l{QTableView::}{selectionMode} is set to
+    Each table view's \l{BOBUIableView::}{selectionMode} is set to
     QAbstractItemView::SingleSelection and
-    \l{QTableView::}{selectionBehavior} is set to
+    \l{BOBUIableView::}{selectionBehavior} is set to
     QAbstractItemView::SelectRows, allowing the user to select
-    all the items in one row at the same time. Each QTableView object
+    all the items in one row at the same time. Each BOBUIableView object
     is automatically given a QItemSelectionModel that keeps track
     of the selected indexes.
 
@@ -195,14 +195,14 @@
     \l{QItemSelectionModel::selectionChanged()}{selectionChanged}
     signal that is connected to \c{AddressWidget}'s
     \c selectionChanged() signal. We also connect
-    QTabWidget::currentChanged() signal to the lambda expression which
+    BOBUIabWidget::currentChanged() signal to the lambda expression which
     emits \c{AddressWidget}'s \c selectionChanged() as well. These
     connections are necessary to enable the \uicontrol{Edit Entry...} and
     \uicontrol{Remove Entry} actions in \c MainWindow's Tools menu.
     It is further explained in \c MainWindow's implementation.
 
     Each table view in the address book is added as a tab to the
-    QTabWidget with the relevant label, obtained from the QStringList
+    BOBUIabWidget with the relevant label, obtained from the QStringList
     of groups.
 
     \image addressbook-signals.png {Address book signals and slots connections}
@@ -239,8 +239,8 @@
     as the example does not allow the user to change the name of an
     existing contact.
 
-    Firstly, we obtain the active tab's QTableView object using
-    QTabWidget::currentWidget(). Then we extract the
+    Firstly, we obtain the active tab's BOBUIableView object using
+    BOBUIabWidget::currentWidget(). Then we extract the
     \c selectionModel from the \c tableView to obtain the selected
     indexes.
 
@@ -317,7 +317,7 @@
     \section1 AddDialog Class Definition
 
     The \c AddDialog class extends QDialog and provides the user
-    with a QLineEdit and a QTextEdit to input data into the
+    with a QLineEdit and a BOBUIextEdit to input data into the
     address book.
 
     \snippet itemviews/addressbook/adddialog.h 0

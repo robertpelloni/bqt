@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # We can't create the same interface imported target multiple times, CMake will complain if we do
@@ -22,31 +22,31 @@ if(Vulkan_INCLUDE_DIR)
         ${Vulkan_INCLUDE_DIR})
 
     set_target_properties(WrapVulkanHeaders::WrapVulkanHeaders PROPERTIES
-        _qt_is_nolink_target TRUE)
+        _bobui_is_nolink_target TRUE)
 
     set_target_properties(WrapVulkanHeaders::WrapVulkanHeaders PROPERTIES
-        _qt_skip_include_dir_for_pri TRUE)
+        _bobui_skip_include_dir_for_pri TRUE)
 
     # Also propagate MoltenVK include directory on Apple platforms if found.
     if(APPLE)
         # Check for the LunarG Vulkan SDK folder structure.
-        set(__qt_molten_vk_include_path "${Vulkan_INCLUDE_DIR}/../../MoltenVK/include")
+        set(__bobui_molten_vk_include_path "${Vulkan_INCLUDE_DIR}/../../MoltenVK/include")
         get_filename_component(
-            __qt_molten_vk_include_path
-            "${__qt_molten_vk_include_path}" ABSOLUTE)
-        if(EXISTS "${__qt_molten_vk_include_path}")
+            __bobui_molten_vk_include_path
+            "${__bobui_molten_vk_include_path}" ABSOLUTE)
+        if(EXISTS "${__bobui_molten_vk_include_path}")
             target_include_directories(WrapVulkanHeaders::WrapVulkanHeaders INTERFACE
-                ${__qt_molten_vk_include_path})
+                ${__bobui_molten_vk_include_path})
         endif()
 
         # Check for homebrew molten-vk folder structure
-        set(__qt_molten_vk_homebrew_include_path "${Vulkan_INCLUDE_DIR}/../../include")
+        set(__bobui_molten_vk_homebrew_include_path "${Vulkan_INCLUDE_DIR}/../../include")
         get_filename_component(
-            __qt_molten_vk_homebrew_include_path
-            "${__qt_molten_vk_homebrew_include_path}" ABSOLUTE)
-        if(EXISTS "${__qt_molten_vk_homebrew_include_path}")
+            __bobui_molten_vk_homebrew_include_path
+            "${__bobui_molten_vk_homebrew_include_path}" ABSOLUTE)
+        if(EXISTS "${__bobui_molten_vk_homebrew_include_path}")
             target_include_directories(WrapVulkanHeaders::WrapVulkanHeaders INTERFACE
-                ${__qt_molten_vk_homebrew_include_path})
+                ${__bobui_molten_vk_homebrew_include_path})
         endif()
 
         # Check for homebrew vulkan-headers folder structure
@@ -55,18 +55,18 @@ if(Vulkan_INCLUDE_DIR)
         # headers. If we assume that user has installed the molten-vk formula as
         # well, then we might have a chance to pick it up like this.
         if(Vulkan_INCLUDE_DIR MATCHES "/homebrew/Cellar/")
-            set(__qt_standalone_molten_vk_homebrew_include_path
+            set(__bobui_standalone_molten_vk_homebrew_include_path
                     "${Vulkan_INCLUDE_DIR}/../../../../opt/molten-vk/include")
         else()
-            set(__qt_standalone_molten_vk_homebrew_include_path
+            set(__bobui_standalone_molten_vk_homebrew_include_path
                     "${Vulkan_INCLUDE_DIR}/../../molten-vk/include")
         endif()
         get_filename_component(
-            __qt_standalone_molten_vk_homebrew_include_path
-            "${__qt_standalone_molten_vk_homebrew_include_path}" ABSOLUTE)
-        if(EXISTS "${__qt_standalone_molten_vk_homebrew_include_path}")
+            __bobui_standalone_molten_vk_homebrew_include_path
+            "${__bobui_standalone_molten_vk_homebrew_include_path}" ABSOLUTE)
+        if(EXISTS "${__bobui_standalone_molten_vk_homebrew_include_path}")
             target_include_directories(WrapVulkanHeaders::WrapVulkanHeaders INTERFACE
-                ${__qt_standalone_molten_vk_homebrew_include_path})
+                ${__bobui_standalone_molten_vk_homebrew_include_path})
         endif()
     endif()
 endif()

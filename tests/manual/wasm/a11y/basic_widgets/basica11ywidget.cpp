@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "basica11ywidget.h"
 
 BasicA11yWidget::BasicA11yWidget()  :
-                                     m_toolBar (new QToolBar()),
+                                     m_toolBar (new BOBUIoolBar()),
                                      m_layout(new QVBoxLayout),
-                                     m_tabWidget(new QTabWidget)
+                                     m_tabWidget(new BOBUIabWidget)
 {
     createActions();
     createMenus();
@@ -29,13 +29,13 @@ void BasicA11yWidget::handleButton() {
     QDialog *asmSmplDlg = new QDialog(this);
     QVBoxLayout *vlayout = new QVBoxLayout(asmSmplDlg);
     asmSmplDlg->setWindowTitle("WebAssembly Dialog box ");
-    QLabel *label = new QLabel("Accessibility Demo sample application developed in Qt.");
+    QLabel *label = new QLabel("Accessibility Demo sample application developed in BobUI.");
     QAbstractButton *bExit = new QPushButton("Exit");
     vlayout->addWidget(label);
     vlayout->addWidget(bExit);
     asmSmplDlg->setLayout(vlayout);
     auto p = asmSmplDlg->palette();
-    p.setColor( asmSmplDlg->backgroundRole(), Qt::gray);
+    p.setColor( asmSmplDlg->backgroundRole(), BobUI::gray);
     asmSmplDlg->setPalette(p);
     asmSmplDlg->show();
     asmSmplDlg->connect(bExit, SIGNAL(clicked()), asmSmplDlg, SLOT(close()));

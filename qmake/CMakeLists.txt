@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Generated from qmake.pro.
@@ -8,28 +8,28 @@
 #####################################################################
 
 # The common object library, that should be available regardless of the presence of qmake.
-if(QT_WILL_BUILD_TOOLS)
-    qt_add_library(QtLibraryInfo OBJECT
+if(BOBUI_WILL_BUILD_TOOLS)
+    bobui_add_library(BobUILibraryInfo OBJECT
         library/proitems.cpp library/proitems.h
         library/qmake_global.h
         property.cpp property.h
         propertyprinter.cpp propertyprinter.h
         qmakelibraryinfo.cpp qmakelibraryinfo.h
     )
-    qt_internal_add_sbom(QtLibraryInfo
-        SBOM_ENTITY_TYPE QT_MODULE
+    bobui_internal_add_sbom(BobUILibraryInfo
+        SBOM_ENTITY_TYPE BOBUI_MODULE
         NO_INSTALL
     )
 
-    # Make sure we use same parameters when building QtLibraryInfo and other Qt libraries,
+    # Make sure we use same parameters when building BobUILibraryInfo and other BobUI libraries,
     # otherwise some compilers may have compilation errors, such as clang-cl.
-    target_link_libraries(QtLibraryInfo PUBLIC PlatformCommonInternal)
+    target_link_libraries(BobUILibraryInfo PUBLIC PlatformCommonInternal)
 
-    target_link_libraries(QtLibraryInfo PUBLIC Qt::CorePrivate)
+    target_link_libraries(BobUILibraryInfo PUBLIC BobUI::CorePrivate)
 
-    qt_internal_add_sync_header_dependencies(QtLibraryInfo Core)
+    bobui_internal_add_sync_header_dependencies(BobUILibraryInfo Core)
 
-    target_include_directories(QtLibraryInfo PUBLIC
+    target_include_directories(BobUILibraryInfo PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}"
         "${CMAKE_CURRENT_SOURCE_DIR}/library"
     )
@@ -40,31 +40,31 @@ if(QT_WILL_BUILD_TOOLS)
         set(hostdatadir ".")
     endif()
 
-    target_compile_definitions(QtLibraryInfo PUBLIC
+    target_compile_definitions(BobUILibraryInfo PUBLIC
         PROEVALUATOR_FULL
-        QT_BUILD_QMAKE
-        QT_USE_QSTRINGBUILDER
-        QT_HOST_MKSPEC="${QT_QMAKE_HOST_MKSPEC}"
-        QT_TARGET_MKSPEC="${QT_QMAKE_TARGET_MKSPEC}"
-        QT_HOST_DATADIR="${hostdatadir}"
+        BOBUI_BUILD_QMAKE
+        BOBUI_USE_QSTRINGBUILDER
+        BOBUI_HOST_MKSPEC="${BOBUI_QMAKE_HOST_MKSPEC}"
+        BOBUI_TARGET_MKSPEC="${BOBUI_QMAKE_TARGET_MKSPEC}"
+        BOBUI_HOST_DATADIR="${hostdatadir}"
     )
 
-    qt_internal_set_exceptions_flags(QtLibraryInfo OFF)
+    bobui_internal_set_exceptions_flags(BobUILibraryInfo OFF)
 
     # Add QMAKE_VERSION_STR only if qmake is part of the build.
-    if(QT_FEATURE_qmake)
-        target_compile_definitions(QtLibraryInfo PUBLIC
+    if(BOBUI_FEATURE_qmake)
+        target_compile_definitions(BobUILibraryInfo PUBLIC
                 QMAKE_VERSION_STR="3.1"
         )
     endif()
 endif()
 
-if(NOT QT_FEATURE_qmake)
+if(NOT BOBUI_FEATURE_qmake)
     return()
 endif()
 
-qt_get_tool_target_name(target_name qmake)
-qt_internal_add_tool(${target_name}
+bobui_get_tool_target_name(target_name qmake)
+bobui_internal_add_tool(${target_name}
     TRY_RUN
     TOOLS_TARGET Core
     USER_FACING
@@ -107,7 +107,7 @@ qt_internal_add_tool(${target_name}
     PRECOMPILED_HEADER
         "qmake_pch.h"
     LIBRARIES
-        QtLibraryInfo
+        BobUILibraryInfo
     NO_UNITY_BUILD_SOURCES
         generators/win32/msvc_objectmodel.cpp # xml symbols clash with generators/win32/msbuild_objectmodel.cpp
         library/qmakeparser.cpp               # struct statics clashes with qmakeevaluator_p.h
@@ -121,11 +121,11 @@ if(NOT TARGET qmake)
     add_library(qmake INTERFACE)
 endif()
 
-qt_internal_add_docs(qmake
+bobui_internal_add_docs(qmake
     doc/qmake.qdocconf
 )
 
-qt_internal_return_unless_building_tools()
+bobui_internal_return_unless_building_tools()
 
 #### Keys ignored in scope 1:.:.:qmake.pro:<TRUE>:
 # _OPTION = "host_build"
@@ -133,12 +133,12 @@ qt_internal_return_unless_building_tools()
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(${target_name} CONDITION MACOS
+bobui_internal_extend_target(${target_name} CONDITION MACOS
     COMPILE_OPTIONS
         "-fconstant-cfstrings"
 )
 
-qt_internal_extend_target(${target_name} CONDITION WIN32
+bobui_internal_extend_target(${target_name} CONDITION WIN32
     SOURCES
         library/registry.cpp
     DEFINES
@@ -151,6 +151,6 @@ set_target_properties(${target_name} PROPERTIES
     AUTOUIC OFF
 )
 
-qt_internal_apply_gc_binaries(${target_name} PRIVATE)
-qt_internal_set_skip_warnings_are_errors(${target_name} TRUE)
+bobui_internal_apply_gc_binaries(${target_name} PRIVATE)
+bobui_internal_set_skip_warnings_are_errors(${target_name} TRUE)
 

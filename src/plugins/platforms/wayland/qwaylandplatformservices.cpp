@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandappmenu_p.h"
 #include "qwaylandplatformservices_p.h"
@@ -8,9 +8,9 @@
 #include "qwaylandshellsurface_p.h"
 #include "qwaylandwindowmanagerintegration_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandPlatformServices::QWaylandPlatformServices(QWaylandDisplay *display)
     : m_display(display) { }
@@ -79,6 +79,6 @@ void QWaylandPlatformServices::unregisterDBusMenuForWindow(QWindow *window)
 {
     delete m_appMenus.take(window);
 }
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

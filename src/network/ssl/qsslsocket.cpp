@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 //#define QSSLSOCKET_DEBUG
@@ -15,7 +15,7 @@
     \reentrant
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QSslSocket establishes a secure, encrypted TCP connection you can
     use for transmitting encrypted data. It can operate in both client
@@ -38,7 +38,7 @@
 
     \snippet code/src_network_ssl_qsslsocket.cpp 0
 
-    As with a plain QTcpSocket, QSslSocket enters the HostLookupState,
+    As with a plain BOBUIcpSocket, QSslSocket enters the HostLookupState,
     ConnectingState, and finally the ConnectedState, if the connection
     is successful. The handshake then starts automatically, and if it
     succeeds, the encrypted() signal is emitted to indicate the socket
@@ -52,8 +52,8 @@
     An example of using the delayed SSL handshake to secure an
     existing connection is the case where an SSL server secures an
     incoming connection. Suppose you create an SSL server class as a
-    subclass of QTcpServer. You would override
-    QTcpServer::incomingConnection() with something like the example
+    subclass of BOBUIcpServer. You would override
+    BOBUIcpServer::incomingConnection() with something like the example
     below, which first constructs an instance of QSslSocket and then
     calls setSocketDescriptor() to set the new socket's descriptor to
     the existing one passed in. It then initiates the SSL handshake
@@ -73,7 +73,7 @@
     connections is that they should be established with a successful
     handshake.
 
-    Once encrypted, you use QSslSocket as a regular QTcpSocket. When
+    Once encrypted, you use QSslSocket as a regular BOBUIcpSocket. When
     readyRead() is emitted, you can call read(), canReadLine() and
     readLine(), or getChar() to read decrypted data from QSslSocket's
     internal buffer, and you can call write() or putChar() to write
@@ -81,7 +81,7 @@
     written data for you, and emit encryptedBytesWritten() once
     the data has been written to the peer.
 
-    As a convenience, QSslSocket supports QTcpSocket's blocking
+    As a convenience, QSslSocket supports BOBUIcpSocket's blocking
     functions waitForConnected(), waitForReadyRead(),
     waitForBytesWritten(), and waitForDisconnected(). It also provides
     waitForEncrypted(), which will block the calling thread until an
@@ -134,7 +134,7 @@
     for use in the OpenSSL Toolkit (\l{http://www.openssl.org/}).
 
     \note Be aware of the difference between the bytesWritten() signal and
-    the encryptedBytesWritten() signal. For a QTcpSocket, bytesWritten()
+    the encryptedBytesWritten() signal. For a BOBUIcpSocket, bytesWritten()
     will get emitted as soon as data has been written to the TCP socket.
     For a QSslSocket, bytesWritten() will get emitted when the data
     is being encrypted and encryptedBytesWritten()
@@ -149,7 +149,7 @@
     Describes the connection modes available for QSslSocket.
 
     \value UnencryptedMode The socket is unencrypted. Its
-    behavior is identical to QTcpSocket.
+    behavior is identical to BOBUIcpSocket.
 
     \value SslClientMode The socket is a client-side SSL socket.
     It is either already encrypted, or it is in the SSL handshake
@@ -258,7 +258,7 @@
     \a errors contains one or more errors that prevent QSslSocket from
     verifying the identity of the peer.
 
-    \note You cannot use Qt::QueuedConnection when connecting to this signal,
+    \note You cannot use BobUI::QueuedConnection when connecting to this signal,
     or calling QSslSocket::ignoreSslErrors() will have no effect.
 
     \sa peerVerifyError()
@@ -349,21 +349,21 @@
 #include "qsslsocket.h"
 #include "qsslcipher.h"
 #include "qocspresponse.h"
-#include "qtlsbackend_p.h"
+#include "bobuilsbackend_p.h"
 #include "qsslconfiguration_p.h"
 #include "qsslsocket_p.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qelapsedtimer.h>
-#include <QtNetwork/qhostaddress.h>
-#include <QtNetwork/qhostinfo.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUINetwork/qhostaddress.h>
+#include <BobUINetwork/qhostinfo.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #ifdef Q_OS_VXWORKS
 constexpr auto isVxworks = true;
@@ -378,7 +378,7 @@ public:
         : config(new QSslConfigurationPrivate),
           dtlsConfig(new QSslConfigurationPrivate)
     {
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
         dtlsConfig->protocol = QSsl::DtlsV1_2OrLater;
 #endif // dtls
     }
@@ -397,7 +397,7 @@ Q_GLOBAL_STATIC(QSslSocketGlobalData, globalData)
     set to the one returned by the static method defaultCiphers().
 */
 QSslSocket::QSslSocket(QObject *parent)
-    : QTcpSocket(*new QSslSocketPrivate, parent)
+    : BOBUIcpSocket(*new QSslSocketPrivate, parent)
 {
     Q_D(QSslSocket);
 #ifdef QSSLSOCKET_DEBUG
@@ -438,7 +438,7 @@ void QSslSocket::resume()
     if (!d->paused)
         return;
     // continuing might emit signals, rather do this through the event loop
-    QMetaObject::invokeMethod(this, "_q_resumeImplementation", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, "_q_resumeImplementation", BobUI::QueuedConnection);
 }
 
 /*!
@@ -478,7 +478,7 @@ void QSslSocket::resume()
 
     If you want to create a QSslSocket on the server side of a connection, you
     should instead call startServerEncryption() upon receiving the incoming
-    connection through QTcpServer.
+    connection through BOBUIcpServer.
 
     \sa connectToHost(), startClientEncryption(), waitForConnected(), waitForEncrypted()
 */
@@ -613,7 +613,7 @@ QVariant QSslSocket::socketOption(QAbstractSocket::SocketOption option)
 
 /*!
     Returns the current mode for the socket; either UnencryptedMode, where
-    QSslSocket behaves identially to QTcpSocket, or one of SslClientMode or
+    QSslSocket behaves identially to BOBUIcpSocket, or one of SslClientMode or
     SslServerMode, where the client is either negotiating or in encrypted
     mode.
 
@@ -878,7 +878,7 @@ void QSslSocket::close()
         else
             d->plainSocket->close();
     }
-    QTcpSocket::close();
+    BOBUIcpSocket::close();
 
     // must be cleared, reading/writing not possible on closed socket:
     d->buffer.clear();
@@ -969,10 +969,10 @@ void QSslSocket::setSslConfiguration(const QSslConfiguration &configuration)
     d->configuration.nextAllowedProtocols = configuration.allowedNextProtocols();
     d->configuration.nextNegotiatedProtocol = configuration.nextNegotiatedProtocol();
     d->configuration.nextProtocolNegotiationStatus = configuration.nextProtocolNegotiationStatus();
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
     d->configuration.ocspStaplingEnabled = configuration.ocspStaplingEnabled();
 #endif
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     d->configuration.reportFromCallback = configuration.handshakeMustInterruptOnError();
     d->configuration.missingCertIsFatal = configuration.missingCertificateIsFatal();
 #endif // openssl
@@ -1025,7 +1025,7 @@ QList<QSslCertificate> QSslSocket::localCertificateChain() const
     (the default is probably your login keychain) by importing your local certificates
     and keys. This can also result in system dialogs showing up and asking for
     permission when your application is using these private keys. If such behavior
-    is undesired, set the QT_SSL_USE_TEMPORARY_KEYCHAIN environment variable to a
+    is undesired, set the BOBUI_SSL_USE_TEMPORARY_KEYCHAIN environment variable to a
     non-zero value; this will prompt QSslSocket to use its own temporary keychain.
 
     \sa localCertificate(), setPrivateKey()
@@ -1311,7 +1311,7 @@ bool QSslSocket::waitForEncrypted(int msecs)
             startClientEncryption();
         // Loop, waiting until the connection has been encrypted or an error
         // occurs.
-        if (!d->plainSocket->waitForReadyRead(qt_subtract_from_timeout(msecs, stopWatch.elapsed())))
+        if (!d->plainSocket->waitForReadyRead(bobui_subtract_from_timeout(msecs, stopWatch.elapsed())))
             return false;
     }
     return d->connectionEncrypted;
@@ -1355,7 +1355,7 @@ bool QSslSocket::waitForReadyRead(int msecs)
     // test readyReadEmitted first because either operation above
     // (waitForEncrypted or transmit) may have set it
     while (!readyReadEmitted &&
-           d->plainSocket->waitForReadyRead(qt_subtract_from_timeout(msecs, stopWatch.elapsed()))) {
+           d->plainSocket->waitForReadyRead(bobui_subtract_from_timeout(msecs, stopWatch.elapsed()))) {
     }
 
     d->readyReadEmittedPointer = previousReadyReadEmittedPointer;
@@ -1386,7 +1386,7 @@ bool QSslSocket::waitForBytesWritten(int msecs)
         d->transmit();
     }
 
-    return d->plainSocket->waitForBytesWritten(qt_subtract_from_timeout(msecs, stopWatch.elapsed()));
+    return d->plainSocket->waitForBytesWritten(bobui_subtract_from_timeout(msecs, stopWatch.elapsed()));
 }
 
 /*!
@@ -1431,7 +1431,7 @@ bool QSslSocket::waitForDisconnected(int msecs)
     if (state() == UnconnectedState)
         return true;
 
-    bool retVal = d->plainSocket->waitForDisconnected(qt_subtract_from_timeout(msecs, stopWatch.elapsed()));
+    bool retVal = d->plainSocket->waitForDisconnected(bobui_subtract_from_timeout(msecs, stopWatch.elapsed()));
     if (!retVal) {
         setSocketState(d->plainSocket->state());
         d->setError(d->plainSocket->error(), d->plainSocket->errorString());
@@ -1528,13 +1528,13 @@ QString QSslSocket::sslLibraryBuildVersionString()
     \since 6.1
     Returns the names of the currently available backends. These names
     are in lower case, e.g. "openssl", "securetransport", "schannel"
-    (similar to the already existing feature names for TLS backends in Qt).
+    (similar to the already existing feature names for TLS backends in BobUI).
 
     \sa activeBackend()
 */
 QList<QString> QSslSocket::availableBackends()
 {
-    return QTlsBackend::availableBackendNames();
+    return BOBUIlsBackend::availableBackendNames();
 }
 
 /*!
@@ -1550,7 +1550,7 @@ QList<QString> QSslSocket::availableBackends()
     Failing these, if a custom TLS backend is found, it is used.
     If no other backend is found, the "certificate only" backend is selected.
     For more information about TLS plugins, please see
-    \l {Enabling and Disabling SSL Support when Building Qt from Source}.
+    \l {Enabling and Disabling SSL Support when Building BobUI from Source}.
 
     \sa setActiveBackend(), availableBackends()
 */
@@ -1559,7 +1559,7 @@ QString QSslSocket::activeBackend()
     const QMutexLocker locker(&QSslSocketPrivate::backendMutex);
 
     if (!QSslSocketPrivate::activeBackendName.size())
-        QSslSocketPrivate::activeBackendName = QTlsBackend::defaultBackendName();
+        QSslSocketPrivate::activeBackendName = BOBUIlsBackend::defaultBackendName();
 
     return QSslSocketPrivate::activeBackendName;
 }
@@ -1592,7 +1592,7 @@ bool QSslSocket::setActiveBackend(const QString &backendName)
         return activeBackend() == backendName;
     }
 
-    if (!QTlsBackend::availableBackendNames().contains(backendName)) {
+    if (!BOBUIlsBackend::availableBackendNames().contains(backendName)) {
         qCWarning(lcSsl) << "Cannot set unavailable backend named" << backendName
                          << "as active";
         return false;
@@ -1614,7 +1614,7 @@ bool QSslSocket::setActiveBackend(const QString &backendName)
 */
 QList<QSsl::SslProtocol> QSslSocket::supportedProtocols(const QString &backendName)
 {
-    return QTlsBackend::supportedProtocols(backendName.size() ? backendName : activeBackend());
+    return BOBUIlsBackend::supportedProtocols(backendName.size() ? backendName : activeBackend());
 }
 
 /*!
@@ -1640,7 +1640,7 @@ bool QSslSocket::isProtocolSupported(QSsl::SslProtocol protocol, const QString &
 */
 QList<QSsl::ImplementedClass> QSslSocket::implementedClasses(const QString &backendName)
 {
-    return QTlsBackend::implementedClasses(backendName.size() ? backendName : activeBackend());
+    return BOBUIlsBackend::implementedClasses(backendName.size() ? backendName : activeBackend());
 }
 
 /*!
@@ -1665,7 +1665,7 @@ bool QSslSocket::isClassImplemented(QSsl::ImplementedClass cl, const QString &ba
 */
 QList<QSsl::SupportedFeature> QSslSocket::supportedFeatures(const QString &backendName)
 {
-    return QTlsBackend::supportedFeatures(backendName.size() ? backendName : activeBackend());
+    return BOBUIlsBackend::supportedFeatures(backendName.size() ? backendName : activeBackend());
 }
 
 /*!
@@ -1738,8 +1738,8 @@ void QSslSocket::startClientEncryption()
     calling this function).
 
     The most common way to implement an SSL server is to create a
-    subclass of QTcpServer and reimplement
-    QTcpServer::incomingConnection(). The returned socket descriptor
+    subclass of BOBUIcpServer and reimplement
+    BOBUIcpServer::incomingConnection(). The returned socket descriptor
     is then passed to QSslSocket::setSocketDescriptor().
 
     \sa connectToHostEncrypted(), startClientEncryption()
@@ -1864,7 +1864,7 @@ void QSslSocket::connectToHost(const QString &hostName, quint16 port, OpenMode o
 #endif
         d->createPlainSocket(openMode);
     }
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     d->plainSocket->setProtocolTag(d->protocolTag);
     d->plainSocket->setProxy(proxy());
 #endif
@@ -1935,7 +1935,7 @@ qint64 QSslSocket::readData(char *data, qint64 maxlen)
     } else {
         // possibly trigger another transmit() to decrypt more data from the socket
         if (d->plainSocket->bytesAvailable() || d->hasUndecryptedData())
-            QMetaObject::invokeMethod(this, "_q_flushReadBuffer", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this, "_q_flushReadBuffer", BobUI::QueuedConnection);
         else if (d->state != QAbstractSocket::ConnectedState)
             return maxlen ? qint64(-1) : qint64(0);
     }
@@ -1960,7 +1960,7 @@ qint64 QSslSocket::writeData(const char *data, qint64 len)
     // make sure we flush to the plain socket's buffer
     if (!d->flushTriggered) {
         d->flushTriggered = true;
-        QMetaObject::invokeMethod(this, "_q_flushWriteBuffer", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "_q_flushWriteBuffer", BobUI::QueuedConnection);
     }
 
     return len;
@@ -2073,8 +2073,8 @@ bool QSslSocketPrivate::verifyProtocolSupported(const char *where)
         // Should not be used when configuring QSslSocket.
         protocolName = "UnknownProtocol"_L1;
         Q_FALLTHROUGH();
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     case QSsl::DtlsV1_0:
     case QSsl::DtlsV1_2:
     case QSsl::DtlsV1_0OrLater:
@@ -2083,7 +2083,7 @@ QT_WARNING_DISABLE_DEPRECATED
         setErrorAndEmit(QAbstractSocket::SslInvalidUserDataError,
                         QSslSocket::tr("Attempted to use an unsupported protocol."));
         return false;
-QT_WARNING_POP
+BOBUI_WARNING_POP
     default:
         return true;
     }
@@ -2303,13 +2303,13 @@ void QSslConfigurationPrivate::deepCopyDefaultConfiguration(QSslConfigurationPri
     ptr->sslOptions = global->sslOptions;
     ptr->ellipticCurves = global->ellipticCurves;
     ptr->backendConfig = global->backendConfig;
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
     ptr->dtlsCookieEnabled = global->dtlsCookieEnabled;
 #endif
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
     ptr->ocspStaplingEnabled = global->ocspStaplingEnabled;
 #endif
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     ptr->reportFromCallback = global->reportFromCallback;
     ptr->missingCertIsFatal = global->missingCertIsFatal;
 #endif
@@ -2354,38 +2354,38 @@ void QSslSocketPrivate::createPlainSocket(QIODevice::OpenMode openMode)
     q->setPeerAddress(QHostAddress());
     q->setPeerName(QString());
 
-    plainSocket = new QTcpSocket(q);
+    plainSocket = new BOBUIcpSocket(q);
     q->connect(plainSocket, SIGNAL(connected()),
                q, SLOT(_q_connectedSlot()),
-               Qt::DirectConnection);
+               BobUI::DirectConnection);
     q->connect(plainSocket, SIGNAL(hostFound()),
                q, SLOT(_q_hostFoundSlot()),
-               Qt::DirectConnection);
+               BobUI::DirectConnection);
     q->connect(plainSocket, SIGNAL(disconnected()),
                q, SLOT(_q_disconnectedSlot()),
-               Qt::DirectConnection);
+               BobUI::DirectConnection);
     q->connect(plainSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
                q, SLOT(_q_stateChangedSlot(QAbstractSocket::SocketState)),
-               Qt::DirectConnection);
+               BobUI::DirectConnection);
     q->connect(plainSocket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
                q, SLOT(_q_errorSlot(QAbstractSocket::SocketError)),
-               Qt::DirectConnection);
+               BobUI::DirectConnection);
     q->connect(plainSocket, SIGNAL(readyRead()),
                q, SLOT(_q_readyReadSlot()),
-               Qt::DirectConnection);
+               BobUI::DirectConnection);
     q->connect(plainSocket, SIGNAL(channelReadyRead(int)),
                q, SLOT(_q_channelReadyReadSlot(int)),
-               Qt::DirectConnection);
+               BobUI::DirectConnection);
     q->connect(plainSocket, SIGNAL(bytesWritten(qint64)),
                q, SLOT(_q_bytesWrittenSlot(qint64)),
-               Qt::DirectConnection);
+               BobUI::DirectConnection);
     q->connect(plainSocket, SIGNAL(channelBytesWritten(int,qint64)),
                q, SLOT(_q_channelBytesWrittenSlot(int,qint64)),
-               Qt::DirectConnection);
+               BobUI::DirectConnection);
     q->connect(plainSocket, SIGNAL(readChannelFinished()),
                q, SLOT(_q_readChannelFinishedSlot()),
-               Qt::DirectConnection);
-#ifndef QT_NO_NETWORKPROXY
+               BobUI::DirectConnection);
+#ifndef BOBUI_NO_NETWORKPROXY
     q->connect(plainSocket, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
                q, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
 #endif
@@ -2802,7 +2802,7 @@ qint64 QSslSocketPrivate::peek(char *data, qint64 maxSize)
         return -1;
     } else {
         //encrypted mode - the socket engine will read and decrypt data into the QIODevice buffer
-        return QTcpSocketPrivate::peek(data, maxSize);
+        return BOBUIcpSocketPrivate::peek(data, maxSize);
     }
 }
 
@@ -2826,7 +2826,7 @@ QByteArray QSslSocketPrivate::peek(qint64 maxSize)
         return QByteArray();
     } else {
         //encrypted mode - the socket engine will read and decrypt data into the QIODevice buffer
-        return QTcpSocketPrivate::peek(maxSize);
+        return BOBUIcpSocketPrivate::peek(maxSize);
     }
 }
 
@@ -3069,11 +3069,11 @@ bool QSslSocketPrivate::isMatchingHostname(const QString &cn, const QString &hos
 
     // Reject wildcard character embedded within the A-labels or U-labels of an internationalized
     // domain name (RFC6125 section 7.2)
-    if (cn.startsWith("xn--"_L1, Qt::CaseInsensitive))
+    if (cn.startsWith("xn--"_L1, BobUI::CaseInsensitive))
         return false;
 
     // Check characters preceding * (if any) match
-    if (wildcard && QStringView{hostname}.left(wildcard).compare(QStringView{cn}.left(wildcard), Qt::CaseInsensitive) != 0)
+    if (wildcard && QStringView{hostname}.left(wildcard).compare(QStringView{cn}.left(wildcard), BobUI::CaseInsensitive) != 0)
         return false;
 
     // Check characters following first . match
@@ -3095,27 +3095,27 @@ bool QSslSocketPrivate::isMatchingHostname(const QString &cn, const QString &hos
 /*!
     \internal
 */
-QTlsBackend *QSslSocketPrivate::tlsBackendInUse()
+BOBUIlsBackend *QSslSocketPrivate::tlsBackendInUse()
 {
     const QMutexLocker locker(&backendMutex);
     if (tlsBackend)
         return tlsBackend;
 
     if (!activeBackendName.size())
-        activeBackendName = QTlsBackend::defaultBackendName();
+        activeBackendName = BOBUIlsBackend::defaultBackendName();
 
     if (!activeBackendName.size()) {
         qCWarning(lcSsl, "No functional TLS backend was found");
         return nullptr;
     }
 
-    tlsBackend = QTlsBackend::findBackend(activeBackendName);
+    tlsBackend = BOBUIlsBackend::findBackend(activeBackendName);
     if (tlsBackend) {
         QObject::connect(tlsBackend, &QObject::destroyed, tlsBackend, [] {
             const QMutexLocker locker(&backendMutex);
             tlsBackend = nullptr;
         },
-        Qt::DirectConnection);
+        BobUI::DirectConnection);
     }
     return tlsBackend;
 }
@@ -3152,7 +3152,7 @@ QString QSslSocketPrivate::tlsHostName() const
     return hostName;
 }
 
-QTcpSocket *QSslSocketPrivate::plainTcpSocket() const
+BOBUIcpSocket *QSslSocketPrivate::plainTcpSocket() const
 {
     return plainSocket;
 }
@@ -3167,6 +3167,6 @@ QList<QSslCertificate> QSslSocketPrivate::systemCaCertificates()
     return {};
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsslsocket.cpp"

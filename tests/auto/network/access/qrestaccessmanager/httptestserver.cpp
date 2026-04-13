@@ -1,21 +1,21 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "httptestserver_p.h"
 
-#include <QtNetwork/qtcpsocket.h>
+#include <BobUINetwork/bobuicpsocket.h>
 
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qcoreapplication.h>
 
 #include <private/qlocale_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static constexpr char CRLF[] = "\r\n";
 
-HttpTestServer::HttpTestServer(QObject *parent) : QTcpServer(parent)
+HttpTestServer::HttpTestServer(QObject *parent) : BOBUIcpServer(parent)
 {
-    QObject::connect(this, &QTcpServer::newConnection, this, &HttpTestServer::handleConnected);
+    QObject::connect(this, &BOBUIcpServer::newConnection, this, &HttpTestServer::handleConnected);
     const auto ok = listen(QHostAddress::LocalHost);
     Q_ASSERT(ok);
 };
@@ -36,7 +36,7 @@ void HttpTestServer::handleConnected()
     Q_ASSERT(!m_socket); // No socket must exist previously, this is a single-connection server
     m_socket = nextPendingConnection();
     Q_ASSERT(m_socket);
-    QObject::connect(m_socket, &QTcpSocket::readyRead,
+    QObject::connect(m_socket, &BOBUIcpSocket::readyRead,
                      this, &HttpTestServer::handleDataAvailable);
 }
 
@@ -121,12 +121,12 @@ void HttpTestServer::handleDataAvailable()
     }
     m_socket->disconnectFromHost();
     m_request = {};
-    m_socket = nullptr; // deleted by QTcpServer during destruction
+    m_socket = nullptr; // deleted by BOBUIcpServer during destruction
     state = State::ReadingMethod;
     fragment.clear();
 }
 
-bool HttpTestServer::readMethod(QTcpSocket *socket)
+bool HttpTestServer::readMethod(BOBUIcpSocket *socket)
 {
     bool finished = false;
     while (socket->bytesAvailable() && !finished) {
@@ -165,7 +165,7 @@ bool HttpTestServer::readMethod(QTcpSocket *socket)
     return true;
 }
 
-bool HttpTestServer::readUrl(QTcpSocket *socket)
+bool HttpTestServer::readUrl(BOBUIcpSocket *socket)
 {
     bool finished = false;
     while (socket->bytesAvailable() && !finished) {
@@ -192,7 +192,7 @@ bool HttpTestServer::readUrl(QTcpSocket *socket)
     return true;
 }
 
-bool HttpTestServer::readStatus(QTcpSocket *socket)
+bool HttpTestServer::readStatus(BOBUIcpSocket *socket)
 {
     bool finished = false;
     while (socket->bytesAvailable() && !finished) {
@@ -217,7 +217,7 @@ bool HttpTestServer::readStatus(QTcpSocket *socket)
     return true;
 }
 
-bool HttpTestServer::readHeaders(QTcpSocket *socket)
+bool HttpTestServer::readHeaders(BOBUIcpSocket *socket)
 {
     while (socket->bytesAvailable()) {
         fragment += socket->read(1);
@@ -242,7 +242,7 @@ bool HttpTestServer::readHeaders(QTcpSocket *socket)
     return true;
 }
 
-bool HttpTestServer::readBody(QTcpSocket *socket)
+bool HttpTestServer::readBody(BOBUIcpSocket *socket)
 {
     qint64 bytesLeft = 0;
     if (auto values = m_request.headers.values(

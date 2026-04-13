@@ -1,3 +1,3 @@
 #! [0]
-QT += network
+BOBUI += network
 #! [0]

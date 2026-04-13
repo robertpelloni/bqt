@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRGBA64_P_H
 #define QRGBA64_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,10 +18,10 @@
 #include "qrgba64.h"
 #include "qdrawhelper_p.h"
 
-#include <QtCore/private/qsimd_p.h>
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUICore/private/qsimd_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 inline QRgba64 combineAlpha256(QRgba64 rgba64, uint alpha256)
 {
@@ -98,10 +98,10 @@ static inline QRgba64 multiplyAlpha65535(QRgba64 rgba64, uint alpha65535)
     __lsx_vstelm_d(vr, reinterpret_cast<__m128i *>(&r), 0, 0);
     return r;
 #else
-    return QRgba64::fromRgba64(qt_div_65535(rgba64.red()   * alpha65535),
-                               qt_div_65535(rgba64.green() * alpha65535),
-                               qt_div_65535(rgba64.blue()  * alpha65535),
-                               qt_div_65535(rgba64.alpha() * alpha65535));
+    return QRgba64::fromRgba64(bobui_div_65535(rgba64.red()   * alpha65535),
+                               bobui_div_65535(rgba64.green() * alpha65535),
+                               bobui_div_65535(rgba64.blue()  * alpha65535),
+                               bobui_div_65535(rgba64.alpha() * alpha65535));
 #endif
 }
 
@@ -115,10 +115,10 @@ static inline T Q_DECL_VECTORCALL multiplyAlpha255(T rgba64, uint alpha255)
 template<typename T>
 static inline T multiplyAlpha255(T rgba64, uint alpha255)
 {
-    return QRgba64::fromRgba64(qt_div_255(rgba64.red()   * alpha255),
-                               qt_div_255(rgba64.green() * alpha255),
-                               qt_div_255(rgba64.blue()  * alpha255),
-                               qt_div_255(rgba64.alpha() * alpha255));
+    return QRgba64::fromRgba64(bobui_div_255(rgba64.red()   * alpha255),
+                               bobui_div_255(rgba64.green() * alpha255),
+                               bobui_div_255(rgba64.blue()  * alpha255),
+                               bobui_div_255(rgba64.alpha() * alpha255));
 }
 #endif
 
@@ -266,8 +266,8 @@ static inline QRgba64 addWithSaturation(QRgba64 a, QRgba64 b)
 #endif
 }
 
-#if QT_COMPILER_SUPPORTS_HERE(SSE2)
-QT_FUNCTION_TARGET(SSE2)
+#if BOBUI_COMPILER_SUPPORTS_HERE(SSE2)
+BOBUI_FUNCTION_TARGET(SSE2)
 static inline uint Q_DECL_VECTORCALL toArgb32(__m128i v)
 {
     v = _mm_unpacklo_epi16(v, _mm_setzero_si128());
@@ -395,9 +395,9 @@ static inline QRgba64 rgbBlend(QRgba64 d, QRgba64 s, uint rgbAlpha)
     const int mr = qRed(rgbAlpha);
     const int mg = qGreen(rgbAlpha);
     const int mb = qBlue(rgbAlpha);
-    blend = qRgba64(qt_div_255(s.red()   * mr + d.red()   * (255 - mr)),
-                    qt_div_255(s.green() * mg + d.green() * (255 - mg)),
-                    qt_div_255(s.blue()  * mb + d.blue()  * (255 - mb)),
+    blend = qRgba64(bobui_div_255(s.red()   * mr + d.red()   * (255 - mr)),
+                    bobui_div_255(s.green() * mg + d.green() * (255 - mg)),
+                    bobui_div_255(s.blue()  * mb + d.blue()  * (255 - mb)),
                     s.alpha());
 #endif
     return blend;
@@ -467,6 +467,6 @@ static inline void blend_pixel(QRgba64 &dst, QRgba64 src, const int const_alpha)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRGBA64_P_H

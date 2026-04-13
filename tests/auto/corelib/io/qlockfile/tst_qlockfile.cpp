@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2013 David Faure <faure+bluesystems@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtConcurrentRun>
-#if QT_CONFIG(process)
+#include <BOBUIest>
+#include <BobUIConcurrentRun>
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 #include <QSemaphore>
@@ -13,7 +13,7 @@
 #include <qlockfile.h>
 #include <qsysinfo.h>
 #include <qplatformdefs.h>
-#include <qtemporarydir.h>
+#include <bobuiemporarydir.h>
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_VXWORKS)
 #include <unistd.h>
@@ -21,7 +21,7 @@
 #include <sys/stat.h> // utimensat
 #include <sys/time.h>
 #elif defined(Q_OS_WIN)
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #  include <QOperatingSystemVersion>
 #endif
 
@@ -61,14 +61,14 @@ private:
 
 public:
     QString m_helperApp;
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
 };
 
 void tst_QLockFile::initTestCase()
 {
 #ifdef Q_OS_ANDROID
     QSKIP("This test requires deploying and running external console applications");
-#elif !QT_CONFIG(process)
+#elif !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #else
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
@@ -76,7 +76,7 @@ void tst_QLockFile::initTestCase()
     QString testdata_dir = QFileInfo(QFINDTESTDATA("qlockfiletesthelper")).absolutePath();
     QVERIFY2(QDir::setCurrent(testdata_dir), qPrintable("Could not chdir to " + testdata_dir));
     m_helperApp = "qlockfiletesthelper/qlockfile_test_helper";
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QLockFile::lockUnlock()
@@ -111,7 +111,7 @@ void tst_QLockFile::lockUnlock()
 
 void tst_QLockFile::lockOutOtherProcess()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #else
     // Lock
@@ -135,7 +135,7 @@ void tst_QLockFile::lockOutOtherProcess()
     QCOMPARE(ret, int(QLockFile::NoError));
     // Lock doesn't survive process though (on clean exit)
     QVERIFY(!QFile::exists(fileName));
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 static QLockFile::LockError tryLockFromThread(const QString &fileName)
@@ -152,13 +152,13 @@ void tst_QLockFile::lockOutOtherThread()
     QVERIFY(lockFile.lock());
 
     // Other thread can't acquire lock
-    auto ret = QtConcurrent::run(tryLockFromThread, fileName);
+    auto ret = BobUIConcurrent::run(tryLockFromThread, fileName);
     QCOMPARE(ret.result(), QLockFile::LockFailedError);
 
     lockFile.unlock();
 
     // Now other thread can acquire lock
-    auto ret2 = QtConcurrent::run(tryLockFromThread, fileName);
+    auto ret2 = BobUIConcurrent::run(tryLockFromThread, fileName);
     QCOMPARE(ret2.result(), QLockFile::NoError);
 }
 
@@ -169,14 +169,14 @@ static QLockFile::LockError lockFromThread(const QString &fileName)
     return lockInThread.error();
 }
 
-// QTBUG-38853, best way to trigger it was to add a QThread::sleep(1) in QLockFilePrivate::getLockInfo() after the first readLine.
+// BOBUIBUG-38853, best way to trigger it was to add a BOBUIhread::sleep(1) in QLockFilePrivate::getLockInfo() after the first readLine.
 // Then (on Windows), the QFile::remove() in unlock() (called by the first thread who got the lock, in the destructor)
 // would fail due to the existing reader on the file. Fixed by checking the return value of QFile::remove() in unlock().
 void tst_QLockFile::raceWithOtherThread()
 {
     const QString fileName = dir.path() + "/raceWithOtherThread";
-    auto ret = QtConcurrent::run(lockFromThread, fileName);
-    auto ret2 = QtConcurrent::run(lockFromThread, fileName);
+    auto ret = BobUIConcurrent::run(lockFromThread, fileName);
+    auto ret2 = BobUIConcurrent::run(lockFromThread, fileName);
     QCOMPARE(ret.result(), QLockFile::NoError);
     QCOMPARE(ret2.result(), QLockFile::NoError);
 }
@@ -189,7 +189,7 @@ static bool lockFromThreadAndWait(const QString &fileName, int sleepMs, QSemapho
         return false;
     }
     semThreadReady->release();
-    QThread::msleep(sleepMs);
+    BOBUIhread::msleep(sleepMs);
     semMainThreadDone->acquire();
     lockFile.unlock();
     return true;
@@ -197,17 +197,17 @@ static bool lockFromThreadAndWait(const QString &fileName, int sleepMs, QSemapho
 
 void tst_QLockFile::waitForLock_data()
 {
-    QTest::addColumn<int>("testNumber");
-    QTest::addColumn<int>("threadSleepMs");
-    QTest::addColumn<bool>("releaseEarly");
-    QTest::addColumn<int>("tryLockTimeout");
-    QTest::addColumn<bool>("expectedResult");
+    BOBUIest::addColumn<int>("testNumber");
+    BOBUIest::addColumn<int>("threadSleepMs");
+    BOBUIest::addColumn<bool>("releaseEarly");
+    BOBUIest::addColumn<int>("tryLockTimeout");
+    BOBUIest::addColumn<bool>("expectedResult");
 
     int tn = 0; // test number
-    QTest::newRow("wait_forever_succeeds") << ++tn << 500 << true << -1   << true;
-    QTest::newRow("wait_longer_succeeds")  << ++tn << 500 << true << 1000 << true;
-    QTest::newRow("wait_zero_fails")       << ++tn << 500 << false << 0    << false;
-    QTest::newRow("wait_not_enough_fails") << ++tn << 500 << false << 100  << false;
+    BOBUIest::newRow("wait_forever_succeeds") << ++tn << 500 << true << -1   << true;
+    BOBUIest::newRow("wait_longer_succeeds")  << ++tn << 500 << true << 1000 << true;
+    BOBUIest::newRow("wait_zero_fails")       << ++tn << 500 << false << 0    << false;
+    BOBUIest::newRow("wait_not_enough_fails") << ++tn << 500 << false << 100  << false;
 }
 
 void tst_QLockFile::waitForLock()
@@ -222,7 +222,7 @@ void tst_QLockFile::waitForLock()
     QLockFile lockFile(fileName);
     QSemaphore semThreadReady, semMainThreadDone;
     // Lock file from a thread
-    auto ret = QtConcurrent::run(lockFromThreadAndWait, fileName, threadSleepMs, &semThreadReady, &semMainThreadDone);
+    auto ret = BobUIConcurrent::run(lockFromThreadAndWait, fileName, threadSleepMs, &semThreadReady, &semMainThreadDone);
     semThreadReady.acquire();
 
     if (releaseEarly) // let the thread release the lock after threadSleepMs
@@ -242,16 +242,16 @@ void tst_QLockFile::waitForLock()
 
 void tst_QLockFile::staleLockFromCrashedProcess_data()
 {
-    QTest::addColumn<int>("staleLockTime");
+    BOBUIest::addColumn<int>("staleLockTime");
 
     // Test both use cases for QLockFile, should make no difference here.
-    QTest::newRow("short") << 30000;
-    QTest::newRow("long") << 0;
+    BOBUIest::newRow("short") << 30000;
+    BOBUIest::newRow("long") << 0;
 }
 
 void tst_QLockFile::staleLockFromCrashedProcess()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #else
     QFETCH(int, staleLockTime);
@@ -259,7 +259,7 @@ void tst_QLockFile::staleLockFromCrashedProcess()
 
     int ret = QProcess::execute(m_helperApp, QStringList() << fileName << "-uncleanexit");
     QCOMPARE(ret, int(QLockFile::NoError));
-    QTRY_VERIFY(QFile::exists(fileName));
+    BOBUIRY_VERIFY(QFile::exists(fileName));
 
     QLockFile secondLock(fileName);
     secondLock.setStaleLockTime(staleLockTime);
@@ -271,14 +271,14 @@ void tst_QLockFile::staleLockFromCrashedProcess()
     QVERIFY(secondLock.tryLock());
 #endif
     QCOMPARE(int(secondLock.error()), int(QLockFile::NoError));
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QLockFile::staleLockFromCrashedProcessReusedPid()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
     QSKIP("We cannot retrieve information about other processes on this platform.");
 #else
     const QString fileName = dir.path() + "/staleLockFromCrashedProcessReusedPid";
@@ -295,12 +295,12 @@ void tst_QLockFile::staleLockFromCrashedProcessReusedPid()
     secondLock.setStaleLockTime(0);
     QVERIFY(secondLock.tryLock());
     QCOMPARE(int(secondLock.error()), int(QLockFile::NoError));
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QLockFile::staleShortLockFromBusyProcess()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #else
     const QString fileName = dir.path() + "/staleLockFromBusyProcess";
@@ -308,32 +308,32 @@ void tst_QLockFile::staleShortLockFromBusyProcess()
     QProcess proc;
     proc.start(m_helperApp, QStringList() << fileName << "-busy");
     QVERIFY2(proc.waitForStarted(), qPrintable(proc.errorString()));
-    QTRY_VERIFY(QFile::exists(fileName));
+    BOBUIRY_VERIFY(QFile::exists(fileName));
 
     QLockFile secondLock(fileName);
     QVERIFY(!secondLock.tryLock()); // held by other process
     QCOMPARE(int(secondLock.error()), int(QLockFile::LockFailedError));
     qint64 pid;
     QString hostname, appname;
-    QTRY_VERIFY(secondLock.getLockInfo(&pid, &hostname, &appname));
+    BOBUIRY_VERIFY(secondLock.getLockInfo(&pid, &hostname, &appname));
 #ifdef Q_OS_UNIX
     QCOMPARE(pid, proc.processId());
 #endif
 
     secondLock.setStaleLockTime(100);
-    QTest::qSleep(100); // make the lock stale
+    BOBUIest::qSleep(100); // make the lock stale
     // We can't "steal" (delete+recreate) a lock file from a running process
     // until the file descriptor is closed.
     QVERIFY(!secondLock.tryLock());
 
     proc.waitForFinished();
     QVERIFY(secondLock.tryLock());
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QLockFile::staleLongLockFromBusyProcess()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #else
     const QString fileName = dir.path() + "/staleLockFromBusyProcess";
@@ -341,21 +341,21 @@ void tst_QLockFile::staleLongLockFromBusyProcess()
     QProcess proc;
     proc.start(m_helperApp, QStringList() << fileName << "-busy");
     QVERIFY2(proc.waitForStarted(), qPrintable(proc.errorString()));
-    QTRY_VERIFY(QFile::exists(fileName));
+    BOBUIRY_VERIFY(QFile::exists(fileName));
 
     QLockFile secondLock(fileName);
     secondLock.setStaleLockTime(0ms);
     QVERIFY(!secondLock.tryLock(100ms)); // never stale
     QCOMPARE(int(secondLock.error()), int(QLockFile::LockFailedError));
     qint64 pid;
-    QTRY_VERIFY(secondLock.getLockInfo(&pid, NULL, NULL));
+    BOBUIRY_VERIFY(secondLock.getLockInfo(&pid, NULL, NULL));
     QVERIFY(pid > 0);
 
     // As long as the other process is running, we can't remove the lock file
     QVERIFY(!secondLock.removeStaleLockFile());
 
     proc.waitForFinished();
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 static QString tryStaleLockFromThread(const QString &fileName)
@@ -385,7 +385,7 @@ static QString tryStaleLockFromThread(const QString &fileName)
 
 void tst_QLockFile::staleLockRace()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #else
     // Multiple threads notice a stale lock at the same time
@@ -394,17 +394,17 @@ void tst_QLockFile::staleLockRace()
     const QString lockName = fileName + ".lock";
     int ret = QProcess::execute(m_helperApp, QStringList() << lockName << "-uncleanexit");
     QCOMPARE(ret, int(QLockFile::NoError));
-    QTRY_VERIFY(QFile::exists(lockName));
+    BOBUIRY_VERIFY(QFile::exists(lockName));
 
-    QThreadPool::globalInstance()->setMaxThreadCount(10);
+    BOBUIhreadPool::globalInstance()->setMaxThreadCount(10);
     QFutureSynchronizer<QString> synchronizer;
     for (int i = 0; i < 8; ++i)
-        synchronizer.addFuture(QtConcurrent::run(tryStaleLockFromThread, fileName));
+        synchronizer.addFuture(BobUIConcurrent::run(tryStaleLockFromThread, fileName));
     synchronizer.waitForFinished();
     const auto futures = synchronizer.futures();
     for (const QFuture<QString> &future : futures)
         QVERIFY2(future.result().isEmpty(), qPrintable(future.result()));
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QLockFile::noPermissions()
@@ -416,7 +416,7 @@ void tst_QLockFile::noPermissions()
     if (::geteuid() == 0)
         QSKIP("Test is not applicable with root privileges");
 #endif
-    // Restore permissions so that the QTemporaryDir cleanup can happen
+    // Restore permissions so that the BOBUIemporaryDir cleanup can happen
     class PermissionRestorer
     {
         QString m_path;
@@ -541,7 +541,7 @@ void tst_QLockFile::corruptedLockFileInTheFuture()
     times[1].tv_nsec = times[0].tv_nsec;
     utimensat(0 /* ignored */, fileName.toLocal8Bit(), times, 0);
 
-    QTest::ignoreMessage(QtInfoMsg, "QLockFile: Lock file '" + fileName.toUtf8() + "' has a modification time in the future");
+    BOBUIest::ignoreMessage(BobUIInfoMsg, "QLockFile: Lock file '" + fileName.toUtf8() + "' has a modification time in the future");
     corruptedLockFile();
 #endif
 }
@@ -564,7 +564,7 @@ static bool openLockFile(QFile *f, QLockFile *lockfile)
 #else
     fd = QLockFilePrivate::getLockFileHandle(lockfile);
 #endif
-    QT_LSEEK(fd, 0, SEEK_SET);
+    BOBUI_LSEEK(fd, 0, SEEK_SET);
     return f->open(fd, QIODevice::ReadWrite | QIODevice::Text, flags);
 }
 
@@ -606,7 +606,7 @@ void tst_QLockFile::differentMachines()
         // now modify it
         QFile f;
         QVERIFY(openLockFile(&f, &lock1));
-        QVERIFY(overwriteLineInLockFile(f, 1, QT_STRINGIFY(INT_MAX)));
+        QVERIFY(overwriteLineInLockFile(f, 1, BOBUI_STRINGIFY(INT_MAX)));
         QVERIFY(overwriteLineInLockFile(f, 4, "this is not a UUID"));
     }
 
@@ -681,5 +681,5 @@ struct LockFileUsageInGlobalDtor
 };
 LockFileUsageInGlobalDtor s_instance;
 
-QTEST_MAIN(tst_QLockFile)
+BOBUIEST_MAIN(tst_QLockFile)
 #include "tst_qlockfile.moc"

@@ -11,7 +11,7 @@ OmniWindow::OmniWindow(QQuickItem *parent)
       m_isMaximized(false), m_collaborative(false),
       m_isDragging(false), m_isResizing(false), m_resizeEdge(0)
 {
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setFlag(ItemHasContents, true);
     connect(OmniThemeManager::instance(), &OmniThemeManager::themeChanged, this, [this]() { update(); });
 }
@@ -48,8 +48,8 @@ void OmniWindow::paint(QPainter *painter) {
 
         // 4. Cyberpunk Title Bar
         painter->fillRect(QRectF(0, 0, rect.width(), 30), theme->primary());
-        painter->setPen(Qt::black);
-        painter->drawText(QRectF(10, 0, rect.width() - 40, 30), Qt::AlignVCenter, m_title.toUpper());
+        painter->setPen(BobUI::black);
+        painter->drawText(QRectF(10, 0, rect.width() - 40, 30), BobUI::AlignVCenter, m_title.toUpper());
 
     } else if (mode == OmniThemeManager::LiquidGlass) {
         // --- LIQUID GLASS RENDER PASS ---
@@ -66,7 +66,7 @@ void OmniWindow::paint(QPainter *painter) {
         painter->drawPath(glassPath);
 
         painter->setPen(theme->text());
-        painter->drawText(QRectF(15, 0, rect.width(), 30), Qt::AlignVCenter, m_title);
+        painter->drawText(QRectF(15, 0, rect.width(), 30), BobUI::AlignVCenter, m_title);
 
     } else if (mode == OmniThemeManager::Aetheria) {
         // --- AETHERIA CELESTIAL RENDER PASS ---
@@ -80,13 +80,13 @@ void OmniWindow::paint(QPainter *painter) {
         painter->drawRoundedRect(rect, 4, 4);
 
         painter->setPen(theme->primary());
-        painter->drawText(QRectF(10, 0, rect.width(), 30), Qt::AlignVCenter, "◈ " + m_title + " ◈");
+        painter->drawText(QRectF(10, 0, rect.width(), 30), BobUI::AlignVCenter, "◈ " + m_title + " ◈");
     } else {
         // Standard Dark/Light
         painter->fillRect(rect, theme->surface());
         painter->fillRect(QRectF(0,0,width(),30), theme->primary());
         painter->setPen(theme->text());
-        painter->drawText(QRectF(10,0,width(),30), Qt::AlignVCenter, m_title);
+        painter->drawText(QRectF(10,0,width(),30), BobUI::AlignVCenter, m_title);
     }
 }
 

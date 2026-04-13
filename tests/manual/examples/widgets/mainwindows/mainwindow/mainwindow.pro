@@ -1,6 +1,6 @@
 TEMPLATE = app
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS += colorswatch.h mainwindow.h toolbar.h
 SOURCES += colorswatch.cpp mainwindow.cpp toolbar.cpp main.cpp
@@ -14,5 +14,5 @@ RESOURCES += mainwindow.qrc
 #! [qrc]
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/mainwindows/mainwindow
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/mainwindows/mainwindow
 INSTALLS += target

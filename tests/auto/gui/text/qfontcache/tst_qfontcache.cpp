@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 
 #include <qfont.h>
@@ -27,14 +27,14 @@ private slots:
     void clear();
 };
 
-#ifdef QT_BUILD_INTERNAL
-QT_BEGIN_NAMESPACE
+#ifdef BOBUI_BUILD_INTERNAL
+BOBUI_BEGIN_NAMESPACE
 // qfontdatabase.cpp
-Q_AUTOTEST_EXPORT void qt_setQtEnableTestFont(bool value);
+Q_AUTOTEST_EXPORT void bobui_setBobUIEnableTestFont(bool value);
 // qfontengine.cpp
 Q_AUTOTEST_EXPORT void QFontEngine_startCollectingEngines();
 Q_AUTOTEST_EXPORT QList<QFontEngine *> QFontEngine_stopCollectingEngines();
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif
 
 tst_QFontCache::tst_QFontCache()
@@ -47,23 +47,23 @@ tst_QFontCache::~tst_QFontCache()
 
 void tst_QFontCache::engineData_data()
 {
-    QTest::addColumn<QString>("family");
-    QTest::addColumn<QStringList>("cacheKey");
+    BOBUIest::addColumn<QString>("family");
+    BOBUIest::addColumn<QStringList>("cacheKey");
 
-    QTest::newRow("unquoted-family-name") << QString("Times New Roman") << QStringList({"Times New Roman"});
-    QTest::newRow("quoted-family-name") << QString("'Times New Roman'") << QStringList({"Times New Roman"});
-    QTest::newRow("invalid") << QString("invalid") << QStringList({"invalid"});
-    QTest::newRow("multiple") << QString("invalid, Times New Roman")
+    BOBUIest::newRow("unquoted-family-name") << QString("Times New Roman") << QStringList({"Times New Roman"});
+    BOBUIest::newRow("quoted-family-name") << QString("'Times New Roman'") << QStringList({"Times New Roman"});
+    BOBUIest::newRow("invalid") << QString("invalid") << QStringList({"invalid"});
+    BOBUIest::newRow("multiple") << QString("invalid, Times New Roman")
                               << QStringList({"invalid", "Times New Roman"});
-    QTest::newRow("multiple spaces") << QString("invalid,  Times New Roman ")
+    BOBUIest::newRow("multiple spaces") << QString("invalid,  Times New Roman ")
                                      << QStringList({"invalid", "Times New Roman"});
-    QTest::newRow("multiple spaces quotes") << QString("'invalid',  Times New Roman ")
+    BOBUIest::newRow("multiple spaces quotes") << QString("'invalid',  Times New Roman ")
                                             << QStringList({"invalid", "Times New Roman"});
-    QTest::newRow("multiple2") << QString("invalid, Times New Roman  , foobar, 'baz'")
+    BOBUIest::newRow("multiple2") << QString("invalid, Times New Roman  , foobar, 'baz'")
                                << QStringList({"invalid", "Times New Roman", "foobar", "baz"});
-    QTest::newRow("invalid spaces") << QString("invalid spaces, Times New Roman ")
+    BOBUIest::newRow("invalid spaces") << QString("invalid spaces, Times New Roman ")
                                     << QStringList({"invalid spaces", "Times New Roman"});
-    QTest::newRow("invalid spaces quotes") << QString("'invalid spaces', 'Times New Roman' ")
+    BOBUIest::newRow("invalid spaces quotes") << QString("'invalid spaces', 'Times New Roman' ")
                                            << QStringList({"invalid spaces", "Times New Roman"});
 }
 
@@ -95,19 +95,19 @@ void tst_QFontCache::engineData()
 
 void tst_QFontCache::engineDataFamilies_data()
 {
-    QTest::addColumn<QStringList>("families");
+    BOBUIest::addColumn<QStringList>("families");
 
     const QStringList multiple = { QLatin1String("invalid"), QLatin1String("Times New Roman") };
     const QStringList multipleQuotes = { QLatin1String("'invalid'"), QLatin1String("Times New Roman") };
     const QStringList multiple2 = { QLatin1String("invalid"), QLatin1String("Times New Roman"),
                                     QLatin1String("foobar"), QLatin1String("'baz'") };
 
-    QTest::newRow("unquoted-family-name") << QStringList(QLatin1String("Times New Roman"));
-    QTest::newRow("quoted-family-name") << QStringList(QLatin1String("Times New Roman"));
-    QTest::newRow("invalid") << QStringList(QLatin1String("invalid"));
-    QTest::newRow("multiple") << multiple;
-    QTest::newRow("multiple spaces quotes") << multipleQuotes;
-    QTest::newRow("multiple2") << multiple2;
+    BOBUIest::newRow("unquoted-family-name") << QStringList(QLatin1String("Times New Roman"));
+    BOBUIest::newRow("quoted-family-name") << QStringList(QLatin1String("Times New Roman"));
+    BOBUIest::newRow("invalid") << QStringList(QLatin1String("invalid"));
+    BOBUIest::newRow("multiple") << multiple;
+    BOBUIest::newRow("multiple spaces quotes") << multipleQuotes;
+    BOBUIest::newRow("multiple2") << multiple2;
 }
 
 void tst_QFontCache::engineDataFamilies()
@@ -138,7 +138,7 @@ void tst_QFontCache::engineDataFamilies()
 
 void tst_QFontCache::clear()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QFontEngine_startCollectingEngines();
 #else
     // must not crash, at very least ;)
@@ -146,14 +146,14 @@ void tst_QFontCache::clear()
 
     QFontEngine *fontEngine = 0;
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     {
         // we're never caching the box (and the "test") font engines
         // let's ensure we're not leaking them as well as the cached ones
-        qt_setQtEnableTestFont(true);
+        bobui_setBobUIEnableTestFont(true);
 
         QFont f;
-        f.setFamily("__Qt__Box__Engine__");
+        f.setFamily("__BobUI__Box__Engine__");
         f.exactMatch(); // loads engine
     }
 #endif
@@ -195,7 +195,7 @@ void tst_QFontCache::clear()
     // we may even exit the application now:
     QFontCache::instance()->cleanup();
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QList<QFontEngine *> leakedEngines = QFontEngine_stopCollectingEngines();
 for (int i = 0; i < leakedEngines.size(); ++i) qWarning() << i << leakedEngines.at(i) << leakedEngines.at(i)->ref.loadRelaxed();
     // and we are not leaking!
@@ -216,9 +216,9 @@ struct MessageHandler
     }
 
     inline static bool receivedMessage = false;
-    inline static QtMessageHandler oldMessageHandler = nullptr;
+    inline static BobUIMessageHandler oldMessageHandler = nullptr;
     inline static QStringList messages;
-    static void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &text)
+    static void myMessageHandler(BobUIMsgType type, const QMessageLogContext &context, const QString &text)
     {
         if (!text.startsWith("Populating font family aliases took")) {
             receivedMessage = true;
@@ -240,7 +240,7 @@ void tst_QFontCache::threadedAccess()
             fontMetrics.height();
         }
     };
-    auto *qThread = QThread::create(lambda);
+    auto *qThread = BOBUIhread::create(lambda);
     qThread->start();
     qThread->wait();
 
@@ -249,5 +249,5 @@ void tst_QFontCache::threadedAccess()
     QVERIFY2(!messageHandler.receivedMessage, qPrintable(messageHandler.messages.join('\n')));
 }
 
-QTEST_MAIN(tst_QFontCache)
+BOBUIEST_MAIN(tst_QFontCache)
 #include "tst_qfontcache.moc"

@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QAbstractSlider>
-#include <QtWidgets/qdial.h>
+#include <BobUIWidgets/qdial.h>
 #include <QScrollBar>
 #include <QSlider>
 #include <QStyle>
@@ -15,9 +15,9 @@
 #include <QDebug>
 #include <QSignalSpy>
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 // defined to be 120 by the wheel mouse vendors according to the docs
 #define WHEEL_DELTA 120
@@ -49,7 +49,7 @@ private slots:
     void minimum_maximum();
     void keyPressed_data();
     void keyPressed();
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent_data();
     void wheelEvent();
     void fineGrainedWheelEvent_data();
@@ -92,7 +92,7 @@ private:
     qint64 sliderMovedTimeStamp;
 };
 
-Q_DECLARE_METATYPE(QList<Qt::Key>)
+Q_DECLARE_METATYPE(QList<BobUI::Key>)
 
 void tst_QAbstractSlider::initTestCase()
 {
@@ -143,15 +143,15 @@ void tst_QAbstractSlider::sliderMoved(int value)
 
 void tst_QAbstractSlider::triggerAction_data()
 {
-    QTest::addColumn<int>("sliderAction");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("initialSliderPosition");
-    QTest::addColumn<int>("singleStep");
-    QTest::addColumn<int>("pageStep");
-    QTest::addColumn<int>("expectedSliderPosition");
+    BOBUIest::addColumn<int>("sliderAction");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("initialSliderPosition");
+    BOBUIest::addColumn<int>("singleStep");
+    BOBUIest::addColumn<int>("pageStep");
+    BOBUIest::addColumn<int>("expectedSliderPosition");
 
-    QTest::newRow("No action") << int(QAbstractSlider::SliderNoAction) // sliderAction
+    BOBUIest::newRow("No action") << int(QAbstractSlider::SliderNoAction) // sliderAction
                             << 1000                                 // max
                             << 900                                  // min
                             << 987                                  // initial position
@@ -159,7 +159,7 @@ void tst_QAbstractSlider::triggerAction_data()
                             << 234                                  // page step size
                             << 987;                                 // expected position after
 
-    QTest::newRow("Move action") << int(QAbstractSlider::SliderMove) // sliderAction
+    BOBUIest::newRow("Move action") << int(QAbstractSlider::SliderMove) // sliderAction
                               << 1000                                 // max
                               << 900                                  // min
                               << 988                                  // initial position
@@ -167,7 +167,7 @@ void tst_QAbstractSlider::triggerAction_data()
                               << 234                                  // page step size
                               << 988;                                 // expected position after
 
-    QTest::newRow("Empty step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
+    BOBUIest::newRow("Empty step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
                                  << 1000                                      // max
                                  << 900                                       // min
                                  << 988                                       // initial position
@@ -175,7 +175,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                  << 234                                       // page step size
                                  << 988;                                      // expected position after
 
-     QTest::newRow("Empty step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
+     BOBUIest::newRow("Empty step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
                                  << 1000                                       // max
                                  << 900                                        // min
                                  << 987                                        // initial position
@@ -183,7 +183,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                  << 234                                        // page step size
                                  << 987;                                       // expected position after
 
-    QTest::newRow("Empty page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
+    BOBUIest::newRow("Empty page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
                                  << 1000                                    // max
                                  << 900                                     // min
                                  << 988                                     // initial position
@@ -191,7 +191,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                  << 0                                       // page step size
                                  << 988;                                    // expected position after
 
-     QTest::newRow("Empty page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
+     BOBUIest::newRow("Empty page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
                                  << 1000                                     // max
                                  << 900                                      // min
                                  << 987                                      // initial position
@@ -199,7 +199,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                  << 0                                        // page step size
                                  << 987;                                     // expected position after
 
-    QTest::newRow("Legal step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
+    BOBUIest::newRow("Legal step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
                                  << 1000                                      // max
                                  << 900                                       // min
                                  << 988                                       // initial position
@@ -207,7 +207,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                  << 234                                       // page step size
                                  << 993;                                      // expected position after
 
-     QTest::newRow("Legal step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
+     BOBUIest::newRow("Legal step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
                                  << 1000                                       // max
                                  << 900                                        // min
                                  << 987                                        // initial position
@@ -215,7 +215,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                  << 234                                        // page step size
                                  << 982;                                       // expected position after
 
-    QTest::newRow("Legal page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
+    BOBUIest::newRow("Legal page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
                                  << 1000                                    // max
                                  << 900                                     // min
                                  << 988                                     // initial position
@@ -223,7 +223,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                  << 5                                       // page step size
                                  << 993;                                    // expected position after
 
-     QTest::newRow("Legal page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
+     BOBUIest::newRow("Legal page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
                                  << 1000                                     // max
                                  << 900                                      // min
                                  << 987                                      // initial position
@@ -231,7 +231,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                  << 5                                        // page step size
                                  << 982;                                     // expected position after
 
-    QTest::newRow("Illegal step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
+    BOBUIest::newRow("Illegal step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
                                    << 1000                                      // max
                                    << 900                                       // min
                                    << 988                                       // initial position
@@ -239,7 +239,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                    << 234                                       // page step size
                                    << 1000;                                     // expected position after
 
-     QTest::newRow("Illegal step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
+     BOBUIest::newRow("Illegal step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
                                     << 1000                                      // max
                                     << 900                                       // min
                                     << 987                                       // initial position
@@ -247,7 +247,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                     << 234                                       // page step size
                                     << 900;                                      // expected position after
 
-    QTest::newRow("Illegal page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
+    BOBUIest::newRow("Illegal page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
                                    << 1000                                    // max
                                    << 900                                     // min
                                    << 988                                     // initial position
@@ -255,7 +255,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                    << 500                                     // page step size
                                    << 1000;                                   // expected position after
 
-     QTest::newRow("Illegal page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
+     BOBUIest::newRow("Illegal page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
                                     << 1000                                    // max
                                     << 900                                     // min
                                     << 987                                     // initial position
@@ -264,7 +264,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                     << 900;                                    // expected position after
 
     // Negative steps will also be abs()'d so, check that case.
-    QTest::newRow("Negative step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
+    BOBUIest::newRow("Negative step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
                                     << 1000                                      // max
                                     << 900                                       // min
                                     << 988                                       // initial position
@@ -272,7 +272,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                     << 234                                       // page step size
                                     << 989;                                      // expected position after
 
-     QTest::newRow("Negative step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
+     BOBUIest::newRow("Negative step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
                                      << 1000                                      // max
                                      << 900                                       // min
                                      << 987                                       // initial position
@@ -280,7 +280,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                      << 234                                       // page step size
                                      << 986;                                      // expected position after
 
-    QTest::newRow("Negative page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
+    BOBUIest::newRow("Negative page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
                                     << 1000                                    // max
                                     << 900                                     // min
                                     << 988                                     // initial position
@@ -288,7 +288,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                     << -1                                      // page step size
                                     << 989;                                    // expected position after
 
-     QTest::newRow("Negative page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
+     BOBUIest::newRow("Negative page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
                                      << 1000                                    // max
                                      << 900                                     // min
                                      << 987                                     // initial position
@@ -296,7 +296,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                      << -1                                      // page step size
                                      << 986;                                    // expected position after
 
-    QTest::newRow("Illegal negative step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
+    BOBUIest::newRow("Illegal negative step add") << int(QAbstractSlider::SliderSingleStepAdd) // sliderAction
                                             << 1000                                      // max
                                             << 900                                       // min
                                             << 988                                       // initial position
@@ -305,7 +305,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                             << 1000;                                      // expected position after
 
 
-    QTest::newRow("Illegal negative step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
+    BOBUIest::newRow("Illegal negative step sub") << int(QAbstractSlider::SliderSingleStepSub) // sliderAction
                                             << 1000                                      // max
                                             << 900                                       // min
                                             << 988                                       // initial position
@@ -313,7 +313,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                             << 234                                       // page step size
                                             << 900;                                     // expected position after
 
-    QTest::newRow("Illegal negative page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
+    BOBUIest::newRow("Illegal negative page add") << int(QAbstractSlider::SliderPageStepAdd) // sliderAction
                                             << 1000                                    // max
                                             << 900                                     // min
                                             << 988                                     // initial position
@@ -321,7 +321,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                             << -500                                    // page step size
                                             << 1000;                                    // expected position after
 
-    QTest::newRow("Illegal negative page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
+    BOBUIest::newRow("Illegal negative page sub") << int(QAbstractSlider::SliderPageStepSub) // sliderAction
                                             << 1000                                    // max
                                             << 900                                     // min
                                             << 988                                     // initial position
@@ -329,7 +329,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                             << -500                                    // page step size
                                             << 900;                                   // expected position after
 
-    QTest::newRow("Slider to minimum") << int(QAbstractSlider::SliderToMinimum)   // sliderAction
+    BOBUIest::newRow("Slider to minimum") << int(QAbstractSlider::SliderToMinimum)   // sliderAction
                                     << 1000                                    // max
                                     << 900                                     // min
                                     << 988                                     // initial position
@@ -337,7 +337,7 @@ void tst_QAbstractSlider::triggerAction_data()
                                     << 1                                       // page step size
                                     << 900;                                    // expected position after
 
-    QTest::newRow("Slider to maximum") << int(QAbstractSlider::SliderToMaximum)   // sliderAction
+    BOBUIest::newRow("Slider to maximum") << int(QAbstractSlider::SliderToMaximum)   // sliderAction
                                     << 1000                                    // max
                                     << 900                                     // min
                                     << 988                                     // initial position
@@ -386,15 +386,15 @@ void tst_QAbstractSlider::triggerAction()
 
 void tst_QAbstractSlider::minimum_maximum_data()
 {
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<int>("expectedMinimum");
-    QTest::addColumn<int>("expectedMaximum");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<int>("expectedMinimum");
+    BOBUIest::addColumn<int>("expectedMaximum");
 
-    QTest::newRow("Normal range") << 100 << 200 << 100 << 200;
-    QTest::newRow("Minimum higher") << 100 << 0 << 100 << 100;
-    QTest::newRow("Negative minimum") << -100 << 100 << -100 << 100;
-    QTest::newRow("Negative range") << -100 << -50 << -100 << -50;
+    BOBUIest::newRow("Normal range") << 100 << 200 << 100 << 200;
+    BOBUIest::newRow("Minimum higher") << 100 << 0 << 100 << 100;
+    BOBUIest::newRow("Negative minimum") << -100 << 100 << -100 << 100;
+    BOBUIest::newRow("Negative range") << -100 << -50 << -100 << -50;
 }
 
 void tst_QAbstractSlider::minimum_maximum()
@@ -447,19 +447,19 @@ void tst_QAbstractSlider::minimum_maximum()
 
 void tst_QAbstractSlider::keyPressed_data()
 {
-    QTest::addColumn<int>("initialSliderPosition");
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<int>("stepSize");
-    QTest::addColumn<int>("pageSize");
-    QTest::addColumn<bool>("invertedAppearance");
-    QTest::addColumn<bool>("invertedControls");
-    QTest::addColumn<QList<Qt::Key> >("keySequence");
-    QTest::addColumn<int>("expectedSliderPosition");
+    BOBUIest::addColumn<int>("initialSliderPosition");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<int>("stepSize");
+    BOBUIest::addColumn<int>("pageSize");
+    BOBUIest::addColumn<bool>("invertedAppearance");
+    BOBUIest::addColumn<bool>("invertedControls");
+    BOBUIest::addColumn<QList<BobUI::Key> >("keySequence");
+    BOBUIest::addColumn<int>("expectedSliderPosition");
 
-    QList<Qt::Key> list;
-    list << Qt::Key_Down;
-    QTest::newRow("Step down once 1, horizontal")
+    QList<BobUI::Key> list;
+    list << BobUI::Key_Down;
+    BOBUIest::newRow("Step down once 1, horizontal")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -470,7 +470,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    QTest::newRow("Step down once 1, horizontal, appearance inverted")
+    BOBUIest::newRow("Step down once 1, horizontal, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -481,7 +481,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    QTest::newRow("Step down once 1, horizontal, controls inverted")
+    BOBUIest::newRow("Step down once 1, horizontal, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -492,7 +492,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Step down once 1, horizontal, both inverted")
+    BOBUIest::newRow("Step down once 1, horizontal, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -503,7 +503,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Step down once 1, vertical")
+    BOBUIest::newRow("Step down once 1, vertical")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -514,7 +514,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    QTest::newRow("Step down once 1, vertical, appearance inverted")
+    BOBUIest::newRow("Step down once 1, vertical, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -525,7 +525,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    QTest::newRow("Step down once 1, vertical, controls inverted")
+    BOBUIest::newRow("Step down once 1, vertical, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -536,7 +536,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;   // expected position
 
-    QTest::newRow("Step down once 1, vertical, both inverted")
+    BOBUIest::newRow("Step down once 1, vertical, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -547,9 +547,9 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    list = QList<Qt::Key>();
-    list << Qt::Key_Up;
-    QTest::newRow("Step up once 2, horizontal")
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_Up;
+    BOBUIest::newRow("Step up once 2, horizontal")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -560,7 +560,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Step up once 2, horizontal, appearance inverted")
+    BOBUIest::newRow("Step up once 2, horizontal, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -571,51 +571,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Step up once 2, horizontal, controls inverted")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << false// inverted appearance
-            << true // inverted controls
-            << list // key sequence
-            << 7;  // expected position
-
-    QTest::newRow("Step up once 2, horizontal, both inverted")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << true // inverted appearance
-            << true // inverted controls
-            << list // key sequence
-            << 7;  // expected position
-
-    QTest::newRow("Step up once 2, vertical")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << false// inverted appearance
-            << false// inverted controls
-            << list // key sequence
-            << 13;  // expected position
-
-    QTest::newRow("Step up once 2, vertical, appearance inverted")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << true // inverted appearance
-            << false// inverted controls
-            << list // key sequence
-            << 13;  // expected position
-
-    QTest::newRow("Step up once 2, vertical, controls inverted")
+    BOBUIest::newRow("Step up once 2, horizontal, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -626,7 +582,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;  // expected position
 
-    QTest::newRow("Step up once 2, vertical, both inverted")
+    BOBUIest::newRow("Step up once 2, horizontal, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -637,99 +593,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;  // expected position
 
-    list = QList<Qt::Key>();
-    list << Qt::Key_Left;
-    QTest::newRow("Step left once 2, horizontal")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << false// inverted appearance
-            << false// inverted controls
-            << list // key sequence
-            << 7;  // expected position
-
-    QTest::newRow("Step left once 2, horizontal, appearance inverted")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << true // inverted appearance
-            << false// inverted controls
-            << list // key sequence
-            << 7;  // expected position
-
-    QTest::newRow("Step left once 2, horizontal, controls inverted")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << false// inverted appearance
-            << true // inverted controls
-            << list // key sequence
-            << 13;  // expected position
-
-    QTest::newRow("Step left once 2, horizontal, both inverted")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << true // inverted appearance
-            << true // inverted controls
-            << list // key sequence
-            << 13;  // expected position
-
-    QTest::newRow("Step left once 2, vertical")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << false// inverted appearance
-            << false// inverted controls
-            << list // key sequence
-            << 7;  // expected position
-
-    QTest::newRow("Step left once 2, vertical, appearance inverted")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << true // inverted appearance
-            << false// inverted controls
-            << list // key sequence
-            << 7;  // expected position
-
-    QTest::newRow("Step left once 2, vertical, controls inverted")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << false// inverted appearance
-            << true // inverted controls
-            << list // key sequence
-            << 13;  // expected position
-
-    QTest::newRow("Step left once 2, vertical, both inverted")
-            << 10   // initial position
-            << 0    // minimum
-            << 100  // maximum
-            << 3    // single step size
-            << 0    // page step size
-            << true // inverted appearance
-            << true // inverted controls
-            << list // key sequence
-            << 13;  // expected position
-
-    list = QList<Qt::Key>();
-    list << Qt::Key_Right;
-    QTest::newRow("Step right once 2, horizontal")
+    BOBUIest::newRow("Step up once 2, vertical")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -740,7 +604,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Step right once 2, horizontal, appearance inverted")
+    BOBUIest::newRow("Step up once 2, vertical, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -751,7 +615,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Step right once 2, horizontal, controls inverted")
+    BOBUIest::newRow("Step up once 2, vertical, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -762,7 +626,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;  // expected position
 
-    QTest::newRow("Step right once 2, horizontal, both inverted")
+    BOBUIest::newRow("Step up once 2, vertical, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -773,7 +637,99 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;  // expected position
 
-    QTest::newRow("Step right once 2, vertical")
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_Left;
+    BOBUIest::newRow("Step left once 2, horizontal")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << false// inverted appearance
+            << false// inverted controls
+            << list // key sequence
+            << 7;  // expected position
+
+    BOBUIest::newRow("Step left once 2, horizontal, appearance inverted")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << true // inverted appearance
+            << false// inverted controls
+            << list // key sequence
+            << 7;  // expected position
+
+    BOBUIest::newRow("Step left once 2, horizontal, controls inverted")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << false// inverted appearance
+            << true // inverted controls
+            << list // key sequence
+            << 13;  // expected position
+
+    BOBUIest::newRow("Step left once 2, horizontal, both inverted")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << true // inverted appearance
+            << true // inverted controls
+            << list // key sequence
+            << 13;  // expected position
+
+    BOBUIest::newRow("Step left once 2, vertical")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << false// inverted appearance
+            << false// inverted controls
+            << list // key sequence
+            << 7;  // expected position
+
+    BOBUIest::newRow("Step left once 2, vertical, appearance inverted")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << true // inverted appearance
+            << false// inverted controls
+            << list // key sequence
+            << 7;  // expected position
+
+    BOBUIest::newRow("Step left once 2, vertical, controls inverted")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << false// inverted appearance
+            << true // inverted controls
+            << list // key sequence
+            << 13;  // expected position
+
+    BOBUIest::newRow("Step left once 2, vertical, both inverted")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << true // inverted appearance
+            << true // inverted controls
+            << list // key sequence
+            << 13;  // expected position
+
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_Right;
+    BOBUIest::newRow("Step right once 2, horizontal")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -784,7 +740,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Step right once 2, vertical, appearance inverted")
+    BOBUIest::newRow("Step right once 2, horizontal, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -795,7 +751,51 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Step right once 2, vertical, controls inverted")
+    BOBUIest::newRow("Step right once 2, horizontal, controls inverted")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << false// inverted appearance
+            << true // inverted controls
+            << list // key sequence
+            << 7;  // expected position
+
+    BOBUIest::newRow("Step right once 2, horizontal, both inverted")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << true // inverted appearance
+            << true // inverted controls
+            << list // key sequence
+            << 7;  // expected position
+
+    BOBUIest::newRow("Step right once 2, vertical")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << false// inverted appearance
+            << false// inverted controls
+            << list // key sequence
+            << 13;  // expected position
+
+    BOBUIest::newRow("Step right once 2, vertical, appearance inverted")
+            << 10   // initial position
+            << 0    // minimum
+            << 100  // maximum
+            << 3    // single step size
+            << 0    // page step size
+            << true // inverted appearance
+            << false// inverted controls
+            << list // key sequence
+            << 13;  // expected position
+
+    BOBUIest::newRow("Step right once 2, vertical, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -806,7 +806,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    QTest::newRow("Step right once 2, vertical, both inverted")
+    BOBUIest::newRow("Step right once 2, vertical, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -817,9 +817,9 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    list = QList<Qt::Key>();
-    list << Qt::Key_PageDown;
-    QTest::newRow("Page down once, horizontal")
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_PageDown;
+    BOBUIest::newRow("Page down once, horizontal")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -830,7 +830,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    QTest::newRow("Page down once, horizontal, appearance inverted")
+    BOBUIest::newRow("Page down once, horizontal, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -841,7 +841,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    QTest::newRow("Page down once, horizontal, controls inverted")
+    BOBUIest::newRow("Page down once, horizontal, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -852,7 +852,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Page down once, horizontal, both inverted")
+    BOBUIest::newRow("Page down once, horizontal, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -863,7 +863,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Page down once, vertical")
+    BOBUIest::newRow("Page down once, vertical")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -874,7 +874,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    QTest::newRow("Page down once, vertical, appearance inverted")
+    BOBUIest::newRow("Page down once, vertical, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -885,7 +885,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;   // expected position
 
-    QTest::newRow("Page down once, vertical, controls inverted")
+    BOBUIest::newRow("Page down once, vertical, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -896,7 +896,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Page down once, vertical, both inverted")
+    BOBUIest::newRow("Page down once, vertical, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -907,9 +907,9 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    list = QList<Qt::Key>();
-    list << Qt::Key_PageUp;
-    QTest::newRow("Page up once, horizontal")
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_PageUp;
+    BOBUIest::newRow("Page up once, horizontal")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -920,7 +920,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Page up once, horizontal, appearance inverted")
+    BOBUIest::newRow("Page up once, horizontal, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -931,7 +931,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Page up once, horizontal, controls inverted")
+    BOBUIest::newRow("Page up once, horizontal, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -942,7 +942,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;  // expected position
 
-    QTest::newRow("Page up once, horizontal, both inverted")
+    BOBUIest::newRow("Page up once, horizontal, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -953,7 +953,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;  // expected position
 
-    QTest::newRow("Page up once, vertical")
+    BOBUIest::newRow("Page up once, vertical")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -964,7 +964,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Page up once, vertical, appearance inverted")
+    BOBUIest::newRow("Page up once, vertical, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -975,7 +975,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 13;  // expected position
 
-    QTest::newRow("Page up once, vertical, controls inverted")
+    BOBUIest::newRow("Page up once, vertical, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -986,7 +986,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;  // expected position
 
-    QTest::newRow("Page up once, vertical, both inverted")
+    BOBUIest::newRow("Page up once, vertical, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -997,10 +997,10 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 7;  // expected position
 
-    list = QList<Qt::Key>();
-    list << Qt::Key_Up << Qt::Key_Up << Qt::Key_PageDown << Qt::Key_PageDown  << Qt::Key_Left << Qt::Key_Left
-         << Qt::Key_Right << Qt::Key_Down << Qt::Key_PageUp << Qt::Key_PageUp << Qt::Key_Down << Qt::Key_Right;
-    QTest::newRow("Symmetric seq, horizontal")
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_Up << BobUI::Key_Up << BobUI::Key_PageDown << BobUI::Key_PageDown  << BobUI::Key_Left << BobUI::Key_Left
+         << BobUI::Key_Right << BobUI::Key_Down << BobUI::Key_PageUp << BobUI::Key_PageUp << BobUI::Key_Down << BobUI::Key_Right;
+    BOBUIest::newRow("Symmetric seq, horizontal")
             << 50   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1011,7 +1011,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 50;  // expected position
 
-    QTest::newRow("Symmetric seq, horizontal, appearance inverted")
+    BOBUIest::newRow("Symmetric seq, horizontal, appearance inverted")
             << 50   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1022,7 +1022,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 50;  // expected position
 
-    QTest::newRow("Symmetric seq, horizontal, controls inverted")
+    BOBUIest::newRow("Symmetric seq, horizontal, controls inverted")
             << 50   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1033,7 +1033,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 50;  // expected position
 
-    QTest::newRow("Symmetric seq, horizontal, both inverted")
+    BOBUIest::newRow("Symmetric seq, horizontal, both inverted")
             << 50   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1044,7 +1044,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 50;  // expected position
 
-    QTest::newRow("Symmetric seq, vertical")
+    BOBUIest::newRow("Symmetric seq, vertical")
             << 50   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1055,7 +1055,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 50;  // expected position
 
-    QTest::newRow("Symmetric seq, vertical, appearance inverted")
+    BOBUIest::newRow("Symmetric seq, vertical, appearance inverted")
             << 50   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1066,7 +1066,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 50;  // expected position
 
-    QTest::newRow("Symmetric seq, vertical, controls inverted")
+    BOBUIest::newRow("Symmetric seq, vertical, controls inverted")
             << 50   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1077,7 +1077,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 50;  // expected position
 
-    QTest::newRow("Symmetric seq, vertical, both inverted")
+    BOBUIest::newRow("Symmetric seq, vertical, both inverted")
             << 50   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1088,9 +1088,9 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 50;  // expected position
 
-    list = QList<Qt::Key>();
-    list << Qt::Key_Home;
-    QTest::newRow("Home, horizontal")
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_Home;
+    BOBUIest::newRow("Home, horizontal")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1101,7 +1101,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Home, horizontal, appearance inverted")
+    BOBUIest::newRow("Home, horizontal, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1112,7 +1112,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Home, horizontal, controls inverted")
+    BOBUIest::newRow("Home, horizontal, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1123,7 +1123,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Home, horizontal, both inverted")
+    BOBUIest::newRow("Home, horizontal, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1134,7 +1134,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Home, vertical")
+    BOBUIest::newRow("Home, vertical")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1145,7 +1145,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Home, vertical, appearance inverted")
+    BOBUIest::newRow("Home, vertical, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1156,7 +1156,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Home, vertical, controls inverted")
+    BOBUIest::newRow("Home, vertical, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1167,7 +1167,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Home, vertical, both inverted")
+    BOBUIest::newRow("Home, vertical, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1178,9 +1178,9 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    list = QList<Qt::Key>();
-    list << Qt::Key_End;
-    QTest::newRow("End, horizontal")
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_End;
+    BOBUIest::newRow("End, horizontal")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1191,7 +1191,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("End, horizontal, appearance inverted")
+    BOBUIest::newRow("End, horizontal, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1202,7 +1202,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("End, horizontal, controls inverted")
+    BOBUIest::newRow("End, horizontal, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1213,7 +1213,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("End, horizontal, both inverted")
+    BOBUIest::newRow("End, horizontal, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1224,7 +1224,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("End, vertical")
+    BOBUIest::newRow("End, vertical")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1235,7 +1235,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("End, vertical, appearance inverted")
+    BOBUIest::newRow("End, vertical, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1246,7 +1246,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("End, vertical, controls inverted")
+    BOBUIest::newRow("End, vertical, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1257,7 +1257,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("End, vertical, both inverted")
+    BOBUIest::newRow("End, vertical, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1268,9 +1268,9 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    list = QList<Qt::Key>();
-    list << Qt::Key_End << Qt::Key_Up;
-    QTest::newRow("Past end, horizontal")
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_End << BobUI::Key_Up;
+    BOBUIest::newRow("Past end, horizontal")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1281,7 +1281,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("Past end, horizontal, appearance inverted")
+    BOBUIest::newRow("Past end, horizontal, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1292,7 +1292,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("Past end, horizontal, controls inverted")
+    BOBUIest::newRow("Past end, horizontal, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1303,7 +1303,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 97;  // expected position
 
-    QTest::newRow("Past end, horizontal, both inverted")
+    BOBUIest::newRow("Past end, horizontal, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1314,7 +1314,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 97;  // expected position
 
-    QTest::newRow("Past end, vertical")
+    BOBUIest::newRow("Past end, vertical")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1325,7 +1325,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("Past end, vertical, appearance inverted")
+    BOBUIest::newRow("Past end, vertical, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1336,7 +1336,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 100; // expected position
 
-    QTest::newRow("Past end, vertical, controls inverted")
+    BOBUIest::newRow("Past end, vertical, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1347,7 +1347,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 97;  // expected position
 
-    QTest::newRow("Past end, vertical, both inverted")
+    BOBUIest::newRow("Past end, vertical, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1358,9 +1358,9 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 97;  // expected position
 
-    list = QList<Qt::Key>();
-    list << Qt::Key_Home << Qt::Key_Down;
-    QTest::newRow("Past home, horizontal")
+    list = QList<BobUI::Key>();
+    list << BobUI::Key_Home << BobUI::Key_Down;
+    BOBUIest::newRow("Past home, horizontal")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1371,7 +1371,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Past home, horizontal, appearance inverted")
+    BOBUIest::newRow("Past home, horizontal, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1382,7 +1382,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Past home, horizontal, controls inverted")
+    BOBUIest::newRow("Past home, horizontal, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1393,7 +1393,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 3;   // expected position
 
-    QTest::newRow("Past home, horizontal, both inverted")
+    BOBUIest::newRow("Past home, horizontal, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1404,7 +1404,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 3;   // expected position
 
-    QTest::newRow("Past home, vertical")
+    BOBUIest::newRow("Past home, vertical")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1415,7 +1415,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Past home, vertical, appearance inverted")
+    BOBUIest::newRow("Past home, vertical, appearance inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1426,7 +1426,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 0;   // expected position
 
-    QTest::newRow("Past home, vertical, controls inverted")
+    BOBUIest::newRow("Past home, vertical, controls inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1437,7 +1437,7 @@ void tst_QAbstractSlider::keyPressed_data()
             << list // key sequence
             << 3;   // expected position
 
-    QTest::newRow("Past home, vertical, both inverted")
+    BOBUIest::newRow("Past home, vertical, both inverted")
             << 10   // initial position
             << 0    // minimum
             << 100  // maximum
@@ -1458,40 +1458,40 @@ void tst_QAbstractSlider::keyPressed()
     QFETCH(int, pageSize);
     QFETCH(bool, invertedAppearance);
     QFETCH(bool, invertedControls);
-    QFETCH(QList<Qt::Key>, keySequence);
+    QFETCH(QList<BobUI::Key>, keySequence);
     QFETCH(int, expectedSliderPosition);
 
     slider->setRange(minimum,maximum);
     slider->setSliderPosition(initialSliderPosition);
     slider->setSingleStep(stepSize);
     slider->setPageStep(pageSize);
-    slider->setOrientation(Qt::Horizontal);
+    slider->setOrientation(BobUI::Horizontal);
     slider->setInvertedAppearance(invertedAppearance);
     slider->setInvertedControls(invertedControls);
     for (int i=0;i<keySequence.size();i++) {
-        QTest::keyClick(slider, keySequence.at(i));
+        BOBUIest::keyClick(slider, keySequence.at(i));
     }
     QCOMPARE(slider->sliderPosition(), expectedSliderPosition);
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void tst_QAbstractSlider::wheelEvent_data()
 {
-    QTest::addColumn<int>("initialSliderPosition");
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<int>("singleStep");
-    QTest::addColumn<int>("pageStep");
-    QTest::addColumn<bool>("invertedControls");
-    QTest::addColumn<int>("wheelScrollLines");
-    QTest::addColumn<bool>("withModifiers"); // use keyboard modifiers while scrolling? (CTRL and SHIFT)
-    QTest::addColumn<int>("deltaMultiple"); // multiples of WHEEL_DELTA
-    QTest::addColumn<Qt::Orientation>("sliderOrientation");
-    QTest::addColumn<Qt::Orientation>("wheelOrientation");
-    QTest::addColumn<int>("expectedSliderPosition");
-    QTest::addColumn<QPoint>("distanceFromBottomRight"); // mpointer's distance from bottom-right corner of widget
+    BOBUIest::addColumn<int>("initialSliderPosition");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<int>("singleStep");
+    BOBUIest::addColumn<int>("pageStep");
+    BOBUIest::addColumn<bool>("invertedControls");
+    BOBUIest::addColumn<int>("wheelScrollLines");
+    BOBUIest::addColumn<bool>("withModifiers"); // use keyboard modifiers while scrolling? (CTRL and SHIFT)
+    BOBUIest::addColumn<int>("deltaMultiple"); // multiples of WHEEL_DELTA
+    BOBUIest::addColumn<BobUI::Orientation>("sliderOrientation");
+    BOBUIest::addColumn<BobUI::Orientation>("wheelOrientation");
+    BOBUIest::addColumn<int>("expectedSliderPosition");
+    BOBUIest::addColumn<QPoint>("distanceFromBottomRight"); // mpointer's distance from bottom-right corner of widget
 
-    QTest::newRow("Normal data step") << 0                                  // initial position
+    BOBUIest::newRow("Normal data step") << 0                                  // initial position
                                    << 0                                  // minimum
                                    << 100                                // maximum
                                    << 1                                  // single step
@@ -1500,12 +1500,12 @@ void tst_QAbstractSlider::wheelEvent_data()
                                    << 20                                 // wheel scroll lines
                                    << false                              // with modifiers
                                    << 1                                  // delta
-                                   << Qt::Vertical                       // orientation of slider
-                                   << Qt::Vertical                       // orientation of wheel
+                                   << BobUI::Vertical                       // orientation of slider
+                                   << BobUI::Vertical                       // orientation of wheel
                                    << 20                                 // expected position after
                                    << QPoint(0,0);
 
-    QTest::newRow("Normal data page") << 0                                  // initial position
+    BOBUIest::newRow("Normal data page") << 0                                  // initial position
                                    << 0                                  // minimum
                                    << 100                                // maximum
                                    << 100                                // single step
@@ -1514,8 +1514,8 @@ void tst_QAbstractSlider::wheelEvent_data()
                                    << 20                                 // wheel scroll lines
                                    << false                              // with modifiers
                                    << 1                                  // delta
-                                   << Qt::Vertical                       // orientation of slider
-                                   << Qt::Vertical                       // orientation of wheel
+                                   << BobUI::Vertical                       // orientation of slider
+                                   << BobUI::Vertical                       // orientation of wheel
 #ifndef Q_OS_MAC
                                    << 1                                  // expected position after
 #else
@@ -1523,7 +1523,7 @@ void tst_QAbstractSlider::wheelEvent_data()
                                    << 100                                // expected position after
 #endif
                                    << QPoint(1,1);
-    QTest::newRow("Different orientation") << 0                             // initial position
+    BOBUIest::newRow("Different orientation") << 0                             // initial position
                                         << 0                             // minimum
                                         << 100                           // maximum
                                         << 100                           // single step
@@ -1532,8 +1532,8 @@ void tst_QAbstractSlider::wheelEvent_data()
                                         << 20                            // wheel scroll lines
                                         << false                         // with modifiers
                                         << 1                             // delta
-                                        << Qt::Horizontal                // orientation of slider
-                                        << Qt::Vertical                  // orientation of wheel
+                                        << BobUI::Horizontal                // orientation of slider
+                                        << BobUI::Vertical                  // orientation of wheel
 #ifndef Q_OS_MAC
                                         << 1                             // expected position after
 #else
@@ -1542,7 +1542,7 @@ void tst_QAbstractSlider::wheelEvent_data()
 #endif
                                         << QPoint(1,1);
 
-    QTest::newRow("Different orientation2")<< 0                             // initial position
+    BOBUIest::newRow("Different orientation2")<< 0                             // initial position
                                         << 0                             // minimum
                                         << 100                           // maximum
                                         << 100                           // single step
@@ -1551,8 +1551,8 @@ void tst_QAbstractSlider::wheelEvent_data()
                                         << 20                            // wheel scroll lines
                                         << false                         // with modifiers
                                         << 1                             // delta
-                                        << Qt::Horizontal                // orientation of slider
-                                        << Qt::Vertical                  // orientation of wheel
+                                        << BobUI::Horizontal                // orientation of slider
+                                        << BobUI::Vertical                  // orientation of wheel
 #ifndef Q_OS_MAC
                                         << 1                             // expected position after
 #else
@@ -1561,7 +1561,7 @@ void tst_QAbstractSlider::wheelEvent_data()
 #endif
                                         << QPoint(0,0);
 
-    QTest::newRow("Inverted controls")     << 50                            // initial position
+    BOBUIest::newRow("Inverted controls")     << 50                            // initial position
                                         << 0                             // minimum
                                         << 100                           // maximum
                                         << 1                             // single step
@@ -1570,12 +1570,12 @@ void tst_QAbstractSlider::wheelEvent_data()
                                         << 20                            // wheel scroll lines
                                         << false                         // with modifiers
                                         << -1                            // delta
-                                        << Qt::Horizontal                // orientation of slider
-                                        << Qt::Horizontal                // orientation of wheel
+                                        << BobUI::Horizontal                // orientation of slider
+                                        << BobUI::Horizontal                // orientation of wheel
                                         << 30                            // expected position after
                                         << QPoint(1,1);
 
-    QTest::newRow("Past end")              << 50                            // initial position
+    BOBUIest::newRow("Past end")              << 50                            // initial position
                                         << 0                             // minimum
                                         << 100                           // maximum
                                         << 26                            // single step
@@ -1584,12 +1584,12 @@ void tst_QAbstractSlider::wheelEvent_data()
                                         << 1                             // wheel scroll lines
                                         << false                         // with modifiers
                                         << -2                            // delta
-                                        << Qt::Horizontal                // orientation of slider
-                                        << Qt::Horizontal                // orientation of wheel
+                                        << BobUI::Horizontal                // orientation of slider
+                                        << BobUI::Horizontal                // orientation of wheel
                                         << 100                           // expected position after
                                         << QPoint(0,0);
 
-    QTest::newRow("Past start")            << 50                            // initial position
+    BOBUIest::newRow("Past start")            << 50                            // initial position
                                         << 0                             // minimum
                                         << 100                           // maximum
                                         << 26                            // single step
@@ -1598,12 +1598,12 @@ void tst_QAbstractSlider::wheelEvent_data()
                                         << 1                             // wheel scroll lines
                                         << false                         // with modifiers
                                         << 2                             // delta
-                                        << Qt::Horizontal                // orientation of slider
-                                        << Qt::Horizontal                // orientation of wheel
+                                        << BobUI::Horizontal                // orientation of slider
+                                        << BobUI::Horizontal                // orientation of wheel
                                         << 0                             // expected position after
                                         << QPoint(0,0);
 
-    QTest::newRow("With modifiers")        << 50                            // initial position
+    BOBUIest::newRow("With modifiers")        << 50                            // initial position
                                         << 0                             // minimum
                                         << 100                           // maximum
                                         << 1                             // single step
@@ -1612,8 +1612,8 @@ void tst_QAbstractSlider::wheelEvent_data()
                                         << 20                            // wheel scroll lines
                                         << true                          // with modifiers
                                         << -1                            // delta
-                                        << Qt::Horizontal                // orientation of slider
-                                        << Qt::Horizontal                // orientation of wheel
+                                        << BobUI::Horizontal                // orientation of slider
+                                        << BobUI::Horizontal                // orientation of wheel
                                         << 90                            // expected position after
                                         << QPoint(0,0);
 
@@ -1630,8 +1630,8 @@ void tst_QAbstractSlider::wheelEvent()
     QFETCH(int,wheelScrollLines);
     QFETCH(bool,withModifiers);
     QFETCH(int,deltaMultiple);
-    QFETCH(Qt::Orientation, sliderOrientation);
-    QFETCH(Qt::Orientation, wheelOrientation);
+    QFETCH(BobUI::Orientation, sliderOrientation);
+    QFETCH(BobUI::Orientation, wheelOrientation);
     QFETCH(int,expectedSliderPosition);
     QFETCH(QPoint,distanceFromBottomRight);
 
@@ -1646,32 +1646,32 @@ void tst_QAbstractSlider::wheelEvent()
     slider->setInvertedControls(invertedControls);
     slider->setOrientation(sliderOrientation);
 
-    Qt::KeyboardModifier k = withModifiers ? Qt::ControlModifier : Qt::NoModifier;
+    BobUI::KeyboardModifier k = withModifiers ? BobUI::ControlModifier : BobUI::NoModifier;
 
     const QPoint wheelPoint = slider->rect().bottomRight() + distanceFromBottomRight;
-    const QPoint angleDelta(wheelOrientation == Qt::Horizontal ? WHEEL_DELTA * deltaMultiple : 0,
-                            wheelOrientation == Qt::Vertical ? WHEEL_DELTA * deltaMultiple : 0);
+    const QPoint angleDelta(wheelOrientation == BobUI::Horizontal ? WHEEL_DELTA * deltaMultiple : 0,
+                            wheelOrientation == BobUI::Vertical ? WHEEL_DELTA * deltaMultiple : 0);
     QWheelEvent event(wheelPoint, slider->mapToGlobal(wheelPoint), QPoint(), angleDelta,
-                      Qt::NoButton, k, Qt::NoScrollPhase, false);
+                      BobUI::NoButton, k, BobUI::NoScrollPhase, false);
     QVERIFY(applicationInstance->sendEvent(slider,&event));
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("Normal data page", "QTBUG-23679", Continue);
-    QEXPECT_FAIL("Different orientation", "QTBUG-23679", Continue);
-    QEXPECT_FAIL("Different orientation2", "QTBUG-23679", Continue);
+    QEXPECT_FAIL("Normal data page", "BOBUIBUG-23679", Continue);
+    QEXPECT_FAIL("Different orientation", "BOBUIBUG-23679", Continue);
+    QEXPECT_FAIL("Different orientation2", "BOBUIBUG-23679", Continue);
 #endif
     QCOMPARE(slider->sliderPosition(),expectedSliderPosition);
 
     slider->setSliderPosition(initialSliderPosition);
-    k = withModifiers ? Qt::ShiftModifier : Qt::NoModifier;
+    k = withModifiers ? BobUI::ShiftModifier : BobUI::NoModifier;
     QWheelEvent event2 = QWheelEvent(wheelPoint, slider->mapToGlobal(wheelPoint), QPoint(), angleDelta,
-                                     Qt::NoButton, k, Qt::NoScrollPhase, false);
+                                     BobUI::NoButton, k, BobUI::NoScrollPhase, false);
     QSignalSpy spy1(slider, SIGNAL(actionTriggered(int)));
     QSignalSpy spy2(slider, SIGNAL(valueChanged(int)));
     QVERIFY(applicationInstance->sendEvent(slider,&event2));
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("Normal data page", "QTBUG-23679", Continue);
-    QEXPECT_FAIL("Different orientation", "QTBUG-23679", Continue);
-    QEXPECT_FAIL("Different orientation2", "QTBUG-23679", Continue);
+    QEXPECT_FAIL("Normal data page", "BOBUIBUG-23679", Continue);
+    QEXPECT_FAIL("Different orientation", "BOBUIBUG-23679", Continue);
+    QEXPECT_FAIL("Different orientation2", "BOBUIBUG-23679", Continue);
 #endif
     QCOMPARE(slider->sliderPosition(),expectedSliderPosition);
     int expectedSignalCount = (initialSliderPosition == expectedSliderPosition) ? 0 : 1;
@@ -1683,9 +1683,9 @@ void tst_QAbstractSlider::wheelEvent()
 
 void tst_QAbstractSlider::fineGrainedWheelEvent_data()
 {
-    QTest::addColumn<bool>("invertedControls");
-    QTest::newRow("invertedControls=false") << false;
-    QTest::newRow("invertedControls=true") << true;
+    BOBUIest::addColumn<bool>("invertedControls");
+    BOBUIest::newRow("invertedControls=false") << false;
+    BOBUIest::newRow("invertedControls=true") << true;
 }
 
 void tst_QAbstractSlider::fineGrainedWheelEvent()
@@ -1700,20 +1700,20 @@ void tst_QAbstractSlider::fineGrainedWheelEvent()
     slider->setSingleStep(1);
     slider->setPageStep(10);
     slider->setInvertedControls(invertedControls);
-    slider->setOrientation(Qt::Vertical);
+    slider->setOrientation(BobUI::Vertical);
     slider->setSliderPosition(0);
 
     const int singleStepDelta = invertedControls ? (-WHEEL_DELTA / 3) : (WHEEL_DELTA / 3);
     const QPoint wheelPoint = slider->rect().bottomRight();
     QWheelEvent eventDown(wheelPoint, slider->mapToGlobal(wheelPoint), QPoint(), QPoint(0, singleStepDelta / 2),
-                          Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+                          BobUI::NoButton, BobUI::NoModifier, BobUI::NoScrollPhase, false);
     QVERIFY(applicationInstance->sendEvent(slider,&eventDown));
     QCOMPARE(slider->sliderPosition(), 0);
     QVERIFY(applicationInstance->sendEvent(slider,&eventDown));
     QCOMPARE(slider->sliderPosition(), 1);
 
     QWheelEvent eventUp(wheelPoint, slider->mapToGlobal(wheelPoint), QPoint(), QPoint(0, -singleStepDelta / 2),
-                          Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+                          BobUI::NoButton, BobUI::NoModifier, BobUI::NoScrollPhase, false);
     QVERIFY(applicationInstance->sendEvent(slider,&eventUp));
     QCOMPARE(slider->sliderPosition(), 1);
     QVERIFY(applicationInstance->sendEvent(slider,&eventUp));
@@ -1729,35 +1729,35 @@ void tst_QAbstractSlider::fineGrainedWheelEvent()
     QCOMPARE(slider->sliderPosition(), 1);
 }
 
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 
 void tst_QAbstractSlider::sliderPressedReleased_data()
 {
-    QTest::addColumn<int>("control");
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<uint>("subControl");
-    QTest::addColumn<int>("expectedCount");
+    BOBUIest::addColumn<int>("control");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<uint>("subControl");
+    BOBUIest::addColumn<int>("expectedCount");
 
-    QTest::newRow("slider on the handle") << int(QStyle::CC_Slider)
+    BOBUIest::newRow("slider on the handle") << int(QStyle::CC_Slider)
                                << 0
                                << 20
                                << uint(QStyle::SC_SliderHandle)
                                << 1;
 
-    QTest::newRow("slider on the groove") << int(QStyle::CC_Slider)
+    BOBUIest::newRow("slider on the groove") << int(QStyle::CC_Slider)
                                << 0
                                << 20
                                << uint(QStyle::SC_SliderGroove)
-                               << ((qApp->style()->styleHint(QStyle::SH_Slider_AbsoluteSetButtons) & Qt::LeftButton) ? 1 : 0);
+                               << ((qApp->style()->styleHint(QStyle::SH_Slider_AbsoluteSetButtons) & BobUI::LeftButton) ? 1 : 0);
 
-    QTest::newRow("scrollbar on the handle") << int(QStyle::CC_ScrollBar)
+    BOBUIest::newRow("scrollbar on the handle") << int(QStyle::CC_ScrollBar)
                                << 0
                                << 20
                                << uint(QStyle::SC_ScrollBarSlider)
                                << 1;
 
-    QTest::newRow("scrollbar on the groove") << int(QStyle::CC_ScrollBar)
+    BOBUIest::newRow("scrollbar on the groove") << int(QStyle::CC_ScrollBar)
                                << 0
                                << 20
                                << uint(QStyle::SC_ScrollBarGroove)
@@ -1782,7 +1782,7 @@ void tst_QAbstractSlider::sliderPressedReleased()
         break;
     case QStyle::CC_Slider:
         slider = new QSlider(&topLevel);
-        slider->setLayoutDirection(Qt::LeftToRight);   // Makes "upside down" much easier to compute
+        slider->setLayoutDirection(BobUI::LeftToRight);   // Makes "upside down" much easier to compute
         break;
     case QStyle::CC_ScrollBar:
         slider = new QScrollBar(&topLevel);
@@ -1793,7 +1793,7 @@ void tst_QAbstractSlider::sliderPressedReleased()
     slider->setMinimum(minimum);
     slider->setMaximum(maximum);
     slider->setValue(0);
-    slider->setOrientation(Qt::Vertical);
+    slider->setOrientation(BobUI::Vertical);
     slider->resize(slider->sizeHint().width(), slider->sizeHint().height() + 100);
     QSignalSpy spy1(slider, SIGNAL(sliderPressed()));
     QSignalSpy spy2(slider, SIGNAL(sliderReleased()));
@@ -1821,10 +1821,10 @@ void tst_QAbstractSlider::sliderPressedReleased()
     if (qApp->style()->styleHint(QStyle::SH_ScrollBar_LeftClickAbsolutePosition))
         QSKIP("The result depends on system setting on mac");
 
-    QTest::mousePress(slider, Qt::LeftButton, {},
+    BOBUIest::mousePress(slider, BobUI::LeftButton, {},
                       QPoint(rect.center().x() + 2, rect.center().y() + 2));
     QCOMPARE(spy1.size(), expectedCount);
-    QTest::mouseRelease(slider, Qt::LeftButton, {}, rect.center());
+    BOBUIest::mouseRelease(slider, BobUI::LeftButton, {}, rect.center());
     QCOMPARE(spy2.size(), expectedCount);
 
     delete slider;
@@ -1832,35 +1832,35 @@ void tst_QAbstractSlider::sliderPressedReleased()
 
 void tst_QAbstractSlider::sliderMoved_data()
 {
-    QTest::addColumn<int>("control");
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<int>("position");
-    QTest::addColumn<bool>("sliderDown");
-    QTest::addColumn<int>("expectedCount");
+    BOBUIest::addColumn<int>("control");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<int>("position");
+    BOBUIest::addColumn<bool>("sliderDown");
+    BOBUIest::addColumn<int>("expectedCount");
 
-    QTest::newRow("slider pressed") << int(QStyle::CC_Slider)
+    BOBUIest::newRow("slider pressed") << int(QStyle::CC_Slider)
                                << 0
                                << 20
                                << 10
                                << true
                                << 1;
 
-    QTest::newRow("slider not pressed") << int(QStyle::CC_Slider)
+    BOBUIest::newRow("slider not pressed") << int(QStyle::CC_Slider)
                                << 0
                                << 20
                                << 10
                                << false
                                << 0;
 
-    QTest::newRow("scrollbar pressed") << int(QStyle::CC_ScrollBar)
+    BOBUIest::newRow("scrollbar pressed") << int(QStyle::CC_ScrollBar)
                                << 0
                                << 20
                                << 10
                                << true
                                << 1;
 
-    QTest::newRow("scrollbar not pressed") << int(QStyle::CC_ScrollBar)
+    BOBUIest::newRow("scrollbar not pressed") << int(QStyle::CC_ScrollBar)
                                << 0
                                << 20
                                << 10
@@ -1908,9 +1908,9 @@ void tst_QAbstractSlider::setOrientation()
     QSizePolicy sp2 = slider.sizePolicy();
     QCOMPARE(sp, sp2);
 
-    slider.setOrientation(Qt::Horizontal);
+    slider.setOrientation(BobUI::Horizontal);
     sp = slider.sizePolicy();
-    slider.setOrientation(Qt::Vertical);
+    slider.setOrientation(BobUI::Vertical);
     sp2 = slider.sizePolicy();
 
     QVERIFY(sp != sp2);
@@ -1921,33 +1921,33 @@ void tst_QAbstractSlider::setOrientation()
 
 void tst_QAbstractSlider::rangeChanged_data()
 {
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<int>("newMin");
-    QTest::addColumn<int>("newMax");
-    QTest::addColumn<int>("expectedCount");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<int>("newMin");
+    BOBUIest::addColumn<int>("newMax");
+    BOBUIest::addColumn<int>("expectedCount");
 
-    QTest::newRow("no change")
+    BOBUIest::newRow("no change")
                                << 0
                                << 20
                                << 0
                                << 20
                                << 0;
 
-    QTest::newRow("min change")
+    BOBUIest::newRow("min change")
                                << 0
                                << 20
                                << 10
                                << 20
                                << 1;
-    QTest::newRow("max change")
+    BOBUIest::newRow("max change")
                                << 0
                                << 20
                                << 0
                                << 30
                                << 1;
 
-    QTest::newRow("both change")
+    BOBUIest::newRow("both change")
                                << 0
                                << 20
                                << 10
@@ -1971,19 +1971,19 @@ void tst_QAbstractSlider::rangeChanged()
 
 void tst_QAbstractSlider::setSliderPosition_data()
 {
-    QTest::addColumn<bool>("tracking");
-    QTest::addColumn<bool>("down");
+    BOBUIest::addColumn<bool>("tracking");
+    BOBUIest::addColumn<bool>("down");
 
-    QTest::newRow("tracking, slider down")
+    BOBUIest::newRow("tracking, slider down")
                                << true
                                << true;
-    QTest::newRow("tracking, slider not down")
+    BOBUIest::newRow("tracking, slider not down")
                                << true
                                << false;
-    QTest::newRow("no tracking, slider down")
+    BOBUIest::newRow("no tracking, slider down")
                                << false
                                << true;
-    QTest::newRow("no tracking, slider not down")
+    BOBUIest::newRow("no tracking, slider not down")
                                << false
                                << false;
 }
@@ -2014,11 +2014,11 @@ void tst_QAbstractSlider::setSliderPosition()
 
 void tst_QAbstractSlider::setValue_data()
 {
-    QTest::addColumn<bool>("down");
+    BOBUIest::addColumn<bool>("down");
 
-    QTest::newRow("slider down")
+    BOBUIest::newRow("slider down")
                                << true;
-    QTest::newRow("slider not down")
+    BOBUIest::newRow("slider not down")
                                << false;
 }
 
@@ -2051,7 +2051,7 @@ void tst_QAbstractSlider::waitUntilTimeElapsed(const QElapsedTimer &t, int ms)
 {
     const int eps = 80;
     while (t.elapsed() < ms + eps)
-        QTest::qWait(qMax(int(ms - t.elapsed() + eps), 25));
+        BOBUIest::qWait(qMax(int(ms - t.elapsed() + eps), 25));
 }
 
 void tst_QAbstractSlider::setRepeatAction()
@@ -2069,22 +2069,22 @@ void tst_QAbstractSlider::setRepeatAction()
 
     QElapsedTimer t;
     t.start();
-    QTest::qWait(300);
+    BOBUIest::qWait(300);
     QCOMPARE(spy.size(), 0);
     QCOMPARE(slider->value(), 55);
 
     waitUntilTimeElapsed(t, 550);
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIRY_COMPARE(spy.size(), 1);
     QCOMPARE(slider->value(), 65);
     QCOMPARE(spy.at(0).at(0).toUInt(), (uint)QAbstractSlider::SliderPageStepAdd);
 
     waitUntilTimeElapsed(t, 790);
-    QTRY_COMPARE(spy.size(), 2);
+    BOBUIRY_COMPARE(spy.size(), 2);
     QCOMPARE(slider->value(), 75);
     QCOMPARE(spy.at(1).at(0).toUInt(), (uint)QAbstractSlider::SliderPageStepAdd);
 
     waitUntilTimeElapsed(t, 1790);
-    QTRY_COMPARE(spy.size(), 6);
+    BOBUIRY_COMPARE(spy.size(), 6);
     QCOMPARE(slider->value(), 115);
     QCOMPARE(spy.at(4).at(0).toUInt(), (uint)QAbstractSlider::SliderPageStepAdd);
     QCOMPARE(spy.at(5).at(0).toUInt(), (uint)QAbstractSlider::SliderPageStepAdd);
@@ -2093,7 +2093,7 @@ void tst_QAbstractSlider::setRepeatAction()
     QCOMPARE(spy.size(), 6);
     QCOMPARE(slider->value(), 115);
 
-    QTest::qWait(300);
+    BOBUIest::qWait(300);
     QCOMPARE(spy.size(), 6);
     QCOMPARE(slider->value(), 115);
 }
@@ -2137,8 +2137,8 @@ void tst_QAbstractSlider::sliderChange_impl()
     QCOMPARE(sl.changes.back(), SliderChange::SliderRangeChange);
     sl.changes.clear();
 
-    sl.setOrientation(sl.orientation() == Qt::Horizontal ? Qt::Vertical
-                      /* else */                         : Qt::Horizontal);
+    sl.setOrientation(sl.orientation() == BobUI::Horizontal ? BobUI::Vertical
+                      /* else */                         : BobUI::Horizontal);
     QCOMPARE(sl.changes.size(), 1U);
     QCOMPARE(sl.changes.back(), SliderChange::SliderOrientationChange);
     sl.changes.clear();
@@ -2159,5 +2159,5 @@ void tst_QAbstractSlider::sliderChange_impl()
     sl.changes.clear();
 }
 
-QTEST_MAIN(tst_QAbstractSlider)
+BOBUIEST_MAIN(tst_QAbstractSlider)
 #include "tst_qabstractslider.moc"

@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page java-style-iterators.html
-    \title Java-style Iterators in Qt
+    \title Java-style Iterators in BobUI
     \ingroup groups
-    \ingroup qt-basic-concepts
-    \brief Java style iterators for Qt's containers.
+    \ingroup bobui-basic-concepts
+    \brief Java style iterators for BobUI's containers.
 
     \section1 Java-Style Iterators
 
@@ -15,7 +15,7 @@
     read-write access.
 
     \note New code should use \l{STL-Style iterators} since these are more efficient
-    and can be used together with Qt's and STL's \l{generic algorithms}.
+    and can be used together with BobUI's and STL's \l{generic algorithms}.
 
     \table
     \header \li Containers                        \li Read-only iterator

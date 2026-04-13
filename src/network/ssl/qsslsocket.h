@@ -1,22 +1,22 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #ifndef QSSLSOCKET_H
 #define QSSLSOCKET_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qlist.h>
-#ifndef QT_NO_SSL
-#   include <QtNetwork/qtcpsocket.h>
-#   include <QtNetwork/qsslerror.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qlist.h>
+#ifndef BOBUI_NO_SSL
+#   include <BobUINetwork/bobuicpsocket.h>
+#   include <BobUINetwork/qsslerror.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 
 class QDir;
 class QSslCipher;
@@ -26,10 +26,10 @@ class QSslPreSharedKeyAuthenticator;
 class QOcspResponse;
 
 class QSslSocketPrivate;
-class Q_NETWORK_EXPORT QSslSocket : public QTcpSocket
+class Q_NETWORK_EXPORT QSslSocket : public BOBUIcpSocket
 {
     Q_OBJECT
-    Q_MOC_INCLUDE(<QtNetwork/qsslpresharedkeyauthenticator.h>)
+    Q_MOC_INCLUDE(<BobUINetwork/qsslpresharedkeyauthenticator.h>)
 public:
     enum SslMode {
         UnencryptedMode,
@@ -184,8 +184,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_resumeImplementation())
 };
 
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

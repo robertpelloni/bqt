@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QPainter>
 #include <QPen>
 
@@ -16,7 +16,7 @@ void Wrapper::wrapper0() {
 
 //! [0]
 QPainter painter(this);
-QPen pen(Qt::green, 3, Qt::DashDotLine, Qt::RoundCap, Qt::RoundJoin);
+QPen pen(BobUI::green, 3, BobUI::DashDotLine, BobUI::RoundCap, BobUI::RoundJoin);
 painter.setPen(pen);
 //! [0]
 
@@ -29,11 +29,11 @@ void Wrapper::wrapper1() {
 QPainter painter(this);
 QPen pen;  // creates a default pen
 
-pen.setStyle(Qt::DashDotLine);
+pen.setStyle(BobUI::DashDotLine);
 pen.setWidth(3);
-pen.setBrush(Qt::green);
-pen.setCapStyle(Qt::RoundCap);
-pen.setJoinStyle(Qt::RoundJoin);
+pen.setBrush(BobUI::green);
+pen.setCapStyle(BobUI::RoundCap);
+pen.setJoinStyle(BobUI::RoundJoin);
 
 painter.setPen(pen);
 //! [1]

@@ -1,5 +1,5 @@
 // Copyright (C) 2023 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #define _DEFAULT_SOURCE
 #include <assert.h>

@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 import {
     AbortedError,
@@ -34,7 +34,7 @@ export class BatchedTestRunner {
     static #TestBatchModuleName = 'test_batch';
 
     #loader;
-    #qtContainerElements;
+    #bobuiContainerElements;
 
     #results = new Map();
     #status = RunnerStatus.Running;
@@ -53,9 +53,9 @@ export class BatchedTestRunner {
         new EventSource(
             (privateInterface) => this.#testOutputChangedEventPrivate = privateInterface);
 
-    constructor(loader, qtContainerElements) {
+    constructor(loader, bobuiContainerElements) {
         this.#loader = loader;
-        this.#qtContainerElements = qtContainerElements;
+        this.#bobuiContainerElements = bobuiContainerElements;
     }
 
     get results() { return this.#results; }
@@ -80,11 +80,11 @@ export class BatchedTestRunner {
 
         const status = (() => {
             const hasAnyCrashedTest =
-                !![...window.qtTestRunner.results.values()].find(
+                !![...window.bobuiTestRunner.results.values()].find(
                     result => result.status === TestStatus.Crashed);
             if (hasAnyCrashedTest)
                 return { code: RunnerStatus.TestCrashed };
-            const numberOfFailed = [...window.qtTestRunner.results.values()].reduce(
+            const numberOfFailed = [...window.bobuiTestRunner.results.values()].reduce(
                 (previous, current) => previous + current.exitCode, 0);
             return {
                 code: (numberOfFailed ? RunnerStatus.TestsFailed : RunnerStatus.Passed),
@@ -99,7 +99,7 @@ export class BatchedTestRunner {
         const module = await this.#loader.loadEmscriptenModule(
             targetIsBatch ? BatchedTestRunner.#TestBatchModuleName : testName,
             () => { },
-            this.#qtContainerElements
+            this.#bobuiContainerElements
         );
 
         const testsToExecute = (testName || !targetIsBatch)

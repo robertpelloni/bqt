@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaccessibleobject.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QWindow>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QWindow>
 
 #include "qpointer.h"
 #include "qmetaobject.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAccessibleObjectPrivate
 {
@@ -25,7 +25,7 @@ public:
     QAccessibleInterface for QObjects.
 
     \ingroup accessibility
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This class is part of \l {Accessibility for QWidget Applications}.
 
@@ -126,7 +126,7 @@ static QObjectList topLevelObjects()
     const QWindowList tlw(QGuiApplication::topLevelWindows());
     for (int i = 0; i < tlw.size(); ++i) {
         QWindow *w = tlw.at(i);
-        if (w->type() != Qt::Popup) {
+        if (w->type() != BobUI::Popup) {
             if (QAccessibleInterface *root = w->accessibleRoot()) {
                 if (root->object())
                     list.append(root->object());
@@ -203,6 +203,6 @@ QAccessible::State QAccessibleApplication::state() const
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

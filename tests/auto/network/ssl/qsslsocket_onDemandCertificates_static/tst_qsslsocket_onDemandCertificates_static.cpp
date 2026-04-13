@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qnetworkproxy.h>
-#include <QtNetwork/qauthenticator.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qnetworkproxy.h>
+#include <BobUINetwork/qauthenticator.h>
 
 #include "private/qhostinfo_p.h"
 
 #include "../../../network-settings.h"
 
-#ifndef QT_NO_OPENSSL
+#ifndef BOBUI_NO_OPENSSL
 typedef QSharedPointer<QSslSocket> QSslSocketPtr;
 #endif
 
@@ -23,7 +23,7 @@ class tst_QSslSocket_onDemandCertificates_static : public QObject
 
 public:
 
-#ifndef QT_NO_OPENSSL
+#ifndef BOBUI_NO_OPENSSL
     QSslSocketPtr newSocket();
 #endif
 
@@ -34,13 +34,13 @@ public slots:
     void cleanup();
     void proxyAuthenticationRequired(const QNetworkProxy &, QAuthenticator *auth);
 
-#ifndef QT_NO_OPENSSL
+#ifndef BOBUI_NO_OPENSSL
 private slots:
     void onDemandRootCertLoadingStaticMethods();
 
 private:
     QSslSocket *socket;
-#endif // QT_NO_OPENSSL
+#endif // BOBUI_NO_OPENSSL
 };
 
 enum ProxyTests {
@@ -57,31 +57,31 @@ enum ProxyTests {
 
 void tst_QSslSocket_onDemandCertificates_static::initTestCase_data()
 {
-    QTest::addColumn<bool>("setProxy");
-    QTest::addColumn<int>("proxyType");
+    BOBUIest::addColumn<bool>("setProxy");
+    BOBUIest::addColumn<int>("proxyType");
 
-    QTest::newRow("WithoutProxy") << false << 0;
-    QTest::newRow("WithSocks5Proxy") << true << int(Socks5Proxy);
-    QTest::newRow("WithSocks5ProxyAuth") << true << int(Socks5Proxy | AuthBasic);
+    BOBUIest::newRow("WithoutProxy") << false << 0;
+    BOBUIest::newRow("WithSocks5Proxy") << true << int(Socks5Proxy);
+    BOBUIest::newRow("WithSocks5ProxyAuth") << true << int(Socks5Proxy | AuthBasic);
 
-    QTest::newRow("WithHttpProxy") << true << int(HttpProxy);
-    QTest::newRow("WithHttpProxyBasicAuth") << true << int(HttpProxy | AuthBasic);
+    BOBUIest::newRow("WithHttpProxy") << true << int(HttpProxy);
+    BOBUIest::newRow("WithHttpProxyBasicAuth") << true << int(HttpProxy | AuthBasic);
     // uncomment the line below when NTLM works
-//    QTest::newRow("WithHttpProxyNtlmAuth") << true << int(HttpProxy | AuthNtlm);
+//    BOBUIest::newRow("WithHttpProxyNtlmAuth") << true << int(HttpProxy | AuthNtlm);
 }
 
 void tst_QSslSocket_onDemandCertificates_static::initTestCase()
 {
-#ifdef QT_TEST_SERVER
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::socksProxyServerName(), 1080));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::socksProxyServerName(), 1081));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3128));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3129));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3130));
+#ifdef BOBUI_TEST_SERVER
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::socksProxyServerName(), 1080));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::socksProxyServerName(), 1081));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3128));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3129));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3130));
 #else
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
-#endif // QT_TEST_SERVER
+#endif // BOBUI_TEST_SERVER
 }
 
 void tst_QSslSocket_onDemandCertificates_static::init()
@@ -89,8 +89,8 @@ void tst_QSslSocket_onDemandCertificates_static::init()
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy) {
         QFETCH_GLOBAL(int, proxyType);
-        const auto socksAddr = QtNetworkSettings::socksProxyServerIp().toString();
-        const auto squidAddr = QtNetworkSettings::httpProxyServerIp().toString();
+        const auto socksAddr = BobUINetworkSettings::socksProxyServerIp().toString();
+        const auto squidAddr = BobUINetworkSettings::httpProxyServerIp().toString();
 
         QNetworkProxy proxy;
 
@@ -118,7 +118,7 @@ void tst_QSslSocket_onDemandCertificates_static::init()
         QNetworkProxy::setApplicationProxy(proxy);
     }
 
-    qt_qhostinfo_clear_cache();
+    bobui_qhostinfo_clear_cache();
 }
 
 void tst_QSslSocket_onDemandCertificates_static::cleanup()
@@ -126,7 +126,7 @@ void tst_QSslSocket_onDemandCertificates_static::cleanup()
     QNetworkProxy::setApplicationProxy(QNetworkProxy::DefaultProxy);
 }
 
-#ifndef QT_NO_OPENSSL
+#ifndef BOBUI_NO_OPENSSL
 QSslSocketPtr tst_QSslSocket_onDemandCertificates_static::newSocket()
 {
     QSslSocket *socket = new QSslSocket;
@@ -134,7 +134,7 @@ QSslSocketPtr tst_QSslSocket_onDemandCertificates_static::newSocket()
     proxyAuthCalled = 0;
     connect(socket, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
             SLOT(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
-            Qt::DirectConnection);
+            BobUI::DirectConnection);
 
     return QSslSocketPtr(socket);
 }
@@ -147,11 +147,11 @@ void tst_QSslSocket_onDemandCertificates_static::proxyAuthenticationRequired(con
     auth->setPassword("password");
 }
 
-#ifndef QT_NO_OPENSSL
+#ifndef BOBUI_NO_OPENSSL
 
 void tst_QSslSocket_onDemandCertificates_static::onDemandRootCertLoadingStaticMethods()
 {
-    QString host("www.qt.io");
+    QString host("www.bobui.io");
 
     // setting empty default configuration -> should not work
     QSslConfiguration conf;
@@ -164,7 +164,7 @@ void tst_QSslSocket_onDemandCertificates_static::onDemandRootCertLoadingStaticMe
     QSslConfiguration::setDefaultConfiguration(originalDefaultConf); // restore old behaviour for run with proxies etc.
 }
 
-#endif // QT_NO_OPENSSL
+#endif // BOBUI_NO_OPENSSL
 
-QTEST_MAIN(tst_QSslSocket_onDemandCertificates_static)
+BOBUIEST_MAIN(tst_QSslSocket_onDemandCertificates_static)
 #include "tst_qsslsocket_onDemandCertificates_static.moc"

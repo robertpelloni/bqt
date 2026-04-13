@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QNETWORKACCESSCACHEBACKEND_DEBUG
 
@@ -11,9 +11,9 @@
 #include "qcoreapplication.h"
 #include "qhash.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QNetworkAccessCacheBackend::QNetworkAccessCacheBackend()
     : QNetworkAccessBackend(QNetworkAccessBackend::TargetType::Local)
@@ -58,8 +58,8 @@ bool QNetworkAccessCacheBackend::sendCacheContents()
     const auto cacheControlValue = QLatin1StringView(
             headers.value(QHttpHeaders::WellKnownHeader::CacheControl));
     // RFC 9111 Section 5.2 Cache Control
-    if (cacheControlValue.contains("must-revalidate"_L1, Qt::CaseInsensitive)
-        || cacheControlValue.contains("no-cache"_L1, Qt::CaseInsensitive)) {
+    if (cacheControlValue.contains("must-revalidate"_L1, BobUI::CaseInsensitive)
+        || cacheControlValue.contains("no-cache"_L1, BobUI::CaseInsensitive)) {
         return false;
     }
     setHeaders(std::move(headers));
@@ -106,5 +106,5 @@ qint64 QNetworkAccessCacheBackend::read(char *data, qint64 maxlen)
     return device ? device->read(data, maxlen) : qint64(0);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

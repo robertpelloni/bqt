@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(stereoqopenglwidget LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui OpenGL OpenGLWidgets Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui OpenGL OpenGLWidgets Widgets)
 
-qt_add_executable(stereoqopenglwidget
+bobui_add_executable(stereoqopenglwidget
     glwidget.cpp glwidget.h
     main.cpp
     mainwindow.cpp mainwindow.h
@@ -20,11 +20,11 @@ set_target_properties(stereoqopenglwidget PROPERTIES
 )
 
 target_link_libraries(stereoqopenglwidget PUBLIC
-    Qt6::Core
-    Qt6::Gui
-    Qt6::OpenGL
-    Qt6::OpenGLWidgets
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::OpenGL
+    BobUI6::OpenGLWidgets
+    BobUI6::Widgets
 )
 
 
@@ -34,7 +34,7 @@ install(TARGETS stereoqopenglwidget
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-qt_generate_deploy_app_script(
+bobui_generate_deploy_app_script(
     TARGET stereoqopenglwidget
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR

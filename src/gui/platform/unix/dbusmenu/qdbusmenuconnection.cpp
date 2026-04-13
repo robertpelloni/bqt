@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtGui/qtgui-config.h>
+#include <BobUIGui/bobuigui-config.h>
 
 #include <QDBusMessage>
 #include <QDBusInterface>
@@ -11,16 +11,16 @@
 #include <QDebug>
 #include <QCoreApplication>
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 #include <private/qdbustrayicon_p.h>
 #endif
 #include <private/qdbusmenuconnection_p.h>
 #include <private/qdbusmenuadaptor_p.h>
 #include <private/qdbusplatformmenu_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 const QString StatusNotifierWatcherService = "org.kde.StatusNotifierWatcher"_L1;
 const QString StatusNotifierWatcherPath = "/StatusNotifierWatcher"_L1;
@@ -41,7 +41,7 @@ QDBusMenuConnection::QDBusMenuConnection(QObject *parent, const QString &service
     , m_dbusWatcher(new QDBusServiceWatcher(StatusNotifierWatcherService, m_connection, QDBusServiceWatcher::WatchForRegistration, this))
     , m_watcherRegistered(false)
 {
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
     // Start monitoring if any known tray-related services are registered.
     if (m_connection.interface()->isServiceRegistered(StatusNotifierWatcherService))
         m_watcherRegistered = true;
@@ -61,7 +61,7 @@ void QDBusMenuConnection::dbusError(const QDBusError &error)
     qWarning() << "QDBusTrayIcon encountered a D-Bus error:" << error;
 }
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 bool QDBusMenuConnection::registerTrayIconMenu(QDBusTrayIcon *item)
 {
     bool success = connection().registerObject(MenuBarPath, item->menu());
@@ -106,8 +106,8 @@ void QDBusMenuConnection::unregisterTrayIcon(QDBusTrayIcon *item)
     unregisterTrayIconMenu(item);
     connection().unregisterObject(StatusNotifierItemPath);
 }
-#endif // QT_NO_SYSTEMTRAYICON
+#endif // BOBUI_NO_SYSTEMTRAYICON
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusmenuconnection_p.cpp"

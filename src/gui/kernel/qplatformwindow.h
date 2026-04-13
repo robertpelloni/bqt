@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QPLATFORMWINDOW_H
 #define QPLATFORMWINDOW_H
 
@@ -9,20 +9,20 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qmargins.h>
-#include <QtCore/qstring.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtGui/qwindow.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qmargins.h>
+#include <BobUICore/qstring.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUIGui/qwindow.h>
 #include <qpa/qplatformopenglcontext.h>
 #include <qpa/qplatformsurface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define QWINDOWSIZE_MAX ((1<<24)-1)
 
@@ -59,8 +59,8 @@ public:
     virtual QMargins safeAreaMargins() const;
 
     virtual void setVisible(bool visible);
-    virtual void setWindowFlags(Qt::WindowFlags flags);
-    virtual void setWindowState(Qt::WindowStates state);
+    virtual void setWindowFlags(BobUI::WindowFlags flags);
+    virtual void setWindowState(BobUI::WindowStates state);
 
     virtual WId winId() const;
     virtual void setParent(const QPlatformWindow *window);
@@ -89,7 +89,7 @@ public:
     virtual void setMask(const QRegion &region);
     virtual void requestActivateWindow();
 
-    virtual void handleContentOrientationChange(Qt::ScreenOrientation orientation);
+    virtual void handleContentOrientationChange(BobUI::ScreenOrientation orientation);
 
     virtual qreal devicePixelRatio() const;
 
@@ -100,7 +100,7 @@ public:
 
     virtual bool windowEvent(QEvent *event);
 
-    virtual bool startSystemResize(Qt::Edges edges);
+    virtual bool startSystemResize(BobUI::Edges edges);
     virtual bool startSystemMove();
 
     virtual void setFrameStrutEventsEnabled(bool enabled);
@@ -139,6 +139,6 @@ protected:
     QScopedPointer<QPlatformWindowPrivate> d_ptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QPLATFORMWINDOW_H

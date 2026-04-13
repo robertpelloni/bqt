@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDWINDOW_H
 #define QWAYLANDWINDOW_H
@@ -8,40 +8,40 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/QWaitCondition>
-#include <QtCore/QMutex>
-#include <QtCore/QReadWriteLock>
+#include <BobUICore/QWaitCondition>
+#include <BobUICore/QMutex>
+#include <BobUICore/QReadWriteLock>
 
-#include <QtGui/QIcon>
-#include <QtGui/QEventPoint>
-#include <QtCore/QVariant>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QList>
-#include <QtCore/QMap> // for QVariantMap
+#include <BobUIGui/QIcon>
+#include <BobUIGui/QEventPoint>
+#include <BobUICore/QVariant>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QList>
+#include <BobUICore/QMap> // for QVariantMap
 
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatformwindow_p.h>
 
-#include <QtWaylandClient/private/qwayland-wayland.h>
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtWaylandClient/qtwaylandclientglobal.h>
-#include <QtWaylandClient/private/qwaylandshellsurface_p.h>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
+#include <BobUIWaylandClient/private/qwaylandshellsurface_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 struct wl_egl_window;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 Q_DECLARE_LOGGING_CATEGORY(lcWaylandBackingstore)
 
@@ -146,18 +146,18 @@ public:
     QWaylandSubSurface *subSurfaceWindow() const;
     QWaylandScreen *waylandScreen() const;
 
-    void handleContentOrientationChange(Qt::ScreenOrientation orientation) override;
+    void handleContentOrientationChange(BobUI::ScreenOrientation orientation) override;
     void updateBufferTransform();
-    void setOrientationMask(Qt::ScreenOrientations mask);
+    void setOrientationMask(BobUI::ScreenOrientations mask);
 
     ToplevelWindowTilingStates toplevelWindowTilingStates() const;
     void handleToplevelWindowTilingStatesChanged(ToplevelWindowTilingStates states);
 
-    Qt::WindowStates windowStates() const;
-    void setWindowState(Qt::WindowStates states) override;
-    void setWindowFlags(Qt::WindowFlags flags) override;
-    Qt::WindowFlags windowFlags() const;
-    void handleWindowStatesChanged(Qt::WindowStates states);
+    BobUI::WindowStates windowStates() const;
+    void setWindowState(BobUI::WindowStates states) override;
+    void setWindowFlags(BobUI::WindowFlags flags) override;
+    BobUI::WindowFlags windowFlags() const;
+    void handleWindowStatesChanged(BobUI::WindowStates states);
 
     void raise() override;
     void lower() override;
@@ -177,7 +177,7 @@ public:
     QWaylandAbstractDecoration *decoration() const;
 
     void handleMouse(QWaylandInputDevice *inputDevice, const QWaylandPointerEvent &e);
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     void handleSwipeGesture(QWaylandInputDevice *inputDevice,
                             const QWaylandPointerGestureSwipeEvent &e);
     void handlePinchGesture(QWaylandInputDevice *inputDevice,
@@ -185,14 +185,14 @@ public:
 #endif
 
     bool touchDragDecoration(QWaylandInputDevice *inputDevice, const QPointF &local, const QPointF &global,
-                             QEventPoint::State state, Qt::KeyboardModifiers mods);
+                             QEventPoint::State state, BobUI::KeyboardModifiers mods);
     bool handleTabletEventDecoration(QWaylandInputDevice *inputDevice, const QPointF &local,
-                                     const QPointF &global, Qt::MouseButtons buttons,
-                                     Qt::KeyboardModifiers modifiers);
+                                     const QPointF &global, BobUI::MouseButtons buttons,
+                                     BobUI::KeyboardModifiers modifiers);
 
     virtual bool createDecoration();
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     void restoreMouseCursor(QWaylandInputDevice *device);
     void setStoredCursor(const QCursor &cursor);
     void resetStoredCursor();
@@ -211,7 +211,7 @@ public:
     QVariant property(const QString &name);
     QVariant property(const QString &name, const QVariant &defaultValue);
 
-#ifdef QT_PLATFORM_WINDOW_HAS_VIRTUAL_SET_BACKING_STORE
+#ifdef BOBUI_PLATFORM_WINDOW_HAS_VIRTUAL_SET_BACKING_STORE
     void setBackingStore(QPlatformBackingStore *store) override;
 #else
     void setBackingStore(QWaylandShmBackingStore *backingStore) { mBackingStore = backingStore; }
@@ -225,10 +225,10 @@ public:
     void propagateSizeHints() override;
     void addAttachOffset(const QPoint point);
 
-    bool startSystemResize(Qt::Edges edges) override;
+    bool startSystemResize(BobUI::Edges edges) override;
     bool startSystemMove() override;
 
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
     void requestUpdate() override;
     void handleUpdate();
     void deliverUpdateRequest() override;
@@ -294,9 +294,9 @@ protected:
     std::unique_ptr<QWaylandAbstractDecoration> mWindowDecoration;
     bool mWindowDecorationEnabled = false;
     bool mMouseEventsInContentArea = false;
-    Qt::MouseButtons mMousePressedInContentArea = Qt::NoButton;
+    BobUI::MouseButtons mMousePressedInContentArea = BobUI::NoButton;
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     enum GestureState {
         GestureNotActive,
         GestureActiveInContentArea,
@@ -339,7 +339,7 @@ protected:
     QString mWindowTitle;
     QIcon mWindowIcon;
 
-    Qt::WindowFlags mFlags;
+    BobUI::WindowFlags mFlags;
     QRegion mMask;
 
     // Empty QRegion maps to "infinite" input region, needs a dedicated "deliberately empty" state.
@@ -347,7 +347,7 @@ protected:
     bool mTransparentInputRegion = false;
 
     QRegion mOpaqueArea;
-    Qt::WindowStates mLastReportedWindowStates = Qt::WindowNoState;
+    BobUI::WindowStates mLastReportedWindowStates = BobUI::WindowNoState;
     ToplevelWindowTilingStates mLastReportedToplevelWindowTilingStates = WindowNoState;
 
     QWaylandShmBackingStore *mBackingStore = nullptr;
@@ -358,12 +358,12 @@ protected:
     QPointer<QWaylandWindow> mTransientParent;
     QList<QPointer<QWaylandWindow>> mChildPopups;
 
-    Qt::ScreenOrientation mLastReportedContentOrientation = Qt::PrimaryOrientation;
+    BobUI::ScreenOrientation mLastReportedContentOrientation = BobUI::PrimaryOrientation;
 
     std::unique_ptr<ColorManagementSurface> mColorManagementSurface;
     QSurfaceFormat mSurfaceFormat;
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     QCursor mStoredCursor;
     bool mHasStoredCursor = false;
 #endif
@@ -427,6 +427,6 @@ inline QPoint QWaylandWindow::attachOffset() const
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDWINDOW_H

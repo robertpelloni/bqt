@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QSharedMemory>
 #include <QStringList>
 #include <QDebug>
-#include <QTest>
+#include <BOBUIest>
 #include <stdio.h>
 
 void set(QSharedMemory &sm, int pos, char value)
@@ -69,7 +69,7 @@ int producer(const QNativeIpcKey &key)
                 qWarning() << "Could not unlock" << producer.key();
                 return EXIT_FAILURE;
             }
-            QTest::qSleep(1);
+            BOBUIest::qSleep(1);
             continue;
         }
         //qDebug() << "producer:" << i);
@@ -79,7 +79,7 @@ int producer(const QNativeIpcKey &key)
             qWarning() << "Could not unlock" << producer.key();
             return EXIT_FAILURE;
         }
-        QTest::qSleep(1);
+        BOBUIest::qSleep(1);
     }
     if (!producer.lock()) {
         qWarning() << "Could not lock" << producer.key();
@@ -110,7 +110,7 @@ int consumer(const QNativeIpcKey &key)
             return EXIT_FAILURE;
         }
         ++tries;
-        QTest::qSleep(1);
+        BOBUIest::qSleep(1);
     }
     //qDebug("consumer attached");
 
@@ -136,7 +136,7 @@ int consumer(const QNativeIpcKey &key)
             qWarning() << "Could not unlock" << consumer.key();
             return EXIT_FAILURE;
         }
-        QTest::qSleep(10);
+        BOBUIest::qSleep(10);
     }
 
     //qDebug("consumer detaching");

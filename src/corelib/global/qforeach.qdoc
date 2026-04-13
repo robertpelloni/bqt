@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \headerfile <QForeach>
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup funclists
     \brief Helper macros for performing for-loops.
 */
@@ -26,7 +26,7 @@
 
     \snippet code/src_corelib_global_qglobal.cpp 32
 
-    If using other build systems, you can add \c QT_NO_KEYWORDS to the
+    If using other build systems, you can add \c BOBUI_NO_KEYWORDS to the
     list of pre-defined macros.
 
     \sa Q_FOREVER
@@ -48,9 +48,9 @@
     \macro foreach(variable, container)
     \relates <QForeach>
 
-    This macro is used to implement Qt's \c foreach loop. The \a
+    This macro is used to implement BobUI's \c foreach loop. The \a
     variable parameter is a variable name or variable definition; the
-    \a container parameter is a Qt container whose value type
+    \a container parameter is a BobUI container whose value type
     corresponds to the type of the variable. See \l{The foreach
     Keyword} for details.
 
@@ -59,7 +59,7 @@
 
     \snippet code/src_corelib_global_qglobal.cpp 32
 
-    \note Since Qt 5.7, the use of this macro is discouraged.
+    \note Since BobUI 5.7, the use of this macro is discouraged.
     Use C++11 range-based \c for, possibly with \c {std::as_const()},
     as needed.
 */
@@ -73,7 +73,7 @@
     This macro is available even when \c no_keywords is specified
     using the \c .pro file's \c CONFIG variable.
 
-    \note Since Qt 5.7, the use of this macro is discouraged.
+    \note Since BobUI 5.7, the use of this macro is discouraged.
     Use C++11 range-based \c for, possibly with \c {std::as_const()},
     as needed.
 */

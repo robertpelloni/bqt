@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSIZEGRIP_H
 #define QSIZEGRIP_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_REQUIRE_CONFIG(sizegrip);
+BOBUI_REQUIRE_CONFIG(sizegrip);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSizeGripPrivate;
 class Q_WIDGETS_EXPORT QSizeGrip : public QWidget
@@ -42,6 +42,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_showIfNotHidden())
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSIZEGRIP_H

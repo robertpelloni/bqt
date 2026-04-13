@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qheaderview.h"
 
@@ -15,25 +15,25 @@
 #include <qscrollbar.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
-#if QT_CONFIG(tooltip)
-#include <qtooltip.h>
+#if BOBUI_CONFIG(tooltip)
+#include <bobuiooltip.h>
 #endif
 #include <qvarlengtharray.h>
 #include <qvariant.h>
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #include <qwhatsthis.h>
 #endif
 #include <private/qheaderview_p.h>
 #include <private/qabstractitemmodel_p.h>
 #include <private/qabstractitemdelegate_p.h>
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 #include <qdatastream.h>
 #endif
 
-#include <QtCore/q26numeric.h>
+#include <BobUICore/q26numeric.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECL_COLD_FUNCTION
 static void warn_overflow(const char *caller, const char *callee, int value)
@@ -43,7 +43,7 @@ static void warn_overflow(const char *caller, const char *callee, int value)
              value, caller, callee);
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 QDataStream &operator<<(QDataStream &out, const QHeaderViewPrivate::SectionItem &section)
 {
     section.write(out);
@@ -55,7 +55,7 @@ QDataStream &operator>>(QDataStream &in, QHeaderViewPrivate::SectionItem &sectio
     section.read(in);
     return in;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 static const int maxSizeSection = 1048575; // since section size is in a bitfield (uint 20). See qheaderview_p.h
                                            // if this is changed then the docs in maximumSectionSize should be changed.
@@ -67,15 +67,15 @@ static const int maxSizeSection = 1048575; // since section size is in a bitfiel
     item views.
 
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A QHeaderView displays the headers used in item views such as the
-    QTableView and QTreeView classes. It takes the place of Qt3's \c QHeader
-    class previously used for the same purpose, but uses the Qt's model/view
+    BOBUIableView and BOBUIreeView classes. It takes the place of BobUI3's \c QHeader
+    class previously used for the same purpose, but uses the BobUI's model/view
     architecture for consistency with the item view classes.
 
     The QHeaderView class is one of the \l{Model/View Classes} and is part of
-    Qt's \l{Model/View Programming}{model/view framework}.
+    BobUI's \l{Model/View Programming}{model/view framework}.
 
     The header gets the data for each section from the model using the
     QAbstractItemModel::headerData() function. You can set the data by using
@@ -118,29 +118,29 @@ static const int maxSizeSection = 1048575; // since section size is in a bitfiel
 
     \section1 Appearance
 
-    QTableWidget and QTableView create default headers. If you want
+    BOBUIableWidget and BOBUIableView create default headers. If you want
     the headers to be visible, you can use \l{QFrame::}{setVisible()}.
 
-    Not all \l{Qt::}{ItemDataRole}s will have an effect on a
+    Not all \l{BobUI::}{ItemDataRole}s will have an effect on a
     QHeaderView. If you need to draw other roles, you can subclass
     QHeaderView and reimplement \l{QHeaderView::}{paintEvent()}.
     QHeaderView respects the following item data roles, unless they are
     in conflict with the style (which can happen for styles that follow
     the desktop theme):
 
-    \l{Qt::}{TextAlignmentRole}, \l{Qt::}{DisplayRole},
-    \l{Qt::}{FontRole}, \l{Qt::}{DecorationRole},
-    \l{Qt::}{ForegroundRole}, and \l{Qt::}{BackgroundRole}.
+    \l{BobUI::}{TextAlignmentRole}, \l{BobUI::}{DisplayRole},
+    \l{BobUI::}{FontRole}, \l{BobUI::}{DecorationRole},
+    \l{BobUI::}{ForegroundRole}, and \l{BobUI::}{BackgroundRole}.
 
     \note Each header renders the data for each section itself, and does not
     rely on a delegate. As a result, calling a header's setItemDelegate()
     function will have no effect.
 
-    \sa {Model/View Programming}, QListView, QTableView, QTreeView
+    \sa {Model/View Programming}, QListView, BOBUIableView, BOBUIreeView
 
     \section1 Special consideration for huge models
 
-    The headerview uses 8 to 16 bytes of memory per section. However, since Qt
+    The headerview uses 8 to 16 bytes of memory per section. However, since BobUI
     6.9 this section memory is only used if one or more sections are resized or
     reordered. This means that it's possible for a model to have millions of
     sections without QHeaderView consuming a proportional, and therefore huge,
@@ -266,7 +266,7 @@ static const int maxSizeSection = 1048575; // since section size is in a bitfiel
 
 /*!
     \fn void QHeaderView::sortIndicatorChanged(int logicalIndex,
-    Qt::SortOrder order)
+    BobUI::SortOrder order)
 
     This signal is emitted when the section containing the sort indicator or
     the order indicated is changed. The section's logical index is specified
@@ -291,7 +291,7 @@ static const int maxSizeSection = 1048575; // since section size is in a bitfiel
 /*!
     Creates a new generic header with the given \a orientation and \a parent.
 */
-QHeaderView::QHeaderView(Qt::Orientation orientation, QWidget *parent)
+QHeaderView::QHeaderView(BobUI::Orientation orientation, QWidget *parent)
     : QAbstractItemView(*new QHeaderViewPrivate, parent)
 {
     Q_D(QHeaderView);
@@ -303,7 +303,7 @@ QHeaderView::QHeaderView(Qt::Orientation orientation, QWidget *parent)
   \internal
 */
 QHeaderView::QHeaderView(QHeaderViewPrivate &dd,
-                         Qt::Orientation orientation, QWidget *parent)
+                         BobUI::Orientation orientation, QWidget *parent)
     : QAbstractItemView(dd, parent)
 {
     Q_D(QHeaderView);
@@ -327,13 +327,13 @@ QHeaderView::~QHeaderView()
 void QHeaderView::initialize()
 {
     Q_D(QHeaderView);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     setFrameStyle(NoFrame);
-    setFocusPolicy(Qt::NoFocus);
+    setFocusPolicy(BobUI::NoFocus);
     d->viewport->setMouseTracking(true);
     d->viewport->setBackgroundRole(QPalette::Button);
-    d->textElideMode = Qt::ElideNone;
+    d->textElideMode = BobUI::ElideNone;
     delete d->itemDelegate;
 }
 
@@ -350,7 +350,7 @@ void QHeaderView::setModel(QAbstractItemModel *model)
         d->disconnectModel();
 
     if (model && model != QAbstractItemModelPrivate::staticEmptyModel()) {
-        const bool hor = d->orientation == Qt::Horizontal;
+        const bool hor = d->orientation == BobUI::Horizontal;
         d->modelConnections = {
             QObject::connect(model, hor ? &QAbstractItemModel::columnsInserted
                                         : &QAbstractItemModel::rowsInserted,
@@ -390,10 +390,10 @@ void QHeaderView::setModel(QAbstractItemModel *model)
 /*!
     Returns the orientation of the header.
 
-    \sa Qt::Orientation
+    \sa BobUI::Orientation
 */
 
-Qt::Orientation QHeaderView::orientation() const
+BobUI::Orientation QHeaderView::orientation() const
 {
     Q_D(const QHeaderView);
     return d->orientation;
@@ -428,7 +428,7 @@ void QHeaderView::setOffset(int newOffset)
     // don't overflow; this function is checked with both INT_MIN and INT_MAX...
     const int ndelta = q26::saturate_cast<int>(d->headerOffset - qint64{newOffset});
     d->headerOffset = newOffset;
-    if (d->orientation == Qt::Horizontal) {
+    if (d->orientation == BobUI::Horizontal) {
         if (isRightToLeft()) {
             if (int r; !qMulOverflow<-1>(ndelta, &r))
                 d->viewport->scroll(r, 0);
@@ -442,7 +442,7 @@ void QHeaderView::setOffset(int newOffset)
     }
     if (d->state == QHeaderViewPrivate::ResizeSection && !d->preventCursorChangeInSetOffset) {
         QPoint cursorPos = QCursor::pos();
-        if (d->orientation == Qt::Horizontal)
+        if (d->orientation == BobUI::Horizontal)
             QCursor::setPos(cursorPos.x() + ndelta, cursorPos.y());
         else
             QCursor::setPos(cursorPos.x(), cursorPos.y() + ndelta);
@@ -475,7 +475,7 @@ void QHeaderView::setOffsetToSectionPosition(int visualSectionNumber)
 void QHeaderView::setOffsetToLastSection()
 {
     Q_D(const QHeaderView);
-    int size = (d->orientation == Qt::Horizontal ? viewport()->width() : viewport()->height());
+    int size = (d->orientation == BobUI::Horizontal ? viewport()->width() : viewport()->height());
     int position = length() - size;
     setOffset(position);
 }
@@ -550,7 +550,7 @@ void QHeaderView::setVisible(bool v)
     Returns a suitable size hint for the section specified by \a logicalIndex.
 
     \sa sizeHint(), defaultSectionSize(), minimumSectionSize(), maximumSectionSize()
-    Qt::SizeHintRole
+    BobUI::SizeHintRole
 */
 
 int QHeaderView::sectionSizeHint(int logicalIndex) const
@@ -561,12 +561,12 @@ int QHeaderView::sectionSizeHint(int logicalIndex) const
     if (logicalIndex < 0 || logicalIndex >= count())
         return -1;
     QSize size;
-    QVariant value = d->model->headerData(logicalIndex, d->orientation, Qt::SizeHintRole);
+    QVariant value = d->model->headerData(logicalIndex, d->orientation, BobUI::SizeHintRole);
     if (value.isValid())
         size = qvariant_cast<QSize>(value);
     else
         size = sectionSizeFromContents(logicalIndex);
-    int hint = d->orientation == Qt::Horizontal ? size.width() : size.height();
+    int hint = d->orientation == BobUI::Horizontal ? size.width() : size.height();
     return qBound(minimumSectionSize(), hint, maximumSectionSize());
 }
 
@@ -905,7 +905,7 @@ void QHeaderView::resizeSection(int logical, int size)
     int h = d->viewport->height();
     int pos = sectionViewportPosition(logical);
     QRect r;
-    if (d->orientation == Qt::Horizontal)
+    if (d->orientation == BobUI::Horizontal)
         if (isRightToLeft())
             r.setRect(0, 0, pos + size, h);
         else
@@ -922,7 +922,7 @@ void QHeaderView::resizeSection(int logical, int size)
     // then we want to change the geometry on that widget. Not doing it at once can/will
     // cause scrollbars flicker as they would be shown at first but then removed.
     // In the same situation it will also allow shrinking the whole view when stretchLastSection is set
-    // (It is default on QTreeViews - and it wouldn't shrink since the last stretch was made before the
+    // (It is default on BOBUIreeViews - and it wouldn't shrink since the last stretch was made before the
     // viewport was resized)
 
     QAbstractScrollArea *parent = qobject_cast<QAbstractScrollArea *>(parentWidget());
@@ -1118,7 +1118,7 @@ int QHeaderView::logicalIndex(int visualIndex) const
     If \a sectionsMovable is true, the header sections may be moved by the user;
     otherwise they are fixed in place.
 
-    When used in combination with QTreeView, the first column is not
+    When used in combination with BOBUIreeView, the first column is not
     movable (since it contains the tree structure), by default.
     You can make it movable with setFirstSectionMovable(true).
 
@@ -1149,12 +1149,12 @@ bool QHeaderView::sectionsMovable() const
     \brief Whether the first column can be moved by the user
 
     This property controls whether the first column can be moved by the user.
-    In a QTreeView, the first column holds the tree structure and is
+    In a BOBUIreeView, the first column holds the tree structure and is
     therefore non-movable by default, even after setSectionsMovable(true).
 
     It can be made movable again, for instance in the case of flat lists
     without a tree structure, by calling this method.
-    In such a scenario, it is recommended to call QTreeView::setRootIsDecorated(false)
+    In such a scenario, it is recommended to call BOBUIreeView::setRootIsDecorated(false)
     as well.
 
     \code
@@ -1256,7 +1256,7 @@ void QHeaderView::setSectionResizeMode(ResizeMode mode)
 
     \note This setting will be ignored for the last section if the stretchLastSection
     property is set to true. This is the default for the horizontal headers provided
-    by QTreeView.
+    by BOBUIreeView.
 
     \sa setStretchLastSection(), resizeContentsPrecision()
 */
@@ -1316,11 +1316,11 @@ QHeaderView::ResizeMode QHeaderView::sectionResizeMode(int logicalIndex) const
    Special value 0 means that it will look at only the visible area.
    Special value -1 will imply looking at all elements.
 
-   This value is used in QTableView::sizeHintForColumn(), QTableView::sizeHintForRow()
-   and QTreeView::sizeHintForColumn(). Reimplementing these functions can make this
+   This value is used in BOBUIableView::sizeHintForColumn(), BOBUIableView::sizeHintForRow()
+   and BOBUIreeView::sizeHintForColumn(). Reimplementing these functions can make this
    function not having an effect.
 
-    \sa resizeContentsPrecision(), setSectionResizeMode(), resizeSections(), QTableView::sizeHintForColumn(), QTableView::sizeHintForRow(), QTreeView::sizeHintForColumn()
+    \sa resizeContentsPrecision(), setSectionResizeMode(), resizeSections(), BOBUIableView::sizeHintForColumn(), BOBUIableView::sizeHintForRow(), BOBUIreeView::sizeHintForColumn()
 */
 
 void QHeaderView::setResizeContentsPrecision(int precision)
@@ -1401,7 +1401,7 @@ bool QHeaderView::isSortIndicatorShown() const
     \sa sortIndicatorSection(), sortIndicatorOrder()
 */
 
-void QHeaderView::setSortIndicator(int logicalIndex, Qt::SortOrder order)
+void QHeaderView::setSortIndicator(int logicalIndex, BobUI::SortOrder order)
 {
     Q_D(QHeaderView);
 
@@ -1452,7 +1452,7 @@ int QHeaderView::sortIndicatorSection() const
     \sa setSortIndicator(), sortIndicatorSection()
 */
 
-Qt::SortOrder QHeaderView::sortIndicatorOrder() const
+BobUI::SortOrder QHeaderView::sortIndicatorOrder() const
 {
     Q_D(const QHeaderView);
     return d->sortIndicatorOrder;
@@ -1473,9 +1473,9 @@ Qt::SortOrder QHeaderView::sortIndicatorOrder() const
 
     Setting this property to true has no effect unless
     sectionsClickable() is also true (which is the default for certain
-    views, for instance QTableView, or is automatically set when making
+    views, for instance BOBUIableView, or is automatically set when making
     a view sortable, for instance by calling
-    QTreeView::setSortingEnabled).
+    BOBUIreeView::setSortingEnabled).
 */
 
 void QHeaderView::setSortIndicatorClearable(bool clearable)
@@ -1500,7 +1500,7 @@ bool QHeaderView::isSortIndicatorClearable() const
 
     The default value is false.
 
-    \note The horizontal headers provided by QTreeView are configured with this
+    \note The horizontal headers provided by BOBUIreeView are configured with this
     property set to true, ensuring that the view does not waste any of the
     space assigned to it for its header. If this value is set to true, this
     property will override the resize mode set on the last section in the
@@ -1615,7 +1615,7 @@ int QHeaderView::minimumSectionSize() const
     Q_D(const QHeaderView);
     if (d->minimumSectionSize == -1) {
         int margin = 2 * style()->pixelMetric(QStyle::PM_HeaderMargin, nullptr, this);
-        if (d->orientation == Qt::Horizontal)
+        if (d->orientation == BobUI::Horizontal)
             return fontMetrics().maxWidth() + margin;
         return fontMetrics().height() + margin;
     }
@@ -1706,13 +1706,13 @@ void QHeaderView::setMaximumSectionSize(int size)
     \brief the default alignment of the text in each header section
 */
 
-Qt::Alignment QHeaderView::defaultAlignment() const
+BobUI::Alignment QHeaderView::defaultAlignment() const
 {
     Q_D(const QHeaderView);
     return d->defaultAlignment;
 }
 
-void QHeaderView::setDefaultAlignment(Qt::Alignment alignment)
+void QHeaderView::setDefaultAlignment(BobUI::Alignment alignment)
 {
     Q_D(QHeaderView);
     if (d->defaultAlignment == alignment)
@@ -1797,7 +1797,7 @@ void QHeaderViewPrivate::updateCountInNoSectionItemsMode(int newCount)
     }
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     Saves the current state of this header view.
 
@@ -1810,7 +1810,7 @@ QByteArray QHeaderView::saveState() const
     Q_D(const QHeaderView);
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_0);
+    stream.setVersion(QDataStream::BobUI_5_0);
     stream << QHeaderViewPrivate::VersionMarker;
     stream << 0; // current version is 0
     d->write(stream);
@@ -1830,7 +1830,7 @@ bool QHeaderView::restoreState(const QByteArray &state)
     if (state.isEmpty())
         return false;
 
-    for (const auto dataStreamVersion : {QDataStream::Qt_5_0, QDataStream::Qt_6_0}) {
+    for (const auto dataStreamVersion : {QDataStream::BobUI_5_0, QDataStream::BobUI_6_0}) {
 
         QByteArray data = state;
         QDataStream stream(&data, QIODevice::ReadOnly);
@@ -1853,7 +1853,7 @@ bool QHeaderView::restoreState(const QByteArray &state)
     }
     return false;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*!
   \reimp
@@ -1873,7 +1873,7 @@ void QHeaderView::reset()
     Updates the changed header sections with the given \a orientation, from
     \a logicalFirst to \a logicalLast inclusive.
 */
-void QHeaderView::headerDataChanged(Qt::Orientation orientation, int logicalFirst, int logicalLast)
+void QHeaderView::headerDataChanged(BobUI::Orientation orientation, int logicalFirst, int logicalLast)
 {
     Q_D(QHeaderView);
     if (d->orientation != orientation)
@@ -1897,7 +1897,7 @@ void QHeaderView::headerDataChanged(Qt::Orientation orientation, int logicalFirs
               last = d->headerSectionPosition(lastVisualIndex)
                         + d->headerSectionSize(lastVisualIndex);
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         d->viewport->update(first, 0, last - first, d->viewport->height());
     } else {
         d->viewport->update(0, first, d->viewport->width(), last - first);
@@ -1913,7 +1913,7 @@ void QHeaderView::headerDataChanged(Qt::Orientation orientation, int logicalFirs
 void QHeaderView::updateSection(int logicalIndex)
 {
     Q_D(QHeaderView);
-    if (d->orientation == Qt::Horizontal)
+    if (d->orientation == BobUI::Horizontal)
         d->viewport->update(QRect(sectionViewportPosition(logicalIndex),
                                   0, sectionSize(logicalIndex), d->viewport->height()));
     else
@@ -2195,8 +2195,8 @@ void QHeaderViewPrivate::sectionsMoved(const QModelIndex &sourceParent, int logi
 void QHeaderViewPrivate::sectionsAboutToBeChanged(const QList<QPersistentModelIndex> &,
                                                   QAbstractItemModel::LayoutChangeHint hint)
 {
-    if ((hint == QAbstractItemModel::VerticalSortHint && orientation == Qt::Horizontal) ||
-        (hint == QAbstractItemModel::HorizontalSortHint && orientation == Qt::Vertical))
+    if ((hint == QAbstractItemModel::VerticalSortHint && orientation == BobUI::Horizontal) ||
+        (hint == QAbstractItemModel::HorizontalSortHint && orientation == BobUI::Vertical))
         return;
 
     if (noSectionMemoryUsage()) {
@@ -2209,7 +2209,7 @@ void QHeaderViewPrivate::sectionsAboutToBeChanged(const QList<QPersistentModelIn
     //because no QModelIndex in the model would be valid
     // ### this is far from being bullet-proof and we would need a real system to
     // ### map columns or rows persistently
-    if ((orientation == Qt::Horizontal && model->rowCount(root) == 0)
+    if ((orientation == BobUI::Horizontal && model->rowCount(root) == 0)
         || model->columnCount(root) == 0)
         return;
 
@@ -2237,7 +2237,7 @@ void QHeaderViewPrivate::sectionsAboutToBeChanged(const QList<QPersistentModelIn
             s.size = hiddenSectionSize.value(logical);
 
         // ### note that we are using column or row 0
-        layoutChangePersistentSections.append({orientation == Qt::Horizontal
+        layoutChangePersistentSections.append({orientation == BobUI::Horizontal
                                                   ? model->index(0, logical, root)
                                                   : model->index(logical, 0, root),
                                               s});
@@ -2247,8 +2247,8 @@ void QHeaderViewPrivate::sectionsAboutToBeChanged(const QList<QPersistentModelIn
 void QHeaderViewPrivate::sectionsChanged(const QList<QPersistentModelIndex> &,
                                          QAbstractItemModel::LayoutChangeHint hint)
 {
-    if ((hint == QAbstractItemModel::VerticalSortHint && orientation == Qt::Horizontal) ||
-        (hint == QAbstractItemModel::HorizontalSortHint && orientation == Qt::Vertical))
+    if ((hint == QAbstractItemModel::VerticalSortHint && orientation == BobUI::Horizontal) ||
+        (hint == QAbstractItemModel::HorizontalSortHint && orientation == BobUI::Vertical))
         return;
 
     Q_Q(QHeaderView);
@@ -2313,7 +2313,7 @@ void QHeaderViewPrivate::sectionsChanged(const QList<QPersistentModelIndex> &,
         if (!index.isValid())
             continue;
 
-        const int newLogicalIndex = (orientation == Qt::Horizontal
+        const int newLogicalIndex = (orientation == BobUI::Horizontal
                                      ? index.column()
                                      : index.row());
         // the new visualIndices are already adjusted / reset by initializeSections()
@@ -2454,14 +2454,14 @@ void QHeaderView::currentChanged(const QModelIndex &current, const QModelIndex &
 {
     Q_D(QHeaderView);
 
-    if (d->orientation == Qt::Horizontal && current.column() != old.column()) {
+    if (d->orientation == BobUI::Horizontal && current.column() != old.column()) {
         if (old.isValid() && old.parent() == d->root)
             d->viewport->update(QRect(sectionViewportPosition(old.column()), 0,
                                     sectionSize(old.column()), d->viewport->height()));
         if (current.isValid() && current.parent() == d->root)
             d->viewport->update(QRect(sectionViewportPosition(current.column()), 0,
                                     sectionSize(current.column()), d->viewport->height()));
-    } else if (d->orientation == Qt::Vertical && current.row() != old.row()) {
+    } else if (d->orientation == BobUI::Vertical && current.row() != old.row()) {
         if (old.isValid() && old.parent() == d->root)
             d->viewport->update(QRect(0, sectionViewportPosition(old.row()),
                                     d->viewport->width(), sectionSize(old.row())));
@@ -2504,7 +2504,7 @@ bool QHeaderView::event(QEvent *e)
         }
         break; }
     case QEvent::Timer: {
-        QTimerEvent *te = static_cast<QTimerEvent*>(e);
+        BOBUIimerEvent *te = static_cast<BOBUIimerEvent*>(e);
         if (te->timerId() == d->delayedResize.timerId()) {
             d->delayedResize.stop();
             resizeSections();
@@ -2542,7 +2542,7 @@ void QHeaderView::paintEvent(QPaintEvent *e)
 
     int start = -1;
     int end = -1;
-    if (d->orientation == Qt::Horizontal) {
+    if (d->orientation == BobUI::Horizontal) {
         start = visualIndexAt(translatedEventRect.left());
         end = visualIndexAt(translatedEventRect.right());
     } else {
@@ -2573,7 +2573,7 @@ void QHeaderView::paintEvent(QPaintEvent *e)
             continue;
         painter.save();
         const int logical = logicalIndex(i);
-        if (d->orientation == Qt::Horizontal) {
+        if (d->orientation == BobUI::Horizontal) {
             currentSectionRect.setRect(sectionViewportPosition(logical) + rtlHorizontalOffset,
                                        0, sectionSize(logical), height);
         } else {
@@ -2583,7 +2583,7 @@ void QHeaderView::paintEvent(QPaintEvent *e)
         currentSectionRect.translate(offset);
 
         QVariant variant = d->model->headerData(logical, d->orientation,
-                                                Qt::FontRole);
+                                                BobUI::FontRole);
         if (variant.isValid() && variant.canConvert<QFont>()) {
             QFont sectionFont = qvariant_cast<QFont>(variant);
             painter.setFont(sectionFont);
@@ -2620,7 +2620,7 @@ void QHeaderView::paintEvent(QPaintEvent *e)
     // ### visualize sections
     for (int a = 0, i = 0; i < d->sectionItems.count(); ++i) {
         QColor color((i & 4 ? 255 : 0), (i & 2 ? 255 : 0), (i & 1 ? 255 : 0));
-        if (d->orientation == Qt::Horizontal)
+        if (d->orientation == BobUI::Horizontal)
             painter.fillRect(a - d->headerOffset, 0, d->sectionItems.at(i).size, 4, color);
         else
             painter.fillRect(0, a - d->headerOffset, 4, d->sectionItems.at(i).size, color);
@@ -2637,9 +2637,9 @@ void QHeaderView::paintEvent(QPaintEvent *e)
 void QHeaderView::mousePressEvent(QMouseEvent *e)
 {
     Q_D(QHeaderView);
-    if (d->state != QHeaderViewPrivate::NoState || e->button() != Qt::LeftButton)
+    if (d->state != QHeaderViewPrivate::NoState || e->button() != BobUI::LeftButton)
         return;
-    int pos = d->orientation == Qt::Horizontal ? e->position().toPoint().x() : e->position().toPoint().y();
+    int pos = d->orientation == BobUI::Horizontal ? e->position().toPoint().x() : e->position().toPoint().y();
     int handle = d->sectionHandleAt(pos);
     d->originalSize = -1; // clear the stored original size
     if (handle == -1) {
@@ -2682,10 +2682,10 @@ void QHeaderView::mousePressEvent(QMouseEvent *e)
 void QHeaderView::mouseMoveEvent(QMouseEvent *e)
 {
     Q_D(QHeaderView);
-    const int pos = d->orientation == Qt::Horizontal ? e->position().toPoint().x() : e->position().toPoint().y();
+    const int pos = d->orientation == BobUI::Horizontal ? e->position().toPoint().x() : e->position().toPoint().y();
     if (pos < 0 && d->state != QHeaderViewPrivate::SelectSections)
         return;
-    if (e->buttons() == Qt::NoButton) {
+    if (e->buttons() == BobUI::NoButton) {
         // Under Cocoa, when the mouse button is released, may include an extra
         // simulated mouse moved event. The state of the buttons when this event
         // is generated is already "no button" and the code below gets executed
@@ -2715,7 +2715,7 @@ void QHeaderView::mouseMoveEvent(QMouseEvent *e)
                 d->startAutoScroll();
             }
             if (qAbs(pos - d->firstPos) >= QApplication::startDragDistance()
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
                 || !d->sectionIndicator->isHidden()
 #endif
                 ) {
@@ -2764,26 +2764,26 @@ void QHeaderView::mouseMoveEvent(QMouseEvent *e)
             return;
         }
         case QHeaderViewPrivate::NoState: {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             int handle = d->sectionHandleAt(pos);
-            bool hasCursor = testAttribute(Qt::WA_SetCursor);
+            bool hasCursor = testAttribute(BobUI::WA_SetCursor);
             if (handle != -1 && (sectionResizeMode(handle) == Interactive)) {
                 if (!hasCursor)
-                    setCursor(d->orientation == Qt::Horizontal ? Qt::SplitHCursor : Qt::SplitVCursor);
+                    setCursor(d->orientation == BobUI::Horizontal ? BobUI::SplitHCursor : BobUI::SplitVCursor);
             } else {
                 if (hasCursor)
                     unsetCursor();
-#ifndef QT_NO_STATUSTIP
+#ifndef BOBUI_NO_STATUSTIP
                 int logical = logicalIndexAt(pos);
                 QString statusTip;
                 if (logical != -1)
-                    statusTip = d->model->headerData(logical, d->orientation, Qt::StatusTipRole).toString();
+                    statusTip = d->model->headerData(logical, d->orientation, BobUI::StatusTipRole).toString();
                 if (d->shouldClearStatusTip || !statusTip.isEmpty()) {
                     QStatusTipEvent tip(statusTip);
                     QCoreApplication::sendEvent(d->parent ? d->parent : this, &tip);
                     d->shouldClearStatusTip = !statusTip.isEmpty();
                 }
-#endif // !QT_NO_STATUSTIP
+#endif // !BOBUI_NO_STATUSTIP
             }
 #endif
             return;
@@ -2800,11 +2800,11 @@ void QHeaderView::mouseMoveEvent(QMouseEvent *e)
 void QHeaderView::mouseReleaseEvent(QMouseEvent *e)
 {
     Q_D(QHeaderView);
-    int pos = d->orientation == Qt::Horizontal ? e->position().toPoint().x() : e->position().toPoint().y();
+    int pos = d->orientation == BobUI::Horizontal ? e->position().toPoint().x() : e->position().toPoint().y();
     switch (d->state) {
     case QHeaderViewPrivate::MoveSection:
         if (true
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
             && !d->sectionIndicator->isHidden()
 #endif
       ) { // moving
@@ -2832,13 +2832,13 @@ void QHeaderView::mouseReleaseEvent(QMouseEvent *e)
             if (section != -1 && section == d->firstPressed) {
                 QRect firstPressedSectionRect;
                 switch (d->orientation) {
-                case Qt::Horizontal:
+                case BobUI::Horizontal:
                     firstPressedSectionRect.setRect(sectionViewportPosition(d->firstPressed),
                                                     0,
                                                     sectionSize(d->firstPressed),
                                                     d->viewport->height());
                     break;
-                case Qt::Vertical:
+                case BobUI::Vertical:
                     firstPressedSectionRect.setRect(0,
                                                     sectionViewportPosition(d->firstPressed),
                                                     d->viewport->width(),
@@ -2873,18 +2873,18 @@ void QHeaderView::mouseReleaseEvent(QMouseEvent *e)
 void QHeaderView::mouseDoubleClickEvent(QMouseEvent *e)
 {
     Q_D(QHeaderView);
-    int pos = d->orientation == Qt::Horizontal ? e->position().toPoint().x() : e->position().toPoint().y();
+    int pos = d->orientation == BobUI::Horizontal ? e->position().toPoint().x() : e->position().toPoint().y();
     int handle = d->sectionHandleAt(pos);
     if (handle > -1 && sectionResizeMode(handle) == Interactive) {
         emit sectionHandleDoubleClicked(handle);
-#ifndef QT_NO_CURSOR
-        Qt::CursorShape splitCursor = (d->orientation == Qt::Horizontal)
-                                      ? Qt::SplitHCursor : Qt::SplitVCursor;
+#ifndef BOBUI_NO_CURSOR
+        BobUI::CursorShape splitCursor = (d->orientation == BobUI::Horizontal)
+                                      ? BobUI::SplitHCursor : BobUI::SplitVCursor;
         if (cursor().shape() == splitCursor) {
             // signal handlers may have changed the section size
             handle = d->sectionHandleAt(pos);
             if (!(handle > -1 && sectionResizeMode(handle) == Interactive))
-                setCursor(Qt::ArrowCursor);
+                setCursor(BobUI::ArrowCursor);
         }
 #endif
     } else {
@@ -2900,25 +2900,25 @@ bool QHeaderView::viewportEvent(QEvent *e)
 {
     Q_D(QHeaderView);
     switch (e->type()) {
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     case QEvent::ToolTip: {
         QHelpEvent *he = static_cast<QHelpEvent*>(e);
         int logical = logicalIndexAt(he->pos());
         if (logical != -1) {
-            QVariant variant = d->model->headerData(logical, d->orientation, Qt::ToolTipRole);
+            QVariant variant = d->model->headerData(logical, d->orientation, BobUI::ToolTipRole);
             if (variant.isValid()) {
-                QToolTip::showText(he->globalPos(), variant.toString(), this);
+                BOBUIoolTip::showText(he->globalPos(), variant.toString(), this);
                 return true;
             }
         }
         break; }
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     case QEvent::QueryWhatsThis: {
         QHelpEvent *he = static_cast<QHelpEvent*>(e);
         int logical = logicalIndexAt(he->pos());
         if (logical != -1
-            && d->model->headerData(logical, d->orientation, Qt::WhatsThisRole).isValid())
+            && d->model->headerData(logical, d->orientation, BobUI::WhatsThisRole).isValid())
             return true;
         break; }
     case QEvent::WhatsThis: {
@@ -2926,26 +2926,26 @@ bool QHeaderView::viewportEvent(QEvent *e)
         int logical = logicalIndexAt(he->pos());
         if (logical != -1) {
              QVariant whatsthis = d->model->headerData(logical, d->orientation,
-                                                      Qt::WhatsThisRole);
+                                                      BobUI::WhatsThisRole);
              if (whatsthis.isValid()) {
                  QWhatsThis::showText(he->globalPos(), whatsthis.toString(), this);
                  return true;
              }
         }
         break; }
-#endif // QT_CONFIG(whatsthis)
-#if QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(whatsthis)
+#if BOBUI_CONFIG(statustip)
     case QEvent::StatusTip: {
         QHelpEvent *he = static_cast<QHelpEvent*>(e);
         int logical = logicalIndexAt(he->pos());
         if (logical != -1) {
             QString statustip = d->model->headerData(logical, d->orientation,
-                                                    Qt::StatusTipRole).toString();
+                                                    BobUI::StatusTipRole).toString();
             if (!statustip.isEmpty())
                 setStatusTip(statustip);
         }
         return true; }
-#endif // QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(statustip)
     case QEvent::Resize:
     case QEvent::FontChange:
     case QEvent::StyleChange:
@@ -3010,42 +3010,42 @@ void QHeaderView::initStyleOptionForIndex(QStyleOptionHeader *option, int logica
         }
     }
     if (isSortIndicatorShown() && sortIndicatorSection() == logicalIndex)
-        opt.sortIndicator = (sortIndicatorOrder() == Qt::AscendingOrder)
+        opt.sortIndicator = (sortIndicatorOrder() == BobUI::AscendingOrder)
                             ? QStyleOptionHeader::SortDown : QStyleOptionHeader::SortUp;
 
     // setup the style options structure
     QVariant textAlignment = d->model->headerData(logicalIndex, d->orientation,
-                                                  Qt::TextAlignmentRole);
+                                                  BobUI::TextAlignmentRole);
     opt.section = logicalIndex;
     opt.state |= state;
     opt.textAlignment = textAlignment.isValid()
-                        ? QtPrivate::legacyFlagValueFromModelData<Qt::Alignment>(textAlignment)
+                        ? BobUIPrivate::legacyFlagValueFromModelData<BobUI::Alignment>(textAlignment)
                         : d->defaultAlignment;
 
-    opt.iconAlignment = Qt::AlignVCenter;
+    opt.iconAlignment = BobUI::AlignVCenter;
     opt.text = d->model->headerData(logicalIndex, d->orientation,
-                                    Qt::DisplayRole).toString();
+                                    BobUI::DisplayRole).toString();
 
     const QVariant variant = d->model->headerData(logicalIndex, d->orientation,
-                                                  Qt::DecorationRole);
+                                                  BobUI::DecorationRole);
     opt.icon = qvariant_cast<QIcon>(variant);
     if (opt.icon.isNull())
         opt.icon = qvariant_cast<QPixmap>(variant);
 
     QVariant var = d->model->headerData(logicalIndex, d->orientation,
-                                        Qt::FontRole);
+                                        BobUI::FontRole);
     if (var.isValid() && var.canConvert<QFont>())
         opt.fontMetrics = QFontMetrics(qvariant_cast<QFont>(var));
     if (optV2)
         optV2->textElideMode = d->textElideMode;
 
     QVariant foregroundBrush = d->model->headerData(logicalIndex, d->orientation,
-                                                    Qt::ForegroundRole);
+                                                    BobUI::ForegroundRole);
     if (foregroundBrush.canConvert<QBrush>())
         opt.palette.setBrush(QPalette::ButtonText, qvariant_cast<QBrush>(foregroundBrush));
 
     QVariant backgroundBrush = d->model->headerData(logicalIndex, d->orientation,
-                                                    Qt::BackgroundRole);
+                                                    BobUI::BackgroundRole);
     if (backgroundBrush.canConvert<QBrush>()) {
         opt.palette.setBrush(QPalette::Button, qvariant_cast<QBrush>(backgroundBrush));
         opt.palette.setBrush(QPalette::Window, qvariant_cast<QBrush>(backgroundBrush));
@@ -3131,7 +3131,7 @@ QSize QHeaderView::sectionSizeFromContents(int logicalIndex) const
     ensurePolished();
 
     // use SizeHintRole
-    QVariant variant = d->model->headerData(logicalIndex, d->orientation, Qt::SizeHintRole);
+    QVariant variant = d->model->headerData(logicalIndex, d->orientation, BobUI::SizeHintRole);
     if (variant.isValid())
         return qvariant_cast<QSize>(variant);
 
@@ -3140,7 +3140,7 @@ QSize QHeaderView::sectionSizeFromContents(int logicalIndex) const
     initStyleOption(&opt);
     opt.section = logicalIndex;
     QVariant var = d->model->headerData(logicalIndex, d->orientation,
-                                            Qt::FontRole);
+                                            BobUI::FontRole);
     QFont fnt;
     if (var.isValid() && var.canConvert<QFont>())
         fnt = qvariant_cast<QFont>(var);
@@ -3149,8 +3149,8 @@ QSize QHeaderView::sectionSizeFromContents(int logicalIndex) const
     fnt.setBold(true);
     opt.fontMetrics = QFontMetrics(fnt);
     opt.text = d->model->headerData(logicalIndex, d->orientation,
-                                    Qt::DisplayRole).toString();
-    variant = d->model->headerData(logicalIndex, d->orientation, Qt::DecorationRole);
+                                    BobUI::DisplayRole).toString();
+    variant = d->model->headerData(logicalIndex, d->orientation, BobUI::DecorationRole);
     opt.icon = qvariant_cast<QIcon>(variant);
     if (opt.icon.isNull())
         opt.icon = qvariant_cast<QPixmap>(variant);
@@ -3169,7 +3169,7 @@ QSize QHeaderView::sectionSizeFromContents(int logicalIndex) const
 int QHeaderView::horizontalOffset() const
 {
     Q_D(const QHeaderView);
-    if (d->orientation == Qt::Horizontal)
+    if (d->orientation == BobUI::Horizontal)
         return d->headerOffset;
     return 0;
 }
@@ -3184,7 +3184,7 @@ int QHeaderView::horizontalOffset() const
 int QHeaderView::verticalOffset() const
 {
     Q_D(const QHeaderView);
-    if (d->orientation == Qt::Vertical)
+    if (d->orientation == BobUI::Vertical)
         return d->headerOffset;
     return 0;
 }
@@ -3224,14 +3224,14 @@ void QHeaderView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bot
     if (!roles.isEmpty()) {
         const auto doesRoleAffectSize = [](int role) -> bool {
             switch (role) {
-            case Qt::DisplayRole:
-            case Qt::DecorationRole:
-            case Qt::SizeHintRole:
-            case Qt::FontRole:
+            case BobUI::DisplayRole:
+            case BobUI::DecorationRole:
+            case BobUI::SizeHintRole:
+            case BobUI::FontRole:
                 return true;
             default:
                 // who knows what a subclass or custom style might do
-                return role >= Qt::UserRole;
+                return role >= BobUI::UserRole;
             }
         };
         if (std::none_of(roles.begin(), roles.end(), doesRoleAffectSize))
@@ -3240,8 +3240,8 @@ void QHeaderView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bot
     d->invalidateCachedSizeHint();
     if (d->hasAutoResizeSections()) {
         bool resizeRequired = d->globalResizeMode == ResizeToContents;
-        int first = orientation() == Qt::Horizontal ? topLeft.column() : topLeft.row();
-        int last = orientation() == Qt::Horizontal ? bottomRight.column() : bottomRight.row();
+        int first = orientation() == BobUI::Horizontal ? topLeft.column() : topLeft.row();
+        int last = orientation() == BobUI::Horizontal ? bottomRight.column() : bottomRight.row();
         for (int i = first; i <= last && !resizeRequired; ++i)
             resizeRequired = (sectionResizeMode(i) == ResizeToContents);
         if (resizeRequired)
@@ -3315,7 +3315,7 @@ bool QHeaderView::isIndexHidden(const QModelIndex &) const
     Empty implementation because the header doesn't show QModelIndex items.
 */
 
-QModelIndex QHeaderView::moveCursor(CursorAction, Qt::KeyboardModifiers)
+QModelIndex QHeaderView::moveCursor(CursorAction, BobUI::KeyboardModifiers)
 {
     return QModelIndex();
 }
@@ -3343,7 +3343,7 @@ QRegion QHeaderView::visualRegionForSelection(const QItemSelection &selection) c
     Q_D(const QHeaderView);
     const int max = d->modelSectionCount();
 
-    if (d->orientation == Qt::Horizontal) {
+    if (d->orientation == BobUI::Horizontal) {
         int logicalLeft = max;
         int logicalRight = 0;
 
@@ -3386,7 +3386,7 @@ QRegion QHeaderView::visualRegionForSelection(const QItemSelection &selection) c
         rightPos += sectionSize(logicalRight);
         return QRect(leftPos, 0, rightPos - leftPos, height());
     }
-    // orientation() == Qt::Vertical
+    // orientation() == BobUI::Vertical
     int logicalTop = max;
     int logicalBottom = 0;
 
@@ -3467,7 +3467,7 @@ int QHeaderViewPrivate::sectionHandleAt(int position)
 void QHeaderViewPrivate::setupSectionIndicator(int section, int position)
 {
     Q_Q(QHeaderView);
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     if (!sectionIndicator) {
         sectionIndicator = new QLabel(viewport);
     }
@@ -3475,14 +3475,14 @@ void QHeaderViewPrivate::setupSectionIndicator(int section, int position)
 
     int w, h;
     int p = q->sectionViewportPosition(section);
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         w = q->sectionSize(section);
         h = viewport->height();
     } else {
         w = viewport->width();
         h = q->sectionSize(section);
     }
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     sectionIndicator->resize(w, h);
 #endif
 
@@ -3494,7 +3494,7 @@ void QHeaderViewPrivate::setupSectionIndicator(int section, int position)
 
     QPainter painter(&pm);
     const QVariant variant = model->headerData(section, orientation,
-                                               Qt::FontRole);
+                                               BobUI::FontRole);
     if (variant.isValid() && variant.canConvert<QFont>()) {
         const QFont sectionFont = qvariant_cast<QFont>(variant);
         painter.setFont(sectionFont);
@@ -3506,7 +3506,7 @@ void QHeaderViewPrivate::setupSectionIndicator(int section, int position)
     q->paintSection(&painter, rect, section);
     painter.end();
 
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     sectionIndicator->setPixmap(pm);
 #endif
     sectionIndicatorOffset = position - qMax(p, 0);
@@ -3514,7 +3514,7 @@ void QHeaderViewPrivate::setupSectionIndicator(int section, int position)
 
 void QHeaderViewPrivate::updateSectionIndicator(int section, int position)
 {
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     if (!sectionIndicator)
         return;
 
@@ -3523,7 +3523,7 @@ void QHeaderViewPrivate::updateSectionIndicator(int section, int position)
         return;
     }
 
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         sectionIndicator->move(position - sectionIndicatorOffset, 0);
     else
         sectionIndicator->move(0, position - sectionIndicatorOffset);
@@ -3545,7 +3545,7 @@ void QHeaderView::initStyleOption(QStyleOptionHeader *option) const
     option->initFrom(this);
     option->state = QStyle::State_None | QStyle::State_Raised;
     option->orientation = d->orientation;
-    if (d->orientation == Qt::Horizontal)
+    if (d->orientation == BobUI::Horizontal)
         option->state |= QStyle::State_Horizontal;
     if (isEnabled())
         option->state |= QStyle::State_Enabled;
@@ -3567,7 +3567,7 @@ bool QHeaderViewPrivate::isSectionSelected(int section) const
     if (sectionSelected.testBit(i)) // if the value was cached
         return sectionSelected.testBit(i + 1);
     bool s = false;
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         s = isColumnSelected(section);
     else
         s = isRowSelected(section);
@@ -3691,7 +3691,7 @@ void QHeaderViewPrivate::resizeSections(QHeaderView::ResizeMode globalMode, bool
         stretchSection = lastSectionVisualIdx;
 
     // count up the number of stretched sections and how much space left for them
-    int lengthToStretch = (orientation == Qt::Horizontal ? viewport->width() : viewport->height());
+    int lengthToStretch = (orientation == BobUI::Horizontal ? viewport->width() : viewport->height());
     int numberOfStretchedSections = 0;
     QList<int> section_sizes;
     for (int i = 0; i < sectionCount(); ++i) {
@@ -3836,29 +3836,29 @@ void QHeaderViewPrivate::clear()
     }
 }
 
-static Qt::SortOrder flipOrder(Qt::SortOrder order)
+static BobUI::SortOrder flipOrder(BobUI::SortOrder order)
 {
     switch (order) {
-    case Qt::AscendingOrder:
-        return Qt::DescendingOrder;
-    case Qt::DescendingOrder:
-        return Qt::AscendingOrder;
+    case BobUI::AscendingOrder:
+        return BobUI::DescendingOrder;
+    case BobUI::DescendingOrder:
+        return BobUI::AscendingOrder;
     };
-    Q_UNREACHABLE_RETURN(Qt::AscendingOrder);
+    Q_UNREACHABLE_RETURN(BobUI::AscendingOrder);
 };
 
 void QHeaderViewPrivate::flipSortIndicator(int section)
 {
     Q_Q(QHeaderView);
-    Qt::SortOrder sortOrder;
+    BobUI::SortOrder sortOrder;
     if (sortIndicatorSection == section) {
         if (sortIndicatorClearable) {
-            const Qt::SortOrder defaultSortOrder = defaultSortOrderForSection(section);
+            const BobUI::SortOrder defaultSortOrder = defaultSortOrderForSection(section);
             if (sortIndicatorOrder == defaultSortOrder) {
                 sortOrder = flipOrder(sortIndicatorOrder);
             } else {
                 section = -1;
-                sortOrder = Qt::AscendingOrder;
+                sortOrder = BobUI::AscendingOrder;
             }
         } else {
             sortOrder = flipOrder(sortIndicatorOrder);
@@ -3869,12 +3869,12 @@ void QHeaderViewPrivate::flipSortIndicator(int section)
     q->setSortIndicator(section, sortOrder);
 }
 
-Qt::SortOrder QHeaderViewPrivate::defaultSortOrderForSection(int section) const
+BobUI::SortOrder QHeaderViewPrivate::defaultSortOrderForSection(int section) const
 {
-    const QVariant value = model->headerData(section, orientation, Qt::InitialSortOrderRole);
+    const QVariant value = model->headerData(section, orientation, BobUI::InitialSortOrderRole);
     if (value.canConvert<int>())
-        return static_cast<Qt::SortOrder>(value.toInt());
-    return Qt::AscendingOrder;
+        return static_cast<BobUI::SortOrder>(value.toInt());
+    return BobUI::AscendingOrder;
 }
 
 void QHeaderViewPrivate::cascadingResize(int visual, int newSize)
@@ -4030,7 +4030,7 @@ void QHeaderViewPrivate::setDefaultSectionSize(int size)
 void QHeaderViewPrivate::updateDefaultSectionSizeFromStyle()
 {
     Q_Q(QHeaderView);
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         defaultSectionSize = q->style()->pixelMetric(QStyle::PM_HeaderDefaultSectionSizeHorizontal, nullptr, q);
     } else {
         defaultSectionSize = qMax(q->minimumSectionSize(),
@@ -4135,7 +4135,7 @@ void QHeaderViewPrivate::setGlobalHeaderResizeMode(QHeaderView::ResizeMode mode)
 int QHeaderViewPrivate::viewSectionSizeHint(int logical) const
 {
     if (QAbstractItemView *view = qobject_cast<QAbstractItemView*>(parent)) {
-        return (orientation == Qt::Horizontal
+        return (orientation == BobUI::Horizontal
                 ? view->sizeHintForColumn(logical)
                 : view->sizeHintForRow(logical));
     }
@@ -4180,7 +4180,7 @@ void QHeaderViewPrivate::updateSectionsBeforeAfter(int logical)
     int from = logicalIndex(visual > 1 ? visual - 1 : 0);
     int to = logicalIndex(visual + 1 >= sectionCount() ? visual : visual + 1);
     QRect updateRect;
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         if (reverse())
             std::swap(from, to);
         updateRect = QRect(QPoint(q->sectionViewportPosition(from), 0),
@@ -4192,7 +4192,7 @@ void QHeaderViewPrivate::updateSectionsBeforeAfter(int logical)
     viewport->update(updateRect);
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 void QHeaderViewPrivate::write(QDataStream &out) const
 {
     out << int(orientation);
@@ -4299,15 +4299,15 @@ bool QHeaderViewPrivate::read(QDataStream &in)
         return false;
 
     // Alignment out of bounds?
-    if (align < 0 || align > Qt::AlignVertical_Mask)
+    if (align < 0 || align > BobUI::AlignVertical_Mask)
         return false;
 
     in >> sectionItemsIn;
 
 
-    // In Qt4 we had a vector of spans where one span could hold information on more sections.
+    // In BobUI4 we had a vector of spans where one span could hold information on more sections.
     // Now we have an itemvector where one items contains information about one section
-    // For backward compatibility with Qt4 we do the following
+    // For backward compatibility with BobUI4 we do the following
     QList<SectionItem> newSectionItems;
     for (int u = 0; u < sectionItemsIn.size(); ++u) {
         int count = sectionItemsIn.at(u).tmpDataStreamSectionCount;
@@ -4328,8 +4328,8 @@ bool QHeaderViewPrivate::read(QDataStream &in)
     // (Hence we have already set up sections etc)
     headerMode = HeaderMode::FlexibleWithSectionMemoryUsage;
 
-    orientation = static_cast<Qt::Orientation>(orient);
-    sortIndicatorOrder = static_cast<Qt::SortOrder>(order);
+    orientation = static_cast<BobUI::Orientation>(orient);
+    sortIndicatorOrder = static_cast<BobUI::SortOrder>(order);
     sortIndicatorSection = sortIndicatorSectionIn;
     sortIndicatorShown = sortIndicatorShownIn;
     visualIndices = visualIndicesIn;
@@ -4347,7 +4347,7 @@ bool QHeaderViewPrivate::read(QDataStream &in)
     defaultSectionSize = defaultSectionSizeIn;
     minimumSectionSize = minimumSectionSizeIn;
 
-    defaultAlignment = Qt::Alignment(align);
+    defaultAlignment = BobUI::Alignment(align);
     globalResizeMode = static_cast<QHeaderView::ResizeMode>(global);
 
     sectionItems = newSectionItems;
@@ -4409,7 +4409,7 @@ bool QHeaderViewPrivate::read(QDataStream &in)
     }
 
     // Append items from model.
-    const int currentCount = (orient == Qt::Horizontal ? model->columnCount(root) : model->rowCount(root));
+    const int currentCount = (orient == BobUI::Horizontal ? model->columnCount(root) : model->rowCount(root));
     if (sectionItems.size() < currentCount) {
 
         if (noSectionMemoryUsage()) {
@@ -4433,8 +4433,8 @@ bool QHeaderViewPrivate::read(QDataStream &in)
     return true;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qheaderview.cpp"

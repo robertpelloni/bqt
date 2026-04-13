@@ -1,17 +1,17 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLTIMERQUERY_H
 #define QOPENGLTIMERQUERY_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#if !defined(QT_NO_OPENGL) && !QT_CONFIG(opengles2)
+#if !defined(BOBUI_NO_OPENGL) && !BOBUI_CONFIG(opengles2)
 
-#include <QtCore/QObject>
-#include <QtGui/qopengl.h>
+#include <BobUICore/QObject>
+#include <BobUIGui/qopengl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLTimerQueryPrivate;
 
@@ -73,8 +73,8 @@ private:
     Q_DISABLE_COPY(QOpenGLTimeMonitor)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif // QOPENGLTIMERQUERY_H

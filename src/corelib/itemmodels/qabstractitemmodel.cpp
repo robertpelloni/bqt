@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qabstractitemmodel.h"
 #include <private/qabstractitemmodel_p.h>
@@ -11,7 +11,7 @@
 #include <qmimedata.h>
 #include <qdebug.h>
 #include <qlist.h>
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #  include <qregularexpression.h>
 #endif
 #include <qstack.h>
@@ -24,19 +24,19 @@
 
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcCheckIndex, "qt.core.qabstractitemmodel.checkindex")
-Q_STATIC_LOGGING_CATEGORY(lcReset, "qt.core.qabstractitemmodel.reset")
+Q_STATIC_LOGGING_CATEGORY(lcCheckIndex, "bobui.core.qabstractitemmodel.checkindex")
+Q_STATIC_LOGGING_CATEGORY(lcReset, "bobui.core.qabstractitemmodel.reset")
 
-QT_IMPL_METATYPE_EXTERN(QModelIndexList)
+BOBUI_IMPL_METATYPE_EXTERN(QModelIndexList)
 
 QPersistentModelIndexData *QPersistentModelIndexData::create(const QModelIndex &index)
 {
     Q_ASSERT(index.isValid()); // we will _never_ insert an invalid index in the list
     QPersistentModelIndexData *d = nullptr;
     QAbstractItemModel *model = const_cast<QAbstractItemModel *>(index.model());
-    QMultiHash<QtPrivate::QModelIndexWrapper, QPersistentModelIndexData *> &indexes = model->d_func()->persistent.indexes;
+    QMultiHash<BobUIPrivate::QModelIndexWrapper, QPersistentModelIndexData *> &indexes = model->d_func()->persistent.indexes;
     const auto it = indexes.constFind(index);
     if (it != indexes.cend()) {
         d = (*it);
@@ -64,13 +64,13 @@ void QPersistentModelIndexData::destroy(QPersistentModelIndexData *data)
 
 /*!
     \class QModelRoleData
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \ingroup model-view
     \brief The QModelRoleData class holds a role and the data associated to that role.
 
     QModelRoleData objects store an item role (which is a value from the
-    Qt::ItemDataRole enumeration, or an arbitrary integer for a custom role)
+    BobUI::ItemDataRole enumeration, or an arbitrary integer for a custom role)
     as well as the data associated with that role.
 
     A QModelRoleData object is typically created by views or delegates,
@@ -87,7 +87,7 @@ void QPersistentModelIndexData::destroy(QPersistentModelIndexData *data)
 
     Constructs a QModelRoleData object for the given \a role.
 
-    \sa Qt::ItemDataRole
+    \sa BobUI::ItemDataRole
 */
 
 /*!
@@ -95,7 +95,7 @@ void QPersistentModelIndexData::destroy(QPersistentModelIndexData *data)
 
     Returns the role held by this object.
 
-    \sa Qt::ItemDataRole
+    \sa BobUI::ItemDataRole
 */
 
 /*!
@@ -134,7 +134,7 @@ void QPersistentModelIndexData::destroy(QPersistentModelIndexData *data)
 
 /*!
     \class QModelRoleDataSpan
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \ingroup model-view
     \brief The QModelRoleDataSpan class provides a span over QModelRoleData objects.
@@ -284,7 +284,7 @@ void QPersistentModelIndexData::destroy(QPersistentModelIndexData *data)
 
 /*!
   \class QPersistentModelIndex
-  \inmodule QtCore
+  \inmodule BobUICore
   \ingroup shared
 
   \brief The QPersistentModelIndex class is used to locate data in a data model.
@@ -412,17 +412,17 @@ bool comparesEqual(const QPersistentModelIndex &lhs, const QPersistentModelIndex
     The internal data pointer, row, column, and model values in the persistent
     model index are used when comparing with another persistent model index.
 */
-Qt::strong_ordering compareThreeWay(const QPersistentModelIndex &lhs,
+BobUI::strong_ordering compareThreeWay(const QPersistentModelIndex &lhs,
                                     const QPersistentModelIndex &rhs) noexcept
 {
     if (lhs.d && rhs.d)
         return compareThreeWay(lhs.d->index, rhs.d->index);
 
-    using Qt::totally_ordered_wrapper;
+    using BobUI::totally_ordered_wrapper;
     return compareThreeWay(totally_ordered_wrapper{lhs.d}, totally_ordered_wrapper{rhs.d});
 }
 
-Qt::strong_ordering compareThreeWay(const QPersistentModelIndex &lhs,
+BobUI::strong_ordering compareThreeWay(const QPersistentModelIndex &lhs,
                                     const QModelIndex &rhs) noexcept
 {
     return compareThreeWay(lhs.d ? lhs.d->index : QModelIndex{}, rhs);
@@ -609,7 +609,7 @@ QModelIndex QPersistentModelIndex::sibling(int row, int column) const
     index, or a default-constructed QVariant if this persistent model index
     is \l{isValid()}{invalid}.
 
-    \sa Qt::ItemDataRole, QAbstractItemModel::setData()
+    \sa BobUI::ItemDataRole, QAbstractItemModel::setData()
 */
 QVariant QPersistentModelIndex::data(int role) const
 {
@@ -624,7 +624,7 @@ QVariant QPersistentModelIndex::data(int role) const
     index.
 
     \since 6.0
-    \sa Qt::ItemDataRole, QAbstractItemModel::setData()
+    \sa BobUI::ItemDataRole, QAbstractItemModel::setData()
 */
 void QPersistentModelIndex::multiData(QModelRoleDataSpan roleDataSpan) const
 {
@@ -637,7 +637,7 @@ void QPersistentModelIndex::multiData(QModelRoleDataSpan roleDataSpan) const
 
     Returns the flags for the item referred to by the index.
 */
-Qt::ItemFlags QPersistentModelIndex::flags() const
+BobUI::ItemFlags QPersistentModelIndex::flags() const
 {
     if (d)
         return d->index.flags();
@@ -671,7 +671,7 @@ bool QPersistentModelIndex::isValid() const
     return d && d->index.isValid();
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QModelIndex &idx)
 {
     QDebugStateSaver saver(dbg);
@@ -744,12 +744,12 @@ void QAbstractItemModelPrivate::invalidatePersistentIndex(const QModelIndex &ind
 using DefaultRoleNames = QHash<int, QByteArray>;
 Q_GLOBAL_STATIC(DefaultRoleNames, qDefaultRoleNames,
     {
-        { Qt::DisplayRole,    "display"    },
-        { Qt::DecorationRole, "decoration" },
-        { Qt::EditRole,       "edit"       },
-        { Qt::ToolTipRole,    "toolTip"    },
-        { Qt::StatusTipRole,  "statusTip"  },
-        { Qt::WhatsThisRole,  "whatsThis"  },
+        { BobUI::DisplayRole,    "display"    },
+        { BobUI::DecorationRole, "decoration" },
+        { BobUI::EditRole,       "edit"       },
+        { BobUI::ToolTipRole,    "toolTip"    },
+        { BobUI::StatusTipRole,  "statusTip"  },
+        { BobUI::WhatsThisRole,  "whatsThis"  },
     })
 
 const QHash<int,QByteArray> &QAbstractItemModelPrivate::defaultRoleNames()
@@ -758,7 +758,7 @@ const QHash<int,QByteArray> &QAbstractItemModelPrivate::defaultRoleNames()
 }
 
 bool QAbstractItemModelPrivate::isVariantLessThan(const QVariant &left, const QVariant &right,
-                                                  Qt::CaseSensitivity cs, bool isLocaleAware)
+                                                  BobUI::CaseSensitivity cs, bool isLocaleAware)
 {
     if (left.userType() == QMetaType::UnknownType)
         return false;
@@ -781,7 +781,7 @@ bool QAbstractItemModelPrivate::isVariantLessThan(const QVariant &left, const QV
         return left.toChar() < right.toChar();
     case QMetaType::QDate:
         return left.toDate() < right.toDate();
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
         return left.toTime() < right.toTime();
     case QMetaType::QDateTime:
         return left.toDateTime() < right.toDateTime();
@@ -897,7 +897,7 @@ void QAbstractItemModelPrivate::rowsInserted(const QModelIndex &parent,
     }
 }
 
-void QAbstractItemModelPrivate::itemsAboutToBeMoved(const QModelIndex &srcParent, int srcFirst, int srcLast, const QModelIndex &destinationParent, int destinationChild, Qt::Orientation orientation)
+void QAbstractItemModelPrivate::itemsAboutToBeMoved(const QModelIndex &srcParent, int srcFirst, int srcLast, const QModelIndex &destinationParent, int destinationChild, BobUI::Orientation orientation)
 {
     QList<QPersistentModelIndexData *> persistent_moved_explicitly;
     QList<QPersistentModelIndexData *> persistent_moved_in_source;
@@ -913,7 +913,7 @@ void QAbstractItemModelPrivate::itemsAboutToBeMoved(const QModelIndex &srcParent
         const bool isDestinationIndex = (parent == destinationParent);
 
         int childPosition;
-        if (orientation == Qt::Vertical)
+        if (orientation == BobUI::Vertical)
             childPosition = index.row();
         else
             childPosition = index.column();
@@ -958,13 +958,13 @@ void QAbstractItemModelPrivate::itemsAboutToBeMoved(const QModelIndex &srcParent
   differs from the existing parent for the index.
 */
 void QAbstractItemModelPrivate::movePersistentIndexes(const QList<QPersistentModelIndexData *> &indexes, int change,
-                                                      const QModelIndex &parent, Qt::Orientation orientation)
+                                                      const QModelIndex &parent, BobUI::Orientation orientation)
 {
     for (auto *data : indexes) {
         int row = data->index.row();
         int column = data->index.column();
 
-        if (Qt::Vertical == orientation)
+        if (BobUI::Vertical == orientation)
             row += change;
         else
             column += change;
@@ -979,7 +979,7 @@ void QAbstractItemModelPrivate::movePersistentIndexes(const QList<QPersistentMod
     }
 }
 
-void QAbstractItemModelPrivate::itemsMoved(const QModelIndex &sourceParent, int sourceFirst, int sourceLast, const QModelIndex &destinationParent, int destinationChild, Qt::Orientation orientation)
+void QAbstractItemModelPrivate::itemsMoved(const QModelIndex &sourceParent, int sourceFirst, int sourceLast, const QModelIndex &destinationParent, int destinationChild, BobUI::Orientation orientation)
 {
     const QList<QPersistentModelIndexData *> moved_in_destination = persistent.moved.pop();
     const QList<QPersistentModelIndexData *> moved_in_source = persistent.moved.pop();
@@ -1147,7 +1147,7 @@ void QAbstractItemModelPrivate::columnsRemoved(const QModelIndex &parent,
 
     \snippet code/src_corelib_kernel_qabstractitemmodel.cpp 12
 
-    \note Due to a mistake, this slot is missing in Qt 5.0.
+    \note Due to a mistake, this slot is missing in BobUI 5.0.
 
     \sa modelAboutToBeReset(), modelReset()
 */
@@ -1158,7 +1158,7 @@ void QAbstractItemModel::resetInternalData()
 
 /*!
     \class QModelIndex
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QModelIndex class is used to locate data in a data model.
 
@@ -1329,7 +1329,7 @@ void QAbstractItemModel::resetInternalData()
 */
 
 /*!
-    \fn Qt::ItemFlags QModelIndex::flags() const
+    \fn BobUI::ItemFlags QModelIndex::flags() const
     \since 4.2
 
     Returns the flags for the item referred to by the index.
@@ -1363,7 +1363,7 @@ void QAbstractItemModel::resetInternalData()
 
 /*!
     \class QAbstractItemModel
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QAbstractItemModel class provides the abstract interface for
     item model classes.
@@ -1377,12 +1377,12 @@ void QAbstractItemModel::resetInternalData()
     Instead, you should subclass it to create new models.
 
     The QAbstractItemModel class is one of the \l{Model/View Classes}
-    and is part of Qt's \l{Model/View Programming}{model/view framework}. It
+    and is part of BobUI's \l{Model/View Programming}{model/view framework}. It
     can be used as the underlying data model for the item view elements in
-    QML or the item view classes in the Qt Widgets module.
+    QML or the item view classes in the BobUI Widgets module.
 
     If you need a model to use with an item view such as QML's List View
-    element or the C++ widgets QListView or QTableView, you should consider
+    element or the C++ widgets QListView or BOBUIableView, you should consider
     subclassing QAbstractListModel or QAbstractTableModel instead of this class.
 
     The underlying data model is exposed to views and delegates as a hierarchy
@@ -1398,15 +1398,15 @@ void QAbstractItemModel::resetInternalData()
     index may have a sibling() index; child items have a parent() index.
 
     Each item has a number of data elements associated with it and they can be
-    retrieved by specifying a role (see \l Qt::ItemDataRole) to the model's
+    retrieved by specifying a role (see \l BobUI::ItemDataRole) to the model's
     data() function. Data for all available roles can be obtained at the same
     time using the itemData() function.
 
-    Data for each role is set using a particular \l Qt::ItemDataRole. Data for
+    Data for each role is set using a particular \l BobUI::ItemDataRole. Data for
     individual roles are set individually with setData(), or they can be set
     for all roles with setItemData().
 
-    Items can be queried with flags() (see \l Qt::ItemFlag) to see if they can
+    Items can be queried with flags() (see \l BobUI::ItemFlag) to see if they can
     be selected, dragged, or manipulated in other ways.
 
     If an item has child objects, hasChildren() returns \c{true} for the
@@ -1461,14 +1461,14 @@ void QAbstractItemModel::resetInternalData()
     children. See the \l{Simple Tree Model Example} for more information about
     unique identifiers.
 
-    It is not necessary to support every role defined in Qt::ItemDataRole.
+    It is not necessary to support every role defined in BobUI::ItemDataRole.
     Depending on the type of data contained within a model, it may only be
     useful to implement the data() function to return valid information for
     some of the more common roles. Most models provide at least a textual
-    representation of item data for the Qt::DisplayRole, and well-behaved
-    models should also provide valid information for the Qt::ToolTipRole and
-    Qt::WhatsThisRole. Supporting these roles enables models to be used with
-    standard Qt views. However, for some models that handle highly-specialized
+    representation of item data for the BobUI::DisplayRole, and well-behaved
+    models should also provide valid information for the BobUI::ToolTipRole and
+    BobUI::WhatsThisRole. Supporting these roles enables models to be used with
+    standard BobUI views. However, for some models that handle highly-specialized
     data, it may be appropriate to provide data only for user-defined roles.
 
     Models that provide interfaces to resizable data structures can provide
@@ -1621,7 +1621,7 @@ void QAbstractItemModel::resetInternalData()
 
 
 /*!
-    \fn void QAbstractItemModel::headerDataChanged(Qt::Orientation orientation, int first, int last)
+    \fn void QAbstractItemModel::headerDataChanged(BobUI::Orientation orientation, int first, int last)
 
     This signal is emitted whenever a header is changed. The \a orientation
     indicates whether the horizontal or vertical header has changed. The
@@ -1979,7 +1979,7 @@ bool QAbstractItemModel::hasIndex(int row, int column, const QModelIndex &parent
     Use rowCount() on the parent to find out the number of children.
 
     Note that it is undefined behavior to report that a particular index hasChildren
-    with this method if the same index has the flag Qt::ItemNeverHasChildren set.
+    with this method if the same index has the flag BobUI::ItemNeverHasChildren set.
 
     \sa parent(), index()
 */
@@ -2015,12 +2015,12 @@ QModelIndex QAbstractItemModel::sibling(int row, int column, const QModelIndex &
     Reimplement this function if you want to extend the default behavior of
     this function to include custom roles in the map.
 
-    \sa Qt::ItemDataRole, data()
+    \sa BobUI::ItemDataRole, data()
 */
 QMap<int, QVariant> QAbstractItemModel::itemData(const QModelIndex &index) const
 {
     QMap<int, QVariant> roles;
-    for (int i = 0; i < Qt::UserRole; ++i) {
+    for (int i = 0; i < BobUI::UserRole; ++i) {
         QVariant variantData = data(index, i);
         if (variantData.isValid())
             roles.insert(i, variantData);
@@ -2039,7 +2039,7 @@ QMap<int, QVariant> QAbstractItemModel::itemData(const QModelIndex &index) const
     The base class implementation returns \c{false}. This function and data() must
     be reimplemented for editable models.
 
-    \sa Qt::ItemDataRole, data(), itemData()
+    \sa BobUI::ItemDataRole, data(), itemData()
 */
 bool QAbstractItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -2073,12 +2073,12 @@ bool QAbstractItemModel::clearItemData(const QModelIndex &index)
     \note If you do not have a value to return, return an \b invalid
     (default-constructed) QVariant.
 
-    \sa Qt::ItemDataRole, setData(), headerData()
+    \sa BobUI::ItemDataRole, setData(), headerData()
 */
 
 /*!
     Sets the role data for the item at \a index to the associated value in
-    \a roles, for every Qt::ItemDataRole.
+    \a roles, for every BobUI::ItemDataRole.
 
     Returns \c{true} if successful; otherwise returns \c{false}.
 
@@ -2168,7 +2168,7 @@ QMimeData *QAbstractItemModel::mimeData(const QModelIndexList &indexes) const
 
     \sa dropMimeData(), {Using drag and drop with item views}
  */
-bool QAbstractItemModel::canDropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QAbstractItemModel::canDropMimeData(const QMimeData *data, BobUI::DropAction action,
                                          int row, int column,
                                          const QModelIndex &parent) const
 {
@@ -2198,7 +2198,7 @@ bool QAbstractItemModel::canDropMimeData(const QMimeData *data, Qt::DropAction a
     item in the model where the operation ended. It is the responsibility of
     the model to complete the action at the correct location.
 
-    For instance, a drop action on an item in a QTreeView can result in new
+    For instance, a drop action on an item in a BOBUIreeView can result in new
     items either being inserted as children of the item specified by \a row,
     \a column, and \a parent, or as siblings of the item.
 
@@ -2216,11 +2216,11 @@ bool QAbstractItemModel::canDropMimeData(const QMimeData *data, Qt::DropAction a
 
     \sa supportedDropActions(), canDropMimeData(), {Using drag and drop with item views}
 */
-bool QAbstractItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QAbstractItemModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                                       int row, int column, const QModelIndex &parent)
 {
     // check if the action is supported
-    if (!data || !(action == Qt::CopyAction || action == Qt::MoveAction))
+    if (!data || !(action == BobUI::CopyAction || action == BobUI::MoveAction))
         return false;
     // check if the format is supported
     QStringList types = mimeTypes();
@@ -2246,17 +2246,17 @@ bool QAbstractItemModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
 
     Returns the drop actions supported by this model.
 
-    The default implementation returns Qt::CopyAction. Reimplement this
+    The default implementation returns BobUI::CopyAction. Reimplement this
     function if you wish to support additional actions. You must also
     reimplement the dropMimeData() function to handle the additional
     operations.
 
-    \sa dropMimeData(), Qt::DropActions, {Using drag and drop with item
+    \sa dropMimeData(), BobUI::DropActions, {Using drag and drop with item
     views}
 */
-Qt::DropActions QAbstractItemModel::supportedDropActions() const
+BobUI::DropActions QAbstractItemModel::supportedDropActions() const
 {
-    return Qt::CopyAction;
+    return BobUI::CopyAction;
 }
 
 /*!
@@ -2268,9 +2268,9 @@ Qt::DropActions QAbstractItemModel::supportedDropActions() const
     supportedDragActions() is used by QAbstractItemView::startDrag() as the
     default values when a drag occurs.
 
-    \sa Qt::DropActions, {Using drag and drop with item views}
+    \sa BobUI::DropActions, {Using drag and drop with item views}
 */
-Qt::DropActions QAbstractItemModel::supportedDragActions() const
+BobUI::DropActions QAbstractItemModel::supportedDragActions() const
 {
     return supportedDropActions();
 }
@@ -2458,15 +2458,15 @@ bool QAbstractItemModel::canFetchMore(const QModelIndex &) const
     the item (\c ItemIsEnabled) and allows it to be selected
     (\c ItemIsSelectable).
 
-    \sa Qt::ItemFlags
+    \sa BobUI::ItemFlags
 */
-Qt::ItemFlags QAbstractItemModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QAbstractItemModel::flags(const QModelIndex &index) const
 {
     Q_D(const QAbstractItemModel);
     if (!d->indexValid(index))
         return { };
 
-    return Qt::ItemIsSelectable|Qt::ItemIsEnabled;
+    return BobUI::ItemIsSelectable|BobUI::ItemIsEnabled;
 }
 
 /*!
@@ -2474,7 +2474,7 @@ Qt::ItemFlags QAbstractItemModel::flags(const QModelIndex &index) const
 
     The base class implementation does nothing.
 */
-void QAbstractItemModel::sort(int column, Qt::SortOrder order)
+void QAbstractItemModel::sort(int column, BobUI::SortOrder order)
 {
     Q_UNUSED(column);
     Q_UNUSED(order);
@@ -2518,16 +2518,16 @@ QModelIndex QAbstractItemModel::buddy(const QModelIndex &index) const
 */
 QModelIndexList QAbstractItemModel::match(const QModelIndex &start, int role,
                                           const QVariant &value, int hits,
-                                          Qt::MatchFlags flags) const
+                                          BobUI::MatchFlags flags) const
 {
     QModelIndexList result;
-    uint matchType = (flags & Qt::MatchTypeMask).toInt();
-    Qt::CaseSensitivity cs = flags & Qt::MatchCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
-    bool recurse = flags.testAnyFlag(Qt::MatchRecursive);
-    bool wrap = flags.testAnyFlag(Qt::MatchWrap);
+    uint matchType = (flags & BobUI::MatchTypeMask).toInt();
+    BobUI::CaseSensitivity cs = flags & BobUI::MatchCaseSensitive ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
+    bool recurse = flags.testAnyFlag(BobUI::MatchRecursive);
+    bool wrap = flags.testAnyFlag(BobUI::MatchWrap);
     bool allHits = (hits == -1);
     QString text; // only convert to a string if it is needed
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QRegularExpression rx; // only create it if needed
 #endif
     const int column = start.column();
@@ -2543,27 +2543,27 @@ QModelIndexList QAbstractItemModel::match(const QModelIndex &start, int role,
                  continue;
             QVariant v = data(idx, role);
             // QVariant based matching
-            if (matchType == Qt::MatchExactly) {
+            if (matchType == BobUI::MatchExactly) {
                 if (value == v)
                     result.append(idx);
             } else { // QString or regular expression based matching
-#if QT_CONFIG(regularexpression)
-                if (matchType == Qt::MatchRegularExpression) {
+#if BOBUI_CONFIG(regularexpression)
+                if (matchType == BobUI::MatchRegularExpression) {
                     if (rx.pattern().isEmpty()) {
                         if (value.userType() == QMetaType::QRegularExpression) {
                             rx = value.toRegularExpression();
                         } else {
                             rx.setPattern(value.toString());
-                            if (cs == Qt::CaseInsensitive)
+                            if (cs == BobUI::CaseInsensitive)
                                 rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
                         }
                     }
-                } else if (matchType == Qt::MatchWildcard) {
+                } else if (matchType == BobUI::MatchWildcard) {
                     if (rx.pattern().isEmpty()) {
                         const QString pattern = QRegularExpression::wildcardToRegularExpression(value.toString(), QRegularExpression::NonPathWildcardConversion);
                         rx.setPattern(pattern);
                     }
-                    if (cs == Qt::CaseInsensitive)
+                    if (cs == BobUI::CaseInsensitive)
                         rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
                 } else
 #endif
@@ -2574,27 +2574,27 @@ QModelIndexList QAbstractItemModel::match(const QModelIndex &start, int role,
 
                 QString t = v.toString();
                 switch (matchType) {
-#if QT_CONFIG(regularexpression)
-                case Qt::MatchRegularExpression:
+#if BOBUI_CONFIG(regularexpression)
+                case BobUI::MatchRegularExpression:
                     Q_FALLTHROUGH();
-                case Qt::MatchWildcard:
+                case BobUI::MatchWildcard:
                     if (t.contains(rx))
                         result.append(idx);
                     break;
 #endif
-                case Qt::MatchStartsWith:
+                case BobUI::MatchStartsWith:
                     if (t.startsWith(text, cs))
                         result.append(idx);
                     break;
-                case Qt::MatchEndsWith:
+                case BobUI::MatchEndsWith:
                     if (t.endsWith(text, cs))
                         result.append(idx);
                     break;
-                case Qt::MatchFixedString:
+                case BobUI::MatchFixedString:
                     if (t.compare(text, cs) == 0)
                         result.append(idx);
                     break;
-                case Qt::MatchContains:
+                case BobUI::MatchContains:
                 default:
                     if (t.contains(text, cs))
                         result.append(idx);
@@ -2632,29 +2632,29 @@ QSize QAbstractItemModel::span(const QModelIndex &) const
 
     Returns the model's role names.
 
-    The default role names set by Qt are:
+    The default role names set by BobUI are:
 
     \table
     \header
-    \li Qt Role
+    \li BobUI Role
     \li QML Role Name
     \row
-    \li Qt::DisplayRole
+    \li BobUI::DisplayRole
     \li display
     \row
-    \li Qt::DecorationRole
+    \li BobUI::DecorationRole
     \li decoration
     \row
-    \li Qt::EditRole
+    \li BobUI::EditRole
     \li edit
     \row
-    \li Qt::ToolTipRole
+    \li BobUI::ToolTipRole
     \li toolTip
     \row
-    \li Qt::StatusTipRole
+    \li BobUI::StatusTipRole
     \li statusTip
     \row
-    \li Qt::WhatsThisRole
+    \li BobUI::WhatsThisRole
     \li whatsThis
     \endtable
 */
@@ -2700,13 +2700,13 @@ void QAbstractItemModel::revert()
     number. Similarly, for vertical headers, the section number corresponds to
     the row number.
 
-    \sa Qt::ItemDataRole, setHeaderData(), QHeaderView
+    \sa BobUI::ItemDataRole, setHeaderData(), QHeaderView
 */
 
-QVariant QAbstractItemModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QAbstractItemModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     Q_UNUSED(orientation);
-    if (role == Qt::DisplayRole)
+    if (role == BobUI::DisplayRole)
         return section + 1;
     return QVariant();
 }
@@ -2720,10 +2720,10 @@ QVariant QAbstractItemModel::headerData(int section, Qt::Orientation orientation
     When reimplementing this function, the headerDataChanged() signal must be
     emitted explicitly.
 
-    \sa Qt::ItemDataRole, headerData()
+    \sa BobUI::ItemDataRole, headerData()
 */
 
-bool QAbstractItemModel::setHeaderData(int section, Qt::Orientation orientation,
+bool QAbstractItemModel::setHeaderData(int section, BobUI::Orientation orientation,
                                        const QVariant &value, int role)
 {
     Q_UNUSED(section);
@@ -2985,14 +2985,14 @@ void QAbstractItemModel::endRemoveRows()
 
     \internal
 */
-bool QAbstractItemModelPrivate::allowMove(const QModelIndex &srcParent, int start, int end, const QModelIndex &destinationParent, int destinationStart, Qt::Orientation orientation)
+bool QAbstractItemModelPrivate::allowMove(const QModelIndex &srcParent, int start, int end, const QModelIndex &destinationParent, int destinationStart, BobUI::Orientation orientation)
 {
     // Don't move the range within itself.
     if (destinationParent == srcParent)
         return !(destinationStart >= start && destinationStart <= end + 1);
 
     QModelIndex destinationAncestor = destinationParent;
-    int pos = (Qt::Vertical == orientation) ? destinationAncestor.row() : destinationAncestor.column();
+    int pos = (BobUI::Vertical == orientation) ? destinationAncestor.row() : destinationAncestor.column();
     forever {
         if (destinationAncestor == srcParent) {
             if (pos >= start && pos <= end)
@@ -3003,7 +3003,7 @@ bool QAbstractItemModelPrivate::allowMove(const QModelIndex &srcParent, int star
         if (!destinationAncestor.isValid())
           break;
 
-        pos = (Qt::Vertical == orientation) ? destinationAncestor.row() : destinationAncestor.column();
+        pos = (BobUI::Vertical == orientation) ? destinationAncestor.row() : destinationAncestor.column();
         destinationAncestor = destinationAncestor.parent();
     }
 
@@ -3013,7 +3013,7 @@ bool QAbstractItemModelPrivate::allowMove(const QModelIndex &srcParent, int star
 /*!
     \internal
 
-    see QTBUG-94546
+    see BOBUIBUG-94546
  */
 void QAbstractItemModelPrivate::executePendingOperations() const { }
 
@@ -3114,7 +3114,7 @@ bool QAbstractItemModel::beginMoveRows(const QModelIndex &sourceParent, int sour
     Q_ASSERT(destinationChild >= 0);
     Q_D(QAbstractItemModel);
 
-    if (!d->allowMove(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, Qt::Vertical)) {
+    if (!d->allowMove(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, BobUI::Vertical)) {
         return false;
     }
 
@@ -3127,7 +3127,7 @@ bool QAbstractItemModel::beginMoveRows(const QModelIndex &sourceParent, int sour
     d->changes.push(destinationChange);
 
     emit rowsAboutToBeMoved(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, QPrivateSignal());
-    d->itemsAboutToBeMoved(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, Qt::Vertical);
+    d->itemsAboutToBeMoved(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, BobUI::Vertical);
     return true;
 }
 
@@ -3159,7 +3159,7 @@ void QAbstractItemModel::endMoveRows()
     if (removeChange.needsAdjust)
       adjustedSource = createIndex(adjustedSource.row() + numMoved, adjustedSource.column(), adjustedSource.internalPointer());
 
-    d->itemsMoved(adjustedSource, removeChange.first, removeChange.last, adjustedDestination, insertChange.first, Qt::Vertical);
+    d->itemsMoved(adjustedSource, removeChange.first, removeChange.last, adjustedDestination, insertChange.first, BobUI::Vertical);
 
     emit rowsMoved(adjustedSource, removeChange.first, removeChange.last, adjustedDestination, insertChange.first, QPrivateSignal());
 }
@@ -3333,7 +3333,7 @@ bool QAbstractItemModel::beginMoveColumns(const QModelIndex &sourceParent, int s
     Q_ASSERT(destinationChild >= 0);
     Q_D(QAbstractItemModel);
 
-    if (!d->allowMove(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, Qt::Horizontal)) {
+    if (!d->allowMove(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, BobUI::Horizontal)) {
         return false;
     }
 
@@ -3346,7 +3346,7 @@ bool QAbstractItemModel::beginMoveColumns(const QModelIndex &sourceParent, int s
     d->changes.push(destinationChange);
 
     emit columnsAboutToBeMoved(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, QPrivateSignal());
-    d->itemsAboutToBeMoved(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, Qt::Horizontal);
+    d->itemsAboutToBeMoved(sourceParent, sourceFirst, sourceLast, destinationParent, destinationChild, BobUI::Horizontal);
     return true;
 }
 
@@ -3378,7 +3378,7 @@ void QAbstractItemModel::endMoveColumns()
     if (removeChange.needsAdjust)
       adjustedSource = createIndex(adjustedSource.row(), adjustedSource.column() + numMoved, adjustedSource.internalPointer());
 
-    d->itemsMoved(adjustedSource, removeChange.first, removeChange.last, adjustedDestination, insertChange.first, Qt::Horizontal);
+    d->itemsMoved(adjustedSource, removeChange.first, removeChange.last, adjustedDestination, insertChange.first, BobUI::Horizontal);
     emit columnsMoved(adjustedSource, removeChange.first, removeChange.last, adjustedDestination, insertChange.first, QPrivateSignal());
 }
 
@@ -3578,7 +3578,7 @@ QModelIndexList QAbstractItemModel::persistentIndexList() const
     This function returns true if all the checks succeeded, and false otherwise.
     This allows to use the function in \l{Q_ASSERT} and similar other debugging
     mechanisms. If some check failed, a warning message will be printed in the
-    \c{qt.core.qabstractitemmodel.checkindex} logging category, containing
+    \c{bobui.core.qabstractitemmodel.checkindex} logging category, containing
     some information that may be useful for debugging the failure.
 
     \note This function is a debugging helper for implementing your own item
@@ -3712,7 +3712,7 @@ void QAbstractItemModel::multiData(const QModelIndex &index, QModelRoleDataSpan 
 
 /*!
     \class QAbstractTableModel
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAbstractTableModel class provides an abstract model that can be
     subclassed to create table models.
 
@@ -3741,7 +3741,7 @@ void QAbstractItemModel::multiData(const QModelIndex &index, QModelRoleDataSpan 
 
     Editable models need to implement setData(), and implement flags() to
     return a value containing
-    \l{Qt::ItemFlags}{Qt::ItemIsEditable}.
+    \l{BobUI::ItemFlags}{BobUI::ItemIsEditable}.
 
     Models that provide interfaces to resizable data structures can
     provide implementations of insertRows(), removeRows(), insertColumns(),
@@ -3847,17 +3847,17 @@ bool QAbstractTableModel::hasChildren(const QModelIndex &parent) const
 /*!
     \reimp
  */
-Qt::ItemFlags QAbstractTableModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QAbstractTableModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags f = QAbstractItemModel::flags(index);
+    BobUI::ItemFlags f = QAbstractItemModel::flags(index);
     if (index.isValid())
-        f |= Qt::ItemNeverHasChildren;
+        f |= BobUI::ItemNeverHasChildren;
     return f;
 }
 
 /*!
     \class QAbstractListModel
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAbstractListModel class provides an abstract model that can be
     subclassed to create one-dimensional list models.
 
@@ -3896,7 +3896,7 @@ Qt::ItemFlags QAbstractTableModel::flags(const QModelIndex &index) const
 
     For editable list models, you must also provide an implementation of
     setData(), and implement the flags() function so that it returns a value
-    containing \l{Qt::ItemFlags}{Qt::ItemIsEditable}.
+    containing \l{BobUI::ItemFlags}{BobUI::ItemIsEditable}.
 
     Note that QAbstractListModel provides a default implementation of
     columnCount() that informs views that there is only a single column
@@ -3989,11 +3989,11 @@ QModelIndex QAbstractListModel::sibling(int row, int column, const QModelIndex &
 /*!
     \reimp
  */
-Qt::ItemFlags QAbstractListModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QAbstractListModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags f = QAbstractItemModel::flags(index);
+    BobUI::ItemFlags f = QAbstractItemModel::flags(index);
     if (index.isValid())
-        f |= Qt::ItemNeverHasChildren;
+        f |= BobUI::ItemNeverHasChildren;
     return f;
 }
 
@@ -4025,10 +4025,10 @@ bool QAbstractListModel::hasChildren(const QModelIndex &parent) const
 /*!
   \reimp
 */
-bool QAbstractTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QAbstractTableModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                                        int row, int column, const QModelIndex &parent)
 {
-    if (!data || !(action == Qt::CopyAction || action == Qt::MoveAction))
+    if (!data || !(action == BobUI::CopyAction || action == BobUI::MoveAction))
         return false;
 
     QStringList types = mimeTypes();
@@ -4076,10 +4076,10 @@ bool QAbstractTableModel::dropMimeData(const QMimeData *data, Qt::DropAction act
 /*!
   \reimp
 */
-bool QAbstractListModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QAbstractListModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                                       int row, int column, const QModelIndex &parent)
 {
-    if (!data || !(action == Qt::CopyAction || action == Qt::MoveAction))
+    if (!data || !(action == BobUI::CopyAction || action == BobUI::MoveAction))
         return false;
 
     QStringList types = mimeTypes();
@@ -4192,7 +4192,7 @@ void QAbstractItemModelPrivate::Persistent::insertMultiAtEnd(const QModelIndex& 
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractitemmodel.cpp"
 #include "qabstractitemmodel.moc"

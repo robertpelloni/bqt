@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QLOCALE_P_H
 #define QLOCALE_P_H
@@ -10,7 +10,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
@@ -19,13 +19,13 @@
 
 #include "qlocale.h"
 
-#include <QtCore/qcalendar.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qnumeric.h>
-#include <QtCore/private/qnumeric_p.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qcalendar.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qnumeric.h>
+#include <BobUICore/private/qnumeric_p.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qvarlengtharray.h>
 #ifdef Q_OS_WASM
 #include <private/qstdweb_p.h>
 #endif
@@ -34,7 +34,7 @@
 #include <cmath>
 #include <string_view>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T> struct QSimpleParsedNumber
 {
@@ -87,7 +87,7 @@ template <int Extent, uchar Lowest> struct QCharacterSetMatch
     }
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 inline constexpr char ascii_space_chars[] =
         "\t"    // 9: HT - horizontal tab
         "\n"    // 10: LF - line feed
@@ -120,7 +120,7 @@ inline constexpr auto makeCharacterSetMatch() noexcept
         return QCharacterSetMatch<Extent, MinElement>(view);
     }
 }
-} // QtPrivate
+} // BobUIPrivate
 
 // Subclassed by Android platform plugin:
 class Q_CORE_EXPORT QSystemLocale
@@ -161,8 +161,8 @@ public:
         MonthNameNarrow, // QString, in: int
         DateToStringLong, // QString, in: QDate
         DateToStringShort, // QString in: QDate
-        TimeToStringLong, // QString in: QTime
-        TimeToStringShort, // QString in: QTime
+        TimeToStringLong, // QString in: BOBUIime
+        TimeToStringShort, // QString in: BOBUIime
         DateTimeFormatLong, // QString
         DateTimeFormatShort, // QString
         DateTimeToStringLong, // QString in: QDateTime
@@ -171,8 +171,8 @@ public:
         PositiveSign, // QString
         AMText, // QString
         PMText, // QString
-        FirstDayOfWeek, // Qt::DayOfWeek
-        Weekdays, // QList<Qt::DayOfWeek>
+        FirstDayOfWeek, // BobUI::DayOfWeek
+        Weekdays, // QList<BobUI::DayOfWeek>
         CurrencySymbol, // QString in: CurrencyToStringArgument
         CurrencyToString, // QString in: qlonglong, qulonglong or double
         Collation, // QString
@@ -352,7 +352,7 @@ public:
     [[nodiscard]] QSimpleParsedNumber<quint64>
     stringToUnsLongLong(QStringView str, int base, QLocale::NumberOptions options) const;
 
-    // this function is used in QIntValidator (QtGui)
+    // this function is used in QIntValidator (BobUIGui)
     [[nodiscard]] Q_CORE_EXPORT
     static QSimpleParsedNumber<qint64> bytearrayToLongLong(QByteArrayView num, int base);
     [[nodiscard]] static QSimpleParsedNumber<quint64>
@@ -363,7 +363,7 @@ public:
 
     struct NumericData
     {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
         // Only used for the system locale, to store data for the view to look at:
         QString sysDecimal, sysGroup, sysMinus, sysPlus;
 #endif
@@ -447,7 +447,7 @@ public:
         }
     };
 
-    // this function is used in QIntValidator (QtGui)
+    // this function is used in QIntValidator (BobUIGui)
     [[nodiscard]] Q_CORE_EXPORT ParsingResult
     validateChars(QStringView str, NumberMode numMode, int decDigits = -1,
                   QLocale::NumberOptions number_options = QLocale::DefaultNumberOptions) const;
@@ -624,7 +624,7 @@ public:
     static QBasicAtomicInt s_generation;
 };
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
 qsizetype QSystemLocale::fallbackLocaleIndex() const { return fallbackLocale().d->m_index; }
 #endif
 
@@ -638,24 +638,24 @@ inline QLocalePrivate *QSharedDataPointer<QLocalePrivate>::clone()
 
 // Also used to merely skip over an escape in a format string, advancint idx to
 // point after it (so not [[nodiscard]]):
-QString qt_readEscapedFormatString(QStringView format, qsizetype *idx);
-[[nodiscard]] bool qt_splitLocaleName(QStringView name, QStringView *lang = nullptr,
+QString bobui_readEscapedFormatString(QStringView format, qsizetype *idx);
+[[nodiscard]] bool bobui_splitLocaleName(QStringView name, QStringView *lang = nullptr,
                                       QStringView *script = nullptr,
                                       QStringView *cntry = nullptr) noexcept;
-[[nodiscard]] qsizetype qt_repeatCount(QStringView s) noexcept;
+[[nodiscard]] qsizetype bobui_repeatCount(QStringView s) noexcept;
 
 [[nodiscard]] constexpr inline bool ascii_isspace(uchar c) noexcept
 {
-    constexpr auto matcher = QtPrivate::makeCharacterSetMatch<QtPrivate::ascii_space_chars>();
+    constexpr auto matcher = BobUIPrivate::makeCharacterSetMatch<BobUIPrivate::ascii_space_chars>();
     return matcher.matches(c);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // ### move to qnamespace.h
-QT_DECL_METATYPE_EXTERN_TAGGED(QList<Qt::DayOfWeek>, QList_Qt__DayOfWeek, Q_CORE_EXPORT)
-#ifndef QT_NO_SYSTEMLOCALE
-QT_DECL_METATYPE_EXTERN_TAGGED(QSystemLocale::CurrencyToStringArgument,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QList<BobUI::DayOfWeek>, QList_BobUI__DayOfWeek, Q_CORE_EXPORT)
+#ifndef BOBUI_NO_SYSTEMLOCALE
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QSystemLocale::CurrencyToStringArgument,
                                QSystemLocale__CurrencyToStringArgument, Q_CORE_EXPORT)
 #endif
 

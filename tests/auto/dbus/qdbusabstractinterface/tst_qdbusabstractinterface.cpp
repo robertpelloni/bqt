@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QSharedPointer>
@@ -17,11 +17,11 @@
 #include "interface.h"
 #include "pinger_interface.h"
 
-static const char serviceName[] = "org.qtproject.autotests.qpinger";
-static const char objectPath[] = "/org/qtproject/qpinger";
+static const char serviceName[] = "org.bobuiproject.autotests.qpinger";
+static const char objectPath[] = "/org/bobuiproject/qpinger";
 static const char *interfaceName = serviceName;
 
-typedef QSharedPointer<org::qtproject::QtDBus::Pinger> Pinger;
+typedef QSharedPointer<org::bobuiproject::BobUIDBus::Pinger> Pinger;
 
 class tst_QDBusAbstractInterface: public QObject
 {
@@ -218,7 +218,7 @@ void tst_QDBusAbstractInterface::initTestCase()
     QVERIFY(proc.waitForReadyRead());
 
     // verify service is now registered
-    QTRY_VERIFY(con.interface()->isServiceRegistered(serviceName));
+    BOBUIRY_VERIFY(con.interface()->isServiceRegistered(serviceName));
 
     // get peer server address
     QDBusMessage req = QDBusMessage::createMethodCall(serviceName, objectPath, interfaceName, "address");
@@ -451,11 +451,11 @@ void tst_QDBusAbstractInterface::makeAsyncMultiOutCallPeer()
     QCoreApplication::instance()->processEvents();
 }
 
-static const char server_serviceName[] = "org.qtproject.autotests.dbusserver";
-static const char server_objectPath[] = "/org/qtproject/server";
-static const char server_interfaceName[] = "org.qtproject.QtDBus.Pinger";
+static const char server_serviceName[] = "org.bobuiproject.autotests.dbusserver";
+static const char server_objectPath[] = "/org/bobuiproject/server";
+static const char server_interfaceName[] = "org.bobuiproject.BobUIDBus.Pinger";
 
-class DBusServerThread : public QThread
+class DBusServerThread : public BOBUIhread
 {
 public:
     DBusServerThread() {
@@ -532,7 +532,7 @@ void tst_QDBusAbstractInterface::callWithTimeout()
     }
 
     // Now using generated code
-    org::qtproject::QtDBus::Pinger p(server_serviceName, server_objectPath, QDBusConnection::sessionBus());
+    org::bobuiproject::BobUIDBus::Pinger p(server_serviceName, server_objectPath, QDBusConnection::sessionBus());
     {
         // Call with no timeout
         QDBusReply<int> reply = p.sleepMethod(100);
@@ -632,7 +632,7 @@ void tst_QDBusAbstractInterface::stringPropWritePeer()
 
     QString expectedValue = "This is a value";
     QVERIFY(p->setProperty("stringProp", expectedValue));
-    QEXPECT_FAIL("", "QTBUG-24262 peer tests are broken", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-24262 peer tests are broken", Abort);
     QCOMPARE(targetObj.m_stringProp, expectedValue);
 }
 
@@ -658,7 +658,7 @@ void tst_QDBusAbstractInterface::variantPropWritePeer()
 
     QDBusVariant expectedValue = QDBusVariant(Q_INT64_C(-47));
     QVERIFY(p->setProperty("variantProp", QVariant::fromValue(expectedValue)));
-    QEXPECT_FAIL("", "QTBUG-24262 peer tests are broken", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-24262 peer tests are broken", Abort);
     QCOMPARE(targetObj.m_variantProp.variant(), expectedValue.variant());
 }
 
@@ -682,7 +682,7 @@ void tst_QDBusAbstractInterface::complexPropWritePeer()
 
     RegisteredType expectedValue = RegisteredType("This is a value");
     QVERIFY(p->setProperty("complexProp", QVariant::fromValue(expectedValue)));
-    QEXPECT_FAIL("", "QTBUG-24262 peer tests are broken", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-24262 peer tests are broken", Abort);
     QCOMPARE(targetObj.m_complexProp, expectedValue);
 }
 
@@ -762,7 +762,7 @@ void tst_QDBusAbstractInterface::stringPropDirectWritePeer()
 
     QString expectedValue = "This is a value";
     p->setStringProp(expectedValue);
-    QEXPECT_FAIL("", "QTBUG-24262 peer tests are broken", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-24262 peer tests are broken", Abort);
     QCOMPARE(targetObj.m_stringProp, expectedValue);
 }
 
@@ -784,7 +784,7 @@ void tst_QDBusAbstractInterface::variantPropDirectWritePeer()
 
     QDBusVariant expectedValue = QDBusVariant(Q_INT64_C(-47));
     p->setVariantProp(expectedValue);
-    QEXPECT_FAIL("", "QTBUG-24262 peer tests are broken", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-24262 peer tests are broken", Abort);
     QCOMPARE(targetObj.m_variantProp.variant().userType(), expectedValue.variant().userType());
     QCOMPARE(targetObj.m_variantProp.variant(), expectedValue.variant());
 }
@@ -807,19 +807,19 @@ void tst_QDBusAbstractInterface::complexPropDirectWritePeer()
 
     RegisteredType expectedValue = RegisteredType("This is a value");
     p->setComplexProp(expectedValue);
-    QEXPECT_FAIL("", "QTBUG-24262 peer tests are broken", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-24262 peer tests are broken", Abort);
     QCOMPARE(targetObj.m_complexProp, expectedValue);
 }
 
 void tst_QDBusAbstractInterface::getVoidSignal_data()
 {
-    QTest::addColumn<QString>("service");
-    QTest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("service");
+    BOBUIest::addColumn<QString>("path");
 
-    QTest::newRow("specific") << QDBusConnection::sessionBus().baseService() << "/";
-    QTest::newRow("service-wildcard") << QString() << "/";
-    QTest::newRow("path-wildcard") << QDBusConnection::sessionBus().baseService() << QString();
-    QTest::newRow("full-wildcard") << QString() << QString();
+    BOBUIest::newRow("specific") << QDBusConnection::sessionBus().baseService() << "/";
+    BOBUIest::newRow("service-wildcard") << QString() << "/";
+    BOBUIest::newRow("path-wildcard") << QDBusConnection::sessionBus().baseService() << QString();
+    BOBUIest::newRow("full-wildcard") << QString() << QString();
 }
 
 void tst_QDBusAbstractInterface::getVoidSignal()
@@ -830,12 +830,12 @@ void tst_QDBusAbstractInterface::getVoidSignal()
     QVERIFY2(p, "Not connected to D-Bus");
 
     // we need to connect the signal somewhere in order for D-Bus to enable the rules
-    QTestEventLoop::instance().connect(p.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(p.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
     QSignalSpy s(p.data(), SIGNAL(voidSignal()));
 
     emit targetObj.voidSignal();
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(s.size(), 1);
     QCOMPARE(s.at(0).size(), 0);
@@ -854,13 +854,13 @@ void tst_QDBusAbstractInterface::getStringSignal()
     QVERIFY2(p, "Not connected to D-Bus");
 
     // we need to connect the signal somewhere in order for D-Bus to enable the rules
-    QTestEventLoop::instance().connect(p.data(), SIGNAL(stringSignal(QString)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(p.data(), SIGNAL(stringSignal(QString)), SLOT(exitLoop()));
     QSignalSpy s(p.data(), SIGNAL(stringSignal(QString)));
 
     QString expectedValue = "Good morning";
     emit targetObj.stringSignal(expectedValue);
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(s.size(), 1);
     QCOMPARE(s[0].size(), 1);
@@ -881,13 +881,13 @@ void tst_QDBusAbstractInterface::getComplexSignal()
     QVERIFY2(p, "Not connected to D-Bus");
 
     // we need to connect the signal somewhere in order for D-Bus to enable the rules
-    QTestEventLoop::instance().connect(p.data(), SIGNAL(complexSignal(RegisteredType)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(p.data(), SIGNAL(complexSignal(RegisteredType)), SLOT(exitLoop()));
     QSignalSpy s(p.data(), SIGNAL(complexSignal(RegisteredType)));
 
     RegisteredType expectedValue("Good evening");
     emit targetObj.complexSignal(expectedValue);
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(s.size(), 1);
     QCOMPARE(s[0].size(), 1);
@@ -897,10 +897,10 @@ void tst_QDBusAbstractInterface::getComplexSignal()
 
 void tst_QDBusAbstractInterface::getVoidSignalPeer_data()
 {
-    QTest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("path");
 
-    QTest::newRow("specific") << "/";
-    QTest::newRow("wildcard") << QString();
+    BOBUIest::newRow("specific") << "/";
+    BOBUIest::newRow("wildcard") << QString();
 }
 
 void tst_QDBusAbstractInterface::getVoidSignalPeer()
@@ -910,13 +910,13 @@ void tst_QDBusAbstractInterface::getVoidSignalPeer()
     QVERIFY2(p, "Not connected to D-Bus");
 
     // we need to connect the signal somewhere in order for D-Bus to enable the rules
-    QTestEventLoop::instance().connect(p.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(p.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
     QSignalSpy s(p.data(), SIGNAL(voidSignal()));
 
     QDBusMessage req = QDBusMessage::createMethodCall(serviceName, objectPath, interfaceName, "voidSignal");
     QVERIFY(QDBusConnection::sessionBus().send(req));
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(s.size(), 1);
     QCOMPARE(s.at(0).size(), 0);
@@ -934,15 +934,15 @@ void tst_QDBusAbstractInterface::getStringSignalPeer()
     QVERIFY2(p, "Not connected to D-Bus");
 
     // we need to connect the signal somewhere in order for D-Bus to enable the rules
-    QTestEventLoop::instance().connect(p.data(), SIGNAL(stringSignal(QString)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(p.data(), SIGNAL(stringSignal(QString)), SLOT(exitLoop()));
     QSignalSpy s(p.data(), SIGNAL(stringSignal(QString)));
 
     QString expectedValue = "Good morning";
     QDBusMessage req = QDBusMessage::createMethodCall(serviceName, objectPath, interfaceName, "stringSignal");
     req << expectedValue;
     QVERIFY(QDBusConnection::sessionBus().send(req));
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(s.size(), 1);
     QCOMPARE(s[0].size(), 1);
@@ -962,15 +962,15 @@ void tst_QDBusAbstractInterface::getComplexSignalPeer()
     QVERIFY2(p, "Not connected to D-Bus");
 
     // we need to connect the signal somewhere in order for D-Bus to enable the rules
-    QTestEventLoop::instance().connect(p.data(), SIGNAL(complexSignal(RegisteredType)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(p.data(), SIGNAL(complexSignal(RegisteredType)), SLOT(exitLoop()));
     QSignalSpy s(p.data(), SIGNAL(complexSignal(RegisteredType)));
 
     RegisteredType expectedValue("Good evening");
     QDBusMessage req = QDBusMessage::createMethodCall(serviceName, objectPath, interfaceName, "complexSignal");
     req << "Good evening";
     QVERIFY(QDBusConnection::sessionBus().send(req));
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(s.size(), 1);
     QCOMPARE(s[0].size(), 1);
@@ -980,7 +980,7 @@ void tst_QDBusAbstractInterface::getComplexSignalPeer()
 
 void tst_QDBusAbstractInterface::followSignal()
 {
-    const QString serviceToFollow = "org.qtproject.tst_qdbusabstractinterface.FollowMe";
+    const QString serviceToFollow = "org.bobuiproject.tst_qdbusabstractinterface.FollowMe";
     Pinger p = getPinger(serviceToFollow);
     QVERIFY2(p, "Not connected to D-Bus");
 
@@ -996,12 +996,12 @@ void tst_QDBusAbstractInterface::followSignal()
     // happens because QDBusConnectionPrivate runs in a separate thread and
     // uses a QMultiHash and insertMulti prepends to the list of items with the
     // same key.
-    QTestEventLoop::instance().connect(control.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(control.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
     QSignalSpy s(p.data(), SIGNAL(voidSignal()));
 
     emit targetObj.voidSignal();
-    QTestEventLoop::instance().enterLoop(200);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(200);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     // signal must not have been received because the service isn't registered
     QVERIFY(s.isEmpty());
@@ -1016,8 +1016,8 @@ void tst_QDBusAbstractInterface::followSignal()
 
     // emit the signal again:
     emit targetObj.voidSignal();
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     // now the signal must have been received:
     QCOMPARE(s.size(), 1);
@@ -1029,18 +1029,18 @@ void tst_QDBusAbstractInterface::followSignal()
 
 void tst_QDBusAbstractInterface::connectDisconnect_data()
 {
-    QTest::addColumn<int>("connectCount");
-    QTest::addColumn<int>("disconnectCount");
+    BOBUIest::addColumn<int>("connectCount");
+    BOBUIest::addColumn<int>("disconnectCount");
 
     // we don't actually need multiple disconnects
     // QObject::disconnect() disconnects all matching rules
     // we'd have to use QMetaObject::disconnectOne if we wanted just one
-    QTest::newRow("null") << 0 << 0;
-    QTest::newRow("connect-disconnect") << 1 << 1;
-    QTest::newRow("connect-disconnect-wildcard") << 1 << -1;
-    QTest::newRow("connect-twice") << 2 << 0;
-    QTest::newRow("connect-twice-disconnect") << 2 << 1;
-    QTest::newRow("connect-twice-disconnect-wildcard") << 2 << -1;
+    BOBUIest::newRow("null") << 0 << 0;
+    BOBUIest::newRow("connect-disconnect") << 1 << 1;
+    BOBUIest::newRow("connect-disconnect-wildcard") << 1 << -1;
+    BOBUIest::newRow("connect-twice") << 2 << 0;
+    BOBUIest::newRow("connect-twice-disconnect") << 2 << 1;
+    BOBUIest::newRow("connect-twice-disconnect-wildcard") << 2 << -1;
 }
 
 void tst_QDBusAbstractInterface::connectDisconnect()
@@ -1053,7 +1053,7 @@ void tst_QDBusAbstractInterface::connectDisconnect()
 
     // connect the exitLoop slot first
     // if the disconnect() below does something weird, we'll get a timeout
-    QTestEventLoop::instance().connect(p.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(p.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
 
     SignalReceiver sr;
     for (int i = 0; i < connectCount; ++i)
@@ -1062,8 +1062,8 @@ void tst_QDBusAbstractInterface::connectDisconnect()
         QObject::disconnect(p.data(), disconnectCount > 0 ? SIGNAL(voidSignal()) : 0, &sr, SLOT(receive()));
 
     emit targetObj.voidSignal();
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     if (disconnectCount != 0)
         QCOMPARE(sr.callCount, 0);
@@ -1086,7 +1086,7 @@ void tst_QDBusAbstractInterface::connectDisconnectPeer()
 
     // connect the exitLoop slot first
     // if the disconnect() below does something weird, we'll get a timeout
-    QTestEventLoop::instance().connect(p.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(p.data(), SIGNAL(voidSignal()), SLOT(exitLoop()));
 
     SignalReceiver sr;
     for (int i = 0; i < connectCount; ++i)
@@ -1096,8 +1096,8 @@ void tst_QDBusAbstractInterface::connectDisconnectPeer()
 
     QDBusMessage req = QDBusMessage::createMethodCall(serviceName, objectPath, interfaceName, "voidSignal");
     QVERIFY(QDBusConnection::sessionBus().send(req));
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     if (disconnectCount != 0)
         QCOMPARE(sr.callCount, 0);
@@ -1107,13 +1107,13 @@ void tst_QDBusAbstractInterface::connectDisconnectPeer()
 
 void tst_QDBusAbstractInterface::createErrors_data()
 {
-    QTest::addColumn<QString>("service");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("errorName");
+    BOBUIest::addColumn<QString>("service");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("errorName");
 
-    QTest::newRow("invalid-service") << "this isn't valid" << "/" << "org.qtproject.QtDBus.Error.InvalidService";
-    QTest::newRow("invalid-path") << QDBusConnection::sessionBus().baseService() << "this isn't valid"
-            << "org.qtproject.QtDBus.Error.InvalidObjectPath";
+    BOBUIest::newRow("invalid-service") << "this isn't valid" << "/" << "org.bobuiproject.BobUIDBus.Error.InvalidService";
+    BOBUIest::newRow("invalid-path") << QDBusConnection::sessionBus().baseService() << "this isn't valid"
+            << "org.bobuiproject.BobUIDBus.Error.InvalidObjectPath";
 }
 
 void tst_QDBusAbstractInterface::createErrors()
@@ -1124,15 +1124,15 @@ void tst_QDBusAbstractInterface::createErrors()
     QVERIFY2(p, "Not connected to D-Bus");
 
     QVERIFY(!p->isValid());
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::createErrorsPeer_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("errorName");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("errorName");
 
-    QTest::newRow("invalid-path") << "this isn't valid" << "org.qtproject.QtDBus.Error.InvalidObjectPath";
+    BOBUIest::newRow("invalid-path") << "this isn't valid" << "org.bobuiproject.BobUIDBus.Error.InvalidObjectPath";
 }
 
 void tst_QDBusAbstractInterface::createErrorsPeer()
@@ -1142,16 +1142,16 @@ void tst_QDBusAbstractInterface::createErrorsPeer()
     QVERIFY2(p, "Not connected to D-Bus");
 
     QVERIFY(!p->isValid());
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::callErrors_data()
 {
     createErrors_data();
-    QTest::newRow("service-wildcard") << QString() << "/" << "org.qtproject.QtDBus.Error.InvalidService";
-    QTest::newRow("path-wildcard") << QDBusConnection::sessionBus().baseService() << QString()
-            << "org.qtproject.QtDBus.Error.InvalidObjectPath";
-    QTest::newRow("full-wildcard") << QString() << QString() << "org.qtproject.QtDBus.Error.InvalidService";
+    BOBUIest::newRow("service-wildcard") << QString() << "/" << "org.bobuiproject.BobUIDBus.Error.InvalidService";
+    BOBUIest::newRow("path-wildcard") << QDBusConnection::sessionBus().baseService() << QString()
+            << "org.bobuiproject.BobUIDBus.Error.InvalidObjectPath";
+    BOBUIest::newRow("full-wildcard") << QString() << QString() << "org.bobuiproject.BobUIDBus.Error.InvalidService";
 }
 
 void tst_QDBusAbstractInterface::callErrors()
@@ -1164,7 +1164,7 @@ void tst_QDBusAbstractInterface::callErrors()
     // we shouldn't be able to make this call:
     QDBusReply<QString> r = p->stringMethod();
     QVERIFY(!r.isValid());
-    QTEST(r.error().name(), "errorName");
+    BOBUIEST(r.error().name(), "errorName");
     QCOMPARE(p->lastError().name(), r.error().name());
 }
 
@@ -1183,14 +1183,14 @@ void tst_QDBusAbstractInterface::asyncCallErrors()
     // we shouldn't be able to make this call:
     QDBusPendingReply<QString> r = p->stringMethod();
     QVERIFY(r.isError());
-    QTEST(r.error().name(), "errorName");
+    BOBUIEST(r.error().name(), "errorName");
     QCOMPARE(p->lastError().name(), r.error().name());
 }
 
 void tst_QDBusAbstractInterface::callErrorsPeer_data()
 {
     createErrorsPeer_data();
-    QTest::newRow("path-wildcard") << QString() << "org.qtproject.QtDBus.Error.InvalidObjectPath";
+    BOBUIest::newRow("path-wildcard") << QString() << "org.bobuiproject.BobUIDBus.Error.InvalidObjectPath";
 }
 
 void tst_QDBusAbstractInterface::callErrorsPeer()
@@ -1202,7 +1202,7 @@ void tst_QDBusAbstractInterface::callErrorsPeer()
     // we shouldn't be able to make this call:
     QDBusReply<QString> r = p->stringMethod();
     QVERIFY(!r.isValid());
-    QTEST(r.error().name(), "errorName");
+    BOBUIEST(r.error().name(), "errorName");
     QCOMPARE(p->lastError().name(), r.error().name());
 }
 
@@ -1220,7 +1220,7 @@ void tst_QDBusAbstractInterface::asyncCallErrorsPeer()
     // we shouldn't be able to make this call:
     QDBusPendingReply<QString> r = p->stringMethod();
     QVERIFY(r.isError());
-    QTEST(r.error().name(), "errorName");
+    BOBUIEST(r.error().name(), "errorName");
     QCOMPARE(p->lastError().name(), r.error().name());
 }
 
@@ -1240,7 +1240,7 @@ void tst_QDBusAbstractInterface::propertyReadErrors()
     QVariant v = p->property("stringProp");
     QVERIFY(v.isNull());
     QVERIFY(!v.isValid());
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::propertyWriteErrors_data()
@@ -1259,7 +1259,7 @@ void tst_QDBusAbstractInterface::propertyWriteErrors()
     if (p->isValid())
         QCOMPARE(int(p->lastError().type()), int(QDBusError::NoError));
     QVERIFY(!p->setProperty("stringProp", ""));
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::directPropertyReadErrors_data()
@@ -1277,7 +1277,7 @@ void tst_QDBusAbstractInterface::directPropertyReadErrors()
     // we shouldn't be able to get this value:
     QString v = p->stringProp();
     QVERIFY(v.isNull());
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::directPropertyWriteErrors_data()
@@ -1297,7 +1297,7 @@ void tst_QDBusAbstractInterface::directPropertyWriteErrors()
     if (p->isValid())
         QCOMPARE(int(p->lastError().type()), int(QDBusError::NoError));
     p->setStringProp("");
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::propertyReadErrorsPeer_data()
@@ -1315,7 +1315,7 @@ void tst_QDBusAbstractInterface::propertyReadErrorsPeer()
     QVariant v = p->property("stringProp");
     QVERIFY(v.isNull());
     QVERIFY(!v.isValid());
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::propertyWriteErrorsPeer_data()
@@ -1333,7 +1333,7 @@ void tst_QDBusAbstractInterface::propertyWriteErrorsPeer()
     if (p->isValid())
         QCOMPARE(int(p->lastError().type()), int(QDBusError::NoError));
     QVERIFY(!p->setProperty("stringProp", ""));
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::directPropertyReadErrorsPeer_data()
@@ -1350,7 +1350,7 @@ void tst_QDBusAbstractInterface::directPropertyReadErrorsPeer()
     // we shouldn't be able to get this value:
     QString v = p->stringProp();
     QVERIFY(v.isNull());
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::directPropertyWriteErrorsPeer_data()
@@ -1369,20 +1369,20 @@ void tst_QDBusAbstractInterface::directPropertyWriteErrorsPeer()
     if (p->isValid())
         QCOMPARE(int(p->lastError().type()), int(QDBusError::NoError));
     p->setStringProp("");
-    QTEST(p->lastError().name(), "errorName");
+    BOBUIEST(p->lastError().name(), "errorName");
 }
 
 void tst_QDBusAbstractInterface::validity_data()
 {
-    QTest::addColumn<QString>("service");
+    BOBUIest::addColumn<QString>("service");
 
-    QTest::newRow("null-service") << "";
-    QTest::newRow("ignored-service") << "org.example.anyservice";
+    BOBUIest::newRow("null-service") << "";
+    BOBUIest::newRow("ignored-service") << "org.example.anyservice";
 }
 
 void tst_QDBusAbstractInterface::validity()
 {
-    /* Test case for QTBUG-32374 */
+    /* Test case for BOBUIBUG-32374 */
     QFETCH(QString, service);
     Pinger p = getPingerPeer("/", service);
     QVERIFY2(p, "Not connected to D-Bus");
@@ -1390,5 +1390,5 @@ void tst_QDBusAbstractInterface::validity()
     QVERIFY(p->isValid());
 }
 
-QTEST_MAIN(tst_QDBusAbstractInterface)
+BOBUIEST_MAIN(tst_QDBusAbstractInterface)
 #include "tst_qdbusabstractinterface.moc"

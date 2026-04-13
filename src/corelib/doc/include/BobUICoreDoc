@@ -1,0 +1,3 @@
+#include <BobUICore/BobUICore>
+#include "../../platform/android/qandroidextras_p.h"
+#include "../../kernel/qpermissions.h"

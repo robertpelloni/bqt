@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsSceneIndex
@@ -26,14 +26,14 @@
 #include "qgraphicswidget.h"
 #include "qgraphicssceneindex_p.h"
 #include "qgraphicsscenebsptreeindex_p.h"
-#include <QtGui/qpainterpath.h>
+#include <BobUIGui/qpainterpath.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate { // just to keep indentation of the following functions at the same level
+namespace BobUIPrivate { // just to keep indentation of the following functions at the same level
 
-    static bool intersect_rect(const QGraphicsItem *item, const QRectF &exposeRect, Qt::ItemSelectionMode mode,
-                               const QTransform &deviceTransform, const void *intersectData)
+    static bool intersect_rect(const QGraphicsItem *item, const QRectF &exposeRect, BobUI::ItemSelectionMode mode,
+                               const BOBUIransform &deviceTransform, const void *intersectData)
     {
         const QRectF sceneRect = *static_cast<const QRectF *>(intersectData);
 
@@ -47,13 +47,13 @@ namespace QtPrivate { // just to keep indentation of the following functions at 
         const QGraphicsItemPrivate *itemd = QGraphicsItemPrivate::get(item);
         if (itemd->itemIsUntransformable()) {
             // Untransformable items; map the scene rect to item coordinates.
-            const QTransform transform = item->deviceTransform(deviceTransform);
+            const BOBUIransform transform = item->deviceTransform(deviceTransform);
             QRectF itemRect = (deviceTransform * transform.inverted()).mapRect(sceneRect);
-            if (mode == Qt::ContainsItemShape || mode == Qt::ContainsItemBoundingRect)
+            if (mode == BobUI::ContainsItemShape || mode == BobUI::ContainsItemBoundingRect)
                 keep = itemRect.contains(brect) && itemRect != brect;
             else
                 keep = itemRect.intersects(brect);
-            if (keep && (mode == Qt::ContainsItemShape || mode == Qt::IntersectsItemShape)) {
+            if (keep && (mode == BobUI::ContainsItemShape || mode == BobUI::IntersectsItemShape)) {
                 QPainterPath itemPath;
                 itemPath.addRect(itemRect);
                 keep = QGraphicsSceneIndexPrivate::itemCollidesWithPath(item, itemPath, mode);
@@ -64,11 +64,11 @@ namespace QtPrivate { // just to keep indentation of the following functions at 
                                                ? brect.translated(itemd->sceneTransform.dx(),
                                                                   itemd->sceneTransform.dy())
                                                : itemd->sceneTransform.mapRect(brect);
-            if (mode == Qt::ContainsItemShape || mode == Qt::ContainsItemBoundingRect)
+            if (mode == BobUI::ContainsItemShape || mode == BobUI::ContainsItemBoundingRect)
                 keep = sceneRect != brect && sceneRect.contains(itemSceneBoundingRect);
             else
                 keep = sceneRect.intersects(itemSceneBoundingRect);
-            if (keep && (mode == Qt::ContainsItemShape || mode == Qt::IntersectsItemShape)) {
+            if (keep && (mode == BobUI::ContainsItemShape || mode == BobUI::IntersectsItemShape)) {
                 QPainterPath rectPath;
                 rectPath.addRect(sceneRect);
                 if (itemd->sceneTransformTranslateOnly)
@@ -81,8 +81,8 @@ namespace QtPrivate { // just to keep indentation of the following functions at 
         return keep;
     }
 
-    static bool intersect_point(const QGraphicsItem *item, const QRectF &exposeRect, Qt::ItemSelectionMode mode,
-                                const QTransform &deviceTransform, const void *intersectData)
+    static bool intersect_point(const QGraphicsItem *item, const QRectF &exposeRect, BobUI::ItemSelectionMode mode,
+                                const BOBUIransform &deviceTransform, const void *intersectData)
     {
         const QPointF scenePoint = *static_cast<const QPointF *>(intersectData);
 
@@ -96,10 +96,10 @@ namespace QtPrivate { // just to keep indentation of the following functions at 
         const QGraphicsItemPrivate *itemd = QGraphicsItemPrivate::get(item);
         if (itemd->itemIsUntransformable()) {
             // Untransformable items; map the scene point to item coordinates.
-            const QTransform transform = item->deviceTransform(deviceTransform);
+            const BOBUIransform transform = item->deviceTransform(deviceTransform);
             QPointF itemPoint = (deviceTransform * transform.inverted()).map(scenePoint);
             keep = brect.contains(itemPoint);
-            if (keep && (mode == Qt::ContainsItemShape || mode == Qt::IntersectsItemShape)) {
+            if (keep && (mode == BobUI::ContainsItemShape || mode == BobUI::IntersectsItemShape)) {
                 QPainterPath pointPath;
                 pointPath.addRect(QRectF(itemPoint, QSizeF(1, 1)));
                 keep = QGraphicsSceneIndexPrivate::itemCollidesWithPath(item, pointPath, mode);
@@ -111,7 +111,7 @@ namespace QtPrivate { // just to keep indentation of the following functions at 
                                                         itemd->sceneTransform.dy())
                                      : itemd->sceneTransform.mapRect(brect);
             keep = sceneBoundingRect.intersects(QRectF(scenePoint, QSizeF(1, 1)));
-            if (keep && (mode == Qt::ContainsItemShape || mode == Qt::IntersectsItemShape)) {
+            if (keep && (mode == BobUI::ContainsItemShape || mode == BobUI::IntersectsItemShape)) {
                 QPointF p = itemd->sceneTransformTranslateOnly
                           ? QPointF(scenePoint.x() - itemd->sceneTransform.dx(),
                                     scenePoint.y() - itemd->sceneTransform.dy())
@@ -123,8 +123,8 @@ namespace QtPrivate { // just to keep indentation of the following functions at 
         return keep;
     }
 
-    static bool intersect_path(const QGraphicsItem *item, const QRectF &exposeRect, Qt::ItemSelectionMode mode,
-                               const QTransform &deviceTransform, const void *intersectData)
+    static bool intersect_path(const QGraphicsItem *item, const QRectF &exposeRect, BobUI::ItemSelectionMode mode,
+                               const BOBUIransform &deviceTransform, const void *intersectData)
     {
         const QPainterPath scenePath = *static_cast<const QPainterPath *>(intersectData);
 
@@ -138,13 +138,13 @@ namespace QtPrivate { // just to keep indentation of the following functions at 
         const QGraphicsItemPrivate *itemd = QGraphicsItemPrivate::get(item);
         if (itemd->itemIsUntransformable()) {
             // Untransformable items; map the scene rect to item coordinates.
-            const QTransform transform = item->deviceTransform(deviceTransform);
+            const BOBUIransform transform = item->deviceTransform(deviceTransform);
             QPainterPath itemPath = (deviceTransform * transform.inverted()).map(scenePath);
-            if (mode == Qt::ContainsItemShape || mode == Qt::ContainsItemBoundingRect)
+            if (mode == BobUI::ContainsItemShape || mode == BobUI::ContainsItemBoundingRect)
                 keep = itemPath.contains(brect);
             else
                 keep = itemPath.intersects(brect);
-            if (keep && (mode == Qt::ContainsItemShape || mode == Qt::IntersectsItemShape))
+            if (keep && (mode == BobUI::ContainsItemShape || mode == BobUI::IntersectsItemShape))
                 keep = QGraphicsSceneIndexPrivate::itemCollidesWithPath(item, itemPath, mode);
         } else {
             Q_ASSERT(!itemd->dirtySceneTransform);
@@ -152,11 +152,11 @@ namespace QtPrivate { // just to keep indentation of the following functions at 
                                                ? brect.translated(itemd->sceneTransform.dx(),
                                                                   itemd->sceneTransform.dy())
                                                : itemd->sceneTransform.mapRect(brect);
-            if (mode == Qt::ContainsItemShape || mode == Qt::ContainsItemBoundingRect)
+            if (mode == BobUI::ContainsItemShape || mode == BobUI::ContainsItemBoundingRect)
                 keep = scenePath.contains(itemSceneBoundingRect);
             else
                 keep = scenePath.intersects(itemSceneBoundingRect);
-            if (keep && (mode == Qt::ContainsItemShape || mode == Qt::IntersectsItemShape)) {
+            if (keep && (mode == BobUI::ContainsItemShape || mode == BobUI::IntersectsItemShape)) {
                 QPainterPath itemPath = itemd->sceneTransformTranslateOnly
                                       ? scenePath.translated(-itemd->sceneTransform.dx(),
                                                              -itemd->sceneTransform.dy())
@@ -167,11 +167,11 @@ namespace QtPrivate { // just to keep indentation of the following functions at 
         return keep;
     }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 /*!
     \class QGraphicsSceneIndexPrivate
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 
     Constructs a private scene index.
@@ -195,7 +195,7 @@ QGraphicsSceneIndexPrivate::~QGraphicsSceneIndexPrivate()
 */
 bool QGraphicsSceneIndexPrivate::itemCollidesWithPath(const QGraphicsItem *item,
                                                       const QPainterPath &path,
-                                                      Qt::ItemSelectionMode mode)
+                                                      BobUI::ItemSelectionMode mode)
 {
     if (item->collidesWithPath(path, mode))
         return true;
@@ -207,7 +207,7 @@ bool QGraphicsSceneIndexPrivate::itemCollidesWithPath(const QGraphicsItem *item,
             QPainterPath framePath;
             framePath.addRect(frameRect);
             bool intersects = path.intersects(frameRect);
-            if (mode == Qt::IntersectsItemShape || mode == Qt::IntersectsItemBoundingRect)
+            if (mode == BobUI::IntersectsItemShape || mode == BobUI::IntersectsItemBoundingRect)
                 return intersects || path.contains(frameRect.topLeft())
                     || framePath.contains(path.elementAt(0));
             return !intersects && path.contains(frameRect.topLeft());
@@ -223,8 +223,8 @@ bool QGraphicsSceneIndexPrivate::itemCollidesWithPath(const QGraphicsItem *item,
 void QGraphicsSceneIndexPrivate::recursive_items_helper(QGraphicsItem *item, QRectF exposeRect,
                                                         QGraphicsSceneIndexIntersector intersect,
                                                         QList<QGraphicsItem *> *items,
-                                                        const QTransform &viewTransform,
-                                                        Qt::ItemSelectionMode mode,
+                                                        const BOBUIransform &viewTransform,
+                                                        BobUI::ItemSelectionMode mode,
                                                         qreal parentOpacity, const void *intersectData) const
 {
     Q_ASSERT(item);
@@ -349,13 +349,13 @@ QGraphicsScene* QGraphicsSceneIndex::scene() const
 
 /*!
     \fn QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPointF &pos,
-    Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform
+    BobUI::ItemSelectionMode mode, BobUI::SortOrder order, const BOBUIransform
     &deviceTransform) const
 
     Returns all visible items that, depending on \a mode, are at the specified
     \a pos and return a list sorted using \a order.
 
-    The default value for \a mode is Qt::IntersectsItemShape; all items whose
+    The default value for \a mode is BobUI::IntersectsItemShape; all items whose
     exact shape intersects with \a pos are returned.
 
     \a deviceTransform is the transformation apply to the view.
@@ -367,19 +367,19 @@ QGraphicsScene* QGraphicsSceneIndex::scene() const
     \sa estimateItems()
 
 */
-QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPointF &pos, Qt::ItemSelectionMode mode,
-                                                  Qt::SortOrder order, const QTransform &deviceTransform) const
+QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPointF &pos, BobUI::ItemSelectionMode mode,
+                                                  BobUI::SortOrder order, const BOBUIransform &deviceTransform) const
 {
 
     Q_D(const QGraphicsSceneIndex);
     QList<QGraphicsItem *> itemList;
-    d->items_helper(QRectF(pos, QSizeF(1, 1)), &QtPrivate::intersect_point, &itemList, deviceTransform, mode, order, &pos);
+    d->items_helper(QRectF(pos, QSizeF(1, 1)), &BobUIPrivate::intersect_point, &itemList, deviceTransform, mode, order, &pos);
     return itemList;
 }
 
 /*!
     \fn QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QRectF &rect,
-    Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform
+    BobUI::ItemSelectionMode mode, BobUI::SortOrder order, const BOBUIransform
     &deviceTransform) const
 
     \overload
@@ -387,7 +387,7 @@ QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPointF &pos, Qt::ItemSe
     Returns all visible items that, depending on \a mode, are either inside or
     intersect with the specified \a rect and return a list sorted using \a order.
 
-    The default value for \a mode is Qt::IntersectsItemShape; all items whose
+    The default value for \a mode is BobUI::IntersectsItemShape; all items whose
     exact shape intersects with or is contained by \a rect are returned.
 
     \a deviceTransform is the transformation apply to the view.
@@ -399,28 +399,28 @@ QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPointF &pos, Qt::ItemSe
     \sa estimateItems()
 
 */
-QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QRectF &rect, Qt::ItemSelectionMode mode,
-                                                  Qt::SortOrder order, const QTransform &deviceTransform) const
+QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QRectF &rect, BobUI::ItemSelectionMode mode,
+                                                  BobUI::SortOrder order, const BOBUIransform &deviceTransform) const
 {
     Q_D(const QGraphicsSceneIndex);
     QRectF exposeRect = rect;
     _q_adjustRect(&exposeRect);
     QList<QGraphicsItem *> itemList;
-    d->items_helper(exposeRect, &QtPrivate::intersect_rect, &itemList, deviceTransform, mode, order, &rect);
+    d->items_helper(exposeRect, &BobUIPrivate::intersect_rect, &itemList, deviceTransform, mode, order, &rect);
     return itemList;
 }
 
 /*!
     \fn QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPolygonF
-    &polygon, Qt::ItemSelectionMode mode, Qt::SortOrder order, const
-    QTransform &deviceTransform) const
+    &polygon, BobUI::ItemSelectionMode mode, BobUI::SortOrder order, const
+    BOBUIransform &deviceTransform) const
 
     \overload
 
     Returns all visible items that, depending on \a mode, are either inside or
     intersect with the specified \a polygon and return a list sorted using \a order.
 
-    The default value for \a mode is Qt::IntersectsItemShape; all items whose
+    The default value for \a mode is BobUI::IntersectsItemShape; all items whose
     exact shape intersects with or is contained by \a polygon are returned.
 
     \a deviceTransform is the transformation apply to the view.
@@ -432,8 +432,8 @@ QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QRectF &rect, Qt::ItemSe
     \sa estimateItems()
 
 */
-QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPolygonF &polygon, Qt::ItemSelectionMode mode,
-                                                  Qt::SortOrder order, const QTransform &deviceTransform) const
+QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPolygonF &polygon, BobUI::ItemSelectionMode mode,
+                                                  BobUI::SortOrder order, const BOBUIransform &deviceTransform) const
 {
     Q_D(const QGraphicsSceneIndex);
     QList<QGraphicsItem *> itemList;
@@ -441,13 +441,13 @@ QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPolygonF &polygon, Qt::
     _q_adjustRect(&exposeRect);
     QPainterPath path;
     path.addPolygon(polygon);
-    d->items_helper(exposeRect, &QtPrivate::intersect_path, &itemList, deviceTransform, mode, order, &path);
+    d->items_helper(exposeRect, &BobUIPrivate::intersect_path, &itemList, deviceTransform, mode, order, &path);
     return itemList;
 }
 
 /*!
     \fn QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPainterPath
-    &path, Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform
+    &path, BobUI::ItemSelectionMode mode, BobUI::SortOrder order, const BOBUIransform
     &deviceTransform) const
 
     \overload
@@ -455,7 +455,7 @@ QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPolygonF &polygon, Qt::
     Returns all visible items that, depending on \a mode, are either inside or
     intersect with the specified \a path and return a list sorted using \a order.
 
-    The default value for \a mode is Qt::IntersectsItemShape; all items whose
+    The default value for \a mode is BobUI::IntersectsItemShape; all items whose
     exact shape intersects with or is contained by \a path are returned.
 
     \a deviceTransform is the transformation apply to the view.
@@ -467,14 +467,14 @@ QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPolygonF &polygon, Qt::
     \sa estimateItems()
 
 */
-QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPainterPath &path, Qt::ItemSelectionMode mode,
-                                                  Qt::SortOrder order, const QTransform &deviceTransform) const
+QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPainterPath &path, BobUI::ItemSelectionMode mode,
+                                                  BobUI::SortOrder order, const BOBUIransform &deviceTransform) const
 {
     Q_D(const QGraphicsSceneIndex);
     QList<QGraphicsItem *> itemList;
     QRectF exposeRect = path.controlPointRect();
     _q_adjustRect(&exposeRect);
-    d->items_helper(exposeRect, &QtPrivate::intersect_path, &itemList, deviceTransform, mode, order, &path);
+    d->items_helper(exposeRect, &BobUIPrivate::intersect_path, &itemList, deviceTransform, mode, order, &path);
     return itemList;
 }
 
@@ -482,18 +482,18 @@ QList<QGraphicsItem *> QGraphicsSceneIndex::items(const QPainterPath &path, Qt::
     This virtual function return an estimation of items at position \a point.
     This method return a list sorted using \a order.
 */
-QList<QGraphicsItem *> QGraphicsSceneIndex::estimateItems(const QPointF &point, Qt::SortOrder order) const
+QList<QGraphicsItem *> QGraphicsSceneIndex::estimateItems(const QPointF &point, BobUI::SortOrder order) const
 {
     return estimateItems(QRectF(point, QSize(1, 1)), order);
 }
 
-QList<QGraphicsItem *> QGraphicsSceneIndex::estimateTopLevelItems(const QRectF &rect, Qt::SortOrder order) const
+QList<QGraphicsItem *> QGraphicsSceneIndex::estimateTopLevelItems(const QRectF &rect, BobUI::SortOrder order) const
 {
     Q_D(const QGraphicsSceneIndex);
     Q_UNUSED(rect);
     QGraphicsScenePrivate *scened = d->scene->d_func();
     scened->ensureSortedTopLevelItems();
-    if (order == Qt::DescendingOrder) {
+    if (order == BobUI::DescendingOrder) {
         QList<QGraphicsItem *> sorted;
         const int numTopLevelItems = scened->topLevelItems.size();
         sorted.reserve(numTopLevelItems);
@@ -505,7 +505,7 @@ QList<QGraphicsItem *> QGraphicsSceneIndex::estimateTopLevelItems(const QRectF &
 }
 
 /*!
-    \fn QList<QGraphicsItem *> QGraphicsSceneIndex::items(Qt::SortOrder order = Qt::DescendingOrder) const
+    \fn QList<QGraphicsItem *> QGraphicsSceneIndex::items(BobUI::SortOrder order = BobUI::DescendingOrder) const
 
     This pure virtual function all items in the index and sort them using
     \a order.
@@ -593,6 +593,6 @@ void QGraphicsSceneIndex::prepareBoundingRectChange(const QGraphicsItem *item)
     Q_UNUSED(item);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicssceneindex_p.cpp"

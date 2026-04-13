@@ -1,18 +1,18 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \title <Application Example Name>
     \ingroup <Group Name>
     \example <path/to/example/dir>
     \brief <Description of the example's objective in one sentence.>
-    \meta <{tag}{Appropriate tag to display in Qt Creator}>
+    \meta <{tag}{Appropriate tag to display in BobUI Creator}>
     \examplecategory {Application Examples}
     \image {<examplename-screenshot>}{<alt text>}
 
     <Explain the objective of the example:
-    Explain which Qt technologies are used,
-    Explain what Qt features are shown.>
+    Explain which BobUI technologies are used,
+    Explain what BobUI features are shown.>
 
     <Optional - Use this section for more complicated examples.>
     \image {<examplename-workflow-diagram>}{<alt text>}
@@ -31,7 +31,7 @@
     \setion1 Relevant modules and classes
     <Optional - Use this section for more complicated examples.>
 
-    This example introduces the following Qt <modules/classes>:
+    This example introduces the following BobUI <modules/classes>:
     <Link the relevant modules/classes>
 
     \section2 Class Hierarchy
@@ -57,4 +57,4 @@
 
     \section1 Source files
 
-    \sa {All Qt Examples}, <Link to other relevant docs.>
+    \sa {All BobUI Examples}, <Link to other relevant docs.>

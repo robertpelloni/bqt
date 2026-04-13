@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QLoggingCategory>
 
-static const char serviceName[] = "org.qtproject.autotests.qpong";
-static const char objectPath[] = "/org/qtproject/qpong";
+static const char serviceName[] = "org.bobuiproject.autotests.qpong";
+static const char objectPath[] = "/org/bobuiproject/qpong";
 //static const char *interfaceName = serviceName;
 
 class Pong: public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.autotests.qpong")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.autotests.qpong")
 public slots:
 
     void ping(QDBusMessage msg)
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
     // Silence many warnings from findSlot() about ping() not having the expected argument types
-    QLoggingCategory::setFilterRules("qt.dbus.integration=false");
+    QLoggingCategory::setFilterRules("bobui.dbus.integration=false");
 
     QDBusConnection con = QDBusConnection::sessionBus();
     if (!con.isConnected())

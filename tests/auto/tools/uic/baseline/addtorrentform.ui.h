@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addtorrentform.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,21 +9,21 @@
 #ifndef ADDTORRENTFORM_H
 #define ADDTORRENTFORM_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIextEdit>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_AddTorrentFile
 {
@@ -39,7 +39,7 @@ public:
     QLabel *label_5;
     QLabel *label_3;
     QLabel *label_6;
-    QTextEdit *torrentContents;
+    BOBUIextEdit *torrentContents;
     QLineEdit *destinationFolder;
     QLabel *announceUrl;
     QLabel *label;
@@ -99,7 +99,7 @@ public:
 
         label_5 = new QLabel(groupBox);
         label_5->setObjectName("label_5");
-        label_5->setAlignment(Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop);
+        label_5->setAlignment(BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignTop);
 
         gridLayout->addWidget(label_5, 5, 0, 1, 1);
 
@@ -113,18 +113,18 @@ public:
 
         gridLayout->addWidget(label_6, 2, 0, 1, 1);
 
-        torrentContents = new QTextEdit(groupBox);
+        torrentContents = new BOBUIextEdit(groupBox);
         torrentContents->setObjectName("torrentContents");
-        torrentContents->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        torrentContents->setFocusPolicy(BobUI::FocusPolicy::NoFocus);
         torrentContents->setTabChangesFocus(true);
-        torrentContents->setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
+        torrentContents->setLineWrapMode(BOBUIextEdit::LineWrapMode::NoWrap);
         torrentContents->setReadOnly(true);
 
         gridLayout->addWidget(torrentContents, 5, 1, 1, 3);
 
         destinationFolder = new QLineEdit(groupBox);
         destinationFolder->setObjectName("destinationFolder");
-        destinationFolder->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        destinationFolder->setFocusPolicy(BobUI::FocusPolicy::StrongFocus);
 
         gridLayout->addWidget(destinationFolder, 6, 1, 1, 2);
 
@@ -234,6 +234,6 @@ namespace Ui {
     class AddTorrentFile: public Ui_AddTorrentFile {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ADDTORRENTFORM_H

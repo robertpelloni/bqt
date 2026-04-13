@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSMIMEREGISTRY_H
 #define QWINDOWSMIMEREGISTRY_H
 
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-#include <QtGui/qwindowsmimeconverter.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qvariant.h>
+#include <BobUIGui/qwindowsmimeconverter.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QMimeData;
@@ -48,11 +48,11 @@ private:
     mutable int m_internalMimeCount = 0;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug, const FORMATETC &);
 QDebug operator<<(QDebug d, IDataObject *);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSMIMEREGISTRY_H

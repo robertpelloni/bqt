@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMPIXMAP_H
 #define QPLATFORMPIXMAP_H
@@ -10,14 +10,14 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qpixmap.h>
-#include <QtCore/qatomic.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUICore/qatomic.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QImageReader;
@@ -42,20 +42,20 @@ public:
 
     virtual void resize(int width, int height) = 0;
     virtual void fromImage(const QImage &image,
-                           Qt::ImageConversionFlags flags) = 0;
+                           BobUI::ImageConversionFlags flags) = 0;
     virtual void fromImageInPlace(QImage &image,
-                                  Qt::ImageConversionFlags flags)
+                                  BobUI::ImageConversionFlags flags)
     {
         fromImage(image, flags);
     }
 
     virtual void fromImageReader(QImageReader *imageReader,
-                                 Qt::ImageConversionFlags flags);
+                                 BobUI::ImageConversionFlags flags);
 
     virtual bool fromFile(const QString &filename, const char *format,
-                          Qt::ImageConversionFlags flags);
+                          BobUI::ImageConversionFlags flags);
     virtual bool fromData(const uchar *buffer, uint len, const char *format,
-                          Qt::ImageConversionFlags flags);
+                          BobUI::ImageConversionFlags flags);
 
     virtual void copy(const QPlatformPixmap *data, const QRect &rect);
     virtual bool scroll(int dx, int dy, const QRect &rect);
@@ -67,8 +67,8 @@ public:
     virtual void setMask(const QBitmap &mask);
 
     virtual bool hasAlphaChannel() const = 0;
-    virtual QPixmap transformed(const QTransform &matrix,
-                                Qt::TransformationMode mode) const;
+    virtual QPixmap transformed(const BOBUIransform &matrix,
+                                BobUI::TransformationMode mode) const;
 
     virtual QImage toImage() const = 0;
     virtual QImage toImage(const QRect &rect) const;
@@ -121,6 +121,6 @@ private:
     uint is_cached;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMPIXMAP_H

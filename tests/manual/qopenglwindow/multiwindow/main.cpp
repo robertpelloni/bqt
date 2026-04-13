@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
+#include <BobUIGui>
 
 const char applicationDescription[] = "\n\
 This application opens multiple windows and continuously schedules updates for\n\
@@ -175,10 +175,10 @@ int main(int argc, char **argv)
         w->showNormal();
     }
 
-    QTimer fpsTimer;
+    BOBUIimer fpsTimer;
     fpsTimer.setInterval(kFpsInterval);
-    fpsTimer.setTimerType(Qt::PreciseTimer);
-    QObject::connect(&fpsTimer, &QTimer::timeout, &printFps);
+    fpsTimer.setTimerType(BobUI::PreciseTimer);
+    QObject::connect(&fpsTimer, &BOBUIimer::timeout, &printFps);
     fpsTimer.start();
 
     int r = app.exec();

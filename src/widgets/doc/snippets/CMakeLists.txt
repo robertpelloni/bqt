@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 add_library(widgets_snippets OBJECT
     customstyle/customstyle.cpp
@@ -19,10 +19,10 @@ add_library(widgets_snippets OBJECT
     qstackedwidget/main.cpp
     qstyleoption/main.cpp
     qstyleplugin/main.cpp
-    qtablewidget-resizing/mainwindow.cpp
-    qtablewidget-using/mainwindow.cpp
-    qtreewidget-using/mainwindow.cpp
-    qtreewidgetitemiterator-using/mainwindow.cpp
+    bobuiablewidget-resizing/mainwindow.cpp
+    bobuiablewidget-using/mainwindow.cpp
+    bobuireewidget-using/mainwindow.cpp
+    bobuireewidgetitemiterator-using/mainwindow.cpp
     reading-selections/window.cpp
     shareddirmodel/main.cpp
     simplemodel-use/main.cpp
@@ -42,49 +42,49 @@ add_library(widgets_snippets OBJECT
 )
 
 target_link_libraries(widgets_snippets PRIVATE
-    Qt::Core
-    Qt::Gui
-    Qt::GuiPrivate
-    Qt::Widgets
+    BobUI::Core
+    BobUI::Gui
+    BobUI::GuiPrivate
+    BobUI::Widgets
 )
 
-if(QT_FEATURE_filedialog)
+if(BOBUI_FEATURE_filedialog)
     target_sources(widgets_snippets PRIVATE
         filedialogurls/filedialogurls.cpp
     )
 endif()
 
-if(QT_FEATURE_graphicsview)
+if(BOBUI_FEATURE_graphicsview)
     target_sources(widgets_snippets PRIVATE
         graphicssceneadditem/graphicssceneadditemsnippet.cpp
         graphicsview/graphicsview_snippet.cpp
     )
 endif()
 
-if(QT_FEATURE_opengl AND QT_FEATURE_printsupport)
+if(BOBUI_FEATURE_opengl AND BOBUI_FEATURE_printsupport)
     target_link_libraries(widgets_snippets PRIVATE
-        Qt::OpenGL
-        Qt::OpenGLWidgets
-        Qt::PrintSupport
+        BobUI::OpenGL
+        BobUI::OpenGLWidgets
+        BobUI::PrintSupport
     )
     target_sources(widgets_snippets PRIVATE
         graphicsview/graphicsview.cpp
     )
 endif()
 
-if(QT_FEATURE_mdiarea)
+if(BOBUI_FEATURE_mdiarea)
     target_sources(widgets_snippets PRIVATE
         mdiarea/mdiareasnippets.cpp
     )
 endif()
 
-if(QT_FEATURE_scrollarea)
+if(BOBUI_FEATURE_scrollarea)
     target_sources(widgets_snippets PRIVATE
         myscrollarea/myscrollarea.cpp
     )
 endif()
 
-if(QT_FEATURE_spinbox AND QT_FEATURE_itemviews)
+if(BOBUI_FEATURE_spinbox AND BOBUI_FEATURE_itemviews)
     target_sources(widgets_snippets PRIVATE
         qitemdelegate/spinbox-delegate.cpp
     )

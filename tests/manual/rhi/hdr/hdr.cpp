@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // Test application for HDR with scRGB.
 // Launch with the argument "scrgb" or "sdr", perhaps side-by-side even.
@@ -320,7 +320,7 @@ void Window::customRender()
         u->updateDynamicBuffer(d.ubuf, 72, 8, zero);
     }
 
-    QColor clearColor = Qt::green; // sRGB
+    QColor clearColor = BobUI::green; // sRGB
     if (d.usingHDRWindow && d.adjustSDR) {
         float sdrMultiplier = d.SDRWhiteLevelInNits / 80.0f; // scRGB 1.0 = 80 nits (and linear gamma)
         clearColor = QColor::fromRgbF(clearColor.redF() * sdrMultiplier,
@@ -397,7 +397,7 @@ void Window::customGui()
     } else {
         ImGui::Text("The window is standard dynamic range (no HDR, so non-linear sRGB effectively).\n"
                     "Here we just do linear -> sRGB for everything (UI, textured cube)\n"
-                    "at the end of the pipeline, while the Qt::green background is already sRGB.");
+                    "at the end of the pipeline, while the BobUI::green background is already sRGB.");
     }
 
     ImGui::End();

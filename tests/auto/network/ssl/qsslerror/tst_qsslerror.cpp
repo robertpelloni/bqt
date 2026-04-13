@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
 #include <qsslcertificate.h>
 #include <qsslerror.h>
 
-#include <QTest>
-#include <QTestEventLoop>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qset.h>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qset.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 const QByteArray certificateBytes =
     "-----BEGIN CERTIFICATE-----\n"
@@ -120,5 +120,5 @@ void tst_QSslError::hash()
     QCOMPARE(errors.size(), 1);
 }
 
-QTEST_MAIN(tst_QSslError)
+BOBUIEST_MAIN(tst_QSslError)
 #include "tst_qsslerror.moc"

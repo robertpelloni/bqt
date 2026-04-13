@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QVarLengthArray
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QVarLengthArray class provides a low-level variable-length array.
 
     \ingroup tools
@@ -61,7 +61,7 @@
 
     In summary, QVarLengthArray is a low-level optimization class
     that only makes sense in very specific cases. It is used a few
-    places inside Qt and was added to Qt's public API for the
+    places inside BobUI and was added to BobUI's public API for the
     convenience of advanced users.
 
     \sa QList

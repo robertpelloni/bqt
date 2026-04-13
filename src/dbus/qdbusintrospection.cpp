@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusintrospection_p.h"
 #include "qdbusxmlparser_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
@@ -197,7 +197,7 @@ QDBusIntrospection::DiagnosticsReporter::~DiagnosticsReporter()
     The signals available in this interface. Note that signal names are not unique (i.e., signals
     can be overloaded with multiple argument types).
 
-    This member is called "signals_" because "signals" is a reserved keyword in Qt.
+    This member is called "signals_" because "signals" is a reserved keyword in BobUI.
 */
 
 /*!
@@ -352,4 +352,4 @@ QDBusIntrospection::Object QDBusIntrospection::parseObject(const QString &xml,
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

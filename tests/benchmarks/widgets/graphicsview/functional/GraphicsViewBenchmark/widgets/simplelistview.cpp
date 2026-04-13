@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "simplelistview.h"
 #include "scrollbar.h"
@@ -9,7 +9,7 @@
 #include "listitemcache.h"
 #include "theme.h"
 
-#include <QtGui>
+#include <BobUIGui>
 #include <QGraphicsGridLayout>
 #include <QGraphicsSceneResizeEvent>
 
@@ -92,13 +92,13 @@ public:
 
         if (contentRect.height()-q->boundingRect().height() > 0) {
             q->verticalScrollBar()->setSliderSize(contentRect.height()-q->boundingRect().height());
-            if (q->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff &&
+            if (q->verticalScrollBarPolicy() != BobUI::ScrollBarAlwaysOff &&
                 !q->verticalScrollBar()->isVisible()) {
                 q->verticalScrollBar()->show();
             }
         }
-        else if (q->verticalScrollBarPolicy() == Qt::ScrollBarAsNeeded ||
-                 q->verticalScrollBarPolicy() == Qt::ScrollBarAlwaysOff) {
+        else if (q->verticalScrollBarPolicy() == BobUI::ScrollBarAsNeeded ||
+                 q->verticalScrollBarPolicy() == BobUI::ScrollBarAlwaysOff) {
             q->verticalScrollBar()->setSliderSize(0.0);
             q->verticalScrollBar()->hide();
         }
@@ -409,11 +409,11 @@ void SimpleListView::resizeEvent(QGraphicsSceneResizeEvent *event)
     d->resizeScrollBars();
 }
 
-QSizeF SimpleListView::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
+QSizeF SimpleListView::sizeHint(BobUI::SizeHint which, const QSizeF & constraint) const
 {
     Q_D(const SimpleListView);
 
-    if (which == Qt::PreferredSize)
+    if (which == BobUI::PreferredSize)
         return d->m_content->size();
 
     return AbstractScrollArea::sizeHint(which, constraint);

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QGraphicsView>
 #include <QStyleOptionGraphicsItem>
@@ -64,11 +64,11 @@ void TopBar::resizeEvent(QGraphicsSceneResizeEvent* /*event*/)
     QSize newSize = !m_orientationChanged ? QSize(currentSize) : sizes[topbarName];
 
     //Scale according to aspect ratio
-    newSize.scale(size().toSize(), Qt::KeepAspectRatio);
+    newSize.scale(size().toSize(), BobUI::KeepAspectRatio);
 
     //fix width to window widht if previous scaling produced too narrow image
     if(newSize.width() < size().width()) {
-        newSize.scale(size().toSize(), Qt::KeepAspectRatioByExpanding);
+        newSize.scale(size().toSize(), BobUI::KeepAspectRatioByExpanding);
     }
 
     //Calculate scaling factor for rest of the graphics scaling
@@ -161,7 +161,7 @@ void TopBar::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->save();
     painter->setFont(m_titleFont);
     painter->setOpacity(0.7);
-    painter->setPen(Qt::white);
+    painter->setPen(BobUI::white);
     painter->drawText(m_topBarTitlePoint, QString("Contacts") );
     //Status text
     painter->setFont(m_statusFont);
@@ -199,11 +199,11 @@ void TopBar::themeChange()
     QSize newSize = QSize(topBarSize);
 
     //Scale according to aspect ratio
-    newSize.scale(size().toSize(), Qt::KeepAspectRatio);
+    newSize.scale(size().toSize(), BobUI::KeepAspectRatio);
 
     //fix width to window widht if previous scaling produced too narrow image
     if(newSize.width() < size().width()) {
-        newSize.scale(size().toSize(), Qt::KeepAspectRatioByExpanding);
+        newSize.scale(size().toSize(), BobUI::KeepAspectRatioByExpanding);
     }
 
     //Calculate scaling factor for rest of the graphics scaling
@@ -267,7 +267,7 @@ void TopBar::themeChange()
     update();
 }
 
-QSizeF TopBar::sizeHint(Qt::SizeHint which,
+QSizeF TopBar::sizeHint(BobUI::SizeHint which,
         const QSizeF &constraint) const
 {
     //It's possible that m_topBarPixmap is not allocated yet,
@@ -280,10 +280,10 @@ QSizeF TopBar::sizeHint(Qt::SizeHint which,
 
     switch (which)
     {
-    case Qt::MinimumSize:
+    case BobUI::MinimumSize:
         return QSizeF(-1, height);
 
-    case Qt::MaximumSize:
+    case BobUI::MaximumSize:
         return QSizeF(-1, height);
 
     default:

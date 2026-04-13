@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qgenericplugin.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QGenericPlugin
     \ingroup plugins
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QGenericPlugin class is an abstract base class for
     plugins.
@@ -19,7 +19,7 @@ QT_BEGIN_NAMESPACE
     Q_PLUGIN_METADATA() macro, The default implementation of the
     QGenericPluginFactory class will automatically detect the plugin and
     load the driver into the server application at run-time. See \l
-    {How to Create Qt Plugins} for details.
+    {How to Create BobUI Plugins} for details.
 
     The json metadata file should contain a list of keys supported by this
     plugin.
@@ -42,7 +42,7 @@ QGenericPlugin::QGenericPlugin(QObject *parent)
 /*!
     Destroys the plugin.
 
-    Note that Qt destroys a plugin automatically when it is no longer
+    Note that BobUI destroys a plugin automatically when it is no longer
     used, so there is no need for calling the destructor explicitly.
 */
 QGenericPlugin::~QGenericPlugin()
@@ -57,6 +57,6 @@ QGenericPlugin::~QGenericPlugin()
     keys are case-insensitive.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgenericplugin.cpp"

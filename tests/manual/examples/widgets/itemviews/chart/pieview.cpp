@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "pieview.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 PieView::PieView(QWidget *parent)
     : QAbstractItemView(parent)
@@ -17,7 +17,7 @@ void PieView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomR
 {
     QAbstractItemView::dataChanged(topLeft, bottomRight, roles);
 
-    if (!roles.contains(Qt::DisplayRole))
+    if (!roles.contains(BobUI::DisplayRole))
         return;
 
     validItems = 0;
@@ -26,7 +26,7 @@ void PieView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomR
     for (int row = 0; row < model()->rowCount(rootIndex()); ++row) {
 
         QModelIndex index = model()->index(row, 1, rootIndex());
-        double value = model()->data(index, Qt::DisplayRole).toDouble();
+        double value = model()->data(index, BobUI::DisplayRole).toDouble();
 
         if (value > 0.0) {
             totalValue += value;
@@ -229,7 +229,7 @@ void PieView::mouseReleaseEvent(QMouseEvent *event)
 }
 
 QModelIndex PieView::moveCursor(QAbstractItemView::CursorAction cursorAction,
-                                Qt::KeyboardModifiers /*modifiers*/)
+                                BobUI::KeyboardModifiers /*modifiers*/)
 {
     QModelIndex current = currentIndex();
 
@@ -295,12 +295,12 @@ void PieView::paintEvent(QPaintEvent *event)
             double angle = 360 * value / totalValue;
 
             QModelIndex colorIndex = model()->index(row, 0, rootIndex());
-            QColor color = QColor(model()->data(colorIndex, Qt::DecorationRole).toString());
+            QColor color = QColor(model()->data(colorIndex, BobUI::DecorationRole).toString());
 
             if (currentIndex() == index)
-                painter.setBrush(QBrush(color, Qt::Dense4Pattern));
+                painter.setBrush(QBrush(color, BobUI::Dense4Pattern));
             else if (selections->isSelected(index))
-                painter.setBrush(QBrush(color, Qt::Dense3Pattern));
+                painter.setBrush(QBrush(color, BobUI::Dense3Pattern));
             else
                 painter.setBrush(QBrush(color));
 

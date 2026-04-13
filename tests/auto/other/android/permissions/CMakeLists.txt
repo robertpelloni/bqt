@@ -1,22 +1,22 @@
-# Copyright (C) 2025 The Qt Company Ltd.
+# Copyright (C) 2025 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_android_permissions LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_android_permissions
+bobui_internal_add_test(tst_android_permissions
     SOURCES
         tst_android_permissions.cpp
 )
 
-qt_add_android_permission(tst_android_permissions
+bobui_add_android_permission(tst_android_permissions
     NAME android.permission.ACCESS_COARSE_LOCATION
 )
 
-qt_add_android_permission(tst_android_permissions
+bobui_add_android_permission(tst_android_permissions
     NAME android.permission.ACCESS_FINE_LOCATION
     ATTRIBUTES
         maxSdkVersion 31

@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include "mainwindow.h"
 
 #include <QMenu>
 #include <QMenuBar>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
 MainWindow::MainWindow()
 {
@@ -21,8 +21,8 @@ MainWindow::MainWindow()
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(insertMenu);
 
-    editor = new QTextEdit(this);
-    document = new QTextDocument(this);
+    editor = new BOBUIextEdit(this);
+    document = new BOBUIextDocument(this);
     editor->setDocument(document);
 
     setCentralWidget(editor);
@@ -31,13 +31,13 @@ MainWindow::MainWindow()
 
 void MainWindow::insertList()
 {
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
     cursor.beginEditBlock();
 
     //! [add a styled, ordered list]
-    QTextListFormat listFormat;
+    BOBUIextListFormat listFormat;
 
-    listFormat.setStyle(QTextListFormat::ListDecimal);
+    listFormat.setStyle(BOBUIextListFormat::ListDecimal);
     listFormat.setNumberPrefix("(");
     listFormat.setNumberSuffix(")");
 

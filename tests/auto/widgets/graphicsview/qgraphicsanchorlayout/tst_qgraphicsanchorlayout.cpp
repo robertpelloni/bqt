@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtWidgets/qgraphicsanchorlayout.h>
+#include <BOBUIest>
+#include <BobUIWidgets/qgraphicsanchorlayout.h>
 #include <private/qgraphicsanchorlayout_p.h>
-#include <QtWidgets/qgraphicswidget.h>
-#include <QtWidgets/qgraphicsproxywidget.h>
-#include <QtWidgets/qgraphicsview.h>
-#include <QtWidgets/qstylefactory.h>
-#include <QtWidgets/qproxystyle.h>
+#include <BobUIWidgets/qgraphicswidget.h>
+#include <BobUIWidgets/qgraphicsproxywidget.h>
+#include <BobUIWidgets/qgraphicsview.h>
+#include <BobUIWidgets/qstylefactory.h>
+#include <BobUIWidgets/qproxystyle.h>
 
 
 class tst_QGraphicsAnchorLayout : public QObject {
@@ -16,7 +16,7 @@ class tst_QGraphicsAnchorLayout : public QObject {
 
 public:
     tst_QGraphicsAnchorLayout() : QObject() {
-        hasSimplification = qgetenv("QT_ANCHORLAYOUT_NO_SIMPLIFICATION").isEmpty();
+        hasSimplification = qgetenv("BOBUI_ANCHORLAYOUT_NO_SIMPLIFICATION").isEmpty();
     }
 
 private:
@@ -66,7 +66,7 @@ public:
     {
         Q_UNUSED(option);
         Q_UNUSED(widget);
-        painter->drawRoundedRect(rect(), 25, 25, Qt::RelativeSize);
+        painter->drawRoundedRect(rect(), 25, 25, BobUI::RelativeSize);
         painter->drawLine(rect().topLeft(), rect().bottomRight());
         painter->drawLine(rect().bottomLeft(), rect().topRight());
     }
@@ -87,9 +87,9 @@ static QGraphicsWidget *createItem(const QSizeF &minimum = QSizeF(100.0, 100.0),
 
 static void setAnchor(QGraphicsAnchorLayout *l,
                       QGraphicsLayoutItem *firstItem,
-                      Qt::AnchorPoint firstEdge,
+                      BobUI::AnchorPoint firstEdge,
                       QGraphicsLayoutItem *secondItem,
-                      Qt::AnchorPoint secondEdge,
+                      BobUI::AnchorPoint secondEdge,
                       qreal spacing = 0)
 {
     QGraphicsAnchor *anchor = l->addAnchor(firstItem, firstEdge, secondItem, secondEdge);
@@ -101,14 +101,14 @@ static bool checkReverseDirection(QGraphicsWidget *widget)
     QGraphicsLayout *layout = widget->layout();
     qreal left, top, right, bottom;
     layout->getContentsMargins(&left, &top, &right, &bottom);
-    widget->setLayoutDirection(Qt::LeftToRight);
+    widget->setLayoutDirection(BobUI::LeftToRight);
     QApplication::processEvents();
     QMap<QGraphicsLayoutItem *, QRectF> geometries;
     for (int i = 0; i < layout->count(); ++i) {
         QGraphicsLayoutItem *item = layout->itemAt(i);
         geometries.insert(item, item->geometry());
     }
-    widget->setLayoutDirection(Qt::RightToLeft);
+    widget->setLayoutDirection(BobUI::RightToLeft);
     QApplication::processEvents();
     const QRectF layoutGeometry = layout->geometry().adjusted(+right, +top, -left, -bottom);
     for (int i = 0; i < layout->count(); ++i) {
@@ -132,7 +132,7 @@ static bool layoutHasConflict(QGraphicsAnchorLayout *l)
     return QGraphicsAnchorLayoutPrivate::get(l)->hasConflicts();
 }
 
-static bool usedSimplex(QGraphicsAnchorLayout *l, Qt::Orientation o)
+static bool usedSimplex(QGraphicsAnchorLayout *l, BobUI::Orientation o)
 {
     return QGraphicsAnchorLayoutPrivate::get(l)->lastCalculationUsedSimplex[o];
 }
@@ -146,13 +146,13 @@ void tst_QGraphicsAnchorLayout::simple()
     l->setContentsMargins(0, 0, 0, 0);
 
     // Horizontal
-    l->addAnchor(l, Qt::AnchorLeft, w1, Qt::AnchorLeft);
-    l->addAnchor(w1, Qt::AnchorRight, w2, Qt::AnchorLeft);
-    l->addAnchor(w2, Qt::AnchorRight, l, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, w1, BobUI::AnchorLeft);
+    l->addAnchor(w1, BobUI::AnchorRight, w2, BobUI::AnchorLeft);
+    l->addAnchor(w2, BobUI::AnchorRight, l, BobUI::AnchorRight);
 
     // Vertical
-    l->addAnchors(l, w1, Qt::Vertical);
-    l->addAnchors(l, w2, Qt::Vertical);
+    l->addAnchors(l, w1, BobUI::Vertical);
+    l->addAnchors(l, w2, BobUI::Vertical);
 
     QCOMPARE(l->count(), 2);
 
@@ -161,8 +161,8 @@ void tst_QGraphicsAnchorLayout::simple()
     p.adjustSize();
 
     if (hasSimplification) {
-        QVERIFY(!usedSimplex(l, Qt::Horizontal));
-        QVERIFY(!usedSimplex(l, Qt::Vertical));
+        QVERIFY(!usedSimplex(l, BobUI::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Vertical));
     }
 }
 
@@ -179,33 +179,33 @@ void tst_QGraphicsAnchorLayout::simple_center()
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout;
     l->setContentsMargins(0, 0, 0, 0);
     // horizontal
-    setAnchor(l, l, Qt::AnchorLeft, a, Qt::AnchorLeft, 0);
-    setAnchor(l, a, Qt::AnchorRight, b, Qt::AnchorLeft, 0);
-    setAnchor(l, b, Qt::AnchorRight, l, Qt::AnchorRight, 0);
-    setAnchor(l, a, Qt::AnchorHorizontalCenter, c, Qt::AnchorLeft, 0);
-    setAnchor(l, c, Qt::AnchorRight, b, Qt::AnchorHorizontalCenter, 0);
+    setAnchor(l, l, BobUI::AnchorLeft, a, BobUI::AnchorLeft, 0);
+    setAnchor(l, a, BobUI::AnchorRight, b, BobUI::AnchorLeft, 0);
+    setAnchor(l, b, BobUI::AnchorRight, l, BobUI::AnchorRight, 0);
+    setAnchor(l, a, BobUI::AnchorHorizontalCenter, c, BobUI::AnchorLeft, 0);
+    setAnchor(l, c, BobUI::AnchorRight, b, BobUI::AnchorHorizontalCenter, 0);
 
     // vertical
-    setAnchor(l, l, Qt::AnchorTop, a, Qt::AnchorTop, 0);
-    setAnchor(l, l, Qt::AnchorTop, b, Qt::AnchorTop, 0);
-    setAnchor(l, a, Qt::AnchorBottom, c, Qt::AnchorTop, 0);
-    setAnchor(l, b, Qt::AnchorBottom, c, Qt::AnchorTop, 0);
-    setAnchor(l, c, Qt::AnchorBottom, l, Qt::AnchorBottom, 0);
+    setAnchor(l, l, BobUI::AnchorTop, a, BobUI::AnchorTop, 0);
+    setAnchor(l, l, BobUI::AnchorTop, b, BobUI::AnchorTop, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, c, BobUI::AnchorTop, 0);
+    setAnchor(l, b, BobUI::AnchorBottom, c, BobUI::AnchorTop, 0);
+    setAnchor(l, c, BobUI::AnchorBottom, l, BobUI::AnchorBottom, 0);
 
     QCOMPARE(l->count(), 3);
 
-    QGraphicsWidget *p = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *p = new QGraphicsWidget(0, BobUI::Window);
     p->setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
     QCOMPARE(layoutMinimumSize, QSizeF(20, 20));
 
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
     QCOMPARE(layoutMaximumSize, QSizeF(200, 20));
 
     if (hasSimplification) {
-        QVERIFY(usedSimplex(l, Qt::Horizontal));
-        QVERIFY(!usedSimplex(l, Qt::Vertical));
+        QVERIFY(usedSimplex(l, BobUI::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Vertical));
     }
 
     delete p;
@@ -229,32 +229,32 @@ void tst_QGraphicsAnchorLayout::simple_semifloat()
     l->setContentsMargins(0, 0, 0, 0);
 
     // horizontal
-    setAnchor(l, l, Qt::AnchorLeft, A, Qt::AnchorLeft, 0);
-    setAnchor(l, A, Qt::AnchorRight, B, Qt::AnchorLeft, 0);
-    setAnchor(l, B, Qt::AnchorRight, l, Qt::AnchorRight, 0);
+    setAnchor(l, l, BobUI::AnchorLeft, A, BobUI::AnchorLeft, 0);
+    setAnchor(l, A, BobUI::AnchorRight, B, BobUI::AnchorLeft, 0);
+    setAnchor(l, B, BobUI::AnchorRight, l, BobUI::AnchorRight, 0);
 
-    setAnchor(l, A, Qt::AnchorLeft, a, Qt::AnchorLeft, 0);
-    setAnchor(l, B, Qt::AnchorLeft, b, Qt::AnchorLeft, 0);
+    setAnchor(l, A, BobUI::AnchorLeft, a, BobUI::AnchorLeft, 0);
+    setAnchor(l, B, BobUI::AnchorLeft, b, BobUI::AnchorLeft, 0);
 
     // vertical
-    setAnchor(l, l, Qt::AnchorTop, A, Qt::AnchorTop, 0);
-    setAnchor(l, l, Qt::AnchorTop, B, Qt::AnchorTop, 0);
-    setAnchor(l, A, Qt::AnchorBottom, a, Qt::AnchorTop, 0);
-    setAnchor(l, B, Qt::AnchorBottom, b, Qt::AnchorTop, 0);
-    setAnchor(l, a, Qt::AnchorBottom, l, Qt::AnchorBottom, 0);
-    setAnchor(l, b, Qt::AnchorBottom, l, Qt::AnchorBottom, 0);
+    setAnchor(l, l, BobUI::AnchorTop, A, BobUI::AnchorTop, 0);
+    setAnchor(l, l, BobUI::AnchorTop, B, BobUI::AnchorTop, 0);
+    setAnchor(l, A, BobUI::AnchorBottom, a, BobUI::AnchorTop, 0);
+    setAnchor(l, B, BobUI::AnchorBottom, b, BobUI::AnchorTop, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, l, BobUI::AnchorBottom, 0);
+    setAnchor(l, b, BobUI::AnchorBottom, l, BobUI::AnchorBottom, 0);
 
     QCOMPARE(l->count(), 4);
 
-    QGraphicsWidget *p = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *p = new QGraphicsWidget(0, BobUI::Window);
     p->setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
     QCOMPARE(layoutMinimumSize, QSizeF(20, 20));
 
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(100, 20));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(100, 20));
 
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
     QCOMPARE(layoutMaximumSize, QSizeF(200, 20));
 
     delete p;
@@ -278,23 +278,23 @@ void tst_QGraphicsAnchorLayout::layoutDirection()
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout;
     l->setContentsMargins(0, 5, 10, 15);
     // horizontal
-    setAnchor(l, l, Qt::AnchorLeft, a, Qt::AnchorLeft, 0);
-    setAnchor(l, a, Qt::AnchorRight, b, Qt::AnchorLeft, 0);
-    setAnchor(l, b, Qt::AnchorRight, l, Qt::AnchorRight, 0);
-    setAnchor(l, a, Qt::AnchorHorizontalCenter, c, Qt::AnchorLeft, 0);
-    setAnchor(l, c, Qt::AnchorRight, b, Qt::AnchorHorizontalCenter, 0);
+    setAnchor(l, l, BobUI::AnchorLeft, a, BobUI::AnchorLeft, 0);
+    setAnchor(l, a, BobUI::AnchorRight, b, BobUI::AnchorLeft, 0);
+    setAnchor(l, b, BobUI::AnchorRight, l, BobUI::AnchorRight, 0);
+    setAnchor(l, a, BobUI::AnchorHorizontalCenter, c, BobUI::AnchorLeft, 0);
+    setAnchor(l, c, BobUI::AnchorRight, b, BobUI::AnchorHorizontalCenter, 0);
 
     // vertical
-    setAnchor(l, l, Qt::AnchorTop, a, Qt::AnchorTop, 0);
-    setAnchor(l, l, Qt::AnchorTop, b, Qt::AnchorTop, 0);
-    setAnchor(l, a, Qt::AnchorBottom, c, Qt::AnchorTop, 0);
-    setAnchor(l, b, Qt::AnchorBottom, c, Qt::AnchorTop, 0);
-    setAnchor(l, c, Qt::AnchorBottom, l, Qt::AnchorBottom, 0);
+    setAnchor(l, l, BobUI::AnchorTop, a, BobUI::AnchorTop, 0);
+    setAnchor(l, l, BobUI::AnchorTop, b, BobUI::AnchorTop, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, c, BobUI::AnchorTop, 0);
+    setAnchor(l, b, BobUI::AnchorBottom, c, BobUI::AnchorTop, 0);
+    setAnchor(l, c, BobUI::AnchorBottom, l, BobUI::AnchorBottom, 0);
 
     QCOMPARE(l->count(), 3);
 
-    QGraphicsWidget *p = new QGraphicsWidget(0, Qt::Window);
-    p->setLayoutDirection(Qt::LeftToRight);
+    QGraphicsWidget *p = new QGraphicsWidget(0, BobUI::Window);
+    p->setLayoutDirection(BobUI::LeftToRight);
     p->setLayout(l);
 
     QGraphicsScene scene;
@@ -304,11 +304,11 @@ void tst_QGraphicsAnchorLayout::layoutDirection()
     view->show();
 
     QVERIFY(p->layout());
-    QTRY_COMPARE(checkReverseDirection(p), true);
+    BOBUIRY_COMPARE(checkReverseDirection(p), true);
 
     if (hasSimplification) {
-        QVERIFY(usedSimplex(l, Qt::Horizontal));
-        QVERIFY(!usedSimplex(l, Qt::Vertical));
+        QVERIFY(usedSimplex(l, BobUI::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Vertical));
     }
 
     delete p;
@@ -332,35 +332,35 @@ void tst_QGraphicsAnchorLayout::diagonal()
     l->setSpacing(0);
 
     // vertical
-    l->addAnchor(a, Qt::AnchorTop, l, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorTop, l, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorTop, a, Qt::AnchorBottom);
-    l->addAnchor(c, Qt::AnchorTop, b, Qt::AnchorBottom);
-    l->addAnchor(c, Qt::AnchorBottom, d, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, e, Qt::AnchorTop);
-    l->addAnchor(d, Qt::AnchorBottom, l, Qt::AnchorBottom);
-    l->addAnchor(e, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(a, BobUI::AnchorTop, l, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorTop, l, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorTop, a, BobUI::AnchorBottom);
+    l->addAnchor(c, BobUI::AnchorTop, b, BobUI::AnchorBottom);
+    l->addAnchor(c, BobUI::AnchorBottom, d, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, e, BobUI::AnchorTop);
+    l->addAnchor(d, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
+    l->addAnchor(e, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
     // horizontal
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(l, Qt::AnchorLeft, d, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, d, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
 
-    l->addAnchor(a, Qt::AnchorRight, c, Qt::AnchorLeft);
-    l->addAnchor(c, Qt::AnchorRight, e, Qt::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, c, BobUI::AnchorLeft);
+    l->addAnchor(c, BobUI::AnchorRight, e, BobUI::AnchorLeft);
 
-    l->addAnchor(b, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(e, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(d, Qt::AnchorRight, e, Qt::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(e, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(d, BobUI::AnchorRight, e, BobUI::AnchorLeft);
 
     QCOMPARE(l->count(), 5);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
 
     QCOMPARE(layoutMinimumSize, QSizeF(30.0, 300.0));
     QCOMPARE(layoutPreferredSize, QSizeF(170.0, 300.0));
@@ -400,8 +400,8 @@ void tst_QGraphicsAnchorLayout::diagonal()
     QCOMPARE(p.size(), testA);
 
     if (hasSimplification) {
-        QVERIFY(usedSimplex(l, Qt::Horizontal));
-        QVERIFY(!usedSimplex(l, Qt::Vertical));
+        QVERIFY(usedSimplex(l, BobUI::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Vertical));
     }
 
     QVERIFY(p.layout());
@@ -441,32 +441,32 @@ void tst_QGraphicsAnchorLayout::parallel()
     l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
 
-    l->addAnchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
-    l->addAnchor(a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorBottom, c, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, d, Qt::AnchorTop);
-    l->addAnchor(d, Qt::AnchorBottom, e, Qt::AnchorTop);
-    l->addAnchor(e, Qt::AnchorBottom, f, Qt::AnchorTop);
-    l->addAnchor(f, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, d, BobUI::AnchorTop);
+    l->addAnchor(d, BobUI::AnchorBottom, e, BobUI::AnchorTop);
+    l->addAnchor(e, BobUI::AnchorBottom, f, BobUI::AnchorTop);
+    l->addAnchor(f, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, c, Qt::AnchorLeft);
-    l->addAnchor(b, Qt::AnchorRight, d, Qt::AnchorLeft);
-    l->addAnchor(b, Qt::AnchorRight, e, Qt::AnchorLeft);
-    l->addAnchor(c, Qt::AnchorRight, f, Qt::AnchorLeft);
-    l->addAnchor(d, Qt::AnchorRight, f, Qt::AnchorLeft);
-    l->addAnchor(e, Qt::AnchorRight, f, Qt::AnchorLeft);
-    l->addAnchor(f, Qt::AnchorRight, l, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, c, BobUI::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, d, BobUI::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, e, BobUI::AnchorLeft);
+    l->addAnchor(c, BobUI::AnchorRight, f, BobUI::AnchorLeft);
+    l->addAnchor(d, BobUI::AnchorRight, f, BobUI::AnchorLeft);
+    l->addAnchor(e, BobUI::AnchorRight, f, BobUI::AnchorLeft);
+    l->addAnchor(f, BobUI::AnchorRight, l, BobUI::AnchorRight);
 
     QCOMPARE(l->count(), 6);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
 
     QCOMPARE(layoutMinimumSize, QSizeF(450, 600));
     QCOMPARE(layoutPreferredSize, QSizeF(620, 600));
@@ -505,8 +505,8 @@ void tst_QGraphicsAnchorLayout::parallel()
     QCOMPARE(f->geometry(), QRectF(550, 500, 200, 100));
     QCOMPARE(p.size(), layoutMaximumSize);
 
-    QVERIFY(!usedSimplex(l, Qt::Horizontal));
-    QVERIFY(!usedSimplex(l, Qt::Vertical));
+    QVERIFY(!usedSimplex(l, BobUI::Horizontal));
+    QVERIFY(!usedSimplex(l, BobUI::Vertical));
 }
 
 void tst_QGraphicsAnchorLayout::parallel2()
@@ -523,22 +523,22 @@ void tst_QGraphicsAnchorLayout::parallel2()
     l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
 
-    l->addAnchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
-    l->addAnchor(a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchors(l, a, Qt::Horizontal);
-    l->addAnchor(l, Qt::AnchorLeft, b, Qt::AnchorLeft);
-    l->addAnchor(b, Qt::AnchorRight, a, Qt::AnchorRight);
+    l->addAnchors(l, a, BobUI::Horizontal);
+    l->addAnchor(l, BobUI::AnchorLeft, b, BobUI::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, a, BobUI::AnchorRight);
 
     QCOMPARE(l->count(), 2);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
 
     QCOMPARE(layoutMinimumSize, QSizeF(100.0, 200.0));
     QCOMPARE(layoutPreferredSize, QSizeF(150.0, 200.0));
@@ -554,8 +554,8 @@ void tst_QGraphicsAnchorLayout::parallel2()
     QCOMPARE(p.size(), layoutMaximumSize);
 
     if (hasSimplification) {
-        QVERIFY(!usedSimplex(l, Qt::Horizontal));
-        QVERIFY(!usedSimplex(l, Qt::Vertical));
+        QVERIFY(!usedSimplex(l, BobUI::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Vertical));
     }
 }
 
@@ -577,24 +577,24 @@ void tst_QGraphicsAnchorLayout::snake()
     l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
 
-    l->addAnchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
-    l->addAnchor(a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorBottom, c, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorRight);
-    l->addAnchor(b, Qt::AnchorLeft, c, Qt::AnchorLeft);
-    l->addAnchor(c, Qt::AnchorRight, l, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorRight);
+    l->addAnchor(b, BobUI::AnchorLeft, c, BobUI::AnchorLeft);
+    l->addAnchor(c, BobUI::AnchorRight, l, BobUI::AnchorRight);
 
     QCOMPARE(l->count(), 3);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
 
     QCOMPARE(layoutMinimumSize, QSizeF(60.0, 300.0));
     QCOMPARE(layoutPreferredSize, QSizeF(120.0, 300.0));
@@ -624,9 +624,9 @@ void tst_QGraphicsAnchorLayout::snake()
     // points of the layout...
     b->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-    QSizeF newLayoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF newLayoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
-    QSizeF newLayoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
+    QSizeF newLayoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF newLayoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
+    QSizeF newLayoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
 
     QCOMPARE(layoutMinimumSize, newLayoutMinimumSize);
     QCOMPARE(layoutMaximumSize, newLayoutMaximumSize);
@@ -651,27 +651,27 @@ void tst_QGraphicsAnchorLayout::snakeOppositeDirections()
     l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
 
-    l->addAnchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
-    l->addAnchor(a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorBottom, c, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
 
     // Both a and c are 'pointing' to b
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorRight);
-    l->addAnchor(c, Qt::AnchorLeft, b, Qt::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorRight);
+    l->addAnchor(c, BobUI::AnchorLeft, b, BobUI::AnchorLeft);
 
-    l->addAnchor(c, Qt::AnchorRight, l, Qt::AnchorRight);
+    l->addAnchor(c, BobUI::AnchorRight, l, BobUI::AnchorRight);
 
     QCOMPARE(l->count(), 3);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
 
     QCOMPARE(layoutMinimumSize, QSizeF(60.0, 300.0));
     QCOMPARE(layoutPreferredSize, QSizeF(120.0, 300.0));
@@ -722,27 +722,27 @@ void tst_QGraphicsAnchorLayout::fairDistribution()
     l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
 
-    l->addAnchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
-    l->addAnchor(a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorBottom, c, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, d, Qt::AnchorTop);
-    l->addAnchor(d, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, d, BobUI::AnchorTop);
+    l->addAnchor(d, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorLeft);
-    l->addAnchor(b, Qt::AnchorRight, c, Qt::AnchorLeft);
-    l->addAnchor(c, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(l, Qt::AnchorLeft, d, Qt::AnchorLeft);
-    l->addAnchor(d, Qt::AnchorRight, l, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, c, BobUI::AnchorLeft);
+    l->addAnchor(c, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, d, BobUI::AnchorLeft);
+    l->addAnchor(d, BobUI::AnchorRight, l, BobUI::AnchorRight);
 
     QCOMPARE(l->count(), 4);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
 
     QCOMPARE(layoutMinimumSize, QSizeF(60.0, 400.0));
     QCOMPARE(layoutPreferredSize, QSizeF(165.0, 400.0));
@@ -772,8 +772,8 @@ void tst_QGraphicsAnchorLayout::fairDistribution()
     QCOMPARE(p.size(), layoutMaximumSize);
 
     if (hasSimplification) {
-        QVERIFY(!usedSimplex(l, Qt::Horizontal));
-        QVERIFY(!usedSimplex(l, Qt::Vertical));
+        QVERIFY(!usedSimplex(l, BobUI::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Vertical));
     }
 }
 
@@ -804,28 +804,28 @@ void tst_QGraphicsAnchorLayout::fairDistributionOppositeDirections()
     l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
 
-    l->addAnchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
-    l->addAnchor(a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorBottom, c, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, d, Qt::AnchorTop);
-    l->addAnchor(d, Qt::AnchorBottom, e, Qt::AnchorTop);
-    l->addAnchor(e, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, d, BobUI::AnchorTop);
+    l->addAnchor(d, BobUI::AnchorBottom, e, BobUI::AnchorTop);
+    l->addAnchor(e, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchor(a, Qt::AnchorLeft, l, Qt::AnchorLeft);
-    l->addAnchor(b, Qt::AnchorLeft, a, Qt::AnchorRight);
-    l->addAnchor(c, Qt::AnchorLeft, b, Qt::AnchorRight);
-    l->addAnchor(d, Qt::AnchorLeft, c, Qt::AnchorRight);
-    l->addAnchor(d, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchors(l, e, Qt::Horizontal);
+    l->addAnchor(a, BobUI::AnchorLeft, l, BobUI::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorLeft, a, BobUI::AnchorRight);
+    l->addAnchor(c, BobUI::AnchorLeft, b, BobUI::AnchorRight);
+    l->addAnchor(d, BobUI::AnchorLeft, c, BobUI::AnchorRight);
+    l->addAnchor(d, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchors(l, e, BobUI::Horizontal);
 
     QCOMPARE(l->count(), 5);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
 
     QCOMPARE(layoutMinimumSize, QSizeF(60.0, 500.0));
     QCOMPARE(layoutPreferredSize, QSizeF(220.0, 500.0));
@@ -855,8 +855,8 @@ void tst_QGraphicsAnchorLayout::fairDistributionOppositeDirections()
     QCOMPARE(e->size().width(), 4 * a->size().width());
     QCOMPARE(p.size(), layoutMaximumSize);
 
-    QVERIFY(!usedSimplex(l, Qt::Horizontal));
-    QVERIFY(!usedSimplex(l, Qt::Vertical));
+    QVERIFY(!usedSimplex(l, BobUI::Horizontal));
+    QVERIFY(!usedSimplex(l, BobUI::Vertical));
 }
 
 void tst_QGraphicsAnchorLayout::proportionalPreferred()
@@ -872,28 +872,28 @@ void tst_QGraphicsAnchorLayout::proportionalPreferred()
     l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
 
-    l->addAnchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
-    l->addAnchor(a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorBottom, c, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, d, Qt::AnchorTop);
-    l->addAnchor(d, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, d, BobUI::AnchorTop);
+    l->addAnchor(d, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(l, Qt::AnchorLeft, b, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, c, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, d, Qt::AnchorLeft);
-    l->addAnchor(b, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(c, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(d, Qt::AnchorRight, l, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, b, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, c, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, d, BobUI::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(c, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(d, BobUI::AnchorRight, l, BobUI::AnchorRight);
 
     QCOMPARE(l->count(), 4);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
 
     QCOMPARE(layoutMinimumSize, QSizeF(0, 400));
     QCOMPARE(layoutPreferredSize, QSizeF(24, 400));
@@ -921,8 +921,8 @@ void tst_QGraphicsAnchorLayout::proportionalPreferred()
     QCOMPARE(p.size(), QSizeF(12, 400));
 
     if (hasSimplification) {
-        QVERIFY(!usedSimplex(l, Qt::Horizontal));
-        QVERIFY(!usedSimplex(l, Qt::Vertical));
+        QVERIFY(!usedSimplex(l, BobUI::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Vertical));
     }
 }
 
@@ -945,46 +945,46 @@ void tst_QGraphicsAnchorLayout::example()
     l->setSpacing(0);
 
     // vertical
-    l->addAnchor(a, Qt::AnchorTop, l, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorTop, l, Qt::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorTop, l, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorTop, l, BobUI::AnchorTop);
 
-    l->addAnchor(c, Qt::AnchorTop, a, Qt::AnchorBottom);
-    l->addAnchor(c, Qt::AnchorTop, b, Qt::AnchorBottom);
-    l->addAnchor(c, Qt::AnchorBottom, d, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, e, Qt::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorTop, a, BobUI::AnchorBottom);
+    l->addAnchor(c, BobUI::AnchorTop, b, BobUI::AnchorBottom);
+    l->addAnchor(c, BobUI::AnchorBottom, d, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, e, BobUI::AnchorTop);
 
-    l->addAnchor(d, Qt::AnchorBottom, l, Qt::AnchorBottom);
-    l->addAnchor(e, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(d, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
+    l->addAnchor(e, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchor(c, Qt::AnchorTop, f, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorVerticalCenter, f, Qt::AnchorBottom);
-    l->addAnchor(f, Qt::AnchorBottom, g, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, g, Qt::AnchorBottom);
+    l->addAnchor(c, BobUI::AnchorTop, f, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorVerticalCenter, f, BobUI::AnchorBottom);
+    l->addAnchor(f, BobUI::AnchorBottom, g, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, g, BobUI::AnchorBottom);
 
     // horizontal
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(l, Qt::AnchorLeft, d, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, d, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
 
-    l->addAnchor(a, Qt::AnchorRight, c, Qt::AnchorLeft);
-    l->addAnchor(c, Qt::AnchorRight, e, Qt::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, c, BobUI::AnchorLeft);
+    l->addAnchor(c, BobUI::AnchorRight, e, BobUI::AnchorLeft);
 
-    l->addAnchor(b, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(e, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(d, Qt::AnchorRight, e, Qt::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(e, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(d, BobUI::AnchorRight, e, BobUI::AnchorLeft);
 
-    l->addAnchor(l, Qt::AnchorLeft, f, Qt::AnchorLeft);
-    l->addAnchor(l, Qt::AnchorLeft, g, Qt::AnchorLeft);
-    l->addAnchor(f, Qt::AnchorRight, g, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, f, BobUI::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, g, BobUI::AnchorLeft);
+    l->addAnchor(f, BobUI::AnchorRight, g, BobUI::AnchorRight);
 
     QCOMPARE(l->count(), 7);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
 
     QCOMPARE(layoutMinimumSize, QSizeF(90.0, 300.0));
     QCOMPARE(layoutPreferredSize, QSizeF(510.0, 300.0));
@@ -1009,8 +1009,8 @@ void tst_QGraphicsAnchorLayout::example()
     QCOMPARE(f->size(), g->size());
 
     if (hasSimplification) {
-        QVERIFY(usedSimplex(l, Qt::Horizontal));
-        QVERIFY(usedSimplex(l, Qt::Vertical));
+        QVERIFY(usedSimplex(l, BobUI::Horizontal));
+        QVERIFY(usedSimplex(l, BobUI::Vertical));
     }
 }
 
@@ -1025,16 +1025,16 @@ void tst_QGraphicsAnchorLayout::setSpacing()
     QGraphicsWidget *c = createItem(minSize, pref, maxSize);
 
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout;
-    l->addCornerAnchors(l, Qt::TopLeftCorner, a, Qt::TopLeftCorner);
-    l->addCornerAnchors(b, Qt::TopRightCorner, l, Qt::TopRightCorner);
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorLeft);
+    l->addCornerAnchors(l, BobUI::TopLeftCorner, a, BobUI::TopLeftCorner);
+    l->addCornerAnchors(b, BobUI::TopRightCorner, l, BobUI::TopRightCorner);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
 
-    l->addAnchors(l, c, Qt::Horizontal);
+    l->addAnchors(l, c, BobUI::Horizontal);
 
-    l->addAnchor(a, Qt::AnchorBottom, c, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(a, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    QGraphicsWidget *p = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *p = new QGraphicsWidget(0, BobUI::Window);
 
     p->setLayout(l);
     l->setSpacing(1);
@@ -1050,7 +1050,7 @@ void tst_QGraphicsAnchorLayout::setSpacing()
 
     QApplication::processEvents();
 #ifdef Q_OS_MAC
-    QTest::qWait(200);
+    BOBUIest::qWait(200);
 #endif
 
     // 21x21
@@ -1095,7 +1095,7 @@ public:
 
     int layoutSpacing(QSizePolicy::ControlType control1,
                       QSizePolicy::ControlType control2,
-                      Qt::Orientation orientation,
+                      BobUI::Orientation orientation,
                       const QStyleOption *option = nullptr,
                       const QWidget *widget = nullptr) const override;
 
@@ -1106,11 +1106,11 @@ public:
 
 int CustomLayoutStyle::layoutSpacing(QSizePolicy::ControlType control1,
                                 QSizePolicy::ControlType control2,
-                                Qt::Orientation orientation,
+                                BobUI::Orientation orientation,
                                 const QStyleOption * /*option = nullptr*/,
                                 const QWidget * /*widget = nullptr*/) const
 {
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         switch (CT2(control1, control2)) {
             case CT1(QSizePolicy::PushButton):
                 return 2;
@@ -1188,7 +1188,7 @@ void tst_QGraphicsAnchorLayout::styleDefaults()
     QGraphicsWidget *d = createItem(minSize, pref, maxSize);
     d->setSizePolicy(spPushButton);
 
-    QGraphicsWidget *window = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *window = new QGraphicsWidget(0, BobUI::Window);
 
     // Test layoutSpacing
     CustomLayoutStyle *style = new CustomLayoutStyle;
@@ -1197,11 +1197,11 @@ void tst_QGraphicsAnchorLayout::styleDefaults()
     window->setStyle(style);
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout;
 
-    l->addCornerAnchors(l, Qt::TopLeftCorner, a, Qt::TopLeftCorner);
-    l->addCornerAnchors(a, Qt::BottomRightCorner, b, Qt::TopLeftCorner);
-    l->addCornerAnchors(b, Qt::BottomRightCorner, c, Qt::TopLeftCorner);
-    l->addCornerAnchors(c, Qt::BottomRightCorner, d, Qt::TopLeftCorner);
-    l->addCornerAnchors(d, Qt::BottomRightCorner, l, Qt::BottomRightCorner);
+    l->addCornerAnchors(l, BobUI::TopLeftCorner, a, BobUI::TopLeftCorner);
+    l->addCornerAnchors(a, BobUI::BottomRightCorner, b, BobUI::TopLeftCorner);
+    l->addCornerAnchors(b, BobUI::BottomRightCorner, c, BobUI::TopLeftCorner);
+    l->addCornerAnchors(c, BobUI::BottomRightCorner, d, BobUI::TopLeftCorner);
+    l->addCornerAnchors(d, BobUI::BottomRightCorner, l, BobUI::BottomRightCorner);
 
     window->setLayout(l);
 
@@ -1241,7 +1241,7 @@ void tst_QGraphicsAnchorLayout::styleDefaults()
 
 /*!
     Taken from "hard" complex case, found at
-    https://cwiki.nokia.com/S60QTUI/AnchorLayoutComplexCases
+    https://cwiki.nokia.com/S60BOBUIUI/AnchorLayoutComplexCases
 
     This layout has a special property, since it has two possible solutions for its minimum size.
 
@@ -1272,34 +1272,34 @@ static QGraphicsAnchorLayout *createAmbiguousS60Layout()
     QGraphicsWidget *g = createItem(minSize, pref, maxSize, "g");
 
     //<!-- Trunk -->
-    setAnchor(l, l, Qt::AnchorLeft, a, Qt::AnchorLeft, 10);
-    setAnchor(l, a, Qt::AnchorRight, b, Qt::AnchorLeft, 10);
-    setAnchor(l, b, Qt::AnchorRight, c, Qt::AnchorLeft, 10);
-    setAnchor(l, c, Qt::AnchorRight, d, Qt::AnchorLeft, 10);
-    setAnchor(l, d, Qt::AnchorRight, l, Qt::AnchorRight, 10);
+    setAnchor(l, l, BobUI::AnchorLeft, a, BobUI::AnchorLeft, 10);
+    setAnchor(l, a, BobUI::AnchorRight, b, BobUI::AnchorLeft, 10);
+    setAnchor(l, b, BobUI::AnchorRight, c, BobUI::AnchorLeft, 10);
+    setAnchor(l, c, BobUI::AnchorRight, d, BobUI::AnchorLeft, 10);
+    setAnchor(l, d, BobUI::AnchorRight, l, BobUI::AnchorRight, 10);
 
     //<!-- Above trunk -->
-    setAnchor(l, b, Qt::AnchorLeft, e, Qt::AnchorLeft, 10);
-    setAnchor(l, e, Qt::AnchorRight, d, Qt::AnchorLeft, 10);
+    setAnchor(l, b, BobUI::AnchorLeft, e, BobUI::AnchorLeft, 10);
+    setAnchor(l, e, BobUI::AnchorRight, d, BobUI::AnchorLeft, 10);
 
     //<!-- Below trunk -->
-    setAnchor(l, a, Qt::AnchorHorizontalCenter, g, Qt::AnchorLeft, 10);
-    setAnchor(l, g, Qt::AnchorRight, f, Qt::AnchorHorizontalCenter, 10);
-    setAnchor(l, c, Qt::AnchorLeft, f, Qt::AnchorLeft, 10);
-    setAnchor(l, f, Qt::AnchorRight, d, Qt::AnchorRight, 10);
+    setAnchor(l, a, BobUI::AnchorHorizontalCenter, g, BobUI::AnchorLeft, 10);
+    setAnchor(l, g, BobUI::AnchorRight, f, BobUI::AnchorHorizontalCenter, 10);
+    setAnchor(l, c, BobUI::AnchorLeft, f, BobUI::AnchorLeft, 10);
+    setAnchor(l, f, BobUI::AnchorRight, d, BobUI::AnchorRight, 10);
 
     //<!-- vertical is simpler -->
-    setAnchor(l, l, Qt::AnchorTop, e, Qt::AnchorTop, 0);
-    setAnchor(l, e, Qt::AnchorBottom, a, Qt::AnchorTop, 0);
-    setAnchor(l, e, Qt::AnchorBottom, b, Qt::AnchorTop, 0);
-    setAnchor(l, e, Qt::AnchorBottom, c, Qt::AnchorTop, 0);
-    setAnchor(l, e, Qt::AnchorBottom, d, Qt::AnchorTop, 0);
-    setAnchor(l, a, Qt::AnchorBottom, f, Qt::AnchorTop, 0);
-    setAnchor(l, a, Qt::AnchorBottom, b, Qt::AnchorBottom, 0);
-    setAnchor(l, a, Qt::AnchorBottom, c, Qt::AnchorBottom, 0);
-    setAnchor(l, a, Qt::AnchorBottom, d, Qt::AnchorBottom, 0);
-    setAnchor(l, f, Qt::AnchorBottom, g, Qt::AnchorTop, 0);
-    setAnchor(l, g, Qt::AnchorBottom, l, Qt::AnchorBottom, 0);
+    setAnchor(l, l, BobUI::AnchorTop, e, BobUI::AnchorTop, 0);
+    setAnchor(l, e, BobUI::AnchorBottom, a, BobUI::AnchorTop, 0);
+    setAnchor(l, e, BobUI::AnchorBottom, b, BobUI::AnchorTop, 0);
+    setAnchor(l, e, BobUI::AnchorBottom, c, BobUI::AnchorTop, 0);
+    setAnchor(l, e, BobUI::AnchorBottom, d, BobUI::AnchorTop, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, f, BobUI::AnchorTop, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, b, BobUI::AnchorBottom, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, c, BobUI::AnchorBottom, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, d, BobUI::AnchorBottom, 0);
+    setAnchor(l, f, BobUI::AnchorBottom, g, BobUI::AnchorTop, 0);
+    setAnchor(l, g, BobUI::AnchorBottom, l, BobUI::AnchorBottom, 0);
     return l;
 }
 
@@ -1308,15 +1308,15 @@ void tst_QGraphicsAnchorLayout::hardComplexS60()
     QGraphicsAnchorLayout *l = createAmbiguousS60Layout();
     QCOMPARE(l->count(), 7);
 
-    QGraphicsWidget *p = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *p = new QGraphicsWidget(0, BobUI::Window);
     p->setLayout(l);
 
-    QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
+    QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
     QCOMPARE(layoutMinimumSize, QSizeF(60, 40));
     // expected preferred might be wrong, (haven't manually verified it)
-    QSizeF layoutPreferredSize = l->effectiveSizeHint(Qt::PreferredSize);
+    QSizeF layoutPreferredSize = l->effectiveSizeHint(BobUI::PreferredSize);
     QCOMPARE(layoutPreferredSize, QSizeF(220, 40));
-    QSizeF layoutMaximumSize = l->effectiveSizeHint(Qt::MaximumSize);
+    QSizeF layoutMaximumSize = l->effectiveSizeHint(BobUI::MaximumSize);
     QCOMPARE(layoutMaximumSize, QSizeF(240, 40));
 
     delete p;
@@ -1335,7 +1335,7 @@ void tst_QGraphicsAnchorLayout::stability()
 {
     QList<QRectF> geometries;
     geometries.resize(7);
-    QGraphicsWidget p(0, Qt::Window);
+    QGraphicsWidget p(0, BobUI::Window);
     // it usually fails after 3-4 iterations
     for (int pass = 0; pass < 20; ++pass) {
         // In case we need to "scramble" the heap allocator to provoke this bug.
@@ -1346,7 +1346,7 @@ void tst_QGraphicsAnchorLayout::stability()
         //free(mem);
         QGraphicsAnchorLayout *l = createAmbiguousS60Layout();
         p.setLayout(l);
-        QSizeF layoutMinimumSize = l->effectiveSizeHint(Qt::MinimumSize);
+        QSizeF layoutMinimumSize = l->effectiveSizeHint(BobUI::MinimumSize);
         l->setGeometry(QRectF(QPointF(0,0), layoutMinimumSize));
         QApplication::processEvents();
         for (int i = l->count() - 1; i >=0; --i) {
@@ -1378,18 +1378,18 @@ void tst_QGraphicsAnchorLayout::delete_anchor()
     l->setContentsMargins(0, 0, 0, 0);
 
     // Horizontal
-    l->addAnchor(l, Qt::AnchorLeft, w1, Qt::AnchorLeft);
-    l->addAnchor(w1, Qt::AnchorRight, w2, Qt::AnchorLeft);
-    l->addAnchor(w2, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(w1, Qt::AnchorRight, w3, Qt::AnchorLeft);
-    l->addAnchor(w3, Qt::AnchorRight, l, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, w1, BobUI::AnchorLeft);
+    l->addAnchor(w1, BobUI::AnchorRight, w2, BobUI::AnchorLeft);
+    l->addAnchor(w2, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(w1, BobUI::AnchorRight, w3, BobUI::AnchorLeft);
+    l->addAnchor(w3, BobUI::AnchorRight, l, BobUI::AnchorRight);
 
     // Vertical
-    l->addAnchors(l, w1, Qt::Vertical);
-    l->addAnchors(l, w2, Qt::Vertical);
-    l->addAnchors(l, w3, Qt::Vertical);
+    l->addAnchors(l, w1, BobUI::Vertical);
+    l->addAnchors(l, w2, BobUI::Vertical);
+    l->addAnchors(l, w3, BobUI::Vertical);
 
-    QGraphicsAnchor *anchor = l->anchor(w3, Qt::AnchorRight, l, Qt::AnchorRight);
+    QGraphicsAnchor *anchor = l->anchor(w3, BobUI::AnchorRight, l, BobUI::AnchorRight);
     anchor->setSpacing(10);
 
     QGraphicsWidget *p = new QGraphicsWidget;
@@ -1401,14 +1401,14 @@ void tst_QGraphicsAnchorLayout::delete_anchor()
     QGraphicsView *view = new QGraphicsView(&scene);
     QApplication::processEvents();
     // Should now be simplified
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize).width(), qreal(110));
-    QGraphicsAnchor *anchor1 = l->anchor(w3, Qt::AnchorRight, l, Qt::AnchorRight);
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize).width(), qreal(110));
+    QGraphicsAnchor *anchor1 = l->anchor(w3, BobUI::AnchorRight, l, BobUI::AnchorRight);
     QVERIFY(anchor1);
-    QGraphicsAnchor *anchor2 = l->anchor(w3, Qt::AnchorRight, l, Qt::AnchorRight);
+    QGraphicsAnchor *anchor2 = l->anchor(w3, BobUI::AnchorRight, l, BobUI::AnchorRight);
     QVERIFY(anchor2);
-    QGraphicsAnchor *anchor3 = l->anchor(l, Qt::AnchorRight, w3, Qt::AnchorRight);
+    QGraphicsAnchor *anchor3 = l->anchor(l, BobUI::AnchorRight, w3, BobUI::AnchorRight);
     QVERIFY(anchor3);
-    QGraphicsAnchor *anchor4 = l->anchor(l, Qt::AnchorRight, w3, Qt::AnchorRight);
+    QGraphicsAnchor *anchor4 = l->anchor(l, BobUI::AnchorRight, w3, BobUI::AnchorRight);
     QVERIFY(anchor4);
 
     // should all be the same object
@@ -1422,7 +1422,7 @@ void tst_QGraphicsAnchorLayout::delete_anchor()
     QApplication::processEvents();
 
     // it should also change the preferred size of the layout
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize).width(), qreal(100));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize).width(), qreal(100));
 
     delete p;
     delete view;
@@ -1454,88 +1454,88 @@ void tst_QGraphicsAnchorLayout::sizePolicy()
     QApplication::processEvents();
     w1->adjustSize();
 
-    QCOMPARE(l->effectiveSizeHint(Qt::MinimumSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::MaximumSize), QSizeF(100, 100));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MinimumSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MaximumSize), QSizeF(100, 100));
 
     // QSizePolicy::Maximum
     w1->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     QApplication::processEvents();
     w1->adjustSize();
 
-    QCOMPARE(l->effectiveSizeHint(Qt::MinimumSize), QSizeF(0, 0));
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::MaximumSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MinimumSize), QSizeF(0, 0));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MaximumSize), QSizeF(50, 50));
 
     // QSizePolicy::Fixed
     w1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     QApplication::processEvents();
     w1->adjustSize();
 
-    QCOMPARE(l->effectiveSizeHint(Qt::MinimumSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::MaximumSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MinimumSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MaximumSize), QSizeF(50, 50));
 
     // QSizePolicy::Preferred
     w1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     QApplication::processEvents();
     w1->adjustSize();
 
-    QCOMPARE(l->effectiveSizeHint(Qt::MinimumSize), QSizeF(0, 0));
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::MaximumSize), QSizeF(100, 100));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MinimumSize), QSizeF(0, 0));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MaximumSize), QSizeF(100, 100));
 
     // QSizePolicy::Ignored
     w1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     QApplication::processEvents();
     w1->adjustSize();
 
-    QCOMPARE(l->effectiveSizeHint(Qt::MinimumSize), QSizeF(0, 0));
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(0, 0));
-    QCOMPARE(l->effectiveSizeHint(Qt::MaximumSize), QSizeF(100, 100));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MinimumSize), QSizeF(0, 0));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(0, 0));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MaximumSize), QSizeF(100, 100));
 
     // Anchor size policies
     w1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    QGraphicsAnchor *anchor = l->anchor(l, Qt::AnchorLeft, w1, Qt::AnchorLeft);
+    QGraphicsAnchor *anchor = l->anchor(l, BobUI::AnchorLeft, w1, BobUI::AnchorLeft);
     anchor->setSpacing(10);
 
     // QSizePolicy::Minimum
     anchor->setSizePolicy(QSizePolicy::Minimum);
     QApplication::processEvents();
 
-    QCOMPARE(l->effectiveSizeHint(Qt::MinimumSize), QSizeF(60, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(60, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MinimumSize), QSizeF(60, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(60, 50));
     // The layout has a maximum size of QWIDGETSIZE_MAX, so the result won't exceed that value.
-    QCOMPARE(l->effectiveSizeHint(Qt::MaximumSize), QSizeF(QWIDGETSIZE_MAX, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MaximumSize), QSizeF(QWIDGETSIZE_MAX, 50));
 
     // QSizePolicy::Preferred
     anchor->setSizePolicy(QSizePolicy::Preferred);
     QApplication::processEvents();
 
-    QCOMPARE(l->effectiveSizeHint(Qt::MinimumSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(60, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MinimumSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(60, 50));
     // The layout has a maximum size of QWIDGETSIZE_MAX, so the result won't exceed that value.
-    QCOMPARE(l->effectiveSizeHint(Qt::MaximumSize), QSizeF(QWIDGETSIZE_MAX, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MaximumSize), QSizeF(QWIDGETSIZE_MAX, 50));
 
     // QSizePolicy::Maximum
     anchor->setSizePolicy(QSizePolicy::Maximum);
     QApplication::processEvents();
 
-    QCOMPARE(l->effectiveSizeHint(Qt::MinimumSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(60, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::MaximumSize), QSizeF(60, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MinimumSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(60, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MaximumSize), QSizeF(60, 50));
 
     // QSizePolicy::Ignored
     anchor->setSizePolicy(QSizePolicy::Ignored);
     QApplication::processEvents();
 
-    QCOMPARE(l->effectiveSizeHint(Qt::MinimumSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::PreferredSize), QSizeF(50, 50));
-    QCOMPARE(l->effectiveSizeHint(Qt::MaximumSize), QSizeF(QWIDGETSIZE_MAX, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MinimumSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::PreferredSize), QSizeF(50, 50));
+    QCOMPARE(l->effectiveSizeHint(BobUI::MaximumSize), QSizeF(QWIDGETSIZE_MAX, 50));
 
     if (hasSimplification) {
-        QVERIFY(!usedSimplex(l, Qt::Horizontal));
-        QVERIFY(!usedSimplex(l, Qt::Vertical));
+        QVERIFY(!usedSimplex(l, BobUI::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Vertical));
     }
 
     delete p;
@@ -1555,7 +1555,7 @@ void tst_QGraphicsAnchorLayout::conflicts()
     QGraphicsWidget *c = createItem(QSizeF(10,10), QSizeF(20,10), QSizeF(30,10), "c");
 
     QGraphicsAnchorLayout *l;
-    QGraphicsWidget *p = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *p = new QGraphicsWidget(0, BobUI::Window);
 
     l = new QGraphicsAnchorLayout;
     l->setContentsMargins(0, 0, 0, 0);
@@ -1563,18 +1563,18 @@ void tst_QGraphicsAnchorLayout::conflicts()
     // with the following setup, 'a' cannot be larger than 30 we will first have a Simplex conflict
 
     // horizontal
-    setAnchor(l, l, Qt::AnchorLeft, b, Qt::AnchorLeft);
-    setAnchor(l, b, Qt::AnchorRight, c, Qt::AnchorLeft);
-    setAnchor(l, c, Qt::AnchorRight, l, Qt::AnchorRight);
-    setAnchor(l, b, Qt::AnchorHorizontalCenter, a, Qt::AnchorLeft);
-    setAnchor(l, a, Qt::AnchorRight, c, Qt::AnchorHorizontalCenter);
+    setAnchor(l, l, BobUI::AnchorLeft, b, BobUI::AnchorLeft);
+    setAnchor(l, b, BobUI::AnchorRight, c, BobUI::AnchorLeft);
+    setAnchor(l, c, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    setAnchor(l, b, BobUI::AnchorHorizontalCenter, a, BobUI::AnchorLeft);
+    setAnchor(l, a, BobUI::AnchorRight, c, BobUI::AnchorHorizontalCenter);
 
     // vertical
-    setAnchor(l, l, Qt::AnchorTop, a, Qt::AnchorTop);
-    setAnchor(l, a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    setAnchor(l, a, Qt::AnchorBottom, c, Qt::AnchorTop);
-    setAnchor(l, b, Qt::AnchorBottom, l, Qt::AnchorBottom);
-    setAnchor(l, c, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    setAnchor(l, l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    setAnchor(l, a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    setAnchor(l, a, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+    setAnchor(l, b, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
+    setAnchor(l, c, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
     p->setLayout(l);
 
@@ -1595,7 +1595,7 @@ void tst_QGraphicsAnchorLayout::floatConflict()
     QGraphicsWidget *b = createItem(QSizeF(80,10), QSizeF(90,10), QSizeF(100,10), "b");
 
     QGraphicsAnchorLayout *l;
-    QGraphicsWidget *p = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *p = new QGraphicsWidget(0, BobUI::Window);
 
     l = new QGraphicsAnchorLayout;
     l->setContentsMargins(0, 0, 0, 0);
@@ -1604,15 +1604,15 @@ void tst_QGraphicsAnchorLayout::floatConflict()
 
     // horizontal
     // with this anchor we have two floating items
-    setAnchor(l, a, Qt::AnchorRight, b, Qt::AnchorLeft);
+    setAnchor(l, a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
 
     // Just checking if the layout is handling well the removal of floating items
-    delete l->anchor(a, Qt::AnchorRight, b, Qt::AnchorLeft);
+    delete l->anchor(a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
     QCOMPARE(l->count(), 0);
     QCOMPARE(layoutHasConflict(l), false);
 
     // setting back the same anchor
-    setAnchor(l, a, Qt::AnchorRight, b, Qt::AnchorLeft);
+    setAnchor(l, a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
 
     // We don't support floating items but they should be counted as if they are in the layout
     QCOMPARE(l->count(), 2);
@@ -1620,18 +1620,18 @@ void tst_QGraphicsAnchorLayout::floatConflict()
     QCOMPARE(layoutHasConflict(l), true);
 
     // Semi-floats are supported
-    setAnchor(l, a, Qt::AnchorLeft, l, Qt::AnchorLeft);
+    setAnchor(l, a, BobUI::AnchorLeft, l, BobUI::AnchorLeft);
     QCOMPARE(l->count(), 2);
 
     // Vertically the layout has floating items. Therefore, we have a conflict
     QCOMPARE(layoutHasConflict(l), true);
 
     // No more floating items
-    setAnchor(l, b, Qt::AnchorRight, l, Qt::AnchorRight);
-    setAnchor(l, a, Qt::AnchorTop, l, Qt::AnchorTop);
-    setAnchor(l, a, Qt::AnchorBottom, l, Qt::AnchorBottom);
-    setAnchor(l, b, Qt::AnchorTop, l, Qt::AnchorTop);
-    setAnchor(l, b, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    setAnchor(l, b, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    setAnchor(l, a, BobUI::AnchorTop, l, BobUI::AnchorTop);
+    setAnchor(l, a, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
+    setAnchor(l, b, BobUI::AnchorTop, l, BobUI::AnchorTop);
+    setAnchor(l, b, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
     QCOMPARE(layoutHasConflict(l), false);
 
     delete p;
@@ -1656,18 +1656,18 @@ void tst_QGraphicsAnchorLayout::infiniteMaxSizes()
     QGraphicsWidget *e = createItem(minSize, pref, maxSize, "e");
 
     //<!-- Trunk -->
-    setAnchor(l, l, Qt::AnchorLeft, a, Qt::AnchorLeft, 0);
-    setAnchor(l, a, Qt::AnchorRight, b, Qt::AnchorLeft, 0);
-    setAnchor(l, b, Qt::AnchorRight, c, Qt::AnchorLeft, 0);
-    setAnchor(l, c, Qt::AnchorRight, d, Qt::AnchorLeft, 0);
-    setAnchor(l, d, Qt::AnchorRight, l, Qt::AnchorRight, 0);
-    setAnchor(l, b, Qt::AnchorHorizontalCenter, e, Qt::AnchorLeft, 0);
-    setAnchor(l, e, Qt::AnchorRight, c, Qt::AnchorHorizontalCenter, 0);
+    setAnchor(l, l, BobUI::AnchorLeft, a, BobUI::AnchorLeft, 0);
+    setAnchor(l, a, BobUI::AnchorRight, b, BobUI::AnchorLeft, 0);
+    setAnchor(l, b, BobUI::AnchorRight, c, BobUI::AnchorLeft, 0);
+    setAnchor(l, c, BobUI::AnchorRight, d, BobUI::AnchorLeft, 0);
+    setAnchor(l, d, BobUI::AnchorRight, l, BobUI::AnchorRight, 0);
+    setAnchor(l, b, BobUI::AnchorHorizontalCenter, e, BobUI::AnchorLeft, 0);
+    setAnchor(l, e, BobUI::AnchorRight, c, BobUI::AnchorHorizontalCenter, 0);
 
     QGraphicsWidget p;
     p.setLayout(l);
 
-    QCOMPARE(int(p.effectiveSizeHint(Qt::MaximumSize).width()),
+    QCOMPARE(int(p.effectiveSizeHint(BobUI::MaximumSize).width()),
              QWIDGETSIZE_MAX);
 
     p.resize(200, 10);
@@ -1703,13 +1703,13 @@ void tst_QGraphicsAnchorLayout::simplifiableUnfeasible()
     l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
 
-    l->addAnchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
-    l->addAnchor(a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchors(l, a, Qt::Horizontal);
-    l->addAnchor(l, Qt::AnchorLeft, b, Qt::AnchorLeft);
-    l->addAnchor(b, Qt::AnchorRight, a, Qt::AnchorRight);
+    l->addAnchors(l, a, BobUI::Horizontal);
+    l->addAnchor(l, BobUI::AnchorLeft, b, BobUI::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, a, BobUI::AnchorRight);
 
     QCOMPARE(l->count(), 2);
 
@@ -1719,7 +1719,7 @@ void tst_QGraphicsAnchorLayout::simplifiableUnfeasible()
     l->invalidate();
     QVERIFY(layoutHasConflict(l));
     if (hasSimplification)
-        QVERIFY(!usedSimplex(l, Qt::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Horizontal));
 
     // Now we make it valid
     b->setMinimumWidth(100);
@@ -1727,7 +1727,7 @@ void tst_QGraphicsAnchorLayout::simplifiableUnfeasible()
     l->invalidate();
     QVERIFY(!layoutHasConflict(l));
     if (hasSimplification)
-        QVERIFY(!usedSimplex(l, Qt::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Horizontal));
 
     // And make it invalid again
     a->setPreferredWidth(70);
@@ -1736,7 +1736,7 @@ void tst_QGraphicsAnchorLayout::simplifiableUnfeasible()
     l->invalidate();
     QVERIFY(layoutHasConflict(l));
     if (hasSimplification)
-        QVERIFY(!usedSimplex(l, Qt::Horizontal));
+        QVERIFY(!usedSimplex(l, BobUI::Horizontal));
 }
 
 /*
@@ -1757,30 +1757,30 @@ void tst_QGraphicsAnchorLayout::simplificationVsOrder()
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout(&frame);
 
     // Bulk anchors
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorLeft);
-    l->addAnchor(b, Qt::AnchorLeft, c, Qt::AnchorLeft);
-    l->addAnchor(c, Qt::AnchorRight, l, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorLeft, c, BobUI::AnchorLeft);
+    l->addAnchor(c, BobUI::AnchorRight, l, BobUI::AnchorRight);
 
     // Problematic anchor, direction b->c
-    QGraphicsAnchor *anchor = l->addAnchor(b, Qt::AnchorRight, c, Qt::AnchorRight);
+    QGraphicsAnchor *anchor = l->addAnchor(b, BobUI::AnchorRight, c, BobUI::AnchorRight);
     anchor->setSpacing(5);
 
-    l->effectiveSizeHint(Qt::MinimumSize);
+    l->effectiveSizeHint(BobUI::MinimumSize);
     if (hasSimplification) {
-        QCOMPARE(usedSimplex(l, Qt::Horizontal), false);
-        QCOMPARE(usedSimplex(l, Qt::Vertical), false);
+        QCOMPARE(usedSimplex(l, BobUI::Horizontal), false);
+        QCOMPARE(usedSimplex(l, BobUI::Vertical), false);
     }
 
     // Problematic anchor, direction c->b
     delete anchor;
-    anchor = l->addAnchor(c, Qt::AnchorRight, b, Qt::AnchorRight);
+    anchor = l->addAnchor(c, BobUI::AnchorRight, b, BobUI::AnchorRight);
     anchor->setSpacing(5);
 
-    l->effectiveSizeHint(Qt::MinimumSize);
+    l->effectiveSizeHint(BobUI::MinimumSize);
     if (hasSimplification) {
-        QCOMPARE(usedSimplex(l, Qt::Horizontal), false);
-        QCOMPARE(usedSimplex(l, Qt::Vertical), false);
+        QCOMPARE(usedSimplex(l, BobUI::Horizontal), false);
+        QCOMPARE(usedSimplex(l, BobUI::Vertical), false);
     }
 }
 
@@ -1797,13 +1797,13 @@ void tst_QGraphicsAnchorLayout::parallelSimplificationOfCenter()
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout(&parent);
     l->setContentsMargins(0, 0, 0, 0);
 
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(l, Qt::AnchorRight, a, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorRight, a, BobUI::AnchorRight);
 
-    l->addAnchor(a, Qt::AnchorHorizontalCenter, b, Qt::AnchorLeft);
-    l->addAnchor(b, Qt::AnchorRight, a, Qt::AnchorRight);
+    l->addAnchor(a, BobUI::AnchorHorizontalCenter, b, BobUI::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, a, BobUI::AnchorRight);
 
-    parent.resize(l->effectiveSizeHint(Qt::PreferredSize));
+    parent.resize(l->effectiveSizeHint(BobUI::PreferredSize));
 
     QCOMPARE(a->geometry(), QRectF(0, 0, 40, 10));
     QCOMPARE(b->geometry(), QRectF(20, 0, 20, 10));
@@ -1826,26 +1826,26 @@ void tst_QGraphicsAnchorLayout::simplificationVsRedundance()
     QGraphicsWidget frame;
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout(&frame);
 
-    l->addCornerAnchors(a, Qt::TopLeftCorner, l, Qt::TopLeftCorner);
-    l->addCornerAnchors(a, Qt::BottomLeftCorner, l, Qt::BottomLeftCorner);
+    l->addCornerAnchors(a, BobUI::TopLeftCorner, l, BobUI::TopLeftCorner);
+    l->addCornerAnchors(a, BobUI::BottomLeftCorner, l, BobUI::BottomLeftCorner);
 
-    l->addCornerAnchors(b, Qt::TopLeftCorner, a, Qt::TopRightCorner);
-    l->addCornerAnchors(b, Qt::TopRightCorner, l, Qt::TopRightCorner);
+    l->addCornerAnchors(b, BobUI::TopLeftCorner, a, BobUI::TopRightCorner);
+    l->addCornerAnchors(b, BobUI::TopRightCorner, l, BobUI::TopRightCorner);
 
-    l->addCornerAnchors(c, Qt::TopLeftCorner, b, Qt::BottomLeftCorner);
-    l->addCornerAnchors(c, Qt::BottomLeftCorner, a, Qt::BottomRightCorner);
-    l->addCornerAnchors(c, Qt::TopRightCorner, b, Qt::BottomRightCorner);
-    l->addCornerAnchors(c, Qt::BottomRightCorner, l, Qt::BottomRightCorner);
+    l->addCornerAnchors(c, BobUI::TopLeftCorner, b, BobUI::BottomLeftCorner);
+    l->addCornerAnchors(c, BobUI::BottomLeftCorner, a, BobUI::BottomRightCorner);
+    l->addCornerAnchors(c, BobUI::TopRightCorner, b, BobUI::BottomRightCorner);
+    l->addCornerAnchors(c, BobUI::BottomRightCorner, l, BobUI::BottomRightCorner);
 
-    l->effectiveSizeHint(Qt::MinimumSize);
+    l->effectiveSizeHint(BobUI::MinimumSize);
 
     QCOMPARE(layoutHasConflict(l), false);
 
     if (!hasSimplification)
         QEXPECT_FAIL("", "Test depends on simplification.", Abort);
 
-    QCOMPARE(usedSimplex(l, Qt::Horizontal), false);
-    QCOMPARE(usedSimplex(l, Qt::Vertical), false);
+    QCOMPARE(usedSimplex(l, BobUI::Horizontal), false);
+    QCOMPARE(usedSimplex(l, BobUI::Vertical), false);
 }
 
 /*
@@ -1858,8 +1858,8 @@ void tst_QGraphicsAnchorLayout::spacingPersistency()
     QGraphicsWidget *a = createItem();
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout(&w);
 
-    l->addAnchors(l, a, Qt::Horizontal);
-    QGraphicsAnchor *anchor = l->anchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
+    l->addAnchors(l, a, BobUI::Horizontal);
+    QGraphicsAnchor *anchor = l->anchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
 
     anchor->setSpacing(-30);
     QCOMPARE(anchor->spacing(), -30.0);
@@ -1868,7 +1868,7 @@ void tst_QGraphicsAnchorLayout::spacingPersistency()
     QCOMPARE(anchor->spacing(), 30.0);
 
     anchor->setSizePolicy(QSizePolicy::Ignored);
-    w.effectiveSizeHint(Qt::PreferredSize);
+    w.effectiveSizeHint(BobUI::PreferredSize);
 
     QCOMPARE(anchor->spacing(), 30.0);
 }
@@ -1894,17 +1894,17 @@ void tst_QGraphicsAnchorLayout::snakeParallelWithLayout()
     l->setSpacing(0);
 
     // First we'll do the case in parallel with the entire layout...
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorRight);
-    l->addAnchor(b, Qt::AnchorLeft, c, Qt::AnchorLeft);
-    l->addAnchor(c, Qt::AnchorRight, l, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorRight);
+    l->addAnchor(b, BobUI::AnchorLeft, c, BobUI::AnchorLeft);
+    l->addAnchor(c, BobUI::AnchorRight, l, BobUI::AnchorRight);
 
-    l->addAnchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
-    l->addAnchor(a, Qt::AnchorBottom, b, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorBottom, c, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorBottom, b, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    parent.resize(l->effectiveSizeHint(Qt::PreferredSize));
+    parent.resize(l->effectiveSizeHint(BobUI::PreferredSize));
 
     // Note that A and C are fixed in the maximum size
     QCOMPARE(l->geometry(), QRectF(QPointF(0, 0), QSizeF(150, 60)));
@@ -1913,10 +1913,10 @@ void tst_QGraphicsAnchorLayout::snakeParallelWithLayout()
     QCOMPARE(c->geometry(), QRectF(QPointF(50, 40), maxSize));
 
     // Then, we change the "snake" to be in parallel with half of the layout
-    delete l->anchor(c, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(c, Qt::AnchorRight, l, Qt::AnchorHorizontalCenter);
+    delete l->anchor(c, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(c, BobUI::AnchorRight, l, BobUI::AnchorHorizontalCenter);
 
-    parent.resize(l->effectiveSizeHint(Qt::PreferredSize));
+    parent.resize(l->effectiveSizeHint(BobUI::PreferredSize));
 
     QCOMPARE(l->geometry(), QRectF(QPointF(0, 0), QSizeF(300, 60)));
     QCOMPARE(a->geometry(), QRectF(QPointF(0, 0), maxSize));
@@ -1936,17 +1936,17 @@ void tst_QGraphicsAnchorLayout::parallelToHalfLayout()
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout(&w);
     l->setContentsMargins(10, 10, 10, 10);
 
-    l->addAnchors(l, a, Qt::Vertical);
+    l->addAnchors(l, a, BobUI::Vertical);
 
     QGraphicsAnchor *anchor;
-    anchor = l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
+    anchor = l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
     anchor->setSpacing(5);
-    anchor = l->addAnchor(l, Qt::AnchorHorizontalCenter, a, Qt::AnchorRight);
+    anchor = l->addAnchor(l, BobUI::AnchorHorizontalCenter, a, BobUI::AnchorRight);
     anchor->setSpacing(-5);
 
-    const QSizeF minimumSizeHint = w.effectiveSizeHint(Qt::MinimumSize);
-    const QSizeF preferredSizeHint = w.effectiveSizeHint(Qt::PreferredSize);
-    const QSizeF maximumSizeHint = w.effectiveSizeHint(Qt::MaximumSize);
+    const QSizeF minimumSizeHint = w.effectiveSizeHint(BobUI::MinimumSize);
+    const QSizeF preferredSizeHint = w.effectiveSizeHint(BobUI::PreferredSize);
+    const QSizeF maximumSizeHint = w.effectiveSizeHint(BobUI::MaximumSize);
 
     const QSizeF overhead = QSizeF(10 + 5 + 5, 10) * 2;
 
@@ -1963,11 +1963,11 @@ void tst_QGraphicsAnchorLayout::globalSpacing()
     QGraphicsWidget w;
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout(&w);
 
-    l->addCornerAnchors(l, Qt::TopLeftCorner, a, Qt::TopLeftCorner);
-    l->addCornerAnchors(a, Qt::BottomRightCorner, b, Qt::TopLeftCorner);
-    l->addCornerAnchors(b, Qt::BottomRightCorner, l, Qt::BottomRightCorner);
+    l->addCornerAnchors(l, BobUI::TopLeftCorner, a, BobUI::TopLeftCorner);
+    l->addCornerAnchors(a, BobUI::BottomRightCorner, b, BobUI::TopLeftCorner);
+    l->addCornerAnchors(b, BobUI::BottomRightCorner, l, BobUI::BottomRightCorner);
 
-    w.resize(w.effectiveSizeHint(Qt::PreferredSize));
+    w.resize(w.effectiveSizeHint(BobUI::PreferredSize));
     qreal vSpacing = b->geometry().top() - a->geometry().bottom();
     qreal hSpacing = b->geometry().left() - a->geometry().right();
 
@@ -1975,7 +1975,7 @@ void tst_QGraphicsAnchorLayout::globalSpacing()
     l->setVerticalSpacing(vSpacing + 10);
     l->setHorizontalSpacing(hSpacing + 5);
 
-    w.resize(w.effectiveSizeHint(Qt::PreferredSize));
+    w.resize(w.effectiveSizeHint(BobUI::PreferredSize));
     qreal newVSpacing = b->geometry().top() - a->geometry().bottom();
     qreal newHSpacing = b->geometry().left() - a->geometry().right();
 
@@ -1986,7 +1986,7 @@ void tst_QGraphicsAnchorLayout::globalSpacing()
     // bring back the widget-defined spacing.
     l->setSpacing(-1);
 
-    w.resize(w.effectiveSizeHint(Qt::PreferredSize));
+    w.resize(w.effectiveSizeHint(BobUI::PreferredSize));
     newVSpacing = b->geometry().top() - a->geometry().bottom();
     newHSpacing = b->geometry().left() - a->geometry().right();
 
@@ -2001,9 +2001,9 @@ void tst_QGraphicsAnchorLayout::graphicsAnchorHandling()
 
     l->addAnchors(l, a);
 
-    QGraphicsAnchor *layoutAnchor = l->anchor(l, Qt::AnchorTop, l, Qt::AnchorBottom);
-    QGraphicsAnchor *itemAnchor = l->anchor(a, Qt::AnchorTop, a, Qt::AnchorBottom);
-    QGraphicsAnchor *invalidAnchor = l->anchor(a, Qt::AnchorTop, l, Qt::AnchorBottom);
+    QGraphicsAnchor *layoutAnchor = l->anchor(l, BobUI::AnchorTop, l, BobUI::AnchorBottom);
+    QGraphicsAnchor *itemAnchor = l->anchor(a, BobUI::AnchorTop, a, BobUI::AnchorBottom);
+    QGraphicsAnchor *invalidAnchor = l->anchor(a, BobUI::AnchorTop, l, BobUI::AnchorBottom);
 
     // Ensure none of these anchors are accessible.
     QVERIFY(!layoutAnchor);
@@ -2012,13 +2012,13 @@ void tst_QGraphicsAnchorLayout::graphicsAnchorHandling()
 
     // Hook the anchors to a QObject
     QObject object;
-    QGraphicsAnchor *userAnchor = l->anchor(l, Qt::AnchorTop, a, Qt::AnchorTop);
+    QGraphicsAnchor *userAnchor = l->anchor(l, BobUI::AnchorTop, a, BobUI::AnchorTop);
     userAnchor->setParent(&object);
-    userAnchor = l->anchor(l, Qt::AnchorBottom, a, Qt::AnchorBottom);
+    userAnchor = l->anchor(l, BobUI::AnchorBottom, a, BobUI::AnchorBottom);
     userAnchor->setParent(&object);
-    userAnchor = l->anchor(l, Qt::AnchorRight, a, Qt::AnchorRight);
+    userAnchor = l->anchor(l, BobUI::AnchorRight, a, BobUI::AnchorRight);
     userAnchor->setParent(&object);
-    userAnchor = l->anchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
+    userAnchor = l->anchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
     userAnchor->setParent(&object);
 
     QCOMPARE(object.children().size(), 4);
@@ -2033,22 +2033,22 @@ void tst_QGraphicsAnchorLayout::graphicsAnchorHandling()
 
 void tst_QGraphicsAnchorLayout::invalidHierarchyCheck()
 {
-    QGraphicsWidget window(0, Qt::Window);
+    QGraphicsWidget window(0, BobUI::Window);
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout;
     window.setLayout(l);
 
     QCOMPARE(l->count(), 0);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): "
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): "
                          "You cannot add the parent of the layout to the layout.");
-    QVERIFY(!l->addAnchor(l, Qt::AnchorLeft, &window, Qt::AnchorLeft));
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): "
+    QVERIFY(!l->addAnchor(l, BobUI::AnchorLeft, &window, BobUI::AnchorLeft));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): "
                          "You cannot add the parent of the layout to the layout.");
     l->addAnchors(l, &window);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsAnchorLayout::addAnchor(): "
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsAnchorLayout::addAnchor(): "
                          "You cannot add the parent of the layout to the layout.");
-    l->addCornerAnchors(l, Qt::TopLeftCorner, &window, Qt::TopLeftCorner);
+    l->addCornerAnchors(l, BobUI::TopLeftCorner, &window, BobUI::TopLeftCorner);
     QCOMPARE(l->count(), 0);
 }
 
-QTEST_MAIN(tst_QGraphicsAnchorLayout)
+BOBUIEST_MAIN(tst_QGraphicsAnchorLayout)
 #include "tst_qgraphicsanchorlayout.moc"

@@ -1,14 +1,14 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsvsp2screen.h"
 #include "qeglfskmsvsp2device.h"
 #include <qeglfskmshelpers_p.h>
 
-#include <QtCore/QLoggingCategory>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <drm_fourcc.h>
 #include <xf86drm.h>
@@ -21,7 +21,7 @@ extern "C" {
 #include <mediactl/v4l2subdev.h> //needed in header for default arguments
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcEglfsKmsDebug)
 
@@ -108,19 +108,19 @@ void QEglFSKmsVsp2Screen::initVsp2()
     m_blendDevice.reset(new QVsp2BlendingDevice(rawGeometry().size()));
 
     // Enable input for main buffer drawn by the compositor (always on)
-    initQtLayer();
+    initBobUILayer();
 }
 
-void QEglFSKmsVsp2Screen::initQtLayer()
+void QEglFSKmsVsp2Screen::initBobUILayer()
 {
     const QSize screenSize = rawGeometry().size();
     const uint bytesPerLine = uint(screenSize.width()) * 4; //TODO: is this ok?
-    bool formatSet = m_blendDevice->enableInput(m_qtLayer, QRect(QPoint(), screenSize), m_output.drm_format, bytesPerLine);
+    bool formatSet = m_blendDevice->enableInput(m_bobuiLayer, QRect(QPoint(), screenSize), m_output.drm_format, bytesPerLine);
     if (!formatSet) {
         const uint32_t fallbackFormat = DRM_FORMAT_ARGB8888;
         qWarning() << "Failed to set format" << q_fourccToString(m_output.drm_format)
                    << "falling back to" << q_fourccToString(fallbackFormat);
-        formatSet = m_blendDevice->enableInput(m_qtLayer, QRect(QPoint(), screenSize), fallbackFormat, bytesPerLine);
+        formatSet = m_blendDevice->enableInput(m_bobuiLayer, QRect(QPoint(), screenSize), fallbackFormat, bytesPerLine);
         if (!formatSet)
             qFatal("Failed to set vsp2 blending format");
     }
@@ -244,7 +244,7 @@ void QEglFSKmsVsp2Screen::blendAndFlipDrm()
     if (m_nextGbmBo) {
         Q_ASSERT(m_nextGbmBo != m_currentGbmBo);
         int compositorBackBufferDmaFd = dmaBufferForGbmBuffer(m_nextGbmBo)->dmabufFd;
-        m_blendDevice->setInputBuffer(m_qtLayer, compositorBackBufferDmaFd);
+        m_blendDevice->setInputBuffer(m_bobuiLayer, compositorBackBufferDmaFd);
 
         if (m_currentGbmBo)
             gbm_surface_release_buffer(m_gbmSurface, m_currentGbmBo);
@@ -270,9 +270,9 @@ void QEglFSKmsVsp2Screen::blendAndFlipDrm()
     if (!m_blendDevice->blend(backBuffer.dmabufFd)) {
         qWarning() << "Vsp2: Blending failed";
 
-        // For some reason, a failed blend may often mess up the qt layer, so reinitialize it here
-        m_blendDevice->disableInput(m_qtLayer);
-        initQtLayer();
+        // For some reason, a failed blend may often mess up the bobui layer, so reinitialize it here
+        m_blendDevice->disableInput(m_bobuiLayer);
+        initBobUILayer();
     }
 
     for (auto cb : m_blendFinishedCallbacks)
@@ -336,4 +336,4 @@ bool QEglFSKmsVsp2Screen::Blender::event(QEvent *event)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

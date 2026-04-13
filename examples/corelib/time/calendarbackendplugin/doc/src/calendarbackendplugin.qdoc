@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example time/calendarbackendplugin
@@ -14,7 +14,7 @@
     \section1 Introduction
 
     There are numerous different calendar systems in use around the globe.
-    Qt has built-in support for some of them (see \l{QCalendar::}{System}),
+    BobUI has built-in support for some of them (see \l{QCalendar::}{System}),
     but can't provide general support due to their high number.
     Additional calendar systems can be provided by implementing a
     custom QCalendarBackend, which is a private API.
@@ -93,7 +93,7 @@
 
     \section1 Plugin
 
-    Qt applications can be extended through plugins. This requires the application to
+    BobUI applications can be extended through plugins. This requires the application to
     detect and load plugins using \l{QPluginLoader}.
 
     \section2 Writing a plugin
@@ -106,11 +106,11 @@
 
     \snippet time/calendarbackendplugin/common/calendarBackendInterface.h 0
 
-    and register it in the Qt meta-object system:
+    and register it in the BobUI meta-object system:
 
     \snippet time/calendarbackendplugin/common/calendarBackendInterface.h 1
 
-    \l{<QtPlugin>::}{Q_DECLARE_INTERFACE()} macro is used to associate the
+    \l{<BobUIPlugin>::}{Q_DECLARE_INTERFACE()} macro is used to associate the
     \c ClassName (here: \c RequestedCalendarInterface) with the defined
     \c Identifier (here: \c RequestedCalendarInterface_iid). The \c Identifier
     must be unique. This interface can be implemented by plugins that load
@@ -122,25 +122,25 @@
 
     \snippet time/calendarbackendplugin/plugin/calendarplugin.h 0
 
-    \l{<QtPlugin>::}{Q_PLUGIN_METADATA()} and \l{QObject::}{Q_INTERFACES()}
+    \l{<BobUIPlugin>::}{Q_PLUGIN_METADATA()} and \l{QObject::}{Q_INTERFACES()}
     are being used to declare meta data that was also declared
-    in the interface class and to tell Qt which interface the class implements.
+    in the interface class and to tell BobUI which interface the class implements.
 
-    \sa QtPlugin
+    \sa BobUIPlugin
 
     This plugin instantiates and registers a custom calendar backend which
     can in turn be used to instantiate \l{QCalendar} by the application at
     any point.
 
-    Qt Plugins are stored in a single shared library (a DLL) and \l{QPluginLoader}
+    BobUI Plugins are stored in a single shared library (a DLL) and \l{QPluginLoader}
     is used for detecting and dynamically loading the plugin file (for more
-    see \l{How to Create Qt Plugins}).
+    see \l{How to Create BobUI Plugins}).
 
     \section2 Loading the plugin
 
-    \l{QPluginLoader} checks if the plugin's version of Qt
+    \l{QPluginLoader} checks if the plugin's version of BobUI
     is the same as that of the application and
-    provides direct access to a Qt plugin.
+    provides direct access to a BobUI plugin.
 
     Here is the use of \l QPluginLoader in the example:
 

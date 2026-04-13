@@ -6,17 +6,17 @@ TARGET_FOR_ANDROID_DEPLOYMENT_SETTINGS = $$TARGET
     apk_install_target.depends = first
     apk_install_target.commands = $(MAKE) -f $(MAKEFILE) INSTALL_ROOT=$$shell_path($$OUT_PWD/android-build) install
 
-    qtPrepareTool(ANDROIDDEPLOYQT, androiddeployqt)
+    bobuiPrepareTool(ANDROIDDEPLOYBOBUI, androiddeploybobui)
     isEmpty(ANDROID_DEPLOYMENT_SETTINGS_FILE): ANDROID_DEPLOYMENT_SETTINGS_FILE = $$OUT_PWD/android-$$TARGET-deployment-settings.json
     contains(QMAKE_HOST.os, Windows): extension = .exe
 
     apk.target = apk
     apk.depends = apk_install_target
-    apk.commands = $$ANDROIDDEPLOYQT --input $$ANDROID_DEPLOYMENT_SETTINGS_FILE --output $$OUT_PWD/android-build --apk $$APK_PATH
+    apk.commands = $$ANDROIDDEPLOYBOBUI --input $$ANDROID_DEPLOYMENT_SETTINGS_FILE --output $$OUT_PWD/android-build --apk $$APK_PATH
 
     aab.target = aab
     aab.depends = apk_install_target
-    aab.commands = $$ANDROIDDEPLOYQT --input $$ANDROID_DEPLOYMENT_SETTINGS_FILE --output $$OUT_PWD/android-build --aab --apk $$APK_PATH
+    aab.commands = $$ANDROIDDEPLOYBOBUI --input $$ANDROID_DEPLOYMENT_SETTINGS_FILE --output $$OUT_PWD/android-build --aab --apk $$APK_PATH
 } else {
     prepareRecursiveTarget(aab)
     prepareRecursiveTarget(apk)
@@ -24,16 +24,16 @@ TARGET_FOR_ANDROID_DEPLOYMENT_SETTINGS = $$TARGET
 }
 
 # Apply Android arch specific settings in the following cases:
-# - build_pass == true aka Qt was configured with multi-ABI (2+ arches)
-# - single_android_abi == true aka Qt was configuring with a single ABI / arch
+# - build_pass == true aka BobUI was configured with multi-ABI (2+ arches)
+# - single_android_abi == true aka BobUI was configuring with a single ABI / arch
 #   modifications are omitted when building config.tests
-#   during Qt configuration, by checkking for the presence of single_arch
+#   during BobUI configuration, by checkking for the presence of single_arch
 build_pass|if(single_android_abi:!single_arch) {
     contains(TEMPLATE, ".*app") {
         !android_app {
             !contains(TARGET, ".so") {
                 single_arch:TARGET = lib$${TARGET}.so
-                       else:TARGET = lib$${TARGET}_$${QT_ARCH}.so
+                       else:TARGET = lib$${TARGET}_$${BOBUI_ARCH}.so
             }
             QMAKE_LFLAGS += -Wl,-soname,$$shell_quote($$TARGET)
 
@@ -42,9 +42,9 @@ build_pass|if(single_android_abi:!single_arch) {
                 INSTALLS *= target
             }
         }
-    } else: contains(TEMPLATE, "lib"):!QTDIR_build:android_install {
-        tmpvar = $$str_member($$TARGET, -$$str_size($${QT_ARCH}), -1)
-        !equals(tmpvar, $${QT_ARCH}): TARGET = $${TARGET}_$${QT_ARCH}
+    } else: contains(TEMPLATE, "lib"):!BOBUIDIR_build:android_install {
+        tmpvar = $$str_member($$TARGET, -$$str_size($${BOBUI_ARCH}), -1)
+        !equals(tmpvar, $${BOBUI_ARCH}): TARGET = $${TARGET}_$${BOBUI_ARCH}
         !static {
             target.path = /libs/$$ANDROID_TARGET_ARCH/
             INSTALLS *= target

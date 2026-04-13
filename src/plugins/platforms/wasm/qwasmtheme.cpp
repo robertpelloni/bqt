@@ -1,9 +1,9 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmtheme.h"
 #include "qwasmfiledialoghelper.h"
-#include <QtCore/qvariant.h>
+#include <BobUICore/qvariant.h>
 #include <QFontDatabase>
 #include <QList>
 #include <qloggingcategory.h>
@@ -14,11 +14,11 @@
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
 
-Q_GUI_EXPORT QPalette qt_fusionPalette();
+Q_GUI_EXPORT QPalette bobui_fusionPalette();
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcQpaThemeWasm, "qt.qpa.theme.wasm")
+Q_STATIC_LOGGING_CATEGORY(lcQpaThemeWasm, "bobui.qpa.theme.wasm")
 
 namespace {
 bool matchMedia(std::string mediaQueryString)
@@ -28,26 +28,26 @@ bool matchMedia(std::string mediaQueryString)
             .as<bool>();
 }
 
-Qt::ColorScheme getColorSchemeFromMedia()
+BobUI::ColorScheme getColorSchemeFromMedia()
 {
     if (matchMedia(colorSchemePreferenceDark)) {
-        return Qt::ColorScheme::Dark;
+        return BobUI::ColorScheme::Dark;
     } else {
-        return Qt::ColorScheme::Light;
+        return BobUI::ColorScheme::Light;
     }
 }
 
-Qt::ContrastPreference getContrastPreferenceFromMedia()
+BobUI::ContrastPreference getContrastPreferenceFromMedia()
 {
     if (matchMedia(contrastPreferenceMore)) {
-        return Qt::ContrastPreference::HighContrast;
+        return BobUI::ContrastPreference::HighContrast;
     } else {
-        return Qt::ContrastPreference::NoPreference;
+        return BobUI::ContrastPreference::NoPreference;
     }
 }
 } // namespace
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QWasmTheme::QWasmTheme()
 {
@@ -85,19 +85,19 @@ const QPalette *QWasmTheme::palette(Palette type) const
     if (type == SystemPalette) {
         if (m_paletteIsDirty) {
             m_paletteIsDirty = false;
-            *m_palette = qt_fusionPalette();
+            *m_palette = bobui_fusionPalette();
         }
         return m_palette.get();
     }
     return nullptr;
 }
 
-Qt::ColorScheme QWasmTheme::colorScheme() const
+BobUI::ColorScheme QWasmTheme::colorScheme() const
 {
     return m_colorScheme;
 }
 
-void QWasmTheme::requestColorScheme(Qt::ColorScheme scheme)
+void QWasmTheme::requestColorScheme(BobUI::ColorScheme scheme)
 {
     if (m_colorScheme != scheme) {
         m_paletteIsDirty = true;
@@ -106,7 +106,7 @@ void QWasmTheme::requestColorScheme(Qt::ColorScheme scheme)
     }
 }
 
-Qt::ContrastPreference QWasmTheme::contrastPreference() const
+BobUI::ContrastPreference QWasmTheme::contrastPreference() const
 {
     return m_contrastPreference;
 }
@@ -163,4 +163,4 @@ void QWasmTheme::onContrastPreferenceChange()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

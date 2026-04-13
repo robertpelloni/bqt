@@ -53,7 +53,7 @@ QStatusBar::item {
     border-radius: 2;
 }
 
-QComboBox, QLineEdit, QSpinBox, QTextEdit, QListView {
+QComboBox, QLineEdit, QSpinBox, BOBUIextEdit, QListView {
     background-color: cornsilk;
     selection-color: #0a214c; 
     selection-background-color: #C19A6B;
@@ -96,8 +96,8 @@ QLabel {
     background: none;
 }
 
-/* A QToolTip is a QLabel ... */
-QToolTip {
+/* A BOBUIoolTip is a QLabel ... */
+BOBUIoolTip {
     border: 2px solid darkkhaki;
     padding: 5px;
     border-radius: 3px;

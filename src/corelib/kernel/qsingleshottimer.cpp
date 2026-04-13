@@ -1,17 +1,17 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/private/qsingleshottimer_p.h>
+#include <BobUICore/private/qsingleshottimer_p.h>
 
 #include "qcoreapplication.h"
 #include "qmetaobject_p.h"
 #include "private/qnumeric_p.h"
-#include "qthread.h"
+#include "bobuihread.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QSingleShotTimer::QSingleShotTimer(Duration interval, Qt::TimerType timerType,
+QSingleShotTimer::QSingleShotTimer(Duration interval, BobUI::TimerType timerType,
                                    const QObject *r, const char *member)
     : QObject(QAbstractEventDispatcher::instance())
 {
@@ -19,14 +19,14 @@ QSingleShotTimer::QSingleShotTimer(Duration interval, Qt::TimerType timerType,
     startTimerForReceiver(interval, timerType, r);
 }
 
-QSingleShotTimer::QSingleShotTimer(Duration interval, Qt::TimerType timerType,
-                                   const QObject *r, QtPrivate::QSlotObjectBase *slotObj)
+QSingleShotTimer::QSingleShotTimer(Duration interval, BobUI::TimerType timerType,
+                                   const QObject *r, BobUIPrivate::QSlotObjectBase *slotObj)
     : QObject(QAbstractEventDispatcher::instance())
 {
     int signal_index = QMetaObjectPrivate::signalOffset(&staticMetaObject);
     Q_ASSERT(QMetaObjectPrivate::signal(&staticMetaObject, signal_index).name() == "timeout");
     QObjectPrivate::connectImpl(this, signal_index, r ? r : this, nullptr, slotObj,
-                                Qt::AutoConnection, nullptr, &staticMetaObject);
+                                BobUI::AutoConnection, nullptr, &staticMetaObject);
 
     startTimerForReceiver(interval, timerType, r);
 }
@@ -38,7 +38,7 @@ QSingleShotTimer::~QSingleShotTimer() = default;
     the same thread as where it will be handled, so that it fires reliably even
     if the thread that set up the timer is busy.
 */
-void QSingleShotTimer::startTimerForReceiver(Duration interval, Qt::TimerType timerType,
+void QSingleShotTimer::startTimerForReceiver(Duration interval, BobUI::TimerType timerType,
                                              const QObject *receiver)
 {
     if (receiver && receiver->thread() != thread()) {
@@ -63,9 +63,9 @@ void QSingleShotTimer::timerFinished()
     delete this;
 }
 
-void QSingleShotTimer::timerEvent(QTimerEvent *event)
+void QSingleShotTimer::timerEvent(BOBUIimerEvent *event)
 {
-    if (event->id() == Qt::TimerId::Invalid) {
+    if (event->id() == BobUI::TimerId::Invalid) {
         StartTimerEvent *startTimerEvent = static_cast<StartTimerEvent *>(event);
         Q_UNUSED(startTimerEvent->timer.release()); // it's the same as "this"
         const QDeadlineTimer &deadline = startTimerEvent->deadline;
@@ -74,7 +74,7 @@ void QSingleShotTimer::timerEvent(QTimerEvent *event)
         } else {
             timer.start(deadline.remainingTimeAsDuration(), deadline.timerType(), this);
             // we are now definitely in a thread that has an event dispatcher
-            setParent(QThread::currentThread()->eventDispatcher());
+            setParent(BOBUIhread::currentThread()->eventDispatcher());
         }
     } else {
         // need to kill the timer _before_ we emit timeout() in case the
@@ -85,6 +85,6 @@ void QSingleShotTimer::timerEvent(QTimerEvent *event)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsingleshottimer_p.cpp"

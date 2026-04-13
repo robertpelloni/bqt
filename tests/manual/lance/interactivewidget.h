@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef INTERACTIVEWIDGET_H
 #define INTERACTIVEWIDGET_H
 
@@ -10,7 +10,7 @@
 
 #include <private/qmath_p.h>
 
-QT_FORWARD_DECLARE_CLASS(QToolBox)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIoolBox)
 
 class InteractiveWidget : public QMainWindow
 {
@@ -32,10 +32,10 @@ protected slots:
     void enumSelected(QListWidgetItem *item);
 
 private:
-    QToolBox *m_commandsToolBox;
-    QToolBox *m_enumsToolBox;
+    BOBUIoolBox *m_commandsToolBox;
+    BOBUIoolBox *m_enumsToolBox;
     OnScreenWidget<QWidget> *m_onScreenWidget;
-    QTextEdit *ui_textEdit;
+    BOBUIextEdit *ui_textEdit;
     QString m_filename;
 };
 

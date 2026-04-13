@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <QFileIconProvider>
 #include <QFileInfo>
-#include <QTest>
+#include <BOBUIest>
 
 class tst_QFileIconProvider : public QObject
 {
@@ -34,15 +34,15 @@ void tst_QFileIconProvider::qfileiconprovider()
 Q_DECLARE_METATYPE(QFileIconProvider::IconType)
 void tst_QFileIconProvider::iconType_data()
 {
-    QTest::addColumn<QFileIconProvider::IconType>("type");
+    BOBUIest::addColumn<QFileIconProvider::IconType>("type");
 
-    QTest::newRow("computer") << QFileIconProvider::Computer;
-    QTest::newRow("desktop") << QFileIconProvider::Desktop;
-    QTest::newRow("trashcan") << QFileIconProvider::Trashcan;
-    QTest::newRow("network") << QFileIconProvider::Network;
-    QTest::newRow("drive") << QFileIconProvider::Drive;
-    QTest::newRow("folder") << QFileIconProvider::Folder;
-    QTest::newRow("file") << QFileIconProvider::File;
+    BOBUIest::newRow("computer") << QFileIconProvider::Computer;
+    BOBUIest::newRow("desktop") << QFileIconProvider::Desktop;
+    BOBUIest::newRow("trashcan") << QFileIconProvider::Trashcan;
+    BOBUIest::newRow("network") << QFileIconProvider::Network;
+    BOBUIest::newRow("drive") << QFileIconProvider::Drive;
+    BOBUIest::newRow("folder") << QFileIconProvider::Folder;
+    BOBUIest::newRow("file") << QFileIconProvider::File;
 }
 
 // public QIcon icon(QFileIconProvider::IconType const& type) const
@@ -56,13 +56,13 @@ void tst_QFileIconProvider::iconType()
 
 void tst_QFileIconProvider::iconInfo_data()
 {
-    QTest::addColumn<QFileInfo>("info");
-    QTest::addColumn<bool>("setPath");
+    BOBUIest::addColumn<QFileInfo>("info");
+    BOBUIest::addColumn<bool>("setPath");
 
-    QTest::newRow("null") << QFileInfo() << false;
-    QTest::newRow("drive") << QFileInfo(QDir::rootPath()) << true;
-    QTest::newRow("home") << QFileInfo(QDir::homePath()) << true;
-    QTest::newRow("current") << QFileInfo(QDir::currentPath()) << true;
+    BOBUIest::newRow("null") << QFileInfo() << false;
+    BOBUIest::newRow("drive") << QFileInfo(QDir::rootPath()) << true;
+    BOBUIest::newRow("home") << QFileInfo(QDir::homePath()) << true;
+    BOBUIest::newRow("current") << QFileInfo(QDir::currentPath()) << true;
 }
 
 // public QIcon icon(QFileInfo const& info) const
@@ -80,15 +80,15 @@ void tst_QFileIconProvider::iconInfo()
 
 void tst_QFileIconProvider::type_data()
 {
-    QTest::addColumn<QFileInfo>("info");
+    BOBUIest::addColumn<QFileInfo>("info");
     // Return value is _very_ system dependent, hard to test
-    // QTest::addColumn<QString>("type");
+    // BOBUIest::addColumn<QString>("type");
 
-    QTest::newRow("null") << QFileInfo();
-    QTest::newRow("drive") << QFileInfo(QDir::rootPath());
-    QTest::newRow("home") << QFileInfo(QDir::homePath());
-    QTest::newRow("current") << QFileInfo(QDir::currentPath());
-    QTest::newRow("exe") << QFileInfo(QCoreApplication::applicationFilePath());
+    BOBUIest::newRow("null") << QFileInfo();
+    BOBUIest::newRow("drive") << QFileInfo(QDir::rootPath());
+    BOBUIest::newRow("home") << QFileInfo(QDir::homePath());
+    BOBUIest::newRow("current") << QFileInfo(QDir::currentPath());
+    BOBUIest::newRow("exe") << QFileInfo(QCoreApplication::applicationFilePath());
 }
 
 // public QString type(QFileInfo const& info) const
@@ -115,6 +115,6 @@ void tst_QFileIconProvider::iconPixmaps()
     }
 }
 
-QTEST_MAIN(tst_QFileIconProvider)
+BOBUIEST_MAIN(tst_QFileIconProvider)
 #include "tst_qfileiconprovider.moc"
 

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \group animation
     \brief Provides an easy way for creating animated GUIs.
     \title Animation Framework
 
-    This page lists classes belonging to \l{Qt Core}'s
+    This page lists classes belonging to \l{BobUI Core}'s
     \l{The Animation Framework}{animation framework}.
 
 */
@@ -14,7 +14,7 @@
 /*!
     \page animation-overview.html
     \title The Animation Framework
-    \ingroup qt-gui-concepts
+    \ingroup bobui-gui-concepts
 
     \brief An overview of the Animation Framework
 
@@ -23,9 +23,9 @@
     \keyword Animation
 
     The animation framework provides an easy way to animate your GUI elements.
-    It enables you to animate a Qt property value of a widget or QObject.
+    It enables you to animate a BobUI property value of a widget or QObject.
     Most of the features offered by the framework are also available in
-    \l{Qt Quick}, where it's possible to define animations in a declarative way.
+    \l{BobUI Quick}, where it's possible to define animations in a declarative way.
 
     This overview explains the framework's architecture, with examples that
     demonstrate the common techniques used for animating QObject and
@@ -47,10 +47,10 @@
     The framework further provides the QVariantAnimation and
     QAnimationGroup classes, which build on their base case, QAbstractAnimation.
     Next in the hierarchy is QPropertyAnimation, which is derived from
-    QVariantAnimation, and it lets you animate a Qt property of a widget or
+    QVariantAnimation, and it lets you animate a BobUI property of a widget or
     QObject. The class performs interpolation on the property value using an
     easing curve. With these in place, you just need a QObject class with a
-    Qt property value that you can animate.
+    BobUI property value that you can animate.
 
     \note It is required that the target object you are animating is a QObject
     or its subclass. This is necessary as the animation framework depends on the
@@ -77,16 +77,16 @@
 
     \annotatedlist animation
 
-    \section1 Animating Qt properties
+    \section1 Animating BobUI properties
 
-    As the QPropertyAnimation class can interpolate on Qt properties, it is
+    As the QPropertyAnimation class can interpolate on BobUI properties, it is
     used often. In fact, its superclass---QVariantAnimation---provides an
     abstract implementation of \l{QVariantAnimation::}{updateCurrentValue()},
     which does not change any value unless you change it on the
     \l{QVariantAnimation::valueChanged()}{valueChanged signal}.
 
-    The framework lets you animate the Qt properties of the existing
-    classes in Qt. For example, the QWidget class---can be embedded in
+    The framework lets you animate the BobUI properties of the existing
+    classes in BobUI. For example, the QWidget class---can be embedded in
     a QGraphicsView---has properties for its bounds, colors, and so on.
     The following example demonstrates how you can animate a QPushButton
     widget:
@@ -98,7 +98,7 @@
     \snippet code/src_corelib_animation_qpropertyanimation.cpp ctor_close
     \snippet code/src_corelib_animation_qpropertyanimation.cpp main
 
-    The example animates the \c pos Qt property of a QPushButton, to move
+    The example animates the \c pos BobUI property of a QPushButton, to move
     it from the top--left corner of the screen to the end position (250, 250),
     in 10 seconds (10000 milliseconds).
 
@@ -122,12 +122,12 @@
     the remaining 2 seconds. The button's movement is linear-interpolated
     between these points.
 
-    You can also animate a QObject's value that is not declared as a Qt
+    You can also animate a QObject's value that is not declared as a BobUI
     property, if the value has a setter method. In such cases, derive
-    a new class from the class that contains the value, and add a Qt property
+    a new class from the class that contains the value, and add a BobUI property
     for that value with the setter.
 
-    \note Each Qt property requires a getter also, so you should provide a
+    \note Each BobUI property requires a getter also, so you should provide a
     getter if that is not defined.
 
     \code
@@ -143,8 +143,8 @@
     animate the item's \c pos even if QGraphicsRectItem does not provide
     the \c pos property.
 
-    For a general introduction to the Qt property system, refer to
-    \l{Qt's Property System}.
+    For a general introduction to the BobUI property system, refer to
+    \l{BobUI's Property System}.
 
     \section1 Animations and the Graphics View Framework
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCase name="tst_FailInitData">
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/failinitdata/tst_failinitdata.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/failinitdata/tst_failinitdata.cpp" line="0">
       <Description><![CDATA['false' returned FALSE. ()]]></Description>
     </Incident>
     <Duration msecs="0"/>

@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMINTEGRATION_WAYLAND_H
 #define QPLATFORMINTEGRATION_WAYLAND_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandClient/qtwaylandclientglobal.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformopenglcontext.h>
-#include <QtCore/QScopedPointer>
-#include <QtCore/QMutex>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/QScopedPointer>
+#include <BobUICore/QMutex>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandBuffer;
 class QWaylandDisplay;
@@ -39,7 +39,7 @@ class QWaylandPlatformServices;
 class QWaylandSessionManager;
 
 class Q_WAYLANDCLIENT_EXPORT QWaylandIntegration : public QPlatformIntegration
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     , public QNativeInterface::Private::QEGLIntegration
 #endif
 {
@@ -53,7 +53,7 @@ public:
 
     bool hasCapability(QPlatformIntegration::Capability cap) const override;
     QPlatformWindow *createPlatformWindow(QWindow *window) const override;
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
     QPlatformOffscreenSurface *createPlatformOffscreenSurface(QOffscreenSurface *surface) const override;
     QOpenGLContext *createOpenGLContext(EGLContext context, EGLDisplay display, QOpenGLContext *shareContext) const override;
@@ -66,17 +66,17 @@ public:
     QPlatformFontDatabase *fontDatabase() const override;
 
     QPlatformNativeInterface *nativeInterface() const override;
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QPlatformClipboard *clipboard() const override;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QPlatformDrag *drag() const override;
 #endif
     QPlatformInputContext *inputContext() const override;
 
     QVariant styleHint(StyleHint hint) const override;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QPlatformAccessibility *accessibility() const override;
 #endif
 
@@ -84,7 +84,7 @@ public:
 
     QWaylandDisplay *display() const;
 
-    Qt::KeyboardModifiers queryKeyboardModifiers() const override;
+    BobUI::KeyboardModifiers queryKeyboardModifiers() const override;
 
     QList<int> possibleKeys(const QKeyEvent *event) const override;
 
@@ -92,7 +92,7 @@ public:
 
     QPlatformTheme *createPlatformTheme(const QString &name) const override;
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QPlatformVulkanInstance *createPlatformVulkanInstance(QVulkanInstance *instance) const override;
 #endif
 
@@ -133,20 +133,20 @@ private:
     void initializeShellIntegration();
     void initializeInputDeviceIntegration();
     QWaylandShellIntegration *createShellIntegration(const QString& interfaceName);
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     QPlatformSessionManager *createPlatformSessionManager(const QString &id, const QString &key) const override;
 #endif
 
     const QString mPlatformName;
     QScopedPointer<QPlatformFontDatabase> mFontDb;
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QScopedPointer<QPlatformClipboard> mClipboard;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QScopedPointer<QPlatformDrag> mDrag;
 #endif
     QScopedPointer<QPlatformNativeInterface> mNativeInterface;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     mutable QScopedPointer<QPlatformAccessibility> mAccessibility;
 #endif
     QScopedPointer<QWaylandPlatformServices> mPlatformServices;
@@ -162,6 +162,6 @@ private:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

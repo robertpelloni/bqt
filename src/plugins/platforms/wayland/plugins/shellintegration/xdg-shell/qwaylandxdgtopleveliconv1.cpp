@@ -1,25 +1,25 @@
 // Copyright (C) 2024 David Reondo <kde@david-redondo.de>
 // Copyright (C) 2024 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandxdgtopleveliconv1_p.h"
 
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtWaylandClient/private/qwaylandshmbackingstore_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylandshmbackingstore_p.h>
 
 #include <QIcon>
 #include <QDir>
 #include <QPainter>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
-class QWaylandXdgToplevelIconV1 : public QtWayland::xdg_toplevel_icon_v1
+class QWaylandXdgToplevelIconV1 : public BobUIWayland::xdg_toplevel_icon_v1
 {
 public:
     QWaylandXdgToplevelIconV1(::xdg_toplevel_icon_v1 *object, QWaylandDisplay *display)
-        : QtWayland::xdg_toplevel_icon_v1(object), mDisplay(display)
+        : BobUIWayland::xdg_toplevel_icon_v1(object), mDisplay(display)
     {
     }
 
@@ -48,7 +48,7 @@ private:
 QWaylandXdgToplevelIconManagerV1::QWaylandXdgToplevelIconManagerV1(QWaylandDisplay *display,
                                                                    wl_registry *registry,
                                                                    uint32_t id, int version)
-    : QtWayland::xdg_toplevel_icon_manager_v1(registry, id, version), mDisplay(display)
+    : BobUIWayland::xdg_toplevel_icon_manager_v1(registry, id, version), mDisplay(display)
 {
 }
 
@@ -111,6 +111,6 @@ void QWaylandXdgToplevelIconManagerV1::setIcon(const QIcon &icon, xdg_toplevel *
     }
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

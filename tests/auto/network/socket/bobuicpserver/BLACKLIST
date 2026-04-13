@@ -1,0 +1,15 @@
+[listenWhileListening:WithSocks5Proxy]
+linux
+windows
+[ipv6Server:WithoutProxy]
+windows
+osx
+[serverAddress]
+# BOBUIBUG-103056
+qnx
+windows-10
+
+[bobuibug6305]
+macos-12 arm # BOBUIBUG-127568
+[linkLocal]
+macos arm

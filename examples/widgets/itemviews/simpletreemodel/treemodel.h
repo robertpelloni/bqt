@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef TREEMODEL_H
 #define TREEMODEL_H
@@ -22,9 +22,9 @@ public:
     ~TreeModel() override;
 
     QVariant data(const QModelIndex &index, int role) const override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
+    QVariant headerData(int section, BobUI::Orientation orientation,
+                        int role = BobUI::DisplayRole) const override;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = {}) const override;
     QModelIndex parent(const QModelIndex &index) const override;

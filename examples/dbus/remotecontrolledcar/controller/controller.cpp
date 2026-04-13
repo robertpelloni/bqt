@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "controller.h"
 #include <QGridLayout>
@@ -37,7 +37,7 @@ Controller::Controller(QWidget *parent) : QWidget(parent)
     QHBoxLayout *statusLayout = new QHBoxLayout();
     statusLayout->addWidget(status);
     statusLayout->addWidget(statusSymbol);
-    layout->addLayout(statusLayout, 0, 1, 1, 2, Qt::AlignTop | Qt::AlignRight);
+    layout->addLayout(statusLayout, 0, 1, 1, 2, BobUI::AlignTop | BobUI::AlignRight);
 
     connect(accelerate, &QPushButton::clicked, car, &CarInterface::accelerate);
     connect(decelerate, &QPushButton::clicked, car, &CarInterface::decelerate);
@@ -47,7 +47,7 @@ Controller::Controller(QWidget *parent) : QWidget(parent)
     startTimer(1000);
 }
 
-void Controller::timerEvent(QTimerEvent *event)
+void Controller::timerEvent(BOBUIimerEvent *event)
 {
     Q_UNUSED(event);
 

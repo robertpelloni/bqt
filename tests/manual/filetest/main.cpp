@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDateTime>
 #include <QDebug>
@@ -12,7 +12,7 @@
 #include <string>
 
 static const char usage1[] =
-"\nTests various file functionality in Qt\n\n"
+"\nTests various file functionality in BobUI\n\n"
 "Usage: ";
 static const char usage2[] =" [KEYWORD] [ARGUMENTS]\n\n"
 "Keywords: ls  FILES             list file information\n"
@@ -33,7 +33,7 @@ std::ostream &operator<<(std::ostream &o, const QString &str)
 std::ostream &operator<<(std::ostream &o, const QDateTime &dt)
 {
     if (dt.isValid())
-        return o << dt.toString(Qt::ISODateWithMs);
+        return o << dt.toString(BobUI::ISODateWithMs);
     return o << '-';
 }
 

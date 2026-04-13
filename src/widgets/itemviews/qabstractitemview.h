@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTITEMVIEW_H
 #define QABSTRACTITEMVIEW_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractscrollarea.h>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qitemselectionmodel.h>
-#include <QtWidgets/qabstractitemdelegate.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractscrollarea.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qitemselectionmodel.h>
+#include <BobUIWidgets/qabstractitemdelegate.h>
 
 class tst_QAbstractItemView;
-class tst_QTreeView;
+class tst_BOBUIreeView;
 
-QT_REQUIRE_CONFIG(itemviews);
+BOBUI_REQUIRE_CONFIG(itemviews);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMenu;
 class QDrag;
@@ -30,25 +30,25 @@ class Q_WIDGETS_EXPORT QAbstractItemView : public QAbstractScrollArea
     Q_PROPERTY(int autoScrollMargin READ autoScrollMargin WRITE setAutoScrollMargin)
     Q_PROPERTY(EditTriggers editTriggers READ editTriggers WRITE setEditTriggers)
     Q_PROPERTY(bool tabKeyNavigation READ tabKeyNavigation WRITE setTabKeyNavigation)
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     Q_PROPERTY(bool showDropIndicator READ showDropIndicator WRITE setDropIndicatorShown)
     Q_PROPERTY(bool dragEnabled READ dragEnabled WRITE setDragEnabled)
     Q_PROPERTY(bool dragDropOverwriteMode READ dragDropOverwriteMode WRITE setDragDropOverwriteMode)
     Q_PROPERTY(DragDropMode dragDropMode READ dragDropMode WRITE setDragDropMode)
-    Q_PROPERTY(Qt::DropAction defaultDropAction READ defaultDropAction WRITE setDefaultDropAction)
+    Q_PROPERTY(BobUI::DropAction defaultDropAction READ defaultDropAction WRITE setDefaultDropAction)
 #endif
     Q_PROPERTY(bool alternatingRowColors READ alternatingRowColors WRITE setAlternatingRowColors)
     Q_PROPERTY(SelectionMode selectionMode READ selectionMode WRITE setSelectionMode)
     Q_PROPERTY(SelectionBehavior selectionBehavior READ selectionBehavior
                WRITE setSelectionBehavior)
     Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize NOTIFY iconSizeChanged)
-    Q_PROPERTY(Qt::TextElideMode textElideMode READ textElideMode WRITE setTextElideMode)
+    Q_PROPERTY(BobUI::TextElideMode textElideMode READ textElideMode WRITE setTextElideMode)
     Q_PROPERTY(ScrollMode verticalScrollMode READ verticalScrollMode WRITE setVerticalScrollMode
                RESET resetVerticalScrollMode)
     Q_PROPERTY(ScrollMode horizontalScrollMode READ horizontalScrollMode
                WRITE setHorizontalScrollMode RESET resetHorizontalScrollMode)
     Q_PROPERTY(int updateThreshold READ updateThreshold WRITE setUpdateThreshold)
-    Q_PROPERTY(Qt::MatchFlags keyboardSearchFlags READ keyboardSearchFlags
+    Q_PROPERTY(BobUI::MatchFlags keyboardSearchFlags READ keyboardSearchFlags
                WRITE setKeyboardSearchFlags)
 
 public:
@@ -136,7 +136,7 @@ public:
     void setTabKeyNavigation(bool enable);
     bool tabKeyNavigation() const;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void setDropIndicatorShown(bool enable);
     bool showDropIndicator() const;
 
@@ -158,8 +158,8 @@ public:
     void setDragDropMode(DragDropMode behavior);
     DragDropMode dragDropMode() const;
 
-    void setDefaultDropAction(Qt::DropAction dropAction);
-    Qt::DropAction defaultDropAction() const;
+    void setDefaultDropAction(BobUI::DropAction dropAction);
+    BobUI::DropAction defaultDropAction() const;
 #endif
 
     void setAlternatingRowColors(bool enable);
@@ -168,8 +168,8 @@ public:
     void setIconSize(const QSize &size);
     QSize iconSize() const;
 
-    void setTextElideMode(Qt::TextElideMode mode);
-    Qt::TextElideMode textElideMode() const;
+    void setTextElideMode(BobUI::TextElideMode mode);
+    BobUI::TextElideMode textElideMode() const;
 
     virtual void keyboardSearch(const QString &search);
 
@@ -184,8 +184,8 @@ public:
     int updateThreshold() const;
     void setUpdateThreshold(int threshold);
 
-    Qt::MatchFlags keyboardSearchFlags() const;
-    void setKeyboardSearchFlags(Qt::MatchFlags searchFlags);
+    BobUI::MatchFlags keyboardSearchFlags() const;
+    void setKeyboardSearchFlags(BobUI::MatchFlags searchFlags);
 
     void openPersistentEditor(const QModelIndex &index);
     void closePersistentEditor(const QModelIndex &index);
@@ -200,14 +200,14 @@ public:
     void setItemDelegateForColumn(int column, QAbstractItemDelegate *delegate);
     QAbstractItemDelegate *itemDelegateForColumn(int column) const;
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use itemDelegateForIndex instead")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use itemDelegateForIndex instead")
     QAbstractItemDelegate *itemDelegate(const QModelIndex &index) const
     { return itemDelegateForIndex(index); }
 #endif
     virtual QAbstractItemDelegate *itemDelegateForIndex(const QModelIndex &index) const;
 
-    virtual QVariant inputMethodQuery(Qt::InputMethodQuery query) const override;
+    virtual QVariant inputMethodQuery(BobUI::InputMethodQuery query) const override;
 
     using QWidget::update;
 
@@ -259,7 +259,7 @@ protected:
                         MoveHome, MoveEnd, MovePageUp, MovePageDown,
                         MoveNext, MovePrevious };
     virtual QModelIndex moveCursor(CursorAction cursorAction,
-                                   Qt::KeyboardModifiers modifiers) = 0;
+                                   BobUI::KeyboardModifiers modifiers) = 0;
 
     virtual int horizontalOffset() const = 0;
     virtual int verticalOffset() const = 0;
@@ -275,8 +275,8 @@ protected:
     virtual QItemSelectionModel::SelectionFlags selectionCommand(const QModelIndex &index,
                                                                  const QEvent *event = nullptr) const;
 
-#if QT_CONFIG(draganddrop)
-    virtual void startDrag(Qt::DropActions supportedActions);
+#if BOBUI_CONFIG(draganddrop)
+    virtual void startDrag(BobUI::DropActions supportedActions);
 #endif
 
     virtual void initViewItemOption(QStyleOptionViewItem *option) const;
@@ -312,7 +312,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dragLeaveEvent(QDragLeaveEvent *event) override;
@@ -322,11 +322,11 @@ protected:
     void focusOutEvent(QFocusEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
     void inputMethodEvent(QInputMethodEvent *event) override;
     bool eventFilter(QObject *object, QEvent *event) override;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     enum DropIndicatorPosition { OnItem, AboveItem, BelowItem, OnViewport };
     DropIndicatorPosition dropIndicatorPosition() const;
 #endif
@@ -338,8 +338,8 @@ private:
     Q_DISABLE_COPY(QAbstractItemView)
 
     friend class ::tst_QAbstractItemView;
-    friend class ::tst_QTreeView;
-    friend class QTreeViewPrivate; // needed to compile with MSVC
+    friend class ::tst_BOBUIreeView;
+    friend class BOBUIreeViewPrivate; // needed to compile with MSVC
     friend class QListModeViewBase;
     friend class QListViewPrivate;
     friend class QAbstractSlider;
@@ -348,6 +348,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractItemView::EditTriggers)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTITEMVIEW_H

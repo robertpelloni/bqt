@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Generated from seatv4.pro.
@@ -7,7 +7,7 @@
 ## tst_seatv4 Test:
 #####################################################################
 
-qt_internal_add_test(tst_seatv4
+bobui_internal_add_test(tst_seatv4
     SOURCES
         tst_seatv4.cpp
     LIBRARIES
@@ -17,8 +17,8 @@ qt_internal_add_test(tst_seatv4
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_seatv4 CONDITION QT_FEATURE_cursor
+bobui_internal_extend_target(tst_seatv4 CONDITION BOBUI_FEATURE_cursor
     LIBRARIES
-        Qt::GuiPrivate
+        BobUI::GuiPrivate
         Wayland::Cursor
 )

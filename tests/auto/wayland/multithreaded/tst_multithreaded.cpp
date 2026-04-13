@@ -1,13 +1,13 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2020 UBports Foundataion.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <unistd.h>
 #include <poll.h>
 
 #include <wayland-client-core.h>
 
-#include <QtGui/QScreen>
+#include <BobUIGui/QScreen>
 #include <QAbstractEventDispatcher>
 #include <qpa/qplatformnativeinterface.h>
 
@@ -20,11 +20,11 @@ using namespace MockCompositor;
  * for data from Wayland compositor.
  */
 
-class ExternalWaylandReaderThread : public QThread
+class ExternalWaylandReaderThread : public BOBUIhread
 {
 public:
     ExternalWaylandReaderThread(struct wl_display *disp)
-        : QThread()
+        : BOBUIhread()
         , m_disp(disp)
     {
         setObjectName(QStringLiteral("ExternalWaylandReader"));
@@ -71,7 +71,7 @@ protected:
             Q_ASSERT(wl_display_prepare_read_queue(m_disp, a_queue) == 0);
             wl_display_flush(m_disp);
 
-            // Wakeup every 10 seconds so that if Qt blocks in _read_events(),
+            // Wakeup every 10 seconds so that if BobUI blocks in _read_events(),
             // it won't last forever.
             poll(fds, /* nfds */ 2, 10000);
 
@@ -117,7 +117,7 @@ private slots:
     }
     void cleanup()
     {
-        QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
+        BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
     }
 
     void mainThreadIsNotBlocked();
@@ -131,7 +131,7 @@ void tst_multithreaded::mainThreadIsNotBlocked()
     QElapsedTimer timer;
     timer.start();
 
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QVERIFY(timer.elapsed() < 200);
 }
 

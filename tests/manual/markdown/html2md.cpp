@@ -1,18 +1,18 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCommandLineParser>
 #include <QDebug>
 #include <QFile>
 #include <QGuiApplication>
-#include <QTextDocument>
+#include <BOBUIextDocument>
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
-    QGuiApplication::setApplicationVersion(QT_VERSION_STR);
+    QGuiApplication::setApplicationVersion(BOBUI_VERSION_STR);
     QCommandLineParser parser;
-    parser.setApplicationDescription("Converts the Qt-supported subset of HTML to Markdown.");
+    parser.setApplicationDescription("Converts the BobUI-supported subset of HTML to Markdown.");
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument(QGuiApplication::translate("main", "input"),
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
         qFatal("failed to open %s for writing", parser.positionalArguments().at(1).toLocal8Bit().data());
         exit(2);
     }
-    QTextDocument doc;
+    BOBUIextDocument doc;
     doc.setHtml(QString::fromUtf8(inFile.readAll()));
     outFile.write(doc.toMarkdown().toUtf8());
 }

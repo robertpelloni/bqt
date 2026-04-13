@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFUTUREINTERFACE_P_H
 #define QFUTUREINTERFACE_P_H
@@ -9,30 +9,30 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qcoreevent.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qwaitcondition.h>
-#include <QtCore/qrunnable.h>
-#include <QtCore/qthreadpool.h>
-#include <QtCore/qfutureinterface.h>
-#include <QtCore/qexception.h>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qcoreevent.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qwaitcondition.h>
+#include <BobUICore/qrunnable.h>
+#include <BobUICore/bobuihreadpool.h>
+#include <BobUICore/qfutureinterface.h>
+#include <BobUICore/qexception.h>
 
-QT_REQUIRE_CONFIG(future);
+BOBUI_REQUIRE_CONFIG(future);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Although QFutureCallOutEvent and QFutureCallOutInterface are private,
-// for historical reasons they were used externally (in QtJambi, see
-// https://github.com/OmixVisualization/qtjambi), so we export them to
+// for historical reasons they were used externally (in BobUIJambi, see
+// https://github.com/OmixVisualization/bobuijambi), so we export them to
 // not break the pre-existing code.
 class Q_CORE_EXPORT QFutureCallOutEvent : public QEvent
 {
@@ -122,24 +122,24 @@ public:
     QWaitCondition pausedWaitCondition;
 
     union Data {
-        QtPrivate::ResultStoreBase m_results;
-        QtPrivate::ExceptionStore m_exceptionStore;
+        BobUIPrivate::ResultStoreBase m_results;
+        BobUIPrivate::ExceptionStore m_exceptionStore;
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
         void setException(const std::exception_ptr &e)
         {
             m_results.~ResultStoreBase();
-            new (&m_exceptionStore) QtPrivate::ExceptionStore();
+            new (&m_exceptionStore) BobUIPrivate::ExceptionStore();
             m_exceptionStore.setException(e);
         }
 #endif
 
         ~Data() { }
     };
-    Data data = { QtPrivate::ResultStoreBase() };
+    Data data = { BobUIPrivate::ResultStoreBase() };
 
     QRunnable *runnable = nullptr;
-    QThreadPool *m_pool = nullptr;
+    BOBUIhreadPool *m_pool = nullptr;
     // Wrapper for continuation
     std::function<void(const QFutureInterfaceBase &)> continuation;
     QFutureInterfaceBasePrivate *continuationData = nullptr;
@@ -170,8 +170,8 @@ public:
 
     QFutureInterfaceBase::ContinuationType continuationType = QFutureInterfaceBase::ContinuationType::Unknown;
 
-    inline QThreadPool *pool() const
-    { return m_pool ? m_pool : QThreadPool::globalInstance(); }
+    inline BOBUIhreadPool *pool() const
+    { return m_pool ? m_pool : BOBUIhreadPool::globalInstance(); }
 
     // Internal functions that does not change the mutex state.
     // The mutex must be locked when calling these.
@@ -197,6 +197,6 @@ public:
     void cancelImpl(QFutureInterfaceBase::CancelMode mode, CancelOptions options);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

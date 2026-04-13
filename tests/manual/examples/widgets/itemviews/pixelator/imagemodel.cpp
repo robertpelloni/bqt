@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "imagemodel.h"
 
@@ -35,7 +35,7 @@ int ImageModel::columnCount(const QModelIndex & /* parent */) const
 //! [4]
 QVariant ImageModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || role != Qt::DisplayRole)
+    if (!index.isValid() || role != BobUI::DisplayRole)
         return QVariant();
     return qGray(modelImage.pixel(index.column(), index.row()));
 }
@@ -43,10 +43,10 @@ QVariant ImageModel::data(const QModelIndex &index, int role) const
 
 //! [5]
 QVariant ImageModel::headerData(int /* section */,
-                                Qt::Orientation /* orientation */,
+                                BobUI::Orientation /* orientation */,
                                 int role) const
 {
-    if (role == Qt::SizeHintRole)
+    if (role == BobUI::SizeHintRole)
         return QSize(1, 1);
     return QVariant();
 }

@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef WINDOW_H
 #define WINDOW_H
@@ -16,7 +16,7 @@
 #include <QHBoxLayout>
 #include <QPainter>
 #include <QApplication>
-#include <QThread>
+#include <BOBUIhread>
 #include <QMap>
 #include <QElapsedTimer>
 #include <QDebug>
@@ -33,7 +33,7 @@ struct Statistics {
     QLabel *output;
     void sleep()
     {
-        QThread::msleep(sleepMsecs);
+        BOBUIhread::msleep(sleepMsecs);
     }
     int currentBenchmarkIteration;
     bool relayoutClicked;
@@ -45,7 +45,7 @@ class Window;
 
 class SlowWidget : public QGraphicsWidget {
 public:
-    SlowWidget(QGraphicsWidget *w = nullptr, Qt::WindowFlags wFlags = {}) : QGraphicsWidget(w, wFlags)
+    SlowWidget(QGraphicsWidget *w = nullptr, BobUI::WindowFlags wFlags = {}) : QGraphicsWidget(w, wFlags)
     {
         m_window = 0;
     }
@@ -78,7 +78,7 @@ public:
         Q_UNUSED(option);
         Q_UNUSED(widget);
         painter->setBrush(m_brush);
-        painter->drawRoundedRect(rect(), 25, 25, Qt::RelativeSize);
+        painter->drawRoundedRect(rect(), 25, 25, BobUI::RelativeSize);
         painter->drawLine(rect().topLeft(), rect().bottomRight());
         painter->drawLine(rect().bottomLeft(), rect().topRight());
     }
@@ -161,10 +161,10 @@ private slots:
             QApplication::processEvents();
             delete m_window;
         }
-        m_window = new SlowWidget(0, Qt::Window);
+        m_window = new SlowWidget(0, BobUI::Window);
         m_window->setStats(&m_stats);
         m_window->setWindow(this);
-        QColor col(Qt::black);
+        QColor col(BobUI::black);
         m_window->setBrush(col);
         scene.addItem(m_window);
         m_leaf = 0;

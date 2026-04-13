@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "openglwidget.h"
 #include <QApplication>
@@ -14,9 +14,9 @@
 #include <QLCDNumber>
 #include <QScrollArea>
 #include <QScrollBar>
-#include <QTabWidget>
+#include <BOBUIabWidget>
 #include <QLabel>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <private/qwindow_p.h>
@@ -88,18 +88,18 @@ class TabWidgetResetter : public QObject
 {
     Q_OBJECT
 public:
-    TabWidgetResetter(QTabWidget *tw) : m_tw(tw) { }
+    TabWidgetResetter(BOBUIabWidget *tw) : m_tw(tw) { }
 public slots:
     void reset() { m_tw->setCurrentIndex(0); }
 private:
-    QTabWidget *m_tw;
+    BOBUIabWidget *m_tw;
 };
 
 int main(int argc, char *argv[])
 {
     if (argc > 1 && !strcmp(argv[1], "--sharecontext")) {
         qDebug("Requesting all contexts to share");
-        QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+        QCoreApplication::setAttribute(BobUI::AA_ShareOpenGLContexts);
     }
 
     QApplication a(argc, argv);
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 
     QMdiArea *w = new QMdiArea;
     w->setObjectName("MDI area");
-    w->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    w->setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
     wnd.setCentralWidget(w);
 
     OpenGLWidget *glw = new OpenGLWidget(33, QVector3D(0, 0, 1));
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     QScrollArea *sa = new QScrollArea;
     sa->setWidget(glw3);
     sa->setMinimumSize(100, 100);
-    sa->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    sa->setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
     sw = w->addSubWindow(sa);
     sw->setObjectName("MDI Sub-Window for scroll area");
     sw->setWindowTitle("Cont. update");
@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
     sw->setObjectName("MDI Sub-Window for LCD widget");
     sw->setWindowTitle("Ordinary widget");
 
-    QTabWidget *tw = new QTabWidget;
+    BOBUIabWidget *tw = new BOBUIabWidget;
     QOpenGLWidget *glw4 = new OpenGLWidget(16, QVector3D(1, 0, 0));
     glw4->setObjectName("GL widget in tab widget");
     tw->addTab(glw4, "OpenGL");

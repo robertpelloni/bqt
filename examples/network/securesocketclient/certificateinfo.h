@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef CERTIFICATEINFO_H
 #define CERTIFICATEINFO_H
@@ -8,9 +8,9 @@
 #include <QList>
 #include <QSslCertificate>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class Ui_CertificateInfo;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class CertificateInfo : public QDialog
 {

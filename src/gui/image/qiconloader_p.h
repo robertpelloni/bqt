@@ -1,28 +1,28 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QICONLOADER_P_H
 #define QICONLOADER_P_H
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 
-#ifndef QT_NO_ICON
+#ifndef BOBUI_NO_ICON
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/QIcon>
-#include <QtGui/QIconEngine>
-#include <QtCore/QList>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QVarLengthArray>
+#include <BobUIGui/QIcon>
+#include <BobUIGui/QIconEngine>
+#include <BobUICore/QList>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/QVarLengthArray>
 #include <private/qflatmap_p.h>
 #include <private/qiconengine_p.h>
 
@@ -30,7 +30,7 @@
 #include <memory>
 #include <optional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIconLoader;
 
@@ -82,18 +82,18 @@ struct PixmapEntry final : public QIconLoaderEngineEntry
     QPixmap basePixmap;
 };
 
-using QThemeIconEntries = std::vector<std::unique_ptr<QIconLoaderEngineEntry>>;
+using BOBUIhemeIconEntries = std::vector<std::unique_ptr<QIconLoaderEngineEntry>>;
 
-struct QThemeIconInfo
+struct BOBUIhemeIconInfo
 {
-    QThemeIconEntries entries;
+    BOBUIhemeIconEntries entries;
     QString iconName;
 };
 
-class QThemeIconEngine : public QProxyIconEngine
+class BOBUIhemeIconEngine : public QProxyIconEngine
 {
 public:
-    QThemeIconEngine(const QString& iconName = QString());
+    BOBUIhemeIconEngine(const QString& iconName = QString());
     QIconEngine *clone() const override;
     bool read(QDataStream &in) override;
     bool write(QDataStream &out) const override;
@@ -102,7 +102,7 @@ protected:
     QIconEngine *proxiedEngine() const override;
 
 private:
-    QThemeIconEngine(const QThemeIconEngine &other);
+    BOBUIhemeIconEngine(const BOBUIhemeIconEngine &other);
     QString key() const override;
 
     QString m_iconName;
@@ -127,7 +127,7 @@ public:
     QPixmap scaledPixmap(const QSize &size, QIcon::Mode mode, QIcon::State state, qreal scale) override;
     QList<QSize> availableSizes(QIcon::Mode mode, QIcon::State state) override;
 
-    Q_GUI_EXPORT static QIconLoaderEngineEntry *entryForSize(const QThemeIconInfo &info, const QSize &size, int scale = 1);
+    Q_GUI_EXPORT static QIconLoaderEngineEntry *entryForSize(const BOBUIhemeIconInfo &info, const QSize &size, int scale = 1);
 
 private:
     Q_DISABLE_COPY(QIconLoaderEngine)
@@ -136,7 +136,7 @@ private:
     bool hasIcon() const;
 
     QString m_iconName;
-    QThemeIconInfo m_info;
+    BOBUIhemeIconInfo m_info;
 
     friend class QIconLoader;
 };
@@ -167,7 +167,7 @@ class Q_GUI_EXPORT QIconLoader
 {
 public:
     QIconLoader();
-    QThemeIconInfo loadIcon(const QString &iconName) const;
+    BOBUIhemeIconInfo loadIcon(const QString &iconName) const;
     uint themeKey() const { return m_themeKey; }
 
     QString themeName() const;
@@ -190,11 +190,11 @@ public:
 
 private:
     enum DashRule { FallBack, NoFallBack };
-    QThemeIconInfo findIconHelper(const QString &themeName,
+    BOBUIhemeIconInfo findIconHelper(const QString &themeName,
                                   const QString &iconName,
                                   QStringList &visited,
                                   DashRule rule) const;
-    QThemeIconInfo lookupFallbackIcon(const QString &iconName) const;
+    BOBUIhemeIconInfo lookupFallbackIcon(const QString &iconName) const;
 
     uint m_themeKey;
     mutable std::optional<QIconEnginePlugin *> m_factory;
@@ -210,8 +210,8 @@ private:
     mutable QString m_iconName;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_ICON
+#endif // BOBUI_NO_ICON
 
 #endif // QICONLOADER_P_H

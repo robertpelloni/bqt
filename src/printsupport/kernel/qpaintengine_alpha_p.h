@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPAINTENGINE_ALPHA_P_H
 #define QPAINTENGINE_ALPHA_P_H
@@ -9,20 +9,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 #include "private/qpaintengine_p.h"
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAlphaPaintEnginePrivate;
 
@@ -42,7 +42,7 @@ public:
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode) override;
 
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr) override;
-    void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+    void drawTextItem(const QPointF &p, const BOBUIextItem &textItem) override;
     void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s) override;
 
 protected:
@@ -84,7 +84,7 @@ public:
     bool m_emulateProjectiveTransforms;
     bool m_continueCall;
 
-    QTransform m_transform;
+    BOBUIransform m_transform;
     QPen m_pen;
 
     void addAlphaRect(const QRectF &rect);
@@ -99,8 +99,8 @@ public:
     void resetState(QPainter *p);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
 #endif // QPAINTENGINE_ALPHA_P_H

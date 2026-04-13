@@ -1,15 +1,15 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QEvent>
-#include <QtCore/QObject>
-#include <QtGui/qwindow.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qoffscreensurface.h>
-#include <QtGui/qpa/qwindowsysteminterface.h>
-#include <QtGui/rhi/qrhi.h>
+#include <BobUICore/QEvent>
+#include <BobUICore/QObject>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qoffscreensurface.h>
+#include <BobUIGui/qpa/qwindowsysteminterface.h>
+#include <BobUIGui/rhi/qrhi.h>
 
-#include <qtwasmtestlib.h>
+#include <bobuiwasmtestlib.h>
 
 #include <emscripten.h>
 #include <emscripten/val.h>
@@ -94,8 +94,8 @@ public:
     QWasmCompositorTest() : m_window(val::global("window")), m_testSupport(val::object())
     {
         m_window.set("testSupport", m_testSupport);
-        m_testSupport.set("qtSetContainerElements",
-                          emscripten::val::module_property("qtSetContainerElements"));
+        m_testSupport.set("bobuiSetContainerElements",
+                          emscripten::val::module_property("bobuiSetContainerElements"));
     }
 
     ~QWasmCompositorTest() noexcept
@@ -116,12 +116,12 @@ private:
         });
         m_cleanup.emplace_back([]() mutable {
             EM_ASM({
-                testSupport.qtSetContainerElements([]);
+                testSupport.bobuiSetContainerElements([]);
                 testSupport.screenElement.parentElement.removeChild(testSupport.screenElement);
             });
         });
 
-        EM_ASM({ testSupport.qtSetContainerElements([testSupport.screenElement]); });
+        EM_ASM({ testSupport.bobuiSetContainerElements([testSupport.screenElement]); });
     }
 
     template<class T>
@@ -156,7 +156,7 @@ void QWasmCompositorTest::testReceivingKeyboardEventsAfterOpenGLContextReset()
                      []() { QWASMFAIL("Cannot initialize test window"); });
     QObject::connect(window, &Window::exposed, []() {
         EM_ASM({
-            testSupport.screenElement.shadowRoot.querySelector('.qt-window')
+            testSupport.screenElement.shadowRoot.querySelector('.bobui-window')
                     .dispatchEvent(new KeyboardEvent('keydown', { key : 'a' }));
         });
     });
@@ -165,7 +165,7 @@ void QWasmCompositorTest::testReceivingKeyboardEventsAfterOpenGLContextReset()
 int main(int argc, char **argv)
 {
     auto testObject = std::make_shared<QWasmCompositorTest>();
-    QtWasmTest::initTestCase<QGuiApplication>(argc, argv, testObject);
+    BobUIWasmTest::initTestCase<QGuiApplication>(argc, argv, testObject);
     return 0;
 }
 

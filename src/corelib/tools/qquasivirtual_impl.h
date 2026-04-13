@@ -1,18 +1,18 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QQUASIVIRTUAL_IMPL_H
 #define QQUASIVIRTUAL_IMPL_H
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
-#include <QtCore/qscopeguard.h>
-#include <QtCore/qassert.h>
-#include <QtCore/qtclasshelpermacros.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
 
 #include <algorithm>
 #include <type_traits>
@@ -20,9 +20,9 @@
 
 #ifndef Q_QDOC
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename Applier, size_t ...Is>
 void applyIndexSwitch(size_t index, Applier&& applier, std::index_sequence<Is...>)
@@ -232,9 +232,9 @@ public:
     };
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // Q_DOC
 

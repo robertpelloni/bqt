@@ -1,10 +1,10 @@
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qhashfunctions.h>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #include <qprocess.h>
 #endif
 
@@ -21,7 +21,7 @@ private Q_SLOTS:
     void deterministicSeed();
     void reseeding();
     void quality();
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && QT_DEPRECATED_SINCE(6,6)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && BOBUI_DEPRECATED_SINCE(6,6)
     void compatibilityApi();
     void deterministicSeed_compat();
 #endif
@@ -29,14 +29,14 @@ private Q_SLOTS:
 
 void tst_QHashSeed::initMain()
 {
-    qunsetenv("QT_HASH_SEED");
+    qunsetenv("BOBUI_HASH_SEED");
 }
 
 void tst_QHashSeed::initTestCase()
 {
     // in case the qunsetenv above didn't work
-    if (qEnvironmentVariableIsSet("QT_HASH_SEED"))
-        QSKIP("QT_HASH_SEED environment variable is set, please don't do that");
+    if (qEnvironmentVariableIsSet("BOBUI_HASH_SEED"))
+        QSKIP("BOBUI_HASH_SEED environment variable is set, please don't do that");
 }
 
 void tst_QHashSeed::environmentVariable_data()
@@ -45,23 +45,23 @@ void tst_QHashSeed::environmentVariable_data()
     QSKIP("This test needs a helper binary, so is excluded from this platform.");
 #endif
 
-    QTest::addColumn<QByteArray>("envVar");
-    QTest::addColumn<bool>("isZero");
-    QTest::newRow("unset-environment") << QByteArray() << false;
-    QTest::newRow("empty-environment") << QByteArray("") << false;
-    QTest::newRow("zero-seed") << QByteArray("0") << true;
+    BOBUIest::addColumn<QByteArray>("envVar");
+    BOBUIest::addColumn<bool>("isZero");
+    BOBUIest::newRow("unset-environment") << QByteArray() << false;
+    BOBUIest::newRow("empty-environment") << QByteArray("") << false;
+    BOBUIest::newRow("zero-seed") << QByteArray("0") << true;
 }
 
 void tst_QHashSeed::environmentVariable()
 {
- #if QT_CONFIG(process)
+ #if BOBUI_CONFIG(process)
     QFETCH(QByteArray, envVar);
     QFETCH(bool, isZero);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     if (envVar.isNull())
-        env.remove("QT_HASH_SEED");
+        env.remove("BOBUI_HASH_SEED");
     else
-        env.insert("QT_HASH_SEED", envVar);
+        env.insert("BOBUI_HASH_SEED", envVar);
 
     QProcess helper;
     helper.setProcessEnvironment(env);
@@ -157,8 +157,8 @@ void tst_QHashSeed::quality()
              "seedsToMinus1 = " + QByteArray::number(seedsToMinus1));
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && QT_DEPRECATED_SINCE(6,6)
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && BOBUI_DEPRECATED_SINCE(6,6)
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QHashSeed::compatibilityApi()
 {
     int oldSeed = qGlobalQHashSeed();
@@ -180,7 +180,7 @@ void tst_QHashSeed::deterministicSeed_compat()
     QVERIFY(qGlobalQHashSeed() != 0);
     QVERIFY(qGlobalQHashSeed() != -1);  // possible, but extremely unlikely
 }
-#endif // Qt 7
+#endif // BobUI 7
 
-QTEST_MAIN(tst_QHashSeed)
+BOBUIEST_MAIN(tst_QHashSeed)
 #include "tst_qhashseed.moc"

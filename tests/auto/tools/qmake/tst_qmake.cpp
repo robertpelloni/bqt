@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include "testcompiler.h"
 
@@ -10,7 +10,7 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QStandardPaths>
-#include <QTemporaryDir>
+#include <BOBUIemporaryDir>
 #include <QLibraryInfo>
 #include <QProcessEnvironment>
 
@@ -60,7 +60,7 @@ private slots:
 
 private:
     TestCompiler test_compiler;
-    QTemporaryDir tempWorkDir;
+    BOBUIemporaryDir tempWorkDir;
     QString base_path;
     const QString origCurrentDirPath;
 };
@@ -103,7 +103,7 @@ void tst_qmake::initTestCase()
     QString binpath = QLibraryInfo::path(QLibraryInfo::BinariesPath);
     QString cmd = QString("%1/qmake").arg(binpath);
 
-    // If Qt is cross-compiled with CMake, we might also cross-compile qmake for the device.
+    // If BobUI is cross-compiled with CMake, we might also cross-compile qmake for the device.
     // In this case we don't want to use the cross-compiled qmake, but rather the host qmake
     // shell wrapper (if it's available).
     const QString hostQmake = QString("%1/host-qmake").arg(binpath);
@@ -148,7 +148,7 @@ void tst_qmake::initTestCase()
 
 void tst_qmake::cleanupTestCase()
 {
-    // On Windows, ~QTemporaryDir fails to remove the directory if we're still in there.
+    // On Windows, ~BOBUIemporaryDir fails to remove the directory if we're still in there.
     QDir::setCurrent(origCurrentDirPath);
 }
 
@@ -302,7 +302,7 @@ void tst_qmake::subdirs()
 
 void tst_qmake::subdir_via_pro_file_extra_target()
 {
-    if (QProcessEnvironment::systemEnvironment().contains(QStringLiteral("QT_TEST_RUNNING_IN_CTEST")))
+    if (QProcessEnvironment::systemEnvironment().contains(QStringLiteral("BOBUI_TEST_RUNNING_IN_CTEST")))
         QSKIP("This test does not run properly when invoked from CTest.");
 
     QString workDir = base_path + "/testdata/subdir_via_pro_file_extra_target";
@@ -338,8 +338,8 @@ void tst_qmake::export_across_file_boundaries()
 
 void tst_qmake::include_dir()
 {
-#ifdef QT_NO_WIDGETS
-    QSKIP("This test depends on QtWidgets");
+#ifdef BOBUI_NO_WIDGETS
+    QSKIP("This test depends on BobUIWidgets");
 #else
     QString workDir = base_path + "/testdata/include_dir";
     QVERIFY( test_compiler.qmake( workDir, "foo" ));
@@ -567,7 +567,7 @@ void tst_qmake::windowsResources()
     test_compiler.clearCommandOutput();
 
     // Wait a second to make sure we get a new timestamp in the touch below
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
 
     // Touch the deepest include of the .rc file
     QVERIFY(test_compiler.runCommand("cmd", QStringList{"/c",
@@ -766,5 +766,5 @@ void tst_qmake::conflictingTargets()
     QCOMPARE(builds, expectedBuilds);
 }
 
-QTEST_MAIN(tst_qmake)
+BOBUIEST_MAIN(tst_qmake)
 #include "tst_qmake.moc"

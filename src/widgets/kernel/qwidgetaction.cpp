@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwidgetaction.h"
 #include "qwidget.h"
 #include "qdebug.h"
 
-#include <QtWidgets/private/qwidget_p.h>
+#include <BobUIWidgets/private/qwidget_p.h>
 
 #include "qwidgetaction_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWidgetAction
@@ -20,19 +20,19 @@ QT_BEGIN_NAMESPACE
     as toolbars.
 
     \ingroup mainwindow-classes
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     Most actions in an application are represented as items in menus or
     buttons in toolbars. However sometimes more complex widgets are
     necessary. For example a zoom action in a word processor may be
-    realized using a QComboBox in a QToolBar, presenting a range
-    of different zoom levels. QToolBar provides QToolBar::insertWidget()
+    realized using a QComboBox in a BOBUIoolBar, presenting a range
+    of different zoom levels. BOBUIoolBar provides BOBUIoolBar::insertWidget()
     as convenience function for inserting a single widget.
     However if you want to implement an action that uses custom
     widgets for visualization in multiple containers then you have to
     subclass QWidgetAction.
 
-    If a QWidgetAction is added for example to a QToolBar then
+    If a QWidgetAction is added for example to a BOBUIoolBar then
     QWidgetAction::createWidget() is called. Reimplementations of that
     function should create a new custom widget with the specified parent.
 
@@ -43,7 +43,7 @@ QT_BEGIN_NAMESPACE
 
     If you have only one single custom widget then you can set it as default
     widget using setDefaultWidget(). That widget will then be used if the
-    action is added to a QToolBar, or in general to an action container that
+    action is added to a BOBUIoolBar, or in general to an action container that
     supports QWidgetAction. If a QWidgetAction with only a default widget is
     added to two toolbars at the same time then the default widget is shown
     only in the first toolbar the action was added to. QWidgetAction takes
@@ -246,6 +246,6 @@ QList<QWidget *> QWidgetAction::createdWidgets() const
     return d->createdWidgets;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwidgetaction.cpp"

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKCOOKIE_H
 #define QNETWORKCOOKIE_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/QSharedDataPointer>
-#include <QtCore/QList>
-#include <QtCore/QMetaType>
-#include <QtCore/QObject>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/QSharedDataPointer>
+#include <BobUICore/QList>
+#include <BobUICore/QMetaType>
+#include <BobUICore/QObject>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QByteArray;
@@ -76,7 +76,7 @@ public:
     bool hasSameIdentifier(const QNetworkCookie &other) const;
     void normalize(const QUrl &url);
 
-#if QT_NETWORK_REMOVED_SINCE(6, 7)
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 7)
     static QList<QNetworkCookie> parseCookies(const QByteArray &cookieString);
 #endif
     static QList<QNetworkCookie> parseCookies(QByteArrayView cookieString);
@@ -88,13 +88,13 @@ private:
 
 Q_DECLARE_SHARED(QNetworkCookie)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 Q_NETWORK_EXPORT QDebug operator<<(QDebug, const QNetworkCookie &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QNetworkCookie, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QNetworkCookie, Q_NETWORK_EXPORT)
 
 #endif

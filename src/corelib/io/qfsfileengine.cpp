@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qfsfileengine_p.h"
 #include "qfsfileengine_iterator_p.h"
 #include "qfilesystemengine_p.h"
 #include "qdatetime.h"
 #include "qset.h"
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
-#ifndef QT_NO_FSFILEENGINE
+#ifndef BOBUI_NO_FSFILEENGINE
 
 #include <errno.h>
 #if defined(Q_OS_UNIX)
@@ -22,9 +22,9 @@
 # include <private/qcore_mac_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #ifdef Q_OS_WIN
 #  ifndef S_ISREG
@@ -56,12 +56,12 @@ static_assert(sizeof(SignedIOType) == sizeof(UnsignedIOType),
 #endif
 
 /*! \class QFSFileEngine
-    \inmodule QtCore
-    \brief The QFSFileEngine class implements Qt's default file engine.
+    \inmodule BobUICore
+    \brief The QFSFileEngine class implements BobUI's default file engine.
     \since 4.1
     \internal
 
-    This class is part of the file engine framework in Qt. If you only want to
+    This class is part of the file engine framework in BobUI. If you only want to
     access files or directories, use QFile, QFileInfo or QDir instead.
 
     QFSFileEngine is the default file engine for accessing regular files. It
@@ -174,7 +174,7 @@ QFSFileEngine::~QFSFileEngine()
         if (d->fh) {
             fclose(d->fh);
         } else if (d->fd != -1) {
-            QT_CLOSE(d->fd);
+            BOBUI_CLOSE(d->fd);
         }
     }
     d->unmapAll();
@@ -250,7 +250,7 @@ bool QFSFileEngine::open(QIODevice::OpenMode openMode, FILE *fh, QFile::FileHand
 
 /*!
     \class QFSFileEnginePrivate
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
 */
 
@@ -270,7 +270,7 @@ bool QFSFileEnginePrivate::openFh(QIODevice::OpenMode openMode, FILE *fh)
     if (openMode & QIODevice::Append) {
         int ret;
         do {
-            ret = QT_FSEEK(fh, 0, SEEK_END);
+            ret = BOBUI_FSEEK(fh, 0, SEEK_END);
         } while (ret != 0 && errno == EINTR);
 
         if (ret != 0) {
@@ -325,9 +325,9 @@ bool QFSFileEnginePrivate::openFd(QIODevice::OpenMode openMode, int fd)
 
     // Seek to the end when in Append mode.
     if (openMode & QFile::Append) {
-        QT_OFF_T ret;
+        BOBUI_OFF_T ret;
         do {
-            ret = QT_LSEEK(fd, 0, SEEK_END);
+            ret = BOBUI_LSEEK(fd, 0, SEEK_END);
         } while (ret == -1 && errno == EINTR);
 
         if (ret == -1) {
@@ -377,7 +377,7 @@ bool QFSFileEnginePrivate::closeFdFh()
             ret = fclose(fh);
         } else {
             // Close unbuffered file.
-            ret = QT_CLOSE(fd);
+            ret = BOBUI_CLOSE(fd);
         }
 
         // We must reset these guys regardless; calling close again after a
@@ -502,8 +502,8 @@ qint64 QFSFileEngine::pos() const
 qint64 QFSFileEnginePrivate::posFdFh() const
 {
     if (fh)
-        return qint64(QT_FTELL(fh));
-    return QT_LSEEK(fd, 0, SEEK_CUR);
+        return qint64(BOBUI_FTELL(fh));
+    return BOBUI_LSEEK(fd, 0, SEEK_CUR);
 }
 
 /*!
@@ -547,14 +547,14 @@ bool QFSFileEnginePrivate::seekFdFh(qint64 pos)
     if (lastIOCommand != QFSFileEnginePrivate::IOFlushCommand && !q->flush())
         return false;
 
-    if (pos < 0 || pos != qint64(QT_OFF_T(pos)))
+    if (pos < 0 || pos != qint64(BOBUI_OFF_T(pos)))
         return false;
 
     if (fh) {
         // Buffered stdlib mode.
         int ret;
         do {
-            ret = QT_FSEEK(fh, QT_OFF_T(pos), SEEK_SET);
+            ret = BOBUI_FSEEK(fh, BOBUI_OFF_T(pos), SEEK_SET);
         } while (ret != 0 && errno == EINTR);
 
         if (ret != 0) {
@@ -563,7 +563,7 @@ bool QFSFileEnginePrivate::seekFdFh(qint64 pos)
         }
     } else {
         // Unbuffered stdio mode.
-        if (QT_LSEEK(fd, QT_OFF_T(pos), SEEK_SET) == -1) {
+        if (BOBUI_LSEEK(fd, BOBUI_OFF_T(pos), SEEK_SET) == -1) {
             q->setError(QFile::PositionError, QSystemError::stdString(errno));
             qWarning("QFile::at: Cannot set file position %lld", pos);
             return false;
@@ -625,7 +625,7 @@ qint64 QFSFileEnginePrivate::readFdFh(char *data, qint64 len)
                 // On OS X, this is needed, e.g., if a file was written to
                 // through another stream since our last read. See test
                 // tst_QFile::appendAndRead
-                QT_FSEEK(fh, QT_FTELL(fh), SEEK_SET); // re-sync stream.
+                BOBUI_FSEEK(fh, BOBUI_FTELL(fh), SEEK_SET); // re-sync stream.
                 break;
             }
             readBytes += result;
@@ -643,10 +643,10 @@ qint64 QFSFileEnginePrivate::readFdFh(char *data, qint64 len)
             UnsignedIOType chunkSize = std::numeric_limits<SignedIOType>::max();
             if (chunkSize > wantedBytes)
                 chunkSize = wantedBytes;
-            result = QT_READ(fd, data + readBytes, chunkSize);
+            result = BOBUI_READ(fd, data + readBytes, chunkSize);
         } while (result > 0 && (readBytes += result) < len);
 
-        // QT_READ (::read()) returns 0 to indicate end-of-file
+        // BOBUI_READ (::read()) returns 0 to indicate end-of-file
         eof = result == 0;
     }
 
@@ -685,12 +685,12 @@ qint64 QFSFileEnginePrivate::readLineFdFh(char *data, qint64 maxlen)
     if (!fh)
         return q->QAbstractFileEngine::readLine(data, maxlen);
 
-    QT_OFF_T oldPos = 0;
+    BOBUI_OFF_T oldPos = 0;
 #ifdef Q_OS_WIN
     bool seq = q->isSequential();
     if (!seq)
 #endif
-        oldPos = QT_FTELL(fh);
+        oldPos = BOBUI_FTELL(fh);
 
     // QIODevice::readLine() passes maxlen - 1 to QFile::readLineData()
     // because it has made space for the '\0' at the end of data.  But fgets
@@ -707,7 +707,7 @@ qint64 QFSFileEnginePrivate::readLineFdFh(char *data, qint64 maxlen)
         return qstrlen(data);
 #endif
 
-    qint64 lineLength = QT_FTELL(fh) - oldPos;
+    qint64 lineLength = BOBUI_FTELL(fh) - oldPos;
     return lineLength > 0 ? lineLength : qstrlen(data);
 }
 
@@ -744,7 +744,7 @@ qint64 QFSFileEnginePrivate::writeFdFh(const char *data, qint64 len)
 
     qint64 writtenBytes = 0;
 
-    if (len) { // avoid passing nullptr to fwrite() or QT_WRITE() (UB)
+    if (len) { // avoid passing nullptr to fwrite() or BOBUI_WRITE() (UB)
 
         if (fh) {
             // Buffered stdlib mode.
@@ -767,7 +767,7 @@ qint64 QFSFileEnginePrivate::writeFdFh(const char *data, qint64 len)
                 UnsignedIOType chunkSize = std::numeric_limits<SignedIOType>::max();
                 if (chunkSize > wantedBytes)
                     chunkSize = wantedBytes;
-                result = QT_WRITE(fd, data + writtenBytes, chunkSize);
+                result = BOBUI_WRITE(fd, data + writtenBytes, chunkSize);
             } while (result > 0 && (writtenBytes += result) < len);
         }
 
@@ -785,7 +785,7 @@ qint64 QFSFileEnginePrivate::writeFdFh(const char *data, qint64 len)
     return writtenBytes;
 }
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
 /*!
     \internal
 */
@@ -795,7 +795,7 @@ QFSFileEngine::beginEntryList(const QString &path, QDirListing::IteratorFlags fi
 {
     return std::make_unique<QFSFileEngineIterator>(path, filters, filterNames);
 }
-#endif // QT_NO_FILESYSTEMITERATOR
+#endif // BOBUI_NO_FILESYSTEMITERATOR
 
 /*!
     \reimp
@@ -1027,6 +1027,6 @@ bool QFSFileEngine::caseSensitive() const
     \internal
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_FSFILEENGINE
+#endif // BOBUI_NO_FSFILEENGINE

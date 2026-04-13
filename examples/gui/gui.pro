@@ -1,7 +1,7 @@
-requires(qtHaveModule(gui))
+requires(bobuiHaveModule(gui))
 
 TEMPLATE     = subdirs
-QT_FOR_CONFIG += gui
+BOBUI_FOR_CONFIG += gui
 CONFIG += no_docs_target
 
 SUBDIRS += rasterwindow \

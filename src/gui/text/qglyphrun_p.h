@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGLYPHRUN_P_H
 #define QGLYPHRUN_P_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qshareddata.h>
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "qglyphrun.h"
 #include "qrawfont.h"
 
 #include <qfont.h>
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGlyphRunPrivate: public QSharedData
 {
@@ -81,8 +81,8 @@ public:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 
 #endif // QGLYPHRUN_P_H

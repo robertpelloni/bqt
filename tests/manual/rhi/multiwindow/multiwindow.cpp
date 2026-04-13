@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QWidget>
@@ -49,18 +49,18 @@ static QString graphicsApiName()
 }
 
 static struct {
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QVulkanInstance *instance = nullptr;
 #endif
     QRhi *r = nullptr;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOffscreenSurface *fallbackSurface = nullptr;
 #endif
 } r;
 
 void createRhi()
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     if (graphicsApi == OpenGL) {
         r.fallbackSurface = QRhiGles2InitParams::newFallbackSurface();
         QRhiGles2InitParams params;
@@ -70,7 +70,7 @@ void createRhi()
     }
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (graphicsApi == Vulkan) {
         QRhiVulkanInitParams params;
         params.inst = r.instance;
@@ -91,7 +91,7 @@ void createRhi()
     }
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     if (graphicsApi == Metal) {
         QRhiMetalInitParams params;
         r.r = QRhi::create(QRhi::Metal, &params);
@@ -106,7 +106,7 @@ void destroyRhi()
 {
     delete r.r;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     delete r.fallbackSurface;
 #endif
 }
@@ -266,7 +266,7 @@ Window::Window(const QString &title, const QColor &bgColor, int axis, bool noVSy
         break;
     case Vulkan:
         setSurfaceType(VulkanSurface);
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
         setVulkanInstance(r.instance);
 #endif
         break;
@@ -452,7 +452,7 @@ void Window::render()
 
 void createWindow(bool noVSync)
 {
-    static QColor colors[] = { Qt::red, Qt::green, Qt::blue, Qt::yellow, Qt::cyan, Qt::gray };
+    static QColor colors[] = { BobUI::red, BobUI::green, BobUI::blue, BobUI::yellow, BobUI::cyan, BobUI::gray };
     const int n = d.windows.count();
     d.windows.append(new Window(QString::asprintf("Window #%d%s", n, noVSync ? " (no vsync)" : ""), colors[n % 6], n % 3, noVSync));
     d.windows.last()->show();
@@ -469,9 +469,9 @@ int main(int argc, char **argv)
 
 #if defined(Q_OS_WIN)
     graphicsApi = D3D11;
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
     graphicsApi = Metal;
-#elif QT_CONFIG(vulkan)
+#elif BOBUI_CONFIG(vulkan)
     graphicsApi = Vulkan;
 #else
     graphicsApi = OpenGL;
@@ -508,7 +508,7 @@ int main(int argc, char **argv)
     fmt.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(fmt);
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     r.instance = new QVulkanInstance;
     if (graphicsApi == Vulkan) {
         r.instance->setLayers({ "VK_LAYER_KHRONOS_validation" });
@@ -569,7 +569,7 @@ int main(int argc, char **argv)
     destroySharedResources();
     destroyRhi();
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     delete r.instance;
 #endif
 

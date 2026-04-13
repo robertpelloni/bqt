@@ -1,17 +1,17 @@
 // Copyright (C) 2014 Robin Burchell <robin.burchell@viroteck.net>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoscmessage_p.h"
-#include "qtuio_p.h"
+#include "bobuiuio_p.h"
 
 #include <QDebug>
-#include <QtEndian>
+#include <BobUIEndian>
 #include <QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcTuioMessage, "qt.qpa.tuio.message")
+Q_LOGGING_CATEGORY(lcTuioMessage, "bobui.qpa.tuio.message")
 
 QOscMessage::QOscMessage() {}
 
@@ -28,12 +28,12 @@ QOscMessage::QOscMessage(const QByteArray &data)
 
     // "An OSC message consists of an OSC Address Pattern"
     QByteArray addressPattern;
-    if (!qt_readOscString(data, addressPattern, parsedBytes) || addressPattern.size() == 0)
+    if (!bobui_readOscString(data, addressPattern, parsedBytes) || addressPattern.size() == 0)
         return;
 
     // "followed by an OSC Type Tag String"
     QByteArray typeTagString;
-    if (!qt_readOscString(data, typeTagString, parsedBytes))
+    if (!bobui_readOscString(data, typeTagString, parsedBytes))
         return;
 
     // "Note: some older implementations of OSC may omit the OSC Type Tag string.
@@ -52,7 +52,7 @@ QOscMessage::QOscMessage(const QByteArray &data)
         char typeTag = typeTagString.at(i);
         if (typeTag == 's') { // osc-string
             QByteArray aString;
-            if (!qt_readOscString(data, aString, parsedBytes))
+            if (!bobui_readOscString(data, aString, parsedBytes))
                 return;
             arguments.append(aString);
         } else if (typeTag == 'i') { // int32
@@ -89,5 +89,5 @@ QOscMessage::QOscMessage(const QByteArray &data)
     qCDebug(lcTuioMessage) << "Message with address pattern: " << addressPattern << " arguments: " << arguments;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

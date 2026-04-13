@@ -1,9 +1,9 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qstandardpaths.h>
-#include <QTest>
+#include <BOBUIest>
 #include <QOperatingSystemVersion>
 #include <qdebug.h>
 #include <qfileinfo.h>
@@ -11,7 +11,7 @@
 #include <qregularexpression.h>
 #include <qsysinfo.h>
 #if defined(Q_OS_WIN)
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 #ifdef Q_OS_ANDROID
 #include <private/qjnihelpers_p.h>
@@ -27,7 +27,7 @@
 #define Q_XDG_PLATFORM
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Update this when adding new enum values; update enumNames too
 static const int MaxStandardLocation = QStandardPaths::GenericStateLocation;
@@ -126,17 +126,17 @@ private:
 
     // Config dirs
     QString m_localConfigDir;
-    QTemporaryDir m_localConfigTempDir;
+    BOBUIemporaryDir m_localConfigTempDir;
     QString m_globalConfigDir;
-    QTemporaryDir m_globalConfigTempDir;
+    BOBUIemporaryDir m_globalConfigTempDir;
 
     // App dirs
     QString m_localAppDir;
-    QTemporaryDir m_localAppTempDir;
+    BOBUIemporaryDir m_localAppTempDir;
     QString m_globalAppDir;
-    QTemporaryDir m_globalAppTempDir;
+    BOBUIemporaryDir m_globalAppTempDir;
     QString m_stateDir;
-    QTemporaryDir m_stateTempDir;
+    BOBUIemporaryDir m_stateTempDir;
 };
 
 static const char * const enumNames[MaxStandardLocation + 1 - int(QStandardPaths::DesktopLocation)] = {
@@ -278,10 +278,10 @@ void tst_qstandardpaths::enableTestMode()
 
 #ifdef Q_XDG_PLATFORM
     setCustomLocations(); // for the global config dir
-    const QString qttestDir = QDir::homePath() + QLatin1String("/.qttest");
+    const QString bobuitestDir = QDir::homePath() + QLatin1String("/.bobuitest");
 
     // *Config*Location
-    const QString configDir = qttestDir + QLatin1String("/config");
+    const QString configDir = bobuitestDir + QLatin1String("/config");
     QCOMPARE(configLoc(), configDir);
     QCOMPARE(genericConfigLoc(), configDir);
     const QStringList confDirs = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation);
@@ -290,7 +290,7 @@ void tst_qstandardpaths::enableTestMode()
     QCOMPARE(appConfigLoc(), configDir + "/tst_qstandardpaths"_L1);
 
     // *Data*Location
-    const QString dataDir = qttestDir + QLatin1String("/share");
+    const QString dataDir = bobuitestDir + QLatin1String("/share");
     QCOMPARE(genericDataLoc(), dataDir);
     const QStringList gdDirs = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
     QCOMPARE(gdDirs, QStringList() << dataDir << m_globalAppDir);
@@ -300,7 +300,7 @@ void tst_qstandardpaths::enableTestMode()
     QCOMPARE(appLocalDataLoc(), dataDir + "/tst_qstandardpaths"_L1);
 
     // *CacheLocation
-    const QString cacheDir = qttestDir + QLatin1String("/cache");
+    const QString cacheDir = bobuitestDir + QLatin1String("/cache");
     QCOMPARE(genericCacheLoc(), cacheDir);
     const QStringList cacheDirs = QStandardPaths::standardLocations(QStandardPaths::GenericCacheLocation);
     QCOMPARE(cacheDirs, QStringList() << cacheDir);
@@ -308,26 +308,26 @@ void tst_qstandardpaths::enableTestMode()
     QCOMPARE(cacheLoc(), cacheDir + "/tst_qstandardpaths"_L1);
 
     // *StateLocation
-    const QString stateDir = qttestDir + QLatin1String("/state");
+    const QString stateDir = bobuitestDir + QLatin1String("/state");
     QCOMPARE(genericStateLoc(), stateDir);
     const QStringList stateDirs = QStandardPaths::standardLocations(QStandardPaths::GenericStateLocation);
     QCOMPARE(stateDirs, QStringList() << stateDir);
     // StateLocation should be "GenericStateLocation/organization-name/app-name"
     QCOMPARE(stateLoc(), stateDir + "/tst_qstandardpaths"_L1);
 
-    QCoreApplication::setOrganizationName("Qt");
-    QCOMPARE(appConfigLoc(), configDir + "/Qt/tst_qstandardpaths"_L1);
-    QCOMPARE(appDataLoc(), dataDir + "/Qt/tst_qstandardpaths"_L1);
-    QCOMPARE(appLocalDataLoc(), dataDir + "/Qt/tst_qstandardpaths"_L1);
-    QCOMPARE(cacheLoc(), cacheDir + "/Qt/tst_qstandardpaths"_L1);
-    QCOMPARE(stateLoc(), stateDir + "/Qt/tst_qstandardpaths"_L1);
+    QCoreApplication::setOrganizationName("BobUI");
+    QCOMPARE(appConfigLoc(), configDir + "/BobUI/tst_qstandardpaths"_L1);
+    QCOMPARE(appDataLoc(), dataDir + "/BobUI/tst_qstandardpaths"_L1);
+    QCOMPARE(appLocalDataLoc(), dataDir + "/BobUI/tst_qstandardpaths"_L1);
+    QCOMPARE(cacheLoc(), cacheDir + "/BobUI/tst_qstandardpaths"_L1);
+    QCOMPARE(stateLoc(), stateDir + "/BobUI/tst_qstandardpaths"_L1);
 
-    QCoreApplication::setApplicationName("QtTest");
-    QCOMPARE(appConfigLoc(), configDir + "/Qt/QtTest"_L1);
-    QCOMPARE(appDataLoc(), dataDir + "/Qt/QtTest"_L1);
-    QCOMPARE(appLocalDataLoc(), dataDir + "/Qt/QtTest"_L1);
-    QCOMPARE(cacheLoc(), cacheDir + "/Qt/QtTest"_L1);
-    QCOMPARE(stateLoc(), stateDir + "/Qt/QtTest"_L1);
+    QCoreApplication::setApplicationName("BobUITest");
+    QCOMPARE(appConfigLoc(), configDir + "/BobUI/BobUITest"_L1);
+    QCOMPARE(appDataLoc(), dataDir + "/BobUI/BobUITest"_L1);
+    QCOMPARE(appLocalDataLoc(), dataDir + "/BobUI/BobUITest"_L1);
+    QCOMPARE(cacheLoc(), cacheDir + "/BobUI/BobUITest"_L1);
+    QCOMPARE(stateLoc(), stateDir + "/BobUI/BobUITest"_L1);
 
     // Check these are unaffected by org/app names
     QCOMPARE(genericConfigLoc(), configDir);
@@ -401,21 +401,21 @@ void tst_qstandardpaths::testDataLocation()
 #if !defined(Q_OS_ANDROID)
     const QString base = genericDataLoc();
     QCOMPARE(appLocalDataLoc(), base + "/tst_qstandardpaths");
-    QCoreApplication::instance()->setOrganizationName("Qt");
-    QCOMPARE(appLocalDataLoc(), base + "/Qt/tst_qstandardpaths");
-    QCoreApplication::instance()->setApplicationName("QtTest");
-    QCOMPARE(appLocalDataLoc(), base + "/Qt/QtTest");
+    QCoreApplication::instance()->setOrganizationName("BobUI");
+    QCOMPARE(appLocalDataLoc(), base + "/BobUI/tst_qstandardpaths");
+    QCoreApplication::instance()->setApplicationName("BobUITest");
+    QCOMPARE(appLocalDataLoc(), base + "/BobUI/BobUITest");
 #endif
 
 #ifdef Q_XDG_PLATFORM
     setDefaultLocations();
-    const QString expectedAppDataDir = QDir::homePath() + QString::fromLatin1("/.local/share/Qt/QtTest");
+    const QString expectedAppDataDir = QDir::homePath() + QString::fromLatin1("/.local/share/BobUI/BobUITest");
     QCOMPARE(appLocalDataLoc(), expectedAppDataDir);
     const QStringList appDataDirs = QStandardPaths::standardLocations(QStandardPaths::AppLocalDataLocation);
     QCOMPARE(appDataDirs.size(), 3);
     QCOMPARE(appDataDirs.at(0), expectedAppDataDir);
-    QCOMPARE(appDataDirs.at(1), QString::fromLatin1("/usr/local/share/Qt/QtTest"));
-    QCOMPARE(appDataDirs.at(2), QString::fromLatin1("/usr/share/Qt/QtTest"));
+    QCOMPARE(appDataDirs.at(1), QString::fromLatin1("/usr/local/share/BobUI/BobUITest"));
+    QCOMPARE(appDataDirs.at(2), QString::fromLatin1("/usr/share/BobUI/BobUITest"));
 #endif
 }
 
@@ -426,10 +426,10 @@ void tst_qstandardpaths::testAppConfigLocation()
 #if !defined(Q_OS_ANDROID)
     const QString base = genericConfigLoc();
     QCOMPARE(appConfigLoc(), base + "/tst_qstandardpaths");
-    QCoreApplication::setOrganizationName("Qt");
-    QCOMPARE(appConfigLoc(), base + "/Qt/tst_qstandardpaths");
-    QCoreApplication::setApplicationName("QtTest");
-    QCOMPARE(appConfigLoc(), base + "/Qt/QtTest");
+    QCoreApplication::setOrganizationName("BobUI");
+    QCOMPARE(appConfigLoc(), base + "/BobUI/tst_qstandardpaths");
+    QCoreApplication::setApplicationName("BobUITest");
+    QCOMPARE(appConfigLoc(), base + "/BobUI/BobUITest");
 #endif
 }
 
@@ -441,7 +441,7 @@ static inline QFileInfo findSh()
     QLatin1String sh("/sh");
     QByteArray pEnv = qgetenv("PATH");
     const QLatin1Char pathSep(':');
-    const QStringList rawPaths = QString::fromLocal8Bit(pEnv.constData()).split(pathSep, Qt::SkipEmptyParts);
+    const QStringList rawPaths = QString::fromLocal8Bit(pEnv.constData()).split(pathSep, BobUI::SkipEmptyParts);
     for (const QString &path : rawPaths) {
         if (QFile::exists(path + sh))
             return QFileInfo(path + sh);
@@ -455,24 +455,24 @@ void tst_qstandardpaths::testFindExecutable_data()
 #ifdef SKIP_FINDEXECUTABLE
     // Test needs to be skipped or Q_ASSERT below will cancel the test
     // and report FAIL regardless of BLACKLIST contents
-    QSKIP("QTBUG-64404");
+    QSKIP("BOBUIBUG-64404");
 #endif
 
-    QTest::addColumn<QString>("directory");
-    QTest::addColumn<QString>("needle");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("directory");
+    BOBUIest::addColumn<QString>("needle");
+    BOBUIest::addColumn<QString>("expected");
 #ifdef Q_OS_WIN
     const QFileInfo cmdFi = QFileInfo(QDir::cleanPath(QString::fromLocal8Bit(qgetenv("COMSPEC"))));
     const QString cmdPath = cmdFi.absoluteFilePath();
 
     Q_ASSERT(cmdFi.exists());
-    QTest::newRow("win-cmd")
+    BOBUIest::newRow("win-cmd")
         << QString() << QString::fromLatin1("cmd.eXe") << cmdPath;
-    QTest::newRow("win-full-path")
+    BOBUIest::newRow("win-full-path")
         << QString() << cmdPath << cmdPath;
-    QTest::newRow("win-relative-path")
+    BOBUIest::newRow("win-relative-path")
         << cmdFi.absolutePath() << QString::fromLatin1("./cmd.exe") << cmdPath;
-    QTest::newRow("win-cmd-nosuffix")
+    BOBUIest::newRow("win-cmd-nosuffix")
         << QString() << QString::fromLatin1("cmd") << cmdPath;
 
     if (QOperatingSystemVersion::current() >= QOperatingSystemVersion::Windows8) {
@@ -481,9 +481,9 @@ void tst_qstandardpaths::testFindExecutable_data()
         // Note: Requires disabling WOW64 redirection, see initTestCase()
         const QString logo = QLatin1String("microsoft.windows.softwarelogo.showdesktop");
         const QString logoPath = cmdFi.absolutePath() + QLatin1Char('/') + logo + QLatin1String(".exe");
-        QTest::newRow("win8-logo")
+        BOBUIest::newRow("win8-logo")
             << QString() << (logo + QLatin1String(".exe")) << logoPath;
-        QTest::newRow("win8-logo-nosuffix")
+        BOBUIest::newRow("win8-logo-nosuffix")
             << QString() << logo << logoPath;
     }
 #else
@@ -491,17 +491,17 @@ void tst_qstandardpaths::testFindExecutable_data()
     const QFileInfo shFi = findSh();
     Q_ASSERT(shFi.exists());
     const QString shPath = shFi.absoluteFilePath();
-    QTest::newRow("unix-sh")
+    BOBUIest::newRow("unix-sh")
         << QString() << QString::fromLatin1("sh") << shPath;
-    QTest::newRow("unix-sh-fullpath")
+    BOBUIest::newRow("unix-sh-fullpath")
         << QString() << shPath << shPath;
-    QTest::newRow("unix-sh-relativepath")
+    BOBUIest::newRow("unix-sh-relativepath")
         << QString(shFi.absolutePath()) << QString::fromLatin1("./sh") << shPath;
 #endif /* !WASM */
 #endif
-    QTest::newRow("idontexist")
+    BOBUIest::newRow("idontexist")
         << QString() << QString::fromLatin1("idontexist") << QString();
-    QTest::newRow("empty")
+    BOBUIest::newRow("empty")
         << QString() << QString() << QString();
 }
 
@@ -519,9 +519,9 @@ void tst_qstandardpaths::testFindExecutable()
         QVERIFY(QDir::setCurrent(currentDirectory));
 
 #ifdef Q_OS_WIN
-    const Qt::CaseSensitivity sensitivity = Qt::CaseInsensitive;
+    const BobUI::CaseSensitivity sensitivity = BobUI::CaseInsensitive;
 #else
-    const Qt::CaseSensitivity sensitivity = Qt::CaseSensitive;
+    const BobUI::CaseSensitivity sensitivity = BobUI::CaseSensitive;
 #endif
     QVERIFY2(!result.compare(expected, sensitivity),
              qPrintable(QString::fromLatin1("Actual: '%1', Expected: '%2'").arg(result, expected)));
@@ -534,7 +534,7 @@ void tst_qstandardpaths::testFindExecutableLinkToDirectory()
 #else
     const QString appPath = QCoreApplication::applicationDirPath();
 #ifdef Q_OS_ANDROID
-    if (QtAndroidPrivate::isUncompressedNativeLibs())
+    if (BobUIAndroidPrivate::isUncompressedNativeLibs())
         QSKIP("Can't create a link to applicationDir which points inside an APK on Android");
 #endif
     // link to directory
@@ -584,7 +584,7 @@ static QString fallbackXdgRuntimeDir()
     qunsetenv("XDG_RUNTIME_DIR");
 #ifdef Q_XDG_PLATFORM
 #if !defined(Q_OS_WASM) && !defined(Q_OS_INTEGRITY)
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          qPrintable("QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '"
                                     + fallbackXdgRuntimeDir() + '\''));
 #endif
@@ -596,9 +596,9 @@ void tst_qstandardpaths::testCustomRuntimeDirectory_data()
 #ifdef Q_OS_INTEGRITY
     QSKIP("Test requires getgid/getpwuid API that are not available on INTEGRITY");
 #elif defined(Q_XDG_PLATFORM)
-    QTest::addColumn<RuntimeDirSetup>("setup");
+    BOBUIest::addColumn<RuntimeDirSetup>("setup");
     auto addRow = [](const char *name, RuntimeDirSetup f) {
-        QTest::newRow(name) << f;
+        BOBUIest::newRow(name) << f;
     };
 
 
@@ -624,7 +624,7 @@ void tst_qstandardpaths::testCustomRuntimeDirectory_data()
         QFile::setPermissions(p, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
                                  QFile::ExeGroup | QFile::ExeOther);
         updateRuntimeDir(p);
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              QString("QStandardPaths: wrong permissions on runtime directory %1, "
                                      "0711 instead of 0700")
                              .arg(p).toLatin1());
@@ -632,11 +632,11 @@ void tst_qstandardpaths::testCustomRuntimeDirectory_data()
     });
 
     addRow("environment:wrong-owner", [](QDir &) -> std::optional<QString> {
-        QT_STATBUF st;
-        QT_STAT("/", &st);
+        BOBUI_STATBUF st;
+        BOBUI_STAT("/", &st);
 
         updateRuntimeDir("/");
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              QString("QStandardPaths: runtime directory '/' is not owned by UID "
                                      "%1, but a directory permissions %2 owned by UID %3 GID %4")
                              .arg(getuid())
@@ -661,7 +661,7 @@ void tst_qstandardpaths::testCustomRuntimeDirectory_data()
         f.setPermissions(QFile::ReadOwner | QFile::WriteOwner);
 
         updateRuntimeDir(p);
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              QString("QStandardPaths: runtime directory '%1' is not a directory, "
                                      "but a regular file permissions 0600 owned by UID %2 GID %3")
                              .arg(p).arg(getuid()).arg(getgid()).toLatin1());
@@ -672,7 +672,7 @@ void tst_qstandardpaths::testCustomRuntimeDirectory_data()
         QString p = d.filePath("link");
         QFile::link(d.filePath("this-goes-nowhere"), p);
         updateRuntimeDir(p);
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              QString("QStandardPaths: runtime directory '%1' is not a directory, "
                                      "but a broken symlink")
                              .arg(p).toLatin1());
@@ -685,7 +685,7 @@ void tst_qstandardpaths::testCustomRuntimeDirectory_data()
         QFile::link(d.filePath("dir"), p);
         QFile::setPermissions(p, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner);
         updateRuntimeDir(p);
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              QString("QStandardPaths: runtime directory '%1' is not a directory, "
                                      "but a symbolic link to a directory permissions 0700 owned by UID %2 GID %3")
                              .arg(p).arg(getuid()).arg(getgid()).toLatin1());
@@ -713,7 +713,7 @@ void tst_qstandardpaths::testCustomRuntimeDirectory_data()
         f.setPermissions(QFile::ReadOwner | QFile::WriteOwner);
 
         clearRuntimeDir();
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              QString("QStandardPaths: runtime directory '%1' is not a directory, "
                                      "but a regular file permissions 0600 owned by UID %2 GID %3")
                              .arg(p).arg(getuid()).arg(getgid()).toLatin1());
@@ -727,7 +727,7 @@ void tst_qstandardpaths::testCustomRuntimeDirectory_data()
             return failedToOpen(f);
         f.setPermissions(QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup);
         updateRuntimeDir(p);
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              QString("QStandardPaths: runtime directory '%1' is not a directory, "
                                      "but a regular file permissions 0640 owned by UID %2 GID %3")
                              .arg(p).arg(getuid()).arg(getgid()).toLatin1());
@@ -737,7 +737,7 @@ void tst_qstandardpaths::testCustomRuntimeDirectory_data()
         if (!f.open(QIODevice::WriteOnly))
             return failedToOpen(f);
         f.setPermissions(QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup);
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              QString("QStandardPaths: runtime directory '%1' is not a directory, "
                                      "but a regular file permissions 0640 owned by UID %2 GID %3")
                              .arg(f.fileName()).arg(getuid()).arg(getgid()).toLatin1());
@@ -768,7 +768,7 @@ void tst_qstandardpaths::testCustomRuntimeDirectory()
     EnvVarRestorer restorer;
 
     // set up the environment to point to a place we control
-    QTemporaryDir tempDir;
+    BOBUIemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), qPrintable(tempDir.errorString()));
 
     QDir d(tempDir.path());
@@ -797,18 +797,18 @@ void tst_qstandardpaths::testCustomRuntimeDirectory()
 Q_DECLARE_METATYPE(QStandardPaths::StandardLocation)
 void tst_qstandardpaths::testAllWritableLocations_data()
 {
-    QTest::addColumn<QStandardPaths::StandardLocation>("location");
-    QTest::newRow("DesktopLocation") << QStandardPaths::DesktopLocation;
-    QTest::newRow("DocumentsLocation") << QStandardPaths::DocumentsLocation;
-    QTest::newRow("FontsLocation") << QStandardPaths::FontsLocation;
-    QTest::newRow("ApplicationsLocation") << QStandardPaths::ApplicationsLocation;
-    QTest::newRow("MusicLocation") << QStandardPaths::MusicLocation;
-    QTest::newRow("MoviesLocation") << QStandardPaths::MoviesLocation;
-    QTest::newRow("PicturesLocation") << QStandardPaths::PicturesLocation;
-    QTest::newRow("TempLocation") << QStandardPaths::TempLocation;
-    QTest::newRow("HomeLocation") << QStandardPaths::HomeLocation;
-    QTest::newRow("AppLocalDataLocation") << QStandardPaths::AppLocalDataLocation;
-    QTest::newRow("DownloadLocation") << QStandardPaths::DownloadLocation;
+    BOBUIest::addColumn<QStandardPaths::StandardLocation>("location");
+    BOBUIest::newRow("DesktopLocation") << QStandardPaths::DesktopLocation;
+    BOBUIest::newRow("DocumentsLocation") << QStandardPaths::DocumentsLocation;
+    BOBUIest::newRow("FontsLocation") << QStandardPaths::FontsLocation;
+    BOBUIest::newRow("ApplicationsLocation") << QStandardPaths::ApplicationsLocation;
+    BOBUIest::newRow("MusicLocation") << QStandardPaths::MusicLocation;
+    BOBUIest::newRow("MoviesLocation") << QStandardPaths::MoviesLocation;
+    BOBUIest::newRow("PicturesLocation") << QStandardPaths::PicturesLocation;
+    BOBUIest::newRow("TempLocation") << QStandardPaths::TempLocation;
+    BOBUIest::newRow("HomeLocation") << QStandardPaths::HomeLocation;
+    BOBUIest::newRow("AppLocalDataLocation") << QStandardPaths::AppLocalDataLocation;
+    BOBUIest::newRow("DownloadLocation") << QStandardPaths::DownloadLocation;
 }
 
 void tst_qstandardpaths::testAllWritableLocations()
@@ -828,7 +828,7 @@ void tst_qstandardpaths::testAllWritableLocations()
 
 void tst_qstandardpaths::testCleanPath()
 {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     const QRegularExpression filter(QStringLiteral("\\\\"));
     QVERIFY(filter.isValid());
     for (int i = 0; i <= QStandardPaths::GenericCacheLocation; ++i) {
@@ -884,6 +884,6 @@ void tst_qstandardpaths::testXdgPathCleanup()
 #endif
 }
 
-QTEST_MAIN(tst_qstandardpaths)
+BOBUIEST_MAIN(tst_qstandardpaths)
 
 #include "tst_qstandardpaths.moc"

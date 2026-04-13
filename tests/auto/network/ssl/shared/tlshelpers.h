@@ -1,24 +1,24 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 
-#include <QtNetwork/qsslsocket.h>
+#include <BobUINetwork/qsslsocket.h>
 
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 
-#include <QtCore/qstring.h>
-#include <QtCore/qglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace TlsAux {
 
 inline bool classImplemented(QSsl::ImplementedClass cl)
 {
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     return QSslSocket::implementedClasses().contains(cl);
 #endif
     return cl == QSsl::ImplementedClass::Certificate; // This is the only thing our 'cert-only' supports.
@@ -28,4 +28,4 @@ inline bool classImplemented(QSsl::ImplementedClass cl)
 
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

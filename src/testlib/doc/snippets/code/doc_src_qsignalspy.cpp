@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [0]
 QCheckBox *box = ...;
@@ -61,7 +61,7 @@ QCOMPARE(spy.count(), 1);
 
 //! [8]
 void tst_QWindow::writeMinMaxDimensionalProps_data()
-    QTest::addColumn<int>("propertyIndex");
+    BOBUIest::addColumn<int>("propertyIndex");
 
     // Collect all relevant properties
     static const auto mo = QWindow::staticMetaObject;
@@ -75,7 +75,7 @@ void tst_QWindow::writeMinMaxDimensionalProps_data()
 
             // ...and start with "minimum" or "maximum"
             if (re.match(name).hasMatch()) {
-                QTest::addRow("%s", name) << i;
+                BOBUIest::addRow("%s", name) << i;
             }
         }
     }

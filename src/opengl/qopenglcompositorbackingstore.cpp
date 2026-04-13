@@ -1,9 +1,9 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QWindow>
-#include <QtGui/QPainter>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/QPainter>
 #include <qpa/qplatformbackingstore.h>
 #include <private/qwindow_p.h>
 #include <rhi/qrhi.h>
@@ -15,7 +15,7 @@
 #define GL_UNPACK_ROW_LENGTH              0x0CF2
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QOpenGLCompositorBackingStore
@@ -225,7 +225,7 @@ void QOpenGLCompositorBackingStore::beginPaint(const QRegion &region)
         QPainter p(&m_image);
         p.setCompositionMode(QPainter::CompositionMode_Source);
         for (const QRect &r : region)
-            p.fillRect(r, Qt::transparent);
+            p.fillRect(r, BobUI::transparent);
     }
 }
 
@@ -260,4 +260,4 @@ QImage QOpenGLCompositorBackingStore::toImage() const
     return m_image;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

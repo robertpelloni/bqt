@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfuturewatcher.h"
 #include "qfuturewatcher_p.h"
 
-#include <QtCore/qcoreevent.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qthread.h>
+#include <BobUICore/qcoreevent.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/bobuihread.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*! \class QFutureWatcher
     \reentrant
     \since 4.4
 
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup thread
 
     \brief The QFutureWatcher class allows monitoring a QFuture using signals
@@ -52,15 +52,15 @@ QT_BEGIN_NAMESPACE
     \snippet code/src_corelib_thread_qfuturewatcher.cpp 0
 
     Be aware that not all running asynchronous computations can be canceled or
-    suspended. For example, the future returned by QtConcurrent::run() cannot be
-    canceled; but the future returned by QtConcurrent::mappedReduced() can.
+    suspended. For example, the future returned by BobUIConcurrent::run() cannot be
+    canceled; but the future returned by BobUIConcurrent::mappedReduced() can.
 
     QFutureWatcher<void> is specialized to not contain any of the result
     fetching functions. Any QFuture<T> can be watched by a
     QFutureWatcher<void> as well. This is useful if only status or progress
     information is needed; not the actual result data.
 
-    \sa QFuture, {Qt Concurrent}
+    \sa QFuture, {BobUI Concurrent}
 */
 
 /*! \fn template <typename T> QFutureWatcher<T>::QFutureWatcher(QObject *parent)
@@ -92,15 +92,15 @@ QFutureWatcherBase::QFutureWatcherBase(QObject *parent)
     resultsReadyAt() signals.
 
     Be aware that not all running asynchronous computations can be canceled.
-    For example, the QFuture returned by QtConcurrent::run() cannot be
-    canceled; but the QFuture returned by QtConcurrent::mappedReduced() can.
+    For example, the QFuture returned by BobUIConcurrent::run() cannot be
+    canceled; but the QFuture returned by BobUIConcurrent::mappedReduced() can.
 */
 void QFutureWatcherBase::cancel()
 {
     futureInterface().cancel();
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*! \fn template <typename T> void QFutureWatcher<T>::setPaused(bool paused)
 
     \deprecated [6.6] Use setSuspended() instead.
@@ -117,8 +117,8 @@ void QFutureWatcherBase::cancel()
     If the computation was not previously paused, this function does nothing.
 
     Be aware that not all computations can be paused. For example, the
-    QFuture returned by QtConcurrent::run() cannot be paused; but the QFuture
-    returned by QtConcurrent::mappedReduced() can.
+    QFuture returned by BobUIConcurrent::run() cannot be paused; but the QFuture
+    returned by BobUIConcurrent::mappedReduced() can.
 
     \sa suspend(), resume(), toggleSuspended()
 */
@@ -142,7 +142,7 @@ void QFutureWatcherBase::pause()
     futureInterface().setSuspended(true);
 }
 
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*! \fn template <typename T> void QFutureWatcher<T>::setSuspended(bool suspend)
 
@@ -159,8 +159,8 @@ void QFutureWatcherBase::pause()
     If the computation was not previously suspended, this function does nothing.
 
     Be aware that not all computations can be suspended. For example, the
-    QFuture returned by QtConcurrent::run() cannot be suspended; but the QFuture
-    returned by QtConcurrent::mappedReduced() can.
+    QFuture returned by BobUIConcurrent::run() cannot be suspended; but the QFuture
+    returned by BobUIConcurrent::mappedReduced() can.
 
     \sa suspend(), resume(), toggleSuspended()
 */
@@ -196,7 +196,7 @@ void QFutureWatcherBase::resume()
     futureInterface().setSuspended(false);
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*! \fn template <typename T> void QFutureWatcher<T>::togglePaused()
 
     \deprecated [6.0] Use toggleSuspended() instead.
@@ -212,7 +212,7 @@ void QFutureWatcherBase::togglePaused()
 {
     futureInterface().toggleSuspended();
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*! \fn template <typename T> void QFutureWatcher<T>::toggleSuspended()
 
@@ -320,7 +320,7 @@ bool QFutureWatcherBase::isCanceled() const
     return futureInterface().queryState(QFutureInterfaceBase::Canceled);
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*! \fn template <typename T> bool QFutureWatcher<T>::isPaused() const
 
@@ -338,12 +338,12 @@ bool QFutureWatcherBase::isCanceled() const
 
 bool QFutureWatcherBase::isPaused() const
 {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     return futureInterface().isPaused();
-QT_WARNING_POP
+BOBUI_WARNING_POP
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*! \fn template <typename T> bool QFutureWatcher<T>::isSuspending() const
 
@@ -418,7 +418,7 @@ void QFutureWatcherBase::connectNotify(const QMetaMethod &signal)
     static const QMetaMethod resultReadyAtSignal = QMetaMethod::fromSignal(&QFutureWatcherBase::resultReadyAt);
     if (signal == resultReadyAtSignal)
         d->resultAtConnected.ref();
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     static const QMetaMethod finishedSignal = QMetaMethod::fromSignal(&QFutureWatcherBase::finished);
     if (signal == finishedSignal) {
         if (futureInterface().isRunning()) {
@@ -442,7 +442,7 @@ void QFutureWatcherBase::disconnectNotify(const QMetaMethod &signal)
     \internal
 */
 QFutureWatcherBasePrivate::QFutureWatcherBasePrivate()
-    : maximumPendingResultsReady(QThread::idealThreadCount() * 2),
+    : maximumPendingResultsReady(BOBUIhread::idealThreadCount() * 2),
       resultAtConnected(0)
 { }
 
@@ -503,11 +503,11 @@ void QFutureWatcherBasePrivate::sendCallOutEvent(QFutureCallOutEvent *event)
             if (q->futureInterface().isCanceled())
                 break;
             emit q->suspending();
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
             emit q->paused();
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
         break;
         case QFutureCallOutEvent::Suspended:
@@ -555,7 +555,7 @@ QT_WARNING_POP
 }
 
 
-/*! \fn template <typename T> template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>> const T &QFutureWatcher<T>::result() const
+/*! \fn template <typename T> template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>> const T &QFutureWatcher<T>::result() const
 
     Returns the first result in the future(). If the result is not immediately
     available, this function will block and wait for the result to become
@@ -564,7 +564,7 @@ QT_WARNING_POP
     \sa resultAt()
 */
 
-/*! \fn template <typename T> template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>> const T &QFutureWatcher<T>::resultAt(int index) const
+/*! \fn template <typename T> template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>> const T &QFutureWatcher<T>::resultAt(int index) const
 
     Returns the result at \a index in the future(). If the result is not
     immediately available, this function will block and wait for the result to
@@ -628,7 +628,7 @@ QT_WARNING_POP
     \sa setSuspended(), suspend(), suspended()
 */
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*! \fn template <typename T> void QFutureWatcher<T>::paused()
 
     \deprecated [6.0] Use suspending() instead.
@@ -644,7 +644,7 @@ QT_WARNING_POP
 
     \sa setSuspended(), suspend(), suspended()
 */
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*! \fn template <typename T> void QFutureWatcher<T>::suspended()
 
@@ -702,6 +702,6 @@ QT_WARNING_POP
 
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfuturewatcher.cpp"

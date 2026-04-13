@@ -1,12 +1,12 @@
 /*
-Copyright (C) 2016 The Qt Company Ltd.
-SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+Copyright (C) 2016 The BobUI Company Ltd.
+SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'Widget.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -14,15 +14,15 @@ SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Form
 {
@@ -77,6 +77,6 @@ namespace Ui {
     class Form: public Ui_Form {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // WIDGET_H

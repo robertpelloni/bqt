@@ -2,7 +2,7 @@
 osx
 [resizeAnchor]
 rhel
-# QTBUG-87397
+# BOBUIBUG-87397
 [itemsAtPoint]
 android
 [itemsInRect_cosmeticAdjust]
@@ -29,9 +29,9 @@ android
 android
 [update_ancestorClipsChildrenToShape2]
 android
-[QTBUG_70255_scrollTo]
-android # QTBUG-87397
+[BOBUIBUG_70255_scrollTo]
+android # BOBUIBUG-87397
 [embeddedViewsWithFocus]
-android # QTBUG-87397
+android # BOBUIBUG-87397
 [viewportUpdateMode2]
-android # QTBUG-87397
+android # BOBUIBUG-87397

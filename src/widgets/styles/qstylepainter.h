@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTYLEPAINTER_H
 #define QSTYLEPAINTER_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtGui/qpainter.h>
-#include <QtWidgets/qstyle.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIWidgets/qstyle.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QStylePainter : public QPainter
@@ -68,6 +68,6 @@ void QStylePainter::drawItemPixmap(const QRect &r, int flags, const QPixmap &pix
     wstyle->drawItemPixmap(this, r, flags, pixmap);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTYLEPAINTER_H

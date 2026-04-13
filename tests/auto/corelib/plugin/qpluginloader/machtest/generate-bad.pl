@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # Copyright (C) 2016 Intel Corporation.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 use strict;
 use constant FAT_MAGIC => 0xcafebabe;
@@ -31,7 +31,7 @@ my $good = pack("(L7 L2 Z16 L8 Z16 Z16 L9 . L)>",
     1, # 19: nsects
     0, # 20: flags
 
-    'qtmetadata', # 21-24: sectname
+    'bobuimetadata', # 21-24: sectname
     '__TEXT', # 25-28: segname
     0x200, # 29: addr
     4, # 30: size
@@ -66,7 +66,7 @@ my $good64 = pack("(L8 L2 Z16 Q4 L4 Z16 Z16 Q2 L8 . Q)>",
     1, # 24: nsects
     0, # 25: flags
 
-    'qtmetadata', # 26-29: sectname
+    'bobuimetadata', # 26-29: sectname
     '__TEXT', # 30-33: segname
     0x200, # 34-35: addr
     4, # 36-37: size

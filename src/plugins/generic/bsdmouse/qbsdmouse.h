@@ -1,5 +1,5 @@
 // Copyright (C) 2015-2016 Oleksandr Tymoshenko <gonzo@bluezbox.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QBSDMOUSE_H
 #define QBSDMOUSE_H
@@ -10,7 +10,7 @@
 
 #include <qobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSocketNotifier;
 
@@ -32,9 +32,9 @@ private:
     int m_y = 0;
     int m_xOffset = 0;
     int m_yOffset = 0;
-    Qt::MouseButtons m_buttons = Qt::NoButton;
+    BobUI::MouseButtons m_buttons = BobUI::NoButton;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBSDMOUSE_H

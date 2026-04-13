@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example cube
@@ -10,7 +10,7 @@
     \brief Shows how to manually rotate a textured 3D cube with user input.
 
     The Cube OpenGL ES 2.0 example shows how to manually rotate a textured 3D
-    cube with user input, using OpenGL ES 2.0 with Qt. It shows how to
+    cube with user input, using OpenGL ES 2.0 with BobUI. It shows how to
     handle polygon geometries efficiently and how to write a simple vertex and
     fragment shader for a programmable graphics pipeline. In addition it
     shows how to use quaternions for representing 3D object orientation.
@@ -59,7 +59,7 @@
     \snippet cube/fshader.glsl 0
 
     Using QOpenGLShaderProgram we can compile, link and bind shader code to
-    graphics pipeline. This code uses Qt Resource files to access shader source code.
+    graphics pipeline. This code uses BobUI Resource files to access shader source code.
 
     \snippet cube/mainwidget.cpp 3
 
@@ -67,7 +67,7 @@
 
     \snippet cube/mainwidget.cpp 2
 
-    \section1 Loading Textures from Qt Resource Files
+    \section1 Loading Textures from BobUI Resource Files
 
     The \c QOpenGLWidget interface implements methods for loading textures from QImage
     to OpenGL texture memory. We still need to use OpenGL provided functions for

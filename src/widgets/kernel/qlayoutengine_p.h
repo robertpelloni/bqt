@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLAYOUTENGINE_P_H
 #define QLAYOUTENGINE_P_H
@@ -9,19 +9,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtWidgets/qlayoutitem.h"
-#include "QtWidgets/qstyle.h"
-#include <QtCore/qcontainerfwd.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIWidgets/qlayoutitem.h"
+#include "BobUIWidgets/qstyle.h"
+#include <BobUICore/qcontainerfwd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QLayoutStruct
 {
@@ -68,9 +68,9 @@ Q_WIDGETS_EXPORT QSize qSmartMinSize(const QWidgetItem *i);
 Q_WIDGETS_EXPORT QSize qSmartMinSize(const QWidget *w);
 Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QSize &sizeHint,
                                  const QSize &minSize, const QSize &maxSize,
-                                 const QSizePolicy &sizePolicy, Qt::Alignment align = { });
-Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QWidgetItem *i, Qt::Alignment align = { });
-Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QWidget *w, Qt::Alignment align = { });
+                                 const QSizePolicy &sizePolicy, BobUI::Alignment align = { });
+Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QWidgetItem *i, BobUI::Alignment align = { });
+Q_WIDGETS_EXPORT QSize qSmartMaxSize(const QWidget *w, BobUI::Alignment align = { });
 
 Q_WIDGETS_EXPORT int qSmartSpacing(const QLayout *layout, QStyle::PixelMetric pm);
 
@@ -97,6 +97,6 @@ static inline void qMaxExpCalc(int & max, bool &exp, bool &empty,
     empty = empty && boxempty;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLAYOUTENGINE_P_H

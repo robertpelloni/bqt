@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QBYTEARRAYMATCHER_H
 #define QBYTEARRAYMATCHER_H
 
-#include <QtCore/qbytearray.h>
+#include <BobUICore/qbytearray.h>
 
-#include <QtCore/q20algorithm.h>
+#include <BobUICore/q20algorithm.h>
 #include <iterator>
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QByteArrayMatcherPrivate;
@@ -32,7 +32,7 @@ public:
 
     void setPattern(const QByteArray &pattern);
 
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
     qsizetype indexIn(const QByteArray &ba, qsizetype from = 0) const;
 #else
     Q_WEAK_OVERLOAD
@@ -74,7 +74,7 @@ protected:
     // compiler-generated copy/more ctors/assignment operators are ok!
     ~QStaticByteArrayMatcherBase() = default;
 
-#if QT_CORE_REMOVED_SINCE(6, 3) && QT_POINTER_SIZE != 4
+#if BOBUI_CORE_REMOVED_SINCE(6, 3) && BOBUI_POINTER_SIZE != 4
     Q_CORE_EXPORT int indexOfIn(const char *needle, uint nlen, const char *haystack, int hlen, int from) const noexcept;
 #endif
     Q_CORE_EXPORT qsizetype indexOfIn(const char *needle, size_t nlen,
@@ -124,6 +124,6 @@ template <size_t N>
 constexpr QStaticByteArrayMatcher<N> qMakeStaticByteArrayMatcher(const char (&pattern)[N]) noexcept
 { return QStaticByteArrayMatcher<N>(pattern); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBYTEARRAYMATCHER_H

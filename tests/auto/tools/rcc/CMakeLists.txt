@@ -1,17 +1,17 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_rcc Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_rcc LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_rcc
+bobui_internal_add_test(tst_rcc
     SOURCES
         tst_rcc.cpp
 )
@@ -23,7 +23,7 @@ set(images_resource_files
     "data/images/images/subdir/triangle.png"
 )
 
-qt_internal_add_resource(tst_rcc "images"
+bobui_internal_add_resource(tst_rcc "images"
     PREFIX
         "/"
     BASE
@@ -35,7 +35,7 @@ set(size-0_resource_files
     "data/sizes/data/data-0.txt"
 )
 
-qt_internal_add_resource(tst_rcc "size-0"
+bobui_internal_add_resource(tst_rcc "size-0"
     PREFIX
         "/"
     BASE
@@ -50,7 +50,7 @@ set(size-2-0-35-1_resource_files
     "data/sizes/data/data-35.txt"
 )
 
-qt_internal_add_resource(tst_rcc "size-2-0-35-1"
+bobui_internal_add_resource(tst_rcc "size-2-0-35-1"
     PREFIX
         "/"
     BASE
@@ -62,7 +62,7 @@ set(size-1_resource_files
     "data/sizes/data/data-1.txt"
 )
 
-qt_internal_add_resource(tst_rcc "size-1"
+bobui_internal_add_resource(tst_rcc "size-1"
     PREFIX
         "/"
     BASE
@@ -73,5 +73,5 @@ qt_internal_add_resource(tst_rcc "size-1"
 
 # Add dependencies that are implicitly used inside the test
 add_dependencies(tst_rcc
-    Qt::rcc
+    BobUI::rcc
 )

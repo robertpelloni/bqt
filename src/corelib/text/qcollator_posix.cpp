@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2013 Aleix Pol Gonzalez <aleixpol@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcollator_p.h"
 #include "qstringlist.h"
@@ -11,7 +11,7 @@
 #include <cstring>
 #include <cwchar>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QCollatorPrivate::init()
 {
@@ -20,7 +20,7 @@ void QCollatorPrivate::init()
             qWarning("Only the C and system collation locales are supported "
                      "with the POSIX collation implementation");
         }
-        if (caseSensitivity != Qt::CaseSensitive)
+        if (caseSensitivity != BobUI::CaseSensitive)
             qWarning("Case insensitive sorting unsupported in the posix collation implementation");
     }
     if (numericMode)
@@ -92,4 +92,4 @@ int QCollatorSortKey::compare(const QCollatorSortKey &otherKey) const
     return std::wcscmp(d->m_key.constData(), otherKey.d->m_key.constData());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,19 +1,19 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformclipboard.h"
 
-#include <QtCore/QUrl>
-#include <QtCore/QJniEnvironment>
-#include <QtCore/QJniObject>
-#include <QtCore/private/qjnihelpers_p.h>
+#include <BobUICore/QUrl>
+#include <BobUICore/QJniEnvironment>
+#include <BobUICore/QJniObject>
+#include <BobUICore/private/qjnihelpers_p.h>
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
-using namespace QtJniTypes;
+using namespace BobUIJniTypes;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QAndroidPlatformClipboard::onClipboardDataChanged(JNIEnv *env, jobject obj, jlong nativePointer)
 {
@@ -27,7 +27,7 @@ void QAndroidPlatformClipboard::onClipboardDataChanged(JNIEnv *env, jobject obj,
 
 QAndroidPlatformClipboard::QAndroidPlatformClipboard()
 {
-    m_clipboardManager = QtClipboardManager::construct(QtAndroidPrivate::context(),
+    m_clipboardManager = BobUIClipboardManager::construct(BobUIAndroidPrivate::context(),
                                                        reinterpret_cast<jlong>(this));
 }
 
@@ -76,7 +76,7 @@ void QAndroidPlatformClipboard::clearClipboardData()
 void QAndroidPlatformClipboard::setClipboardMimeData(QMimeData *data)
 {
     clearClipboardData();
-    auto context = QtAndroidPrivate::context();
+    auto context = BobUIAndroidPrivate::context();
     if (data->hasUrls()) {
         QList<QUrl> urls = data->urls();
         for (const auto &u : std::as_const(urls))
@@ -108,16 +108,16 @@ bool QAndroidPlatformClipboard::supportsMode(QClipboard::Mode mode) const
 
 bool QAndroidPlatformClipboard::registerNatives(QJniEnvironment &env)
 {
-    bool success = env.registerNativeMethods(Traits<QtClipboardManager>::className(),
+    bool success = env.registerNativeMethods(Traits<BobUIClipboardManager>::className(),
                 { Q_JNI_NATIVE_SCOPED_METHOD(onClipboardDataChanged, QAndroidPlatformClipboard) });
     if (!success) {
-        qCritical() << "QtClipboardManager: registerNativeMethods() failed";
+        qCritical() << "BobUIClipboardManager: registerNativeMethods() failed";
         return false;
     }
 
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_CLIPBOARD
+#endif // BOBUI_NO_CLIPBOARD

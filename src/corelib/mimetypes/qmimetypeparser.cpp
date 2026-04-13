@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trusted-data-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trusted-data-only
 
-#define QT_NO_CAST_FROM_ASCII
+#define BOBUI_NO_CAST_FROM_ASCII
 
 #include "qmimetypeparser_p.h"
 
 #include "qmimetype_p.h"
 #include "qmimemagicrulematcher_p.h"
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
-#include <QtCore/QDir>
-#include <QtCore/QXmlStreamReader>
-#include <QtCore/QXmlStreamWriter>
-#include <QtCore/QStack>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDebug>
+#include <BobUICore/QDir>
+#include <BobUICore/QXmlStreamReader>
+#include <BobUICore/QXmlStreamWriter>
+#include <BobUICore/QStack>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // XML tags in MIME files
 static const char mimeInfoTagC[] = "mime-info";
@@ -48,7 +48,7 @@ static const char matchMaskAttributeC[] = "mask";
 
 /*!
     \class QMimeTypeParser
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
     \brief The QMimeTypeParser class parses MIME types, and builds a MIME database hierarchy by adding to QMimeDatabase.
 
@@ -63,7 +63,7 @@ QMimeTypeParser::~QMimeTypeParser()
 
 /*!
     \class QMimeTypeParserBase
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
     \brief The QMimeTypeParserBase class parses for a sequence of <mime-type> in a generic way.
 
@@ -146,7 +146,7 @@ bool QMimeTypeParserBase::parseNumber(QStringView n, int *target, QString *error
     return true;
 }
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 struct CreateMagicMatchRuleResult
 {
     QString errorMessage; // must be first
@@ -171,7 +171,7 @@ static CreateMagicMatchRuleResult createMagicMatchRule(const QXmlStreamAttribute
 
 bool QMimeTypeParserBase::parse(QIODevice *dev, const QString &fileName, QString *errorMessage)
 {
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
     QMimeTypeXMLData data;
     int priority = 50;
     QStack<QMimeMagicRule *> currentRules; // stack for the nesting of rules
@@ -208,7 +208,7 @@ bool QMimeTypeParserBase::parse(QIODevice *dev, const QString &fileName, QString
                     weight = QMimeGlobPattern::DefaultWeight;
 
                 Q_ASSERT(!data.name.isEmpty());
-                const QMimeGlobPattern glob(pattern, data.name, weight, caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive);
+                const QMimeGlobPattern glob(pattern, data.name, weight, caseSensitive ? BobUI::CaseSensitive : BobUI::CaseInsensitive);
                 if (!process(glob, errorMessage))   // for actual glob matching
                     return false;
                 data.addGlobPattern(pattern); // just for QMimeType::globPatterns()
@@ -336,4 +336,4 @@ void QMimeTypeXMLData::addGlobPattern(const QString &pattern)
     globPatterns.append(pattern);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

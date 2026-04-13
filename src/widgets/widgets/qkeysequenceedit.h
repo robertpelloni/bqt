@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2013 Ivan Komissarov.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QKEYSEQUENCEEDIT_H
 #define QKEYSEQUENCEEDIT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_REQUIRE_CONFIG(keysequenceedit);
+BOBUI_REQUIRE_CONFIG(keysequenceedit);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QKeySequenceEditPrivate;
 class Q_WIDGETS_EXPORT QKeySequenceEdit : public QWidget
@@ -47,12 +47,12 @@ Q_SIGNALS:
     void keySequenceChanged(const QKeySequence &keySequence);
 
 protected:
-    QKeySequenceEdit(QKeySequenceEditPrivate &d, QWidget *parent, Qt::WindowFlags f);
+    QKeySequenceEdit(QKeySequenceEditPrivate &d, QWidget *parent, BobUI::WindowFlags f);
 
     bool event(QEvent *) override;
     void keyPressEvent(QKeyEvent *) override;
     void keyReleaseEvent(QKeyEvent *) override;
-    void timerEvent(QTimerEvent *) override;
+    void timerEvent(BOBUIimerEvent *) override;
     void focusOutEvent(QFocusEvent *) override;
 
 private:
@@ -60,6 +60,6 @@ private:
     Q_DECLARE_PRIVATE(QKeySequenceEdit)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QKEYSEQUENCEEDIT_H

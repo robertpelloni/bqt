@@ -19,7 +19,7 @@ isEmpty(QMAKE_CONFIG_TESTS_DIR): QMAKE_CONFIG_TESTS_DIR = $$_PRO_FILE_PWD_/confi
 # can be suppressed by passing CONFIG+=recheck to qmake.
 #
 # Returns: true iff the test passes
-defineTest(qtCompileTest) {
+defineTest(bobuiCompileTest) {
     positive = config_$$1
     done = done_config_$$1
 
@@ -37,17 +37,17 @@ defineTest(qtCompileTest) {
     test_cmd_base = "$$QMAKE_CD $$system_quote($$system_path($$test_out_dir)) &&"
 
     # Disable qmake features which are typically counterproductive for tests
-    qmake_configs = "\"CONFIG -= qt debug_and_release app_bundle lib_bundle\""
+    qmake_configs = "\"CONFIG -= bobui debug_and_release app_bundle lib_bundle\""
 
     # Clean up after previous run
-    exists($$test_out_dir/Makefile):qtRunLoggedCommand("$$test_cmd_base $$QMAKE_MAKE distclean")
+    exists($$test_out_dir/Makefile):bobuiRunLoggedCommand("$$test_cmd_base $$QMAKE_MAKE distclean")
 
     mkpath($$test_out_dir)|error()
 
-    !isEmpty (QMAKE_QTCONF): qtconfarg = -qtconf $$QMAKE_QTCONF
+    !isEmpty (QMAKE_BOBUICONF): bobuiconfarg = -bobuiconf $$QMAKE_BOBUICONF
 
-    qtRunLoggedCommand("$$test_cmd_base $$system_quote($$system_path($$QMAKE_QMAKE)) $$qtconfarg -spec $$QMAKESPEC $$qmake_configs $$shell_quote($$test_dir)") {
-        qtRunLoggedCommand("$$test_cmd_base $$QMAKE_MAKE") {
+    bobuiRunLoggedCommand("$$test_cmd_base $$system_quote($$system_path($$QMAKE_QMAKE)) $$bobuiconfarg -spec $$QMAKESPEC $$qmake_configs $$shell_quote($$test_dir)") {
+        bobuiRunLoggedCommand("$$test_cmd_base $$QMAKE_MAKE") {
             log("yes$$escape_expand(\\n)")
             msg = "test $$1 succeeded"
             write_file($$QMAKE_CONFIG_LOG, msg, append)

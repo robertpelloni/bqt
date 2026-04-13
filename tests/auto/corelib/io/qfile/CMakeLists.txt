@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qfile Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qfile LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Collect test data
@@ -22,12 +22,12 @@ list(APPEND test_data "forCopying.txt")
 list(APPEND test_data "forRenaming.txt")
 list(APPEND test_data "resources/file1.ext1")
 
-qt_internal_add_test(tst_qfile
+bobui_internal_add_test(tst_qfile
     SOURCES
         tst_qfile.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::TestPrivate
+        BobUI::CorePrivate
+        BobUI::TestPrivate
     TESTDATA ${test_data}
 )
 
@@ -36,7 +36,7 @@ set(qfile_resource_files
     "resources/"
 )
 
-qt_internal_add_resource(tst_qfile "qfile"
+bobui_internal_add_resource(tst_qfile "qfile"
     PREFIX
         "/tst_qfile/"
     FILES
@@ -46,7 +46,7 @@ set(rename-fallback_resource_files
     "rename-fallback.qrc"
 )
 
-qt_internal_add_resource(tst_qfile "rename-fallback"
+bobui_internal_add_resource(tst_qfile "rename-fallback"
     PREFIX
         "/"
     FILES
@@ -56,7 +56,7 @@ set(copy-fallback_resource_files
     "copy-fallback.qrc"
 )
 
-qt_internal_add_resource(tst_qfile "copy-fallback"
+bobui_internal_add_resource(tst_qfile "copy-fallback"
     PREFIX
         "/"
     FILES
@@ -67,27 +67,27 @@ qt_internal_add_resource(tst_qfile "copy-fallback"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qfile CONDITION TARGET Qt::Network
+bobui_internal_extend_target(tst_qfile CONDITION TARGET BobUI::Network
     LIBRARIES
-        Qt::Network
+        BobUI::Network
 )
 
-qt_internal_extend_target(tst_qfile CONDITION NOT TARGET Qt::Network
+bobui_internal_extend_target(tst_qfile CONDITION NOT TARGET BobUI::Network
     DEFINES
-        QT_NO_NETWORK
+        BOBUI_NO_NETWORK
 )
 
-qt_internal_extend_target(tst_qfile CONDITION CONFIG___contains___builtin_testdata
+bobui_internal_extend_target(tst_qfile CONDITION CONFIG___contains___builtin_testdata
     DEFINES
         BUILTIN_TESTDATA
 )
 
-qt_internal_extend_target(tst_qfile CONDITION WIN32
+bobui_internal_extend_target(tst_qfile CONDITION WIN32
     LIBRARIES
         ole32
         uuid
 )
 add_subdirectory(stdinprocess)
-if(QT_FEATURE_process)
+if(BOBUI_FEATURE_process)
     add_dependencies(tst_qfile stdinprocess_helper)
 endif()

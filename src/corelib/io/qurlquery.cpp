@@ -1,20 +1,20 @@
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qurlquery.h"
 #include "qurl_p.h"
 
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qstringlist.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
   \class QUrlQuery
-  \inmodule QtCore
+  \inmodule BobUICore
   \since 5.0
 
   \brief The QUrlQuery class provides a way to manipulate a key-value pairs in
@@ -221,7 +221,7 @@ inline QString QUrlQueryPrivate::recodeFromUser(const QString &input) const
         decode('#'),
         0
     };
-    if (qt_urlRecode(output, input,
+    if (bobui_urlRecode(output, input,
                      QUrl::DecodeReserved,
                      prettyDecodedActions))
         return output;
@@ -242,7 +242,7 @@ inline QString QUrlQueryPrivate::recodeToUser(const QString &input, QUrl::Compon
 
     if (!(encoding & QUrl::EncodeDelimiters)) {
         QString output;
-        if (qt_urlRecode(output, input,
+        if (bobui_urlRecode(output, input,
                          encoding, nullptr))
             return output;
         return input;
@@ -252,7 +252,7 @@ inline QString QUrlQueryPrivate::recodeToUser(const QString &input, QUrl::Compon
     ushort actions[] = { encode(pairDelimiter.unicode()), encode(valueDelimiter.unicode()),
                          encode('#'), 0 };
     QString output;
-    if (qt_urlRecode(output, input, encoding, actions))
+    if (bobui_urlRecode(output, input, encoding, actions))
         return output;
     return input;
 }
@@ -287,7 +287,7 @@ void QUrlQueryPrivate::setQuery(const QString &query)
         // delimiter points to the value delimiter or to the end of this pair
 
         QString key;
-        if (!qt_urlRecode(key, QStringView{begin, delimiter},
+        if (!bobui_urlRecode(key, QStringView{begin, delimiter},
                           QUrl::DecodeReserved,
                           prettyDecodedActions))
             key = QString(begin, delimiter - begin);
@@ -297,10 +297,10 @@ void QUrlQueryPrivate::setQuery(const QString &query)
             itemList.append(std::make_pair(key, QString()));
         } else if (delimiter + 1 == pos) {
             // if the delimiter was found but the value is empty, store empty-but-not-null
-            itemList.append(std::make_pair(key, QString(0, Qt::Uninitialized)));
+            itemList.append(std::make_pair(key, QString(0, BobUI::Uninitialized)));
         } else {
             QString value;
-            if (!qt_urlRecode(value, QStringView{delimiter + 1, pos},
+            if (!bobui_urlRecode(value, QStringView{delimiter + 1, pos},
                               QUrl::DecodeReserved,
                               prettyDecodedActions))
                 value = QString(delimiter + 1, pos - delimiter - 1);
@@ -482,7 +482,7 @@ void QUrlQuery::setQuery(const QString &queryString)
 static void recodeAndAppend(QString &to, const QString &input,
                             QUrl::ComponentFormattingOptions encoding, const ushort *tableModifications)
 {
-    if (!qt_urlRecode(to, input, encoding, tableModifications))
+    if (!bobui_urlRecode(to, input, encoding, tableModifications))
         to += input;
 }
 
@@ -778,7 +778,7 @@ void QUrlQuery::removeAllQueryItems(const QString &key)
     Returns the default character for separating keys from values in the query,
     an equal sign ("=").
 
-    \note Prior to Qt 6, this function returned QChar.
+    \note Prior to BobUI 6, this function returned QChar.
 
     \sa setQueryDelimiters(), queryValueDelimiter(), defaultQueryPairDelimiter()
 */
@@ -788,7 +788,7 @@ void QUrlQuery::removeAllQueryItems(const QString &key)
     Returns the default character for separating keys-value pairs from each
     other, an ampersand ("&").
 
-    \note Prior to Qt 6, this function returned QChar.
+    \note Prior to BobUI 6, this function returned QChar.
 
     \sa setQueryDelimiters(), queryPairDelimiter(), defaultQueryValueDelimiter()
 */
@@ -817,7 +817,7 @@ void QUrlQuery::removeAllQueryItems(const QString &key)
 
     \sa operator==()
 */
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #undef decode
 #undef leave

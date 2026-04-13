@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoperatingsystemversion.h"
 
@@ -8,22 +8,22 @@
 #endif
 
 #if defined(Q_OS_DARWIN)
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 #endif
 
 #include <qversionnumber.h>
 #include <qdebug.h>
 
 #ifdef Q_OS_ANDROID
-#include <QtCore/private/qjnihelpers_p.h>
+#include <BobUICore/private/qjnihelpers_p.h>
 #include <QJniObject>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QOperatingSystemVersion
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.9
     \brief The QOperatingSystemVersion class provides information about the
     operating system version.
@@ -129,7 +129,7 @@ QOperatingSystemVersionBase QOperatingSystemVersionBase::current_impl()
     QOperatingSystemVersionBase version;
     version.m_os = currentType();
 #ifdef Q_OS_ANDROID
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     const QVersionNumber v = QVersionNumber::fromString(QJniObject::getStaticObjectField(
         "android/os/Build$VERSION", "RELEASE", "Ljava/lang/String;").toString());
     if (!v.isNull()) {
@@ -183,7 +183,7 @@ QOperatingSystemVersionBase QOperatingSystemVersionBase::current_impl()
     };
 
     // This will give us at least the first 2 version components
-    const size_t versionIdx = QtAndroidPrivate::androidSdkVersion() - 1;
+    const size_t versionIdx = BobUIAndroidPrivate::androidSdkVersion() - 1;
     if (versionIdx < sizeof(versions) / sizeof(versions[0])) {
         version.m_major = versions[versionIdx].major;
         version.m_minor = versions[versionIdx].minor;
@@ -344,7 +344,7 @@ QString QOperatingSystemVersionBase::name(QOperatingSystemVersionBase osversion)
 */
 bool QOperatingSystemVersion::isAnyOfType(std::initializer_list<OSType> types) const
 {
-    // ### Qt7: Remove this function
+    // ### BobUI7: Remove this function
     return std::find(types.begin(), types.end(), type()) != types.end();
 }
 
@@ -353,7 +353,7 @@ bool QOperatingSystemVersionBase::isAnyOfType(std::initializer_list<OSType> type
     return std::find(types.begin(), types.end(), type) != types.end();
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 
 /*!
     \variable QOperatingSystemVersion::Windows7
@@ -731,9 +731,9 @@ const QOperatingSystemVersionBase QOperatingSystemVersion::Android13;
     \since 6.7
  */
 
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QOperatingSystemVersion &ov)
 {
     QDebugStateSaver saver(debug);
@@ -743,6 +743,6 @@ QDebug operator<<(QDebug debug, const QOperatingSystemVersion &ov)
         << '.' << ov.microVersion() << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

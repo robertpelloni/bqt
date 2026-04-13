@@ -10,14 +10,14 @@ elseif(WIN32)
 endif()
 
 # Generate a deployment script to be executed at install time
-qt_generate_deploy_script(
+bobui_generate_deploy_script(
     TARGET MyApp
     OUTPUT_SCRIPT deploy_script
     CONTENT "
-qt_deploy_runtime_dependencies(
+bobui_deploy_runtime_dependencies(
     EXECUTABLE \"${executable_path}\"
     DEPLOY_TOOL_OPTIONS "${deploy_tool_options_arg}"
-    GENERATE_QT_CONF
+    GENERATE_BOBUI_CONF
     VERBOSE
 )")
 \endcode

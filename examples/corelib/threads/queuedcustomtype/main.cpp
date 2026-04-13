@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "block.h"
 #include "window.h"
@@ -17,12 +17,12 @@ QImage createImage(int width, int height)
     QImage image(width, height, QImage::Format_RGB16);
     QPainter painter;
     QPen pen;
-    pen.setStyle(Qt::NoPen);
-    QBrush brush(Qt::blue);
+    pen.setStyle(BobUI::NoPen);
+    QBrush brush(BobUI::blue);
 
     painter.begin(&image);
     painter.fillRect(image.rect(), brush);
-    brush.setColor(Qt::white);
+    brush.setColor(BobUI::white);
     painter.setPen(pen);
     painter.setBrush(brush);
 

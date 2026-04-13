@@ -1,12 +1,12 @@
 // Copyright (C) 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXNATIVEINTERFACE_H
 #define QQNXNATIVEINTERFACE_H
 
 #include <qpa/qplatformnativeinterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QQnxIntegration;
 
@@ -18,7 +18,7 @@ public:
     void *nativeResourceForScreen(const QByteArray &resource, QScreen *screen) override;
     void *nativeResourceForIntegration(const QByteArray &resource) override;
 
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
     void *nativeResourceForContext(const QByteArray &resource, QOpenGLContext *context) override;
 #endif
 
@@ -29,6 +29,6 @@ private:
     QQnxIntegration *m_integration;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXNATIVEINTERFACE_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "block.h"
 #include "renderthread.h"
@@ -20,7 +20,7 @@ Window::Window(QWidget *parent)
 //! [Window constructor start] //! [set up widgets and connections]
 
     label = new QLabel(this);
-    label->setAlignment(Qt::AlignCenter);
+    label->setAlignment(BobUI::AlignCenter);
 
     loadButton = new QPushButton(tr("&Load image..."), this);
     resetButton = new QPushButton(tr("&Stop"), this);
@@ -79,7 +79,7 @@ void Window::loadImage(const QImage &image)
     const QRect space = QGuiApplication::primaryScreen()->availableGeometry();
     if (image.width() > 0.75*space.width() || image.height() > 0.75*space.height())
         useImage = image.scaled(0.75*space.width(), 0.75*space.height(),
-                                Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                                BobUI::KeepAspectRatio, BobUI::SmoothTransformation);
     else
         useImage = image;
 

@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdatetime.h"
 
@@ -13,7 +13,7 @@
 
 #include "private/qcalendarmath_p.h"
 #include "private/qdatetime_p.h"
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
 #include "private/qdatetimeparser_p.h"
 #endif
 #ifdef Q_OS_DARWIN
@@ -25,22 +25,22 @@
 #include "private/qnumeric_p.h"
 #include "private/qstringconverter_p.h"
 #include "private/qstringiterator_p.h"
-#if QT_CONFIG(timezone)
-#include "private/qtimezoneprivate_p.h"
+#if BOBUI_CONFIG(timezone)
+#include "private/bobuiimezoneprivate_p.h"
 #endif
 
 #include <cmath>
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtPrivate::DateTimeConstants;
-using namespace QtMiscUtils;
+using namespace BobUI::StringLiterals;
+using namespace BobUIPrivate::DateTimeConstants;
+using namespace BobUIMiscUtils;
 
 /*****************************************************************************
   Date/Time Constants
@@ -75,23 +75,23 @@ static inline QDate fixedDate(QCalendar::YearMonthDay parts)
   Date/Time formatting helper functions
  *****************************************************************************/
 
-#if QT_CONFIG(textdate)
-static const char qt_shortMonthNames[][4] = {
+#if BOBUI_CONFIG(textdate)
+static const char bobui_shortMonthNames[][4] = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
 static int fromShortMonthName(QStringView monthName)
 {
-    for (unsigned int i = 0; i < sizeof(qt_shortMonthNames) / sizeof(qt_shortMonthNames[0]); ++i) {
-        if (monthName == QLatin1StringView(qt_shortMonthNames[i], 3))
+    for (unsigned int i = 0; i < sizeof(bobui_shortMonthNames) / sizeof(bobui_shortMonthNames[0]); ++i) {
+        if (monthName == QLatin1StringView(bobui_shortMonthNames[i], 3))
             return i + 1;
     }
     return -1;
 }
 #endif // textdate
 
-#if QT_CONFIG(datestring) // depends on, so implies, textdate
+#if BOBUI_CONFIG(datestring) // depends on, so implies, textdate
 namespace {
 using ParsedInt = QSimpleParsedNumber<qulonglong>;
 
@@ -130,7 +130,7 @@ ParsedInt readInt(QStringView text)
 
 struct ParsedRfcDateTime {
     QDate date;
-    QTime time;
+    BOBUIime time;
     int utcOffset = 0;
 };
 
@@ -152,7 +152,7 @@ static ParsedRfcDateTime rfcDateImpl(QStringView s)
 
     QVarLengthArray<QStringView, 6> words;
 
-    auto tokens = s.tokenize(u' ', Qt::SkipEmptyParts);
+    auto tokens = s.tokenize(u' ', BobUI::SkipEmptyParts);
     auto it = tokens.begin();
     for (int i = 0; i < 6 && it != tokens.end(); ++i, ++it)
         words.emplace_back(*it);
@@ -233,7 +233,7 @@ static ParsedRfcDateTime rfcDateImpl(QStringView s)
     words.remove(0, 2); // month and day-of-month, in some order
 
     // Time: [hh:mm[:ss]]
-    QTime time;
+    BOBUIime time;
     if (words.size() && words.at(0).contains(colon)) {
         const QStringView when = words.front();
         words.erase(words.begin());
@@ -250,7 +250,7 @@ static ParsedRfcDateTime rfcDateImpl(QStringView s)
         const auto secs = when.size() == 8 ? when.last(2).toInt(&ok) : 0;
         if (!ok)
             return result;
-        time = QTime(hour, minute, secs);
+        time = BOBUIime(hour, minute, secs);
     }
 
     // Offset: [±hh[mm]]
@@ -284,17 +284,17 @@ static ParsedRfcDateTime rfcDateImpl(QStringView s)
 #endif // datestring
 
 // Return offset in ±HH:mm format
-static QString toOffsetString(Qt::DateFormat format, int offset)
+static QString toOffsetString(BobUI::DateFormat format, int offset)
 {
     return QString::asprintf("%c%02d%s%02d",
                              offset >= 0 ? '+' : '-',
                              qAbs(offset) / int(SECS_PER_HOUR),
-                             // Qt::ISODate puts : between the hours and minutes, but Qt:TextDate does not:
-                             format == Qt::TextDate ? "" : ":",
+                             // BobUI::ISODate puts : between the hours and minutes, but BobUI:TextDate does not:
+                             format == BobUI::TextDate ? "" : ":",
                              (qAbs(offset) / 60) % 60);
 }
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
 // Parse offset in ±HH[[:]mm] format
 static int fromOffsetString(QStringView offsetString, bool *valid) noexcept
 {
@@ -328,7 +328,7 @@ static int fromOffsetString(QStringView offsetString, bool *valid) noexcept
     const QStringView hhRef = time.first(qMin(hhLen, time.size()));
     bool ok = false;
     const int hour = hhRef.toInt(&ok);
-    if (!ok || hour > 23) // More generous than QTimeZone::MaxUtcOffsetSecs
+    if (!ok || hour > 23) // More generous than BOBUIimeZone::MaxUtcOffsetSecs
         return 0;
 
     const QStringView mmRef = time.sliced(qMin(mmIndex, time.size()));
@@ -347,7 +347,7 @@ static int fromOffsetString(QStringView offsetString, bool *valid) noexcept
 
 /*!
     \class QDate
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \brief The QDate class provides date functions.
 
@@ -423,7 +423,7 @@ static int fromOffsetString(QStringView offsetString, bool *valid) noexcept
     before 2 billion BCE to after 2 billion CE. This is more than seven times as
     wide as the range of dates a QDateTime can represent.
 
-    \sa QTime, QDateTime, QCalendar, QDateTime::YearRange, QDateEdit, QDateTimeEdit, QCalendarWidget
+    \sa BOBUIime, QDateTime, QCalendar, QDateTime::YearRange, QDateEdit, QDateTimeEdit, QCalendarWidget
 */
 
 /*!
@@ -467,7 +467,7 @@ QDate::QDate(int y, int m, int d, QCalendar cal)
 
     Constructs a QDate representing the same date as \a date. This allows for
     easy interoperability between the Standard Library calendaring classes and
-    Qt datetime classes.
+    BobUI datetime classes.
 
     For example:
 
@@ -671,7 +671,7 @@ int QDate::day() const
     if the date is invalid. Some calendars may give special meaning
     (e.g. intercallary days) to values greater than 7.
 
-    \sa day(), dayOfYear(), QCalendar::dayOfWeek(), Qt::DayOfWeek
+    \sa day(), dayOfYear(), QCalendar::dayOfWeek(), BobUI::DayOfWeek
 */
 
 int QDate::dayOfWeek(QCalendar cal) const
@@ -823,35 +823,35 @@ int QDate::weekNumber(int *yearNumber) const
     return (thursday.dayOfYear() + 6) / 7;
 }
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 // Only called by deprecated methods (so bootstrap builds warn unused without this #if).
-static QTimeZone asTimeZone(Qt::TimeSpec spec, int offset, const char *warner)
+static BOBUIimeZone asTimeZone(BobUI::TimeSpec spec, int offset, const char *warner)
 {
     if (warner) {
         switch (spec) {
-        case Qt::TimeZone:
-            qWarning("%s: Pass a QTimeZone instead of Qt::TimeZone.", warner);
+        case BobUI::TimeZone:
+            qWarning("%s: Pass a BOBUIimeZone instead of BobUI::TimeZone.", warner);
             break;
-        case Qt::LocalTime:
+        case BobUI::LocalTime:
             if (offset) {
-                qWarning("%s: Ignoring offset (%d seconds) passed with Qt::LocalTime",
+                qWarning("%s: Ignoring offset (%d seconds) passed with BobUI::LocalTime",
                          warner, offset);
             }
             break;
-        case Qt::UTC:
+        case BobUI::UTC:
             if (offset) {
-                qWarning("%s: Ignoring offset (%d seconds) passed with Qt::UTC",
+                qWarning("%s: Ignoring offset (%d seconds) passed with BobUI::UTC",
                          warner, offset);
                 offset = 0;
             }
             break;
-        case Qt::OffsetFromUTC:
+        case BobUI::OffsetFromUTC:
             break;
         }
     }
-    return QTimeZone::isUtcOrFixedOffset(spec)
-        ? QTimeZone::fromSecondsAheadOfUtc(offset)
-        : QTimeZone(QTimeZone::LocalTime);
+    return BOBUIimeZone::isUtcOrFixedOffset(spec)
+        ? BOBUIimeZone::fromSecondsAheadOfUtc(offset)
+        : BOBUIimeZone(BOBUIimeZone::LocalTime);
 }
 #endif // Helper for 6.9 deprecation
 
@@ -877,21 +877,21 @@ static bool inDateTimeRange(qint64 jd, DaySide side)
     Q_UNREACHABLE_RETURN(false);
 }
 
-static QDateTime toEarliest(QDate day, const QTimeZone &zone)
+static QDateTime toEarliest(QDate day, const BOBUIimeZone &zone)
 {
     Q_ASSERT(!zone.isUtcOrFixedOffset());
     // And the day starts in a gap. First find a moment not in that gap.
-    const auto moment = [=](QTime time) {
+    const auto moment = [=](BOBUIime time) {
         return QDateTime(day, time, zone, QDateTime::TransitionResolution::Reject);
     };
     // Longest routine time-zone transition is 2 hours:
-    QDateTime when = moment(QTime(2, 0));
+    QDateTime when = moment(BOBUIime(2, 0));
     if (!when.isValid()) {
         // Noon should be safe ...
-        when = moment(QTime(12, 0));
+        when = moment(BOBUIime(12, 0));
         if (!when.isValid()) {
             // ... unless it's a 24-hour jump (moving the date-line)
-            when = moment(QTime(23, 59, 59, 999));
+            when = moment(BOBUIime(23, 59, 59, 999));
             if (!when.isValid())
                 return QDateTime();
         }
@@ -901,7 +901,7 @@ static QDateTime toEarliest(QDate day, const QTimeZone &zone)
     // Binary chop to the right minute
     while (high > low + 1) {
         const int mid = (high + low) / 2;
-        const QDateTime probe = QDateTime(day, QTime(mid / 60, mid % 60), zone,
+        const QDateTime probe = QDateTime(day, BOBUIime(mid / 60, mid % 60), zone,
                                           QDateTime::TransitionResolution::PreferBefore);
         if (probe.isValid() && probe.date() == day) {
             high = mid;
@@ -919,7 +919,7 @@ static QDateTime toEarliest(QDate day, const QTimeZone &zone)
         while (high > low + 1) {
             const int mid = (high + low) / 2;
             const int min = mid / 60;
-            const QDateTime probe = moment(QTime(min / 60, min % 60, mid % 60));
+            const QDateTime probe = moment(BOBUIime(min / 60, min % 60, mid % 60));
             if (probe.isValid() && probe.date() == day) {
                 high = mid;
                 when = probe;
@@ -949,8 +949,8 @@ static QDateTime toEarliest(QDate day, const QTimeZone &zone)
     earliest time in the day is returned. This can only arise when the time
     representation is a time-zone or local time.
 
-    When \a zone has a timeSpec() of is Qt::OffsetFromUTC or Qt::UTC, the time
-    representation has no transitions so the start of the day is QTime(0, 0).
+    When \a zone has a timeSpec() of is BobUI::OffsetFromUTC or BobUI::UTC, the time
+    representation has no transitions so the start of the day is BOBUIime(0, 0).
 
     In the rare case of a date that was entirely skipped (this happens when a
     zone east of the international date-line switches to being west of it), the
@@ -960,21 +960,21 @@ static QDateTime toEarliest(QDate day, const QTimeZone &zone)
 
     \sa endOfDay()
 */
-QDateTime QDate::startOfDay(const QTimeZone &zone) const
+QDateTime QDate::startOfDay(const BOBUIimeZone &zone) const
 {
     if (!inDateTimeRange(jd, DaySide::Start) || !zone.isValid())
         return QDateTime();
 
-    QDateTime when(*this, QTime(0, 0), zone,
+    QDateTime when(*this, BOBUIime(0, 0), zone,
                    QDateTime::TransitionResolution::RelativeToBefore);
     if (Q_UNLIKELY(!when.isValid() || when.date() != *this)) {
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
         // The start of the day must have fallen in a spring-forward's gap; find the spring-forward:
-        if (zone.timeSpec() == Qt::TimeZone && zone.hasTransitions()) {
-            QTimeZone::OffsetData tran
+        if (zone.timeSpec() == BobUI::TimeZone && zone.hasTransitions()) {
+            BOBUIimeZone::OffsetData tran
                 // There's unlikely to be another transition before noon tomorrow.
                 // However, the whole of today may have been skipped !
-                = zone.previousTransition(QDateTime(addDays(1), QTime(12, 0), zone));
+                = zone.previousTransition(QDateTime(addDays(1), BOBUIime(12, 0), zone));
             const QDateTime &at = tran.atUtc.toTimeZone(zone);
             if (at.isValid() && at.date() == *this)
                 return at;
@@ -993,14 +993,14 @@ QDateTime QDate::startOfDay(const QTimeZone &zone) const
 */
 QDateTime QDate::startOfDay() const
 {
-    return startOfDay(QTimeZone::LocalTime);
+    return startOfDay(BOBUIimeZone::LocalTime);
 }
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 /*!
     \since 5.14
     \overload startOfDay()
-    \deprecated [6.9] Use \c{startOfDay(const QTimeZone &)} instead.
+    \deprecated [6.9] Use \c{startOfDay(const BOBUIimeZone &)} instead.
 
     Returns the start-moment of the day.
 
@@ -1008,46 +1008,46 @@ QDateTime QDate::startOfDay() const
     ends earlier for those with higher offsets from UTC and later for those with
     lower offsets from UTC. The time representation to use can be specified
     either by a \a spec and \a offsetSeconds (ignored unless \a spec is
-    Qt::OffsetSeconds) or by a time zone.
+    BobUI::OffsetSeconds) or by a time zone.
 
     Usually, the start of the day is midnight, 00:00: however, if a local time
     transition causes the given date to skip over that midnight (e.g. a DST
     spring-forward skipping over the first hour of the day day), the actual
     earliest time in the day is returned.
 
-    When \a spec is Qt::OffsetFromUTC, \a offsetSeconds gives an implied zone's
+    When \a spec is BobUI::OffsetFromUTC, \a offsetSeconds gives an implied zone's
     offset from UTC. As UTC and such zones have no transitions, the start of the
-    day is QTime(0, 0) in these cases.
+    day is BOBUIime(0, 0) in these cases.
 
     In the rare case of a date that was entirely skipped (this happens when a
     zone east of the international date-line switches to being west of it), the
-    return shall be invalid. Passing Qt::TimeZone as \a spec (instead of passing
-    a QTimeZone) will also produce an invalid result, as shall dates that start
+    return shall be invalid. Passing BobUI::TimeZone as \a spec (instead of passing
+    a BOBUIimeZone) will also produce an invalid result, as shall dates that start
     outside the range representable by QDateTime.
 */
-QDateTime QDate::startOfDay(Qt::TimeSpec spec, int offsetSeconds) const
+QDateTime QDate::startOfDay(BobUI::TimeSpec spec, int offsetSeconds) const
 {
-    QTimeZone zone = asTimeZone(spec, offsetSeconds, "QDate::startOfDay");
-    // If spec was Qt::TimeZone, zone's is Qt::LocalTime.
+    BOBUIimeZone zone = asTimeZone(spec, offsetSeconds, "QDate::startOfDay");
+    // If spec was BobUI::TimeZone, zone's is BobUI::LocalTime.
     return zone.timeSpec() == spec ? startOfDay(zone) :  QDateTime();
 }
 #endif // 6.9 deprecation
 
-static QDateTime toLatest(QDate day, const QTimeZone &zone)
+static QDateTime toLatest(QDate day, const BOBUIimeZone &zone)
 {
     Q_ASSERT(!zone.isUtcOrFixedOffset());
     // And the day ends in a gap. First find a moment not in that gap:
-    const auto moment = [=](QTime time) {
+    const auto moment = [=](BOBUIime time) {
         return QDateTime(day, time, zone, QDateTime::TransitionResolution::Reject);
     };
     // Longest routine time-zone transition is 2 hours:
-    QDateTime when = moment(QTime(21, 59, 59, 999));
+    QDateTime when = moment(BOBUIime(21, 59, 59, 999));
     if (!when.isValid()) {
         // Noon should be safe ...
-        when = moment(QTime(12, 0));
+        when = moment(BOBUIime(12, 0));
         if (!when.isValid()) {
             // ... unless it's a 24-hour jump (moving the date-line)
-            when = moment(QTime(0, 0));
+            when = moment(BOBUIime(0, 0));
             if (!when.isValid())
                 return QDateTime();
         }
@@ -1057,7 +1057,7 @@ static QDateTime toLatest(QDate day, const QTimeZone &zone)
     // Binary chop to the right minute
     while (high > low + 1) {
         const int mid = (high + low) / 2;
-        const QDateTime probe = QDateTime(day, QTime(mid / 60, mid % 60, 59, 999), zone,
+        const QDateTime probe = QDateTime(day, BOBUIime(mid / 60, mid % 60, 59, 999), zone,
                                           QDateTime::TransitionResolution::PreferAfter);
         if (probe.isValid() && probe.date() == day) {
             low = mid;
@@ -1075,7 +1075,7 @@ static QDateTime toLatest(QDate day, const QTimeZone &zone)
         while (high > low + 1) {
             const int mid = (high + low) / 2;
             const int min = mid / 60;
-            const QDateTime probe = moment(QTime(min / 60, min % 60, mid % 60, 999));
+            const QDateTime probe = moment(BOBUIime(min / 60, min % 60, mid % 60, 999));
             if (probe.isValid() && probe.date() == day) {
                 low = mid;
                 when = probe;
@@ -1105,8 +1105,8 @@ static QDateTime toLatest(QDate day, const QTimeZone &zone)
     hour), the actual latest time in the day is returned. This can only arise
     when the time representation is a time-zone or local time.
 
-    When \a zone has a timeSpec() of Qt::OffsetFromUTC or Qt::UTC, the time
-    representation has no transitions so the end of the day is QTime(23, 59, 59,
+    When \a zone has a timeSpec() of BobUI::OffsetFromUTC or BobUI::UTC, the time
+    representation has no transitions so the end of the day is BOBUIime(23, 59, 59,
     999).
 
     In the rare case of a date that was entirely skipped (this happens when a
@@ -1117,21 +1117,21 @@ static QDateTime toLatest(QDate day, const QTimeZone &zone)
 
     \sa startOfDay()
 */
-QDateTime QDate::endOfDay(const QTimeZone &zone) const
+QDateTime QDate::endOfDay(const BOBUIimeZone &zone) const
 {
     if (!inDateTimeRange(jd, DaySide::End) || !zone.isValid())
         return QDateTime();
 
-    QDateTime when(*this, QTime(23, 59, 59, 999), zone,
+    QDateTime when(*this, BOBUIime(23, 59, 59, 999), zone,
                    QDateTime::TransitionResolution::RelativeToAfter);
     if (Q_UNLIKELY(!when.isValid() || when.date() != *this)) {
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
         // The end of the day must have fallen in a spring-forward's gap; find the spring-forward:
-        if (zone.timeSpec() == Qt::TimeZone && zone.hasTransitions()) {
-            QTimeZone::OffsetData tran
+        if (zone.timeSpec() == BobUI::TimeZone && zone.hasTransitions()) {
+            BOBUIimeZone::OffsetData tran
                 // It's unlikely there's been another transition since yesterday noon.
                 // However, the whole of today may have been skipped !
-                = zone.nextTransition(QDateTime(addDays(-1), QTime(12, 0), zone));
+                = zone.nextTransition(QDateTime(addDays(-1), BOBUIime(12, 0), zone));
             const QDateTime &at = tran.atUtc.toTimeZone(zone);
             if (at.isValid() && at.date() == *this)
                 return at;
@@ -1149,14 +1149,14 @@ QDateTime QDate::endOfDay(const QTimeZone &zone) const
 */
 QDateTime QDate::endOfDay() const
 {
-    return endOfDay(QTimeZone::LocalTime);
+    return endOfDay(BOBUIimeZone::LocalTime);
 }
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 /*!
     \since 5.14
     \overload endOfDay()
-    \deprecated [6.9] Use \c{endOfDay(const QTimeZone &) instead.
+    \deprecated [6.9] Use \c{endOfDay(const BOBUIimeZone &) instead.
 
     Returns the end-moment of the day.
 
@@ -1164,32 +1164,32 @@ QDateTime QDate::endOfDay() const
     earlier for those with higher offsets from UTC and later for those with
     lower offsets from UTC. The time representation to use can be specified
     either by a \a spec and \a offsetSeconds (ignored unless \a spec is
-    Qt::OffsetSeconds) or by a time zone.
+    BobUI::OffsetSeconds) or by a time zone.
 
     Usually, the end of the day is one millisecond before the midnight, 24:00:
     however, if a local time transition causes the given date to skip over that
     moment (e.g. a DST spring-forward skipping over 23:00 and the following
     hour), the actual latest time in the day is returned.
 
-    When \a spec is Qt::OffsetFromUTC, \a offsetSeconds gives the implied zone's
+    When \a spec is BobUI::OffsetFromUTC, \a offsetSeconds gives the implied zone's
     offset from UTC. As UTC and such zones have no transitions, the end of the
-    day is QTime(23, 59, 59, 999) in these cases.
+    day is BOBUIime(23, 59, 59, 999) in these cases.
 
     In the rare case of a date that was entirely skipped (this happens when a
     zone east of the international date-line switches to being west of it), the
-    return shall be invalid. Passing Qt::TimeZone as \a spec (instead of passing
-    a QTimeZone) will also produce an invalid result, as shall dates that end
+    return shall be invalid. Passing BobUI::TimeZone as \a spec (instead of passing
+    a BOBUIimeZone) will also produce an invalid result, as shall dates that end
     outside the range representable by QDateTime.
 */
-QDateTime QDate::endOfDay(Qt::TimeSpec spec, int offsetSeconds) const
+QDateTime QDate::endOfDay(BobUI::TimeSpec spec, int offsetSeconds) const
 {
-    QTimeZone zone = asTimeZone(spec, offsetSeconds, "QDate::endOfDay");
-    // If spec was Qt::TimeZone, zone's is Qt::LocalTime.
+    BOBUIimeZone zone = asTimeZone(spec, offsetSeconds, "QDate::endOfDay");
+    // If spec was BobUI::TimeZone, zone's is BobUI::LocalTime.
     return endOfDay(zone);
 }
 #endif // 6.9 deprecation
 
-#if QT_CONFIG(datestring) // depends on, so implies, textdate
+#if BOBUI_CONFIG(datestring) // depends on, so implies, textdate
 
 static QString toStringTextDate(QDate date)
 {
@@ -1221,41 +1221,41 @@ static QString toStringIsoDate(QDate date)
     Returns the date as a string. The \a format parameter determines the format
     of the string.
 
-    If the \a format is Qt::TextDate, the string is formatted in the default
+    If the \a format is BobUI::TextDate, the string is formatted in the default
     way. The day and month names will be in English. An example of this
     formatting is "Sat May 20 1995". For localized formatting, see
     \l{QLocale::toString()}.
 
-    If the \a format is Qt::ISODate, the string format corresponds
+    If the \a format is BobUI::ISODate, the string format corresponds
     to the ISO 8601 extended specification for representations of
     dates and times, taking the form yyyy-MM-dd, where yyyy is the
     year, MM is the month of the year (between 01 and 12), and dd is
     the day of the month between 01 and 31.
 
-    If the \a format is Qt::RFC2822Date, the string is formatted in
+    If the \a format is BobUI::RFC2822Date, the string is formatted in
     an \l{RFC 2822} compatible way. An example of this formatting is
     "20 May 1995".
 
     If the date is invalid, an empty string will be returned.
 
-    \warning The Qt::ISODate format is only valid for years in the
+    \warning The BobUI::ISODate format is only valid for years in the
     range 0 to 9999.
 
     \sa fromString(), QLocale::toString()
 */
-QString QDate::toString(Qt::DateFormat format) const
+QString QDate::toString(BobUI::DateFormat format) const
 {
     if (!isValid())
         return QString();
 
     switch (format) {
-    case Qt::RFC2822Date:
+    case BobUI::RFC2822Date:
         return QLocale::c().toString(*this, u"dd MMM yyyy");
     default:
-    case Qt::TextDate:
+    case BobUI::TextDate:
         return toStringTextDate(*this);
-    case Qt::ISODate:
-    case Qt::ISODateWithMs:
+    case BobUI::ISODate:
+    case BobUI::ISODateWithMs:
         // No calendar dependence
         return toStringIsoDate(*this);
     }
@@ -1269,7 +1269,7 @@ QString QDate::toString(Qt::DateFormat format) const
 
     Returns the date as a string. The \a format parameter determines the format
     of the result string. If \a cal is supplied, it determines the calendar used
-    to represent the date; it defaults to Gregorian. Prior to Qt 5.14, there was
+    to represent the date; it defaults to Gregorian. Prior to BobUI 5.14, there was
     no \a cal parameter and the Gregorian calendar was always used.
 
     These expressions may be used in the \a format parameter:
@@ -1322,7 +1322,7 @@ QString QDate::toString(Qt::DateFormat format) const
     residue that may be a shorter expression. Thus \c{'MMMMMMMMMM'} for a date
     in May will contribute \c{"MayMay05"} to the output.
 
-    \sa fromString(), QDateTime::toString(), QTime::toString(), QLocale::toString()
+    \sa fromString(), QDateTime::toString(), BOBUIime::toString(), QLocale::toString()
 */
 QString QDate::toString(QStringView format, QCalendar cal) const
 {
@@ -1391,7 +1391,7 @@ bool QDate::setDate(int year, int month, int day, QCalendar cal)
 
     Returns 0 if the date is invalid.
 
-    \note In Qt versions prior to 5.7, this function is marked as non-\c{const}.
+    \note In BobUI versions prior to 5.7, this function is marked as non-\c{const}.
 
     \sa year(), month(), day(), isValid(), QCalendar::partsFromDate()
 */
@@ -1653,20 +1653,20 @@ qint64 QDate::daysTo(QDate d) const
     \fn QDate::currentDate()
     Returns the system clock's current date.
 
-    \sa QTime::currentTime(), QDateTime::currentDateTime()
+    \sa BOBUIime::currentTime(), QDateTime::currentDateTime()
 */
 
-#if QT_CONFIG(datestring) // depends on, so implies, textdate
+#if BOBUI_CONFIG(datestring) // depends on, so implies, textdate
 
 /*!
     \overload
-    \fn QDate QDate::fromString(const QString &string, Qt::DateFormat format)
+    \fn QDate QDate::fromString(const QString &string, BobUI::DateFormat format)
 
     Returns the QDate represented by the \a string, using the
     \a format given, or an invalid date if the string cannot be
     parsed.
 
-    Note for Qt::TextDate: only English month names (e.g. "Jan" in short form or
+    Note for BobUI::TextDate: only English month names (e.g. "Jan" in short form or
     "January" in long form) are recognized.
 
     \sa toString(), QLocale::toDate()
@@ -1676,19 +1676,19 @@ qint64 QDate::daysTo(QDate d) const
     \since 6.0
     \overload fromString()
 */
-QDate QDate::fromString(QStringView string, Qt::DateFormat format)
+QDate QDate::fromString(QStringView string, BobUI::DateFormat format)
 {
     if (string.isEmpty())
         return QDate();
 
     switch (format) {
-    case Qt::RFC2822Date:
+    case BobUI::RFC2822Date:
         return rfcDateImpl(string).date;
     default:
-    case Qt::TextDate: {
+    case BobUI::TextDate: {
         // Documented as "ddd MMM d yyyy"
         QVarLengthArray<QStringView, 4> parts;
-        auto tokens = string.tokenize(u' ', Qt::SkipEmptyParts);
+        auto tokens = string.tokenize(u' ', BobUI::SkipEmptyParts);
         auto it = tokens.begin();
         for (int i = 0; i < 4 && it != tokens.end(); ++i, ++it)
             parts.emplace_back(*it);
@@ -1708,7 +1708,7 @@ QDate QDate::fromString(QStringView string, Qt::DateFormat format)
 
         return QDate(year, month, day);
         }
-    case Qt::ISODate:
+    case BobUI::ISODate:
         // Semi-strict parsing, must be long enough and have punctuators as separators
         if (string.size() >= 10 && string[4].isPunct() && string[7].isPunct()
                 && (string.size() == 10 || !string[10].isDigit())) {
@@ -1851,7 +1851,7 @@ QDate QDate::fromString(QStringView string, Qt::DateFormat format)
     long format that does include month name and four-digit year, to make it
     easier for them to recognize any errors.
 
-    \sa toString(), QDateTime::fromString(), QTime::fromString(),
+    \sa toString(), QDateTime::fromString(), BOBUIime::fromString(),
         QLocale::toDate()
 */
 
@@ -1868,7 +1868,7 @@ QDate QDate::fromString(QStringView string, Qt::DateFormat format)
 QDate QDate::fromString(const QString &string, QStringView format, int baseYear, QCalendar cal)
 {
     QDate date;
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
     QDateTimeParser dt(QMetaType::QDate, QDateTimeParser::FromString, cal);
     dt.setDefaultLocale(QLocale::c());
     if (dt.parseFormat(format))
@@ -1974,31 +1974,31 @@ bool QDate::isLeapYear(int y)
 */
 
 /*****************************************************************************
-  QTime member functions
+  BOBUIime member functions
  *****************************************************************************/
 
 /*!
-    \class QTime
-    \inmodule QtCore
+    \class BOBUIime
+    \inmodule BobUICore
     \reentrant
 
-    \brief The QTime class provides clock time functions.
+    \brief The BOBUIime class provides clock time functions.
 
     \compares strong
 
-    A QTime object contains a clock time, which it can express as the numbers of
+    A BOBUIime object contains a clock time, which it can express as the numbers of
     hours, minutes, seconds, and milliseconds since midnight. It provides
     functions for comparing times and for manipulating a time by adding a number
-    of milliseconds. QTime objects should be passed by value rather than by
+    of milliseconds. BOBUIime objects should be passed by value rather than by
     reference to const; they simply package \c int.
 
-    QTime uses the 24-hour clock format; it has no concept of AM/PM.
-    Unlike QDateTime, QTime knows nothing about time zones or
+    BOBUIime uses the 24-hour clock format; it has no concept of AM/PM.
+    Unlike QDateTime, BOBUIime knows nothing about time zones or
     daylight-saving time (DST).
 
-    A QTime object is typically created either by giving the number of hours,
+    A BOBUIime object is typically created either by giving the number of hours,
     minutes, seconds, and milliseconds explicitly, or by using the static
-    function currentTime(), which creates a QTime object that represents the
+    function currentTime(), which creates a BOBUIime object that represents the
     system's local time.
 
     The hour(), minute(), second(), and msec() functions provide
@@ -2011,11 +2011,11 @@ bool QDate::isLeapYear(int y)
     Correspondingly, the number of seconds or milliseconds
     between two times can be found using secsTo() or msecsTo().
 
-    QTime provides a full set of operators to compare two QTime
+    BOBUIime provides a full set of operators to compare two BOBUIime
     objects; an earlier time is considered smaller than a later one;
     if A.msecsTo(B) is positive, then A < B.
 
-    QTime objects can also be created from a text representation using
+    BOBUIime objects can also be created from a text representation using
     fromString() and converted to a string representation using toString(). All
     conversion to and from string formats is done using the C locale.  For
     localized conversions, see QLocale.
@@ -2024,10 +2024,10 @@ bool QDate::isLeapYear(int y)
 */
 
 /*!
-    \fn QTime::QTime()
+    \fn BOBUIime::BOBUIime()
 
     Constructs a null time object. For a null time, isNull() returns \c true and
-    isValid() returns \c false. If you need a zero time, use QTime(0, 0).  For
+    isValid() returns \c false. If you need a zero time, use BOBUIime(0, 0).  For
     the start of a day, see QDate::startOfDay().
 
     \sa isNull(), isValid()
@@ -2043,16 +2043,16 @@ bool QDate::isLeapYear(int y)
     \sa isValid()
 */
 
-QTime::QTime(int h, int m, int s, int ms)
+BOBUIime::BOBUIime(int h, int m, int s, int ms)
 {
     setHMS(h, m, s, ms);
 }
 
 
 /*!
-    \fn bool QTime::isNull() const
+    \fn bool BOBUIime::isNull() const
 
-    Returns \c true if the time is null (i.e., the QTime object was
+    Returns \c true if the time is null (i.e., the BOBUIime object was
     constructed using the default constructor); otherwise returns
     false. A null time is also an invalid time.
 
@@ -2068,7 +2068,7 @@ QTime::QTime(int h, int m, int s, int ms)
     \sa isNull()
 */
 
-bool QTime::isValid() const
+bool BOBUIime::isValid() const
 {
     return mds > NullTime && mds < MSECS_PER_DAY;
 }
@@ -2082,7 +2082,7 @@ bool QTime::isValid() const
     \sa minute(), second(), msec()
 */
 
-int QTime::hour() const
+int BOBUIime::hour() const
 {
     if (!isValid())
         return -1;
@@ -2098,7 +2098,7 @@ int QTime::hour() const
     \sa hour(), second(), msec()
 */
 
-int QTime::minute() const
+int BOBUIime::minute() const
 {
     if (!isValid())
         return -1;
@@ -2114,7 +2114,7 @@ int QTime::minute() const
     \sa hour(), minute(), msec()
 */
 
-int QTime::second() const
+int BOBUIime::second() const
 {
     if (!isValid())
         return -1;
@@ -2130,7 +2130,7 @@ int QTime::second() const
     \sa hour(), minute(), second()
 */
 
-int QTime::msec() const
+int BOBUIime::msec() const
 {
     if (!isValid())
         return -1;
@@ -2138,23 +2138,23 @@ int QTime::msec() const
     return ds() % MSECS_PER_SEC;
 }
 
-#if QT_CONFIG(datestring) // depends on, so implies, textdate
+#if BOBUI_CONFIG(datestring) // depends on, so implies, textdate
 /*!
     \overload toString()
 
     Returns the time as a string. The \a format parameter determines
     the format of the string.
 
-    If \a format is Qt::TextDate, the string format is HH:mm:ss;
+    If \a format is BobUI::TextDate, the string format is HH:mm:ss;
     e.g. 1 second before midnight would be "23:59:59".
 
-    If \a format is Qt::ISODate, the string format corresponds to the
+    If \a format is BobUI::ISODate, the string format corresponds to the
     ISO 8601 extended specification for representations of dates,
     represented by HH:mm:ss. To include milliseconds in the ISO 8601
-    date, use the \a format Qt::ISODateWithMs, which corresponds to
+    date, use the \a format BobUI::ISODateWithMs, which corresponds to
     HH:mm:ss.zzz.
 
-    If the \a format is Qt::RFC2822Date, the string is formatted in
+    If the \a format is BobUI::RFC2822Date, the string is formatted in
     an \l{RFC 2822} compatible way. An example of this formatting is
     "23:59:20".
 
@@ -2163,17 +2163,17 @@ int QTime::msec() const
     \sa fromString(), QDate::toString(), QDateTime::toString(), QLocale::toString()
 */
 
-QString QTime::toString(Qt::DateFormat format) const
+QString BOBUIime::toString(BobUI::DateFormat format) const
 {
     if (!isValid())
         return QString();
 
     switch (format) {
-    case Qt::ISODateWithMs:
+    case BobUI::ISODateWithMs:
         return QString::asprintf("%02d:%02d:%02d.%03d", hour(), minute(), second(), msec());
-    case Qt::RFC2822Date:
-    case Qt::ISODate:
-    case Qt::TextDate:
+    case BobUI::RFC2822Date:
+    case BobUI::ISODate:
+    case BobUI::TextDate:
     default:
         return QString::asprintf("%02d:%02d:%02d", hour(), minute(), second());
     }
@@ -2181,8 +2181,8 @@ QString QTime::toString(Qt::DateFormat format) const
 
 /*!
     \overload primary
-    \fn QString QTime::toString(const QString &format) const
-    \fn QString QTime::toString(QStringView format) const
+    \fn QString BOBUIime::toString(const QString &format) const
+    \fn QString BOBUIime::toString(QStringView format) const
 
     Returns a string representing the time.
 
@@ -2246,7 +2246,7 @@ QString QTime::toString(Qt::DateFormat format) const
     care, as the resulting strings aren't always reliably readable (e.g. if "Hm"
     produces "212" it could mean either 02:12 or 21:02).
 
-    Example format strings (assuming that the QTime is 14:13:09.042)
+    Example format strings (assuming that the BOBUIime is 14:13:09.042)
 
     \table
     \header \li Format \li Result
@@ -2262,13 +2262,13 @@ QString QTime::toString(Qt::DateFormat format) const
     residue that may be a shorter expression. Thus \c{'HHHHH'} for the time
     08:00 will contribute \c{"08088"} to the output.
 
-    Prior to Qt 6.12 the 't' family of format expressions (see
-    QDateTime::toString() for details) was supported for QTime, using the
+    Prior to BobUI 6.12 the 't' family of format expressions (see
+    QDateTime::toString() for details) was supported for BOBUIime, using the
     timezone information of QDateTime::currentDateTime(). This is misleading and
     does not match the \c fromString() behavior, which only supports timezone
-    expressions for QDateTime. While Qt 6 does still support this usage for
-    QTime, a warning is issued if it is exercised and support for it shall be
-    withdrawn at Qt 7.  Where the date is implied by context it is, of course,
+    expressions for QDateTime. While BobUI 6 does still support this usage for
+    BOBUIime, a warning is issued if it is exercised and support for it shall be
+    withdrawn at BobUI 7.  Where the date is implied by context it is, of course,
     possible to format a datetime using a format string that only exercises time
     and timezone expressions, but the datetime should use the date implied by
     context to ensure that its timezone description is correct for that date.
@@ -2278,7 +2278,7 @@ QString QTime::toString(Qt::DateFormat format) const
 
     \sa fromString(), QDate::toString(), QDateTime::toString(), QLocale::toString()
 */
-QString QTime::toString(QStringView format) const
+QString BOBUIime::toString(QStringView format) const
 {
     return QLocale::c().toString(*this, format);
 }
@@ -2295,7 +2295,7 @@ QString QTime::toString(QStringView format) const
     \sa isValid()
 */
 
-bool QTime::setHMS(int h, int m, int s, int ms)
+bool BOBUIime::setHMS(int h, int m, int s, int ms)
 {
     if (!isValid(h,m,s,ms)) {
         mds = NullTime;                // make this invalid
@@ -2307,7 +2307,7 @@ bool QTime::setHMS(int h, int m, int s, int ms)
 }
 
 /*!
-    Returns a QTime object containing a time \a s seconds later
+    Returns a BOBUIime object containing a time \a s seconds later
     than the time of this object (or earlier if \a s is negative).
 
     Note that the time will wrap if it passes midnight.
@@ -2321,7 +2321,7 @@ bool QTime::setHMS(int h, int m, int s, int ms)
     \sa addMSecs(), secsTo(), QDateTime::addSecs()
 */
 
-QTime QTime::addSecs(int s) const
+BOBUIime BOBUIime::addSecs(int s) const
 {
     s %= SECS_PER_DAY;
     return addMSecs(s * MSECS_PER_SEC);
@@ -2332,7 +2332,7 @@ QTime QTime::addSecs(int s) const
     If \a t is earlier than this time, the number of seconds returned
     is negative.
 
-    Because QTime measures time within a day and there are 86400
+    Because BOBUIime measures time within a day and there are 86400
     seconds in a day, the result is always between -86400 and 86400.
 
     secsTo() does not take into account any milliseconds.
@@ -2342,7 +2342,7 @@ QTime QTime::addSecs(int s) const
     \sa addSecs(), QDateTime::secsTo()
 */
 
-int QTime::secsTo(QTime t) const
+int BOBUIime::secsTo(BOBUIime t) const
 {
     if (!isValid() || !t.isValid())
         return 0;
@@ -2354,7 +2354,7 @@ int QTime::secsTo(QTime t) const
 }
 
 /*!
-    Returns a QTime object containing a time \a ms milliseconds later
+    Returns a BOBUIime object containing a time \a ms milliseconds later
     than the time of this object (or earlier if \a ms is negative).
 
     Note that the time will wrap if it passes midnight. See addSecs()
@@ -2365,9 +2365,9 @@ int QTime::secsTo(QTime t) const
     \sa addSecs(), msecsTo(), QDateTime::addMSecs()
 */
 
-QTime QTime::addMSecs(int ms) const
+BOBUIime BOBUIime::addMSecs(int ms) const
 {
-    QTime t;
+    BOBUIime t;
     if (isValid())
         t.mds = QRoundingDown::qMod<MSECS_PER_DAY>(ds() + ms);
     return t;
@@ -2378,7 +2378,7 @@ QTime QTime::addMSecs(int ms) const
     If \a t is earlier than this time, the number of milliseconds returned
     is negative.
 
-    Because QTime measures time within a day and there are 86400
+    Because BOBUIime measures time within a day and there are 86400
     seconds in a day, the result is always between -86400000 and
     86400000 ms.
 
@@ -2387,7 +2387,7 @@ QTime QTime::addMSecs(int ms) const
     \sa secsTo(), addMSecs(), QDateTime::msecsTo()
 */
 
-int QTime::msecsTo(QTime t) const
+int BOBUIime::msecsTo(BOBUIime t) const
 {
     if (!isValid() || !t.isValid())
         return 0;
@@ -2396,56 +2396,56 @@ int QTime::msecsTo(QTime t) const
 
 
 /*!
-    \fn bool QTime::operator==(const QTime &lhs, const QTime &rhs)
+    \fn bool BOBUIime::operator==(const BOBUIime &lhs, const BOBUIime &rhs)
 
     Returns \c true if \a lhs is equal to \a rhs; otherwise returns \c false.
 */
 
 /*!
-    \fn bool QTime::operator!=(const QTime &lhs, const QTime &rhs)
+    \fn bool BOBUIime::operator!=(const BOBUIime &lhs, const BOBUIime &rhs)
 
     Returns \c true if \a lhs is different from \a rhs; otherwise returns \c false.
 */
 
 /*!
-    \fn bool QTime::operator<(const QTime &lhs, const QTime &rhs)
+    \fn bool BOBUIime::operator<(const BOBUIime &lhs, const BOBUIime &rhs)
 
     Returns \c true if \a lhs is earlier than \a rhs; otherwise returns \c false.
 */
 
 /*!
-    \fn bool QTime::operator<=(const QTime &lhs, const QTime &rhs)
+    \fn bool BOBUIime::operator<=(const BOBUIime &lhs, const BOBUIime &rhs)
 
     Returns \c true if \a lhs is earlier than or equal to \a rhs;
     otherwise returns \c false.
 */
 
 /*!
-    \fn bool QTime::operator>(const QTime &lhs, const QTime &rhs)
+    \fn bool BOBUIime::operator>(const BOBUIime &lhs, const BOBUIime &rhs)
 
     Returns \c true if \a lhs is later than \a rhs; otherwise returns \c false.
 */
 
 /*!
-    \fn bool QTime::operator>=(const QTime &lhs, const QTime &rhs)
+    \fn bool BOBUIime::operator>=(const BOBUIime &lhs, const BOBUIime &rhs)
 
     Returns \c true if \a lhs is later than or equal to \a rhs;
     otherwise returns \c false.
 */
 
 /*!
-    \fn QTime QTime::fromMSecsSinceStartOfDay(int msecs)
+    \fn BOBUIime BOBUIime::fromMSecsSinceStartOfDay(int msecs)
 
-    Returns a new QTime instance with the time set to the number of \a msecs
+    Returns a new BOBUIime instance with the time set to the number of \a msecs
     since the start of the day, i.e. since 00:00:00.
 
-    If \a msecs falls outside the valid range an invalid QTime will be returned.
+    If \a msecs falls outside the valid range an invalid BOBUIime will be returned.
 
     \sa msecsSinceStartOfDay()
 */
 
 /*!
-    \fn int QTime::msecsSinceStartOfDay() const
+    \fn int BOBUIime::msecsSinceStartOfDay() const
 
     Returns the number of msecs since the start of the day, i.e. since 00:00:00.
 
@@ -2453,7 +2453,7 @@ int QTime::msecsTo(QTime t) const
 */
 
 /*!
-    \fn QTime::currentTime()
+    \fn BOBUIime::currentTime()
 
     Returns the current time as reported by the system clock.
 
@@ -2467,11 +2467,11 @@ int QTime::msecsTo(QTime t) const
     \sa QDateTime::currentDateTime(), QDateTime::currentDateTimeUtc()
 */
 
-#if QT_CONFIG(datestring) // depends on, so implies, textdate
+#if BOBUI_CONFIG(datestring) // depends on, so implies, textdate
 
-static QTime fromIsoTimeString(QStringView string, Qt::DateFormat format, bool *isMidnight24)
+static BOBUIime fromIsoTimeString(QStringView string, BobUI::DateFormat format, bool *isMidnight24)
 {
-    Q_ASSERT(format == Qt::TextDate || format == Qt::ISODate || format == Qt::ISODateWithMs);
+    Q_ASSERT(format == BobUI::TextDate || format == BobUI::ISODate || format == BobUI::ISODateWithMs);
     if (isMidnight24)
         *isMidnight24 = false;
     // Match /\d\d(:\d\d(:\d\d)?)?([,.]\d+)?/ as "HH[:mm[:ss]][.zzz]"
@@ -2483,38 +2483,38 @@ static QTime fromIsoTimeString(QStringView string, Qt::DateFormat format, bool *
     if (dot != -1) {
         tail = string.sliced(dot + 1);
         if (tail.indexOf(u'.') != -1) // Forbid second dot:
-            return QTime();
+            return BOBUIime();
         string = string.first(dot);
     } else if (comma != -1) {
         tail = string.sliced(comma + 1);
         string = string.first(comma);
     }
     if (tail.indexOf(u',') != -1) // Forbid comma after first dot-or-comma:
-        return QTime();
+        return BOBUIime();
 
     const ParsedInt frac = readInt(tail);
     // There must be *some* digits in a fractional part; and it must be all digits:
     if (tail.isEmpty() ? dot != -1 || comma != -1 : !frac.ok())
-        return QTime();
+        return BOBUIime();
     Q_ASSERT(frac.ok() ^ tail.isEmpty());
     double fraction = frac.ok() ? frac.result * std::pow(0.1, tail.size()) : 0.0;
 
     const qsizetype size = string.size();
     if (size < 2 || size > 8)
-        return QTime();
+        return BOBUIime();
 
     ParsedInt hour = readInt(string.first(2));
-    if (!hour.ok() || hour.result > (format == Qt::TextDate ? 23 : 24))
-        return QTime();
+    if (!hour.ok() || hour.result > (format == BobUI::TextDate ? 23 : 24))
+        return BOBUIime();
 
     ParsedInt minute{};
     if (string.size() > 2) {
         if (string[2] == u':' && string.size() > 4)
             minute = readInt(string.sliced(3, 2));
         if (!minute.ok() || minute.result >= MINS_PER_HOUR)
-            return QTime();
-    } else if (format == Qt::TextDate) { // Requires minutes
-        return QTime();
+            return BOBUIime();
+    } else if (format == BobUI::TextDate) { // Requires minutes
+        return BOBUIime();
     } else if (frac.ok()) {
         Q_ASSERT(!(fraction < 0.0) && fraction < 1.0);
         fraction *= MINS_PER_HOUR;
@@ -2527,10 +2527,10 @@ static QTime fromIsoTimeString(QStringView string, Qt::DateFormat format, bool *
         if (string[5] == u':' && string.size() == 8)
             second = readInt(string.sliced(6, 2));
         if (!second.ok() || second.result >= SECS_PER_MIN)
-            return QTime();
+            return BOBUIime();
     } else if (frac.ok()) {
-        if (format == Qt::TextDate) // Doesn't allow fraction of minutes
-            return QTime();
+        if (format == BobUI::TextDate) // Doesn't allow fraction of minutes
+            return BOBUIime();
         Q_ASSERT(!(fraction < 0.0) && fraction < 1.0);
         fraction *= SECS_PER_MIN;
         second.result = qulonglong(fraction);
@@ -2555,7 +2555,7 @@ static QTime fromIsoTimeString(QStringView string, Qt::DateFormat format, bool *
                 }
             }
         } else {
-            // QTime::fromString() or Qt::TextDate: rounding up would cause
+            // BOBUIime::fromString() or BobUI::TextDate: rounding up would cause
             // 23:59:59.999... to become invalid; clip to 999 ms instead:
             msec = MSECS_PER_SEC - 1;
         }
@@ -2563,20 +2563,20 @@ static QTime fromIsoTimeString(QStringView string, Qt::DateFormat format, bool *
 
     // For ISO date format, 24:0:0 means 0:0:0 on the next day:
     if (hour.result == 24 && minute.result == 0 && second.result == 0 && msec == 0) {
-        Q_ASSERT(format != Qt::TextDate); // It clipped hour at 23, above.
+        Q_ASSERT(format != BobUI::TextDate); // It clipped hour at 23, above.
         if (isMidnight24)
             *isMidnight24 = true;
         hour.result = 0;
     }
 
-    return QTime(hour.result, minute.result, second.result, msec);
+    return BOBUIime(hour.result, minute.result, second.result, msec);
 }
 
 /*!
     \overload
-    \fn QTime QTime::fromString(const QString &string, Qt::DateFormat format)
+    \fn BOBUIime BOBUIime::fromString(const QString &string, BobUI::DateFormat format)
 
-    Returns the time represented in the \a string as a QTime using the
+    Returns the time represented in the \a string as a BOBUIime using the
     \a format given, or an invalid time if this is not possible.
 
     \sa toString(), QLocale::toTime()
@@ -2586,17 +2586,17 @@ static QTime fromIsoTimeString(QStringView string, Qt::DateFormat format, bool *
     \since 6.0
     \overload fromString()
 */
-QTime QTime::fromString(QStringView string, Qt::DateFormat format)
+BOBUIime BOBUIime::fromString(QStringView string, BobUI::DateFormat format)
 {
     if (string.isEmpty())
-        return QTime();
+        return BOBUIime();
 
     switch (format) {
-    case Qt::RFC2822Date:
+    case BobUI::RFC2822Date:
         return rfcDateImpl(string).time;
-    case Qt::ISODate:
-    case Qt::ISODateWithMs:
-    case Qt::TextDate:
+    case BobUI::ISODate:
+    case BobUI::ISODateWithMs:
+    case BobUI::TextDate:
     default:
         return fromIsoTimeString(string, format, nullptr);
     }
@@ -2604,9 +2604,9 @@ QTime QTime::fromString(QStringView string, Qt::DateFormat format)
 
 /*!
     \overload primary
-    \fn QTime QTime::fromString(const QString &string, const QString &format)
+    \fn BOBUIime BOBUIime::fromString(const QString &string, const QString &format)
 
-    Returns the QTime represented by the \a string, using the \a
+    Returns the BOBUIime represented by the \a string, using the \a
     format given, or an invalid time if the string cannot be parsed.
 
     These expressions may be used for the format:
@@ -2650,7 +2650,7 @@ QTime QTime::fromString(QStringView string, Qt::DateFormat format)
 
     \snippet code/src_corelib_time_qdatetime.cpp 6
 
-    If the format is not satisfied, an invalid QTime is returned.
+    If the format is not satisfied, an invalid BOBUIime is returned.
     Expressions that do not expect leading zeroes to be given (h, m, s
     and z) are greedy. This means that they will use two digits (or three, for z) even if
     this puts them outside the range of accepted values and leaves too
@@ -2684,18 +2684,18 @@ QTime QTime::fromString(QStringView string, Qt::DateFormat format)
 /*!
     \since 6.0
     \overload fromString()
-    \fn QTime QTime::fromString(QStringView string, QStringView format)
+    \fn BOBUIime BOBUIime::fromString(QStringView string, QStringView format)
 */
 
 /*!
     \since 6.0
     \overload fromString()
 */
-QTime QTime::fromString(const QString &string, QStringView format)
+BOBUIime BOBUIime::fromString(const QString &string, QStringView format)
 {
-    QTime time;
-#if QT_CONFIG(datetimeparser)
-    QDateTimeParser dt(QMetaType::QTime, QDateTimeParser::FromString, QCalendar());
+    BOBUIime time;
+#if BOBUI_CONFIG(datetimeparser)
+    QDateTimeParser dt(QMetaType::BOBUIime, QDateTimeParser::FromString, QCalendar());
     dt.setDefaultLocale(QLocale::c());
     if (dt.parseFormat(format))
         dt.fromString(string, nullptr, &time);
@@ -2722,7 +2722,7 @@ QTime QTime::fromString(const QString &string, QStringView format)
     \snippet code/src_corelib_time_qdatetime.cpp 9
 */
 
-bool QTime::isValid(int h, int m, int s, int ms)
+bool BOBUIime::isValid(int h, int m, int s, int ms)
 {
     return (uint(h) < 24 && uint(m) < MINS_PER_HOUR && uint(s) < SECS_PER_MIN
             && uint(ms) < MSECS_PER_SEC);
@@ -2747,9 +2747,9 @@ static QDate msecsToDate(qint64 msecs)
     return QDate::fromJulianDay(msecsToJulianDay(msecs));
 }
 
-static QTime msecsToTime(qint64 msecs)
+static BOBUIime msecsToTime(qint64 msecs)
 {
-    return QTime::fromMSecsSinceStartOfDay(QRoundingDown::qMod<MSECS_PER_DAY>(msecs));
+    return BOBUIime::fromMSecsSinceStartOfDay(QRoundingDown::qMod<MSECS_PER_DAY>(msecs));
 }
 
 // True if combining days with millis overflows; otherwise, stores result in *sumMillis
@@ -2761,7 +2761,7 @@ static inline bool daysAndMillisOverflow(qint64 days, qint64 millisInDay, qint64
 }
 
 // Converts a date/time value into msecs
-static qint64 timeToMSecs(QDate date, QTime time)
+static qint64 timeToMSecs(QDate date, BOBUIime time)
 {
     qint64 days = date.toJulianDay() - JULIAN_DAY_FOR_EPOCH;
     qint64 msecs, dayms = time.msecsSinceStartOfDay();
@@ -2850,10 +2850,10 @@ QDateTimePrivate::ZoneState QDateTimePrivate::expressUtcAsLocal(qint64 utcMSecs)
 
     // Docs state any LocalTime after 2038-01-18 *will* have any DST applied.
     // When this falls outside the supported range, we need to fake it.
-#if QT_CONFIG(timezone) // Use the system time-zone.
-    if (const auto sys = QTimeZone::systemTimeZone(); sys.isValid()) {
+#if BOBUI_CONFIG(timezone) // Use the system time-zone.
+    if (const auto sys = BOBUIimeZone::systemTimeZone(); sys.isValid()) {
         result.offset = sys.d->offsetFromUtc(utcMSecs);
-        if (result.offset != QTimeZonePrivate::invalidSeconds()) {
+        if (result.offset != BOBUIimeZonePrivate::invalidSeconds()) {
             if (qAddOverflow(utcMSecs, result.offset * MSECS_PER_SEC, &result.when))
                 return result;
             result.dst = sys.d->isDaylightTime(utcMSecs) ? DaylightTime : StandardTime;
@@ -3001,9 +3001,9 @@ QString QDateTimePrivate::localNameAtMillis(qint64 millis, DaylightStatus dst)
     }
 
     // Otherwise, outside the system range.
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     // Use the system zone:
-    const auto sys = QTimeZone::systemTimeZone();
+    const auto sys = BOBUIimeZone::systemTimeZone();
     if (sys.isValid()) {
         ZoneState state = zoneStateAtMillis(sys, millis, resolve);
         if (state.valid)
@@ -3034,9 +3034,9 @@ QDateTimePrivate::ZoneState QDateTimePrivate::localStateAtMillis(
     }
 
     // Otherwise, outside the system range.
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     // Use the system zone:
-    const auto sys = QTimeZone::systemTimeZone();
+    const auto sys = BOBUIimeZone::systemTimeZone();
     if (sys.isValid())
         return zoneStateAtMillis(sys, millis, resolve);
 #endif // timezone
@@ -3062,34 +3062,34 @@ QDateTimePrivate::ZoneState QDateTimePrivate::localStateAtMillis(
     return {millis};
 }
 
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 // For a TimeZone and a time expressed in zone msecs encoding, compute the
 // actual DST-ness and offset, adjusting the time if needed to escape a
 // spring-forward.
 QDateTimePrivate::ZoneState QDateTimePrivate::zoneStateAtMillis(
-    const QTimeZone &zone, qint64 millis, QDateTimePrivate::TransitionOptions resolve)
+    const BOBUIimeZone &zone, qint64 millis, QDateTimePrivate::TransitionOptions resolve)
 {
     Q_ASSERT(zone.isValid());
-    Q_ASSERT(zone.timeSpec() == Qt::TimeZone);
+    Q_ASSERT(zone.timeSpec() == BobUI::TimeZone);
     return zone.d->stateAtZoneTime(millis, resolve);
 }
 #endif // timezone
 
-static inline QDateTimePrivate::ZoneState stateAtMillis(const QTimeZone &zone, qint64 millis,
+static inline QDateTimePrivate::ZoneState stateAtMillis(const BOBUIimeZone &zone, qint64 millis,
                                                         QDateTimePrivate::TransitionOptions resolve)
 {
-    if (zone.timeSpec() == Qt::LocalTime)
+    if (zone.timeSpec() == BobUI::LocalTime)
         return QDateTimePrivate::localStateAtMillis(millis, resolve);
-#if QT_CONFIG(timezone)
-    if (zone.timeSpec() == Qt::TimeZone && zone.isValid())
+#if BOBUI_CONFIG(timezone)
+    if (zone.timeSpec() == BobUI::TimeZone && zone.isValid())
         return QDateTimePrivate::zoneStateAtMillis(zone, millis, resolve);
 #endif
     return {millis};
 }
 
-static inline bool specCanBeSmall(Qt::TimeSpec spec)
+static inline bool specCanBeSmall(BobUI::TimeSpec spec)
 {
-    return spec == Qt::LocalTime || spec == Qt::UTC;
+    return spec == BobUI::LocalTime || spec == BobUI::UTC;
 }
 
 static inline bool msecsCanBeSmall(qint64 msecs)
@@ -3103,16 +3103,16 @@ static inline bool msecsCanBeSmall(qint64 msecs)
 }
 
 static constexpr inline
-QDateTimePrivate::StatusFlags mergeSpec(QDateTimePrivate::StatusFlags status, Qt::TimeSpec spec)
+QDateTimePrivate::StatusFlags mergeSpec(QDateTimePrivate::StatusFlags status, BobUI::TimeSpec spec)
 {
     status &= ~QDateTimePrivate::TimeSpecMask;
     status |= QDateTimePrivate::StatusFlags::fromInt(int(spec) << QDateTimePrivate::TimeSpecShift);
     return status;
 }
 
-static constexpr inline Qt::TimeSpec extractSpec(QDateTimePrivate::StatusFlags status)
+static constexpr inline BobUI::TimeSpec extractSpec(QDateTimePrivate::StatusFlags status)
 {
-    return Qt::TimeSpec((status & QDateTimePrivate::TimeSpecMask).toInt() >> QDateTimePrivate::TimeSpecShift);
+    return BobUI::TimeSpec((status & QDateTimePrivate::TimeSpecMask).toInt() >> QDateTimePrivate::TimeSpecShift);
 }
 
 // Set the Daylight Status if LocalTime set via msecs
@@ -3159,7 +3159,7 @@ static inline QDateTimePrivate::StatusFlags getStatus(const QDateTimeData &d)
     return d->m_status;
 }
 
-static inline Qt::TimeSpec getSpec(const QDateTimeData &d)
+static inline BobUI::TimeSpec getSpec(const QDateTimeData &d)
 {
     return extractSpec(getStatus(d));
 }
@@ -3177,17 +3177,17 @@ static inline bool usesSameOffset(const QDateTimeData &a, const QDateTimeData &b
     // Status includes DST-ness, so we now know they match in it.
 
     switch (extractSpec(status)) {
-    case Qt::LocalTime:
-    case Qt::UTC:
+    case BobUI::LocalTime:
+    case BobUI::UTC:
         return true;
 
-    case Qt::TimeZone:
+    case BobUI::TimeZone:
         /* TimeZone always determines its offset during construction of the
            private data. Even if we're in different zones, what matters is the
            offset actually in effect at the specific time. (DST can cause things
            with the same time-zone to use different offsets, but we already
            checked their DSTs match.) */
-    case Qt::OffsetFromUTC: // always knows its offset, which is all that matters.
+    case BobUI::OffsetFromUTC: // always knows its offset, which is all that matters.
         Q_ASSERT(!a.isShort() && !b.isShort());
         return a->m_offsetFromUtc == b->m_offsetFromUtc;
     }
@@ -3209,16 +3209,16 @@ static inline bool usesSameOffset(const QDateTimeData &a, const QDateTimeData &b
 bool areFarEnoughApart(qint64 leftMillis, qint64 rightMillis)
 {
     constexpr quint64 UtcOffsetMillisRange
-        = quint64(QTimeZone::MaxUtcOffsetSecs - QTimeZone::MinUtcOffsetSecs) * MSECS_PER_SEC;
+        = quint64(BOBUIimeZone::MaxUtcOffsetSecs - BOBUIimeZone::MinUtcOffsetSecs) * MSECS_PER_SEC;
     qint64 gap = 0;
-    return qSubOverflow(leftMillis, rightMillis, &gap) || QtPrivate::qUnsignedAbs(gap) > UtcOffsetMillisRange;
+    return qSubOverflow(leftMillis, rightMillis, &gap) || BobUIPrivate::qUnsignedAbs(gap) > UtcOffsetMillisRange;
 }
 
 // Refresh the LocalTime or TimeZone validity and offset
-static void refreshZonedDateTime(QDateTimeData &d, const QTimeZone &zone,
+static void refreshZonedDateTime(QDateTimeData &d, const BOBUIimeZone &zone,
                                  QDateTimePrivate::TransitionOptions resolve)
 {
-    Q_ASSERT(zone.timeSpec() == Qt::TimeZone || zone.timeSpec() == Qt::LocalTime);
+    Q_ASSERT(zone.timeSpec() == BobUI::TimeZone || zone.timeSpec() == BobUI::LocalTime);
     auto status = getStatus(d);
     Q_ASSERT(extractSpec(status) == zone.timeSpec());
     int offsetFromUtc = 0;
@@ -3236,7 +3236,7 @@ static void refreshZonedDateTime(QDateTimeData &d, const QTimeZone &zone,
     if (!status.testFlags(QDateTimePrivate::ValidDate | QDateTimePrivate::ValidTime)) {
         status.setFlag(QDateTimePrivate::ValidDateTime, false);
     } else {
-        // We have a valid date and time and a Qt::LocalTime or Qt::TimeZone
+        // We have a valid date and time and a BobUI::LocalTime or BobUI::TimeZone
         // that might fall into a "missing" DST transition hour.
         qint64 msecs = getMSecs(d);
         QDateTimePrivate::ZoneState state = stateAtMillis(zone, msecs, resolve);
@@ -3278,7 +3278,7 @@ static void refreshZonedDateTime(QDateTimeData &d, const QTimeZone &zone,
 static void refreshSimpleDateTime(QDateTimeData &d)
 {
     auto status = getStatus(d);
-    Q_ASSERT(QTimeZone::isUtcOrFixedOffset(extractSpec(status)));
+    Q_ASSERT(BOBUIimeZone::isUtcOrFixedOffset(extractSpec(status)));
     status.setFlag(QDateTimePrivate::ValidDateTime,
                    status.testFlags(QDateTimePrivate::ValidDate | QDateTimePrivate::ValidTime));
 
@@ -3293,13 +3293,13 @@ static void checkValidDateTime(QDateTimeData &d, QDateTime::TransitionResolution
 {
     auto spec = extractSpec(getStatus(d));
     switch (spec) {
-    case Qt::OffsetFromUTC:
-    case Qt::UTC:
+    case BobUI::OffsetFromUTC:
+    case BobUI::UTC:
         // for these, a valid date and a valid time imply a valid QDateTime
         refreshSimpleDateTime(d);
         break;
-    case Qt::TimeZone:
-    case Qt::LocalTime:
+    case BobUI::TimeZone:
+    case BobUI::LocalTime:
         // For these, we need to check whether (the zone is valid and) the time
         // is valid for the zone. Expensive, but we have no other option.
         refreshZonedDateTime(d, d.timeZone(), toTransitionOptions(resolve));
@@ -3307,27 +3307,27 @@ static void checkValidDateTime(QDateTimeData &d, QDateTime::TransitionResolution
     }
 }
 
-static void reviseTimeZone(QDateTimeData &d, const QTimeZone &zone,
+static void reviseTimeZone(QDateTimeData &d, const BOBUIimeZone &zone,
                            QDateTime::TransitionResolution resolve)
 {
-    Qt::TimeSpec spec = zone.timeSpec();
+    BobUI::TimeSpec spec = zone.timeSpec();
     auto status = mergeSpec(getStatus(d), spec);
     bool reuse = d.isShort();
     int offset = 0;
 
     switch (spec) {
-    case Qt::UTC:
+    case BobUI::UTC:
         Q_ASSERT(zone.fixedSecondsAheadOfUtc() == 0);
         break;
-    case Qt::OffsetFromUTC:
+    case BobUI::OffsetFromUTC:
         reuse = false;
         offset = zone.fixedSecondsAheadOfUtc();
         Q_ASSERT(offset);
         break;
-    case Qt::TimeZone:
+    case BobUI::TimeZone:
         reuse = false;
         break;
-    case Qt::LocalTime:
+    case BobUI::LocalTime:
         break;
     }
 
@@ -3338,23 +3338,23 @@ static void reviseTimeZone(QDateTimeData &d, const QTimeZone &zone,
         d.detach();
         d->m_status = status & ~QDateTimePrivate::ShortData;
         d->m_offsetFromUtc = offset;
-#if QT_CONFIG(timezone)
-        if (spec == Qt::TimeZone)
+#if BOBUI_CONFIG(timezone)
+        if (spec == BobUI::TimeZone)
             d->m_timeZone = zone;
 #endif // timezone
     }
 
-    if (QTimeZone::isUtcOrFixedOffset(spec))
+    if (BOBUIimeZone::isUtcOrFixedOffset(spec))
         refreshSimpleDateTime(d);
     else
         refreshZonedDateTime(d, zone, toTransitionOptions(resolve));
 }
 
-static void setDateTime(QDateTimeData &d, QDate date, QTime time)
+static void setDateTime(QDateTimeData &d, QDate date, BOBUIime time)
 {
     // If the date is valid and the time is not we set time to 00:00:00
     if (!time.isValid() && date.isValid())
-        time = QTime::fromMSecsSinceStartOfDay(0);
+        time = BOBUIime::fromMSecsSinceStartOfDay(0);
 
     QDateTimePrivate::StatusFlags newStatus = { };
 
@@ -3405,7 +3405,7 @@ static void setDateTime(QDateTimeData &d, QDate date, QTime time)
     }
 }
 
-static std::pair<QDate, QTime> getDateTime(const QDateTimeData &d)
+static std::pair<QDate, BOBUIime> getDateTime(const QDateTimeData &d)
 {
     auto status = getStatus(d);
     const qint64 msecs = getMSecs(d);
@@ -3414,8 +3414,8 @@ static std::pair<QDate, QTime> getDateTime(const QDateTimeData &d)
             ? QDate::fromJulianDay(JULIAN_DAY_FOR_EPOCH + dayMilli.quotient)
             : QDate(),
             status.testFlag(QDateTimePrivate::ValidTime)
-            ? QTime::fromMSecsSinceStartOfDay(dayMilli.remainder)
-            : QTime() };
+            ? BOBUIime::fromMSecsSinceStartOfDay(dayMilli.remainder)
+            : BOBUIime() };
 }
 
 /*****************************************************************************
@@ -3427,13 +3427,13 @@ inline QDateTime::Data::Data() noexcept
     // default-constructed data has a special exception:
     // it can be small even if CanBeSmall == false
     // (optimization so we don't allocate memory in the default constructor)
-    quintptr value = mergeSpec(QDateTimePrivate::ShortData, Qt::LocalTime).toInt();
+    quintptr value = mergeSpec(QDateTimePrivate::ShortData, BobUI::LocalTime).toInt();
     d = reinterpret_cast<QDateTimePrivate *>(value);
 }
 
-inline QDateTime::Data::Data(const QTimeZone &zone)
+inline QDateTime::Data::Data(const BOBUIimeZone &zone)
 {
-    Qt::TimeSpec spec = zone.timeSpec();
+    BobUI::TimeSpec spec = zone.timeSpec();
     if (CanBeSmall && Q_LIKELY(specCanBeSmall(spec))) {
         quintptr value = mergeSpec(QDateTimePrivate::ShortData, spec).toInt();
         d = reinterpret_cast<QDateTimePrivate *>(value);
@@ -3443,9 +3443,9 @@ inline QDateTime::Data::Data(const QTimeZone &zone)
         d = new QDateTimePrivate;
         d->ref.ref();
         d->m_status = mergeSpec({}, spec);
-        if (spec == Qt::OffsetFromUTC)
+        if (spec == BobUI::OffsetFromUTC)
             d->m_offsetFromUtc = zone.fixedSecondsAheadOfUtc();
-        else if (spec == Qt::TimeZone)
+        else if (spec == BobUI::TimeZone)
             d->m_timeZone = zone;
         Q_ASSERT(!isShort());
     }
@@ -3554,23 +3554,23 @@ void QDateTime::Data::invalidate()
     }
 }
 
-QTimeZone QDateTime::Data::timeZone() const
+BOBUIimeZone QDateTime::Data::timeZone() const
 {
     switch (getSpec(*this)) {
-    case Qt::UTC:
-        return QTimeZone::UTC;
-    case Qt::OffsetFromUTC:
-        return QTimeZone::fromSecondsAheadOfUtc(d->m_offsetFromUtc);
-    case Qt::TimeZone:
-#if QT_CONFIG(timezone)
+    case BobUI::UTC:
+        return BOBUIimeZone::UTC;
+    case BobUI::OffsetFromUTC:
+        return BOBUIimeZone::fromSecondsAheadOfUtc(d->m_offsetFromUtc);
+    case BobUI::TimeZone:
+#if BOBUI_CONFIG(timezone)
         if (d->m_timeZone.isValid())
             return d->m_timeZone;
 #endif
         break;
-    case Qt::LocalTime:
-        return QTimeZone::LocalTime;
+    case BobUI::LocalTime:
+        return BOBUIimeZone::LocalTime;
     }
-    return QTimeZone();
+    return BOBUIimeZone();
 }
 
 inline const QDateTimePrivate *QDateTime::Data::operator->() const
@@ -3592,7 +3592,7 @@ inline QDateTimePrivate *QDateTime::Data::operator->()
  *****************************************************************************/
 
 Q_NEVER_INLINE
-QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTimeZone &zone,
+QDateTime::Data QDateTimePrivate::create(QDate toDate, BOBUIime toTime, const BOBUIimeZone &zone,
                                          QDateTime::TransitionResolution resolve)
 {
     QDateTime::Data result(zone);
@@ -3610,7 +3610,7 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
 
 /*!
     \class QDateTime
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup shared
     \reentrant
     \brief The QDateTime class provides date and time functions.
@@ -3619,14 +3619,14 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
 
     A QDateTime object encodes a calendar date and a clock time (a "datetime")
     in accordance with a time representation. It combines features of the QDate
-    and QTime classes. It can read the current datetime from the system
+    and BOBUIime classes. It can read the current datetime from the system
     clock. It provides functions for comparing datetimes and for manipulating a
     datetime by adding a number of seconds, days, months, or years.
 
-    QDateTime can describe datetimes with respect to \l{Qt::LocalTime}{local
-    time}, to \l{Qt::UTC}{UTC}, to a specified \l{Qt::OffsetFromUTC}{offset from
-    UTC} or to a specified \l{Qt::TimeZone}{time zone}. Each of these time
-    representations can be encapsulated in a suitable instance of the QTimeZone
+    QDateTime can describe datetimes with respect to \l{BobUI::LocalTime}{local
+    time}, to \l{BobUI::UTC}{UTC}, to a specified \l{BobUI::OffsetFromUTC}{offset from
+    UTC} or to a specified \l{BobUI::TimeZone}{time zone}. Each of these time
+    representations can be encapsulated in a suitable instance of the BOBUIimeZone
     class. For example, a time zone of "Europe/Berlin" will apply the
     daylight-saving rules as used in Germany. In contrast, a fixed offset from
     UTC of +3600 seconds is one hour ahead of UTC (usually written in ISO
@@ -3635,7 +3635,7 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
     time-zone transitions (see \l {Timezone transitions}{below}) are taken into
     account. A QDateTime's timeSpec() will tell you which of the four types of
     time representation is in use; its timeRepresentation() provides a full
-    description of that time representation, as a QTimeZone.
+    description of that time representation, as a BOBUIimeZone.
 
     A QDateTime object is typically created either by giving a date and time
     explicitly in the constructor, or by using a static function such as
@@ -3650,7 +3650,7 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
     date and time with respect to a specific time representation, such as local
     time (its default). QDateTime::currentDateTimeUtc() returns a QDateTime that
     expresses the current date and time with respect to UTC; it is equivalent to
-    \c {QDateTime::currentDateTime(QTimeZone::UTC)}.
+    \c {QDateTime::currentDateTime(BOBUIimeZone::UTC)}.
 
     The date() and time() functions provide access to the date and
     time parts of the datetime. The same information is provided in
@@ -3670,10 +3670,10 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
     applicable.
 
     Use toTimeZone() to re-express a datetime in terms of a different time
-    representation. By passing a lightweight QTimeZone that represents local
+    representation. By passing a lightweight BOBUIimeZone that represents local
     time, UTC or a fixed offset from UTC, you can convert the datetime to use
     the corresponding time representation; or you can pass a full time zone
-    (whose \l {QTimeZone::timeSpec()}{timeSpec()} is \c {Qt::TimeZone}) to use
+    (whose \l {BOBUIimeZone::timeSpec()}{timeSpec()} is \c {BobUI::TimeZone}) to use
     that instead.
 
     \section1 Remarks
@@ -3711,15 +3711,15 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
 
     QDateTime likewise uses system-provided information to determine the offsets
     of other timezones from UTC. If this information is incomplete or out of
-    date, QDateTime will give wrong results. See the QTimeZone documentation for
+    date, QDateTime will give wrong results. See the BOBUIimeZone documentation for
     more details.
 
     On modern Unix systems, this means QDateTime usually has accurate
     information about historical transitions (including DST, see below) whenever
     possible. On Windows, where the system doesn't support historical timezone
     data, historical accuracy is not maintained with respect to timezone
-    transitions, notably including DST. However, building Qt with the ICU
-    library will equip QTimeZone with the same timezone database as is used on
+    transitions, notably including DST. However, building BobUI with the ICU
+    library will equip BOBUIimeZone with the same timezone database as is used on
     Unix.
 
     \section2 Timezone transitions
@@ -3747,7 +3747,7 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
     transition, making it either invalid or ambiguous. Methods where this
     situation may arise take a \c resolve parameter: this is always ignored if
     the requested datetime is valid and unambiguous. See \l TransitionResolution
-    for the options it lets you control. Prior to Qt 6.7, the equivalent of its
+    for the options it lets you control. Prior to BobUI 6.7, the equivalent of its
     \l LegacyBehavior was selected.
 
     For a spring forward's skipped interval, interpreting the requested time
@@ -3778,7 +3778,7 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
     can represent if the type is 64-bit), the standard system APIs are used to
     determine local time's offset from UTC. For datetimes not handled by these
     system APIs (potentially including some within the \c time_t range),
-    QTimeZone::systemTimeZone() is used, if available, or a best effort is made
+    BOBUIimeZone::systemTimeZone() is used, if available, or a best effort is made
     to estimate. In any case, the offset information used depends on the system
     and may be incomplete or, for past times, historically
     inaccurate. Furthermore, for future dates, the local time zone's offsets and
@@ -3819,7 +3819,7 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
     five minutes. Historical time zones have a wider range and may have offsets
     including seconds; these last cannot be faithfully represented in strings.
 
-    \sa QDate, QTime, QDateTimeEdit, QTimeZone
+    \sa QDate, BOBUIime, QDateTimeEdit, BOBUIimeZone
 */
 
 /*!
@@ -3889,7 +3889,7 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
     An additional constant, \c LegacyBehavior, is used as a default value for
     TransitionResolution parameters in some constructors and setter functions.
     This is an alias for \c RelativeToBefore, which implements behavior that
-    most closely matches the behavior of QDateTime prior to Qt 6.7.
+    most closely matches the behavior of QDateTime prior to BobUI 6.7.
 
     For \l addDays(), \l addMonths() or \l addYears(), the behavior is and
     (mostly) was to use \c RelativeToBefore if adding a positive adjustment and \c
@@ -3902,7 +3902,7 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
     winter (known as "negative DST"), the reverse applies, provided the
     operating system reports - as it does on most platforms - whether a datetime
     is in DST or standard time. For some platforms, where transition details are
-    unavailable even for Qt::TimeZone datetimes, QTimeZone is obliged to presume
+    unavailable even for BobUI::TimeZone datetimes, BOBUIimeZone is obliged to presume
     that the side with lower offset from UTC is standard time, effectively
     assuming positive DST.
 
@@ -3956,7 +3956,7 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
     conflict or ambiguity. Code using this may well find the other options above
     useful to determine relevant information to use in its own (or the user's)
     resolution. If the start or end of the transition, or the moment of the
-    transition itself, is the right resolution, QTimeZone's transition APIs can
+    transition itself, is the right resolution, BOBUIimeZone's transition APIs can
     be used to obtain that information. You can determine whether the transition
     is a repeated or skipped interval by using \l secsTo() to measure the actual
     time between noon on the previous and following days. The result will be
@@ -3995,35 +3995,35 @@ QDateTime::Data QDateTimePrivate::create(QDate toDate, QTime toTime, const QTime
 */
 QDateTime::QDateTime() noexcept
 {
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0) || defined(QT_BOOTSTRAPPED) || QT_POINTER_SIZE == 8
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0) || defined(BOBUI_BOOTSTRAPPED) || BOBUI_POINTER_SIZE == 8
     static_assert(sizeof(ShortData) == sizeof(qint64));
     static_assert(sizeof(Data) == sizeof(qint64));
 #endif
     static_assert(sizeof(ShortData) >= sizeof(void*), "oops, Data::swap() is broken!");
 }
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 /*!
-    \deprecated [6.9] Use \c{QDateTime(date, time)} or \c{QDateTime(date, time, QTimeZone::fromSecondsAheadOfUtc(offsetSeconds))}.
+    \deprecated [6.9] Use \c{QDateTime(date, time)} or \c{QDateTime(date, time, BOBUIimeZone::fromSecondsAheadOfUtc(offsetSeconds))}.
 
     Constructs a datetime with the given \a date and \a time, using the time
     representation implied by \a spec and \a offsetSeconds seconds.
 
     If \a date is valid and \a time is not, the time will be set to midnight.
 
-    If \a spec is not Qt::OffsetFromUTC then \a offsetSeconds will be
-    ignored. If \a spec is Qt::OffsetFromUTC and \a offsetSeconds is 0 then the
-    timeSpec() will be set to Qt::UTC, i.e. an offset of 0 seconds.
+    If \a spec is not BobUI::OffsetFromUTC then \a offsetSeconds will be
+    ignored. If \a spec is BobUI::OffsetFromUTC and \a offsetSeconds is 0 then the
+    timeSpec() will be set to BobUI::UTC, i.e. an offset of 0 seconds.
 
-    If \a spec is Qt::TimeZone then the spec will be set to Qt::LocalTime,
-    i.e. the current system time zone.  To create a Qt::TimeZone datetime
+    If \a spec is BobUI::TimeZone then the spec will be set to BobUI::LocalTime,
+    i.e. the current system time zone.  To create a BobUI::TimeZone datetime
     use the correct constructor.
 
     If \a date lies outside the range of dates representable by QDateTime, the
-    result is invalid. If \a spec is Qt::LocalTime and the system's time-zone
+    result is invalid. If \a spec is BobUI::LocalTime and the system's time-zone
     skipped over the given date and time, the result is invalid.
 */
-QDateTime::QDateTime(QDate date, QTime time, Qt::TimeSpec spec, int offsetSeconds)
+QDateTime::QDateTime(QDate date, BOBUIime time, BobUI::TimeSpec spec, int offsetSeconds)
     : d(QDateTimePrivate::create(date, time, asTimeZone(spec, offsetSeconds, "QDateTime"),
                                  TransitionResolution::LegacyBehavior))
 {
@@ -4043,12 +4043,12 @@ QDateTime::QDateTime(QDate date, QTime time, Qt::TimeSpec spec, int offsetSecond
     controls how that situation is resolved.
 
 //! [pre-resolve-note]
-    \note Prior to Qt 6.7, the version of this function lacked the \a resolve
+    \note Prior to BobUI 6.7, the version of this function lacked the \a resolve
     parameter so had no way to resolve the ambiguities related to transitions.
 //! [pre-resolve-note]
 */
 
-QDateTime::QDateTime(QDate date, QTime time, const QTimeZone &timeZone, TransitionResolution resolve)
+QDateTime::QDateTime(QDate date, BOBUIime time, const BOBUIimeZone &timeZone, TransitionResolution resolve)
     : d(QDateTimePrivate::create(date, time, timeZone, resolve))
 {
 }
@@ -4066,8 +4066,8 @@ QDateTime::QDateTime(QDate date, QTime time, const QTimeZone &timeZone, Transiti
     \include qdatetime.cpp pre-resolve-note
 */
 
-QDateTime::QDateTime(QDate date, QTime time, TransitionResolution resolve)
-    : d(QDateTimePrivate::create(date, time, QTimeZone::LocalTime, resolve))
+QDateTime::QDateTime(QDate date, BOBUIime time, TransitionResolution resolve)
+    : d(QDateTimePrivate::create(date, time, BOBUIimeZone::LocalTime, resolve))
 {
 }
 
@@ -4115,7 +4115,7 @@ QDateTime &QDateTime::operator=(const QDateTime &other) noexcept
     Returns \c true if both the date and the time are null; otherwise
     returns \c false. A null datetime is invalid.
 
-    \sa QDate::isNull(), QTime::isNull(), isValid()
+    \sa QDate::isNull(), BOBUIime::isNull(), isValid()
 */
 
 bool QDateTime::isNull() const
@@ -4135,7 +4135,7 @@ bool QDateTime::isNull() const
     spring). For example, if DST ends at 2am with the clock advancing to 3am,
     then datetimes from 02:00:00 to 02:59:59.999 on that day are invalid.
 
-    \sa QDateTime::YearRange, QDate::isValid(), QTime::isValid()
+    \sa QDateTime::YearRange, QDate::isValid(), BOBUIime::isValid()
 */
 
 bool QDateTime::isValid() const
@@ -4160,9 +4160,9 @@ QDate QDateTime::date() const
     \sa setTime(), date(), timeRepresentation()
 */
 
-QTime QDateTime::time() const
+BOBUIime QDateTime::time() const
 {
-    return getStatus(d).testFlag(QDateTimePrivate::ValidTime) ? msecsToTime(getMSecs(d)) : QTime();
+    return getStatus(d).testFlag(QDateTimePrivate::ValidTime) ? msecsToTime(getMSecs(d)) : BOBUIime();
 }
 
 /*!
@@ -4176,47 +4176,47 @@ QTime QDateTime::time() const
     \sa setTimeZone(), timeRepresentation(), date(), time()
 */
 
-Qt::TimeSpec QDateTime::timeSpec() const
+BobUI::TimeSpec QDateTime::timeSpec() const
 {
     return getSpec(d);
 }
 
 /*!
     \since 6.5
-    Returns a QTimeZone identifying how this datetime represents time.
+    Returns a BOBUIimeZone identifying how this datetime represents time.
 
-    The timeSpec() of the returned QTimeZone will coincide with that of this
-    datetime; if it is not Qt::TimeZone then the returned QTimeZone is a time
-    representation. When their timeSpec() is Qt::OffsetFromUTC, the returned
-    QTimeZone's fixedSecondsAheadOfUtc() supplies the offset.  When timeSpec()
-    is Qt::TimeZone, the QTimeZone object itself is the full representation of
+    The timeSpec() of the returned BOBUIimeZone will coincide with that of this
+    datetime; if it is not BobUI::TimeZone then the returned BOBUIimeZone is a time
+    representation. When their timeSpec() is BobUI::OffsetFromUTC, the returned
+    BOBUIimeZone's fixedSecondsAheadOfUtc() supplies the offset.  When timeSpec()
+    is BobUI::TimeZone, the BOBUIimeZone object itself is the full representation of
     that time zone.
 
-    \sa timeZone(), setTimeZone(), QTimeZone::asBackendZone()
+    \sa timeZone(), setTimeZone(), BOBUIimeZone::asBackendZone()
 */
 
-QTimeZone QDateTime::timeRepresentation() const
+BOBUIimeZone QDateTime::timeRepresentation() const
 {
     return d.timeZone();
 }
 
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 /*!
     \since 5.2
 
     Returns the time zone of the datetime.
 
     The result is the same as \c{timeRepresentation().asBackendZone()}. In all
-    cases, the result's \l {QTimeZone::timeSpec()}{timeSpec()} is Qt::TimeZone.
+    cases, the result's \l {BOBUIimeZone::timeSpec()}{timeSpec()} is BobUI::TimeZone.
 
-    When timeSpec() is Qt::LocalTime, the result will describe local time at the
+    When timeSpec() is BobUI::LocalTime, the result will describe local time at the
     time this method was called. It will not reflect subsequent changes to the
     system time zone, even when the QDateTime from which it was obtained does.
 
-    \sa timeRepresentation(), setTimeZone(), Qt::TimeSpec, QTimeZone::asBackendZone()
+    \sa timeRepresentation(), setTimeZone(), BobUI::TimeSpec, BOBUIimeZone::asBackendZone()
 */
 
-QTimeZone QDateTime::timeZone() const
+BOBUIimeZone QDateTime::timeZone() const
 {
     return d.timeZone().asBackendZone();
 }
@@ -4229,10 +4229,10 @@ QTimeZone QDateTime::timeZone() const
 
     The result depends on timeSpec():
     \list
-    \li \c Qt::UTC The offset is 0.
-    \li \c Qt::OffsetFromUTC The offset is the value originally set.
-    \li \c Qt::LocalTime The local time's offset from UTC is returned.
-    \li \c Qt::TimeZone The offset used by the time-zone is returned.
+    \li \c BobUI::UTC The offset is 0.
+    \li \c BobUI::OffsetFromUTC The offset is the value originally set.
+    \li \c BobUI::LocalTime The local time's offset from UTC is returned.
+    \li \c BobUI::TimeZone The offset used by the time-zone is returned.
     \endlist
 
     For the last two, the offset at this date and time will be returned, taking
@@ -4254,13 +4254,13 @@ int QDateTime::offsetFromUtc() const
         return d->m_offsetFromUtc;
 
     auto spec = extractSpec(status);
-    if (spec == Qt::LocalTime) {
+    if (spec == BobUI::LocalTime) {
         // We didn't cache the value, so we need to calculate it:
         const auto resolve = toTransitionOptions(extractDaylightStatus(status));
         return QDateTimePrivate::localStateAtMillis(getMSecs(d), resolve).offset;
     }
 
-    Q_ASSERT(spec == Qt::UTC);
+    Q_ASSERT(spec == BobUI::UTC);
     return 0;
 }
 
@@ -4272,17 +4272,17 @@ int QDateTime::offsetFromUtc() const
     The returned string depends on timeSpec():
 
     \list
-    \li For Qt::UTC it is "UTC".
-    \li For Qt::OffsetFromUTC it will be in the format "UTC±00:00".
-    \li For Qt::LocalTime, the host system is queried.
-    \li For Qt::TimeZone, the associated QTimeZone object is queried.
+    \li For BobUI::UTC it is "UTC".
+    \li For BobUI::OffsetFromUTC it will be in the format "UTC±00:00".
+    \li For BobUI::LocalTime, the host system is queried.
+    \li For BobUI::TimeZone, the associated BOBUIimeZone object is queried.
     \endlist
 
     \note The abbreviation is not guaranteed to be unique, i.e. different time
-    zones may have the same abbreviation. For Qt::LocalTime and Qt::TimeZone,
+    zones may have the same abbreviation. For BobUI::LocalTime and BobUI::TimeZone,
     when returned by the host system, the abbreviation may be localized.
 
-    \sa timeSpec(), QTimeZone::abbreviation()
+    \sa timeSpec(), BOBUIimeZone::abbreviation()
 */
 
 QString QDateTime::timeZoneAbbreviation() const
@@ -4291,21 +4291,21 @@ QString QDateTime::timeZoneAbbreviation() const
         return QString();
 
     switch (getSpec(d)) {
-    case Qt::UTC:
+    case BobUI::UTC:
         return "UTC"_L1;
-    case Qt::OffsetFromUTC:
-        return "UTC"_L1 + toOffsetString(Qt::ISODate, d->m_offsetFromUtc);
-    case Qt::TimeZone:
-#if !QT_CONFIG(timezone)
+    case BobUI::OffsetFromUTC:
+        return "UTC"_L1 + toOffsetString(BobUI::ISODate, d->m_offsetFromUtc);
+    case BobUI::TimeZone:
+#if !BOBUI_CONFIG(timezone)
         break;
 #else
         Q_ASSERT(d->m_timeZone.isValid());
         return d->m_timeZone.abbreviation(*this);
 #endif // timezone
-    case Qt::LocalTime:
-#if defined(Q_OS_WIN) && QT_CONFIG(timezone)
+    case BobUI::LocalTime:
+#if defined(Q_OS_WIN) && BOBUI_CONFIG(timezone)
         // MS's tzname is a full MS-name, not an abbreviation:
-        if (QString sys = QTimeZone::systemTimeZone().abbreviation(*this); !sys.isEmpty())
+        if (QString sys = BOBUIimeZone::systemTimeZone().abbreviation(*this); !sys.isEmpty())
             return sys;
         // ... but, even so, a full name isn't as bad as empty.
 #endif
@@ -4320,7 +4320,7 @@ QString QDateTime::timeZoneAbbreviation() const
 
     Returns if this datetime falls in Daylight-Saving Time.
 
-    If the Qt::TimeSpec is not Qt::LocalTime or Qt::TimeZone then will always
+    If the BobUI::TimeSpec is not BobUI::LocalTime or BobUI::TimeZone then will always
     return false.
 
     \sa timeSpec()
@@ -4332,11 +4332,11 @@ bool QDateTime::isDaylightTime() const
         return false;
 
     switch (getSpec(d)) {
-    case Qt::UTC:
-    case Qt::OffsetFromUTC:
+    case BobUI::UTC:
+    case BobUI::OffsetFromUTC:
         return false;
-    case Qt::TimeZone:
-#if !QT_CONFIG(timezone)
+    case BobUI::TimeZone:
+#if !BOBUI_CONFIG(timezone)
         break;
 #else
         Q_ASSERT(d->m_timeZone.isValid());
@@ -4346,7 +4346,7 @@ bool QDateTime::isDaylightTime() const
         }
         return d->m_timeZone.d->isDaylightTime(toMSecsSinceEpoch());
 #endif // timezone
-    case Qt::LocalTime: {
+    case BobUI::LocalTime: {
         auto dst = extractDaylightStatus(getStatus(d));
         if (dst == QDateTimePrivate::UnknownDaylightTime) {
             dst = QDateTimePrivate::localStateAtMillis(
@@ -4382,11 +4382,11 @@ void QDateTime::setDate(QDate date, TransitionResolution resolve)
 /*!
     Sets the time part of this datetime to \a time. If \a time is not valid,
     this function sets it to midnight. Therefore, it's possible to clear any
-    set time in a QDateTime by setting it to a default QTime:
+    set time in a QDateTime by setting it to a default BOBUIime:
 
     \code
         QDateTime dt = QDateTime::currentDateTime();
-        dt.setTime(QTime());
+        dt.setTime(BOBUIime());
     \endcode
 
     If date() and \a time describe a moment close to a transition for this
@@ -4398,23 +4398,23 @@ void QDateTime::setDate(QDate date, TransitionResolution resolve)
     \sa time(), setDate(), setTimeZone()
 */
 
-void QDateTime::setTime(QTime time, TransitionResolution resolve)
+void QDateTime::setTime(BOBUIime time, TransitionResolution resolve)
 {
     setDateTime(d, date(), time);
     checkValidDateTime(d, resolve);
 }
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 /*!
     \deprecated [6.9] Use setTimeZone() instead
 
     Sets the time specification used in this datetime to \a spec.
     The datetime may refer to a different point in time.
 
-    If \a spec is Qt::OffsetFromUTC then the timeSpec() will be set
-    to Qt::UTC, i.e. an effective offset of 0.
+    If \a spec is BobUI::OffsetFromUTC then the timeSpec() will be set
+    to BobUI::UTC, i.e. an effective offset of 0.
 
-    If \a spec is Qt::TimeZone then the spec will be set to Qt::LocalTime,
+    If \a spec is BobUI::TimeZone then the spec will be set to BobUI::LocalTime,
     i.e. the current system time zone.
 
     Example:
@@ -4423,7 +4423,7 @@ void QDateTime::setTime(QTime time, TransitionResolution resolve)
     \sa setTimeZone(), timeSpec(), toTimeSpec(), setDate(), setTime()
 */
 
-void QDateTime::setTimeSpec(Qt::TimeSpec spec)
+void QDateTime::setTimeSpec(BobUI::TimeSpec spec)
 {
     reviseTimeZone(d, asTimeZone(spec, 0, "QDateTime::setTimeSpec"),
                    TransitionResolution::LegacyBehavior);
@@ -4431,23 +4431,23 @@ void QDateTime::setTimeSpec(Qt::TimeSpec spec)
 
 /*!
     \since 5.2
-    \deprecated [6.9] Use setTimeZone(QTimeZone::fromSecondsAheadOfUtc(offsetSeconds)) instead
+    \deprecated [6.9] Use setTimeZone(BOBUIimeZone::fromSecondsAheadOfUtc(offsetSeconds)) instead
 
-    Sets the timeSpec() to Qt::OffsetFromUTC and the offset to \a offsetSeconds.
+    Sets the timeSpec() to BobUI::OffsetFromUTC and the offset to \a offsetSeconds.
     The datetime may refer to a different point in time.
 
     The maximum and minimum offset is 14 positive or negative hours.  If
     \a offsetSeconds is larger or smaller than that, then the result is
     undefined.
 
-    If \a offsetSeconds is 0 then the timeSpec() will be set to Qt::UTC.
+    If \a offsetSeconds is 0 then the timeSpec() will be set to BobUI::UTC.
 
     \sa setTimeZone(), isValid(), offsetFromUtc(), toOffsetFromUtc()
 */
 
 void QDateTime::setOffsetFromUtc(int offsetSeconds)
 {
-    reviseTimeZone(d, QTimeZone::fromSecondsAheadOfUtc(offsetSeconds),
+    reviseTimeZone(d, BOBUIimeZone::fromSecondsAheadOfUtc(offsetSeconds),
                    TransitionResolution::Reject);
 }
 #endif // 6.9 deprecations
@@ -4469,10 +4469,10 @@ void QDateTime::setOffsetFromUtc(int offsetSeconds)
 
     \include qdatetime.cpp pre-resolve-note
 
-    \sa timeRepresentation(), timeZone(), Qt::TimeSpec
+    \sa timeRepresentation(), timeZone(), BobUI::TimeSpec
 */
 
-void QDateTime::setTimeZone(const QTimeZone &toZone, TransitionResolution resolve)
+void QDateTime::setTimeZone(const BOBUIimeZone &toZone, TransitionResolution resolve)
 {
     reviseTimeZone(d, toZone, resolve);
 }
@@ -4484,7 +4484,7 @@ void QDateTime::setTimeZone(const QTimeZone &toZone, TransitionResolution resolv
     the year 1970.
 
     On systems that do not support time zones, this function will
-    behave as if local time were Qt::UTC.
+    behave as if local time were BobUI::UTC.
 
     The behavior for this function is undefined if the datetime stored in
     this object is not valid. However, for all valid dates, this function
@@ -4504,14 +4504,14 @@ qint64 QDateTime::toMSecsSinceEpoch() const
         return 0;
 
     switch (extractSpec(status)) {
-    case Qt::UTC:
+    case BobUI::UTC:
         return getMSecs(d);
 
-    case Qt::OffsetFromUTC:
+    case BobUI::OffsetFromUTC:
         Q_ASSERT(!d.isShort());
         return d->m_msecs - d->m_offsetFromUtc * MSECS_PER_SEC;
 
-    case Qt::LocalTime:
+    case BobUI::LocalTime:
         if (status.testFlag(QDateTimePrivate::ShortData)) {
             // Short form has nowhere to cache the offset, so recompute.
             const auto resolve = toTransitionOptions(extractDaylightStatus(getStatus(d)));
@@ -4521,9 +4521,9 @@ qint64 QDateTime::toMSecsSinceEpoch() const
         // Use the offset saved by refreshZonedDateTime() on creation.
         return d->m_msecs - d->m_offsetFromUtc * MSECS_PER_SEC;
 
-    case Qt::TimeZone:
+    case BobUI::TimeZone:
         Q_ASSERT(!d.isShort());
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
         // Use offset refreshZonedDateTime() saved on creation:
         if (d->m_timeZone.isValid())
             return d->m_msecs - d->m_offsetFromUtc * MSECS_PER_SEC;
@@ -4540,7 +4540,7 @@ qint64 QDateTime::toMSecsSinceEpoch() const
     year 1970.
 
     On systems that do not support time zones, this function will
-    behave as if local time were Qt::UTC.
+    behave as if local time were BobUI::UTC.
 
     The behavior for this function is undefined if the datetime stored in
     this object is not valid. However, for all valid dates, this function
@@ -4560,7 +4560,7 @@ qint64 QDateTime::toSecsSinceEpoch() const
     milliseconds after the start, in UTC, of the year 1970.
 
     On systems that do not support time zones, this function will
-    behave as if local time were Qt::UTC.
+    behave as if local time were BobUI::UTC.
 
     Note that passing the minimum of \c qint64
     (\c{std::numeric_limits<qint64>::min()}) to \a msecs will result in
@@ -4576,19 +4576,19 @@ void QDateTime::setMSecsSinceEpoch(qint64 msecs)
     QDateTimePrivate::ZoneState state(msecs);
 
     status &= ~QDateTimePrivate::ValidityMask;
-    if (QTimeZone::isUtcOrFixedOffset(spec)) {
-        if (spec == Qt::OffsetFromUTC)
+    if (BOBUIimeZone::isUtcOrFixedOffset(spec)) {
+        if (spec == BobUI::OffsetFromUTC)
             state.offset = d->m_offsetFromUtc;
         if (!state.offset || !qAddOverflow(msecs, state.offset * MSECS_PER_SEC, &state.when))
             status |= QDateTimePrivate::ValidityMask;
-    } else if (spec == Qt::LocalTime) {
+    } else if (spec == BobUI::LocalTime) {
         state = QDateTimePrivate::expressUtcAsLocal(msecs);
         if (state.valid)
             status = mergeDaylightStatus(status | QDateTimePrivate::ValidityMask, state.dst);
-#if QT_CONFIG(timezone)
-    } else if (spec == Qt::TimeZone && (d.detach(), d->m_timeZone.isValid())) {
+#if BOBUI_CONFIG(timezone)
+    } else if (spec == BobUI::TimeZone && (d.detach(), d->m_timeZone.isValid())) {
         const auto data = d->m_timeZone.d->data(msecs);
-        if (Q_LIKELY(data.offsetFromUtc != QTimeZonePrivate::invalidSeconds())) {
+        if (Q_LIKELY(data.offsetFromUtc != BOBUIimeZonePrivate::invalidSeconds())) {
             state.offset = data.offsetFromUtc;
             Q_ASSERT(state.offset >= -SECS_PER_DAY && state.offset <= SECS_PER_DAY);
             if (!state.offset
@@ -4626,7 +4626,7 @@ void QDateTime::setMSecsSinceEpoch(qint64 msecs)
     after the start, in UTC, of the year 1970.
 
     On systems that do not support time zones, this function will
-    behave as if local time were Qt::UTC.
+    behave as if local time were BobUI::UTC.
 
     \sa setMSecsSinceEpoch(), toSecsSinceEpoch(), fromSecsSinceEpoch()
 */
@@ -4639,90 +4639,90 @@ void QDateTime::setSecsSinceEpoch(qint64 secs)
         d.invalidate();
 }
 
-#if QT_CONFIG(datestring) // depends on, so implies, textdate
+#if BOBUI_CONFIG(datestring) // depends on, so implies, textdate
 /*!
     \overload toString()
 
     Returns the datetime as a string in the \a format given.
 
-    If the \a format is Qt::TextDate, the string is formatted in the default
+    If the \a format is BobUI::TextDate, the string is formatted in the default
     way. The day and month names will be in English. An example of this
     formatting is "Wed May 20 03:40:13 1998". For localized formatting, see
     \l{QLocale::toString()}.
 
-    If the \a format is Qt::ISODate, the string format corresponds to the ISO
+    If the \a format is BobUI::ISODate, the string format corresponds to the ISO
     8601 extended specification for representations of dates and times, taking
     the form yyyy-MM-ddTHH:mm:ss[Z|±HH:mm], depending on the timeSpec() of the
-    QDateTime. If the timeSpec() is Qt::UTC, Z will be appended to the string;
-    if the timeSpec() is Qt::OffsetFromUTC, the offset in hours and minutes from
+    QDateTime. If the timeSpec() is BobUI::UTC, Z will be appended to the string;
+    if the timeSpec() is BobUI::OffsetFromUTC, the offset in hours and minutes from
     UTC will be appended to the string. To include milliseconds in the ISO 8601
-    date, use the \a format Qt::ISODateWithMs, which corresponds to
+    date, use the \a format BobUI::ISODateWithMs, which corresponds to
     yyyy-MM-ddTHH:mm:ss.zzz[Z|±HH:mm].
 
-    If the \a format is Qt::RFC2822Date, the string is formatted
+    If the \a format is BobUI::RFC2822Date, the string is formatted
     following \l{RFC 2822}.
 
     If the datetime is invalid, an empty string will be returned.
 
-    \warning The Qt::ISODate format is only valid for years in the
+    \warning The BobUI::ISODate format is only valid for years in the
     range 0 to 9999.
 
-    \sa fromString(), QDate::toString(), QTime::toString(),
+    \sa fromString(), QDate::toString(), BOBUIime::toString(),
     QLocale::toString()
 */
-QString QDateTime::toString(Qt::DateFormat format) const
+QString QDateTime::toString(BobUI::DateFormat format) const
 {
     QString buf;
     if (!isValid())
         return buf;
 
     switch (format) {
-    case Qt::RFC2822Date:
+    case BobUI::RFC2822Date:
         buf = QLocale::c().toString(*this, u"dd MMM yyyy hh:mm:ss ");
-        buf += toOffsetString(Qt::TextDate, offsetFromUtc());
+        buf += toOffsetString(BobUI::TextDate, offsetFromUtc());
         return buf;
     default:
-    case Qt::TextDate: {
-        const std::pair<QDate, QTime> p = getDateTime(d);
+    case BobUI::TextDate: {
+        const std::pair<QDate, BOBUIime> p = getDateTime(d);
         buf = toStringTextDate(p.first);
         // Insert time between date's day and year:
         buf.insert(buf.lastIndexOf(u' '),
-                   u' ' + p.second.toString(Qt::TextDate));
+                   u' ' + p.second.toString(BobUI::TextDate));
         // Append zone/offset indicator, as appropriate:
         switch (timeSpec()) {
-        case Qt::LocalTime:
+        case BobUI::LocalTime:
             break;
-#if QT_CONFIG(timezone)
-        case Qt::TimeZone:
+#if BOBUI_CONFIG(timezone)
+        case BobUI::TimeZone:
             buf += u' ' + d->m_timeZone.displayName(
-                *this, QTimeZone::OffsetName, QLocale::c());
+                *this, BOBUIimeZone::OffsetName, QLocale::c());
             break;
 #endif
         default:
-#if 0 // ### Qt 7 GMT: use UTC instead, see qnamespace.qdoc documentation
+#if 0 // ### BobUI 7 GMT: use UTC instead, see qnamespace.qdoc documentation
             buf += " UTC"_L1;
 #else
             buf += " GMT"_L1;
 #endif
-            if (getSpec(d) == Qt::OffsetFromUTC)
-                buf += toOffsetString(Qt::TextDate, offsetFromUtc());
+            if (getSpec(d) == BobUI::OffsetFromUTC)
+                buf += toOffsetString(BobUI::TextDate, offsetFromUtc());
         }
         return buf;
     }
-    case Qt::ISODate:
-    case Qt::ISODateWithMs: {
-        const std::pair<QDate, QTime> p = getDateTime(d);
+    case BobUI::ISODate:
+    case BobUI::ISODateWithMs: {
+        const std::pair<QDate, BOBUIime> p = getDateTime(d);
         buf = toStringIsoDate(p.first);
         if (buf.isEmpty())
             return QString();   // failed to convert
         buf += u'T' + p.second.toString(format);
         switch (getSpec(d)) {
-        case Qt::UTC:
+        case BobUI::UTC:
             buf += u'Z';
             break;
-        case Qt::OffsetFromUTC:
-        case Qt::TimeZone:
-            buf += toOffsetString(Qt::ISODate, offsetFromUtc());
+        case BobUI::OffsetFromUTC:
+        case BobUI::TimeZone:
+            buf += toOffsetString(BobUI::ISODate, offsetFromUtc());
             break;
         default:
             break;
@@ -4740,12 +4740,12 @@ QString QDateTime::toString(Qt::DateFormat format) const
 
     Returns the datetime as a string. The \a format parameter determines the
     format of the result string. If \a cal is supplied, it determines the
-    calendar used to represent the date; it defaults to Gregorian. Prior to Qt
+    calendar used to represent the date; it defaults to Gregorian. Prior to BobUI
     5.14, there was no \a cal parameter and the Gregorian calendar was always
     used.
 
     In addition to the expressions, recognized in the format string to represent
-    parts of the date and time, by QDate::toString() and QTime::toString(), this
+    parts of the date and time, by QDate::toString() and BOBUIime::toString(), this
     method supports:
 
     \table
@@ -4761,8 +4761,8 @@ QString QDateTime::toString(Qt::DateFormat format) const
          \li The timezone's offset from UTC with a colon between the hours and
              minutes (for example "+02:00").
     \row \li tttt
-         \li The timezone name, as provided by \l QTimeZone::displayName() with
-             the \l QTimeZone::LongName type. This may depend on the operating
+         \li The timezone name, as provided by \l BOBUIimeZone::displayName() with
+             the \l BOBUIimeZone::LongName type. This may depend on the operating
              system in use. If no such name is available, the IANA ID of the
              zone (such as "Europe/Berlin") may be used.  It may give no
              indication of whether the datetime was in daylight-saving time or
@@ -4772,7 +4772,7 @@ QString QDateTime::toString(Qt::DateFormat format) const
 
     When the timezone cannot be determined or no suitable representation of it
     is available, these representions of it may be skipped. See \l
-    QTimeZone::displayName() for details of when it returns an empty string.
+    BOBUIimeZone::displayName() for details of when it returns an empty string.
 
     Any sequence of characters enclosed in single quotes will be included
     verbatim in the output string (stripped of the quotes), even if it contains
@@ -4803,7 +4803,7 @@ QString QDateTime::toString(Qt::DateFormat format) const
     (C locale).  To get localized month and day names and localized forms of
     AM/PM, use QLocale::system().toDateTime().
 
-    \sa fromString(), QDate::toString(), QTime::toString(), QLocale::toString()
+    \sa fromString(), QDate::toString(), BOBUIime::toString(), QLocale::toString()
 */
 QString QDateTime::toString(QStringView format, QCalendar cal) const
 {
@@ -4830,7 +4830,7 @@ QString QDateTime::toString(const QString &format) const
 }
 #endif // datestring
 
-static inline void massageAdjustedDateTime(QDateTimeData &d, QDate date, QTime time, bool forward)
+static inline void massageAdjustedDateTime(QDateTimeData &d, QDate date, BOBUIime time, bool forward)
 {
     const QDateTimePrivate::TransitionOptions resolve = toTransitionOptions(
         forward ? QDateTime::TransitionResolution::RelativeToBefore
@@ -4839,7 +4839,7 @@ static inline void massageAdjustedDateTime(QDateTimeData &d, QDate date, QTime t
     Q_ASSERT(status.testFlags(QDateTimePrivate::ValidDate | QDateTimePrivate::ValidTime
                               | QDateTimePrivate::ValidDateTime));
     auto spec = extractSpec(status);
-    if (QTimeZone::isUtcOrFixedOffset(spec)) {
+    if (BOBUIimeZone::isUtcOrFixedOffset(spec)) {
         setDateTime(d, date, time);
         refreshSimpleDateTime(d);
         return;
@@ -4870,7 +4870,7 @@ static inline void massageAdjustedDateTime(QDateTimeData &d, QDate date, QTime t
     later than the datetime of this object (or earlier if \a ndays is
     negative).
 
-    If the timeSpec() is Qt::LocalTime or Qt::TimeZone and the resulting date
+    If the timeSpec() is BobUI::LocalTime or BobUI::TimeZone and the resulting date
     and time fall in the Standard Time to Daylight-Saving Time transition hour
     then the result will be just beyond this gap, in the direction of change.
     If the transition is at 2am and the clock goes forward to 3am, the result of
@@ -4886,7 +4886,7 @@ QDateTime QDateTime::addDays(qint64 ndays) const
         return QDateTime();
 
     QDateTime dt(*this);
-    std::pair<QDate, QTime> p = getDateTime(d);
+    std::pair<QDate, BOBUIime> p = getDateTime(d);
     massageAdjustedDateTime(dt.d, p.first.addDays(ndays), p.second, ndays >= 0);
     return dt;
 }
@@ -4936,7 +4936,7 @@ QDateTime QDateTime::addDays(qint64 ndays) const
     later than the datetime of this object (or earlier if \a nmonths
     is negative).
 
-    If the timeSpec() is Qt::LocalTime or Qt::TimeZone and the resulting date
+    If the timeSpec() is BobUI::LocalTime or BobUI::TimeZone and the resulting date
     and time fall in the Standard Time to Daylight-Saving Time transition hour
     then the result will be just beyond this gap, in the direction of change.
     If the transition is at 2am and the clock goes forward to 3am, the result of
@@ -4952,7 +4952,7 @@ QDateTime QDateTime::addMonths(int nmonths) const
         return QDateTime();
 
     QDateTime dt(*this);
-    std::pair<QDate, QTime> p = getDateTime(d);
+    std::pair<QDate, BOBUIime> p = getDateTime(d);
     massageAdjustedDateTime(dt.d, p.first.addMonths(nmonths), p.second, nmonths >= 0);
     return dt;
 }
@@ -4962,7 +4962,7 @@ QDateTime QDateTime::addMonths(int nmonths) const
     later than the datetime of this object (or earlier if \a nyears is
     negative).
 
-    If the timeSpec() is Qt::LocalTime or Qt::TimeZone and the resulting date
+    If the timeSpec() is BobUI::LocalTime or BobUI::TimeZone and the resulting date
     and time fall in the Standard Time to Daylight-Saving Time transition hour
     then the result will be just beyond this gap, in the direction of change.
     If the transition is at 2am and the clock goes forward to 3am, the result of
@@ -4978,7 +4978,7 @@ QDateTime QDateTime::addYears(int nyears) const
         return QDateTime();
 
     QDateTime dt(*this);
-    std::pair<QDate, QTime> p = getDateTime(d);
+    std::pair<QDate, BOBUIime> p = getDateTime(d);
     massageAdjustedDateTime(dt.d, p.first.addYears(nyears), p.second, nyears >= 0);
     return dt;
 }
@@ -5017,16 +5017,16 @@ QDateTime QDateTime::addMSecs(qint64 msecs) const
 
     QDateTime dt(*this);
     switch (getSpec(d)) {
-    case Qt::LocalTime:
-    case Qt::TimeZone:
+    case BobUI::LocalTime:
+    case BobUI::TimeZone:
         // Convert to real UTC first in case this crosses a DST transition:
         if (!qAddOverflow(toMSecsSinceEpoch(), msecs, &msecs))
             dt.setMSecsSinceEpoch(msecs);
         else
             dt.d.invalidate();
         break;
-    case Qt::UTC:
-    case Qt::OffsetFromUTC:
+    case BobUI::UTC:
+    case BobUI::OffsetFromUTC:
         // No need to convert, just add on
         if (qAddOverflow(getMSecs(d), msecs, &msecs)) {
             dt.d.invalidate();
@@ -5088,7 +5088,7 @@ qint64 QDateTime::daysTo(const QDateTime &other) const
     the value returned is negative.
 
     Before performing the comparison, the two datetimes are converted
-    to Qt::UTC to ensure that the result is correct if daylight-saving
+    to BobUI::UTC to ensure that the result is correct if daylight-saving
     (DST) applies to one of the two datetimes but not the other.
 
     Returns 0 if either datetime is invalid.
@@ -5096,7 +5096,7 @@ qint64 QDateTime::daysTo(const QDateTime &other) const
     Example:
     \snippet code/src_corelib_time_qdatetime.cpp 11
 
-    \sa addSecs(), daysTo(), QTime::secsTo()
+    \sa addSecs(), daysTo(), BOBUIime::secsTo()
 */
 
 qint64 QDateTime::secsTo(const QDateTime &other) const
@@ -5110,12 +5110,12 @@ qint64 QDateTime::secsTo(const QDateTime &other) const
     the value returned is negative.
 
     Before performing the comparison, the two datetimes are converted
-    to Qt::UTC to ensure that the result is correct if daylight-saving
+    to BobUI::UTC to ensure that the result is correct if daylight-saving
     (DST) applies to one of the two datetimes and but not the other.
 
     Returns 0 if either datetime is invalid.
 
-    \sa addMSecs(), daysTo(), QTime::msecsTo()
+    \sa addMSecs(), daysTo(), BOBUIime::msecsTo()
 */
 
 qint64 QDateTime::msecsTo(const QDateTime &other) const
@@ -5195,7 +5195,7 @@ qint64 QDateTime::msecsTo(const QDateTime &other) const
     \sa addMSecs
 */
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 /*!
     \deprecated [6.9] Use \l toTimeZone() instead.
 
@@ -5203,10 +5203,10 @@ qint64 QDateTime::msecsTo(const QDateTime &other) const
 
     The result represents the same moment in time as, and is equal to, this datetime.
 
-    If \a spec is Qt::OffsetFromUTC then it is set to Qt::UTC. To set to a fixed
+    If \a spec is BobUI::OffsetFromUTC then it is set to BobUI::UTC. To set to a fixed
     offset from UTC, use toTimeZone() or toOffsetFromUtc().
 
-    If \a spec is Qt::TimeZone then it is set to Qt::LocalTime, i.e. the local
+    If \a spec is BobUI::TimeZone then it is set to BobUI::LocalTime, i.e. the local
     Time Zone. To set a specified time-zone, use toTimeZone().
 
     Example:
@@ -5215,7 +5215,7 @@ qint64 QDateTime::msecsTo(const QDateTime &other) const
     \sa setTimeSpec(), timeSpec(), toTimeZone()
 */
 
-QDateTime QDateTime::toTimeSpec(Qt::TimeSpec spec) const
+QDateTime QDateTime::toTimeSpec(BobUI::TimeSpec spec) const
 {
     return toTimeZone(asTimeZone(spec, 0, "toTimeSpec"));
 }
@@ -5224,9 +5224,9 @@ QDateTime QDateTime::toTimeSpec(Qt::TimeSpec spec) const
 /*!
     \since 5.2
 
-    Returns a copy of this datetime converted to a spec of Qt::OffsetFromUTC
+    Returns a copy of this datetime converted to a spec of BobUI::OffsetFromUTC
     with the given \a offsetSeconds. Equivalent to
-    \c{toTimeZone(QTimeZone::fromSecondsAheadOfUtc(offsetSeconds))}.
+    \c{toTimeZone(BOBUIimeZone::fromSecondsAheadOfUtc(offsetSeconds))}.
 
     If the \a offsetSeconds equals 0 then a UTC datetime will be returned.
 
@@ -5237,7 +5237,7 @@ QDateTime QDateTime::toTimeSpec(Qt::TimeSpec spec) const
 
 QDateTime QDateTime::toOffsetFromUtc(int offsetSeconds) const
 {
-    return toTimeZone(QTimeZone::fromSecondsAheadOfUtc(offsetSeconds));
+    return toTimeZone(BOBUIimeZone::fromSecondsAheadOfUtc(offsetSeconds));
 }
 
 /*!
@@ -5253,7 +5253,7 @@ QDateTime QDateTime::toOffsetFromUtc(int offsetSeconds) const
 */
 QDateTime QDateTime::toLocalTime() const
 {
-    return toTimeZone(QTimeZone::LocalTime);
+    return toTimeZone(BOBUIimeZone::LocalTime);
 }
 
 /*!
@@ -5269,7 +5269,7 @@ QDateTime QDateTime::toLocalTime() const
 */
 QDateTime QDateTime::toUTC() const
 {
-    return toTimeZone(QTimeZone::UTC);
+    return toTimeZone(BOBUIimeZone::UTC);
 }
 
 /*!
@@ -5290,7 +5290,7 @@ QDateTime QDateTime::toUTC() const
     \sa timeRepresentation(), toLocalTime(), toUTC(), toOffsetFromUtc()
 */
 
-QDateTime QDateTime::toTimeZone(const QTimeZone &timeZone) const
+QDateTime QDateTime::toTimeZone(const BOBUIimeZone &timeZone) const
 {
     if (timeRepresentation() == timeZone)
         return *this;
@@ -5360,20 +5360,20 @@ bool QDateTime::equals(const QDateTime &other) const
     \sa operator==()
 */
 
-Qt::weak_ordering compareThreeWay(const QDateTime &lhs, const QDateTime &rhs)
+BobUI::weak_ordering compareThreeWay(const QDateTime &lhs, const QDateTime &rhs)
 {
     if (!lhs.isValid())
-        return rhs.isValid() ? Qt::weak_ordering::less : Qt::weak_ordering::equivalent;
+        return rhs.isValid() ? BobUI::weak_ordering::less : BobUI::weak_ordering::equivalent;
 
     if (!rhs.isValid())
-        return Qt::weak_ordering::greater; // we know that lhs is valid here
+        return BobUI::weak_ordering::greater; // we know that lhs is valid here
 
     const qint64 lhms = getMSecs(lhs.d), rhms = getMSecs(rhs.d);
     if (usesSameOffset(lhs.d, rhs.d) || areFarEnoughApart(lhms, rhms))
-        return Qt::compareThreeWay(lhms, rhms);
+        return BobUI::compareThreeWay(lhms, rhms);
 
     // Convert to UTC and compare
-    return Qt::compareThreeWay(lhs.toMSecsSinceEpoch(), rhs.toMSecsSinceEpoch());
+    return BobUI::compareThreeWay(lhs.toMSecsSinceEpoch(), rhs.toMSecsSinceEpoch());
 }
 
 /*!
@@ -5422,12 +5422,12 @@ Qt::weak_ordering compareThreeWay(const QDateTime &lhs, const QDateTime &rhs)
 /*!
     \since 6.5
     \overload primary
-    \fn QDateTime QDateTime::currentDateTime(const QTimeZone &zone)
+    \fn QDateTime QDateTime::currentDateTime(const BOBUIimeZone &zone)
 
     Returns the system clock's current datetime, using the time representation
     described by \a zone. If \a zone is omitted, local time is used.
 
-    \sa currentDateTimeUtc(), QDate::currentDate(), QTime::currentTime(), toTimeZone()
+    \sa currentDateTimeUtc(), QDate::currentDate(), BOBUIime::currentTime(), toTimeZone()
 */
 
 /*!
@@ -5436,7 +5436,7 @@ Qt::weak_ordering compareThreeWay(const QDateTime &lhs, const QDateTime &rhs)
 */
 QDateTime QDateTime::currentDateTime()
 {
-    return currentDateTime(QTimeZone::LocalTime);
+    return currentDateTime(BOBUIimeZone::LocalTime);
 }
 
 /*!
@@ -5444,14 +5444,14 @@ QDateTime QDateTime::currentDateTime()
     \since 4.7
     Returns the system clock's current datetime, expressed in terms of UTC.
 
-    Equivalent to \c{currentDateTime(QTimeZone::UTC)}.
+    Equivalent to \c{currentDateTime(BOBUIimeZone::UTC)}.
 
-    \sa currentDateTime(), QDate::currentDate(), QTime::currentTime(), toTimeZone()
+    \sa currentDateTime(), QDate::currentDate(), BOBUIime::currentTime(), toTimeZone()
 */
 
 QDateTime QDateTime::currentDateTimeUtc()
 {
-    return currentDateTime(QTimeZone::UTC);
+    return currentDateTime(BOBUIimeZone::UTC);
 }
 
 /*!
@@ -5483,7 +5483,7 @@ QDateTime QDateTime::currentDateTimeUtc()
     \fn template <typename Clock, typename Duration> QDateTime QDateTime::fromStdTimePoint(const std::chrono::time_point<Clock, Duration> &time)
 
     Constructs a datetime representing the same point in time as \a time,
-    using Qt::UTC as its time representation.
+    using BobUI::UTC as its time representation.
 
     The clock of \a time must be compatible with
     \c{std::chrono::system_clock}; in particular, a conversion
@@ -5507,7 +5507,7 @@ QDateTime QDateTime::currentDateTimeUtc()
     \overload fromStdTimePoint()
 
     Constructs a datetime representing the same point in time as \a time,
-    using Qt::UTC as its time representation.
+    using BobUI::UTC as its time representation.
 */
 QDateTime QDateTime::fromStdTimePoint(
     std::chrono::time_point<
@@ -5515,7 +5515,7 @@ QDateTime QDateTime::fromStdTimePoint(
         std::chrono::milliseconds
     > time)
 {
-    return fromMSecsSinceEpoch(time.time_since_epoch().count(), QTimeZone::UTC);
+    return fromMSecsSinceEpoch(time.time_since_epoch().count(), BOBUIimeZone::UTC);
 }
 
 /*!
@@ -5524,7 +5524,7 @@ QDateTime QDateTime::fromStdTimePoint(
 
     Constructs a datetime whose date and time are the number of milliseconds
     represented by \a time, counted since 1970-01-01T00:00:00.000 in local
-    time (Qt::LocalTime).
+    time (BobUI::LocalTime).
 
     \note This function requires C++20.
 
@@ -5537,7 +5537,7 @@ QDateTime QDateTime::fromStdTimePoint(
 
     Constructs a datetime whose date and time are the number of milliseconds
     represented by \a time, counted since 1970-01-01T00:00:00.000 in local
-    time (Qt::LocalTime).
+    time (BobUI::LocalTime).
 
     \note This function requires C++20.
 
@@ -5553,7 +5553,7 @@ QDateTime QDateTime::fromStdTimePoint(
 
     \note This function requires C++20.
 
-    \sa QTimeZone
+    \sa BOBUIimeZone
 
     \sa toStdSysMilliseconds(), fromMSecsSinceEpoch()
 */
@@ -5595,20 +5595,20 @@ QDate QDate::currentDate()
     return QDate(st.wYear, st.wMonth, st.wDay);
 }
 
-QTime QTime::currentTime()
+BOBUIime BOBUIime::currentTime()
 {
-    QTime ct;
+    BOBUIime ct;
     SYSTEMTIME st = {};
     GetLocalTime(&st);
     ct.setHMS(st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
     return ct;
 }
 
-QDateTime QDateTime::currentDateTime(const QTimeZone &zone)
+QDateTime QDateTime::currentDateTime(const BOBUIimeZone &zone)
 {
     // We can get local time or "system" time (which is UTC); otherwise, we must
     // convert, which is most efficiently done from UTC.
-    const Qt::TimeSpec spec = zone.timeSpec();
+    const BobUI::TimeSpec spec = zone.timeSpec();
     SYSTEMTIME st = {};
     // https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtime
     // We previously used GetLocalTime for spec == LocalTime but it didn't provide enough
@@ -5617,9 +5617,9 @@ QDateTime QDateTime::currentDateTime(const QTimeZone &zone)
     // the UTC time.
     GetSystemTime(&st);
     QDate d(st.wYear, st.wMonth, st.wDay);
-    QTime t(msecsFromDecomposed(st.wHour, st.wMinute, st.wSecond, st.wMilliseconds));
-    QDateTime utc(d, t, QTimeZone::UTC);
-    return spec == Qt::UTC ? utc : utc.toTimeZone(zone);
+    BOBUIime t(msecsFromDecomposed(st.wHour, st.wMinute, st.wSecond, st.wMilliseconds));
+    QDateTime utc(d, t, BOBUIimeZone::UTC);
+    return spec == BobUI::UTC ? utc : utc.toTimeZone(zone);
 }
 
 qint64 QDateTime::currentMSecsSinceEpoch() noexcept
@@ -5648,12 +5648,12 @@ QDate QDate::currentDate()
     return QDateTime::currentDateTime().date();
 }
 
-QTime QTime::currentTime()
+BOBUIime BOBUIime::currentTime()
 {
     return QDateTime::currentDateTime().time();
 }
 
-QDateTime QDateTime::currentDateTime(const QTimeZone &zone)
+QDateTime QDateTime::currentDateTime(const BOBUIimeZone &zone)
 {
     return fromMSecsSinceEpoch(currentMSecsSinceEpoch(), zone);
 }
@@ -5677,11 +5677,11 @@ qint64 QDateTime::currentSecsSinceEpoch() noexcept
 #error "What system is this?"
 #endif
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 /*!
     \since 5.2
     \overload fromMSecsSinceEpoch()
-    \deprecated [6.9] Pass a \l QTimeZone instead, or omit \a spec and \a offsetSeconds.
+    \deprecated [6.9] Pass a \l BOBUIimeZone instead, or omit \a spec and \a offsetSeconds.
 
     Returns a datetime representing a moment the given number \a msecs of
     milliseconds after the start, in UTC, of the year 1970, described as
@@ -5691,17 +5691,17 @@ qint64 QDateTime::currentSecsSinceEpoch() noexcept
     range of QDateTime, both negative and positive. The behavior of this
     function is undefined for those values.
 
-    If the \a spec is not Qt::OffsetFromUTC then the \a offsetSeconds will be
-    ignored.  If the \a spec is Qt::OffsetFromUTC and the \a offsetSeconds is 0
-    then Qt::UTC will be used as the \a spec, since UTC has zero offset.
+    If the \a spec is not BobUI::OffsetFromUTC then the \a offsetSeconds will be
+    ignored.  If the \a spec is BobUI::OffsetFromUTC and the \a offsetSeconds is 0
+    then BobUI::UTC will be used as the \a spec, since UTC has zero offset.
 
-    If \a spec is Qt::TimeZone then Qt::LocalTime will be used in its place,
+    If \a spec is BobUI::TimeZone then BobUI::LocalTime will be used in its place,
     equivalent to using the current system time zone (but differently
     represented).
 
     \sa fromSecsSinceEpoch(), toMSecsSinceEpoch(), setMSecsSinceEpoch()
 */
-QDateTime QDateTime::fromMSecsSinceEpoch(qint64 msecs, Qt::TimeSpec spec, int offsetSeconds)
+QDateTime QDateTime::fromMSecsSinceEpoch(qint64 msecs, BobUI::TimeSpec spec, int offsetSeconds)
 {
     return fromMSecsSinceEpoch(msecs,
                                asTimeZone(spec, offsetSeconds, "QDateTime::fromMSecsSinceEpoch"));
@@ -5710,7 +5710,7 @@ QDateTime QDateTime::fromMSecsSinceEpoch(qint64 msecs, Qt::TimeSpec spec, int of
 /*!
     \since 5.8
     \overload fromSecsSinceEpoch
-    \deprecated [6.9] Pass a \l QTimeZone instead, or omit \a spec and \a offsetSeconds.
+    \deprecated [6.9] Pass a \l BOBUIimeZone instead, or omit \a spec and \a offsetSeconds.
 
     Returns a datetime representing a moment the given number \a secs of seconds
     after the start, in UTC, of the year 1970, described as specified by \a spec
@@ -5720,17 +5720,17 @@ QDateTime QDateTime::fromMSecsSinceEpoch(qint64 msecs, Qt::TimeSpec spec, int of
     range of QDateTime, both negative and positive. The behavior of this
     function is undefined for those values.
 
-    If the \a spec is not Qt::OffsetFromUTC then the \a offsetSeconds will be
-    ignored.  If the \a spec is Qt::OffsetFromUTC and the \a offsetSeconds is 0
-    then Qt::UTC will be used as the \a spec, since UTC has zero offset.
+    If the \a spec is not BobUI::OffsetFromUTC then the \a offsetSeconds will be
+    ignored.  If the \a spec is BobUI::OffsetFromUTC and the \a offsetSeconds is 0
+    then BobUI::UTC will be used as the \a spec, since UTC has zero offset.
 
-    If \a spec is Qt::TimeZone then Qt::LocalTime will be used in its place,
+    If \a spec is BobUI::TimeZone then BobUI::LocalTime will be used in its place,
     equivalent to using the current system time zone (but differently
     represented).
 
     \sa fromMSecsSinceEpoch(), toSecsSinceEpoch(), setSecsSinceEpoch()
 */
-QDateTime QDateTime::fromSecsSinceEpoch(qint64 secs, Qt::TimeSpec spec, int offsetSeconds)
+QDateTime QDateTime::fromSecsSinceEpoch(qint64 secs, BobUI::TimeSpec spec, int offsetSeconds)
 {
     return fromSecsSinceEpoch(secs,
                               asTimeZone(spec, offsetSeconds, "QDateTime::fromSecsSinceEpoch"));
@@ -5751,7 +5751,7 @@ QDateTime QDateTime::fromSecsSinceEpoch(qint64 secs, Qt::TimeSpec spec, int offs
 
     \sa fromSecsSinceEpoch(), toMSecsSinceEpoch(), setMSecsSinceEpoch()
 */
-QDateTime QDateTime::fromMSecsSinceEpoch(qint64 msecs, const QTimeZone &timeZone)
+QDateTime QDateTime::fromMSecsSinceEpoch(qint64 msecs, const BOBUIimeZone &timeZone)
 {
     QDateTime dt;
     reviseTimeZone(dt.d, timeZone, TransitionResolution::Reject);
@@ -5765,7 +5765,7 @@ QDateTime QDateTime::fromMSecsSinceEpoch(qint64 msecs, const QTimeZone &timeZone
 */
 QDateTime QDateTime::fromMSecsSinceEpoch(qint64 msecs)
 {
-    return fromMSecsSinceEpoch(msecs, QTimeZone::LocalTime);
+    return fromMSecsSinceEpoch(msecs, BOBUIimeZone::LocalTime);
 }
 
 /*!
@@ -5782,7 +5782,7 @@ QDateTime QDateTime::fromMSecsSinceEpoch(qint64 msecs)
 
     \sa fromMSecsSinceEpoch(), toSecsSinceEpoch(), setSecsSinceEpoch()
 */
-QDateTime QDateTime::fromSecsSinceEpoch(qint64 secs, const QTimeZone &timeZone)
+QDateTime QDateTime::fromSecsSinceEpoch(qint64 secs, const BOBUIimeZone &timeZone)
 {
     QDateTime dt;
     reviseTimeZone(dt.d, timeZone, TransitionResolution::Reject);
@@ -5796,19 +5796,19 @@ QDateTime QDateTime::fromSecsSinceEpoch(qint64 secs, const QTimeZone &timeZone)
 */
 QDateTime QDateTime::fromSecsSinceEpoch(qint64 secs)
 {
-    return fromSecsSinceEpoch(secs, QTimeZone::LocalTime);
+    return fromSecsSinceEpoch(secs, BOBUIimeZone::LocalTime);
 }
 
-#if QT_CONFIG(datestring) // depends on, so implies, textdate
+#if BOBUI_CONFIG(datestring) // depends on, so implies, textdate
 
 /*!
     \overload
-    \fn QDateTime QDateTime::fromString(const QString &string, Qt::DateFormat format)
+    \fn QDateTime QDateTime::fromString(const QString &string, BobUI::DateFormat format)
 
     Returns the QDateTime represented by the \a string, using the
     \a format given, or an invalid datetime if this is not possible.
 
-    Note for Qt::TextDate: only English short month names (e.g. "Jan" in short
+    Note for BobUI::TextDate: only English short month names (e.g. "Jan" in short
     form or "January" in long form) are recognized.
 
     \sa toString(), QLocale::toDateTime()
@@ -5818,40 +5818,40 @@ QDateTime QDateTime::fromSecsSinceEpoch(qint64 secs)
     \since 6.0
     \overload fromString()
 */
-QDateTime QDateTime::fromString(QStringView string, Qt::DateFormat format)
+QDateTime QDateTime::fromString(QStringView string, BobUI::DateFormat format)
 {
     if (string.isEmpty())
         return QDateTime();
 
     switch (format) {
-    case Qt::RFC2822Date: {
+    case BobUI::RFC2822Date: {
         const ParsedRfcDateTime rfc = rfcDateImpl(string);
 
         if (!rfc.date.isValid() || !rfc.time.isValid())
             return QDateTime();
 
-        QDateTime dateTime(rfc.date, rfc.time, QTimeZone::UTC);
-        dateTime.setTimeZone(QTimeZone::fromSecondsAheadOfUtc(rfc.utcOffset));
+        QDateTime dateTime(rfc.date, rfc.time, BOBUIimeZone::UTC);
+        dateTime.setTimeZone(BOBUIimeZone::fromSecondsAheadOfUtc(rfc.utcOffset));
         return dateTime;
     }
-    case Qt::ISODate:
-    case Qt::ISODateWithMs: {
+    case BobUI::ISODate:
+    case BobUI::ISODateWithMs: {
         const int size = string.size();
         if (size < 10)
             return QDateTime();
 
-        QDate date = QDate::fromString(string.first(10), Qt::ISODate);
+        QDate date = QDate::fromString(string.first(10), BobUI::ISODate);
         if (!date.isValid())
             return QDateTime();
         if (size == 10)
             return date.startOfDay();
 
-        QTimeZone zone = QTimeZone::LocalTime;
+        BOBUIimeZone zone = BOBUIimeZone::LocalTime;
         QStringView isoString = string.sliced(10); // trim "yyyy-MM-dd"
 
         // Must be left with T (or space) and at least one digit for the hour:
         if (isoString.size() < 2
-            || !(isoString.startsWith(u'T', Qt::CaseInsensitive)
+            || !(isoString.startsWith(u'T', BobUI::CaseInsensitive)
                  // RFC 3339 (section 5.6) allows a space here.  (It actually
                  // allows any separator one considers more readable, merely
                  // giving space as an example - but let's not go wild !)
@@ -5861,8 +5861,8 @@ QDateTime QDateTime::fromString(QStringView string, Qt::DateFormat format)
         isoString = isoString.sliced(1); // trim 'T' (or space)
 
         // Check end of string for Time Zone definition, either Z for UTC or ±HH:mm for Offset
-        if (isoString.endsWith(u'Z', Qt::CaseInsensitive)) {
-            zone = QTimeZone::UTC;
+        if (isoString.endsWith(u'Z', BobUI::CaseInsensitive)) {
+            zone = BOBUIimeZone::UTC;
             isoString.chop(1); // trim 'Z'
         } else {
             // the loop below is faster but functionally equal to:
@@ -5881,24 +5881,24 @@ QDateTime QDateTime::fromString(QStringView string, Qt::DateFormat format)
                 if (!ok)
                     return QDateTime();
                 isoString = isoString.first(signIndex);
-                zone = QTimeZone::fromSecondsAheadOfUtc(offset);
+                zone = BOBUIimeZone::fromSecondsAheadOfUtc(offset);
             }
         }
 
-        // Might be end of day (24:00, including variants), which QTime considers invalid.
+        // Might be end of day (24:00, including variants), which BOBUIime considers invalid.
         // ISO 8601 (section 4.2.3) says that 24:00 is equivalent to 00:00 the next day.
         bool isMidnight24 = false;
-        QTime time = fromIsoTimeString(isoString, format, &isMidnight24);
+        BOBUIime time = fromIsoTimeString(isoString, format, &isMidnight24);
         if (!time.isValid())
             return QDateTime();
         if (isMidnight24) // time is 0:0, but we want the start of next day:
             return date.addDays(1).startOfDay(zone);
         return QDateTime(date, time, zone);
     }
-    case Qt::TextDate: {
+    case BobUI::TextDate: {
         QVarLengthArray<QStringView, 6> parts;
 
-        auto tokens = string.tokenize(u' ', Qt::SkipEmptyParts);
+        auto tokens = string.tokenize(u' ', BobUI::SkipEmptyParts);
         auto it = tokens.begin();
         for (int i = 0; i < 6 && it != tokens.end(); ++i, ++it)
             parts.emplace_back(*it);
@@ -5930,7 +5930,7 @@ QDateTime QDateTime::fromString(QStringView string, Qt::DateFormat format)
         if (!date.isValid())
             return QDateTime();
 
-        const QTime time = fromIsoTimeString(parts.at(timePart), format, nullptr);
+        const BOBUIime time = fromIsoTimeString(parts.at(timePart), format, nullptr);
         if (!time.isValid())
             return QDateTime();
 
@@ -5940,13 +5940,13 @@ QDateTime QDateTime::fromString(QStringView string, Qt::DateFormat format)
         QStringView tz = parts.at(5);
         if (tz.startsWith("UTC"_L1)
             // GMT has long been deprecated as an alias for UTC.
-            || tz.startsWith("GMT"_L1, Qt::CaseInsensitive)) {
+            || tz.startsWith("GMT"_L1, BobUI::CaseInsensitive)) {
             tz = tz.sliced(3);
             if (tz.isEmpty())
-                return QDateTime(date, time, QTimeZone::UTC);
+                return QDateTime(date, time, BOBUIimeZone::UTC);
 
             int offset = fromOffsetString(tz, &ok);
-            return ok ? QDateTime(date, time, QTimeZone::fromSecondsAheadOfUtc(offset))
+            return ok ? QDateTime(date, time, BOBUIimeZone::fromSecondsAheadOfUtc(offset))
                       : QDateTime();
         }
         return QDateTime();
@@ -5968,7 +5968,7 @@ QDateTime QDateTime::fromString(QStringView string, Qt::DateFormat format)
     \include qlocale.cpp base-year-for-two-digit
 
     In addition to the expressions, recognized in the format string to represent
-    parts of the date and time, by QDate::fromString() and QTime::fromString(),
+    parts of the date and time, by QDate::fromString() and BOBUIime::fromString(),
     this method supports:
 
     \table
@@ -5982,14 +5982,14 @@ QDateTime QDateTime::fromString(QStringView string, Qt::DateFormat format)
          \li the timezone in offset format with a colon between hours and
              minutes (for example "+02:00")
     \row \li tttt
-         \li the timezone name, either what \l QTimeZone::displayName() reports
-             for \l QTimeZone::LongName or the IANA ID of the zone (for example
+         \li the timezone name, either what \l BOBUIimeZone::displayName() reports
+             for \l BOBUIimeZone::LongName or the IANA ID of the zone (for example
              "Europe/Berlin"). The names recognized are those known to \l
-             QTimeZone, which may depend on the operating system in use.
+             BOBUIimeZone, which may depend on the operating system in use.
     \endtable
 
     If no 't' format specifier is present, the system's local time-zone is used.
-    For the defaults of all other fields, see QDate::fromString() and QTime::fromString().
+    For the defaults of all other fields, see QDate::fromString() and BOBUIime::fromString().
 
     For example:
 
@@ -6036,7 +6036,7 @@ QDateTime QDateTime::fromString(QStringView string, Qt::DateFormat format)
     datetime string contained "Europe/BerlinZ" it would "match" but produce an
     inconsistent result, leading to an invalid datetime.
 
-    \sa toString(), QDate::fromString(), QTime::fromString(),
+    \sa toString(), QDate::fromString(), BOBUIime::fromString(),
     QLocale::toDateTime()
 */
 
@@ -6053,7 +6053,7 @@ QDateTime QDateTime::fromString(QStringView string, Qt::DateFormat format)
 QDateTime QDateTime::fromString(const QString &string, QStringView format, int baseYear,
                                 QCalendar cal)
 {
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
     QDateTime datetime;
 
     QDateTimeParser dt(QMetaType::QDateTime, QDateTimeParser::FromString, cal);
@@ -6121,18 +6121,18 @@ QDateTime QDateTime::fromString(const QString &string, QStringView format, int b
   Date/time stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \relates QDate
 
     Writes the \a date to stream \a out.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &out, QDate date)
 {
-    if (out.version() < QDataStream::Qt_5_0)
+    if (out.version() < QDataStream::BobUI_5_0)
         return out << quint32(date.jd);
     else
         return out << date.jd;
@@ -6143,12 +6143,12 @@ QDataStream &operator<<(QDataStream &out, QDate date)
 
     Reads a date from stream \a in into the \a date.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &in, QDate &date)
 {
-    if (in.version() < QDataStream::Qt_5_0) {
+    if (in.version() < QDataStream::BobUI_5_0) {
         quint32 jd;
         in >> jd;
         // Older versions consider 0 an invalid jd.
@@ -6161,40 +6161,40 @@ QDataStream &operator>>(QDataStream &in, QDate &date)
 }
 
 /*!
-    \relates QTime
+    \relates BOBUIime
 
     Writes \a time to stream \a out.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
-QDataStream &operator<<(QDataStream &out, QTime time)
+QDataStream &operator<<(QDataStream &out, BOBUIime time)
 {
-    if (out.version() >= QDataStream::Qt_4_0) {
+    if (out.version() >= QDataStream::BobUI_4_0) {
         return out << quint32(time.mds);
     } else {
-        // Qt3 had no support for reading -1, QTime() was valid and serialized as 0
+        // BobUI3 had no support for reading -1, BOBUIime() was valid and serialized as 0
         return out << quint32(time.isNull() ? 0 : time.mds);
     }
 }
 
 /*!
-    \relates QTime
+    \relates BOBUIime
 
     Reads a time from stream \a in into the given \a time.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
-QDataStream &operator>>(QDataStream &in, QTime &time)
+QDataStream &operator>>(QDataStream &in, BOBUIime &time)
 {
     quint32 ds;
     in >> ds;
-    if (in.version() >= QDataStream::Qt_4_0) {
+    if (in.version() >= QDataStream::BobUI_4_0) {
         time.mds = int(ds);
     } else {
-        // Qt3 would write 0 for a null time
-        time.mds = (ds == 0) ? QTime::NullTime : int(ds);
+        // BobUI3 would write 0 for a null time
+        time.mds = (ds == 0) ? BOBUIime::NullTime : int(ds);
     }
     return in;
 }
@@ -6204,57 +6204,57 @@ QDataStream &operator>>(QDataStream &in, QTime &time)
 
     Writes \a dateTime to the \a out stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &out, const QDateTime &dateTime)
 {
-    std::pair<QDate, QTime> dateAndTime;
+    std::pair<QDate, BOBUIime> dateAndTime;
 
-    // TODO: new version, route spec and details via QTimeZone
-    if (out.version() >= QDataStream::Qt_5_2) {
+    // TODO: new version, route spec and details via BOBUIimeZone
+    if (out.version() >= QDataStream::BobUI_5_2) {
 
-        // In 5.2 we switched to using Qt::TimeSpec and added offset and zone support
+        // In 5.2 we switched to using BobUI::TimeSpec and added offset and zone support
         dateAndTime = getDateTime(dateTime.d);
         out << dateAndTime << qint8(dateTime.timeSpec());
-        if (dateTime.timeSpec() == Qt::OffsetFromUTC)
+        if (dateTime.timeSpec() == BobUI::OffsetFromUTC)
             out << qint32(dateTime.offsetFromUtc());
-#if QT_CONFIG(timezone)
-        else if (dateTime.timeSpec() == Qt::TimeZone)
+#if BOBUI_CONFIG(timezone)
+        else if (dateTime.timeSpec() == BobUI::TimeZone)
             out << dateTime.timeZone();
 #endif // timezone
 
-    } else if (out.version() == QDataStream::Qt_5_0) {
+    } else if (out.version() == QDataStream::BobUI_5_0) {
 
-        // In Qt 5.0 we incorrectly serialised all datetimes as UTC.
+        // In BobUI 5.0 we incorrectly serialised all datetimes as UTC.
         // This approach is wrong and should not be used again; it breaks
         // the guarantee that a deserialised local datetime is the same time
         // of day, regardless of which timezone it was serialised in.
         dateAndTime = getDateTime((dateTime.isValid() ? dateTime.toUTC() : dateTime).d);
         out << dateAndTime << qint8(dateTime.timeSpec());
 
-    } else if (out.version() >= QDataStream::Qt_4_0) {
+    } else if (out.version() >= QDataStream::BobUI_4_0) {
 
         // From 4.0 to 5.1 (except 5.0) we used QDateTimePrivate::Spec
         dateAndTime = getDateTime(dateTime.d);
         out << dateAndTime;
         switch (dateTime.timeSpec()) {
-        case Qt::UTC:
+        case BobUI::UTC:
             out << (qint8)QDateTimePrivate::UTC;
             break;
-        case Qt::OffsetFromUTC:
+        case BobUI::OffsetFromUTC:
             out << (qint8)QDateTimePrivate::OffsetFromUTC;
             break;
-        case Qt::TimeZone:
+        case BobUI::TimeZone:
             out << (qint8)QDateTimePrivate::TimeZone;
             break;
-        case Qt::LocalTime:
+        case BobUI::LocalTime:
             out << (qint8)QDateTimePrivate::LocalUnknown;
             break;
         }
 
-    } else { // version < QDataStream::Qt_4_0
+    } else { // version < QDataStream::BobUI_4_0
 
-        // Before 4.0 there was no TimeSpec, only Qt::LocalTime was supported
+        // Before 4.0 there was no TimeSpec, only BobUI::LocalTime was supported
         dateAndTime = getDateTime(dateTime.d);
         out << dateAndTime;
 
@@ -6268,55 +6268,55 @@ QDataStream &operator<<(QDataStream &out, const QDateTime &dateTime)
 
     Reads a datetime from the stream \a in into \a dateTime.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &in, QDateTime &dateTime)
 {
     QDate dt;
-    QTime tm;
+    BOBUIime tm;
     qint8 ts = 0;
-    QTimeZone zone(QTimeZone::LocalTime);
+    BOBUIimeZone zone(BOBUIimeZone::LocalTime);
 
-    if (in.version() >= QDataStream::Qt_5_2) {
+    if (in.version() >= QDataStream::BobUI_5_2) {
 
-        // In 5.2 we switched to using Qt::TimeSpec and added offset and zone support
+        // In 5.2 we switched to using BobUI::TimeSpec and added offset and zone support
         in >> dt >> tm >> ts;
-        switch (static_cast<Qt::TimeSpec>(ts)) {
-        case Qt::UTC:
-            zone = QTimeZone::UTC;
+        switch (static_cast<BobUI::TimeSpec>(ts)) {
+        case BobUI::UTC:
+            zone = BOBUIimeZone::UTC;
             break;
-        case Qt::OffsetFromUTC: {
+        case BobUI::OffsetFromUTC: {
             qint32 offset = 0;
             in >> offset;
-            zone = QTimeZone::fromSecondsAheadOfUtc(offset);
+            zone = BOBUIimeZone::fromSecondsAheadOfUtc(offset);
             break;
         }
-        case Qt::LocalTime:
+        case BobUI::LocalTime:
             break;
-        case Qt::TimeZone:
+        case BobUI::TimeZone:
             in >> zone;
             break;
         }
         // Note: no way to resolve transition ambiguity, when relevant; use default.
         dateTime = QDateTime(dt, tm, zone);
 
-    } else if (in.version() == QDataStream::Qt_5_0) {
+    } else if (in.version() == QDataStream::BobUI_5_0) {
 
-        // In Qt 5.0 we incorrectly serialised all datetimes as UTC
+        // In BobUI 5.0 we incorrectly serialised all datetimes as UTC
         in >> dt >> tm >> ts;
-        dateTime = QDateTime(dt, tm, QTimeZone::UTC);
-        if (static_cast<Qt::TimeSpec>(ts) == Qt::LocalTime)
+        dateTime = QDateTime(dt, tm, BOBUIimeZone::UTC);
+        if (static_cast<BobUI::TimeSpec>(ts) == BobUI::LocalTime)
             dateTime = dateTime.toTimeZone(zone);
 
-    } else if (in.version() >= QDataStream::Qt_4_0) {
+    } else if (in.version() >= QDataStream::BobUI_4_0) {
 
         // From 4.0 to 5.1 (except 5.0) we used QDateTimePrivate::Spec
         in >> dt >> tm >> ts;
         switch (static_cast<QDateTimePrivate::Spec>(ts)) {
         case QDateTimePrivate::OffsetFromUTC: // No offset was stored, so treat as UTC.
         case QDateTimePrivate::UTC:
-            zone = QTimeZone::UTC;
+            zone = BOBUIimeZone::UTC;
             break;
         case QDateTimePrivate::TimeZone: // No zone was stored, so treat as LocalTime:
         case QDateTimePrivate::LocalUnknown:
@@ -6326,9 +6326,9 @@ QDataStream &operator>>(QDataStream &in, QDateTime &dateTime)
         }
         dateTime = QDateTime(dt, tm, zone);
 
-    } else { // version < QDataStream::Qt_4_0
+    } else { // version < QDataStream::BobUI_4_0
 
-        // Before 4.0 there was no TimeSpec, only Qt::LocalTime was supported
+        // Before 4.0 there was no TimeSpec, only BobUI::LocalTime was supported
         in >> dt >> tm;
         dateTime = QDateTime(dt, tm);
 
@@ -6336,33 +6336,33 @@ QDataStream &operator>>(QDataStream &in, QDateTime &dateTime)
 
     return in;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*****************************************************************************
   Date / Time Debug Streams
 *****************************************************************************/
 
-#if !defined(QT_NO_DEBUG_STREAM) && QT_CONFIG(datestring)
+#if !defined(BOBUI_NO_DEBUG_STREAM) && BOBUI_CONFIG(datestring)
 QDebug operator<<(QDebug dbg, QDate date)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace() << "QDate(";
     if (date.isValid())
-        // QTBUG-91070, ISODate only supports years in the range 0-9999
+        // BOBUIBUG-91070, ISODate only supports years in the range 0-9999
         if (int y = date.year(); y > 0 && y <= 9999)
-            dbg.nospace() << date.toString(Qt::ISODate);
+            dbg.nospace() << date.toString(BobUI::ISODate);
         else
-            dbg.nospace() << date.toString(Qt::TextDate);
+            dbg.nospace() << date.toString(BobUI::TextDate);
     else
         dbg.nospace() << "Invalid";
     dbg.nospace() << ')';
     return dbg;
 }
 
-QDebug operator<<(QDebug dbg, QTime time)
+QDebug operator<<(QDebug dbg, BOBUIime time)
 {
     QDebugStateSaver saver(dbg);
-    dbg.nospace() << "QTime(";
+    dbg.nospace() << "BOBUIime(";
     if (time.isValid())
         dbg.nospace() << time.toString(u"HH:mm:ss.zzz");
     else
@@ -6376,21 +6376,21 @@ QDebug operator<<(QDebug dbg, const QDateTime &date)
     QDebugStateSaver saver(dbg);
     dbg.nospace() << "QDateTime(";
     if (date.isValid()) {
-        const Qt::TimeSpec ts = date.timeSpec();
+        const BobUI::TimeSpec ts = date.timeSpec();
         dbg.noquote() << date.toString(u"yyyy-MM-dd HH:mm:ss.zzz t")
                       << ' ' << ts;
         switch (ts) {
-        case Qt::UTC:
+        case BobUI::UTC:
             break;
-        case Qt::OffsetFromUTC:
+        case BobUI::OffsetFromUTC:
             dbg.space() << date.offsetFromUtc() << 's';
             break;
-        case Qt::TimeZone:
-#if QT_CONFIG(timezone)
+        case BobUI::TimeZone:
+#if BOBUI_CONFIG(timezone)
             dbg.space() << date.timeZone().id();
 #endif // timezone
             break;
-        case Qt::LocalTime:
+        case BobUI::LocalTime:
             break;
         }
     } else {
@@ -6407,7 +6407,7 @@ QDebug operator<<(QDebug dbg, const QDateTime &date)
 size_t qHash(const QDateTime &key, size_t seed)
 {
     // Use to toMSecsSinceEpoch instead of individual qHash functions for
-    // QDate/QTime/spec/offset because QDateTime::operator== converts both arguments
+    // QDate/BOBUIime/spec/offset because QDateTime::operator== converts both arguments
     // to the same timezone. If we don't, qHash would return different hashes for
     // two QDateTimes that are equivalent once converted to the same timezone.
     return key.isValid() ? qHash(key.toMSecsSinceEpoch(), seed) : seed;
@@ -6422,13 +6422,13 @@ size_t qHash(QDate key, size_t seed) noexcept
     return qHash(key.toJulianDay(), seed);
 }
 
-/*! \fn size_t qHash(QTime key, size_t seed = 0)
+/*! \fn size_t qHash(BOBUIime key, size_t seed = 0)
     \qhashold{QHash}
     \since 5.0
 */
-size_t qHash(QTime key, size_t seed) noexcept
+size_t qHash(BOBUIime key, size_t seed) noexcept
 {
     return qHash(key.msecsSinceStartOfDay(), seed);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

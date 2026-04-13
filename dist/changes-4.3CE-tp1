@@ -1,4 +1,4 @@
-Changes for Qt/CE 4.3.x "Feierabend" release.
+Changes for BobUI/CE 4.3.x "Feierabend" release.
 
 ****************************************************************************
 *                           Features                                       *
@@ -30,7 +30,7 @@ Changes for Qt/CE 4.3.x "Feierabend" release.
 
 - QFileDialog
    * updated UI to fit on embedded screen.
-   * in case no native dialog exists on device, use Qt FileDialog instead.
+   * in case no native dialog exists on device, use BobUI FileDialog instead.
    * fixed file extension bug.
 
 - QFSFileEngine

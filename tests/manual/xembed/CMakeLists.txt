@@ -1,8 +1,8 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(QT_FEATURE_gtk3)
+if(BOBUI_FEATURE_gtk3)
     add_subdirectory(gtk-container)
 endif()
-add_subdirectory(qt-client-raster)
-add_subdirectory(qt-client-widget)
+add_subdirectory(bobui-client-raster)
+add_subdirectory(bobui-client-widget)

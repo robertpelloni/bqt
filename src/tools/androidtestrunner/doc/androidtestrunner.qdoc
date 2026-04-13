@@ -1,20 +1,20 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page android-test-runner.html
-    \brief Overview of the androidtestrunner tool for running Qt tests on Android.
+    \brief Overview of the androidtestrunner tool for running BobUI tests on Android.
     \title The androidtestrunner Tool
 
     \ingroup android-platform-extra-topics
 
     \section1 Introduction
 
-    The \c androidtestrunner tool runs Qt tests on Android devices and emulators.
+    The \c androidtestrunner tool runs BobUI tests on Android devices and emulators.
     It automates the steps required to execute tests, including managing APK
     installation, test execution, and retrieving results.
 
-    Before using the \c androidtestrunner, ensure you have configured your Qt
+    Before using the \c androidtestrunner, ensure you have configured your BobUI
     test project with CMake or qmake.
 
     \section1 How it works
@@ -38,7 +38,7 @@
     \endlist
 
     To enhance the integration experience, the test runner
-    propagates QT or QTEST environment variables from the host environment of
+    propagates BOBUI or BOBUIEST environment variables from the host environment of
     the test runner process to the app, ensuring consistency and a seamless
     testing workflow.
 
@@ -49,7 +49,7 @@
     only \c testAssets test case:
 
     \badcode
-    ANDROID_SERIAL=emulator-5554 QT_DEBUG_PLUGINS=1 ./tst_android testAssets
+    ANDROID_SERIAL=emulator-5554 BOBUI_DEBUG_PLUGINS=1 ./tst_android testAssets
     \endcode
 
     \section1 Retrieving results
@@ -59,7 +59,7 @@
     tests, any explicitly requested test files are pulled into the specified output
     path with their respective formats.
 
-    For comprehensive details about Qt Test Framework, see \l {Qt Test Overview}.
+    For comprehensive details about BobUI Test Framework, see \l {BobUI Test Overview}.
 
     \section1 How to use it
 

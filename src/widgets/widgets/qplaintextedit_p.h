@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPLAINTEXTEDIT_P_H
 #define QPLAINTEXTEDIT_P_H
@@ -9,35 +9,35 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "private/qabstractscrollarea_p.h"
-#include "QtGui/qtextdocumentfragment.h"
-#if QT_CONFIG(scrollbar)
-#include "QtWidgets/qscrollbar.h"
+#include "BobUIGui/bobuiextdocumentfragment.h"
+#if BOBUI_CONFIG(scrollbar)
+#include "BobUIWidgets/qscrollbar.h"
 #endif
-#include "QtGui/qtextcursor.h"
-#include "QtGui/qtextformat.h"
-#if QT_CONFIG(menu)
-#include "QtWidgets/qmenu.h"
+#include "BobUIGui/bobuiextcursor.h"
+#include "BobUIGui/bobuiextformat.h"
+#if BOBUI_CONFIG(menu)
+#include "BobUIWidgets/qmenu.h"
 #endif
-#include "QtGui/qabstracttextdocumentlayout.h"
-#include "QtCore/qbasictimer.h"
+#include "BobUIGui/qabstracttextdocumentlayout.h"
+#include "BobUICore/qbasictimer.h"
 #include "qplaintextedit.h"
 
 #include "private/qwidgettextcontrol_p.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_REQUIRE_CONFIG(textedit);
+BOBUI_REQUIRE_CONFIG(textedit);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 
@@ -54,10 +54,10 @@ public:
     QMimeData *createMimeDataFromSelection() const override;
     bool canInsertFromMimeData(const QMimeData *source) const override;
     void insertFromMimeData(const QMimeData *source) override;
-    int hitTest(const QPointF &point, Qt::HitTestAccuracy = Qt::FuzzyHit) const override;
-    QRectF blockBoundingRect(const QTextBlock &block) const override;
+    int hitTest(const QPointF &point, BobUI::HitTestAccuracy = BobUI::FuzzyHit) const override;
+    QRectF blockBoundingRect(const BOBUIextBlock &block) const override;
     QString anchorAt(const QPointF &pos) const override;
-    inline QRectF cursorRect(const QTextCursor &cursor) const {
+    inline QRectF cursorRect(const BOBUIextCursor &cursor) const {
         QRectF r = QWidgetTextControl::cursorRect(cursor);
         r.setLeft(qMax(r.left(), (qreal) 0.));
         return r;
@@ -71,7 +71,7 @@ public:
 
     QPlainTextEdit *textEdit;
     int topBlock;
-    QTextBlock firstVisibleBlock() const;
+    BOBUIextBlock firstVisibleBlock() const;
 
     QVariant loadResource(int type, const QUrl &name) override {
         return textEdit->loadResource(type, name);
@@ -98,7 +98,7 @@ public:
     void ensureViewportLayouted();
     void relayoutDocument();
 
-    void pageUpDown(QTextCursor::MoveOperation op, QTextCursor::MoveMode moveMode, bool moveCursor = true);
+    void pageUpDown(BOBUIextCursor::MoveOperation op, BOBUIextCursor::MoveMode moveMode, bool moveCursor = true);
 
     inline int horizontalOffset() const
         { return (q_func()->isRightToLeft() ? (hbar->maximum() - hbar->value()) : hbar->value()); }
@@ -111,7 +111,7 @@ public:
     void updateDefaultTextOption();
 
     QBasicTimer autoScrollTimer;
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     QBasicTimer deleteAllTimer;
 #endif
     QPoint autoScrollDragPos;
@@ -121,7 +121,7 @@ public:
     qreal topLineFracture = 0; // for non-int sized fonts
     qreal pageUpDownLastCursorY = 0;
     QPlainTextEdit::LineWrapMode lineWrap = QPlainTextEdit::WidgetWidth;
-    QTextOption::WrapMode wordWrap = QTextOption::WrapAtWordBoundaryOrAnywhere;
+    BOBUIextOption::WrapMode wordWrap = BOBUIextOption::WrapAtWordBoundaryOrAnywhere;
     int originalOffsetY = 0;
     int topLine = 0;
 
@@ -143,7 +143,7 @@ public:
 
     QPointer<QPlainTextDocumentLayout> documentLayoutPtr;
 
-    void append(const QString &text, Qt::TextFormat format = Qt::AutoText);
+    void append(const QString &text, BobUI::TextFormat format = BobUI::AutoText);
 
     void cursorPositionChanged();
     void modificationChanged(bool);
@@ -154,6 +154,6 @@ public:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLAINTEXTEDIT_P_H

@@ -1,10 +1,10 @@
 // Copyright (C) 2014 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMDEFS_H
 #define QPLATFORMDEFS_H
 
-// Get Qt defines/settings
+// Get BobUI defines/settings
 
 #include "qglobal.h"
 
@@ -34,11 +34,11 @@
 
 #include "../common/posix/qplatformdefs.h"
 
-#define QT_SOCKLEN_T        socklen_t
+#define BOBUI_SOCKLEN_T        socklen_t
 
-#define QT_SNPRINTF         ::snprintf
-#define QT_VSNPRINTF        ::vsnprintf
-#undef QT_OPEN_LARGEFILE
-#define QT_OPEN_LARGEFILE   0
+#define BOBUI_SNPRINTF         ::snprintf
+#define BOBUI_VSNPRINTF        ::vsnprintf
+#undef BOBUI_OPEN_LARGEFILE
+#define BOBUI_OPEN_LARGEFILE   0
 
 #endif // QPLATFORMDEFS_H

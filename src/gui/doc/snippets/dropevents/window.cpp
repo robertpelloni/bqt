@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QComboBox>
 #include <QDragEnterEvent>
 #include <QLabel>
 #include <QMimeData>
-#include <QTextBrowser>
+#include <BOBUIextBrowser>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -21,7 +21,7 @@ protected:
 
 private:
     QComboBox *mimeTypeCombo = nullptr;
-    QTextBrowser *textBrowser = nullptr;
+    BOBUIextBrowser *textBrowser = nullptr;
     QString oldText;
     QStringList oldMimeTypes;
 };
@@ -32,7 +32,7 @@ Window::Window(QWidget *parent)
 {
 //! [0]
     QLabel *textLabel = new QLabel(tr("Data:"), this);
-    textBrowser = new QTextBrowser(this);
+    textBrowser = new BOBUIextBrowser(this);
 
     QLabel *mimeTypeLabel = new QLabel(tr("MIME types:"), this);
     mimeTypeCombo = new QComboBox(this);

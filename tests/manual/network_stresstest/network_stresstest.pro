@@ -1,6 +1,6 @@
 TARGET = tst_network_stresstest
 
-QT = core-private network-private testlib
+BOBUI = core-private network-private testlib
 
 SOURCES  += tst_network_stresstest.cpp \
     minihttpserver.cpp

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDDATAOFFER_H
 #define QWAYLANDDATAOFFER_H
@@ -8,26 +8,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qhash.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qstring.h>
 
-#include <QtGui/private/qinternalmimedata_p.h>
+#include <BobUIGui/private/qinternalmimedata_p.h>
 
-#include <QtWaylandClient/private/qtwaylandclientglobal_p.h>
-#include <QtWaylandClient/private/qwayland-wayland.h>
+#include <BobUIWaylandClient/private/bobuiwaylandclientglobal_p.h>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
 
-QT_REQUIRE_CONFIG(wayland_datadevice);
+BOBUI_REQUIRE_CONFIG(wayland_datadevice);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 class QWaylandMimeData;
@@ -42,14 +42,14 @@ public:
 };
 
 class Q_WAYLANDCLIENT_EXPORT QWaylandDataOffer
-        : public QtWayland::wl_data_offer // needs to be the first because we do static casts from the user pointer to the wrapper
+        : public BobUIWayland::wl_data_offer // needs to be the first because we do static casts from the user pointer to the wrapper
         , public QWaylandAbstractDataOffer
 {
 public:
     explicit QWaylandDataOffer(QWaylandDisplay *display, struct ::wl_data_offer *offer);
     ~QWaylandDataOffer() override;
     QMimeData *mimeData() override;
-    Qt::DropActions supportedActions() const;
+    BobUI::DropActions supportedActions() const;
 
     QString firstFormat() const;
 
@@ -63,7 +63,7 @@ protected:
 private:
     QWaylandDisplay *m_display = nullptr;
     QScopedPointer<QWaylandMimeData> m_mimeData;
-    Qt::DropActions m_supportedActions;
+    BobUI::DropActions m_supportedActions;
 };
 
 
@@ -87,7 +87,7 @@ private:
     mutable QHash<QString, QByteArray> m_data;
 };
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif

@@ -7,7 +7,7 @@
 OmniButton::OmniButton(QQuickItem *parent) 
     : QQuickPaintedItem(parent), m_text("Button"), m_isHovered(false), m_isPressed(false)
 {
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setAcceptHoverEvents(true);
     connect(OmniThemeManager::instance(), &OmniThemeManager::themeChanged, this, [this]() { update(); });
 }
@@ -27,7 +27,7 @@ void OmniButton::paint(QPainter *painter) {
         painter->setPen(QPen(theme->primary(), 1.5));
         painter->drawPath(path);
         
-        painter->setPen(m_isPressed ? Qt::black : theme->primary());
+        painter->setPen(m_isPressed ? BobUI::black : theme->primary());
         QFont f = painter->font(); f.setItalic(true); f.setBold(true); painter->setFont(f);
     } else if (mode == OmniThemeManager::LiquidGlass) {
         path.addRoundedRect(rect, 4, 4);
@@ -44,12 +44,12 @@ void OmniButton::paint(QPainter *painter) {
     } else {
         path.addRoundedRect(rect, 4, 4);
         painter->fillPath(path, m_isPressed ? theme->primary().darker() : theme->primary());
-        painter->setPen(Qt::NoPen);
+        painter->setPen(BobUI::NoPen);
         painter->drawPath(path);
         painter->setPen(theme->text());
     }
 
-    painter->drawText(rect, Qt::AlignCenter, m_text.toUpper());
+    painter->drawText(rect, BobUI::AlignCenter, m_text.toUpper());
 }
 
 // Boilerplate property handlers...

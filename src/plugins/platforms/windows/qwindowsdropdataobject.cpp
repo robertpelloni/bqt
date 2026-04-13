@@ -1,15 +1,15 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsdropdataobject.h"
 
-#include <QtCore/qurl.h>
-#include <QtCore/qmimedata.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qmimedata.h>
 #include "qwindowsmimeregistry.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QWindowsDropDataObject
@@ -68,4 +68,4 @@ bool QWindowsDropDataObject::shouldIgnore(LPFORMATETC pformatetc) const
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

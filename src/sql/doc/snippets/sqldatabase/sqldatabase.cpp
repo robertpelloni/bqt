@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QCoreApplication>
-#include <QtSql>
+#include <BobUISql>
 #include <iostream>
 
 using namespace std;
@@ -372,7 +372,7 @@ void sql_intro_snippets()
     QSqlTableModel model;
     model.setTable("employee");
     model.setFilter("salary > 50000");
-    model.setSort(2, Qt::DescendingOrder);
+    model.setSort(2, BobUI::DescendingOrder);
     model.select();
 
     for (int i = 0; i < model.rowCount(); ++i) {

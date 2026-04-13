@@ -5,19 +5,19 @@
 Meta-Object System
 ------------------
 
-Qt 4.0.0 introduced a change to the way type names outside the current
+BobUI 4.0.0 introduced a change to the way type names outside the current
 scope were handled in signals and slots declarations and connections
-which differed from the behavior in Qt 3.x.
+which differed from the behavior in BobUI 3.x.
 
 Unfortunately, this could lead to signal-slot connections that were
-potentially type-unsafe. Therefore, in Qt 4.0.1 type names must be fully
+potentially type-unsafe. Therefore, in BobUI 4.0.1 type names must be fully
 qualified in signal-slot declarations and connections.
 
-For example, in Qt 4.0.0, it was possible to write:
+For example, in BobUI 4.0.0, it was possible to write:
 
     connect(socket, SIGNAL(error(SocketError)), ...);
 
-In Qt 4.0.1, the above connection must be made in the following way:
+In BobUI 4.0.1, the above connection must be made in the following way:
 
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), ...);
 
@@ -30,16 +30,16 @@ Support for SGI Altix has been added for both gcc and Intel icc.
 
 QX11EmbedContainer and QX11EmbedWidget are now exported classes.
 
-This change only affects developers using Qt/X11 with gcc >= 4.0 and
-symbol visibility enabled. Applications built against Qt 4.0.1 that
-use these classes cannot be linked against Qt 4.0.0.
+This change only affects developers using BobUI/X11 with gcc >= 4.0 and
+symbol visibility enabled. Applications built against BobUI 4.0.1 that
+use these classes cannot be linked against BobUI 4.0.0.
 
 
 ****************************************************************************
 *                                Changes                                   *
 ****************************************************************************
 
-Qt Designer
+BobUI Designer
 -----------
 
 Fixed crash in designer when using fonts in custom widgets that
@@ -64,12 +64,12 @@ Don't change system setting for double click interval.
 
 Disabled the richtext editor for the "statusTip" property.
 
-Improved widget handling, loading and saving for QFrame, QTabWidget,
+Improved widget handling, loading and saving for QFrame, BOBUIabWidget,
 and Q3GroupBox.
 
 Added a platform-neutral mechanism for saving key sequences.
 
-Used Qt's list of supported image formats rather than an incomplete
+Used BobUI's list of supported image formats rather than an incomplete
 static list.
 
 Provided a way for plugins to access to the layout of container
@@ -78,7 +78,7 @@ widgets.
 Added support for editable byte arrays.
 
 
-Qt Linguist
+BobUI Linguist
 -----------
 
 Made lupdate handle cases where the compiler converts strings using
@@ -91,7 +91,7 @@ Fixed lupdate's octal sequence handling.
 Fixed duplicate context when two contexts have the same hash value.
 
 
-Qt 3 to 4 Porting Tool
+BobUI 3 to 4 Porting Tool
 ----------------------
 
 Fixed connnect statement that did not work with the new stricter moc.
@@ -115,7 +115,7 @@ from classes inside namespaces.
 Improved the efficiency of signals with default arguments.
 
 
-Qt Assistant
+BobUI Assistant
 ------------
 
 Fixed the document list for full text search indexing.
@@ -132,7 +132,7 @@ Made it possible to read titles in the tabs in assistant.
 
 Updated the QAssistantClient documentation.
 
-Added the QtAssistantClient headers to the other library headers
+Added the BobUIAssistantClient headers to the other library headers
 for installation.
 
 Fixed full text search for phrases.
@@ -211,9 +211,9 @@ General Fixes
 
 - QDir
         Fixed relative path handling on Windows.
-        Reverted empty string matching behavior to match Qt 3's
+        Reverted empty string matching behavior to match BobUI 3's
         behavior.
-        Restored API compatibility with Qt 3.
+        Restored API compatibility with BobUI 3.
 
 - QDirModel
         Fixed accidental deletion of directories in read-only mode.
@@ -333,7 +333,7 @@ General Fixes
 
 - QMainWindow
         Fixed problems with multiple connections from QMainWindow
-        signals to QToolBar slots.
+        signals to BOBUIoolBar slots.
         Fixed dock widget handling (adding a widget to all dock
         areas) and incorrect dock area splitting behavior that
         could lead to crashes in QMainWindow.
@@ -347,8 +347,8 @@ General Fixes
 
 - QMetaType
         Fixed whitespace handling in template specialization.
-        Fixed missing qt_metatype_id implementation for <void *>.
-        Added more support for compilation with QT_NO_DATASTREAM.
+        Fixed missing bobui_metatype_id implementation for <void *>.
+        Added more support for compilation with BOBUI_NO_DATASTREAM.
 
 - QMenu
         Fixed keyboard navigation when mouse navigation is also
@@ -410,7 +410,7 @@ General Fixes
         Improved handling of non-terminated strings in INI files.
 
 - QSizeGrip
-        Made the Qt 3-style constructor public.
+        Made the BobUI 3-style constructor public.
 
 - QSpinBox
         Fixed problems with out-of-range integers and doubles.
@@ -425,13 +425,13 @@ General Fixes
 - QStatusBar
         Fixed status bar height without size grip.
 
-- QTabBar
+- BOBUIabBar
         Fixed handling of the current page index when adding the
-        first page to QTabWidget.
+        first page to BOBUIabWidget.
         Improved tab bar icon handling to enable icons to be updated
         without redrawing the entire tab bar.
 
-- QTableView
+- BOBUIableView
         Improved text cursor handling and support for keyboard
         modifiers.
         Fixed problems with disappearing headers.
@@ -439,18 +439,18 @@ General Fixes
         Fixed crashes involving empty models and tables with headers
         but no rows or columns.
 
-- QTableWidget
+- BOBUIableWidget
         Improved sorting and signal emission behavior.
 
-- QTabWidget
+- BOBUIabWidget
         Fixed handling of the current widget to keep the tab bar
         updated.
 
-- QTextBrowser
+- BOBUIextBrowser
         Removed temporary visible text selection when activating
         anchors with Shift-click.
 
-- QTextCursor
+- BOBUIextCursor
         Fixed selection behavior for words at the beginning of lines.
         Fixed incorrect use of character formats when calling
         insertFragment().
@@ -458,7 +458,7 @@ General Fixes
         returns would not be transformed into Unicode block
         separators.
 
-- QTextDocument
+- BOBUIextDocument
         Added support for page breaking.
         Added support for relative font sizes.
         Added support for <hr /> tags.
@@ -477,35 +477,35 @@ General Fixes
         Improved performance and size of PostScript images when
         printing high resolution or scaled images.
 
-- QTextEdit
+- BOBUIextEdit
         Improved layout and selection handling.
         Added configuration support for non-blinking cursors.
         Improved keyboard handling.
         Improved text insertion handling.
 
-- QTextFormat
+- BOBUIextFormat
         Added support for horizontal rules.
         Improved font handling.
 
-- QTextLayout
+- BOBUIextLayout
         Allow line breaking at tabs.
         Improved reporting of line widths for lines ending with a
         QChar::LineSeparator.
         Fixed reporting of the minimum width for layouts that have
         NoWrap/ManualWrap as their wrap policy.
 
-- QTextStream
+- BOBUIextStream
         Fixed locking behavior when reading from stdin.
         Fixed seek() behavior.
         Improved Latin-1 string handling.
 
-- QTextTable
+- BOBUIextTable
         Improved performance and selection handling.
 
-- QToolBar
+- BOBUIoolBar
         Fixed toolbar resizing behavior to handle icon size changes.
 
-- QTreeView
+- BOBUIreeView
         Improved handling of hidden rows, columns, and child items.
         Fixed repainting issues with newly inserted child items
         and selections.
@@ -513,9 +513,9 @@ General Fixes
         Fixed crashes involving column handling and empty views.
         Fixed sorting indicator behavior.
 
-- QTreeWidget
+- BOBUIreeWidget
         Improved item insertion performance.
-        Fixed clone() and operator=() for QTreeWidgetItem.
+        Fixed clone() and operator=() for BOBUIreeWidgetItem.
         Fixed crash when removing or deleting items with children.
         Improved sorting performance.
         Fixed sorting indicator behavior.
@@ -644,7 +644,7 @@ Mac OS X:
         Fixed URL handling.
 
 - QClipboard
-        Fixed Junk at end of pasted text on Qt/Mac.
+        Fixed Junk at end of pasted text on BobUI/Mac.
 
 - QCursor
         Fixed incorrect pixmap handling.
@@ -658,7 +658,7 @@ Mac OS X:
         Enable kerning and fix Arabic text handling.
 
 - QLibraryInfo
-        Fixed location of qt.conf in Mac OS X bundles.
+        Fixed location of bobui.conf in Mac OS X bundles.
 
 - QMacStyle
         Improvements to rendering accuracy of comboboxes, tab bars,
@@ -708,10 +708,10 @@ Tools
 - uic3
         Fixed class name handling when used in "-convert" mode.
         Fixed vertical space issues with .ui files converted from
-        Qt 3 to Qt 4.
-        Improved support for Qt3Support widgets.
+        BobUI 3 to BobUI 4.
+        Improved support for BobUI3Support widgets.
         Improved support for deprecated enums.
-        Added a generator for dependencies in Qt 3 .ui files.
+        Added a generator for dependencies in BobUI 3 .ui files.
 
 - rcc
         Added better error reporting.
@@ -748,11 +748,11 @@ General:
 
 Fix documentation of amortized container behavior.
 
-Added information about using specific compilers to build Qt.
+Added information about using specific compilers to build BobUI.
 
-Removed QtMotif documentation because it is now part of Qt Solutions.
+Removed BobUIMotif documentation because it is now part of BobUI Solutions.
 
-Clarify parent-child relationship within QThreads.
+Clarify parent-child relationship within BOBUIhreads.
 
 Documented potential file name clashes when using precompiled headers.
 
@@ -761,9 +761,9 @@ Added a Windows XP gallery.
 Added pages to contain lists of classes for each Commercial Edition.
 
 Reintroduced the QAssistantClient documentation as part of the
-QtAssistant module.
+BobUIAssistant module.
 
-Added missing Qt Designer API documentation.
+Added missing BobUI Designer API documentation.
 
 - QApplication
         Documented correct use of QApplication::setStyle().

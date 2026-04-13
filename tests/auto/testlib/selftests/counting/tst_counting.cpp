@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 class tst_Counting : public QObject
 {
@@ -84,9 +84,9 @@ void tst_Counting::helper()
 
 void tst_Counting::testPassPass_data()
 {
-    QTest::addColumn<TestResult>("result");
-    QTest::newRow("row 1") << Pass;
-    QTest::newRow("row 2") << Pass;
+    BOBUIest::addColumn<TestResult>("result");
+    BOBUIest::newRow("row 1") << Pass;
+    BOBUIest::newRow("row 2") << Pass;
 }
 
 void tst_Counting::testPassPass()
@@ -96,9 +96,9 @@ void tst_Counting::testPassPass()
 
 void tst_Counting::testPassSkip_data()
 {
-    QTest::addColumn<TestResult>("result");
-    QTest::newRow("row 1") << Pass;
-    QTest::newRow("row 2") << Skip;
+    BOBUIest::addColumn<TestResult>("result");
+    BOBUIest::newRow("row 1") << Pass;
+    BOBUIest::newRow("row 2") << Skip;
 }
 
 void tst_Counting::testPassSkip()
@@ -108,9 +108,9 @@ void tst_Counting::testPassSkip()
 
 void tst_Counting::testPassFail_data()
 {
-    QTest::addColumn<TestResult>("result");
-    QTest::newRow("row 1") << Pass;
-    QTest::newRow("row 2") << Fail;
+    BOBUIest::addColumn<TestResult>("result");
+    BOBUIest::newRow("row 1") << Pass;
+    BOBUIest::newRow("row 2") << Fail;
 }
 
 void tst_Counting::testPassFail()
@@ -120,9 +120,9 @@ void tst_Counting::testPassFail()
 
 void tst_Counting::testSkipPass_data()
 {
-    QTest::addColumn<TestResult>("result");
-    QTest::newRow("row 1") << Skip;
-    QTest::newRow("row 2") << Pass;
+    BOBUIest::addColumn<TestResult>("result");
+    BOBUIest::newRow("row 1") << Skip;
+    BOBUIest::newRow("row 2") << Pass;
 }
 
 void tst_Counting::testSkipPass()
@@ -132,9 +132,9 @@ void tst_Counting::testSkipPass()
 
 void tst_Counting::testSkipSkip_data()
 {
-    QTest::addColumn<TestResult>("result");
-    QTest::newRow("row 1") << Skip;
-    QTest::newRow("row 2") << Skip;
+    BOBUIest::addColumn<TestResult>("result");
+    BOBUIest::newRow("row 1") << Skip;
+    BOBUIest::newRow("row 2") << Skip;
 }
 
 void tst_Counting::testSkipSkip()
@@ -144,9 +144,9 @@ void tst_Counting::testSkipSkip()
 
 void tst_Counting::testSkipFail_data()
 {
-    QTest::addColumn<TestResult>("result");
-    QTest::newRow("row 1") << Skip;
-    QTest::newRow("row 2") << Fail;
+    BOBUIest::addColumn<TestResult>("result");
+    BOBUIest::newRow("row 1") << Skip;
+    BOBUIest::newRow("row 2") << Fail;
 }
 
 void tst_Counting::testSkipFail()
@@ -156,9 +156,9 @@ void tst_Counting::testSkipFail()
 
 void tst_Counting::testFailPass_data()
 {
-    QTest::addColumn<TestResult>("result");
-    QTest::newRow("row 1") << Fail;
-    QTest::newRow("row 2") << Pass;
+    BOBUIest::addColumn<TestResult>("result");
+    BOBUIest::newRow("row 1") << Fail;
+    BOBUIest::newRow("row 2") << Pass;
 }
 
 void tst_Counting::testFailPass()
@@ -168,9 +168,9 @@ void tst_Counting::testFailPass()
 
 void tst_Counting::testFailSkip_data()
 {
-    QTest::addColumn<TestResult>("result");
-    QTest::newRow("row 1") << Fail;
-    QTest::newRow("row 2") << Skip;
+    BOBUIest::addColumn<TestResult>("result");
+    BOBUIest::newRow("row 1") << Fail;
+    BOBUIest::newRow("row 2") << Skip;
 }
 
 void tst_Counting::testFailSkip()
@@ -180,9 +180,9 @@ void tst_Counting::testFailSkip()
 
 void tst_Counting::testFailFail_data()
 {
-    QTest::addColumn<TestResult>("result");
-    QTest::newRow("row 1") << Fail;
-    QTest::newRow("row 2") << Fail;
+    BOBUIest::addColumn<TestResult>("result");
+    BOBUIest::newRow("row 1") << Fail;
+    BOBUIest::newRow("row 2") << Fail;
 }
 
 void tst_Counting::testFailFail()
@@ -192,91 +192,91 @@ void tst_Counting::testFailFail()
 
 void tst_Counting::init()
 {
-    if (strcmp(QTest::currentTestFunction(), "testFailInInit") == 0
-        && strcmp(QTest::currentDataTag(), "fail") == 0) {
+    if (strcmp(BOBUIest::currentTestFunction(), "testFailInInit") == 0
+        && strcmp(BOBUIest::currentDataTag(), "fail") == 0) {
         QFAIL("Fail in init()");
-    } else if (strcmp(QTest::currentTestFunction(), "testSkipInInit") == 0
-               && strcmp(QTest::currentDataTag(), "skip") == 0) {
+    } else if (strcmp(BOBUIest::currentTestFunction(), "testSkipInInit") == 0
+               && strcmp(BOBUIest::currentDataTag(), "skip") == 0) {
         QSKIP("Skip in init()");
     }
 }
 
 void tst_Counting::cleanup()
 {
-    if (strcmp(QTest::currentTestFunction(), "testFailInCleanup") == 0 && strcmp(QTest::currentDataTag(), "fail") == 0)
+    if (strcmp(BOBUIest::currentTestFunction(), "testFailInCleanup") == 0 && strcmp(BOBUIest::currentDataTag(), "fail") == 0)
         QFAIL("Fail in cleanup()");
-    else if (strcmp(QTest::currentTestFunction(), "testSkipInCleanup") == 0 && strcmp(QTest::currentDataTag(), "skip") == 0)
+    else if (strcmp(BOBUIest::currentTestFunction(), "testSkipInCleanup") == 0 && strcmp(BOBUIest::currentDataTag(), "skip") == 0)
         QSKIP("Skip in cleanup()");
 }
 
 void tst_Counting::testFailInInit_data()
 {
-    QTest::addColumn<bool>("dummy");
-    QTest::newRow("before") << true;
-    QTest::newRow("fail") << true;
-    QTest::newRow("after") << true;
+    BOBUIest::addColumn<bool>("dummy");
+    BOBUIest::newRow("before") << true;
+    BOBUIest::newRow("fail") << true;
+    BOBUIest::newRow("after") << true;
 }
 
 void tst_Counting::testFailInInit()
 {
-    if (strcmp(QTest::currentDataTag(), "fail") == 0)
+    if (strcmp(BOBUIest::currentDataTag(), "fail") == 0)
         QFAIL("This test function should have been skipped due to QFAIL in init()");
 }
 
 void tst_Counting::testFailInCleanup_data()
 {
-    QTest::addColumn<bool>("dummy");
-    QTest::newRow("before") << true;
-    QTest::newRow("fail") << true;
-    QTest::newRow("after") << true;
+    BOBUIest::addColumn<bool>("dummy");
+    BOBUIest::newRow("before") << true;
+    BOBUIest::newRow("fail") << true;
+    BOBUIest::newRow("after") << true;
 }
 
 void tst_Counting::testFailInCleanup()
 {
-    if (strcmp(QTest::currentDataTag(), "fail") == 0)
+    if (strcmp(BOBUIest::currentDataTag(), "fail") == 0)
         qDebug() << "This test function should execute and then QFAIL in cleanup()";
 }
 
 void tst_Counting::testSkipInInit_data()
 {
-    QTest::addColumn<bool>("dummy");
-    QTest::newRow("before") << true;
-    QTest::newRow("skip") << true;
-    QTest::newRow("after") << true;
+    BOBUIest::addColumn<bool>("dummy");
+    BOBUIest::newRow("before") << true;
+    BOBUIest::newRow("skip") << true;
+    BOBUIest::newRow("after") << true;
 }
 
 void tst_Counting::testSkipInInit()
 {
-    if (strcmp(QTest::currentDataTag(), "skip") == 0)
+    if (strcmp(BOBUIest::currentDataTag(), "skip") == 0)
         QFAIL("This test function should have been skipped due to QSKIP in init()");
 }
 
 void tst_Counting::testSkipInCleanup_data()
 {
-    QTest::addColumn<bool>("dummy");
-    QTest::newRow("before") << true;
-    QTest::newRow("skip") << true;
-    QTest::newRow("after") << true;
+    BOBUIest::addColumn<bool>("dummy");
+    BOBUIest::newRow("before") << true;
+    BOBUIest::newRow("skip") << true;
+    BOBUIest::newRow("after") << true;
 }
 
 void tst_Counting::testSkipInCleanup()
 {
-    if (strcmp(QTest::currentDataTag(), "skip") == 0)
+    if (strcmp(BOBUIest::currentDataTag(), "skip") == 0)
         qDebug() << "This test function should execute and then QSKIP in cleanup()";
 }
 
 #ifdef TESTLIB_VERBOSITY_ARG
 #define SETUP() \
     std::vector<const char*> args(argv, argv + argc); \
-    args.push_back(QT_STRINGIFY(TESTLIB_VERBOSITY_ARG)); \
+    args.push_back(BOBUI_STRINGIFY(TESTLIB_VERBOSITY_ARG)); \
     argc = int(args.size()); \
     argv = const_cast<char**>(&args[0]);
 #else
 #define SETUP()
 #endif
 
-QTEST_MAIN_WRAPPER(tst_Counting,
+BOBUIEST_MAIN_WRAPPER(tst_Counting,
     SETUP()
-    QTEST_MAIN_SETUP())
+    BOBUIEST_MAIN_SETUP())
 
 #include "tst_counting.moc"

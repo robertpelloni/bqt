@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QFutureWatcher>
-#include <QtConcurrent>
+#include <BobUIConcurrent>
 
 class MyClass : public QObject
 {
@@ -23,7 +23,7 @@ void examples()
     QObject::connect(&watcher, &QFutureWatcher<int>::finished, &myObject, &MyClass::handleFinished);
 
     // Start the computation.
-    QFuture<int> future = QtConcurrent::run([result](){ /*...*/ return result;});
+    QFuture<int> future = BobUIConcurrent::run([result](){ /*...*/ return result;});
     watcher.setFuture(future);
     //! [0]
 }

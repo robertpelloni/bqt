@@ -1,5 +1,5 @@
 ********* Start testing of tst_FetchBogus *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_FetchBogus::initTestCase()
 QFATAL : tst_FetchBogus::fetchBogus(foo) QFETCH: Requested testdata 'bubu' not available, check your _data function.
 FAIL!  : tst_FetchBogus::fetchBogus(foo) Received a fatal error.

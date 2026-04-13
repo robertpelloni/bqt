@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "propertywatcher.h"
 #include <QApplication>
 #include <QScreen>
 #include <QWindow>
 #include <QDebug>
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QFormLayout>
 #include <QMainWindow>
 #include <QMenu>
@@ -26,7 +26,7 @@ class MouseMonitor : public QLabel {
 public:
     MouseMonitor() : m_grabbed(false) {
         setMinimumSize(540, 240);
-        setAlignment(Qt::AlignCenter);
+        setAlignment(BobUI::AlignCenter);
         setMouseTracking(true);
         setWindowTitle(QLatin1String("Mouse Monitor"));
         updateText();
@@ -41,7 +41,7 @@ public:
             const auto screenNum = screen ? QGuiApplication::screens().indexOf(screen) : 0;
             txt += QString(QLatin1String("Current mouse position: %1, %2 on screen %3\n"))
                     .arg(m_cursorPos.x()).arg(m_cursorPos.y()).arg(screenNum);
-            if (QGuiApplication::mouseButtons() & Qt::LeftButton) {
+            if (QGuiApplication::mouseButtons() & BobUI::LeftButton) {
                 QWindow *win = QGuiApplication::topLevelAt(m_cursorPos);
                 txt += QString(QLatin1String("Top-level window found? %1\n"))
                         .arg(win ? (win->title().isEmpty() ? "no title" : win->title()) : "none");
@@ -61,9 +61,9 @@ protected:
         qDebug() << "top level @" << m_cursorPos << ":" << QGuiApplication::topLevelAt(m_cursorPos);
         updateText();
         if (!m_grabbed) {
-            grabMouse(Qt::CrossCursor);
+            grabMouse(BobUI::CrossCursor);
             m_grabbed = true;
-        } else if (ev->button() == Qt::RightButton) {
+        } else if (ev->button() == BobUI::RightButton) {
             setVisible(false);
             deleteLater();
         }
@@ -142,21 +142,21 @@ ScreenWatcherMainWindow::ScreenWatcherMainWindow(QScreen *screen)
     : m_annotation(QLatin1Char('#') + QString::number(i++))
     ,  m_watcher(new ScreenPropertyWatcher(this))
 {
-    setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(BobUI::WA_DeleteOnClose);
     setCentralWidget(m_watcher);
     m_watcher->setScreenSubject(screen, m_annotation);
 
     QMenu *fileMenu = menuBar()->addMenu(QLatin1String("&File"));
     QAction *a = fileMenu->addAction(QLatin1String("Close"));
-    a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
+    a->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_W));
     connect(a, SIGNAL(triggered()), this, SLOT(close()));
     a = fileMenu->addAction(QLatin1String("Quit"));
-    a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+    a->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_Q));
     connect(a, SIGNAL(triggered()), qApp, SLOT(quit()));
 
     QMenu *toolsMenu = menuBar()->addMenu(QLatin1String("&Tools"));
     a = toolsMenu->addAction(QLatin1String("Mouse Monitor"));
-    a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_M));
+    a->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_M));
     connect(a, &QAction::triggered, this, &ScreenWatcherMainWindow::startMouseMonitor);
 }
 
@@ -168,15 +168,15 @@ static inline QString msgScreenChange(const QWidget *w, const QScreen *oldScreen
     if (!newScreen) {
         result = QLatin1String("Screen changed --> null");
     } else if (!oldScreen) {
-        QTextStream(&result) << "Screen changed null --> \"" << newScreen->name() << "\" at "
+        BOBUIextStream(&result) << "Screen changed null --> \"" << newScreen->name() << "\" at "
                              << pos.x() << ',' << pos.y() << " geometry: " << geometry.width()
-                             << 'x' << geometry.height() << Qt::forcesign << geometry.x()
+                             << 'x' << geometry.height() << BobUI::forcesign << geometry.x()
                              << geometry.y() << '.';
     } else {
-        QTextStream(&result) << "Screen changed \"" << oldScreen->name() << "\" --> \""
+        BOBUIextStream(&result) << "Screen changed \"" << oldScreen->name() << "\" --> \""
                              << newScreen->name() << "\" at " << pos.x() << ',' << pos.y()
                              << " geometry: " << geometry.width() << 'x' << geometry.height()
-                             << Qt::forcesign << geometry.x() << geometry.y() << '.';
+                             << BobUI::forcesign << geometry.x() << geometry.y() << '.';
     }
     return result;
 }

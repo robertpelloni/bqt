@@ -46,7 +46,7 @@ android {
     }
 
     aaptOptions {
-        // Do not compress Qt binary resources file
+        // Do not compress BobUI binary resources file
         noCompress 'rcc'
     }
 

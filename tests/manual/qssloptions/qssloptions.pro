@@ -1,7 +1,7 @@
 TARGET = tst_qssloptions
 
-QT -= gui
-QT += network testlib
+BOBUI -= gui
+BOBUI += network testlib
 
 #CONFIG += release
 

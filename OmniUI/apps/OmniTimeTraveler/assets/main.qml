@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 import QtQuick 2.15
 <<<<<<< HEAD
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+=======
+import BobUIQuick 2.15
+import BobUIQuick.Controls 2.15
+import BobUIQuick.Layouts 1.15
+>>>>>>> origin/dev
 import Omni.Time 1.0
 
 ApplicationWindow {
@@ -102,14 +108,14 @@ ApplicationWindow {
 
                     ColumnLayout {
                         spacing: 5
-                        Label { text: "Temporal Coordinates (UTC)"; color: "#a1a1aa"; font.bold: true; Layout.alignment: Qt.AlignRight }
+                        Label { text: "Temporal Coordinates (UTC)"; color: "#a1a1aa"; font.bold: true; Layout.alignment: BobUI.AlignRight }
                         Label {
                             text: OmniTimeline.formattedTime
                             color: "#38bdf8"
                             font.pixelSize: 32
                             font.bold: true
                             font.family: "monospace"
-                            Layout.alignment: Qt.AlignRight
+                            Layout.alignment: BobUI.AlignRight
                             ToolTip.visible: hovered
                             ToolTip.text: "Precise timestamp of the current simulation epoch"
                         }
@@ -118,7 +124,7 @@ ApplicationWindow {
                             color: "#52525b"
                             font.pixelSize: 12
                             font.family: "monospace"
-                            Layout.alignment: Qt.AlignRight
+                            Layout.alignment: BobUI.AlignRight
                         }
                     }
                 }

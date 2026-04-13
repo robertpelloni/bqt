@@ -1,15 +1,15 @@
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@edeltech.ch>
 // Copyright (C) 2013 Teo Mrnjavac <teo@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformsessionmanager.h"
 
 #include "qguiapplication_p.h"
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPlatformSessionManager::QPlatformSessionManager(const QString &id, const QString &key)
     : m_sessionId(id),
@@ -111,6 +111,6 @@ void QPlatformSessionManager::appSaveState()
     qGuiApp->d_func()->saveState();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_SESSIONMANAGER
+#endif // BOBUI_NO_SESSIONMANAGER

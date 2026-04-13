@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandcolormanagement_p.h"
 #include "qwaylanddisplay_p.h"
@@ -8,12 +8,12 @@
 
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 ColorManager::ColorManager(struct ::wl_registry *registry, uint32_t id, int version)
-    : QtWayland::wp_color_manager_v1(registry, id, version)
+    : BobUIWayland::wp_color_manager_v1(registry, id, version)
 {
 }
 
@@ -51,12 +51,12 @@ void ColorManager::wp_color_manager_v1_supported_feature(uint32_t feature)
 
 void ColorManager::wp_color_manager_v1_supported_primaries_named(uint32_t primaries)
 {
-    mPrimaries.push_back(QtWayland::wp_color_manager_v1::primaries(primaries));
+    mPrimaries.push_back(BobUIWayland::wp_color_manager_v1::primaries(primaries));
 }
 
 void ColorManager::wp_color_manager_v1_supported_tf_named(uint32_t transferFunction)
 {
-    mTransferFunctions.push_back(QtWayland::wp_color_manager_v1::transfer_function(transferFunction));
+    mTransferFunctions.push_back(BobUIWayland::wp_color_manager_v1::transfer_function(transferFunction));
 }
 
 ColorManager::Features ColorManager::supportedFeatures() const
@@ -64,12 +64,12 @@ ColorManager::Features ColorManager::supportedFeatures() const
     return mFeatures;
 }
 
-bool ColorManager::supportsNamedPrimary(QtWayland::wp_color_manager_v1::primaries primaries) const
+bool ColorManager::supportsNamedPrimary(BobUIWayland::wp_color_manager_v1::primaries primaries) const
 {
     return mPrimaries.contains(primaries);
 }
 
-bool ColorManager::supportsTransferFunction(QtWayland::wp_color_manager_v1::transfer_function transferFunction) const
+bool ColorManager::supportsTransferFunction(BobUIWayland::wp_color_manager_v1::transfer_function transferFunction) const
 {
     return mTransferFunctions.contains(transferFunction);
 }
@@ -140,7 +140,7 @@ std::unique_ptr<ImageDescription> ColorManager::createImageDescription(const QCo
 }
 
 ImageDescriptionInfo::ImageDescriptionInfo(ImageDescription *descr)
-    : QtWayland::wp_image_description_info_v1(descr->get_information())
+    : BobUIWayland::wp_image_description_info_v1(descr->get_information())
 {
 }
 
@@ -195,7 +195,7 @@ void ImageDescriptionInfo::wp_image_description_info_v1_target_luminance(uint32_
 }
 
 ImageDescription::ImageDescription(::wp_image_description_v1 *descr)
-    : QtWayland::wp_image_description_v1(descr)
+    : BobUIWayland::wp_image_description_v1(descr)
 {
 }
 
@@ -219,7 +219,7 @@ void ImageDescription::wp_image_description_v1_ready(uint32_t identity)
 }
 
 ColorManagementFeedback::ColorManagementFeedback(::wp_color_management_surface_feedback_v1 *obj)
-    : QtWayland::wp_color_management_surface_feedback_v1(obj)
+    : BobUIWayland::wp_color_management_surface_feedback_v1(obj)
     , mPreferred(std::make_unique<ImageDescription>(get_preferred()))
 {
 }
@@ -243,7 +243,7 @@ void ColorManagementFeedback::handlePreferredDone()
 }
 
 ColorManagementSurface::ColorManagementSurface(::wp_color_management_surface_v1 *obj)
-    : QtWayland::wp_color_management_surface_v1(obj)
+    : BobUIWayland::wp_color_management_surface_v1(obj)
 {
 }
 
@@ -255,13 +255,13 @@ ColorManagementSurface::~ColorManagementSurface()
 void ColorManagementSurface::setImageDescription(ImageDescription *descr)
 {
     if (descr)
-        wp_color_management_surface_v1_set_image_description(object(), descr->object(), QtWayland::wp_color_manager_v1::render_intent::render_intent_perceptual);
+        wp_color_management_surface_v1_set_image_description(object(), descr->object(), BobUIWayland::wp_color_manager_v1::render_intent::render_intent_perceptual);
     else
         wp_color_management_surface_v1_unset_image_description(object());
 }
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandcolormanagement_p.cpp"

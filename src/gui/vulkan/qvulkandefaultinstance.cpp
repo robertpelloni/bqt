@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvulkandefaultinstance_p.h"
 #include <rhi/qrhi.h>
 #include <QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcGuiVk, "qt.vulkan")
+Q_LOGGING_CATEGORY(lcGuiVk, "bobui.vulkan")
 
 static QVulkanInstance *s_vulkanInstance;
 Q_CONSTINIT static QVulkanDefaultInstance::Flags s_vulkanInstanceFlags;
@@ -43,7 +43,7 @@ QVulkanInstance *QVulkanDefaultInstance::instance()
     // versions for now. For 1.0 implementations nothing will be requested, the
     // default 0 in VkApplicationInfo means 1.0.
     //
-    // Vulkan 1.0 is actually sufficient for 99% of Qt Quick (3D)'s
+    // Vulkan 1.0 is actually sufficient for 99% of BobUI Quick (3D)'s
     // functionality. In addition, Vulkan implementations tend to enable 1.1+
     // functionality regardless of the VkInstance API request. However, the
     // validation layer seems to take this fairly seriously, so we should be
@@ -86,4 +86,4 @@ void QVulkanDefaultInstance::cleanup()
     s_vulkanInstance = nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

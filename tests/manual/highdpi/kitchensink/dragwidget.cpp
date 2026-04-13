@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include "dragwidget.h"
 
 class FramedLabel : public QLabel
@@ -42,7 +42,7 @@ DragWidget::DragWidget(QString text, QWidget *parent)
 
     /*
     QPalette newPalette = palette();
-    newPalette.setColor(QPalette::Window, Qt::white);
+    newPalette.setColor(QPalette::Window, BobUI::white);
     setPalette(newPalette);
     */
 
@@ -57,7 +57,7 @@ void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasText()) {
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -85,7 +85,7 @@ void DragWidget::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasText()) {
         const QMimeData *mime = event->mimeData();
         const QStringList pieces = mime->text().split(QRegularExpression("\\s+"),
-                                                      Qt::SkipEmptyParts);
+                                                      BobUI::SkipEmptyParts);
         QPoint position = event->pos();
         QPoint hotSpot;
 
@@ -107,7 +107,7 @@ void DragWidget::dropEvent(QDropEvent *event)
         }
 
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -137,7 +137,7 @@ void DragWidget::mousePressEvent(QMouseEvent *event)
     mimeData->setData("application/x-hotspot",
                       QByteArray::number(hotSpot.x()) + ' ' + QByteArray::number(hotSpot.y()));
 
-    const qreal dpr = devicePixelRatio() > 1 && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)
+    const qreal dpr = devicePixelRatio() > 1 && !(QGuiApplication::keyboardModifiers() & BobUI::ShiftModifier)
         ? devicePixelRatio() : 1;
 
     QPixmap pixmap(child->size() * dpr);
@@ -149,13 +149,13 @@ void DragWidget::mousePressEvent(QMouseEvent *event)
     drag->setPixmap(pixmap);
     drag->setHotSpot(hotSpot);
 
-    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+    BobUI::DropAction dropAction = drag->exec(BobUI::CopyAction | BobUI::MoveAction, BobUI::CopyAction);
 
-    if (dropAction == Qt::MoveAction)
+    if (dropAction == BobUI::MoveAction)
         child->close();
 }
 
-void DragWidget::timerEvent(QTimerEvent *e)
+void DragWidget::timerEvent(BOBUIimerEvent *e)
 {
     if (e->timerId() == dragTimer.timerId())
         dragTimer.stop();
@@ -167,15 +167,15 @@ void DragWidget::timerEvent(QTimerEvent *e)
 void DragWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    p.fillRect(rect(), Qt::white);
+    p.fillRect(rect(), BobUI::white);
 
     if (dropTimer.isActive()) {
-        p.setBrush(Qt::red);
+        p.setBrush(BobUI::red);
         p.drawEllipse(dropPos, 50, 50);
     }
 
     if (dragTimer.isActive()) {
-        p.setPen(QPen(Qt::blue, 5));
+        p.setPen(QPen(BobUI::blue, 5));
         QPoint p1 = (rect().topLeft()*3 + rect().bottomRight())/4;
         QPoint p2 = (rect().topLeft() + rect().bottomRight()*3)/4;
         p.drawLine(p1, dragPos);

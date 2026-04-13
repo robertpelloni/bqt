@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QStringList>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QStringList>
+#include <BOBUIest>
 #include <private/qmetaobjectbuilder_p.h>
 
 /*
@@ -77,20 +77,20 @@ void tst_BadXml::badDataTag() const
 
 void tst_BadXml::badDataTag_data() const
 {
-    QTest::addColumn<bool>("shouldFail");
+    BOBUIest::addColumn<bool>("shouldFail");
 
     for (const QByteArray &ba: badStrings()) {
-        QTest::addRow("fail %s", ba.constData()) << true;
-        QTest::addRow("pass %s", ba.constData()) << false;
+        BOBUIest::addRow("fail %s", ba.constData()) << true;
+        BOBUIest::addRow("pass %s", ba.constData()) << false;
     }
 }
 
 void tst_BadXml::failWithNoFile() const
 {
-    QTest::qFail("failure message", 0, 0);
+    BOBUIest::qFail("failure message", 0, 0);
 }
 
-// QTBUG-35743, test whether XML is using correct UTF-8 encoding
+// BOBUIBUG-35743, test whether XML is using correct UTF-8 encoding
 // on platforms where the console encoding differs.
 void tst_BadXml::encoding()
 {
@@ -119,11 +119,11 @@ void tst_BadXml::badMessage() const
 
 void tst_BadXml::badMessage_data() const
 {
-    QTest::addColumn<QByteArray>("message");
+    BOBUIest::addColumn<QByteArray>("message");
 
     int i = 0;
     for (const QByteArray &str : badStrings())
-        QTest::newRow(qPrintable(QString::fromLatin1("string %1").arg(i++))) << str;
+        BOBUIest::newRow(qPrintable(QString::fromLatin1("string %1").arg(i++))) << str;
 }
 
 /*
@@ -177,7 +177,7 @@ int main(int argc, char** argv)
 
     if (badstring == -1) {
         tst_BadXml test;
-        return QTest::qExec(&test, args.size(), const_cast<char**>(args.data()));
+        return BOBUIest::qExec(&test, args.size(), const_cast<char**>(args.data()));
     }
 
     QList<QByteArray> badstrings = tst_BadXml::badStrings();
@@ -186,7 +186,7 @@ int main(int argc, char** argv)
 
     tst_BadXmlSub test;
     test.className = badstrings[badstring].constData();
-    return QTest::qExec(&test, args.size(), const_cast<char**>(args.data()));
+    return BOBUIest::qExec(&test, args.size(), const_cast<char**>(args.data()));
 }
 
 #include "tst_badxml.moc"

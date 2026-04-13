@@ -1,4 +1,4 @@
-QT += widgets printsupport
+BOBUI += widgets printsupport
 
 HEADERS       = licensewizard.h
 SOURCES       = licensewizard.cpp \
@@ -6,5 +6,5 @@ SOURCES       = licensewizard.cpp \
 RESOURCES     = licensewizard.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/dialogs/licensewizard
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/dialogs/licensewizard
 INSTALLS += target

@@ -1,19 +1,19 @@
 // Copyright (C) 2011 - 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxrasterbackingstore.h"
 #include "qqnxrasterwindow.h"
 #include "qqnxscreen.h"
 #include "qqnxglobal.h"
 
-#include <QtCore/QDebug>
-#include <QtGui/QBackingStore>
+#include <BobUICore/QDebug>
+#include <BobUIGui/QBackingStore>
 
 #include <private/qhighdpiscaling_p.h>
 
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QQnxRasterBackingStore::QQnxRasterBackingStore(QWindow *window)
     : QPlatformBackingStore(window),
@@ -140,4 +140,4 @@ QQnxRasterWindow *QQnxRasterBackingStore::platformWindow() const
   return static_cast<QQnxRasterWindow*>(m_window->handle());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

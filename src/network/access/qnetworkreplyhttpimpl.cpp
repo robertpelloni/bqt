@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 //#define QNETWORKACCESSHTTPBACKEND_DEBUG
 
@@ -13,16 +13,16 @@
 #include "qnetworkrequest_p.h"
 #include "qnetworkcookie.h"
 #include "qnetworkcookie_p.h"
-#include "QtCore/qdatetime.h"
-#include "QtCore/qelapsedtimer.h"
-#include "QtNetwork/qsslconfiguration.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qelapsedtimer.h"
+#include "BobUINetwork/qsslconfiguration.h"
 #include "qhttpthreaddelegate_p.h"
 #include "qhsts_p.h"
-#include "qthread.h"
-#include "QtCore/qcoreapplication.h"
+#include "bobuihread.h"
+#include "BobUICore/qcoreapplication.h"
 
-#include <QtCore/private/qthread_p.h>
-#include <QtCore/private/qtools_p.h>
+#include <BobUICore/private/bobuihread_p.h>
+#include <BobUICore/private/bobuiools_p.h>
 
 #include "qnetworkcookiejar.h"
 
@@ -30,10 +30,10 @@
 
 #include <string.h>             // for strchr
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtMiscUtils;
+using namespace BobUI::StringLiterals;
+using namespace BobUIMiscUtils;
 using namespace std::chrono_literals;
 
 class QNetworkProxy;
@@ -146,15 +146,15 @@ static auto remapCustom(QNetworkAccessManager::Operation operation, const QNetwo
     if (operation == QNetworkAccessManager::CustomOperation) {
         const QByteArray customVerb = req.attribute(QNetworkRequest::CustomVerbAttribute)
                                               .toByteArray();
-        if (customVerb.compare("get", Qt::CaseInsensitive) == 0)
+        if (customVerb.compare("get", BobUI::CaseInsensitive) == 0)
             return QNetworkAccessManager::GetOperation;
-        if (customVerb.compare("head", Qt::CaseInsensitive) == 0)
+        if (customVerb.compare("head", BobUI::CaseInsensitive) == 0)
             return QNetworkAccessManager::HeadOperation;
-        if (customVerb.compare("delete", Qt::CaseInsensitive) == 0)
+        if (customVerb.compare("delete", BobUI::CaseInsensitive) == 0)
             return QNetworkAccessManager::DeleteOperation;
-        if (customVerb.compare("put", Qt::CaseInsensitive) == 0)
+        if (customVerb.compare("put", BobUI::CaseInsensitive) == 0)
             return QNetworkAccessManager::PutOperation;
-        if (customVerb.compare("post", Qt::CaseInsensitive) == 0)
+        if (customVerb.compare("post", BobUI::CaseInsensitive) == 0)
             return QNetworkAccessManager::PostOperation;
     }
     return operation;
@@ -175,20 +175,20 @@ QNetworkReplyHttpImpl::QNetworkReplyHttpImpl(QNetworkAccessManager* const manage
     d->operation = remapCustom(operation, request);
     d->outgoingData = outgoingData;
     d->url = request.url();
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     if (request.url().scheme() == "https"_L1)
         d->sslConfiguration.reset(new QSslConfiguration(request.sslConfiguration()));
 #endif
 
     QObjectPrivate::connect(this, &QNetworkReplyHttpImpl::redirectAllowed, d,
-            &QNetworkReplyHttpImplPrivate::followRedirect, Qt::QueuedConnection);
+            &QNetworkReplyHttpImplPrivate::followRedirect, BobUI::QueuedConnection);
 
     // FIXME Later maybe set to Unbuffered, especially if it is zerocopy or from cache?
     QIODevice::open(QIODevice::ReadOnly);
 
 
     // Internal code that does a HTTP reply for the synchronous Ajax
-    // in Qt WebKit.
+    // in BobUI WebKit.
     QVariant synchronousHttpAttribute = request.attribute(
             static_cast<QNetworkRequest::Attribute>(QNetworkRequest::SynchronousRequestAttribute));
     if (synchronousHttpAttribute.isValid()) {
@@ -214,7 +214,7 @@ QNetworkReplyHttpImpl::QNetworkReplyHttpImpl(QNetworkAccessManager* const manage
         if (!d->outgoingData->isSequential()) {
             // fixed size non-sequential (random-access)
             // just start the operation
-            QMetaObject::invokeMethod(this, "_q_startOperation", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this, "_q_startOperation", BobUI::QueuedConnection);
             // FIXME make direct call?
         } else {
             bool bufferingDisallowed =
@@ -228,16 +228,16 @@ QNetworkReplyHttpImpl::QNetworkReplyHttpImpl(QNetworkAccessManager* const manage
                 const auto sizeOpt = QNetworkHeadersPrivate::toInt(
                         request.headers().value(QHttpHeaders::WellKnownHeader::ContentLength));
                  if (sizeOpt) {
-                    QMetaObject::invokeMethod(this, "_q_startOperation", Qt::QueuedConnection);
+                    QMetaObject::invokeMethod(this, "_q_startOperation", BobUI::QueuedConnection);
                     // FIXME make direct call?
                 } else {
                     d->state = d->Buffering;
-                    QMetaObject::invokeMethod(this, "_q_bufferOutgoingData", Qt::QueuedConnection);
+                    QMetaObject::invokeMethod(this, "_q_bufferOutgoingData", BobUI::QueuedConnection);
                 }
             } else {
                 // _q_startOperation will be called when the buffering has finished.
                 d->state = d->Buffering;
-                QMetaObject::invokeMethod(this, "_q_bufferOutgoingData", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(this, "_q_bufferOutgoingData", BobUI::QueuedConnection);
             }
         }
     } else {
@@ -418,7 +418,7 @@ bool QNetworkReplyHttpImpl::canReadLine () const
     return false;
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void QNetworkReplyHttpImpl::ignoreSslErrors()
 {
     Q_D(QNetworkReplyHttpImpl);
@@ -488,7 +488,7 @@ QNetworkReplyHttpImplPrivate::QNetworkReplyHttpImplPrivate()
     , downloadZerocopyBuffer(nullptr)
     , pendingDownloadDataEmissions(std::make_shared<QAtomicInt>())
     , pendingDownloadProgressEmissions(std::make_shared<QAtomicInt>())
-    #ifndef QT_NO_SSL
+    #ifndef BOBUI_NO_SSL
     , pendingIgnoreAllSslErrors(false)
     #endif
 
@@ -664,7 +664,7 @@ void QNetworkReplyHttpImplPrivate::maybeDropUploadDevice(const QNetworkRequest &
         case QNetworkAccessManager::CustomOperation: {
             const QByteArray customVerb = newHttpRequest.attribute(QNetworkRequest::CustomVerbAttribute)
                                                 .toByteArray();
-            if (customVerb.compare("connect", Qt::CaseInsensitive) != 0)
+            if (customVerb.compare("connect", BobUI::CaseInsensitive) != 0)
                 return true; // Trust user => content-length 0 is presumably okay!
             // else:
             [[fallthrough]];
@@ -700,11 +700,11 @@ void QNetworkReplyHttpImplPrivate::postRequest(const QNetworkRequest &newHttpReq
 {
     Q_Q(QNetworkReplyHttpImpl);
 
-    QThread *thread = nullptr;
+    BOBUIhread *thread = nullptr;
     if (synchronous) {
         // A synchronous HTTP request uses its own thread
-        thread = new QThread();
-        thread->setObjectName(QStringLiteral("Qt HTTP synchronous thread"));
+        thread = new BOBUIhread();
+        thread->setObjectName(QStringLiteral("BobUI HTTP synchronous thread"));
         QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
         thread->start();
     } else {
@@ -725,7 +725,7 @@ void QNetworkReplyHttpImplPrivate::postRequest(const QNetworkRequest &newHttpReq
     bool preConnect = (scheme == "preconnect-http"_L1 || scheme == "preconnect-https"_L1);
     httpRequest.setPreConnect(preConnect);
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     QNetworkProxy transparentProxy, cacheProxy;
 
     // FIXME the proxy stuff should be done in the HTTP thread
@@ -753,10 +753,10 @@ void QNetworkReplyHttpImplPrivate::postRequest(const QNetworkRequest &newHttpReq
     if (transparentProxy.type() == QNetworkProxy::DefaultProxy &&
         cacheProxy.type() == QNetworkProxy::DefaultProxy) {
         // unsuitable proxies
-        QMetaObject::invokeMethod(q, "_q_error", synchronous ? Qt::DirectConnection : Qt::QueuedConnection,
+        QMetaObject::invokeMethod(q, "_q_error", synchronous ? BobUI::DirectConnection : BobUI::QueuedConnection,
                                   Q_ARG(QNetworkReply::NetworkError, QNetworkReply::ProxyNotFoundError),
                                   Q_ARG(QString, QNetworkReplyHttpImpl::tr("No suitable proxy found")));
-        QMetaObject::invokeMethod(q, "_q_finished", synchronous ? Qt::DirectConnection : Qt::QueuedConnection);
+        QMetaObject::invokeMethod(q, "_q_finished", synchronous ? BobUI::DirectConnection : BobUI::QueuedConnection);
         return;
     }
 #endif
@@ -862,9 +862,9 @@ void QNetworkReplyHttpImplPrivate::postRequest(const QNetworkRequest &newHttpReq
         httpRequest.setHTTP2Allowed(allowed.value<bool>());
     }
     auto h2cAttribute = request.attribute(QNetworkRequest::Http2CleartextAllowedAttribute);
-    // ### Qt7: Stop checking the environment variable
+    // ### BobUI7: Stop checking the environment variable
     if (h2cAttribute.toBool()
-        || (!h2cAttribute.isValid() && qEnvironmentVariableIsSet("QT_NETWORK_H2C_ALLOWED"))) {
+        || (!h2cAttribute.isValid() && qEnvironmentVariableIsSet("BOBUI_NETWORK_H2C_ALLOWED"))) {
         httpRequest.setH2cAllowed(true);
     }
 
@@ -908,7 +908,7 @@ void QNetworkReplyHttpImplPrivate::postRequest(const QNetworkRequest &newHttpReq
     QMetaObject::Connection threadFinishedConnection =
             QObject::connect(thread, SIGNAL(finished()), delegate, SLOT(deleteLater()));
 
-    // QTBUG-88063: When 'delegate' is deleted the connection will be added to 'thread''s orphaned
+    // BOBUIBUG-88063: When 'delegate' is deleted the connection will be added to 'thread''s orphaned
     // connections list. This orphaned list will be cleaned up next time 'thread' emits a signal,
     // unfortunately that's the finished signal. It leads to a soft-leak so we do this to disconnect
     // it on deletion so that it cleans up the orphan immediately.
@@ -919,12 +919,12 @@ void QNetworkReplyHttpImplPrivate::postRequest(const QNetworkRequest &newHttpReq
 
     // Set the properties it needs
     delegate->httpRequest = httpRequest;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     delegate->cacheProxy = cacheProxy;
     delegate->transparentProxy = transparentProxy;
 #endif
     delegate->ssl = ssl;
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     if (ssl)
         delegate->incomingSslConfiguration.reset(new QSslConfiguration(newHttpRequest.sslConfiguration()));
 #endif
@@ -956,49 +956,49 @@ void QNetworkReplyHttpImplPrivate::postRequest(const QNetworkRequest &newHttpReq
         // Connect the signals of the delegate to us
         QObject::connect(delegate, SIGNAL(downloadData(QByteArray)),
                 q, SLOT(replyDownloadData(QByteArray)),
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
         QObject::connect(delegate, SIGNAL(downloadFinished()),
                 q, SLOT(replyFinished()),
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
         QObject::connect(delegate, &QHttpThreadDelegate::socketStartedConnecting,
-                q, &QNetworkReply::socketStartedConnecting, Qt::QueuedConnection);
+                q, &QNetworkReply::socketStartedConnecting, BobUI::QueuedConnection);
         QObject::connect(delegate, &QHttpThreadDelegate::requestSent,
-                q, &QNetworkReply::requestSent, Qt::QueuedConnection);
+                q, &QNetworkReply::requestSent, BobUI::QueuedConnection);
         connect(delegate, &QHttpThreadDelegate::downloadMetaData, this,
-                &QNetworkReplyHttpImplPrivate::replyDownloadMetaData, Qt::QueuedConnection);
+                &QNetworkReplyHttpImplPrivate::replyDownloadMetaData, BobUI::QueuedConnection);
         QObject::connect(delegate, SIGNAL(downloadProgress(qint64,qint64)),
                 q, SLOT(replyDownloadProgressSlot(qint64,qint64)),
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
         QObject::connect(delegate, SIGNAL(error(QNetworkReply::NetworkError,QString)),
                 q, SLOT(httpError(QNetworkReply::NetworkError,QString)),
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
         QObject::connect(delegate, SIGNAL(redirected(QUrl,int,int)),
                 q, SLOT(onRedirected(QUrl,int,int)),
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         QObject::connect(delegate, SIGNAL(sslConfigurationChanged(QSslConfiguration)),
                 q, SLOT(replySslConfigurationChanged(QSslConfiguration)),
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
 #endif
         // Those need to report back, therefore BlockingQueuedConnection
         QObject::connect(delegate, SIGNAL(authenticationRequired(QHttpNetworkRequest,QAuthenticator*)),
                 q, SLOT(httpAuthenticationRequired(QHttpNetworkRequest,QAuthenticator*)),
-                Qt::BlockingQueuedConnection);
-#ifndef QT_NO_NETWORKPROXY
+                BobUI::BlockingQueuedConnection);
+#ifndef BOBUI_NO_NETWORKPROXY
         QObject::connect(delegate, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
                  q, SLOT(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
-                 Qt::BlockingQueuedConnection);
+                 BobUI::BlockingQueuedConnection);
 #endif
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         QObject::connect(delegate, SIGNAL(encrypted()), q, SLOT(replyEncrypted()),
-                Qt::BlockingQueuedConnection);
+                BobUI::BlockingQueuedConnection);
         QObject::connect(delegate, SIGNAL(sslErrors(QList<QSslError>,bool*,QList<QSslError>*)),
                 q, SLOT(replySslErrors(QList<QSslError>,bool*,QList<QSslError>*)),
-                Qt::BlockingQueuedConnection);
+                BobUI::BlockingQueuedConnection);
         QObject::connect(delegate, SIGNAL(preSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator*)),
                          q, SLOT(replyPreSharedKeyAuthenticationRequiredSlot(QSslPreSharedKeyAuthenticator*)),
-                         Qt::BlockingQueuedConnection);
+                         BobUI::BlockingQueuedConnection);
 #endif
         // This signal we will use to start the request.
         QObject::connect(q, SIGNAL(startHttpRequest()), delegate, SLOT(startRequest()));
@@ -1017,14 +1017,14 @@ void QNetworkReplyHttpImplPrivate::postRequest(const QNetworkRequest &newHttpReq
             // If the device in the user thread claims it has more data, keep the flow to HTTP thread going
             QObject::connect(uploadByteDevice.get(), SIGNAL(readyRead()),
                              q, SLOT(uploadByteDeviceReadyReadSlot()),
-                             Qt::QueuedConnection);
+                             BobUI::QueuedConnection);
 
             // From user thread to http thread:
             QObject::connect(q, SIGNAL(haveUploadData(qint64,QByteArray,bool,qint64)),
-                             forwardUploadDevice, SLOT(haveDataSlot(qint64,QByteArray,bool,qint64)), Qt::QueuedConnection);
+                             forwardUploadDevice, SLOT(haveDataSlot(qint64,QByteArray,bool,qint64)), BobUI::QueuedConnection);
             QObject::connect(uploadByteDevice.get(), SIGNAL(readyRead()),
                              forwardUploadDevice, SIGNAL(readyRead()),
-                             Qt::QueuedConnection);
+                             BobUI::QueuedConnection);
 
             // From http thread to user thread:
             QObject::connect(forwardUploadDevice, SIGNAL(wantData(qint64)),
@@ -1033,10 +1033,10 @@ void QNetworkReplyHttpImplPrivate::postRequest(const QNetworkRequest &newHttpReq
                              q, SLOT(sentUploadDataSlot(qint64,qint64)));
             QObject::connect(forwardUploadDevice, SIGNAL(resetData(bool*)),
                     q, SLOT(resetUploadDataSlot(bool*)),
-                    Qt::BlockingQueuedConnection); // this is the only one with BlockingQueued!
+                    BobUI::BlockingQueuedConnection); // this is the only one with BlockingQueued!
         }
     } else if (synchronous) {
-        QObject::connect(q, SIGNAL(startHttpRequestSynchronously()), delegate, SLOT(startRequestSynchronously()), Qt::BlockingQueuedConnection);
+        QObject::connect(q, SIGNAL(startHttpRequestSynchronously()), delegate, SLOT(startRequestSynchronously()), BobUI::BlockingQueuedConnection);
 
         if (uploadByteDevice) {
             // For the synchronous HTTP use case the use thread (this one here) is blocked
@@ -1397,7 +1397,7 @@ void QNetworkReplyHttpImplPrivate::followRedirect()
         managerPrivate->thread->disconnect();
 
     QMetaObject::invokeMethod(
-            q, [this]() { postRequest(redirectRequest); }, Qt::QueuedConnection);
+            q, [this]() { postRequest(redirectRequest); }, BobUI::QueuedConnection);
 }
 
 static constexpr QLatin1StringView locationHeader() noexcept { return "location"_L1; }
@@ -1435,7 +1435,7 @@ void QNetworkReplyHttpImplPrivate::replyDownloadMetaData(const QHttpHeaders &hm,
     statusCode = sc;
     reasonPhrase = rp;
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     // We parse this header only if we're using secure transport:
     //
     // RFC6797, 8.1
@@ -1469,7 +1469,7 @@ void QNetworkReplyHttpImplPrivate::replyDownloadMetaData(const QHttpHeaders &hm,
         // Reset any previous "location" header set in the reply. In case of
         // redirects, we don't want to 'append' multiple location header values,
         // rather we keep only the latest one
-        if (key.compare(locationHeader(), Qt::CaseInsensitive) == 0)
+        if (key.compare(locationHeader(), BobUI::CaseInsensitive) == 0)
             h.removeAll(key);
 
         if (shouldDecompress && !decompressHelper.isValid() && key == "content-encoding"_L1) {
@@ -1594,7 +1594,7 @@ void QNetworkReplyHttpImplPrivate::httpAuthenticationRequired(const QHttpNetwork
     managerPrivate->authenticationRequired(auth, q_func(), synchronous, url, &urlForLastAuthentication, request.withCredentials());
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 void QNetworkReplyHttpImplPrivate::proxyAuthenticationRequired(const QNetworkProxy &proxy,
                                                         QAuthenticator *authenticator)
 {
@@ -1613,7 +1613,7 @@ void QNetworkReplyHttpImplPrivate::httpError(QNetworkReply::NetworkError errorCo
     error(errorCode, errorString);
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void QNetworkReplyHttpImplPrivate::replyEncrypted()
 {
     Q_Q(QNetworkReplyHttpImpl);
@@ -1754,7 +1754,7 @@ bool QNetworkReplyHttpImplPrivate::sendCacheContents(const QNetworkCacheMetaData
         const auto value = cachedHeaders.valueAt(i);
 
         if (httpRequest.isFollowRedirects()
-            && !name.compare(locationHeader(), Qt::CaseInsensitive)) {
+            && !name.compare(locationHeader(), BobUI::CaseInsensitive)) {
             redirectUrl = QUrl::fromEncoded(value);
         }
 
@@ -1772,8 +1772,8 @@ bool QNetworkReplyHttpImplPrivate::sendCacheContents(const QNetworkCacheMetaData
     // This needs to be emitted in the event loop because it can be reached at
     // the direct code path of qnam.get(...) before the user has a chance
     // to connect any signals.
-    QMetaObject::invokeMethod(q, "_q_metaDataChanged", Qt::QueuedConnection);
-    QMetaObject::invokeMethod(q, "_q_cacheLoadReadyRead", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(q, "_q_metaDataChanged", BobUI::QueuedConnection);
+    QMetaObject::invokeMethod(q, "_q_cacheLoadReadyRead", BobUI::QueuedConnection);
 
 
 #if defined(QNETWORKACCESSHTTPBACKEND_DEBUG)
@@ -1782,7 +1782,7 @@ bool QNetworkReplyHttpImplPrivate::sendCacheContents(const QNetworkCacheMetaData
 
     // Do redirect processing
     if (httpRequest.isFollowRedirects() && QHttpNetworkReply::isHttpRedirect(status)) {
-        QMetaObject::invokeMethod(q, "onRedirected", Qt::QueuedConnection,
+        QMetaObject::invokeMethod(q, "onRedirected", BobUI::QueuedConnection,
                                   Q_ARG(QUrl, redirectUrl),
                                   Q_ARG(int, status),
                                   Q_ARG(int, httpRequest.redirectCount() - 1));
@@ -1798,7 +1798,7 @@ static auto caseInsensitiveCompare(QByteArrayView value)
 {
     return [value](QByteArrayView element)
     {
-        return value.compare(element, Qt::CaseInsensitive) == 0;
+        return value.compare(element, BobUI::CaseInsensitive) == 0;
     };
 }
 
@@ -1830,7 +1830,7 @@ QNetworkCacheMetaData QNetworkReplyHttpImplPrivate::fetchCacheMetaData(const QNe
         if (isHopByHop(name))
             continue;
 
-        if (name.compare("set-cookie", Qt::CaseInsensitive) == 0)
+        if (name.compare("set-cookie", BobUI::CaseInsensitive) == 0)
             continue;
 
         // for 4.6.0, we were planning to not store the date header in the
@@ -1843,7 +1843,7 @@ QNetworkCacheMetaData QNetworkReplyHttpImplPrivate::fetchCacheMetaData(const QNe
             //continue;
 
         // Don't store Warning 1xx headers
-        if (name.compare("warning", Qt::CaseInsensitive) == 0) {
+        if (name.compare("warning", BobUI::CaseInsensitive) == 0) {
             if (value.size() == 3
                 && value[0] == '1'
                 && isAsciiDigit(value[1])
@@ -1861,13 +1861,13 @@ QNetworkCacheMetaData QNetworkReplyHttpImplPrivate::fetchCacheMetaData(const QNe
 
         // IIS has been known to send "Content-Length: 0" on 304 responses, so
         // ignore this too
-        if (statusCode == 304 && name.compare("content-length", Qt::CaseInsensitive) == 0)
+        if (statusCode == 304 && name.compare("content-length", BobUI::CaseInsensitive) == 0)
             continue;
 
 #if defined(QNETWORKACCESSHTTPBACKEND_DEBUG)
         QByteArrayView n = newHeaders.value(name);
         QByteArrayView o = cacheHeaders.value(name);
-        if (n != o && name.compare("date", Qt::CaseInsensitive) != 0) {
+        if (n != o && name.compare("date", BobUI::CaseInsensitive) != 0) {
             qDebug() << "replacing" << name;
             qDebug() << "new" << n;
             qDebug() << "old" << o;
@@ -2044,7 +2044,7 @@ void QNetworkReplyHttpImplPrivate::_q_cacheLoadReadyRead()
         if (actualCount < 0) {
             cacheLoadDevice->deleteLater();
             cacheLoadDevice = nullptr;
-            QMetaObject::invokeMethod(q, "_q_finished", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, "_q_finished", BobUI::QueuedConnection);
         } else if (actualCount == 1) {
             // This is most probably not happening since most QIODevice returned something proper for bytesAvailable()
             // and had already been "emptied".
@@ -2054,7 +2054,7 @@ void QNetworkReplyHttpImplPrivate::_q_cacheLoadReadyRead()
         // This codepath is in case the cache device is a QBuffer, e.g. from QNetworkDiskCache.
         cacheLoadDevice->deleteLater();
         cacheLoadDevice = nullptr;
-        QMetaObject::invokeMethod(q, "_q_finished", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(q, "_q_finished", BobUI::QueuedConnection);
     }
 }
 
@@ -2073,7 +2073,7 @@ void QNetworkReplyHttpImplPrivate::_q_bufferOutgoingDataFinished()
     QObject::disconnect(outgoingData, SIGNAL(readChannelFinished()), q, SLOT(_q_bufferOutgoingDataFinished()));
 
     // finally, start the request
-    QMetaObject::invokeMethod(q, "_q_startOperation", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(q, "_q_startOperation", BobUI::QueuedConnection);
 }
 
 void QNetworkReplyHttpImplPrivate::_q_cacheSaveDeviceAboutToClose()
@@ -2136,17 +2136,17 @@ void QNetworkReplyHttpImplPrivate::setupTransferTimeout()
 {
     Q_Q(QNetworkReplyHttpImpl);
     if (!transferTimeout) {
-      transferTimeout = new QTimer(q);
+      transferTimeout = new BOBUIimer(q);
       QObject::connect(transferTimeout, SIGNAL(timeout()),
                        q, SLOT(_q_transferTimedOut()),
-                       Qt::QueuedConnection);
+                       BobUI::QueuedConnection);
     }
     transferTimeout->stop();
     if (request.transferTimeoutAsDuration() > 0ms) {
         transferTimeout->setSingleShot(true);
         transferTimeout->setInterval(request.transferTimeoutAsDuration());
         QMetaObject::invokeMethod(transferTimeout, "start",
-                                  Qt::QueuedConnection);
+                                  BobUI::QueuedConnection);
 
     }
 }
@@ -2346,6 +2346,6 @@ void QNetworkReplyHttpImplPrivate::completeCacheSave()
     cacheEnabled = false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkreplyhttpimpl_p.cpp"

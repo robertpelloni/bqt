@@ -1,7 +1,7 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qpageranges.h>
 
 typedef QList<QPageRanges::Range> PageRangeList;
@@ -53,15 +53,15 @@ void tst_QPageRanges::basics()
 
 void tst_QPageRanges::addPage_data()
 {
-    QTest::addColumn<QList<int>>("pageNumbers");
-    QTest::addColumn<PageRangeList>("expected");
+    BOBUIest::addColumn<QList<int>>("pageNumbers");
+    BOBUIest::addColumn<PageRangeList>("expected");
 
-    QTest::newRow("single") << QList<int>{5} << PageRangeList{{5, 5}};
-    QTest::newRow("duplicate") << QList<int>{5, 5} << PageRangeList{{5, 5}};
-    QTest::newRow("adjacent") << QList<int>{5, 6, 7} << PageRangeList{{5, 7}};
-    QTest::newRow("separate") << QList<int>{1, 3, 5} << PageRangeList{{1, 1}, {3, 3}, {5, 5}};
-    QTest::newRow("unsorted") << QList<int>{5, 3, 4, 1} << PageRangeList{{1, 1}, {3, 5}};
-    QTest::newRow("invalid") << QList<int>{-1} << PageRangeList{};
+    BOBUIest::newRow("single") << QList<int>{5} << PageRangeList{{5, 5}};
+    BOBUIest::newRow("duplicate") << QList<int>{5, 5} << PageRangeList{{5, 5}};
+    BOBUIest::newRow("adjacent") << QList<int>{5, 6, 7} << PageRangeList{{5, 7}};
+    BOBUIest::newRow("separate") << QList<int>{1, 3, 5} << PageRangeList{{1, 1}, {3, 3}, {5, 5}};
+    BOBUIest::newRow("unsorted") << QList<int>{5, 3, 4, 1} << PageRangeList{{1, 1}, {3, 5}};
+    BOBUIest::newRow("invalid") << QList<int>{-1} << PageRangeList{};
 }
 
 void tst_QPageRanges::addPage()
@@ -71,8 +71,8 @@ void tst_QPageRanges::addPage()
 
     QPageRanges result;
     for (int pageNumber : std::as_const(pageNumbers)) {
-        if (QByteArrayView(QTest::currentDataTag()) == "invalid")
-            QTest::ignoreMessage(QtWarningMsg, "QPageRanges::addPage: 'pageNumber' must be greater than 0");
+        if (QByteArrayView(BOBUIest::currentDataTag()) == "invalid")
+            BOBUIest::ignoreMessage(BobUIWarningMsg, "QPageRanges::addPage: 'pageNumber' must be greater than 0");
         result.addPage(pageNumber);
     }
 
@@ -81,28 +81,28 @@ void tst_QPageRanges::addPage()
 
 void tst_QPageRanges::addRange_data()
 {
-    QTest::addColumn<PageRangeList>("ranges");
-    QTest::addColumn<PageRangeList>("expected");
+    BOBUIest::addColumn<PageRangeList>("ranges");
+    BOBUIest::addColumn<PageRangeList>("expected");
 
-    QTest::newRow("single")     << PageRangeList{{5, 5}}
+    BOBUIest::newRow("single")     << PageRangeList{{5, 5}}
                                 << PageRangeList{{5, 5}};
-    QTest::newRow("duplicate")  << PageRangeList{{5, 5}, {5, 5}}
+    BOBUIest::newRow("duplicate")  << PageRangeList{{5, 5}, {5, 5}}
                                 << PageRangeList{{5, 5}};
-    QTest::newRow("adjacent")   << PageRangeList{{1, 3}, {4, 6}, {7, 10}}
+    BOBUIest::newRow("adjacent")   << PageRangeList{{1, 3}, {4, 6}, {7, 10}}
                                 << PageRangeList{{1, 10}};
-    QTest::newRow("separate")   << PageRangeList{{1, 2}, {4, 5}, {7, 8}}
+    BOBUIest::newRow("separate")   << PageRangeList{{1, 2}, {4, 5}, {7, 8}}
                                 << PageRangeList{{1, 2}, {4, 5}, {7, 8}};
-    QTest::newRow("overlap")    << PageRangeList{{1, 5}, {4, 8}, {8, 10}}
+    BOBUIest::newRow("overlap")    << PageRangeList{{1, 5}, {4, 8}, {8, 10}}
                                 << PageRangeList{{1, 10}};
-    QTest::newRow("included")   << PageRangeList{{1, 5}, {2, 3}, {8, 9}, {7, 10}}
+    BOBUIest::newRow("included")   << PageRangeList{{1, 5}, {2, 3}, {8, 9}, {7, 10}}
                                 << PageRangeList{{1, 5}, {7, 10}};
-    QTest::newRow("unsorted")   << PageRangeList{{7, 8}, {1, 4}, {9, 10}}
+    BOBUIest::newRow("unsorted")   << PageRangeList{{7, 8}, {1, 4}, {9, 10}}
                                 << PageRangeList{{1, 4}, {7, 10}};
-    QTest::newRow("flipped")    << PageRangeList{{5, 1}}
+    BOBUIest::newRow("flipped")    << PageRangeList{{5, 1}}
                                 << PageRangeList{{1, 5}};
-    QTest::newRow("invalid1")   << PageRangeList{{-1, 2}}
+    BOBUIest::newRow("invalid1")   << PageRangeList{{-1, 2}}
                                 << PageRangeList{};
-    QTest::newRow("invalid2")   << PageRangeList{{0, -1}}
+    BOBUIest::newRow("invalid2")   << PageRangeList{{0, -1}}
                                 << PageRangeList{};
 }
 
@@ -113,9 +113,9 @@ void tst_QPageRanges::addRange()
 
     QPageRanges result;
     for (const auto &range : std::as_const(ranges)) {
-        const QByteArrayView testdata(QTest::currentDataTag());
+        const QByteArrayView testdata(BOBUIest::currentDataTag());
         if (testdata.startsWith("invalid"))
-            QTest::ignoreMessage(QtWarningMsg, "QPageRanges::addRange: 'from' and 'to' must be greater than 0");
+            BOBUIest::ignoreMessage(BobUIWarningMsg, "QPageRanges::addRange: 'from' and 'to' must be greater than 0");
 
         result.addRange(range.from, range.to);
     }
@@ -125,19 +125,19 @@ void tst_QPageRanges::addRange()
 
 void tst_QPageRanges::fromToString_data()
 {
-    QTest::addColumn<QString>("fromString");
-    QTest::addColumn<PageRangeList>("rangeList");
-    QTest::addColumn<QString>("toString");
+    BOBUIest::addColumn<QString>("fromString");
+    BOBUIest::addColumn<PageRangeList>("rangeList");
+    BOBUIest::addColumn<QString>("toString");
 
-    QTest::newRow("invalid") << QString(",-8")
+    BOBUIest::newRow("invalid") << QString(",-8")
                              << PageRangeList{}
                              << QString();
 
-    QTest::newRow("overlapping") << QString("1-3,5-9,6-7,8-11")
+    BOBUIest::newRow("overlapping") << QString("1-3,5-9,6-7,8-11")
                                  << PageRangeList{{1, 3}, {5, 11}}
                                  << QString("1-3,5-11");
 
-    QTest::newRow("spacy") << QString("1 -2, 3- 4 ,\t5-6\t,7 - 8 ,\n9 - 10")
+    BOBUIest::newRow("spacy") << QString("1 -2, 3- 4 ,\t5-6\t,7 - 8 ,\n9 - 10")
                                  << PageRangeList{{1, 10}}
                                  << QString("1-10");
 }
@@ -153,6 +153,6 @@ void tst_QPageRanges::fromToString()
     QCOMPARE(ranges.toString(), toString);
 }
 
-QTEST_APPLESS_MAIN(tst_QPageRanges)
+BOBUIEST_APPLESS_MAIN(tst_QPageRanges)
 
 #include "tst_qpageranges.moc"

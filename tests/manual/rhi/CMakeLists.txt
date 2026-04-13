@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 add_subdirectory(hellominimalcrossgfxtriangle)
@@ -35,6 +35,6 @@ add_subdirectory(imguirenderer)
 add_subdirectory(multiview)
 add_subdirectory(msaatextureresolve)
 add_subdirectory(vrs)
-if(QT_FEATURE_widgets)
+if(BOBUI_FEATURE_widgets)
     add_subdirectory(rhiwidgetproto)
 endif()

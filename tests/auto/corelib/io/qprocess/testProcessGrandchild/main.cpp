@@ -1,8 +1,8 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qprocess.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qprocess.h>
 
 #include <stdio.h>
 

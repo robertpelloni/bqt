@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../shared/examplefw.h"
 #include "../shared/cube.h"
@@ -33,13 +33,13 @@ void Window::customInit()
     d.ubuf->create();
 
     QSize imageSize;
-    d.compressedData = loadBC1(QLatin1String(":/qt256_bc1_9mips.dds"), &imageSize);
+    d.compressedData = loadBC1(QLatin1String(":/bobui256_bc1_9mips.dds"), &imageSize);
     Q_ASSERT(imageSize == QSize(256, 256));
 
     d.tex = m_r->newTexture(QRhiTexture::BC1, imageSize);
     d.tex->create();
 
-    d.compressedData2 = loadBC1(QLatin1String(":/bwqt224_64_nomips.dds"), &imageSize);
+    d.compressedData2 = loadBC1(QLatin1String(":/bwbobui224_64_nomips.dds"), &imageSize);
     Q_ASSERT(imageSize == QSize(224, 64));
 
     d.sampler = m_r->newSampler(QRhiSampler::Linear, QRhiSampler::Linear, QRhiSampler::None, // no mipmapping here

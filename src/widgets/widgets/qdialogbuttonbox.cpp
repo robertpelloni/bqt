@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qhash.h>
-#include <QtWidgets/qpushbutton.h>
-#include <QtWidgets/qstyle.h>
-#include <QtWidgets/qlayout.h>
-#include <QtWidgets/qdialog.h>
-#include <QtWidgets/qapplication.h>
+#include <BobUICore/qhash.h>
+#include <BobUIWidgets/qpushbutton.h>
+#include <BobUIWidgets/qstyle.h>
+#include <BobUIWidgets/qlayout.h>
+#include <BobUIWidgets/qdialog.h>
+#include <BobUIWidgets/qapplication.h>
 #include <private/qwidget_p.h>
 #include <private/qguiapplication_p.h>
-#include <QtGui/qpa/qplatformdialoghelper.h>
-#include <QtGui/qpa/qplatformtheme.h>
-#include <QtGui/qaction.h>
+#include <BobUIGui/qpa/qplatformdialoghelper.h>
+#include <BobUIGui/qpa/qplatformtheme.h>
+#include <BobUIGui/qaction.h>
 
 #include "qdialogbuttonbox.h"
 #include "qdialogbuttonbox_p.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QDialogButtonBox
@@ -27,7 +27,7 @@ QT_BEGIN_NAMESPACE
     layout that is appropriate to the current widget style.
 
     \ingroup dialog-classes
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     Dialogs and message boxes typically present buttons in a layout that
     conforms to the interface guidelines for that platform. Invariably,
@@ -134,7 +134,7 @@ QT_BEGIN_NAMESPACE
 
     \sa QMessageBox, QPushButton, QDialog
 */
-QDialogButtonBoxPrivate::QDialogButtonBoxPrivate(Qt::Orientation orient)
+QDialogButtonBoxPrivate::QDialogButtonBoxPrivate(BobUI::Orientation orient)
     : orientation(orient), buttonLayout(nullptr), center(false)
 {
     struct EventFilter : public QObject
@@ -160,11 +160,11 @@ void QDialogButtonBoxPrivate::initLayout()
     Q_Q(QDialogButtonBox);
     layoutPolicy = QDialogButtonBox::ButtonLayout(q->style()->styleHint(QStyle::SH_DialogButtonLayout, nullptr, q));
     bool createNewLayout = buttonLayout == nullptr
-        || (orientation == Qt::Horizontal && qobject_cast<QVBoxLayout *>(buttonLayout) != 0)
-        || (orientation == Qt::Vertical && qobject_cast<QHBoxLayout *>(buttonLayout) != 0);
+        || (orientation == BobUI::Horizontal && qobject_cast<QVBoxLayout *>(buttonLayout) != 0)
+        || (orientation == BobUI::Vertical && qobject_cast<QHBoxLayout *>(buttonLayout) != 0);
     if (createNewLayout) {
         delete buttonLayout;
-        if (orientation == Qt::Horizontal)
+        if (orientation == BobUI::Horizontal)
             buttonLayout = new QHBoxLayout(q);
         else
             buttonLayout = new QVBoxLayout(q);
@@ -175,12 +175,12 @@ void QDialogButtonBoxPrivate::initLayout()
     getLayoutItemMargins(&left, &top, &right, &bottom);
     buttonLayout->setContentsMargins(-left, -top, -right, -bottom);
 
-    if (!q->testAttribute(Qt::WA_WState_OwnSizePolicy)) {
+    if (!q->testAttribute(BobUI::WA_WState_OwnSizePolicy)) {
         QSizePolicy sp(QSizePolicy::Expanding, QSizePolicy::Fixed, QSizePolicy::ButtonBox);
-        if (orientation == Qt::Vertical)
+        if (orientation == BobUI::Vertical)
             sp.transpose();
         q->setSizePolicy(sp);
-        q->setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+        q->setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
     }
 }
 
@@ -400,7 +400,7 @@ QPushButton *QDialogButtonBoxPrivate::createButton(QDialogButtonBox::StandardBut
         qWarning("QDialogButtonBox::createButton: Invalid ButtonRole, button not added");
     else
         addButton(button, static_cast<QDialogButtonBox::ButtonRole>(role), layoutRule);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     const QKeySequence standardShortcut = QGuiApplicationPrivate::platformTheme()->standardButtonShortcut(sbutton);
     if (!standardShortcut.isEmpty())
         button->setShortcut(standardShortcut);
@@ -459,7 +459,7 @@ void QDialogButtonBoxPrivate::retranslateStrings()
     \sa orientation, addButton()
 */
 QDialogButtonBox::QDialogButtonBox(QWidget *parent)
-    : QDialogButtonBox(Qt::Horizontal, parent)
+    : QDialogButtonBox(BobUI::Horizontal, parent)
 {
 }
 
@@ -468,7 +468,7 @@ QDialogButtonBox::QDialogButtonBox(QWidget *parent)
 
     \sa orientation, addButton()
 */
-QDialogButtonBox::QDialogButtonBox(Qt::Orientation orientation, QWidget *parent)
+QDialogButtonBox::QDialogButtonBox(BobUI::Orientation orientation, QWidget *parent)
     : QWidget(*new QDialogButtonBoxPrivate(orientation), parent, { })
 {
     d_func()->initLayout();
@@ -483,7 +483,7 @@ QDialogButtonBox::QDialogButtonBox(Qt::Orientation orientation, QWidget *parent)
     \sa orientation, addButton()
 */
 QDialogButtonBox::QDialogButtonBox(StandardButtons buttons, QWidget *parent)
-    : QDialogButtonBox(buttons, Qt::Horizontal, parent)
+    : QDialogButtonBox(buttons, BobUI::Horizontal, parent)
 {
 }
 
@@ -493,7 +493,7 @@ QDialogButtonBox::QDialogButtonBox(StandardButtons buttons, QWidget *parent)
 
     \sa orientation, addButton()
 */
-QDialogButtonBox::QDialogButtonBox(StandardButtons buttons, Qt::Orientation orientation,
+QDialogButtonBox::QDialogButtonBox(StandardButtons buttons, BobUI::Orientation orientation,
                                    QWidget *parent)
     : QDialogButtonBox(orientation, parent)
 {
@@ -591,7 +591,7 @@ QDialogButtonBox::~QDialogButtonBox()
     \value KdeLayout Use a policy appropriate for applications on KDE.
     \value GnomeLayout Use a policy appropriate for applications on GNOME.
     \value AndroidLayout Use a policy appropriate for applications on Android.
-                            This enum value was added in Qt 5.10.
+                            This enum value was added in BobUI 5.10.
 
     The button layout is specified by the \l{style()}{current style}. However,
     on the X11 platform, it may be influenced by the desktop environment.
@@ -638,15 +638,15 @@ QDialogButtonBox::~QDialogButtonBox()
     \brief the orientation of the button box
 
     By default, the orientation is horizontal (i.e. the buttons are laid out
-    side by side). The possible orientations are Qt::Horizontal and
-    Qt::Vertical.
+    side by side). The possible orientations are BobUI::Horizontal and
+    BobUI::Vertical.
 */
-Qt::Orientation QDialogButtonBox::orientation() const
+BobUI::Orientation QDialogButtonBox::orientation() const
 {
     return d_func()->orientation;
 }
 
-void QDialogButtonBox::setOrientation(Qt::Orientation orientation)
+void QDialogButtonBox::setOrientation(BobUI::Orientation orientation)
 {
     Q_D(QDialogButtonBox);
     if (orientation == d->orientation)
@@ -1056,8 +1056,8 @@ void QDialogButtonBoxPrivate::ensureFirstAcceptIsDefault()
         // immediately when the button box is focused, which is not what
         // we want. Account for this by explicitly making the firstAcceptButton
         // focused as well, unless an explicit focus widget has been set, or
-        // a dialog child has Qt::StrongFocus.
-        if (dialog && !(QWidgetPrivate::get(dialog)->hasChildWithFocusPolicy(Qt::StrongFocus, q)
+        // a dialog child has BobUI::StrongFocus.
+        if (dialog && !(QWidgetPrivate::get(dialog)->hasChildWithFocusPolicy(BobUI::StrongFocus, q)
                         || dialog->focusWidget()))
             firstAcceptButton->setFocus();
     }
@@ -1092,6 +1092,6 @@ bool QDialogButtonBox::event(QEvent *event)
     return QWidget::event(event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdialogbuttonbox.cpp"

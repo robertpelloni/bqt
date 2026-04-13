@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef GLOBAL_H
 #define GLOBAL_H
@@ -62,9 +62,9 @@ const InputType Epsilon = -1;
 
 struct Config
 {
-    inline Config() : caseSensitivity(Qt::CaseSensitive), debug(false), cache(false) {}
+    inline Config() : caseSensitivity(BobUI::CaseSensitive), debug(false), cache(false) {}
     QSet<InputType> maxInputSet;
-    Qt::CaseSensitivity caseSensitivity;
+    BobUI::CaseSensitivity caseSensitivity;
     QString className;
     bool debug;
     bool cache;

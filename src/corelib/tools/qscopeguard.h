@@ -1,22 +1,22 @@
 // Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Sérgio Martins <sergio.martins@kdab.com>
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSCOPEGUARD_H
 #define QSCOPEGUARD_H
 
-#include <QtCore/qassert.h>
-#include <QtCore/qtclasshelpermacros.h>
-#include <QtCore/qcompilerdetection.h>
-#include <QtCore/qtconfigmacros.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
+#include <BobUICore/qcompilerdetection.h>
+#include <BobUICore/bobuiconfigmacros.h>
 
 #include <type_traits>
 #include <utility>
 
 class tst_QScopeGuard;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename F>
 class QScopeGuard
@@ -76,6 +76,6 @@ template <typename F>
     return QScopeGuard<typename std::decay<F>::type>(std::forward<F>(f));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSCOPEGUARD_H

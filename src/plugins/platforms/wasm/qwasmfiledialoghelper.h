@@ -1,16 +1,16 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMFILEDIALOGHELPER_H
 #define QWASMFILEDIALOGHELPER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QUrl>
-#include <QtCore/QEventLoop>
-#include <QtGui/qpa/qplatformdialoghelper.h>
-#include <QtGui/private/qwasmlocalfileaccess_p.h>
+#include <BobUICore/QObject>
+#include <BobUICore/QUrl>
+#include <BobUICore/QEventLoop>
+#include <BobUIGui/qpa/qplatformdialoghelper.h>
+#include <BobUIGui/private/qwasmlocalfileaccess_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWasmFileDialogHelper : public QPlatformFileDialogHelper
 {
@@ -20,8 +20,8 @@ public:
     ~QWasmFileDialogHelper();
 public:
     virtual void exec() override;
-    virtual bool show(Qt::WindowFlags windowFlags,
-                          Qt::WindowModality windowModality,
+    virtual bool show(BobUI::WindowFlags windowFlags,
+                          BobUI::WindowModality windowModality,
                           QWindow *parent) override;
     virtual void hide() override;
     virtual bool defaultNameFilterDisables() const override;
@@ -44,6 +44,6 @@ private:
     QEventLoop *m_eventLoop;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWASMFILEDIALOGHELPER_H

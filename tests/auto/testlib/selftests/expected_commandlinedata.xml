@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCase name="tst_DataTable">
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="fiveTablePasses">
-  <Message type="info" file="qtbase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
+  <Message type="info" file="bobuibase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
     <DataTag><![CDATA[fiveTablePasses_data1]]></DataTag>
     <Description><![CDATA[QVERIFY(test)]]></Description>
   </Message>
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[fiveTablePasses_data1]]></DataTag>
     </Incident>
-  <Message type="info" file="qtbase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
+  <Message type="info" file="bobuibase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
     <DataTag><![CDATA[fiveTablePasses_data2]]></DataTag>
     <Description><![CDATA[QVERIFY(test)]]></Description>
   </Message>
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[fiveTablePasses_data2]]></DataTag>
     </Incident>
-  <Message type="info" file="qtbase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
+  <Message type="info" file="bobuibase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
     <DataTag><![CDATA[fiveTablePasses_data3]]></DataTag>
     <Description><![CDATA[QVERIFY(test)]]></Description>
   </Message>
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[fiveTablePasses_data3]]></DataTag>
     </Incident>
-  <Message type="info" file="qtbase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
+  <Message type="info" file="bobuibase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
     <DataTag><![CDATA[fiveTablePasses_data4]]></DataTag>
     <Description><![CDATA[QVERIFY(test)]]></Description>
   </Message>
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[fiveTablePasses_data4]]></DataTag>
     </Incident>
-  <Message type="info" file="qtbase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
+  <Message type="info" file="bobuibase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
     <DataTag><![CDATA[fiveTablePasses_data5]]></DataTag>
     <Description><![CDATA[QVERIFY(test)]]></Description>
   </Message>
@@ -48,7 +48,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="fiveTablePasses">
-  <Message type="info" file="qtbase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
+  <Message type="info" file="bobuibase/tests/auto/testlib/selftests/commandlinedata/tst_commandlinedata.cpp" line="0">
     <DataTag><![CDATA[fiveTablePasses_data1]]></DataTag>
     <Description><![CDATA[QVERIFY(test)]]></Description>
   </Message>

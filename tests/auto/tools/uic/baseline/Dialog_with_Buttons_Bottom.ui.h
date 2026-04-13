@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'Dialog_with_Buttons_Bottom.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,13 +9,13 @@
 #ifndef DIALOG_WITH_BUTTONS_BOTTOM_H
 #define DIALOG_WITH_BUTTONS_BOTTOM_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Dialog
 {
@@ -30,7 +30,7 @@ public:
         buttonBox = new QDialogButtonBox(Dialog);
         buttonBox->setObjectName("buttonBox");
         buttonBox->setGeometry(QRect(30, 240, 341, 32));
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         retranslateUi(Dialog);
@@ -51,6 +51,6 @@ namespace Ui {
     class Dialog: public Ui_Dialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // DIALOG_WITH_BUTTONS_BOTTOM_H

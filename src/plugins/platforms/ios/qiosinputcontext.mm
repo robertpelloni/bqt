@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qiosinputcontext.h"
 
@@ -14,12 +14,12 @@
 #include "qioswindow.h"
 #include "quiview.h"
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <QGuiApplication>
-#include <QtGui/private/qwindow_p.h>
+#include <BobUIGui/private/qwindow_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 // -------------------------------------------------------------------------
 
@@ -69,10 +69,10 @@ static QUIView *focusView()
 @end
 
 @implementation QIOSKeyboardListener {
-    QT_PREPEND_NAMESPACE(QIOSInputContext) *m_context;
+    BOBUI_PREPEND_NAMESPACE(QIOSInputContext) *m_context;
 }
 
-- (instancetype)initWithQIOSInputContext:(QT_PREPEND_NAMESPACE(QIOSInputContext) *)context
+- (instancetype)initWithQIOSInputContext:(BOBUI_PREPEND_NAMESPACE(QIOSInputContext) *)context
 {
     if (self = [super initWithTarget:self action:@selector(gestureStateChanged:)]) {
 
@@ -122,7 +122,7 @@ static QUIView *focusView()
 {
     [self keyboardWillOrDidChange:notification];
 
-    UIResponder *firstResponder = [UIResponder qt_currentFirstResponder];
+    UIResponder *firstResponder = [UIResponder bobui_currentFirstResponder];
     if (![firstResponder isKindOfClass:[QIOSTextInputResponder class]])
         return;
 
@@ -215,7 +215,7 @@ static QUIView *focusView()
 
 - (void)touchesEndedOrCancelled
 {
-    // Defer final state change until next runloop iteration, so that Qt
+    // Defer final state change until next runloop iteration, so that BobUI
     // has a chance to process the final touch events first, before we eg.
     // scroll the view.
     dispatch_async(dispatch_get_main_queue (), ^{
@@ -235,7 +235,7 @@ static QUIView *focusView()
 
     if (self.state == UIGestureRecognizerStateBegan) {
         qImDebug("hide keyboard gesture was triggered");
-        UIResponder *firstResponder = [UIResponder qt_currentFirstResponder];
+        UIResponder *firstResponder = [UIResponder bobui_currentFirstResponder];
         Q_ASSERT([firstResponder isKindOfClass:[QIOSTextInputResponder class]]);
         [firstResponder resignFirstResponder];
     }
@@ -263,9 +263,9 @@ static QUIView *focusView()
 
 // -------------------------------------------------------------------------
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Qt::InputMethodQueries ImeState::update(Qt::InputMethodQueries properties)
+BobUI::InputMethodQueries ImeState::update(BobUI::InputMethodQueries properties)
 {
     if (!properties)
         return {};
@@ -278,9 +278,9 @@ Qt::InputMethodQueries ImeState::update(Qt::InputMethodQueries properties)
     if (focusObject)
         QCoreApplication::sendEvent(focusObject, &newState);
 
-    Qt::InputMethodQueries updatedProperties;
-    for (uint i = 0; i < (sizeof(Qt::ImQueryAll) * CHAR_BIT); ++i) {
-        if (Qt::InputMethodQuery property = Qt::InputMethodQuery(int(properties & (1 << i)))) {
+    BobUI::InputMethodQueries updatedProperties;
+    for (uint i = 0; i < (sizeof(BobUI::ImQueryAll) * CHAR_BIT); ++i) {
+        if (BobUI::InputMethodQuery property = BobUI::InputMethodQuery(int(properties & (1 << i)))) {
             if (newState.value(property) != currentState.value(property)) {
                 updatedProperties |= property;
                 currentState.setValue(property, newState.value(property));
@@ -441,7 +441,7 @@ UIView *QIOSInputContext::scrollableRootView()
 void QIOSInputContext::scrollToCursor()
 {
 #if !defined(Q_OS_VISIONOS)
-    if (!isQtApplication())
+    if (!isBobUIApplication())
         return;
 
     if (m_keyboardHideGesture.state == UIGestureRecognizerStatePossible && m_keyboardHideGesture.numberOfTouches == 1) {
@@ -508,7 +508,7 @@ void QIOSInputContext::scroll(int y)
     if (!rootView)
         return;
 
-    if (qt_apple_isApplicationExtension()) {
+    if (bobui_apple_isApplicationExtension()) {
         qWarning() << "can't scroll root view in application extension";
         return;
     }
@@ -551,7 +551,7 @@ void QIOSInputContext::scroll(int y)
 
             // Raise all known windows to above the status-bar if we're scrolling the screen,
             // while keeping the relative window level between the windows the same.
-            NSArray<UIWindow *> *applicationWindows = [qt_apple_sharedApplication() windows];
+            NSArray<UIWindow *> *applicationWindows = [bobui_apple_sharedApplication() windows];
             static QHash<UIWindow *, UIWindowLevel> originalWindowLevels;
             for (UIWindow *window in applicationWindows) {
                 if (keyboardScrollIsActive && !originalWindowLevels.contains(window))
@@ -613,7 +613,7 @@ void QIOSInputContext::focusWindowChanged(QWindow *focusWindow)
 
     reset();
 
-    if (isQtApplication()) {
+    if (isBobUIApplication()) {
         [m_keyboardHideGesture.view removeGestureRecognizer:m_keyboardHideGesture];
         [focusView().window addGestureRecognizer:m_keyboardHideGesture];
     }
@@ -632,7 +632,7 @@ void QIOSInputContext::focusWindowChanged(QWindow *focusWindow)
     \a queries parameter has to be used to tell what has changes, which input method
     can use to make queries for attributes it's interested with QInputMethodQueryEvent.
 */
-void QIOSInputContext::update(Qt::InputMethodQueries updatedProperties)
+void QIOSInputContext::update(BobUI::InputMethodQueries updatedProperties)
 {
     qImDebug() << "fw =" << qApp->focusWindow() << "fo =" << qApp->focusObject();
 
@@ -640,7 +640,7 @@ void QIOSInputContext::update(Qt::InputMethodQueries updatedProperties)
     // triggering a reset() which will update all the properties based on the new
     // focus object. We try to detect code paths that fail this assertion and smooth
     // over the situation by doing a manual update of the focus object.
-    if (qApp->focusObject() != m_imeState.focusObject && updatedProperties != Qt::ImQueryAll) {
+    if (qApp->focusObject() != m_imeState.focusObject && updatedProperties != BobUI::ImQueryAll) {
         qCWarning(lcQpaInputMethods).verbosity(0) << "Updating input context" << updatedProperties
             << "with last reported focus object" << m_imeState.focusObject
             << "but qGuiApp reports" << qApp->focusObject()
@@ -650,12 +650,12 @@ void QIOSInputContext::update(Qt::InputMethodQueries updatedProperties)
     }
 
     // Mask for properties that we are interested in and see if any of them changed
-    updatedProperties &= (Qt::ImEnabled | Qt::ImHints | Qt::ImQueryInput | Qt::ImEnterKeyType | Qt::ImPlatformData | Qt::ImReadOnly);
+    updatedProperties &= (BobUI::ImEnabled | BobUI::ImHints | BobUI::ImQueryInput | BobUI::ImEnterKeyType | BobUI::ImPlatformData | BobUI::ImReadOnly);
 
     // Perform update first, so we can trust the value of inputMethodAccepted()
-    Qt::InputMethodQueries changedProperties = m_imeState.update(updatedProperties);
+    BobUI::InputMethodQueries changedProperties = m_imeState.update(updatedProperties);
 
-    const bool inputIsReadOnly = m_imeState.currentState.value(Qt::ImReadOnly).toBool();
+    const bool inputIsReadOnly = m_imeState.currentState.value(BobUI::ImReadOnly).toBool();
 
     if (inputMethodAccepted() || inputIsReadOnly) {
         if (!m_textResponder || [m_textResponder needsKeyboardReconfigure:changedProperties]) {
@@ -677,7 +677,7 @@ void QIOSInputContext::update(Qt::InputMethodQueries updatedProperties)
             [m_textResponder becomeFirstResponder];
         }
 
-        if (changedProperties & Qt::ImCursorRectangle)
+        if (changedProperties & BobUI::ImCursorRectangle)
             scrollToCursor();
     } else if ([m_textResponder isFirstResponder]) {
         qImDebug("IM not enabled, resigning text responder as first responder");
@@ -688,9 +688,9 @@ void QIOSInputContext::update(Qt::InputMethodQueries updatedProperties)
 bool QIOSInputContext::inputMethodAccepted() const
 {
     // The IM enablement state is based on the last call to update()
-    bool lastKnownImEnablementState = m_imeState.currentState.value(Qt::ImEnabled).toBool();
+    bool lastKnownImEnablementState = m_imeState.currentState.value(BobUI::ImEnabled).toBool();
 
-#if !defined(QT_NO_DEBUG)
+#if !defined(BOBUI_NO_DEBUG)
     // QPlatformInputContext keeps a cached value of the current IM enablement state that is
     // updated by QGuiApplication when the current focus object changes, or by QInputMethod's
     // update() function. If the focus object changes, but the change is not propagated as
@@ -728,7 +728,7 @@ void QIOSInputContext::reset()
     [m_textResponder autorelease];
     m_textResponder = nullptr;
 
-    update(Qt::ImQueryAll);
+    update(BobUI::ImQueryAll);
 
     // If update() didn't end up creating a new text responder, oldResponder will still be
     // the first responder. In that case we need to resign it, so that the input panel hides.
@@ -758,4 +758,4 @@ QLocale QIOSInputContext::locale() const
     return QLocale(QString::fromNSString([[NSLocale currentLocale] objectForKey:NSLocaleIdentifier]));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

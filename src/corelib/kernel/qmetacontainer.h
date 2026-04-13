@@ -1,26 +1,26 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMETACONTAINER_H
 #define QMETACONTAINER_H
 
-#include <QtCore/qcontainerinfo.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qflags.h>
-#include <QtCore/qglobal.h>
+#include <BobUICore/qcontainerinfo.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qflags.h>
+#include <BobUICore/qglobal.h>
 
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMetaType;
-namespace QtPrivate {
+namespace BobUIPrivate {
 class QMetaTypeInterface;
 template<typename T>
 constexpr const QMetaTypeInterface *qMetaTypeInterfaceForType();
 }
 
-namespace QtMetaContainerPrivate {
+namespace BobUIMetaContainerPrivate {
 
 class Sequence;
 class SequentialIterator;
@@ -104,7 +104,7 @@ public:
 class QMetaSequenceInterface : public QMetaContainerInterface
 {
 public:
-    const QtPrivate::QMetaTypeInterface *valueMetaType;
+    const BobUIPrivate::QMetaTypeInterface *valueMetaType;
     AddRemoveCapabilities addRemoveCapabilities;
 
     using ValueAtIndexFn = void(*)(const void *, qsizetype, void *);
@@ -155,8 +155,8 @@ public:
 class QMetaAssociationInterface : public QMetaContainerInterface
 {
 public:
-    const QtPrivate::QMetaTypeInterface *keyMetaType;
-    const QtPrivate::QMetaTypeInterface *mappedMetaType;
+    const BobUIPrivate::QMetaTypeInterface *keyMetaType;
+    const BobUIPrivate::QMetaTypeInterface *mappedMetaType;
 
     using InsertKeyFn = void(*)(void *, const void *);
     InsertKeyFn insertKeyFn;
@@ -440,10 +440,10 @@ class QMetaSequenceForContainer : public QMetaContainerForContainer<C>
 {
     friend QMetaSequenceInterface;
 
-    static constexpr const QtPrivate::QMetaTypeInterface *getValueMetaType()
+    static constexpr const BobUIPrivate::QMetaTypeInterface *getValueMetaType()
     {
         if constexpr (QContainerInfo::has_value_type_v<C>)
-            return QtPrivate::qMetaTypeInterfaceForType<typename C::value_type>();
+            return BobUIPrivate::qMetaTypeInterfaceForType<typename C::value_type>();
         else
             return nullptr;
     }
@@ -664,18 +664,18 @@ class QMetaAssociationForContainer : public QMetaContainerForContainer<C>
 {
     friend QMetaAssociationInterface;
 
-    static constexpr const QtPrivate::QMetaTypeInterface *getKeyMetaType()
+    static constexpr const BobUIPrivate::QMetaTypeInterface *getKeyMetaType()
     {
         if constexpr (QContainerInfo::has_key_type_v<C>)
-            return QtPrivate::qMetaTypeInterfaceForType<typename C::key_type>();
+            return BobUIPrivate::qMetaTypeInterfaceForType<typename C::key_type>();
         else
             return nullptr;
     }
 
-    static constexpr const QtPrivate::QMetaTypeInterface *getMappedMetaType()
+    static constexpr const BobUIPrivate::QMetaTypeInterface *getMappedMetaType()
     {
         if constexpr (QContainerInfo::has_mapped_type_v<C>)
-            return QtPrivate::qMetaTypeInterfaceForType<typename C::mapped_type>();
+            return BobUIPrivate::qMetaTypeInterfaceForType<typename C::mapped_type>();
         else
             return nullptr;
     }
@@ -886,13 +886,13 @@ class QMetaAssociationForContainer : public QMetaContainerForContainer<C>
     }
 };
 
-} // namespace QtMetaContainerPrivate
+} // namespace BobUIMetaContainerPrivate
 
 class Q_CORE_EXPORT QMetaContainer
 {
 public:
     QMetaContainer() = default;
-    explicit QMetaContainer(const QtMetaContainerPrivate::QMetaContainerInterface *d) : d_ptr(d) {}
+    explicit QMetaContainer(const BobUIMetaContainerPrivate::QMetaContainerInterface *d) : d_ptr(d) {}
 
     bool hasInputIterator() const;
     bool hasForwardIterator() const;
@@ -924,10 +924,10 @@ public:
     qsizetype diffConstIterator(const void *i, const void *j) const;
 
 protected:
-    const QtMetaContainerPrivate::QMetaContainerInterface *d_ptr = nullptr;
+    const BobUIMetaContainerPrivate::QMetaContainerInterface *d_ptr = nullptr;
 };
 
-// ### Qt7: Move this to qmetasequence.h, including QtMetaContainerPrivate parts above.
+// ### BobUI7: Move this to qmetasequence.h, including BobUIMetaContainerPrivate parts above.
 class Q_CORE_EXPORT QMetaSequence : public QMetaContainer
 {
 public:
@@ -978,11 +978,11 @@ public:
         void removeFirst();
     };
 #else
-    using Iterable = QtMetaContainerPrivate::Sequence;
+    using Iterable = BobUIMetaContainerPrivate::Sequence;
 #endif
 
     QMetaSequence() = default;
-    explicit QMetaSequence(const QtMetaContainerPrivate::QMetaSequenceInterface *d) : QMetaContainer(d) {}
+    explicit QMetaSequence(const BobUIMetaContainerPrivate::QMetaSequenceInterface *d) : QMetaContainer(d) {}
 
     template<typename T>
     static constexpr QMetaSequence fromContainer()
@@ -1032,7 +1032,7 @@ public:
     bool canGetValueAtConstIterator() const;
     void valueAtConstIterator(const void *iterator, void *result) const;
 
-    const QtMetaContainerPrivate::QMetaSequenceInterface *iface() const { return d(); }
+    const BobUIMetaContainerPrivate::QMetaSequenceInterface *iface() const { return d(); }
 
 private:
     friend bool comparesEqual(const QMetaSequence &lhs, const QMetaSequence &rhs) noexcept
@@ -1044,18 +1044,18 @@ private:
     template<typename T>
     struct MetaSequence
     {
-        static constexpr const QtMetaContainerPrivate::QMetaSequenceInterface value
-            = QtMetaContainerPrivate::QMetaSequenceInterface(
-                    QtMetaContainerPrivate::QMetaSequenceForContainer<T>());
+        static constexpr const BobUIMetaContainerPrivate::QMetaSequenceInterface value
+            = BobUIMetaContainerPrivate::QMetaSequenceInterface(
+                    BobUIMetaContainerPrivate::QMetaSequenceForContainer<T>());
     };
 
-    const QtMetaContainerPrivate::QMetaSequenceInterface *d() const
+    const BobUIMetaContainerPrivate::QMetaSequenceInterface *d() const
     {
-        return static_cast<const QtMetaContainerPrivate::QMetaSequenceInterface *>(d_ptr);
+        return static_cast<const BobUIMetaContainerPrivate::QMetaSequenceInterface *>(d_ptr);
     }
 };
 
-// ### Qt7: Move this to qmetaassociation.h, including QtMetaContainerPrivate parts above.
+// ### BobUI7: Move this to qmetaassociation.h, including BobUIMetaContainerPrivate parts above.
 class Q_CORE_EXPORT QMetaAssociation : public QMetaContainer
 {
 public:
@@ -1113,11 +1113,11 @@ public:
         void setValue(const QVariant &key, const QVariant &mapped);
     };
 #else
-    using Iterable = QtMetaContainerPrivate::Association;
+    using Iterable = BobUIMetaContainerPrivate::Association;
 #endif
 
     QMetaAssociation() = default;
-    explicit QMetaAssociation(const QtMetaContainerPrivate::QMetaAssociationInterface *d) : QMetaContainer(d) {}
+    explicit QMetaAssociation(const BobUIMetaContainerPrivate::QMetaAssociationInterface *d) : QMetaContainer(d) {}
 
     template<typename T>
     static constexpr QMetaAssociation fromContainer()
@@ -1283,7 +1283,7 @@ public:
         return nullptr;
     }
 
-    const QtMetaContainerPrivate::QMetaAssociationInterface *iface() const { return d(); }
+    const BobUIMetaContainerPrivate::QMetaAssociationInterface *iface() const { return d(); }
 
 private:
     friend bool comparesEqual(const QMetaAssociation &lhs, const QMetaAssociation &rhs) noexcept
@@ -1295,17 +1295,17 @@ private:
     template<typename T>
     struct MetaAssociation
     {
-        static constexpr const QtMetaContainerPrivate::QMetaAssociationInterface value
-                = QtMetaContainerPrivate::QMetaAssociationInterface(
-                        QtMetaContainerPrivate::QMetaAssociationForContainer<T>());
+        static constexpr const BobUIMetaContainerPrivate::QMetaAssociationInterface value
+                = BobUIMetaContainerPrivate::QMetaAssociationInterface(
+                        BobUIMetaContainerPrivate::QMetaAssociationForContainer<T>());
     };
 
-    const QtMetaContainerPrivate::QMetaAssociationInterface *d() const
+    const BobUIMetaContainerPrivate::QMetaAssociationInterface *d() const
     {
-        return static_cast<const QtMetaContainerPrivate::QMetaAssociationInterface *>(d_ptr);
+        return static_cast<const BobUIMetaContainerPrivate::QMetaAssociationInterface *>(d_ptr);
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMETACONTAINER_H

@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QSTRINGALGORITHMS_P_H
 #define QSTRINGALGORITHMS_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
@@ -20,7 +20,7 @@
 #include "qstring.h"
 #include "qlocale_p.h"      // for ascii_isspace
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename StringType> struct QStringAlgorithms
 {
@@ -94,7 +94,7 @@ template <typename StringType> struct QStringAlgorithms
         const Char *src = str.cbegin();
         const Char *end = str.cend();
         NakedStringType result = isConst || !str.isDetached() ?
-                                     StringType(str.size(), Qt::Uninitialized) :
+                                     StringType(str.size(), BobUI::Uninitialized) :
                                      std::move(str);
 
         Char *dst = const_cast<Char *>(result.cbegin());
@@ -168,7 +168,7 @@ template <typename StringType> struct QStringAlgorithms
                                          ViewType after, QSpan<const qsizetype> indices,
                                          qsizetype newlen)
     {
-        StringType tmp{newlen, Qt::Uninitialized};
+        StringType tmp{newlen, BobUI::Uninitialized};
         auto *to = tmp.data_ptr().data();
         const auto *a = asUnicodeChar(after);
         auto *const begin = src.data_ptr().data();
@@ -266,6 +266,6 @@ template <typename StringType> struct QStringAlgorithms
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTRINGALGORITHMS_P_H

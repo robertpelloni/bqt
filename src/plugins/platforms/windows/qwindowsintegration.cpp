@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@edeltech.ch>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsintegration.h"
 #include "qwindowswindow.h"
@@ -12,56 +12,56 @@
 #include "qwindowsscreen.h"
 #include "qwindowstheme.h"
 #include "qwindowsservices.h"
-#include <QtGui/private/qtgui-config_p.h>
-#if QT_CONFIG(directwrite3)
-#include <QtGui/private/qwindowsdirectwritefontdatabase_p.h>
+#include <BobUIGui/private/bobuigui-config_p.h>
+#if BOBUI_CONFIG(directwrite3)
+#include <BobUIGui/private/qwindowsdirectwritefontdatabase_p.h>
 #endif
-#ifndef QT_NO_FREETYPE
-#  include <QtGui/private/qwindowsfontdatabase_ft_p.h>
+#ifndef BOBUI_NO_FREETYPE
+#  include <BobUIGui/private/qwindowsfontdatabase_ft_p.h>
 #endif
-#include <QtGui/private/qwindowsfontdatabase_p.h>
-#if QT_CONFIG(clipboard)
+#include <BobUIGui/private/qwindowsfontdatabase_p.h>
+#if BOBUI_CONFIG(clipboard)
 #  include "qwindowsclipboard.h"
-#  if QT_CONFIG(draganddrop)
+#  if BOBUI_CONFIG(draganddrop)
 #    include "qwindowsdrag.h"
 #  endif
 #endif
 #include "qwindowsinputcontext.h"
 #include "qwindowskeymapper.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #  include "uiautomation/qwindowsuiaaccessibility.h"
 #endif
 
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qwindowsysteminterface.h>
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
 #  include "qwindowssessionmanager.h"
 #endif
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
-#include <QtGui/qpa/qplatforminputcontextfactory_p.h>
-#include <QtGui/qpa/qplatformcursor.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/qpa/qplatforminputcontextfactory_p.h>
+#include <BobUIGui/qpa/qplatformcursor.h>
 
-#include <QtGui/private/qwindowsguieventdispatcher_p.h>
+#include <BobUIGui/private/qwindowsguieventdispatcher_p.h>
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qvariant.h>
 
-#include <QtCore/qoperatingsystemversion.h>
-#include <QtCore/private/qfunctions_win_p.h>
-#include <QtCore/private/qcomptr_p.h>
+#include <BobUICore/qoperatingsystemversion.h>
+#include <BobUICore/private/qfunctions_win_p.h>
+#include <BobUICore/private/qcomptr_p.h>
 
 #include <limits.h>
 
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
 #  include "qwindowsglcontext.h"
 #endif
 
 #include "qwindowsopengltester.h"
 
-#if QT_CONFIG(cpp_winrt)
-#  include <QtCore/private/qt_winrtbase_p.h>
+#if BOBUI_CONFIG(cpp_winrt)
+#  include <BobUICore/private/bobui_winrtbase_p.h>
 #  include <winrt/Windows.UI.Notifications.h>
 #  include <winrt/Windows.Data.Xml.Dom.h>
 #  include <winrt/Windows.Foundation.h>
@@ -75,9 +75,9 @@ static inline void initOpenGlBlacklistResources()
     Q_INIT_RESOURCE(openglblacklists);
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 struct QWindowsIntegrationPrivate
 {
@@ -90,18 +90,18 @@ struct QWindowsIntegrationPrivate
     unsigned m_options = 0;
     QWindowsContext m_context;
     QPlatformFontDatabase *m_fontDatabase = nullptr;
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QWindowsClipboard m_clipboard;
-#  if QT_CONFIG(draganddrop)
+#  if BOBUI_CONFIG(draganddrop)
     QWindowsDrag m_drag;
 #  endif
 #endif
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QMutex m_staticContextLock;
     QScopedPointer<QWindowsStaticOpenGLContext> m_staticOpenGLContext;
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
     QScopedPointer<QPlatformInputContext> m_inputContext;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
    QWindowsUiaAccessibility m_accessibility;
 #endif
     mutable QScopedPointer<QWindowsServices> m_services;
@@ -135,7 +135,7 @@ using DarkModeHandling = QNativeInterface::Private::QWindowsApplication::DarkMod
 
 static inline unsigned parseOptions(const QStringList &paramList,
                                     int *tabletAbsoluteRange,
-                                    QtWindows::DpiAwareness *dpiAwareness,
+                                    BobUIWindows::DpiAwareness *dpiAwareness,
                                     DarkModeHandling *darkModeHandling)
 {
     unsigned options = 0;
@@ -166,8 +166,8 @@ static inline unsigned parseOptions(const QStringList &paramList,
             options |= QWindowsIntegration::DontPassOsMouseEventsSynthesizedFromTouch;
         } else if (parseIntOption(param, "verbose"_L1, 0, INT_MAX, &QWindowsContext::verbose)
             || parseIntOption(param, "tabletabsoluterange"_L1, 0, INT_MAX, tabletAbsoluteRange)
-            || parseIntOption(param, "dpiawareness"_L1, QtWindows::DpiAwareness::Invalid,
-                    QtWindows::DpiAwareness::PerMonitorVersion2, dpiAwareness)) {
+            || parseIntOption(param, "dpiawareness"_L1, BobUIWindows::DpiAwareness::Invalid,
+                    BobUIWindows::DpiAwareness::PerMonitorVersion2, dpiAwareness)) {
         } else if (param == u"menus=native") {
             options |= QWindowsIntegration::AlwaysUseNativeMenus;
         } else if (param == u"menus=none") {
@@ -195,7 +195,7 @@ void QWindowsIntegrationPrivate::parseOptions(QWindowsIntegration *q, const QStr
 
     static bool dpiAwarenessSet = false;
     // Default to per-monitor-v2 awareness (if available)
-    QtWindows::DpiAwareness dpiAwareness = QtWindows::DpiAwareness::PerMonitorVersion2;
+    BobUIWindows::DpiAwareness dpiAwareness = BobUIWindows::DpiAwareness::PerMonitorVersion2;
 
     int tabletAbsoluteRange = -1;
     DarkModeHandling darkModeHandling = DarkModeHandlingFlag::DarkModeWindowFrames
@@ -206,11 +206,11 @@ void QWindowsIntegrationPrivate::parseOptions(QWindowsIntegration *q, const QStr
     if (tabletAbsoluteRange >= 0)
         QWindowsContext::setTabletAbsoluteRange(tabletAbsoluteRange);
 
-    QCoreApplication::setAttribute(Qt::AA_CompressHighFrequencyEvents);
+    QCoreApplication::setAttribute(BobUI::AA_CompressHighFrequencyEvents);
     QWindowSystemInterfacePrivate::TabletEvent::setPlatformSynthesizesMouse(false);
 
     if (!dpiAwarenessSet) { // Set only once in case of repeated instantiations of QGuiApplication.
-        if (!QCoreApplication::testAttribute(Qt::AA_PluginApplication)) {
+        if (!QCoreApplication::testAttribute(BobUI::AA_PluginApplication)) {
             m_context.setProcessDpiAwareness(dpiAwareness);
             qCDebug(lcQpaWindow) << "DpiAwareness=" << dpiAwareness
                 << "effective process DPI awareness=" << QWindowsContext::processDpiAwareness();
@@ -236,7 +236,7 @@ QWindowsIntegration::QWindowsIntegration(const QStringList &paramList) :
 {
     m_instance = this;
     d->parseOptions(this, paramList);
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     d->m_clipboard.registerViewer();
 #endif
     d->m_context.screenManager().initialize();
@@ -260,9 +260,9 @@ bool QWindowsIntegration::hasCapability(QPlatformIntegration::Capability cap) co
     switch (cap) {
     case ThreadedPixmaps:
         return true;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     case OpenGL:
-#if !QT_CONFIG(run_opengl_tests)
+#if !BOBUI_CONFIG(run_opengl_tests)
         // Workaround for build configs on WoA that don't have OpenGL installed
         // FIXME: Detect at runtime
         return false;
@@ -272,7 +272,7 @@ bool QWindowsIntegration::hasCapability(QPlatformIntegration::Capability cap) co
         if (const QWindowsStaticOpenGLContext *glContext = QWindowsIntegration::staticOpenGLContext())
             return glContext->supportsThreadedOpenGL();
         return false;
-#endif // !QT_NO_OPENGL
+#endif // !BOBUI_NO_OPENGL
     case WindowMasks:
         return true;
     case MultipleWindows:
@@ -282,7 +282,7 @@ bool QWindowsIntegration::hasCapability(QPlatformIntegration::Capability cap) co
     case AllGLFunctionsQueryable:
         return true;
     case SwitchableWidgetComposition:
-        return false; // QTBUG-68329 QTBUG-53515 QTBUG-54734
+        return false; // BOBUIBUG-68329 BOBUIBUG-53515 BOBUIBUG-54734
     case BackingStoreStaticContents:
         return true;
     default:
@@ -298,7 +298,7 @@ QPlatformWindow *QWindowsIntegration::createPlatformWindow(QWindow *window) cons
     requested.geometry = window->isTopLevel()
         ? QHighDpi::toNativePixels(window->geometry(), window)
         : QHighDpi::toNativeLocalPosition(window->geometry(), window);
-    if (!(requested.flags & Qt::FramelessWindowHint)) {
+    if (!(requested.flags & BobUI::FramelessWindowHint)) {
         // Apply custom margins (see  QWindowsWindow::setCustomMargins())).
         const QVariant customMarginsV = window->property("_q_windowsCustomMargins");
         if (customMarginsV.isValid())
@@ -345,8 +345,8 @@ QPlatformWindow *QWindowsIntegration::createForeignWindow(QWindow *window, WId n
         screen = pScreen->screen();
     if (screen && screen != window->screen())
         window->setScreen(screen);
-    qCDebug(lcQpaWindow) << "Foreign window:" << window << Qt::showbase << Qt::hex
-        << result->winId() << Qt::noshowbase << Qt::dec << obtainedGeometry << screen;
+    qCDebug(lcQpaWindow) << "Foreign window:" << window << BobUI::showbase << BobUI::hex
+        << result->winId() << BobUI::noshowbase << BobUI::dec << obtainedGeometry << screen;
     return result;
 }
 
@@ -356,17 +356,17 @@ QWindowsWindow *QWindowsIntegration::createPlatformWindowHelper(QWindow *window,
     return new QWindowsWindow(window, data);
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
 QWindowsStaticOpenGLContext *QWindowsStaticOpenGLContext::doCreate()
 {
-#if defined(QT_OPENGL_DYNAMIC)
+#if defined(BOBUI_OPENGL_DYNAMIC)
     QWindowsOpenGLTester::Renderer requestedRenderer = QWindowsOpenGLTester::requestedRenderer();
     switch (requestedRenderer) {
     case QWindowsOpenGLTester::DesktopGl:
         if (QWindowsStaticOpenGLContext *glCtx = QOpenGLStaticContext::create()) {
             if ((QWindowsOpenGLTester::supportedRenderers(requestedRenderer) & QWindowsOpenGLTester::DisableRotationFlag)
-                && !QWindowsScreen::setOrientationPreference(Qt::LandscapeOrientation)) {
+                && !QWindowsScreen::setOrientationPreference(BobUI::LandscapeOrientation)) {
                 qCWarning(lcQpaGl, "Unable to disable rotation.");
             }
             return glCtx;
@@ -386,13 +386,13 @@ QWindowsStaticOpenGLContext *QWindowsStaticOpenGLContext::doCreate()
 
     const QWindowsOpenGLTester::Renderers supportedRenderers = QWindowsOpenGLTester::supportedRenderers(requestedRenderer);
     if (supportedRenderers.testFlag(QWindowsOpenGLTester::DisableProgramCacheFlag)
-        && !QCoreApplication::testAttribute(Qt::AA_DisableShaderDiskCache)) {
-        QCoreApplication::setAttribute(Qt::AA_DisableShaderDiskCache);
+        && !QCoreApplication::testAttribute(BobUI::AA_DisableShaderDiskCache)) {
+        QCoreApplication::setAttribute(BobUI::AA_DisableShaderDiskCache);
     }
     if (supportedRenderers & QWindowsOpenGLTester::DesktopGl) {
         if (QWindowsStaticOpenGLContext *glCtx = QOpenGLStaticContext::create()) {
             if ((supportedRenderers & QWindowsOpenGLTester::DisableRotationFlag)
-                && !QWindowsScreen::setOrientationPreference(Qt::LandscapeOrientation)) {
+                && !QWindowsScreen::setOrientationPreference(BobUI::LandscapeOrientation)) {
                 qCWarning(lcQpaGl, "Unable to disable rotation.");
             }
             return glCtx;
@@ -422,7 +422,7 @@ QPlatformOpenGLContext *QWindowsIntegration::createPlatformOpenGLContext(QOpenGL
 
 QOpenGLContext::OpenGLModuleType QWindowsIntegration::openGLModuleType()
 {
-#if !defined(QT_OPENGL_DYNAMIC)
+#if !defined(BOBUI_OPENGL_DYNAMIC)
     return QOpenGLContext::LibGL;
 #else
     if (const QWindowsStaticOpenGLContext *staticOpenGLContext = QWindowsIntegration::staticOpenGLContext())
@@ -469,17 +469,17 @@ QWindowsStaticOpenGLContext *QWindowsIntegration::staticOpenGLContext()
         d->m_staticOpenGLContext.reset(QWindowsStaticOpenGLContext::create());
     return d->m_staticOpenGLContext.data();
 }
-#endif // !QT_NO_OPENGL
+#endif // !BOBUI_NO_OPENGL
 
 QPlatformFontDatabase *QWindowsIntegration::fontDatabase() const
 {
     if (!d->m_fontDatabase) {
-#ifndef QT_NO_FREETYPE
+#ifndef BOBUI_NO_FREETYPE
         if (d->m_options & QWindowsIntegration::FontDatabaseFreeType)
             d->m_fontDatabase = new QWindowsFontDatabaseFT;
         else
-#endif // QT_NO_FREETYPE
-#if QT_CONFIG(directwrite3)
+#endif // BOBUI_NO_FREETYPE
+#if BOBUI_CONFIG(directwrite3)
         if (!(d->m_options & (QWindowsIntegration::FontDatabaseGDI | QWindowsIntegration::DontUseDirectWriteFonts)))
             d->m_fontDatabase = new QWindowsDirectWriteFontDatabase;
         else
@@ -537,25 +537,25 @@ QPlatformKeyMapper *QWindowsIntegration::keyMapper() const
     return d->m_context.keyMapper();
 }
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 QPlatformClipboard * QWindowsIntegration::clipboard() const
 {
     return &d->m_clipboard;
 }
-#  if QT_CONFIG(draganddrop)
+#  if BOBUI_CONFIG(draganddrop)
 QPlatformDrag *QWindowsIntegration::drag() const
 {
     return &d->m_drag;
 }
-#  endif // QT_CONFIG(draganddrop)
-#endif // !QT_NO_CLIPBOARD
+#  endif // BOBUI_CONFIG(draganddrop)
+#endif // !BOBUI_NO_CLIPBOARD
 
 QPlatformInputContext * QWindowsIntegration::inputContext() const
 {
     return d->m_inputContext.data();
 }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 QPlatformAccessibility *QWindowsIntegration::accessibility() const
 {
     return &d->m_accessibility;
@@ -567,7 +567,7 @@ unsigned QWindowsIntegration::options() const
     return d->m_options;
 }
 
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
 QPlatformSessionManager *QWindowsIntegration::createPlatformSessionManager(const QString &id, const QString &key) const
 {
     return new QWindowsSessionManager(id, key);
@@ -614,24 +614,24 @@ void QWindowsIntegration::setApplicationBadge(qint64 number)
 
     static const bool isWindows11 = QOperatingSystemVersion::current() >= QOperatingSystemVersion::Windows11;
 
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
     // We prefer the native BadgeUpdater API, that allows us to set a number directly,
     // but it requires that the application has a package identity, and also doesn't
     // seem to work in all cases on < Windows 11.
-    QT_TRY {
-        if (isWindows11 && qt_win_hasPackageIdentity()) {
+    BOBUI_TRY {
+        if (isWindows11 && bobui_win_hasPackageIdentity()) {
             using namespace winrt::Windows::UI::Notifications;
             auto badgeXml = BadgeUpdateManager::GetTemplateContent(BadgeTemplateType::BadgeNumber);
             badgeXml.SelectSingleNode(L"//badge/@value").NodeValue(winrt::box_value(winrt::to_hstring(number)));
             BadgeUpdateManager::CreateBadgeUpdaterForApplication().Update(BadgeNotification(badgeXml));
             return;
         }
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         // fall back to win32 implementation
     }
 #endif
 
-    // Fallback for non-packaged apps, Windows 10, or Qt builds without WinRT/C++ support
+    // Fallback for non-packaged apps, Windows 10, or BobUI builds without WinRT/C++ support
 
     if (!number) {
         // Clear badge
@@ -640,12 +640,12 @@ void QWindowsIntegration::setApplicationBadge(qint64 number)
     }
 
     const bool isDarkMode = QWindowsTheme::instance()->colorScheme()
-                         == Qt::ColorScheme::Dark;
+                         == BobUI::ColorScheme::Dark;
 
     QColor badgeColor;
     QColor textColor;
 
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
     if (isWindows11) {
         // Match colors used by BadgeUpdater
         static const auto fromUIColor = [](winrt::Windows::UI::Color &&color) {
@@ -661,9 +661,9 @@ void QWindowsIntegration::setApplicationBadge(qint64 number)
 
     if (!badgeColor.isValid()) {
         // Fall back to basic badge colors, based on Windows 10 look
-        badgeColor = isDarkMode ? Qt::black : QColor(220, 220, 220);
+        badgeColor = isDarkMode ? BobUI::black : QColor(220, 220, 220);
         badgeColor.setAlphaF(0.5f);
-        textColor = isDarkMode ? Qt::white : Qt::black;
+        textColor = isDarkMode ? BobUI::white : BobUI::black;
     }
 
     const auto devicePixelRatio = qApp->devicePixelRatio();
@@ -671,12 +671,12 @@ void QWindowsIntegration::setApplicationBadge(qint64 number)
     static const QSize iconBaseSize(16, 16);
     QImage image(iconBaseSize * devicePixelRatio,
         QImage::Format_ARGB32_Premultiplied);
-    image.fill(Qt::transparent);
+    image.fill(BobUI::transparent);
 
     QPainter painter(&image);
 
     QRect badgeRect = image.rect();
-    QPen badgeBorderPen = Qt::NoPen;
+    QPen badgeBorderPen = BobUI::NoPen;
     if (!isWindows11) {
         QColor badgeBorderColor = textColor;
         badgeBorderColor.setAlphaF(0.5f);
@@ -705,7 +705,7 @@ void QWindowsIntegration::setApplicationBadge(qint64 number)
 
     auto text = textOverflow ? u"99+"_s : QString::number(number);
     painter.translate(textOverflow ? 1 : 0, textOverflow ? 0 : -1);
-    painter.drawText(image.rect(), Qt::AlignCenter, text);
+    painter.drawText(image.rect(), BobUI::AlignCenter, text);
 
     painter.end();
 
@@ -757,11 +757,11 @@ void QWindowsIntegration::updateApplicationBadge()
         setApplicationBadge(m_applicationBadgeNumber);
 }
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 QPlatformVulkanInstance *QWindowsIntegration::createPlatformVulkanInstance(QVulkanInstance *instance) const
 {
     return new QWindowsVulkanInstance(instance);
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

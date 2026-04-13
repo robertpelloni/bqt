@@ -1,21 +1,21 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdxgivsyncservice_p.h"
-#include <QThread>
+#include <BOBUIhread>
 #include <QWaitCondition>
 #include <QElapsedTimer>
 #include <QCoreApplication>
 #include <QLoggingCategory>
 #include <QScreen>
 #include <QVarLengthArray>
-#include <QtCore/private/qsystemerror_p.h>
+#include <BobUICore/private/qsystemerror_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcQpaScreenUpdates, "qt.qpa.screen.updates", QtCriticalMsg);
+Q_STATIC_LOGGING_CATEGORY(lcQpaScreenUpdates, "bobui.qpa.screen.updates", BobUICriticalMsg);
 
-class QDxgiVSyncThread : public QThread
+class QDxgiVSyncThread : public BOBUIhread
 {
 public:
     // the HMONITOR is unique (i.e. identifies the output), the IDXGIOutput (the pointer/object itself) is not
@@ -58,7 +58,7 @@ void QDxgiVSyncThread::run()
             // (reportedly can happen e.g. when a screen gets powered on/off?),
             // or it reported an error, do a sleep; spinning unthrottled is
             // never acceptable
-            QThread::msleep((unsigned long) vsyncIntervalMsReportedForScreen);
+            BOBUIhread::msleep((unsigned long) vsyncIntervalMsReportedForScreen);
         } else {
             callback(output, monitor, timestamp.nsecsElapsed());
         }
@@ -73,7 +73,7 @@ void QDxgiVSyncThread::run()
 void QDxgiVSyncThread::stop()
 {
     mutex.lock();
-    qCDebug(lcQpaScreenUpdates) << "Requesting QDxgiVSyncThread stop from thread" << QThread::currentThread() << "on" << this;
+    qCDebug(lcQpaScreenUpdates) << "Requesting QDxgiVSyncThread stop from thread" << BOBUIhread::currentThread() << "on" << this;
     if (isRunning() && !quit.loadAcquire()) {
         quit.storeRelease(1);
         cond.wait(&mutex);
@@ -92,7 +92,7 @@ QDxgiVSyncService::QDxgiVSyncService()
 {
     qCDebug(lcQpaScreenUpdates) << "New QDxgiVSyncService" << this;
 
-    disableService = qEnvironmentVariableIntValue("QT_D3D_NO_VBLANK_THREAD");
+    disableService = qEnvironmentVariableIntValue("BOBUI_D3D_NO_VBLANK_THREAD");
     if (disableService) {
         qCDebug(lcQpaScreenUpdates) << "QDxgiVSyncService disabled by environment";
         return;
@@ -353,7 +353,7 @@ void QDxgiVSyncService::updateWindowData(QWindow *window, WindowData *wd)
                 }
                 if (!w.isEmpty()) {
 #if 0
-                    qDebug() << "vsync thread" << QThread::currentThread() << monitor << "window list" << w << timestampNs;
+                    qDebug() << "vsync thread" << BOBUIhread::currentThread() << monitor << "window list" << w << timestampNs;
 #endif
                     for (const Callback &cb : std::as_const(callbacks)) {
                         if (cb)
@@ -361,7 +361,7 @@ void QDxgiVSyncService::updateWindowData(QWindow *window, WindowData *wd)
                     }
                 }
             });
-            t->start(QThread::TimeCriticalPriority);
+            t->start(BOBUIhread::TimeCriticalPriority);
             it->notifiers.insert(wd->monitor, { wd->output, t });
         }
         return;
@@ -390,7 +390,7 @@ void QDxgiVSyncService::registerWindow(QWindow *window)
         auto it = windows.find(window);
         if (it != windows.end())
             updateWindowData(window, &*it);
-    }, Qt::QueuedConnection); // intentionally using Queued
+    }, BobUI::QueuedConnection); // intentionally using Queued
     // It has been observed that with DirectConnection _sometimes_ we do not
     // find any IDXGIOutput for the window when moving it to a different screen.
     // Add a delay by going through the event loop.
@@ -438,4 +438,4 @@ void QDxgiVSyncService::unregisterCallback(qsizetype id)
         callbacks[index] = nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

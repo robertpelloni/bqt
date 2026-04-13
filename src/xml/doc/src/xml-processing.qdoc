@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \group xml-tools
@@ -17,18 +17,18 @@
     \title XML Processing
     \ingroup explanations-dataprocessingandio
 
-    \brief An Overview of the XML processing facilities in Qt.
+    \brief An Overview of the XML processing facilities in BobUI.
 
-    Qt provides two general-purpose sets of APIs to read and write well-formed
+    BobUI provides two general-purpose sets of APIs to read and write well-formed
     XML: \l{XML Streaming}{stream based} and
     \l{Working with the DOM Tree}{DOM based}.
 
-    Qt also provides specific support for some XML dialects. For instance, the
-    Qt SVG module provides the QSvgRenderer and QSvgGenerator classes to read
+    BobUI also provides specific support for some XML dialects. For instance, the
+    BobUI SVG module provides the QSvgRenderer and QSvgGenerator classes to read
     and write a subset of SVG, an XML-based file
-    format. Qt also provides helper functions that may be useful to
-    those working with XML and XHTML: see Qt::escape() and
-    Qt::convertFromPlainText().
+    format. BobUI also provides helper functions that may be useful to
+    those working with XML and XHTML: see BobUI::escape() and
+    BobUI::convertFromPlainText().
 
     \section1 Topics:
 
@@ -53,9 +53,9 @@
 
     \nextpage XML Streaming
 
-    Parts of the Qt XML module documentation assume that you are familiar
+    Parts of the BobUI XML module documentation assume that you are familiar
     with XML namespaces. Here we present a brief introduction; skip to
-    \l{#namespacesConventions}{Qt XML documentation conventions}
+    \l{#namespacesConventions}{BobUI XML documentation conventions}
     if you already know this material.
 
     Namespaces are a concept introduced into XML to allow a more modular
@@ -148,7 +148,7 @@
     prefix \e title instead of applying the default \e xmlns namespace.
     \endlist
 
-    With the Qt XML classes elements and attributes can be accessed in two
+    With the BobUI XML classes elements and attributes can be accessed in two
     ways: either by referring to their qualified names consisting of the
     namespace prefix and the "real" name (or \e local name) or by the
     combination of local name and namespace URI.
@@ -157,7 +157,7 @@
     \l http://www.w3.org/TR/REC-xml-names/.
 
     \target namespacesConventions
-    \section1 Conventions Used in the Qt XML Documentation
+    \section1 Conventions Used in the BobUI XML Documentation
 
     The following terms are used to distinguish the parts of names within
     the context of namespaces:
@@ -191,9 +191,9 @@
     \previouspage An Introduction to Namespaces
     \nextpage Working with the DOM Tree
 
-    Qt provides two classes for reading and writing XML through a simple streaming
+    BobUI provides two classes for reading and writing XML through a simple streaming
     API: QXmlStreamReader and QXmlStreamWriter. These classes are located in
-    \l{Qt Serialization}{Qt Serialization (part of QtCore)}.
+    \l{BobUI Serialization}{BobUI Serialization (part of BobUICore)}.
 
     A stream reader reports an XML document as a stream
     of tokens. This differs from SAX as SAX applications provide handlers to

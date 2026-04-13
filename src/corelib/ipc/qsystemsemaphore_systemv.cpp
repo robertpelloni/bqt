@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsystemsemaphore.h"
 #include "qsystemsemaphore_p.h"
@@ -10,7 +10,7 @@
 #include <qfile.h>
 #include <qcoreapplication.h>
 
-#if QT_CONFIG(sysv_sem)
+#if BOBUI_CONFIG(sysv_sem)
 
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -30,14 +30,14 @@
 #define EIDRM EINVAL
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 bool QSystemSemaphoreSystemV::runtimeSupportCheck()
 {
 #if defined(Q_OS_DARWIN)
-    if (qt_apple_isSandboxed())
+    if (bobui_apple_isSandboxed())
         return false;
 #endif
     static const bool result = []() {
@@ -58,11 +58,11 @@ key_t QSystemSemaphoreSystemV::handle(QSystemSemaphorePrivate *self, QSystemSema
         return unix_key;  // we already have a semaphore
 
 #if defined(Q_OS_DARWIN)
-    if (qt_apple_isSandboxed()) {
+    if (bobui_apple_isSandboxed()) {
         // attempting to use System V semaphores will get us a SIGSYS
         self->setError(QSystemSemaphore::PermissionDenied,
                        QSystemSemaphore::tr("%1: System V semaphores are not available for "
-                                            "sandboxed applications. Please build Qt with "
+                                            "sandboxed applications. Please build BobUI with "
                                             "-feature-ipc_posix")
                        .arg("QSystemSemaphore::handle:"_L1));
         return -1;
@@ -78,7 +78,7 @@ key_t QSystemSemaphoreSystemV::handle(QSystemSemaphorePrivate *self, QSystemSema
     }
 
     // ftok requires that an actual file exists somewhere
-    int built = QtIpcCommon::createUnixKeyFile(nativeKeyFile);
+    int built = BobUIIpcCommon::createUnixKeyFile(nativeKeyFile);
     if (-1 == built) {
         self->setError(QSystemSemaphore::KeyError,
                        QSystemSemaphore::tr("%1: unable to make key")
@@ -120,7 +120,7 @@ key_t QSystemSemaphoreSystemV::handle(QSystemSemaphorePrivate *self, QSystemSema
 
     // Created semaphore so initialize its value.
     if (createdSemaphore && self->initialValue >= 0) {
-        qt_semun init_op;
+        bobui_semun init_op;
         init_op.val = self->initialValue;
         if (-1 == semctl(semaphore, 0, SETVAL, init_op)) {
             self->setUnixErrorString("QSystemSemaphore::handle"_L1);
@@ -175,7 +175,7 @@ bool QSystemSemaphoreSystemV::modifySemaphore(QSystemSemaphorePrivate *self, int
     operation.sem_flg = SEM_UNDO;
 
     int res;
-    QT_EINTR_LOOP(res, semop(semaphore, &operation, 1));
+    BOBUI_EINTR_LOOP(res, semop(semaphore, &operation, 1));
     if (-1 == res) {
         // If the semaphore was removed be nice and create it and then modifySemaphore again
         if (errno == EINVAL || errno == EIDRM) {
@@ -197,6 +197,6 @@ bool QSystemSemaphoreSystemV::modifySemaphore(QSystemSemaphorePrivate *self, int
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(sysv_sem)
+#endif // BOBUI_CONFIG(sysv_sem)

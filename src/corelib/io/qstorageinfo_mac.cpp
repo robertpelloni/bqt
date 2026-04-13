@@ -1,21 +1,21 @@
 // Copyright (C) 2014 Ivan Komissarov <ABBAPOH@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstorageinfo_p.h"
 
-#include <QtCore/qfileinfo.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFURLEnumerator.h>
 
 #include <sys/mount.h>
 
-#define QT_STATFSBUF struct statfs
-#define QT_STATFS    ::statfs
+#define BOBUI_STATFSBUF struct statfs
+#define BOBUI_STATFS    ::statfs
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QStorageInfoPrivate::initRootPath()
 {
@@ -41,8 +41,8 @@ void QStorageInfoPrivate::doStat()
 
 void QStorageInfoPrivate::retrievePosixInfo()
 {
-    QT_STATFSBUF statfs_buf;
-    int result = QT_STATFS(QFile::encodeName(rootPath).constData(), &statfs_buf);
+    BOBUI_STATFSBUF statfs_buf;
+    int result = BOBUI_STATFS(QFile::encodeName(rootPath).constData(), &statfs_buf);
     if (result == 0) {
         device.assign(statfs_buf.f_mntfromname);
         readOnly = (statfs_buf.f_flags & MNT_RDONLY) != 0;
@@ -161,4 +161,4 @@ QList<QStorageInfo> QStorageInfoPrivate::mountedVolumes()
     return volumes;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

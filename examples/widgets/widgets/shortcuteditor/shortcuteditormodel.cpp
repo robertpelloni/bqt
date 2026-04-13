@@ -1,5 +1,5 @@
 // Copyright (C) 2022 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "shortcuteditormodel.h"
 
@@ -180,7 +180,7 @@ QVariant ShortcutEditorModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role != Qt::DisplayRole && role != Qt::EditRole)
+    if (role != BobUI::DisplayRole && role != BobUI::EditRole)
         return QVariant();
 
     ShortcutEditorModelItem *item = static_cast<ShortcutEditorModelItem*>(index.internalPointer());
@@ -189,23 +189,23 @@ QVariant ShortcutEditorModel::data(const QModelIndex &index, int role) const
 //! [7]
 
 //! [8]
-Qt::ItemFlags ShortcutEditorModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags ShortcutEditorModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return Qt::NoItemFlags;
+        return BobUI::NoItemFlags;
 
-    Qt::ItemFlags modelFlags = QAbstractItemModel::flags(index);
+    BobUI::ItemFlags modelFlags = QAbstractItemModel::flags(index);
     if (index.column() == static_cast<int>(Column::Shortcut))
-        modelFlags |= Qt::ItemIsEditable;
+        modelFlags |= BobUI::ItemIsEditable;
 
     return modelFlags;
 }
 //! [8]
 
 //! [9]
-QVariant ShortcutEditorModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ShortcutEditorModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+    if (orientation == BobUI::Horizontal && role == BobUI::DisplayRole) {
         return m_rootItem->data(section);
     }
 
@@ -253,7 +253,7 @@ void ShortcutEditorModel::setupModelData(ShortcutEditorModelItem *parent)
 //! [11]
 bool ShortcutEditorModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role == Qt::EditRole && index.column() == static_cast<int>(Column::Shortcut)) {
+    if (role == BobUI::EditRole && index.column() == static_cast<int>(Column::Shortcut)) {
         QString keySequenceString = value.toString();
         ShortcutEditorModelItem *item = static_cast<ShortcutEditorModelItem *>(index.internalPointer());
         QAction *itemAction = item->action();

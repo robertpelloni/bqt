@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSTYLEHINTS_H
 #define QSTYLEHINTS_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobject.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPlatformIntegration;
 class QStyleHintsPrivate;
@@ -19,7 +19,7 @@ class Q_GUI_EXPORT QStyleHints : public QObject
     Q_DECLARE_PRIVATE(QStyleHints)
     Q_PROPERTY(int cursorFlashTime READ cursorFlashTime NOTIFY cursorFlashTimeChanged FINAL)
     Q_PROPERTY(qreal fontSmoothingGamma READ fontSmoothingGamma STORED false CONSTANT FINAL)
-#if QT_DEPRECATED_SINCE(6, 5)
+#if BOBUI_DEPRECATED_SINCE(6, 5)
     Q_PROPERTY(int keyboardAutoRepeatRate READ keyboardAutoRepeatRate STORED false CONSTANT FINAL)
 #endif
     Q_PROPERTY(qreal keyboardAutoRepeatRateF READ keyboardAutoRepeatRateF STORED false CONSTANT FINAL)
@@ -36,13 +36,13 @@ class Q_GUI_EXPORT QStyleHints : public QObject
     Q_PROPERTY(bool showIsMaximized READ showIsMaximized STORED false CONSTANT FINAL)
     Q_PROPERTY(bool showShortcutsInContextMenus READ showShortcutsInContextMenus
                WRITE setShowShortcutsInContextMenus NOTIFY showShortcutsInContextMenusChanged FINAL)
-    Q_PROPERTY(Qt::ContextMenuTrigger contextMenuTrigger READ contextMenuTrigger WRITE
+    Q_PROPERTY(BobUI::ContextMenuTrigger contextMenuTrigger READ contextMenuTrigger WRITE
                    setContextMenuTrigger NOTIFY contextMenuTriggerChanged FINAL)
     Q_PROPERTY(int startDragDistance READ startDragDistance NOTIFY startDragDistanceChanged FINAL)
     Q_PROPERTY(int startDragTime READ startDragTime NOTIFY startDragTimeChanged FINAL)
     Q_PROPERTY(int startDragVelocity READ startDragVelocity STORED false CONSTANT FINAL)
     Q_PROPERTY(bool useRtlExtensions READ useRtlExtensions STORED false CONSTANT FINAL)
-    Q_PROPERTY(Qt::TabFocusBehavior tabFocusBehavior READ tabFocusBehavior
+    Q_PROPERTY(BobUI::TabFocusBehavior tabFocusBehavior READ tabFocusBehavior
                NOTIFY tabFocusBehaviorChanged FINAL)
     Q_PROPERTY(bool singleClickActivation READ singleClickActivation STORED false CONSTANT FINAL)
     Q_PROPERTY(bool useHoverEffects READ useHoverEffects WRITE setUseHoverEffects
@@ -54,7 +54,7 @@ class Q_GUI_EXPORT QStyleHints : public QObject
     Q_PROPERTY(int mouseDoubleClickDistance READ mouseDoubleClickDistance STORED false CONSTANT
                FINAL)
     Q_PROPERTY(int touchDoubleTapDistance READ touchDoubleTapDistance STORED false CONSTANT FINAL)
-    Q_PROPERTY(Qt::ColorScheme colorScheme READ colorScheme WRITE setColorScheme
+    Q_PROPERTY(BobUI::ColorScheme colorScheme READ colorScheme WRITE setColorScheme
                RESET unsetColorScheme NOTIFY colorSchemeChanged FINAL)
     Q_PROPERTY(bool menuSelectionWraps READ menuSelectionWraps STORED false CONSTANT FINAL REVISION(6, 10))
     Q_PROPERTY(const QAccessibilityHints* accessibility READ accessibility CONSTANT FINAL REVISION(6, 10))
@@ -75,8 +75,8 @@ public:
     int startDragVelocity() const;
     void setKeyboardInputInterval(int keyboardInputInterval);
     int keyboardInputInterval() const;
-#if QT_DEPRECATED_SINCE(6, 5)
-    QT_DEPRECATED_VERSION_X_6_5("Use keyboardAutoRepeatRateF() instead")
+#if BOBUI_DEPRECATED_SINCE(6, 5)
+    BOBUI_DEPRECATED_VERSION_X_6_5("Use keyboardAutoRepeatRateF() instead")
     int keyboardAutoRepeatRate() const;
 #endif
     qreal keyboardAutoRepeatRateF() const;
@@ -86,16 +86,16 @@ public:
     bool showIsMaximized() const;
     bool showShortcutsInContextMenus() const;
     void setShowShortcutsInContextMenus(bool showShortcutsInContextMenus);
-    Qt::ContextMenuTrigger contextMenuTrigger() const;
-    void setContextMenuTrigger(Qt::ContextMenuTrigger contextMenuTrigger);
+    BobUI::ContextMenuTrigger contextMenuTrigger() const;
+    void setContextMenuTrigger(BobUI::ContextMenuTrigger contextMenuTrigger);
     bool menuSelectionWraps() const;
     int passwordMaskDelay() const;
     QChar passwordMaskCharacter() const;
     qreal fontSmoothingGamma() const;
     bool useRtlExtensions() const;
     bool setFocusOnTouchRelease() const;
-    Qt::TabFocusBehavior tabFocusBehavior() const;
-    void setTabFocusBehavior(Qt::TabFocusBehavior tabFocusBehavior);
+    BobUI::TabFocusBehavior tabFocusBehavior() const;
+    void setTabFocusBehavior(BobUI::TabFocusBehavior tabFocusBehavior);
     bool singleClickActivation() const;
     bool useHoverEffects() const;
     void setUseHoverEffects(bool useHoverEffects);
@@ -103,9 +103,9 @@ public:
     void setWheelScrollLines(int scrollLines);
     void setMouseQuickSelectionThreshold(int threshold);
     int mouseQuickSelectionThreshold() const;
-    Qt::ColorScheme colorScheme() const;
-    void setColorScheme(Qt::ColorScheme scheme);
-    void unsetColorScheme() { setColorScheme(Qt::ColorScheme::Unknown); }
+    BobUI::ColorScheme colorScheme() const;
+    void setColorScheme(BobUI::ColorScheme scheme);
+    void unsetColorScheme() { setColorScheme(BobUI::ColorScheme::Unknown); }
     const QAccessibilityHints* accessibility() const;
     int toolTipWakeUpDelay() const;
     void setToolTipWakeUpDelay(int toolTipWakeUpDelay);
@@ -117,13 +117,13 @@ Q_SIGNALS:
     void mousePressAndHoldIntervalChanged(int mousePressAndHoldInterval);
     void startDragDistanceChanged(int startDragDistance);
     void startDragTimeChanged(int startDragTime);
-    void tabFocusBehaviorChanged(Qt::TabFocusBehavior tabFocusBehavior);
+    void tabFocusBehaviorChanged(BobUI::TabFocusBehavior tabFocusBehavior);
     void useHoverEffectsChanged(bool useHoverEffects);
     void showShortcutsInContextMenusChanged(bool);
-    void contextMenuTriggerChanged(Qt::ContextMenuTrigger contextMenuTrigger);
+    void contextMenuTriggerChanged(BobUI::ContextMenuTrigger contextMenuTrigger);
     void wheelScrollLinesChanged(int scrollLines);
     void mouseQuickSelectionThresholdChanged(int threshold);
-    void colorSchemeChanged(Qt::ColorScheme colorScheme);
+    void colorSchemeChanged(BobUI::ColorScheme colorScheme);
     Q_REVISION(6, 12) void toolTipWakeUpDelayChanged(int toolTipWakeUpDelay);
 
 private:
@@ -131,6 +131,6 @@ private:
     QStyleHints();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

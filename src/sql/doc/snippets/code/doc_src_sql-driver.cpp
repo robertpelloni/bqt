@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlDriver>
@@ -11,7 +11,7 @@ void testProc()
 {
 //! [2]
 QSqlQuery q;
-q.exec("call qtestproc (@outval1, @outval2)");
+q.exec("call bobuiestproc (@outval1, @outval2)");
 q.exec("select @outval1, @outval2");
 if (q.next())
     qDebug() << q.value(0) << q.value(1); // outputs "42" and "43"
@@ -84,7 +84,7 @@ void callOutProc()
     QSqlDatabase db;
     QSqlQuery query;
     int i1 = 10, i2 = 0;
-    query.prepare("call qtestproc(?, ?)");
+    query.prepare("call bobuiestproc(?, ?)");
     query.bindValue(0, i1, QSql::InOut);
     query.bindValue(1, i2, QSql::Out);
     query.exec();

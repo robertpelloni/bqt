@@ -1,12 +1,12 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_COREPROTOCOL_H
 #define MOCKCOMPOSITOR_COREPROTOCOL_H
 
 #include "corecompositor.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <qwayland-server-wayland.h>
 
@@ -24,12 +24,12 @@ class ShmPool;
 class ShmBuffer;
 class DataDevice;
 
-class Buffer : public QObject, public QtWaylandServer::wl_buffer
+class Buffer : public QObject, public BobUIWaylandServer::wl_buffer
 {
     Q_OBJECT
 public:
     explicit Buffer(wl_client *client, int id, int version)
-        : QtWaylandServer::wl_buffer(client, id, version)
+        : BobUIWaylandServer::wl_buffer(client, id, version)
     {
     }
     virtual QSize size() const = 0;
@@ -49,17 +49,17 @@ protected:
     void buffer_destroy(Resource *resource) override { wl_resource_destroy(resource->handle); }
 };
 
-class Callback : public QObject, public QtWaylandServer::wl_callback
+class Callback : public QObject, public BobUIWaylandServer::wl_callback
 {
     Q_OBJECT
 public:
     explicit Callback(wl_client *client, int id, int version = 1)
-        : QtWaylandServer::wl_callback(client, id, version)
+        : BobUIWaylandServer::wl_callback(client, id, version)
     {
     }
     ~Callback() override { if (!m_destroyed) wl_resource_destroy(resource()->handle); }
     void send_done(uint32_t data) = delete; // use state-tracking method below instead
-    void sendDone(uint data) { Q_ASSERT(!m_done); QtWaylandServer::wl_callback::send_done(data); m_done = true; }
+    void sendDone(uint data) { Q_ASSERT(!m_done); BobUIWaylandServer::wl_callback::send_done(data); m_done = true; }
     void sendDoneAndDestroy(uint data) { sendDone(data); wl_resource_destroy(resource()->handle); }
     bool m_done = false;
     bool m_destroyed = false;
@@ -71,7 +71,7 @@ class SurfaceRole : public QObject {
     Q_OBJECT
 };
 
-class Surface : public QObject, public QtWaylandServer::wl_surface
+class Surface : public QObject, public BobUIWaylandServer::wl_surface
 {
     Q_OBJECT
 public:
@@ -128,11 +128,11 @@ protected:
     void surface_offset(Resource *resource, int32_t x, int32_t y) override;
 };
 
-class Region : public QtWaylandServer::wl_region
+class Region : public BobUIWaylandServer::wl_region
 {
 public:
     explicit Region(wl_client *client, int id, int version)
-        : QtWaylandServer::wl_region(client, id, version)
+        : BobUIWaylandServer::wl_region(client, id, version)
     {
     }
 
@@ -143,12 +143,12 @@ public:
     }
 };
 
-class WlCompositor : public Global, public QtWaylandServer::wl_compositor
+class WlCompositor : public Global, public BobUIWaylandServer::wl_compositor
 {
     Q_OBJECT
 public:
     explicit WlCompositor(CoreCompositor *compositor, int version = 6)
-        : QtWaylandServer::wl_compositor(compositor->m_display, version)
+        : BobUIWaylandServer::wl_compositor(compositor->m_display, version)
         , m_compositor(compositor)
     {}
     bool isClean() override;
@@ -173,7 +173,7 @@ protected:
     }
 };
 
-class WlShell : public Global, public QtWaylandServer::wl_shell
+class WlShell : public Global, public BobUIWaylandServer::wl_shell
 {
     Q_OBJECT
 public:
@@ -193,7 +193,7 @@ class WlShellSurfaceRole : public SurfaceRole
     Q_OBJECT
 };
 
-class WlShellSurface : public QObject, public QtWaylandServer::wl_shell_surface
+class WlShellSurface : public QObject, public BobUIWaylandServer::wl_shell_surface
 {
     Q_OBJECT
 public:
@@ -210,12 +210,12 @@ public:
 
 class Subsurface;
 
-class SubCompositor : public Global, public QtWaylandServer::wl_subcompositor
+class SubCompositor : public Global, public BobUIWaylandServer::wl_subcompositor
 {
     Q_OBJECT
 public:
     explicit SubCompositor(CoreCompositor *compositor, int version = 1)
-        : QtWaylandServer::wl_subcompositor(compositor->m_display, version)
+        : BobUIWaylandServer::wl_subcompositor(compositor->m_display, version)
     {}
     QList<Subsurface *> m_subsurfaces;
 
@@ -233,12 +233,12 @@ class SubSurfaceRole : public SurfaceRole
     Q_OBJECT
 };
 
-class Subsurface : public QObject, public QtWaylandServer::wl_subsurface
+class Subsurface : public QObject, public BobUIWaylandServer::wl_subsurface
 {
     Q_OBJECT
 public:
     explicit Subsurface(SubCompositor *subCompositor, wl_client *client, int id, int version)
-        : QtWaylandServer::wl_subsurface(client, id, version), m_subcompositor(subCompositor)
+        : BobUIWaylandServer::wl_subsurface(client, id, version), m_subcompositor(subCompositor)
     {
     }
     ~Subsurface()
@@ -271,8 +271,8 @@ struct OutputMode {
 };
 
 struct OutputData {
-    using Subpixel = QtWaylandServer::wl_output::subpixel;
-    using Transform = QtWaylandServer::wl_output::transform;
+    using Subpixel = BobUIWaylandServer::wl_output::subpixel;
+    using Transform = BobUIWaylandServer::wl_output::transform;
     explicit OutputData() = default;
 
     // for geometry event
@@ -287,12 +287,12 @@ struct OutputData {
     OutputMode mode; // for mode event
 };
 
-class Output : public Global, public QtWaylandServer::wl_output
+class Output : public Global, public BobUIWaylandServer::wl_output
 {
     Q_OBJECT
 public:
     explicit Output(CoreCompositor *compositor, OutputData data = OutputData(), int version = 2)
-        : QtWaylandServer::wl_output(compositor->m_display, version)
+        : BobUIWaylandServer::wl_output(compositor->m_display, version)
         , m_data(std::move(data))
         , m_version(version)
     {}
@@ -320,7 +320,7 @@ protected:
     void output_bind_resource(Resource *resource) override;
 };
 
-class Seat : public Global, public QtWaylandServer::wl_seat
+class Seat : public Global, public BobUIWaylandServer::wl_seat
 {
     Q_OBJECT
 public:
@@ -359,7 +359,7 @@ protected:
 //    void seat_release(Resource *resource) override;
 };
 
-class Pointer : public QObject, public QtWaylandServer::wl_pointer
+class Pointer : public QObject, public BobUIWaylandServer::wl_pointer
 {
     Q_OBJECT
 public:
@@ -404,7 +404,7 @@ public:
     Surface *m_surface = nullptr;
 };
 
-class Touch : public QObject, public QtWaylandServer::wl_touch
+class Touch : public QObject, public BobUIWaylandServer::wl_touch
 {
     Q_OBJECT
 public:
@@ -418,7 +418,7 @@ public:
     Seat *m_seat = nullptr;
 };
 
-class Keyboard : public QObject, public QtWaylandServer::wl_keyboard
+class Keyboard : public QObject, public BobUIWaylandServer::wl_keyboard
 {
     Q_OBJECT
 public:
@@ -431,7 +431,7 @@ public:
     Surface *m_enteredSurface = nullptr;
 };
 
-class Shm : public Global, public QtWaylandServer::wl_shm
+class Shm : public Global, public BobUIWaylandServer::wl_shm
 {
     Q_OBJECT
 public:
@@ -450,7 +450,7 @@ protected:
     }
 };
 
-class ShmPool : QObject, public QtWaylandServer::wl_shm_pool
+class ShmPool : QObject, public BobUIWaylandServer::wl_shm_pool
 {
     Q_OBJECT
 public:

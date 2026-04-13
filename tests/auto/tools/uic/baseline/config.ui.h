@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'config.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,24 +16,24 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/QSlider>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/QVBoxLayout>
 #include "gammaview.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Config
 {
@@ -311,43 +311,43 @@ public:
         bslider->setObjectName("bslider");
         QPalette palette;
         QBrush brush(QColor(128, 128, 128, 255));
-        brush.setStyle(Qt::BrushStyle::SolidPattern);
+        brush.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::WindowText, brush);
         QBrush brush1(QColor(0, 0, 255, 255));
-        brush1.setStyle(Qt::BrushStyle::SolidPattern);
+        brush1.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Button, brush1);
         QBrush brush2(QColor(127, 127, 255, 255));
-        brush2.setStyle(Qt::BrushStyle::SolidPattern);
+        brush2.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Light, brush2);
         QBrush brush3(QColor(38, 38, 255, 255));
-        brush3.setStyle(Qt::BrushStyle::SolidPattern);
+        brush3.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Midlight, brush3);
         QBrush brush4(QColor(0, 0, 127, 255));
-        brush4.setStyle(Qt::BrushStyle::SolidPattern);
+        brush4.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Dark, brush4);
         QBrush brush5(QColor(0, 0, 170, 255));
-        brush5.setStyle(Qt::BrushStyle::SolidPattern);
+        brush5.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Mid, brush5);
         QBrush brush6(QColor(0, 0, 0, 255));
-        brush6.setStyle(Qt::BrushStyle::SolidPattern);
+        brush6.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Text, brush6);
         QBrush brush7(QColor(255, 255, 255, 255));
-        brush7.setStyle(Qt::BrushStyle::SolidPattern);
+        brush7.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::BrightText, brush7);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::ButtonText, brush);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Base, brush7);
         QBrush brush8(QColor(220, 220, 220, 255));
-        brush8.setStyle(Qt::BrushStyle::SolidPattern);
+        brush8.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Window, brush8);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Shadow, brush6);
         QBrush brush9(QColor(10, 95, 137, 255));
-        brush9.setStyle(Qt::BrushStyle::SolidPattern);
+        brush9.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Highlight, brush9);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::HighlightedText, brush7);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Link, brush6);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::LinkVisited, brush6);
         QBrush brush10(QColor(232, 232, 232, 255));
-        brush10.setStyle(Qt::BrushStyle::SolidPattern);
+        brush10.setStyle(BobUI::BrushStyle::SolidPattern);
         palette.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::AlternateBase, brush10);
         palette.setBrush(QPalette::ColorGroup::Inactive, QPalette::ColorRole::WindowText, brush);
         palette.setBrush(QPalette::ColorGroup::Inactive, QPalette::ColorRole::Button, brush1);
@@ -386,7 +386,7 @@ public:
         bslider->setPalette(palette);
         bslider->setMaximum(400);
         bslider->setValue(100);
-        bslider->setOrientation(Qt::Orientation::Horizontal);
+        bslider->setOrientation(BobUI::Orientation::Horizontal);
 
         gridLayout->addWidget(bslider, 6, 1, 1, 1);
 
@@ -405,19 +405,19 @@ public:
         QPalette palette1;
         palette1.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::WindowText, brush);
         QBrush brush11(QColor(0, 255, 0, 255));
-        brush11.setStyle(Qt::BrushStyle::SolidPattern);
+        brush11.setStyle(BobUI::BrushStyle::SolidPattern);
         palette1.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Button, brush11);
         QBrush brush12(QColor(127, 255, 127, 255));
-        brush12.setStyle(Qt::BrushStyle::SolidPattern);
+        brush12.setStyle(BobUI::BrushStyle::SolidPattern);
         palette1.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Light, brush12);
         QBrush brush13(QColor(38, 255, 38, 255));
-        brush13.setStyle(Qt::BrushStyle::SolidPattern);
+        brush13.setStyle(BobUI::BrushStyle::SolidPattern);
         palette1.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Midlight, brush13);
         QBrush brush14(QColor(0, 127, 0, 255));
-        brush14.setStyle(Qt::BrushStyle::SolidPattern);
+        brush14.setStyle(BobUI::BrushStyle::SolidPattern);
         palette1.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Dark, brush14);
         QBrush brush15(QColor(0, 170, 0, 255));
-        brush15.setStyle(Qt::BrushStyle::SolidPattern);
+        brush15.setStyle(BobUI::BrushStyle::SolidPattern);
         palette1.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Mid, brush15);
         palette1.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Text, brush6);
         palette1.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::BrightText, brush7);
@@ -467,7 +467,7 @@ public:
         gslider->setPalette(palette1);
         gslider->setMaximum(400);
         gslider->setValue(100);
-        gslider->setOrientation(Qt::Orientation::Horizontal);
+        gslider->setOrientation(BobUI::Orientation::Horizontal);
 
         gridLayout->addWidget(gslider, 4, 1, 1, 1);
 
@@ -494,10 +494,10 @@ public:
         palette2.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Light, brush7);
         palette2.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Midlight, brush7);
         QBrush brush16(QColor(127, 127, 127, 255));
-        brush16.setStyle(Qt::BrushStyle::SolidPattern);
+        brush16.setStyle(BobUI::BrushStyle::SolidPattern);
         palette2.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Dark, brush16);
         QBrush brush17(QColor(170, 170, 170, 255));
-        brush17.setStyle(Qt::BrushStyle::SolidPattern);
+        brush17.setStyle(BobUI::BrushStyle::SolidPattern);
         palette2.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Mid, brush17);
         palette2.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Text, brush6);
         palette2.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::BrightText, brush7);
@@ -547,7 +547,7 @@ public:
         gammaslider->setPalette(palette2);
         gammaslider->setMaximum(400);
         gammaslider->setValue(100);
-        gammaslider->setOrientation(Qt::Orientation::Horizontal);
+        gammaslider->setOrientation(BobUI::Orientation::Horizontal);
 
         gridLayout->addWidget(gammaslider, 0, 1, 1, 1);
 
@@ -566,19 +566,19 @@ public:
         QPalette palette3;
         palette3.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::WindowText, brush);
         QBrush brush18(QColor(255, 0, 0, 255));
-        brush18.setStyle(Qt::BrushStyle::SolidPattern);
+        brush18.setStyle(BobUI::BrushStyle::SolidPattern);
         palette3.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Button, brush18);
         QBrush brush19(QColor(255, 127, 127, 255));
-        brush19.setStyle(Qt::BrushStyle::SolidPattern);
+        brush19.setStyle(BobUI::BrushStyle::SolidPattern);
         palette3.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Light, brush19);
         QBrush brush20(QColor(255, 38, 38, 255));
-        brush20.setStyle(Qt::BrushStyle::SolidPattern);
+        brush20.setStyle(BobUI::BrushStyle::SolidPattern);
         palette3.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Midlight, brush20);
         QBrush brush21(QColor(127, 0, 0, 255));
-        brush21.setStyle(Qt::BrushStyle::SolidPattern);
+        brush21.setStyle(BobUI::BrushStyle::SolidPattern);
         palette3.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Dark, brush21);
         QBrush brush22(QColor(170, 0, 0, 255));
-        brush22.setStyle(Qt::BrushStyle::SolidPattern);
+        brush22.setStyle(BobUI::BrushStyle::SolidPattern);
         palette3.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Mid, brush22);
         palette3.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::Text, brush6);
         palette3.setBrush(QPalette::ColorGroup::Active, QPalette::ColorRole::BrightText, brush7);
@@ -628,7 +628,7 @@ public:
         rslider->setPalette(palette3);
         rslider->setMaximum(400);
         rslider->setValue(100);
-        rslider->setOrientation(Qt::Orientation::Horizontal);
+        rslider->setOrientation(BobUI::Orientation::Horizontal);
 
         gridLayout->addWidget(rslider, 2, 1, 1, 1);
 
@@ -727,6 +727,6 @@ namespace Ui {
     class Config: public Ui_Config {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // CONFIG_H

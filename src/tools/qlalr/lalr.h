@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef LALR_H
 #define LALR_H
 
-#include <QtCore/qset.h>
-#include <QtCore/qstack.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qtextstream.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qstack.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/bobuiextstream.h>
 
 #include <algorithm>
 #include <functional>
@@ -343,9 +343,9 @@ public:
   int id (StatePointer state);
   int id (Name name);
 
-  void dump (QTextStream &out, IncludeNode incl);
-  void dump (QTextStream &out, ReadNode rd);
-  void dump (QTextStream &out, const Lookback &lp);
+  void dump (BOBUIextStream &out, IncludeNode incl);
+  void dump (BOBUIextStream &out, ReadNode rd);
+  void dump (BOBUIextStream &out, const Lookback &lp);
 
 public: // ### private
   Grammar *_M_grammar;
@@ -369,14 +369,14 @@ bool operator < (StatePointer a, StatePointer b);
 bool operator < (ItemPointer a, ItemPointer b);
 }
 
-QTextStream &operator << (QTextStream &out, const Name &n);
-QTextStream &operator << (QTextStream &out, const Rule &r);
-QTextStream &operator << (QTextStream &out, const Item &item);
-QTextStream &operator << (QTextStream &out, const NameSet &ns);
+BOBUIextStream &operator << (BOBUIextStream &out, const Name &n);
+BOBUIextStream &operator << (BOBUIextStream &out, const Rule &r);
+BOBUIextStream &operator << (BOBUIextStream &out, const Item &item);
+BOBUIextStream &operator << (BOBUIextStream &out, const NameSet &ns);
 
-QT_BEGIN_NAMESPACE
-QTextStream &qerr();
-QTextStream &qout();
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+BOBUIextStream &qerr();
+BOBUIextStream &qout();
+BOBUI_END_NAMESPACE
 
 #endif // LALR_H

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgesturerecognizer.h"
 
@@ -8,16 +8,16 @@
 #include "private/qgesturemanager_p.h"
 #include "private/qapplication_p.h"
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
    \class QGestureRecognizer
    \since 4.6
    \brief The QGestureRecognizer class provides the infrastructure for gesture recognition.
    \ingroup gestures
-   \inmodule QtWidgets
+   \inmodule BobUIWidgets
 
    Gesture recognizers are responsible for creating and managing QGesture objects and
    monitoring input events sent to QWidget and QGraphicsObject subclasses.
@@ -27,7 +27,7 @@ QT_BEGIN_NAMESPACE
    need to use this class directly. Instances will be created behind the scenes by the
    framework.
 
-   For an overview of gesture handling in Qt and information on using gestures
+   For an overview of gesture handling in BobUI and information on using gestures
    in your applications, see the \l{Gestures in Widgets and Graphics View} document.
 
    \section1 Recognizing Gestures
@@ -126,7 +126,7 @@ QGestureRecognizer::~QGestureRecognizer()
 }
 
 /*!
-    This function is called by Qt to create a new QGesture object for the
+    This function is called by BobUI to create a new QGesture object for the
     given \a target (QWidget or QGraphicsObject).
 
     Reimplement this function to create a custom QGesture-derived gesture
@@ -141,7 +141,7 @@ QGesture *QGestureRecognizer::create(QObject *target)
 }
 
 /*!
-    This function is called by Qt to reset a given \a gesture.
+    This function is called by BobUI to reset a given \a gesture.
 
     Reimplement this function to implement additional requirements for custom QGesture
     objects. This may be necessary if you implement a custom QGesture whose properties
@@ -151,7 +151,7 @@ void QGestureRecognizer::reset(QGesture *gesture)
 {
     if (gesture) {
         QGesturePrivate *d = gesture->d_func();
-        d->state = Qt::NoGesture;
+        d->state = BobUI::NoGesture;
         d->hotSpot = QPointF();
         d->sceneHotSpot = QPointF();
         d->isHotSpotSet = false;
@@ -179,13 +179,13 @@ void QGestureRecognizer::reset(QGesture *gesture)
 
     QApplication takes ownership of the \a recognizer, and this function
     returns the gesture type ID associated with it. For gesture recognizers
-    that handle custom QGesture objects (those that return Qt::CustomGesture in
+    that handle custom QGesture objects (those that return BobUI::CustomGesture in
     a QGesture::gestureType() function), the return value is a generated
-    gesture ID with the Qt::CustomGesture flag set.
+    gesture ID with the BobUI::CustomGesture flag set.
 
     \sa unregisterRecognizer(), QGestureRecognizer::create(), QGesture
 */
-Qt::GestureType QGestureRecognizer::registerRecognizer(QGestureRecognizer *recognizer)
+BobUI::GestureType QGestureRecognizer::registerRecognizer(QGestureRecognizer *recognizer)
 {
     return QGestureManager::instance()->registerGestureRecognizer(recognizer);
 }
@@ -195,7 +195,7 @@ Qt::GestureType QGestureRecognizer::registerRecognizer(QGestureRecognizer *recog
 
     \sa registerRecognizer()
 */
-void QGestureRecognizer::unregisterRecognizer(Qt::GestureType type)
+void QGestureRecognizer::unregisterRecognizer(BobUI::GestureType type)
 {
     auto qAppPriv = QApplicationPrivate::instance();
     if (!qAppPriv)
@@ -205,6 +205,6 @@ void QGestureRecognizer::unregisterRecognizer(Qt::GestureType type)
     QGestureManager::instance()->unregisterGestureRecognizer(type);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES

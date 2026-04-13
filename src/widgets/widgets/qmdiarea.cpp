@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QMdiArea
     \brief The QMdiArea widget provides an area in which MDI windows are displayed.
     \since 4.3
     \ingroup mainwindow-classes
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QMdiArea functions, essentially, like a window manager for MDI
     windows. For instance, it draws the windows it manages on itself
@@ -19,7 +19,7 @@
     \snippet mdiarea/mdiareasnippets.cpp 0
 
     Unlike the window managers for top-level windows, all window flags
-    (Qt::WindowFlags) are supported by QMdiArea as long as the flags
+    (BobUI::WindowFlags) are supported by QMdiArea as long as the flags
     are supported by the current widget style.
 
     Subwindows in QMdiArea are instances of QMdiSubWindow. They
@@ -58,7 +58,7 @@
              {MDI windows in a tiling pattern}
     \endtable
 
-    \note The default scroll bar property for QMdiArea is Qt::ScrollBarAlwaysOff.
+    \note The default scroll bar property for QMdiArea is BobUI::ScrollBarAlwaysOff.
 
     \sa QMdiSubWindow
 */
@@ -125,22 +125,22 @@
 #include <QChildEvent>
 #include <QResizeEvent>
 #include <QScrollBar>
-#include <QtAlgorithms>
+#include <BobUIAlgorithms>
 #include <QPainter>
 #include <QFontMetrics>
 #include <QStyleOption>
 #include <QDebug>
 #include <qmath.h>
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <qmenu.h>
 #endif
 #include <private/qlayoutengine_p.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace QMdi;
 
 // Asserts in debug mode, gives warning otherwise.
@@ -192,9 +192,9 @@ static void setIndex(int *index, int candidate, int min, int max, bool isIncreas
 }
 
 static inline bool useScrollBar(const QRect &childrenRect, const QSize &maxViewportSize,
-                                Qt::Orientation orientation)
+                                BobUI::Orientation orientation)
 {
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         return  childrenRect.width() > maxViewportSize.width()
                 || childrenRect.left() < 0
                 || childrenRect.right() >= maxViewportSize.width();
@@ -219,9 +219,9 @@ static inline QMdiArea *mdiAreaParent(QWidget *widget)
     return nullptr;
 }
 
-#if QT_CONFIG(tabwidget)
-QTabBar::Shape _q_tb_tabBarShapeFrom(QTabWidget::TabShape shape, QTabWidget::TabPosition position);
-#endif // QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
+BOBUIabBar::Shape _q_tb_tabBarShapeFrom(BOBUIabWidget::TabShape shape, BOBUIabWidget::TabPosition position);
+#endif // BOBUI_CONFIG(tabwidget)
 
 static inline QString tabTextFor(QMdiSubWindow *subWindow)
 {
@@ -232,8 +232,8 @@ static inline QString tabTextFor(QMdiSubWindow *subWindow)
     if (subWindow->isWindowModified()) {
         title.replace("[*]"_L1, "*"_L1);
     } else {
-        extern QString qt_setWindowTitle_helperHelper(const QString&, const QWidget*);
-        title = qt_setWindowTitle_helperHelper(title, subWindow);
+        extern QString bobui_setWindowTitle_helperHelper(const QString&, const QWidget*);
+        title = bobui_setWindowTitle_helperHelper(title, subWindow);
     }
 
     return title.isEmpty() ? QMdiArea::tr("(Untitled)") : title;
@@ -514,15 +514,15 @@ QPoint MinOverlapPlacer::place(const QSize &size, const QList<QRect> &rects,
     return findBestPlacement(domain, rects, candidates);
 }
 
-#if QT_CONFIG(tabbar)
-class QMdiAreaTabBar : public QTabBar
+#if BOBUI_CONFIG(tabbar)
+class QMdiAreaTabBar : public BOBUIabBar
 {
 public:
-    QMdiAreaTabBar(QWidget *parent) : QTabBar(parent) {}
+    QMdiAreaTabBar(QWidget *parent) : BOBUIabBar(parent) {}
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *event) override;
 #endif
 
@@ -535,8 +535,8 @@ private:
 */
 void QMdiAreaTabBar::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() != Qt::MiddleButton) {
-        QTabBar::mousePressEvent(event);
+    if (event->button() != BobUI::MiddleButton) {
+        BOBUIabBar::mousePressEvent(event);
         return;
     }
 
@@ -549,7 +549,7 @@ void QMdiAreaTabBar::mousePressEvent(QMouseEvent *event)
     subWindow->close();
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     \internal
 */
@@ -561,7 +561,7 @@ void QMdiAreaTabBar::contextMenuEvent(QContextMenuEvent *event)
         return;
     }
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     QMdiSubWindowPrivate *subWindowPrivate = subWindow->d_func();
     if (!subWindowPrivate->systemMenu) {
         event->ignore();
@@ -589,9 +589,9 @@ void QMdiAreaTabBar::contextMenuEvent(QContextMenuEvent *event)
 
     // Restore action visibility.
     subWindowPrivate->updateActions();
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 /*!
     \internal
@@ -612,7 +612,7 @@ QMdiSubWindow *QMdiAreaTabBar::subWindowFromIndex(int index) const
 
     return subWindow;
 }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 /*!
     \internal
@@ -622,22 +622,22 @@ QMdiAreaPrivate::QMdiAreaPrivate()
       regularTiler(nullptr),
       iconTiler(nullptr),
       placer(nullptr),
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
       rubberBand(nullptr),
 #endif
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
       tabBar(nullptr),
 #endif
       activationOrder(QMdiArea::CreationOrder),
       viewMode(QMdiArea::SubWindowView),
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
       documentMode(false),
       tabsClosable(false),
       tabsMovable(false),
 #endif
-#if QT_CONFIG(tabwidget)
-      tabShape(QTabWidget::Rounded),
-      tabPosition(QTabWidget::North),
+#if BOBUI_CONFIG(tabwidget)
+      tabShape(BOBUIabWidget::Rounded),
+      tabPosition(BOBUIabWidget::North),
 #endif
       ignoreGeometryChange(false),
       ignoreWindowStateChange(false),
@@ -697,8 +697,8 @@ void QMdiAreaPrivate::_q_deactivateAllWindows(QMdiSubWindow *aboutToActivate)
 /*!
     \internal
 */
-void QMdiAreaPrivate::_q_processWindowStateChanged(Qt::WindowStates oldState,
-                                                   Qt::WindowStates newState)
+void QMdiAreaPrivate::_q_processWindowStateChanged(BobUI::WindowStates oldState,
+                                                   BobUI::WindowStates newState)
 {
     if (ignoreWindowStateChange)
         return;
@@ -709,30 +709,30 @@ void QMdiAreaPrivate::_q_processWindowStateChanged(Qt::WindowStates oldState,
         return;
 
     // windowActivated
-    if (!(oldState & Qt::WindowActive) && (newState & Qt::WindowActive))
+    if (!(oldState & BobUI::WindowActive) && (newState & BobUI::WindowActive))
         emitWindowActivated(child);
     // windowDeactivated
-    else if ((oldState & Qt::WindowActive) && !(newState & Qt::WindowActive))
+    else if ((oldState & BobUI::WindowActive) && !(newState & BobUI::WindowActive))
         resetActiveWindow(child);
 
     // windowMinimized
-    if (!(oldState & Qt::WindowMinimized) && (newState & Qt::WindowMinimized)) {
+    if (!(oldState & BobUI::WindowMinimized) && (newState & BobUI::WindowMinimized)) {
         isSubWindowsTiled = false;
         arrangeMinimizedSubWindows();
     // windowMaximized
-    } else if (!(oldState & Qt::WindowMaximized) && (newState & Qt::WindowMaximized)) {
+    } else if (!(oldState & BobUI::WindowMaximized) && (newState & BobUI::WindowMaximized)) {
         internalRaise(child);
     // windowRestored
-    } else if (!(newState & (Qt::WindowMaximized | Qt::WindowMinimized))) {
+    } else if (!(newState & (BobUI::WindowMaximized | BobUI::WindowMinimized))) {
         internalRaise(child);
-        if (oldState & Qt::WindowMinimized)
+        if (oldState & BobUI::WindowMinimized)
             arrangeMinimizedSubWindows();
     }
 }
 
 void QMdiAreaPrivate::_q_currentTabChanged(int index)
 {
-#if !QT_CONFIG(tabbar)
+#if !BOBUI_CONFIG(tabbar)
     Q_UNUSED(index);
 #else
     if (!tabBar || index < 0)
@@ -751,23 +751,23 @@ void QMdiAreaPrivate::_q_currentTabChanged(int index)
     QMdiSubWindow *subWindow = childWindows.at(index);
     Q_ASSERT(subWindow);
     activateWindow(subWindow);
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 }
 
 void QMdiAreaPrivate::_q_closeTab(int index)
 {
-#if !QT_CONFIG(tabbar)
+#if !BOBUI_CONFIG(tabbar)
     Q_UNUSED(index);
 #else
     QMdiSubWindow *subWindow = childWindows.at(index);
     Q_ASSERT(subWindow);
     subWindow->close();
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 }
 
 void QMdiAreaPrivate::_q_moveTab(int from, int to)
 {
-#if !QT_CONFIG(tabbar)
+#if !BOBUI_CONFIG(tabbar)
     Q_UNUSED(from);
     Q_UNUSED(to);
 #else
@@ -783,7 +783,7 @@ void QMdiAreaPrivate::_q_moveTab(int from, int to)
             internalRaise(active);
         }
     }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 }
 
 /*!
@@ -798,7 +798,7 @@ void QMdiAreaPrivate::appendChild(QMdiSubWindow *child)
         child->setParent(viewport, child->windowFlags());
     childWindows.append(QPointer<QMdiSubWindow>(child));
 
-    if (!child->testAttribute(Qt::WA_Resized) && q->isVisible()) {
+    if (!child->testAttribute(BobUI::WA_Resized) && q->isVisible()) {
         QSize newSize(child->sizeHint().boundedTo(viewport->size()));
         child->resize(newSize.expandedTo(qSmartMinSize(child)));
     }
@@ -807,12 +807,12 @@ void QMdiAreaPrivate::appendChild(QMdiSubWindow *child)
         placer = new MinOverlapPlacer;
     place(placer, child);
 
-    if (hbarpolicy != Qt::ScrollBarAlwaysOff)
+    if (hbarpolicy != BobUI::ScrollBarAlwaysOff)
         child->setOption(QMdiSubWindow::AllowOutsideAreaHorizontally, true);
     else
         child->setOption(QMdiSubWindow::AllowOutsideAreaHorizontally, false);
 
-    if (vbarpolicy != Qt::ScrollBarAlwaysOff)
+    if (vbarpolicy != BobUI::ScrollBarAlwaysOff)
         child->setOption(QMdiSubWindow::AllowOutsideAreaVertically, true);
     else
         child->setOption(QMdiSubWindow::AllowOutsideAreaVertically, false);
@@ -821,7 +821,7 @@ void QMdiAreaPrivate::appendChild(QMdiSubWindow *child)
     indicesToActivatedChildren.prepend(childWindows.size() - 1);
     Q_ASSERT(indicesToActivatedChildren.size() == childWindows.size());
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabBar) {
         tabBar->addTab(child->windowIcon(), tabTextFor(child));
         updateTabBarGeometry();
@@ -830,13 +830,13 @@ void QMdiAreaPrivate::appendChild(QMdiSubWindow *child)
     }
 #endif
 
-    if (!(child->windowFlags() & Qt::SubWindow))
-        child->setWindowFlags(Qt::SubWindow);
+    if (!(child->windowFlags() & BobUI::SubWindow))
+        child->setWindowFlags(BobUI::SubWindow);
     child->installEventFilter(q);
 
     QObject::connect(child, SIGNAL(aboutToActivate()), q, SLOT(_q_deactivateAllWindows()));
-    QObject::connect(child, SIGNAL(windowStateChanged(Qt::WindowStates,Qt::WindowStates)),
-                     q, SLOT(_q_processWindowStateChanged(Qt::WindowStates,Qt::WindowStates)));
+    QObject::connect(child, SIGNAL(windowStateChanged(BobUI::WindowStates,BobUI::WindowStates)),
+                     q, SLOT(_q_processWindowStateChanged(BobUI::WindowStates,BobUI::WindowStates)));
 }
 
 /*!
@@ -861,7 +861,7 @@ void QMdiAreaPrivate::place(Placer *placer, QMdiSubWindow *child)
     QRect parentRect = q->rect();
     for (QMdiSubWindow *window : std::as_const(childWindows)) {
         if (!sanityCheck(window, "QMdiArea::place") || window == child || !window->isVisibleTo(q)
-                || !window->testAttribute(Qt::WA_Moved)) {
+                || !window->testAttribute(BobUI::WA_Moved)) {
             continue;
         }
         QRect occupiedGeometry;
@@ -995,7 +995,7 @@ void QMdiAreaPrivate::activateHighlightedWindow()
         activateWindow(nextVisibleSubWindow(-1, QMdiArea::ActivationHistoryOrder));
     else
         activateWindow(childWindows.at(indexToHighlighted));
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     hideRubberBand();
 #endif
 }
@@ -1041,7 +1041,7 @@ void QMdiAreaPrivate::emitWindowActivated(QMdiSubWindow *activeWindow)
     aboutToBecomeActive = nullptr;
     Q_ASSERT(active->d_func()->isActive);
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabBar && tabBar->currentIndex() != indexToActiveWindow)
         tabBar->setCurrentIndex(indexToActiveWindow);
 #endif
@@ -1091,7 +1091,7 @@ void QMdiAreaPrivate::updateActiveWindow(int removedIndex, bool activeRemoved)
             --index;
     }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabBar && removedIndex >= 0) {
         const QSignalBlocker blocker(tabBar);
         tabBar->removeTab(removedIndex);
@@ -1106,7 +1106,7 @@ void QMdiAreaPrivate::updateActiveWindow(int removedIndex, bool activeRemoved)
     }
 
     if (indexToHighlighted >= 0) {
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
         // Hide rubber band if highlighted window is removed.
         if (indexToHighlighted == removedIndex)
             hideRubberBand();
@@ -1141,9 +1141,9 @@ void QMdiAreaPrivate::updateScrollBars()
 
     if (q->style()->styleHint(QStyle::SH_ScrollView_FrameOnlyAroundContents, nullptr, q)) {
         const int doubleFrameWidth = frameWidth * 2;
-        if (hbarpolicy == Qt::ScrollBarAlwaysOn)
+        if (hbarpolicy == BobUI::ScrollBarAlwaysOn)
             maxSize.rheight() -= doubleFrameWidth;
-        if (vbarpolicy == Qt::ScrollBarAlwaysOn)
+        if (vbarpolicy == BobUI::ScrollBarAlwaysOn)
             maxSize.rwidth() -= doubleFrameWidth;
         hbarExtent.rheight() += doubleFrameWidth;
         vbarExtent.rwidth() += doubleFrameWidth;
@@ -1151,22 +1151,22 @@ void QMdiAreaPrivate::updateScrollBars()
 
     const QRect childrenRect = active && active->isMaximized()
                                ? active->geometry() : viewport->childrenRect();
-    bool useHorizontalScrollBar = useScrollBar(childrenRect, maxSize, Qt::Horizontal);
-    bool useVerticalScrollBar = useScrollBar(childrenRect, maxSize, Qt::Vertical);
+    bool useHorizontalScrollBar = useScrollBar(childrenRect, maxSize, BobUI::Horizontal);
+    bool useVerticalScrollBar = useScrollBar(childrenRect, maxSize, BobUI::Vertical);
 
     if (useHorizontalScrollBar && !useVerticalScrollBar) {
         const QSize max = maxSize - QSize(0, hbarExtent.height());
-        useVerticalScrollBar = useScrollBar(childrenRect, max, Qt::Vertical);
+        useVerticalScrollBar = useScrollBar(childrenRect, max, BobUI::Vertical);
     }
 
     if (useVerticalScrollBar && !useHorizontalScrollBar) {
         const QSize max = maxSize - QSize(vbarExtent.width(), 0);
-        useHorizontalScrollBar = useScrollBar(childrenRect, max, Qt::Horizontal);
+        useHorizontalScrollBar = useScrollBar(childrenRect, max, BobUI::Horizontal);
     }
 
-    if (useHorizontalScrollBar && hbarpolicy != Qt::ScrollBarAlwaysOn)
+    if (useHorizontalScrollBar && hbarpolicy != BobUI::ScrollBarAlwaysOn)
         maxSize.rheight() -= hbarExtent.height();
-    if (useVerticalScrollBar && vbarpolicy != Qt::ScrollBarAlwaysOn)
+    if (useVerticalScrollBar && vbarpolicy != BobUI::ScrollBarAlwaysOn)
         maxSize.rwidth() -= vbarExtent.width();
 
     QRect viewportRect(QPoint(0, 0), maxSize);
@@ -1243,7 +1243,7 @@ QRect QMdiAreaPrivate::resizeToMinimumTileSize(const QSize &minSubWindowSize, in
     if (!tileCalledFromResizeEvent) {
         QWidget *topLevel = q;
         // Find the topLevel for this area, either a real top-level or a sub-window.
-        while (topLevel && !topLevel->isWindow() && topLevel->windowType() != Qt::SubWindow)
+        while (topLevel && !topLevel->isWindow() && topLevel->windowType() != BobUI::SubWindow)
             topLevel = topLevel->parentWidget();
         // We don't want sub-subwindows to be placed at the edge, thus add 2 pixels.
         int minAreaWidth = minWidth + left + right + 2;
@@ -1259,9 +1259,9 @@ QRect QMdiAreaPrivate::resizeToMinimumTileSize(const QSize &minSubWindowSize, in
         }
         const QSize diff = QSize(minAreaWidth, minAreaHeight).expandedTo(q->size()) - q->size();
         // Only resize topLevel widget if scroll bars are disabled.
-        if (hbarpolicy == Qt::ScrollBarAlwaysOff)
+        if (hbarpolicy == BobUI::ScrollBarAlwaysOff)
             topLevel->resize(topLevel->size().width() + diff.width(), topLevel->size().height());
-        if (vbarpolicy == Qt::ScrollBarAlwaysOff)
+        if (vbarpolicy == BobUI::ScrollBarAlwaysOff)
             topLevel->resize(topLevel->size().width(), topLevel->size().height() + diff.height());
     }
 
@@ -1270,16 +1270,16 @@ QRect QMdiAreaPrivate::resizeToMinimumTileSize(const QSize &minSubWindowSize, in
     // Adjust domain width and provide horizontal scroll bar.
     if (domain.width() < minWidth) {
         domain.setWidth(minWidth);
-        if (hbarpolicy == Qt::ScrollBarAlwaysOff)
-            q->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        if (hbarpolicy == BobUI::ScrollBarAlwaysOff)
+            q->setHorizontalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
         else
             hbar->setValue(0);
     }
     // Adjust domain height and provide vertical scroll bar.
     if (domain.height() < minHeight) {
         domain.setHeight(minHeight);
-        if (vbarpolicy  == Qt::ScrollBarAlwaysOff)
-            q->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        if (vbarpolicy  == BobUI::ScrollBarAlwaysOff)
+            q->setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
         else
             vbar->setValue(0);
     }
@@ -1291,7 +1291,7 @@ QRect QMdiAreaPrivate::resizeToMinimumTileSize(const QSize &minSubWindowSize, in
 */
 bool QMdiAreaPrivate::scrollBarsEnabled() const
 {
-    return hbarpolicy != Qt::ScrollBarAlwaysOff || vbarpolicy != Qt::ScrollBarAlwaysOff;
+    return hbarpolicy != BobUI::ScrollBarAlwaysOff || vbarpolicy != BobUI::ScrollBarAlwaysOff;
 }
 
 /*!
@@ -1306,7 +1306,7 @@ bool QMdiAreaPrivate::lastWindowAboutToBeDestroyed() const
     if (!last)
         return true;
 
-    if (!last->testAttribute(Qt::WA_DeleteOnClose))
+    if (!last->testAttribute(BobUI::WA_DeleteOnClose))
         return false;
 
     return last->d_func()->data.is_closing;
@@ -1331,14 +1331,14 @@ void QMdiAreaPrivate::setChildActivationEnabled(bool enable, bool onlyNextActiva
     \internal
     \reimp
 */
-void QMdiAreaPrivate::scrollBarPolicyChanged(Qt::Orientation orientation, Qt::ScrollBarPolicy policy)
+void QMdiAreaPrivate::scrollBarPolicyChanged(BobUI::Orientation orientation, BobUI::ScrollBarPolicy policy)
 {
     if (childWindows.isEmpty())
         return;
 
-    const QMdiSubWindow::SubWindowOption option = orientation == Qt::Horizontal ?
+    const QMdiSubWindow::SubWindowOption option = orientation == BobUI::Horizontal ?
         QMdiSubWindow::AllowOutsideAreaHorizontally : QMdiSubWindow::AllowOutsideAreaVertically;
-    const bool enable = policy != Qt::ScrollBarAlwaysOff;
+    const bool enable = policy != BobUI::ScrollBarAlwaysOff;
     // Take a copy because child->setOption() may indirectly call QCoreApplication::sendEvent(),
     // the latter could call unknown code that could e.g. recurse into the class
     // modifying childWindows.
@@ -1483,17 +1483,17 @@ void QMdiAreaPrivate::highlightNextSubWindow(int increaseFactor)
     if (!highlight)
         return;
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if (!rubberBand) {
         rubberBand = new QRubberBand(QRubberBand::Rectangle, q);
         // For accessibility to identify this special widget.
-        rubberBand->setObjectName("qt_rubberband"_L1);
-        rubberBand->setWindowFlags(rubberBand->windowFlags() | Qt::WindowStaysOnTopHint);
+        rubberBand->setObjectName("bobui_rubberband"_L1);
+        rubberBand->setWindowFlags(rubberBand->windowFlags() | BobUI::WindowStaysOnTopHint);
     }
 #endif
 
     // Only highlight if we're not switching back to the previously active window (Ctrl-Tab once).
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if (!tabToPreviousTimer.isActive())
         showRubberBandFor(highlight);
 #endif
@@ -1502,13 +1502,13 @@ void QMdiAreaPrivate::highlightNextSubWindow(int increaseFactor)
     Q_ASSERT(indexToHighlighted >= 0);
 }
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 void QMdiAreaPrivate::showRubberBandFor(QMdiSubWindow *subWindow)
 {
     if (!subWindow || !rubberBand)
         return;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (viewMode == QMdiArea::TabbedView)
         rubberBand->setGeometry(tabBar->tabRect(childWindows.indexOf(subWindow)));
     else
@@ -1518,7 +1518,7 @@ void QMdiAreaPrivate::showRubberBandFor(QMdiSubWindow *subWindow)
     rubberBand->raise();
     rubberBand->show();
 }
-#endif // QT_CONFIG(rubberBand)
+#endif // BOBUI_CONFIG(rubberBand)
 /*!
     \internal
     \since 4.4
@@ -1532,14 +1532,14 @@ void QMdiAreaPrivate::setViewMode(QMdiArea::ViewMode mode)
     // Just a guard since we cannot set viewMode = mode here.
     inViewModeChange = true;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (mode == QMdiArea::TabbedView) {
         Q_ASSERT(!tabBar);
         tabBar = new QMdiAreaTabBar(q);
         tabBar->setDocumentMode(documentMode);
         tabBar->setTabsClosable(tabsClosable);
         tabBar->setMovable(tabsMovable);
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
         tabBar->setShape(_q_tb_tabBarShapeFrom(tabShape, tabPosition));
 #endif
 
@@ -1578,12 +1578,12 @@ void QMdiAreaPrivate::setViewMode(QMdiArea::ViewMode mode)
         QObject::connect(tabBar, SIGNAL(tabCloseRequested(int)), q, SLOT(_q_closeTab(int)));
         QObject::connect(tabBar, SIGNAL(tabMoved(int,int)), q, SLOT(_q_moveTab(int,int)));
     } else
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
     { // SubWindowView
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         delete tabBar;
         tabBar = nullptr;
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
         viewMode = mode;
         q->setViewportMargins(0, 0, 0, 0);
@@ -1598,7 +1598,7 @@ void QMdiAreaPrivate::setViewMode(QMdiArea::ViewMode mode)
     inViewModeChange = false;
 }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 /*!
     \internal
 */
@@ -1608,7 +1608,7 @@ void QMdiAreaPrivate::updateTabBarGeometry()
         return;
 
     Q_Q(QMdiArea);
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
     Q_ASSERT(_q_tb_tabBarShapeFrom(tabShape, tabPosition) == tabBar->shape());
 #endif
     const QSize tabBarSizeHint = tabBar->sizeHint();
@@ -1622,25 +1622,25 @@ void QMdiAreaPrivate::updateTabBarGeometry()
         areaWidth -= vbar->width();
 
     QRect tabBarRect;
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
     switch (tabPosition) {
-    case QTabWidget::North:
+    case BOBUIabWidget::North:
         q->setViewportMargins(0, tabBarSizeHint.height(), 0, 0);
         tabBarRect = QRect(0, 0, areaWidth, tabBarSizeHint.height());
         break;
-    case QTabWidget::South:
+    case BOBUIabWidget::South:
         q->setViewportMargins(0, 0, 0, tabBarSizeHint.height());
         tabBarRect = QRect(0, areaHeight - tabBarSizeHint.height(), areaWidth, tabBarSizeHint.height());
         break;
-    case QTabWidget::East:
-        if (q->layoutDirection() == Qt::LeftToRight)
+    case BOBUIabWidget::East:
+        if (q->layoutDirection() == BobUI::LeftToRight)
             q->setViewportMargins(0, 0, tabBarSizeHint.width(), 0);
         else
             q->setViewportMargins(tabBarSizeHint.width(), 0, 0, 0);
         tabBarRect = QRect(areaWidth - tabBarSizeHint.width(), 0, tabBarSizeHint.width(), areaHeight);
         break;
-    case QTabWidget::West:
-        if (q->layoutDirection() == Qt::LeftToRight)
+    case BOBUIabWidget::West:
+        if (q->layoutDirection() == BobUI::LeftToRight)
             q->setViewportMargins(tabBarSizeHint.width(), 0, 0, 0);
         else
             q->setViewportMargins(0, 0, tabBarSizeHint.width(), 0);
@@ -1649,7 +1649,7 @@ void QMdiAreaPrivate::updateTabBarGeometry()
     default:
         break;
     }
-#endif // QT_CONFIG(tabwidget)
+#endif // BOBUI_CONFIG(tabwidget)
 
     tabBar->setGeometry(QStyle::visualRect(q->layoutDirection(), q->contentsRect(), tabBarRect));
 }
@@ -1665,12 +1665,12 @@ void QMdiAreaPrivate::refreshTabBar()
     tabBar->setDocumentMode(documentMode);
     tabBar->setTabsClosable(tabsClosable);
     tabBar->setMovable(tabsMovable);
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
     tabBar->setShape(_q_tb_tabBarShapeFrom(tabShape, tabPosition));
 #endif
     updateTabBarGeometry();
 }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 /*!
     Constructs an empty mdi area. \a parent is passed to QWidget's
@@ -1681,10 +1681,10 @@ QMdiArea::QMdiArea(QWidget *parent)
 {
     setBackground(palette().brush(QPalette::Dark));
     setFrameStyle(QFrame::NoFrame);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     setViewport(nullptr);
-    setFocusPolicy(Qt::NoFocus);
+    setFocusPolicy(BobUI::NoFocus);
     QApplication::instance()->installEventFilter(this);
 }
 
@@ -1791,7 +1791,7 @@ QMdiSubWindow *QMdiArea::currentSubWindow() const
     window in which the MDI area lives gains focus, the window will be
     activated.
 
-    \sa setActiveSubWindow(), Qt::WindowState
+    \sa setActiveSubWindow(), BobUI::WindowState
 */
 QMdiSubWindow *QMdiArea::activeSubWindow() const
 {
@@ -1936,7 +1936,7 @@ void QMdiArea::activatePreviousSubWindow()
     \snippet mdiarea/mdiareasnippets.cpp 1
 
     When you create your own subwindow, you must set the
-    Qt::WA_DeleteOnClose widget attribute if you want the window to be
+    BobUI::WA_DeleteOnClose widget attribute if you want the window to be
     deleted when closed in the MDI area. If not, the window will be
     hidden and the MDI area will not activate the next subwindow.
 
@@ -1944,7 +1944,7 @@ void QMdiArea::activatePreviousSubWindow()
 
     \sa removeSubWindow()
 */
-QMdiSubWindow *QMdiArea::addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags)
+QMdiSubWindow *QMdiArea::addSubWindow(QWidget *widget, BobUI::WindowFlags windowFlags)
 {
     if (Q_UNLIKELY(!widget)) {
         qWarning("QMdiArea::addSubWindow: null pointer to widget");
@@ -1966,9 +1966,9 @@ QMdiSubWindow *QMdiArea::addSubWindow(QWidget *widget, Qt::WindowFlags windowFla
     // Create a QMdiSubWindow
     } else {
         child = new QMdiSubWindow(viewport(), windowFlags);
-        child->setAttribute(Qt::WA_DeleteOnClose);
+        child->setAttribute(BobUI::WA_DeleteOnClose);
         child->setWidget(widget);
-        Q_ASSERT(child->testAttribute(Qt::WA_DeleteOnClose));
+        Q_ASSERT(child->testAttribute(BobUI::WA_DeleteOnClose));
     }
 
     d->appendChild(child);
@@ -2052,7 +2052,7 @@ void QMdiArea::setBackground(const QBrush &brush)
     Q_D(QMdiArea);
     if (d->background != brush) {
         d->background = brush;
-        d->viewport->setAttribute(Qt::WA_OpaquePaintEvent, brush.isOpaque());
+        d->viewport->setAttribute(BobUI::WA_OpaquePaintEvent, brush.isOpaque());
         d->viewport->update();
     }
 }
@@ -2125,7 +2125,7 @@ void QMdiArea::setViewMode(ViewMode mode)
     d->setViewMode(mode);
 }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 /*!
     \property QMdiArea::documentMode
     \brief whether the tab bar is set to document mode in tabbed view mode.
@@ -2133,7 +2133,7 @@ void QMdiArea::setViewMode(ViewMode mode)
 
     Document mode is disabled by default.
 
-    \sa QTabBar::documentMode, setViewMode()
+    \sa BOBUIabBar::documentMode, setViewMode()
 */
 bool QMdiArea::documentMode() const
 {
@@ -2158,7 +2158,7 @@ void QMdiArea::setDocumentMode(bool enabled)
 
     Tabs are not closable by default.
 
-    \sa QTabBar::tabsClosable, setViewMode()
+    \sa BOBUIabBar::tabsClosable, setViewMode()
 */
 bool QMdiArea::tabsClosable() const
 {
@@ -2183,7 +2183,7 @@ void QMdiArea::setTabsClosable(bool closable)
 
     Tabs are not movable by default.
 
-    \sa QTabBar::movable, setViewMode()
+    \sa BOBUIabBar::movable, setViewMode()
 */
 bool QMdiArea::tabsMovable() const
 {
@@ -2200,26 +2200,26 @@ void QMdiArea::setTabsMovable(bool movable)
     d->tabsMovable = movable;
     d->refreshTabBar();
 }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
 /*!
     \property QMdiArea::tabShape
     \brief the shape of the tabs in tabbed view mode.
     \since 4.4
 
-    Possible values for this property are QTabWidget::Rounded
-    (default) or QTabWidget::Triangular.
+    Possible values for this property are BOBUIabWidget::Rounded
+    (default) or BOBUIabWidget::Triangular.
 
-    \sa QTabWidget::TabShape, setViewMode()
+    \sa BOBUIabWidget::TabShape, setViewMode()
 */
-QTabWidget::TabShape QMdiArea::tabShape() const
+BOBUIabWidget::TabShape QMdiArea::tabShape() const
 {
     Q_D(const QMdiArea);
     return d->tabShape;
 }
 
-void QMdiArea::setTabShape(QTabWidget::TabShape shape)
+void QMdiArea::setTabShape(BOBUIabWidget::TabShape shape)
 {
     Q_D(QMdiArea);
     if (d->tabShape == shape)
@@ -2235,17 +2235,17 @@ void QMdiArea::setTabShape(QTabWidget::TabShape shape)
     \since 4.4
 
     Possible values for this property are described by the
-    QTabWidget::TabPosition enum.
+    BOBUIabWidget::TabPosition enum.
 
-    \sa QTabWidget::TabPosition, setViewMode()
+    \sa BOBUIabWidget::TabPosition, setViewMode()
 */
-QTabWidget::TabPosition QMdiArea::tabPosition() const
+BOBUIabWidget::TabPosition QMdiArea::tabPosition() const
 {
     Q_D(const QMdiArea);
     return d->tabPosition;
 }
 
-void QMdiArea::setTabPosition(QTabWidget::TabPosition position)
+void QMdiArea::setTabPosition(BOBUIabWidget::TabPosition position)
 {
     Q_D(QMdiArea);
     if (d->tabPosition == position)
@@ -2254,7 +2254,7 @@ void QMdiArea::setTabPosition(QTabWidget::TabPosition position)
     d->tabPosition = position;
     d->refreshTabBar();
 }
-#endif // QT_CONFIG(tabwidget)
+#endif // BOBUI_CONFIG(tabwidget)
 
 /*!
     \reimp
@@ -2281,7 +2281,7 @@ void QMdiArea::resizeEvent(QResizeEvent *resizeEvent)
         return;
     }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     d->updateTabBarGeometry();
 #endif
 
@@ -2334,7 +2334,7 @@ void QMdiArea::resizeEvent(QResizeEvent *resizeEvent)
 /*!
     \reimp
 */
-void QMdiArea::timerEvent(QTimerEvent *timerEvent)
+void QMdiArea::timerEvent(BOBUIimerEvent *timerEvent)
 {
     Q_D(QMdiArea);
     if (timerEvent->id() == d->resizeTimer.id()) {
@@ -2344,7 +2344,7 @@ void QMdiArea::timerEvent(QTimerEvent *timerEvent)
         d->tabToPreviousTimer.stop();
         if (d->indexToHighlighted < 0)
             return;
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
         // We're not doing a "quick switch" ... show rubber band.
         Q_ASSERT(d->indexToHighlighted < d->childWindows.size());
         Q_ASSERT(d->rubberBand);
@@ -2390,11 +2390,11 @@ void QMdiArea::showEvent(QShowEvent *showEvent)
                 d->emitWindowActivated(window); // Also maximizes the window
                 continue;
             }
-            if (!window->testAttribute(Qt::WA_Resized)) {
+            if (!window->testAttribute(BobUI::WA_Resized)) {
                 QSize newSize(window->sizeHint().boundedTo(viewport()->size()));
                 window->resize(newSize.expandedTo(qSmartMinSize(window)));
             }
-            if (!window->testAttribute(Qt::WA_Moved) && !window->isMinimized()
+            if (!window->testAttribute(BobUI::WA_Moved) && !window->isMinimized()
                     && !window->isMaximized()) {
                 d->place(d->placer, window);
             }
@@ -2537,7 +2537,7 @@ bool QMdiArea::event(QEvent *event)
         d->setActive(d->active, false, false);
         d->setChildActivationEnabled(false);
         break;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     case QEvent::LayoutDirectionChange:
         d->updateTabBarGeometry();
         break;
@@ -2562,7 +2562,7 @@ bool QMdiArea::eventFilter(QObject *object, QEvent *event)
 
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
         // Ignore key events without a Ctrl modifier (except for press/release on the modifier itself).
-        if (!(keyEvent->modifiers() & Qt::ControlModifier) && keyEvent->key() != Qt::Key_Control)
+        if (!(keyEvent->modifiers() & BobUI::ControlModifier) && keyEvent->key() != BobUI::Key_Control)
             return QAbstractScrollArea::eventFilter(object, event);
 
         // Find closest mdi area (in case we have a nested workspace).
@@ -2577,19 +2577,19 @@ bool QMdiArea::eventFilter(QObject *object, QEvent *event)
         // 3) Ctrl-Shift-Tab (Tab, Tab, ...) -> iterate through all windows in the opposite
         //    direction (activatePreviousSubWindow())
         switch (keyEvent->key()) {
-        case Qt::Key_Control:
+        case BobUI::Key_Control:
             if (keyPress)
                 area->d_func()->startTabToPreviousTimer();
             else
                 area->d_func()->activateHighlightedWindow();
             break;
-        case Qt::Key_Tab:
-        case Qt::Key_Backtab:
+        case BobUI::Key_Tab:
+        case BobUI::Key_Backtab:
             if (keyPress)
-                area->d_func()->highlightNextSubWindow(keyEvent->key() == Qt::Key_Tab ? 1 : -1);
+                area->d_func()->highlightNextSubWindow(keyEvent->key() == BobUI::Key_Tab ? 1 : -1);
             return true;
-#if QT_CONFIG(rubberband)
-        case Qt::Key_Escape:
+#if BOBUI_CONFIG(rubberband)
+        case BobUI::Key_Escape:
             area->d_func()->hideRubberBand();
             break;
 #endif
@@ -2626,13 +2626,13 @@ bool QMdiArea::eventFilter(QObject *object, QEvent *event)
             d->isSubWindowsTiled = false;
         break;
     case QEvent::Show:
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         if (d->tabBar) {
             const int tabIndex = d->childWindows.indexOf(subWindow);
             if (!d->tabBar->isTabEnabled(tabIndex))
                 d->tabBar->setTabEnabled(tabIndex, true);
         }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
         Q_FALLTHROUGH();
     case QEvent::Hide:
         // Do not reset the isSubWindowsTiled flag if the event is a spontaneous system window event.
@@ -2641,13 +2641,13 @@ bool QMdiArea::eventFilter(QObject *object, QEvent *event)
         if (!event->spontaneous())
             d->isSubWindowsTiled = false;
         break;
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     case QEvent::Close:
         if (d->childWindows.indexOf(subWindow) == d->indexToHighlighted)
             d->hideRubberBand();
         break;
 #endif
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     case QEvent::WindowTitleChange:
     case QEvent::ModifiedChange:
         if (d->tabBar)
@@ -2657,7 +2657,7 @@ bool QMdiArea::eventFilter(QObject *object, QEvent *event)
         if (d->tabBar)
             d->tabBar->setTabIcon(d->childWindows.indexOf(subWindow), subWindow->windowIcon());
         break;
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
     default:
         break;
     }
@@ -2686,7 +2686,7 @@ void QMdiArea::setupViewport(QWidget *viewport)
 {
     Q_D(QMdiArea);
     if (viewport)
-        viewport->setAttribute(Qt::WA_OpaquePaintEvent, d->background.isOpaque());
+        viewport->setAttribute(BobUI::WA_OpaquePaintEvent, d->background.isOpaque());
     // Take a copy because the child->setParent() call below may call QCoreApplication::sendEvent()
     // which may call unknown code that could e.g. recurse into the class modifying d->childWindows.
     const auto subWindows = d->childWindows;
@@ -2697,6 +2697,6 @@ void QMdiArea::setupViewport(QWidget *viewport)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qmdiarea.cpp"

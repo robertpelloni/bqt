@@ -6,9 +6,9 @@ SHARED_FOLDER = ../shared
 include($$SHARED_FOLDER/shared.pri)
 
 RESOURCES += gradients.qrc
-QT += widgets
+BOBUI += widgets
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/gradients
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/painting/gradients
 INSTALLS += target
 

@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_moc Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_moc LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 set(JSON_HEADERS
@@ -42,7 +42,7 @@ set(JSON_HEADERS
         qinvokable.h
         qmlmacro.h
         qprivateslots.h
-        qtbug-35657-gadget.h
+        bobuibug-35657-gadget.h
         related-metaobjects-in-gadget.h
         related-metaobjects-in-namespaces.h
         related-metaobjects-name-conflict.h
@@ -59,7 +59,7 @@ set(JSON_HEADERS
         virtualAndOverride.h
 )
 
-qt_wrap_cpp(comparison_relevant_moc_list ${JSON_HEADERS}
+bobui_wrap_cpp(comparison_relevant_moc_list ${JSON_HEADERS}
     TARGET tst_moc
     OPTIONS
         "-Muri=com.company.app"
@@ -68,12 +68,12 @@ qt_wrap_cpp(comparison_relevant_moc_list ${JSON_HEADERS}
         "-DDEFINE_CMDLINE_SIGNAL=void cmdlineSignal(const QMap<int, int> &i)"
         "--output-json"
     DEPENDS
-        ${QT_CMAKE_EXPORT_NAMESPACE}::moc
+        ${BOBUI_CMAKE_EXPORT_NAMESPACE}::moc
 )
 
 list(TRANSFORM comparison_relevant_moc_list  APPEND ".json" OUTPUT_VARIABLE moc_json_files)
 
-qt_internal_add_test(tst_moc
+bobui_internal_add_test(tst_moc
     SOURCES
         cxx-attributes.h
         single_function_keyword.h
@@ -92,18 +92,18 @@ qt_internal_add_test(tst_moc
     EXCEPTIONS
 )
 
-qt_internal_extend_target(tst_moc LIBRARIES Qt::CorePrivate)
+bobui_internal_extend_target(tst_moc LIBRARIES BobUI::CorePrivate)
 
-qt_internal_extend_target(tst_moc CONDITION CMAKE_CROSSCOMPILING
+bobui_internal_extend_target(tst_moc CONDITION CMAKE_CROSSCOMPILING
     DEFINES
         MOC_CROSS_COMPILED
 )
 
 if (${PROJECT_VERSION_MAJOR} LESS 7)
-    # This file intentional produces a warning, so we use qt_wrap_cpp so we can
+    # This file intentional produces a warning, so we use bobui_wrap_cpp so we can
     # suppress it.
-    qt_wrap_cpp(flags_property_moc flags-property-integer-access.h)
-    qt_internal_extend_target(tst_moc SOURCES ${flags_property_moc})
+    bobui_wrap_cpp(flags_property_moc flags-property-integer-access.h)
+    bobui_internal_extend_target(tst_moc SOURCES ${flags_property_moc})
     if (CLANG OR GCC)
         set(Wno_deprecated "-Wno-deprecated-declarations")
     elseif (MSVC)
@@ -114,39 +114,39 @@ if (${PROJECT_VERSION_MAJOR} LESS 7)
 endif()
 
 if (UNIX AND (CLANG OR GCC OR QCC))
-    qt_wrap_cpp(os9_moc os9-newlines.h)
+    bobui_wrap_cpp(os9_moc os9-newlines.h)
 endif()
 
-qt_internal_extend_target(tst_moc CONDITION UNIX AND (CLANG OR GCC OR QCC)
+bobui_internal_extend_target(tst_moc CONDITION UNIX AND (CLANG OR GCC OR QCC)
     SOURCES
         os9-newlines.h
         win-newlines.h
         ${os9_moc}
 )
 
-qt_internal_extend_target(tst_moc CONDITION CLANG OR GCC
+bobui_internal_extend_target(tst_moc CONDITION CLANG OR GCC
     SOURCES
         dollars.h
 )
 
-qt_internal_extend_target(tst_moc CONDITION TARGET Qt::DBus
+bobui_internal_extend_target(tst_moc CONDITION TARGET BobUI::DBus
     LIBRARIES
-        Qt::DBus
+        BobUI::DBus
 )
 
-qt_internal_extend_target(tst_moc CONDITION TARGET Qt::Concurrent
+bobui_internal_extend_target(tst_moc CONDITION TARGET BobUI::Concurrent
     LIBRARIES
-        Qt::Concurrent
+        BobUI::Concurrent
 )
 
-qt_internal_extend_target(tst_moc CONDITION TARGET Qt::Network
+bobui_internal_extend_target(tst_moc CONDITION TARGET BobUI::Network
     LIBRARIES
-        Qt::Network
+        BobUI::Network
 )
 
-qt_internal_extend_target(tst_moc CONDITION TARGET Qt::Sql
+bobui_internal_extend_target(tst_moc CONDITION TARGET BobUI::Sql
     LIBRARIES
-        Qt::Sql
+        BobUI::Sql
 )
 
 get_target_property(target_binary_dir tst_moc BINARY_DIR)
@@ -166,7 +166,7 @@ configure_file("allmocs_baseline_in.json" "${target_binary_dir}/allmocs_baseline
 
 add_custom_command(TARGET tst_moc
     POST_BUILD
-    COMMAND ${QT_CMAKE_EXPORT_NAMESPACE}::moc
+    COMMAND ${BOBUI_CMAKE_EXPORT_NAMESPACE}::moc
         -o "allmocs.json"
         --collect-json  "@${moc_json_out}"
     COMMENT "Running moc with --collect-json"
@@ -175,6 +175,6 @@ add_custom_command(TARGET tst_moc
 
 # Add dependencies that are implicitly used inside the test
 add_dependencies(tst_moc
-    Qt::qtpaths
-    Qt::moc
+    BobUI::bobuipaths
+    BobUI::moc
 )

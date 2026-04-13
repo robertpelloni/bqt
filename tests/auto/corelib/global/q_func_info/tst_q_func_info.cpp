@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <QString>
-#include <QTest>
-#include <QtDebug>
+#include <BOBUIest>
+#include <BobUIDebug>
 
 class tst_q_func_info : public QObject
 {
@@ -78,29 +78,29 @@ void tst_q_func_info::callFunctions() const
 
 void tst_q_func_info::isOfTypeConstChar() const
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     QString::fromLatin1(Q_FUNC_INFO);
 #endif
 }
 
 /* \internal
-    Ensure that the macro is available even though QT_NO_DEBUG
-    is defined.  If QT_NO_DEBUG is not defined, we define it
+    Ensure that the macro is available even though BOBUI_NO_DEBUG
+    is defined.  If BOBUI_NO_DEBUG is not defined, we define it
     just for this function then undef it again afterwards.
  */
 void tst_q_func_info::availableWithoutDebug() const
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
 #   define UNDEF_NO_DEBUG
-#   define QT_NO_DEBUG
+#   define BOBUI_NO_DEBUG
 #endif
     QVERIFY(!QString::fromLatin1(Q_FUNC_INFO).isEmpty());
 #ifdef UNDEF_NO_DEBUG
-#   undef QT_NO_DEBUG
+#   undef BOBUI_NO_DEBUG
 #   undef UNDEF_NO_DEBUG
 #endif
 }
 
-QTEST_MAIN(tst_q_func_info)
+BOBUIEST_MAIN(tst_q_func_info)
 
 #include "tst_q_func_info.moc"

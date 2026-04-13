@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QFILESYSTEMITERATOR_H
 #define QFILESYSTEMITERATOR_H
 
-#include <QtCore/qdir.h>
+#include <BobUICore/qdir.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QDirIteratorTest {
 
@@ -54,6 +54,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QFileSystemIterator::IteratorFlags)
 
 } // namespace QDirIteratorTest
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

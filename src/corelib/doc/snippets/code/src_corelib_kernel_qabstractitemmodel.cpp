@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QSortFilterProxyModel>
 #include <QVariant>
@@ -83,7 +83,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role) const override
     {
-        if (role != Qt::BackgroundRole)
+        if (role != BobUI::BackgroundRole)
             return QSortFilterProxyModel::data(index, role);
 
         if (m_customData.contains(index.row()))
@@ -105,17 +105,17 @@ private:
 void example(CustomDataProxy *model, const QModelIndex &index)
 {
     //! [13]
-    QVariant text = model->data(index, Qt::DisplayRole);
-    QVariant decoration = model->data(index, Qt::DecorationRole);
-    QVariant checkState = model->data(index, Qt::CheckStateRole);
+    QVariant text = model->data(index, BobUI::DisplayRole);
+    QVariant decoration = model->data(index, BobUI::DecorationRole);
+    QVariant checkState = model->data(index, BobUI::CheckStateRole);
     // etc.
     //! [13]
 
     //! [14]
     std::array<QModelRoleData, 3> roleData = { {
-        QModelRoleData(Qt::DisplayRole),
-        QModelRoleData(Qt::DecorationRole),
-        QModelRoleData(Qt::CheckStateRole)
+        QModelRoleData(BobUI::DisplayRole),
+        QModelRoleData(BobUI::DecorationRole),
+        QModelRoleData(BobUI::CheckStateRole)
     } };
 
     // Usually, this is not necessary: A QModelRoleDataSpan

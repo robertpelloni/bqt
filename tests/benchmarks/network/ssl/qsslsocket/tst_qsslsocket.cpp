@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qsslconfiguration.h>
@@ -38,7 +38,7 @@ tst_QSslSocket::~tst_QSslSocket()
 
 void tst_QSslSocket::initTestCase()
 {
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 }
 
@@ -56,7 +56,7 @@ void tst_QSslSocket::rootCertLoading()
 {
     QBENCHMARK_ONCE {
         QSslSocket socket;
-        socket.connectToHostEncrypted(QtNetworkSettings::serverName(), 443);
+        socket.connectToHostEncrypted(BobUINetworkSettings::serverName(), 443);
         socket.waitForEncrypted();
     }
 }
@@ -65,11 +65,11 @@ void tst_QSslSocket::systemCaCertificates()
 {
   // The results of this test change if the benchmarking system changes too much.
   // Therefore this benchmark is only good for manual regression checking between
-  // Qt versions.
+  // BobUI versions.
   QBENCHMARK_ONCE {
       QList<QSslCertificate> list = QSslConfiguration::defaultConfiguration().systemCaCertificates();
   }
 }
 
-QTEST_MAIN(tst_QSslSocket)
+BOBUIEST_MAIN(tst_QSslSocket)
 #include "tst_qsslsocket.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "hellovulkantexture.h"
 #include <QVulkanFunctions>
@@ -94,7 +94,7 @@ bool VulkanRenderer::createTexture(const QString &name)
         return false;
     }
 
-    static bool alwaysStage = qEnvironmentVariableIntValue("QT_VK_FORCE_STAGE_TEX");
+    static bool alwaysStage = qEnvironmentVariableIntValue("BOBUI_VK_FORCE_STAGE_TEX");
 
     if (canSampleLinear && !alwaysStage) {
         if (!createTextureImage(img.size(), &m_texImage, &m_texMem,
@@ -422,7 +422,7 @@ void VulkanRenderer::initResources()
         qFatal("Failed to create sampler: %d", err);
 
     // Texture.
-    if (!createTexture(QStringLiteral(":/qt256.png")))
+    if (!createTexture(QStringLiteral(":/bobui256.png")))
         qFatal("Failed to create texture");
 
     // Set up descriptor set and its layout.

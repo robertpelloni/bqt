@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDRAWUTIL_H
 #define QDRAWUTIL_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qstring.h> // char*->QString conversion
-#include <QtCore/qmargins.h>
-#include <QtGui/qpixmap.h>
-QT_BEGIN_NAMESPACE
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qstring.h> // char*->QString conversion
+#include <BobUICore/qmargins.h>
+#include <BobUIGui/qpixmap.h>
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPainter;
@@ -85,14 +85,14 @@ inline void qDrawPlainRoundedRect(QPainter *painter, const QRect& rect, qreal rx
 }
 
 
-struct QTileRules
+struct BOBUIileRules
 {
-    inline QTileRules(Qt::TileRule horizontalRule, Qt::TileRule verticalRule)
+    inline BOBUIileRules(BobUI::TileRule horizontalRule, BobUI::TileRule verticalRule)
             : horizontal(horizontalRule), vertical(verticalRule) {}
-    inline QTileRules(Qt::TileRule rule = Qt::StretchTile)
+    inline BOBUIileRules(BobUI::TileRule rule = BobUI::StretchTile)
             : horizontal(rule), vertical(rule) {}
-    Qt::TileRule horizontal;
-    Qt::TileRule vertical;
+    BobUI::TileRule horizontal;
+    BobUI::TileRule vertical;
 };
 
 #ifndef Q_QDOC
@@ -126,7 +126,7 @@ Q_WIDGETS_EXPORT void qDrawBorderPixmap(QPainter *painter,
                                     const QPixmap &pixmap,
                                     const QRect &sourceRect,
                                     const QMargins &sourceMargins,
-                                    const QTileRules &rules = QTileRules()
+                                    const BOBUIileRules &rules = BOBUIileRules()
 #ifndef Q_QDOC
                                     , QDrawBorderPixmap::DrawingHints hints = QDrawBorderPixmap::DrawingHints()
 #endif
@@ -140,6 +140,6 @@ inline void qDrawBorderPixmap(QPainter *painter,
     qDrawBorderPixmap(painter, target, margins, pixmap, pixmap.rect(), margins);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDRAWUTIL_H

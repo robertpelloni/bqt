@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QVncIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QVncIntegrationPlugin
+bobui_internal_add_plugin(QVncIntegrationPlugin
     OUTPUT_NAME qvnc
     PLUGIN_TYPE platforms
-    DEFAULT_IF "vnc" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "vnc" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         main.cpp
         qvnc.cpp qvnc_p.h
@@ -16,20 +16,20 @@ qt_internal_add_plugin(QVncIntegrationPlugin
         qvncintegration.cpp qvncintegration.h
         qvncscreen.cpp qvncscreen.h
     DEFINES
-        QT_NO_FOREACH
+        BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::FbSupportPrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Network
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::FbSupportPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Network
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QVncIntegrationPlugin CONDITION TARGET Qt::InputSupportPrivate
+bobui_internal_extend_target(QVncIntegrationPlugin CONDITION TARGET BobUI::InputSupportPrivate
     LIBRARIES
-        Qt::InputSupportPrivate
+        BobUI::InputSupportPrivate
 )

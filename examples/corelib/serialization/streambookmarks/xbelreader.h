@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef XBELREADER_H
 #define XBELREADER_H
@@ -7,17 +7,17 @@
 #include <QIcon>
 #include <QXmlStreamReader>
 
-QT_BEGIN_NAMESPACE
-class QTreeWidget;
-class QTreeWidgetItem;
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+class BOBUIreeWidget;
+class BOBUIreeWidgetItem;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class XbelReader
 {
 public:
 //! [1]
-    XbelReader(QTreeWidget *treeWidget);
+    XbelReader(BOBUIreeWidget *treeWidget);
 //! [1]
 
     bool read(QIODevice *device);
@@ -26,15 +26,15 @@ public:
 private:
 //! [2]
     void readXBEL();
-    void readTitle(QTreeWidgetItem *item);
-    void readSeparator(QTreeWidgetItem *item);
-    void readFolder(QTreeWidgetItem *item);
-    void readBookmark(QTreeWidgetItem *item);
+    void readTitle(BOBUIreeWidgetItem *item);
+    void readSeparator(BOBUIreeWidgetItem *item);
+    void readFolder(BOBUIreeWidgetItem *item);
+    void readBookmark(BOBUIreeWidgetItem *item);
 
-    QTreeWidgetItem *createChildItem(QTreeWidgetItem *item);
+    BOBUIreeWidgetItem *createChildItem(BOBUIreeWidgetItem *item);
 
     QXmlStreamReader xml;
-    QTreeWidget *treeWidget;
+    BOBUIreeWidget *treeWidget;
 //! [2]
 
     QIcon folderIcon;

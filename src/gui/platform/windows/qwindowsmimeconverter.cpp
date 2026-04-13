@@ -1,21 +1,21 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsmimeconverter.h"
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/qpa/qplatformintegration.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/qpa/qplatformintegration.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsMimeConverter
     \brief The QWindowsMimeConverter class maps open-standard MIME to Window Clipboard formats.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
-    Qt's drag-and-drop and clipboard facilities use the MIME standard.
+    BobUI's drag-and-drop and clipboard facilities use the MIME standard.
     On X11, this maps trivially to the Xdnd protocol, but on Windows
     although some applications use MIME types to describe clipboard
     formats, others use arbitrary non-standardized naming conventions,
@@ -38,17 +38,17 @@ QT_BEGIN_NAMESPACE
 
     Destroying the instance will unregister the converter and remove support
     for the conversion. It is also valid to heap-allocate the converter
-    instance; Qt takes ownership and will delete the converter object during
+    instance; BobUI takes ownership and will delete the converter object during
     QGuiApplication shut-down.
 
-    Qt has predefined support for the following Windows Clipboard formats:
+    BobUI has predefined support for the following Windows Clipboard formats:
 
     \table
     \header \li Windows Format \li Equivalent MIME type
     \row \li \c CF_UNICODETEXT \li \c text/plain
     \row \li \c CF_TEXT        \li \c text/plain
     \row \li \c CF_DIB         \li \c{image/xyz}, where \c xyz is
-                                 a \l{QImageWriter::supportedImageFormats()}{Qt image format}
+                                 a \l{QImageWriter::supportedImageFormats()}{BobUI image format}
     \row \li \c CF_HDROP       \li \c text/uri-list
     \row \li \c CF_INETURL     \li \c text/uri-list
     \row \li \c CF_HTML        \li \c text/html
@@ -156,7 +156,7 @@ QWindowsMimeConverter::~QWindowsMimeConverter()
     Registers the MIME type \a mimeType, and returns an ID number
     identifying the format on Windows.
 
-    A mime type \c {application/x-qt-windows-mime;value="WindowsType"} will be
+    A mime type \c {application/x-bobui-windows-mime;value="WindowsType"} will be
     registered as the clipboard format for \c WindowsType.
 */
 int QWindowsMimeConverter::registerMimeType(const QString &mimeType)
@@ -167,4 +167,4 @@ int QWindowsMimeConverter::registerMimeType(const QString &mimeType)
     return nativeWindowsApp->registerMimeType(mimeType);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

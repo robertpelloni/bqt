@@ -1,20 +1,20 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkmanagerservice.h"
 #include "qnetworkmanagernetworkinformationbackend.h"
 
 #include <QObject>
 #include <QList>
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusError>
-#include <QtDBus/QDBusInterface>
-#include <QtDBus/QDBusMessage>
-#include <QtDBus/QDBusReply>
-#include <QtDBus/QDBusPendingCallWatcher>
-#include <QtDBus/QDBusObjectPath>
-#include <QtDBus/QDBusPendingCall>
+#include <BobUIDBus/QDBusConnection>
+#include <BobUIDBus/QDBusError>
+#include <BobUIDBus/QDBusInterface>
+#include <BobUIDBus/QDBusMessage>
+#include <BobUIDBus/QDBusReply>
+#include <BobUIDBus/QDBusPendingCallWatcher>
+#include <BobUIDBus/QDBusObjectPath>
+#include <BobUIDBus/QDBusPendingCall>
 
 #define DBUS_PROPERTIES_INTERFACE "org.freedesktop.DBus.Properties"_L1
 
@@ -25,9 +25,9 @@
 #define NM_CONNECTION_DBUS_INTERFACE NM_DBUS_SERVICE ".Connection.Active"_L1
 #define NM_DEVICE_DBUS_INTERFACE NM_DBUS_SERVICE ".Device"_L1
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 constexpr QLatin1StringView propertiesChangedKey = "PropertiesChanged"_L1;
@@ -216,6 +216,6 @@ void QNetworkManagerInterface::setProperties(const QString &interfaceName,
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkmanagerservice.cpp"

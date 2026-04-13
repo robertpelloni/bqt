@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "treemodel.h"
@@ -7,7 +7,7 @@
 #include <QDebug>
 #include <QFile>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -59,9 +59,9 @@ void MainWindow::insertChild()
 
     for (int column = 0; column < model->columnCount(index); ++column) {
         const QModelIndex child = model->index(0, column, index);
-        model->setData(child, QVariant(tr("[No data]")), Qt::EditRole);
-        if (!model->headerData(column, Qt::Horizontal).isValid())
-            model->setHeaderData(column, Qt::Horizontal, QVariant(tr("[No header]")), Qt::EditRole);
+        model->setData(child, QVariant(tr("[No data]")), BobUI::EditRole);
+        if (!model->headerData(column, BobUI::Horizontal).isValid())
+            model->setHeaderData(column, BobUI::Horizontal, QVariant(tr("[No header]")), BobUI::EditRole);
     }
 
     view->selectionModel()->setCurrentIndex(model->index(0, 0, index),
@@ -77,7 +77,7 @@ bool MainWindow::insertColumn()
     // Insert a column in the parent item.
     bool changed = model->insertColumn(column + 1);
     if (changed)
-        model->setHeaderData(column + 1, Qt::Horizontal, QVariant("[No header]"), Qt::EditRole);
+        model->setHeaderData(column + 1, BobUI::Horizontal, QVariant("[No header]"), BobUI::EditRole);
 
     updateActions();
 
@@ -96,7 +96,7 @@ void MainWindow::insertRow()
 
     for (int column = 0; column < model->columnCount(index.parent()); ++column) {
         const QModelIndex child = model->index(index.row() + 1, column, index.parent());
-        model->setData(child, QVariant(tr("[No data]")), Qt::EditRole);
+        model->setData(child, QVariant(tr("[No data]")), BobUI::EditRole);
     }
 }
 

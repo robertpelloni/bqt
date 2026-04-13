@@ -1,6 +1,6 @@
-include(QtRunCMake)
+include(BobUIRunCMake)
 
-set(cmake_opts "-DQt6_DIR=${Qt6_DIR}")
+set(cmake_opts "-DBobUI6_DIR=${BobUI6_DIR}")
 
 # Check that configuration and build suceeds when a project does not set an explicit policy value.
 set(RunCMake_TEST_BINARY_DIR "${RunCMake_BINARY_DIR}/project-policy-none-build")

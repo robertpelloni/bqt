@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOMMONSTYLE_H
 #define QCOMMONSTYLE_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qstyle.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qstyle.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCommonStylePrivate;
 
@@ -47,7 +47,7 @@ public:
     QPixmap generatedIconPixmap(QIcon::Mode iconMode, const QPixmap &pixmap,
                                 const QStyleOption *opt) const override;
     int layoutSpacing(QSizePolicy::ControlType control1, QSizePolicy::ControlType control2,
-                      Qt::Orientation orientation, const QStyleOption *option = nullptr,
+                      BobUI::Orientation orientation, const QStyleOption *option = nullptr,
                       const QWidget *widget = nullptr) const override;
 
     void polish(QPalette &) override;
@@ -64,6 +64,6 @@ private:
     Q_DISABLE_COPY(QCommonStyle)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMMONSTYLE_H

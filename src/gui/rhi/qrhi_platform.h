@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRHIPLATFORM_H
 #define QRHIPLATFORM_H
@@ -10,27 +10,27 @@
 //
 // This file is part of the RHI API, with limited compatibility guarantees.
 // Usage of this API may make your code source and binary incompatible with
-// future versions of Qt.
+// future versions of BobUI.
 //
 
 #include <rhi/qrhi.h>
 
-#if QT_CONFIG(opengl)
-#include <QtGui/qsurfaceformat.h>
+#if BOBUI_CONFIG(opengl)
+#include <BobUIGui/qsurfaceformat.h>
 #endif
 
-#if QT_CONFIG(vulkan)
-#include <QtGui/qvulkaninstance.h>
+#if BOBUI_CONFIG(vulkan)
+#include <BobUIGui/qvulkaninstance.h>
 #endif
 
-#if QT_CONFIG(metal) || defined(Q_QDOC)
+#if BOBUI_CONFIG(metal) || defined(Q_QDOC)
 Q_FORWARD_DECLARE_OBJC_CLASS(MTLDevice);
 Q_FORWARD_DECLARE_OBJC_CLASS(MTLCommandQueue);
 Q_FORWARD_DECLARE_OBJC_CLASS(MTLCommandBuffer);
 Q_FORWARD_DECLARE_OBJC_CLASS(MTLRenderCommandEncoder);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct Q_GUI_EXPORT QRhiNullInitParams : public QRhiInitParams
 {
@@ -40,7 +40,7 @@ struct Q_GUI_EXPORT QRhiNullNativeHandles : public QRhiNativeHandles
 {
 };
 
-#if QT_CONFIG(opengl) || defined(Q_QDOC)
+#if BOBUI_CONFIG(opengl) || defined(Q_QDOC)
 
 class QOpenGLContext;
 class QOffscreenSurface;
@@ -66,7 +66,7 @@ struct Q_GUI_EXPORT QRhiGles2NativeHandles : public QRhiNativeHandles
 
 #endif // opengl/qdoc
 
-#if (QT_CONFIG(vulkan) && __has_include(<vulkan/vulkan.h>)) || defined(Q_QDOC)
+#if (BOBUI_CONFIG(vulkan) && __has_include(<vulkan/vulkan.h>)) || defined(Q_QDOC)
 
 struct Q_GUI_EXPORT QRhiVulkanInitParams : public QRhiInitParams
 {
@@ -160,7 +160,7 @@ struct Q_GUI_EXPORT QRhiD3D12CommandBufferNativeHandles : public QRhiNativeHandl
 
 #endif // WIN/QDOC
 
-#if QT_CONFIG(metal) || defined(Q_QDOC)
+#if BOBUI_CONFIG(metal) || defined(Q_QDOC)
 
 struct Q_GUI_EXPORT QRhiMetalInitParams : public QRhiInitParams
 {
@@ -180,6 +180,6 @@ struct Q_GUI_EXPORT QRhiMetalCommandBufferNativeHandles : public QRhiNativeHandl
 
 #endif // MACOS/IOS/QDOC
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

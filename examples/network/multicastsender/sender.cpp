@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "sender.h"
 
@@ -37,7 +37,7 @@ Sender::Sender(QWidget *parent)
     connect(ttlSpinBox, &QSpinBox::valueChanged, this, &Sender::ttlChanged);
     connect(startButton, &QPushButton::clicked, this, &Sender::startSending);
     connect(quitButton, &QPushButton::clicked, this, &Sender::close);
-    connect(&timer, &QTimer::timeout, this, &Sender::sendDatagram);
+    connect(&timer, &BOBUIimer::timeout, this, &Sender::sendDatagram);
 
     auto mainLayout = new QVBoxLayout;
     mainLayout->addWidget(statusLabel);

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "drmeglserverbufferintegration.h"
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
 #include <QDebug>
-#include <QtOpenGL/QOpenGLTexture>
-#include <QtGui/QOpenGLContext>
+#include <BobUIOpenGL/QOpenGLTexture>
+#include <BobUIGui/QOpenGLContext>
 
 #include <EGL/egl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 DrmServerBuffer::DrmServerBuffer(DrmEglServerBufferIntegration *integration
                                 , int32_t name
@@ -25,13 +25,13 @@ DrmServerBuffer::DrmServerBuffer(DrmEglServerBufferIntegration *integration
     EGLint egl_format;
     int32_t format_stride;
     switch (format) {
-        case QtWayland::qt_drm_egl_server_buffer::format_RGBA32:
+        case BobUIWayland::bobui_drm_egl_server_buffer::format_RGBA32:
             m_format = QWaylandServerBuffer::RGBA32;
             egl_format = EGL_DRM_BUFFER_FORMAT_ARGB32_MESA;
             format_stride = stride / 4;
             break;
 #ifdef EGL_DRM_BUFFER_FORMAT_A8_MESA
-        case QtWayland::qt_drm_egl_server_buffer::format_A8:
+        case BobUIWayland::bobui_drm_egl_server_buffer::format_A8:
             m_format = QWaylandServerBuffer::A8;
             egl_format = EGL_DRM_BUFFER_FORMAT_A8_MESA;
             format_stride = stride;
@@ -89,7 +89,7 @@ void DrmEglServerBufferIntegration::initializeEgl()
         return;
     m_egl_initialized = true;
 
-#if QT_CONFIG(egl_extension_platform_wayland)
+#if BOBUI_CONFIG(egl_extension_platform_wayland)
     m_egl_display = eglGetPlatformDisplay(EGL_PLATFORM_WAYLAND_EXT, m_display->wl_display(), nullptr);
 #else
     m_egl_display = eglGetDisplay((EGLNativeDisplayType) m_display->wl_display());
@@ -125,21 +125,21 @@ void DrmEglServerBufferIntegration::initialize(QWaylandDisplay *display)
     display->addRegistryListener(&wlDisplayHandleGlobal, this);
 }
 
-QWaylandServerBuffer *DrmEglServerBufferIntegration::serverBuffer(struct qt_server_buffer *buffer)
+QWaylandServerBuffer *DrmEglServerBufferIntegration::serverBuffer(struct bobui_server_buffer *buffer)
 {
-    return static_cast<QWaylandServerBuffer *>(qt_server_buffer_get_user_data(buffer));
+    return static_cast<QWaylandServerBuffer *>(bobui_server_buffer_get_user_data(buffer));
 }
 
 void DrmEglServerBufferIntegration::wlDisplayHandleGlobal(void *data, ::wl_registry *registry, uint32_t id, const QString &interface, uint32_t version)
 {
     Q_UNUSED(version);
-    if (interface == QStringLiteral("qt_drm_egl_server_buffer")) {
+    if (interface == QStringLiteral("bobui_drm_egl_server_buffer")) {
         auto *integration = static_cast<DrmEglServerBufferIntegration *>(data);
-        integration->QtWayland::qt_drm_egl_server_buffer::init(registry, id, 1);
+        integration->BobUIWayland::bobui_drm_egl_server_buffer::init(registry, id, 1);
     }
 }
 
-void DrmEglServerBufferIntegration::drm_egl_server_buffer_server_buffer_created(struct ::qt_server_buffer *id
+void DrmEglServerBufferIntegration::drm_egl_server_buffer_server_buffer_created(struct ::bobui_server_buffer *id
                                                                                , int32_t name
                                                                                , int32_t width
                                                                                , int32_t height
@@ -147,9 +147,9 @@ void DrmEglServerBufferIntegration::drm_egl_server_buffer_server_buffer_created(
                                                                                , int32_t format)
 {
     DrmServerBuffer *server_buffer = new DrmServerBuffer(this, name, width, height, stride, format);
-    qt_server_buffer_set_user_data(id, server_buffer);
+    bobui_server_buffer_set_user_data(id, server_buffer);
 }
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_JUnit : public QObject
 {
@@ -73,5 +73,5 @@ void tst_JUnit::testFunc7()
 }
 
 
-QTEST_APPLESS_MAIN(tst_JUnit)
+BOBUIEST_APPLESS_MAIN(tst_JUnit)
 #include "tst_junit.moc"

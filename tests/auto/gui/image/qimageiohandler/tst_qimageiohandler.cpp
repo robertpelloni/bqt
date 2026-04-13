@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -86,23 +86,23 @@ void tst_QImageIOHandler::hasCustomPluginFormat()
 
 void tst_QImageIOHandler::pluginRead_data()
 {
-    QTest::addColumn<QString>("color");
-    QTest::addColumn<QString>("suffix");
-    QTest::addColumn<QStringList>("expectedPluginLog");
+    BOBUIest::addColumn<QString>("color");
+    BOBUIest::addColumn<QString>("suffix");
+    BOBUIest::addColumn<QStringList>("expectedPluginLog");
 
-    QTest::newRow("testplugin") << "green" << "foo" << QStringList({ "formatname-matched" });
-    QTest::newRow("overridden-builtin") << "red" << "png" << QStringList({ "formatname-matched" });
-    QTest::newRow("builtin") << "black" << "bmp" << QStringList();
-    QTest::newRow("no-suffix") << "blue" << "" << QStringList({ "contents-matched" });
-    QTest::newRow("wrong-suffix") << "yellow" << "jpg" << QStringList({ "contents-matched" });
-    QTest::newRow("unknown-suffix") << "black" << "bar" << QStringList({ "formatname-unmatched", "contents-unmatched" });
+    BOBUIest::newRow("testplugin") << "green" << "foo" << QStringList({ "formatname-matched" });
+    BOBUIest::newRow("overridden-builtin") << "red" << "png" << QStringList({ "formatname-matched" });
+    BOBUIest::newRow("builtin") << "black" << "bmp" << QStringList();
+    BOBUIest::newRow("no-suffix") << "blue" << "" << QStringList({ "contents-matched" });
+    BOBUIest::newRow("wrong-suffix") << "yellow" << "jpg" << QStringList({ "contents-matched" });
+    BOBUIest::newRow("unknown-suffix") << "black" << "bar" << QStringList({ "formatname-unmatched", "contents-unmatched" });
     if (m_supportedReadFormats.contains("jpeg"))
-        QTest::newRow("wrong-suffix2") << "white" << "foo" << QStringList({ "formatname-matched" });
+        BOBUIest::newRow("wrong-suffix2") << "white" << "foo" << QStringList({ "formatname-matched" });
     if (m_supportedReadFormats.contains("gif")) {
         if (m_testPluginFoundLast)
-            QTest::newRow("plugin-writeonly") << "cyan" << "gif" << QStringList();
+            BOBUIest::newRow("plugin-writeonly") << "cyan" << "gif" << QStringList();
         else
-            QTest::newRow("plugin-writeonly") << "cyan" << "gif" << QStringList({ "formatname-matched" });
+            BOBUIest::newRow("plugin-writeonly") << "cyan" << "gif" << QStringList({ "formatname-matched" });
     }
 }
 
@@ -124,23 +124,23 @@ void tst_QImageIOHandler::pluginRead()
 
 void tst_QImageIOHandler::pluginNoAutoDetection_data()
 {
-    QTest::addColumn<QString>("color");
-    QTest::addColumn<QString>("suffix");
-    QTest::addColumn<QStringList>("expectedPluginLog");
-    QTest::addColumn<bool>("expectedSuccess");
+    BOBUIest::addColumn<QString>("color");
+    BOBUIest::addColumn<QString>("suffix");
+    BOBUIest::addColumn<QStringList>("expectedPluginLog");
+    BOBUIest::addColumn<bool>("expectedSuccess");
 
-    QTest::newRow("testplugin") << "green" << "foo" << QStringList({ "formatname-matched" }) << true;
-    QTest::newRow("overridden-builtin") << "red" << "png" << QStringList({ "formatname-matched" }) << true;
-    QTest::newRow("builtin") << "black" << "bmp" << QStringList() << true;
-    QTest::newRow("no-suffix") << "blue" << "" << QStringList() << false;
-    QTest::newRow("wrong-suffix") << "yellow" << "jpg" << QStringList() << false;
-    QTest::newRow("unknown-suffix") << "black" << "bar" << QStringList() << false;
-    QTest::newRow("wrong-suffix2") << "white" << "foo" << QStringList({ "formatname-matched" }) << false;
+    BOBUIest::newRow("testplugin") << "green" << "foo" << QStringList({ "formatname-matched" }) << true;
+    BOBUIest::newRow("overridden-builtin") << "red" << "png" << QStringList({ "formatname-matched" }) << true;
+    BOBUIest::newRow("builtin") << "black" << "bmp" << QStringList() << true;
+    BOBUIest::newRow("no-suffix") << "blue" << "" << QStringList() << false;
+    BOBUIest::newRow("wrong-suffix") << "yellow" << "jpg" << QStringList() << false;
+    BOBUIest::newRow("unknown-suffix") << "black" << "bar" << QStringList() << false;
+    BOBUIest::newRow("wrong-suffix2") << "white" << "foo" << QStringList({ "formatname-matched" }) << false;
     if (m_supportedReadFormats.contains("gif")) {
         if (m_testPluginFoundLast)
-            QTest::newRow("plugin-writeonly") << "cyan" << "gif" << QStringList() << true;
+            BOBUIest::newRow("plugin-writeonly") << "cyan" << "gif" << QStringList() << true;
         else
-            QTest::newRow("plugin-writeonly") << "cyan" << "gif" << QStringList({ "formatname-matched" }) << true;
+            BOBUIest::newRow("plugin-writeonly") << "cyan" << "gif" << QStringList({ "formatname-matched" }) << true;
     }
 }
 
@@ -177,21 +177,21 @@ void tst_QImageIOHandler::pluginNoAutoDetection()
 
 void tst_QImageIOHandler::pluginDecideFromContent_data()
 {
-    QTest::addColumn<QString>("color");
-    QTest::addColumn<QString>("suffix");
-    QTest::addColumn<QStringList>("expectedPluginLog");
+    BOBUIest::addColumn<QString>("color");
+    BOBUIest::addColumn<QString>("suffix");
+    BOBUIest::addColumn<QStringList>("expectedPluginLog");
 
-    QTest::newRow("testplugin") << "green" << "foo" << QStringList({ "contents-matched" });
-    QTest::newRow("overridden-builtin") << "red" << "png" << QStringList({ "contents-matched" });
-    QTest::newRow("builtin") << "black" << "bmp" << QStringList({ "contents-unmatched" });
-    QTest::newRow("no-suffix") << "blue" << "" << QStringList({ "contents-matched" });
-    QTest::newRow("wrong-suffix") << "yellow" << "jpg" << QStringList({ "contents-matched" });
-    QTest::newRow("unknown-suffix") << "black" << "bar" << QStringList({ "contents-unmatched" });
+    BOBUIest::newRow("testplugin") << "green" << "foo" << QStringList({ "contents-matched" });
+    BOBUIest::newRow("overridden-builtin") << "red" << "png" << QStringList({ "contents-matched" });
+    BOBUIest::newRow("builtin") << "black" << "bmp" << QStringList({ "contents-unmatched" });
+    BOBUIest::newRow("no-suffix") << "blue" << "" << QStringList({ "contents-matched" });
+    BOBUIest::newRow("wrong-suffix") << "yellow" << "jpg" << QStringList({ "contents-matched" });
+    BOBUIest::newRow("unknown-suffix") << "black" << "bar" << QStringList({ "contents-unmatched" });
     if (m_supportedReadFormats.contains("jpeg")) {
         if (m_testPluginFoundLast)
-            QTest::newRow("wrong-suffix2") << "white" << "foo" << QStringList();
+            BOBUIest::newRow("wrong-suffix2") << "white" << "foo" << QStringList();
         else
-            QTest::newRow("wrong-suffix2") << "white" << "foo" << QStringList({ "contents-unmatched" });
+            BOBUIest::newRow("wrong-suffix2") << "white" << "foo" << QStringList({ "contents-unmatched" });
     }
 }
 
@@ -216,20 +216,20 @@ void tst_QImageIOHandler::pluginDecideFromContent()
 
 void tst_QImageIOHandler::pluginDetectedFormat_data()
 {
-    QTest::addColumn<QString>("color");
-    QTest::addColumn<QString>("suffix");
-    QTest::addColumn<QString>("fileFormat");
+    BOBUIest::addColumn<QString>("color");
+    BOBUIest::addColumn<QString>("suffix");
+    BOBUIest::addColumn<QString>("fileFormat");
 
-    QTest::newRow("testplugin") << "green" << "foo" << "foo";
-    QTest::newRow("overridden-builtin") << "red" << "png" << "png";
-    QTest::newRow("builtin") << "black" << "bmp" << "bmp";
-    QTest::newRow("no-suffix") << "blue" << "" << "png";
-    QTest::newRow("wrong-suffix") << "yellow" << "jpg" << "foo";
-    QTest::newRow("unknown-suffix") << "black" << "bar" << "bmp";
+    BOBUIest::newRow("testplugin") << "green" << "foo" << "foo";
+    BOBUIest::newRow("overridden-builtin") << "red" << "png" << "png";
+    BOBUIest::newRow("builtin") << "black" << "bmp" << "bmp";
+    BOBUIest::newRow("no-suffix") << "blue" << "" << "png";
+    BOBUIest::newRow("wrong-suffix") << "yellow" << "jpg" << "foo";
+    BOBUIest::newRow("unknown-suffix") << "black" << "bar" << "bmp";
     if (m_supportedReadFormats.contains("jpeg"))
-        QTest::newRow("wrong-suffix2") << "white" << "foo" << "jpeg";
+        BOBUIest::newRow("wrong-suffix2") << "white" << "foo" << "jpeg";
     if (m_supportedReadFormats.contains("gif"))
-        QTest::newRow("plugin-writeonly") << "cyan" << "gif" << "gif";
+        BOBUIest::newRow("plugin-writeonly") << "cyan" << "gif" << "gif";
 }
 
 void tst_QImageIOHandler::pluginDetectedFormat()
@@ -244,17 +244,17 @@ void tst_QImageIOHandler::pluginDetectedFormat()
 
 void tst_QImageIOHandler::pluginWrongFormat_data()
 {
-    QTest::addColumn<QString>("color");
-    QTest::addColumn<QString>("suffix");
-    QTest::addColumn<QString>("forceFormat");
+    BOBUIest::addColumn<QString>("color");
+    BOBUIest::addColumn<QString>("suffix");
+    BOBUIest::addColumn<QString>("forceFormat");
 
-    QTest::newRow("testplugin") << "green" << "foo" << "bmp";
-    QTest::newRow("overridden-builtin") << "red" << "png" << "bmp";
-    QTest::newRow("builtin") << "black" << "bmp" << "foo";
-    QTest::newRow("no-suffix") << "blue" << "" << "bmp";
-    QTest::newRow("wrong-suffix") << "yellow" << "jpg" << "bmp";
-    QTest::newRow("unknown-suffix") << "black" << "bar" << "foo";
-    QTest::newRow("wrong-suffix2") << "white" << "foo" << "bmp";
+    BOBUIest::newRow("testplugin") << "green" << "foo" << "bmp";
+    BOBUIest::newRow("overridden-builtin") << "red" << "png" << "bmp";
+    BOBUIest::newRow("builtin") << "black" << "bmp" << "foo";
+    BOBUIest::newRow("no-suffix") << "blue" << "" << "bmp";
+    BOBUIest::newRow("wrong-suffix") << "yellow" << "jpg" << "bmp";
+    BOBUIest::newRow("unknown-suffix") << "black" << "bar" << "foo";
+    BOBUIest::newRow("wrong-suffix2") << "white" << "foo" << "bmp";
 }
 
 void tst_QImageIOHandler::pluginWrongFormat()
@@ -269,6 +269,6 @@ void tst_QImageIOHandler::pluginWrongFormat()
     QVERIFY(img.isNull());
 }
 
-QTEST_MAIN(tst_QImageIOHandler)
+BOBUIEST_MAIN(tst_QImageIOHandler)
 
 #include "tst_qimageiohandler.moc"

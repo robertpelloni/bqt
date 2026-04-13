@@ -1,59 +1,59 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qevent.h>
-#if QT_CONFIG(future)
-#include <QtCore/private/qfutureinterface_p.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qevent.h>
+#if BOBUI_CONFIG(future)
+#include <BobUICore/private/qfutureinterface_p.h>
 #endif
 
 
-#if QT_CONFIG(future)
+#if BOBUI_CONFIG(future)
 #define X_QFutureCallOutEvent(X) X(QFutureCallOutEvent, ())
 #else
 #define X_QFutureCallOutEvent(X)
 #endif
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 #define X_QWheelEvent(X) X(QWheelEvent, ({}, {}, {}, {}, {}, {}, {}, {}))
 #else
 #define X_QWheelEvent(X)
 #endif
 
-#if QT_CONFIG(tabletevent)
-#define X_QTabletEvent(X) X(QTabletEvent, (QEvent::None, QPointingDevice::primaryPointingDevice(), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}))
+#if BOBUI_CONFIG(tabletevent)
+#define X_BOBUIabletEvent(X) X(BOBUIabletEvent, (QEvent::None, QPointingDevice::primaryPointingDevice(), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}))
 #else
-#define X_QTabletEvent(X)
+#define X_BOBUIabletEvent(X)
 #endif
 
-#if QT_CONFIG(gestures)
+#if BOBUI_CONFIG(gestures)
 #define X_QNativeGestureEvent(X) X(QNativeGestureEvent, ({}, QPointingDevice::primaryPointingDevice(), 0, {}, {}, {}, {}, {}))
 #else
 #define X_QNativeGestureEvent(X)
 #endif
 
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #define X_QWhatsThisClickedEvent(X) X(QWhatsThisClickedEvent, ({}))
 #else
 #define X_QWhatsThisClickedEvent(X)
 #endif
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 #define X_QActionEvent(X) X(QActionEvent, (0, nullptr))
 #else
 #define X_QActionEvent(X)
 #endif
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #define X_QShortcutEvent(X) X(QShortcutEvent, ({}, 0))
 #else
 #define X_QShortcutEvent(X)
 #endif
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #define X_QDropEvent(X) X(QDropEvent, ({}, {}, {}, {}, {}))
 #define X_QDragMoveEvent(X) X(QDragMoveEvent, ({}, {}, {}, {}, {}))
 #define X_QDragEnterEvent(X) X(QDragEnterEvent, ({}, {}, {}, {}, {}))
@@ -68,7 +68,7 @@
 #define FOR_EACH_CORE_EVENT(X) \
     /* qcoreevent.h */ \
     X(QEvent, (QEvent::None)) \
-    X(QTimerEvent, (Qt::TimerId{42})) \
+    X(BOBUIimerEvent, (BobUI::TimerId{42})) \
     X(QChildEvent, (QEvent::ChildAdded, nullptr)) \
     X(QDynamicPropertyChangeEvent, ("size")) \
     /* qfutureinterface_p.h */ \
@@ -85,7 +85,7 @@
     X(QMouseEvent, (QEvent::None, {}, {}, {}, {}, {}, {}, {}, QPointingDevice::primaryPointingDevice())) \
     X(QHoverEvent, (QEvent::None, {}, {}, QPointF{})) \
     X_QWheelEvent(X) \
-    X_QTabletEvent(X) \
+    X_BOBUIabletEvent(X) \
     X_QNativeGestureEvent(X) \
     X(QKeyEvent, (QEvent::None, 0, {})) \
     X(QFocusEvent, (QEvent::None)) \
@@ -110,10 +110,10 @@
     X_QWhatsThisClickedEvent(X) \
     X_QActionEvent(X) \
     X(QFileOpenEvent, (QString{})) \
-    X(QToolBarChangeEvent, (false)) \
+    X(BOBUIoolBarChangeEvent, (false)) \
     X_QShortcutEvent(X) \
     X(QWindowStateChangeEvent, ({})) \
-    X(QTouchEvent, (QEvent::None)) \
+    X(BOBUIouchEvent, (QEvent::None)) \
     X(QScrollPrepareEvent, ({})) \
     X(QScrollEvent, ({}, {}, {})) \
     X(QScreenOrientationChangeEvent, (nullptr, {})) \
@@ -163,19 +163,19 @@ void tst_QEvent::clone() const
 
 void tst_QEvent::registerEventType_data()
 {
-    QTest::addColumn<int>("hint");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<int>("hint");
+    BOBUIest::addColumn<int>("expected");
 
     // default argument
-    QTest::newRow("default") << -1 << int(QEvent::MaxUser);
+    BOBUIest::newRow("default") << -1 << int(QEvent::MaxUser);
     // hint not valid
-    QTest::newRow("User-1") << int(QEvent::User - 1) << int(QEvent::MaxUser - 1);
+    BOBUIest::newRow("User-1") << int(QEvent::User - 1) << int(QEvent::MaxUser - 1);
     // hint not valid II
-    QTest::newRow("MaxUser+1") << int(QEvent::MaxUser + 1) << int(QEvent::MaxUser - 2);
+    BOBUIest::newRow("MaxUser+1") << int(QEvent::MaxUser + 1) << int(QEvent::MaxUser - 2);
     // hint valid, but already taken
-    QTest::newRow("MaxUser-1") << int(QEvent::MaxUser - 1) << int(QEvent::MaxUser - 3);
+    BOBUIest::newRow("MaxUser-1") << int(QEvent::MaxUser - 1) << int(QEvent::MaxUser - 3);
     // hint valid, but not taken
-    QTest::newRow("User + 1000") << int(QEvent::User + 1000) << int(QEvent::User + 1000);
+    BOBUIest::newRow("User + 1000") << int(QEvent::User + 1000) << int(QEvent::User + 1000);
 }
 
 void tst_QEvent::registerEventType()
@@ -206,5 +206,5 @@ void tst_QEvent::exhaustEventTypeRegistration()
     QCOMPARE(i, int(QEvent::MaxUser - 4));
 }
 
-QTEST_MAIN(tst_QEvent)
+BOBUIEST_MAIN(tst_QEvent)
 #include "tst_qevent.moc"

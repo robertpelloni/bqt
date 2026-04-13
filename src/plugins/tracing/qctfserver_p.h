@@ -1,14 +1,14 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef QT_CTFSERVER_H
-#define QT_CTFSERVER_H
+#ifndef BOBUI_CTFSERVER_H
+#define BOBUI_CTFSERVER_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,19 +18,19 @@
 
 #include <qbytearray.h>
 #include <qdatastream.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <qmutex.h>
 #include <qwaitcondition.h>
 #include <qeventloop.h>
-#include <QtNetwork/qtcpserver.h>
-#include <QtNetwork/qtcpsocket.h>
+#include <BobUINetwork/bobuicpserver.h>
+#include <BobUINetwork/bobuicpsocket.h>
 #include <qcborstreamreader.h>
 #include <qcborstreamwriter.h>
 #include <qlist.h>
 
 typedef struct ZSTD_CCtx_s ZSTD_CCtx;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCtfServer;
 struct TracePacket
@@ -103,7 +103,7 @@ struct TraceResponse
     QString serverName;
 };
 
-class QCtfServer : public QThread
+class QCtfServer : public BOBUIhread
 {
     Q_OBJECT
 public:
@@ -165,8 +165,8 @@ private:
     QWaitCondition m_bufferHasData;
     QList<TracePacket> m_packets;
     QString m_address;
-    QTcpServer *m_server = nullptr;
-    QTcpSocket *m_socket = nullptr;
+    BOBUIcpServer *m_server = nullptr;
+    BOBUIcpSocket *m_socket = nullptr;
     QEventLoop *m_eventLoop = nullptr;
     QList<QString> m_keySet;
     TraceRequest m_req;
@@ -181,7 +181,7 @@ private:
     bool m_bufferOnIdle = true;
     QString m_currentKey;
     QString m_requestedCompressionScheme;
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
     ZSTD_CCtx *m_zstdCCtx = nullptr;
 #endif
 
@@ -189,6 +189,6 @@ private:
     static constexpr quint32 DefaultMaxPackets = 256; // 1 MB
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

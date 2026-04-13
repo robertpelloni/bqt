@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QPropertyAnimation
-    \inmodule QtCore
-    \brief The QPropertyAnimation class animates Qt properties.
+    \inmodule BobUICore
+    \brief The QPropertyAnimation class animates BobUI properties.
     \since 4.6
 
     \ingroup animation
 
-    QPropertyAnimation interpolates over \l{Qt's Property System}{Qt
+    QPropertyAnimation interpolates over \l{BobUI's Property System}{BobUI
     properties}. As property values are stored in \l{QVariant}s, the
     class inherits QVariantAnimation, and supports animation of the
     same \l{QMetaType::Type}{meta types} as its super class.
@@ -18,7 +18,7 @@
     A class declaring properties must be a QObject. To make it
     possible to animate a property, it must provide a setter (so that
     QPropertyAnimation can set the property's value). Note that this
-    makes it possible to animate many of Qt's widgets. Let's look at
+    makes it possible to animate many of BobUI's widgets. Let's look at
     an example:
 
     \snippet code/src_corelib_animation_qpropertyanimation.cpp includes
@@ -58,11 +58,11 @@
 #include "qanimationgroup.h"
 #include "qpropertyanimation_p.h"
 
-#include <QtCore/QMutex>
-#include <QtCore/QHash>
-#include <QtCore/private/qlocking_p.h>
+#include <BobUICore/QMutex>
+#include <BobUICore/QHash>
+#include <BobUICore/private/qlocking_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPropertyAnimationPrivate::~QPropertyAnimationPrivate()
     = default;
@@ -269,7 +269,7 @@ void QPropertyAnimation::updateState(QAbstractAnimation::State newState,
     QPropertyAnimation *animToStop = nullptr;
     {
         Q_CONSTINIT static QBasicMutex mutex;
-        auto locker = qt_unique_lock(mutex);
+        auto locker = bobui_unique_lock(mutex);
         using QPropertyAnimationPair = std::pair<QObject *, QByteArray>;
         typedef QHash<QPropertyAnimationPair, QPropertyAnimation*> QPropertyAnimationHash;
         Q_CONSTINIT static QPropertyAnimationHash hash;
@@ -326,6 +326,6 @@ void QPropertyAnimation::updateState(QAbstractAnimation::State newState,
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpropertyanimation.cpp"

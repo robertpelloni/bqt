@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QDateTime>
-#include <QtCore/QString>
-#include <QtCore/QElapsedTimer>
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
-#include <QTimer>
+#include <BobUICore/QDateTime>
+#include <BobUICore/QString>
+#include <BobUICore/QElapsedTimer>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
+#include <BOBUIimer>
 
 static const int minResolution = 100; // the minimum resolution for the tests
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 QDebug operator<<(QDebug s, const QElapsedTimer &t)
 {
     s.nospace() << "(" << t.msecsSinceReference() << ")";
     return s.space();
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class tst_QElapsedTimer : public QObject
 {
@@ -33,12 +33,12 @@ private Q_SLOTS:
 
 void tst_QElapsedTimer::compareCompiles()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QElapsedTimer>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QElapsedTimer>();
 }
 
 void tst_QElapsedTimer::statics()
 {
-    // these have been required since Qt 6.6
+    // these have been required since BobUI 6.6
     QCOMPARE(QElapsedTimer::clockType(), QElapsedTimer::MonotonicClock);
     QVERIFY(QElapsedTimer::isMonotonic());
 
@@ -46,8 +46,8 @@ void tst_QElapsedTimer::statics()
     t.start();
     qint64 system_now = QDateTime::currentMSecsSinceEpoch();
 
-    auto setprecision = +[](QTextStream &s) -> QTextStream & {
-        s.setRealNumberNotation(QTextStream::FixedNotation);
+    auto setprecision = +[](BOBUIextStream &s) -> BOBUIextStream & {
+        s.setRealNumberNotation(BOBUIextStream::FixedNotation);
         s.setRealNumberPrecision(3);
         return s;
     };
@@ -84,7 +84,7 @@ void tst_QElapsedTimer::basics()
     QVERIFY(!(t1 < t1));
     QCOMPARE(t1.msecsTo(t1), qint64(0));
     QCOMPARE(t1.secsTo(t1), qint64(0));
-    QT_TEST_ALL_COMPARISON_OPS(t1, t1, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(t1, t1, BobUI::strong_ordering::equal);
 
     quint64 value1 = t1.msecsSinceReference();
     qDebug() << "value1:" << value1 << "t1:" << t1;
@@ -116,7 +116,7 @@ void tst_QElapsedTimer::elapsed()
     QElapsedTimer t1;
     t1.start();
 
-    QTimer::singleShot(2 * minResolution, Qt::PreciseTimer, [&](){
+    BOBUIimer::singleShot(2 * minResolution, BobUI::PreciseTimer, [&](){
         nsecs = t1.nsecsElapsed();
         msecs = t1.elapsed();
         expired1 = t1.hasExpired(minResolution);
@@ -126,7 +126,7 @@ void tst_QElapsedTimer::elapsed()
         timerExecuted = true;
     });
 
-    QTRY_VERIFY2_WITH_TIMEOUT(timerExecuted,
+    BOBUIRY_VERIFY2_WITH_TIMEOUT(timerExecuted,
         "Looks like timer didn't fire on time.", 4 * minResolution);
 
     QVERIFY(nsecs > 0);
@@ -146,19 +146,19 @@ void tst_QElapsedTimer::msecsTo()
 {
     QElapsedTimer t1;
     t1.start();
-    QTest::qSleep(minResolution);
+    BOBUIest::qSleep(minResolution);
     QElapsedTimer t2;
     t2.start();
-    QTest::qSleep(minResolution);
+    BOBUIest::qSleep(minResolution);
     QElapsedTimer t3;
     t3.start();
 
-    QT_TEST_EQUALITY_OPS(t1, t2, false);
-    QT_TEST_EQUALITY_OPS(QElapsedTimer(), QElapsedTimer(), true);
-    QT_TEST_EQUALITY_OPS(QElapsedTimer(), t2, false);
-    QT_TEST_ALL_COMPARISON_OPS(t1, t2, Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(t3, t2, Qt::strong_ordering::greater);
-    QT_TEST_ALL_COMPARISON_OPS(t3, QElapsedTimer(), Qt::strong_ordering::greater);
+    BOBUI_TEST_EQUALITY_OPS(t1, t2, false);
+    BOBUI_TEST_EQUALITY_OPS(QElapsedTimer(), QElapsedTimer(), true);
+    BOBUI_TEST_EQUALITY_OPS(QElapsedTimer(), t2, false);
+    BOBUI_TEST_ALL_COMPARISON_OPS(t1, t2, BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(t3, t2, BobUI::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(t3, QElapsedTimer(), BobUI::strong_ordering::greater);
 
     auto diff = t1.msecsTo(t2);
     QVERIFY2(diff > 0, QString("difference t1 and t2 is %1").arg(diff).toLatin1());
@@ -166,6 +166,6 @@ void tst_QElapsedTimer::msecsTo()
     QVERIFY2(diff < 0, QString("difference t2 and t1 is %1").arg(diff).toLatin1());
 }
 
-QTEST_MAIN(tst_QElapsedTimer);
+BOBUIEST_MAIN(tst_QElapsedTimer);
 
 #include "tst_qelapsedtimer.moc"

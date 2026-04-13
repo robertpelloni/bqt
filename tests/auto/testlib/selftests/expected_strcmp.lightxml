@@ -1,7 +1,7 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
@@ -12,16 +12,16 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="compareByteArray">
-    <Incident type="xfail" file="qtbase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
+    <Incident type="xfail" file="bobuibase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
       <Description><![CDATA[Next test should fail]]></Description>
     </Incident>
-    <Incident type="xfail" file="qtbase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
+    <Incident type="xfail" file="bobuibase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
       <Description><![CDATA[Next test should fail]]></Description>
     </Incident>
-    <Incident type="xfail" file="qtbase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
+    <Incident type="xfail" file="bobuibase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
       <Description><![CDATA[Next test should fail]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
       <Description><![CDATA[Compared values are not the same
    Actual   (a): "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"...
    Expected (b): "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"...]]></Description>
@@ -29,7 +29,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="failByteArray">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
       <Description><![CDATA[Compared values are not the same
    Actual   (QByteArray("abc")): "abc"
    Expected (QByteArray("cba")): "cba"]]></Description>
@@ -37,7 +37,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="failByteArrayNull">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
       <Description><![CDATA[Compared values are not the same
    Actual   (QByteArray("foo")): "foo"
    Expected (QByteArray())     : ""]]></Description>
@@ -45,7 +45,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="failByteArrayEmpty">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
       <Description><![CDATA[Compared values are not the same
    Actual   (QByteArray(""))   : ""
    Expected (QByteArray("foo")): "foo"]]></Description>
@@ -53,7 +53,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="failByteArraySingleChars">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/strcmp/tst_strcmp.cpp" line="0">
       <Description><![CDATA[Compared values are not the same
    Actual   (QByteArray("6")): "6"
    Expected (QByteArray("7")): "7"]]></Description>

@@ -1,6 +1,6 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxdgdesktopportaltheme.h"
 #include "qxdgdesktopportalfiledialog_p.h"
@@ -17,9 +17,9 @@
 #include <QDBusPendingReply>
 #include <QDBusReply>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static constexpr QLatin1StringView appearanceInterface("org.freedesktop.appearance");
 static constexpr QLatin1StringView colorSchemeKey("color-scheme");
@@ -46,25 +46,25 @@ public:
 
     /*! \internal
 
-        Converts the given Freedesktop color scheme setting \a colorschemePref to a Qt::ColorScheme value.
+        Converts the given Freedesktop color scheme setting \a colorschemePref to a BobUI::ColorScheme value.
         Specification: https://github.com/flatpak/xdg-desktop-portal/blob/d7a304a00697d7d608821253cd013f3b97ac0fb6/data/org.freedesktop.impl.portal.Settings.xml#L33-L45
 
         Unfortunately the enum numerical values are not defined identically, so we have to convert them.
 
         The mapping is as follows:
 
-        Enum Index: Freedesktop definition  | Qt definition
+        Enum Index: Freedesktop definition  | BobUI definition
         ----------------------------------- | -------------
         0: No preference                    | 0: Unknown
         1: Prefer dark appearance           | 2: Dark
         2: Prefer light appearance          | 1: Light
     */
-    static Qt::ColorScheme colorSchemeFromXdgPref(const XdgColorschemePref colorschemePref)
+    static BobUI::ColorScheme colorSchemeFromXdgPref(const XdgColorschemePref colorschemePref)
     {
         switch (colorschemePref) {
-            case PreferDark: return Qt::ColorScheme::Dark;
-            case PreferLight: return Qt::ColorScheme::Light;
-            default: return Qt::ColorScheme::Unknown;
+            case PreferDark: return BobUI::ColorScheme::Dark;
+            case PreferLight: return BobUI::ColorScheme::Light;
+            default: return BobUI::ColorScheme::Unknown;
         }
     }
 
@@ -77,7 +77,7 @@ public Q_SLOTS:
                 colorScheme = colorSchemeFromXdgPref(static_cast<XdgColorschemePref>(value.variant().toUInt()));
                 QWindowSystemInterface::handleThemeChange();
             } else if (key == contrastKey) {
-                contrast = static_cast<Qt::ContrastPreference>(value.variant().toUInt());
+                contrast = static_cast<BobUI::ContrastPreference>(value.variant().toUInt());
                 QWindowSystemInterface::handleThemeChange();
             }
         }
@@ -86,8 +86,8 @@ public Q_SLOTS:
 public:
     QPlatformTheme *baseTheme = nullptr;
     uint fileChooserPortalVersion = 0;
-    Qt::ColorScheme colorScheme = Qt::ColorScheme::Unknown;
-    Qt::ContrastPreference contrast = Qt::ContrastPreference::NoPreference;
+    BobUI::ColorScheme colorScheme = BobUI::ColorScheme::Unknown;
+    BobUI::ContrastPreference contrast = BobUI::ContrastPreference::NoPreference;
 };
 
 QXdgDesktopPortalTheme::QXdgDesktopPortalTheme()
@@ -149,7 +149,7 @@ QXdgDesktopPortalTheme::QXdgDesktopPortalTheme()
         if (!settingsMap.isEmpty()) {
             const auto xdgColorSchemePref = static_cast<QXdgDesktopPortalThemePrivate::XdgColorschemePref>(settingsMap.value(appearanceInterface).value(colorSchemeKey).toUInt());
             d->colorScheme = QXdgDesktopPortalThemePrivate::colorSchemeFromXdgPref(xdgColorSchemePref);
-            d->contrast = static_cast<Qt::ContrastPreference>(settingsMap.value(appearanceInterface).value(contrastKey).toUInt());
+            d->contrast = static_cast<BobUI::ContrastPreference>(settingsMap.value(appearanceInterface).value(contrastKey).toUInt());
         }
     } else {
         qWarning() << "Call to org.freedesktop.portal.Settings.ReadAll failed" << reply.error();
@@ -212,7 +212,7 @@ QPlatformDialogHelper* QXdgDesktopPortalTheme::createPlatformDialogHelper(Dialog
     return d->baseTheme->createPlatformDialogHelper(type);
 }
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 QPlatformSystemTrayIcon* QXdgDesktopPortalTheme::createPlatformSystemTrayIcon() const
 {
     Q_D(const QXdgDesktopPortalTheme);
@@ -238,15 +238,15 @@ QVariant QXdgDesktopPortalTheme::themeHint(ThemeHint hint) const
     return d->baseTheme->themeHint(hint);
 }
 
-Qt::ColorScheme QXdgDesktopPortalTheme::colorScheme() const
+BobUI::ColorScheme QXdgDesktopPortalTheme::colorScheme() const
 {
     Q_D(const QXdgDesktopPortalTheme);
-    if (d->colorScheme == Qt::ColorScheme::Unknown)
+    if (d->colorScheme == BobUI::ColorScheme::Unknown)
         return d->baseTheme->colorScheme();
     return d->colorScheme;
 }
 
-Qt::ContrastPreference QXdgDesktopPortalTheme::contrastPreference() const
+BobUI::ContrastPreference QXdgDesktopPortalTheme::contrastPreference() const
 {
     Q_D(const QXdgDesktopPortalTheme);
     return d->contrast;
@@ -271,7 +271,7 @@ QIconEngine * QXdgDesktopPortalTheme::createIconEngine(const QString &iconName) 
     return d->baseTheme->createIconEngine(iconName);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 QList<QKeySequence> QXdgDesktopPortalTheme::keyBindings(QKeySequence::StandardKey key) const
 {
     Q_D(const QXdgDesktopPortalTheme);
@@ -287,11 +287,11 @@ QString QXdgDesktopPortalTheme::standardButtonText(int button) const
 
 bool QXdgDesktopPortalTheme::isXdgPlugin(const QString &key)
 {
-    return key.compare("xdgdesktopportal"_L1, Qt::CaseInsensitive) == 0 ||
-           key.compare("flatpak"_L1, Qt::CaseInsensitive) == 0 ||
-           key.compare("snap"_L1, Qt::CaseInsensitive) == 0;
+    return key.compare("xdgdesktopportal"_L1, BobUI::CaseInsensitive) == 0 ||
+           key.compare("flatpak"_L1, BobUI::CaseInsensitive) == 0 ||
+           key.compare("snap"_L1, BobUI::CaseInsensitive) == 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qxdgdesktopportaltheme.moc"

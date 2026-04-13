@@ -1,14 +1,14 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbconnection.h"
 #include "qxcbscreen.h"
 #include "qxcbintegration.h"
 
-#include <QtGui/private/qhighdpiscaling_p.h>
-#include <QtCore/QString>
-#include <QtCore/QList>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
+#include <BobUICore/QString>
+#include <BobUICore/QList>
 
 #include <qpa/qwindowsysteminterface.h>
 

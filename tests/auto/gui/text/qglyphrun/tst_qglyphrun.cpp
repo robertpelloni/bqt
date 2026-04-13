@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qglyphrun.h>
 #include <qpainter.h>
-#include <qtextlayout.h>
+#include <bobuiextlayout.h>
 #include <qfontdatabase.h>
 
 // #define DEBUG_SAVE_IMAGE
@@ -14,7 +14,7 @@ class tst_QGlyphRun: public QObject
 {
     Q_OBJECT
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 private slots:
     void initTestCase();
     void init();
@@ -48,11 +48,11 @@ private:
     int m_testFontId;
     QFont m_testFont;
     bool m_testFont_ok;
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 
 };
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 
 Q_DECLARE_METATYPE(QGlyphRun);
 
@@ -63,9 +63,9 @@ void tst_QGlyphRun::initTestCase()
     m_testFontId = QFontDatabase::addApplicationFont(QFINDTESTDATA("test.ttf"));
     QVERIFY(m_testFontId >= 0);
 
-    m_testFont = QFont("QtsSpecialTestFont");
+    m_testFont = QFont("BobUIsSpecialTestFont");
 
-    QCOMPARE(QFontInfo(m_testFont).family(), QString::fromLatin1("QtsSpecialTestFont"));
+    QCOMPARE(QFontInfo(m_testFont).family(), QString::fromLatin1("BobUIsSpecialTestFont"));
 
     m_testFont_ok = true;
 }
@@ -151,14 +151,14 @@ void tst_QGlyphRun::assignment()
 
 void tst_QGlyphRun::equalsOperator_data()
 {
-    QTest::addColumn<QGlyphRun>("one");
-    QTest::addColumn<QGlyphRun>("two");
-    QTest::addColumn<bool>("equals");
+    BOBUIest::addColumn<QGlyphRun>("one");
+    BOBUIest::addColumn<QGlyphRun>("two");
+    BOBUIest::addColumn<bool>("equals");
 
     QGlyphRun one(make_dummy_indexes());
     QGlyphRun two(make_dummy_indexes());
 
-    QTest::newRow("Identical") << one << two << true;
+    BOBUIest::newRow("Identical") << one << two << true;
 
     {
         QGlyphRun busted(two);
@@ -168,7 +168,7 @@ void tst_QGlyphRun::equalsOperator_data()
         busted.setPositions(positions);
 
 
-        QTest::newRow("Different positions") << one << busted << false;
+        BOBUIest::newRow("Different positions") << one << busted << false;
     }
 
     {
@@ -178,7 +178,7 @@ void tst_QGlyphRun::equalsOperator_data()
         font.setPixelSize(busted.rawFont().pixelSize() * 2);
         busted.setRawFont(QRawFont::fromFont(font));
 
-        QTest::newRow("Different fonts") << one << busted << false;
+        BOBUIest::newRow("Different fonts") << one << busted << false;
     }
 
     {
@@ -188,7 +188,7 @@ void tst_QGlyphRun::equalsOperator_data()
         glyphIndexes[2] += 1;
         busted.setGlyphIndexes(glyphIndexes);
 
-        QTest::newRow("Different glyph indexes") << one << busted << false;
+        BOBUIest::newRow("Different glyph indexes") << one << busted << false;
     }
 
 }
@@ -226,7 +226,7 @@ void tst_QGlyphRun::textLayoutGlyphIndexes()
     s.append(QLatin1Char('A'));
     s.append(QChar(0xe000));
 
-    QTextLayout layout(s);
+    BOBUIextLayout layout(s);
     layout.setFont(m_testFont);
     layout.setCacheEnabled(true);
     layout.beginLayout();
@@ -249,14 +249,14 @@ void tst_QGlyphRun::drawExistingGlyphs()
     QPixmap textLayoutDraw(1000, 1000);
     QPixmap drawGlyphs(1000, 1000);
 
-    textLayoutDraw.fill(Qt::white);
-    drawGlyphs.fill(Qt::white);
+    textLayoutDraw.fill(BobUI::white);
+    drawGlyphs.fill(BobUI::white);
 
     QString s;
     s.append(QLatin1Char('A'));
     s.append(QChar(0xe000));
 
-    QTextLayout layout(s);
+    BOBUIextLayout layout(s);
     layout.setFont(m_testFont);
     layout.setCacheEnabled(true);
     layout.beginLayout();
@@ -293,7 +293,7 @@ void tst_QGlyphRun::setRawData()
     glyphRun.setPositions(QList<QPointF>() << QPointF(2, 3) << QPointF(20, 3) << QPointF(10, 20));
 
     QPixmap baseline(100, 50);
-    baseline.fill(Qt::white);
+    baseline.fill(BobUI::white);
     {
         QPainter p(&baseline);
         p.drawGlyphRun(QPointF(3, 2), glyphRun);
@@ -307,7 +307,7 @@ void tst_QGlyphRun::setRawData()
     glyphRun.setRawData(glyphIndexArray, glyphPositionArray, 3);
 
     QPixmap rawDataGlyphs(100, 50);
-    rawDataGlyphs.fill(Qt::white);
+    rawDataGlyphs.fill(BobUI::white);
     {
         QPainter p(&rawDataGlyphs);
         p.drawGlyphRun(QPointF(3, 2), glyphRun);
@@ -319,7 +319,7 @@ void tst_QGlyphRun::setRawData()
     glyphRun.setRawData(otherGlyphIndexArray, otherGlyphPositionArray, 1);
 
     QPixmap baselineCopiedPixmap(100, 50);
-    baselineCopiedPixmap.fill(Qt::white);
+    baselineCopiedPixmap.fill(BobUI::white);
     {
         QPainter p(&baselineCopiedPixmap);
         p.drawGlyphRun(QPointF(3, 2), baselineCopied);
@@ -376,7 +376,7 @@ void tst_QGlyphRun::drawNonExistentGlyphs()
     glyphs.setRawFont(QRawFont::fromFont(m_testFont));
 
     QPixmap image(1000, 1000);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
 
     QPixmap imageBefore = image;
     {
@@ -396,17 +396,17 @@ void tst_QGlyphRun::drawMultiScriptText1()
     QString text;
     text += QChar(0x03D0); // Greek, beta
 
-    QTextLayout textLayout(text);
+    BOBUIextLayout textLayout(text);
     textLayout.setCacheEnabled(true);
     textLayout.beginLayout();
     textLayout.createLine();
     textLayout.endLayout();
 
     QPixmap textLayoutDraw(1000, 1000);
-    textLayoutDraw.fill(Qt::white);
+    textLayoutDraw.fill(BobUI::white);
 
     QPixmap drawGlyphs(1000, 1000);
-    drawGlyphs.fill(Qt::white);
+    drawGlyphs.fill(BobUI::white);
 
     const QList<QGlyphRun> glyphsList = textLayout.glyphRuns();
     QCOMPARE(glyphsList.size(), 1);
@@ -436,17 +436,17 @@ void tst_QGlyphRun::drawMultiScriptText2()
     text += QChar(0x0621); // Arabic, Hamza
     text += QChar(0x03D0); // Greek, beta
 
-    QTextLayout textLayout(text);
+    BOBUIextLayout textLayout(text);
     textLayout.setCacheEnabled(true);
     textLayout.beginLayout();
     textLayout.createLine();
     textLayout.endLayout();
 
     QPixmap textLayoutDraw(1000, 1000);
-    textLayoutDraw.fill(Qt::white);
+    textLayoutDraw.fill(BobUI::white);
 
     QPixmap drawGlyphs(1000, 1000);
-    drawGlyphs.fill(Qt::white);
+    drawGlyphs.fill(BobUI::white);
 
     const QList<QGlyphRun> glyphsList = textLayout.glyphRuns();
     QCOMPARE(glyphsList.size(), 2);
@@ -501,10 +501,10 @@ void tst_QGlyphRun::drawRightToLeft()
     QPixmap textLayoutDraw(1000, 1000);
     QPixmap drawGlyphs(1000, 1000);
 
-    textLayoutDraw.fill(Qt::white);
-    drawGlyphs.fill(Qt::white);
+    textLayoutDraw.fill(BobUI::white);
+    drawGlyphs.fill(BobUI::white);
 
-    QTextLayout layout(s);
+    BOBUIextLayout layout(s);
     layout.setCacheEnabled(true);
     layout.beginLayout();
     layout.createLine();
@@ -570,7 +570,7 @@ void tst_QGlyphRun::mixedScripts()
     s += QChar(0x31); // The character '1'
     s += QChar(0xbc14); // Hangul character
 
-    QTextLayout layout;
+    BOBUIextLayout layout;
     layout.setFont(m_testFont);
     layout.setText(s);
     layout.beginLayout();
@@ -583,11 +583,11 @@ void tst_QGlyphRun::mixedScripts()
 
 void tst_QGlyphRun::multiLineBoundingRect()
 {
-    QTextLayout layout;
+    BOBUIextLayout layout;
     layout.setText("Foo Bar");
     layout.beginLayout();
 
-    QTextLine line = layout.createLine();
+    BOBUIextLine line = layout.createLine();
     line.setNumColumns(4);
     line.setPosition(QPointF(0, 0));
 
@@ -612,8 +612,8 @@ void tst_QGlyphRun::multiLineBoundingRect()
 void tst_QGlyphRun::defaultIgnorables()
 {
     {
-        QTextLayout layout;
-        layout.setFont(QFont("QtsSpecialTestFont"));
+        BOBUIextLayout layout;
+        layout.setFont(QFont("BobUIsSpecialTestFont"));
         layout.setText(QChar(0x200D));
         layout.beginLayout();
         layout.createLine();
@@ -624,8 +624,8 @@ void tst_QGlyphRun::defaultIgnorables()
     }
 
     {
-        QTextLayout layout;
-        layout.setFont(QFont("QtsSpecialTestFont"));
+        BOBUIextLayout layout;
+        layout.setFont(QFont("BobUIsSpecialTestFont"));
         layout.setText(QStringLiteral("AAA") + QChar(0xFE0F) + QStringLiteral("111"));
         layout.beginLayout();
         layout.createLine();
@@ -636,11 +636,11 @@ void tst_QGlyphRun::defaultIgnorables()
 
         bool hasFullMainFontRun = false;
         for (const QGlyphRun &run : runs) {
-            // QtsSpecialFont will be used for at least five characters: AA[...]111
+            // BobUIsSpecialFont will be used for at least five characters: AA[...]111
             // Depending on the font selected for the 0xFE0F variant selector, the
-            // third 'A' may be in QtsSpecialFont or in the fallback. This is platform-specific,
+            // third 'A' may be in BobUIsSpecialFont or in the fallback. This is platform-specific,
             // so we accept either.
-            if (run.rawFont().familyName() == QStringLiteral("QtsSpecialTestFont")
+            if (run.rawFont().familyName() == QStringLiteral("BobUIsSpecialTestFont")
                     && run.glyphIndexes().size() >= 5) {
                 hasFullMainFontRun = true;
                 break;
@@ -655,15 +655,15 @@ void tst_QGlyphRun::stringIndexes()
     int ligatureFontId = QFontDatabase::addApplicationFont(QFINDTESTDATA("Ligatures.otf"));
     QVERIFY(ligatureFontId >= 0);
 
-    QFont ligatureFont = QFont("QtLigatures");
-    QCOMPARE(QFontInfo(ligatureFont).family(), QString::fromLatin1("QtLigatures"));
+    QFont ligatureFont = QFont("BobUILigatures");
+    QCOMPARE(QFontInfo(ligatureFont).family(), QString::fromLatin1("BobUILigatures"));
 
-    QTextLayout::GlyphRunRetrievalFlags retrievalFlags
-            = QTextLayout::RetrieveGlyphIndexes | QTextLayout::RetrieveStringIndexes;
+    BOBUIextLayout::GlyphRunRetrievalFlags retrievalFlags
+            = BOBUIextLayout::RetrieveGlyphIndexes | BOBUIextLayout::RetrieveStringIndexes;
 
     // Three characters -> three glyphs
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText("f i");
         layout.setFont(ligatureFont);
         layout.beginLayout();
@@ -693,7 +693,7 @@ void tst_QGlyphRun::stringIndexes()
 
     // Two characters -> one glyph
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText("fi");
         layout.setFont(ligatureFont);
         layout.beginLayout();
@@ -727,7 +727,7 @@ void tst_QGlyphRun::stringIndexes()
 
     // Four characters -> three glyphs
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText("ffii");
         layout.setFont(ligatureFont);
         layout.beginLayout();
@@ -792,7 +792,7 @@ void tst_QGlyphRun::stringIndexes()
 
     // One character -> two glyphs
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(QChar(0xe6)); // LATIN SMALL LETTER AE
         layout.setFont(ligatureFont);
         layout.beginLayout();
@@ -814,7 +814,7 @@ void tst_QGlyphRun::stringIndexes()
 
     // Three characters -> four glyphs
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(QString('f') + QChar(0xe6) + QChar('i'));
         layout.setFont(ligatureFont);
         layout.beginLayout();
@@ -876,7 +876,7 @@ void tst_QGlyphRun::stringIndexes()
 
     // Five characters -> five glyphs
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(QLatin1String("ffi") + QChar(0xe6) + QLatin1Char('i'));
         layout.setFont(ligatureFont);
         layout.beginLayout();
@@ -906,42 +906,42 @@ void tst_QGlyphRun::stringIndexes()
 
 void tst_QGlyphRun::retrievalFlags_data()
 {
-    QTest::addColumn<QTextLayout::GlyphRunRetrievalFlags>("flags");
-    QTest::addColumn<bool>("expectedGlyphIndexes");
-    QTest::addColumn<bool>("expectedStringIndexes");
-    QTest::addColumn<bool>("expectedString");
-    QTest::addColumn<bool>("expectedGlyphPositions");
+    BOBUIest::addColumn<BOBUIextLayout::GlyphRunRetrievalFlags>("flags");
+    BOBUIest::addColumn<bool>("expectedGlyphIndexes");
+    BOBUIest::addColumn<bool>("expectedStringIndexes");
+    BOBUIest::addColumn<bool>("expectedString");
+    BOBUIest::addColumn<bool>("expectedGlyphPositions");
 
-    QTest::newRow("Glyph indexes")
-            << QTextLayout::GlyphRunRetrievalFlags(QTextLayout::RetrieveGlyphIndexes)
+    BOBUIest::newRow("Glyph indexes")
+            << BOBUIextLayout::GlyphRunRetrievalFlags(BOBUIextLayout::RetrieveGlyphIndexes)
             << true << false << false << false;
-    QTest::newRow("Glyph Positions")
-            << QTextLayout::GlyphRunRetrievalFlags(QTextLayout::RetrieveGlyphPositions)
+    BOBUIest::newRow("Glyph Positions")
+            << BOBUIextLayout::GlyphRunRetrievalFlags(BOBUIextLayout::RetrieveGlyphPositions)
             << false << false << false << true;
-    QTest::newRow("String indexes")
-            << QTextLayout::GlyphRunRetrievalFlags(QTextLayout::RetrieveStringIndexes)
+    BOBUIest::newRow("String indexes")
+            << BOBUIextLayout::GlyphRunRetrievalFlags(BOBUIextLayout::RetrieveStringIndexes)
             << false << true << false << false;
-    QTest::newRow("String")
-            << QTextLayout::GlyphRunRetrievalFlags(QTextLayout::RetrieveString)
+    BOBUIest::newRow("String")
+            << BOBUIextLayout::GlyphRunRetrievalFlags(BOBUIextLayout::RetrieveString)
             << false << false << true << false;
 
-    QTest::newRow("Default")
-            << QTextLayout::GlyphRunRetrievalFlags(QTextLayout::DefaultRetrievalFlags)
+    BOBUIest::newRow("Default")
+            << BOBUIextLayout::GlyphRunRetrievalFlags(BOBUIextLayout::DefaultRetrievalFlags)
             << true << false << false << true;
-    QTest::newRow("All")
-            << QTextLayout::GlyphRunRetrievalFlags(QTextLayout::RetrieveAll)
+    BOBUIest::newRow("All")
+            << BOBUIextLayout::GlyphRunRetrievalFlags(BOBUIextLayout::RetrieveAll)
             << true << true << true << true;
 }
 
 void tst_QGlyphRun::retrievalFlags()
 {
-    QFETCH(QTextLayout::GlyphRunRetrievalFlags, flags);
+    QFETCH(BOBUIextLayout::GlyphRunRetrievalFlags, flags);
     QFETCH(bool, expectedGlyphIndexes);
     QFETCH(bool, expectedStringIndexes);
     QFETCH(bool, expectedString);
     QFETCH(bool, expectedGlyphPositions);
 
-    QTextLayout layout;
+    BOBUIextLayout layout;
     layout.setText(QLatin1String("abc"));
     layout.beginLayout();
     layout.createLine();
@@ -959,7 +959,7 @@ void tst_QGlyphRun::retrievalFlags()
 
 void tst_QGlyphRun::objectReplacementCharacter()
 {
-    QTextLayout layout;
+    BOBUIextLayout layout;
     layout.setFont(m_testFont);
     layout.setText(QStringLiteral("\uFFFC"));
     layout.beginLayout();
@@ -972,8 +972,8 @@ void tst_QGlyphRun::objectReplacementCharacter()
     QCOMPARE(glyphRuns.first().glyphIndexes().first(), uint(5));
 }
 
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 
-QTEST_MAIN(tst_QGlyphRun)
+BOBUIEST_MAIN(tst_QGlyphRun)
 #include "tst_qglyphrun.moc"
 

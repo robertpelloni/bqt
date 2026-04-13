@@ -1,9 +1,9 @@
 // Copyright (C) 2024 Christian Ehrlicher <ch.ehrlicher@gmx.de>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpainterstateguard.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPainterStateGuard
@@ -11,7 +11,7 @@ QT_BEGIN_NAMESPACE
     QPainter::save() and QPainter::restore() calls.
     \since 6.9
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup painting
 
     \reentrant
@@ -74,4 +74,4 @@ QT_BEGIN_NAMESPACE
     \note This function asserts in debug builds if the counter has already reached zero.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

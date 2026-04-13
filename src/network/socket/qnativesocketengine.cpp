@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QNATIVESOCKETENGINE_DEBUG
 
@@ -12,13 +12,13 @@
 
     \reentrant
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
-    QtSocketLayer provides basic socket functionality provided by the
+    BobUISocketLayer provides basic socket functionality provided by the
     operating system. It also keeps track of what state the socket is
     in, and which errors that occur.
 
-    The classes QTcpSocket, QUdpSocket and QTcpServer provide a
+    The classes BOBUIcpSocket, QUdpSocket and BOBUIcpServer provide a
     higher level API, and are in general more useful for the common
     application.
 
@@ -90,22 +90,22 @@
 #include <qsocketnotifier.h>
 #include <qnetworkinterface.h>
 
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 #include <private/qobject_p.h>
 
-#if !defined(QT_NO_NETWORKPROXY)
+#if !defined(BOBUI_NO_NETWORKPROXY)
 # include "qnetworkproxy.h"
 # include "qabstractsocket.h"
-# include "qtcpserver.h"
+# include "bobuicpserver.h"
 #endif
 
-#if !defined(QT_NO_SCTP)
+#if !defined(BOBUI_NO_SCTP)
 # include "qsctpserver.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //#define QNATIVESOCKETENGINE_DEBUG
 
@@ -156,7 +156,7 @@ using namespace Qt::StringLiterals;
                  " socket other than "#type1" or "#type2); \
         return (returnValue); \
     } } while (0)
-#define Q_TR(a) QT_TRANSLATE_NOOP(QNativeSocketEngine, a)
+#define Q_TR(a) BOBUI_TRANSLATE_NOOP(QNativeSocketEngine, a)
 
 /*! \internal
     Constructs the private class and initializes all data members.
@@ -331,7 +331,7 @@ bool QNativeSocketEnginePrivate::checkProxy(const QHostAddress &address)
     if (address.isLoopback())
         return true;
 
-#if !defined(QT_NO_NETWORKPROXY)
+#if !defined(BOBUI_NO_NETWORKPROXY)
     QObject *parent = q_func()->parent();
     QNetworkProxy proxy;
     QNetworkProxyQuery::QueryType queryType = QNetworkProxyQuery::TcpSocket;
@@ -348,10 +348,10 @@ bool QNativeSocketEnginePrivate::checkProxy(const QHostAddress &address)
         case QAbstractSocket::UnknownSocketType:
             queryType = QNetworkProxyQuery::TcpSocket;
         }
-    } else if (QTcpServer *server = qobject_cast<QTcpServer *>(parent)) {
+    } else if (BOBUIcpServer *server = qobject_cast<BOBUIcpServer *>(parent)) {
         proxy = server->proxy();
         queryType = QNetworkProxyQuery::TcpServer;
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
         if (qobject_cast<QSctpServer *>(server))
             queryType = QNetworkProxyQuery::SctpServer;
 #endif
@@ -459,11 +459,11 @@ bool QNativeSocketEngine::initialize(QAbstractSocket::SocketType socketType, QAb
     }
 #endif
 
-    // Before Qt 4.6, we always set the send and receive buffer size to 49152 as
+    // Before BobUI 4.6, we always set the send and receive buffer size to 49152 as
     // this was found to be an optimal value. However, modern OS
     // all have some kind of auto tuning for this and we therefore don't set
     // this explicitly anymore.
-    // If it introduces any performance regressions for Qt 4.6.x (x > 0) then
+    // If it introduces any performance regressions for BobUI 4.6.x (x > 0) then
     // it will be put back in.
     //
     // You can use tests/manual/qhttpnetworkconnection to test HTTP download speed
@@ -672,7 +672,7 @@ bool QNativeSocketEngine::listen(int backlog)
     Q_D(QNativeSocketEngine);
     Q_CHECK_VALID_SOCKETLAYER(QNativeSocketEngine::listen(), false);
     Q_CHECK_STATE(QNativeSocketEngine::listen(), QAbstractSocket::BoundState, false);
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
     Q_CHECK_TYPES(QNativeSocketEngine::listen(), QAbstractSocket::TcpSocket,
                   QAbstractSocket::SctpSocket, false);
 #else
@@ -694,7 +694,7 @@ qintptr QNativeSocketEngine::accept()
     Q_D(QNativeSocketEngine);
     Q_CHECK_VALID_SOCKETLAYER(QNativeSocketEngine::accept(), -1);
     Q_CHECK_STATE(QNativeSocketEngine::accept(), QAbstractSocket::ListeningState, -1);
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
     Q_CHECK_TYPES(QNativeSocketEngine::accept(), QAbstractSocket::TcpSocket,
                   QAbstractSocket::SctpSocket, -1);
 #else
@@ -721,8 +721,8 @@ qint64 QNativeSocketEngine::bytesAvailable() const
     return d->nativeBytesAvailable();
 }
 
-#ifndef QT_NO_UDPSOCKET
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_UDPSOCKET
+#ifndef BOBUI_NO_NETWORKINTERFACE
 
 /*!
     \since 4.8
@@ -785,7 +785,7 @@ bool QNativeSocketEngine::setMulticastInterface(const QNetworkInterface &iface)
     return d->nativeSetMulticastInterface(iface);
 }
 
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
 /*!
     Returns \c true if there is at least one datagram pending. This
@@ -816,7 +816,7 @@ qint64 QNativeSocketEngine::pendingDatagramSize() const
 
     return d->nativePendingDatagramSize();
 }
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
 /*!
     Reads up to \a maxSize bytes of a datagram from the socket,
@@ -923,7 +923,7 @@ qint64 QNativeSocketEngine::read(char *data, qint64 maxSize)
         if (!d->hasSetSocketError) {
             d->hasSetSocketError = true;
             d->socketError = QAbstractSocket::NetworkError;
-            d->socketErrorString = qt_error_string();
+            d->socketErrorString = bobui_error_string();
         }
         close();
         return -1;
@@ -1354,6 +1354,6 @@ void QNativeSocketEngine::setExceptionNotificationEnabled(bool enable)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnativesocketengine_p.cpp"

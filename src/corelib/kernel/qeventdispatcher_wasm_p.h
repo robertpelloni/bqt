@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVENTDISPATCHER_WASM_P_H
 #define QEVENTDISPATCHER_WASM_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,10 +16,10 @@
 //
 
 #include "qabstracteventdispatcher.h"
-#include "private/qtimerinfo_unix_p.h"
+#include "private/bobuiimerinfo_unix_p.h"
 #include "private/qwasmsuspendresumecontrol_p.h"
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qwaitcondition.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qwaitcondition.h>
 
 #include <chrono>
 #include <mutex>
@@ -27,7 +27,7 @@
 #include <tuple>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcEventDispatcher);
 Q_DECLARE_LOGGING_CATEGORY(lcEventDispatcherTimers)
@@ -41,12 +41,12 @@ public:
 
     bool processEvents(QEventLoop::ProcessEventsFlags flags) override;
 
-    void registerTimer(Qt::TimerId timerId, Duration interval, Qt::TimerType timerType,
+    void registerTimer(BobUI::TimerId timerId, Duration interval, BobUI::TimerType timerType,
                        QObject *object) override final;
-    bool unregisterTimer(Qt::TimerId timerId) override final;
+    bool unregisterTimer(BobUI::TimerId timerId) override final;
     bool unregisterTimers(QObject *object) override final;
     QList<TimerInfoV2> timersForObject(QObject *object) const override final;
-    Duration remainingTime(Qt::TimerId timerId) const override final;
+    Duration remainingTime(BobUI::TimerId timerId) const override final;
 
     void interrupt() override;
     void wakeUp() override;
@@ -92,7 +92,7 @@ private:
     bool m_interrupted = false;
     bool m_wakeup = false;
 
-    std::unique_ptr<QTimerInfoList> m_timerInfo;
+    std::unique_ptr<BOBUIimerInfoList> m_timerInfo;
     std::chrono::time_point<std::chrono::steady_clock> m_timerTargetTime;
 
     std::unique_ptr<QWasmTimer> m_nativeTimer;
@@ -102,7 +102,7 @@ private:
     bool m_wakeFromSuspendTimer = false;
     bool m_isSendingNativeEvents = false;
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     std::mutex m_mutex;
     bool m_wakeUpCalled = false;
     std::condition_variable m_moreEvents;

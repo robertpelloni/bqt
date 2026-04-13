@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "codeeditor.h"
 
 #include <QPainter>
-#include <QTextBlock>
+#include <BOBUIextBlock>
 
 //![constructor]
 
@@ -80,15 +80,15 @@ void CodeEditor::resizeEvent(QResizeEvent *e)
 
 void CodeEditor::highlightCurrentLine()
 {
-    QList<QTextEdit::ExtraSelection> extraSelections;
+    QList<BOBUIextEdit::ExtraSelection> extraSelections;
 
     if (!isReadOnly()) {
-        QTextEdit::ExtraSelection selection;
+        BOBUIextEdit::ExtraSelection selection;
 
-        QColor lineColor = QColor(Qt::yellow).lighter(160);
+        QColor lineColor = QColor(BobUI::yellow).lighter(160);
 
         selection.format.setBackground(lineColor);
-        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.format.setProperty(BOBUIextFormat::FullWidthSelection, true);
         selection.cursor = textCursor();
         selection.cursor.clearSelection();
         extraSelections.append(selection);
@@ -104,12 +104,12 @@ void CodeEditor::highlightCurrentLine()
 void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
     QPainter painter(lineNumberArea);
-    painter.fillRect(event->rect(), Qt::lightGray);
+    painter.fillRect(event->rect(), BobUI::lightGray);
 
 //![extraAreaPaintEvent_0]
 
 //![extraAreaPaintEvent_1]
-    QTextBlock block = firstVisibleBlock();
+    BOBUIextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();
     int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
     int bottom = top + qRound(blockBoundingRect(block).height());
@@ -119,9 +119,9 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::black);
+            painter.setPen(BobUI::black);
             painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignRight, number);
+                             BobUI::AlignRight, number);
         }
 
         block = block.next();

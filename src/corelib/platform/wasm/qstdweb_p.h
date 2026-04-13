@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSTDWEB_P_H
 #define QSTDWEB_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,10 +16,10 @@
 //
 
 #include <private/qglobal_p.h>
-#include <QtCore/qglobal.h>
-#include "QtCore/qhash.h"
-#include "QtCore/qiodevice.h"
-#include "QtCore/private/qwasmsuspendresumecontrol_p.h"
+#include <BobUICore/qglobal.h>
+#include "BobUICore/qhash.h"
+#include "BobUICore/qiodevice.h"
+#include "BobUICore/private/qwasmsuspendresumecontrol_p.h"
 
 #include <emscripten/val.h>
 
@@ -30,18 +30,18 @@
 #include <string>
 #include <utility>
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 #include <emscripten/proxying.h>
 #include <emscripten/threading.h>
-#endif  // #if QT_CONFIG(thread)
+#endif  // #if BOBUI_CONFIG(thread)
 
-#if QT_CONFIG(wasm_jspi)
-# define QT_WASM_EMSCRIPTEN_ASYNC ,emscripten::async()
+#if BOBUI_CONFIG(wasm_jspi)
+# define BOBUI_WASM_EMSCRIPTEN_ASYNC ,emscripten::async()
 #else
-# define QT_WASM_EMSCRIPTEN_ASYNC
+# define BOBUI_WASM_EMSCRIPTEN_ASYNC
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 
@@ -436,6 +436,6 @@ namespace qstdweb {
     bool canBlockCallingThread();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

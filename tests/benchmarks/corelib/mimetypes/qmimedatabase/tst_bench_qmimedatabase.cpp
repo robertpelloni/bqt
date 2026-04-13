@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2021 Igor Kushnir <igorkuo@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QMimeDatabase>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 struct MatchModeInfo
@@ -22,7 +22,7 @@ void addFileRows(const char *tag, const QString &fileName, const QStringList &ex
 {
     QCOMPARE(static_cast<std::size_t>(expectedMimeNames.size()), std::size(matchModes));
     for (int i = 0; i < expectedMimeNames.size(); ++i) {
-        QTest::addRow(qPrintable(tag + QStringLiteral(" - %s")), matchModes[i].name)
+        BOBUIest::addRow(qPrintable(tag + QStringLiteral(" - %s")), matchModes[i].name)
                 << fileName << matchModes[i].mode << expectedMimeNames[i];
     }
 }
@@ -80,8 +80,8 @@ void tst_QMimeDatabase::inheritsPerformance()
     QCOMPARE(match, u"text/plain"_s);
     // Numbers from 2011, in release mode:
     // KDE 4.7 numbers: 0.21 msec / 494,000 ticks / 568,345 instr. loads per iteration
-    // QMimeBinaryProvider (with Qt 5): 0.16 msec / NA / 416,049 instr. reads per iteration
-    // QMimeXmlProvider (with Qt 5): 0.062 msec / NA / 172,889 instr. reads per iteration
+    // QMimeBinaryProvider (with BobUI 5): 0.16 msec / NA / 416,049 instr. reads per iteration
+    // QMimeXmlProvider (with BobUI 5): 0.062 msec / NA / 172,889 instr. reads per iteration
     //   (but the startup time is way higher)
     // And memory usage is flat at 200K with QMimeBinaryProvider, while it peaks at 6 MB when
     // parsing XML, and then keeps being around 4.5 MB for all the in-memory hashes.
@@ -99,9 +99,9 @@ void tst_QMimeDatabase::benchMimeTypeForName()
 
 void tst_QMimeDatabase::benchMimeTypeForFile_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QMimeDatabase::MatchMode>("mode");
-    QTest::addColumn<QString>("expectedMimeName");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QMimeDatabase::MatchMode>("mode");
+    BOBUIest::addColumn<QString>("expectedMimeName");
 
     addFileRows("archive", "a.tar.gz",
                 { "application/x-compressed-tar",
@@ -141,6 +141,6 @@ void tst_QMimeDatabase::benchMimeTypeForFile()
     }
 }
 
-QTEST_MAIN(tst_QMimeDatabase)
+BOBUIEST_MAIN(tst_QMimeDatabase)
 
 #include "tst_bench_qmimedatabase.moc"

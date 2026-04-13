@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "screenshot.h"
 
@@ -10,7 +10,7 @@ Screenshot::Screenshot()
     :  screenshotLabel(new QLabel(this))
 {
     screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    screenshotLabel->setAlignment(Qt::AlignCenter);
+    screenshotLabel->setAlignment(BobUI::AlignCenter);
 
     const QRect screenGeometry = screen()->geometry();
     screenshotLabel->setMinimumSize(screenGeometry.width() / 8, screenGeometry.height() / 8);
@@ -43,7 +43,7 @@ Screenshot::Screenshot()
     connect(saveScreenshotButton, &QPushButton::clicked, this, &Screenshot::saveScreenshot);
     buttonsLayout->addWidget(saveScreenshotButton);
     QPushButton *quitScreenshotButton = new QPushButton(tr("Quit"), this);
-    quitScreenshotButton->setShortcut(Qt::CTRL | Qt::Key_Q);
+    quitScreenshotButton->setShortcut(BobUI::CTRL | BobUI::Key_Q);
     connect(quitScreenshotButton, &QPushButton::clicked, this, &QWidget::close);
     buttonsLayout->addWidget(quitScreenshotButton);
     buttonsLayout->addStretch();
@@ -61,7 +61,7 @@ Screenshot::Screenshot()
 void Screenshot::resizeEvent(QResizeEvent * /* event */)
 {
     QSize scaledSize = originalPixmap.size();
-    scaledSize.scale(screenshotLabel->size(), Qt::KeepAspectRatio);
+    scaledSize.scale(screenshotLabel->size(), BobUI::KeepAspectRatio);
     if (scaledSize != screenshotLabel->pixmap().size())
         updateScreenshotLabel();
 }
@@ -74,7 +74,7 @@ void Screenshot::newScreenshot()
         hide();
     newScreenshotButton->setDisabled(true);
 
-    QTimer::singleShot(delaySpinBox->value() * 1000, this, &Screenshot::shootScreen);
+    BOBUIimer::singleShot(delaySpinBox->value() * 1000, this, &Screenshot::shootScreen);
 }
 //! [2]
 
@@ -146,7 +146,7 @@ void Screenshot::updateCheckBox()
 void Screenshot::updateScreenshotLabel()
 {
     screenshotLabel->setPixmap(originalPixmap.scaled(screenshotLabel->size(),
-                                                     Qt::KeepAspectRatio,
-                                                     Qt::SmoothTransformation));
+                                                     BobUI::KeepAspectRatio,
+                                                     BobUI::SmoothTransformation));
 }
 //! [10]

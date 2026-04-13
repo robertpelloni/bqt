@@ -1,18 +1,18 @@
 #! /bin/sh
 
-# Copyright (C) 2021 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+# Copyright (C) 2021 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #
 # This is a small script to copy the required files from a harfbuzz tarball
 # into 3rdparty/harfbuzz-ng/ . Documentation, tests, demos etc. are not imported.
 # Steps:
-# 1. rm -rf $QTDIR/src/3rdparty/harfbuzz-ng/src/ && mkdir src
-# 2. source import_from_tarball.sh harfbuzz_tarball_dir/ $QTDIR/src/3rdparty/harfbuzz-ng/
+# 1. rm -rf $BOBUIDIR/src/3rdparty/harfbuzz-ng/src/ && mkdir src
+# 2. source import_from_tarball.sh harfbuzz_tarball_dir/ $BOBUIDIR/src/3rdparty/harfbuzz-ng/
 # 3. If there are new files, check if they need to be added (just source files and no test stuff)
 # 4. Check that CMakeLists contains everything new
 
 if [ $# -ne 2 ]; then
-    echo "Usage: $0 harfbuzz_tarball_dir/ \$QTDIR/src/3rdparty/harfbuzz-ng/"
+    echo "Usage: $0 harfbuzz_tarball_dir/ \$BOBUIDIR/src/3rdparty/harfbuzz-ng/"
     exit 1
 fi
 

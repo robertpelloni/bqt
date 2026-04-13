@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsSceneLinearIndex
@@ -25,14 +25,14 @@
 */
 
 /*!
-    \fn QList<QGraphicsItem *> QGraphicsSceneLinearIndex::items(Qt::SortOrder order = Qt::DescendingOrder) const;
+    \fn QList<QGraphicsItem *> QGraphicsSceneLinearIndex::items(BobUI::SortOrder order = BobUI::DescendingOrder) const;
 
     Return all items in the index and sort them using \a order.
 */
 
 
 /*!
-    \fn virtual QList<QGraphicsItem *> QGraphicsSceneLinearIndex::estimateItems(const QRectF &rect, Qt::SortOrder order) const
+    \fn virtual QList<QGraphicsItem *> QGraphicsSceneLinearIndex::estimateItems(const QRectF &rect, BobUI::SortOrder order) const
 
     Returns an estimation visible items that are either inside or
     intersect with the specified \a rect and return a list sorted using \a order.

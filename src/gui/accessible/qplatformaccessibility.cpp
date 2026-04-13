@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #include "qplatformaccessibility.h"
 #include <private/qfactoryloader_p.h>
 #include "qaccessibleplugin.h"
 #include "qaccessibleobject.h"
 #include "qaccessiblebridge.h"
-#include <QtGui/QGuiApplication>
+#include <BobUIGui/QGuiApplication>
 
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 /* accessiblebridge plugin discovery stuff */
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, bridgeloader,
@@ -119,6 +119,6 @@ void QPlatformAccessibility::clearActiveNotificationState()
     m_activeNotificationState = std::nullopt;
 }
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

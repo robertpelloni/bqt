@@ -1,5 +1,5 @@
 ********* Start testing of tst_Watchdog *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_Watchdog::initTestCase()
 QFATAL : tst_Watchdog::delay() Test function timed out
 FAIL!  : tst_Watchdog::delay() Received a fatal error.

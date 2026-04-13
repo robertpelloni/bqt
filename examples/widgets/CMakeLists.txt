@@ -1,15 +1,15 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-if(NOT TARGET Qt6::Widgets)
+if(NOT TARGET BobUI6::Widgets)
     return()
 endif()
-if(QT_FEATURE_animation)
+if(BOBUI_FEATURE_animation)
     add_subdirectory(animation)
 endif()
 add_subdirectory(desktop)
 add_subdirectory(dialogs)
-qt_internal_add_example(gallery)
+bobui_internal_add_example(gallery)
 add_subdirectory(gestures)
 add_subdirectory(graphicsview)
 add_subdirectory(itemviews)
@@ -21,9 +21,9 @@ add_subdirectory(tools)
 add_subdirectory(touch)
 add_subdirectory(tutorials)
 add_subdirectory(widgets)
-if(QT_FEATURE_draganddrop)
+if(BOBUI_FEATURE_draganddrop)
     add_subdirectory(draganddrop)
 endif()
-if(QT_FEATURE_cursor)
+if(BOBUI_FEATURE_cursor)
     add_subdirectory(mainwindows)
 endif()

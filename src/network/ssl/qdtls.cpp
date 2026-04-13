@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsslconfiguration.h"
 #include "qsslsocket_p.h"
@@ -17,7 +17,7 @@
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     The QDtlsClientVerifier class implements server-side DTLS cookie generation
     and verification. Datagram security protocols are highly susceptible to a
@@ -107,7 +107,7 @@
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     An object of this class provides the parameters that QDtlsClientVerifier
     will use to generate DTLS cookies. They include a cryptographic hash
@@ -131,7 +131,7 @@
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     This enum describes general and TLS-specific errors that can be encountered
     by objects of the classes QDtlsClientVerifier and QDtls.
@@ -161,7 +161,7 @@
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     The QDtls class can be used to establish a secure connection with a network
     peer using User Datagram Protocol (UDP). DTLS connection over essentially
@@ -284,7 +284,7 @@
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     This enum describes the current state of DTLS handshake for a QDtls
     connection.
@@ -299,7 +299,7 @@
 */
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QString msgUnsupportedMulticastAddress()
 {
@@ -394,7 +394,7 @@ bool QDtlsClientVerifier::setCookieGeneratorParameters(const GeneratorParameters
 
 /*!
     Returns the current secret and hash algorithm used to generate cookies.
-    The default hash algorithm is QCryptographicHash::Sha256 if Qt was configured
+    The default hash algorithm is QCryptographicHash::Sha256 if BobUI was configured
     to support it, QCryptographicHash::Sha1 otherwise. The default secret is
     obtained from the backend-specific cryptographically strong pseudorandom
     number generator.
@@ -714,7 +714,7 @@ bool QDtls::setCookieGeneratorParameters(const GeneratorParameters &params)
     Returns the current hash algorithm and secret, either default ones or previously
     set by a call to setCookieGeneratorParameters().
 
-    The default hash algorithm is QCryptographicHash::Sha256 if Qt was
+    The default hash algorithm is QCryptographicHash::Sha256 if BobUI was
     configured to support it, QCryptographicHash::Sha1 otherwise. The default
     secret is obtained from the backend-specific cryptographically strong
     pseudorandom number generator.
@@ -1194,6 +1194,6 @@ void QDtls::ignoreVerificationErrors(const QList<QSslError> &errorsToIgnore)
         backend->ignoreVerificationErrors(errorsToIgnore);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdtls.cpp"

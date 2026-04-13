@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtTest/QtTestWidgets>
-#include <QtWidgets/qgraphicseffect.h>
-#include <QtWidgets/qgraphicsview.h>
-#include <QtWidgets/qgraphicsscene.h>
-#include <QtWidgets/qgraphicsitem.h>
-#include <QtWidgets/qgraphicswidget.h>
-#include <QtWidgets/qstyleoption.h>
+#include <BobUITest/BobUITestWidgets>
+#include <BobUIWidgets/qgraphicseffect.h>
+#include <BobUIWidgets/qgraphicsview.h>
+#include <BobUIWidgets/qgraphicsscene.h>
+#include <BobUIWidgets/qgraphicsitem.h>
+#include <BobUIWidgets/qgraphicswidget.h>
+#include <BobUIWidgets/qstyleoption.h>
 
 #include <private/qgraphicseffect_p.h>
 
@@ -196,7 +196,7 @@ void tst_QGraphicsEffect::boundingRect()
     // Install effect on QGraphicsItem.
     QRectF itemRect(0, 0, 100, 100);
     QGraphicsRectItem *item = new QGraphicsRectItem;
-    item->setPen(QPen(Qt::black, 0));
+    item->setPen(QPen(BobUI::black, 0));
     item->setRect(itemRect);
     item->setGraphicsEffect(effect);
     int margin = effect->margin();
@@ -228,19 +228,19 @@ void tst_QGraphicsEffect::boundingRect2()
 {
     CustomEffect *effect = new CustomEffect;
     QGraphicsRectItem *root = new QGraphicsRectItem;
-    root->setPen(QPen(Qt::black, 0));
+    root->setPen(QPen(BobUI::black, 0));
     root->setGraphicsEffect(effect);
 
     QGraphicsRectItem *child = new QGraphicsRectItem;
     QRectF childRect(0, 0, 100, 100);
-    child->setPen(QPen(Qt::black, 0));
+    child->setPen(QPen(BobUI::black, 0));
     child->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
     child->setRect(childRect);
     child->setParentItem(root);
 
     QGraphicsRectItem *grandChild = new QGraphicsRectItem;
     QRectF grandChildRect(0, 0, 200, 200);
-    grandChild->setPen(QPen(Qt::black, 0));
+    grandChild->setPen(QPen(BobUI::black, 0));
     grandChild->setRect(grandChildRect);
     grandChild->setParentItem(child);
 
@@ -286,16 +286,16 @@ void tst_QGraphicsEffect::draw()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(item->numRepaints > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(item->numRepaints > 0);
     QCoreApplication::processEvents(); // Process all queued paint events
     item->reset();
 
     // Make sure installing the effect triggers a repaint.
     CustomEffect *effect = new CustomEffect;
     item->setGraphicsEffect(effect);
-    QTRY_COMPARE(effect->numRepaints, 1);
-    QTRY_COMPARE(item->numRepaints, 1);
+    BOBUIRY_COMPARE(effect->numRepaints, 1);
+    BOBUIRY_COMPARE(item->numRepaints, 1);
 
     // Make sure QPainter* and QStyleOptionGraphicsItem* stays persistent
     // during QGraphicsEffect::draw/QGraphicsItem::paint.
@@ -309,23 +309,23 @@ void tst_QGraphicsEffect::draw()
 
     // Make sure updating the source triggers a repaint.
     item->update();
-    QTRY_COMPARE(effect->numRepaints, 1);
-    QTRY_COMPARE(item->numRepaints, 1);
+    BOBUIRY_COMPARE(effect->numRepaints, 1);
+    BOBUIRY_COMPARE(item->numRepaints, 1);
     QVERIFY(effect->m_sourceChangedFlags & QGraphicsEffect::SourceInvalidated);
     effect->reset();
     item->reset();
 
     // Make sure changing the effect's bounding rect triggers a repaint.
     effect->setMargin(20);
-    QTRY_COMPARE(effect->numRepaints, 1);
-    QTRY_COMPARE(item->numRepaints, 1);
+    BOBUIRY_COMPARE(effect->numRepaints, 1);
+    BOBUIRY_COMPARE(item->numRepaints, 1);
     effect->reset();
     item->reset();
 
     // Make sure change the item's bounding rect triggers a repaint.
     item->setRect(0, 0, 50, 50);
-    QTRY_COMPARE(effect->numRepaints, 1);
-    QTRY_COMPARE(item->numRepaints, 1);
+    BOBUIRY_COMPARE(effect->numRepaints, 1);
+    BOBUIRY_COMPARE(item->numRepaints, 1);
     QVERIFY(effect->m_sourceChangedFlags & QGraphicsEffect::SourceBoundingRectChanged);
     effect->reset();
     item->reset();
@@ -333,7 +333,7 @@ void tst_QGraphicsEffect::draw()
     // Make sure the effect is the one to issue a repaint of the item.
     effect->doNothingInDraw = true;
     item->update();
-    QTRY_COMPARE(effect->numRepaints, 1);
+    BOBUIRY_COMPARE(effect->numRepaints, 1);
     QCOMPARE(item->numRepaints, 0);
     effect->doNothingInDraw = false;
     effect->reset();
@@ -341,14 +341,14 @@ void tst_QGraphicsEffect::draw()
 
     // Make sure we update the source when disabling/enabling the effect.
     effect->setEnabled(false);
-    QTRY_COMPARE(item->numRepaints, 1);
+    BOBUIRY_COMPARE(item->numRepaints, 1);
     QCOMPARE(effect->numRepaints, 0);
     effect->reset();
     item->reset();
 
     effect->setEnabled(true);
-    QTRY_COMPARE(effect->numRepaints, 1);
-    QTRY_COMPARE(item->numRepaints, 1);
+    BOBUIRY_COMPARE(effect->numRepaints, 1);
+    BOBUIRY_COMPARE(item->numRepaints, 1);
     effect->reset();
     item->reset();
 
@@ -364,7 +364,7 @@ void tst_QGraphicsEffect::draw()
     QPointer<CustomEffect> ptr = effect;
     item->setGraphicsEffect(0);
     QVERIFY(!ptr);
-    QTRY_COMPARE(item->numRepaints, 1);
+    BOBUIRY_COMPARE(item->numRepaints, 1);
 }
 
 void tst_QGraphicsEffect::opacity()
@@ -379,8 +379,8 @@ void tst_QGraphicsEffect::opacity()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(effect->numRepaints > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(effect->numRepaints > 0);
     QCOMPARE(effect->m_opacity, qreal(0.5));
 }
 
@@ -392,11 +392,11 @@ void tst_QGraphicsEffect::grayscale()
     QGraphicsScene scene(0, 0, 100, 100);
 
     QGraphicsRectItem *item = scene.addRect(0, 0, 50, 50);
-    item->setPen(Qt::NoPen);
-    item->setBrush(QColor(122, 193, 66)); // Qt light green
+    item->setPen(BobUI::NoPen);
+    item->setBrush(QColor(122, 193, 66)); // BobUI light green
 
     QGraphicsColorizeEffect *effect = new QGraphicsColorizeEffect;
-    effect->setColor(Qt::black);
+    effect->setColor(BobUI::black);
     item->setGraphicsEffect(effect);
 
     QPainter painter;
@@ -439,11 +439,11 @@ void tst_QGraphicsEffect::colorize()
     QGraphicsScene scene(0, 0, 100, 100);
 
     QGraphicsRectItem *item = scene.addRect(0, 0, 50, 50);
-    item->setPen(Qt::NoPen);
-    item->setBrush(QColor(122, 193, 66)); // Qt light green
+    item->setPen(BobUI::NoPen);
+    item->setBrush(QColor(122, 193, 66)); // BobUI light green
 
     QGraphicsColorizeEffect *effect = new QGraphicsColorizeEffect;
-    effect->setColor(QColor(102, 153, 51)); // Qt dark green
+    effect->setColor(QColor(102, 153, 51)); // BobUI dark green
     item->setGraphicsEffect(effect);
 
     QPainter painter;
@@ -492,8 +492,8 @@ public:
 
     void draw(QPainter *painter) override
     {
-        QCOMPARE(sourcePixmap(Qt::LogicalCoordinates).handle(), pixmap.handle());
-        QVERIFY((painter->worldTransform().type() <= QTransform::TxTranslate) == (sourcePixmap(Qt::DeviceCoordinates).handle() == pixmap.handle()));
+        QCOMPARE(sourcePixmap(BobUI::LogicalCoordinates).handle(), pixmap.handle());
+        QVERIFY((painter->worldTransform().type() <= BOBUIransform::TxTranslate) == (sourcePixmap(BobUI::DeviceCoordinates).handle() == pixmap.handle()));
 
         ++repaints;
     }
@@ -505,8 +505,8 @@ void tst_QGraphicsEffect::drawPixmapItem()
 {
     QImage image(32, 32, QImage::Format_RGB32);
     QPainter p(&image);
-    p.fillRect(0, 0, 32, 16, Qt::blue);
-    p.fillRect(0, 16, 32, 16, Qt::red);
+    p.fillRect(0, 0, 32, 16, BobUI::blue);
+    p.fillRect(0, 16, 32, 16, BobUI::red);
     p.end();
 
     QGraphicsScene scene;
@@ -518,12 +518,12 @@ void tst_QGraphicsEffect::drawPixmapItem()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(effect->repaints >= 1);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(effect->repaints >= 1);
 
-    item->setTransform(QTransform().rotate(180), true);
+    item->setTransform(BOBUIransform().rotate(180), true);
 
-    QTRY_VERIFY(effect->repaints >= 2);
+    BOBUIRY_VERIFY(effect->repaints >= 2);
 }
 
 class DeviceEffect : public QGraphicsEffect
@@ -535,13 +535,13 @@ public:
     void draw(QPainter *painter) override
     {
         QPoint offset;
-        QPixmap pixmap = sourcePixmap(Qt::DeviceCoordinates, &offset, QGraphicsEffect::NoPad);
+        QPixmap pixmap = sourcePixmap(BobUI::DeviceCoordinates, &offset, QGraphicsEffect::NoPad);
 
         if (pixmap.isNull())
             return;
 
         painter->save();
-        painter->setWorldTransform(QTransform());
+        painter->setWorldTransform(BOBUIransform());
         painter->drawPixmap(offset, pixmap);
         painter->restore();
     }
@@ -555,19 +555,19 @@ void tst_QGraphicsEffect::deviceCoordinateTranslateCaching()
     scene.setSceneRect(0, 0, 50, 0);
 
     item->setGraphicsEffect(new DeviceEffect);
-    item->setPen(Qt::NoPen);
-    item->setBrush(Qt::red);
+    item->setPen(BobUI::NoPen);
+    item->setBrush(BobUI::red);
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_VERIFY(item->numRepaints >= 1);
+    BOBUIRY_VERIFY(item->numRepaints >= 1);
     int numRepaints = item->numRepaints;
 
-    item->setTransform(QTransform::fromTranslate(10, 0), true);
+    item->setTransform(BOBUIransform::fromTranslate(10, 0), true);
 
-    QTRY_COMPARE(item->numRepaints, numRepaints);
+    BOBUIRY_COMPARE(item->numRepaints, numRepaints);
 }
 
 void tst_QGraphicsEffect::inheritOpacity()
@@ -579,23 +579,23 @@ void tst_QGraphicsEffect::inheritOpacity()
     scene.addItem(rectItem);
 
     item->setGraphicsEffect(new DeviceEffect);
-    item->setPen(Qt::NoPen);
-    item->setBrush(Qt::red);
+    item->setPen(BobUI::NoPen);
+    item->setBrush(BobUI::red);
 
     rectItem->setOpacity(0.5);
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_VERIFY(item->numRepaints >= 1);
+    BOBUIRY_VERIFY(item->numRepaints >= 1);
 
     int numRepaints = item->numRepaints;
 
     rectItem->setOpacity(1);
 
     // item should have been rerendered due to opacity changing
-    QTRY_VERIFY(item->numRepaints > numRepaints);
+    BOBUIRY_VERIFY(item->numRepaints > numRepaints);
 }
 
 void tst_QGraphicsEffect::dropShadowClipping()
@@ -606,8 +606,8 @@ void tst_QGraphicsEffect::dropShadowClipping()
     QGraphicsScene scene;
     QGraphicsRectItem *item = new QGraphicsRectItem(-5, -500, 10, 1000);
     item->setGraphicsEffect(new QGraphicsDropShadowEffect);
-    item->setPen(Qt::NoPen);
-    item->setBrush(Qt::red);
+    item->setPen(BobUI::NoPen);
+    item->setBrush(BobUI::red);
 
     scene.addItem(item);
 
@@ -645,8 +645,8 @@ void tst_QGraphicsEffect::childrenVisibilityShouldInvalidateCache()
     scene.addItem(&parent);
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(parent.nbPaint >= 1);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(parent.nbPaint >= 1);
     //we set an effect on the parent
     parent.setGraphicsEffect(new QGraphicsDropShadowEffect(&parent));
     //flush the events
@@ -670,21 +670,21 @@ void tst_QGraphicsEffect::prepareGeometryChangeInvalidateCache()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(view.windowHandle()->isActive());
-    QTRY_VERIFY(item->nbPaint >= 1);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(view.windowHandle()->isActive());
+    BOBUIRY_VERIFY(item->nbPaint >= 1);
 
     item->nbPaint = 0;
     item->setGraphicsEffect(new QGraphicsDropShadowEffect);
-    QTRY_COMPARE(item->nbPaint, 1);
+    BOBUIRY_COMPARE(item->nbPaint, 1);
 
     item->nbPaint = 0;
     item->resize(300, 300);
-    QTRY_COMPARE(item->nbPaint, 1);
+    BOBUIRY_COMPARE(item->nbPaint, 1);
 
     item->nbPaint = 0;
     item->setPos(item->pos() + QPointF(10, 10));
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(item->nbPaint, 0);
 }
 
@@ -702,20 +702,20 @@ void tst_QGraphicsEffect::itemHasNoContents()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(child->nbPaint >= 1);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(child->nbPaint >= 1);
 
     CustomEffect *effect = new CustomEffect;
     parent->setGraphicsEffect(effect);
-    QTRY_VERIFY(effect->numRepaints >= 1);
+    BOBUIRY_VERIFY(effect->numRepaints >= 1);
 
     for (int i = 0; i < 3; ++i) {
         effect->reset();
         effect->update();
-        QTRY_VERIFY(effect->numRepaints >= 1);
+        BOBUIRY_VERIFY(effect->numRepaints >= 1);
     }
 }
 
-QTEST_MAIN(tst_QGraphicsEffect)
+BOBUIEST_MAIN(tst_QGraphicsEffect)
 #include "tst_qgraphicseffect.moc"
 

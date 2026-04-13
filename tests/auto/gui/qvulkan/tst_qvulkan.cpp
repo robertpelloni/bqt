@@ -1,13 +1,13 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui/QVulkanInstance>
-#include <QtGui/QVulkanFunctions>
-#include <QtGui/QVulkanWindow>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qelapsedtimer.h>
+#include <BobUIGui/QVulkanInstance>
+#include <BobUIGui/QVulkanFunctions>
+#include <BobUIGui/QVulkanWindow>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qelapsedtimer.h>
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QSignalSpy>
 
@@ -185,7 +185,7 @@ void tst_QVulkan::vulkanPlainWindow()
     w.setVulkanInstance(&inst);
     w.resize(1024, 768);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     QCOMPARE(w.vulkanInstance(), &inst);
 
@@ -252,7 +252,7 @@ static void waitForUnexposed(QWindow *w)
             break;
         QCoreApplication::processEvents(QEventLoop::AllEvents, remaining);
         QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
-        QTest::qSleep(10);
+        BOBUIest::qSleep(10);
     }
 }
 
@@ -267,7 +267,7 @@ void tst_QVulkan::vulkanWindow()
     QVERIFY(!w.isValid());
     w.resize(1024, 768);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     QVERIFY(!w.isValid());
 
     // Now set it. A simple hide - show should be enough to correct, this, no
@@ -279,7 +279,7 @@ void tst_QVulkan::vulkanWindow()
     if (pdevs.isEmpty())
         QSKIP("No Vulkan physical devices; skip");
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     QVERIFY(w.isValid());
     QCOMPARE(w.vulkanInstance(), &inst);
     QVulkanInfoVector<QVulkanExtension> exts = w.supportedDeviceExtensions();
@@ -293,7 +293,7 @@ void tst_QVulkan::vulkanWindow()
     // supported lists can be queried before expose too
     QVERIFY(w.supportedDeviceExtensions() == exts);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     QVERIFY(w.isValid());
     QVERIFY(w.flags().testFlag(QVulkanWindow::PersistentResources));
 
@@ -440,7 +440,7 @@ void tst_QVulkan::vulkanWindowRenderer()
     w.setVulkanInstance(&inst);
     w.resize(1024, 768);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     if (w.availablePhysicalDevices().isEmpty())
         QSKIP("No Vulkan physical devices; skip");
@@ -448,8 +448,8 @@ void tst_QVulkan::vulkanWindowRenderer()
     QCOMPARE(testVulkan.preInitResCount, 1);
     QCOMPARE(testVulkan.initResCount, 1);
     QCOMPARE(testVulkan.initSwcResCount, 1);
-    // this has to be QTRY due to the async update in QVulkanWindowPrivate::ensureStarted()
-    QTRY_VERIFY(testVulkan.startNextFrameCount >= 1);
+    // this has to be BOBUIRY due to the async update in QVulkanWindowPrivate::ensureStarted()
+    BOBUIRY_VERIFY(testVulkan.startNextFrameCount >= 1);
 
     QVERIFY(!w.swapChainImageSize().isEmpty());
     QCOMPARE_NE(w.colorFormat(), VK_FORMAT_UNDEFINED);
@@ -474,7 +474,7 @@ void tst_QVulkan::vulkanWindowGrab()
     w.setVulkanInstance(&inst);
     w.resize(1024, 768);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     if (w.availablePhysicalDevices().isEmpty())
         QSKIP("No Vulkan physical devices; skip");
@@ -515,6 +515,6 @@ void tst_QVulkan::vulkanWindowGrab()
     w.destroy();
 }
 
-QTEST_MAIN(tst_QVulkan)
+BOBUIEST_MAIN(tst_QVulkan)
 
 #include "tst_qvulkan.moc"

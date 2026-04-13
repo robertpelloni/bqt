@@ -1,10 +1,10 @@
 // Copyright (C) 2013 David Faure <faure+bluesystems@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDebug>
 #include <QCoreApplication>
 #include <QLockFile>
-#include <QThread>
+#include <BOBUIhread>
 
 #ifdef Q_OS_UNIX
 #  include <unistd.h>
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     } else if (option == "-busy") {
         QLockFile lockFile(lockName);
         lockFile.lock();
-        QThread::msleep(500);
+        BOBUIhread::msleep(500);
         return 0;
     } else {
         QLockFile lockFile(lockName);

@@ -1,46 +1,46 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#define QT_STATICPLUGIN
-#include <QtWidgets/qstyleplugin.h>
+#define BOBUI_STATICPLUGIN
+#include <BobUIWidgets/qstyleplugin.h>
 
 #include <qdebug.h>
 
-#include <QTest>
-#include <QTimer>
+#include <BOBUIest>
+#include <BOBUIimer>
 #include <QLibraryInfo>
 #include <QSignalSpy>
 #include <QFileSystemWatcher>
 #include <QSharedMemory>
 
-#include <QtCore/QAbstractEventDispatcher>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDir>
-#if QT_CONFIG(process)
-# include <QtCore/QProcess>
+#include <BobUICore/QAbstractEventDispatcher>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QDir>
+#if BOBUI_CONFIG(process)
+# include <BobUICore/QProcess>
 #endif
-#include <QtCore/QSettings>
-#include <QtCore/private/qeventloop_p.h>
+#include <BobUICore/QSettings>
+#include <BobUICore/private/qeventloop_p.h>
 
-#include <QtGui/QFontDatabase>
-#include <QtGui/QClipboard>
-#include <QtGui/QStyleHints>
+#include <BobUIGui/QFontDatabase>
+#include <BobUIGui/QClipboard>
+#include <BobUIGui/QStyleHints>
 
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QStyleFactory>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QScrollArea>
-#include <QtWidgets/QScrollBar>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/private/qapplication_p.h>
-#include <QtWidgets/QStyle>
-#include <QtWidgets/qproxystyle.h>
-#include <QtWidgets/QTextEdit>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QMessageBox>
+#include <BobUIWidgets/QStyleFactory>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QScrollArea>
+#include <BobUIWidgets/QScrollBar>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/QStyle>
+#include <BobUIWidgets/qproxystyle.h>
+#include <BobUIWidgets/BOBUIextEdit>
 
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qwindowsysteminterface_p.h>
@@ -52,10 +52,10 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-extern bool Q_GUI_EXPORT qt_tab_all_widgets(); // from qapplication.cpp
-QT_END_NAMESPACE
+extern bool Q_GUI_EXPORT bobui_tab_all_widgets(); // from qapplication.cpp
+BOBUI_END_NAMESPACE
 
 class tst_QApplication : public QObject
 {
@@ -91,9 +91,9 @@ private slots:
     void testDeleteLaterProcessEvents4();
     void testDeleteLaterProcessEvents5();
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void sendPostedEvents();
-#endif  // ifdef QT_BUILD_INTERNAL
+#endif  // ifdef BOBUI_BUILD_INTERNAL
 
     void exitFromEventLoop() { QCoreApplicationTestHelper::run(); }
     void exitFromThread() { QCoreApplicationTestHelper::run(); }
@@ -114,7 +114,7 @@ private slots:
 
     void execAfterExit();
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelScrollLines();
 #endif
 
@@ -134,7 +134,7 @@ private slots:
     void wheelEventPropagation();
 
     void modalDialog();
-    void qtbug_103611();
+    void bobuibug_103611();
     void noQuitOnHide();
 
     void globalStaticObjectDestruction(); // run this last
@@ -180,7 +180,7 @@ void tst_QApplication::sendEventsOnProcessEvents()
 
         QByteArray libs = f.readAll();
         if (libs.contains("libqgtk3.") || libs.contains("libqgtk3TestInfix.")) {
-            QEXPECT_FAIL("", "Fails if qgtk3 (Glib) is loaded, see QTBUG-87137", Abort);
+            QEXPECT_FAIL("", "Fails if qgtk3 (Glib) is loaded, see BOBUIBUG-87137", Abort);
         }
     }
 #endif
@@ -237,11 +237,11 @@ void tst_QApplication::staticSetup()
         EventWatcher()
         {
             qApp->installEventFilter(this);
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
             QObject::connect(qApp, &QApplication::paletteChanged, [&]{ ++palette_changed; });
             QObject::connect(qApp, &QApplication::fontChanged, [&]{ ++font_changed; });
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
         }
 
@@ -268,12 +268,12 @@ QT_WARNING_POP
 
     QCOMPARE(watcher.palette_changed, 0);
     QCOMPARE(watcher.font_changed, 0);
-    qApp->setPalette(QPalette(Qt::red));
+    qApp->setPalette(QPalette(BobUI::red));
 
     font.setBold(!font.bold());
     qApp->setFont(font);
     QApplication::processEvents();
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     // signal, plus events delivered to qApp and QStyleHints
     QCOMPARE(watcher.palette_changed, 3);
     QCOMPARE(watcher.font_changed, 3);
@@ -294,7 +294,7 @@ public:
         startTimer(150);
     }
 
-    void timerEvent(QTimerEvent *) override
+    void timerEvent(BOBUIimerEvent *) override
     {
         quit();
     }
@@ -307,14 +307,14 @@ void tst_QApplication::alert()
     QApplication::alert(nullptr, 0);
 
     QWidget widget;
-    widget.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    widget.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     QWidget widget2;
-    widget2.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1Char('2'));
+    widget2.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1Char('2'));
     QApplication::alert(&widget, 100);
     widget.show();
     widget2.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
-    QVERIFY(QTest::qWaitForWindowExposed(&widget2));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget2));
     QApplication::alert(&widget, -1);
     QApplication::alert(&widget, 250);
     widget2.activateWindow();
@@ -325,13 +325,13 @@ void tst_QApplication::alert()
 
 void tst_QApplication::multiple_data()
 {
-    QTest::addColumn<QStringList>("features");
+    BOBUIest::addColumn<QStringList>("features");
 
     // return a list of things to try
-    QTest::newRow( "data0" ) << QStringList( "" );
-    QTest::newRow( "data1" ) << QStringList( "QFont" );
-    QTest::newRow( "data2" ) << QStringList( "QPixmap" );
-    QTest::newRow( "data3" ) << QStringList( "QWidget" );
+    BOBUIest::newRow( "data0" ) << QStringList( "" );
+    BOBUIest::newRow( "data1" ) << QStringList( "QFont" );
+    BOBUIest::newRow( "data2" ) << QStringList( "QPixmap" );
+    BOBUIest::newRow( "data3" ) << QStringList( "QWidget" );
 }
 
 void tst_QApplication::multiple()
@@ -351,7 +351,7 @@ void tst_QApplication::multiple()
         }
         if (features.contains("QPixmap")) {
             QPixmap pix(100, 100);
-            pix.fill(Qt::black);
+            pix.fill(BobUI::black);
         }
         if (features.contains("QWidget")) {
             QWidget widget;
@@ -375,9 +375,9 @@ void tst_QApplication::nonGui()
 
 void tst_QApplication::setFont_data()
 {
-    QTest::addColumn<QString>("family");
-    QTest::addColumn<int>("pointsize");
-    QTest::addColumn<bool>("beforeAppConstructor");
+    BOBUIest::addColumn<QString>("family");
+    BOBUIest::addColumn<int>("pointsize");
+    BOBUIest::addColumn<bool>("beforeAppConstructor");
 
     int argc = 0;
     QApplication app(argc, nullptr); // Needed for QFontDatabase
@@ -392,11 +392,11 @@ void tst_QApplication::setFont_data()
                 sizes = QFontDatabase::standardSizes();
             if (!sizes.isEmpty()) {
                 const QByteArray name = QByteArrayLiteral("data") + QByteArray::number(i);
-                QTest::newRow((name + 'a').constData())
+                BOBUIest::newRow((name + 'a').constData())
                     << family
                     << sizes.constFirst()
                     << false;
-                QTest::newRow((name + 'b').constData())
+                BOBUIest::newRow((name + 'b').constData())
                     << family
                     << sizes.constFirst()
                     << true;
@@ -404,16 +404,16 @@ void tst_QApplication::setFont_data()
         }
     }
 
-    QTest::newRow("nonexistingfont after") << "nosuchfont_probably_quiteunlikely"
+    BOBUIest::newRow("nonexistingfont after") << "nosuchfont_probably_quiteunlikely"
         << 0 << false;
-    QTest::newRow("nonexistingfont before") << "nosuchfont_probably_quiteunlikely"
+    BOBUIest::newRow("nonexistingfont before") << "nosuchfont_probably_quiteunlikely"
         << 0 << true;
 
-    QTest::newRow("largescaleable after") << "smoothtimes" << 100 << false;
-    QTest::newRow("largescaleable before") << "smoothtimes" << 100 << true;
+    BOBUIest::newRow("largescaleable after") << "smoothtimes" << 100 << false;
+    BOBUIest::newRow("largescaleable before") << "smoothtimes" << 100 << true;
 
-    QTest::newRow("largeunscaleale after") << "helvetica" << 100 << false;
-    QTest::newRow("largeunscaleale before") << "helvetica" << 100 << true;
+    BOBUIest::newRow("largeunscaleale after") << "helvetica" << 100 << false;
+    BOBUIest::newRow("largeunscaleale before") << "helvetica" << 100 << true;
 }
 
 void tst_QApplication::setFont()
@@ -440,7 +440,7 @@ class tstHeaderView : public QHeaderView
 {
     Q_OBJECT
 public:
-    explicit tstHeaderView(Qt::Orientation orientation, QWidget *parent = nullptr)
+    explicit tstHeaderView(BobUI::Orientation orientation, QWidget *parent = nullptr)
         : QHeaderView(orientation, parent)
     {}
 };
@@ -449,7 +449,7 @@ class tstWidget : public QWidget { Q_OBJECT };
 
 void tst_QApplication::setFontForClass()
 {
-    // QTBUG-89910
+    // BOBUIBUG-89910
     // If a default font was not registered for the widget's class,
     // it returns the default font of its nearest registered superclass.
     int argc = 0;
@@ -463,7 +463,7 @@ void tst_QApplication::setFontForClass()
         app.setFont(font, className.constData());
     }
 
-    tstHeaderView headView(Qt::Horizontal);
+    tstHeaderView headView(BobUI::Horizontal);
     tstFrame frame;
     tstWidget widget;
 
@@ -478,15 +478,15 @@ void tst_QApplication::setFontForClass()
 
 void tst_QApplication::args_data()
 {
-    QTest::addColumn<int>("argc_in");
-    QTest::addColumn<QString>("args_in");
-    QTest::addColumn<int>("argc_out");
-    QTest::addColumn<QString>("args_out");
+    BOBUIest::addColumn<int>("argc_in");
+    BOBUIest::addColumn<QString>("args_in");
+    BOBUIest::addColumn<int>("argc_out");
+    BOBUIest::addColumn<QString>("args_out");
 
-    QTest::newRow( "App name" ) << 1 << "/usr/bin/appname" << 1 << "/usr/bin/appname";
-    QTest::newRow( "No arguments" ) << 0 << QString() << 0 << QString();
-    QTest::newRow( "App name, style" ) << 3 << "/usr/bin/appname -style windows" << 1 << "/usr/bin/appname";
-    QTest::newRow( "App name, style, arbitrary, reverse" ) << 5 << "/usr/bin/appname -style windows -arbitrary -reverse"
+    BOBUIest::newRow( "App name" ) << 1 << "/usr/bin/appname" << 1 << "/usr/bin/appname";
+    BOBUIest::newRow( "No arguments" ) << 0 << QString() << 0 << QString();
+    BOBUIest::newRow( "App name, style" ) << 3 << "/usr/bin/appname -style windows" << 1 << "/usr/bin/appname";
+    BOBUIest::newRow( "App name, style, arbitrary, reverse" ) << 5 << "/usr/bin/appname -style windows -arbitrary -reverse"
                                                            << 2 << "/usr/bin/appname -arbitrary";
 }
 
@@ -577,7 +577,7 @@ public:
     }
 
 protected:
-    void timerEvent(QTimerEvent *) override
+    void timerEvent(BOBUIimerEvent *) override
     {
         close();
     }
@@ -592,16 +592,16 @@ void tst_QApplication::lastWindowClosed()
     QSignalSpy spy(&app, &QGuiApplication::lastWindowClosed);
 
     QPointer<QDialog> dialog = new QDialog;
-    dialog->setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1String("Dialog"));
-    QVERIFY(dialog->testAttribute(Qt::WA_QuitOnClose));
-    QTimer::singleShot(1000, dialog.data(), &QDialog::accept);
+    dialog->setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("Dialog"));
+    QVERIFY(dialog->testAttribute(BobUI::WA_QuitOnClose));
+    BOBUIimer::singleShot(1000, dialog.data(), &QDialog::accept);
     dialog->exec();
     QVERIFY(dialog);
     QCOMPARE(spy.size(), 0);
 
     QPointer<CloseWidget>widget = new CloseWidget;
-    widget->setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1String("CloseWidget"));
-    QVERIFY(widget->testAttribute(Qt::WA_QuitOnClose));
+    widget->setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("CloseWidget"));
+    QVERIFY(widget->testAttribute(BobUI::WA_QuitOnClose));
     widget->show();
     QObject::connect(&app, &QGuiApplication::lastWindowClosed, widget.data(), &QObject::deleteLater);
     QCoreApplication::exec();
@@ -613,16 +613,16 @@ void tst_QApplication::lastWindowClosed()
 
     // show 3 windows, close them, should only get lastWindowClosed once
     QWidget w1;
-    w1.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1Char('1'));
+    w1.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1Char('1'));
     QWidget w2;
-    w1.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1Char('2'));
+    w1.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1Char('2'));
     QWidget w3;
-    w1.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1Char('3'));
+    w1.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1Char('3'));
     w1.show();
     w2.show();
     w3.show();
 
-    QTimer::singleShot(1000, &app, &QApplication::closeAllWindows);
+    BOBUIimer::singleShot(1000, &app, &QApplication::closeAllWindows);
     QCoreApplication::exec();
     QCOMPARE(spy.size(), 1);
 }
@@ -648,9 +648,9 @@ public slots:
     {
         QDialog other;
 
-        QTimer timer;
-        connect(&timer, &QTimer::timeout, &other, &QDialog::accept);
-        QSignalSpy spy(&timer, &QTimer::timeout);
+        BOBUIimer timer;
+        connect(&timer, &BOBUIimer::timeout, &other, &QDialog::accept);
+        QSignalSpy spy(&timer, &BOBUIimer::timeout);
         QSignalSpy appSpy(qApp, &QGuiApplication::lastWindowClosed);
 
         timer.start(1000);
@@ -677,9 +677,9 @@ public slots:
     {
         QDialog dialog;
         dialog.setWindowTitle(QLatin1String("QuitOnLastWindowClosedWindow Dialog"));
-        QTimer timer1;
-        connect(&timer1, &QTimer::timeout, &dialog, &QDialog::accept);
-        QSignalSpy spy1(&timer1, &QTimer::timeout);
+        BOBUIimer timer1;
+        connect(&timer1, &BOBUIimer::timeout, &dialog, &QDialog::accept);
+        QSignalSpy spy1(&timer1, &BOBUIimer::timeout);
         timer1.setSingleShot(true);
         timer1.start(1000);
         dialog.exec();
@@ -696,9 +696,9 @@ void tst_QApplication::quitOnLastWindowClosed()
         QApplication app(argc, nullptr);
 
         QuitOnLastWindowClosedDialog d;
-        d.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+        d.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
         d.show();
-        QTimer::singleShot(1000, &d, &QuitOnLastWindowClosedDialog::animateOkClick);
+        BOBUIimer::singleShot(1000, &d, &QuitOnLastWindowClosedDialog::animateOkClick);
 
         QSignalSpy appSpy(&app, &QGuiApplication::lastWindowClosed);
         QCoreApplication::exec();
@@ -712,19 +712,19 @@ void tst_QApplication::quitOnLastWindowClosed()
         QSignalSpy appSpy(&app, &QGuiApplication::lastWindowClosed);
 
         QDialog dialog;
-        dialog.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
-        QTimer timer1;
-        connect(&timer1, &QTimer::timeout, &dialog, &QDialog::accept);
-        QSignalSpy spy1(&timer1, &QTimer::timeout);
+        dialog.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
+        BOBUIimer timer1;
+        connect(&timer1, &BOBUIimer::timeout, &dialog, &QDialog::accept);
+        QSignalSpy spy1(&timer1, &BOBUIimer::timeout);
         timer1.setSingleShot(true);
         timer1.start(1000);
         dialog.exec();
         QCOMPARE(spy1.size(), 1);
         QCOMPARE(appSpy.size(), 0);
 
-        QTimer timer2;
-        connect(&timer2, &QTimer::timeout, &app, &QCoreApplication::quit);
-        QSignalSpy spy2(&timer2, &QTimer::timeout);
+        BOBUIimer timer2;
+        connect(&timer2, &BOBUIimer::timeout, &app, &QCoreApplication::quit);
+        QSignalSpy spy2(&timer2, &BOBUIimer::timeout);
         timer2.setSingleShot(true);
         timer2.start(1000);
         int returnValue = QCoreApplication::exec();
@@ -735,29 +735,29 @@ void tst_QApplication::quitOnLastWindowClosed()
     {
         int argc = 0;
         QApplication app(argc, nullptr);
-        QTimer timer;
+        BOBUIimer timer;
         timer.setInterval(100);
 
         QSignalSpy spy(&app, &QCoreApplication::aboutToQuit);
-        QSignalSpy spy2(&timer, &QTimer::timeout);
+        QSignalSpy spy2(&timer, &BOBUIimer::timeout);
 
         QMainWindow mainWindow;
-        mainWindow.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+        mainWindow.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
         QDialog *dialog = new QDialog(&mainWindow);
-        dialog->setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1String("Dialog"));
+        dialog->setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("Dialog"));
 
         QVERIFY(app.quitOnLastWindowClosed());
-        QVERIFY(mainWindow.testAttribute(Qt::WA_QuitOnClose));
-        QVERIFY(dialog->testAttribute(Qt::WA_QuitOnClose));
+        QVERIFY(mainWindow.testAttribute(BobUI::WA_QuitOnClose));
+        QVERIFY(dialog->testAttribute(BobUI::WA_QuitOnClose));
 
         mainWindow.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
         dialog->show();
-        QVERIFY(QTest::qWaitForWindowExposed(dialog));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(dialog));
 
         timer.start();
-        QTimer::singleShot(1000, &mainWindow, &QWidget::close); // This should quit the application
-        QTimer::singleShot(2000, &app, &QCoreApplication::quit); // This makes sure we quit even if it didn't
+        BOBUIimer::singleShot(1000, &mainWindow, &QWidget::close); // This should quit the application
+        BOBUIimer::singleShot(2000, &app, &QCoreApplication::quit); // This makes sure we quit even if it didn't
 
         QCoreApplication::exec();
 
@@ -778,17 +778,17 @@ void tst_QApplication::quitOnLastWindowClosed()
         QSignalSpy spy(&app, &QCoreApplication::aboutToQuit);
 
         CloseEventTestWindow mainWindow;
-        mainWindow.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+        mainWindow.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
 
         QVERIFY(app.quitOnLastWindowClosed());
-        QVERIFY(mainWindow.testAttribute(Qt::WA_QuitOnClose));
+        QVERIFY(mainWindow.testAttribute(BobUI::WA_QuitOnClose));
 
         mainWindow.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
 
-        QTimer::singleShot(1000, &mainWindow, &QWidget::close); // This should NOT quit the application (see CloseEventTestWindow)
+        BOBUIimer::singleShot(1000, &mainWindow, &QWidget::close); // This should NOT quit the application (see CloseEventTestWindow)
         quitApplicationTriggered = false;
-        QTimer::singleShot(2000, this, quitSlot); // This actually quits the application.
+        BOBUIimer::singleShot(2000, this, quitSlot); // This actually quits the application.
 
         QCoreApplication::exec();
 
@@ -802,12 +802,12 @@ void tst_QApplication::quitOnLastWindowClosed()
 
         // exec a dialog for 1 second, then show the window
         QuitOnLastWindowClosedWindow window;
-        window.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
-        QTimer::singleShot(0, &window, &QuitOnLastWindowClosedWindow::execDialogThenShow);
+        window.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
+        BOBUIimer::singleShot(0, &window, &QuitOnLastWindowClosedWindow::execDialogThenShow);
 
-        QTimer timer;
-        QSignalSpy timerSpy(&timer, &QTimer::timeout);
-        connect(&timer, &QTimer::timeout, &window, &QWidget::close);
+        BOBUIimer timer;
+        QSignalSpy timerSpy(&timer, &BOBUIimer::timeout);
+        connect(&timer, &BOBUIimer::timeout, &window, &QWidget::close);
         timer.setSingleShot(true);
         timer.start(2000);
         int returnValue = QCoreApplication::exec();
@@ -823,45 +823,45 @@ void tst_QApplication::quitOnLastWindowClosed()
         QVERIFY(app.quitOnLastWindowClosed());
 
         QWindow w;
-        w.setTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1String("Window"));
+        w.setTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("Window"));
         w.show();
 
         QWidget wid;
-        wid.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1String("Widget"));
+        wid.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("Widget"));
         wid.show();
 
-        QTimer::singleShot(1000, &wid, &QWidget::close); // This should NOT quit the application because the
+        BOBUIimer::singleShot(1000, &wid, &QWidget::close); // This should NOT quit the application because the
                                                        // QWindow is still there.
         quitApplicationTriggered = false;
-        QTimer::singleShot(2000, this, quitSlot);  // This causes the quit.
+        BOBUIimer::singleShot(2000, this, quitSlot);  // This causes the quit.
 
         QCoreApplication::exec();
 
         QVERIFY(quitApplicationTriggered);      // Should be around 20 if closing did not caused the quit
     }
-    {   // QTBUG-31569: If the last widget with Qt::WA_QuitOnClose set is closed, other
+    {   // BOBUIBUG-31569: If the last widget with BobUI::WA_QuitOnClose set is closed, other
         // widgets that don't have the attribute set should be closed automatically.
         int argc = 0;
         QApplication app(argc, nullptr);
         QVERIFY(app.quitOnLastWindowClosed());
 
         QWidget w1;
-        w1.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1Char('1'));
+        w1.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1Char('1'));
         w1.show();
 
         QWidget w2;
-        w1.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1Char('2'));
-        w2.setAttribute(Qt::WA_QuitOnClose, false);
+        w1.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1Char('2'));
+        w2.setAttribute(BobUI::WA_QuitOnClose, false);
         w2.show();
 
-        QVERIFY(QTest::qWaitForWindowExposed(&w2));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&w2));
 
-        QTimer timer;
+        BOBUIimer timer;
         timer.setInterval(100);
         timer.start();
-        QSignalSpy timerSpy(&timer, &QTimer::timeout);
+        QSignalSpy timerSpy(&timer, &BOBUIimer::timeout);
 
-        QTimer::singleShot(100, &w1, &QWidget::close);
+        BOBUIimer::singleShot(100, &w1, &QWidget::close);
         QCoreApplication::exec();
 
         QVERIFY(timerSpy.size() < 10);
@@ -885,7 +885,7 @@ public:
         messageBox->setDefaultButton(QMessageBox::Save);
 
         messageBox->show();
-        QVERIFY(QTest::qWaitForWindowExposed(messageBox));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(messageBox));
 
         // verify that all windows are visible
         const auto &topLevels = QApplication::topLevelWidgets();
@@ -908,7 +908,7 @@ void tst_QApplication::closeAllWindows()
 {
     int argc = 0;
     QApplication app(argc, nullptr);
-    app.setAttribute(Qt::AA_DontUseNativeDialogs, true);
+    app.setAttribute(BobUI::AA_DontUseNativeDialogs, true);
 
     // create some windows
     new QWidget;
@@ -919,7 +919,7 @@ void tst_QApplication::closeAllWindows()
     auto topLevels = QApplication::topLevelWidgets();
     for (QWidget *w : std::as_const(topLevels)) {
         w->show();
-        QVERIFY(QTest::qWaitForWindowExposed(w));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(w));
     }
     // verify that they are visible
     QVERIFY(std::all_of(topLevels.cbegin(), topLevels.cend(), isVisible));
@@ -936,7 +936,7 @@ void tst_QApplication::closeAllWindows()
     topLevels = QApplication::topLevelWidgets();
     for (QWidget *w : std::as_const(topLevels)) {
         w->show();
-        QVERIFY(QTest::qWaitForWindowExposed(w));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(w));
     }
     // close the last window to open the prompt (eventloop recurses)
     promptOnCloseWidget->close();
@@ -951,7 +951,7 @@ void tst_QApplication::closeAllWindows()
     qDeleteAll(QApplication::topLevelWidgets());
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 class SendPostedEventsTester : public QObject
 {
     Q_OBJECT
@@ -976,7 +976,7 @@ void SendPostedEventsTester::doTest()
     deleteLater();
 
     QEventLoop eventLoop;
-    QMetaObject::invokeMethod(&eventLoop, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&eventLoop, "quit", BobUI::QueuedConnection);
     eventLoop.exec();
     QVERIFY(p != nullptr);
 
@@ -991,8 +991,8 @@ void tst_QApplication::sendPostedEvents()
     int argc = 0;
     QApplication app(argc, nullptr);
     SendPostedEventsTester *tester = new SendPostedEventsTester;
-    QMetaObject::invokeMethod(tester, "doTest", Qt::QueuedConnection);
-    QMetaObject::invokeMethod(&app, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(tester, "doTest", BobUI::QueuedConnection);
+    QMetaObject::invokeMethod(&app, "quit", BobUI::QueuedConnection);
     QPointer<SendPostedEventsTester> p = tester;
     (void) QCoreApplication::exec();
     QVERIFY(p.isNull());
@@ -1001,7 +1001,7 @@ void tst_QApplication::sendPostedEvents()
 
 void tst_QApplication::thread()
 {
-    QThread *currentThread = QThread::currentThread();
+    BOBUIhread *currentThread = BOBUIhread::currentThread();
     // no app, but still have a valid thread
     QVERIFY(currentThread != nullptr);
 
@@ -1022,9 +1022,9 @@ void tst_QApplication::thread()
         QApplication app(argc, nullptr);
 
         // current thread still valid
-        QVERIFY(QThread::currentThread() != nullptr);
+        QVERIFY(BOBUIhread::currentThread() != nullptr);
         // thread should be the same as before
-        QCOMPARE(QThread::currentThread(), currentThread);
+        QCOMPARE(BOBUIhread::currentThread(), currentThread);
 
         // app's thread should be the current thread
         QCOMPARE(app.thread(), currentThread);
@@ -1033,12 +1033,12 @@ void tst_QApplication::thread()
         QVERIFY(currentThread->isRunning());
         QVERIFY(!currentThread->isFinished());
 
-        QTestEventLoop::instance().enterLoop(1);
+        BOBUIestEventLoop::instance().enterLoop(1);
     }
 
     // app dead, current thread still valid
-    QVERIFY(QThread::currentThread() != nullptr);
-    QCOMPARE(QThread::currentThread(), currentThread);
+    QVERIFY(BOBUIhread::currentThread() != nullptr);
+    QCOMPARE(BOBUIhread::currentThread(), currentThread);
 
     // the thread should still be running and not finished
     QVERIFY(currentThread->isRunning());
@@ -1055,9 +1055,9 @@ void tst_QApplication::thread()
         QApplication app(argc, nullptr);
 
         // current thread still valid
-        QVERIFY(QThread::currentThread() != nullptr);
+        QVERIFY(BOBUIhread::currentThread() != nullptr);
         // thread should be the same as before
-        QCOMPARE(QThread::currentThread(), currentThread);
+        QCOMPARE(BOBUIhread::currentThread(), currentThread);
 
         // app's thread should be the current thread
         QCOMPARE(app.thread(), currentThread);
@@ -1070,12 +1070,12 @@ void tst_QApplication::thread()
         QCOMPARE(object.thread(), currentThread);
         QCOMPARE(child.thread(), currentThread);
 
-        QTestEventLoop::instance().enterLoop(1);
+        BOBUIestEventLoop::instance().enterLoop(1);
     }
 
     // app dead, current thread still valid
-    QVERIFY(QThread::currentThread() != nullptr);
-    QCOMPARE(QThread::currentThread(), currentThread);
+    QVERIFY(BOBUIhread::currentThread() != nullptr);
+    QCOMPARE(BOBUIhread::currentThread(), currentThread);
 
     // the thread should still be running and not finished
     QVERIFY(currentThread->isRunning());
@@ -1114,14 +1114,14 @@ void DeleteLaterWidget::runTest()
     QVERIFY(!child_deleted);
 
     QDialog dlg;
-    QTimer::singleShot(500, &dlg, &QDialog::reject);
+    BOBUIimer::singleShot(500, &dlg, &QDialog::reject);
     dlg.exec();
 
     QVERIFY(!child_deleted);
     QCoreApplication::processEvents();
     QVERIFY(!child_deleted);
 
-    QTimer::singleShot(500, this, &DeleteLaterWidget::checkDeleteLater);
+    BOBUIimer::singleShot(500, this, &DeleteLaterWidget::checkDeleteLater);
 
     QCoreApplication::processEvents();
 
@@ -1147,7 +1147,7 @@ void tst_QApplication::testDeleteLater()
     connect(&app, &QGuiApplication::lastWindowClosed, &app, &QCoreApplication::quit);
 
     DeleteLaterWidget *wgt = new DeleteLaterWidget(&app);
-    QTimer::singleShot(500, wgt, &DeleteLaterWidget::runTest);
+    BOBUIimer::singleShot(500, wgt, &DeleteLaterWidget::runTest);
 
     QObject *object = new QObject(wgt);
     object->setObjectName("deleteLater");
@@ -1178,8 +1178,8 @@ public slots:
           deleteLater() will *not* delete the object in the nested
           event loop
         */
-        QMetaObject::invokeMethod(this, "deleteLater", Qt::QueuedConnection);
-        QTimer::singleShot(1000, &eventLoop, &QEventLoop::quit);
+        QMetaObject::invokeMethod(this, "deleteLater", BobUI::QueuedConnection);
+        BOBUIimer::singleShot(1000, &eventLoop, &QEventLoop::quit);
         eventLoop.exec();
         QVERIFY(p);
     }
@@ -1191,8 +1191,8 @@ public slots:
         // _current_ event loop:
         QEventLoop eventLoop;
         QPointer<QObject> p(this);
-        QMetaObject::invokeMethod(this, "deleteLater", Qt::QueuedConnection);
-        QMetaObject::invokeMethod(&eventLoop, "quit", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "deleteLater", BobUI::QueuedConnection);
+        QMetaObject::invokeMethod(&eventLoop, "quit", BobUI::QueuedConnection);
         eventLoop.exec();
         QVERIFY(p); // not dead yet
     }
@@ -1216,14 +1216,14 @@ public slots:
         // trying to delete this object in a deeper eventloop just won't work
         QMetaObject::invokeMethod(this,
                                   "processEventsOnly",
-                                  Qt::QueuedConnection);
-        QMetaObject::invokeMethod(&eventLoop, "quit", Qt::QueuedConnection);
+                                  BobUI::QueuedConnection);
+        QMetaObject::invokeMethod(&eventLoop, "quit", BobUI::QueuedConnection);
         eventLoop.exec();
         QVERIFY(p);
         QMetaObject::invokeMethod(this,
                                   "sendPostedEventsWithDeferredDelete",
-                                  Qt::QueuedConnection);
-        QMetaObject::invokeMethod(&eventLoop, "quit", Qt::QueuedConnection);
+                                  BobUI::QueuedConnection);
+        QMetaObject::invokeMethod(&eventLoop, "quit", BobUI::QueuedConnection);
         eventLoop.exec();
         QVERIFY(p);
 
@@ -1271,7 +1271,7 @@ void tst_QApplication::testDeleteLaterProcessEvents2()
     connect(object, &QObject::destroyed, &loop, &QEventLoop::quit);
     p = object;
     object->deleteLater();
-    QTimer::singleShot(1000, &loop, &QEventLoop::quit);
+    BOBUIimer::singleShot(1000, &loop, &QEventLoop::quit);
     loop.exec();
     QVERIFY(!p);
 }
@@ -1286,8 +1286,8 @@ void tst_QApplication::testDeleteLaterProcessEvents3()
     QEventLoop loop;
     EventLoopNester *nester = new EventLoopNester;
     QPointer<QObject> p(nester);
-    QTimer::singleShot(3000, &loop, &QEventLoop::quit);
-    QTimer::singleShot(0, nester, &EventLoopNester::deleteLaterAndEnterLoop);
+    BOBUIimer::singleShot(3000, &loop, &QEventLoop::quit);
+    BOBUIimer::singleShot(0, nester, &EventLoopNester::deleteLaterAndEnterLoop);
 
     loop.exec();
     QVERIFY(!p);
@@ -1303,8 +1303,8 @@ void tst_QApplication::testDeleteLaterProcessEvents4()
     QEventLoop loop;
     EventLoopNester *nester = new EventLoopNester;
     QPointer<QObject> p(nester);
-    QTimer::singleShot(3000, &loop, &QEventLoop::quit);
-    QTimer::singleShot(0, nester, &EventLoopNester::deleteLaterAndExitLoop);
+    BOBUIimer::singleShot(3000, &loop, &QEventLoop::quit);
+    BOBUIimer::singleShot(0, nester, &EventLoopNester::deleteLaterAndExitLoop);
 
     loop.exec();
     QVERIFY(!p);
@@ -1320,8 +1320,8 @@ void tst_QApplication::testDeleteLaterProcessEvents5()
     QEventLoop loop;
     EventLoopNester *nester = new EventLoopNester();
     QPointer<QObject> p(nester);
-    QTimer::singleShot(3000, &loop, &QEventLoop::quit);
-    QTimer::singleShot(0, nester, &EventLoopNester::deleteLaterAndProcessEvents);
+    BOBUIimer::singleShot(3000, &loop, &QEventLoop::quit);
+    BOBUIimer::singleShot(0, nester, &EventLoopNester::deleteLaterAndProcessEvents);
 
     loop.exec();
     QVERIFY(!p);
@@ -1332,11 +1332,11 @@ void tst_QApplication::testDeleteLaterProcessEvents5()
 */
 void tst_QApplication::desktopSettingsAware()
 {
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     QProcess testProcess;
 #ifdef Q_OS_MACOS
     QStringList environment = QProcess::systemEnvironment();
-    environment += QLatin1String("QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM=1");
+    environment += QLatin1String("BOBUI_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM=1");
     testProcess.setEnvironment(environment);
 #endif
     testProcess.start("./desktopsettingsaware_helper");
@@ -1411,13 +1411,13 @@ void tst_QApplication::activateDeactivateEvent()
 
     w1.show();
     w1.requestActivate();
-    QVERIFY(QTest::qWaitForWindowActive(&w1));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w1));
     QCOMPARE(w1.activateCount, 1);
     QCOMPARE(w1.deactivateCount, 0);
 
     w2.show();
     w2.requestActivate();
-    QVERIFY(QTest::qWaitForWindowActive(&w2));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w2));
     QCOMPARE(w1.deactivateCount, 1);
     QCOMPARE(w2.activateCount, 1);
 }
@@ -1429,10 +1429,10 @@ void tst_QApplication::focusWidget()
 
     // The focus widget is the active window itself
     {
-        QTextEdit te;
+        BOBUIextEdit te;
         te.show();
 
-        QVERIFY(QTest::qWaitForWindowFocused(&te));
+        QVERIFY(BOBUIest::qWaitForWindowFocused(&te));
 
         const auto focusWidget = QApplication::focusWidget();
         QVERIFY(focusWidget);
@@ -1444,10 +1444,10 @@ void tst_QApplication::focusWidget()
     // The focus widget is a child of the active window
     {
         QWidget w;
-        QTextEdit te(&w);
+        BOBUIextEdit te(&w);
         w.show();
 
-        QVERIFY(QTest::qWaitForWindowFocused(&w));
+        QVERIFY(BOBUIest::qWaitForWindowFocused(&w));
 
         const auto focusWidget = QApplication::focusWidget();
         QVERIFY(focusWidget);
@@ -1470,7 +1470,7 @@ void tst_QApplication::focusChanged()
     QWidget *old = nullptr;
 
     QWidget parent1;
-    parent1.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1Char('1'));
+    parent1.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1Char('1'));
     QHBoxLayout hbox1(&parent1);
     QLabel lb1(&parent1);
     QLineEdit le1(&parent1);
@@ -1521,7 +1521,7 @@ void tst_QApplication::focusChanged()
     spy.clear();
 
     QWidget parent2;
-    parent2.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1Char('1'));
+    parent2.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1Char('1'));
     QHBoxLayout hbox2(&parent2);
     QLabel lb2(&parent2);
     QLineEdit le2(&parent2);
@@ -1540,9 +1540,9 @@ void tst_QApplication::focusChanged()
     QVERIFY(!old);
     spy.clear();
 
-    QTestKeyEvent tab(QTest::Press, Qt::Key_Tab, Qt::KeyboardModifiers(), 0);
-    QTestKeyEvent backtab(QTest::Press, Qt::Key_Backtab, Qt::KeyboardModifiers(), 0);
-    QTestMouseEvent click(QTest::MouseClick, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(5, 5), 0);
+    BOBUIestKeyEvent tab(BOBUIest::Press, BobUI::Key_Tab, BobUI::KeyboardModifiers(), 0);
+    BOBUIestKeyEvent backtab(BOBUIest::Press, BobUI::Key_Backtab, BobUI::KeyboardModifiers(), 0);
+    BOBUIestMouseEvent click(BOBUIest::MouseClick, BobUI::LeftButton, BobUI::KeyboardModifiers(), QPoint(5, 5), 0);
 
     bool tabAllControls = true;
 #ifdef Q_OS_MAC
@@ -1554,8 +1554,8 @@ void tst_QApplication::focusChanged()
     tabAllControls = (appleValue.toInt() & 0x2);
 #endif
 
-    // make sure Qt's idea of tabbing between widgets matches what we think it should
-    QCOMPARE(qt_tab_all_widgets(), tabAllControls);
+    // make sure BobUI's idea of tabbing between widgets matches what we think it should
+    QCOMPARE(bobui_tab_all_widgets(), tabAllControls);
 
     tab.simulate(now);
     if (!tabAllControls) {
@@ -1616,7 +1616,7 @@ void tst_QApplication::focusChanged()
     }
 
     click.simulate(old);
-    if (!(pb2.focusPolicy() & Qt::ClickFocus)) {
+    if (!(pb2.focusPolicy() & BobUI::ClickFocus)) {
         QCOMPARE(spy.size(), 0);
         QCOMPARE(now, QApplication::focusWidget());
     } else {
@@ -1684,7 +1684,7 @@ void tst_QApplication::focusOut()
     // Tests the case where the style pointer changes when on focus in/out
     // (the above is the case when the stylesheet changes)
     QWidget w;
-    w.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    w.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     QLineEdit *le1 = new LineEdit(&w);
     le1->setObjectName("le1");
     le1->setStyleSheet("background: #fee");
@@ -1695,11 +1695,11 @@ void tst_QApplication::focusOut()
     le2->setStyleSheet("background: #fee");
     le2->move(100, 100);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
-    QTest::qWait(2000);
+    BOBUIest::qWait(2000);
     le2->setFocus();
-    QTest::qWait(2000);
+    BOBUIest::qWait(2000);
 }
 
 void tst_QApplication::focusMouseClick()
@@ -1711,33 +1711,33 @@ void tst_QApplication::focusMouseClick()
         QSKIP("Window activation is not supported");
 
     QWidget w;
-    w.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
-    w.setFocusPolicy(Qt::StrongFocus);
+    w.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
+    w.setFocusPolicy(BobUI::StrongFocus);
     QWidget w2(&w);
-    w2.setFocusPolicy(Qt::TabFocus);
+    w2.setFocusPolicy(BobUI::TabFocus);
     w.show();
     w.setFocus();
-    QTRY_COMPARE(QApplication::focusWidget(), &w);
+    BOBUIRY_COMPARE(QApplication::focusWidget(), &w);
 
-    // front most widget has Qt::TabFocus, parent widget accepts clicks as well
+    // front most widget has BobUI::TabFocus, parent widget accepts clicks as well
     // now send a mouse button press event and check what happens with the focus
     // it should be given to the parent widget
-    QMouseEvent ev(QEvent::MouseButtonPress, QPointF(), w.mapToGlobal(QPointF()), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QMouseEvent ev(QEvent::MouseButtonPress, QPointF(), w.mapToGlobal(QPointF()), BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier);
     QSpontaneKeyEvent::setSpontaneous(&ev);
     QVERIFY(ev.spontaneous());
     qApp->notify(&w2, &ev);
     QCOMPARE(QApplication::focusWidget(), &w);
 
     // then we give the inner widget strong focus -> it should get focus
-    w2.setFocusPolicy(Qt::StrongFocus);
+    w2.setFocusPolicy(BobUI::StrongFocus);
     QSpontaneKeyEvent::setSpontaneous(&ev);
     QVERIFY(ev.spontaneous());
     qApp->notify(&w2, &ev);
-    QTRY_COMPARE(QApplication::focusWidget(), &w2);
+    BOBUIRY_COMPARE(QApplication::focusWidget(), &w2);
 
     // now back to tab focus and click again (it already had focus) -> focus should stay
-    // (focus was revoked as of QTBUG-34042)
-    w2.setFocusPolicy(Qt::TabFocus);
+    // (focus was revoked as of BOBUIBUG-34042)
+    w2.setFocusPolicy(BobUI::TabFocus);
     QSpontaneKeyEvent::setSpontaneous(&ev);
     QVERIFY(ev.spontaneous());
     qApp->notify(&w2, &ev);
@@ -1748,7 +1748,7 @@ void tst_QApplication::execAfterExit()
 {
     int argc = 1;
     QApplication app(argc, &argv0);
-    QMetaObject::invokeMethod(&app, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&app, "quit", BobUI::QueuedConnection);
     // this should be ignored, as exec() will reset the exitCode
     QApplication::exit(1);
     int exitCode = QCoreApplication::exec();
@@ -1757,12 +1757,12 @@ void tst_QApplication::execAfterExit()
     // the quitNow flag should have been reset, so we can spin an
     // eventloop after QApplication::exec() returns
     QEventLoop eventLoop;
-    QMetaObject::invokeMethod(&eventLoop, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&eventLoop, "quit", BobUI::QueuedConnection);
     exitCode = eventLoop.exec();
     QCOMPARE(exitCode, 0);
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void tst_QApplication::wheelScrollLines()
 {
     int argc = 1;
@@ -1770,7 +1770,7 @@ void tst_QApplication::wheelScrollLines()
     // If wheelScrollLines returns 0, the mose wheel will be disabled.
     QVERIFY(app.wheelScrollLines() > 0);
 }
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 
 void tst_QApplication::style()
 {
@@ -1797,7 +1797,7 @@ public:
     void polish(QPalette &palette) override
     {
         polished++;
-        palette.setColor(QPalette::Active, QPalette::Link, Qt::red);
+        palette.setColor(QPalette::Active, QPalette::Link, BobUI::red);
     }
     static int polished;
 };
@@ -1807,7 +1807,7 @@ int CustomStyle::polished = 0;
 class CustomStylePlugin : public QStylePlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "customstyle.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.QStyleFactoryInterface" FILE "customstyle.json")
 public:
     QStyle *create(const QString &) override { return new CustomStyle; }
 };
@@ -1818,14 +1818,14 @@ void tst_QApplication::applicationPalettePolish()
 {
     int argc = 1;
 
-#if defined(QT_BUILD_INTERNAL)
+#if defined(BOBUI_BUILD_INTERNAL)
     {
-        qputenv("QT_DESKTOP_STYLE_KEY", "customstyle");
+        qputenv("BOBUI_DESKTOP_STYLE_KEY", "customstyle");
         QApplication app(argc, &argv0);
         QVERIFY(CustomStyle::polished);
         QVERIFY(!app.palette().resolveMask());
-        QCOMPARE(app.palette().color(QPalette::Link), Qt::red);
-        qunsetenv("QT_DESKTOP_STYLE_KEY");
+        QCOMPARE(app.palette().color(QPalette::Link), BobUI::red);
+        qunsetenv("BOBUI_DESKTOP_STYLE_KEY");
     }
 #endif
 
@@ -1834,7 +1834,7 @@ void tst_QApplication::applicationPalettePolish()
         QApplication app(argc, &argv0);
         QVERIFY(CustomStyle::polished);
         QVERIFY(!app.palette().resolveMask());
-        QCOMPARE(app.palette().color(QPalette::Link), Qt::red);
+        QCOMPARE(app.palette().color(QPalette::Link), BobUI::red);
     }
 
     {
@@ -1842,22 +1842,22 @@ void tst_QApplication::applicationPalettePolish()
         app.setStyle(new CustomStyle);
         QVERIFY(CustomStyle::polished);
         QVERIFY(!app.palette().resolveMask());
-        QCOMPARE(app.palette().color(QPalette::Link), Qt::red);
+        QCOMPARE(app.palette().color(QPalette::Link), BobUI::red);
 
         CustomStyle::polished = 0;
         app.setPalette(QPalette());
         QVERIFY(CustomStyle::polished);
         QVERIFY(!app.palette().resolveMask());
-        QCOMPARE(app.palette().color(QPalette::Link), Qt::red);
+        QCOMPARE(app.palette().color(QPalette::Link), BobUI::red);
 
         CustomStyle::polished = 0;
         QPalette palette;
-        palette.setColor(QPalette::Active, QPalette::Highlight, Qt::green);
+        palette.setColor(QPalette::Active, QPalette::Highlight, BobUI::green);
         app.setPalette(palette);
         QVERIFY(CustomStyle::polished);
         QVERIFY(app.palette().resolveMask());
-        QCOMPARE(app.palette().color(QPalette::Link), Qt::red);
-        QCOMPARE(app.palette().color(QPalette::Highlight), Qt::green);
+        QCOMPARE(app.palette().color(QPalette::Link), BobUI::red);
+        QCOMPARE(app.palette().color(QPalette::Highlight), BobUI::green);
     }
 }
 
@@ -1867,7 +1867,7 @@ void tst_QApplication::setColorScheme()
     QApplication app(argc, &argv0);
 
     if (QStringList{"minimal", "offscreen", "wayland", "xcb", "wasm", "webassembly"}
-        .contains(QGuiApplication::platformName(), Qt::CaseInsensitive)) {
+        .contains(QGuiApplication::platformName(), BobUI::CaseInsensitive)) {
         QSKIP("Setting the colorScheme is not implemented on this platform.");
     }
     qDebug() << "Testing setColorScheme on platform" << QGuiApplication::platformName();
@@ -1875,11 +1875,11 @@ void tst_QApplication::setColorScheme()
     if (QByteArrayView(app.style()->metaObject()->className()) == "QWindowsVistaStyle")
         QSKIP("Setting the colorScheme is not supported with the Windows Vista style.");
 
-    const Qt::ColorScheme defaultColorScheme = QApplication::styleHints()->colorScheme();
+    const BobUI::ColorScheme defaultColorScheme = QApplication::styleHints()->colorScheme();
     // if we implement setColorScheme, then we must be able to read it
-    QVERIFY(defaultColorScheme != Qt::ColorScheme::Unknown);
-    const Qt::ColorScheme newColorScheme = defaultColorScheme == Qt::ColorScheme::Light
-                                         ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light;
+    QVERIFY(defaultColorScheme != BobUI::ColorScheme::Unknown);
+    const BobUI::ColorScheme newColorScheme = defaultColorScheme == BobUI::ColorScheme::Light
+                                         ? BobUI::ColorScheme::Dark : BobUI::ColorScheme::Light;
 
     class TopLevelWidget : public QWidget
     {
@@ -1915,7 +1915,7 @@ void tst_QApplication::setColorScheme()
         }
     } topLevelWidget;
     topLevelWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevelWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevelWidget));
 
     QSignalSpy colorSchemeChangedSpy(app.styleHints(), &QStyleHints::colorSchemeChanged);
 
@@ -1930,14 +1930,14 @@ void tst_QApplication::setColorScheme()
     });
 
     app.styleHints()->setColorScheme(newColorScheme);
-    QTRY_COMPARE(colorSchemeChangedSpy.count(), 1);
+    BOBUIRY_COMPARE(colorSchemeChangedSpy.count(), 1);
     // We have not yet updated the palette when we emit the colorSchemeChanged
     // signal, so the toplevel widget should still use the previous palette
     QVERIFY(oldPaletteWhenSchemeChanged);
     QCOMPARE(topLevelWidget.eventCount(QEvent::ThemeChange), 1);
     // We can't guarantee that there is only one ApplicationPaletteChange,
     // and they might arrive asynchronously in response to ThemeChange
-    QTRY_COMPARE_GE(topLevelWidget.eventCount(QEvent::ApplicationPaletteChange), 1);
+    BOBUIRY_COMPARE_GE(topLevelWidget.eventCount(QEvent::ApplicationPaletteChange), 1);
     // But we can guarantee a single PaletteChange event for the widget
     QCOMPARE(topLevelWidget.eventCount(QEvent::PaletteChange), 1);
     // The palette should have changed
@@ -1949,14 +1949,14 @@ void tst_QApplication::setColorScheme()
     // verify that a widget shown with a color scheme override in place respect that
     QWidget newWidget;
     newWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&newWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&newWidget));
     QCOMPARE(newWidget.palette(), topLevelWidget.palette());
 
     // Setting to Unknown should follow the system preference again
-    app.styleHints()->setColorScheme(Qt::ColorScheme::Unknown);
-    QTRY_COMPARE(colorSchemeChangedSpy.count(), 1);
+    app.styleHints()->setColorScheme(BobUI::ColorScheme::Unknown);
+    BOBUIRY_COMPARE(colorSchemeChangedSpy.count(), 1);
     QCOMPARE(app.styleHints()->colorScheme(), defaultColorScheme);
-    QTRY_COMPARE(topLevelWidget.eventCount(QEvent::PaletteChange), 1);
+    BOBUIRY_COMPARE(topLevelWidget.eventCount(QEvent::PaletteChange), 1);
 
     auto debugPalette = qScopeGuard([defaultPalette, &topLevelWidget]{
         qDebug() << "Inspecting palettes for differences";
@@ -1993,7 +1993,7 @@ void tst_QApplication::topLevelWidgets()
     QApplication app(argc, &argv0);
     QWidget *w = new QWidget;
     w->show();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QClipboard *clipboard = QGuiApplication::clipboard();
     clipboard->setText(QLatin1String("newText"));
 #endif
@@ -2012,24 +2012,24 @@ void tst_QApplication::setAttribute()
 {
     int argc = 1;
     QApplication app(argc, &argv0);
-    QVERIFY(!QApplication::testAttribute(Qt::AA_NativeWindows));
+    QVERIFY(!QApplication::testAttribute(BobUI::AA_NativeWindows));
     QWidget  *w = new QWidget;
     w->show(); // trigger creation;
-    QVERIFY(!w->testAttribute(Qt::WA_NativeWindow));
+    QVERIFY(!w->testAttribute(BobUI::WA_NativeWindow));
     delete w;
 
-    QApplication::setAttribute(Qt::AA_NativeWindows);
-    QVERIFY(QApplication::testAttribute(Qt::AA_NativeWindows));
+    QApplication::setAttribute(BobUI::AA_NativeWindows);
+    QVERIFY(QApplication::testAttribute(BobUI::AA_NativeWindows));
     w = new QWidget;
     w->show(); // trigger creation
-    QVERIFY(w->testAttribute(Qt::WA_NativeWindow));
+    QVERIFY(w->testAttribute(BobUI::WA_NativeWindow));
     delete w;
 
-    QApplication::setAttribute(Qt::AA_NativeWindows, false);
-    QVERIFY(!QApplication::testAttribute(Qt::AA_NativeWindows));
+    QApplication::setAttribute(BobUI::AA_NativeWindows, false);
+    QVERIFY(!QApplication::testAttribute(BobUI::AA_NativeWindows));
     w = new QWidget;
     w->show(); // trigger creation;
-    QVERIFY(!w->testAttribute(Qt::WA_NativeWindow));
+    QVERIFY(!w->testAttribute(BobUI::WA_NativeWindow));
     delete w;
 }
 
@@ -2043,7 +2043,7 @@ public:
 
     explicit TouchEventPropagationTestWidget(QWidget *parent = nullptr) : QWidget(parent)
     {
-        setAttribute(Qt::WA_TouchPadAcceptSingleTouchEvents);
+        setAttribute(BobUI::WA_TouchPadAcceptSingleTouchEvents);
     }
 
     void reset()
@@ -2081,19 +2081,19 @@ void tst_QApplication::touchEventPropagation()
     QApplication app(argc, &argv0);
 
 
-    QPointingDevice *device = QTest::createTouchDevice();
+    QPointingDevice *device = BOBUIest::createTouchDevice();
 
     {
         // touch event behavior on a window
         TouchEventPropagationTestWidget window;
-        window.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+        window.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
         window.resize(200, 200);
         window.setObjectName("1. window");
         window.show(); // Must have an explicitly specified QWindow for handleTouchEvent,
                        // passing 0 would result in using topLevelAt() which is not ok in this case
                        // as the screen position in the point is bogus.
         auto handle = window.windowHandle();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
         // QPA always takes screen positions and since we map the TouchPoint back to QPA's structure first,
         // we must ensure there is a screen position in the TouchPoint that maps to a local 0, 0.
         const QPoint deviceGlobalPos = window.mapToGlobal(QPoint(0, 0));
@@ -2115,7 +2115,7 @@ void tst_QApplication::touchEventPropagation()
         QVERIFY(window.seenMouseEvent); // QApplication may transform ignored touch events in mouse events
 
         window.reset();
-        window.setAttribute(Qt::WA_AcceptTouchEvents);
+        window.setAttribute(BobUI::WA_AcceptTouchEvents);
         QWindowSystemInterface::handleTouchEvent(handle,
                                                  0,
                                                  device,
@@ -2146,7 +2146,7 @@ void tst_QApplication::touchEventPropagation()
     {
         // touch event behavior on a window with a child widget
         TouchEventPropagationTestWidget window;
-        window.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+        window.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
         window.resize(200, 200);
         window.setObjectName("2. window");
         TouchEventPropagationTestWidget widget(&window);
@@ -2154,7 +2154,7 @@ void tst_QApplication::touchEventPropagation()
         widget.setObjectName("2. widget");
         window.show();
         auto handle = window.windowHandle();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
         const QPoint deviceGlobalPos = window.mapToGlobal(QPoint(50, 150));
         auto pressedTouchPoints = QList<QEventPoint>() <<
             QEventPoint(0, QEventPoint::State::Pressed, QPointF(), deviceGlobalPos);
@@ -2169,14 +2169,14 @@ void tst_QApplication::touchEventPropagation()
                                                  0,
                                                  device,
                                                  QWindowSystemInterfacePrivate::toNativeTouchPoints(releasedTouchPoints, handle));
-        QTRY_VERIFY(widget.seenMouseEvent);
+        BOBUIRY_VERIFY(widget.seenMouseEvent);
         QVERIFY(!widget.seenTouchEvent);
         QVERIFY(!window.seenTouchEvent);
         QVERIFY(window.seenMouseEvent);
 
         window.reset();
         widget.reset();
-        widget.setAttribute(Qt::WA_AcceptTouchEvents);
+        widget.setAttribute(BobUI::WA_AcceptTouchEvents);
         QWindowSystemInterface::handleTouchEvent(handle,
                                                  0,
                                                  device,
@@ -2227,8 +2227,8 @@ void tst_QApplication::touchEventPropagation()
 
         window.reset();
         widget.reset();
-        widget.setAttribute(Qt::WA_AcceptTouchEvents, false);
-        window.setAttribute(Qt::WA_AcceptTouchEvents);
+        widget.setAttribute(BobUI::WA_AcceptTouchEvents, false);
+        window.setAttribute(BobUI::WA_AcceptTouchEvents);
         QWindowSystemInterface::handleTouchEvent(handle,
                                                  0,
                                                  device,
@@ -2288,12 +2288,12 @@ void tst_QApplication::touchEventPropagation()
     wheel events are ignored by default (unlike mouse events, which are accepted by default,
     and ignored in the default implementation of the event handler of QWidget).
 
-    And Qt tries to make sure that wheel events that "belong together" are going to the same
+    And BobUI tries to make sure that wheel events that "belong together" are going to the same
     widget. However, for low-precision events as generated by an old-fashioned
-    mouse wheel, each event is a distinct event, so Qt has no choice than to deliver the event
+    mouse wheel, each event is a distinct event, so BobUI has no choice than to deliver the event
     to the widget under the mouse.
     High-precision events, as generated by track pads or other kinetic scrolling devices, come
-    in a continuous stream, with different phases. Qt tries to make sure that all events in the
+    in a continuous stream, with different phases. BobUI tries to make sure that all events in the
     same stream go to the widget that accepted the first event.
 
     Also, QAbstractScrollArea forwards wheel events from the viewport to the relevant scrollbar,
@@ -2310,11 +2310,11 @@ void tst_QApplication::touchEventPropagation()
 */
 struct WheelEvent
 {
-    WheelEvent(Qt::ScrollPhase p = Qt::NoScrollPhase, Qt::Orientation o = Qt::Vertical)
+    WheelEvent(BobUI::ScrollPhase p = BobUI::NoScrollPhase, BobUI::Orientation o = BobUI::Vertical)
     : phase(p), orientation(o)
     {}
-    Qt::ScrollPhase phase = Qt::NoScrollPhase;
-    Qt::Orientation orientation = Qt::Vertical;
+    BobUI::ScrollPhase phase = BobUI::NoScrollPhase;
+    BobUI::Orientation orientation = BobUI::Vertical;
 };
 using WheelEventList = QList<WheelEvent>;
 
@@ -2322,33 +2322,33 @@ void tst_QApplication::wheelEventPropagation_data()
 {
     qRegisterMetaType<WheelEventList>();
 
-    QTest::addColumn<bool>("innerScrolls");
-    QTest::addColumn<WheelEventList>("events");
+    BOBUIest::addColumn<bool>("innerScrolls");
+    BOBUIest::addColumn<WheelEventList>("events");
 
-    QTest::addRow("inner, classic")
+    BOBUIest::addRow("inner, classic")
         << true
         << WheelEventList{{}, {}, {}};
-    QTest::addRow("outer, classic")
+    BOBUIest::addRow("outer, classic")
         << false
         << WheelEventList{{}, {}, {}};
-    QTest::addRow("inner, kinetic")
+    BOBUIest::addRow("inner, kinetic")
         << true
-        << WheelEventList{Qt::ScrollBegin, Qt::ScrollUpdate, Qt::ScrollMomentum, Qt::ScrollEnd};
-    QTest::addRow("outer, kinetic")
+        << WheelEventList{BobUI::ScrollBegin, BobUI::ScrollUpdate, BobUI::ScrollMomentum, BobUI::ScrollEnd};
+    BOBUIest::addRow("outer, kinetic")
         << false
-        << WheelEventList{Qt::ScrollBegin, Qt::ScrollUpdate, Qt::ScrollMomentum, Qt::ScrollEnd};
-    QTest::addRow("inner, partial kinetic")
+        << WheelEventList{BobUI::ScrollBegin, BobUI::ScrollUpdate, BobUI::ScrollMomentum, BobUI::ScrollEnd};
+    BOBUIest::addRow("inner, partial kinetic")
         << true
-        << WheelEventList{Qt::ScrollUpdate, Qt::ScrollMomentum, Qt::ScrollEnd};
-    QTest::addRow("outer, partial kinetic")
+        << WheelEventList{BobUI::ScrollUpdate, BobUI::ScrollMomentum, BobUI::ScrollEnd};
+    BOBUIest::addRow("outer, partial kinetic")
         << false
-        << WheelEventList{Qt::ScrollUpdate, Qt::ScrollMomentum, Qt::ScrollEnd};
-    QTest::addRow("inner, changing direction")
+        << WheelEventList{BobUI::ScrollUpdate, BobUI::ScrollMomentum, BobUI::ScrollEnd};
+    BOBUIest::addRow("inner, changing direction")
         << true
-        << WheelEventList{Qt::ScrollUpdate, {Qt::ScrollUpdate, Qt::Horizontal}, Qt::ScrollMomentum, Qt::ScrollEnd};
-    QTest::addRow("outer, changing direction")
+        << WheelEventList{BobUI::ScrollUpdate, {BobUI::ScrollUpdate, BobUI::Horizontal}, BobUI::ScrollMomentum, BobUI::ScrollEnd};
+    BOBUIest::addRow("outer, changing direction")
         << false
-        << WheelEventList{Qt::ScrollUpdate, {Qt::ScrollUpdate, Qt::Horizontal}, Qt::ScrollMomentum, Qt::ScrollEnd};
+        << WheelEventList{BobUI::ScrollUpdate, {BobUI::ScrollUpdate, BobUI::Horizontal}, BobUI::ScrollMomentum, BobUI::ScrollEnd};
 }
 
 void tst_QApplication::wheelEventPropagation()
@@ -2371,13 +2371,13 @@ void tst_QApplication::wheelEventPropagation()
     innerArea.viewport()->setObjectName("innerArea_viewport");
     QWidget largeWidget;
     largeWidget.setObjectName("largeWidget");
-    QScrollBar trap(Qt::Vertical, &largeWidget);
+    QScrollBar trap(BobUI::Vertical, &largeWidget);
     trap.setObjectName("It's a trap!");
 
     largeWidget.setFixedSize(baseSize * 8);
 
     // classic wheel events will be grabbed by the widget under the mouse, so don't place a trap
-    if (events.at(0).phase == Qt::NoScrollPhase)
+    if (events.at(0).phase == BobUI::NoScrollPhase)
         trap.hide();
     // kinetic wheel events should all go to the first widget; place a trap
     else
@@ -2392,12 +2392,12 @@ void tst_QApplication::wheelEventPropagation()
     outerArea.setWidget(&innerArea);
     outerArea.show();
 
-    if (!QTest::qWaitForWindowExposed(&outerArea))
+    if (!BOBUIest::qWaitForWindowExposed(&outerArea))
         QSKIP("Window failed to show, can't run test");
 
     auto innerVBar = innerArea.verticalScrollBar();
     innerVBar->setObjectName("innerArea_vbar");
-    QTRY_COMPARE(innerVBar->isVisible(), innerScrolls);
+    BOBUIRY_COMPARE(innerVBar->isVisible(), innerScrolls);
     auto innerHBar = innerArea.horizontalScrollBar();
     innerHBar->setObjectName("innerArea_hbar");
     QCOMPARE(innerHBar->isVisible(), innerScrolls);
@@ -2419,12 +2419,12 @@ void tst_QApplication::wheelEventPropagation()
     int hcount = 0;
 
     for (const auto &event : std::as_const(events)) {
-        const QPoint pixelDelta = event.orientation == Qt::Vertical ? QPoint(0, -scrollStep) : QPoint(-scrollStep, 0);
-        const QPoint angleDelta = event.orientation == Qt::Vertical ? QPoint(0, -120) : QPoint(-120, 0);
+        const QPoint pixelDelta = event.orientation == BobUI::Vertical ? QPoint(0, -scrollStep) : QPoint(-scrollStep, 0);
+        const QPoint angleDelta = event.orientation == BobUI::Vertical ? QPoint(0, -120) : QPoint(-120, 0);
         QWindowSystemInterface::handleWheelEvent(outerArea.windowHandle(), center, global,
-                                                 pixelDelta, angleDelta, Qt::NoModifier,
+                                                 pixelDelta, angleDelta, BobUI::NoModifier,
                                                  event.phase);
-        if (event.orientation == Qt::Vertical)
+        if (event.orientation == BobUI::Vertical)
             ++vcount;
         else
             ++hcount;
@@ -2447,10 +2447,10 @@ QString modalHelperPath()
 #endif
 }
 
-// QTBUG-133037, QTBUG-12673
+// BOBUIBUG-133037, BOBUIBUG-12673
 void tst_QApplication::modalDialog()
 {
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     QProcess testProcess;
     QStringList arguments;
     testProcess.start(modalHelperPath(), arguments);
@@ -2463,7 +2463,7 @@ void tst_QApplication::modalDialog()
 #endif
 }
 
-void tst_QApplication::qtbug_103611()
+void tst_QApplication::bobuibug_103611()
 {
     {
         int argc = 0;
@@ -2484,8 +2484,8 @@ public:
     explicit NoQuitOnHideWidget(QWidget *parent = nullptr)
       : QWidget(parent)
     {
-        QTimer::singleShot(0, this, &QWidget::hide);
-        QTimer::singleShot(500, this, [] () { QCoreApplication::exit(1); });
+        BOBUIimer::singleShot(0, this, &QWidget::hide);
+        BOBUIimer::singleShot(500, this, [] () { QCoreApplication::exit(1); });
     }
 };
 
@@ -2494,7 +2494,7 @@ void tst_QApplication::noQuitOnHide()
     int argc = 0;
     QApplication app(argc, nullptr);
     NoQuitOnHideWidget window1;
-    window1.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    window1.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     window1.show();
     QCOMPARE(QCoreApplication::exec(), 1);
 }
@@ -2512,7 +2512,7 @@ public:
         // use a longer timeout to avoid flaky failures
         timeout = 1000;
 #endif
-        QTimer::singleShot(timeout, this, [] () { QCoreApplication::exit(1); });
+        BOBUIimer::singleShot(timeout, this, [] () { QCoreApplication::exit(1); });
     }
 
     bool shown = false;
@@ -2520,7 +2520,7 @@ public:
 protected:
     void showEvent(QShowEvent *) override
     {
-        QTimer::singleShot(0, this, &ShowCloseShowWidget::doClose);
+        BOBUIimer::singleShot(0, this, &ShowCloseShowWidget::doClose);
         shown = true;
     }
     void hideEvent(QHideEvent *) override
@@ -2544,19 +2544,19 @@ void tst_QApplication::abortQuitOnShow()
     int argc = 0;
     QApplication app(argc, nullptr);
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
-        QSKIP("Wayland: This crash, see QTBUG-123172.");
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
+        QSKIP("Wayland: This crash, see BOBUIBUG-123172.");
 
     ShowCloseShowWidget window1(false);
-    window1.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    window1.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     window1.show();
-    QVERIFY(QTest::qWaitFor([&window1](){ return window1.shown; }));
+    QVERIFY(BOBUIest::qWaitFor([&window1](){ return window1.shown; }));
     QCOMPARE(QCoreApplication::exec(), 0);
 
     ShowCloseShowWidget window2(true);
-    window2.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    window2.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     window2.show();
-    QVERIFY(QTest::qWaitFor([&window2](){ return window2.shown; }));
+    QVERIFY(BOBUIest::qWaitFor([&window2](){ return window2.shown; }));
     QCOMPARE(QCoreApplication::exec(), 1);
 }
 
@@ -2567,23 +2567,23 @@ void tst_QApplication::staticFunctions()
     QApplication::allWidgets();
     QApplication::topLevelWidgets();
     QApplication::activePopupWidget();
-    QTest::ignoreMessage(QtWarningMsg, "Must construct a QGuiApplication first.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Must construct a QGuiApplication first.");
     QApplication::activeModalWidget();
     QApplication::focusWidget();
     QApplication::activeWindow();
     QApplicationPrivate::setActiveWindow(nullptr);
     QApplication::widgetAt(QPoint(0, 0));
     QApplication::topLevelAt(QPoint(0, 0));
-    QTest::ignoreMessage(QtWarningMsg, "Must construct a QApplication first.");
-    QApplication::isEffectEnabled(Qt::UI_General);
-    QApplication::setEffectEnabled(Qt::UI_General, false);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Must construct a QApplication first.");
+    QApplication::isEffectEnabled(BobUI::UI_General);
+    QApplication::setEffectEnabled(BobUI::UI_General, false);
 }
 
 void tst_QApplication::settableStyleHints_data()
 {
-    QTest::addColumn<bool>("appInstance");
-    QTest::newRow("app") << true;
-    QTest::newRow("no-app") << false;
+    BOBUIest::addColumn<bool>("appInstance");
+    BOBUIest::newRow("app") << true;
+    BOBUIest::newRow("no-app") << false;
 }
 
 void tst_QApplication::settableStyleHints()
@@ -2612,13 +2612,13 @@ void tst_QApplication::settableStyleHints()
     executed *after* the destruction of QApplication.
  */
 Q_GLOBAL_STATIC(QLocale, tst_qapp_locale);
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 Q_GLOBAL_STATIC(QProcess, tst_qapp_process);
 #endif
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
 Q_GLOBAL_STATIC(QFileSystemWatcher, tst_qapp_fileSystemWatcher);
 #endif
-#ifndef QT_NO_SHAREDMEMORY
+#ifndef BOBUI_NO_SHAREDMEMORY
 Q_GLOBAL_STATIC(QSharedMemory, tst_qapp_sharedMemory);
 #endif
 Q_GLOBAL_STATIC(QElapsedTimer, tst_qapp_elapsedTimer);
@@ -2627,7 +2627,7 @@ Q_GLOBAL_STATIC(QWidget, tst_qapp_widget);
 Q_GLOBAL_STATIC(QPixmap, tst_qapp_pixmap);
 Q_GLOBAL_STATIC(QFont, tst_qapp_font);
 Q_GLOBAL_STATIC(QRegion, tst_qapp_region);
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 Q_GLOBAL_STATIC(QCursor, tst_qapp_cursor);
 #endif
 
@@ -2636,13 +2636,13 @@ void tst_QApplication::globalStaticObjectDestruction()
     int argc = 1;
     QApplication app(argc, &argv0);
     QVERIFY(tst_qapp_locale());
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     QVERIFY(tst_qapp_process());
 #endif
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     QVERIFY(tst_qapp_fileSystemWatcher());
 #endif
-#ifndef QT_NO_SHAREDMEMORY
+#ifndef BOBUI_NO_SHAREDMEMORY
     QVERIFY(tst_qapp_sharedMemory());
 #endif
     QVERIFY(tst_qapp_elapsedTimer());
@@ -2651,18 +2651,18 @@ void tst_QApplication::globalStaticObjectDestruction()
     QVERIFY(tst_qapp_pixmap());
     QVERIFY(tst_qapp_font());
     QVERIFY(tst_qapp_region());
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QVERIFY(tst_qapp_cursor());
 #endif
 }
 
-//QTEST_APPLESS_MAIN(tst_QApplication)
+//BOBUIEST_APPLESS_MAIN(tst_QApplication)
 int main(int argc, char *argv[])
 {
     tst_QApplication tc;
     argv0 = argv[0];
-    QTEST_SET_MAIN_SOURCE_PATH
-    return QTest::qExec(&tc, argc, argv);
+    BOBUIEST_SET_MAIN_SOURCE_PATH
+    return BOBUIest::qExec(&tc, argc, argv);
 }
 
 #include "tst_qapplication.moc"

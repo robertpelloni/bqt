@@ -1,12 +1,12 @@
 // Copyright (C) 2018 QNX Software Systems. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXSCREENTRAITS_H
 #define QQNXSCREENTRAITS_H
 
 #include <screen/screen.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T>
 class screen_traits
@@ -86,6 +86,6 @@ public:
     static int destroy(screen_window_t window) { return screen_destroy_window(window); }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXSCREENTRAITS_H

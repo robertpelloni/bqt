@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "textedit.h"
 #include <QCompleter>
 #include <QKeyEvent>
 #include <QAbstractItemView>
-#include <QtDebug>
+#include <BobUIDebug>
 #include <QApplication>
 #include <QModelIndex>
 #include <QAbstractItemModel>
@@ -13,7 +13,7 @@
 
 //! [0]
 TextEdit::TextEdit(QWidget *parent)
-    : QTextEdit(parent)
+    : BOBUIextEdit(parent)
 {
     setPlainText(tr("This TextEdit provides autocompletions for words that have more than"
                     " 3 characters. You can trigger autocompletion using ") +
@@ -40,7 +40,7 @@ void TextEdit::setCompleter(QCompleter *completer)
 
     c->setWidget(this);
     c->setCompletionMode(QCompleter::PopupCompletion);
-    c->setCaseSensitivity(Qt::CaseInsensitive);
+    c->setCaseSensitivity(BobUI::CaseInsensitive);
     QObject::connect(c, QOverload<const QString &>::of(&QCompleter::activated),
                      this, &TextEdit::insertCompletion);
 }
@@ -58,10 +58,10 @@ void TextEdit::insertCompletion(const QString &completion)
 {
     if (c->widget() != this)
         return;
-    QTextCursor tc = textCursor();
+    BOBUIextCursor tc = textCursor();
     int extra = completion.length() - c->completionPrefix().length();
-    tc.movePosition(QTextCursor::Left);
-    tc.movePosition(QTextCursor::EndOfWord);
+    tc.movePosition(BOBUIextCursor::Left);
+    tc.movePosition(BOBUIextCursor::EndOfWord);
     tc.insertText(completion.right(extra));
     setTextCursor(tc);
 }
@@ -70,8 +70,8 @@ void TextEdit::insertCompletion(const QString &completion)
 //! [5]
 QString TextEdit::textUnderCursor() const
 {
-    QTextCursor tc = textCursor();
-    tc.select(QTextCursor::WordUnderCursor);
+    BOBUIextCursor tc = textCursor();
+    tc.select(BOBUIextCursor::WordUnderCursor);
     return tc.selectedText();
 }
 //! [5]
@@ -81,7 +81,7 @@ void TextEdit::focusInEvent(QFocusEvent *e)
 {
     if (c)
         c->setWidget(this);
-    QTextEdit::focusInEvent(e);
+    BOBUIextEdit::focusInEvent(e);
 }
 //! [6]
 
@@ -91,11 +91,11 @@ void TextEdit::keyPressEvent(QKeyEvent *e)
     if (c && c->popup()->isVisible()) {
         // The following keys are forwarded by the completer to the widget
        switch (e->key()) {
-       case Qt::Key_Enter:
-       case Qt::Key_Return:
-       case Qt::Key_Escape:
-       case Qt::Key_Tab:
-       case Qt::Key_Backtab:
+       case BobUI::Key_Enter:
+       case BobUI::Key_Return:
+       case BobUI::Key_Escape:
+       case BobUI::Key_Tab:
+       case BobUI::Key_Backtab:
             e->ignore();
             return; // let the completer do default behavior
        default:
@@ -103,19 +103,19 @@ void TextEdit::keyPressEvent(QKeyEvent *e)
        }
     }
 
-    const bool isShortcut = (e->modifiers().testFlag(Qt::ControlModifier) && e->key() == Qt::Key_E); // CTRL+E
+    const bool isShortcut = (e->modifiers().testFlag(BobUI::ControlModifier) && e->key() == BobUI::Key_E); // CTRL+E
     if (!c || !isShortcut) // do not process the shortcut when we have a completer
-        QTextEdit::keyPressEvent(e);
+        BOBUIextEdit::keyPressEvent(e);
 //! [7]
 
 //! [8]
-    const bool ctrlOrShift = e->modifiers().testFlag(Qt::ControlModifier) ||
-                             e->modifiers().testFlag(Qt::ShiftModifier);
+    const bool ctrlOrShift = e->modifiers().testFlag(BobUI::ControlModifier) ||
+                             e->modifiers().testFlag(BobUI::ShiftModifier);
     if (!c || (ctrlOrShift && e->text().isEmpty()))
         return;
 
     static QString eow("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
-    const bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
+    const bool hasModifier = (e->modifiers() != BobUI::NoModifier) && !ctrlOrShift;
     QString completionPrefix = textUnderCursor();
 
     if (!isShortcut && (hasModifier || e->text().isEmpty()|| completionPrefix.length() < 3

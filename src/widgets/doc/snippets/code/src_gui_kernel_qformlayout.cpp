@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 //! [0]
 QFormLayout *formLayout = new QFormLayout(this);
@@ -35,8 +35,8 @@ gridLayout->addWidget(ageSpinBox, 2, 1);
 //! [2]
 formLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
 formLayout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
-formLayout->setFormAlignment(Qt::AlignHCenter | Qt::AlignTop);
-formLayout->setLabelAlignment(Qt::AlignLeft);
+formLayout->setFormAlignment(BobUI::AlignHCenter | BobUI::AlignTop);
+formLayout->setLabelAlignment(BobUI::AlignLeft);
 //! [2]
 
 //! [3]

@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QEglFSVivWaylandIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QEglFSVivWaylandIntegrationPlugin
+bobui_internal_add_plugin(QEglFSVivWaylandIntegrationPlugin
     OUTPUT_NAME qeglfs-viv-wl-integration
     PLUGIN_TYPE egldeviceintegrations
     SOURCES
@@ -18,9 +18,9 @@ qt_internal_add_plugin(QEglFSVivWaylandIntegrationPlugin
         ../../api
     LIBRARIES
         Wayland::Server
-        Qt::Core
-        Qt::CorePrivate
-        Qt::EglFSDeviceIntegrationPrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::EglFSDeviceIntegrationPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qpixmap.h>
 #include <private/qpixmapfilter_p.h>
 #include <qpainter.h>
@@ -48,7 +48,7 @@ void tst_QPixmapFilter::testDefaultImplementations()
     QCOMPARE(filter.boundingRectFor(QRectF(1, 2, 4, 8)), QRectF(1, 2, 4, 8));
 
     QPixmap src(10, 10);
-    src.fill(Qt::blue);
+    src.fill(BobUI::blue);
 
     QPixmap test(src.size());
     QPainter p(&test);
@@ -131,7 +131,7 @@ void tst_QPixmapFilter::colorizeDraw()
 void tst_QPixmapFilter::colorizeDrawStrength()
 {
     QPixmapColorizeFilter filter;
-    filter.setColor(Qt::blue);
+    filter.setColor(BobUI::blue);
     filter.setStrength(0.3);
 
     QImage source(256, 128, QImage::Format_ARGB32);
@@ -359,9 +359,9 @@ void tst_QPixmapFilter::dropShadowBoundingRectFor()
     QCOMPARE(filter.boundingRectFor(rect3), rect3.adjusted(-delta - 10, -delta - 10, 0, 0));
 }
 
-QT_BEGIN_NAMESPACE
-void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+void bobui_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
+BOBUI_END_NAMESPACE
 
 void tst_QPixmapFilter::blurIndexed8()
 {
@@ -374,17 +374,17 @@ void tst_QPixmapFilter::blurIndexed8()
     img.fill(255);
 
     QImage original = img;
-    qt_blurImage(img, 10, true, false);
+    bobui_blurImage(img, 10, true, false);
     QCOMPARE(original.size(), img.size());
     QVERIFY2(qFuzzyCompare(img.devicePixelRatio(), qreal(2)),
              QByteArray::number(img.devicePixelRatio()).constData());
 
     original = img;
-    qt_blurImage(img, 10, true, true);
+    bobui_blurImage(img, 10, true, true);
     QVERIFY2(qFuzzyCompare(img.devicePixelRatio(), qreal(2)),
              QByteArray::number(img.devicePixelRatio()).constData());
     QCOMPARE(original.size(), QSize(img.height(), img.width()));
 }
 
-QTEST_MAIN(tst_QPixmapFilter)
+BOBUIEST_MAIN(tst_QPixmapFilter)
 #include "tst_qpixmapfilter.moc"

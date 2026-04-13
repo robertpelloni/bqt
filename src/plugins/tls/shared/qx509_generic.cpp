@@ -1,25 +1,25 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
-#include <QtNetwork/private/qsslcertificate_p.h>
-#include <QtNetwork/private/qssl_p.h>
+#include <BobUINetwork/private/qsslcertificate_p.h>
+#include <BobUINetwork/private/qssl_p.h>
 
 #include "qasn1element_p.h"
 #include "qx509_generic_p.h"
 
-#include <QtNetwork/qhostaddress.h>
+#include <BobUINetwork/qhostaddress.h>
 
-#include <QtCore/qendian.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qhash.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QTlsPrivate {
+namespace BOBUIlsPrivate {
 
 namespace {
 
@@ -86,7 +86,7 @@ QString X509CertificateGeneric::toText() const
     return {};
 }
 
-Qt::HANDLE X509CertificateGeneric::handle() const
+BobUI::HANDLE X509CertificateGeneric::handle() const
 {
     Q_UNIMPLEMENTED();
     return nullptr;
@@ -132,7 +132,7 @@ QList<QSslCertificate> X509CertificateGeneric::certificatesFromDer(const QByteAr
     QByteArray data = der;
     while (count == -1 || certificates.size() < count) {
         QSslCertificate cert;
-        auto *certBackend = QTlsBackend::backend<X509CertificateGeneric>(cert);
+        auto *certBackend = BOBUIlsBackend::backend<X509CertificateGeneric>(cert);
         if (!certBackend->parse(data))
             break;
 
@@ -428,6 +428,6 @@ bool X509CertificateGeneric::parseExtension(const QByteArray &data, X509Certific
     return true;
 }
 
-} // namespace QTlsPrivate
+} // namespace BOBUIlsPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

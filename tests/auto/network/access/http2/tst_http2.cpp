@@ -1,59 +1,59 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QScopeGuard>
 #include <QRandomGenerator>
 #include <QSignalSpy>
 
 #include "http2srv.h"
 
-#include <QtNetwork/private/qhttpnetworkconnection_p.h>
-#include <QtNetwork/private/qhttpnetworkreply_p.h>
-#include <QtNetwork/private/http2protocol_p.h>
-#include <QtNetwork/qnetworkaccessmanager.h>
-#include <QtNetwork/qhttp2configuration.h>
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkreply.h>
+#include <BobUINetwork/private/qhttpnetworkconnection_p.h>
+#include <BobUINetwork/private/qhttpnetworkreply_p.h>
+#include <BobUINetwork/private/http2protocol_p.h>
+#include <BobUINetwork/qnetworkaccessmanager.h>
+#include <BobUINetwork/qhttp2configuration.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkreply.h>
 
-#if QT_CONFIG(ssl)
-#include <QtNetwork/qsslsocket.h>
+#if BOBUI_CONFIG(ssl)
+#include <BobUINetwork/qsslsocket.h>
 #endif
 
-#include <QtCore/private/qnoncontiguousbytedevice_p.h>
-#include <QtCore/qsemaphore.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qset.h>
+#include <BobUICore/private/qnoncontiguousbytedevice_p.h>
+#include <BobUICore/qsemaphore.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qset.h>
 
 #include <cstdlib>
 #include <memory>
 #include <string>
 
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
 Q_DECLARE_METATYPE(H2Type)
 Q_DECLARE_METATYPE(QNetworkRequest::Attribute)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QHttp2Configuration qt_defaultH2Configuration()
+QHttp2Configuration bobui_defaultH2Configuration()
 {
     QHttp2Configuration config;
-    config.setStreamReceiveWindowSize(Http2::qtDefaultStreamReceiveWindowSize);
+    config.setStreamReceiveWindowSize(Http2::bobuiDefaultStreamReceiveWindowSize);
     config.setSessionReceiveWindowSize(Http2::maxSessionReceiveWindowSize);
     config.setServerPushEnabled(false);
     return config;
 }
 
-RawSettings qt_H2ConfigurationToSettings(const QHttp2Configuration &config = qt_defaultH2Configuration())
+RawSettings bobui_H2ConfigurationToSettings(const QHttp2Configuration &config = bobui_defaultH2Configuration())
 {
     RawSettings settings;
     settings[Http2::Settings::ENABLE_PUSH_ID] = config.serverPushEnabled();
@@ -140,25 +140,25 @@ private:
     std::function<void()> m_temporaryKeyChainRollback;
     [[nodiscard]] std::function<void()> useTemporaryKeychain()
     {
-#if QT_CONFIG(securetransport)
+#if BOBUI_CONFIG(securetransport)
         // Normally on macOS we use plain text only for SecureTransport
         // does not support ALPN on the server side. With 'direct encrytped'
         // we have to use TLS sockets (== private key) and thus suppress a
         // keychain UI asking for permission to use a private key.
         // Our CI has this, but somebody testing locally - will have a problem.
-        auto value = qEnvironmentVariable("QT_SSL_USE_TEMPORARY_KEYCHAIN");
-        qputenv("QT_SSL_USE_TEMPORARY_KEYCHAIN", "1");
+        auto value = qEnvironmentVariable("BOBUI_SSL_USE_TEMPORARY_KEYCHAIN");
+        qputenv("BOBUI_SSL_USE_TEMPORARY_KEYCHAIN", "1");
         auto envRollback = [value](){
             if (value.isEmpty())
-                qunsetenv("QT_SSL_USE_TEMPORARY_KEYCHAIN");
+                qunsetenv("BOBUI_SSL_USE_TEMPORARY_KEYCHAIN");
             else
-                qputenv("QT_SSL_USE_TEMPORARY_KEYCHAIN", value.toUtf8());
+                qputenv("BOBUI_SSL_USE_TEMPORARY_KEYCHAIN", value.toUtf8());
         };
         return envRollback;
 #else
         // avoid maybe-unused warnings from callers
         return {};
-#endif // QT_CONFIG(securetransport)
+#endif // BOBUI_CONFIG(securetransport)
     }
 
     void clearHTTP2State();
@@ -168,19 +168,19 @@ private:
     void runEventLoop(int ms = 5000);
     void stopEventLoop();
     Http2Server *newServer(const RawSettings &serverSettings, H2Type connectionType,
-                           const RawSettings &clientSettings = qt_H2ConfigurationToSettings());
+                           const RawSettings &clientSettings = bobui_H2ConfigurationToSettings());
     // Send a get or post request, depending on a payload (empty or not).
     void sendRequest(int streamNumber,
                      QNetworkRequest::Priority priority = QNetworkRequest::NormalPriority,
                      const QByteArray &payload = QByteArray(),
-                     const QHttp2Configuration &clientConfiguration = qt_defaultH2Configuration());
+                     const QHttp2Configuration &clientConfiguration = bobui_defaultH2Configuration());
     QUrl requestUrl(H2Type connnectionType) const;
 
     quint16 serverPort = 0;
-    QThread *workerThread = nullptr;
+    BOBUIhread *workerThread = nullptr;
     std::unique_ptr<QNetworkAccessManager> manager;
 
-    QTestEventLoop eventLoop;
+    BOBUIestEventLoop eventLoop;
 
     int nRequests = 0;
     int nSentRequests = 0;
@@ -194,7 +194,7 @@ private:
 };
 
 #define STOP_ON_FAILURE \
-    if (QTest::currentTestFailed()) \
+    if (BOBUIest::currentTestFailed()) \
         return;
 
 const RawSettings tst_Http2::defaultServerSettings{{Http2::Settings::MAX_CONCURRENT_STREAMS_ID, 100}};
@@ -209,7 +209,7 @@ struct ServerDeleter
     {
         if (srv) {
             srv->stopSendingDATAFrames();
-            QMetaObject::invokeMethod(srv, "deleteLater", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(srv, "deleteLater", BobUI::QueuedConnection);
         }
     }
 };
@@ -226,9 +226,9 @@ H2Type defaultConnectionType()
 } // unnamed namespace
 
 tst_Http2::tst_Http2()
-    : workerThread(new QThread)
+    : workerThread(new BOBUIhread)
 {
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     const auto features = QSslSocket::supportedFeatures();
     clearTextHTTP2 = !features.contains(QSsl::SupportedFeature::ServerSideAlpn);
 #else
@@ -245,8 +245,8 @@ tst_Http2::~tst_Http2()
     if (workerThread->isFinished()) {
         delete workerThread;
     } else {
-        connect(workerThread, &QThread::finished,
-                workerThread, &QThread::deleteLater);
+        connect(workerThread, &BOBUIhread::finished,
+                workerThread, &BOBUIhread::deleteLater);
     }
 }
 
@@ -267,27 +267,27 @@ void tst_Http2::cleanup()
 void tst_Http2::defaultQnamHttp2Configuration()
 {
     // The configuration we also implicitly use in QNAM.
-    QCOMPARE(qt_defaultH2Configuration(), QNetworkRequest().http2Configuration());
+    QCOMPARE(bobui_defaultH2Configuration(), QNetworkRequest().http2Configuration());
 }
 
 void tst_Http2::singleRequest_data()
 {
-    QTest::addColumn<QNetworkRequest::Attribute>("h2Attribute");
-    QTest::addColumn<H2Type>("connectionType");
+    BOBUIest::addColumn<QNetworkRequest::Attribute>("h2Attribute");
+    BOBUIest::addColumn<H2Type>("connectionType");
 
     // 'Clear text' that should always work, either via the protocol upgrade
     // or as direct.
-    QTest::addRow("h2c-upgrade") << QNetworkRequest::Http2AllowedAttribute << H2Type::h2c;
-    QTest::addRow("h2c-direct") << QNetworkRequest::Http2DirectAttribute << H2Type::h2cDirect;
+    BOBUIest::addRow("h2c-upgrade") << QNetworkRequest::Http2AllowedAttribute << H2Type::h2c;
+    BOBUIest::addRow("h2c-direct") << QNetworkRequest::Http2DirectAttribute << H2Type::h2cDirect;
 
     if (!clearTextHTTP2) {
-        // Qt with TLS where TLS-backend supports ALPN.
-        QTest::addRow("h2-ALPN") << QNetworkRequest::Http2AllowedAttribute << H2Type::h2Alpn;
+        // BobUI with TLS where TLS-backend supports ALPN.
+        BOBUIest::addRow("h2-ALPN") << QNetworkRequest::Http2AllowedAttribute << H2Type::h2Alpn;
     }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     if (QSslSocket::supportsSsl())
-        QTest::addRow("h2-direct") << QNetworkRequest::Http2DirectAttribute << H2Type::h2Direct;
+        BOBUIest::addRow("h2-direct") << QNetworkRequest::Http2DirectAttribute << H2Type::h2Direct;
 #endif
 }
 
@@ -301,7 +301,7 @@ void tst_Http2::singleRequest()
     QFETCH(const H2Type, connectionType);
     ServerPtr srv(newServer(defaultServerSettings, connectionType));
 
-    QMetaObject::invokeMethod(srv.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(srv.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -315,9 +315,9 @@ void tst_Http2::singleRequest()
     request.setAttribute(h2Attribute, QVariant(true));
 
     auto reply = manager->get(request);
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     QSignalSpy encSpy(reply, &QNetworkReply::encrypted);
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 
     connect(reply, &QNetworkReply::finished, this, &tst_Http2::replyFinished);
     // Since we're using self-signed certificates,
@@ -334,22 +334,22 @@ void tst_Http2::singleRequest()
     QCOMPARE(reply->error(), QNetworkReply::NoError);
     QVERIFY(reply->isFinished());
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     if (connectionType == H2Type::h2Alpn || connectionType == H2Type::h2Direct)
         QCOMPARE(encSpy.size(), 1);
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 }
 
 void tst_Http2::informationalRequest_data()
 {
-    QTest::addColumn<int>("statusCode");
+    BOBUIest::addColumn<int>("statusCode");
 
     // 'Clear text' that should always work, either via the protocol upgrade
     // or as direct.
-    QTest::addRow("statusCode-100") << 100;
-    QTest::addRow("statusCode-125") << 125;
-    QTest::addRow("statusCode-150") << 150;
-    QTest::addRow("statusCode-175") << 175;
+    BOBUIest::addRow("statusCode-100") << 100;
+    BOBUIest::addRow("statusCode-125") << 125;
+    BOBUIest::addRow("statusCode-150") << 150;
+    BOBUIest::addRow("statusCode-175") << 175;
 }
 
 void tst_Http2::informationalRequest()
@@ -364,7 +364,7 @@ void tst_Http2::informationalRequest()
     QFETCH(const int, statusCode);
     srv->setInformationalStatusCode(statusCode);
 
-    QMetaObject::invokeMethod(srv.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(srv.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -413,7 +413,7 @@ void tst_Http2::multipleRequests()
 
     ServerPtr srv(newServer(defaultServerSettings, defaultConnectionType()));
 
-    QMetaObject::invokeMethod(srv.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(srv.get(), "startServer", BobUI::QueuedConnection);
 
     runEventLoop();
     QVERIFY(serverPort != 0);
@@ -461,12 +461,12 @@ void tst_Http2::flowControlClientSide()
     params.setStreamReceiveWindowSize(Http2::defaultSessionWindowSize);
 
     const RawSettings serverSettings = {{Settings::MAX_CONCURRENT_STREAMS_ID, quint32(3)}};
-    ServerPtr srv(newServer(serverSettings, defaultConnectionType(), qt_H2ConfigurationToSettings(params)));
+    ServerPtr srv(newServer(serverSettings, defaultConnectionType(), bobui_H2ConfigurationToSettings(params)));
 
     const QByteArray respond(int(Http2::defaultSessionWindowSize * 10), 'x');
     srv->setResponseBody(respond);
 
-    QMetaObject::invokeMethod(srv.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(srv.get(), "startServer", BobUI::QueuedConnection);
 
     runEventLoop();
     QVERIFY(serverPort != 0);
@@ -493,7 +493,7 @@ void tst_Http2::flowControlServerSide()
     // to let all replies finish without any error.
     using namespace Http2;
 
-    if (QTestPrivate::isRunningArmOnX86())
+    if (BOBUIestPrivate::isRunningArmOnX86())
         QSKIP("Test is too slow to run on emulator");
 
     clearHTTP2State();
@@ -507,7 +507,7 @@ void tst_Http2::flowControlServerSide()
 
     const QByteArray payload(int(Http2::defaultSessionWindowSize * 500), 'x');
 
-    QMetaObject::invokeMethod(srv.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(srv.get(), "startServer", BobUI::QueuedConnection);
 
     runEventLoop();
     QVERIFY(serverPort != 0);
@@ -538,10 +538,10 @@ void tst_Http2::pushPromise()
     // Defaults are good, except ENABLE_PUSH:
     params.setServerPushEnabled(true);
 
-    ServerPtr srv(newServer(defaultServerSettings, defaultConnectionType(), qt_H2ConfigurationToSettings(params)));
+    ServerPtr srv(newServer(defaultServerSettings, defaultConnectionType(), bobui_H2ConfigurationToSettings(params)));
     srv->enablePushPromise(true, QByteArray("/script.js"));
 
-    QMetaObject::invokeMethod(srv.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(srv.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -603,13 +603,13 @@ void tst_Http2::goaway_data()
     if (clearTextHTTP2)
         QSKIP("This test requires TLS with ALPN to work");
 
-    QTest::addColumn<int>("responseTimeoutMS");
-    QTest::addColumn<int>("goawayCode");
-    QTest::addColumn<QNetworkReply::NetworkError>("expectedError");
-    QTest::newRow("ImmediateGOAWAY") << 0 << int(Http2::INTERNAL_ERROR) << QNetworkReply::InternalServerError;
-    QTest::newRow("DelayedGOAWAY") << 1000 << int(Http2::INTERNAL_ERROR) << QNetworkReply::InternalServerError;
-    QTest::newRow("Graceful") << 0 << int(Http2::HTTP2_NO_ERROR) << QNetworkReply::RemoteHostClosedError;
-    QTest::newRow("Unknown") << 0 << 500000 << QNetworkReply::ProtocolFailure;
+    BOBUIest::addColumn<int>("responseTimeoutMS");
+    BOBUIest::addColumn<int>("goawayCode");
+    BOBUIest::addColumn<QNetworkReply::NetworkError>("expectedError");
+    BOBUIest::newRow("ImmediateGOAWAY") << 0 << int(Http2::INTERNAL_ERROR) << QNetworkReply::InternalServerError;
+    BOBUIest::newRow("DelayedGOAWAY") << 1000 << int(Http2::INTERNAL_ERROR) << QNetworkReply::InternalServerError;
+    BOBUIest::newRow("Graceful") << 0 << int(Http2::HTTP2_NO_ERROR) << QNetworkReply::RemoteHostClosedError;
+    BOBUIest::newRow("Unknown") << 0 << 500000 << QNetworkReply::ProtocolFailure;
 }
 
 void tst_Http2::goaway()
@@ -627,7 +627,7 @@ void tst_Http2::goaway()
 
     ServerPtr srv(newServer(defaultServerSettings, defaultConnectionType()));
     srv->emulateGOAWAY(goawayCode, responseTimeoutMS);
-    QMetaObject::invokeMethod(srv.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(srv.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -676,7 +676,7 @@ void tst_Http2::earlyResponse()
 
     ServerPtr targetServer(newServer(defaultServerSettings, defaultConnectionType()));
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -687,11 +687,11 @@ void tst_Http2::earlyResponse()
     ServerPtr redirector(newServer(defaultServerSettings, defaultConnectionType()));
     redirector->redirectOpenStream(targetPort);
 
-    QMetaObject::invokeMethod(redirector.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(redirector.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort);
-    sendRequest(1, QNetworkRequest::NormalPriority, {1000000, Qt::Uninitialized});
+    sendRequest(1, QNetworkRequest::NormalPriority, {1000000, BobUI::Uninitialized});
 
     runEventLoop();
     STOP_ON_FAILURE
@@ -719,7 +719,7 @@ void tst_Http2::earlyError()
                                                                              : H2Type::h2Alpn;
     ServerPtr server(newServer(defaultServerSettings, serverConnectionType));
     server->enableSendEarlyError(true);
-    QMetaObject::invokeMethod(server.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(server.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
     QCOMPARE_NE(serverPort, 0);
 
@@ -729,7 +729,7 @@ void tst_Http2::earlyError()
             : QHttpNetworkConnection::ConnectionTypeHTTP2;
     QHttpNetworkConnection connection(1, "127.0.0.1", serverPort, true, false, nullptr,
                                       connectionType);
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     QSslConfiguration config = QSslConfiguration::defaultConfiguration();
     config.setAllowedNextProtocols({"h2"});
     connection.setSslConfiguration(config);
@@ -781,7 +781,7 @@ void tst_Http2::earlyError()
     QCOMPARE(statusCode, 403);
 
     QVERIFY(prefaceOK);
-    QTRY_VERIFY(serverGotSettingsACK);
+    BOBUIRY_VERIFY(serverGotSettingsACK);
 }
 
 /*
@@ -797,7 +797,7 @@ void tst_Http2::abortReply()
                                                                              : H2Type::h2Alpn;
     ServerPtr targetServer(newServer(defaultServerSettings, serverConnectionType));
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -810,7 +810,7 @@ void tst_Http2::abortReply()
             : QHttpNetworkConnection::ConnectionTypeHTTP2;
     QHttpNetworkConnection connection(1, "127.0.0.1", serverPort, true, false, nullptr,
                                       connectionType);
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     QSslConfiguration config = QSslConfiguration::defaultConfiguration();
     config.setAllowedNextProtocols({"h2"});
     connection.setSslConfiguration(config);
@@ -835,38 +835,38 @@ void tst_Http2::abortReply()
     });
 
     // failOnWarning doesn't work for qCritical, so we set this env-var:
-    const char envvar[] = "QT_FATAL_CRITICALS";
+    const char envvar[] = "BOBUI_FATAL_CRITICALS";
     auto restore = qScopeGuard([envvar, prev = qgetenv(envvar)]() {
         qputenv(envvar, prev);
     });
     qputenv(envvar, "1");
-    QTest::failOnWarning(QRegularExpression("HEADERS on invalid stream"));
-    QVERIFY(QTest::qWaitFor([&sem]() { return sem.tryAcquire(); }));
+    BOBUIest::failOnWarning(QRegularExpression("HEADERS on invalid stream"));
+    QVERIFY(BOBUIest::qWaitFor([&sem]() { return sem.tryAcquire(); }));
     using namespace std::chrono_literals;
     // Process some extra events in case they trigger an error:
-    QTest::qWait(100ms);
+    BOBUIest::qWait(100ms);
 }
 
 
 void tst_Http2::connectToHost_data()
 {
     // The attribute to set on a new request:
-    QTest::addColumn<QNetworkRequest::Attribute>("requestAttribute");
+    BOBUIest::addColumn<QNetworkRequest::Attribute>("requestAttribute");
     // The corresponding (to the attribute above) connection type the
     // server will use:
-    QTest::addColumn<H2Type>("connectionType");
+    BOBUIest::addColumn<H2Type>("connectionType");
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     if (QSslSocket::supportsSsl()) {
-        QTest::addRow("encrypted-h2-direct") << QNetworkRequest::Http2DirectAttribute << H2Type::h2Direct;
+        BOBUIest::addRow("encrypted-h2-direct") << QNetworkRequest::Http2DirectAttribute << H2Type::h2Direct;
         if (!clearTextHTTP2)
-            QTest::addRow("encrypted-h2-ALPN") << QNetworkRequest::Http2AllowedAttribute << H2Type::h2Alpn;
+            BOBUIest::addRow("encrypted-h2-ALPN") << QNetworkRequest::Http2AllowedAttribute << H2Type::h2Alpn;
     }
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
     // This works for all configurations, tests 'preconnect-http' scheme:
     // h2 with protocol upgrade is not working for now (the logic is a bit
     // complicated there ...).
-    QTest::addRow("h2-direct") << QNetworkRequest::Http2DirectAttribute << H2Type::h2cDirect;
+    BOBUIest::addRow("h2-direct") << QNetworkRequest::Http2DirectAttribute << H2Type::h2cDirect;
 }
 
 void tst_Http2::connectToHost()
@@ -893,7 +893,7 @@ void tst_Http2::connectToHost()
 
     ServerPtr targetServer(newServer(defaultServerSettings, connectionType));
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     if (QSslSocket::supportsSsl())
     {
         Q_ASSERT(!clearTextHTTP2 || connectionType != H2Type::h2Alpn);
@@ -904,7 +904,7 @@ void tst_Http2::connectToHost()
         Q_ASSERT(targetServer->isClearText());
     }
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -914,7 +914,7 @@ void tst_Http2::connectToHost()
 
     QNetworkReply *reply = nullptr;
     // Here some mess with how we create this first reply:
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     if (!targetServer->isClearText()) {
         // Let's emulate what QNetworkAccessManager::connectToHostEncrypted() does.
         // Alas, we cannot use it directly, since it does not return the reply and
@@ -928,7 +928,7 @@ void tst_Http2::connectToHost()
         // Since we're using self-signed certificates, ignore SSL errors:
         reply->ignoreSslErrors();
     } else
-#endif  // QT_CONFIG(ssl)
+#endif  // BOBUI_CONFIG(ssl)
     {
         // Emulating what QNetworkAccessManager::connectToHost() does with
         // additional information that it cannot provide (the attribute).
@@ -977,9 +977,9 @@ void tst_Http2::connectToHost()
 
 void tst_Http2::maxFrameSize()
 {
-#if !QT_CONFIG(ssl)
+#if !BOBUI_CONFIG(ssl)
     QSKIP("TLS support is needed for this test");
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 
     // Here we test we send 'MAX_FRAME_SIZE' setting in our
     // 'SETTINGS'. If done properly, our server will not chunk
@@ -992,16 +992,16 @@ void tst_Http2::maxFrameSize()
         attribute = QNetworkRequest::Http2DirectAttribute;
     }
 
-    auto h2Config = qt_defaultH2Configuration();
+    auto h2Config = bobui_defaultH2Configuration();
     h2Config.setMaxFrameSize(Http2::minPayloadLimit * 3);
 
     serverPort = 0;
     nRequests = 1;
 
     ServerPtr srv(newServer(defaultServerSettings, connectionType,
-                            qt_H2ConfigurationToSettings(h2Config)));
+                            bobui_H2ConfigurationToSettings(h2Config)));
     srv->setResponseBody(QByteArray(Http2::minPayloadLimit * 2, 'q'));
-    QMetaObject::invokeMethod(srv.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(srv.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
     QVERIFY(serverPort != 0);
 
@@ -1116,21 +1116,21 @@ void tst_Http2::http2DATAFrames()
 
 void tst_Http2::moreActivitySignals_data()
 {
-    QTest::addColumn<QNetworkRequest::Attribute>("h2Attribute");
-    QTest::addColumn<H2Type>("connectionType");
+    BOBUIest::addColumn<QNetworkRequest::Attribute>("h2Attribute");
+    BOBUIest::addColumn<H2Type>("connectionType");
 
-    QTest::addRow("h2c-upgrade")
+    BOBUIest::addRow("h2c-upgrade")
             << QNetworkRequest::Http2AllowedAttribute << H2Type::h2c;
-    QTest::addRow("h2c-direct")
+    BOBUIest::addRow("h2c-direct")
             << QNetworkRequest::Http2DirectAttribute << H2Type::h2cDirect;
 
     if (!clearTextHTTP2)
-        QTest::addRow("h2-ALPN")
+        BOBUIest::addRow("h2-ALPN")
                 << QNetworkRequest::Http2AllowedAttribute << H2Type::h2Alpn;
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     if (QSslSocket::supportsSsl()) {
-        QTest::addRow("h2-direct")
+        BOBUIest::addRow("h2-direct")
                 << QNetworkRequest::Http2DirectAttribute << H2Type::h2Direct;
     }
 #endif
@@ -1143,7 +1143,7 @@ void tst_Http2::moreActivitySignals()
     serverPort = 0;
     QFETCH(H2Type, connectionType);
     ServerPtr srv(newServer(defaultServerSettings, connectionType));
-    QMetaObject::invokeMethod(srv.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(srv.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
     QVERIFY(serverPort != 0);
     auto url = requestUrl(connectionType);
@@ -1180,11 +1180,11 @@ void tst_Http2::moreActivitySignals()
 
 void tst_Http2::contentEncoding_data()
 {
-    QTest::addColumn<QByteArray>("encoding");
-    QTest::addColumn<QByteArray>("body");
-    QTest::addColumn<QByteArray>("expected");
-    QTest::addColumn<QNetworkRequest::Attribute>("h2Attribute");
-    QTest::addColumn<H2Type>("connectionType");
+    BOBUIest::addColumn<QByteArray>("encoding");
+    BOBUIest::addColumn<QByteArray>("body");
+    BOBUIest::addColumn<QByteArray>("expected");
+    BOBUIest::addColumn<QNetworkRequest::Attribute>("h2Attribute");
+    BOBUIest::addColumn<H2Type>("connectionType");
 
     struct ContentEncodingData
     {
@@ -1204,12 +1204,12 @@ void tst_Http2::contentEncoding_data()
     contentEncodingData.emplace_back(
             "deflate", QByteArray::fromBase64("eJzLSM3JyVcozy/KSQEAGgsEXQ=="), "hello world");
 
-#if QT_CONFIG(brotli)
+#if BOBUI_CONFIG(brotli)
     contentEncodingData.emplace_back("br", QByteArray::fromBase64("DwWAaGVsbG8gd29ybGQD"),
                                      "hello world");
 #endif
 
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
     contentEncodingData.emplace_back(
             "zstd", QByteArray::fromBase64("KLUv/QRYWQAAaGVsbG8gd29ybGRoaR6y"), "hello world");
 #endif
@@ -1217,21 +1217,21 @@ void tst_Http2::contentEncoding_data()
     // Loop through and add the data...
     for (const auto &data : contentEncodingData) {
         const char *name = data.contentEncoding.data();
-        QTest::addRow("%s-h2c-upgrade", name)
+        BOBUIest::addRow("%s-h2c-upgrade", name)
                 << data.contentEncoding << data.body << data.expected
                 << QNetworkRequest::Http2AllowedAttribute << H2Type::h2c;
-        QTest::addRow("%s-h2c-direct", name)
+        BOBUIest::addRow("%s-h2c-direct", name)
                 << data.contentEncoding << data.body << data.expected
                 << QNetworkRequest::Http2DirectAttribute << H2Type::h2cDirect;
 
         if (!clearTextHTTP2)
-            QTest::addRow("%s-h2-ALPN", name)
+            BOBUIest::addRow("%s-h2-ALPN", name)
                     << data.contentEncoding << data.body << data.expected
                     << QNetworkRequest::Http2AllowedAttribute << H2Type::h2Alpn;
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
         if (QSslSocket::supportsSsl()) {
-            QTest::addRow("%s-h2-direct", name)
+            BOBUIest::addRow("%s-h2-direct", name)
                     << data.contentEncoding << data.body << data.expected
                     << QNetworkRequest::Http2DirectAttribute << H2Type::h2Direct;
         }
@@ -1251,7 +1251,7 @@ void tst_Http2::contentEncoding()
     QFETCH(QByteArray, encoding);
     targetServer->setContentEncoding(encoding);
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -1281,25 +1281,25 @@ void tst_Http2::contentEncoding()
 
     QCOMPARE(reply->error(), QNetworkReply::NoError);
     QVERIFY(reply->isFinished());
-    QTEST(reply->readAll(), "expected");
+    BOBUIEST(reply->readAll(), "expected");
 }
 
 void tst_Http2::authenticationRequired_data()
 {
-    QTest::addColumn<bool>("success");
-    QTest::addColumn<bool>("responseHEADOnly");
-    QTest::addColumn<bool>("withChallenge");
+    BOBUIest::addColumn<bool>("success");
+    BOBUIest::addColumn<bool>("responseHEADOnly");
+    BOBUIest::addColumn<bool>("withChallenge");
 
-    QTest::addRow("failed-auth") << false << true << true;
-    QTest::addRow("successful-auth") << true << true << true;
+    BOBUIest::addRow("failed-auth") << false << true << true;
+    BOBUIest::addRow("successful-auth") << true << true << true;
     // Include a DATA frame in the response from the remote server. An example would be receiving a
     // JSON response on a request along with the 401 error.
-    QTest::addRow("failed-auth-with-response") << false << false << true;
-    QTest::addRow("successful-auth-with-response") << true << false << true;
+    BOBUIest::addRow("failed-auth-with-response") << false << false << true;
+    BOBUIest::addRow("successful-auth-with-response") << true << false << true;
 
     // Don't provide a challenge header. This is valid if you are actually just
     // denied access for whatever reason.
-    QTest::addRow("no-challenge") << false << false << false;
+    BOBUIest::addRow("no-challenge") << false << false << false;
 }
 
 void tst_Http2::authenticationRequired()
@@ -1320,7 +1320,7 @@ void tst_Http2::authenticationRequired()
     else
         targetServer->setAuthenticationRequired(true);
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -1359,7 +1359,7 @@ void tst_Http2::authenticationRequired()
         // Use queued connection so that the finished signal can be emitted and the isFinished
         // property can be set.
         connect(reply.get(), &QNetworkReply::errorOccurred, this,
-                &tst_Http2::replyFinishedWithError, Qt::QueuedConnection);
+                &tst_Http2::replyFinishedWithError, BobUI::QueuedConnection);
     }
     // Since we're using self-signed certificates,
     // ignore SSL errors:
@@ -1397,7 +1397,7 @@ void tst_Http2::authenticationRequired()
     // In the `!success` case we need to wait for the server to emit this or it might cause issues
     // in the next test running after this. In the `success` case we anyway expect it to have been
     // received.
-    QTRY_VERIFY(serverGotSettingsACK);
+    BOBUIRY_VERIFY(serverGotSettingsACK);
 }
 
 void tst_Http2::unsupportedAuthenticateChallenge()
@@ -1411,9 +1411,9 @@ void tst_Http2::unsupportedAuthenticateChallenge()
     ServerPtr targetServer(newServer(defaultServerSettings, defaultConnectionType()));
     QByteArray responseBody = "Hello"_ba;
     targetServer->setResponseBody(responseBody);
-    targetServer->setAuthenticationHeader("Bearer realm=\"qt.io accounts\"");
+    targetServer->setAuthenticationHeader("Bearer realm=\"bobui.io accounts\"");
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -1451,7 +1451,7 @@ void tst_Http2::unsupportedAuthenticateChallenge()
     // Use queued connection so that the finished signal can be emitted and the
     // isFinished property can be set.
     connect(reply.get(), &QNetworkReply::errorOccurred, this,
-            &tst_Http2::replyFinishedWithError, Qt::QueuedConnection);
+            &tst_Http2::replyFinishedWithError, BobUI::QueuedConnection);
 
     // Since we're using self-signed certificates, ignore SSL errors:
     reply->ignoreSslErrors();
@@ -1478,21 +1478,21 @@ void tst_Http2::unsupportedAuthenticateChallenge()
     // In the `!success` case we need to wait for the server to emit this or it might cause issues
     // in the next test running after this. In the `success` case we anyway expect it to have been
     // received.
-    QTRY_VERIFY(serverGotSettingsACK);
+    BOBUIRY_VERIFY(serverGotSettingsACK);
 
 }
 
 void tst_Http2::h2cAllowedAttribute_data()
 {
-    QTest::addColumn<bool>("h2cAllowed");
-    QTest::addColumn<bool>("useAttribute"); // true: use attribute, false: use environment variable
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<bool>("h2cAllowed");
+    BOBUIest::addColumn<bool>("useAttribute"); // true: use attribute, false: use environment variable
+    BOBUIest::addColumn<bool>("success");
 
-    QTest::addRow("h2c-not-allowed") << false << false << false;
+    BOBUIest::addRow("h2c-not-allowed") << false << false << false;
     // Use the attribute to enable/disable the H2C:
-    QTest::addRow("attribute") << true << true << true;
-    // Use the QT_NETWORK_H2C_ALLOWED environment variable to enable/disable the H2C:
-    QTest::addRow("environment-variable") << true << false << true;
+    BOBUIest::addRow("attribute") << true << true << true;
+    // Use the BOBUI_NETWORK_H2C_ALLOWED environment variable to enable/disable the H2C:
+    BOBUIest::addRow("environment-variable") << true << false << true;
 }
 
 void tst_Http2::h2cAllowedAttribute()
@@ -1507,7 +1507,7 @@ void tst_Http2::h2cAllowedAttribute()
     ServerPtr targetServer(newServer(defaultServerSettings, H2Type::h2c));
     targetServer->setResponseBody("Hello");
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -1521,9 +1521,9 @@ void tst_Http2::h2cAllowedAttribute()
         if (useAttribute)
             request.setAttribute(QNetworkRequest::Http2CleartextAllowedAttribute, true);
         else
-            qputenv("QT_NETWORK_H2C_ALLOWED", "1");
+            qputenv("BOBUI_NETWORK_H2C_ALLOWED", "1");
     }
-    auto envCleanup = qScopeGuard([]() { qunsetenv("QT_NETWORK_H2C_ALLOWED"); });
+    auto envCleanup = qScopeGuard([]() { qunsetenv("BOBUI_NETWORK_H2C_ALLOWED"); });
 
     auto reply = std::unique_ptr<QNetworkReply>(manager->get(request));
 
@@ -1543,19 +1543,19 @@ void tst_Http2::h2cAllowedAttribute()
         QCOMPARE(reply->error(), QNetworkReply::ConnectionRefusedError);
     } else {
         QCOMPARE(reply->readAll(), QByteArray("Hello"));
-        QTRY_VERIFY(serverGotSettingsACK);
+        BOBUIRY_VERIFY(serverGotSettingsACK);
     }
 }
 
 void tst_Http2::redirect_data()
 {
-    QTest::addColumn<int>("maxRedirects");
-    QTest::addColumn<int>("redirectCount");
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<int>("maxRedirects");
+    BOBUIest::addColumn<int>("redirectCount");
+    BOBUIest::addColumn<bool>("success");
 
-    QTest::addRow("1-redirects-none-allowed-failure") << 0 << 1 << false;
-    QTest::addRow("1-redirects-success") << 1 << 1 << true;
-    QTest::addRow("2-redirects-1-allowed-failure") << 1 << 2 << false;
+    BOBUIest::addRow("1-redirects-none-allowed-failure") << 0 << 1 << false;
+    BOBUIest::addRow("1-redirects-success") << 1 << 1 << true;
+    BOBUIest::addRow("2-redirects-1-allowed-failure") << 1 << 2 << false;
 }
 
 void tst_Http2::redirect()
@@ -1571,7 +1571,7 @@ void tst_Http2::redirect()
     ServerPtr targetServer(newServer(defaultServerSettings, defaultConnectionType()));
     targetServer->setRedirect(redirectUrl, redirectCount);
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -1584,8 +1584,8 @@ void tst_Http2::redirect()
     QNetworkRequest request(url);
     request.setMaximumRedirectsAllowed(maxRedirects);
     // H2C might be used on macOS where SecureTransport doesn't support server-side ALPN
-    qputenv("QT_NETWORK_H2C_ALLOWED", "1");
-    auto envCleanup = qScopeGuard([]() { qunsetenv("QT_NETWORK_H2C_ALLOWED"); });
+    qputenv("BOBUI_NETWORK_H2C_ALLOWED", "1");
+    auto envCleanup = qScopeGuard([]() { qunsetenv("BOBUI_NETWORK_H2C_ALLOWED"); });
 
     auto reply = std::unique_ptr<QNetworkReply>(manager->get(request));
 
@@ -1611,7 +1611,7 @@ void tst_Http2::redirect()
     } else if (maxRedirects < redirectCount) {
         QCOMPARE(reply->error(), QNetworkReply::TooManyRedirectsError);
     }
-    QTRY_VERIFY(serverGotSettingsACK);
+    BOBUIRY_VERIFY(serverGotSettingsACK);
 }
 
 void tst_Http2::trailingHEADERS()
@@ -1622,7 +1622,7 @@ void tst_Http2::trailingHEADERS()
     ServerPtr targetServer(newServer(defaultServerSettings, defaultConnectionType()));
     targetServer->setSendTrailingHEADERS(true);
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -1646,7 +1646,7 @@ void tst_Http2::trailingHEADERS()
     QCOMPARE(nRequests, 0);
 
     QCOMPARE(reply->error(), QNetworkReply::NoError);
-    QTRY_VERIFY(serverGotSettingsACK);
+    BOBUIRY_VERIFY(serverGotSettingsACK);
 }
 
 void tst_Http2::duplicateRequestsWithAborts()
@@ -1657,7 +1657,7 @@ void tst_Http2::duplicateRequestsWithAborts()
     H2Type connectionType = H2Type::h2Direct;
     ServerPtr targetServer(newServer(defaultServerSettings, connectionType));
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -1698,7 +1698,7 @@ void tst_Http2::duplicateRequestsWithAborts()
 
 void tst_Http2::abortOnEncrypted()
 {
-#if !QT_CONFIG(ssl)
+#if !BOBUI_CONFIG(ssl)
     QSKIP("TLS support is needed for this test");
 #else
     if (!QSslSocket::supportsSsl())
@@ -1709,7 +1709,7 @@ void tst_Http2::abortOnEncrypted()
 
     ServerPtr targetServer(newServer(defaultServerSettings, H2Type::h2Direct));
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     nRequests = 1;
@@ -1732,13 +1732,13 @@ void tst_Http2::abortOnEncrypted()
     QCOMPARE(nRequests, 0);
     QCOMPARE(reply->error(), QNetworkReply::OperationCanceledError);
 
-    const bool res = QTest::qWaitFor(
+    const bool res = BOBUIest::qWaitFor(
             [this, server = targetServer.get()]() {
                 return serverGotSettingsACK || prefaceOK || nSentRequests > 0;
             },
             500);
     QVERIFY(!res);
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 }
 
 /*
@@ -1758,7 +1758,7 @@ void tst_Http2::limitedConcurrentStreamsAllowed()
     RawSettings oneConcurrentStream{ { Http2::Settings::MAX_CONCURRENT_STREAMS_ID, 1 } };
     ServerPtr targetServer(newServer(oneConcurrentStream, connectionType));
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -1805,7 +1805,7 @@ void tst_Http2::maxHeaderTableSize()
     RawSettings maxHeaderTableSize{ { Http2::Settings::HEADER_TABLE_SIZE_ID, 0 } };
     ServerPtr targetServer(newServer(maxHeaderTableSize, connectionType));
 
-    QMetaObject::invokeMethod(targetServer.get(), "startServer", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(targetServer.get(), "startServer", BobUI::QueuedConnection);
     runEventLoop();
 
     QVERIFY(serverPort != 0);
@@ -1921,7 +1921,7 @@ void tst_Http2::sendRequest(int streamNumber,
 
 QUrl tst_Http2::requestUrl(H2Type connectionType) const
 {
-#if !QT_CONFIG(ssl)
+#if !BOBUI_CONFIG(ssl)
     Q_ASSERT(connectionType != H2Type::h2Alpn && connectionType != H2Type::h2Direct);
 #endif
     static auto url = QUrl(QLatin1String(clearTextHTTP2 ? "http://127.0.0.1" : "https://127.0.0.1"));
@@ -1978,7 +1978,7 @@ void tst_Http2::receivedRequest(quint32 streamID)
     qDebug() << "   server got a request on stream" << streamID;
     Http2Server *srv = qobject_cast<Http2Server *>(sender());
     Q_ASSERT(srv);
-    QMetaObject::invokeMethod(srv, "sendResponse", Qt::QueuedConnection,
+    QMetaObject::invokeMethod(srv, "sendResponse", BobUI::QueuedConnection,
                               Q_ARG(quint32, streamID),
                               Q_ARG(bool, false /*non-empty body*/));
 }
@@ -1988,7 +1988,7 @@ void tst_Http2::receivedData(quint32 streamID)
     qDebug() << "   server got a 'POST' request on stream" << streamID;
     Http2Server *srv = qobject_cast<Http2Server *>(sender());
     Q_ASSERT(srv);
-    QMetaObject::invokeMethod(srv, "sendResponse", Qt::QueuedConnection,
+    QMetaObject::invokeMethod(srv, "sendResponse", BobUI::QueuedConnection,
                               Q_ARG(quint32, streamID),
                               Q_ARG(bool, POSTResponseHEADOnly /*true = HEADERS only*/));
 }
@@ -2048,8 +2048,8 @@ void tst_Http2::replyFinishedWithError()
         stopEventLoop();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_MAIN(tst_Http2)
+BOBUIEST_MAIN(tst_Http2)
 
 #include "tst_http2.moc"

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdbusargument_p.h"
 #include "qdbusconnection.h"
 #include "qdbusmetatype_p.h"
 #include "qdbusutil_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static void qIterAppend(DBusMessageIter *it, QByteArray *ba, int type, const void *arg)
 {
@@ -236,11 +236,11 @@ inline QDBusMarshaller *QDBusMarshaller::beginMap(QMetaType kid, QMetaType vid)
         return this;
     }
     if (ksignature[1] != 0 || !QDBusUtil::isValidBasicType(*ksignature)) {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wformat-overflow")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wformat-overflow")
         qWarning("QDBusMarshaller: type '%s' (%d) cannot be used as the key type in a D-Bus map.",
                  kid.name(), kid.id());
-QT_WARNING_POP
+BOBUI_WARNING_POP
         error("Type %1 passed in arguments cannot be used as a key in a map"_L1
               .arg(QLatin1StringView(kid.name())));
         return this;
@@ -550,4 +550,4 @@ bool QDBusMarshaller::appendCrossMarshalling(QDBusDemarshaller *demarshaller)
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## EglFsKmsSupportPrivate Module:
 #####################################################################
 
-qt_internal_add_module(EglFsKmsSupportPrivate
+bobui_internal_add_module(EglFsKmsSupportPrivate
     CONFIG_MODULE_NAME eglfs_kms_support
     INTERNAL_MODULE
     SOURCES
@@ -15,14 +15,14 @@ qt_internal_add_module(EglFsKmsSupportPrivate
         qeglfskmsintegration.cpp qeglfskmsintegration_p.h
         qeglfskmsscreen.cpp qeglfskmsscreen_p.h
     DEFINES
-        QT_EGL_NO_X11
+        BOBUI_EGL_NO_X11
     PUBLIC_LIBRARIES
         Libdrm::Libdrm
-        Qt::Core
-        Qt::CorePrivate
-        Qt::EglFSDeviceIntegrationPrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::KmsSupportPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::EglFSDeviceIntegrationPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::KmsSupportPrivate
     NO_GENERATE_CPP_EXPORTS
 )

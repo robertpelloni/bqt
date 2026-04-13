@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page bindableproperties.html
-    \title Qt Bindable Properties
-    \brief Qt's bindable properties.
+    \title BobUI Bindable Properties
+    \brief BobUI's bindable properties.
 
-    \ingroup qt-basic-concepts
-    \keyword Qt's Bindable Properties
+    \ingroup bobui-basic-concepts
+    \keyword BobUI's Bindable Properties
 
-    Qt provides bindable properties. Bindable properties are properties
+    BobUI provides bindable properties. Bindable properties are properties
     which either have a value or are specified using any C++ function,
     typically a C++ lambda expression.
     In case they are specified using a C++ function, they are
@@ -164,8 +164,8 @@
     and getters to be virtual. There is nothing it makes sense for the derived
     class to do.
 
-    However some Qt classes can have properties with virtual setters. When
-    subclassing such a Qt class, overriding such setters requires special care.
+    However some BobUI classes can have properties with virtual setters. When
+    subclassing such a BobUI class, overriding such setters requires special care.
 
     In any case the base implementation \e must be called for the binding to
     work correctly.

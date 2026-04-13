@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 class tst_Skip: public QObject
 {
@@ -23,9 +23,9 @@ private slots:
 
 void tst_Skip::test_data()
 {
-    QTest::addColumn<bool>("booll");
-    QTest::newRow("local 1") << false;
-    QTest::newRow("local 2") << true;
+    BOBUIest::addColumn<bool>("booll");
+    BOBUIest::newRow("local 1") << false;
+    BOBUIest::newRow("local 2") << true;
 
     QSKIP("skipping all");
 }
@@ -47,9 +47,9 @@ void tst_Skip::emptytest()
 
 void tst_Skip::singleSkip_data()
 {
-    QTest::addColumn<bool>("booll");
-    QTest::newRow("local 1") << false;
-    QTest::newRow("local 2") << true;
+    BOBUIest::addColumn<bool>("booll");
+    BOBUIest::newRow("local 1") << false;
+    BOBUIest::newRow("local 2") << true;
 }
 
 void tst_Skip::singleSkip()
@@ -60,6 +60,6 @@ void tst_Skip::singleSkip()
     qDebug("this line should only be reached once (%s)", booll ? "true" : "false");
 }
 
-QTEST_MAIN(tst_Skip)
+BOBUIEST_MAIN(tst_Skip)
 
 #include "tst_skip.moc"

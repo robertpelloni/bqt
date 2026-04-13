@@ -1,16 +1,16 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSCOLORDIALOG_H
 #define QIOSCOLORDIALOG_H
 
-#include <QtCore/qeventloop.h>
+#include <BobUICore/qeventloop.h>
 #include <qpa/qplatformdialoghelper.h>
 
 Q_FORWARD_DECLARE_OBJC_CLASS(QIOSColorDialogController);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIOSColorDialog : public QPlatformColorDialogHelper
 {
@@ -19,7 +19,7 @@ public:
     ~QIOSColorDialog();
 
     void exec() override;
-    bool show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent) override;
+    bool show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent) override;
     void hide() override;
 
     void setCurrentColor(const QColor&) override;
@@ -33,7 +33,7 @@ private:
     QColor m_currentColor;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIOSCOLORDIALOG_H
 

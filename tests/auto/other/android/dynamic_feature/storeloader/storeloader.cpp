@@ -1,19 +1,19 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "storeloader.h"
 
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qlogging.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/quuid.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qlogging.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/quuid.h>
 
 #include <jni.h>
 
 Q_DECLARE_JNI_CLASS(StoreLoader,
-                    "org/qtproject/example/android_dynamic_feature/StoreLoader");
+                    "org/bobuiproject/example/android_dynamic_feature/StoreLoader");
 
 class StoreLoaderHandlerPrivate : public QObjectPrivate
 {
@@ -35,12 +35,12 @@ private:
     QString m_callId = QUuid::createUuid().toString();
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 QString asString(const jstring &s)
 {
     return QJniObject(s).toString();
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 namespace {
 
@@ -54,7 +54,7 @@ public:
     StoreLoaderHandler *findHandler(const jstring &callId);
     void removeHandler(const jstring &callId);
 
-    QtJniTypes::StoreLoader loader = nullptr;
+    BobUIJniTypes::StoreLoader loader = nullptr;
 
 private:
     QHash<QString, QPointer<StoreLoaderHandler>> m_handlers;
@@ -122,14 +122,14 @@ Q_DECLARE_JNI_NATIVE_METHOD(finishedNative)
 
 StoreLoaderImpl::StoreLoaderImpl()
 {
-    loader = QJniObject::construct<QtJniTypes::StoreLoader, QtJniTypes::Context>(
+    loader = QJniObject::construct<BobUIJniTypes::StoreLoader, BobUIJniTypes::Context>(
             QNativeInterface::QAndroidApplication::context());
 }
 
 bool StoreLoaderImpl::registerNatives() const
 {
     static bool result = [] {
-        return QtJniTypes::StoreLoader::registerNativeMethods({
+        return BobUIJniTypes::StoreLoader::registerNativeMethods({
                 Q_JNI_NATIVE_METHOD(stateChangedNative),
                 Q_JNI_NATIVE_METHOD(errorOccurredNative),
                 Q_JNI_NATIVE_METHOD(userConfirmationRequestedNative),

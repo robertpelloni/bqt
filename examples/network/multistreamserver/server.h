@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SERVER_H
 #define SERVER_H
@@ -8,12 +8,12 @@
 #include <QList>
 #include <QList>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QSctpServer;
 class QSctpSocket;
 class QLabel;
 class QByteArray;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class Provider;
 

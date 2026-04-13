@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qchar.h>
 #include <qfile.h>
 #include <qstringlist.h>
@@ -90,8 +90,8 @@ static void verifyCharClassPattern(QString str, qulonglong pattern,
 
 void tst_QUnicodeTools::graphemeBreakClass_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::addColumn<int>("pattern");
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::addColumn<int>("pattern");
 
     // A grapheme cluster is a set of unicode code points that is
     // seen as a single character.
@@ -100,40 +100,40 @@ void tst_QUnicodeTools::graphemeBreakClass_data()
     // A pattern bit is cleared for every code point that modifies
     // the current graphene cluster.
 
-    QTest::addRow("g and combining diaeresis")
+    BOBUIest::addRow("g and combining diaeresis")
             << u8"g\u0308"
             << 0b10;
-    QTest::addRow("hangul gag single")
+    BOBUIest::addRow("hangul gag single")
             << u8"\uAC01"
             << 0b1;
-    QTest::addRow("hangul gag cluster")
+    BOBUIest::addRow("hangul gag cluster")
             << u8"\u1100\u1161\u11A8"
             << 0b100;
-    QTest::addRow("thai ko")
+    BOBUIest::addRow("thai ko")
             << u8"\u0E01"
             << 0b1;
-    QTest::addRow("tamil ni")
+    BOBUIest::addRow("tamil ni")
             << u8"\u0BA8\u0BBF"
             << 0b10;
-    QTest::addRow("thai e")
+    BOBUIest::addRow("thai e")
             << u8"\u0E40"
             << 0b1;
-    QTest::addRow("thai kam")
+    BOBUIest::addRow("thai kam")
             << u8"\u0E01\u0E33"
             << 0b10;
-    QTest::addRow("devanagari ssi")
+    BOBUIest::addRow("devanagari ssi")
             << u8"\u0937\u093F"
             << 0b10;
-    QTest::addRow("thai am")
+    BOBUIest::addRow("thai am")
             << u8"\u0E33"
             << 0b1;
-    QTest::addRow("devanagari ssa")
+    BOBUIest::addRow("devanagari ssa")
             << u8"\u0937"
             << 0b1;
-    QTest::addRow("devanagari i")
+    BOBUIest::addRow("devanagari i")
             << u8"\u093F"
             << 0b1;
-    QTest::addRow("devanagari kshi")
+    BOBUIest::addRow("devanagari kshi")
             << u8"\u0915\u094D\u0937\u093F"
             << 0b1000;
 }
@@ -148,25 +148,25 @@ void tst_QUnicodeTools::graphemeBreakClass()
 
 void tst_QUnicodeTools::wordBreakClass_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::addColumn<qulonglong>("pattern");
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::addColumn<qulonglong>("pattern");
 
     // Word boundaries are used for things like selection and whole word search.
     // Typically they are beginning of words, whitespaces and punctuation.
 
-    QTest::addRow("two words")
+    BOBUIest::addRow("two words")
             <<  "two words"
             << 0b100110000ULL;
             // breaks at beginning of words and space
-    QTest::addRow("three words")
+    BOBUIest::addRow("three words")
             <<  "The quick fox"
             << 0b1001100001100ULL;
             // breaks at beginning of words and spaces
-    QTest::addRow("quoted")
+    BOBUIest::addRow("quoted")
             << u8"The quick (\"brown\") fox"
             <<  0b10011000011'110000'111100ULL;
             // as above plus quotes and parentesis
-    QTest::addRow("long")
+    BOBUIest::addRow("long")
             <<  "The quick (\"brown\") fox can’t jump 32.3 feet, right?"
             << 0b10011000011'110000'11110011000011000110001100011100001ULL;
             // as above plus commma and question mark
@@ -183,18 +183,18 @@ void tst_QUnicodeTools::wordBreakClass()
 
 void tst_QUnicodeTools::sentenceBreakClass_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::addColumn<qulonglong>("pattern");
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::addColumn<qulonglong>("pattern");
 
     // Sentence boundaries are at the beginning of each new sentence
 
-    QTest::addRow("one sentence")
+    BOBUIest::addRow("one sentence")
             <<  "One sentence."
             << 0b1000000000000ULL;
-    QTest::addRow("two sentences")
+    BOBUIest::addRow("two sentences")
             <<  "One sentence. One more."
             << 0b10000000000000100000000ULL;
-    QTest::addRow("question")
+    BOBUIest::addRow("question")
             <<  "Who said \"Hey you?\" I did."
             << 0b100000000'000000000'00100000ULL;
 }
@@ -207,5 +207,5 @@ void tst_QUnicodeTools::sentenceBreakClass()
     verifyCharClassPattern(str, pattern, QUnicodeTools::SentenceBreaks);
 }
 
-QTEST_APPLESS_MAIN(tst_QUnicodeTools)
+BOBUIEST_APPLESS_MAIN(tst_QUnicodeTools)
 #include "tst_qunicodetools.moc"

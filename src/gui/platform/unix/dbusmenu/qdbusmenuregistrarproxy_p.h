@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Dmitry Shachnev <mitya57@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*
  * This file was originally created by qdbusxml2cpp version 0.8
@@ -16,24 +16,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/QObject>
-#include <QtCore/QByteArray>
-#include <QtCore/QList>
-#include <QtCore/QString>
-#include <QtCore/QVariant>
-#include <QtDBus/QDBusAbstractInterface>
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusReply>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/QObject>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QList>
+#include <BobUICore/QString>
+#include <BobUICore/QVariant>
+#include <BobUIDBus/QDBusAbstractInterface>
+#include <BobUIDBus/QDBusConnection>
+#include <BobUIDBus/QDBusReply>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
  * Proxy class for interface com.canonical.AppMenu.Registrar
@@ -80,6 +80,6 @@ public Q_SLOTS: // METHODS
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDBUSMENUREGISTRARPROXY_P_H

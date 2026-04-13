@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include <QPrinter>
 
 void examples()
@@ -47,7 +47,7 @@ void examples()
         view.show();
 
         // a blue background
-        scene.setBackgroundBrush(Qt::blue);
+        scene.setBackgroundBrush(BobUI::blue);
 
         // a gradient background
         QRadialGradient gradient(0, 0, 10);
@@ -66,7 +66,7 @@ void examples()
         scene.setForegroundBrush(QColor(255, 255, 255, 127));
 
         // a grid foreground
-        scene.setForegroundBrush(QBrush(Qt::lightGray, Qt::CrossPattern));
+        scene.setForegroundBrush(QBrush(BobUI::lightGray, BobUI::CrossPattern));
         //! [4]
     }
 }

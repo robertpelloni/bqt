@@ -1,9 +1,9 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/q20utility.h>
-#include <QtCore/qcompare.h>
+#include <BOBUIest>
+#include <BobUICore/q20utility.h>
+#include <BobUICore/qcompare.h>
 
 class tst_q20_utility : public QObject
 {
@@ -25,7 +25,7 @@ private Q_SLOTS:
     void compareLongInt() { compareImpl<long, ulong>(); }
     void compareQLonglongInt_data() { dataImpl1<qlonglong, qulonglong>(); }
     void compareQLonglongInt() { compareImpl<qlonglong, qulonglong>(); }
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     void compareQInt128_data() { dataImpl1<qint128, quint128>(); }
     void compareQInt128() { compareImpl<qint128, quint128>(); }
     void compareMixedQInt128ULonglong_data() { dataImpl2<qint128, qulonglong>(); }
@@ -49,23 +49,23 @@ private Q_SLOTS:
 template <typename LeftType, typename RightType>
 void tst_q20_utility::dataImpl1()
 {
-    QTest::addColumn<LeftType>("a");
-    QTest::addColumn<RightType>("b");
-    QTest::addColumn<Qt::strong_ordering>("ordering");
+    BOBUIest::addColumn<LeftType>("a");
+    BOBUIest::addColumn<RightType>("b");
+    BOBUIest::addColumn<BobUI::strong_ordering>("ordering");
 
     const LeftType lmin = (std::numeric_limits<LeftType>::min)();
     const LeftType lmax = (std::numeric_limits<LeftType>::max)();
     const RightType rmax = (std::numeric_limits<RightType>::max)();
 
-    //                           LeftType          RightType          a <=> b Qt::strong_ordering
-    QTest::addRow("0_0")      << LeftType(0)    << RightType(0)    << Qt::strong_ordering::equal;
-    QTest::addRow("-1_1")     << LeftType(-1)   << RightType(1)    << Qt::strong_ordering::less;
-    QTest::addRow("min_0")    << lmin           << RightType(0)    << Qt::strong_ordering::less;
-    QTest::addRow("min_max")  << lmin           << RightType(lmax) << Qt::strong_ordering::less;
-    QTest::addRow("min_umax") << lmin           << rmax            << Qt::strong_ordering::less;
-    QTest::addRow("-1_max")   << LeftType(-1)   << RightType(lmax) << Qt::strong_ordering::less;
-    QTest::addRow("-1_umax")  << LeftType(-1)   << rmax            << Qt::strong_ordering::less;
-    QTest::addRow("126_126")  << LeftType(126)  << RightType(126)  << Qt::strong_ordering::equal;
+    //                           LeftType          RightType          a <=> b BobUI::strong_ordering
+    BOBUIest::addRow("0_0")      << LeftType(0)    << RightType(0)    << BobUI::strong_ordering::equal;
+    BOBUIest::addRow("-1_1")     << LeftType(-1)   << RightType(1)    << BobUI::strong_ordering::less;
+    BOBUIest::addRow("min_0")    << lmin           << RightType(0)    << BobUI::strong_ordering::less;
+    BOBUIest::addRow("min_max")  << lmin           << RightType(lmax) << BobUI::strong_ordering::less;
+    BOBUIest::addRow("min_umax") << lmin           << rmax            << BobUI::strong_ordering::less;
+    BOBUIest::addRow("-1_max")   << LeftType(-1)   << RightType(lmax) << BobUI::strong_ordering::less;
+    BOBUIest::addRow("-1_umax")  << LeftType(-1)   << rmax            << BobUI::strong_ordering::less;
+    BOBUIest::addRow("126_126")  << LeftType(126)  << RightType(126)  << BobUI::strong_ordering::equal;
 }
 
 template <typename LeftType, typename RightType>
@@ -73,9 +73,9 @@ void tst_q20_utility::compareImpl()
 {
     QFETCH(LeftType, a);
     QFETCH(RightType, b);
-    QFETCH(Qt::strong_ordering, ordering);
+    QFETCH(BobUI::strong_ordering, ordering);
 
-    Qt::strong_ordering reversed = QtOrderingPrivate::reversed(ordering);
+    BobUI::strong_ordering reversed = BobUIOrderingPrivate::reversed(ordering);
     QCOMPARE(q20::cmp_equal(a, b), is_eq(ordering));
     QCOMPARE(q20::cmp_less_equal(a, b), is_lteq(ordering));
     QCOMPARE(q20::cmp_greater_equal(a, b), is_gteq(ordering));
@@ -94,41 +94,41 @@ void tst_q20_utility::compareImpl()
 template <typename LeftType, typename RightType>
 void tst_q20_utility::dataImpl2()
 {
-    QTest::addColumn<LeftType>("a");
-    QTest::addColumn<RightType>("b");
-    QTest::addColumn<Qt::strong_ordering>("ordering");
+    BOBUIest::addColumn<LeftType>("a");
+    BOBUIest::addColumn<RightType>("b");
+    BOBUIest::addColumn<BobUI::strong_ordering>("ordering");
 
     const LeftType lmin = (std::numeric_limits<LeftType>::min)();
     const LeftType lmax = (std::numeric_limits<LeftType>::max)();
     const RightType rmax = (std::numeric_limits<RightType>::max)();
 
-    //                           LeftType          RightType          a <=> b Qt::strong_ordering
-    QTest::addRow("0_0")      << LeftType(0)    << RightType(0)    << Qt::strong_ordering::equal;
-    QTest::addRow("-1_1")     << LeftType(-1)   << RightType(1)    << Qt::strong_ordering::less;
-    QTest::addRow("min_0")    << lmin           << RightType(0)    << Qt::strong_ordering::less;
-    QTest::addRow("min_max")  << lmin           << RightType(lmax) << Qt::strong_ordering::less;
-    QTest::addRow("min_umax") << lmin           << rmax            << Qt::strong_ordering::less;
-    QTest::addRow("-1_max")   << LeftType(-1)   << RightType(lmax) << Qt::strong_ordering::less;
-    QTest::addRow("-1_umax")  << LeftType(-1)   << rmax            << Qt::strong_ordering::less;
-    QTest::addRow("126_126")  << LeftType(126)  << RightType(126)  << Qt::strong_ordering::equal;
+    //                           LeftType          RightType          a <=> b BobUI::strong_ordering
+    BOBUIest::addRow("0_0")      << LeftType(0)    << RightType(0)    << BobUI::strong_ordering::equal;
+    BOBUIest::addRow("-1_1")     << LeftType(-1)   << RightType(1)    << BobUI::strong_ordering::less;
+    BOBUIest::addRow("min_0")    << lmin           << RightType(0)    << BobUI::strong_ordering::less;
+    BOBUIest::addRow("min_max")  << lmin           << RightType(lmax) << BobUI::strong_ordering::less;
+    BOBUIest::addRow("min_umax") << lmin           << rmax            << BobUI::strong_ordering::less;
+    BOBUIest::addRow("-1_max")   << LeftType(-1)   << RightType(lmax) << BobUI::strong_ordering::less;
+    BOBUIest::addRow("-1_umax")  << LeftType(-1)   << rmax            << BobUI::strong_ordering::less;
+    BOBUIest::addRow("126_126")  << LeftType(126)  << RightType(126)  << BobUI::strong_ordering::equal;
 }
 
 void tst_q20_utility::compareCrossSizeTypes_data()
 {
-    QTest::addColumn<qlonglong>("a");
-    QTest::addColumn<ushort>("b");
-    QTest::addColumn<Qt::strong_ordering>("ordering");
+    BOBUIest::addColumn<qlonglong>("a");
+    BOBUIest::addColumn<ushort>("b");
+    BOBUIest::addColumn<BobUI::strong_ordering>("ordering");
 
-    //                           qlonglong              ushort               a <=> b Qt::strong_ordering
-    QTest::addRow("0_0")      << qlonglong(0)        << ushort(0)         << Qt::strong_ordering::equal;
-    QTest::addRow("-1_1")     << qlonglong(-1)       << ushort(1)         << Qt::strong_ordering::less;
-    QTest::addRow("min_0")    << qlonglong(SHRT_MIN) << ushort(0)         << Qt::strong_ordering::less;
-    QTest::addRow("min_max")  << qlonglong(SHRT_MIN) << ushort(SHRT_MAX)  << Qt::strong_ordering::less;
-    QTest::addRow("min_umax") << qlonglong(SHRT_MIN) << ushort(USHRT_MAX) << Qt::strong_ordering::less;
-    QTest::addRow("max_max")  << qlonglong(SHRT_MAX) << ushort(SHRT_MAX)  << Qt::strong_ordering::equal;
-    QTest::addRow("-1_max")   << qlonglong(-1)       << ushort(SHRT_MAX)  << Qt::strong_ordering::less;
-    QTest::addRow("-1_umax")  << qlonglong(-1)       << ushort(USHRT_MAX) << Qt::strong_ordering::less;
-    QTest::addRow("max_umax") << qlonglong(SHRT_MAX) << ushort(USHRT_MAX) << Qt::strong_ordering::less;
+    //                           qlonglong              ushort               a <=> b BobUI::strong_ordering
+    BOBUIest::addRow("0_0")      << qlonglong(0)        << ushort(0)         << BobUI::strong_ordering::equal;
+    BOBUIest::addRow("-1_1")     << qlonglong(-1)       << ushort(1)         << BobUI::strong_ordering::less;
+    BOBUIest::addRow("min_0")    << qlonglong(SHRT_MIN) << ushort(0)         << BobUI::strong_ordering::less;
+    BOBUIest::addRow("min_max")  << qlonglong(SHRT_MIN) << ushort(SHRT_MAX)  << BobUI::strong_ordering::less;
+    BOBUIest::addRow("min_umax") << qlonglong(SHRT_MIN) << ushort(USHRT_MAX) << BobUI::strong_ordering::less;
+    BOBUIest::addRow("max_max")  << qlonglong(SHRT_MAX) << ushort(SHRT_MAX)  << BobUI::strong_ordering::equal;
+    BOBUIest::addRow("-1_max")   << qlonglong(-1)       << ushort(SHRT_MAX)  << BobUI::strong_ordering::less;
+    BOBUIest::addRow("-1_umax")  << qlonglong(-1)       << ushort(USHRT_MAX) << BobUI::strong_ordering::less;
+    BOBUIest::addRow("max_umax") << qlonglong(SHRT_MAX) << ushort(USHRT_MAX) << BobUI::strong_ordering::less;
 }
 
 void tst_q20_utility::inRange()
@@ -150,11 +150,11 @@ void tst_q20_utility::inRange()
     static_assert((q20::in_range<ulong>(INT_MAX)));
     static_assert(q20::in_range<ulong>(ULONG_MAX));
     static_assert(q20::in_range<ulong>(INT_MAX));
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     static_assert(!q20::in_range<quint128>(-1));
     static_assert(q20::in_range<qint128>(-1));
 #endif
 }
 
-QTEST_MAIN(tst_q20_utility)
+BOBUIEST_MAIN(tst_q20_utility)
 #include "tst_q20_utility.moc"

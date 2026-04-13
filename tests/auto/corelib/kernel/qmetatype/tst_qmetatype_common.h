@@ -1,22 +1,22 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // Used by both tst_qmetatype and tst_qsettings
 
 #ifndef TST_QMETATYPE_H
 #define TST_QMETATYPE_H
 
-#include <QtCore>
+#include <BobUICore>
 
 #include <float.h>
 
 #define FOR_EACH_PRIMITIVE_METATYPE(F) \
-    QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(F) \
-    QT_FOR_EACH_STATIC_CORE_POINTER(F) \
+    BOBUI_FOR_EACH_STATIC_PRIMITIVE_TYPE(F) \
+    BOBUI_FOR_EACH_STATIC_CORE_POINTER(F) \
 
 #define FOR_EACH_COMPLEX_CORE_METATYPE(F) \
-    QT_FOR_EACH_STATIC_CORE_CLASS(F) \
-    QT_FOR_EACH_STATIC_CORE_TEMPLATE(F)
+    BOBUI_FOR_EACH_STATIC_CORE_CLASS(F) \
+    BOBUI_FOR_EACH_STATIC_CORE_TEMPLATE(F)
 
 #define FOR_EACH_CORE_METATYPE(F) \
     FOR_EACH_PRIMITIVE_METATYPE(F) \
@@ -153,8 +153,8 @@ template<> struct TestValueFactory<QMetaType::QBitArray> {
 template<> struct TestValueFactory<QMetaType::QDate> {
     static QDate *create() { return new QDate(QDate::currentDate()); }
 };
-template<> struct TestValueFactory<QMetaType::QTime> {
-    static QTime *create() { return new QTime(QTime::currentTime()); }
+template<> struct TestValueFactory<QMetaType::BOBUIime> {
+    static BOBUIime *create() { return new BOBUIime(BOBUIime::currentTime()); }
 };
 template<> struct TestValueFactory<QMetaType::QDateTime> {
     static QDateTime *create() { return new QDateTime(QDateTime::currentDateTime()); }
@@ -207,7 +207,7 @@ template<> struct TestValueFactory<QMetaType::Nullptr> {
 template<> struct TestValueFactory<QMetaType::QRegularExpression> {
     static QRegularExpression *create()
     {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         return new QRegularExpression("abc.*def");
 #else
         return 0;

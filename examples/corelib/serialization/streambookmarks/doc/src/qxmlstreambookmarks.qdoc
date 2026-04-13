@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example serialization/streambookmarks
@@ -11,7 +11,7 @@
     \ingroup corelib_examples
 
     The QXmlStream Bookmarks example provides a viewer for XML Bookmark Exchange
-    Language (XBEL) files. It can read bookmarks using Qt's QXmlStreamReader and
+    Language (XBEL) files. It can read bookmarks using BobUI's QXmlStreamReader and
     write them back out again using QXmlStreamWriter. As this example aims to
     show how to use these reader and writer types, it provides no means to open
     a bookmark, add a new one, or merge two bookmark files, and only minimal
@@ -22,7 +22,7 @@
 
     \section1 XbelWriter Class Definition
 
-    The \c XbelWriter class takes a \l{QTreeWidget}{tree widget} describing a
+    The \c XbelWriter class takes a \l{BOBUIreeWidget}{tree widget} describing a
     hierarchy of folders containing bookmarks. Its \c writeFile() provides the
     means to write out this hierarchy, in XBEL format, to a given output device.
 
@@ -49,7 +49,7 @@
 
     \snippet serialization/streambookmarks/xbelwriter.cpp 1
 
-    The \c writeItem() function accepts a QTreeWidgetItem object and writes to
+    The \c writeItem() function accepts a BOBUIreeWidgetItem object and writes to
     its XML stream a representation of the object, which depends on its \c
     UserRole, which can be one of a \c{"folder"}, \c{"bookmark"},
     or \c{"separator"}. Within each folder, it calls itself recursively on each
@@ -60,12 +60,12 @@
 
     \section1 XbelReader Class Definition
 
-    The \c XbelReader takes a \l{QTreeWidget}{tree widget} to populate with
+    The \c XbelReader takes a \l{BOBUIreeWidget}{tree widget} to populate with
     items describing a bookmark hierarchy. It supports reading XBEL data from a
     QIODevice as a source of these items. If parsing of the XBEL data fails, it
     can report what went wrong.
 
-    Internally, it records the QTreeWidget that it will populate and packages an
+    Internally, it records the BOBUIreeWidget that it will populate and packages an
     instance of QXmlStreamReader, the companion class to QXmlStreamWriter, which
     it will use to read XBEL data.
 
@@ -77,7 +77,7 @@
     extensive use of the \l{QXmlStreamReader::}{readNextStartElement()}
     convenience function.
 
-    The \c XbelReader constructor requires a QTreeWidget that it will populate.
+    The \c XbelReader constructor requires a BOBUIreeWidget that it will populate.
     It populates the tree widget's style with suitable icons: a folder icon that
     changes form to indicate whether each folder as open or closed; and a
     standard file icon for the individual bookmarks within those folders.
@@ -156,7 +156,7 @@
 
     \section1 MainWindow Class Implementation
 
-    The \c MainWindow constructor sets up its QTreeWidget object, \c treeWidget,
+    The \c MainWindow constructor sets up its BOBUIreeWidget object, \c treeWidget,
     as its own central widget, with column headings for the title and location
     of each book-mark. It configures a custom menu that enables the user to
     perform actions on individual bookmarks within the tree widget.
@@ -177,7 +177,7 @@
     The \c createMenus() function creates the \c fileMenu and \c helpMenu and
     adds QAction objects to them, bound variously to the \c open(), \c saveAs()
     and \c about() functions, along with QWidget::close() and
-    QApplication::aboutQt(). The connections are as shown below:
+    QApplication::aboutBobUI(). The connections are as shown below:
 
     \snippet serialization/streambookmarks/mainwindow.cpp 2
 
@@ -207,7 +207,7 @@
     \snippet serialization/streambookmarks/mainwindow.cpp 4
 
     The \c about() function displays a QMessageBox with a brief description of
-    the example, or general information about Qt and the version of it in use.
+    the example, or general information about BobUI and the version of it in use.
 
     \snippet serialization/streambookmarks/mainwindow.cpp 5
 

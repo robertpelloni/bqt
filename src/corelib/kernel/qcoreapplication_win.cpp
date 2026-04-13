@@ -1,27 +1,27 @@
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@edeltech.ch>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcoreapplication.h"
 #include "qcoreapplication_p.h"
 #include "qstringlist.h"
 #include "qdir.h"
 #include "qfileinfo.h"
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "qmutex.h"
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 #include <private/qlocking_p.h>
 #endif
-#include "qtextstream.h"
+#include "bobuiextstream.h"
 #include "qvarlengtharray.h"
 #include <ctype.h>
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-// By default, we get the path to the host .exe. ActiveQt can override this
+// By default, we get the path to the host .exe. ActiveBobUI can override this
 // with the component's DLL.
 Q_CONSTINIT void *QCoreApplicationPrivate::mainInstanceHandle = nullptr;
 QString qAppFileName()                // get application file name
@@ -54,7 +54,7 @@ QString qAppFileName()                // get application file name
     } while (Q_UNLIKELY(v >= size));
 
     // QCoreApplication::applicationFilePath() expects a canonical path with
-    // Qt-style separators
+    // BobUI-style separators
     QStringView nativePath(space.data(), v);
     return QDir::fromNativeSeparators(nativePath.toString());
 }
@@ -67,7 +67,7 @@ QString QCoreApplicationPrivate::appName() const
 QString QCoreApplicationPrivate::appVersion() const
 {
     QString applicationVersion;
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     const QString appFileName = qAppFileName();
     QVarLengthArray<wchar_t> buffer(appFileName.size() + 1);
     buffer[appFileName.toWCharArray(buffer.data())] = 0;
@@ -94,17 +94,17 @@ QString QCoreApplicationPrivate::appVersion() const
     return applicationVersion;
 }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 
-#if defined(Q_OS_WIN) && !defined(QT_NO_DEBUG_STREAM)
+#if defined(Q_OS_WIN) && !defined(BOBUI_NO_DEBUG_STREAM)
 /*****************************************************************************
   Convenience functions for convert WM_* messages into human readable strings,
   including a nifty QDebug operator<< for simple QDebug() << msg output.
  *****************************************************************************/
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include <windowsx.h>
 #include "qdebug.h"
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 #if !defined(GET_X_LPARAM)
 #  define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
@@ -682,9 +682,9 @@ QString decodeMSG(const MSG& msg)
             break;
         case 0x02E0u: { // WM_DPICHANGED
             auto rect = reinterpret_cast<const RECT *>(lParam);
-            QTextStream(&parameters) << "DPI: " << HIWORD(wParam) << ','
+            BOBUIextStream(&parameters) << "DPI: " << HIWORD(wParam) << ','
                 << LOWORD(wParam) << ' ' << (rect->right - rect->left) << 'x'
-                << (rect->bottom - rect->top) << Qt::forcesign << rect->left << rect->top;
+                << (rect->bottom - rect->top) << BobUI::forcesign << rect->left << rect->top;
             }
             break;
         case WM_IME_NOTIFY:
@@ -827,14 +827,14 @@ QDebug operator<<(QDebug dbg, const MSG &msg)
 }
 #endif
 
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 void QCoreApplicationPrivate::removePostedTimerEvent(QObject *object, int timerId)
 {
-    QThreadData *data = object->d_func()->threadData.loadRelaxed();
+    BOBUIhreadData *data = object->d_func()->threadData.loadRelaxed();
 
-    const auto locker = qt_scoped_lock(data->postEventList.mutex);
+    const auto locker = bobui_scoped_lock(data->postEventList.mutex);
     if (data->postEventList.size() == 0)
         return;
     for (int i = 0; i < data->postEventList.size(); ++i) {
@@ -842,7 +842,7 @@ void QCoreApplicationPrivate::removePostedTimerEvent(QObject *object, int timerI
         if (pe.receiver == object
                 && pe.event
                 && (pe.event->type() == QEvent::Timer || pe.event->type() == QEvent::ZeroTimerEvent)
-                && static_cast<QTimerEvent *>(pe.event)->timerId() == timerId) {
+                && static_cast<BOBUIimerEvent *>(pe.event)->timerId() == timerId) {
             --pe.receiver->d_func()->postedEvents;
             pe.event->m_posted = false;
             delete pe.event;
@@ -851,7 +851,7 @@ void QCoreApplicationPrivate::removePostedTimerEvent(QObject *object, int timerI
         }
     }
 }
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
 static bool hasValidStdOutHandle()
 {
@@ -863,14 +863,14 @@ void QCoreApplicationPrivate::initDebuggingConsole()
 {
     if (hasValidStdOutHandle())
         return;
-    const QString env = qEnvironmentVariable("QT_WIN_DEBUG_CONSOLE");
+    const QString env = qEnvironmentVariable("BOBUI_WIN_DEBUG_CONSOLE");
     if (env.isEmpty())
         return;
-    if (env.compare(u"new"_s, Qt::CaseInsensitive) == 0) {
+    if (env.compare(u"new"_s, BobUI::CaseInsensitive) == 0) {
         if (AllocConsole() == FALSE)
             return;
         consoleAllocated = true;
-    } else if (env.compare(u"attach"_s, Qt::CaseInsensitive) == 0) {
+    } else if (env.compare(u"attach"_s, BobUI::CaseInsensitive) == 0) {
         // If the calling process is already attached to a console,
         // the error code returned is ERROR_ACCESS_DENIED.
         if (!::AttachConsole(ATTACH_PARENT_PROCESS) && ::GetLastError() != ERROR_ACCESS_DENIED)
@@ -898,4 +898,4 @@ void QCoreApplicationPrivate::cleanupDebuggingConsole()
         FreeConsole();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,23 +1,23 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## openglwidget Binary:
 #####################################################################
 
-qt_internal_add_manual_test(openglwidget
+bobui_internal_add_manual_test(openglwidget
     GUI
     SOURCES
         main.cpp
         openglwidget.cpp openglwidget.h
     NO_PCH_SOURCES
-        main.cpp # undef QT_NO_FOREACH
+        main.cpp # undef BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::OpenGL
-        Qt::OpenGLWidgets
-        Qt::Widgets
-        Qt::WidgetsPrivate
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::OpenGL
+        BobUI::OpenGLWidgets
+        BobUI::Widgets
+        BobUI::WidgetsPrivate
 )

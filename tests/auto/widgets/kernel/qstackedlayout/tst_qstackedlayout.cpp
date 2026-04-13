@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QLineEdit>
 #include <QLabel>
 #include <QStackedLayout>
@@ -11,7 +11,7 @@
 #include <QPushButton>
 #include <QSignalSpy>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 class tst_QStackedLayout : public QObject
 {
@@ -71,7 +71,7 @@ tst_QStackedLayout::tst_QStackedLayout()
 
 void tst_QStackedLayout::init()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     if (testWidget) {
@@ -85,7 +85,7 @@ void tst_QStackedLayout::init()
     // make sure the tests work with focus follows mouse
     QCursor::setPos(testWidget->geometry().center());
     testWidget->activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(testWidget));
 }
 
 void tst_QStackedLayout::cleanup()
@@ -234,7 +234,7 @@ void tst_QStackedLayout::removeWidget()
     vbox->addLayout(testLayout);
     top->setFocus();
     top->activateWindow();
-    QTRY_COMPARE(QApplication::focusWidget(), top);
+    BOBUIRY_COMPARE(QApplication::focusWidget(), top);
 
     // focus should stay at the 'top' widget
     testLayout->removeWidget(w1);
@@ -256,7 +256,7 @@ protected:
         const QWidget *w = this;
         while ((w = w->nextInFocusChain()) != this) {
             if (w->isVisible() && static_cast<const QWidget*>(w->focusProxy()) != this
-                && w->focusPolicy() & Qt::TabFocus) {
+                && w->focusPolicy() & BobUI::TabFocus) {
                 return false;
             }
         }
@@ -280,7 +280,7 @@ void tst_QStackedLayout::keepFocusAfterSetCurrent()
 {
     if (testWidget->layout()) delete testWidget->layout();
     QStackedLayout *stackLayout = new QStackedLayout(testWidget);
-    testWidget->setFocusPolicy(Qt::NoFocus);
+    testWidget->setFocusPolicy(BobUI::NoFocus);
 
     LineEdit *edit1 = new LineEdit;
     LineEdit *edit2 = new LineEdit;
@@ -290,12 +290,12 @@ void tst_QStackedLayout::keepFocusAfterSetCurrent()
     stackLayout->setCurrentIndex(0);
 
     testWidget->show();
-    QVERIFY(QTest::qWaitForWindowActive(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(testWidget));
 
     edit1->setFocus();
     edit1->activateWindow();
 
-    QTRY_VERIFY(edit1->hasFocus());
+    BOBUIRY_VERIFY(edit1->hasFocus());
 
     stackLayout->setCurrentIndex(1);
     QVERIFY(!edit1->hasFocus());
@@ -313,11 +313,11 @@ void tst_QStackedLayout::heigthForWidth()
     stackLayout->addWidget(shortLabel);
 
     QLabel *longLabel = new QLabel("Write code once to target multiple platforms\n"
-                         "Qt allows you to write advanced applications and UIs once, "
+                         "BobUI allows you to write advanced applications and UIs once, "
                          "and deploy them across desktop and embedded operating systems "
                          "without rewriting the source code saving time and development cost.\n\n"
                          "Create amazing user experiences\n"
-                         "Whether you prefer C++ or JavaScript, Qt provides the building blocks - "
+                         "Whether you prefer C++ or JavaScript, BobUI provides the building blocks - "
                          "a broad set of customizable widgets, graphics canvas, style engine "
                          "and more that you need to build modern user interfaces. "
                          "Incorporate 3D graphics, multimedia audio or video, visual effects, "
@@ -375,6 +375,6 @@ void tst_QStackedLayout::widgetAdded()
 }
 
 
-QTEST_MAIN(tst_QStackedLayout)
+BOBUIEST_MAIN(tst_QStackedLayout)
 #include "tst_qstackedlayout.moc"
 

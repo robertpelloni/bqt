@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMFONTDATABASE_H
 #define QPLATFORMFONTDATABASE_H
@@ -10,21 +10,21 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QList>
-#include <QtGui/QFontDatabase>
-#include <QtGui/private/qfontengine_p.h>
-#include <QtGui/private/qfontdatabase_p.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/QString>
+#include <BobUICore/QStringList>
+#include <BobUICore/QList>
+#include <BobUIGui/QFontDatabase>
+#include <BobUIGui/private/qfontengine_p.h>
+#include <BobUIGui/private/qfontdatabase_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcQpaFonts, Q_GUI_EXPORT)
+BOBUI_DECLARE_EXPORTED_BOBUI_LOGGING_CATEGORY(lcQpaFonts, Q_GUI_EXPORT)
 
 class QWritingSystemsPrivate;
 
@@ -47,7 +47,7 @@ private:
 
     friend Q_GUI_EXPORT bool operator==(const QSupportedWritingSystems &, const QSupportedWritingSystems &);
     friend Q_GUI_EXPORT bool operator!=(const QSupportedWritingSystems &, const QSupportedWritingSystems &);
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug, const QSupportedWritingSystems &);
 #endif
 };
@@ -55,7 +55,7 @@ private:
 Q_GUI_EXPORT bool operator==(const QSupportedWritingSystems &, const QSupportedWritingSystems &);
 Q_GUI_EXPORT bool operator!=(const QSupportedWritingSystems &, const QSupportedWritingSystems &);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QSupportedWritingSystems &);
 #endif
 
@@ -110,6 +110,6 @@ public:
     static bool isFamilyPopulated(const QString &familyName);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMFONTDATABASE_H

@@ -1,4 +1,4 @@
-QT += opengl
+BOBUI += opengl
 
 HEADERS = $$PWD/glwindow.h
 
@@ -7,5 +7,5 @@ SOURCES = $$PWD/glwindow.cpp \
 
 RESOURCES += computegles31.qrc
 
-target.path = $$[QT_INSTALL_EXAMPLES]/opengl/computegles31
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/opengl/computegles31
 INSTALLS += target

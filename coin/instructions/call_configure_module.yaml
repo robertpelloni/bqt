@@ -1,6 +1,6 @@
 type: Group
 instructions:
-  - !include "{{qt/qtbase}}/prepare_configure_module_executable.yaml"
+  - !include "{{bobui/bobuibase}}/prepare_configure_module_executable.yaml"
   - type: ExecuteCommand
     command: "{{.Env.CONFIGURE_ENV_PREFIX}} {{.Env.CONFIGURE_EXECUTABLE}} {{.SourceDir}} {{.Env.COIN_CONFIGURE_ARGS}} -- {{.Env.COIN_CMAKE_ARGS}}"
     executeCommandArgumentSplitingBehavior: SplitAfterVariableSubstitution

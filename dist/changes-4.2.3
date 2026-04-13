@@ -1,7 +1,7 @@
-Qt 4.2.3 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.2.0.
+BobUI 4.2.3 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.2.0.
 
-The Qt version 4.2 series is binary compatible with the 4.1.x and 4.0.x
+The BobUI version 4.2 series is binary compatible with the 4.1.x and 4.0.x
 series. Applications compiled for 4.0 or 4.1 will continue to run with 4.2.
 
 ****************************************************************************
@@ -18,13 +18,13 @@ General Improvements
 
 - Documentation
     * Completed documentation for "Implementing Atomic Operations",
-      which is useful for people porting Qt to a new hardware architecture.
+      which is useful for people porting BobUI to a new hardware architecture.
 
 - Translations
     * Added a new unofficial Portuguese translation courtesy of Helder
       Correia.
 
-- Qt Linguist
+- BobUI Linguist
     * Made the columns in the phrasebook resizeable.
 
 - lupdate
@@ -72,7 +72,7 @@ General improvements
       items from a group.
 
 - Item views
-    * Fixed data loss in QTreeWidget, QTableWidget and QListWidget that
+    * Fixed data loss in BOBUIreeWidget, BOBUIableWidget and QListWidget that
       occurred when performing a drag and drop copy operation on items
       containing data in custom roles.
 
@@ -108,7 +108,7 @@ General improvements
     * Fixed potential memory overrun when determining a clipping chunk.
 
 - Q3Socket
-    * Fixed unexpected remote disconnection bugs (also QTcpSocket).
+    * Fixed unexpected remote disconnection bugs (also BOBUIcpSocket).
 
 - QFile
     * Performance enhancements in QFile::copy().
@@ -145,7 +145,7 @@ General improvements
     * Fixed a race condition on Windows where QProcess::bytesToWrite() would
       return a short byte count.
 
-- QTextDocument
+- BOBUIextDocument
     * Fixed find() with backward searches.
     * Match CSS style selector case insensitively.
     * Fixed HTML import for tables with missing cells and rowspan/colspan
@@ -155,7 +155,7 @@ General improvements
     * Fixed a crash caused by calling filterChanged().
     * Fixed a crash caused by removing items from the source model.
     * Fixed a bug that could cause a model to enter an invalid state when
-      filtering items in a hierarchy, causing items in a QTreeView to
+      filtering items in a hierarchy, causing items in a BOBUIreeView to
       erroneously be collapsed.
     * Fixed a bug that could cause invalid items to be added when inserting
       new items to the source model.
@@ -167,8 +167,8 @@ General improvements
 - QPluginLoader
     * Fixed compilation of Q_EXPORT_PLUGIN when used with templates.
 
-- QTcpSocket
-    * Fixed a bug where QTcpSocket would time out when connecting to a
+- BOBUIcpSocket
+    * Fixed a bug where BOBUIcpSocket would time out when connecting to a
       closed service on Windows.
     * Fixed a race condition when calling waitFor...() functions with a very
       short timeout value.
@@ -176,17 +176,17 @@ General improvements
     * Improved the reliability of the waitFor...() functions with SOCKS5
       proxy support.
 
-- QTextLayout
+- BOBUIextLayout
     * Fixed rendering of surrogate pairs and cursor navigation with them.
 
-- QTextEdit
-    * Fixed crash in QTextEdit::setExtraSelection() that could occur when
+- BOBUIextEdit
+    * Fixed crash in BOBUIextEdit::setExtraSelection() that could occur when
       used with null cursors.
     * Fixed scrollbar bug which could cause the bottom of the text to be
       unreachable.
 
-- QTextStream
-    * Fixed QTextStream::readLine() so it can be used reliably with stdin on
+- BOBUIextStream
+    * Fixed BOBUIextStream::readLine() so it can be used reliably with stdin on
       all platforms, and updated the documentation to reflect this.
 
 - QMacStyle
@@ -216,17 +216,17 @@ General improvements
     * Ensured that QSqlDriver::formatValue() doesn't cut off characters from
       field names.
 
-- QTextTable
+- BOBUIextTable
     * Removed false assertion when deleting the first row or column in a
       table.
     * Fixed crash when splitting cells in the rightmost column of a table.
-    * Fixed issue where QTextTable::splitCells() would shift cells further
+    * Fixed issue where BOBUIextTable::splitCells() would shift cells further
       down in the table.
-    * Fixed crash in QTextTable::mergeCells() caused by merging an already
+    * Fixed crash in BOBUIextTable::mergeCells() caused by merging an already
       merged cell.
     
-- QToolTip
-    * Fixed QToolTip sizes when used with HTML tags like <BR>.
+- BOBUIoolTip
+    * Fixed BOBUIoolTip sizes when used with HTML tags like <BR>.
 
 - QUdpSocket
     * Fixed a busy-wait causing the event loop to spin when writing a
@@ -268,7 +268,7 @@ General improvements
 - QAbstractItemView
     * Fixed focus problem with cell widgets.
 
-- QTableView
+- BOBUIableView
     * Fixed problem with context menus clearing the selections.
 
 - QHeaderView
@@ -280,10 +280,10 @@ General improvements
 - QListView
     * Fixed crash when calling reset.
 
-- QTableWidget
+- BOBUIableWidget
     * Fixed painting problem that could occur when rows were swapped.
 
-- QTreeView
+- BOBUIreeView
     * Fixed a crash that could appear when removing all the children of an
       item.
 
@@ -297,10 +297,10 @@ X11
     * Fixed crash on exit in QSystemTrayIcon when QApplication is used
       as the parent.
     * Fixed animation GUI effects on tooltips, menus, and comboboxes.
-    * Fixed crashes in threaded programs when Qt uses the Glib main
+    * Fixed crashes in threaded programs when BobUI uses the Glib main
       loop.
     * Fixed bug where an empty LANG environment variable could prevent input
-      of non-ASCII chars in Qt widgets.
+      of non-ASCII chars in BobUI widgets.
     * Fixed leak of initial style created by QApplication after calling
       QApplication::setStyle().
     * Fixed erroneous event delivery to a widget that has been destroyed.
@@ -332,13 +332,13 @@ Windows
 
 Mac OS X
 --------
-    * Fixed regression where dragging/copying Unicode text in Qt to another
+    * Fixed regression where dragging/copying Unicode text in BobUI to another
       application would only export the non-Unicode version.
     * Fixed regression where releasing the mouse button would send two mouse
       releas events to a widget.
     * Fixed regression where the drop action would be reset after a native
       "DragLeave" event was received.
-    * Wrapping a (non-Qt) window's content view and resizing before showing
+    * Wrapping a (non-BobUI) window's content view and resizing before showing
       the window for the first time now works correctly.
     * Ensured that the content view is always created before we QWidgets are
       added to a window - this allows better integration with Cocoa apps.
@@ -349,16 +349,16 @@ Mac OS X
     * Fixed the open source binary package to have the correct definitions
       for development.
 
-Qtopia Core
+BobUIopia Core
 -----------
     * Fixed a data corruption bug in QDataStream on ARM processors where
       reading and writing doubles/qreals would be incompatible with streams
       on other platforms.
-      Note: corrupt data streams generated with previous versions of Qtopia
+      Note: corrupt data streams generated with previous versions of BobUIopia
       Core on ARM platforms cannot be read with this version.
     * Fixed a possible buffer overflow in the VNC driver.
     * Fixed a memory leak in the windowing system.
-    * Fixed painting errors occuring with use of QT::WA_PaintOnScreen on
+    * Fixed painting errors occuring with use of BOBUI::WA_PaintOnScreen on
       certain screen configurations.
     * Improved performance when using a 16-bit brush as the background on a 
       16-bit screen.

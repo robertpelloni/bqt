@@ -1,16 +1,16 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 #include <QStandardPaths>
 #include <QScopeGuard>
 
 #include <qfile.h>
 #include <qdir.h>
 #include <qcoreapplication.h>
-#include <qtemporaryfile.h>
-#include <qtemporarydir.h>
+#include <bobuiemporaryfile.h>
+#include <bobuiemporarydir.h>
 #include <qdir.h>
 #include <qfileinfo.h>
 #include <qstorageinfo.h>
@@ -25,7 +25,7 @@
 #endif
 #endif
 #ifdef Q_OS_WIN
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <private/qwinregistry_p.h>
 #include <lm.h>
 #endif
@@ -38,7 +38,7 @@
 #include <Foundation/Foundation.h>
 #endif
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 
@@ -50,7 +50,7 @@
 bool IsUserAdmin();
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 inline bool qIsLikelyToBeFat(const QString &path)
 {
@@ -259,9 +259,9 @@ private:
     QString m_sourceFile;
     QString m_proFile;
     QString m_resourcesDir;
-    QTemporaryDir m_dir;
-    QSharedPointer<QTemporaryDir> m_dataDir;
-    QTemporaryDir m_tempSubDir;
+    BOBUIemporaryDir m_dir;
+    QSharedPointer<BOBUIemporaryDir> m_dataDir;
+    BOBUIemporaryDir m_tempSubDir;
     bool uncServerAvailable = false;
 };
 
@@ -282,7 +282,7 @@ void tst_QFileInfo::initTestCase()
 
 #ifdef Q_OS_WIN
     // "When used with directories, _access determines only whether the specified directory exists"
-    if (_waccess(qUtf16Printable("//" + QTest::uncServerName() + "/testshare"), 0) == 0)
+    if (_waccess(qUtf16Printable("//" + BOBUIest::uncServerName() + "/testshare"), 0) == 0)
         uncServerAvailable = true;
 #endif
 }
@@ -311,7 +311,7 @@ static QFileInfoPrivate* getPrivate(QFileInfo &info)
 
 void tst_QFileInfo::copy()
 {
-    QTemporaryFile t;
+    BOBUIemporaryFile t;
     QVERIFY2(t.open(), qPrintable(t.errorString()));
     QFileInfo info(t.fileName());
     QVERIFY(info.exists());
@@ -334,7 +334,7 @@ void tst_QFileInfo::copy()
     QCOMPARE(file.write("JAJAJAA"), qint64(7));
     file.flush();
 
-    QTest::qWait(250);
+    BOBUIest::qWait(250);
 #if defined(Q_OS_WIN)
     file.close();
 #endif
@@ -347,14 +347,14 @@ void tst_QFileInfo::copy()
 
 void tst_QFileInfo::isFile_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("data0") << QDir::currentPath() << false;
-    QTest::newRow("data1") << m_sourceFile << true;
-    QTest::newRow("data2") << ":/tst_qfileinfo/resources/" << false;
-    QTest::newRow("data3") << ":/tst_qfileinfo/resources/file1" << true;
-    QTest::newRow("data4") << ":/tst_qfileinfo/resources/afilethatshouldnotexist" << false;
+    BOBUIest::newRow("data0") << QDir::currentPath() << false;
+    BOBUIest::newRow("data1") << m_sourceFile << true;
+    BOBUIest::newRow("data2") << ":/tst_qfileinfo/resources/" << false;
+    BOBUIest::newRow("data3") << ":/tst_qfileinfo/resources/file1" << true;
+    BOBUIest::newRow("data4") << ":/tst_qfileinfo/resources/afilethatshouldnotexist" << false;
 }
 
 void tst_QFileInfo::isFile()
@@ -380,34 +380,34 @@ void tst_QFileInfo::isDir_data()
         QVERIFY( info3.isSymLink() );
     }
 
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("data0") << QDir::currentPath() << true;
-    QTest::newRow("data1") << m_sourceFile << false;
-    QTest::newRow("data2") << ":/tst_qfileinfo/resources/" << true;
-    QTest::newRow("data3") << ":/tst_qfileinfo/resources/file1" << false;
-    QTest::newRow("data4") << ":/tst_qfileinfo/resources/afilethatshouldnotexist" << false;
+    BOBUIest::newRow("data0") << QDir::currentPath() << true;
+    BOBUIest::newRow("data1") << m_sourceFile << false;
+    BOBUIest::newRow("data2") << ":/tst_qfileinfo/resources/" << true;
+    BOBUIest::newRow("data3") << ":/tst_qfileinfo/resources/file1" << false;
+    BOBUIest::newRow("data4") << ":/tst_qfileinfo/resources/afilethatshouldnotexist" << false;
 
-    QTest::newRow("simple dir") << m_resourcesDir << true;
-    QTest::newRow("simple dir with slash") << (m_resourcesDir + QLatin1Char('/')) << true;
+    BOBUIest::newRow("simple dir") << m_resourcesDir << true;
+    BOBUIest::newRow("simple dir with slash") << (m_resourcesDir + QLatin1Char('/')) << true;
 
-    QTest::newRow("broken link") << "brokenlink.lnk" << false;
+    BOBUIest::newRow("broken link") << "brokenlink.lnk" << false;
 
 #if defined(Q_OS_WIN)
-    QTest::newRow("drive 1") << "c:" << true;
-    QTest::newRow("drive 2") << "c:/" << true;
-    //QTest::newRow("drive 2") << "t:s" << false;
+    BOBUIest::newRow("drive 1") << "c:" << true;
+    BOBUIest::newRow("drive 2") << "c:/" << true;
+    //BOBUIest::newRow("drive 2") << "t:s" << false;
 #endif
 #if defined(Q_OS_WIN)
-    const QString uncRoot = QStringLiteral("//") + QTest::uncServerName();
-    QTest::newRow("unc 1") << uncRoot << true;
-    QTest::newRow("unc 2") << uncRoot + QLatin1Char('/') << true;
-    QTest::newRow("unc 3") << uncRoot + "/testshare" << uncServerAvailable;
-    QTest::newRow("unc 4") << uncRoot + "/testshare/" << uncServerAvailable;
-    QTest::newRow("unc 5") << uncRoot + "/testshare/tmp" << uncServerAvailable;
-    QTest::newRow("unc 6") << uncRoot + "/testshare/tmp/" << uncServerAvailable;
-    QTest::newRow("unc 7") << uncRoot + "/testshare/adirthatshouldnotexist" << false;
+    const QString uncRoot = QStringLiteral("//") + BOBUIest::uncServerName();
+    BOBUIest::newRow("unc 1") << uncRoot << true;
+    BOBUIest::newRow("unc 2") << uncRoot + QLatin1Char('/') << true;
+    BOBUIest::newRow("unc 3") << uncRoot + "/testshare" << uncServerAvailable;
+    BOBUIest::newRow("unc 4") << uncRoot + "/testshare/" << uncServerAvailable;
+    BOBUIest::newRow("unc 5") << uncRoot + "/testshare/tmp" << uncServerAvailable;
+    BOBUIest::newRow("unc 6") << uncRoot + "/testshare/tmp/" << uncServerAvailable;
+    BOBUIest::newRow("unc 7") << uncRoot + "/testshare/adirthatshouldnotexist" << false;
 #endif
 }
 
@@ -425,11 +425,11 @@ void tst_QFileInfo::isDir()
 
 void tst_QFileInfo::isOther_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("expected");
 
     m_tempSubDir.remove();
-    m_tempSubDir = QTemporaryDir(m_dir.path() + "/isother_test_dir.XXXXXX"_L1);
+    m_tempSubDir = BOBUIemporaryDir(m_dir.path() + "/isother_test_dir.XXXXXX"_L1);
 
     const QString prefix = m_tempSubDir.path() + u'/';
 
@@ -452,21 +452,21 @@ void tst_QFileInfo::isOther_data()
     dummy.link(brokenLink);
     dummy.remove();
 
-    QTest::newRow("regular-file") << filePath << false;
-    QTest::newRow("symlink-to-regular-file") << linkToFile << false;
-    QTest::newRow("dir") << dirPath << false;
-    QTest::newRow("symlink-to-dir") << linkToDir << false;
-    QTest::newRow("broken-symlink") << brokenLink << false;
+    BOBUIest::newRow("regular-file") << filePath << false;
+    BOBUIest::newRow("symlink-to-regular-file") << linkToFile << false;
+    BOBUIest::newRow("dir") << dirPath << false;
+    BOBUIest::newRow("symlink-to-dir") << linkToDir << false;
+    BOBUIest::newRow("broken-symlink") << brokenLink << false;
 
-    QTest::newRow("qresources-file") << ":/tst_qfileinfo/resources/file1" << false;
-    QTest::newRow("qresources-broken-dir") << ":/I/do_not_expect_this_path_to_exist/" << false;
-    QTest::newRow("qresources-broken-file") << ":/tst_qfileinfo/resources/ghost-file" << false;
+    BOBUIest::newRow("qresources-file") << ":/tst_qfileinfo/resources/file1" << false;
+    BOBUIest::newRow("qresources-broken-dir") << ":/I/do_not_expect_this_path_to_exist/" << false;
+    BOBUIest::newRow("qresources-broken-file") << ":/tst_qfileinfo/resources/ghost-file" << false;
 
 #ifdef Q_OS_UNIX
     auto addSpecialRow = [&prefix](const QString &s, uint type) {
         const QString name = prefix + s;
         if (::mknod(name.toLatin1().constData(), 0777 | type, dev_t{}) == 0)
-            QTest::addRow("%s", qPrintable(name)) << name << true;
+            BOBUIest::addRow("%s", qPrintable(name)) << name << true;
         else
             qDebug("mknod call failed: %s", strerror(errno));
     };
@@ -476,14 +476,14 @@ void tst_QFileInfo::isOther_data()
     const QString linkToSpecial = prefix + "link-to-dev-null"_L1;
     QFile::link(u"/dev/null"_s, linkToSpecial);
 
-    QTest::newRow("character-device") << u"/dev/null"_s << true;
-    QTest::newRow("symlink-to-special") << linkToSpecial << true;
+    BOBUIest::newRow("character-device") << u"/dev/null"_s << true;
+    BOBUIest::newRow("symlink-to-special") << linkToSpecial << true;
 #elif defined(Q_OS_WIN)
     const QString name = prefix + "win-CreateSymbolicLink-file"_L1;
     const auto res = FileSystem::createSymbolicLink(name.toLatin1().constData(),
                                                     file.fileName().toLatin1().constData());
     if (res.dwErr == ERROR_SUCCESS)
-        QTest::newRow("win-CreateSymbolicLink-file") << name << false;
+        BOBUIest::newRow("win-CreateSymbolicLink-file") << name << false;
     else if (res.dwErr == ERROR_PRIVILEGE_NOT_HELD)
         qDebug() << msgInsufficientPrivileges(res.errorMessage);
     else
@@ -493,7 +493,7 @@ void tst_QFileInfo::isOther_data()
     QFile lnkTarget(prefix + "lnkTarget"_L1);
     (void)lnkTarget.open(QIODevice::WriteOnly);
     lnkTarget.link(winLnk);
-    QTest::newRow("winLnk") << winLnk << true;
+    BOBUIest::newRow("winLnk") << winLnk << true;
 
     const QString brokenWinLnk = prefix + "broken_winLnk.lnk"_L1;
     const QString dummyPath = prefix + "lnkDummy"_L1;
@@ -501,7 +501,7 @@ void tst_QFileInfo::isOther_data()
     QFile lnkDummy(dummyPath);
     lnkDummy.link(brokenWinLnk);
     lnkDummy.remove();
-    QTest::newRow("broken-winLnk") << brokenWinLnk << true;
+    BOBUIest::newRow("broken-winLnk") << brokenWinLnk << true;
 #endif // Q_OS_UNIX
 }
 
@@ -512,11 +512,11 @@ void tst_QFileInfo::isOther()
 
     QFileInfo info(path);
     QCOMPARE(info.isOther(), expected);
-    if (!QByteArrayView{QTest::currentDataTag()}.contains("broken"))
+    if (!QByteArrayView{BOBUIest::currentDataTag()}.contains("broken"))
         QVERIFY(info.exists());
 
-#if QT_CONFIG(cxx17_filesystem) // This code doesn't work in QNX on the CI
-    if (QByteArrayView{QTest::currentDataTag()}.contains("winLnk"))
+#if BOBUI_CONFIG(cxx17_filesystem) // This code doesn't work in QNX on the CI
+    if (QByteArrayView{BOBUIest::currentDataTag()}.contains("winLnk"))
         QEXPECT_FAIL("", "QFileInfo::isOther() returns true for '.lnk' files on Windows, "
                          "std::filesystem::is_other() returns false", Continue);
 
@@ -526,30 +526,30 @@ void tst_QFileInfo::isOther()
 
 void tst_QFileInfo::isRoot_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("expected");
-    QTest::newRow("data0") << QDir::currentPath() << false;
-    QTest::newRow("data1") << "/" << true;
-    QTest::newRow("data2") << "*" << false;
-    QTest::newRow("data3") << "/*" << false;
-    QTest::newRow("data4") << ":/tst_qfileinfo/resources/" << false;
-    QTest::newRow("data5") << ":/" << true;
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("expected");
+    BOBUIest::newRow("data0") << QDir::currentPath() << false;
+    BOBUIest::newRow("data1") << "/" << true;
+    BOBUIest::newRow("data2") << "*" << false;
+    BOBUIest::newRow("data3") << "/*" << false;
+    BOBUIest::newRow("data4") << ":/tst_qfileinfo/resources/" << false;
+    BOBUIest::newRow("data5") << ":/" << true;
 
-    QTest::newRow("simple dir") << m_resourcesDir << false;
-    QTest::newRow("simple dir with slash") << (m_resourcesDir + QLatin1Char('/')) << false;
+    BOBUIest::newRow("simple dir") << m_resourcesDir << false;
+    BOBUIest::newRow("simple dir with slash") << (m_resourcesDir + QLatin1Char('/')) << false;
 #if defined(Q_OS_WIN)
-    QTest::newRow("drive 1") << "c:" << false;
-    QTest::newRow("drive 2") << "c:/" << true;
-    QTest::newRow("drive 3") << "p:/" << false;
+    BOBUIest::newRow("drive 1") << "c:" << false;
+    BOBUIest::newRow("drive 2") << "c:/" << true;
+    BOBUIest::newRow("drive 3") << "p:/" << false;
 #endif
 
 #if defined(Q_OS_WIN)
-    const QString uncRoot = QStringLiteral("//") + QTest::uncServerName();
-    QTest::newRow("unc 1") << uncRoot << true;
-    QTest::newRow("unc 2") << uncRoot + QLatin1Char('/') << true;
-    QTest::newRow("unc 3") << uncRoot + "/testshare" << false;
-    QTest::newRow("unc 4") << uncRoot + "/testshare/" << false;
-    QTest::newRow("unc 7") << "//ahostthatshouldnotexist" << false;
+    const QString uncRoot = QStringLiteral("//") + BOBUIest::uncServerName();
+    BOBUIest::newRow("unc 1") << uncRoot << true;
+    BOBUIest::newRow("unc 2") << uncRoot + QLatin1Char('/') << true;
+    BOBUIest::newRow("unc 3") << uncRoot + "/testshare" << false;
+    BOBUIest::newRow("unc 4") << uncRoot + "/testshare/" << false;
+    BOBUIest::newRow("unc 7") << "//ahostthatshouldnotexist" << false;
 #endif
 }
 
@@ -567,37 +567,37 @@ void tst_QFileInfo::isRoot()
 
 void tst_QFileInfo::exists_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("data0") << QDir::currentPath() << true;
-    QTest::newRow("data1") << m_sourceFile << true;
-    QTest::newRow("data2") << "/I/do_not_expect_this_path_to_exist/" << false;
-    QTest::newRow("data3") << ":/tst_qfileinfo/resources/" << true;
-    QTest::newRow("data4") << ":/tst_qfileinfo/resources/file1" << true;
-    QTest::newRow("data5") << ":/I/do_not_expect_this_path_to_exist/" << false;
-    QTest::newRow("data6") << (m_resourcesDir + "/*") << false;
-    QTest::newRow("data7") << (m_resourcesDir + "/*.foo") << false;
-    QTest::newRow("data8") << (m_resourcesDir + "/*.ext1") << false;
-    QTest::newRow("data9") << (m_resourcesDir + "/file?.ext1") << false;
-    QTest::newRow("data10") << "." << true;
-    QTest::newRow("data11") << ". " << false;
-    QTest::newRow("empty") << "" << false;
+    BOBUIest::newRow("data0") << QDir::currentPath() << true;
+    BOBUIest::newRow("data1") << m_sourceFile << true;
+    BOBUIest::newRow("data2") << "/I/do_not_expect_this_path_to_exist/" << false;
+    BOBUIest::newRow("data3") << ":/tst_qfileinfo/resources/" << true;
+    BOBUIest::newRow("data4") << ":/tst_qfileinfo/resources/file1" << true;
+    BOBUIest::newRow("data5") << ":/I/do_not_expect_this_path_to_exist/" << false;
+    BOBUIest::newRow("data6") << (m_resourcesDir + "/*") << false;
+    BOBUIest::newRow("data7") << (m_resourcesDir + "/*.foo") << false;
+    BOBUIest::newRow("data8") << (m_resourcesDir + "/*.ext1") << false;
+    BOBUIest::newRow("data9") << (m_resourcesDir + "/file?.ext1") << false;
+    BOBUIest::newRow("data10") << "." << true;
+    BOBUIest::newRow("data11") << ". " << false;
+    BOBUIest::newRow("empty") << "" << false;
 
-    QTest::newRow("simple dir") << m_resourcesDir << true;
-    QTest::newRow("simple dir with slash") << (m_resourcesDir + QLatin1Char('/')) << true;
+    BOBUIest::newRow("simple dir") << m_resourcesDir << true;
+    BOBUIest::newRow("simple dir with slash") << (m_resourcesDir + QLatin1Char('/')) << true;
 
 #if defined(Q_OS_WIN)
-    const QString uncRoot = QStringLiteral("//") + QTest::uncServerName();
-    QTest::newRow("unc 1") << uncRoot << true;
-    QTest::newRow("unc 2") << uncRoot + QLatin1Char('/') << true;
-    QTest::newRow("unc 3") << uncRoot + "/testshare" << uncServerAvailable;
-    QTest::newRow("unc 4") << uncRoot + "/testshare/" << uncServerAvailable;
-    QTest::newRow("unc 5") << uncRoot + "/testshare/tmp" << uncServerAvailable;
-    QTest::newRow("unc 6") << uncRoot + "/testshare/tmp/" << uncServerAvailable;
-    QTest::newRow("unc 7") << uncRoot + "/testshare/adirthatshouldnotexist" << false;
-    QTest::newRow("unc 8") << uncRoot + "/asharethatshouldnotexist" << false;
-    QTest::newRow("unc 9") << "//ahostthatshouldnotexist" << false;
+    const QString uncRoot = QStringLiteral("//") + BOBUIest::uncServerName();
+    BOBUIest::newRow("unc 1") << uncRoot << true;
+    BOBUIest::newRow("unc 2") << uncRoot + QLatin1Char('/') << true;
+    BOBUIest::newRow("unc 3") << uncRoot + "/testshare" << uncServerAvailable;
+    BOBUIest::newRow("unc 4") << uncRoot + "/testshare/" << uncServerAvailable;
+    BOBUIest::newRow("unc 5") << uncRoot + "/testshare/tmp" << uncServerAvailable;
+    BOBUIest::newRow("unc 6") << uncRoot + "/testshare/tmp/" << uncServerAvailable;
+    BOBUIest::newRow("unc 7") << uncRoot + "/testshare/adirthatshouldnotexist" << false;
+    BOBUIest::newRow("unc 8") << uncRoot + "/asharethatshouldnotexist" << false;
+    BOBUIest::newRow("unc 9") << "//ahostthatshouldnotexist" << false;
 #endif
 }
 
@@ -645,38 +645,38 @@ void tst_QFileInfo::deletedFileLinuxProcExists()
 
 void tst_QFileInfo::absolutePath_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("filename");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("filename");
 
     QString drivePrefix;
 #if defined(Q_OS_WIN)
     drivePrefix = QDir::currentPath().left(2);
     QString nonCurrentDrivePrefix =
-        drivePrefix.left(1).compare("X", Qt::CaseInsensitive) == 0 ? QString("Y:") : QString("X:");
+        drivePrefix.left(1).compare("X", BobUI::CaseInsensitive) == 0 ? QString("Y:") : QString("X:");
 
     // Make sure drive-relative paths return correct absolute paths.
-    QTest::newRow("<current drive>:my.dll") << drivePrefix + "my.dll" << QDir::currentPath() << "my.dll";
-    QTest::newRow("<not current drive>:my.dll") << nonCurrentDrivePrefix + "my.dll"
+    BOBUIest::newRow("<current drive>:my.dll") << drivePrefix + "my.dll" << QDir::currentPath() << "my.dll";
+    BOBUIest::newRow("<not current drive>:my.dll") << nonCurrentDrivePrefix + "my.dll"
                                                 << nonCurrentDrivePrefix + "/"
                                                 << "my.dll";
 #endif
-    QTest::newRow("0") << "/machine/share/dir1/" << drivePrefix + "/machine/share/dir1" << "";
-    QTest::newRow("1") << "/machine/share/dir1" << drivePrefix + "/machine/share" << "dir1";
-    QTest::newRow("2") << "/usr/local/bin" << drivePrefix + "/usr/local" << "bin";
-    QTest::newRow("3") << "/usr/local/bin/" << drivePrefix + "/usr/local/bin" << "";
-    QTest::newRow("/test") << "/test" << drivePrefix + "/" << "test";
+    BOBUIest::newRow("0") << "/machine/share/dir1/" << drivePrefix + "/machine/share/dir1" << "";
+    BOBUIest::newRow("1") << "/machine/share/dir1" << drivePrefix + "/machine/share" << "dir1";
+    BOBUIest::newRow("2") << "/usr/local/bin" << drivePrefix + "/usr/local" << "bin";
+    BOBUIest::newRow("3") << "/usr/local/bin/" << drivePrefix + "/usr/local/bin" << "";
+    BOBUIest::newRow("/test") << "/test" << drivePrefix + "/" << "test";
 
 #if defined(Q_OS_WIN)
-    QTest::newRow("c:\\autoexec.bat") << "c:\\autoexec.bat" << "C:/"
+    BOBUIest::newRow("c:\\autoexec.bat") << "c:\\autoexec.bat" << "C:/"
                                       << "autoexec.bat";
-    QTest::newRow("c:autoexec.bat") << QDir::currentPath().left(2) + "autoexec.bat" << QDir::currentPath()
+    BOBUIest::newRow("c:autoexec.bat") << QDir::currentPath().left(2) + "autoexec.bat" << QDir::currentPath()
                                     << "autoexec.bat";
 #endif
-    QTest::newRow("QTBUG-19995.1") << drivePrefix + "/System/Library/StartupItems/../Frameworks"
+    BOBUIest::newRow("BOBUIBUG-19995.1") << drivePrefix + "/System/Library/StartupItems/../Frameworks"
                                    << drivePrefix + "/System/Library"
                                    << "Frameworks";
-    QTest::newRow("QTBUG-19995.2") << drivePrefix + "/System/Library/StartupItems/../Frameworks/"
+    BOBUIest::newRow("BOBUIBUG-19995.2") << drivePrefix + "/System/Library/StartupItems/../Frameworks/"
                                    << drivePrefix + "/System/Library/Frameworks" << "";
 }
 
@@ -694,32 +694,32 @@ void tst_QFileInfo::absolutePath()
 
 void tst_QFileInfo::absFilePath_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("relativeFile") << "tmp.txt" << QDir::currentPath() + "/tmp.txt";
-    QTest::newRow("relativeFileInSubDir") << "temp/tmp.txt" << QDir::currentPath() + "/" + "temp/tmp.txt";
+    BOBUIest::newRow("relativeFile") << "tmp.txt" << QDir::currentPath() + "/tmp.txt";
+    BOBUIest::newRow("relativeFileInSubDir") << "temp/tmp.txt" << QDir::currentPath() + "/" + "temp/tmp.txt";
     QString drivePrefix;
 #if defined(Q_OS_WIN)
     QString curr = QDir::currentPath();
 
-    curr.remove(0, 2);   // Make it a absolute path with no drive specifier: \depot\qt-4.2\tests\auto\qfileinfo
-    QTest::newRow(".")            << curr << QDir::currentPath();
-    QTest::newRow("absFilePath") << "c:\\home\\andy\\tmp.txt" << "C:/home/andy/tmp.txt";
+    curr.remove(0, 2);   // Make it a absolute path with no drive specifier: \depot\bobui-4.2\tests\auto\qfileinfo
+    BOBUIest::newRow(".")            << curr << QDir::currentPath();
+    BOBUIest::newRow("absFilePath") << "c:\\home\\andy\\tmp.txt" << "C:/home/andy/tmp.txt";
 
     // Make sure drive-relative paths return correct absolute paths.
     drivePrefix = QDir::currentPath().left(2);
     QString nonCurrentDrivePrefix =
-        drivePrefix.left(1).compare("X", Qt::CaseInsensitive) == 0 ? QString("Y:") : QString("X:");
+        drivePrefix.left(1).compare("X", BobUI::CaseInsensitive) == 0 ? QString("Y:") : QString("X:");
 
-    QTest::newRow("absFilePathWithoutSlash") << drivePrefix + "tmp.txt" << QDir::currentPath() + "/tmp.txt";
-    QTest::newRow("<current drive>:my.dll") << drivePrefix + "temp/my.dll" << QDir::currentPath() + "/temp/my.dll";
-    QTest::newRow("<not current drive>:my.dll") << nonCurrentDrivePrefix + "temp/my.dll"
+    BOBUIest::newRow("absFilePathWithoutSlash") << drivePrefix + "tmp.txt" << QDir::currentPath() + "/tmp.txt";
+    BOBUIest::newRow("<current drive>:my.dll") << drivePrefix + "temp/my.dll" << QDir::currentPath() + "/temp/my.dll";
+    BOBUIest::newRow("<not current drive>:my.dll") << nonCurrentDrivePrefix + "temp/my.dll"
                                                 << nonCurrentDrivePrefix + "/temp/my.dll";
 #else
-    QTest::newRow("absFilePath") << "/home/andy/tmp.txt" << "/home/andy/tmp.txt";
+    BOBUIest::newRow("absFilePath") << "/home/andy/tmp.txt" << "/home/andy/tmp.txt";
 #endif
-    QTest::newRow("QTBUG-19995") << drivePrefix + "/System/Library/StartupItems/../Frameworks"
+    BOBUIest::newRow("BOBUIBUG-19995") << drivePrefix + "/System/Library/StartupItems/../Frameworks"
                                  << drivePrefix + "/System/Library/Frameworks";
 }
 
@@ -730,7 +730,7 @@ void tst_QFileInfo::absFilePath()
 
     QFileInfo fi(file);
 #if defined(Q_OS_WIN)
-    QVERIFY(QString::compare(fi.absoluteFilePath(), expected, Qt::CaseInsensitive) == 0);
+    QVERIFY(QString::compare(fi.absoluteFilePath(), expected, BobUI::CaseInsensitive) == 0);
 #else
     QCOMPARE(fi.absoluteFilePath(), expected);
 #endif
@@ -738,7 +738,7 @@ void tst_QFileInfo::absFilePath()
 
 void tst_QFileInfo::canonicalPath()
 {
-    QTemporaryFile tempFile;
+    BOBUIemporaryFile tempFile;
     tempFile.setAutoRemove(true);
     QVERIFY2(tempFile.open(), qPrintable(tempFile.errorString()));
     QFileInfo fi(tempFile.fileName());
@@ -876,25 +876,25 @@ void tst_QFileInfo::canonicalFilePath()
 
 void tst_QFileInfo::fileName_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("relativeFile") << "tmp.txt" << "tmp.txt";
-    QTest::newRow("relativeFileInSubDir") << "temp/tmp.txt" << "tmp.txt";
+    BOBUIest::newRow("relativeFile") << "tmp.txt" << "tmp.txt";
+    BOBUIest::newRow("relativeFileInSubDir") << "temp/tmp.txt" << "tmp.txt";
 #if defined(Q_OS_WIN)
-    QTest::newRow("absFilePath") << "c:\\home\\andy\\tmp.txt" << "tmp.txt";
-    QTest::newRow("driveWithNoSlash") << "c:tmp.txt" << "tmp.txt";
+    BOBUIest::newRow("absFilePath") << "c:\\home\\andy\\tmp.txt" << "tmp.txt";
+    BOBUIest::newRow("driveWithNoSlash") << "c:tmp.txt" << "tmp.txt";
 #else
-    QTest::newRow("absFilePath") << "/home/andy/tmp.txt" << "tmp.txt";
+    BOBUIest::newRow("absFilePath") << "/home/andy/tmp.txt" << "tmp.txt";
 #endif
-    QTest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "file1.ext1";
-    QTest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "file1.ext1.ext2";
+    BOBUIest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "file1.ext1";
+    BOBUIest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "file1.ext1.ext2";
 
-    QTest::newRow("ending slash [small]") << QString::fromLatin1("/a/") << QString::fromLatin1("");
-    QTest::newRow("no ending slash [small]") << QString::fromLatin1("/a") << QString::fromLatin1("a");
+    BOBUIest::newRow("ending slash [small]") << QString::fromLatin1("/a/") << QString::fromLatin1("");
+    BOBUIest::newRow("no ending slash [small]") << QString::fromLatin1("/a") << QString::fromLatin1("a");
 
-    QTest::newRow("ending slash") << QString::fromLatin1("/somedir/") << QString::fromLatin1("");
-    QTest::newRow("no ending slash") << QString::fromLatin1("/somedir") << QString::fromLatin1("somedir");
+    BOBUIest::newRow("ending slash") << QString::fromLatin1("/somedir/") << QString::fromLatin1("");
+    BOBUIest::newRow("no ending slash") << QString::fromLatin1("/somedir") << QString::fromLatin1("somedir");
 }
 
 void tst_QFileInfo::fileName()
@@ -908,13 +908,13 @@ void tst_QFileInfo::fileName()
 
 void tst_QFileInfo::bundleName_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("root") << "/" << "";
-    QTest::newRow("etc") << "/etc" << "";
+    BOBUIest::newRow("root") << "/" << "";
+    BOBUIest::newRow("etc") << "/etc" << "";
 #ifdef Q_OS_DARWIN
-    QTest::newRow("safari") << "/Applications/Safari.app" << "Safari";
+    BOBUIest::newRow("safari") << "/Applications/Safari.app" << "Safari";
 #endif
 }
 
@@ -929,20 +929,20 @@ void tst_QFileInfo::bundleName()
 
 void tst_QFileInfo::dir_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<bool>("absPath");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<bool>("absPath");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("relativeFile") << "tmp.txt" << false << ".";
-    QTest::newRow("relativeFileAbsPath") << "tmp.txt" << true << QDir::currentPath();
-    QTest::newRow("relativeFileInSubDir") << "temp/tmp.txt" << false << "temp";
-    QTest::newRow("relativeFileInSubDirAbsPath") << "temp/tmp.txt" << true << QDir::currentPath() + "/temp";
-    QTest::newRow("absFilePath") << QDir::currentPath() + "/tmp.txt" << false << QDir::currentPath();
-    QTest::newRow("absFilePathAbsPath") << QDir::currentPath() + "/tmp.txt" << true << QDir::currentPath();
-    QTest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << true << ":/tst_qfileinfo/resources";
+    BOBUIest::newRow("relativeFile") << "tmp.txt" << false << ".";
+    BOBUIest::newRow("relativeFileAbsPath") << "tmp.txt" << true << QDir::currentPath();
+    BOBUIest::newRow("relativeFileInSubDir") << "temp/tmp.txt" << false << "temp";
+    BOBUIest::newRow("relativeFileInSubDirAbsPath") << "temp/tmp.txt" << true << QDir::currentPath() + "/temp";
+    BOBUIest::newRow("absFilePath") << QDir::currentPath() + "/tmp.txt" << false << QDir::currentPath();
+    BOBUIest::newRow("absFilePathAbsPath") << QDir::currentPath() + "/tmp.txt" << true << QDir::currentPath();
+    BOBUIest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << true << ":/tst_qfileinfo/resources";
 #if defined(Q_OS_WIN)
-    QTest::newRow("driveWithSlash") << "C:/file1.ext1.ext2" << true << "C:/";
-    QTest::newRow("driveWithoutSlash") << QDir::currentPath().left(2) + "file1.ext1.ext2" << false << QDir::currentPath().left(2);
+    BOBUIest::newRow("driveWithSlash") << "C:/file1.ext1.ext2" << true << "C:/";
+    BOBUIest::newRow("driveWithoutSlash") << QDir::currentPath().left(2) + "file1.ext1.ext2" << false << QDir::currentPath().left(2);
 #endif
 }
 
@@ -965,29 +965,29 @@ void tst_QFileInfo::dir()
 
 void tst_QFileInfo::suffix_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("noextension0") << "file" << "";
-    QTest::newRow("noextension1") << "/path/to/file" << "";
-    QTest::newRow("data0") << "file.tar" << "tar";
-    QTest::newRow("data1") << "file.tar.gz" << "gz";
-    QTest::newRow("data2") << "/path/file/file.tar.gz" << "gz";
-    QTest::newRow("data3") << "/path/file.tar" << "tar";
-    QTest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "ext1";
-    QTest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "ext2";
-    QTest::newRow("hidden1") << ".ext1" << "ext1";
-    QTest::newRow("hidden1") << ".ext" << "ext";
-    QTest::newRow("hidden1") << ".ex" << "ex";
-    QTest::newRow("hidden1") << ".e" << "e";
-    QTest::newRow("hidden2") << ".ext1.ext2" << "ext2";
-    QTest::newRow("hidden2") << ".ext.ext2" << "ext2";
-    QTest::newRow("hidden2") << ".ex.ext2" << "ext2";
-    QTest::newRow("hidden2") << ".e.ext2" << "ext2";
-    QTest::newRow("hidden2") << "..ext2" << "ext2";
+    BOBUIest::newRow("noextension0") << "file" << "";
+    BOBUIest::newRow("noextension1") << "/path/to/file" << "";
+    BOBUIest::newRow("data0") << "file.tar" << "tar";
+    BOBUIest::newRow("data1") << "file.tar.gz" << "gz";
+    BOBUIest::newRow("data2") << "/path/file/file.tar.gz" << "gz";
+    BOBUIest::newRow("data3") << "/path/file.tar" << "tar";
+    BOBUIest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "ext1";
+    BOBUIest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "ext2";
+    BOBUIest::newRow("hidden1") << ".ext1" << "ext1";
+    BOBUIest::newRow("hidden1") << ".ext" << "ext";
+    BOBUIest::newRow("hidden1") << ".ex" << "ex";
+    BOBUIest::newRow("hidden1") << ".e" << "e";
+    BOBUIest::newRow("hidden2") << ".ext1.ext2" << "ext2";
+    BOBUIest::newRow("hidden2") << ".ext.ext2" << "ext2";
+    BOBUIest::newRow("hidden2") << ".ex.ext2" << "ext2";
+    BOBUIest::newRow("hidden2") << ".e.ext2" << "ext2";
+    BOBUIest::newRow("hidden2") << "..ext2" << "ext2";
 #ifdef Q_OS_WIN
-    QTest::newRow("driveWithSlash") << "c:/file1.ext1.ext2" << "ext2";
-    QTest::newRow("driveWithoutSlash") << "c:file1.ext1.ext2" << "ext2";
+    BOBUIest::newRow("driveWithSlash") << "c:/file1.ext1.ext2" << "ext2";
+    BOBUIest::newRow("driveWithoutSlash") << "c:file1.ext1.ext2" << "ext2";
 #endif
 }
 
@@ -1003,20 +1003,20 @@ void tst_QFileInfo::suffix()
 
 void tst_QFileInfo::completeSuffix_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("noextension0") << "file" << "";
-    QTest::newRow("noextension1") << "/path/to/file" << "";
-    QTest::newRow("data0") << "file.tar" << "tar";
-    QTest::newRow("data1") << "file.tar.gz" << "tar.gz";
-    QTest::newRow("data2") << "/path/file/file.tar.gz" << "tar.gz";
-    QTest::newRow("data3") << "/path/file.tar" << "tar";
-    QTest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "ext1";
-    QTest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "ext1.ext2";
+    BOBUIest::newRow("noextension0") << "file" << "";
+    BOBUIest::newRow("noextension1") << "/path/to/file" << "";
+    BOBUIest::newRow("data0") << "file.tar" << "tar";
+    BOBUIest::newRow("data1") << "file.tar.gz" << "tar.gz";
+    BOBUIest::newRow("data2") << "/path/file/file.tar.gz" << "tar.gz";
+    BOBUIest::newRow("data3") << "/path/file.tar" << "tar";
+    BOBUIest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "ext1";
+    BOBUIest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "ext1.ext2";
 #ifdef Q_OS_WIN
-    QTest::newRow("driveWithSlash") << "c:/file1.ext1.ext2" << "ext1.ext2";
-    QTest::newRow("driveWithoutSlash") << "c:file1.ext1.ext2" << "ext1.ext2";
+    BOBUIest::newRow("driveWithSlash") << "c:/file1.ext1.ext2" << "ext1.ext2";
+    BOBUIest::newRow("driveWithoutSlash") << "c:file1.ext1.ext2" << "ext1.ext2";
 #endif
 }
 
@@ -1031,19 +1031,19 @@ void tst_QFileInfo::completeSuffix()
 
 void tst_QFileInfo::baseName_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("data0") << "file.tar" << "file";
-    QTest::newRow("data1") << "file.tar.gz" << "file";
-    QTest::newRow("data2") << "/path/file/file.tar.gz" << "file";
-    QTest::newRow("data3") << "/path/file.tar" << "file";
-    QTest::newRow("data4") << "/path/file" << "file";
-    QTest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "file1";
-    QTest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "file1";
+    BOBUIest::newRow("data0") << "file.tar" << "file";
+    BOBUIest::newRow("data1") << "file.tar.gz" << "file";
+    BOBUIest::newRow("data2") << "/path/file/file.tar.gz" << "file";
+    BOBUIest::newRow("data3") << "/path/file.tar" << "file";
+    BOBUIest::newRow("data4") << "/path/file" << "file";
+    BOBUIest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "file1";
+    BOBUIest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "file1";
 #ifdef Q_OS_WIN
-    QTest::newRow("driveWithSlash") << "c:/file1.ext1.ext2" << "file1";
-    QTest::newRow("driveWithoutSlash") << "c:file1.ext1.ext2" << "file1";
+    BOBUIest::newRow("driveWithSlash") << "c:/file1.ext1.ext2" << "file1";
+    BOBUIest::newRow("driveWithoutSlash") << "c:file1.ext1.ext2" << "file1";
 #endif
 }
 
@@ -1058,19 +1058,19 @@ void tst_QFileInfo::baseName()
 
 void tst_QFileInfo::completeBaseName_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("data0") << "file.tar" << "file";
-    QTest::newRow("data1") << "file.tar.gz" << "file.tar";
-    QTest::newRow("data2") << "/path/file/file.tar.gz" << "file.tar";
-    QTest::newRow("data3") << "/path/file.tar" << "file";
-    QTest::newRow("data4") << "/path/file" << "file";
-    QTest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "file1";
-    QTest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "file1.ext1";
+    BOBUIest::newRow("data0") << "file.tar" << "file";
+    BOBUIest::newRow("data1") << "file.tar.gz" << "file.tar";
+    BOBUIest::newRow("data2") << "/path/file/file.tar.gz" << "file.tar";
+    BOBUIest::newRow("data3") << "/path/file.tar" << "file";
+    BOBUIest::newRow("data4") << "/path/file" << "file";
+    BOBUIest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << "file1";
+    BOBUIest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << "file1.ext1";
 #ifdef Q_OS_WIN
-    QTest::newRow("driveWithSlash") << "c:/file1.ext1.ext2" << "file1.ext1";
-    QTest::newRow("driveWithoutSlash") << "c:file1.ext1.ext2" << "file1.ext1";
+    BOBUIest::newRow("driveWithSlash") << "c:/file1.ext1.ext2" << "file1.ext1";
+    BOBUIest::newRow("driveWithoutSlash") << "c:file1.ext1.ext2" << "file1.ext1";
 #endif
 }
 
@@ -1085,15 +1085,15 @@ void tst_QFileInfo::completeBaseName()
 
 void tst_QFileInfo::permission_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<int>("perms");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<int>("perms");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("data0") << QCoreApplication::instance()->applicationFilePath() << int(QFile::ExeUser) << true;
-    QTest::newRow("data1") << m_sourceFile << int(QFile::ReadUser) << true;
-    QTest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << int(QFile::ReadUser) << true;
-    QTest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1" << int(QFile::WriteUser) << false;
-    QTest::newRow("resource3") << ":/tst_qfileinfo/resources/file1.ext1" << int(QFile::ExeUser) << false;
+    BOBUIest::newRow("data0") << QCoreApplication::instance()->applicationFilePath() << int(QFile::ExeUser) << true;
+    BOBUIest::newRow("data1") << m_sourceFile << int(QFile::ReadUser) << true;
+    BOBUIest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << int(QFile::ReadUser) << true;
+    BOBUIest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1" << int(QFile::WriteUser) << false;
+    BOBUIest::newRow("resource3") << ":/tst_qfileinfo/resources/file1.ext1" << int(QFile::ExeUser) << false;
 }
 
 void tst_QFileInfo::permission()
@@ -1107,17 +1107,17 @@ void tst_QFileInfo::permission()
 
 void tst_QFileInfo::size_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<int>("size");
 
-    QTest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << 0;
+    BOBUIest::newRow("resource1") << ":/tst_qfileinfo/resources/file1.ext1" << 0;
     QFile::remove("file1");
     QFile file("file1");
     QVERIFY(file.open(QFile::WriteOnly));
     QCOMPARE(file.write("JAJAJAA"), qint64(7));
-    QTest::newRow("created-file") << "file1" << 7;
+    BOBUIest::newRow("created-file") << "file1" << 7;
 
-    QTest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << 0;
+    BOBUIest::newRow("resource2") << ":/tst_qfileinfo/resources/file1.ext1.ext2" << 0;
 }
 
 void tst_QFileInfo::size()
@@ -1126,7 +1126,7 @@ void tst_QFileInfo::size()
 
     QFileInfo fi(file);
     (void)fi.permissions();
-    QTEST(int(fi.size()), "size");
+    BOBUIEST(int(fi.size()), "size");
 }
 
 void tst_QFileInfo::systemFiles()
@@ -1146,31 +1146,31 @@ void tst_QFileInfo::systemFiles()
 
 void tst_QFileInfo::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QFileInfo>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QFileInfo>();
 }
 
 void tst_QFileInfo::compare_data()
 {
-    QTest::addColumn<QString>("file1");
-    QTest::addColumn<QString>("file2");
-    QTest::addColumn<bool>("same");
+    BOBUIest::addColumn<QString>("file1");
+    BOBUIest::addColumn<QString>("file2");
+    BOBUIest::addColumn<bool>("same");
 
     QString caseChangedSource = m_sourceFile;
     caseChangedSource.replace("info", "Info");
 
-    QTest::newRow("data0")
+    BOBUIest::newRow("data0")
         << m_sourceFile
         << m_sourceFile
         << true;
-    QTest::newRow("data1")
+    BOBUIest::newRow("data1")
         << m_sourceFile
         << QString::fromLatin1("/tst_qfileinfo.cpp")
         << false;
-    QTest::newRow("data2")
+    BOBUIest::newRow("data2")
         << QString::fromLatin1("tst_qfileinfo.cpp")
         << QDir::currentPath() + QString::fromLatin1("/tst_qfileinfo.cpp")
         << true;
-    QTest::newRow("casesense1")
+    BOBUIest::newRow("casesense1")
         << caseChangedSource
         << m_sourceFile
 #if defined(Q_OS_WIN)
@@ -1185,27 +1185,27 @@ void tst_QFileInfo::compare_data()
 void tst_QFileInfo::compare()
 {
 #if defined(Q_OS_DARWIN)
-    if (qstrcmp(QTest::currentDataTag(), "casesense1") == 0)
-        QSKIP("Qt thinks all UNIX filesystems are case sensitive, see QTBUG-28246");
+    if (qstrcmp(BOBUIest::currentDataTag(), "casesense1") == 0)
+        QSKIP("BobUI thinks all UNIX filesystems are case sensitive, see BOBUIBUG-28246");
 #endif
 
     QFETCH(QString, file1);
     QFETCH(QString, file2);
     QFETCH(bool, same);
     QFileInfo fi1(file1), fi2(file2);
-    QT_TEST_EQUALITY_OPS(fi1, fi2, same);
+    BOBUI_TEST_EQUALITY_OPS(fi1, fi2, same);
 }
 
 void tst_QFileInfo::consistent_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
 #if defined(Q_OS_WIN)
-    QTest::newRow("slashes") << QString::fromLatin1("\\a\\a\\a\\a") << QString::fromLatin1("/a/a/a/a");
+    BOBUIest::newRow("slashes") << QString::fromLatin1("\\a\\a\\a\\a") << QString::fromLatin1("/a/a/a/a");
 #endif
-    QTest::newRow("ending slash") << QString::fromLatin1("/a/somedir/") << QString::fromLatin1("/a/somedir/");
-    QTest::newRow("no ending slash") << QString::fromLatin1("/a/somedir") << QString::fromLatin1("/a/somedir");
+    BOBUIest::newRow("ending slash") << QString::fromLatin1("/a/somedir/") << QString::fromLatin1("/a/somedir/");
+    BOBUIest::newRow("no ending slash") << QString::fromLatin1("/a/somedir") << QString::fromLatin1("/a/somedir");
 }
 
 void tst_QFileInfo::consistent()
@@ -1221,14 +1221,14 @@ void tst_QFileInfo::consistent()
 
 void tst_QFileInfo::fileTimes_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::newRow("simple") << QString::fromLatin1("simplefile.txt");
-    QTest::newRow( "longfile" ) << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::newRow("simple") << QString::fromLatin1("simplefile.txt");
+    BOBUIest::newRow( "longfile" ) << QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName.txt");
-    QTest::newRow( "longfile absolutepath" ) << QFileInfo(QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
+    BOBUIest::newRow( "longfile absolutepath" ) << QFileInfo(QString::fromLatin1("longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
                                                      "longFileNamelongFileNamelongFileNamelongFileName"
@@ -1238,7 +1238,7 @@ void tst_QFileInfo::fileTimes_data()
 void tst_QFileInfo::fileTimes()
 {
     auto datePairString = [](const QDateTime &actual, const QDateTime &before) {
-        return (actual.toString(Qt::ISODateWithMs) + " (should be >) " + before.toString(Qt::ISODateWithMs))
+        return (actual.toString(BobUI::ISODateWithMs) + " (should be >) " + before.toString(BobUI::ISODateWithMs))
                 .toLatin1();
     };
 
@@ -1261,8 +1261,8 @@ void tst_QFileInfo::fileTimes()
     {
         // try to guess if file times on this filesystem round to the second
         QFileInfo cwd(".");
-        if (cwd.lastModified(QTimeZone::UTC).toMSecsSinceEpoch() % 1000 == 0
-                && cwd.lastRead(QTimeZone::UTC).toMSecsSinceEpoch() % 1000 == 0) {
+        if (cwd.lastModified(BOBUIimeZone::UTC).toMSecsSinceEpoch() % 1000 == 0
+                && cwd.lastRead(BOBUIimeZone::UTC).toMSecsSinceEpoch() % 1000 == 0) {
             fsClockSkew = sleepTime = 1000;
 
             noAccessTime = qIsLikelyToBeFat(fileName);
@@ -1287,24 +1287,24 @@ void tst_QFileInfo::fileTimes()
         QFile file(fileName);
         QVERIFY(file.open(QFile::WriteOnly | QFile::Text));
         QFileInfo fileInfo(fileName);
-        birthTime = fileInfo.birthTime(QTimeZone::UTC);
+        birthTime = fileInfo.birthTime(BOBUIimeZone::UTC);
         QVERIFY2(!birthTime.isValid() || birthTime > beforeBirth,
                  datePairString(birthTime, beforeBirth));
 
-        QTest::qSleep(sleepTime);
+        BOBUIest::qSleep(sleepTime);
         beforeWrite = QDateTime::currentDateTimeUtc().addMSecs(-fsClockSkew);
-        QTextStream ts(&file);
-        ts << fileName << Qt::endl;
+        BOBUIextStream ts(&file);
+        ts << fileName << BobUI::endl;
     }
     {
         QFileInfo fileInfo(fileName);
-        writeTime = fileInfo.lastModified(QTimeZone::UTC);
+        writeTime = fileInfo.lastModified(BOBUIimeZone::UTC);
         QVERIFY2(writeTime > beforeWrite, datePairString(writeTime, beforeWrite));
-        QCOMPARE(fileInfo.birthTime(QTimeZone::UTC), birthTime); // mustn't have changed
+        QCOMPARE(fileInfo.birthTime(BOBUIimeZone::UTC), birthTime); // mustn't have changed
     }
 
     // --- Change the file's metadata
-    QTest::qSleep(sleepTime);
+    BOBUIest::qSleep(sleepTime);
     beforeMetadataChange = QDateTime::currentDateTimeUtc().addMSecs(-fsClockSkew);
     {
         QFile file(fileName);
@@ -1312,28 +1312,28 @@ void tst_QFileInfo::fileTimes()
     }
     {
         QFileInfo fileInfo(fileName);
-        metadataChangeTime = fileInfo.metadataChangeTime(QTimeZone::UTC);
+        metadataChangeTime = fileInfo.metadataChangeTime(BOBUIimeZone::UTC);
         QVERIFY2(metadataChangeTime > beforeMetadataChange,
                  datePairString(metadataChangeTime, beforeMetadataChange));
         QVERIFY(metadataChangeTime >= writeTime); // not all filesystems can store both times
-        QCOMPARE(fileInfo.birthTime(QTimeZone::UTC), birthTime); // mustn't have changed
+        QCOMPARE(fileInfo.birthTime(BOBUIimeZone::UTC), birthTime); // mustn't have changed
     }
 
     // --- Read the file
-    QTest::qSleep(sleepTime);
+    BOBUIest::qSleep(sleepTime);
     beforeRead = QDateTime::currentDateTimeUtc().addMSecs(-fsClockSkew);
     {
         QFile file(fileName);
         QVERIFY(file.open(QFile::ReadOnly | QFile::Text));
-        QTextStream ts(&file);
+        BOBUIextStream ts(&file);
         QString line = ts.readLine();
         QCOMPARE(line, fileName);
     }
 
     QFileInfo fileInfo(fileName);
-    readTime = fileInfo.lastRead(QTimeZone::UTC);
-    QCOMPARE(fileInfo.lastModified(QTimeZone::UTC), writeTime); // mustn't have changed
-    QCOMPARE(fileInfo.birthTime(QTimeZone::UTC), birthTime); // mustn't have changed
+    readTime = fileInfo.lastRead(BOBUIimeZone::UTC);
+    QCOMPARE(fileInfo.lastModified(BOBUIimeZone::UTC), writeTime); // mustn't have changed
+    QCOMPARE(fileInfo.birthTime(BOBUIimeZone::UTC), birthTime); // mustn't have changed
     QVERIFY(readTime.isValid());
 
 #if defined(Q_OS_QNX) || defined(Q_OS_ANDROID)
@@ -1360,7 +1360,7 @@ void tst_QFileInfo::fileTimes()
 void tst_QFileInfo::setFileTimes()
 {
     QByteArray data("OLE\nOLE\nOLE");
-    QTemporaryFile file;
+    BOBUIemporaryFile file;
 
     QVERIFY(file.open());
     QCOMPARE(file.write(data), data.size());
@@ -1372,8 +1372,8 @@ void tst_QFileInfo::setFileTimes()
     const QDateTime mtime = file.fileTime(QFile::FileModificationTime).toUTC();
     if (mtime.time().msec() == 0)
     {
-        const QTime beforeTime = before.time();
-        const QTime beforeTimeWithMSCutOff{beforeTime.hour(), beforeTime.minute(), beforeTime.second(), 0};
+        const BOBUIime beforeTime = before.time();
+        const BOBUIime beforeTimeWithMSCutOff{beforeTime.hour(), beforeTime.minute(), beforeTime.second(), 0};
         before.setTime(beforeTimeWithMSCutOff);
     }
     QCOMPARE(mtime, before);
@@ -1381,14 +1381,14 @@ void tst_QFileInfo::setFileTimes()
 
 void tst_QFileInfo::fakeFileTimes_data()
 {
-    QTest::addColumn<QDateTime>("when");
+    BOBUIest::addColumn<QDateTime>("when");
 
     // This is 2^{31} seconds before 1970-01-01 15:14:8,
     // i.e. shortly after the start of time_t, in any time-zone:
-    QTest::newRow("early") << QDateTime(QDate(1901, 12, 14), QTime(12, 0));
+    BOBUIest::newRow("early") << QDateTime(QDate(1901, 12, 14), BOBUIime(12, 0));
 
-    // QTBUG-12006 claims XP handled this (2010-Mar-26 8:46:10) wrong due to an MS API bug:
-    QTest::newRow("XP-bug") << QDateTime::fromSecsSinceEpoch(1269593170);
+    // BOBUIBUG-12006 claims XP handled this (2010-Mar-26 8:46:10) wrong due to an MS API bug:
+    BOBUIest::newRow("XP-bug") << QDateTime::fromSecsSinceEpoch(1269593170);
 }
 
 void tst_QFileInfo::fakeFileTimes()
@@ -1410,7 +1410,7 @@ void tst_QFileInfo::fakeFileTimes()
     file.close();
 
     if (ok)
-        QCOMPARE(QFileInfo(file.fileName()).lastModified(QTimeZone::UTC), when);
+        QCOMPARE(QFileInfo(file.fileName()).lastModified(BOBUIimeZone::UTC), when);
     else
         QSKIP("Unable to set file metadata to contrived values");
 }
@@ -1431,19 +1431,19 @@ void tst_QFileInfo::isSymLink_data()
     QVERIFY(file2.link("brokenlink.lnk"));
     file2.remove();
 
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isSymLink");
-    QTest::addColumn<QString>("linkTarget");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isSymLink");
+    BOBUIest::addColumn<QString>("linkTarget");
 
-    QTest::newRow("existent file") << m_sourceFile << false << "";
-    QTest::newRow("link") << "link.lnk" << true << QFileInfo(m_sourceFile).absoluteFilePath();
-    QTest::newRow("broken link") << "brokenlink.lnk" << true << QFileInfo("dummyfile").absoluteFilePath();
-    QTest::newRow("nonexistent") << "thispathdoesntexist.lnk" << false << QString();
+    BOBUIest::newRow("existent file") << m_sourceFile << false << "";
+    BOBUIest::newRow("link") << "link.lnk" << true << QFileInfo(m_sourceFile).absoluteFilePath();
+    BOBUIest::newRow("broken link") << "brokenlink.lnk" << true << QFileInfo("dummyfile").absoluteFilePath();
+    BOBUIest::newRow("nonexistent") << "thispathdoesntexist.lnk" << false << QString();
 
 #ifndef Q_OS_WIN
     QDir::current().mkdir("relative");
     QFile::link("../dummyfile", "relative/link.lnk");
-    QTest::newRow("relative link") << "relative/link.lnk" << true << QFileInfo("dummyfile").absoluteFilePath();
+    BOBUIest::newRow("relative link") << "relative/link.lnk" << true << QFileInfo("dummyfile").absoluteFilePath();
 #endif
 #endif
 }
@@ -1472,24 +1472,24 @@ void tst_QFileInfo::isShortcut_data()
     QFile::remove("directory.lnk");
     QFile::remove("directory");
 
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isShortcut");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isShortcut");
 
     QFile regularFile(m_sourceFile);
-    QTest::newRow("regular")
+    BOBUIest::newRow("regular")
         << regularFile.fileName() << false;
-    QTest::newRow("directory")
+    BOBUIest::newRow("directory")
         << QDir::currentPath() << false;
 #if defined(Q_OS_WIN)
     // windows shortcuts
     QVERIFY(regularFile.link("link.lnk"));
-    QTest::newRow("shortcut")
+    BOBUIest::newRow("shortcut")
         << "link.lnk" << true;
     QVERIFY(regularFile.link("link"));
-    QTest::newRow("invalid-shortcut")
+    BOBUIest::newRow("invalid-shortcut")
         << "link" << false;
     QVERIFY(QFile::link(QDir::currentPath(), "directory.lnk"));
-    QTest::newRow("directory-shortcut")
+    BOBUIest::newRow("directory-shortcut")
         << "directory.lnk" << true;
 #endif
 }
@@ -1509,12 +1509,12 @@ void tst_QFileInfo::isAlias_data()
     QFile::remove("file-alias");
     QFile::remove("directory-alias");
 
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isAlias");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isAlias");
 
     QFile regularFile(m_sourceFile);
-    QTest::newRow("regular-file") << regularFile.fileName() << false;
-    QTest::newRow("directory") << QDir::currentPath() << false;
+    BOBUIest::newRow("regular-file") << regularFile.fileName() << false;
+    BOBUIest::newRow("directory") << QDir::currentPath() << false;
 
 #if defined(Q_OS_MACOS)
     auto createAlias = [](const QString &target, const QString &alias) {
@@ -1530,18 +1530,18 @@ void tst_QFileInfo::isAlias_data()
     };
 
     regularFile.link("symlink");
-    QTest::newRow("symlink") << "symlink" << false;
+    BOBUIest::newRow("symlink") << "symlink" << false;
 
     createAlias(regularFile.fileName(), QDir::current().filePath("file-alias"));
-    QTest::newRow("file-alias") << "file-alias" << true;
+    BOBUIest::newRow("file-alias") << "file-alias" << true;
 
     createAlias(QDir::currentPath(), QDir::current().filePath("directory-alias"));
-    QTest::newRow("directory-alias") << "directory-alias" << true;
+    BOBUIest::newRow("directory-alias") << "directory-alias" << true;
 
     regularFile.copy("non-existing-file");
     createAlias("non-existing-file", QDir::current().filePath("non-existing-file-alias"));
     QDir::current().remove("non-existing-file");
-    QTest::newRow("non-existing-file-alias") << "non-existing-file-alias" << true;
+    BOBUIest::newRow("non-existing-file-alias") << "non-existing-file-alias" << true;
 #endif
 }
 
@@ -1556,15 +1556,15 @@ void tst_QFileInfo::isAlias()
 
 void tst_QFileInfo::isSymbolicLink_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isSymbolicLink");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isSymbolicLink");
 
     QFile regularFile(m_sourceFile);
-    QTest::newRow("regular")
+    BOBUIest::newRow("regular")
         << regularFile.fileName() << false;
-    QTest::newRow("directory")
+    BOBUIest::newRow("directory")
         << QDir::currentPath() << false;
-    QTest::newRow("nonexistent")
+    BOBUIest::newRow("nonexistent")
         << "thispathdoesntexist.lnk" << false;
 
 #ifndef Q_NO_SYMLINKS
@@ -1574,18 +1574,18 @@ void tst_QFileInfo::isSymbolicLink_data()
         qWarning() << qPrintable(msgInsufficientPrivileges(creationResult.errorMessage));
     } else {
         QVERIFY2(creationResult.dwErr == ERROR_SUCCESS, qPrintable(creationResult.errorMessage));
-        QTest::newRow("NTFS-symlink")
+        BOBUIest::newRow("NTFS-symlink")
             << "symlink" << true;
     }
 #else // Unix:
     QVERIFY(regularFile.link("symlink.lnk"));
-    QTest::newRow("symlink.lnk")
+    BOBUIest::newRow("symlink.lnk")
         << "symlink.lnk" << true;
     QVERIFY(regularFile.link("symlink"));
-    QTest::newRow("symlink")
+    BOBUIest::newRow("symlink")
         << "symlink" << true;
     QVERIFY(QFile::link(QDir::currentPath(), "directory"));
-    QTest::newRow("directory-symlink")
+    BOBUIest::newRow("directory-symlink")
         << "directory" << true;
 #endif
 #endif // !Q_NO_SYMLINKS
@@ -1609,24 +1609,24 @@ void tst_QFileInfo::link_data()
     QFile::remove("dummyfile");
     QFile::remove("relative/link");
 
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isShortcut");
-    QTest::addColumn<bool>("isSymbolicLink");
-    QTest::addColumn<QString>("linkTarget");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isShortcut");
+    BOBUIest::addColumn<bool>("isSymbolicLink");
+    BOBUIest::addColumn<QString>("linkTarget");
 
     QFile file1(m_sourceFile);
     QFile file2("dummyfile");
     QVERIFY(file2.open(QIODevice::WriteOnly));
 
-    QTest::newRow("existent file") << m_sourceFile << false << false << "";
+    BOBUIest::newRow("existent file") << m_sourceFile << false << false << "";
 #if defined(Q_OS_WIN)
     // windows shortcuts
     QVERIFY(file1.link("link.lnk"));
-    QTest::newRow("link.lnk")
+    BOBUIest::newRow("link.lnk")
         << "link.lnk" << true << false << QFileInfo(m_sourceFile).absoluteFilePath();
 
     QVERIFY(file2.link("brokenlink.lnk"));
-    QTest::newRow("broken link.lnk")
+    BOBUIest::newRow("broken link.lnk")
         << "brokenlink.lnk" << true << false << QFileInfo("dummyfile").absoluteFilePath();
 #endif
 
@@ -1637,7 +1637,7 @@ void tst_QFileInfo::link_data()
         qWarning() << qPrintable(msgInsufficientPrivileges(creationResult.errorMessage));
     } else {
         QVERIFY2(creationResult.dwErr == ERROR_SUCCESS, qPrintable(creationResult.errorMessage));
-        QTest::newRow("link")
+        BOBUIest::newRow("link")
             << "link" << false << true << QFileInfo(m_sourceFile).absoluteFilePath();
     }
 
@@ -1646,21 +1646,21 @@ void tst_QFileInfo::link_data()
         qWarning() << qPrintable(msgInsufficientPrivileges(creationResult.errorMessage));
     } else {
         QVERIFY2(creationResult.dwErr == ERROR_SUCCESS, qPrintable(creationResult.errorMessage));
-        QTest::newRow("broken link")
+        BOBUIest::newRow("broken link")
             << "brokenlink" << false << true  << QFileInfo("dummyfile").absoluteFilePath();
     }
 #else // Unix:
     QVERIFY(file1.link("link"));
-    QTest::newRow("link")
+    BOBUIest::newRow("link")
         << "link" << false << true << QFileInfo(m_sourceFile).absoluteFilePath();
 
     QVERIFY(file2.link("brokenlink"));
-    QTest::newRow("broken link")
+    BOBUIest::newRow("broken link")
         << "brokenlink" << false << true << QFileInfo("dummyfile").absoluteFilePath();
 
     QDir::current().mkdir("relative");
     QFile::link("../dummyfile", "relative/link");
-    QTest::newRow("relative link")
+    BOBUIest::newRow("relative link")
         << "relative/link" << false << true << QFileInfo("dummyfile").absoluteFilePath();
 #endif
 #endif // !Q_NO_SYMLINKS
@@ -1682,48 +1682,48 @@ void tst_QFileInfo::link()
 
 void tst_QFileInfo::isHidden_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isHidden");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isHidden");
     const auto drives = QDir::drives();
     for (const QFileInfo& info : drives)
-        QTest::newRow(qPrintable("drive." + info.path())) << info.path() << false;
+        BOBUIest::newRow(qPrintable("drive." + info.path())) << info.path() << false;
 
 #if defined(Q_OS_WIN)
     QVERIFY(QDir("./hidden-directory").exists() || QDir().mkdir("./hidden-directory"));
     QVERIFY(SetFileAttributesW(reinterpret_cast<LPCWSTR>(QString("./hidden-directory").utf16()),FILE_ATTRIBUTE_HIDDEN));
-    QTest::newRow("hidden-directory") << QString::fromLatin1("hidden-directory") << true;
-    QTest::newRow("C:/path/to/hidden-directory") << QDir::currentPath() + QString::fromLatin1("/hidden-directory") << true;
-    QTest::newRow("C:/path/to/hidden-directory/.") << QDir::currentPath() + QString::fromLatin1("/hidden-directory/.") << true;
+    BOBUIest::newRow("hidden-directory") << QString::fromLatin1("hidden-directory") << true;
+    BOBUIest::newRow("C:/path/to/hidden-directory") << QDir::currentPath() + QString::fromLatin1("/hidden-directory") << true;
+    BOBUIest::newRow("C:/path/to/hidden-directory/.") << QDir::currentPath() + QString::fromLatin1("/hidden-directory/.") << true;
 #endif
 #if defined(Q_OS_UNIX)
     QVERIFY(QDir("./.hidden-directory").exists() || QDir().mkdir("./.hidden-directory"));
-    QTest::newRow(".hidden-directory") << QString(".hidden-directory") << true;
-    QTest::newRow(".hidden-directory/") << QString(".hidden-directory/") << true;
-    QTest::newRow(".hidden-directory//") << QString(".hidden-directory//") << true;
-    QTest::newRow(".hidden-directory/.") << QString(".hidden-directory/.") << true;
-    QTest::newRow(".hidden-directory//.") << QString(".hidden-directory//.") << true;
-    QTest::newRow(".hidden-directory/..") << QString(".hidden-directory/..") << true;
-    QTest::newRow(".hidden-directory//..") << QString(".hidden-directory//..") << true;
-    QTest::newRow("/path/to/.hidden-directory") << QDir::currentPath() + QString("/.hidden-directory") << true;
-    QTest::newRow("/path/to/.hidden-directory/") << QDir::currentPath() + QString("/.hidden-directory/") << true;
-    QTest::newRow("/path/to/.hidden-directory//") << QDir::currentPath() + QString("/.hidden-directory//") << true;
-    QTest::newRow("/path/to/.hidden-directory/.") << QDir::currentPath() + QString("/.hidden-directory/.") << true;
-    QTest::newRow("/path/to/.hidden-directory//.") << QDir::currentPath() + QString("/.hidden-directory//.") << true;
-    QTest::newRow("/path/to/.hidden-directory/..") << QDir::currentPath() + QString("/.hidden-directory/..") << true;
-    QTest::newRow("/path/to/.hidden-directory//..") << QDir::currentPath() + QString("/.hidden-directory//..") << true;
+    BOBUIest::newRow(".hidden-directory") << QString(".hidden-directory") << true;
+    BOBUIest::newRow(".hidden-directory/") << QString(".hidden-directory/") << true;
+    BOBUIest::newRow(".hidden-directory//") << QString(".hidden-directory//") << true;
+    BOBUIest::newRow(".hidden-directory/.") << QString(".hidden-directory/.") << true;
+    BOBUIest::newRow(".hidden-directory//.") << QString(".hidden-directory//.") << true;
+    BOBUIest::newRow(".hidden-directory/..") << QString(".hidden-directory/..") << true;
+    BOBUIest::newRow(".hidden-directory//..") << QString(".hidden-directory//..") << true;
+    BOBUIest::newRow("/path/to/.hidden-directory") << QDir::currentPath() + QString("/.hidden-directory") << true;
+    BOBUIest::newRow("/path/to/.hidden-directory/") << QDir::currentPath() + QString("/.hidden-directory/") << true;
+    BOBUIest::newRow("/path/to/.hidden-directory//") << QDir::currentPath() + QString("/.hidden-directory//") << true;
+    BOBUIest::newRow("/path/to/.hidden-directory/.") << QDir::currentPath() + QString("/.hidden-directory/.") << true;
+    BOBUIest::newRow("/path/to/.hidden-directory//.") << QDir::currentPath() + QString("/.hidden-directory//.") << true;
+    BOBUIest::newRow("/path/to/.hidden-directory/..") << QDir::currentPath() + QString("/.hidden-directory/..") << true;
+    BOBUIest::newRow("/path/to/.hidden-directory//..") << QDir::currentPath() + QString("/.hidden-directory//..") << true;
 #endif
 
 #if defined(Q_OS_DARWIN)
     // /bin has the hidden attribute on OS X
-    QTest::newRow("/bin/") << QString::fromLatin1("/bin/") << true;
+    BOBUIest::newRow("/bin/") << QString::fromLatin1("/bin/") << true;
 #elif !defined(Q_OS_WIN)
-    QTest::newRow("/bin/") << QString::fromLatin1("/bin/") << false;
+    BOBUIest::newRow("/bin/") << QString::fromLatin1("/bin/") << false;
 #endif
 
 #ifdef Q_OS_DARWIN
-    QTest::newRow("mac_etc") << QString::fromLatin1("/etc") << true;
-    QTest::newRow("mac_private_etc") << QString::fromLatin1("/private/etc") << false;
-    QTest::newRow("mac_Applications") << QString::fromLatin1("/Applications") << false;
+    BOBUIest::newRow("mac_etc") << QString::fromLatin1("/etc") << true;
+    BOBUIest::newRow("mac_private_etc") << QString::fromLatin1("/private/etc") << false;
+    BOBUIest::newRow("mac_Applications") << QString::fromLatin1("/Applications") << false;
 #endif
 }
 
@@ -1741,20 +1741,20 @@ void tst_QFileInfo::isHiddenFromFinder_data()
 #ifndef UF_HIDDEN
     QSKIP("Only supported on OSes with UF_HIDDEN flag");
 #endif
-    QTest::addColumn<bool>("isSymlink");
-    QTest::addColumn<bool>("isHidden");
-    QTest::newRow("regular-visible") << false << false;
-    QTest::newRow("symlink-visible") << true << false;
-    QTest::newRow("regular-hidden") << false << true;
-    QTest::newRow("symlink-hidden") << true << true;
+    BOBUIest::addColumn<bool>("isSymlink");
+    BOBUIest::addColumn<bool>("isHidden");
+    BOBUIest::newRow("regular-visible") << false << false;
+    BOBUIest::newRow("symlink-visible") << true << false;
+    BOBUIest::newRow("regular-hidden") << false << true;
+    BOBUIest::newRow("symlink-hidden") << true << true;
 }
 
 void tst_QFileInfo::isHiddenFromFinder()
 {
     auto setHiddenFromFinder = [](const char *filename) {
 #ifdef UF_HIDDEN
-        QT_STATBUF buf;
-        QT_STAT(filename, &buf);
+        BOBUI_STATBUF buf;
+        BOBUI_STAT(filename, &buf);
         lchflags(filename, buf.st_flags | UF_HIDDEN);
 #else
         Q_UNUSED(filename);
@@ -1790,12 +1790,12 @@ void tst_QFileInfo::isHiddenFromFinder()
 
 void tst_QFileInfo::isBundle_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isBundle");
-    QTest::newRow("root") << QString::fromLatin1("/") << false;
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isBundle");
+    BOBUIest::newRow("root") << QString::fromLatin1("/") << false;
 #ifdef Q_OS_DARWIN
-    QTest::newRow("mac_Applications") << QString::fromLatin1("/Applications") << false;
-    QTest::newRow("mac_Applications") << QString::fromLatin1("/Applications/Safari.app") << true;
+    BOBUIest::newRow("mac_Applications") << QString::fromLatin1("/Applications") << false;
+    BOBUIest::newRow("mac_Applications") << QString::fromLatin1("/Applications/Safari.app") << true;
 #endif
 }
 
@@ -1809,16 +1809,16 @@ void tst_QFileInfo::isBundle()
 
 void tst_QFileInfo::isNativePath_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isNativePath");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isNativePath");
 
-    QTest::newRow("default-constructed") << QString() << false;
-    QTest::newRow("empty") << QString("") << false;
+    BOBUIest::newRow("default-constructed") << QString() << false;
+    BOBUIest::newRow("empty") << QString("") << false;
 
-    QTest::newRow("local root") << QString::fromLatin1("/") << true;
-    QTest::newRow("local non-existent file") << QString::fromLatin1("/abrakadabra.boo") << true;
+    BOBUIest::newRow("local root") << QString::fromLatin1("/") << true;
+    BOBUIest::newRow("local non-existent file") << QString::fromLatin1("/abrakadabra.boo") << true;
 
-    QTest::newRow("qresource root") << QString::fromLatin1(":/") << false;
+    BOBUIest::newRow("qresource root") << QString::fromLatin1(":/") << false;
 }
 
 void tst_QFileInfo::isNativePath()
@@ -1847,14 +1847,14 @@ void tst_QFileInfo::refresh()
     file.flush();
 
     QFileInfo info(file);
-    QDateTime lastModified = info.lastModified(QTimeZone::UTC);
+    QDateTime lastModified = info.lastModified(BOBUIimeZone::UTC);
     QCOMPARE(info.size(), qint64(7));
 
-    QTest::qSleep(sleepTime);
+    BOBUIest::qSleep(sleepTime);
 
     QCOMPARE(file.write("JOJOJO"), qint64(6));
     file.flush();
-    QCOMPARE(info.lastModified(QTimeZone::UTC), lastModified);
+    QCOMPARE(info.lastModified(BOBUIimeZone::UTC), lastModified);
 
     QCOMPARE(info.size(), qint64(7));
 #if defined(Q_OS_WIN)
@@ -1862,7 +1862,7 @@ void tst_QFileInfo::refresh()
 #endif
     info.refresh();
     QCOMPARE(info.size(), qint64(13));
-    QVERIFY(info.lastModified(QTimeZone::UTC) > lastModified);
+    QVERIFY(info.lastModified(BOBUIimeZone::UTC) > lastModified);
 
     QFileInfo info2 = info;
     QCOMPARE(info2.size(), info.size());
@@ -1889,10 +1889,10 @@ Q_DECLARE_METATYPE(NtfsTestResource)
 
 void tst_QFileInfo::ntfsJunctionPointsAndSymlinks_data()
 {
-    QTest::addColumn<NtfsTestResource>("resource");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("linkTarget");
-    QTest::addColumn<QString>("canonicalFilePath");
+    BOBUIest::addColumn<NtfsTestResource>("resource");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("linkTarget");
+    BOBUIest::addColumn<QString>("canonicalFilePath");
 
     QDir pwd;
     pwd.mkdir("target");
@@ -1916,13 +1916,13 @@ void tst_QFileInfo::ntfsJunctionPointsAndSymlinks_data()
 
         QVERIFY2(file.exists(), msgDoesNotExist(file.fileName()).constData());
 
-        QTest::newRow("absolute dir symlink")
+        BOBUIest::newRow("absolute dir symlink")
             << NtfsTestResource(NtfsTestResource::SymLink, absSymlink, absTarget)
             << absSymlink << QDir::fromNativeSeparators(absTarget) << target.canonicalPath();
-        QTest::newRow("relative dir symlink")
+        BOBUIest::newRow("relative dir symlink")
             << NtfsTestResource(NtfsTestResource::SymLink, relSymlink, relTarget)
             << relSymlink << QDir::fromNativeSeparators(absTarget) << target.canonicalPath();
-        QTest::newRow("file in symlink dir")
+        BOBUIest::newRow("file in symlink dir")
             << NtfsTestResource()
             << fileInSymlink << "" << target.canonicalPath().append("/file");
     }
@@ -1938,22 +1938,22 @@ void tst_QFileInfo::ntfsJunctionPointsAndSymlinks_data()
         QString relToRelTarget = QDir::toNativeSeparators(relativeDir.relativeFilePath(target.absoluteFilePath()));
         QString relToRelSymlink = "relative/rel_symlink";
 
-        QTest::newRow("absolute file symlink")
+        BOBUIest::newRow("absolute file symlink")
             << NtfsTestResource(NtfsTestResource::SymLink, absSymlink, absTarget)
             << absSymlink << QDir::fromNativeSeparators(absTarget) << target.canonicalFilePath();
-        QTest::newRow("relative file symlink")
+        BOBUIest::newRow("relative file symlink")
             << NtfsTestResource(NtfsTestResource::SymLink, relSymlink, relTarget)
             << relSymlink << QDir::fromNativeSeparators(absTarget) << target.canonicalFilePath();
-        QTest::newRow("relative to relative file symlink")
+        BOBUIest::newRow("relative to relative file symlink")
             << NtfsTestResource(NtfsTestResource::SymLink, relToRelSymlink, relToRelTarget)
             << relToRelSymlink << QDir::fromNativeSeparators(absTarget) << target.canonicalFilePath();
     }
     if (uncServerAvailable) {
         // Symlink to UNC share
         pwd.mkdir("unc");
-        QString uncTarget = QStringLiteral("//") + QTest::uncServerName() + "/testshare";
+        QString uncTarget = QStringLiteral("//") + BOBUIest::uncServerName() + "/testshare";
         QString uncSymlink = QDir::toNativeSeparators(pwd.absolutePath().append("\\unc\\link_to_unc"));
-        QTest::newRow("UNC symlink")
+        BOBUIest::newRow("UNC symlink")
             << NtfsTestResource(NtfsTestResource::SymLink, uncSymlink, uncTarget)
             << QDir::fromNativeSeparators(uncSymlink) << QDir::fromNativeSeparators(uncTarget) << uncTarget;
     }
@@ -1962,7 +1962,7 @@ void tst_QFileInfo::ntfsJunctionPointsAndSymlinks_data()
     QString target = "target";
     QString junction = "junction_pwd";
     QFileInfo targetInfo(target);
-    QTest::newRow("junction_pwd")
+    BOBUIest::newRow("junction_pwd")
         << NtfsTestResource(NtfsTestResource::Junction, junction, target)
         << junction << QString() << QString();
 
@@ -1971,14 +1971,14 @@ void tst_QFileInfo::ntfsJunctionPointsAndSymlinks_data()
     QVERIFY2(file.open(QIODevice::ReadWrite), qPrintable(file.errorString()));
     file.close();
     QVERIFY2(file.exists(), msgDoesNotExist(file.fileName()).constData());
-    QTest::newRow("file in junction")
+    BOBUIest::newRow("file in junction")
         << NtfsTestResource()
         << fileInJunction.absoluteFilePath() << QString() << fileInJunction.canonicalFilePath();
 
     target = QDir::rootPath();
     junction = "junction_root";
     targetInfo.setFile(target);
-    QTest::newRow("junction_root")
+    BOBUIest::newRow("junction_root")
         << NtfsTestResource(NtfsTestResource::Junction, junction, target)
         << junction << QString() << QString();
 
@@ -1989,7 +1989,7 @@ void tst_QFileInfo::ntfsJunctionPointsAndSymlinks_data()
     QString rootVolume = QString::fromWCharArray(buffer);
     junction = "mountpoint";
     rootVolume.replace("\\\\?\\","\\??\\");
-    QTest::newRow("mountpoint")
+    BOBUIest::newRow("mountpoint")
         << NtfsTestResource(NtfsTestResource::Junction, junction, rootVolume)
         << junction << QString() << QString();
 }
@@ -2083,7 +2083,7 @@ void tst_QFileInfo::brokenShortcut()
     QVERIFY(!info.exists());
     QFile::remove(linkName);
 
-    QDir current; // QTBUG-21863
+    QDir current; // BOBUIBUG-21863
     QVERIFY(current.mkdir(linkName));
     QFileInfo dirInfo(linkName);
     QVERIFY(!dirInfo.isSymbolicLink());
@@ -2186,14 +2186,14 @@ void tst_QFileInfo::isExecutable()
 
 void tst_QFileInfo::testDecomposedUnicodeNames_data()
 {
-    QTest::addColumn<QString>("filePath");
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<bool>("exists");
+    BOBUIest::addColumn<QString>("filePath");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<bool>("exists");
     QString currPath = QDir::currentPath();
-    QTest::newRow("latin-only") << currPath + "/4.pdf" << "4.pdf" << true;
-    QTest::newRow("one-decomposed uni") << currPath + QString::fromUtf8("/4 ä.pdf") << QString::fromUtf8("4 ä.pdf") << true;
-    QTest::newRow("many-decomposed uni") << currPath + QString::fromUtf8("/4 äääcopy.pdf") << QString::fromUtf8("4 äääcopy.pdf") << true;
-    QTest::newRow("no decomposed") << currPath + QString::fromUtf8("/4 øøøcopy.pdf") << QString::fromUtf8("4 øøøcopy.pdf") << true;
+    BOBUIest::newRow("latin-only") << currPath + "/4.pdf" << "4.pdf" << true;
+    BOBUIest::newRow("one-decomposed uni") << currPath + QString::fromUtf8("/4 ä.pdf") << QString::fromUtf8("4 ä.pdf") << true;
+    BOBUIest::newRow("many-decomposed uni") << currPath + QString::fromUtf8("/4 äääcopy.pdf") << QString::fromUtf8("4 äääcopy.pdf") << true;
+    BOBUIest::newRow("no decomposed") << currPath + QString::fromUtf8("/4 øøøcopy.pdf") << QString::fromUtf8("4 øøøcopy.pdf") << true;
 }
 
 // This is a helper class that ensures that files created during the test
@@ -2240,8 +2240,8 @@ void tst_QFileInfo::testDecomposedUnicodeNames()
     QVERIFY2(error == 0, qPrintable(QString("Couldn't create native file %1: %2").arg(filePath).arg(strerror(error))));
 
     QFileInfo file(filePath);
-    QTEST(file.fileName(), "fileName");
-    QTEST(file.exists(), "exists");
+    BOBUIEST(file.fileName(), "fileName");
+    BOBUIEST(file.exists(), "exists");
 #endif
 }
 
@@ -2475,19 +2475,19 @@ static void stateCheck(const QFileInfo &info, const QString &dirname, const QStr
 
     QCOMPARE(info.permissions(), QFile::Permissions());
 
-    QVERIFY(!info.birthTime(QTimeZone::UTC).isValid());
-    QVERIFY(!info.metadataChangeTime(QTimeZone::UTC).isValid());
-    QVERIFY(!info.lastRead(QTimeZone::UTC).isValid());
-    QVERIFY(!info.lastModified(QTimeZone::UTC).isValid());
+    QVERIFY(!info.birthTime(BOBUIimeZone::UTC).isValid());
+    QVERIFY(!info.metadataChangeTime(BOBUIimeZone::UTC).isValid());
+    QVERIFY(!info.lastRead(BOBUIimeZone::UTC).isValid());
+    QVERIFY(!info.lastModified(BOBUIimeZone::UTC).isValid());
 };
 
 void tst_QFileInfo::invalidState_data()
 {
-    QTest::addColumn<int>("mode");
-    QTest::newRow("default") << 0;
-    QTest::newRow("empty") << 1;
-    QTest::newRow("copy-of-default") << 2;
-    QTest::newRow("copy-of-empty") << 3;
+    BOBUIest::addColumn<int>("mode");
+    BOBUIest::newRow("default") << 0;
+    BOBUIest::newRow("empty") << 1;
+    BOBUIest::newRow("copy-of-default") << 2;
+    BOBUIest::newRow("copy-of-empty") << 3;
 }
 
 void tst_QFileInfo::invalidState()
@@ -2518,7 +2518,7 @@ void tst_QFileInfo::nonExistingFile()
 
 void tst_QFileInfo::stdfilesystem()
 {
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
 
     namespace fs = std::filesystem;
 
@@ -2535,7 +2535,7 @@ void tst_QFileInfo::stdfilesystem()
                      QFileInfo(base, QString::fromLocal8Bit(filepath)).absoluteFilePath());
         };
 #define COMPARE_CONSTRUCTION(filepath)                                                 \
-    doCompare(filepath); if (QTest::currentTestFailed()) return
+    doCompare(filepath); if (BOBUIest::currentTestFailed()) return
 
         COMPARE_CONSTRUCTION("./file");
 
@@ -2644,24 +2644,24 @@ void tst_QFileInfo::readSymLink()
 #if defined(Q_OS_DARWIN)
 void tst_QFileInfo::fileSystemCaseSensitivity_data()
 {
-    QTest::addColumn<QString>("fileSystemType");
-    QTest::addColumn<QString>("volumeName");
-    QTest::addColumn<Qt::CaseSensitivity>("caseSensitivity");
+    BOBUIest::addColumn<QString>("fileSystemType");
+    BOBUIest::addColumn<QString>("volumeName");
+    BOBUIest::addColumn<BobUI::CaseSensitivity>("caseSensitivity");
 
-    QTest::newRow("APFS") << "APFS" << "apfs" << Qt::CaseInsensitive;
-    QTest::newRow("APFS case-sensitive") << "Case-sensitive APFS" << "apfs_case_sensitive" << Qt::CaseSensitive;
-    QTest::newRow("HFS+") << "HFS+" << "hfs" << Qt::CaseInsensitive;
-    QTest::newRow("HFS+ case-sensitive") << "Case-sensitive HFS+" << "hfs_case_sensitive" << Qt::CaseSensitive;
-    QTest::newRow("FAT32") << "MS-DOS FAT32" << "fat32" << Qt::CaseInsensitive;
-    QTest::newRow("ExFAT") << "ExFAT" << "exfat" << Qt::CaseInsensitive;
+    BOBUIest::newRow("APFS") << "APFS" << "apfs" << BobUI::CaseInsensitive;
+    BOBUIest::newRow("APFS case-sensitive") << "Case-sensitive APFS" << "apfs_case_sensitive" << BobUI::CaseSensitive;
+    BOBUIest::newRow("HFS+") << "HFS+" << "hfs" << BobUI::CaseInsensitive;
+    BOBUIest::newRow("HFS+ case-sensitive") << "Case-sensitive HFS+" << "hfs_case_sensitive" << BobUI::CaseSensitive;
+    BOBUIest::newRow("FAT32") << "MS-DOS FAT32" << "fat32" << BobUI::CaseInsensitive;
+    BOBUIest::newRow("ExFAT") << "ExFAT" << "exfat" << BobUI::CaseInsensitive;
 }
 
 void tst_QFileInfo::fileSystemCaseSensitivity()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No QProcess available");
 #else
-    QTemporaryDir tmpDir;
+    BOBUIemporaryDir tmpDir;
     QVERIFY2(tmpDir.isValid(), qPrintable(tmpDir.errorString()));
 
     QFETCH(QString, fileSystemType);
@@ -2696,12 +2696,12 @@ void tst_QFileInfo::fileSystemCaseSensitivity()
         QVERIFY(file.open(QFile::WriteOnly));
     }
 
-    QFETCH(Qt::CaseSensitivity, caseSensitivity);
-    QCOMPARE(lowerCase == upperCase, caseSensitivity == Qt::CaseInsensitive);
+    QFETCH(BobUI::CaseSensitivity, caseSensitivity);
+    QCOMPARE(lowerCase == upperCase, caseSensitivity == BobUI::CaseInsensitive);
 
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 #endif // defined(Q_OS_DARWIN)
 
-QTEST_MAIN(tst_QFileInfo)
+BOBUIEST_MAIN(tst_QFileInfo)
 #include "tst_qfileinfo.moc"

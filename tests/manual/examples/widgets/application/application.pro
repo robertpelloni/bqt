@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 HEADERS       = mainwindow.h
 SOURCES       = main.cpp \
@@ -9,5 +9,5 @@ RESOURCES     = application.qrc
 #! [0]
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/mainwindows/application
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/mainwindows/application
 INSTALLS += target

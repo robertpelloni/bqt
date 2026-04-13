@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(tablewidget))
+BOBUI += widgets
+requires(bobuiConfig(tablewidget))
 
 HEADERS       = locationdialog.h \
                 mainwindow.h \
@@ -14,5 +14,5 @@ SOURCES       = locationdialog.cpp \
 EXAMPLE_FILES = inifiles
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tools/settingseditor
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tools/settingseditor
 INSTALLS += target

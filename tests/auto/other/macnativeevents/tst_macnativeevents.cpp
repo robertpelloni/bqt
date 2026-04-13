@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QWidget>
 #include <QDialog>
 #include <QPushButton>
-#include <QTest>
+#include <BOBUIest>
 
 #include "qnativeevents.h"
 #include "nativeeventlist.h"
 #include "expectedeventlist.h"
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 // Unicode code points for the glyphs associated with these keys
 // Defined by Carbon headers but not anywhere in Cocoa
@@ -50,10 +50,10 @@ void tst_MacNativeEvents::testMouseMoveLocation()
     QPoint p = w.geometry().center();
 
     NativeEventList native;
-    native.append(new QNativeMouseMoveEvent(p, Qt::NoModifier));
+    native.append(new QNativeMouseMoveEvent(p, BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(p), p, Qt::NoButton, Qt::NoButton, Qt::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(p), p, BobUI::NoButton, BobUI::NoButton, BobUI::NoModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -68,12 +68,12 @@ void tst_MacNativeEvents::testPushButtonPressRelease()
     QPoint p = w.geometry().center();
 
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -88,16 +88,16 @@ void tst_MacNativeEvents::testMouseLeftDoubleClick()
     QPoint p = w.geometry().center();
 
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 0, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 2, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 0, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 2, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseButtonDblClick, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonDblClick, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -115,15 +115,15 @@ void tst_MacNativeEvents::stressTestMouseLeftDoubleClick()
     ExpectedEventList expected(&w);
 
     for (int i=0; i<10; ++i){
-        native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 1, Qt::NoModifier));
-        native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 0, Qt::NoModifier));
-        native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 2, Qt::NoModifier));
-        native.append(new QNativeMouseButtonEvent(p, Qt::LeftButton, 0, Qt::NoModifier));
+        native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 1, BobUI::NoModifier));
+        native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 0, BobUI::NoModifier));
+        native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 2, BobUI::NoModifier));
+        native.append(new QNativeMouseButtonEvent(p, BobUI::LeftButton, 0, BobUI::NoModifier));
 
-        expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-        expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
-        expected.append(new QMouseEvent(QEvent::MouseButtonDblClick, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-        expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
+        expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier));
+        expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier));
+        expected.append(new QMouseEvent(QEvent::MouseButtonDblClick, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier));
+        expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p), p, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier));
     }
 
     native.play();
@@ -142,16 +142,16 @@ void tst_MacNativeEvents::testMouseDragInside()
     QPoint p4 = p1 - QPoint(30, 0);
 
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(p1, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseDragEvent(p2, Qt::LeftButton, Qt::NoModifier));
-    native.append(new QNativeMouseDragEvent(p3, Qt::LeftButton, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(p4, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(p1, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseDragEvent(p2, BobUI::LeftButton, BobUI::NoModifier));
+    native.append(new QNativeMouseDragEvent(p3, BobUI::LeftButton, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(p4, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(p1), p1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(p2), p2, Qt::NoButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(p3), p3, Qt::NoButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p4), p4, Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(p1), p1, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(p2), p2, BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(p3), p3, BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(p4), p4, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -170,16 +170,16 @@ void tst_MacNativeEvents::testMouseDragOutside()
     QPoint outside2 = outside1 - QPoint(10, 0);
 
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(inside1, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseDragEvent(inside2, Qt::LeftButton, Qt::NoModifier));
-    native.append(new QNativeMouseDragEvent(outside1, Qt::LeftButton, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(outside2, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(inside1, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseDragEvent(inside2, BobUI::LeftButton, BobUI::NoModifier));
+    native.append(new QNativeMouseDragEvent(outside1, BobUI::LeftButton, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(outside2, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(inside1), inside1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(inside2), inside2, Qt::NoButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(outside1), outside1, Qt::NoButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(outside2), outside2, Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(inside1), inside1, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(inside2), inside2, BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(outside1), outside1, BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(outside2), outside2, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -198,16 +198,16 @@ void tst_MacNativeEvents::testMouseDragToNonClientArea()
     QPoint titlebar2 = titlebar1 - QPoint(10, 0);
 
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(inside1, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseDragEvent(inside2, Qt::LeftButton, Qt::NoModifier));
-    native.append(new QNativeMouseDragEvent(titlebar1, Qt::LeftButton, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(titlebar2, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(inside1, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseDragEvent(inside2, BobUI::LeftButton, BobUI::NoModifier));
+    native.append(new QNativeMouseDragEvent(titlebar1, BobUI::LeftButton, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(titlebar2, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(inside1), inside1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(inside2), inside2, Qt::NoButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(titlebar1), titlebar1, Qt::NoButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(titlebar2), titlebar2, Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonPress, w.mapFromGlobal(inside1), inside1, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(inside2), inside2, BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(titlebar1), titlebar1, BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseButtonRelease, w.mapFromGlobal(titlebar2), titlebar2, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -223,13 +223,13 @@ void tst_MacNativeEvents::testDragWindow()
     QPoint moveTo = titlebar + QPoint(100, 0);
 
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(titlebar, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseDragEvent(moveTo, Qt::LeftButton, Qt::NoModifier));
-    native.append(500, new QNativeMouseButtonEvent(moveTo, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(titlebar, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseDragEvent(moveTo, BobUI::LeftButton, BobUI::NoModifier));
+    native.append(500, new QNativeMouseButtonEvent(moveTo, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QMouseEvent(QEvent::NonClientAreaMouseButtonPress, w.mapFromGlobal(titlebar), titlebar, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-    expected.append(new QMouseEvent(QEvent::NonClientAreaMouseButtonRelease, w.mapFromGlobal(titlebar), moveTo, Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
+    expected.append(new QMouseEvent(QEvent::NonClientAreaMouseButtonPress, w.mapFromGlobal(titlebar), titlebar, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier));
+    expected.append(new QMouseEvent(QEvent::NonClientAreaMouseButtonRelease, w.mapFromGlobal(titlebar), moveTo, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -246,12 +246,12 @@ void tst_MacNativeEvents::testMouseEnter()
     QPoint inside = w.geometry().center();
 
     NativeEventList native;
-    native.append(new QNativeMouseMoveEvent(outside, Qt::NoModifier));
-    native.append(new QNativeMouseMoveEvent(inside, Qt::NoModifier));
+    native.append(new QNativeMouseMoveEvent(outside, BobUI::NoModifier));
+    native.append(new QNativeMouseMoveEvent(inside, BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
     expected.append(new QEvent(QEvent::Enter));
-    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(inside), inside, Qt::NoButton, Qt::NoButton, Qt::NoModifier));
+    expected.append(new QMouseEvent(QEvent::MouseMove, w.mapFromGlobal(inside), inside, BobUI::NoButton, BobUI::NoButton, BobUI::NoModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -259,12 +259,12 @@ void tst_MacNativeEvents::testMouseEnter()
 
 void tst_MacNativeEvents::testChildDialogInFrontOfModalParent()
 {
-    QSKIP("Modal dialog causes later tests to fail, see QTBUG-58474");
+    QSKIP("Modal dialog causes later tests to fail, see BOBUIBUG-58474");
 
     // Test that a child dialog of a modal parent dialog is
     // in front of the parent, and active:
     QDialog parent;
-    parent.setWindowModality(Qt::ApplicationModal);
+    parent.setWindowModality(BobUI::ApplicationModal);
     QDialog child(&parent);
     QPushButton button("close", &child);
     connect(&button, SIGNAL(clicked()), &child, SLOT(close()));
@@ -274,16 +274,16 @@ void tst_MacNativeEvents::testChildDialogInFrontOfModalParent()
 
     // Post a click on the button to close the child dialog:
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(inside, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(inside, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(inside, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(inside, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     native.play();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QVERIFY(!child.isVisible());
 }
 
 #if 0
-// This test is disabled as of Qt-4.7.4 because we cannot do it
+// This test is disabled as of BobUI-4.7.4 because we cannot do it
 // unless we use the Cocoa sub window API. But using that opens up
 // a world of side effects that we cannot live with. So we rather
 // not support child-on-top-of-parent instead.
@@ -293,7 +293,7 @@ void tst_MacNativeEvents::testChildWindowInFrontOfParentWindow()
     // Do this by first click on the parent, then on the child window button.
     QWidget parent;
     QPushButton child("a button", &parent);
-    child.setWindowFlags(Qt::Window);
+    child.setWindowFlags(BobUI::Window);
     connect(&child, SIGNAL(clicked()), &child, SLOT(close()));
     parent.show();
     child.show();
@@ -302,13 +302,13 @@ void tst_MacNativeEvents::testChildWindowInFrontOfParentWindow()
     QPoint child_p = child.geometry().center();
 
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(parent_p, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(parent_p, Qt::LeftButton, 0, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(child_p, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(child_p, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(parent_p, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(parent_p, BobUI::LeftButton, 0, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(child_p, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(child_p, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     native.play();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QVERIFY(!child.isVisible());
 }
 #endif
@@ -319,9 +319,9 @@ void tst_MacNativeEvents::testChildToolWindowInFrontOfChildNormalWindow()
     // Test that a child tool window always stacks in front of normal sibling windows.
     // Do this by first click on the sibling, then on the tool window button.
     QWidget parent;
-    QWidget normalChild(&parent, Qt::Window);
+    QWidget normalChild(&parent, BobUI::Window);
     QPushButton toolChild("a button", &parent);
-    toolChild.setWindowFlags(Qt::Tool);
+    toolChild.setWindowFlags(BobUI::Tool);
     connect(&toolChild, SIGNAL(clicked()), &toolChild, SLOT(close()));
     parent.show();
     normalChild.show();
@@ -331,22 +331,22 @@ void tst_MacNativeEvents::testChildToolWindowInFrontOfChildNormalWindow()
     QPoint toolChild_p = toolChild.geometry().center();
 
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(normalChild_p, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(normalChild_p, Qt::LeftButton, 0, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(toolChild_p, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(toolChild_p, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(normalChild_p, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(normalChild_p, BobUI::LeftButton, 0, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(toolChild_p, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(toolChild_p, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     native.play();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QVERIFY(!toolChild.isVisible());
 }
 */
 void tst_MacNativeEvents::testChildWindowInFrontOfStaysOnTopParentWindow()
 {
     // Test that a child window stacks on top of a stays-on-top parent.
-    QWidget parent(0, Qt::WindowStaysOnTopHint);
+    QWidget parent(0, BobUI::WindowStaysOnTopHint);
     QPushButton button("close", &parent);
-    button.setWindowFlags(Qt::Window);
+    button.setWindowFlags(BobUI::Window);
     connect(&button, SIGNAL(clicked()), &button, SLOT(close()));
     parent.show();
     button.show();
@@ -354,31 +354,31 @@ void tst_MacNativeEvents::testChildWindowInFrontOfStaysOnTopParentWindow()
 
     // Post a click on the button to close the child dialog:
     NativeEventList native;
-    native.append(new QNativeMouseButtonEvent(inside, Qt::LeftButton, 1, Qt::NoModifier));
-    native.append(new QNativeMouseButtonEvent(inside, Qt::LeftButton, 0, Qt::NoModifier));
+    native.append(new QNativeMouseButtonEvent(inside, BobUI::LeftButton, 1, BobUI::NoModifier));
+    native.append(new QNativeMouseButtonEvent(inside, BobUI::LeftButton, 0, BobUI::NoModifier));
 
     native.play();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QVERIFY(!button.isVisible());
 }
 
 void tst_MacNativeEvents::testKeyPressOnToplevel()
 {
     // Check that we receive keyevents for
-    // toplevel widgets. For leagacy reasons, and according to Qt on
+    // toplevel widgets. For leagacy reasons, and according to BobUI on
     // other platforms (carbon port + linux), we should get these events
-    // even when the focus policy is set to Qt::NoFocus when there is no
+    // even when the focus policy is set to BobUI::NoFocus when there is no
     // other focus widget on screen:
     QWidget w;
     w.show();
 
     NativeEventList native;
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, Qt::NoModifier));
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, Qt::NoModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, BobUI::NoModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier));
-    expected.append(new QKeyEvent(QEvent::KeyRelease, Qt::Key_A, Qt::NoModifier));
+    expected.append(new QKeyEvent(QEvent::KeyPress, BobUI::Key_A, BobUI::NoModifier));
+    expected.append(new QKeyEvent(QEvent::KeyRelease, BobUI::Key_A, BobUI::NoModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -390,16 +390,16 @@ void tst_MacNativeEvents::testModifierShift()
     w.show();
 
     NativeEventList native;
-    native.append(new QNativeModifierEvent(Qt::ShiftModifier));
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, Qt::ShiftModifier));
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, Qt::ShiftModifier));
-    native.append(new QNativeModifierEvent(Qt::NoModifier));
+    native.append(new QNativeModifierEvent(BobUI::ShiftModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, BobUI::ShiftModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, BobUI::ShiftModifier));
+    native.append(new QNativeModifierEvent(BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QKeyEvent(QEvent::KeyPress, Qt::Key_Shift, Qt::NoModifier));
-    expected.append(new QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::ShiftModifier));
-    expected.append(new QKeyEvent(QEvent::KeyRelease, Qt::Key_A, Qt::ShiftModifier));
-    expected.append(new QKeyEvent(QEvent::KeyRelease, Qt::Key_Shift, Qt::ShiftModifier));
+    expected.append(new QKeyEvent(QEvent::KeyPress, BobUI::Key_Shift, BobUI::NoModifier));
+    expected.append(new QKeyEvent(QEvent::KeyPress, BobUI::Key_A, BobUI::ShiftModifier));
+    expected.append(new QKeyEvent(QEvent::KeyRelease, BobUI::Key_A, BobUI::ShiftModifier));
+    expected.append(new QKeyEvent(QEvent::KeyRelease, BobUI::Key_Shift, BobUI::ShiftModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -411,16 +411,16 @@ void tst_MacNativeEvents::testModifierAlt()
     w.show();
 
     NativeEventList native;
-    native.append(new QNativeModifierEvent(Qt::AltModifier));
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, Qt::AltModifier));
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, Qt::AltModifier));
-    native.append(new QNativeModifierEvent(Qt::NoModifier));
+    native.append(new QNativeModifierEvent(BobUI::AltModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, BobUI::AltModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, BobUI::AltModifier));
+    native.append(new QNativeModifierEvent(BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QKeyEvent(QEvent::KeyPress, Qt::Key_Alt, Qt::NoModifier));
-    expected.append(new QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::AltModifier));
-    expected.append(new QKeyEvent(QEvent::KeyRelease, Qt::Key_A, Qt::AltModifier));
-    expected.append(new QKeyEvent(QEvent::KeyRelease, Qt::Key_Alt, Qt::AltModifier));
+    expected.append(new QKeyEvent(QEvent::KeyPress, BobUI::Key_Alt, BobUI::NoModifier));
+    expected.append(new QKeyEvent(QEvent::KeyPress, BobUI::Key_A, BobUI::AltModifier));
+    expected.append(new QKeyEvent(QEvent::KeyRelease, BobUI::Key_A, BobUI::AltModifier));
+    expected.append(new QKeyEvent(QEvent::KeyRelease, BobUI::Key_Alt, BobUI::AltModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -433,20 +433,20 @@ void tst_MacNativeEvents::testModifierCtrl()
     QWidget w;
     w.show();
 
-    QCOMPARE(ushort(kControlUnicode), QKeySequence(Qt::Key_Meta).toString(QKeySequence::NativeText).at(0).unicode());
-    QCOMPARE(ushort(kCommandUnicode), QKeySequence(Qt::Key_Control).toString(QKeySequence::NativeText).at(0).unicode());
+    QCOMPARE(ushort(kControlUnicode), QKeySequence(BobUI::Key_Meta).toString(QKeySequence::NativeText).at(0).unicode());
+    QCOMPARE(ushort(kCommandUnicode), QKeySequence(BobUI::Key_Control).toString(QKeySequence::NativeText).at(0).unicode());
 
     NativeEventList native;
-    native.append(new QNativeModifierEvent(Qt::ControlModifier));
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, Qt::ControlModifier));
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, Qt::ControlModifier));
-    native.append(new QNativeModifierEvent(Qt::NoModifier));
+    native.append(new QNativeModifierEvent(BobUI::ControlModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, BobUI::ControlModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, BobUI::ControlModifier));
+    native.append(new QNativeModifierEvent(BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QKeyEvent(QEvent::KeyPress, Qt::Key_Meta, Qt::NoModifier));
-    expected.append(new QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::MetaModifier));
-    expected.append(new QKeyEvent(QEvent::KeyRelease, Qt::Key_A, Qt::MetaModifier));
-    expected.append(new QKeyEvent(QEvent::KeyRelease, Qt::Key_Meta, Qt::MetaModifier));
+    expected.append(new QKeyEvent(QEvent::KeyPress, BobUI::Key_Meta, BobUI::NoModifier));
+    expected.append(new QKeyEvent(QEvent::KeyPress, BobUI::Key_A, BobUI::MetaModifier));
+    expected.append(new QKeyEvent(QEvent::KeyRelease, BobUI::Key_A, BobUI::MetaModifier));
+    expected.append(new QKeyEvent(QEvent::KeyRelease, BobUI::Key_Meta, BobUI::MetaModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
@@ -462,29 +462,29 @@ void tst_MacNativeEvents::testModifierCtrlWithDontSwapCtrlAndMeta()
     // least not until someone complains. So I choose to let the test just stop
     // any unintended regressions instead. If we decide to resepect the flag at one
     // point, fix the test.
-    QCoreApplication::setAttribute(Qt::AA_MacDontSwapCtrlAndMeta);
+    QCoreApplication::setAttribute(BobUI::AA_MacDontSwapCtrlAndMeta);
     QWidget w;
     w.show();
 
-    QCOMPARE(ushort(kCommandUnicode), QKeySequence(Qt::Key_Meta).toString(QKeySequence::NativeText).at(0).unicode());
-    QCOMPARE(ushort(kControlUnicode), QKeySequence(Qt::Key_Control).toString(QKeySequence::NativeText).at(0).unicode());
+    QCOMPARE(ushort(kCommandUnicode), QKeySequence(BobUI::Key_Meta).toString(QKeySequence::NativeText).at(0).unicode());
+    QCOMPARE(ushort(kControlUnicode), QKeySequence(BobUI::Key_Control).toString(QKeySequence::NativeText).at(0).unicode());
 
     NativeEventList native;
-    native.append(new QNativeModifierEvent(Qt::ControlModifier));
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, Qt::ControlModifier));
-    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, Qt::ControlModifier));
-    native.append(new QNativeModifierEvent(Qt::NoModifier));
+    native.append(new QNativeModifierEvent(BobUI::ControlModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, true, BobUI::ControlModifier));
+    native.append(new QNativeKeyEvent(QNativeKeyEvent::Key_A, false, BobUI::ControlModifier));
+    native.append(new QNativeModifierEvent(BobUI::NoModifier));
 
     ExpectedEventList expected(&w);
-    expected.append(new QKeyEvent(QEvent::KeyPress, Qt::Key_Control, Qt::NoModifier));
-    expected.append(new QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::ControlModifier));
-    expected.append(new QKeyEvent(QEvent::KeyRelease, Qt::Key_A, Qt::ControlModifier));
-    expected.append(new QKeyEvent(QEvent::KeyRelease, Qt::Key_Control, Qt::ControlModifier));
+    expected.append(new QKeyEvent(QEvent::KeyPress, BobUI::Key_Control, BobUI::NoModifier));
+    expected.append(new QKeyEvent(QEvent::KeyPress, BobUI::Key_A, BobUI::ControlModifier));
+    expected.append(new QKeyEvent(QEvent::KeyRelease, BobUI::Key_A, BobUI::ControlModifier));
+    expected.append(new QKeyEvent(QEvent::KeyRelease, BobUI::Key_Control, BobUI::ControlModifier));
 
     native.play();
     QVERIFY2(expected.waitForAllEvents(), "the test did not receive all expected events!");
-    QCoreApplication::setAttribute(Qt::AA_MacDontSwapCtrlAndMeta, false);
+    QCoreApplication::setAttribute(BobUI::AA_MacDontSwapCtrlAndMeta, false);
 }
 
-QTEST_MAIN(tst_MacNativeEvents)
+BOBUIEST_MAIN(tst_MacNativeEvents)
 #include "tst_macnativeevents.moc"

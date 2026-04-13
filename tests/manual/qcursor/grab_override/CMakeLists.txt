@@ -1,18 +1,18 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## t_cursors Binary:
 #####################################################################
 
-qt_internal_add_manual_test(t_cursors
+bobui_internal_add_manual_test(t_cursors
     GUI
     SOURCES
         main.cpp
         mainwindow.cpp mainwindow.h mainwindow.ui
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
     ENABLE_AUTOGEN_TOOLS
         uic
 )
@@ -22,7 +22,7 @@ set(images_resource_files
     "data/monkey_on_64x64.png"
 )
 
-qt_internal_add_resource(t_cursors "images"
+bobui_internal_add_resource(t_cursors "images"
     PREFIX
         "/"
     FILES

@@ -1,27 +1,27 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
 #ifndef QSHAREDDATA_IMPL_H
 #define QSHAREDDATA_IMPL_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename T>
 class QExplicitlySharedDataPointerV2
 {
-    Qt::totally_ordered_wrapper<T *> d;
+    BobUI::totally_ordered_wrapper<T *> d;
 
 public:
     constexpr QExplicitlySharedDataPointerV2() noexcept : d(nullptr) {}
@@ -104,7 +104,7 @@ public:
 
     constexpr void swap(QExplicitlySharedDataPointerV2 &other) noexcept
     {
-        qt_ptr_swap(d, other.d);
+        bobui_ptr_swap(d, other.d);
     }
 
     // important change from QExplicitlySharedDataPointer: deep const
@@ -122,18 +122,18 @@ private:
     constexpr friend bool comparesEqual(const QExplicitlySharedDataPointerV2 &lhs,
                                         const QExplicitlySharedDataPointerV2 &rhs) noexcept
     { return lhs.d == rhs.d; }
-    constexpr friend Qt::strong_ordering
+    constexpr friend BobUI::strong_ordering
     compareThreeWay(const QExplicitlySharedDataPointerV2 &lhs,
                     const QExplicitlySharedDataPointerV2 &rhs) noexcept
-    { return Qt::compareThreeWay(lhs.d, rhs.d); }
+    { return BobUI::compareThreeWay(lhs.d, rhs.d); }
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QExplicitlySharedDataPointerV2)
 
     constexpr friend bool
     comparesEqual(const QExplicitlySharedDataPointerV2 &lhs, std::nullptr_t) noexcept
     { return lhs.d == nullptr; }
-    constexpr friend Qt::strong_ordering
+    constexpr friend BobUI::strong_ordering
     compareThreeWay(const QExplicitlySharedDataPointerV2 &lhs, std::nullptr_t) noexcept
-    { return Qt::compareThreeWay(lhs.d, nullptr); }
+    { return BobUI::compareThreeWay(lhs.d, nullptr); }
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QExplicitlySharedDataPointerV2, std::nullptr_t)
 };
 
@@ -143,8 +143,8 @@ constexpr void swap(QExplicitlySharedDataPointerV2<T> &lhs, QExplicitlySharedDat
     lhs.swap(rhs);
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSHAREDDATA_IMPL_H

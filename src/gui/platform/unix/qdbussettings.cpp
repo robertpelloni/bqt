@@ -1,48 +1,48 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbussettings_p.h"
-#include <QtCore/qvariant.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QDBusSettings::XdgSettings {
 // https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Settings.html
 enum class ColorScheme : uint { NoPreference, PreferDark, PreferLight };
 } // namespace QDBusSettings::XdgSettings
 
-Qt::ContrastPreference QDBusSettings::XdgSettings::convertContrastPreference(const QVariant &value)
+BobUI::ContrastPreference QDBusSettings::XdgSettings::convertContrastPreference(const QVariant &value)
 {
     // XDG portal provides the contrast preference value as uint:
     // 0 for no-preference, and, 1 for high-contrast.
     if (!value.isValid())
-        return Qt::ContrastPreference::NoPreference;
-    return static_cast<Qt::ContrastPreference>(value.toUInt());
+        return BobUI::ContrastPreference::NoPreference;
+    return static_cast<BobUI::ContrastPreference>(value.toUInt());
 }
 
-Qt::ColorScheme QDBusSettings::XdgSettings::convertColorScheme(const QVariant &value)
+BobUI::ColorScheme QDBusSettings::XdgSettings::convertColorScheme(const QVariant &value)
 {
     switch (ColorScheme{ value.toUInt() }) {
     case ColorScheme::NoPreference:
-        return Qt::ColorScheme::Unknown;
+        return BobUI::ColorScheme::Unknown;
     case ColorScheme::PreferDark:
-        return Qt::ColorScheme::Dark;
+        return BobUI::ColorScheme::Dark;
     case ColorScheme::PreferLight:
-        return Qt::ColorScheme::Light;
+        return BobUI::ColorScheme::Light;
     }
-    Q_UNREACHABLE_RETURN(Qt::ColorScheme::Unknown);
+    Q_UNREACHABLE_RETURN(BobUI::ColorScheme::Unknown);
 }
 
-Qt::ContrastPreference
+BobUI::ContrastPreference
 QDBusSettings::GnomeSettings::convertContrastPreference(const QVariant &value)
 {
     // GSetting provides the contrast value as boolean:
     // true for enabled high-contrast, and, false for disabled high-contrast.
     if (!value.isValid())
-        return Qt::ContrastPreference::NoPreference;
-    return value.toBool() ? Qt::ContrastPreference::HighContrast
-                          : Qt::ContrastPreference::NoPreference;
+        return BobUI::ContrastPreference::NoPreference;
+    return value.toBool() ? BobUI::ContrastPreference::HighContrast
+                          : BobUI::ContrastPreference::NoPreference;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

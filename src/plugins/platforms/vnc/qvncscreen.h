@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QVncScreen_H
 #define QVncScreen_H
 
-#include <QtFbSupport/private/qfbscreen_p.h>
+#include <BobUIFbSupport/private/qfbscreen_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPainter;
 class QFbCursor;
-class QTcpSocket;
+class BOBUIcpSocket;
 class QVncServer;
 class QVncDirtyMap;
 class QVncClientCursor;
@@ -50,12 +50,12 @@ public:
     QRegion dirtyRegion;
     int refreshRate = 30;
     QVncServer *vncServer = nullptr;
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     QVncClientCursor *clientCursor = nullptr;
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QVncScreen_H
 

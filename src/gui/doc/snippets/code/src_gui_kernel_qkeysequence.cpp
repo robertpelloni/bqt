@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QKeySequence>
 #include <QMenu>
-#include <QTranslator>
+#include <BOBUIranslator>
 
 
 namespace src_gui_kernel_qkeysequence {
@@ -19,15 +19,15 @@ namespace src_gui_kernel_qkeysequence {
     QKeySequence(QKeySequence::Print);
     QKeySequence(tr("Ctrl+P"));
     QKeySequence(tr("Ctrl+p"));
-    QKeySequence(Qt::CTRL | Qt::Key_P);
-    QKeySequence(Qt::CTRL + Qt::Key_P); // deprecated
+    QKeySequence(BobUI::CTRL | BobUI::Key_P);
+    QKeySequence(BobUI::CTRL + BobUI::Key_P); // deprecated
     //! [0]
 
 
     //! [1]
     QKeySequence(tr("Ctrl+X, Ctrl+C"));
-    QKeySequence(Qt::CTRL | Qt::Key_X, Qt::CTRL | Qt::Key_C);
-    QKeySequence(Qt::CTRL + Qt::Key_X, Qt::CTRL + Qt::Key_C); // deprecated
+    QKeySequence(BobUI::CTRL | BobUI::Key_X, BobUI::CTRL | BobUI::Key_C);
+    QKeySequence(BobUI::CTRL + BobUI::Key_X, BobUI::CTRL + BobUI::Key_C); // deprecated
     //! [1]
 
     */ // Wrap non-compilable code snippet

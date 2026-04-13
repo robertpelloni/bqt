@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 
@@ -7,67 +7,67 @@
 
 # input doubleconversion
 set(INPUT_doubleconversion "undefined" CACHE STRING "")
-set_property(CACHE INPUT_doubleconversion PROPERTY STRINGS undefined no qt system)
+set_property(CACHE INPUT_doubleconversion PROPERTY STRINGS undefined no bobui system)
 
 # input libb2
 set(INPUT_libb2 "undefined" CACHE STRING "")
-set_property(CACHE INPUT_libb2 PROPERTY STRINGS undefined no qt system)
+set_property(CACHE INPUT_libb2 PROPERTY STRINGS undefined no bobui system)
 
 
 
 #### Libraries
 
-if((UNIX AND NOT QNX) OR QT_FIND_ALL_PACKAGES_ALWAYS)
+if((UNIX AND NOT QNX) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
     # QNX's libbacktrace has an API wholly different from all the other Unix
     # offerings
-    qt_find_package(WrapBacktrace MODULE
+    bobui_find_package(WrapBacktrace MODULE
         PROVIDED_TARGETS WrapBacktrace::WrapBacktrace MODULE_NAME core QMAKE_LIB backtrace)
 endif()
-qt_find_package(WrapSystemDoubleConversion MODULE
+bobui_find_package(WrapSystemDoubleConversion MODULE
                 PROVIDED_TARGETS WrapSystemDoubleConversion::WrapSystemDoubleConversion
                 MODULE_NAME core QMAKE_LIB doubleconversion)
-qt_find_package(GLIB2 MODULE PROVIDED_TARGETS GLIB2::GLIB2 MODULE_NAME core QMAKE_LIB glib)
-qt_find_package_extend_sbom(TARGETS GLIB2::GLIB2
+bobui_find_package(GLIB2 MODULE PROVIDED_TARGETS GLIB2::GLIB2 MODULE_NAME core QMAKE_LIB glib)
+bobui_find_package_extend_sbom(TARGETS GLIB2::GLIB2
     LICENSE_EXPRESSION "LGPL-2.1-or-later"
 )
-qt_find_package(ICU 50.1 COMPONENTS i18n uc data PROVIDED_TARGETS ICU::i18n ICU::uc ICU::data
+bobui_find_package(ICU 50.1 COMPONENTS i18n uc data PROVIDED_TARGETS ICU::i18n ICU::uc ICU::data
     MODULE_NAME core QMAKE_LIB icu
     VCPKG_PORT icu
     VCPKG_PLATFORM !windows
 )
 
-if(QT_FEATURE_dlopen)
-    qt_add_qmake_lib_dependency(icu libdl)
+if(BOBUI_FEATURE_dlopen)
+    bobui_add_qmake_lib_dependency(icu libdl)
 endif()
-qt_find_package(JeMalloc MODULE
+bobui_find_package(JeMalloc MODULE
     PROVIDED_TARGETS PkgConfig::JeMalloc MODULE_NAME core QMAKE_LIB jemalloc)
-qt_find_package(Libsystemd MODULE
+bobui_find_package(Libsystemd MODULE
     PROVIDED_TARGETS PkgConfig::Libsystemd MODULE_NAME core QMAKE_LIB journald)
-qt_find_package(Liburing MODULE
+bobui_find_package(Liburing MODULE
     PROVIDED_TARGETS PkgConfig::Liburing MODULE_NAME global QMAKE_LIB liburing)
-qt_find_package(WrapAtomic MODULE
+bobui_find_package(WrapAtomic MODULE
     PROVIDED_TARGETS WrapAtomic::WrapAtomic MODULE_NAME core QMAKE_LIB libatomic)
-qt_find_package(Libb2 MODULE PROVIDED_TARGETS Libb2::Libb2 MODULE_NAME core QMAKE_LIB libb2)
-qt_find_package_extend_sbom(TARGETS Libb2::Libb2
+bobui_find_package(Libb2 MODULE PROVIDED_TARGETS Libb2::Libb2 MODULE_NAME core QMAKE_LIB libb2)
+bobui_find_package_extend_sbom(TARGETS Libb2::Libb2
     LICENSE_EXPRESSION "CC0-1.0"
 )
-qt_find_package(WrapRt MODULE
+bobui_find_package(WrapRt MODULE
     PROVIDED_TARGETS WrapRt::WrapRt MODULE_NAME core QMAKE_LIB librt)
-qt_find_package(WrapSystemPCRE2 10.20 MODULE
+bobui_find_package(WrapSystemPCRE2 10.20 MODULE
     PROVIDED_TARGETS WrapSystemPCRE2::WrapSystemPCRE2 MODULE_NAME core QMAKE_LIB pcre2
     VCPKG_PORT pcre2
 )
 set_package_properties(WrapPCRE2 PROPERTIES TYPE REQUIRED)
-if((QNX) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(PPS MODULE PROVIDED_TARGETS PPS::PPS MODULE_NAME core QMAKE_LIB pps)
+if((QNX) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(PPS MODULE PROVIDED_TARGETS PPS::PPS MODULE_NAME core QMAKE_LIB pps)
 endif()
-qt_find_package(Slog2 MODULE PROVIDED_TARGETS Slog2::Slog2 MODULE_NAME core QMAKE_LIB slog2)
+bobui_find_package(Slog2 MODULE PROVIDED_TARGETS Slog2::Slog2 MODULE_NAME core QMAKE_LIB slog2)
 
 
 #### Tests
 
 # atomicfptr
-qt_config_compile_test(atomicfptr
+bobui_config_compile_test(atomicfptr
     LABEL "working std::atomic for function pointers"
     CODE
 "#include <atomic>
@@ -96,7 +96,7 @@ test(fptr);
 ")
 
 # clock-monotonic
-qt_config_compile_test(clock_monotonic
+bobui_config_compile_test(clock_monotonic
     LABEL "POSIX monotonic clock"
     LIBRARIES
         WrapRt::WrapRt
@@ -119,7 +119,7 @@ clock_gettime(CLOCK_MONOTONIC, &ts);
 ")
 
 # cloexec
-qt_config_compile_test(cloexec
+bobui_config_compile_test(cloexec
     LABEL "O_CLOEXEC"
     CODE
 "#define _GNU_SOURCE 1
@@ -146,7 +146,7 @@ int pipes[2];
 ")
 
 # dup3
-qt_config_compile_test(dup3
+bobui_config_compile_test(dup3
     LABEL "dup3"
     CODE
 "#define _GNU_SOURCE 1
@@ -163,7 +163,7 @@ int main(void)
 ")
 
 # acccept4
-qt_config_compile_test(accept4
+bobui_config_compile_test(accept4
     LABEL "accept4"
     CODE
 "#define _GNU_SOURCE 1
@@ -186,7 +186,7 @@ int main(void)
 ")
 
 # copy_file_range
-qt_config_compile_test(copy_file_range
+bobui_config_compile_test(copy_file_range
     LABEL "copy_file_range()"
     CODE
 "#include <unistd.h>
@@ -200,14 +200,14 @@ int main()
 
 # Check if __cxa_thread_atexit{,_impl} are present in the C library (hence why
 # PROJECT_PATH instead of CODE for C++). Either one suffices to disable
-# FEATURE_broken_threadlocal_dtors. See details in qthread_unix.cpp.
-qt_config_compile_test(cxa_thread_atexit
+# FEATURE_broken_threadlocal_dtors. See details in bobuihread_unix.cpp.
+bobui_config_compile_test(cxa_thread_atexit
     # Seen on Darwin and FreeBSD
     LABEL "__cxa_thread_atexit in C library"
     PROJECT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../config.tests/cxa_thread_atexit"
     CMAKE_FLAGS -DTEST_FUNC=__cxa_thread_atexit
 )
-qt_config_compile_test(cxa_thread_atexit_impl
+bobui_config_compile_test(cxa_thread_atexit_impl
     # Seen on Bionic, FreeBSD, glibc
     LABEL "__cxa_thread_atexit_impl in C library"
     PROJECT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../config.tests/cxa_thread_atexit"
@@ -215,7 +215,7 @@ qt_config_compile_test(cxa_thread_atexit_impl
 )
 
 # cxx17_filesystem
-qt_config_compile_test(cxx17_filesystem
+bobui_config_compile_test(cxx17_filesystem
     LABEL "C++17 <filesystem>"
     CODE
 "#include <filesystem>
@@ -233,7 +233,7 @@ std::filesystem::copy(
 )
 
 # dladdr
-qt_config_compile_test(dladdr
+bobui_config_compile_test(dladdr
     LABEL "dladdr"
     LIBRARIES
         dl
@@ -250,7 +250,7 @@ int main(void)
 )
 
 # futimens
-qt_config_compile_test(futimens
+bobui_config_compile_test(futimens
     LABEL "futimens()"
     CODE
 "#include <sys/stat.h>
@@ -265,7 +265,7 @@ futimens(-1, 0);
 ")
 
 # getauxval
-qt_config_compile_test(getauxval
+bobui_config_compile_test(getauxval
     LABEL "getauxval()"
     CODE
 "#include <sys/auxv.h>
@@ -280,7 +280,7 @@ int main(void)
 ")
 
 # getentropy
-qt_config_compile_test(getentropy
+bobui_config_compile_test(getentropy
     LABEL "getentropy()"
     CODE
 "#include <unistd.h>
@@ -299,7 +299,7 @@ char buf[32];
 ")
 
 # inotify
-qt_config_compile_test(inotify
+bobui_config_compile_test(inotify
     LABEL "inotify"
     CODE
 "#include <sys/inotify.h>
@@ -316,7 +316,7 @@ inotify_rm_watch(0, 1);
 ")
 
 # fsnotify
-qt_config_compile_test(fsnotify
+bobui_config_compile_test(fsnotify
     LABEL "libfsnotify"
     LIBRARIES fsnotify
     CODE
@@ -335,7 +335,7 @@ int main(void)
 }
 ")
 
-qt_config_compile_test(sysv_shm
+bobui_config_compile_test(sysv_shm
     LABEL "System V/XSI shared memory"
     CODE
 "#include <sys/types.h>
@@ -352,7 +352,7 @@ int main(void)
 }
 ")
 
-qt_config_compile_test(sysv_sem
+bobui_config_compile_test(sysv_sem
     LABEL "System V/XSI semaphores"
     CODE
 "#include <sys/types.h>
@@ -371,7 +371,7 @@ int main(void)
 if (LINUX)
     set(ipc_posix_TEST_LIBRARIES pthread WrapRt::WrapRt)
 endif()
-qt_config_compile_test(posix_shm
+bobui_config_compile_test(posix_shm
     LABEL "POSIX shared memory"
     LIBRARIES
      "${ipc_posix_TEST_LIBRARIES}"
@@ -388,7 +388,7 @@ int main(void)
 }
 ")
 
-qt_config_compile_test(posix_sem
+bobui_config_compile_test(posix_sem
     LABEL "POSIX semaphores"
     LIBRARIES
      "${ipc_posix_TEST_LIBRARIES}"
@@ -405,7 +405,7 @@ int main(void)
 ")
 
 # liburing
-qt_config_compile_test(liburing
+bobui_config_compile_test(liburing
     LABEL "liburing"
     LIBRARIES uring
     CODE
@@ -419,7 +419,7 @@ int main(void)
 ")
 
 # linkat
-qt_config_compile_test(linkat
+bobui_config_compile_test(linkat
     LABEL "linkat()"
     CODE
 "#define _ATFILE_SOURCE 1
@@ -436,7 +436,7 @@ linkat(AT_FDCWD, \"foo\", AT_FDCWD, \"bar\", AT_SYMLINK_FOLLOW);
 ")
 
 # memmem
-qt_config_compile_test(memmem
+bobui_config_compile_test(memmem
     LABEL "memmem()"
     CODE
 #define _APPLE_SAUCE 1  /* Apple doesn't require anything */
@@ -452,7 +452,7 @@ int main(void)
 }")
 
 # memrchr
-qt_config_compile_test(memrchr
+bobui_config_compile_test(memrchr
     LABEL "memrchr()"
     CODE
 "#define _BSD_SOURCE 1   /* For FreeBSD */
@@ -467,7 +467,7 @@ int main(void)
 }")
 
 # ppoll
-qt_config_compile_test(ppoll
+bobui_config_compile_test(ppoll
     LABEL "ppoll()"
     CODE
 "#include <signal.h>
@@ -486,7 +486,7 @@ ppoll(&pfd, 1, &ts, &sig);
 ")
 
 # pollts
-qt_config_compile_test(pollts
+bobui_config_compile_test(pollts
     LABEL "pollts()"
     CODE
 "#include <poll.h>
@@ -506,7 +506,7 @@ pollts(&pfd, 1, &ts, &sig);
 ")
 
 # poll
-qt_config_compile_test(poll
+bobui_config_compile_test(poll
     LABEL "poll()"
     CODE
 "#include <poll.h>
@@ -526,7 +526,7 @@ poll(&pfd, 1, 0);
 # so disable it in a TSAN build. Unfortunately there doesn't
 # seem to be a version check possible, just check the
 # TSAN_INTERCEPT macros into tsan_interceptors_posix.cpp.
-qt_config_compile_test(pthread_clockjoin
+bobui_config_compile_test(pthread_clockjoin
     LABEL "pthread_clockjoin()"
     LIBRARIES Threads::Threads
     CODE
@@ -543,7 +543,7 @@ int main()
 ")
 
 # pthread_condattr_setclock
-qt_config_compile_test(pthread_condattr_setclock
+bobui_config_compile_test(pthread_condattr_setclock
     LABEL "pthread_condattr_setclock()"
     LIBRARIES Threads::Threads
     CODE
@@ -557,7 +557,7 @@ int main()
 ")
 
 # pthread_timedjoin
-qt_config_compile_test(pthread_timedjoin
+bobui_config_compile_test(pthread_timedjoin
     LABEL "pthread_timedjoin()"
     LIBRARIES Threads::Threads
     CODE
@@ -574,7 +574,7 @@ int main()
 ")
 
 # renameat2
-qt_config_compile_test(renameat2
+bobui_config_compile_test(renameat2
     LABEL "renameat2()"
     CODE
 "#define _ATFILE_SOURCE 1
@@ -590,7 +590,7 @@ renameat2(AT_FDCWD, argv[1], AT_FDCWD, argv[2], RENAME_NOREPLACE | RENAME_WHITEO
 }
 ")
 
-qt_config_compile_test(winsdkicu
+bobui_config_compile_test(winsdkicu
     LABEL "Windows SDK: ICU"
     LIBRARIES icu
     CODE
@@ -605,7 +605,7 @@ int main(void)
 "
 )
 
-qt_config_compile_test(windows_ioring
+bobui_config_compile_test(windows_ioring
     LABEL "Windows SDK: IORing"
     CODE
 "#include <windows.h>
@@ -630,7 +630,7 @@ int main(void)
 "
 )
 
-qt_config_compile_test(windows_ioring_skip_builder_param_checks
+bobui_config_compile_test(windows_ioring_skip_builder_param_checks
     LABEL "Windows SDK: IORing IORING_CREATE_SKIP_BUILDER_PARAM_CHECKS"
     CODE
 "#include <windows.h>
@@ -649,7 +649,7 @@ int main(void)
 )
 
 # cpp_winrt
-qt_config_compile_test(cpp_winrt
+bobui_config_compile_test(cpp_winrt
     LABEL "cpp/winrt"
     LIBRARIES
         runtimeobject
@@ -665,7 +665,7 @@ int main(void)
 ")
 
 # std::format support
-qt_config_compile_test(cxx20_format
+bobui_config_compile_test(cxx20_format
     LABEL "C++20 std::format support"
     CODE
 "#include <format>
@@ -687,7 +687,7 @@ const auto s = std::format(\"{}\", 1);
 )
 
 # <stacktrace>
-qt_config_compile_test(cxx23_stacktrace
+bobui_config_compile_test(cxx23_stacktrace
     LABEL "C++23 <stacktrace> support"
     CODE
 "#include <stacktrace>
@@ -706,7 +706,7 @@ const auto backtrace = std::stacktrace::current();
 )
 
 # <future>
-qt_config_compile_test(cxx_std_async_noncopyable
+bobui_config_compile_test(cxx_std_async_noncopyable
     LABEL "std::async() NonCopyable"
     LIBRARIES Threads::Threads
     CODE
@@ -735,7 +735,7 @@ int main(int argc, char** argv) {
 ")
 
 # <chrono>
-qt_config_compile_test(chrono_tzdb
+bobui_config_compile_test(chrono_tzdb
     LABEL "Support for timezones in C++20 <chrono>"
     CODE
 "#include <chrono>
@@ -755,628 +755,628 @@ int main(void)
 }
 "
 )
-qt_feature("windows-ioring-runtime" PRIVATE
+bobui_feature("windows-ioring-runtime" PRIVATE
     LABEL "Resolve Windows I/O Ring functions at runtime"
     AUTODETECT TRUE
-    CONDITION QT_FEATURE_windows_ioring
+    CONDITION BOBUI_FEATURE_windows_ioring
 )
 
 #### Features
 
-qt_feature("clock-gettime" PRIVATE
+bobui_feature("clock-gettime" PRIVATE
     LABEL "clock_gettime()"
     CONDITION UNIX AND WrapRt_FOUND
 )
-qt_feature("clock-monotonic" PUBLIC
+bobui_feature("clock-monotonic" PUBLIC
     LABEL "POSIX monotonic clock"
-    CONDITION QT_FEATURE_clock_gettime AND TEST_clock_monotonic
+    CONDITION BOBUI_FEATURE_clock_gettime AND TEST_clock_monotonic
 )
-qt_feature_definition("clock-monotonic" "QT_NO_CLOCK_MONOTONIC" NEGATE VALUE "1")
-qt_feature("copy_file_range" PRIVATE
+bobui_feature_definition("clock-monotonic" "BOBUI_NO_CLOCK_MONOTONIC" NEGATE VALUE "1")
+bobui_feature("copy_file_range" PRIVATE
     LABEL "copy_file_range()"
-    CONDITION QT_FEATURE_process AND TEST_copy_file_range
+    CONDITION BOBUI_FEATURE_process AND TEST_copy_file_range
     AUTODETECT UNIX AND NOT DARWIN
 )
-qt_feature("doubleconversion" PRIVATE
+bobui_feature("doubleconversion" PRIVATE
     LABEL "DoubleConversion"
 )
-qt_feature_definition("doubleconversion" "QT_NO_DOUBLECONVERSION" NEGATE VALUE "1")
-qt_feature("system-doubleconversion" PRIVATE SYSTEM_LIBRARY
+bobui_feature_definition("doubleconversion" "BOBUI_NO_DOUBLECONVERSION" NEGATE VALUE "1")
+bobui_feature("system-doubleconversion" PRIVATE SYSTEM_LIBRARY
     LABEL "  Using system DoubleConversion"
-    CONDITION QT_FEATURE_doubleconversion AND WrapSystemDoubleConversion_FOUND
+    CONDITION BOBUI_FEATURE_doubleconversion AND WrapSystemDoubleConversion_FOUND
     ENABLE INPUT_doubleconversion STREQUAL 'system'
-    DISABLE INPUT_doubleconversion STREQUAL 'qt'
+    DISABLE INPUT_doubleconversion STREQUAL 'bobui'
 )
-qt_feature("cxx11_future" PUBLIC
+bobui_feature("cxx11_future" PUBLIC
     LABEL "C++11 <future>"
     CONDITION TEST_cxx_std_async_noncopyable
 )
-qt_feature("cxx17_filesystem" PUBLIC
+bobui_feature("cxx17_filesystem" PUBLIC
     LABEL "C++17 <filesystem>"
     CONDITION TEST_cxx17_filesystem
 )
-qt_feature("broken-threadlocal-dtors" PRIVATE
+bobui_feature("broken-threadlocal-dtors" PRIVATE
     LABEL "Broken execution of thread_local destructors at exit() time"
     # Windows is broken in different ways from Unix
     CONDITION WIN32 OR NOT (TEST_cxa_thread_atexit OR TEST_cxa_thread_atexit_impl)
 )
-qt_feature("dladdr" PRIVATE
+bobui_feature("dladdr" PRIVATE
     LABEL "dladdr"
-    CONDITION QT_FEATURE_dlopen AND TEST_dladdr
+    CONDITION BOBUI_FEATURE_dlopen AND TEST_dladdr
 )
-qt_feature("futimens" PRIVATE
+bobui_feature("futimens" PRIVATE
     LABEL "futimens()"
     CONDITION NOT WIN32 AND TEST_futimens
 )
-qt_feature("getauxval" PRIVATE
+bobui_feature("getauxval" PRIVATE
     LABEL "getauxval()"
     CONDITION LINUX AND TEST_getauxval
 )
-qt_feature("getentropy" PRIVATE
+bobui_feature("getentropy" PRIVATE
     LABEL "getentropy()"
     CONDITION UNIX AND TEST_getentropy
 )
-qt_feature("glib" PUBLIC PRIVATE
+bobui_feature("glib" PUBLIC PRIVATE
     LABEL "GLib"
     AUTODETECT NOT WIN32
     CONDITION GLIB2_FOUND
 )
-qt_feature_definition("glib" "QT_NO_GLIB" NEGATE VALUE "1")
-qt_feature("icu" PRIVATE
+bobui_feature_definition("glib" "BOBUI_NO_GLIB" NEGATE VALUE "1")
+bobui_feature("icu" PRIVATE
     LABEL "ICU"
     AUTODETECT NOT WIN32
     CONDITION ICU_FOUND
 )
-qt_feature("winsdkicu" PRIVATE
+bobui_feature("winsdkicu" PRIVATE
     LABEL "ICU (Windows SDK)"
     AUTODETECT WIN32
     CONDITION TEST_winsdkicu
-    DISABLE QT_FEATURE_icu
+    DISABLE BOBUI_FEATURE_icu
 )
-qt_feature("windows-ioring" PRIVATE
+bobui_feature("windows-ioring" PRIVATE
     LABEL "Windows I/O Ring"
     AUTODETECT WIN32
     CONDITION TEST_windows_ioring
 )
-qt_feature("windows-ioring-skip-builder-param-checks" PRIVATE
+bobui_feature("windows-ioring-skip-builder-param-checks" PRIVATE
     LABEL "Windows I/O Ring IORING_CREATE_SKIP_BUILDER_PARAM_CHECKS"
     AUTODETECT WIN32
     CONDITION TEST_windows_ioring_skip_builder_param_checks
 )
-qt_feature("inotify" PUBLIC PRIVATE
+bobui_feature("inotify" PUBLIC PRIVATE
     LABEL "inotify"
     CONDITION TEST_inotify OR TEST_fsnotify
 )
-qt_feature("fsnotify"
+bobui_feature("fsnotify"
     LABEL "fsnotify"
     CONDITION TEST_fsnotify
 )
-qt_feature_definition("inotify" "QT_NO_INOTIFY" NEGATE VALUE "1")
-qt_feature("ipc_posix"
+bobui_feature_definition("inotify" "BOBUI_NO_INOTIFY" NEGATE VALUE "1")
+bobui_feature("ipc_posix"
     LABEL "Defaulting legacy IPC to POSIX"
     CONDITION TEST_posix_shm AND TEST_posix_sem AND (
-        FEATURE_ipc_posix OR (APPLE AND QT_FEATURE_appstore_compliant)
+        FEATURE_ipc_posix OR (APPLE AND BOBUI_FEATURE_appstore_compliant)
         OR NOT TEST_sysv_shm OR NOT TEST_sysv_sem
     )
 )
-qt_feature_definition("ipc_posix" "QT_POSIX_IPC")
-qt_feature("jemalloc" PUBLIC PRIVATE
+bobui_feature_definition("ipc_posix" "BOBUI_POSIX_IPC")
+bobui_feature("jemalloc" PUBLIC PRIVATE
     LABEL "JeMalloc"
     AUTODETECT OFF
     CONDITION JeMalloc_FOUND
 )
-qt_feature("journald" PRIVATE
+bobui_feature("journald" PRIVATE
     LABEL "journald"
     AUTODETECT OFF
     CONDITION Libsystemd_FOUND
 )
 # Used by QCryptographicHash for the BLAKE2 hashing algorithms
-qt_feature("system-libb2" PRIVATE SYSTEM_LIBRARY
+bobui_feature("system-libb2" PRIVATE SYSTEM_LIBRARY
     LABEL "Using system libb2"
     CONDITION Libb2_FOUND
     ENABLE INPUT_libb2 STREQUAL 'system'
-    DISABLE INPUT_libb2 STREQUAL 'no' OR INPUT_libb2 STREQUAL 'qt'
+    DISABLE INPUT_libb2 STREQUAL 'no' OR INPUT_libb2 STREQUAL 'bobui'
 )
-# Currently only used by QTemporaryFile; linkat() exists on Android, but hardlink creation fails due to security rules
-qt_feature("linkat" PRIVATE
+# Currently only used by BOBUIemporaryFile; linkat() exists on Android, but hardlink creation fails due to security rules
+bobui_feature("linkat" PRIVATE
     LABEL "linkat()"
     AUTODETECT ( LINUX AND NOT ANDROID ) OR HURD
     CONDITION TEST_linkat
 )
-qt_feature("liburing" PRIVATE
+bobui_feature("liburing" PRIVATE
     LABEL "liburing"
     AUTODETECT LINUX
     CONDITION Liburing_FOUND
 )
-qt_feature("std-atomic64" PUBLIC
+bobui_feature("std-atomic64" PUBLIC
     LABEL "64 bit atomic operations"
     CONDITION WrapAtomic_FOUND
 )
-qt_feature("memmem" PRIVATE
+bobui_feature("memmem" PRIVATE
     LABEL "C library function memmem()"
     CONDITION TEST_memmem
 )
-qt_feature("memrchr" PRIVATE
+bobui_feature("memrchr" PRIVATE
     LABEL "C library function memrchr()"
     CONDITION TEST_memrchr
 )
-qt_feature("mimetype" PUBLIC
+bobui_feature("mimetype" PUBLIC
     SECTION "Utilities"
     LABEL "Mimetype handling"
     PURPOSE "Provides MIME type handling."
 )
-qt_feature_definition("mimetype" "QT_NO_MIMETYPE" NEGATE VALUE "1")
-qt_feature("mimetype-database" PRIVATE
+bobui_feature_definition("mimetype" "BOBUI_NO_MIMETYPE" NEGATE VALUE "1")
+bobui_feature("mimetype-database" PRIVATE
     LABEL "Built-in copy of the MIME database"
-    CONDITION QT_FEATURE_mimetype
+    CONDITION BOBUI_FEATURE_mimetype
 )
-qt_feature("pcre2"
+bobui_feature("pcre2"
     LABEL "PCRE2"
-    ENABLE INPUT_pcre STREQUAL 'qt' OR QT_FEATURE_system_pcre2
+    ENABLE INPUT_pcre STREQUAL 'bobui' OR BOBUI_FEATURE_system_pcre2
     DISABLE INPUT_pcre STREQUAL 'no'
 )
-qt_feature_config("pcre2" QMAKE_PRIVATE_CONFIG)
-qt_feature("system-pcre2" PRIVATE SYSTEM_LIBRARY
+bobui_feature_config("pcre2" QMAKE_PRIVATE_CONFIG)
+bobui_feature("system-pcre2" PRIVATE SYSTEM_LIBRARY
     LABEL "  Using system PCRE2"
     CONDITION WrapSystemPCRE2_FOUND
     ENABLE INPUT_pcre STREQUAL 'system'
-    DISABLE INPUT_pcre STREQUAL 'no' OR INPUT_pcre STREQUAL 'qt'
+    DISABLE INPUT_pcre STREQUAL 'no' OR INPUT_pcre STREQUAL 'bobui'
 )
-qt_feature("poll_ppoll" PRIVATE
+bobui_feature("poll_ppoll" PRIVATE
     LABEL "Native ppoll()"
     CONDITION NOT WASM AND TEST_ppoll
     EMIT_IF NOT WIN32
 )
-qt_feature("poll_pollts" PRIVATE
+bobui_feature("poll_pollts" PRIVATE
     LABEL "Native pollts()"
-    CONDITION NOT QT_FEATURE_poll_ppoll AND TEST_pollts
+    CONDITION NOT BOBUI_FEATURE_poll_ppoll AND TEST_pollts
     EMIT_IF NOT WIN32
 )
-qt_feature("poll_poll" PRIVATE
+bobui_feature("poll_poll" PRIVATE
     LABEL "Native poll()"
-    CONDITION NOT QT_FEATURE_poll_ppoll AND NOT QT_FEATURE_poll_pollts AND TEST_poll
+    CONDITION NOT BOBUI_FEATURE_poll_ppoll AND NOT BOBUI_FEATURE_poll_pollts AND TEST_poll
     EMIT_IF NOT WIN32
 )
-qt_feature("poll_select" PRIVATE
+bobui_feature("poll_select" PRIVATE
     LABEL "Emulated poll()"
-    CONDITION NOT QT_FEATURE_poll_ppoll AND NOT QT_FEATURE_poll_pollts AND NOT QT_FEATURE_poll_poll
+    CONDITION NOT BOBUI_FEATURE_poll_ppoll AND NOT BOBUI_FEATURE_poll_pollts AND NOT BOBUI_FEATURE_poll_poll
     EMIT_IF NOT WIN32
 )
-qt_feature_definition("poll_select" "QT_NO_NATIVE_POLL")
-qt_feature("posix_sem" PRIVATE
+bobui_feature_definition("poll_select" "BOBUI_NO_NATIVE_POLL")
+bobui_feature("posix_sem" PRIVATE
     LABEL "POSIX semaphores"
-    CONDITION TEST_posix_sem AND QT_FEATURE_systemsemaphore
+    CONDITION TEST_posix_sem AND BOBUI_FEATURE_systemsemaphore
 )
-qt_feature("posix_shm" PRIVATE
+bobui_feature("posix_shm" PRIVATE
     LABEL "POSIX shared memory"
     CONDITION TEST_posix_shm AND UNIX
 )
-qt_feature("pthread_clockjoin" PRIVATE
+bobui_feature("pthread_clockjoin" PRIVATE
     LABEL "pthread_clockjoin() function"
     AUTODETECT UNIX
-    CONDITION UNIX AND QT_FEATURE_thread AND TEST_pthread_clockjoin
+    CONDITION UNIX AND BOBUI_FEATURE_thread AND TEST_pthread_clockjoin
 )
-qt_feature("pthread_condattr_setclock" PRIVATE
+bobui_feature("pthread_condattr_setclock" PRIVATE
     LABEL "pthread_condattr_setclock() function"
     AUTODETECT UNIX
-    CONDITION UNIX AND QT_FEATURE_thread AND TEST_pthread_condattr_setclock
+    CONDITION UNIX AND BOBUI_FEATURE_thread AND TEST_pthread_condattr_setclock
 )
-qt_feature("pthread_timedjoin" PRIVATE
+bobui_feature("pthread_timedjoin" PRIVATE
     LABEL "pthread_timedjoin() function"
     AUTODETECT UNIX
-    CONDITION UNIX AND QT_FEATURE_thread AND TEST_pthread_timedjoin
+    CONDITION UNIX AND BOBUI_FEATURE_thread AND TEST_pthread_timedjoin
 )
-qt_feature("qqnx_pps" PRIVATE
+bobui_feature("qqnx_pps" PRIVATE
     LABEL "PPS"
     CONDITION PPS_FOUND
     EMIT_IF QNX
 )
-qt_feature("renameat2" PRIVATE
+bobui_feature("renameat2" PRIVATE
     LABEL "renameat2()"
     CONDITION ( LINUX OR HURD ) AND TEST_renameat2
 )
-qt_feature("slog2" PRIVATE
+bobui_feature("slog2" PRIVATE
     LABEL "slog2"
     CONDITION Slog2_FOUND
 )
-qt_feature("syslog" PRIVATE
+bobui_feature("syslog" PRIVATE
     LABEL "syslog"
     AUTODETECT OFF
 )
-qt_feature("sysv_sem" PRIVATE
+bobui_feature("sysv_sem" PRIVATE
     LABEL "System V / XSI semaphores"
-    CONDITION TEST_sysv_sem AND QT_FEATURE_systemsemaphore
+    CONDITION TEST_sysv_sem AND BOBUI_FEATURE_systemsemaphore
 )
-qt_feature("sysv_shm" PRIVATE
+bobui_feature("sysv_shm" PRIVATE
     LABEL "System V / XSI shared memory"
     CONDITION TEST_sysv_shm
 )
-qt_feature("threadsafe-cloexec"
+bobui_feature("threadsafe-cloexec"
     LABEL "Threadsafe pipe creation"
     CONDITION TEST_cloexec
 )
-qt_feature_definition("threadsafe-cloexec" "QT_THREADSAFE_CLOEXEC" VALUE "1")
-qt_feature_config("threadsafe-cloexec" QMAKE_PUBLIC_QT_CONFIG)
-qt_feature("dup3" PRIVATE
+bobui_feature_definition("threadsafe-cloexec" "BOBUI_THREADSAFE_CLOEXEC" VALUE "1")
+bobui_feature_config("threadsafe-cloexec" QMAKE_PUBLIC_BOBUI_CONFIG)
+bobui_feature("dup3" PRIVATE
     LABEL "dup3 support"
     CONDITION TEST_dup3
 )
-qt_feature("accept4" PRIVATE
+bobui_feature("accept4" PRIVATE
     LABEL "accept4 support"
     CONDITION TEST_accept4
 )
-qt_feature("vxpipedrv" PRIVATE
+bobui_feature("vxpipedrv" PRIVATE
     LABEL "Use pipedrv pipes on VxWorks"
     AUTODETECT OFF
     CONDITION VXWORKS
 )
-qt_feature_deprecated("regularexpression" PUBLIC
+bobui_feature_deprecated("regularexpression" PUBLIC
     REMOVE_BY "7.0"
     SECTION "Kernel"
     LABEL "QRegularExpression"
     PURPOSE "Provides an API to Perl-compatible regular expressions."
     VALUE ON
 )
-qt_feature_definition("regularexpression" "QT_NO_REGULAREXPRESSION" NEGATE VALUE "1")
-qt_feature("backtrace" PRIVATE
+bobui_feature_definition("regularexpression" "BOBUI_NO_REGULAREXPRESSION" NEGATE VALUE "1")
+bobui_feature("backtrace" PRIVATE
     LABEL "backtrace"
-    CONDITION UNIX AND QT_FEATURE_regularexpression AND WrapBacktrace_FOUND
+    CONDITION UNIX AND BOBUI_FEATURE_regularexpression AND WrapBacktrace_FOUND
 )
-qt_feature("cxx20_format" PRIVATE
+bobui_feature("cxx20_format" PRIVATE
     LABEL "C++20 std::format support"
-    CONDITION TEST_cxx20_format # intentionally not checking QT_FEATURE_cxx20!
+    CONDITION TEST_cxx20_format # intentionally not checking BOBUI_FEATURE_cxx20!
     AUTODETECT TRUE
 )
-qt_feature("cxx23_stacktrace" PRIVATE
+bobui_feature("cxx23_stacktrace" PRIVATE
     LABEL "C++23 <stacktrace>"
-    CONDITION TEST_cxx23_stacktrace AND QT_FEATURE_cxx2b
+    CONDITION TEST_cxx23_stacktrace AND BOBUI_FEATURE_cxx2b
 )
-qt_feature("sharedmemory" PUBLIC
+bobui_feature("sharedmemory" PUBLIC
     SECTION "Kernel"
     LABEL "QSharedMemory"
     PURPOSE "Provides access to a shared memory segment."
     CONDITION WIN32 OR TEST_sysv_shm OR TEST_posix_shm
 )
-qt_feature_definition("sharedmemory" "QT_NO_SHAREDMEMORY" NEGATE VALUE "1")
-qt_feature("shortcut" PUBLIC
+bobui_feature_definition("sharedmemory" "BOBUI_NO_SHAREDMEMORY" NEGATE VALUE "1")
+bobui_feature("shortcut" PUBLIC
     SECTION "Kernel"
     LABEL "QShortcut"
     PURPOSE "Provides keyboard accelerators and shortcuts."
 )
-qt_feature_definition("shortcut" "QT_NO_SHORTCUT" NEGATE VALUE "1")
-qt_feature("systemsemaphore" PUBLIC
+bobui_feature_definition("shortcut" "BOBUI_NO_SHORTCUT" NEGATE VALUE "1")
+bobui_feature("systemsemaphore" PUBLIC
     SECTION "Kernel"
     LABEL "QSystemSemaphore"
     PURPOSE "Provides a general counting system semaphore."
     CONDITION WIN32 OR TEST_sysv_sem OR TEST_posix_sem
 )
-qt_feature_definition("systemsemaphore" "QT_NO_SYSTEMSEMAPHORE" NEGATE VALUE "1")
-qt_feature("xmlstream" PUBLIC
+bobui_feature_definition("systemsemaphore" "BOBUI_NO_SYSTEMSEMAPHORE" NEGATE VALUE "1")
+bobui_feature("xmlstream" PUBLIC
     SECTION "Kernel"
     LABEL "XML Streaming APIs"
     PURPOSE "Provides a simple streaming API for XML."
 )
-qt_feature("cpp-winrt" PRIVATE PUBLIC
+bobui_feature("cpp-winrt" PRIVATE PUBLIC
     LABEL "cpp/winrt base"
     PURPOSE "basic cpp/winrt language projection support"
     AUTODETECT WIN32
     CONDITION WIN32 AND TEST_cpp_winrt
 )
-qt_feature("xmlstreamreader" PUBLIC
+bobui_feature("xmlstreamreader" PUBLIC
     SECTION "Kernel"
     LABEL "QXmlStreamReader"
     PURPOSE "Provides a well-formed XML parser with a simple streaming API."
-    CONDITION QT_FEATURE_xmlstream
+    CONDITION BOBUI_FEATURE_xmlstream
 )
-qt_feature("xmlstreamwriter" PUBLIC
+bobui_feature("xmlstreamwriter" PUBLIC
     SECTION "Kernel"
     LABEL "QXmlStreamWriter"
     PURPOSE "Provides a XML writer with a simple streaming API."
-    CONDITION QT_FEATURE_xmlstream
+    CONDITION BOBUI_FEATURE_xmlstream
 )
-qt_feature("textdate" PUBLIC
+bobui_feature("textdate" PUBLIC
     SECTION "Data structures"
     LABEL "Text Date"
     PURPOSE "Supports month and day names in dates."
 )
-qt_feature_definition("textdate" "QT_NO_TEXTDATE" NEGATE VALUE "1")
-qt_feature("datestring" PUBLIC
+bobui_feature_definition("textdate" "BOBUI_NO_TEXTDATE" NEGATE VALUE "1")
+bobui_feature("datestring" PUBLIC
     SECTION "Data structures"
-    LABEL "QDate/QTime/QDateTime"
+    LABEL "QDate/BOBUIime/QDateTime"
     PURPOSE "Provides conversion between dates and strings."
-    CONDITION QT_FEATURE_textdate
+    CONDITION BOBUI_FEATURE_textdate
 )
-qt_feature_definition("datestring" "QT_NO_DATESTRING" NEGATE VALUE "1")
-qt_feature("process" PUBLIC
+bobui_feature_definition("datestring" "BOBUI_NO_DATESTRING" NEGATE VALUE "1")
+bobui_feature("process" PUBLIC
     SECTION "File I/O"
     LABEL "QProcess"
     PURPOSE "Supports external process invocation."
-    CONDITION QT_FEATURE_processenvironment
-              AND (QT_FEATURE_thread OR NOT UNIX)
+    CONDITION BOBUI_FEATURE_processenvironment
+              AND (BOBUI_FEATURE_thread OR NOT UNIX)
               AND NOT UIKIT
               AND NOT INTEGRITY
               AND NOT VXWORKS
               AND NOT rtems
               AND NOT WASM
 )
-qt_feature_definition("process" "QT_NO_PROCESS" NEGATE VALUE "1")
-qt_feature("processenvironment" PUBLIC
+bobui_feature_definition("process" "BOBUI_NO_PROCESS" NEGATE VALUE "1")
+bobui_feature("processenvironment" PUBLIC
     SECTION "File I/O"
     LABEL "QProcessEnvironment"
     PURPOSE "Provides a higher-level abstraction of environment variables."
     CONDITION NOT INTEGRITY AND NOT rtems
 )
-qt_feature("temporaryfile" PUBLIC
+bobui_feature("temporaryfile" PUBLIC
     SECTION "File I/O"
-    LABEL "QTemporaryFile"
+    LABEL "BOBUIemporaryFile"
     PURPOSE "Provides an I/O device that operates on temporary files."
 )
-qt_feature_definition("temporaryfile" "QT_NO_TEMPORARYFILE" NEGATE VALUE "1")
-qt_feature("library" PUBLIC
+bobui_feature_definition("temporaryfile" "BOBUI_NO_TEMPORARYFILE" NEGATE VALUE "1")
+bobui_feature("library" PUBLIC
     SECTION "File I/O"
     LABEL "QLibrary"
     PURPOSE "Provides a wrapper for dynamically loaded libraries."
-    CONDITION WIN32 OR HPUX OR QT_FEATURE_dlopen
+    CONDITION WIN32 OR HPUX OR BOBUI_FEATURE_dlopen
 )
-qt_feature_definition("library" "QT_NO_LIBRARY" NEGATE VALUE "1")
-qt_feature("settings" PUBLIC
+bobui_feature_definition("library" "BOBUI_NO_LIBRARY" NEGATE VALUE "1")
+bobui_feature("settings" PUBLIC
     SECTION "File I/O"
     LABEL "QSettings"
     PURPOSE "Provides persistent application settings."
 )
-qt_feature_definition("settings" "QT_NO_SETTINGS" NEGATE VALUE "1")
-qt_feature("filesystemwatcher" PUBLIC
+bobui_feature_definition("settings" "BOBUI_NO_SETTINGS" NEGATE VALUE "1")
+bobui_feature("filesystemwatcher" PUBLIC
     SECTION "File I/O"
     LABEL "QFileSystemWatcher"
     PURPOSE "Provides an interface for monitoring files and directories for modifications."
 )
-qt_feature_definition("filesystemwatcher" "QT_NO_FILESYSTEMWATCHER" NEGATE VALUE "1")
-qt_feature("filesystemiterator" PUBLIC
+bobui_feature_definition("filesystemwatcher" "BOBUI_NO_FILESYSTEMWATCHER" NEGATE VALUE "1")
+bobui_feature("filesystemiterator" PUBLIC
     SECTION "File I/O"
     LABEL "QFileSystemIterator"
     PURPOSE "Provides fast file system iteration."
 )
-qt_feature_definition("filesystemiterator" "QT_NO_FILESYSTEMITERATOR" NEGATE VALUE "1")
-qt_feature("itemmodel" PUBLIC
+bobui_feature_definition("filesystemiterator" "BOBUI_NO_FILESYSTEMITERATOR" NEGATE VALUE "1")
+bobui_feature("itemmodel" PUBLIC
     SECTION "ItemViews"
-    LABEL "Qt Item Model"
+    LABEL "BobUI Item Model"
     PURPOSE "Provides the item model for item views"
 )
-qt_feature_definition("itemmodel" "QT_NO_ITEMMODEL" NEGATE VALUE "1")
-qt_feature("proxymodel" PUBLIC
+bobui_feature_definition("itemmodel" "BOBUI_NO_ITEMMODEL" NEGATE VALUE "1")
+bobui_feature("proxymodel" PUBLIC
     SECTION "ItemViews"
     LABEL "QAbstractProxyModel"
     PURPOSE "Supports processing of data passed between another model and a view."
-    CONDITION QT_FEATURE_itemmodel
+    CONDITION BOBUI_FEATURE_itemmodel
 )
-qt_feature_definition("proxymodel" "QT_NO_PROXYMODEL" NEGATE VALUE "1")
-qt_feature("sortfilterproxymodel" PUBLIC
+bobui_feature_definition("proxymodel" "BOBUI_NO_PROXYMODEL" NEGATE VALUE "1")
+bobui_feature("sortfilterproxymodel" PUBLIC
     SECTION "ItemViews"
     LABEL "QSortFilterProxyModel"
     PURPOSE "Supports sorting and filtering of data passed between another model and a view."
-    CONDITION QT_FEATURE_proxymodel AND QT_FEATURE_regularexpression
+    CONDITION BOBUI_FEATURE_proxymodel AND BOBUI_FEATURE_regularexpression
 )
-qt_feature_definition("sortfilterproxymodel" "QT_NO_SORTFILTERPROXYMODEL" NEGATE VALUE "1")
-qt_feature("identityproxymodel" PUBLIC
+bobui_feature_definition("sortfilterproxymodel" "BOBUI_NO_SORTFILTERPROXYMODEL" NEGATE VALUE "1")
+bobui_feature("identityproxymodel" PUBLIC
     SECTION "ItemViews"
     LABEL "QIdentityProxyModel"
     PURPOSE "Supports proxying a source model unmodified."
-    CONDITION QT_FEATURE_proxymodel
+    CONDITION BOBUI_FEATURE_proxymodel
 )
-qt_feature_definition("identityproxymodel" "QT_NO_IDENTITYPROXYMODEL" NEGATE VALUE "1")
-qt_feature("transposeproxymodel" PUBLIC
+bobui_feature_definition("identityproxymodel" "BOBUI_NO_IDENTITYPROXYMODEL" NEGATE VALUE "1")
+bobui_feature("transposeproxymodel" PUBLIC
     SECTION "ItemViews"
-    LABEL "QTransposeProxyModel"
+    LABEL "BOBUIransposeProxyModel"
     PURPOSE "Provides a proxy to swap rows and columns of a model."
-    CONDITION QT_FEATURE_proxymodel
+    CONDITION BOBUI_FEATURE_proxymodel
 )
-qt_feature_definition("transposeproxymodel" "QT_NO_TRANSPOSEPROXYMODEL" NEGATE VALUE "1")
-qt_feature("concatenatetablesproxymodel" PUBLIC
+bobui_feature_definition("transposeproxymodel" "BOBUI_NO_TRANSPOSEPROXYMODEL" NEGATE VALUE "1")
+bobui_feature("concatenatetablesproxymodel" PUBLIC
     SECTION "ItemViews"
     LABEL "QConcatenateTablesProxyModel"
     PURPOSE "Supports concatenating source models."
-    CONDITION QT_FEATURE_proxymodel
+    CONDITION BOBUI_FEATURE_proxymodel
 )
-qt_feature_definition("concatenatetablesproxymodel" "QT_NO_CONCATENATETABLESPROXYMODEL" NEGATE VALUE "1")
-qt_feature("stringlistmodel" PUBLIC
+bobui_feature_definition("concatenatetablesproxymodel" "BOBUI_NO_CONCATENATETABLESPROXYMODEL" NEGATE VALUE "1")
+bobui_feature("stringlistmodel" PUBLIC
     SECTION "ItemViews"
     LABEL "QStringListModel"
     PURPOSE "Provides a model that supplies strings to views."
-    CONDITION QT_FEATURE_itemmodel
+    CONDITION BOBUI_FEATURE_itemmodel
 )
-qt_feature_definition("stringlistmodel" "QT_NO_STRINGLISTMODEL" NEGATE VALUE "1")
-qt_feature("translation" PUBLIC
+bobui_feature_definition("stringlistmodel" "BOBUI_NO_STRINGLISTMODEL" NEGATE VALUE "1")
+bobui_feature("translation" PUBLIC
     SECTION "Internationalization"
     LABEL "Translation"
     PURPOSE "Supports translations using QObject::tr()."
 )
-qt_feature_definition("translation" "QT_NO_TRANSLATION" NEGATE VALUE "1")
-qt_feature("easingcurve" PUBLIC
+bobui_feature_definition("translation" "BOBUI_NO_TRANSLATION" NEGATE VALUE "1")
+bobui_feature("easingcurve" PUBLIC
     SECTION "Utilities"
     LABEL "Easing curve"
     PURPOSE "Provides easing curve."
 )
-qt_feature("animation" PUBLIC
+bobui_feature("animation" PUBLIC
     SECTION "Utilities"
     LABEL "Animation"
     PURPOSE "Provides a framework for animations."
-    CONDITION QT_FEATURE_easingcurve
+    CONDITION BOBUI_FEATURE_easingcurve
 )
-qt_feature_definition("animation" "QT_NO_ANIMATION" NEGATE VALUE "1")
-qt_feature("gestures" PUBLIC
+bobui_feature_definition("animation" "BOBUI_NO_ANIMATION" NEGATE VALUE "1")
+bobui_feature("gestures" PUBLIC
     SECTION "Utilities"
     LABEL "Gesture"
     PURPOSE "Provides a framework for gestures."
 )
-qt_feature_definition("gestures" "QT_NO_GESTURES" NEGATE VALUE "1")
-qt_feature("sha3-fast" PRIVATE
+bobui_feature_definition("gestures" "BOBUI_NO_GESTURES" NEGATE VALUE "1")
+bobui_feature("sha3-fast" PRIVATE
     SECTION "Utilities"
     LABEL "Speed optimized SHA3"
     PURPOSE "Optimizes SHA3 for speed instead of size."
 )
-qt_feature("jalalicalendar" PUBLIC
+bobui_feature("jalalicalendar" PUBLIC
     SECTION "Utilities"
     LABEL "QJalaliCalendar"
     PURPOSE "Support the Jalali (Persian) calendar"
 )
-qt_feature("hijricalendar" PRIVATE
+bobui_feature("hijricalendar" PRIVATE
     SECTION "Utilities"
     LABEL "QHijriCalendar"
     PURPOSE "Generic basis for Islamic calendars, providing shared locale data"
 )
-qt_feature("islamiccivilcalendar" PUBLIC
+bobui_feature("islamiccivilcalendar" PUBLIC
     SECTION "Utilities"
     LABEL "QIslamicCivilCalendar"
     PURPOSE "Support the Islamic Civil calendar"
-    CONDITION QT_FEATURE_hijricalendar
+    CONDITION BOBUI_FEATURE_hijricalendar
 )
-qt_feature("timezone" PUBLIC
+bobui_feature("timezone" PUBLIC
     SECTION "Utilities"
-    LABEL "QTimeZone"
+    LABEL "BOBUIimeZone"
     PURPOSE "Provides support for time-zone handling."
     CONDITION NOT WASM
 )
-qt_feature("timezone_locale" PRIVATE
+bobui_feature("timezone_locale" PRIVATE
     SECTION "Utilities"
-    LABEL "QTimeZoneLocale"
+    LABEL "BOBUIimeZoneLocale"
     PURPOSE "Provides support for localized time-zone display names."
     CONDITION
-        QT_FEATURE_timezone AND NOT APPLE AND NOT ANDROID
+        BOBUI_FEATURE_timezone AND NOT APPLE AND NOT ANDROID
 )
-qt_feature("timezone_tzdb" PUBLIC
+bobui_feature("timezone_tzdb" PUBLIC
     SECTION "Utilities"
-    LABEL "std::chrono::tzdb QTZ backend"
+    LABEL "std::chrono::tzdb BOBUIZ backend"
     PURPOSE "Provides support for a timezone backend using std::chrono."
     CONDITION TEST_chrono_tzdb
-    # See QTBUG-127598 for gcc's libstdc++'s deficiencies.
+    # See BOBUIBUG-127598 for gcc's libstdc++'s deficiencies.
     # Update src/corelib/doc/src/cpp20-overview.qdoc before enabling this:
     AUTODETECT OFF
 )
-qt_feature("datetimeparser" PRIVATE
+bobui_feature("datetimeparser" PRIVATE
     SECTION "Utilities"
     LABEL "QDateTimeParser"
     PURPOSE "Provides support for parsing date-time texts."
-    CONDITION QT_FEATURE_datestring
+    CONDITION BOBUI_FEATURE_datestring
 )
-qt_feature("commandlineparser" PUBLIC
+bobui_feature("commandlineparser" PUBLIC
     SECTION "Utilities"
     LABEL "QCommandlineParser"
     PURPOSE "Provides support for command line parsing."
 )
-qt_feature("lttng" PRIVATE
+bobui_feature("lttng" PRIVATE
     LABEL "LTTNG"
     AUTODETECT OFF
     CONDITION LINUX AND LTTNGUST_FOUND
     ENABLE INPUT_trace STREQUAL 'lttng' OR ( INPUT_trace STREQUAL 'yes' AND LINUX )
     DISABLE INPUT_trace STREQUAL 'etw' OR INPUT_trace STREQUAL 'no'
 )
-qt_feature("etw" PRIVATE
+bobui_feature("etw" PRIVATE
     LABEL "ETW"
     AUTODETECT OFF
     CONDITION WIN32
     ENABLE INPUT_trace STREQUAL 'etw' OR ( INPUT_trace STREQUAL 'yes' AND WIN32 )
     DISABLE INPUT_trace STREQUAL 'lttng' OR INPUT_trace STREQUAL 'no'
 )
-qt_feature("ctf" PRIVATE
+bobui_feature("ctf" PRIVATE
     LABEL "CTF"
     AUTODETECT OFF
     ENABLE INPUT_trace STREQUAL 'ctf'
     DISABLE INPUT_trace STREQUAL 'etw' OR INPUT_trace STREQUAL 'no' OR INPUT_trace STREQUAL 'lttng'
 )
-qt_feature("forkfd_pidfd" PRIVATE
+bobui_feature("forkfd_pidfd" PRIVATE
     LABEL "CLONE_PIDFD support in forkfd"
     CONDITION LINUX
 )
-qt_feature("cborstreamreader" PUBLIC
+bobui_feature("cborstreamreader" PUBLIC
     SECTION "Utilities"
     LABEL "CBOR stream reading"
-    PURPOSE "Provides support for reading the CBOR binary format.  Note that this is required for plugin loading. Qt GUI needs QPA plugins for basic operation."
+    PURPOSE "Provides support for reading the CBOR binary format.  Note that this is required for plugin loading. BobUI GUI needs QPA plugins for basic operation."
 )
-qt_feature("cborstreamwriter" PUBLIC
+bobui_feature("cborstreamwriter" PUBLIC
     SECTION "Utilities"
     LABEL "CBOR stream writing"
     PURPOSE "Provides support for writing the CBOR binary format."
 )
-qt_feature("poll-exit-on-error" PRIVATE
+bobui_feature("poll-exit-on-error" PRIVATE
     LABEL "Poll exit on error"
     AUTODETECT VXWORKS
     CONDITION UNIX
     PURPOSE "Exit on error instead of just printing the error code and continue."
 )
-qt_feature("permissions" PUBLIC
+bobui_feature("permissions" PUBLIC
     SECTION "Utilities"
     LABEL "Application permissions"
     PURPOSE "Provides support for requesting user permission to access restricted data or APIs"
 )
-qt_feature("openssl-hash" PRIVATE
+bobui_feature("openssl-hash" PRIVATE
     LABEL "OpenSSL based cryptographic hash"
-    CONDITION QT_FEATURE_openssl_linked AND QT_FEATURE_opensslv30
+    CONDITION BOBUI_FEATURE_openssl_linked AND BOBUI_FEATURE_opensslv30
     PURPOSE "Uses OpenSSL based implementation of cryptographic hash algorithms."
 )
-qt_feature("async-io" PRIVATE
+bobui_feature("async-io" PRIVATE
     LABEL "Async File I/O"
     PURPOSE "Provides support for asynchronous file I/O."
-    CONDITION QT_FEATURE_thread AND QT_FEATURE_future
+    CONDITION BOBUI_FEATURE_thread AND BOBUI_FEATURE_future
 )
 
-qt_configure_add_summary_section(NAME "Qt Core")
-qt_configure_add_summary_entry(ARGS "backtrace")
-qt_configure_add_summary_entry(ARGS "cxx23_stacktrace")
-qt_configure_add_summary_entry(ARGS "doubleconversion")
-qt_configure_add_summary_entry(ARGS "system-doubleconversion")
-qt_configure_add_summary_entry(ARGS "forkfd_pidfd" CONDITION LINUX)
-qt_configure_add_summary_entry(ARGS "glib")
-qt_configure_add_summary_entry(ARGS "icu")
-qt_configure_add_summary_entry(ARGS "jemalloc")
-qt_configure_add_summary_entry(ARGS "liburing")
-qt_configure_add_summary_entry(ARGS "windows-ioring")
-qt_configure_add_summary_entry(ARGS "windows-ioring-skip-builder-param-checks")
-qt_configure_add_summary_entry(ARGS "windows-ioring-runtime")
-qt_configure_add_summary_entry(ARGS "timezone_tzdb")
-qt_configure_add_summary_entry(ARGS "system-libb2")
-qt_configure_add_summary_entry(ARGS "mimetype-database")
-qt_configure_add_summary_entry(ARGS "permissions")
-qt_configure_add_summary_entry(ARGS "ipc_posix" CONDITION UNIX)
-qt_configure_add_summary_entry(
+bobui_configure_add_summary_section(NAME "BobUI Core")
+bobui_configure_add_summary_entry(ARGS "backtrace")
+bobui_configure_add_summary_entry(ARGS "cxx23_stacktrace")
+bobui_configure_add_summary_entry(ARGS "doubleconversion")
+bobui_configure_add_summary_entry(ARGS "system-doubleconversion")
+bobui_configure_add_summary_entry(ARGS "forkfd_pidfd" CONDITION LINUX)
+bobui_configure_add_summary_entry(ARGS "glib")
+bobui_configure_add_summary_entry(ARGS "icu")
+bobui_configure_add_summary_entry(ARGS "jemalloc")
+bobui_configure_add_summary_entry(ARGS "liburing")
+bobui_configure_add_summary_entry(ARGS "windows-ioring")
+bobui_configure_add_summary_entry(ARGS "windows-ioring-skip-builder-param-checks")
+bobui_configure_add_summary_entry(ARGS "windows-ioring-runtime")
+bobui_configure_add_summary_entry(ARGS "timezone_tzdb")
+bobui_configure_add_summary_entry(ARGS "system-libb2")
+bobui_configure_add_summary_entry(ARGS "mimetype-database")
+bobui_configure_add_summary_entry(ARGS "permissions")
+bobui_configure_add_summary_entry(ARGS "ipc_posix" CONDITION UNIX)
+bobui_configure_add_summary_entry(
     TYPE "firstAvailableFeature"
     ARGS "etw lttng ctf"
     MESSAGE "Tracing backend"
 )
-qt_configure_add_summary_entry(ARGS "openssl-hash")
-qt_configure_add_summary_section(NAME "Logging backends")
-qt_configure_add_summary_entry(ARGS "journald")
-qt_configure_add_summary_entry(ARGS "syslog")
-qt_configure_add_summary_entry(ARGS "slog2")
-qt_configure_end_summary_section() # end of "Logging backends" section
-qt_configure_add_summary_entry(
+bobui_configure_add_summary_entry(ARGS "openssl-hash")
+bobui_configure_add_summary_section(NAME "Logging backends")
+bobui_configure_add_summary_entry(ARGS "journald")
+bobui_configure_add_summary_entry(ARGS "syslog")
+bobui_configure_add_summary_entry(ARGS "slog2")
+bobui_configure_end_summary_section() # end of "Logging backends" section
+bobui_configure_add_summary_entry(
     ARGS "qqnx_pps"
     CONDITION QNX
 )
-qt_configure_add_summary_entry(ARGS "pcre2")
-qt_configure_add_summary_entry(ARGS "system-pcre2")
-qt_configure_end_summary_section() # end of "Qt Core" section
-qt_configure_add_report_entry(
+bobui_configure_add_summary_entry(ARGS "pcre2")
+bobui_configure_add_summary_entry(ARGS "system-pcre2")
+bobui_configure_end_summary_section() # end of "BobUI Core" section
+bobui_configure_add_report_entry(
     TYPE NOTE
-    MESSAGE "journald, syslog or slog2 integration is enabled.  If your users intend to develop applications against this build, ensure that the IDEs they use either set QT_FORCE_STDERR_LOGGING to 1 or are able to read the logged output from journald, syslog or slog2."
-    CONDITION QT_FEATURE_journald OR QT_FEATURE_syslog OR ( QNX AND QT_FEATURE_slog2 )
+    MESSAGE "journald, syslog or slog2 integration is enabled.  If your users intend to develop applications against this build, ensure that the IDEs they use either set BOBUI_FORCE_STDERR_LOGGING to 1 or are able to read the logged output from journald, syslog or slog2."
+    CONDITION BOBUI_FEATURE_journald OR BOBUI_FEATURE_syslog OR ( QNX AND BOBUI_FEATURE_slog2 )
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE ERROR
     MESSAGE "detected a std::atomic implementation that fails for function pointers."
     CONDITION NOT TEST_atomicfptr
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE ERROR
-    MESSAGE "Qt requires poll(), ppoll(), poll_ts() or select() on this platform"
-    CONDITION ( UNIX OR INTEGRITY ) AND ( NOT QT_FEATURE_poll_ppoll ) AND ( NOT QT_FEATURE_poll_pollts ) AND ( NOT QT_FEATURE_poll_poll ) AND ( NOT QT_FEATURE_poll_select )
+    MESSAGE "BobUI requires poll(), ppoll(), poll_ts() or select() on this platform"
+    CONDITION ( UNIX OR INTEGRITY ) AND ( NOT BOBUI_FEATURE_poll_ppoll ) AND ( NOT BOBUI_FEATURE_poll_pollts ) AND ( NOT BOBUI_FEATURE_poll_poll ) AND ( NOT BOBUI_FEATURE_poll_select )
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE WARNING
     MESSAGE "Basic cpp/winrt support missing. Some features might not be available."
-    CONDITION WIN32 AND NOT QT_FEATURE_cpp_winrt
+    CONDITION WIN32 AND NOT BOBUI_FEATURE_cpp_winrt
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE ERROR
-    MESSAGE "Qt requires pcre2 or system-pcre2 feature"
-    CONDITION NOT QT_FEATURE_pcre2 AND NOT QT_FEATURE_system_pcre2
+    MESSAGE "BobUI requires pcre2 or system-pcre2 feature"
+    CONDITION NOT BOBUI_FEATURE_pcre2 AND NOT BOBUI_FEATURE_system_pcre2
 )

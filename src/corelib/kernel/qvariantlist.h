@@ -1,19 +1,19 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QVARIANTLIST_H
 #define QVARIANTLIST_H
 
 #if 0
-#pragma qt_class(QVariantList)
+#pragma bobui_class(QVariantList)
 #endif
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-#include <QtCore/QList>
-#include <QtCore/QVariant>
+#include <BobUICore/QList>
+#include <BobUICore/QVariant>
 
-QT_BEGIN_NAMESPACE
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

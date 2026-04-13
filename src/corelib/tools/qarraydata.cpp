@@ -1,28 +1,28 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtCore/qalloc.h>
-#include <QtCore/qarraydata.h>
-#include <QtCore/private/qnumeric_p.h>
-#include <QtCore/private/qtools_p.h>
-#include <QtCore/qmath.h>
+#include <BobUICore/qalloc.h>
+#include <BobUICore/qarraydata.h>
+#include <BobUICore/private/qnumeric_p.h>
+#include <BobUICore/private/bobuiools_p.h>
+#include <BobUICore/qmath.h>
 
-#include <QtCore/qbytearray.h>  // QBA::value_type
-#include <QtCore/qstring.h>  // QString::value_type
+#include <BobUICore/qbytearray.h>  // QBA::value_type
+#include <BobUICore/qstring.h>  // QString::value_type
 
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
- * This pair of functions is declared in qtools_p.h and is used by the Qt
+ * This pair of functions is declared in bobuiools_p.h and is used by the BobUI
  * containers to allocate memory and grow the memory block during append
  * operations.
  *
  * They take qsizetype parameters and return qsizetype so they will change sizes
- * according to the pointer width. However, knowing Qt containers store the
+ * according to the pointer width. However, knowing BobUI containers store the
  * container size and element indexes in ints, these functions never return a
  * size larger than INT_MAX. This is done by casting the element count and
  * memory block size to int in several comparisons: the check for negative is
@@ -103,7 +103,7 @@ qCalculateGrowingBlockSize(qsizetype elementCount, qsizetype elementSize, qsizet
     } else {
         bytes = qsizetype(morebytes);
     }
-    size_t fittedBytes = QtPrivate::expectedAllocSize(bytes, alignof(std::max_align_t));
+    size_t fittedBytes = BobUIPrivate::expectedAllocSize(bytes, alignof(std::max_align_t));
     if (fittedBytes != 0)
         bytes = fittedBytes;
 
@@ -112,7 +112,7 @@ qCalculateGrowingBlockSize(qsizetype elementCount, qsizetype elementSize, qsizet
     return result;
 }
 
-using QtPrivate::AlignedQArrayData;
+using BobUIPrivate::AlignedQArrayData;
 
 static qsizetype calculateHeaderSize(qsizetype alignment)
 {
@@ -123,7 +123,7 @@ static qsizetype calculateHeaderSize(qsizetype alignment)
         // Allocate extra (alignment - Q_ALIGNOF(AlignedQArrayData)) padding
         // bytes so we can properly align the data array. This assumes malloc is
         // able to provide appropriate alignment for the header -- as it should!
-        // Effectively, we allocate one QTypedArrayData<T>::AlignmentDummy.
+        // Effectively, we allocate one BOBUIypedArrayData<T>::AlignmentDummy.
         headerSize += alignment - headerAlignment;
     }
     Q_ASSERT(headerSize > 0);
@@ -180,7 +180,7 @@ allocateHelper(QArrayData **dptr, qsizetype objectSize, qsizetype alignment, qsi
     if (Q_LIKELY(mem)) {
         *dptr = new (mem) QArrayData{1, {}, capacity};
         // find where offset should point to so that data() is aligned to alignment bytes
-        data = QTypedArrayData<void>::dataStart(*dptr, alignment);
+        data = BOBUIypedArrayData<void>::dataStart(*dptr, alignment);
     }
 
     return data;
@@ -261,9 +261,9 @@ void QArrayData::deallocate(QArrayData *data, qsizetype objectSize,
     const qsizetype allocSize = blockSize.size;
 
     if (Q_LIKELY(allocSize > 0))
-        QtPrivate::sizedFree(data, size_t(allocSize));
+        BobUIPrivate::sizedFree(data, size_t(allocSize));
     else // something went wrong, fallback to slow free()
         free(data);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

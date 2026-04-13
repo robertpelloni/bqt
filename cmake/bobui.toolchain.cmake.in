@@ -1,0 +1,222 @@
+set(__bobui_toolchain_used_variables
+    BOBUI_CHAINLOAD_TOOLCHAIN_FILE
+    BOBUI_TOOLCHAIN_INCLUDE_FILE
+    BOBUI_TOOLCHAIN_RELOCATABLE_CMAKE_DIR
+    BOBUI_TOOLCHAIN_RELOCATABLE_PREFIX
+    BOBUI_ADDITIONAL_PACKAGES_PREFIX_PATH
+)
+@init_additional_used_variables@
+
+# Make cache variables used by this toolchain file available to the
+# try_compile command that operates on sources files.
+list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES ${__bobui_toolchain_used_variables})
+list(REMOVE_DUPLICATES CMAKE_TRY_COMPILE_PLATFORM_VARIABLES)
+
+# Turn the environment variables that are created at the end of this
+# file into proper variables. This is needed for try_compile calls
+# that operate on whole projects.
+if($ENV{_BOBUI_TOOLCHAIN_VARS_INITIALIZED})
+    foreach(var ${__bobui_toolchain_used_variables})
+        set(${var} "$ENV{_BOBUI_TOOLCHAIN_${var}}")
+    endforeach()
+endif()
+
+@init_original_toolchain_file@
+@init_platform@
+
+if(NOT "${BOBUI_CHAINLOAD_TOOLCHAIN_FILE}" STREQUAL "")
+    set(__bobui_chainload_toolchain_file "${BOBUI_CHAINLOAD_TOOLCHAIN_FILE}")
+endif()
+
+@init_vcpkg@
+if(BOBUI_USE_VCPKG OR (NOT DEFINED BOBUI_USE_VCPKG AND __bobui_initially_configured_use_vcpkg)
+    AND DEFINED ENV{VCPKG_ROOT})
+
+    # Ensure BOBUI_USE_VCPKG value persists in cache
+    set(BOBUI_USE_VCPKG TRUE CACHE BOOL "Enable the use of vcpkg")
+
+    # Extract the toolchain file path from the VCPKG_ROOT
+    set(__bobui_vcpkg_toolchain_file "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+    get_filename_component(__bobui_vcpkg_toolchain_file "${__bobui_vcpkg_toolchain_file}" REALPATH)
+
+    # If BOBUI_CHAINLOAD_TOOLCHAIN_FILE is already set to the vcpkg one, nothing needs to be done.
+    # The vcpkg toolchain file will be chainloaded as part of BOBUI_CHAINLOAD_TOOLCHAIN_FILE loading
+    # procedure.
+    get_filename_component(__bobui_chainload_toolchain_file_real_path
+        "${__bobui_chainload_toolchain_file}" REALPATH)
+    if(NOT __bobui_chainload_toolchain_file_real_path STREQUAL __bobui_vcpkg_toolchain_file)
+        if(BOBUI_CHAINLOAD_TOOLCHAIN_FILE AND VCPKG_CHANLOAD_TOOLCHAIN_FILE)
+            message(FATAL_ERROR "Both BOBUI_CHAINLOAD_TOOLCHAIN_FILE AND "
+                " VCPKG_CHAINLOAD_TOOLCHAIN_FILE are specified. This toolchain loading scenario is"
+                " not supported."
+            )
+        endif()
+
+        if(NOT VCPKG_CHAINLOAD_TOOLCHAIN_FILE AND __bobui_chainload_toolchain_file)
+            set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${__bobui_chainload_toolchain_file}" CACHE STRING "")
+        endif()
+
+        set(__bobui_chainload_toolchain_file "${__bobui_vcpkg_toolchain_file}")
+    endif()
+
+    unset(__bobui_chainload_toolchain_file_real_path)
+    unset(__bobui_vcpkg_toolchain_file)
+endif()
+
+if(NOT VCPKG_CHAINLOAD_TOOLCHAIN_FILE AND __bobui_initially_configured_vcpkg_chainload_toolchain_file)
+    set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE
+        "${__bobui_initially_configured_vcpkg_chainload_toolchain_file}" CACHE STRING "")
+endif()
+unset(__bobui_initially_configured_vcpkg_chainload_toolchain_file)
+
+get_filename_component(__bobui_vcpkg_chainload_toolchain_file_realpath
+    "${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}" REALPATH)
+if(VCPKG_CHAINLOAD_TOOLCHAIN_FILE
+    AND NOT EXISTS "${__bobui_vcpkg_chainload_toolchain_file_realpath}")
+    message(WARNING "The toolchain file to be chainloaded VCPKG_CHAINLOAD_TOOLCHAIN_FILE"
+        " ${VCPKG_CHAINLOAD_TOOLCHAIN_FILE} doesn't exists and"
+        " will be skipped.")
+    set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "")
+endif()
+
+if(NOT VCPKG_TARGET_TRIPLET AND __bobui_initially_configured_vcpkg_target_triplet)
+    set(VCPKG_TARGET_TRIPLET "${__bobui_initially_configured_vcpkg_target_triplet}" CACHE STRING "")
+endif()
+unset(__bobui_initially_configured_vcpkg_target_triplet)
+
+if(__bobui_chainload_toolchain_file)
+    get_filename_component(__bobui_chainload_toolchain_file_real_path
+                          "${__bobui_chainload_toolchain_file}" REALPATH)
+    if(__bobui_chainload_toolchain_file_real_path STREQUAL CMAKE_CURRENT_LIST_FILE)
+        message(FATAL_ERROR
+                "Woah, the BobUI toolchain file tried to include itself recursively! '${__bobui_chainload_toolchain_file}' "
+                "Make sure to remove bobuibase/CMakeCache.txt and reconfigure bobuibase with 'cmake' "
+                "rather than 'bobui-cmake', and then you can reconfigure your own project."
+        )
+    elseif(NOT EXISTS "${__bobui_chainload_toolchain_file_real_path}")
+        message(WARNING "The toolchain file to be chainloaded "
+            "'${__bobui_chainload_toolchain_file}' does not exist.")
+    else()
+        include("${__bobui_chainload_toolchain_file}")
+        set(__bobui_chainload_toolchain_file_included TRUE)
+    endif()
+    unset(__bobui_chainload_toolchain_file)
+endif()
+
+@init_post_chainload_toolchain@
+
+# Compute dynamically the BobUI installation prefix from the location of this file. This allows
+# the usage of the toolchain file when the BobUI installation is relocated.
+get_filename_component(BOBUI_TOOLCHAIN_RELOCATABLE_INSTALL_PREFIX
+                       ${CMAKE_CURRENT_LIST_DIR}/../@bobui_path_from_cmake_config_dir_to_prefix@
+                       ABSOLUTE)
+
+# Compute the path to the installed BobUI lib/cmake folder.
+# We assume that the BobUI toolchain location is inside the CMake BobUI6 package, and thus the directory
+# one level higher is what we're looking for.
+get_filename_component(BOBUI_TOOLCHAIN_RELOCATABLE_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
+
+# REROOT_PATH_ISSUE_MARKER
+# There's a subdirectory check in cmake's cmFindCommon::RerootPaths() function, that doesn't handle
+# the case of CMAKE_PREFIX_PATH == CMAKE_FIND_ROOT_PATH for a particular pair of entries.
+# Instead of collapsing the search prefix (which is the case when one is a subdir of the other),
+# it concatenates them creating an invalid path. Workaround it by setting the root path to the
+# BobUI install prefix, and the prefix path to the lib/cmake subdir.
+list(PREPEND CMAKE_PREFIX_PATH "${BOBUI_TOOLCHAIN_RELOCATABLE_CMAKE_DIR}")
+list(PREPEND CMAKE_FIND_ROOT_PATH "${BOBUI_TOOLCHAIN_RELOCATABLE_INSTALL_PREFIX}")
+
+# Let CMake load our custom platform modules.
+# CMake-provided platform modules take precedence.
+if(NOT BOBUI_AVOID_CUSTOM_PLATFORM_MODULES)
+    list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/platforms")
+endif()
+
+# Handle packages located in BOBUI_ADDITIONAL_PACKAGES_PREFIX_PATH when cross-compiling. Needed for
+# Conan.
+# We prepend to CMAKE_PREFIX_PATH so that a find_package(BobUI6Foo) call works, without having to go
+# through the BobUI6 umbrella package. The paths must end in lib/cmake to ensure the package is found.
+# See REROOT_PATH_ISSUE_MARKER.
+# We prepend to CMAKE_FIND_ROOT_PATH, due to the bug mentioned at REROOT_PATH_ISSUE_MARKER.
+#
+# Note that we don't handle BOBUI_ADDITIONAL_HOST_PACKAGES_PREFIX_PATH here, because we would thwart
+# our efforts to not accidentally pick up host packages. For now, we say that
+# find_package(BobUI6FooTools) is not supported, and people must use find_package(BobUI6 COMPONENTS
+# FooTools) instead.
+set(__bobui_toolchain_additional_packages_prefixes "")
+if(BOBUI_ADDITIONAL_PACKAGES_PREFIX_PATH)
+    list(APPEND __bobui_toolchain_additional_packages_prefixes
+         ${BOBUI_ADDITIONAL_PACKAGES_PREFIX_PATH})
+endif()
+if(DEFINED ENV{BOBUI_ADDITIONAL_PACKAGES_PREFIX_PATH}
+    AND NOT "$ENV{BOBUI_ADDITIONAL_PACKAGES_PREFIX_PATH}" STREQUAL "")
+    set(__bobui_env_additional_packages_prefixes $ENV{BOBUI_ADDITIONAL_PACKAGES_PREFIX_PATH})
+    if(NOT CMAKE_HOST_WIN32)
+        string(REPLACE ":" ";" __bobui_env_additional_packages_prefixes
+            "${__bobui_env_additional_packages_prefixes}")
+    endif()
+    list(APPEND __bobui_toolchain_additional_packages_prefixes
+        ${__bobui_env_additional_packages_prefixes})
+    unset(__bobui_env_additional_packages_prefixes)
+endif()
+
+if(__bobui_toolchain_additional_packages_prefixes)
+    set(__bobui_toolchain_additional_packages_root_paths "")
+    set(__bobui_toolchain_additional_packages_prefix_paths "")
+
+    foreach(__bobui_additional_path IN LISTS __bobui_toolchain_additional_packages_prefixes)
+        file(TO_CMAKE_PATH "${__bobui_additional_path}" __bobui_additional_path)
+        get_filename_component(__bobui_additional_path "${__bobui_additional_path}" ABSOLUTE)
+        set(__bobui_additional_path_lib_cmake "${__bobui_additional_path}")
+        if(NOT __bobui_additional_path_lib_cmake MATCHES "/@re_INSTALL_CMAKEDIR@$")
+            string(APPEND __bobui_additional_path_lib_cmake "/@INSTALL_CMAKEDIR@")
+        endif()
+
+        list(APPEND __bobui_toolchain_additional_packages_root_paths
+                    "${__bobui_additional_path}")
+        list(APPEND __bobui_toolchain_additional_packages_prefix_paths
+                    "${__bobui_additional_path_lib_cmake}")
+    endforeach()
+    list(PREPEND CMAKE_PREFIX_PATH ${__bobui_toolchain_additional_packages_prefix_paths})
+    list(PREPEND CMAKE_FIND_ROOT_PATH ${__bobui_toolchain_additional_packages_root_paths})
+
+    unset(__bobui_additional_path)
+    unset(__bobui_additional_path_lib_cmake)
+    unset(__bobui_toolchain_additional_packages_root_paths)
+    unset(__bobui_toolchain_additional_packages_prefix_paths)
+endif()
+unset(__bobui_toolchain_additional_packages_prefixes)
+
+# Allow customization of the toolchain file by placing an additional file next to it.
+set(__bobui_toolchain_extra_file "${CMAKE_CURRENT_LIST_DIR}/bobui.toolchain.extra.cmake")
+if(EXISTS "${__bobui_toolchain_extra_file}")
+    include("${__bobui_toolchain_extra_file}")
+endif()
+
+# Allow customization of the toolchain file by passing a path to an additional CMake file to be
+# included.
+if(BOBUI_TOOLCHAIN_INCLUDE_FILE)
+    get_filename_component(__bobui_toolchain_include_file_real_path
+                          "${BOBUI_TOOLCHAIN_INCLUDE_FILE}" REALPATH)
+    if(EXISTS "${__bobui_toolchain_include_file_real_path}")
+        include("${__bobui_toolchain_include_file_real_path}")
+    else()
+        message(WARNING "The passed extra toolchain file to be included does not exist: "
+                "${__bobui_toolchain_include_file_real_path}")
+    endif()
+endif()
+
+# Store initial build type (if any is specified) to be read by BobUIBuildInternals.cmake when building
+# a BobUI repo, standalone tests or a single test.
+if(DEFINED CACHE{CMAKE_BUILD_TYPE})
+    set(__bobui_toolchain_cmake_build_type_before_project_call "${CMAKE_BUILD_TYPE}")
+endif()
+
+# Compile tests only see a restricted set of variables.
+# All cache variables, this toolchain file uses, must be made available to project-based
+# try_compile tests because this toolchain file will be included there too.
+if(NOT "$ENV{_BOBUI_TOOLCHAIN_VARS_INITIALIZED}")
+    set(ENV{_BOBUI_TOOLCHAIN_VARS_INITIALIZED} ON)
+    foreach(var ${__bobui_toolchain_used_variables})
+        set(ENV{_BOBUI_TOOLCHAIN_${var}} "${${var}}")
+    endforeach()
+endif()

@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QWaitCondition
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QWaitCondition class provides a condition variable for
     synchronizing threads.
 
@@ -20,7 +20,7 @@
     For example, let's suppose that we have three tasks that should
     be performed whenever the user presses a key. Each task could be
     split into a thread, each of which would have a
-    \l{QThread::run()}{run()} body like this:
+    \l{BOBUIhread::run()}{run()} body like this:
 
     \snippet code/src_corelib_thread_qwaitcondition_unix.cpp 0
 
@@ -56,7 +56,7 @@
     for controlling access to a circular buffer shared by a producer
     thread and a consumer thread.
 
-    \sa QMutex, QSemaphore, QThread, {Producer and Consumer using Wait Conditions}
+    \sa QMutex, QSemaphore, BOBUIhread, {Producer and Consumer using Wait Conditions}
 */
 
 /*!

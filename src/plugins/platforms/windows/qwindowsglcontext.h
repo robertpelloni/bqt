@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSGLCONTEXT_H
 #define QWINDOWSGLCONTEXT_H
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include "qwindowsopenglcontext.h"
 
-#include <QtGui/qopenglcontext.h>
+#include <BobUIGui/qopenglcontext.h>
 
 #include <vector>
 
-QT_BEGIN_NAMESPACE
-#ifndef QT_NO_OPENGL
+BOBUI_BEGIN_NAMESPACE
+#ifndef BOBUI_NO_OPENGL
 
 class QDebug;
 
@@ -56,7 +56,7 @@ struct QWindowsOpenGLContextFormat
     QSurfaceFormat::FormatOptions options;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const PIXELFORMATDESCRIPTOR &);
 QDebug operator<<(QDebug d, const QWindowsOpenGLContextFormat &);
 QDebug operator<<(QDebug d, const QOpenGLStaticContext &s);
@@ -207,6 +207,6 @@ private:
     bool m_lost = false;
 };
 #endif
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSGLCONTEXT_H

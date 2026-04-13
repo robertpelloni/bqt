@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGETRESIZEHANDLER_P_H
 #define QWIDGETRESIZEHANDLER_P_H
@@ -9,20 +9,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  This header file may
+// This file is not part of the BobUI API.  This header file may
 // change from version to version without notice, or even be
 // removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtCore/qobject.h"
-#include "QtCore/qpoint.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUICore/qobject.h"
+#include "BobUICore/qpoint.h"
 
-QT_REQUIRE_CONFIG(resizehandler);
+BOBUI_REQUIRE_CONFIG(resizehandler);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMouseEvent;
 class QKeyEvent;
@@ -80,6 +80,6 @@ private:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWIDGETRESIZEHANDLER_P_H

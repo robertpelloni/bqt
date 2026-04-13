@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QIbusPlatformInputContextPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QIbusPlatformInputContextPlugin
+bobui_internal_add_plugin(QIbusPlatformInputContextPlugin
     OUTPUT_NAME ibusplatforminputcontextplugin
     PLUGIN_TYPE platforminputcontexts
     DEFAULT_IF FALSE
@@ -17,9 +17,9 @@ qt_internal_add_plugin(QIbusPlatformInputContextPlugin
         qibusproxyportal.cpp qibusproxyportal.h
         qibustypes.cpp qibustypes.h
     LIBRARIES
-        Qt::Core
-        Qt::DBus
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::DBus
+        BobUI::Gui
+        BobUI::GuiPrivate
         XKB::XKB
 )

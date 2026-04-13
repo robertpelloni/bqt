@@ -1,5 +1,5 @@
-# Copyright (C) 2025 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2025 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 add_library(gui_snippets_code OBJECT
     src_gui_accessible_qaccessible.cpp
@@ -24,21 +24,21 @@ add_library(gui_snippets_code OBJECT
     src_gui_painting_qregion.cpp
     src_gui_text_qfont.cpp
     src_gui_text_qfontmetrics.cpp
-    src_gui_text_qtextcursor.cpp
-    src_gui_text_qtextdocumentwriter.cpp
-    src_gui_text_qtextlayout.cpp
+    src_gui_text_bobuiextcursor.cpp
+    src_gui_text_bobuiextdocumentwriter.cpp
+    src_gui_text_bobuiextlayout.cpp
     src_gui_util_qdesktopservices.cpp
     src_gui_util_qundostack.cpp
 )
 
 target_link_libraries(gui_snippets_code PRIVATE
-    Qt::Core
-    Qt::Gui
+    BobUI::Core
+    BobUI::Gui
 )
 
-if(QT_FEATURE_widgets)
+if(BOBUI_FEATURE_widgets)
     target_link_libraries(gui_snippets_code PRIVATE
-        Qt::Widgets
+        BobUI::Widgets
     )
     target_sources(gui_snippets_code PRIVATE
         doc_src_coordsys.cpp
@@ -53,7 +53,7 @@ if(QT_FEATURE_widgets)
         src_gui_text_qsyntaxhighlighter.cpp
         src_gui_util_qvalidator.cpp
     )
-if(QT_FEATURE_opengl)
+if(BOBUI_FEATURE_opengl)
     target_sources(gui_snippets PRIVATE
         src_gui_opengl_qopenglfunctions.cpp
         src_gui_painting_qpainter.cpp
@@ -61,7 +61,7 @@ if(QT_FEATURE_opengl)
 endif()
 endif()
 
-if(QT_FEATURE_vulkan)
+if(BOBUI_FEATURE_vulkan)
     target_sources(gui_snippets_code PRIVATE
         src_gui_vulkan_qvulkanfunctions.cpp
         src_gui_vulkan_qvulkaninstance.cpp
@@ -69,7 +69,7 @@ if(QT_FEATURE_vulkan)
     )
 endif()
 
-if(QT_FEATURE_clipboard)
+if(BOBUI_FEATURE_clipboard)
     target_sources(gui_snippets_code PRIVATE
         src_gui_kernel_qclipboard.cpp
     )

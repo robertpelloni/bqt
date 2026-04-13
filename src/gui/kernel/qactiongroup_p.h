@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGUIACTIONGROUP_P_H
 #define QGUIACTIONGROUP_P_H
@@ -8,26 +8,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists for the convenience
-// of other Qt classes. This header file may change from version to
+// This file is not part of the BobUI API. It exists for the convenience
+// of other BobUI classes. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/qactiongroup.h>
-#include <QtGui/qfont.h>
-#if QT_CONFIG(shortcut)
-#  include <QtGui/private/qshortcutmap_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/qactiongroup.h>
+#include <BobUIGui/qfont.h>
+#if BOBUI_CONFIG(shortcut)
+#  include <BobUIGui/private/qshortcutmap_p.h>
 #endif
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 #include "private/qobject_p.h"
 
-QT_REQUIRE_CONFIG(action);
+BOBUI_REQUIRE_CONFIG(action);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QActionGroupPrivate : public QObjectPrivate
 {
@@ -52,6 +52,6 @@ private:
     void _q_actionHovered();    //private slot
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QACTIONGROUP_P_H

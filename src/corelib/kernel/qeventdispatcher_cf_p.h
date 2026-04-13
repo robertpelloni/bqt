@@ -8,28 +8,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qabstracteventdispatcher.h>
-#include <QtCore/private/qtimerinfo_unix_p.h>
-#include <QtCore/private/qcfsocketnotifier_p.h>
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qabstracteventdispatcher.h>
+#include <BobUICore/private/bobuiimerinfo_unix_p.h>
+#include <BobUICore/private/qcfsocketnotifier_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUICore/qloggingcategory.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 
-Q_FORWARD_DECLARE_OBJC_CLASS(QT_MANGLE_NAMESPACE(RunLoopModeTracker));
+Q_FORWARD_DECLARE_OBJC_CLASS(BOBUI_MANGLE_NAMESPACE(RunLoopModeTracker));
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
-QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcEventDispatcher, Q_CORE_EXPORT)
-QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcEventDispatcherTimers, Q_CORE_EXPORT)
+namespace BobUIPrivate {
+BOBUI_DECLARE_EXPORTED_BOBUI_LOGGING_CATEGORY(lcEventDispatcher, Q_CORE_EXPORT)
+BOBUI_DECLARE_EXPORTED_BOBUI_LOGGING_CATEGORY(lcEventDispatcherTimers, Q_CORE_EXPORT)
 }
 
 class QEventDispatcherCoreFoundation;
@@ -147,12 +147,12 @@ public:
     void registerSocketNotifier(QSocketNotifier *notifier) override;
     void unregisterSocketNotifier(QSocketNotifier *notifier) override;
 
-    void registerTimer(Qt::TimerId timerId, Duration interval, Qt::TimerType timerType,
+    void registerTimer(BobUI::TimerId timerId, Duration interval, BobUI::TimerType timerType,
                        QObject *object) override final;
-    bool unregisterTimer(Qt::TimerId timerId) override final;
+    bool unregisterTimer(BobUI::TimerId timerId) override final;
     bool unregisterTimers(QObject *object) override final;
     QList<TimerInfoV2> timersForObject(QObject *object) const override final;
-    Duration remainingTime(Qt::TimerId timerId) const override final;
+    Duration remainingTime(BobUI::TimerId timerId) const override final;
 
     void wakeUp() override;
     void interrupt() override;
@@ -202,9 +202,9 @@ private:
     RunLoopSource<> m_postedEventsRunLoopSource;
     RunLoopObserver<> m_runLoopActivityObserver;
 
-    QT_MANGLE_NAMESPACE(RunLoopModeTracker) *m_runLoopModeTracker;
+    BOBUI_MANGLE_NAMESPACE(RunLoopModeTracker) *m_runLoopModeTracker;
 
-    QTimerInfoList m_timerInfoList;
+    BOBUIimerInfoList m_timerInfoList;
     CFRunLoopTimerRef m_runLoopTimer;
     CFRunLoopTimerRef m_blockedRunLoopTimer;
     QCFType<CFRunLoopRef> m_runLoop;
@@ -220,6 +220,6 @@ private:
     void invalidateTimer();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVENTDISPATCHER_CF_P_H

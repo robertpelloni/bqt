@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef XFORM_H
 #define XFORM_H
@@ -11,9 +11,9 @@
 
 class HoverPoints;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QLineEdit;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class XFormView : public ArthurFrame
 {
@@ -77,8 +77,8 @@ signals:
     void shearChanged(int shear);
 
 protected:
-    void timerEvent(QTimerEvent *e) override;
-#if QT_CONFIG(wheelevent)
+    void timerEvent(BOBUIimerEvent *e) override;
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *) override;
 #endif
 

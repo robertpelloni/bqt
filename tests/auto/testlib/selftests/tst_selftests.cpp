@@ -1,31 +1,31 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
+#include <BobUICore/QCoreApplication>
 
-QT_REQUIRE_CONFIG(process);
+BOBUI_REQUIRE_CONFIG(process);
 
-#if QT_CONFIG(temporaryfile)
+#if BOBUI_CONFIG(temporaryfile)
 #  define USE_DIFF
-#  include <QtCore/QTemporaryFile>
-#  include <QtCore/QStandardPaths>
+#  include <BobUICore/BOBUIemporaryFile>
+#  include <BobUICore/QStandardPaths>
 #endif
 
-#include <QtCore/QXmlStreamReader>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDir>
-#include <QtCore/QTemporaryDir>
-#include <QtCore/QProcess>
+#include <BobUICore/QXmlStreamReader>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QDir>
+#include <BobUICore/BOBUIemporaryDir>
+#include <BobUICore/QProcess>
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <regex>
 #include <private/cycle_include_p.h>
 
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 enum class Throw { OnFail = 1 };
 
@@ -168,12 +168,12 @@ static QByteArray runDiff(const QByteArrayList &expected, const QByteArrayList &
 #  endif
     if (diff.isEmpty())
         return result;
-    QTemporaryFile expectedFile;
+    BOBUIemporaryFile expectedFile;
     if (!expectedFile.open())
         return result;
     writeLines(expectedFile, expected);
     expectedFile.close();
-    QTemporaryFile actualFile;
+    BOBUIemporaryFile actualFile;
     if (!actualFile.open())
         return result;
     writeLines(actualFile, actual);
@@ -191,7 +191,7 @@ static QByteArray runDiff(const QByteArrayList &expected, const QByteArrayList &
 }
 
 static QString teamCityLocation() { return QStringLiteral("|[Loc: _FILE_(_LINE_)|]"); }
-static QString qtVersionPlaceHolder() { return QStringLiteral("@INSERT_QT_VERSION_HERE@"); }
+static QString bobuiVersionPlaceHolder() { return QStringLiteral("@INSERT_BOBUI_VERSION_HERE@"); }
 
 // Forward declarations
 bool compareLine(const QString &logger, const QString &subdir, bool benchmark,
@@ -217,7 +217,7 @@ bool compareOutput(const QString &logger, const QString &subdir,
     // Verify that the actual output is an acceptable match for the
     // expected output.
 
-    const QString qtVersion = QLatin1String(QT_VERSION_STR);
+    const QString bobuiVersion = QLatin1String(BOBUI_VERSION_STR);
     bool benchmark = false;
     for (int i = 0, size = actual.size(); i < size; ++i) {
         const QByteArray &actualLineBA = actual.at(i);
@@ -229,15 +229,15 @@ bool compareOutput(const QString &logger, const QString &subdir,
         if (actualLineBA.endsWith(" : message location"))
             continue;
 
-        if (actualLineBA.startsWith("Config: Using QtTest library") // Text build string
-            || actualLineBA.startsWith("    <QtBuild") // XML, Light XML build string
-            || (actualLineBA.startsWith("    <property name=\"QtBuild\" value="))) { // JUnit-XML build string
+        if (actualLineBA.startsWith("Config: Using BobUITest library") // Text build string
+            || actualLineBA.startsWith("    <BobUIBuild") // XML, Light XML build string
+            || (actualLineBA.startsWith("    <property name=\"BobUIBuild\" value="))) { // JUnit-XML build string
             continue;
         }
 
         QString actualLine = QString::fromLatin1(actualLineBA);
         QString expectedLine = QString::fromLatin1(expected.at(i));
-        expectedLine.replace(qtVersionPlaceHolder(), qtVersion);
+        expectedLine.replace(bobuiVersionPlaceHolder(), bobuiVersion);
 
         if (logger.endsWith(QLatin1String("junitxml"))) {
             static QRegularExpression timestampRegex("timestamp=\".*?\"");
@@ -339,7 +339,7 @@ bool compareLine(const QString &logger, const QString &subdir,
         // We don't care about the pointer of the object to whom the signal belongs, so we
         // replace it with _POINTER_, e.g.:
         // Signal: SignalSlotClass(7ffd72245410) signalWithoutParameters ()
-        // Signal: QThread(7ffd72245410) started ()
+        // Signal: BOBUIhread(7ffd72245410) started ()
         // After this instance pointer we may have further pointers and
         // references (with an @ prefix) as parameters of the signal or
         // slot being invoked.
@@ -354,7 +354,7 @@ bool compareLine(const QString &logger, const QString &subdir,
         return true;
     }
 
-    if (QTestPrivate::isRunningArmOnX86() && subdir == QLatin1String("float")) {
+    if (BOBUIestPrivate::isRunningArmOnX86() && subdir == QLatin1String("float")) {
         // QEMU cheats at qfloat16, so outputs it as if it were a float.
         if (actualLine.endsWith(QLatin1String("Actual   (operandLeft) : 0.001"))
             && expectedLine.endsWith(QLatin1String("Actual   (operandLeft) : 0.000999"))) {
@@ -492,7 +492,7 @@ BenchmarkResult BenchmarkResult::parse(QString const& line, QString* error)
     auto it = std::find_if(begin, remaining.cend(), [](const auto ch) {
         return ch.isSpace();
     });
-    QString sFirstNumber{std::distance(begin, it), Qt::Uninitialized};
+    QString sFirstNumber{std::distance(begin, it), BobUI::Uninitialized};
     std::move(begin, it, sFirstNumber.begin());
     remaining.erase(begin, it);
     remaining = remaining.trimmed();
@@ -576,38 +576,38 @@ BenchmarkResult BenchmarkResult::parse(QString const& line, QString* error)
 // ----------------------------------------------------------------------
 
 #include "catch_p.h"
-#include <QtTest/private/qtestlog_p.h>
+#include <BobUITest/private/bobuiestlog_p.h>
 
 #if defined(Q_OS_MACOS)
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 #endif
 
 enum RebaseMode { NoRebase, RebaseMissing, RebaseFailing, RebaseAll };
 static RebaseMode rebaseMode = NoRebase;
 
-static QTemporaryDir testOutputDir(QDir::tempPath() + "/tst_selftests.XXXXXX");
+static BOBUIemporaryDir testOutputDir(QDir::tempPath() + "/tst_selftests.XXXXXX");
 
 enum ArgumentStyle { NewStyleArgument, OldStyleArguments };
 enum OutputMode { FileOutput, StdoutOutput };
 
 struct TestLogger
 {
-    TestLogger(QTestLog::LogMode logger) : logger(logger) {}
+    TestLogger(BOBUIestLog::LogMode logger) : logger(logger) {}
 
-    TestLogger(QTestLog::LogMode logger, ArgumentStyle argumentStyle)
+    TestLogger(BOBUIestLog::LogMode logger, ArgumentStyle argumentStyle)
         : logger(logger), argumentStyle(argumentStyle) {}
-    TestLogger(QTestLog::LogMode logger, OutputMode outputMode)
+    TestLogger(BOBUIestLog::LogMode logger, OutputMode outputMode)
         : logger(logger), outputMode(outputMode) {}
 
-    TestLogger(QTestLog::LogMode logger, OutputMode outputMode, ArgumentStyle argumentStyle)
+    TestLogger(BOBUIestLog::LogMode logger, OutputMode outputMode, ArgumentStyle argumentStyle)
         : logger(logger), outputMode(outputMode), argumentStyle(argumentStyle) {}
 
     QString shortName() const
     {
-        if (logger == QTestLog::Plain)
+        if (logger == BOBUIestLog::Plain)
             return "txt";
 
-        auto loggers = QMetaEnum::fromType<QTestLog::LogMode>();
+        auto loggers = QMetaEnum::fromType<BOBUIestLog::LogMode>();
         return QString(loggers.valueToKey(logger)).toLower();
     }
 
@@ -653,26 +653,26 @@ struct TestLogger
 
     bool shouldIgnoreTest(const QString &test) const;
 
-    operator QTestLog::LogMode() const { return logger; }
+    operator BOBUIestLog::LogMode() const { return logger; }
 
-    QTestLog::LogMode logger;
+    BOBUIestLog::LogMode logger;
     OutputMode outputMode = FileOutput;
     ArgumentStyle argumentStyle = NewStyleArgument;
 };
 
 bool TestLogger::shouldIgnoreTest(const QString &test) const
 {
-#if defined(QT_USE_APPLE_UNIFIED_LOGGING)
-    if (logger == QTestLog::Apple)
+#if defined(BOBUI_USE_APPLE_UNIFIED_LOGGING)
+    if (logger == BOBUIestLog::Apple)
         return true;
 #endif
 
     // These tests are affected by timing and whether the CPU tick counter
     // is monotonically increasing. They won't work on some machines so
     // leave them off by default. Feel free to enable them for your own
-    // testing by setting the QTEST_ENABLE_EXTRA_SELFTESTS environment
+    // testing by setting the BOBUIEST_ENABLE_EXTRA_SELFTESTS environment
     // variable to something non-empty.
-    static bool enableExtraTests = !qEnvironmentVariableIsEmpty("QTEST_ENABLE_EXTRA_SELFTESTS");
+    static bool enableExtraTests = !qEnvironmentVariableIsEmpty("BOBUIEST_ENABLE_EXTRA_SELFTESTS");
     if (!enableExtraTests && (test == "benchlibtickcounter" || test == "benchlibwalltime"))
         return true;
 
@@ -684,21 +684,21 @@ bool TestLogger::shouldIgnoreTest(const QString &test) const
         return true;
 #endif
 
-#if defined(QT_NO_EXCEPTIONS) || defined(Q_OS_WIN)
+#if defined(BOBUI_NO_EXCEPTIONS) || defined(Q_OS_WIN)
     // Disable this test on Windows or for Intel compiler, as the run-times
     // will popup dialogs with warnings that uncaught exceptions were thrown
     if (test == "exceptionthrow")
         return true;
 #endif
 
-#if defined(QT_NO_EXCEPTIONS)
+#if defined(BOBUI_NO_EXCEPTIONS)
     // This test will test nothing if the exceptions are disabled
     if (test == "verifyexceptionthrown")
         return true;
 #endif
 
-#if defined(QT_NO_EXCEPTIONS) || !QT_CONFIG(future) || defined(QT_NO_CONCURRENT)
-    // This test requires exceptions, QException, and QtConcurrent::run():
+#if defined(BOBUI_NO_EXCEPTIONS) || !BOBUI_CONFIG(future) || defined(BOBUI_NO_CONCURRENT)
+    // This test requires exceptions, QException, and BobUIConcurrent::run():
     if (test == "throwonfailandskip")
         return true;
 #endif
@@ -730,12 +730,12 @@ bool TestLogger::shouldIgnoreTest(const QString &test) const
     }
 #endif
 
-    if (!QT_CONFIG(signaling_nan) && test == "float") {
+    if (!BOBUI_CONFIG(signaling_nan) && test == "float") {
         WARN("Test output was designed for machines with signaling NaN");
         return true;
     }
 
-    if (logger != QTestLog::Plain || outputMode == FileOutput) {
+    if (logger != BOBUIestLog::Plain || outputMode == FileOutput) {
         // The following tests only work with plain text output to stdout,
         // either because they execute multiple test objects or because
         // they internally supply arguments to themselves.
@@ -769,15 +769,15 @@ bool TestLogger::shouldIgnoreTest(const QString &test) const
             return true;
     }
 
-    if (test == "badxml" && !(logger == QTestLog::XML
-            || logger == QTestLog::LightXML || logger == QTestLog::JUnitXML))
+    if (test == "badxml" && !(logger == BOBUIestLog::XML
+            || logger == BOBUIestLog::LightXML || logger == BOBUIestLog::JUnitXML))
         return true;
 
     // Skip benchmark for TeamCity logger, skip everything else for CSV:
-    if (logger == (test.startsWith("benchlib") ? QTestLog::TeamCity : QTestLog::CSV))
+    if (logger == (test.startsWith("benchlib") ? BOBUIestLog::TeamCity : BOBUIestLog::CSV))
         return true;
 
-    if (logger != QTestLog::JUnitXML && test == "junit")
+    if (logger != BOBUIestLog::JUnitXML && test == "junit")
         return true;
 
     return false;
@@ -829,10 +829,10 @@ void checkErrorOutput(const QString &test, const QByteArray &errorOutput)
         // Under ASan, this test is not silent
         return;
 #elif defined(Q_CC_MINGW)
-        // Originally QTBUG-29014 (I can't reproduce this -Thiago)
+        // Originally BOBUIBUG-29014 (I can't reproduce this -Thiago)
         return;
 #endif
-        if (QTestPrivate::isRunningArmOnX86())
+        if (BOBUIestPrivate::isRunningArmOnX86())
             return;         // QEMU outputs to stderr about uncaught signals
     }
 
@@ -973,11 +973,11 @@ static QProcessEnvironment testEnvironment()
     static QProcessEnvironment environment;
     if (environment.isEmpty()) {
         const QProcessEnvironment systemEnvironment = QProcessEnvironment::systemEnvironment();
-        const bool preserveLibPath = qEnvironmentVariableIsSet("QT_PRESERVE_TESTLIB_PATH");
+        const bool preserveLibPath = qEnvironmentVariableIsSet("BOBUI_PRESERVE_TESTLIB_PATH");
         const auto envKeys = systemEnvironment.keys();
         for (const QString &key : envKeys) {
-            const bool useVariable = key == "PATH" || key == "QT_QPA_PLATFORM"
-                || key == "QTEST_THROW_ON_FAIL"_L1 || key == "QTEST_THROW_ON_SKIP"_L1
+            const bool useVariable = key == "PATH" || key == "BOBUI_QPA_PLATFORM"
+                || key == "BOBUIEST_THROW_ON_FAIL"_L1 || key == "BOBUIEST_THROW_ON_SKIP"_L1
                 || key == "ASAN_OPTIONS"
 #if defined(Q_OS_QNX)
                 || key == "GRAPHICS_ROOT" || key == "TZ"
@@ -990,16 +990,16 @@ static QProcessEnvironment testEnvironment()
 #  endif // !Q_OS_MACOS
 #endif // Q_OS_UNIX
 #ifdef __COVERAGESCANNER__
-                || key == "QT_TESTCOCOON_ACTIVE"
+                || key == "BOBUI_TESTCOCOON_ACTIVE"
 #endif
-                || ( preserveLibPath && (key == "QT_PLUGIN_PATH"
+                || ( preserveLibPath && (key == "BOBUI_PLUGIN_PATH"
                                         || key == "LD_LIBRARY_PATH"))
                 ;
             if (useVariable)
                 environment.insert(key, systemEnvironment.value(key));
         }
-        // Avoid interference from any qtlogging.ini files, e.g. in /etc/xdg/QtProject/:
-        environment.insert("QT_LOGGING_RULES", "*.debug=true;qt.*=false");
+        // Avoid interference from any bobuilogging.ini files, e.g. in /etc/xdg/BobUIProject/:
+        environment.insert("BOBUI_LOGGING_RULES", "*.debug=true;bobui.*=false");
 
 #if defined(Q_OS_UNIX)
         // Avoid the warning from QCoreApplication
@@ -1033,10 +1033,10 @@ TestProcessResult runTestProcess(const QString &test, const QStringList &argumen
         || test == "crashes" || test == "silent_fatal" || test == "watchdog";
 
     if (expectedCrash) {
-        environment.insert("QTEST_DISABLE_CORE_DUMP", "1");
-        environment.insert("QTEST_DISABLE_STACK_DUMP", "1");
+        environment.insert("BOBUIEST_DISABLE_CORE_DUMP", "1");
+        environment.insert("BOBUIEST_DISABLE_STACK_DUMP", "1");
         if (test == "watchdog")
-            environment.insert("QTEST_FUNCTION_TIMEOUT", "100");
+            environment.insert("BOBUIEST_FUNCTION_TIMEOUT", "100");
     }
 
     QProcess process;
@@ -1118,10 +1118,10 @@ void runTest(const QString &test, const TestLogger &logger)
 // ----------------------- Catch helpers -----------------------
 
 template <typename T>
-class QtMetaEnumGenerator : public Catch::Generators::IGenerator<T>
+class BobUIMetaEnumGenerator : public Catch::Generators::IGenerator<T>
 {
 public:
-    QtMetaEnumGenerator()
+    BobUIMetaEnumGenerator()
     {
         metaEnum = QMetaEnum::fromType<T>();
         next();
@@ -1146,10 +1146,10 @@ Catch::Generators::GeneratorWrapper<T> enums()
 {
     return Catch::Generators::GeneratorWrapper<T>(
         std::unique_ptr<Catch::Generators::IGenerator<T>>(
-            new QtMetaEnumGenerator<T>()));
+            new BobUIMetaEnumGenerator<T>()));
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 template <typename T, typename A = typename std::enable_if<std::is_same<T, std::string>::value == false, void>::type>
 std::ostream& operator<<(std::ostream &os, const T &value)
 {
@@ -1159,32 +1159,32 @@ std::ostream& operator<<(std::ostream &os, const T &value)
     os << output.toStdString();
     return os;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // ----------------------- Test cases -----------------------
 
 static const auto kBaselineTest = "pass";
 
-bool isCommandLineLogger(QTestLog::LogMode logger)
+bool isCommandLineLogger(BOBUIestLog::LogMode logger)
 {
-#if defined(QT_USE_APPLE_UNIFIED_LOGGING)
+#if defined(BOBUI_USE_APPLE_UNIFIED_LOGGING)
     // The Apple logger is internal and never logs to file or stdout
-    return logger != QTestLog::Apple;
+    return logger != BOBUIestLog::Apple;
 #else
     Q_UNUSED(logger);
     return true;
 #endif
 }
 
-bool isGenericCommandLineLogger(QTestLog::LogMode logger)
+bool isGenericCommandLineLogger(BOBUIestLog::LogMode logger)
 {
     // The CSV logger is only used for benchmarks
-    return isCommandLineLogger(logger) && logger != QTestLog::CSV;
+    return isCommandLineLogger(logger) && logger != BOBUIestLog::CSV;
 }
 
 TEST_CASE("Loggers support both old and new style arguments")
 {
-    auto logger = GENERATE(filter(isGenericCommandLineLogger, enums<QTestLog::LogMode>()));
+    auto logger = GENERATE(filter(isGenericCommandLineLogger, enums<BOBUIestLog::LogMode>()));
 
     GIVEN("The " << logger << " logger") {
         auto argumentStyle = GENERATE(OldStyleArguments, NewStyleArgument);
@@ -1197,7 +1197,7 @@ TEST_CASE("Loggers support both old and new style arguments")
 
 TEST_CASE("Loggers can output to both file and stdout")
 {
-    auto logger = GENERATE(filter(isGenericCommandLineLogger, enums<QTestLog::LogMode>()));
+    auto logger = GENERATE(filter(isGenericCommandLineLogger, enums<BOBUIestLog::LogMode>()));
 
     GIVEN("The " << logger << " logger") {
         auto outputMode = GENERATE(StdoutOutput, FileOutput);
@@ -1209,14 +1209,14 @@ TEST_CASE("Loggers can output to both file and stdout")
 
 TEST_CASE("Logging to file and stdout at the same time")
 {
-    auto loggerEnum = QMetaEnum::fromType<QTestLog::LogMode>();
+    auto loggerEnum = QMetaEnum::fromType<BOBUIestLog::LogMode>();
     for (int i = 0; i < loggerEnum.keyCount(); ++i) {
-        auto stdoutLogger = QTestLog::LogMode(loggerEnum.value(i));
+        auto stdoutLogger = BOBUIestLog::LogMode(loggerEnum.value(i));
         if (!isGenericCommandLineLogger(stdoutLogger))
             continue;
 
         for (int j = 0; j < loggerEnum.keyCount(); ++j) {
-            auto fileLogger = QTestLog::LogMode(loggerEnum.value(j));
+            auto fileLogger = BOBUIestLog::LogMode(loggerEnum.value(j));
             if (!isGenericCommandLineLogger(fileLogger))
                 continue;
 
@@ -1232,9 +1232,9 @@ TEST_CASE("All loggers can be enabled at the same time")
 {
     TestLoggers loggers;
 
-    auto loggerEnum = QMetaEnum::fromType<QTestLog::LogMode>();
+    auto loggerEnum = QMetaEnum::fromType<BOBUIestLog::LogMode>();
     for (int i = 0; i < loggerEnum.keyCount(); ++i) {
-        auto logger = QTestLog::LogMode(loggerEnum.value(i));
+        auto logger = BOBUIestLog::LogMode(loggerEnum.value(i));
         if (!isGenericCommandLineLogger(logger))
             continue;
 
@@ -1246,11 +1246,11 @@ TEST_CASE("All loggers can be enabled at the same time")
 
 SCENARIO("Test output of the loggers is as expected")
 {
-    static QStringList tests = QString(QT_STRINGIFY(SUBPROGRAMS)).split(' ');
+    static QStringList tests = QString(BOBUI_STRINGIFY(SUBPROGRAMS)).split(' ');
     if (QString override = qEnvironmentVariable("TST_SELFTEST_SUBPROGRAMS"); !override.isEmpty())
-        tests = override.split(' ', Qt::SkipEmptyParts);
+        tests = override.split(' ', BobUI::SkipEmptyParts);
 
-    auto logger = GENERATE(filter(isGenericCommandLineLogger, enums<QTestLog::LogMode>()));
+    auto logger = GENERATE(filter(isGenericCommandLineLogger, enums<BOBUIestLog::LogMode>()));
 
     GIVEN("The " << logger << " logger") {
         for (QString test : tests) {
@@ -1365,7 +1365,7 @@ int main(int argc, char **argv)
     if (!QDir::setCurrent(testdataDir))
         qFatal("Could not chdir to %s", qUtf8Printable(testdataDir));
 
-    auto result = QTestPrivate::catchMain(argc, argv);
+    auto result = BOBUIestPrivate::catchMain(argc, argv);
 
     if (result != 0 || rebaseMode != NoRebase) {
         // Note: Ctrl+C won't pass though here, so the test output won't be kept

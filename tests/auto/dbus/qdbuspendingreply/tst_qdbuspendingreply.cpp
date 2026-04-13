@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QObject>
 #include <QVariant>
 #include <QList>
@@ -82,7 +82,7 @@ private slots:
 class TypesInterface: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.Qt.Autotests.TypesInterface")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.BobUI.Autotests.TypesInterface")
 public:
     TypesInterface(QObject *parent)
         : QDBusAbstractAdaptor(parent)
@@ -217,7 +217,7 @@ tst_QDBusPendingReply::tst_QDBusPendingReply()
     QDBusConnection::sessionBus().registerObject("/", this);
 
     iface = new QDBusInterface(QDBusConnection::sessionBus().baseService(), "/",
-                               "org.qtproject.Qt.Autotests.TypesInterface",
+                               "org.bobuiproject.BobUI.Autotests.TypesInterface",
                                QDBusConnection::sessionBus(),
                                this);
 }
@@ -573,10 +573,10 @@ void tst_QDBusPendingReply::errors()
 
 void tst_QDBusPendingReply::getResultFromAnotherInstance_data()
 {
-    QTest::addColumn<bool>("shouldMove");
+    BOBUIest::addColumn<bool>("shouldMove");
 
-    QTest::newRow("copy") << false;
-    QTest::newRow("move") << true;
+    BOBUIest::newRow("copy") << false;
+    BOBUIest::newRow("move") << true;
 }
 
 void tst_QDBusPendingReply::getResultFromAnotherInstance()
@@ -813,6 +813,6 @@ void tst_QDBusPendingReply::movePreservesReplySignature()
     }
 }
 
-QTEST_MAIN(tst_QDBusPendingReply)
+BOBUIEST_MAIN(tst_QDBusPendingReply)
 
 #include "tst_qdbuspendingreply.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef Q_VXWORKS_PLATFORMDEFS_H
 #define Q_VXWORKS_PLATFORMDEFS_H
@@ -24,15 +24,15 @@
 
 #include "../common/posix/qplatformdefs.h"
 
-#undef QT_OPEN_LARGEFILE
+#undef BOBUI_OPEN_LARGEFILE
 
 #define O_LARGEFILE         0
-#define QT_OPEN_LARGEFILE   O_LARGEFILE
+#define BOBUI_OPEN_LARGEFILE   O_LARGEFILE
 
-#define QT_MMAP                 ::mmap
+#define BOBUI_MMAP                 ::mmap
 
-#define QT_SNPRINTF             ::snprintf
-#define QT_VSNPRINTF            ::vsnprintf
+#define BOBUI_SNPRINTF             ::snprintf
+#define BOBUI_VSNPRINTF            ::vsnprintf
 
 #define S_ISVTX 01000
 

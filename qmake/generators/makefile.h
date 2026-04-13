@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef MAKEFILE_H
 #define MAKEFILE_H
@@ -7,22 +7,22 @@
 #include "option.h"
 #include "project.h"
 #include "makefiledeps.h"
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qlist.h>
 #include <qhash.h>
 #include <qfileinfo.h>
 #include <functional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_OS_WIN32
-#define QT_POPEN _popen
-#define QT_POPEN_READ "rb"
-#define QT_PCLOSE _pclose
+#define BOBUI_POPEN _popen
+#define BOBUI_POPEN_READ "rb"
+#define BOBUI_PCLOSE _pclose
 #else
-#define QT_POPEN popen
-#define QT_POPEN_READ "r"
-#define QT_PCLOSE pclose
+#define BOBUI_POPEN popen
+#define BOBUI_POPEN_READ "r"
+#define BOBUI_PCLOSE pclose
 #endif
 
 struct ReplaceExtraCompilerCacheKey;
@@ -51,25 +51,25 @@ protected:
     ProStringList createObjectList(const ProStringList &sources);
 
     //makefile style generator functions
-    void writeObj(QTextStream &, const char *src);
-    void writeInstalls(QTextStream &t, bool noBuild=false);
-    void writeHeader(QTextStream &t);
-    void writeSubDirs(QTextStream &t);
-    void writeMakeQmake(QTextStream &t, bool noDummyQmakeAll = false);
-    void writeExportedVariables(QTextStream &t);
-    void writeExtraVariables(QTextStream &t);
-    void writeExtraTargets(QTextStream &t);
+    void writeObj(BOBUIextStream &, const char *src);
+    void writeInstalls(BOBUIextStream &t, bool noBuild=false);
+    void writeHeader(BOBUIextStream &t);
+    void writeSubDirs(BOBUIextStream &t);
+    void writeMakeQmake(BOBUIextStream &t, bool noDummyQmakeAll = false);
+    void writeExportedVariables(BOBUIextStream &t);
+    void writeExtraVariables(BOBUIextStream &t);
+    void writeExtraTargets(BOBUIextStream &t);
     QString resolveDependency(const QDir &outDir, const QString &file);
     void callExtraCompilerDependCommand(const ProString &extraCompiler,
                                         const QString &tmp_dep_cmd, const QString &inpf,
                                         const QString &tmp_out, bool dep_lines, QStringList *deps,
                                         bool existingDepsOnly,
                                         bool checkCommandAvailability = false);
-    void writeExtraCompilerTargets(QTextStream &t);
-    void writeExtraCompilerVariables(QTextStream &t);
-    bool writeDummyMakefile(QTextStream &t);
-    virtual bool writeMakefile(QTextStream &t);
-    virtual void writeDefaultVariables(QTextStream &t);
+    void writeExtraCompilerTargets(BOBUIextStream &t);
+    void writeExtraCompilerVariables(BOBUIextStream &t);
+    bool writeDummyMakefile(BOBUIextStream &t);
+    virtual bool writeMakefile(BOBUIextStream &t);
+    virtual void writeDefaultVariables(BOBUIextStream &t);
 
     QString pkgConfigPrefix() const;
     QString pkgConfigFileName(bool fixify=true);
@@ -93,13 +93,13 @@ protected:
         SubTargetsNoFlags=0x00
     };
     QList<MakefileGenerator::SubTarget*> findSubDirsSubTargets() const;
-    void writeSubTargetCall(QTextStream &t,
+    void writeSubTargetCall(BOBUIextStream &t,
             const QString &in_directory, const QString &in, const QString &out_directory, const QString &out,
             const QString &out_directory_cdin, const QString &makefilein);
-    virtual void suppressBuiltinRules(QTextStream &t) const;
-    virtual void writeSubMakeCall(QTextStream &t, const QString &outDirectory_cdin,
+    virtual void suppressBuiltinRules(BOBUIextStream &t) const;
+    virtual void writeSubMakeCall(BOBUIextStream &t, const QString &outDirectory_cdin,
                                   const QString &makeFileIn);
-    virtual void writeSubTargets(QTextStream &t, QList<SubTarget*> subtargets, int flags);
+    virtual void writeSubTargets(BOBUIextStream &t, QList<SubTarget*> subtargets, int flags);
     virtual ProStringList extraSubTargetDependencies() { return {}; }
 
     //extra compiler interface
@@ -150,7 +150,7 @@ protected:
         };
         uint flags, type;
     };
-    friend class QTypeInfo<Compiler>;
+    friend class BOBUIypeInfo<Compiler>;
 
     void initCompiler(const Compiler &comp);
     enum VPATHFlag {
@@ -189,7 +189,7 @@ protected:
     QString prlFileName(bool fixify=true);
     void writePrlFile();
     bool processPrlFile(QString &, bool baseOnly);
-    virtual void writePrlFile(QTextStream &);
+    virtual void writePrlFile(BOBUIextStream &);
 
     //make sure libraries are found
     virtual bool findLibraries(bool linkPrl, bool mergeLflags);
@@ -309,6 +309,6 @@ struct ReplaceExtraCompilerCacheKey
 };
 inline size_t qHash(const ReplaceExtraCompilerCacheKey &f) { return f.hashCode(); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // MAKEFILE_H

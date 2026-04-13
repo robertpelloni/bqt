@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QVALIDATOR_H
 #define QVALIDATOR_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qstring.h>
-#if QT_CONFIG(regularexpression)
-#  include <QtCore/qregularexpression.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qstring.h>
+#if BOBUI_CONFIG(regularexpression)
+#  include <BobUICore/qregularexpression.h>
 #endif
-#include <QtCore/qlocale.h>
+#include <BobUICore/qlocale.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
 
 class QValidatorPrivate;
 
@@ -134,7 +134,7 @@ private:
     int dec;
 };
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 
 class QRegularExpressionValidatorPrivate;
 
@@ -163,10 +163,10 @@ private:
     Q_DECLARE_PRIVATE(QRegularExpressionValidator)
 };
 
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
-#endif // QT_NO_VALIDATOR
+#endif // BOBUI_NO_VALIDATOR
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QVALIDATOR_H

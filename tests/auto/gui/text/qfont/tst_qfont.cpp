@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QBuffer>
-#include <QtEndian>
-#if QT_CONFIG(process)
+#include <BobUIEndian>
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 
@@ -14,17 +14,17 @@
 #include <qfontinfo.h>
 #include <qstringlist.h>
 #include <qguiapplication.h>
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 #include <qwidget.h>
 #endif
 #include <qlist.h>
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 #include <private/qcomparisontesthelper_p.h>
 #include <qpa/qplatformfontdatabase.h>
 #include <qpa/qplatformintegration.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QFont : public QObject
 {
@@ -36,7 +36,7 @@ private slots:
     void exactMatch();
     void compare();
     void resolve();
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     void resetFont();
 #endif
     void isCopyOf();
@@ -44,7 +44,7 @@ private slots:
     void insertAndRemoveSubstitutions();
     void serialize_data();
     void serialize();
-    void deserializeQt515();
+    void deserializeBobUI515();
 
     void styleName();
     void defaultFamily_data();
@@ -325,7 +325,7 @@ void tst_QFont::resolve()
     QCOMPARE(font7.family(), "Helvetica");
 }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 void tst_QFont::resetFont()
 {
     QWidget parent;
@@ -403,90 +403,90 @@ Q_DECLARE_METATYPE(QDataStream::Version)
 
 void tst_QFont::serialize_data()
 {
-    QTest::addColumn<QFont>("font");
+    BOBUIest::addColumn<QFont>("font");
     // The version in which the tested feature was added.
-    QTest::addColumn<QDataStream::Version>("minimumStreamVersion");
+    BOBUIest::addColumn<QDataStream::Version>("minimumStreamVersion");
 
     QFont basicFont;
-    // Versions <= Qt 2.1 had broken point size serialization,
+    // Versions <= BobUI 2.1 had broken point size serialization,
     // so we set an integer point size.
     basicFont.setPointSize(9);
-    // Versions <= Qt 5.4 didn't serialize styleName, so clear it
+    // Versions <= BobUI 5.4 didn't serialize styleName, so clear it
     basicFont.setStyleName(QString());
 
     QFont font = basicFont;
-    QTest::newRow("defaultConstructed") << font << QDataStream::Qt_1_0;
+    BOBUIest::newRow("defaultConstructed") << font << QDataStream::BobUI_1_0;
 
     font.setLetterSpacing(QFont::AbsoluteSpacing, 105);
-    QTest::newRow("letterSpacing=105") << font << QDataStream::Qt_4_5;
+    BOBUIest::newRow("letterSpacing=105") << font << QDataStream::BobUI_4_5;
 
     font = basicFont;
     font.setWordSpacing(50.0);
-    QTest::newRow("wordSpacing") << font << QDataStream::Qt_4_5;
+    BOBUIest::newRow("wordSpacing") << font << QDataStream::BobUI_4_5;
 
     font = basicFont;
     font.setPointSize(20);
-    QTest::newRow("pointSize") << font << QDataStream::Qt_1_0;
+    BOBUIest::newRow("pointSize") << font << QDataStream::BobUI_1_0;
 
     font = basicFont;
     font.setPixelSize(32);
-    QTest::newRow("pixelSize") << font << QDataStream::Qt_3_0;
+    BOBUIest::newRow("pixelSize") << font << QDataStream::BobUI_3_0;
 
     font = basicFont;
     font.setStyleHint(QFont::Monospace);
-    QTest::newRow("styleHint") << font << QDataStream::Qt_1_0;
+    BOBUIest::newRow("styleHint") << font << QDataStream::BobUI_1_0;
 
     font = basicFont;
     font.setStretch(4000);
-    QTest::newRow("stretch") << font << QDataStream::Qt_4_3;
+    BOBUIest::newRow("stretch") << font << QDataStream::BobUI_4_3;
 
     font = basicFont;
     font.setWeight(QFont::Light);
-    QTest::newRow("weight") << font << QDataStream::Qt_1_0;
+    BOBUIest::newRow("weight") << font << QDataStream::BobUI_1_0;
 
     font = basicFont;
     font.setUnderline(true);
-    QTest::newRow("underline") << font << QDataStream::Qt_1_0;
+    BOBUIest::newRow("underline") << font << QDataStream::BobUI_1_0;
 
     font = basicFont;
     font.setStrikeOut(true);
-    QTest::newRow("strikeOut") << font << QDataStream::Qt_1_0;
+    BOBUIest::newRow("strikeOut") << font << QDataStream::BobUI_1_0;
 
     font = basicFont;
     font.setFixedPitch(true);
     // This fails for versions less than this, as ignorePitch is set to false
     // whenever setFixedPitch() is called, but ignorePitch is considered an
     // extended bit, which were apparently not available until 4.4.
-    QTest::newRow("fixedPitch") << font << QDataStream::Qt_4_4;
+    BOBUIest::newRow("fixedPitch") << font << QDataStream::BobUI_4_4;
 
     font = basicFont;
     font.setLetterSpacing(QFont::AbsoluteSpacing, 10);
     // Fails for 4.4 because letterSpacing wasn't read until 4.5.
-    QTest::newRow("letterSpacing=10") << font << QDataStream::Qt_4_5;
+    BOBUIest::newRow("letterSpacing=10") << font << QDataStream::BobUI_4_5;
 
     font = basicFont;
     font.setKerning(false);
-    QTest::newRow("kerning") << font << QDataStream::Qt_4_0;
+    BOBUIest::newRow("kerning") << font << QDataStream::BobUI_4_0;
 
     font = basicFont;
     font.setStyleStrategy(QFont::NoFontMerging);
     // This wasn't read properly until 5.4.
-    QTest::newRow("styleStrategy") << font << QDataStream::Qt_5_4;
+    BOBUIest::newRow("styleStrategy") << font << QDataStream::BobUI_5_4;
 
     font = basicFont;
     font.setHintingPreference(QFont::PreferFullHinting);
     // This wasn't read until 5.4.
-    QTest::newRow("hintingPreference") << font << QDataStream::Qt_5_4;
+    BOBUIest::newRow("hintingPreference") << font << QDataStream::BobUI_5_4;
 
     font = basicFont;
     font.setStyleName("Regular Black Condensed");
     // This wasn't read until 5.4.
-    QTest::newRow("styleName") << font << QDataStream::Qt_5_4;
+    BOBUIest::newRow("styleName") << font << QDataStream::BobUI_5_4;
 
     font = basicFont;
     font.setCapitalization(QFont::AllUppercase);
     // This wasn't read until 5.6.
-    QTest::newRow("capitalization") << font << QDataStream::Qt_5_6;
+    BOBUIest::newRow("capitalization") << font << QDataStream::BobUI_5_6;
 }
 
 void tst_QFont::serialize()
@@ -513,7 +513,7 @@ void tst_QFont::serialize()
     }
 }
 
-void tst_QFont::deserializeQt515()
+void tst_QFont::deserializeBobUI515()
 {
     QFile file;
     file.setFileName(QFINDTESTDATA("datastream.515"));
@@ -522,7 +522,7 @@ void tst_QFont::deserializeQt515()
     QFont font;
     {
         QDataStream stream(&file);
-        stream.setVersion(QDataStream::Qt_5_15);
+        stream.setVersion(QDataStream::BobUI_5_15);
         stream >> font;
     }
 
@@ -541,7 +541,7 @@ void tst_QFont::deserializeQt515()
         QVERIFY(buffer.open(QIODevice::WriteOnly));
 
         QDataStream stream(&buffer);
-        stream.setVersion(QDataStream::Qt_5_15);
+        stream.setVersion(QDataStream::BobUI_5_15);
         stream << font;
     }
 
@@ -564,7 +564,7 @@ void tst_QFont::styleName()
 
 QString getPlatformGenericFont(const char* genericName)
 {
-#if defined(Q_OS_UNIX) && !defined(QT_NO_FONTCONFIG) && QT_CONFIG(process)
+#if defined(Q_OS_UNIX) && !defined(BOBUI_NO_FONTCONFIG) && BOBUI_CONFIG(process)
     QProcess p;
     p.start(QLatin1String("fc-match"), (QStringList() << "-f%{family}" << genericName));
     if (!p.waitForStarted())
@@ -586,14 +586,14 @@ static inline QByteArray msgNotAcceptableFont(const QString &defaultFamily, cons
 Q_DECLARE_METATYPE(QFont::StyleHint)
 void tst_QFont::defaultFamily_data()
 {
-    QTest::addColumn<QFont::StyleHint>("styleHint");
-    QTest::addColumn<QStringList>("acceptableFamilies");
+    BOBUIest::addColumn<QFont::StyleHint>("styleHint");
+    BOBUIest::addColumn<QStringList>("acceptableFamilies");
 
-    QTest::newRow("serif") << QFont::Serif << (QStringList() << "Times New Roman" << "Times" << "Droid Serif" << getPlatformGenericFont("serif").split(","));
-    QTest::newRow("monospace") << QFont::Monospace << (QStringList() << "Courier New" << "Monaco" << "Menlo" << "Droid Sans Mono" << getPlatformGenericFont("monospace").split(","));
-    QTest::newRow("cursive") << QFont::Cursive << (QStringList() << "Comic Sans MS" << "Apple Chancery" << "Roboto" << "Droid Sans" << getPlatformGenericFont("cursive").split(","));
-    QTest::newRow("fantasy") << QFont::Fantasy << (QStringList() << "Impact" << "Zapfino"  << "Roboto" << "Droid Sans" << getPlatformGenericFont("fantasy").split(","));
-    QTest::newRow("sans-serif") << QFont::SansSerif << (QStringList() << "Arial" << "Lucida Grande" << "Helvetica" << "Roboto" << "Droid Sans" << "Segoe UI" << getPlatformGenericFont("sans-serif").split(","));
+    BOBUIest::newRow("serif") << QFont::Serif << (QStringList() << "Times New Roman" << "Times" << "Droid Serif" << getPlatformGenericFont("serif").split(","));
+    BOBUIest::newRow("monospace") << QFont::Monospace << (QStringList() << "Courier New" << "Monaco" << "Menlo" << "Droid Sans Mono" << getPlatformGenericFont("monospace").split(","));
+    BOBUIest::newRow("cursive") << QFont::Cursive << (QStringList() << "Comic Sans MS" << "Apple Chancery" << "Roboto" << "Droid Sans" << getPlatformGenericFont("cursive").split(","));
+    BOBUIest::newRow("fantasy") << QFont::Fantasy << (QStringList() << "Impact" << "Zapfino"  << "Roboto" << "Droid Sans" << getPlatformGenericFont("fantasy").split(","));
+    BOBUIest::newRow("sans-serif") << QFont::SansSerif << (QStringList() << "Arial" << "Lucida Grande" << "Helvetica" << "Roboto" << "Droid Sans" << "Segoe UI" << getPlatformGenericFont("sans-serif").split(","));
 }
 
 void tst_QFont::defaultFamily()
@@ -610,23 +610,23 @@ void tst_QFont::defaultFamily()
 
     bool isAcceptable = false;
     for (const QString &family : acceptableFamilies) {
-        if (!familyForHint.compare(family, Qt::CaseInsensitive)) {
+        if (!familyForHint.compare(family, BobUI::CaseInsensitive)) {
             isAcceptable = true;
             break;
         }
     }
 
-#if defined(Q_OS_UNIX) && defined(QT_NO_FONTCONFIG)
+#if defined(Q_OS_UNIX) && defined(BOBUI_NO_FONTCONFIG)
     QSKIP("This platform does not support checking for default font acceptability");
 #endif
 
 #ifdef Q_PROCESSOR_ARM_32
-    if (QTestPrivate::isRunningArmOnX86())
-        QEXPECT_FAIL("", "Fails on ARMv7 QEMU (QTQAINFRA-4127)", Continue);
+    if (BOBUIestPrivate::isRunningArmOnX86())
+        QEXPECT_FAIL("", "Fails on ARMv7 QEMU (BOBUIQAINFRA-4127)", Continue);
 #endif
 
 #ifdef Q_OS_ANDROID
-    QEXPECT_FAIL("serif", "QTBUG-69215", Continue);
+    QEXPECT_FAIL("serif", "BOBUIBUG-69215", Continue);
 #endif
     QVERIFY2(isAcceptable, msgNotAcceptableFont(familyForHint, acceptableFamilies));
 }
@@ -652,16 +652,16 @@ void tst_QFont::toAndFromString()
 
 void tst_QFont::fromStringCompatibility_data()
 {
-    QTest::addColumn<bool>("current");
-    QTest::addColumn<QString>("description");
-    QTest::addColumn<QFont>("font");
+    BOBUIest::addColumn<bool>("current");
+    BOBUIest::addColumn<QString>("description");
+    BOBUIest::addColumn<QFont>("font");
 
     QFont fontFrom515("Times New Roman", 18);
     fontFrom515.setBold(true);
     fontFrom515.setItalic(true);
     fontFrom515.setFixedPitch(true);
     fontFrom515.setStyleName("Regular");
-    QTest::addRow("Times New Roman, Qt 5.15") << false << QStringLiteral("Times New Roman,18,-1,5,75,1,0,0,1,0,Regular") << fontFrom515;
+    BOBUIest::addRow("Times New Roman, BobUI 5.15") << false << QStringLiteral("Times New Roman,18,-1,5,75,1,0,0,1,0,Regular") << fontFrom515;
 
     QFont fontFrom60 = fontFrom515;
     fontFrom60.setStyleStrategy(QFont::PreferBitmap);
@@ -669,37 +669,37 @@ void tst_QFont::fromStringCompatibility_data()
     fontFrom60.setLetterSpacing(QFont::PercentageSpacing, 150.5);
     fontFrom60.setWordSpacing(2.5);
     fontFrom60.setStretch(50);
-    QTest::addRow("Times New Roman, Qt 6.0") << false << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular") << fontFrom60;
+    BOBUIest::addRow("Times New Roman, BobUI 6.0") << false << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular") << fontFrom60;
 
     QFont fontFrom611 = fontFrom60;
-    QTest::addRow("Times New Roman (without font features and variable axes), Qt 6.11") << true << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular,0,0") << fontFrom611;
+    BOBUIest::addRow("Times New Roman (without font features and variable axes), BobUI 6.11") << true << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular,0,0") << fontFrom611;
 
     QFont fontFrom611WithFeatures = fontFrom60;
     fontFrom611WithFeatures.setFeature("frac", 1);
     fontFrom611WithFeatures.setFeature("liga", 0);
-    QTest::addRow("Times New Roman (with features), Qt 6.11") << true << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular,2,frac=1,liga=0,0") << fontFrom611WithFeatures;
+    BOBUIest::addRow("Times New Roman (with features), BobUI 6.11") << true << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular,2,frac=1,liga=0,0") << fontFrom611WithFeatures;
 
     QFont fontFrom611WithVariableAxes = fontFrom60;
     fontFrom611WithVariableAxes.setVariableAxis("wght", 12.34f);
-    QTest::addRow("Times New Roman (with variable axes), Qt 6.11") << true << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular,0,1,wght=12.34") << fontFrom611WithVariableAxes;
+    BOBUIest::addRow("Times New Roman (with variable axes), BobUI 6.11") << true << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular,0,1,wght=12.34") << fontFrom611WithVariableAxes;
 
     QFont fontFrom611WithFontFeaturesAndVariableAxes = fontFrom60;
     fontFrom611WithFontFeaturesAndVariableAxes.setFeature("frac", 1);
     fontFrom611WithFontFeaturesAndVariableAxes.setFeature("liga", 0);
     fontFrom611WithFontFeaturesAndVariableAxes.setVariableAxis("wght", 12.34f);
-    QTest::addRow("Times New Roman (with font features and variable axes), Qt 6.11") << true << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular,2,frac=1,liga=0,1,wght=12.34") << fontFrom611WithFontFeaturesAndVariableAxes;
+    BOBUIest::addRow("Times New Roman (with font features and variable axes), BobUI 6.11") << true << QStringLiteral("Times New Roman,18,-1,5,700,1,0,0,1,0,1,0,150.5,2.5,50,2,Regular,2,frac=1,liga=0,1,wght=12.34") << fontFrom611WithFontFeaturesAndVariableAxes;
 }
 
 void tst_QFont::fromStringCompatibility()
 {
-    // This test verifies that font descriptions from older Qt releases are handled as expected.
+    // This test verifies that font descriptions from older BobUI releases are handled as expected.
 
     QFETCH(bool, current);
     QFETCH(QString, description);
 
     QFont font;
     font.fromString(description);
-    QTEST(font, "font");
+    BOBUIEST(font, "font");
 
     if (current) {
         QCOMPARE(font.toString(), description);
@@ -799,20 +799,20 @@ void tst_QFont::fromStringWithoutFeaturesOrVariableAxes()
 
 void tst_QFont::fromDegenerateString_data()
 {
-    QTest::addColumn<QString>("string");
+    BOBUIest::addColumn<QString>("string");
 
-    QTest::newRow("empty") << QString();
-    QTest::newRow("justAComma") << ",";
-    QTest::newRow("commasAndSpaces") << " , ,    ";
-    QTest::newRow("spaces") << "   ";
-    QTest::newRow("spacesTabsAndNewlines") << " \t  \n";
+    BOBUIest::newRow("empty") << QString();
+    BOBUIest::newRow("justAComma") << ",";
+    BOBUIest::newRow("commasAndSpaces") << " , ,    ";
+    BOBUIest::newRow("spaces") << "   ";
+    BOBUIest::newRow("spacesTabsAndNewlines") << " \t  \n";
 }
 
 void tst_QFont::fromDegenerateString()
 {
     QFETCH(QString, string);
     QFont f;
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(".*Invalid description.*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(".*Invalid description.*"));
     QCOMPARE(f.fromString(string), false);
     QCOMPARE(f, QFont());
 }
@@ -862,9 +862,9 @@ void tst_QFont::sharing()
 
 void tst_QFont::familyNameWithCommaQuote_data()
 {
-    QTest::addColumn<QString>("enteredFamilyName");
-    QTest::addColumn<QString>("familyName");
-    QTest::addColumn<QString>("chosenFamilyName");
+    BOBUIest::addColumn<QString>("enteredFamilyName");
+    BOBUIest::addColumn<QString>("familyName");
+    BOBUIest::addColumn<QString>("chosenFamilyName");
 
     const QString standardFont(QFont().defaultFamily());
     if (standardFont.isEmpty())
@@ -875,11 +875,11 @@ void tst_QFont::familyNameWithCommaQuote_data()
     const QString commaSeparatedWeird(weirdFont + QLatin1String(",") + standardFont);
     const QString commaSeparatedBogus(bogusFont +  QLatin1String(",") + standardFont);
 
-    QTest::newRow("standard") << standardFont << standardFont << standardFont;
-    QTest::newRow("weird") << weirdFont << QString("'My") << standardFont;
-    QTest::newRow("commaSeparated") << commaSeparated << standardFont << standardFont;
-    QTest::newRow("commaSeparatedWeird") << commaSeparatedWeird << QString("'My") << standardFont;
-    QTest::newRow("commaSeparatedBogus") << commaSeparatedBogus << bogusFont << standardFont;
+    BOBUIest::newRow("standard") << standardFont << standardFont << standardFont;
+    BOBUIest::newRow("weird") << weirdFont << QString("'My") << standardFont;
+    BOBUIest::newRow("commaSeparated") << commaSeparated << standardFont << standardFont;
+    BOBUIest::newRow("commaSeparatedWeird") << commaSeparatedWeird << QString("'My") << standardFont;
+    BOBUIest::newRow("commaSeparatedBogus") << commaSeparatedBogus << bogusFont << standardFont;
 }
 
 void tst_QFont::familyNameWithCommaQuote()
@@ -899,20 +899,20 @@ void tst_QFont::familyNameWithCommaQuote()
 
 void tst_QFont::setFamilies_data()
 {
-    QTest::addColumn<QStringList>("families");
-    QTest::addColumn<QString>("chosenFamilyName");
+    BOBUIest::addColumn<QStringList>("families");
+    BOBUIest::addColumn<QString>("chosenFamilyName");
 
     const QString weirdFont(QLatin1String("'My, weird'' font name',"));
     const QString standardFont(QFont().defaultFamily());
     if (standardFont.isEmpty())
         QSKIP("No default font available on the system");
 
-    QTest::newRow("emptyFamily") << (QStringList()) << QString();
-    QTest::newRow("standard") << (QStringList() << standardFont) << standardFont;
-    QTest::newRow("weird") << (QStringList() << weirdFont) << weirdFont;
-    QTest::newRow("standard-weird") << (QStringList() << standardFont << weirdFont) << standardFont;
-    QTest::newRow("weird-standard") << (QStringList() << weirdFont << standardFont) << weirdFont;
-    QTest::newRow("nonexist-weird") << (QStringList() << "NonExistentFont" << weirdFont) << weirdFont;
+    BOBUIest::newRow("emptyFamily") << (QStringList()) << QString();
+    BOBUIest::newRow("standard") << (QStringList() << standardFont) << standardFont;
+    BOBUIest::newRow("weird") << (QStringList() << weirdFont) << weirdFont;
+    BOBUIest::newRow("standard-weird") << (QStringList() << standardFont << weirdFont) << standardFont;
+    BOBUIest::newRow("weird-standard") << (QStringList() << weirdFont << standardFont) << weirdFont;
+    BOBUIest::newRow("nonexist-weird") << (QStringList() << "NonExistentFont" << weirdFont) << weirdFont;
 }
 
 void tst_QFont::setFamilies()
@@ -933,9 +933,9 @@ void tst_QFont::setFamilies()
 
 void tst_QFont::setFamiliesAndFamily_data()
 {
-    QTest::addColumn<QStringList>("families");
-    QTest::addColumn<QString>("family");
-    QTest::addColumn<QString>("chosenFamilyName");
+    BOBUIest::addColumn<QStringList>("families");
+    BOBUIest::addColumn<QString>("family");
+    BOBUIest::addColumn<QString>("chosenFamilyName");
 
     const QString weirdFont(QLatin1String("'My, weird'' font name',"));
     const QString defaultFont(QFont().defaultFamily());
@@ -945,10 +945,10 @@ void tst_QFont::setFamiliesAndFamily_data()
     const QString timesFont(QLatin1String("Times"));
     const QString nonExistFont(QLatin1String("NonExistentFont"));
 
-    QTest::newRow("emptyFamily") << (QStringList()) << QString() << QString();
-    QTest::newRow("firstInFamilies") << (QStringList() << defaultFont << timesFont) << weirdFont << defaultFont;
-    QTest::newRow("secondInFamilies") << (QStringList() << nonExistFont << weirdFont) << defaultFont << weirdFont;
-    QTest::newRow("family") << (QStringList() << nonExistFont) << defaultFont << defaultFont;
+    BOBUIest::newRow("emptyFamily") << (QStringList()) << QString() << QString();
+    BOBUIest::newRow("firstInFamilies") << (QStringList() << defaultFont << timesFont) << weirdFont << defaultFont;
+    BOBUIest::newRow("secondInFamilies") << (QStringList() << nonExistFont << weirdFont) << defaultFont << weirdFont;
+    BOBUIest::newRow("family") << (QStringList() << nonExistFont) << defaultFont << defaultFont;
 }
 
 void tst_QFont::setFamiliesAndFamily()
@@ -1012,7 +1012,7 @@ void tst_QFont::featureAccessors()
     QVERIFY(QFont::Tag::fromString(u"frac"_s));
 
     // named constructors with invalid input
-    QTest::ignoreMessage(QtWarningMsg, "The tag name must be exactly 4 characters long!");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "The tag name must be exactly 4 characters long!");
     QVERIFY(!QFont::Tag::fromString(u"fraction"_s));
     QVERIFY(!QFont::Tag::fromValue(0));
     QVERIFY(QFont::Tag::fromValue(abcdTag.value()));
@@ -1024,15 +1024,15 @@ void tst_QFont::featureAccessors()
 
 void tst_QFont::tagCompares_data()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QFont::Tag>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QFont::Tag>();
 
-    QTest::addColumn<QFont::Tag>("lhs");
-    QTest::addColumn<QFont::Tag>("rhs");
-    QTest::addColumn<Qt::strong_ordering>("expectedOrder");
+    BOBUIest::addColumn<QFont::Tag>("lhs");
+    BOBUIest::addColumn<QFont::Tag>("rhs");
+    BOBUIest::addColumn<BobUI::strong_ordering>("expectedOrder");
 
     auto row = [](QFont::Tag left, QFont::Tag right) {
-        QTest::addRow("%s<=>%s", left.toString().constData(), right.toString().constData())
-            << left << right << Qt::compareThreeWay(left.value(), right.value());
+        BOBUIest::addRow("%s<=>%s", left.toString().constData(), right.toString().constData())
+            << left << right << BobUI::compareThreeWay(left.value(), right.value());
     };
     row("frac", "wght");
 }
@@ -1041,7 +1041,7 @@ void tst_QFont::tagCompares()
 {
     QFETCH(QFont::Tag, lhs);
     QFETCH(QFont::Tag, rhs);
-    QFETCH(Qt::strong_ordering, expectedOrder);
+    QFETCH(BobUI::strong_ordering, expectedOrder);
 
     QVERIFY(comparesEqual(lhs, lhs));
     QCOMPARE(compareThreeWay(lhs, rhs), expectedOrder);
@@ -1076,5 +1076,5 @@ void tst_QFont::variableAxes()
     QCOMPARE(variableAxis.maximumValue(), 900.0);
 }
 
-QTEST_MAIN(tst_QFont)
+BOBUIEST_MAIN(tst_QFont)
 #include "tst_qfont.moc"

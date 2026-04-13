@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstyleanimation_p.h"
 
@@ -8,13 +8,13 @@
 #include <qwidget.h>
 #include <qevent.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const qreal ScrollBarFadeOutDuration = 200.0;
 static const qreal ScrollBarFadeOutDelay = 450.0;
 
 QStyleAnimation::QStyleAnimation(QObject *target) : QAbstractAnimation(target),
-    _delay(0), _duration(-1), _startTime(QTime::currentTime()), _fps(ThirtyFps), _skip(0)
+    _delay(0), _duration(-1), _startTime(BOBUIime::currentTime()), _fps(ThirtyFps), _skip(0)
 {
 }
 
@@ -47,12 +47,12 @@ void QStyleAnimation::setDelay(int delay)
     _delay = delay;
 }
 
-QTime QStyleAnimation::startTime() const
+BOBUIime QStyleAnimation::startTime() const
 {
     return _startTime;
 }
 
-void QStyleAnimation::setStartTime(QTime time)
+void QStyleAnimation::setStartTime(BOBUIime time)
 {
     _startTime = time;
 }
@@ -328,6 +328,6 @@ void QScrollbarStyleAnimation::updateCurrentTime(int time)
         target()->setProperty("visible", false);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstyleanimation_p.cpp"

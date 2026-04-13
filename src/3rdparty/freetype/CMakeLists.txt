@@ -60,7 +60,7 @@ endif ()
 ## BundledFreetype Generic Library:
 #####################################################################
 
-qt_internal_add_3rdparty_library(BundledFreetype
+bobui_internal_add_3rdparty_library(BundledFreetype
     QMAKE_LIB_NAME freetype
     STATIC
     SKIP_AUTOMOC
@@ -75,43 +75,43 @@ qt_internal_add_3rdparty_library(BundledFreetype
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-qt_internal_add_3rdparty_header_module(FreetypePrivate
+bobui_internal_add_3rdparty_header_module(FreetypePrivate
     EXTERNAL_HEADERS_DIR include
 )
 
-qt_disable_warnings(BundledFreetype)
-qt_set_symbol_visibility_hidden(BundledFreetype)
+bobui_disable_warnings(BundledFreetype)
+bobui_set_symbol_visibility_hidden(BundledFreetype)
 
-qt_internal_extend_target(BundledFreetype CONDITION WIN32
+bobui_internal_extend_target(BundledFreetype CONDITION WIN32
     SOURCES
         src/base/ftsystem.c
 )
 
-qt_internal_extend_target(BundledFreetype CONDITION UNIX
+bobui_internal_extend_target(BundledFreetype CONDITION UNIX
     SOURCES
         builds/unix/ftsystem.c
     INCLUDE_DIRECTORIES
         builds/unix
 )
 
-qt_internal_extend_target(BundledFreetype CONDITION QT_FEATURE_png
+bobui_internal_extend_target(BundledFreetype CONDITION BOBUI_FEATURE_png
     DEFINES
         FT_CONFIG_OPTION_USE_PNG
     LIBRARIES
         WrapPNG::WrapPNG
 )
 
-qt_internal_extend_target(BundledFreetype CONDITION QT_FEATURE_system_zlib
+bobui_internal_extend_target(BundledFreetype CONDITION BOBUI_FEATURE_system_zlib
     LIBRARIES
         WrapZLIB::WrapZLIB
 )
 
-qt_internal_extend_target(BundledFreetype CONDITION NOT QT_FEATURE_system_zlib
+bobui_internal_extend_target(BundledFreetype CONDITION NOT BOBUI_FEATURE_system_zlib
     INCLUDE_DIRECTORIES
         ../zlib/src
 )
 
-qt_internal_extend_target(BundledFreetype CONDITION NOT QT_FEATURE_system_zlib
+bobui_internal_extend_target(BundledFreetype CONDITION NOT BOBUI_FEATURE_system_zlib
     LIBRARIES
-        Qt::Core
+        BobUI::Core
 )

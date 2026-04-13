@@ -1,4 +1,4 @@
-# Prepares environment for building Qt module. It sets all important environment variables in particular
+# Prepares environment for building BobUI module. It sets all important environment variables in particular
 # configures the right compiler and cmake generator
 type: Group
 instructions:
@@ -13,7 +13,7 @@ instructions:
         variableName: COMMON_CMAKE_ARGS
         variableValue: " -DCMAKE_MAKE_PROGRAM={{.Env.NINJA_EXECUTABLE}}"
       - type: AppendToEnvironmentVariable
-        variableName: COMMON_NON_QTBASE_CMAKE_ARGS
+        variableName: COMMON_NON_BOBUIBASE_CMAKE_ARGS
         variableValue: " -DCMAKE_MAKE_PROGRAM={{.Env.NINJA_EXECUTABLE}}"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TEST_CMAKE_ARGS
@@ -26,7 +26,7 @@ instructions:
         variableName: COMMON_TARGET_CMAKE_ARGS
         variableValue: " -DCMAKE_MAKE_PROGRAM={{.Env.NINJA_EXECUTABLE}}"
       - type: AppendToEnvironmentVariable
-        variableName: COMMON_NON_QTBASE_TARGET_CMAKE_ARGS
+        variableName: COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS
         variableValue: " -DCMAKE_MAKE_PROGRAM={{.Env.NINJA_EXECUTABLE}}"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TARGET_TEST_CMAKE_ARGS
@@ -58,7 +58,7 @@ instructions:
       property: host.os
       equals_value: Windows
 
-  # Enable Axivion_analysis for Qt
+  # Enable Axivion_analysis for BobUI
   - type: EnvironmentVariable
     variableName: AXIVION_ANALYSIS
     variableValue: "1"
@@ -206,7 +206,7 @@ instructions:
               in_values: ["AARCH64", "ARM64"]
       - type: EnvironmentVariable
         # HACK. Overwrite TARGET_ARCHITECTURE as we do not use standard MSVC cross
-        # compilation targets here. The target architecture will be detected by Qt.
+        # compilation targets here. The target architecture will be detected by BobUI.
         variableName: TARGET_ARCHITECTURE
         variableValue: x86
         enable_if:
@@ -318,7 +318,7 @@ instructions:
     instructions:
     - type: WriteFile
       fileContents: "call \"{{.Env.VC_SCRIPT}}\" {{.Env.TARGET_ARCHITECTURE}} {{.Env.WINDOWS_SDK_VERSION}}\r\ncmd /c %*"
-      filename: c:\\users\\qt\\prefix.bat
+      filename: c:\\users\\bobui\\prefix.bat
       fileMode: 420
       maxTimeInSeconds: 20
       maxTimeBetweenOutput: 20
@@ -333,7 +333,7 @@ instructions:
             contains_value: MSVC
     - type: EnvironmentVariable
       variableName: ENV_PREFIX
-      variableValue: "c:\\users\\qt\\prefix.bat"
+      variableValue: "c:\\users\\bobui\\prefix.bat"
       enable_if:
         condition: and
         conditions:
@@ -358,9 +358,9 @@ instructions:
 
   - type: Group
     instructions:
-    # Need to unset QMAKESPEC, so that the pre-installed boot2qt mkspec is not picked up.
+    # Need to unset QMAKESPEC, so that the pre-installed boot2bobui mkspec is not picked up.
     - type: WriteFile
-      fileContents: "#!/bin/bash\nunset LD_LIBRARY_PATH\n. {{.Env.QT_YOCTO_ENVSETUP}}\nexport PATH={{.Env.QT_CMAKE_DIR}}:$PATH;\nunset QMAKESPEC\n\"$@\""
+      fileContents: "#!/bin/bash\nunset LD_LIBRARY_PATH\n. {{.Env.BOBUI_YOCTO_ENVSETUP}}\nexport PATH={{.Env.BOBUI_CMAKE_DIR}}:$PATH;\nunset QMAKESPEC\n\"$@\""
       filename: "{{.Env.HOME}}/prefix.sh"
       fileMode: 493
       maxTimeInSeconds: 20
@@ -406,7 +406,7 @@ instructions:
     instructions:
       - type: EnvironmentVariable
         variableName: TARGET_ENV_PREFIX
-        variableValue: "c:\\users\\qt\\prefix.bat"
+        variableValue: "c:\\users\\bobui\\prefix.bat"
 
   # VxWorks
   - type: Group
@@ -493,10 +493,10 @@ instructions:
     instructions:
       - type: AppendToEnvironmentVariable
         variableName: COMMON_CMAKE_ARGS
-        variableValue: " -DWARNINGS_ARE_ERRORS=ON -DQT_LINT_EXAMPLES=ON"
+        variableValue: " -DWARNINGS_ARE_ERRORS=ON -DBOBUI_LINT_EXAMPLES=ON"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TARGET_CMAKE_ARGS
-        variableValue: " -DWARNINGS_ARE_ERRORS=ON -DQT_LINT_EXAMPLES=ON"
+        variableValue: " -DWARNINGS_ARE_ERRORS=ON -DBOBUI_LINT_EXAMPLES=ON"
     enable_if:
       condition: property
       property: features
@@ -532,16 +532,16 @@ instructions:
     instructions:
     - type: AppendToEnvironmentVariable
       variableName: COMMON_CMAKE_ARGS
-      variableValue: " -DQT_INSTALL_CONFIG_INFO_FILES=ON"
+      variableValue: " -DBOBUI_INSTALL_CONFIG_INFO_FILES=ON"
     - type: AppendToEnvironmentVariable
-      variableName: COMMON_NON_QTBASE_CMAKE_ARGS
-      variableValue: " -DQT_INSTALL_CONFIG_INFO_FILES=ON"
+      variableName: COMMON_NON_BOBUIBASE_CMAKE_ARGS
+      variableValue: " -DBOBUI_INSTALL_CONFIG_INFO_FILES=ON"
     - type: AppendToEnvironmentVariable
       variableName: COMMON_TARGET_CMAKE_ARGS
-      variableValue: " -DQT_INSTALL_CONFIG_INFO_FILES=ON"
+      variableValue: " -DBOBUI_INSTALL_CONFIG_INFO_FILES=ON"
     - type: AppendToEnvironmentVariable
-      variableName: COMMON_NON_QTBASE_TARGET_CMAKE_ARGS
-      variableValue: " -DQT_INSTALL_CONFIG_INFO_FILES=ON"
+      variableName: COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS
+      variableValue: " -DBOBUI_INSTALL_CONFIG_INFO_FILES=ON"
 
   # SBOM
   - type: Group
@@ -553,21 +553,21 @@ instructions:
     - type: EnvironmentVariable
       variableName: SBOM_COMMON_ARGS
       variableValue: >-
-        -DQT_GENERATE_SBOM=ON
-        -DQT_GENERATE_SOURCE_SBOM=ON
-        -DQT_SBOM_REQUIRE_GENERATE_CYDX_V1_6=ON
-        -DQT_SBOM_VERIFY_CYDX_V1_6=ON
+        -DBOBUI_GENERATE_SBOM=ON
+        -DBOBUI_GENERATE_SOURCE_SBOM=ON
+        -DBOBUI_SBOM_REQUIRE_GENERATE_CYDX_V1_6=ON
+        -DBOBUI_SBOM_VERIFY_CYDX_V1_6=ON
     - type: AppendToEnvironmentVariable
       variableName: COMMON_CMAKE_ARGS
       variableValue: " {{.Env.SBOM_COMMON_ARGS}} "
     - type: AppendToEnvironmentVariable
-      variableName: COMMON_NON_QTBASE_CMAKE_ARGS
+      variableName: COMMON_NON_BOBUIBASE_CMAKE_ARGS
       variableValue: " {{.Env.SBOM_COMMON_ARGS}} "
     - type: AppendToEnvironmentVariable
       variableName: COMMON_TARGET_CMAKE_ARGS
       variableValue: " {{.Env.SBOM_COMMON_ARGS}} "
     - type: AppendToEnvironmentVariable
-      variableName: COMMON_NON_QTBASE_TARGET_CMAKE_ARGS
+      variableName: COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS
       variableValue: " {{.Env.SBOM_COMMON_ARGS}} "
 
   # SBOM Python apps path. On Windows python-installed apps are
@@ -598,25 +598,25 @@ instructions:
           equals_value: null
 
   # Always pass the location of the python intrepreter meant to be used for SBOM generation,
-  # because the Qt default has changed to always generate an SBOM.
+  # because the BobUI default has changed to always generate an SBOM.
   # Don't forget to adjust tests/auto/cmake/RunCMake/Sbom/RunCMakeTest.cmake
   # in case of changing / removing these args.
   - type: EnvironmentVariable
     variableName: SBOM_PYTHON_ARGS
     variableValue: >-
-      -DQT_SBOM_PYTHON_INTERP={{.Env.SBOM_PYTHON_INTERP_PATH}}
-      -DQT_SBOM_PYTHON_APPS_PATH={{.Env.SBOM_PYTHON_APPS_PATH}}
+      -DBOBUI_SBOM_PYTHON_INTERP={{.Env.SBOM_PYTHON_INTERP_PATH}}
+      -DBOBUI_SBOM_PYTHON_APPS_PATH={{.Env.SBOM_PYTHON_APPS_PATH}}
   - type: AppendToEnvironmentVariable
     variableName: COMMON_CMAKE_ARGS
     variableValue: " {{.Env.SBOM_PYTHON_ARGS}} "
   - type: AppendToEnvironmentVariable
-    variableName: COMMON_NON_QTBASE_CMAKE_ARGS
+    variableName: COMMON_NON_BOBUIBASE_CMAKE_ARGS
     variableValue: " {{.Env.SBOM_PYTHON_ARGS}} "
   - type: AppendToEnvironmentVariable
     variableName: COMMON_TARGET_CMAKE_ARGS
     variableValue: " {{.Env.SBOM_PYTHON_ARGS}} "
   - type: AppendToEnvironmentVariable
-    variableName: COMMON_NON_QTBASE_TARGET_CMAKE_ARGS
+    variableName: COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS
     variableValue: " {{.Env.SBOM_PYTHON_ARGS}} "
 
   # SBOM verification and auditing
@@ -629,31 +629,31 @@ instructions:
     - type: EnvironmentVariable
       variableName: SBOM_COMMON_ARGS
       variableValue: >-
-        -DQT_LINT_SOURCE_SBOM=ON
-        -DQT_INTERNAL_SBOM_DEFAULT_CHECKS=ON
-        -DQT_INTERNAL_SBOM_AUDIT=ON
-        -DQT_INTERNAL_SBOM_AUDIT_NO_ERROR=ON
+        -DBOBUI_LINT_SOURCE_SBOM=ON
+        -DBOBUI_INTERNAL_SBOM_DEFAULT_CHECKS=ON
+        -DBOBUI_INTERNAL_SBOM_AUDIT=ON
+        -DBOBUI_INTERNAL_SBOM_AUDIT_NO_ERROR=ON
     - type: AppendToEnvironmentVariable
       variableName: COMMON_CMAKE_ARGS
       variableValue: " {{.Env.SBOM_COMMON_ARGS}} "
     - type: AppendToEnvironmentVariable
-      variableName: COMMON_NON_QTBASE_CMAKE_ARGS
+      variableName: COMMON_NON_BOBUIBASE_CMAKE_ARGS
       variableValue: " {{.Env.SBOM_COMMON_ARGS}} "
     - type: AppendToEnvironmentVariable
       variableName: COMMON_TARGET_CMAKE_ARGS
       variableValue: " {{.Env.SBOM_COMMON_ARGS}} "
     - type: AppendToEnvironmentVariable
-      variableName: COMMON_NON_QTBASE_TARGET_CMAKE_ARGS
+      variableName: COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS
       variableValue: " {{.Env.SBOM_COMMON_ARGS}} "
 
   - type: Group
     instructions:
       - type: AppendToEnvironmentVariable
         variableName: COMMON_CMAKE_ARGS
-        variableValue: " -DQT_BUILD_TESTS=OFF -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
+        variableValue: " -DBOBUI_BUILD_TESTS=OFF -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
       - type: AppendToEnvironmentVariable
-        variableName: COMMON_NON_QTBASE_CMAKE_ARGS
-        variableValue: " -DQT_BUILD_TESTS=OFF -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
+        variableName: COMMON_NON_BOBUIBASE_CMAKE_ARGS
+        variableValue: " -DBOBUI_BUILD_TESTS=OFF -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TEST_CMAKE_ARGS
         variableValue: " -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
@@ -663,10 +663,10 @@ instructions:
 
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TARGET_CMAKE_ARGS
-        variableValue: " -DQT_BUILD_TESTS=OFF -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
+        variableValue: " -DBOBUI_BUILD_TESTS=OFF -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
       - type: AppendToEnvironmentVariable
-        variableName: COMMON_NON_QTBASE_TARGET_CMAKE_ARGS
-        variableValue: " -DQT_BUILD_TESTS=OFF -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
+        variableName: COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS
+        variableValue: " -DBOBUI_BUILD_TESTS=OFF -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TARGET_TEST_CMAKE_ARGS
         variableValue: " -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS"
@@ -681,7 +681,7 @@ instructions:
         variableName: COMMON_CMAKE_ARGS
         variableValue: " -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache"
       - type: AppendToEnvironmentVariable
-        variableName: COMMON_NON_QTBASE_CMAKE_ARGS
+        variableName: COMMON_NON_BOBUIBASE_CMAKE_ARGS
         variableValue: " -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TEST_CMAKE_ARGS
@@ -694,7 +694,7 @@ instructions:
         variableName: COMMON_TARGET_CMAKE_ARGS
         variableValue: " -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache"
       - type: AppendToEnvironmentVariable
-        variableName: COMMON_NON_QTBASE_TARGET_CMAKE_ARGS
+        variableName: COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS
         variableValue: " -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TARGET_TEST_CMAKE_ARGS
@@ -714,7 +714,7 @@ instructions:
         variableName: COMMON_CMAKE_ARGS
         variableValue: " -DBUILD_WITH_PCH=OFF"
       - type: AppendToEnvironmentVariable
-        variableName: COMMON_NON_QTBASE_CMAKE_ARGS
+        variableName: COMMON_NON_BOBUIBASE_CMAKE_ARGS
         variableValue: " -DBUILD_WITH_PCH=OFF"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TEST_CMAKE_ARGS
@@ -727,7 +727,7 @@ instructions:
         variableName: COMMON_TARGET_CMAKE_ARGS
         variableValue: " -DBUILD_WITH_PCH=OFF"
       - type: AppendToEnvironmentVariable
-        variableName: COMMON_NON_QTBASE_TARGET_CMAKE_ARGS
+        variableName: COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS
         variableValue: " -DBUILD_WITH_PCH=OFF"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TARGET_TEST_CMAKE_ARGS
@@ -752,51 +752,51 @@ instructions:
   - type: Group
     instructions:
     - type: AppendToEnvironmentVariable
-      variableName: COMMON_NON_QTBASE_CMAKE_ARGS
-      variableValue: " -DQT_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
+      variableName: COMMON_NON_BOBUIBASE_CMAKE_ARGS
+      variableValue: " -DBOBUI_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
     - type: AppendToEnvironmentVariable
       variableName: COMMON_TEST_CMAKE_ARGS
-      variableValue: " -DQT_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
+      variableValue: " -DBOBUI_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
     - type: AppendToEnvironmentVariable
       variableName: COMMON_EXAMPLES_CMAKE_ARGS
-      variableValue: " -DQT_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
+      variableValue: " -DBOBUI_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
     - type: AppendToEnvironmentVariable
-      variableName: COMMON_NON_QTBASE_TARGET_CMAKE_ARGS
-      variableValue: " -DQT_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
+      variableName: COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS
+      variableValue: " -DBOBUI_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
     - type: AppendToEnvironmentVariable
       variableName: COMMON_TARGET_TEST_CMAKE_ARGS
-      variableValue: " -DQT_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
+      variableValue: " -DBOBUI_USE_VCPKG=ON -DVCPKG_INSTALLED_DIR={{.Env.VCPKG_INSTALLED_DIR}} -DVCPKG_HOST_TRIPLET={{.Env.VCPKG_HOST_TRIPLET}} -DVCPKG_TARGET_TRIPLET={{.Env.VCPKG_TARGET_TRIPLET}}"
     enable_if:
       condition: runtime
       env_var: USE_VCPKG
       equals_value: "ON"
 
   # Specify a custom examples installation directory, so that the built example binaries are not
-  # packaged into the artifact archive together with the Qt libraries.
+  # packaged into the artifact archive together with the BobUI libraries.
   # Also specify that during examples deployment, only a subset of examples should be deployed, to
   # save time and space.
   - type: Group
     instructions:
       - type: AppendToEnvironmentVariable
         variableName: COMMON_CMAKE_ARGS
-        variableValue: " -DQT_INTERNAL_EXAMPLES_INSTALL_PREFIX={{unixPathSeparators .BuildDir}}/installed_examples"
+        variableValue: " -DBOBUI_INTERNAL_EXAMPLES_INSTALL_PREFIX={{unixPathSeparators .BuildDir}}/installed_examples"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TARGET_CMAKE_ARGS
-        variableValue: " -DQT_INTERNAL_EXAMPLES_INSTALL_PREFIX={{unixPathSeparators .BuildDir}}/installed_examples"
+        variableValue: " -DBOBUI_INTERNAL_EXAMPLES_INSTALL_PREFIX={{unixPathSeparators .BuildDir}}/installed_examples"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_CMAKE_ARGS
-        variableValue: " -DQT_DEPLOY_MINIMAL_EXAMPLES=ON"
+        variableValue: " -DBOBUI_DEPLOY_MINIMAL_EXAMPLES=ON"
       - type: AppendToEnvironmentVariable
         variableName: COMMON_TARGET_CMAKE_ARGS
-        variableValue: " -DQT_DEPLOY_MINIMAL_EXAMPLES=ON"
+        variableValue: " -DBOBUI_DEPLOY_MINIMAL_EXAMPLES=ON"
       - type: Group
         instructions:
           - type: AppendToEnvironmentVariable
             variableName: COMMON_CMAKE_ARGS
-            variableValue: " -DQT_INTERNAL_CI_NO_BUILD_IN_TREE_EXAMPLES=ON"
+            variableValue: " -DBOBUI_INTERNAL_CI_NO_BUILD_IN_TREE_EXAMPLES=ON"
           - type: AppendToEnvironmentVariable
             variableName: COMMON_TARGET_CMAKE_ARGS
-            variableValue: " -DQT_INTERNAL_CI_NO_BUILD_IN_TREE_EXAMPLES=ON"
+            variableValue: " -DBOBUI_INTERNAL_CI_NO_BUILD_IN_TREE_EXAMPLES=ON"
         enable_if:
           condition: property
           property: features
@@ -805,38 +805,38 @@ instructions:
       # Only set the custom installation dir if examples are built.
       condition: or
       conditions:
-        # qtbase host case
+        # bobuibase host case
         - condition: runtime
           env_var: CONFIGURE_ARGS
-          contains_value: "QT_BUILD_EXAMPLES=ON"
-        # qtbase target case
+          contains_value: "BOBUI_BUILD_EXAMPLES=ON"
+        # bobuibase target case
         - condition: runtime
           env_var: TARGET_CONFIGURE_ARGS
-          contains_value: "QT_BUILD_EXAMPLES=ON"
-        # non-qtbase host case
+          contains_value: "BOBUI_BUILD_EXAMPLES=ON"
+        # non-bobuibase host case
         - condition: runtime
-          env_var: NON_QTBASE_CONFIGURE_ARGS
-          contains_value: "QT_BUILD_EXAMPLES=ON"
-        # non-qtbase target case
+          env_var: NON_BOBUIBASE_CONFIGURE_ARGS
+          contains_value: "BOBUI_BUILD_EXAMPLES=ON"
+        # non-bobuibase target case
         - condition: runtime
-          env_var: NON_QTBASE_TARGET_CONFIGURE_ARGS
-          contains_value: "QT_BUILD_EXAMPLES=ON"
+          env_var: NON_BOBUIBASE_TARGET_CONFIGURE_ARGS
+          contains_value: "BOBUI_BUILD_EXAMPLES=ON"
         # Same as above, but for configurations marked with UseConfigure
-        # qtbase host case
+        # bobuibase host case
         - condition: runtime
           env_var: CONFIGURE_ARGS
           contains_value: "-make examples"
-        # qtbase target case
+        # bobuibase target case
         - condition: runtime
           env_var: TARGET_CONFIGURE_ARGS
           contains_value: "-make examples"
-        # non-qtbase host case
+        # non-bobuibase host case
         - condition: runtime
-          env_var: NON_QTBASE_CONFIGURE_ARGS
+          env_var: NON_BOBUIBASE_CONFIGURE_ARGS
           contains_value: "-make examples"
-        # non-qtbase target case
+        # non-bobuibase target case
         - condition: runtime
-          env_var: NON_QTBASE_TARGET_CONFIGURE_ARGS
+          env_var: NON_BOBUIBASE_TARGET_CONFIGURE_ARGS
           contains_value: "-make examples"
 
   - type: SetEnvironmentFromScript
@@ -856,7 +856,7 @@ instructions:
 
   - type: EnvironmentVariable
     variableName: HOST_INSTALL_DIR
-    variableValue: "{{$android_host_artifact_path := index .Env \"QT_CI_ARTIFACT_ID_PATH_Android-host\" }}{{index .Env $android_host_artifact_path}}/install"
+    variableValue: "{{$android_host_artifact_path := index .Env \"BOBUI_CI_ARTIFACT_ID_PATH_Android-host\" }}{{index .Env $android_host_artifact_path}}/install"
     enable_if:
       condition: and
       conditions:
@@ -906,7 +906,7 @@ instructions:
         variableValue: "{{.InstallDir}}{{.Env.CI_PATH_SEP}}target"
       - type: EnvironmentVariable
         variableName: TARGET_INSTALL_DIR
-        variableValue: "{{$android_artifact_path:=index .Env \"QT_CI_ARTIFACT_ID_PATH_Android-x86\"}}{{index .Env $android_artifact_path}}/install/target"
+        variableValue: "{{$android_artifact_path:=index .Env \"BOBUI_CI_ARTIFACT_ID_PATH_Android-x86\"}}{{index .Env $android_artifact_path}}/install/target"
         enable_if:
           condition: and
           conditions:

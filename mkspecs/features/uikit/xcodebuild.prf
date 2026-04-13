@@ -1,5 +1,5 @@
 
-# For Qt applications we want Xcode project files as the generated output,
+# For BobUI applications we want Xcode project files as the generated output,
 # but since qmake doesn't handle the transition between makefiles and Xcode
 # project files (which happens when using subdirs), we can't just override
 # MAKEFILE_GENERATOR. Instead, we generate the Xcode project by spawing a

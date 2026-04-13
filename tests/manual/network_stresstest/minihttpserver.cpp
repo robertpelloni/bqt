@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include "minihttpserver.h"
-#include <QtCore/QFile>
-#include <QtCore/QSemaphore>
-#include <QtCore/QUrl>
-#include <QtNetwork/QTcpServer>
-#include <QtNetwork/QTcpSocket>
+#include <BobUICore/QFile>
+#include <BobUICore/QSemaphore>
+#include <BobUICore/QUrl>
+#include <BobUINetwork/BOBUIcpServer>
+#include <BobUINetwork/BOBUIcpSocket>
 
 MiniHttpServer::MiniHttpServer(QObject *parent) :
-    QThread(parent)
+    BOBUIhread(parent)
 {
     readyToGo = new QSemaphore;
     start();
@@ -26,13 +26,13 @@ MiniHttpServer::~MiniHttpServer()
 
 void MiniHttpServer::run()
 {
-    server = new QTcpServer;
+    server = new BOBUIcpServer;
     server->listen(QHostAddress::LocalHost);
     portnum = server->serverPort();
-    connect(server, SIGNAL(newConnection()), this, SLOT(handleConnection()), Qt::DirectConnection);
+    connect(server, SIGNAL(newConnection()), this, SLOT(handleConnection()), BobUI::DirectConnection);
 
     quitObject = new QObject;
-    connect(quitObject, SIGNAL(destroyed()), this, SLOT(quit()), Qt::DirectConnection);
+    connect(quitObject, SIGNAL(destroyed()), this, SLOT(quit()), BobUI::DirectConnection);
 
     readyToGo->release();
     exec();
@@ -44,12 +44,12 @@ void MiniHttpServer::run()
 void MiniHttpServer::handleConnection()
 {
     while (server->hasPendingConnections()) {
-        QTcpSocket *socket = server->nextPendingConnection();
+        BOBUIcpSocket *socket = server->nextPendingConnection();
         new MiniHttpServerConnection(socket); // handles its own lifetime
     }
 }
 
-MiniHttpServerConnection::MiniHttpServerConnection(QTcpSocket *socket)
+MiniHttpServerConnection::MiniHttpServerConnection(BOBUIcpSocket *socket)
     : QObject(socket), socket(socket), source(0)
 {
     connect(socket, SIGNAL(readyRead()), SLOT(handleReadyRead()));

@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/qscroller.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIWidgets/qscroller.h>
+#include <BobUIWidgets/qwidget.h>
 
 #include "private/qscroller_p.h"
 
-#include <QtGui/qevent.h>
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/qstylehints.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/qstylehints.h>
 
-#include <QtCore/qeasingcurve.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
+#include <BobUICore/qeasingcurve.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
 
-#include <QtGui/private/qevent_p.h>
-#include <QtGui/private/qeventpoint_p.h>
+#include <BobUIGui/private/qevent_p.h>
+#include <BobUIGui/private/qeventpoint_p.h>
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 // #include <QDebug>
 
@@ -123,7 +123,7 @@ private slots:
     void mouseEventTimestamp();
 
 private:
-    const std::unique_ptr<QPointingDevice> m_touchScreen{QTest::createTouchDevice()};
+    const std::unique_ptr<QPointingDevice> m_touchScreen{BOBUIest::createTouchDevice()};
 };
 
 /*! \internal
@@ -147,24 +147,24 @@ void tst_QScroller::kineticScroll(tst_QScrollerWidget *sw, QPointF from, QPoint 
     QMutableEventPoint::setScenePosition(touchPoint, touchStart);
     QMutableEventPoint::setGlobalPosition(touchPoint, touchStart);
 
-    QTouchEvent touchEvent1(QEvent::TouchBegin,
+    BOBUIouchEvent touchEvent1(QEvent::TouchBegin,
                             m_touchScreen.get(),
-                            Qt::NoModifier,
-                            (QList<QTouchEvent::TouchPoint>() << touchPoint));
+                            BobUI::NoModifier,
+                            (QList<BOBUIouchEvent::TouchPoint>() << touchPoint));
 
     QApplication::sendEvent(sw, &touchEvent1);
 
     QCOMPARE(s1->state(), QScroller::Pressed);
 
     // send the touch update far enough to trigger a scroll
-    QTest::qWait(200); // we need to wait a little or else the speed would be infinite. now we have around 500 pixel per second.
+    BOBUIest::qWait(200); // we need to wait a little or else the speed would be infinite. now we have around 500 pixel per second.
     QMutableEventPoint::setPosition(touchPoint, touchUpdate);
     QMutableEventPoint::setScenePosition(touchPoint, touchUpdate);
     QMutableEventPoint::setGlobalPosition(touchPoint, touchUpdate);
     QMutableEventPoint::setState(touchPoint, QEventPoint::State::Updated);
-    QTouchEvent touchEvent2(QEvent::TouchUpdate,
+    BOBUIouchEvent touchEvent2(QEvent::TouchUpdate,
                             m_touchScreen.get(),
-                            Qt::NoModifier,
+                            BobUI::NoModifier,
                             (QList<QEventPoint>() << touchPoint));
     QApplication::sendEvent(sw, &touchEvent2);
 
@@ -172,7 +172,7 @@ void tst_QScroller::kineticScroll(tst_QScrollerWidget *sw, QPointF from, QPoint 
     QCOMPARE(sw->receivedPrepare, true);
 
 
-    QTRY_COMPARE(sw->receivedFirst, true);
+    BOBUIRY_COMPARE(sw->receivedFirst, true);
     QCOMPARE(sw->receivedScroll, true);
     QCOMPARE(sw->receivedOvershoot, false);
 
@@ -186,9 +186,9 @@ void tst_QScroller::kineticScroll(tst_QScrollerWidget *sw, QPointF from, QPoint 
     QMutableEventPoint::setScenePosition(touchPoint, touchEnd);
     QMutableEventPoint::setGlobalPosition(touchPoint, touchEnd);
     QMutableEventPoint::setState(touchPoint, QEventPoint::State::Released);
-    QTouchEvent touchEvent5(QEvent::TouchEnd,
+    BOBUIouchEvent touchEvent5(QEvent::TouchEnd,
                             m_touchScreen.get(),
-                            Qt::NoModifier,
+                            BobUI::NoModifier,
                             (QList<QEventPoint>() << touchPoint));
     QApplication::sendEvent(sw, &touchEvent5);
 }
@@ -214,34 +214,34 @@ void tst_QScroller::kineticScrollNoTest(tst_QScrollerWidget *sw, QPointF from, Q
     QMutableEventPoint::setPosition(touchPoint, touchStart);
     QMutableEventPoint::setScenePosition(touchPoint, touchStart);
     QMutableEventPoint::setGlobalPosition(touchPoint, touchStart);
-    QTouchEvent touchEvent1(QEvent::TouchBegin,
+    BOBUIouchEvent touchEvent1(QEvent::TouchBegin,
                             m_touchScreen.get(),
-                            Qt::NoModifier,
+                            BobUI::NoModifier,
                             (QList<QEventPoint>() << touchPoint));
     QApplication::sendEvent(sw, &touchEvent1);
 
     // send the touch update far enough to trigger a scroll
-    QTest::qWait(200); // we need to wait a little or else the speed would be infinite. now we have around 500 pixel per second.
+    BOBUIest::qWait(200); // we need to wait a little or else the speed would be infinite. now we have around 500 pixel per second.
     QMutableEventPoint::setState(touchPoint, QEventPoint::State::Updated);
     QMutableEventPoint::setPosition(touchPoint, touchUpdate);
     QMutableEventPoint::setScenePosition(touchPoint, touchUpdate);
     QMutableEventPoint::setGlobalPosition(touchPoint, touchUpdate);
-    QTouchEvent touchEvent2(QEvent::TouchUpdate,
+    BOBUIouchEvent touchEvent2(QEvent::TouchUpdate,
                             m_touchScreen.get(),
-                            Qt::NoModifier,
+                            BobUI::NoModifier,
                             (QList<QEventPoint>() << touchPoint));
     QApplication::sendEvent(sw, &touchEvent2);
 
-    QTest::qWait(1000 / fps * 2); // wait until the first scroll move
+    BOBUIest::qWait(1000 / fps * 2); // wait until the first scroll move
 
     // send the touch end
     QMutableEventPoint::setState(touchPoint, QEventPoint::State::Released);
     QMutableEventPoint::setPosition(touchPoint, touchEnd);
     QMutableEventPoint::setScenePosition(touchPoint, touchEnd);
     QMutableEventPoint::setGlobalPosition(touchPoint, touchEnd);
-    QTouchEvent touchEvent5(QEvent::TouchEnd,
+    BOBUIouchEvent touchEvent5(QEvent::TouchEnd,
                             m_touchScreen.get(),
-                            Qt::NoModifier,
+                            BobUI::NoModifier,
                             (QList<QEventPoint>() << touchPoint));
     QApplication::sendEvent(sw, &touchEvent5);
 }
@@ -339,7 +339,7 @@ void tst_QScroller::scrollTo()
 {
     QScopedPointer<tst_QScrollerWidget> sw(new tst_QScrollerWidget);
     sw->show();
-    if (!QTest::qWaitForWindowExposed(sw.data()) || !QTest::qWaitForWindowActive(sw.data()))
+    if (!BOBUIest::qWaitForWindowExposed(sw.data()) || !BOBUIest::qWaitForWindowActive(sw.data()))
         QSKIP("Failed to show and activate window");
 
     sw->scrollArea = QRectF(0, 0, 1000, 1000);
@@ -350,38 +350,38 @@ void tst_QScroller::scrollTo()
 
     // a normal scroll
     s1->scrollTo(QPointF(100,100), 100);
-    QTest::qWait(200);
+    BOBUIest::qWait(200);
 
-    QTRY_COMPARE(sw->receivedPrepare, true);
+    BOBUIRY_COMPARE(sw->receivedPrepare, true);
     QCOMPARE(sw->receivedScroll, true);
     QCOMPARE(sw->receivedFirst, true);
     QCOMPARE(sw->receivedLast, true);
     QCOMPARE(sw->receivedOvershoot, false);
-    QTRY_VERIFY(qFuzzyCompare(sw->currentPos.x(), 100));
+    BOBUIRY_VERIFY(qFuzzyCompare(sw->currentPos.x(), 100));
     QVERIFY(qFuzzyCompare(sw->currentPos.y(), 100));
 }
 
 void tst_QScroller::scroll()
 {
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
     // -- good case. normal scroll
     QScopedPointer<tst_QScrollerWidget> sw(new tst_QScrollerWidget());
     sw->scrollArea = QRectF(0, 0, 1000, 1000);
     QScroller::grabGesture(sw.data(), QScroller::TouchGesture);
     sw->setGeometry(100, 100, 400, 300);
     sw->show();
-    if (!QTest::qWaitForWindowExposed(sw.data()) || !QTest::qWaitForWindowActive(sw.data()))
+    if (!BOBUIest::qWaitForWindowExposed(sw.data()) || !BOBUIest::qWaitForWindowActive(sw.data()))
         QSKIP("Failed to show and activate window");
 
     QScroller *s1 = QScroller::scroller(sw.data());
     kineticScroll(sw.data(), QPointF(500, 500), QPoint(0, 0), QPoint(100, 100), QPoint(200, 200));
     // now we should be scrolling
-    QTRY_COMPARE(s1->state(), QScroller::Scrolling);
+    BOBUIRY_COMPARE(s1->state(), QScroller::Scrolling);
 
     // wait until finished, check that no further first scroll is sent
     sw->receivedFirst = false;
     sw->receivedScroll = false;
-    QTRY_VERIFY(s1->state() != QScroller::Scrolling);
+    BOBUIRY_VERIFY(s1->state() != QScroller::Scrolling);
 
     QCOMPARE(sw->receivedFirst, false);
     QCOMPARE(sw->receivedScroll, true);
@@ -395,7 +395,7 @@ void tst_QScroller::scroll()
     sw->scrollArea = QRectF(0, 0, 0, 1000);
     kineticScrollNoTest(sw.data(), QPointF(0, 500), QPoint(0, 0), QPoint(100, 0), QPoint(200, 0));
 
-    QTRY_COMPARE(s1->state(), QScroller::Inactive);
+    BOBUIRY_COMPARE(s1->state(), QScroller::Inactive);
 
     QCOMPARE(sw->currentPos.x(), 0.0);
     QCOMPARE(sw->currentPos.y(), 500.0);
@@ -404,25 +404,25 @@ void tst_QScroller::scroll()
 
 void tst_QScroller::overshoot_data()
 {
-    QTest::addColumn<qreal>("dragDistance");
-    QTest::addColumn<qreal>("scrollDistance");
-    QTest::addColumn<QVariant>("scrollMetric");
-    QTest::addColumn<QRectF>("rectangle");
-    QTest::addColumn<QPointF>("from");
-    QTest::addColumn<QPoint>("touchStart");
-    QTest::addColumn<QPoint>("touchUpdate");
-    QTest::addColumn<QPoint>("touchEnd");
-    QTest::addColumn<bool>("overshoot");
+    BOBUIest::addColumn<qreal>("dragDistance");
+    BOBUIest::addColumn<qreal>("scrollDistance");
+    BOBUIest::addColumn<QVariant>("scrollMetric");
+    BOBUIest::addColumn<QRectF>("rectangle");
+    BOBUIest::addColumn<QPointF>("from");
+    BOBUIest::addColumn<QPoint>("touchStart");
+    BOBUIest::addColumn<QPoint>("touchUpdate");
+    BOBUIest::addColumn<QPoint>("touchEnd");
+    BOBUIest::addColumn<bool>("overshoot");
 
-    QTest::addRow("scrollable good case") << qreal(0.2) << qreal(0.2) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootWhenScrollable))
+    BOBUIest::addRow("scrollable good case") << qreal(0.2) << qreal(0.2) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootWhenScrollable))
                                           << QRectF(0, 0, 1000, 1000) << QPointF(500, 500) << QPoint(0, 0) << QPoint(400, 0) << QPoint(490, 0)  << bool(true) ;
-    QTest::addRow("scrollable bad case") << qreal(0.2) << qreal(0.2) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootWhenScrollable))
+    BOBUIest::addRow("scrollable bad case") << qreal(0.2) << qreal(0.2) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootWhenScrollable))
                                          << QRectF(0, 0, 0, 1000) << QPointF(0, 500) << QPoint(0, 0) << QPoint(400, 0) << QPoint(490, 0)  << bool(false);
-    QTest::addRow("overshoot always on") << qreal(0.2) << qreal(0.2) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootAlwaysOn))
+    BOBUIest::addRow("overshoot always on") << qreal(0.2) << qreal(0.2) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootAlwaysOn))
                                          << QRectF(0, 0, 0, 1000) << QPointF(0, 500) << QPoint(0, 0) << QPoint(400, 0) << QPoint(490, 0)  << bool(true);
-    QTest::addRow("overshoot always off") << qreal(0.2) << qreal(0.2) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootAlwaysOff))
+    BOBUIest::addRow("overshoot always off") << qreal(0.2) << qreal(0.2) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootAlwaysOff))
                                           << QRectF(0, 0, 1000, 1000) << QPointF(500, 500) << QPoint(0, 0) << QPoint(400, 0) << QPoint(490, 0)  << bool(false);
-    QTest::addRow("max overshoot null") << qreal(0.0) << qreal(0.0) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootAlwaysOn))
+    BOBUIest::addRow("max overshoot null") << qreal(0.0) << qreal(0.0) << QVariant(QVariant::fromValue(QScrollerProperties::OvershootAlwaysOn))
                                         << QRectF(0, 0, 1000, 1000) << QPointF(500, 500) << QPoint(0, 0) << QPoint(400, 0) << QPoint(490, 0)  << bool(false) ;
 }
 
@@ -430,12 +430,12 @@ void tst_QScroller::overshoot_data()
 
 void tst_QScroller::overshoot()
 {
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
     QScopedPointer<tst_QScrollerWidget> sw(new tst_QScrollerWidget);
     QScroller::grabGesture(sw.data(), QScroller::TouchGesture);
     sw->setGeometry(100, 100, 400, 300);
     sw->show();
-    if (!QTest::qWaitForWindowExposed(sw.data()) || !QTest::qWaitForWindowActive(sw.data()))
+    if (!BOBUIest::qWaitForWindowExposed(sw.data()) || !BOBUIest::qWaitForWindowActive(sw.data()))
         QSKIP("Failed to show and activate window");
 
     QFETCH(const qreal, dragDistance);
@@ -462,7 +462,7 @@ void tst_QScroller::overshoot()
     sw->scrollArea = rectangle;
     kineticScrollNoTest(sw.data(), from, touchStart, touchUpdate, touchEnd);
 
-    QTRY_COMPARE(s1->state(), QScroller::Inactive);
+    BOBUIRY_COMPARE(s1->state(), QScroller::Inactive);
     QVERIFY(qFuzzyCompare(sw->currentPos.x(), 0));
     QVERIFY(qFuzzyCompare(sw->currentPos.y(), 500));
     QCOMPARE(sw->receivedOvershoot, overshoot);
@@ -471,12 +471,12 @@ void tst_QScroller::overshoot()
 
 void tst_QScroller::overshoot_segments()
 {
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
     QScopedPointer<tst_QScrollerWidget> sw(new tst_QScrollerWidget);
     QScroller::grabGesture(sw.data(), QScroller::TouchGesture);
     sw->setGeometry(100, 100, 400, 300);
     sw->show();
-    if (!QTest::qWaitForWindowExposed(sw.data()) || !QTest::qWaitForWindowActive(sw.data()))
+    if (!BOBUIest::qWaitForWindowExposed(sw.data()) || !BOBUIest::qWaitForWindowActive(sw.data()))
         QSKIP("Failed to show and activate window");
 
     QScroller *s1 = QScroller::scroller(sw.data());
@@ -497,7 +497,7 @@ void tst_QScroller::overshoot_segments()
     const auto& segment = priv->xSegments.head();
     QCOMPARE_LT(segment.startPos + segment.deltaPos, segment.stopPos);
 
-    QTRY_COMPARE(s1->state(), QScroller::Inactive);
+    BOBUIRY_COMPARE(s1->state(), QScroller::Inactive);
     QVERIFY(qFuzzyCompare(sw->currentPos.x(), 0));
     QVERIFY(qFuzzyCompare(sw->currentPos.y(), 500));
     QCOMPARE(sw->receivedOvershoot, false);
@@ -507,7 +507,7 @@ void tst_QScroller::overshoot_segments()
 
 void tst_QScroller::multipleWindows()
 {
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
     QScopedPointer<tst_QScrollerWidget> sw1(new tst_QScrollerWidget);
     sw1->scrollArea = QRectF(0, 0, 1000, 1000);
     QScroller::grabGesture(sw1.data(), QScroller::TouchGesture);
@@ -516,7 +516,7 @@ void tst_QScroller::multipleWindows()
     QScroller *s1 = QScroller::scroller(sw1.data());
     kineticScroll(sw1.data(), QPointF(500, 500), QPoint(0, 0), QPoint(100, 100), QPoint(200, 200));
     // now we should be scrolling
-    QTRY_COMPARE(s1->state(), QScroller::Scrolling);
+    BOBUIRY_COMPARE(s1->state(), QScroller::Scrolling);
 
     // That was fun! Do it again!
     QScopedPointer<tst_QScrollerWidget> sw2(new tst_QScrollerWidget());
@@ -527,15 +527,15 @@ void tst_QScroller::multipleWindows()
     QScroller *s2 = QScroller::scroller(sw2.data());
     kineticScroll(sw2.data(), QPointF(500, 500), QPoint(0, 0), QPoint(100, 100), QPoint(200, 200));
     // now we should be scrolling
-    QTRY_COMPARE(s2->state(), QScroller::Scrolling);
+    BOBUIRY_COMPARE(s2->state(), QScroller::Scrolling);
 
     // wait for both to stop
-    QTRY_VERIFY(s1->state() != QScroller::Scrolling);
-    QTRY_VERIFY(s2->state() != QScroller::Scrolling);
+    BOBUIRY_VERIFY(s1->state() != QScroller::Scrolling);
+    BOBUIRY_VERIFY(s2->state() != QScroller::Scrolling);
 
     sw1.reset(); // destroy one window
     sw2->reset(); // reset the other scroller's internal state
-    // make sure we can still scroll the remaining one without crashing (QTBUG-71232)
+    // make sure we can still scroll the remaining one without crashing (BOBUIBUG-71232)
     kineticScroll(sw2.data(), QPointF(500, 500), QPoint(0, 0), QPoint(100, 100), QPoint(200, 200));
 #endif
 }
@@ -543,22 +543,22 @@ void tst_QScroller::multipleWindows()
 /*!
     This test verifies that mouse events arrive at the target widget
     with valid timestamp, even if there is a gesture filtering (and then
-    replaying a copy of) the event. QTBUG-102010
+    replaying a copy of) the event. BOBUIBUG-102010
 
     We cannot truly simulate the double click here, as simulated events don't
     go through the exact same event machinery as real events, so double clicks
-    don't get generated by Qt here. But we can verify that the timestamps of
+    don't get generated by BobUI here. But we can verify that the timestamps of
     the eventually delivered events are maintained.
 */
 void tst_QScroller::mouseEventTimestamp()
 {
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
     QScopedPointer<tst_QScrollerWidget> sw(new tst_QScrollerWidget());
     sw->scrollArea = QRectF(0, 0, 1000, 1000);
     QScroller::grabGesture(sw.data(), QScroller::LeftMouseButtonGesture);
     sw->setGeometry(100, 100, 400, 300);
     sw->show();
-    if (!QTest::qWaitForWindowExposed(sw.data()) || !QTest::qWaitForWindowActive(sw.data()))
+    if (!BOBUIest::qWaitForWindowExposed(sw.data()) || !BOBUIest::qWaitForWindowActive(sw.data()))
         QSKIP("Failed to show and activate window");
 
     QScroller *s1 = QScroller::scroller(sw.data());
@@ -583,14 +583,14 @@ void tst_QScroller::mouseEventTimestamp()
     // Presses are filtered and then delayed by the scroller/gesture machinery,
     // so we first record all events, and then make sure that the relative timestamps
     // are maintained also for the replayed or synthesized events.
-    QTest::mousePress(sw->windowHandle(), Qt::LeftButton, {}, point);
+    BOBUIest::mousePress(sw->windowHandle(), BobUI::LeftButton, {}, point);
     QCOMPARE(s1->state(), QScroller::Pressed);
-    QTest::mouseRelease(sw->windowHandle(), Qt::LeftButton, {}, point, interval);
+    BOBUIest::mouseRelease(sw->windowHandle(), BobUI::LeftButton, {}, point, interval);
     QCOMPARE(s1->state(), QScroller::Inactive);
-    QTest::mousePress(sw->windowHandle(), Qt::LeftButton, {}, point, interval);
+    BOBUIest::mousePress(sw->windowHandle(), BobUI::LeftButton, {}, point, interval);
     QCOMPARE(s1->state(), QScroller::Pressed);
     // also filtered and delayed by the scroller
-    QTest::mouseRelease(sw->windowHandle(), Qt::LeftButton, {}, point, interval);
+    BOBUIest::mouseRelease(sw->windowHandle(), BobUI::LeftButton, {}, point, interval);
     QCOMPARE(s1->state(), QScroller::Inactive);
     int lastTimestamp = -1;
     for (int timestamp : std::as_const(eventFilter.timestamps)) {
@@ -600,6 +600,6 @@ void tst_QScroller::mouseEventTimestamp()
 #endif
 }
 
-QTEST_MAIN(tst_QScroller)
+BOBUIEST_MAIN(tst_QScroller)
 
 #include "tst_qscroller.moc"

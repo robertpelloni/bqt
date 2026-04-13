@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEGLFSWINDOW_H
 #define QEGLFSWINDOW_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -20,16 +20,16 @@
 #include "qeglfsscreen_p.h"
 
 #include <qpa/qplatformwindow.h>
-#ifndef QT_NO_OPENGL
-# include <QtOpenGL/private/qopenglcompositor_p.h>
+#ifndef BOBUI_NO_OPENGL
+# include <BobUIOpenGL/private/qopenglcompositor_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLCompositorBackingStore;
 class QPlatformTextureList;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 class Q_EGLFS_EXPORT QEglFSWindow : public QPlatformWindow, public QOpenGLCompositorWindow
 #else
 class Q_EGLFS_EXPORT QEglFSWindow : public QPlatformWindow
@@ -69,7 +69,7 @@ public:
 
     bool isRaster() const;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOpenGLCompositorBackingStore *backingStore() const override { return m_backingStore; }
     void setBackingStore(QOpenGLCompositorBackingStore *backingStore) override;
     QWindow *sourceWindow() const override;
@@ -78,7 +78,7 @@ public:
 #endif
 
 protected:
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOpenGLCompositorBackingStore *m_backingStore;
     QOpenGLContext *m_rasterCompositingContext;
 #endif
@@ -98,6 +98,6 @@ protected:
     Flags m_flags;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEGLFSWINDOW_H

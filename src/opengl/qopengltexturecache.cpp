@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopengltexturecache_p.h"
 #include <private/qopengltextureuploader_p.h>
@@ -8,9 +8,9 @@
 #include <private/qimagepixmapcleanuphooks_p.h>
 #include <qpa/qplatformpixmap.h>
 
-#include <qtopengl_tracepoints_p.h>
+#include <bobuiopengl_tracepoints_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLTextureCacheWrapper
 {
@@ -42,16 +42,16 @@ private:
     QMutex m_mutex;
 };
 
-Q_GLOBAL_STATIC(QOpenGLTextureCacheWrapper, qt_texture_caches)
+Q_GLOBAL_STATIC(QOpenGLTextureCacheWrapper, bobui_texture_caches)
 
 QOpenGLTextureCache *QOpenGLTextureCache::cacheForContext(QOpenGLContext *context)
 {
-    return qt_texture_caches()->cacheForContext(context);
+    return bobui_texture_caches()->cacheForContext(context);
 }
 
 void QOpenGLTextureCacheWrapper::cleanupTexturesForCacheKey(qint64 key)
 {
-    QList<QOpenGLSharedResource *> resources = qt_texture_caches()->m_resource.resources();
+    QList<QOpenGLSharedResource *> resources = bobui_texture_caches()->m_resource.resources();
     for (QList<QOpenGLSharedResource *>::iterator it = resources.begin(); it != resources.end(); ++it)
         static_cast<QOpenGLTextureCache *>(*it)->invalidate(key);
 }
@@ -64,7 +64,7 @@ void QOpenGLTextureCacheWrapper::cleanupTexturesForPixmapData(QPlatformPixmap *p
 static quint64 cacheSize()
 {
     bool ok = false;
-    const int envCacheSize = qEnvironmentVariableIntValue("QT_OPENGL_TEXTURE_CACHE_SIZE", &ok);
+    const int envCacheSize = qEnvironmentVariableIntValue("BOBUI_OPENGL_TEXTURE_CACHE_SIZE", &ok);
     if (ok)
         return envCacheSize;
 
@@ -135,8 +135,8 @@ QOpenGLTextureCache::BindResult QOpenGLTextureCache::bindTexture(QOpenGLContext 
     return result;
 }
 
-Q_TRACE_POINT(qtopengl, QOpenGLTextureCache_bindTexture_entry, QOpenGLContext *context, qint64 key, const unsigned char *image, int options);
-Q_TRACE_POINT(qtopengl, QOpenGLTextureCache_bindTexture_exit);
+Q_TRACE_POINT(bobuiopengl, QOpenGLTextureCache_bindTexture_entry, QOpenGLContext *context, qint64 key, const unsigned char *image, int options);
+Q_TRACE_POINT(bobuiopengl, QOpenGLTextureCache_bindTexture_exit);
 
 QOpenGLTextureCache::BindResult QOpenGLTextureCache::bindTexture(QOpenGLContext *context,
                                                                  qint64 key,
@@ -183,4 +183,4 @@ QOpenGLCachedTexture::QOpenGLCachedTexture(GLuint id, QOpenGLTextureUploader::Bi
     m_resource = new QOpenGLSharedResourceGuard(context, id, freeTexture);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

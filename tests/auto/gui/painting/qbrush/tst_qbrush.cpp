@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include "qbrush.h"
 #include <QPainter>
@@ -53,34 +53,34 @@ tst_QBrush::tst_QBrush()
 
 void tst_QBrush::operator_eq_eq_data()
 {
-    QTest::addColumn<QBrush>("brush1");
-    QTest::addColumn<QBrush>("brush2");
-    QTest::addColumn<bool>("isEqual");
+    BOBUIest::addColumn<QBrush>("brush1");
+    BOBUIest::addColumn<QBrush>("brush2");
+    BOBUIest::addColumn<bool>("isEqual");
 
     QLinearGradient lg(10, 10, 100, 100);
-    lg.setColorAt(0, Qt::red);
-    lg.setColorAt(0.5, Qt::blue);
-    lg.setColorAt(1, Qt::green);
+    lg.setColorAt(0, BobUI::red);
+    lg.setColorAt(0.5, BobUI::blue);
+    lg.setColorAt(1, BobUI::green);
 
-    QTest::newRow("black vs black") << QBrush(Qt::black) << QBrush(Qt::black) << true;
-    QTest::newRow("black vs blue") << QBrush(Qt::black) << QBrush(Qt::blue) << false;
+    BOBUIest::newRow("black vs black") << QBrush(BobUI::black) << QBrush(BobUI::black) << true;
+    BOBUIest::newRow("black vs blue") << QBrush(BobUI::black) << QBrush(BobUI::blue) << false;
 
-    QTest::newRow("red vs no") << QBrush(Qt::red) << QBrush(Qt::NoBrush) << false;
-    QTest::newRow("no vs no") << QBrush(Qt::NoBrush) << QBrush(Qt::NoBrush) << true;
+    BOBUIest::newRow("red vs no") << QBrush(BobUI::red) << QBrush(BobUI::NoBrush) << false;
+    BOBUIest::newRow("no vs no") << QBrush(BobUI::NoBrush) << QBrush(BobUI::NoBrush) << true;
 
-    QTest::newRow("lg vs same lg") << QBrush(lg) << QBrush(lg) << true;
-    QTest::newRow("lg vs diff lg") << QBrush(lg) << QBrush(QLinearGradient(QPoint(0, 0), QPoint(1, 1)))
+    BOBUIest::newRow("lg vs same lg") << QBrush(lg) << QBrush(lg) << true;
+    BOBUIest::newRow("lg vs diff lg") << QBrush(lg) << QBrush(QLinearGradient(QPoint(0, 0), QPoint(1, 1)))
                                 << false;
 
-    QTest::newRow("rad vs con") << QBrush(QRadialGradient(0, 0, 0, 0, 0)) << QBrush(QConicalGradient(0, 0, 0)) << false;
+    BOBUIest::newRow("rad vs con") << QBrush(QRadialGradient(0, 0, 0, 0, 0)) << QBrush(QConicalGradient(0, 0, 0)) << false;
 
     QBrush b1(lg);
     QBrush b2(lg);
-    b1.setTransform(QTransform().scale(2, 2));
-    QTest::newRow("lg with transform vs same lg") << b1 << b2 << false;
+    b1.setTransform(BOBUIransform().scale(2, 2));
+    BOBUIest::newRow("lg with transform vs same lg") << b1 << b2 << false;
 
-    b2.setTransform(QTransform().scale(2, 2));
-    QTest::newRow("lg w/transform vs same lg w/same transform") << b1 << b2 << true;
+    b2.setTransform(BOBUIransform().scale(2, 2));
+    BOBUIest::newRow("lg w/transform vs same lg w/same transform") << b1 << b2 << true;
 
 }
 
@@ -94,7 +94,7 @@ void tst_QBrush::operator_eq_eq()
     // exercise operator== overloads
     QCOMPARE(QBrush(brush1.color()), brush1.color());
     QCOMPARE(QBrush(brush1.style()), brush1.style());
-    QCOMPARE(QBrush(Qt::black), Qt::black);
+    QCOMPARE(QBrush(BobUI::black), BobUI::black);
 
     // exercise operator== overloads with implicit construction
     const QGradient warmFlame = QGradient::WarmFlame;
@@ -104,19 +104,19 @@ void tst_QBrush::operator_eq_eq()
 
 void tst_QBrush::stream_data()
 {
-    QTest::addColumn<QBrush>("brush");
+    BOBUIest::addColumn<QBrush>("brush");
 
     QLinearGradient lg(10, 10, 100, 100);
-    lg.setColorAt(0, Qt::red);
-    lg.setColorAt(0.5, Qt::blue);
-    lg.setColorAt(1, Qt::green);
+    lg.setColorAt(0, BobUI::red);
+    lg.setColorAt(0.5, BobUI::blue);
+    lg.setColorAt(1, BobUI::green);
 
-    QTest::newRow("black") << QBrush(Qt::black);
-    QTest::newRow("red") << QBrush(Qt::red);
-    QTest::newRow("no") << QBrush(Qt::NoBrush);
-    QTest::newRow("lg") << QBrush(lg);
-    QTest::newRow("rad") << QBrush(QRadialGradient(0, 0, 0, 0, 0));
-    QTest::newRow("con") << QBrush(QConicalGradient(0, 0, 0));
+    BOBUIest::newRow("black") << QBrush(BobUI::black);
+    BOBUIest::newRow("red") << QBrush(BobUI::red);
+    BOBUIest::newRow("no") << QBrush(BobUI::NoBrush);
+    BOBUIest::newRow("lg") << QBrush(lg);
+    BOBUIest::newRow("rad") << QBrush(QRadialGradient(0, 0, 0, 0, 0));
+    BOBUIest::newRow("con") << QBrush(QConicalGradient(0, 0, 0));
 }
 
 void tst_QBrush::stream()
@@ -246,64 +246,64 @@ void tst_QBrush::testQGradientCopyConstructor()
 
 void tst_QBrush::badStyles()
 {
-    // QBrush(Qt::BrushStyle) constructor
-    QCOMPARE(QBrush(Qt::LinearGradientPattern).style(), Qt::NoBrush);
-    QCOMPARE(QBrush(Qt::RadialGradientPattern).style(), Qt::NoBrush);
-    QCOMPARE(QBrush(Qt::ConicalGradientPattern).style(), Qt::NoBrush);
-    QCOMPARE(QBrush(Qt::TexturePattern).style(), Qt::NoBrush);
+    // QBrush(BobUI::BrushStyle) constructor
+    QCOMPARE(QBrush(BobUI::LinearGradientPattern).style(), BobUI::NoBrush);
+    QCOMPARE(QBrush(BobUI::RadialGradientPattern).style(), BobUI::NoBrush);
+    QCOMPARE(QBrush(BobUI::ConicalGradientPattern).style(), BobUI::NoBrush);
+    QCOMPARE(QBrush(BobUI::TexturePattern).style(), BobUI::NoBrush);
 
-    // QBrush(QColor, Qt::BrushStyle) constructor
-    QCOMPARE(QBrush(QColor(0, 0, 0), Qt::LinearGradientPattern).style(), Qt::NoBrush);
-    QCOMPARE(QBrush(QColor(0, 0, 0), Qt::RadialGradientPattern).style(), Qt::NoBrush);
-    QCOMPARE(QBrush(QColor(0, 0, 0), Qt::ConicalGradientPattern).style(), Qt::NoBrush);
-    QCOMPARE(QBrush(QColor(0, 0, 0), Qt::TexturePattern).style(), Qt::NoBrush);
+    // QBrush(QColor, BobUI::BrushStyle) constructor
+    QCOMPARE(QBrush(QColor(0, 0, 0), BobUI::LinearGradientPattern).style(), BobUI::NoBrush);
+    QCOMPARE(QBrush(QColor(0, 0, 0), BobUI::RadialGradientPattern).style(), BobUI::NoBrush);
+    QCOMPARE(QBrush(QColor(0, 0, 0), BobUI::ConicalGradientPattern).style(), BobUI::NoBrush);
+    QCOMPARE(QBrush(QColor(0, 0, 0), BobUI::TexturePattern).style(), BobUI::NoBrush);
 
-    // QBrush(Qt::GlobalColor, Qt::BrushStyle) constructor
-    QCOMPARE(QBrush(Qt::black, Qt::LinearGradientPattern).style(), Qt::NoBrush);
-    QCOMPARE(QBrush(Qt::black, Qt::RadialGradientPattern).style(), Qt::NoBrush);
-    QCOMPARE(QBrush(Qt::black, Qt::ConicalGradientPattern).style(), Qt::NoBrush);
-    QCOMPARE(QBrush(Qt::black, Qt::TexturePattern).style(), Qt::NoBrush);
+    // QBrush(BobUI::GlobalColor, BobUI::BrushStyle) constructor
+    QCOMPARE(QBrush(BobUI::black, BobUI::LinearGradientPattern).style(), BobUI::NoBrush);
+    QCOMPARE(QBrush(BobUI::black, BobUI::RadialGradientPattern).style(), BobUI::NoBrush);
+    QCOMPARE(QBrush(BobUI::black, BobUI::ConicalGradientPattern).style(), BobUI::NoBrush);
+    QCOMPARE(QBrush(BobUI::black, BobUI::TexturePattern).style(), BobUI::NoBrush);
 
     // Set style...
-    QBrush brush(Qt::red);
+    QBrush brush(BobUI::red);
 
-    brush.setStyle(Qt::LinearGradientPattern);
-    QCOMPARE(brush.style(), Qt::SolidPattern);
+    brush.setStyle(BobUI::LinearGradientPattern);
+    QCOMPARE(brush.style(), BobUI::SolidPattern);
 
-    brush.setStyle(Qt::RadialGradientPattern);
-    QCOMPARE(brush.style(), Qt::SolidPattern);
+    brush.setStyle(BobUI::RadialGradientPattern);
+    QCOMPARE(brush.style(), BobUI::SolidPattern);
 
-    brush.setStyle(Qt::ConicalGradientPattern);
-    QCOMPARE(brush.style(), Qt::SolidPattern);
+    brush.setStyle(BobUI::ConicalGradientPattern);
+    QCOMPARE(brush.style(), BobUI::SolidPattern);
 
-    brush.setStyle(Qt::TexturePattern);
-    QCOMPARE(brush.style(), Qt::SolidPattern);
+    brush.setStyle(BobUI::TexturePattern);
+    QCOMPARE(brush.style(), BobUI::SolidPattern);
 
 }
 
 void tst_QBrush::gradientStops()
 {
     QLinearGradient gradient;
-    gradient.setColorAt(0, Qt::red);
-    gradient.setColorAt(1, Qt::blue);
+    gradient.setColorAt(0, BobUI::red);
+    gradient.setColorAt(1, BobUI::blue);
 
     QCOMPARE(gradient.stops().size(), 2);
 
-    QCOMPARE(gradient.stops().at(0), QGradientStop(0, QColor(Qt::red)));
-    QCOMPARE(gradient.stops().at(1), QGradientStop(1, QColor(Qt::blue)));
+    QCOMPARE(gradient.stops().at(0), QGradientStop(0, QColor(BobUI::red)));
+    QCOMPARE(gradient.stops().at(1), QGradientStop(1, QColor(BobUI::blue)));
 
-    gradient.setColorAt(0, Qt::blue);
-    gradient.setColorAt(1, Qt::red);
+    gradient.setColorAt(0, BobUI::blue);
+    gradient.setColorAt(1, BobUI::red);
 
     QCOMPARE(gradient.stops().size(), 2);
 
-    QCOMPARE(gradient.stops().at(0), QGradientStop(0, QColor(Qt::blue)));
-    QCOMPARE(gradient.stops().at(1), QGradientStop(1, QColor(Qt::red)));
+    QCOMPARE(gradient.stops().at(0), QGradientStop(0, QColor(BobUI::blue)));
+    QCOMPARE(gradient.stops().at(1), QGradientStop(1, QColor(BobUI::red)));
 
-    gradient.setColorAt(0.5, Qt::green);
+    gradient.setColorAt(0.5, BobUI::green);
 
     QCOMPARE(gradient.stops().size(), 3);
-    QCOMPARE(gradient.stops().at(1), QGradientStop(0.5, QColor(Qt::green)));
+    QCOMPARE(gradient.stops().at(1), QGradientStop(0.5, QColor(BobUI::green)));
 
     // A hack in parseStopNode() in qsvghandler.cpp depends on inserting stops at NaN.
     gradient.setStops(QGradientStops() << QGradientStop(qQNaN(), QColor()));
@@ -334,8 +334,8 @@ void fill(QPaintDevice *pd) {
     int w = pd->width();
     int h = pd->height();
 
-    p.fillRect(0, 0, w, h, Qt::white);
-    p.fillRect(0, 0, w/3, h/3, Qt::black);
+    p.fillRect(0, 0, w, h, BobUI::white);
+    p.fillRect(0, 0, w/3, h/3, BobUI::black);
 }
 
 void tst_QBrush::textures()
@@ -377,22 +377,22 @@ void tst_QBrush::textures()
 
 void tst_QBrush::swap()
 {
-    QBrush b1(Qt::black), b2(Qt::white);
+    QBrush b1(BobUI::black), b2(BobUI::white);
     b1.swap(b2);
-    QCOMPARE(b1.color(), QColor(Qt::white));
-    QCOMPARE(b2.color(), QColor(Qt::black));
+    QCOMPARE(b1.color(), QColor(BobUI::white));
+    QCOMPARE(b2.color(), QColor(BobUI::black));
 }
 
 void tst_QBrush::nullBrush()
 {
-    QBrush brush(QColor(100,0,0), Qt::NoBrush);
+    QBrush brush(QColor(100,0,0), BobUI::NoBrush);
     QCOMPARE(brush.color(), QColor(100,0,0));
 }
 
 void tst_QBrush::isOpaque()
 {
     QBitmap bm(8, 8);
-    bm.fill(Qt::black);
+    bm.fill(BobUI::black);
 
     QBrush brush(bm);
     QVERIFY(!brush.isOpaque());
@@ -404,7 +404,7 @@ void tst_QBrush::debug()
     fill(&pixmap_source);
     QBrush pixmap_brush;
     pixmap_brush.setTexture(pixmap_source);
-    QCOMPARE(pixmap_brush.style(), Qt::TexturePattern);
+    QCOMPARE(pixmap_brush.style(), BobUI::TexturePattern);
     qDebug() << pixmap_brush; // don't crash
 }
 
@@ -439,8 +439,8 @@ void tst_QBrush::textureBrushStream()
         stream2 >> loadedBrush2;
     }
 
-    QCOMPARE(loadedBrush1.style(), Qt::TexturePattern);
-    QCOMPARE(loadedBrush2.style(), Qt::TexturePattern);
+    QCOMPARE(loadedBrush1.style(), BobUI::TexturePattern);
+    QCOMPARE(loadedBrush2.style(), BobUI::TexturePattern);
     // pixmaps may have been converted to system format
     QCOMPARE(loadedBrush1.texture().toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied),
              pixmap_source.toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied));
@@ -451,7 +451,7 @@ void tst_QBrush::textureBrushComparison()
 {
     QImage image1(10, 10, QImage::Format_RGB32);
     QRasterPlatformPixmap* ppixmap = new QRasterPlatformPixmap(QPlatformPixmap::PixmapType);
-    ppixmap->fromImage(image1, Qt::NoFormatConversion);
+    ppixmap->fromImage(image1, BobUI::NoFormatConversion);
     QPixmap pixmap(ppixmap);
     QImage image2(image1);
 
@@ -464,5 +464,5 @@ void tst_QBrush::textureBrushComparison()
     QCOMPARE(pixmapBrush, imageBrush1);
 }
 
-QTEST_MAIN(tst_QBrush)
+BOBUIEST_MAIN(tst_QBrush)
 #include "tst_qbrush.moc"

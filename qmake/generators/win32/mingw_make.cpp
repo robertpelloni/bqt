@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "mingw_make.h"
 #include "option.h"
@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QString MingwMakefileGenerator::escapeDependencyPath(const QString &path) const
 {
@@ -52,7 +52,7 @@ bool MingwMakefileGenerator::processPrlFileBase(QString &origFile, QStringView o
     return Win32MakefileGenerator::processPrlFileBase(origFile, origName, fixedBase, slashOff);
 }
 
-bool MingwMakefileGenerator::writeMakefile(QTextStream &t)
+bool MingwMakefileGenerator::writeMakefile(BOBUIextStream &t)
 {
     writeHeader(t);
     if (writeDummyMakefile(t))
@@ -85,7 +85,7 @@ QString MingwMakefileGenerator::installRoot() const
     return QStringLiteral("$(INSTALL_ROOT:@msyshack@%=%)");
 }
 
-void MingwMakefileGenerator::writeMingwParts(QTextStream &t)
+void MingwMakefileGenerator::writeMingwParts(BOBUIextStream &t)
 {
     writeStandardParts(t);
 
@@ -96,13 +96,13 @@ void MingwMakefileGenerator::writeMingwParts(QTextStream &t)
           << finalizeDependencyPaths(findDependencies(header)).join(" \\\n\t\t")
           << "\n\t" << mkdir_p_asstring(preCompHeaderOut)
           << "\n\t$(CC) -x c-header -c $(CFLAGS) $(INCPATH) -o " << escapeFilePath(cHeader)
-          << ' ' << escapeFilePath(header) << Qt::endl << Qt::endl;
+          << ' ' << escapeFilePath(header) << BobUI::endl << BobUI::endl;
         QString cppHeader = preCompHeaderOut + Option::dir_sep + "c++";
         t << escapeDependencyPath(cppHeader) << ": " << escapeDependencyPath(header) << " "
           << finalizeDependencyPaths(findDependencies(header)).join(" \\\n\t\t")
           << "\n\t" << mkdir_p_asstring(preCompHeaderOut)
           << "\n\t$(CXX) -x c++-header -c $(CXXFLAGS) $(INCPATH) -o " << escapeFilePath(cppHeader)
-          << ' ' << escapeFilePath(header) << Qt::endl << Qt::endl;
+          << ' ' << escapeFilePath(header) << BobUI::endl << BobUI::endl;
     }
 }
 
@@ -171,13 +171,13 @@ void MingwMakefileGenerator::init()
     }
 }
 
-void MingwMakefileGenerator::writeIncPart(QTextStream &t)
+void MingwMakefileGenerator::writeIncPart(BOBUIextStream &t)
 {
     t << "INCPATH       = ";
 
     const ProStringList &incs = project->values("INCLUDEPATH");
     QFile responseFile;
-    QTextStream responseStream;
+    BOBUIextStream responseStream;
     QChar sep(' ');
     int totalLength = std::accumulate(incs.constBegin(), incs.constEnd(), 0,
                                       [](int total, const ProString &inc) {
@@ -187,7 +187,7 @@ void MingwMakefileGenerator::writeIncPart(QTextStream &t)
         const QString fileName = createResponseFile("incpath", incs, "-I");
         if (!fileName.isEmpty()) {
             t << '@' + fileName;
-            t << Qt::endl;
+            t << BobUI::endl;
             return;
         }
     }
@@ -197,25 +197,25 @@ void MingwMakefileGenerator::writeIncPart(QTextStream &t)
         inc.replace('\\', '/');
         t << "-I" << escapeFilePath(inc) << sep;
     }
-    t << Qt::endl;
+    t << BobUI::endl;
 }
 
-void MingwMakefileGenerator::writeLibsPart(QTextStream &t)
+void MingwMakefileGenerator::writeLibsPart(BOBUIextStream &t)
 {
     if(project->isActiveConfig("staticlib") && project->first("TEMPLATE") == "lib") {
-        t << "LIB        =        " << var("QMAKE_LIB") << Qt::endl;
+        t << "LIB        =        " << var("QMAKE_LIB") << BobUI::endl;
     } else {
-        t << "LINKER      =        " << var("QMAKE_LINK") << Qt::endl;
-        t << "LFLAGS        =        " << var("QMAKE_LFLAGS") << Qt::endl;
+        t << "LINKER      =        " << var("QMAKE_LINK") << BobUI::endl;
+        t << "LFLAGS        =        " << var("QMAKE_LFLAGS") << BobUI::endl;
         t << "LIBS        =        "
           << fixLibFlags("LIBS").join(' ') << ' '
           << fixLibFlags("LIBS_PRIVATE").join(' ') << ' '
           << fixLibFlags("QMAKE_LIBS").join(' ') << ' '
-          << fixLibFlags("QMAKE_LIBS_PRIVATE").join(' ') << Qt::endl;
+          << fixLibFlags("QMAKE_LIBS_PRIVATE").join(' ') << BobUI::endl;
     }
 }
 
-void MingwMakefileGenerator::writeObjectsPart(QTextStream &t)
+void MingwMakefileGenerator::writeObjectsPart(BOBUIextStream &t)
 {
     linkerResponseFile = maybeCreateLinkerResponseFile();
     if (!linkerResponseFile.isValid()) {
@@ -233,7 +233,7 @@ void MingwMakefileGenerator::writeObjectsPart(QTextStream &t)
     Win32MakefileGenerator::writeObjectsPart(t);
 }
 
-void MingwMakefileGenerator::writeBuildRulesPart(QTextStream &t)
+void MingwMakefileGenerator::writeBuildRulesPart(BOBUIextStream &t)
 {
     t << "first: all\n";
     t << "all: " << escapeDependencyPath(fileFixify(Option::output.fileName()))
@@ -263,10 +263,10 @@ void MingwMakefileGenerator::writeBuildRulesPart(QTextStream &t)
     }
     if(!project->isEmpty("QMAKE_POST_LINK"))
         t << "\n\t" <<var("QMAKE_POST_LINK");
-    t << Qt::endl;
+    t << BobUI::endl;
 }
 
-void MingwMakefileGenerator::writeRcFilePart(QTextStream &t)
+void MingwMakefileGenerator::writeRcFilePart(BOBUIextStream &t)
 {
     const QString rc_file = fileFixify(project->first("RC_FILE").toQString());
 
@@ -323,4 +323,4 @@ QStringList &MingwMakefileGenerator::findDependencies(const QString &file)
     return aList;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

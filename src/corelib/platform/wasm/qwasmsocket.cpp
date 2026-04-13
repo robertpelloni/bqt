@@ -1,22 +1,22 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwasmsocket_p.h"
 #include "qwasmglobal_p.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qsocketnotifier.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qsocketnotifier.h>
 
 #include "emscripten.h"
 #include <sys/ioctl.h>
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 #define LOCK_GUARD(M) std::lock_guard<std::mutex> lock(M)
 #else
 #define LOCK_GUARD(M)
 #endif
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 Q_CONSTINIT std::mutex QWasmSocket::g_socketDataMutex;
 #endif
 
@@ -104,8 +104,8 @@ void QWasmSocket::socketError(int socket, int err, const char* msg, void *contex
     // This is most easily reproducible by adding print statements, where each print requires
     // taking a mutex lock. Work around this by running the callback asynchronously, i.e. by using
     // a native zero-timer, to make sure the main thread stack is completely unwond before calling
-    // the Qt handler.
-    // It is currently unclear if this problem is caused by code in Qt or in Emscripten, or
+    // the BobUI handler.
+    // It is currently unclear if this problem is caused by code in BobUI or in Emscripten, or
     // if this completely fixes the problem.
     qwasmglobal::runAsync([socket](){
         auto notifiersRange = g_socketNotifiers.equal_range(socket);

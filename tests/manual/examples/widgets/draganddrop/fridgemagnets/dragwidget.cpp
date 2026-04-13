@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "draglabel.h"
 #include "dragwidget.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 static inline QString fridgetMagnetsMimeType() { return QStringLiteral("application/x-fridgemagnet"); }
 
@@ -14,7 +14,7 @@ DragWidget::DragWidget(QWidget *parent)
 {
     QFile dictionaryFile(QStringLiteral(":/dictionary/words.txt"));
     dictionaryFile.open(QFile::ReadOnly);
-    QTextStream inputStream(&dictionaryFile);
+    BOBUIextStream inputStream(&dictionaryFile);
 //! [0]
 
 //! [1]
@@ -27,7 +27,7 @@ DragWidget::DragWidget(QWidget *parent)
             DragLabel *wordLabel = new DragLabel(word, this);
             wordLabel->move(x, y);
             wordLabel->show();
-            wordLabel->setAttribute(Qt::WA_DeleteOnClose);
+            wordLabel->setAttribute(BobUI::WA_DeleteOnClose);
             x += wordLabel->width() + 2;
             if (x >= 245) {
                 x = 5;
@@ -39,7 +39,7 @@ DragWidget::DragWidget(QWidget *parent)
 
 //! [2]
     QPalette newPalette = palette();
-    newPalette.setColor(QPalette::Window, Qt::white);
+    newPalette.setColor(QPalette::Window, BobUI::white);
     setPalette(newPalette);
 
     setMinimumSize(400, qMax(200, y));
@@ -55,7 +55,7 @@ void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 //! [4] //! [5]
     if (event->mimeData()->hasFormat(fridgetMagnetsMimeType())) {
         if (children().contains(event->source())) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -75,7 +75,7 @@ void DragWidget::dragMoveEvent(QDragMoveEvent *event)
 {
     if (event->mimeData()->hasFormat(fridgetMagnetsMimeType())) {
         if (children().contains(event->source())) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -105,10 +105,10 @@ void DragWidget::dropEvent(QDropEvent *event)
         DragLabel *newLabel = new DragLabel(text, this);
         newLabel->move(event->position().toPoint() - offset);
         newLabel->show();
-        newLabel->setAttribute(Qt::WA_DeleteOnClose);
+        newLabel->setAttribute(BobUI::WA_DeleteOnClose);
 
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -116,14 +116,14 @@ void DragWidget::dropEvent(QDropEvent *event)
 //! [11] //! [12]
     } else if (event->mimeData()->hasText()) {
         QStringList pieces = event->mimeData()->text().split(
-            QRegularExpression(QStringLiteral("\\s+")), Qt::SkipEmptyParts);
+            QRegularExpression(QStringLiteral("\\s+")), BobUI::SkipEmptyParts);
         QPoint position = event->position().toPoint();
 
         for (const QString &piece : pieces) {
             DragLabel *newLabel = new DragLabel(piece, this);
             newLabel->move(position);
             newLabel->show();
-            newLabel->setAttribute(Qt::WA_DeleteOnClose);
+            newLabel->setAttribute(BobUI::WA_DeleteOnClose);
 
             position += QPoint(newLabel->width(), 0);
         }
@@ -167,7 +167,7 @@ void DragWidget::mousePressEvent(QMouseEvent *event)
 //! [16]
 
 //! [17]
-    if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction)
+    if (drag->exec(BobUI::MoveAction | BobUI::CopyAction, BobUI::CopyAction) == BobUI::MoveAction)
         child->close();
     else
         child->show();

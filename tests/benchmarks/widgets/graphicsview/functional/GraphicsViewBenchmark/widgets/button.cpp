@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "button.h"
 #include "theme.h"
 
-#include <QtGui>
+#include <BobUIGui>
 #include <QGraphicsSceneMouseEvent>
 
 static const int MinTextWidthAsChars = 8;
@@ -79,25 +79,25 @@ void Button::paint(QPainter *painter,
     if(!m_background.isNull())
         painter->drawPixmap(QPoint(), m_background);
     if(m_selected) {
-        painter->setBrush(Qt::black);
+        painter->setBrush(BobUI::black);
         painter->setOpacity(0.2);
         painter->drawRect(boundingRect().toRect());
     }
 }
 
-QSizeF Button::sizeHint(Qt::SizeHint which,
+QSizeF Button::sizeHint(BobUI::SizeHint which,
         const QSizeF &constraint) const
 {
     Q_D(const Button);
 
     switch (which)
     {
-    case Qt::MinimumSize:
+    case BobUI::MinimumSize:
          {
          QFontMetricsF fm(d->textItem->font());
          return QSizeF(MinTextWidthAsChars * fm.maxWidth(), fm.height());
          }
-     case Qt::PreferredSize:
+     case BobUI::PreferredSize:
          {
          QFontMetricsF fm(d->textItem->font());
          return QSizeF(fm.horizontalAdvance(d->textItem->text()), fm.height());
@@ -111,7 +111,7 @@ void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     Q_D(Button);
 
-    if (event->button() != Qt::LeftButton ||
+    if (event->button() != BobUI::LeftButton ||
                   !sceneBoundingRect().contains(event->scenePos()))
         return;
 
@@ -126,7 +126,7 @@ void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     Q_D(Button);
 
-    if (!d->down || event->button() != Qt::LeftButton)
+    if (!d->down || event->button() != BobUI::LeftButton)
         return;
 
     d->down = false;

@@ -1,19 +1,19 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2019 Intel Corporation
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLIST_H
 #define QLIST_H
 
-#include <QtCore/qarraydatapointer.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qiterator.h>
-#include <QtCore/qcontainertools_impl.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qttypetraits.h>
+#include <BobUICore/qarraydatapointer.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qiterator.h>
+#include <BobUICore/qcontainertools_impl.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <functional>
 #include <limits>
@@ -22,9 +22,9 @@
 
 class tst_QList;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
    template <typename V, typename U> qsizetype indexOf(const QList<V> &list, const U &u, qsizetype from) noexcept;
    template <typename V, typename U> qsizetype lastIndexOf(const QList<V> &list, const U &u, qsizetype from) noexcept;
 }
@@ -33,7 +33,7 @@ template <typename T> struct QListSpecialMethodsBase
 {
 protected:
     QListSpecialMethodsBase() = default;
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QListSpecialMethodsBase)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QListSpecialMethodsBase)
 
     using Self = QList<T>;
     Self *self() { return static_cast<Self *>(this); }
@@ -55,7 +55,7 @@ template <typename T> struct QListSpecialMethods : QListSpecialMethodsBase<T>
 {
 protected:
     QListSpecialMethods() = default;
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QListSpecialMethods)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QListSpecialMethods)
 
 public:
     using QListSpecialMethodsBase<T>::indexOf;
@@ -65,8 +65,8 @@ public:
 template <> struct QListSpecialMethods<QByteArray>;
 template <> struct QListSpecialMethods<QString>;
 
-#if !defined(QT_STRICT_QLIST_ITERATORS) && (QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)) && !defined(Q_OS_WIN)
-#define QT_STRICT_QLIST_ITERATORS
+#if !defined(BOBUI_STRICT_QLIST_ITERATORS) && (BOBUI_VERSION >= BOBUI_VERSION_CHECK(6, 6, 0)) && !defined(Q_OS_WIN)
+#define BOBUI_STRICT_QLIST_ITERATORS
 #endif
 
 #ifdef Q_QDOC // define QVector for QDoc
@@ -79,7 +79,7 @@ class QList
     : public QListSpecialMethods<T>
 #endif
 {
-    using Data = QTypedArrayData<T>;
+    using Data = BOBUIypedArrayData<T>;
     using DataOps = QArrayDataOps<T>;
     using DataPointer = QArrayDataPointer<T>;
     class DisableRValueRefs {};
@@ -88,11 +88,11 @@ class QList
 
     DataPointer d;
 
-    template <typename V, typename U> friend qsizetype QtPrivate::indexOf(const QList<V> &list, const U &u, qsizetype from) noexcept;
-    template <typename V, typename U> friend qsizetype QtPrivate::lastIndexOf(const QList<V> &list, const U &u, qsizetype from) noexcept;
-    // This alias prevents the QtPrivate namespace from being exposed into the docs.
+    template <typename V, typename U> friend qsizetype BobUIPrivate::indexOf(const QList<V> &list, const U &u, qsizetype from) noexcept;
+    template <typename V, typename U> friend qsizetype BobUIPrivate::lastIndexOf(const QList<V> &list, const U &u, qsizetype from) noexcept;
+    // This alias prevents the BobUIPrivate namespace from being exposed into the docs.
     template <typename InputIterator>
-    using if_input_iterator = QtPrivate::IfIsInputIterator<InputIterator>;
+    using if_input_iterator = BobUIPrivate::IfIsInputIterator<InputIterator>;
 
 public:
     using Type = T;
@@ -121,14 +121,14 @@ public:
         friend class QList<T>;
         friend class const_iterator;
         T *i = nullptr;
-#ifdef QT_STRICT_QLIST_ITERATORS
+#ifdef BOBUI_STRICT_QLIST_ITERATORS
         inline constexpr explicit iterator(T *n) : i(n) {}
 #endif
 
     public:
         using difference_type = qsizetype;
         using value_type = T;
-#ifdef QT_COMPILER_HAS_LWG3346
+#ifdef BOBUI_COMPILER_HAS_LWG3346
         using iterator_concept = std::contiguous_iterator_tag;
 #endif
         using element_type = value_type;
@@ -137,7 +137,7 @@ public:
         using reference = T &;
 
         inline constexpr iterator() = default;
-#ifndef QT_STRICT_QLIST_ITERATORS
+#ifndef BOBUI_STRICT_QLIST_ITERATORS
         inline constexpr explicit iterator(T *n) : i(n) {}
 #endif
         inline T &operator*() const { return *i; }
@@ -167,8 +167,8 @@ public:
         inline iterator &operator--() { --i; return *this; }
         inline iterator operator--(int) { auto copy = *this; --*this; return copy; }
         inline qsizetype operator-(iterator j) const { return i - j.i; }
-#if QT_DEPRECATED_SINCE(6, 3) && !defined(QT_STRICT_QLIST_ITERATORS)
-        QT_DEPRECATED_VERSION_X_6_3("Use operator* or operator-> rather than relying on "
+#if BOBUI_DEPRECATED_SINCE(6, 3) && !defined(BOBUI_STRICT_QLIST_ITERATORS)
+        BOBUI_DEPRECATED_VERSION_X_6_3("Use operator* or operator-> rather than relying on "
                                     "the implicit conversion between a QList/QVector::iterator "
                                     "and a raw pointer")
         inline operator T*() const { return i; }
@@ -196,14 +196,14 @@ public:
         friend class QList<T>;
         friend class iterator;
         const T *i = nullptr;
-#ifdef QT_STRICT_QLIST_ITERATORS
+#ifdef BOBUI_STRICT_QLIST_ITERATORS
         inline constexpr explicit const_iterator(const T *n) : i(n) {}
 #endif
 
     public:
         using difference_type = qsizetype;
         using value_type = T;
-#ifdef QT_COMPILER_HAS_LWG3346
+#ifdef BOBUI_COMPILER_HAS_LWG3346
         using iterator_concept = std::contiguous_iterator_tag;
 #endif
         using element_type = const value_type;
@@ -212,7 +212,7 @@ public:
         using reference = const T &;
 
         inline constexpr const_iterator() = default;
-#ifndef QT_STRICT_QLIST_ITERATORS
+#ifndef BOBUI_STRICT_QLIST_ITERATORS
         inline constexpr explicit const_iterator(const T *n) : i(n) {}
 #endif
         inline constexpr const_iterator(iterator o): i(o.i) {}
@@ -247,8 +247,8 @@ public:
         inline const_iterator &operator--() { --i; return *this; }
         inline const_iterator operator--(int) { auto copy = *this; --*this; return copy; }
         inline qsizetype operator-(const_iterator j) const { return i - j.i; }
-#if QT_DEPRECATED_SINCE(6, 3) && !defined(QT_STRICT_QLIST_ITERATORS)
-        QT_DEPRECATED_VERSION_X_6_3("Use operator* or operator-> rather than relying on "
+#if BOBUI_DEPRECATED_SINCE(6, 3) && !defined(BOBUI_STRICT_QLIST_ITERATORS)
+        BOBUI_DEPRECATED_VERSION_X_6_3("Use operator* or operator-> rather than relying on "
                                     "the implicit conversion between a QList/QVector::const_iterator "
                                     "and a raw pointer")
         inline operator const T*() const { return i; }
@@ -352,12 +352,12 @@ public:
         }
     }
 
-    // This constructor is here for compatibility with QStringList in Qt 5, that has a QStringList(const QString &) constructor
+    // This constructor is here for compatibility with QStringList in BobUI 5, that has a QStringList(const QString &) constructor
     template<typename String, typename = std::enable_if_t<std::is_same_v<T, QString> && std::is_convertible_v<String, QString>>>
     inline explicit QList(const String &str)
     { append(str); }
 
-    QList(qsizetype size, Qt::Initialization)
+    QList(qsizetype size, BobUI::Initialization)
         : d(size)
     {
         if (size) {
@@ -373,27 +373,27 @@ public:
 #ifndef Q_QDOC
 private:
     template <typename U = T,
-              Qt::if_has_qt_compare_three_way<U, U> = true>
+              BobUI::if_has_bobui_compare_three_way<U, U> = true>
     friend auto compareThreeWay(const QList &lhs, const QList &rhs)
     {
-        return QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
+        return BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
                                                                  rhs.begin(), rhs.end());
     }
 
 #if defined(__cpp_lib_three_way_comparison) && defined(__cpp_lib_concepts)
     template <typename U = T,
-              QtOrderingPrivate::if_has_op_less_or_op_compare_three_way<QList, U> = true>
+              BobUIOrderingPrivate::if_has_op_less_or_op_compare_three_way<QList, U> = true>
     friend auto operator<=>(const QList &lhs, const QList &rhs)
     {
         return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(),
                                                       rhs.begin(), rhs.end(),
-                                                      QtOrderingPrivate::synthThreeWay);
+                                                      BobUIOrderingPrivate::synthThreeWay);
     }
 #endif // __cpp_lib_three_way_comparison && __cpp_lib_concepts
 
 public:
     template <typename U = T>
-    QTypeTraits::compare_eq_result_container<QList, U> operator==(const QList &other) const
+    BOBUIypeTraits::compare_eq_result_container<QList, U> operator==(const QList &other) const
     {
         if (size() != other.size())
             return false;
@@ -405,14 +405,14 @@ public:
     }
 
     template <typename U = T>
-    QTypeTraits::compare_eq_result_container<QList, U> operator!=(const QList &other) const
+    BOBUIypeTraits::compare_eq_result_container<QList, U> operator!=(const QList &other) const
     {
         return !(*this == other);
     }
 
 #ifndef __cpp_lib_three_way_comparison
     template <typename U = T>
-    QTypeTraits::compare_lt_result_container<QList, U> operator<(const QList &other) const
+    BOBUIypeTraits::compare_lt_result_container<QList, U> operator<(const QList &other) const
         noexcept(noexcept(std::lexicographical_compare<typename QList<U>::const_iterator,
                                                        typename QList::const_iterator>(
                             std::declval<QList<U>>().begin(), std::declval<QList<U>>().end(),
@@ -423,21 +423,21 @@ public:
     }
 
     template <typename U = T>
-    QTypeTraits::compare_lt_result_container<QList, U> operator>(const QList &other) const
+    BOBUIypeTraits::compare_lt_result_container<QList, U> operator>(const QList &other) const
         noexcept(noexcept(other < std::declval<QList<U>>()))
     {
         return other < *this;
     }
 
     template <typename U = T>
-    QTypeTraits::compare_lt_result_container<QList, U> operator<=(const QList &other) const
+    BOBUIypeTraits::compare_lt_result_container<QList, U> operator<=(const QList &other) const
         noexcept(noexcept(other < std::declval<QList<U>>()))
     {
         return !(other < *this);
     }
 
     template <typename U = T>
-    QTypeTraits::compare_lt_result_container<QList, U> operator>=(const QList &other) const
+    BOBUIypeTraits::compare_lt_result_container<QList, U> operator>=(const QList &other) const
         noexcept(noexcept(std::declval<QList<U>>() < other))
     {
         return !(*this < other);
@@ -661,19 +661,19 @@ public:
     template <typename AT = T>
     qsizetype removeAll(const AT &t)
     {
-        return QtPrivate::sequential_erase_with_copy(*this, t);
+        return BobUIPrivate::sequential_erase_with_copy(*this, t);
     }
 
     template <typename AT = T>
     bool removeOne(const AT &t)
     {
-        return QtPrivate::sequential_erase_one(*this, t);
+        return BobUIPrivate::sequential_erase_one(*this, t);
     }
 
     template <typename Predicate>
     qsizetype removeIf(Predicate pred)
     {
-        return QtPrivate::sequential_erase_if(*this, pred);
+        return BobUIPrivate::sequential_erase_if(*this, pred);
     }
 
     T takeAt(qsizetype i) { T t = std::move((*this)[i]); remove(i); return t; }
@@ -711,7 +711,7 @@ public:
     iterator erase(const_iterator begin, const_iterator end);
     inline iterator erase(const_iterator pos) { return erase(pos, pos+1); }
 
-    // more Qt
+    // more BobUI
     inline T& first() { Q_ASSERT(!isEmpty()); return *begin(); }
     inline const T &first() const noexcept { Q_ASSERT(!isEmpty()); return *begin(); }
     inline const T &constFirst() const noexcept { Q_ASSERT(!isEmpty()); return *begin(); }
@@ -804,7 +804,7 @@ public:
 
 template <typename InputIterator,
           typename ValueType = typename std::iterator_traits<InputIterator>::value_type,
-          QtPrivate::IfIsInputIterator<InputIterator> = true>
+          BobUIPrivate::IfIsInputIterator<InputIterator> = true>
 QList(InputIterator, InputIterator) -> QList<ValueType>;
 
 template <typename T>
@@ -996,7 +996,7 @@ inline QList<T> &QList<T>::fill(parameter_type t, qsizetype newSize)
     return *this;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T, typename U>
 qsizetype indexOf(const QList<T> &vector, const U &u, qsizetype from) noexcept
 {
@@ -1035,14 +1035,14 @@ template <typename T>
 template <typename AT>
 qsizetype QListSpecialMethodsBase<T>::indexOf(const AT &t, qsizetype from) const noexcept
 {
-    return QtPrivate::indexOf(*self(), t, from);
+    return BobUIPrivate::indexOf(*self(), t, from);
 }
 
 template <typename T>
 template <typename AT>
 qsizetype QListSpecialMethodsBase<T>::lastIndexOf(const AT &t, qsizetype from) const noexcept
 {
-    return QtPrivate::lastIndexOf(*self(), t, from);
+    return BobUIPrivate::lastIndexOf(*self(), t, from);
 }
 
 template <typename T>
@@ -1050,7 +1050,7 @@ inline QList<T> QList<T>::mid(qsizetype pos, qsizetype len) const
 {
     qsizetype p = pos;
     qsizetype l = len;
-    using namespace QtPrivate;
+    using namespace BobUIPrivate;
     switch (QContainerImplHelper::mid(d.size, &p, &l)) {
     case QContainerImplHelper::Null:
     case QContainerImplHelper::Empty:
@@ -1080,21 +1080,21 @@ size_t qHash(const QList<T> &key, size_t seed = 0)
 template <typename T, typename AT>
 qsizetype erase(QList<T> &list, const AT &t)
 {
-    return QtPrivate::sequential_erase(list, t);
+    return BobUIPrivate::sequential_erase(list, t);
 }
 
 template <typename T, typename Predicate>
 qsizetype erase_if(QList<T> &list, Predicate pred)
 {
-    return QtPrivate::sequential_erase_if(list, pred);
+    return BobUIPrivate::sequential_erase_if(list, pred);
 }
 
-// ### Qt 7 char32_t
-QList<uint> QStringView::toUcs4() const { return QtPrivate::convertToUcs4(*this); }
+// ### BobUI 7 char32_t
+QList<uint> QStringView::toUcs4() const { return BobUIPrivate::convertToUcs4(*this); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#include <QtCore/qbytearraylist.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qbytearraylist.h>
+#include <BobUICore/qstringlist.h>
 
 #endif // QLIST_H

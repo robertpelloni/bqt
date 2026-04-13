@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLABEL_H
 #define QLABEL_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qframe.h>
-#include <QtGui/qpicture.h>
-#include <QtGui/qtextdocument.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qframe.h>
+#include <BobUIGui/qpicture.h>
+#include <BobUIGui/bobuiextdocument.h>
 
-QT_REQUIRE_CONFIG(label);
+BOBUI_REQUIRE_CONFIG(label);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QLabelPrivate;
@@ -21,49 +21,49 @@ class Q_WIDGETS_EXPORT QLabel : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(QString text READ text WRITE setText)
-    Q_PROPERTY(Qt::TextFormat textFormat READ textFormat WRITE setTextFormat)
+    Q_PROPERTY(BobUI::TextFormat textFormat READ textFormat WRITE setTextFormat)
     Q_PROPERTY(QPixmap pixmap READ pixmap WRITE setPixmap)
     Q_PROPERTY(bool scaledContents READ hasScaledContents WRITE setScaledContents)
-    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
+    Q_PROPERTY(BobUI::Alignment alignment READ alignment WRITE setAlignment)
     Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap)
     Q_PROPERTY(int margin READ margin WRITE setMargin)
     Q_PROPERTY(int indent READ indent WRITE setIndent)
     Q_PROPERTY(bool openExternalLinks READ openExternalLinks WRITE setOpenExternalLinks)
-    Q_PROPERTY(Qt::TextInteractionFlags textInteractionFlags READ textInteractionFlags
+    Q_PROPERTY(BobUI::TextInteractionFlags textInteractionFlags READ textInteractionFlags
                WRITE setTextInteractionFlags)
     Q_PROPERTY(bool hasSelectedText READ hasSelectedText)
     Q_PROPERTY(QString selectedText READ selectedText)
 
 public:
-    explicit QLabel(QWidget *parent=nullptr, Qt::WindowFlags f=Qt::WindowFlags());
-    explicit QLabel(const QString &text, QWidget *parent=nullptr, Qt::WindowFlags f=Qt::WindowFlags());
+    explicit QLabel(QWidget *parent=nullptr, BobUI::WindowFlags f=BobUI::WindowFlags());
+    explicit QLabel(const QString &text, QWidget *parent=nullptr, BobUI::WindowFlags f=BobUI::WindowFlags());
     ~QLabel();
 
     QString text() const;
 
-#if QT_DEPRECATED_SINCE(6,6)
-    QPixmap pixmap(Qt::ReturnByValueConstant) const { return pixmap(); }
+#if BOBUI_DEPRECATED_SINCE(6,6)
+    QPixmap pixmap(BobUI::ReturnByValueConstant) const { return pixmap(); }
 #endif
     QPixmap pixmap() const;
 
-#ifndef QT_NO_PICTURE
-#if QT_DEPRECATED_SINCE(6,6)
-    QPicture picture(Qt::ReturnByValueConstant) const { return picture(); }
+#ifndef BOBUI_NO_PICTURE
+#if BOBUI_DEPRECATED_SINCE(6,6)
+    QPicture picture(BobUI::ReturnByValueConstant) const { return picture(); }
 #endif
     QPicture picture() const;
 #endif
-#if QT_CONFIG(movie)
+#if BOBUI_CONFIG(movie)
     QMovie *movie() const;
 #endif
 
-    Qt::TextFormat textFormat() const;
-    void setTextFormat(Qt::TextFormat);
+    BobUI::TextFormat textFormat() const;
+    void setTextFormat(BobUI::TextFormat);
 
-    QTextDocument::ResourceProvider resourceProvider() const;
-    void setResourceProvider(const QTextDocument::ResourceProvider &provider);
+    BOBUIextDocument::ResourceProvider resourceProvider() const;
+    void setResourceProvider(const BOBUIextDocument::ResourceProvider &provider);
 
-    Qt::Alignment alignment() const;
-    void setAlignment(Qt::Alignment);
+    BobUI::Alignment alignment() const;
+    void setAlignment(BobUI::Alignment);
 
     void setWordWrap(bool on);
     bool wordWrap() const;
@@ -78,7 +78,7 @@ public:
     void setScaledContents(bool);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     void setBuddy(QWidget *);
     QWidget *buddy() const;
 #endif
@@ -87,8 +87,8 @@ public:
     bool openExternalLinks() const;
     void setOpenExternalLinks(bool open);
 
-    void setTextInteractionFlags(Qt::TextInteractionFlags flags);
-    Qt::TextInteractionFlags textInteractionFlags() const;
+    void setTextInteractionFlags(BobUI::TextInteractionFlags flags);
+    BobUI::TextInteractionFlags textInteractionFlags() const;
 
     void setSelection(int, int);
     bool hasSelectedText() const;
@@ -98,10 +98,10 @@ public:
 public Q_SLOTS:
     void setText(const QString &);
     void setPixmap(const QPixmap &);
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
     void setPicture(const QPicture &);
 #endif
-#if QT_CONFIG(movie)
+#if BOBUI_CONFIG(movie)
     void setMovie(QMovie *movie);
 #endif
     void setNum(int);
@@ -120,9 +120,9 @@ protected:
     void mousePressEvent(QMouseEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
     void mouseReleaseEvent(QMouseEvent *ev) override;
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *ev) override;
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
     void focusInEvent(QFocusEvent *ev) override;
     void focusOutEvent(QFocusEvent *ev) override;
     bool focusNextPrevChild(bool next) override;
@@ -131,11 +131,11 @@ protected:
 private:
     Q_DISABLE_COPY(QLabel)
     Q_DECLARE_PRIVATE(QLabel)
-    friend class QTipLabel;
+    friend class BOBUIipLabel;
     friend class QMessageBoxPrivate;
     friend class QBalloonTip;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLABEL_H

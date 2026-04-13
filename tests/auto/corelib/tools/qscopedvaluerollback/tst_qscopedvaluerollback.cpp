@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QScopedValueRollback>
+#include <BOBUIest>
+#include <BobUICore/QScopedValueRollback>
 
 /*!
  \class tst_QScopedValueRollback
@@ -110,14 +110,14 @@ void tst_QScopedValueRollback::exceptions()
 {
     bool b = false;
     bool caught = false;
-    QT_TRY
+    BOBUI_TRY
     {
         QScopedValueRollback<bool> rb(b);
         b = true;
-        QT_THROW(std::bad_alloc()); //if Qt compiled without exceptions this is noop
-        rb.commit(); //if Qt compiled without exceptions, true is committed
+        BOBUI_THROW(std::bad_alloc()); //if BobUI compiled without exceptions this is noop
+        rb.commit(); //if BobUI compiled without exceptions, true is committed
     }
-    QT_CATCH(...)
+    BOBUI_CATCH(...)
     {
         caught = true;
     }
@@ -178,5 +178,5 @@ void tst_QScopedValueRollback::moveOnly()
     QVERIFY(!uniquePtr);
 }
 
-QTEST_MAIN(tst_QScopedValueRollback)
+BOBUIEST_MAIN(tst_QScopedValueRollback)
 #include "tst_qscopedvaluerollback.moc"

@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QBRUSH_H
 #define QBRUSH_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qtransform.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUIGui/bobuiransform.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 struct QBrushData;
@@ -29,12 +29,12 @@ class Q_GUI_EXPORT QBrush
 {
 public:
     QBrush();
-    QBrush(Qt::BrushStyle bs);
-    QBrush(const QColor &color, Qt::BrushStyle bs=Qt::SolidPattern);
-    QBrush(Qt::GlobalColor color, Qt::BrushStyle bs=Qt::SolidPattern);
+    QBrush(BobUI::BrushStyle bs);
+    QBrush(const QColor &color, BobUI::BrushStyle bs=BobUI::SolidPattern);
+    QBrush(BobUI::GlobalColor color, BobUI::BrushStyle bs=BobUI::SolidPattern);
 
     QBrush(const QColor &color, const QPixmap &pixmap);
-    QBrush(Qt::GlobalColor color, const QPixmap &pixmap);
+    QBrush(BobUI::GlobalColor color, const QPixmap &pixmap);
     QBrush(const QPixmap &pixmap);
     QBrush(const QImage &image);
 
@@ -44,21 +44,21 @@ public:
 
     ~QBrush();
     QBrush &operator=(const QBrush &brush);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QBrush)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QBrush)
     inline void swap(QBrush &other) noexcept
     { d.swap(other.d); }
 
-    QBrush &operator=(Qt::BrushStyle style);
+    QBrush &operator=(BobUI::BrushStyle style);
     QBrush &operator=(QColor color);
-    QBrush &operator=(Qt::GlobalColor color) { return operator=(QColor(color)); }
+    QBrush &operator=(BobUI::GlobalColor color) { return operator=(QColor(color)); }
 
     operator QVariant() const;
 
-    inline Qt::BrushStyle style() const;
-    void setStyle(Qt::BrushStyle);
+    inline BobUI::BrushStyle style() const;
+    void setStyle(BobUI::BrushStyle);
 
-    inline QTransform transform() const;
-    void setTransform(const QTransform &);
+    inline BOBUIransform transform() const;
+    void setTransform(const BOBUIransform &);
 
     QPixmap texture() const;
     void setTexture(const QPixmap &pixmap);
@@ -68,7 +68,7 @@ public:
 
     inline const QColor &color() const;
     void setColor(const QColor &color);
-    inline void setColor(Qt::GlobalColor color);
+    inline void setColor(BobUI::GlobalColor color);
 
     const QGradient *gradient() const;
 
@@ -92,17 +92,17 @@ private:
         return lhs.doCompareEqualColor(rhs);
     }
     Q_DECLARE_EQUALITY_COMPARABLE(QBrush, QColor)
-    Q_DECLARE_EQUALITY_COMPARABLE(QBrush, Qt::GlobalColor)
+    Q_DECLARE_EQUALITY_COMPARABLE(QBrush, BobUI::GlobalColor)
 
-    bool doCompareEqualStyle(Qt::BrushStyle rhs) const noexcept;
-    friend bool comparesEqual(const QBrush &lhs, Qt::BrushStyle rhs) noexcept
+    bool doCompareEqualStyle(BobUI::BrushStyle rhs) const noexcept;
+    friend bool comparesEqual(const QBrush &lhs, BobUI::BrushStyle rhs) noexcept
     {
         return lhs.doCompareEqualStyle(rhs);
     }
-    Q_DECLARE_EQUALITY_COMPARABLE(QBrush, Qt::BrushStyle)
+    Q_DECLARE_EQUALITY_COMPARABLE(QBrush, BobUI::BrushStyle)
 
-    void detach(Qt::BrushStyle newStyle);
-    void init(const QColor &color, Qt::BrushStyle bs);
+    void detach(BobUI::BrushStyle newStyle);
+    void init(const QColor &color, BobUI::BrushStyle bs);
     DataPtr d;
 
 public:
@@ -110,7 +110,7 @@ public:
     inline DataPtr &data_ptr() { return d; }
 };
 
-inline void QBrush::setColor(Qt::GlobalColor acolor)
+inline void QBrush::setColor(BobUI::GlobalColor acolor)
 { setColor(QColor(acolor)); }
 
 Q_DECLARE_SHARED(QBrush)
@@ -119,29 +119,29 @@ Q_DECLARE_SHARED(QBrush)
   QBrush stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QBrush &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QBrush &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QBrush &);
 #endif
 
 struct QBrushData
 {
     QAtomicInt ref;
-    Qt::BrushStyle style;
+    BobUI::BrushStyle style;
     QColor color;
-    QTransform transform;
+    BOBUIransform transform;
 protected:
     QBrushData() = default;
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QBrushData)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QBrushData)
 };
 
-inline Qt::BrushStyle QBrush::style() const { return d->style; }
+inline BobUI::BrushStyle QBrush::style() const { return d->style; }
 inline const QColor &QBrush::color() const { return d->color; }
-inline QTransform QBrush::transform() const { return d->transform; }
+inline BOBUIransform QBrush::transform() const { return d->transform; }
 inline bool QBrush::isDetached() const { return d->ref.loadRelaxed() == 1; }
 
 
@@ -480,6 +480,6 @@ public:
     void setAngle(qreal angle);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBRUSH_H

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include "qsqlrecord.h"
 #include "qsqlfield.h"
@@ -109,20 +109,20 @@ void tst_QSqlRecord::clear()
 
 void tst_QSqlRecord::clearValues_data()
 {
-    QTest::addColumn<QString>("prefix");
-    QTest::addColumn<QString>("sep");
-    QTest::addColumn<int>("ival");
-    QTest::addColumn<QString>("sval");
-    QTest::addColumn<double>("dval");
-    QTest::addColumn<int>("bval");
+    BOBUIest::addColumn<QString>("prefix");
+    BOBUIest::addColumn<QString>("sep");
+    BOBUIest::addColumn<int>("ival");
+    BOBUIest::addColumn<QString>("sval");
+    BOBUIest::addColumn<double>("dval");
+    BOBUIest::addColumn<int>("bval");
 
-    QTest::newRow( "data0" ) << QString::fromLatin1("tablename") << QString::fromLatin1(",") << 10
+    BOBUIest::newRow( "data0" ) << QString::fromLatin1("tablename") << QString::fromLatin1(",") << 10
                           << QString::fromLatin1("Trond K.") << 2222.231234441 << 0;
-    QTest::newRow( "data1" ) << QString::fromLatin1("mytable") << QString::fromLatin1(".") << 12
+    BOBUIest::newRow( "data1" ) << QString::fromLatin1("mytable") << QString::fromLatin1(".") << 12
                           << QString::fromLatin1("Josten") << 544444444444423232.32334441 << 1;
-    QTest::newRow( "data2" ) << QString::fromLatin1("tabby") << QString::fromLatin1("-") << 12
+    BOBUIest::newRow( "data2" ) << QString::fromLatin1("tabby") << QString::fromLatin1("-") << 12
                           << QString::fromLatin1("Odvin") << 899129389283.32334441 << 1;
-    QTest::newRow( "data3" ) << QString::fromLatin1("per") << QString::fromLatin1("00") << 12
+    BOBUIest::newRow( "data3" ) << QString::fromLatin1("per") << QString::fromLatin1("00") << 12
                           << QString::fromLatin1("Brge") << 29382939182.99999919 << 0;
 }
 
@@ -483,5 +483,5 @@ void tst_QSqlRecord::moveSemantics()
     moved = std::move(rec);
 }
 
-QTEST_MAIN(tst_QSqlRecord)
+BOBUIEST_MAIN(tst_QSqlRecord)
 #include "tst_qsqlrecord.moc"

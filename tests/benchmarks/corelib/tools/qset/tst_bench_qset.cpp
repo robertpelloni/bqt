@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QSet>
-#include <QTest>
+#include <BOBUIest>
 
 class tst_QSet : public QObject
 {
@@ -27,16 +27,16 @@ void tst_QSet::initTestCase()
 
 void tst_QSet::intersect_int_data()
 {
-    QTest::addColumn<int>("lhsSize");
-    QTest::addColumn<int>("rhsSize");
-    QTest::addColumn<int>("intersectSize");
+    BOBUIest::addColumn<int>("lhsSize");
+    BOBUIest::addColumn<int>("rhsSize");
+    BOBUIest::addColumn<int>("intersectSize");
 
-    QTest::newRow("1000000.intersect(1000) = empty") << 1000000 << 1000 << 0;
-    QTest::newRow("1000.intersect(1000000) = empty") << 1000 << 1000000 << 0;
-    QTest::newRow("1000000.intersect(1000) = 500") << 1000000 << 1000 << 500;
-    QTest::newRow("1000.intersect(1000000) = 500") << 1000 << 1000000 << 500;
-    QTest::newRow("1000000.intersect(1000) = 1000") << 1000000 << 1000 << 1000;
-    QTest::newRow("1000.intersect(1000000) = 1000") << 1000 << 1000000 << 1000;
+    BOBUIest::newRow("1000000.intersect(1000) = empty") << 1000000 << 1000 << 0;
+    BOBUIest::newRow("1000.intersect(1000000) = empty") << 1000 << 1000000 << 0;
+    BOBUIest::newRow("1000000.intersect(1000) = 500") << 1000000 << 1000 << 500;
+    BOBUIest::newRow("1000.intersect(1000000) = 500") << 1000 << 1000000 << 500;
+    BOBUIest::newRow("1000000.intersect(1000) = 1000") << 1000000 << 1000 << 1000;
+    BOBUIest::newRow("1000.intersect(1000000) = 1000") << 1000 << 1000000 << 1000;
 }
 
 void tst_QSet::intersect_int()
@@ -110,16 +110,16 @@ void tst_QSet::intersect_complexType()
 
 void tst_QSet::unite_int_data()
 {
-    QTest::addColumn<int>("lhsSize");
-    QTest::addColumn<int>("rhsSize");
-    QTest::addColumn<int>("overlap");
+    BOBUIest::addColumn<int>("lhsSize");
+    BOBUIest::addColumn<int>("rhsSize");
+    BOBUIest::addColumn<int>("overlap");
 
-    QTest::newRow("1000000.unite(1000) - 0 overlap") << 1000000 << 1000 << 0;
-    QTest::newRow("1000000.unite(1000) - 100 overlap") << 1000000 << 1000 << 100;
-    QTest::newRow("1000000.unite(1000) - 1000 overlap") << 1000000 << 1000 << 1000;
-    QTest::newRow("1000.unite(1000000) - 0 overlap") << 1000 << 1000000 << 0;
-    QTest::newRow("1000.unite(1000000) - 100 overlap") << 1000 << 1000000 << 100;
-    QTest::newRow("1000.unite(1000000) - 1000 overlap") << 1000 << 1000000 << 1000;
+    BOBUIest::newRow("1000000.unite(1000) - 0 overlap") << 1000000 << 1000 << 0;
+    BOBUIest::newRow("1000000.unite(1000) - 100 overlap") << 1000000 << 1000 << 100;
+    BOBUIest::newRow("1000000.unite(1000) - 1000 overlap") << 1000000 << 1000 << 1000;
+    BOBUIest::newRow("1000.unite(1000000) - 0 overlap") << 1000 << 1000000 << 0;
+    BOBUIest::newRow("1000.unite(1000000) - 100 overlap") << 1000 << 1000000 << 100;
+    BOBUIest::newRow("1000.unite(1000000) - 1000 overlap") << 1000 << 1000000 << 1000;
 }
 
 auto build_sets(int lhsSize, int rhsSize, int overlap)
@@ -174,6 +174,6 @@ void tst_QSet::contains_then_insert_int()
     }
 }
 
-QTEST_MAIN(tst_QSet)
+BOBUIEST_MAIN(tst_QSet)
 
 #include "tst_bench_qset.moc"

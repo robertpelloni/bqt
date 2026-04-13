@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusabstractadaptor.h"
 #include "qdbusabstractadaptor_p.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qset.h>
-#include <QtCore/qthread.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/bobuihread.h>
 
 #include "qdbusconnection.h"
 
@@ -18,7 +18,7 @@
 
 #include <algorithm>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
@@ -110,7 +110,7 @@ QDBusAbstractAdaptor::QDBusAbstractAdaptor(QObject* obj)
     QDBusAdaptorConnector *connector = qDBusCreateAdaptorConnector(obj);
 
     connector->waitingForPolish = true;
-    QMetaObject::invokeMethod(connector, &QDBusAdaptorConnector::polish, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(connector, &QDBusAdaptorConnector::polish, BobUI::QueuedConnection);
 }
 
 /*!
@@ -215,7 +215,7 @@ void QDBusAdaptorConnector::disconnectAllSignals(QObject *obj)
 
 void QDBusAdaptorConnector::connectAllSignals(QObject *obj)
 {
-    QMetaObject::connect(obj, -1, this, relaySlotMethodIndex(), Qt::DirectConnection);
+    QMetaObject::connect(obj, -1, this, relaySlotMethodIndex(), BobUI::DirectConnection);
 }
 
 void QDBusAdaptorConnector::polish()
@@ -244,7 +244,7 @@ void QDBusAdaptorConnector::relaySlot(QMethodRawArguments argv)
                  "Current thread is %s(%p \"%s\").",
                  parent()->metaObject()->className(), parent(), qPrintable(parent()->objectName()),
                  parent()->thread()->metaObject()->className(), parent()->thread(), qPrintable(parent()->thread()->objectName()),
-                 QThread::currentThread()->metaObject()->className(), QThread::currentThread(), qPrintable(QThread::currentThread()->objectName()));
+                 BOBUIhread::currentThread()->metaObject()->className(), BOBUIhread::currentThread(), qPrintable(BOBUIhread::currentThread()->objectName()));
     }
 }
 
@@ -296,4 +296,4 @@ BOBUI_END_NAMESPACE
 #include "moc_qdbusabstractadaptor_p.cpp"
 #include "moc_qdbusabstractadaptor.cpp"
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

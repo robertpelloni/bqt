@@ -4,8 +4,8 @@
 #include <QObject>
 #include <QString>
 #include <QList>
-#include <QtWebSockets/QWebSocketServer>
-#include <QtWebSockets/QWebSocket>
+#include <BobUIWebSockets/QWebSocketServer>
+#include <BobUIWebSockets/QWebSocket>
 
 class OmniWebSocketServer : public QObject {
     Q_OBJECT

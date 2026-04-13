@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 
@@ -30,7 +30,7 @@ Window::Window(QWidget *parent)
             this, &Window::overshootChanged);
     createCurveIcons();
 
-    QPixmap pix(QLatin1String(":/images/qt-logo.png"));
+    QPixmap pix(QLatin1String(":/images/bobui-logo.png"));
     m_item = new PixmapItem(pix);
     m_scene.addItem(m_item);
     m_ui.graphicsView->setScene(&m_scene);
@@ -81,15 +81,15 @@ void Window::createCurveIcons()
 
         qreal curveScale = m_iconSize.height()/2;
 
-        painter.setPen(Qt::NoPen);
+        painter.setPen(BobUI::NoPen);
 
         // start point
-        painter.setBrush(Qt::red);
+        painter.setBrush(BobUI::red);
         QPoint start(qRound(yAxis), qRound(xAxis - curveScale * curve.valueForProgress(0)));
         painter.drawRect(start.x() - 1, start.y() - 1, 3, 3);
 
         // end point
-        painter.setBrush(Qt::blue);
+        painter.setBrush(BobUI::blue);
         QPoint end(qRound(yAxis + curveScale), qRound(xAxis - curveScale * curve.valueForProgress(1)));
         painter.drawRect(end.x() - 1, end.y() - 1, 3, 3);
 

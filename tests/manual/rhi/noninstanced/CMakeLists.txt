@@ -1,17 +1,17 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## noninstanced Binary:
 #####################################################################
 
-qt_internal_add_manual_test(noninstanced
+bobui_internal_add_manual_test(noninstanced
     GUI
     SOURCES
         noninstanced.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 # Resources:
@@ -20,7 +20,7 @@ set(noninstanced_resource_files
     "material.vert.qsb"
 )
 
-qt_internal_add_resource(noninstanced "noninstanced"
+bobui_internal_add_resource(noninstanced "noninstanced"
     PREFIX
         "/"
     FILES

@@ -24,40 +24,40 @@ instructions:
       equals_value: null
 
   # Set an informational build environment env var during the an integration's build phase.
-  # It can be checked during Qt and standalone tests configuration (so configure,
-  # qt-configure-module and qt-internal-configure-tests time).
+  # It can be checked during BobUI and standalone tests configuration (so configure,
+  # bobui-configure-module and bobui-internal-configure-tests time).
   # It's currently needed for some CMake autotest iOS-specific decisions, but it could be useful
   # for other scenarios as well.
   #
-  # A related QTEST_ENVIRONMENT env var is set during an integration's test phase.
+  # A related BOBUIEST_ENVIRONMENT env var is set during an integration's test phase.
   #
   # Note that CMake auto tests are configured and built during the /test/ phase, NOT the build
   # phase.
   # BUT, the options that will be passed to the project cmake invocation in the test phase, are
   # decided during the /build/ phase.
   - type: EnvironmentVariable
-    variableName: QT_BUILD_ENVIRONMENT
+    variableName: BOBUI_BUILD_ENVIRONMENT
     variableValue: "ci"
 
-  # Inform CMake to build just a minimal set of tests for static Qt builds.
+  # Inform CMake to build just a minimal set of tests for static BobUI builds.
   - type: AppendToEnvironmentVariable
     variableName: COIN_CMAKE_ARGS
-    variableValue: " -DQT_BUILD_MINIMAL_STATIC_TESTS=ON"
+    variableValue: " -DBOBUI_BUILD_MINIMAL_STATIC_TESTS=ON"
     enable_if:
       condition: property
       property: features
       contains_value: "MinimalStaticTests"
 
-  # Inform CMake to build just a minimal set of tests for Android multi-ABI Qt builds.
+  # Inform CMake to build just a minimal set of tests for Android multi-ABI BobUI builds.
   - type: AppendToEnvironmentVariable
     variableName: COIN_CMAKE_ARGS
-    variableValue: " -DQT_BUILD_MINIMAL_ANDROID_MULTI_ABI_TESTS=ON"
+    variableValue: " -DBOBUI_BUILD_MINIMAL_ANDROID_MULTI_ABI_TESTS=ON"
     enable_if:
       condition: property
       property: features
       contains_value: "MinimalAndroidMultiABITests"
 
-  - !include "{{qt/qtbase}}/call_cmake_for_standalone_tests.yaml"
+  - !include "{{bobui/bobuibase}}/call_cmake_for_standalone_tests.yaml"
   - type: ExecuteCommand
     command: "{{.Env.TESTS_ENV_PREFIX}} cmake --build . --parallel -v"
     maxTimeInSeconds: 6000

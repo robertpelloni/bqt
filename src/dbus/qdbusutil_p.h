@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the QLibrary class.  This header file may change from
 // version to version without notice, or even be removed.
 //
@@ -19,16 +19,21 @@
 
 #include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <BobUIDBus/qdbuserror.h>
+<<<<<<< HEAD
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
+=======
+#include <BobUICore/qstring.h>
+#include <BobUICore/qvariant.h>
+>>>>>>> origin/dev
 
 #include "qdbus_symbols_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-#define Q_DBUS_NO_EXPORT        // force syncqt looking into this namespace
+#define Q_DBUS_NO_EXPORT        // force syncbobui looking into this namespace
 namespace Q_DBUS_NO_EXPORT QDBusUtil
 {
     Q_DBUS_EXPORT bool isValidInterfaceName(const QString &ifaceName);
@@ -146,5 +151,5 @@ namespace Q_DBUS_NO_EXPORT QDBusUtil
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

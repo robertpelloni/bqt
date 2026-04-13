@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "triviswidget.h"
 #include <QVBoxLayout>
@@ -9,9 +9,9 @@
 #include <QScrollBar>
 #include <QPainter>
 #include <QPainterPath>
-#include <QTimer>
-#include <QtGui/private/qtriangulator_p.h>
-#include <QtGui/private/qtriangulatingstroker_p.h>
+#include <BOBUIimer>
+#include <BobUIGui/private/bobuiriangulator_p.h>
+#include <BobUIGui/private/bobuiriangulatingstroker_p.h>
 #include <QDebug>
 
 static const int W = 100;
@@ -21,7 +21,7 @@ static const int MAX_ZOOM = 512;
 class ScrollArea : public QScrollArea {
 protected:
     void wheelEvent(QWheelEvent *event) override {
-        if (!event->modifiers().testFlag(Qt::ControlModifier))
+        if (!event->modifiers().testFlag(BobUI::ControlModifier))
             QScrollArea::wheelEvent(event);
     }
 };
@@ -242,13 +242,13 @@ void TriVisCanvas::regeneratePreviews()
 
 void TriVisCanvas::addPreview(int idx)
 {
-    QPen pen(Qt::black);
+    QPen pen(BobUI::black);
     pen.setWidthF(m_strokeWidth);
     if (m_dashStroke)
-        pen.setStyle(Qt::DashLine);
+        pen.setStyle(BobUI::DashLine);
 
     QImage img(W, H, QImage::Format_RGB32);
-    img.fill(Qt::white);
+    img.fill(BobUI::white);
     QPainter p(&img);
     p.translate(-TLX, -TLY);
     p.scale(2, 2);
@@ -257,11 +257,11 @@ void TriVisCanvas::addPreview(int idx)
     m_strokePreviews.append(img);
 
     img = QImage(W, H, QImage::Format_RGB32);
-    img.fill(Qt::white);
+    img.fill(BobUI::white);
     p.begin(&img);
     p.translate(-TLX, -TLY);
     p.scale(2, 2);
-    p.fillPath(m_paths[idx], QBrush(Qt::gray));
+    p.fillPath(m_paths[idx], QBrush(BobUI::gray));
     p.end();
     m_fillPreviews.append(img);
 }
@@ -281,20 +281,20 @@ void TriVisCanvas::retriangulate()
     const QPainterPath &path(m_paths[m_idx]);
 
     if (m_type == Stroke) {
-        const QVectorPath &vp = qtVectorPathForPath(path);
+        const QVectorPath &vp = bobuiVectorPathForPath(path);
         const QSize clipSize(W, H);
         const QRectF clip(QPointF(0, 0), clipSize);
         const qreal inverseScale = 1.0 / SCALE;
 
-        QTriangulatingStroker stroker;
+        BOBUIriangulatingStroker stroker;
         stroker.setInvScale(inverseScale);
 
         QPen pen;
         pen.setWidthF(m_strokeWidth);
         if (m_dashStroke)
-            pen.setStyle(Qt::DashLine);
+            pen.setStyle(BobUI::DashLine);
 
-        if (pen.style() == Qt::SolidLine) {
+        if (pen.style() == BobUI::SolidLine) {
             stroker.process(vp, pen, clip, 0);
         } else {
             QDashedStrokeProcessor dashStroker;
@@ -312,8 +312,8 @@ void TriVisCanvas::retriangulate()
                 m_strokeVertices[i].set(vsrc[i * 2], vsrc[i * 2 + 1]);
         }
     } else {
-        const QVectorPath &vp = qtVectorPathForPath(path);
-        QTriangleSet ts = qTriangulate(vp, QTransform::fromScale(SCALE, SCALE), 1, true);
+        const QVectorPath &vp = bobuiVectorPathForPath(path);
+        BOBUIriangleSet ts = qTriangulate(vp, BOBUIransform::fromScale(SCALE, SCALE), 1, true);
         const int vertexCount = ts.vertices.count() / 2;
         m_fillVertices.resize(vertexCount);
         Vertex *vdst = reinterpret_cast<Vertex *>(m_fillVertices.data());
@@ -338,7 +338,7 @@ void TriVisCanvas::retriangulate()
 void TriVisCanvas::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    p.fillRect(rect(), Qt::white);
+    p.fillRect(rect(), BobUI::white);
 
     if (m_type == Stroke) {
         QPointF prevPt[3];
@@ -377,7 +377,7 @@ void TriVisCanvas::wheelEvent(QWheelEvent *event)
 {
     int change = 0;
 
-    if (event->modifiers().testFlag(Qt::ControlModifier)) {
+    if (event->modifiers().testFlag(BobUI::ControlModifier)) {
         if (event->delta() > 0 && m_zoom < MAX_ZOOM) {
             m_zoom += 1;
             change = 1;

@@ -1,7 +1,7 @@
 // Copyright (C) 2013 Imagination Technologies Limited, www.imgtec.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include "qt_mips_asm_dsp_p.h"
+#include "bobui_mips_asm_dsp_p.h"
 
 LEAF_MIPS_DSPR2(qConvertRgb16To32_asm_mips_dspr2)
 /*
@@ -97,7 +97,7 @@ END(qConvertRgb16To32_asm_mips_dspr2)
 #endif
 
 
-LEAF_MIPS_DSPR2(qt_blend_rgb16_on_rgb16_mips_dspr2_asm)
+LEAF_MIPS_DSPR2(bobui_blend_rgb16_on_rgb16_mips_dspr2_asm)
 /*
 + * a0 - dst (*r5g6b5)
  * a1 - src (const *r5g6b5)
@@ -627,7 +627,7 @@ LEAF_MIPS_DSPR2(qt_blend_rgb16_on_rgb16_mips_dspr2_asm)
 0:  jr ra
      nop
 
-END(qt_blend_rgb16_on_rgb16_mips_dspr2_asm)
+END(bobui_blend_rgb16_on_rgb16_mips_dspr2_asm)
 
 #undef PACK
 #undef LDHI

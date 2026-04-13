@@ -92,5 +92,5 @@ bool OmniNativeEventFilter::nativeEventFilter(const QByteArray &eventType, void 
     Q_UNUSED(message);
 #endif
 
-    return false; // Return false to let Qt continue processing the event natively
+    return false; // Return false to let BobUI continue processing the event natively
 }

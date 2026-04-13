@@ -1,14 +1,14 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopengltimerquery.h"
 
 #include "qopenglqueryhelper_p.h"
-#include <QtCore/private/qobject_p.h>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFunctions>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLFunctions>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Helper class used as fallback if OpenGL <3.3 is being used with EXT_timer_query
 class QExtTimerQueryHelper
@@ -202,7 +202,7 @@ GLuint64 QOpenGLTimerQueryPrivate::result() const
 /*!
     \class QOpenGLTimerQuery
     \brief The QOpenGLTimerQuery class wraps an OpenGL timer query object.
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
     \since 5.1
     \ingroup painting-3D
 
@@ -219,7 +219,7 @@ GLuint64 QOpenGLTimerQueryPrivate::result() const
             for all timer query functionality.
         \li OpenGL <=3.2 with the EXT_timer_query extension offers limited support
             in that the timestamp of the GPU cannot be queried. Places where this
-            impacts functions provided by Qt classes will be highlighted in the
+            impacts functions provided by BobUI classes will be highlighted in the
             function documentation.
         \li OpenGL ES 2 (and OpenGL ES 3) do not provide any support for OpenGL
             timer queries.
@@ -232,7 +232,7 @@ GLuint64 QOpenGLTimerQueryPrivate::result() const
     to represent times. A GLuint64 variable has enough width to contain a duration
     of hundreds of years, which is plenty for real-time rendering needs.
 
-    As with the other Qt OpenGL classes, QOpenGLTimerQuery has a create()
+    As with the other BobUI OpenGL classes, QOpenGLTimerQuery has a create()
     function to create the underlying OpenGL object. This is to allow the developer to
     ensure that there is a valid current OpenGL context at the time.
 
@@ -251,7 +251,7 @@ GLuint64 QOpenGLTimerQueryPrivate::result() const
     Note that OpenGL does not permit nesting or interleaving of multiple timer queries
     using begin() and end(). Using multiple timer queries and recordTimestamp() avoids
     this limitation. When using recordTimestamp() the result can be obtained at
-    some later time using isResultAvailable() and waitForResult(). Qt provides the
+    some later time using isResultAvailable() and waitForResult(). BobUI provides the
     convenience class QOpenGLTimeMonitor that helps with using multiple query objects.
 
     \sa QOpenGLTimeMonitor
@@ -474,7 +474,7 @@ bool QOpenGLTimeMonitorPrivate::create()
 
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (context && context != ctx) {
-        qWarning("QTimeMonitor: Attempting to use different OpenGL context to recreate timers.\n"
+        qWarning("BOBUIimeMonitor: Attempting to use different OpenGL context to recreate timers.\n"
                  "Please call destroy() first or use the same context to previously create");
         return false;
     }
@@ -609,7 +609,7 @@ void QOpenGLTimeMonitorPrivate::reset()
 /*!
     \class QOpenGLTimeMonitor
     \brief The QOpenGLTimeMonitor class wraps a sequence of OpenGL timer query objects.
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
     \since 5.1
     \ingroup painting-3D
 
@@ -841,6 +841,6 @@ void QOpenGLTimeMonitor::reset()
     d->reset();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopengltimerquery.cpp"

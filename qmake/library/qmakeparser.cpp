@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "qmakeparser.h"
 
@@ -9,10 +9,10 @@ using namespace QMakeInternal;
 
 #include <qfile.h>
 #ifdef PROPARSER_THREAD_SAFE
-# include <qthreadpool.h>
+# include <bobuihreadpool.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 ///////////////////////////////////////////////////////////////////////
 //
@@ -173,9 +173,9 @@ ProFile *QMakeParser::parsedProFile(const QString &fileName, ParseFlags flags)
 #ifdef PROPARSER_THREAD_SAFE
             if (ent->locker && !ent->locker->done) {
                 ++ent->locker->waiters;
-                QThreadPool::globalInstance()->releaseThread();
+                BOBUIhreadPool::globalInstance()->releaseThread();
                 ent->locker->cond.wait(locker.mutex());
-                QThreadPool::globalInstance()->reserveThread();
+                BOBUIhreadPool::globalInstance()->reserveThread();
                 if (!--ent->locker->waiters) {
                     delete ent->locker;
                     ent->locker = 0;
@@ -1032,7 +1032,7 @@ void QMakeParser::finalizeCond(ushort *&tokPtr, ushort *uc, ushort *ptr, int wor
         ushort *uce = uc + 4 + nlen;
         if (uce == ptr) {
             m_tmp.setRawData((QChar *)uc + 4, nlen);
-            if (!m_tmp.compare(statics.strelse, Qt::CaseInsensitive)) {
+            if (!m_tmp.compare(statics.strelse, BobUI::CaseInsensitive)) {
                 if (failOperator("in front of else"))
                     return;
                 BlockScope &top = m_blockstack.top();
@@ -1547,4 +1547,4 @@ QString QMakeParser::formatProBlock(const QString &block)
 
 #endif // PROPARSER_DEBUG
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

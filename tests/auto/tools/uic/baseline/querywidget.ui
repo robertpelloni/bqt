@@ -44,7 +44,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QTextEdit" name="inputTextEdit"/>
+            <widget class="BOBUIextEdit" name="inputTextEdit"/>
            </item>
           </layout>
          </item>
@@ -67,7 +67,7 @@
           <widget class="QComboBox" name="defaultQueries"/>
          </item>
          <item>
-          <widget class="QTextEdit" name="queryTextEdit">
+          <widget class="BOBUIextEdit" name="queryTextEdit">
            <property name="minimumSize">
             <size>
              <width>400</width>
@@ -106,7 +106,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QTextEdit" name="outputTextEdit">
+            <widget class="BOBUIextEdit" name="outputTextEdit">
              <property name="minimumSize">
               <size>
                <width>500</width>

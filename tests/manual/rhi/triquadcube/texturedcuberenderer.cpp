@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "texturedcuberenderer.h"
 #include <QFile>
@@ -30,14 +30,14 @@ void TexturedCubeRenderer::initResources(QRhiRenderPassDescriptor *rp)
     m_ubuf->setName(QByteArrayLiteral("Cube ubuf (textured)"));
     m_ubuf->create();
 
-    m_image = QImage(QLatin1String(":/qt256.png")).convertToFormat(QImage::Format_RGBA8888);
+    m_image = QImage(QLatin1String(":/bobui256.png")).convertToFormat(QImage::Format_RGBA8888);
     QRhiTexture::Flags texFlags;
     if (MIPMAP)
         texFlags |= QRhiTexture::MipMapped;
     if (AUTOGENMIPMAP)
         texFlags |= QRhiTexture::UsedWithGenerateMips;
     m_tex = m_r->newTexture(QRhiTexture::RGBA8, QSize(m_image.width(), m_image.height()), 1, texFlags);
-    m_tex->setName(QByteArrayLiteral("Qt texture"));
+    m_tex->setName(QByteArrayLiteral("BobUI texture"));
     m_tex->create();
 
     m_sampler = m_r->newSampler(QRhiSampler::Linear, QRhiSampler::Linear, MIPMAP ? QRhiSampler::Linear : QRhiSampler::None,

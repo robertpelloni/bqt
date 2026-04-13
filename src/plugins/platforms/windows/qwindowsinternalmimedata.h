@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSINTERNALMIME_H
 #define QWINDOWSINTERNALMIME_H
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-#include <QtGui/private/qinternalmimedata_p.h>
-#include <QtCore/qvariant.h>
+#include <BobUIGui/private/qinternalmimedata_p.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 
@@ -25,6 +25,6 @@ protected:
     virtual void releaseDataObject(IDataObject *) const {}
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSINTERNALMIME_H

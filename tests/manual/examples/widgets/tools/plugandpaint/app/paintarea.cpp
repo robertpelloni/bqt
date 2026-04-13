@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 
 #include "paintarea.h"
@@ -10,8 +10,8 @@
 
 PaintArea::PaintArea(QWidget *parent) : QWidget(parent)
 {
-    setAttribute(Qt::WA_StaticContents);
-    setAttribute(Qt::WA_OpaquePaintEvent);
+    setAttribute(BobUI::WA_StaticContents);
+    setAttribute(BobUI::WA_OpaquePaintEvent);
 
     theImage.fill(qRgb(255, 255, 255));
 }
@@ -41,8 +41,8 @@ void PaintArea::setImage(const QImage &image)
 void PaintArea::insertShape(const QPainterPath &path)
 {
     pendingPath = path;
-#ifndef QT_NO_CURSOR
-    setCursor(Qt::CrossCursor);
+#ifndef BOBUI_NO_CURSOR
+    setCursor(BobUI::CrossCursor);
 #endif
 }
 
@@ -77,7 +77,7 @@ void PaintArea::paintEvent(QPaintEvent * /* event */)
 
 void PaintArea::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == BobUI::LeftButton) {
         if (!pendingPath.isEmpty()) {
             QPainter painter(&theImage);
             setupPainter(painter);
@@ -94,7 +94,7 @@ void PaintArea::mousePressEvent(QMouseEvent *event)
             painter.drawPath(pendingPath);
 
             pendingPath = QPainterPath();
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             unsetCursor();
 #endif
             update();
@@ -115,7 +115,7 @@ void PaintArea::mousePressEvent(QMouseEvent *event)
 //! [1]
 void PaintArea::mouseMoveEvent(QMouseEvent *event)
 {
-    if ((event->buttons() & Qt::LeftButton) && lastPos != QPoint(-1, -1)) {
+    if ((event->buttons() & BobUI::LeftButton) && lastPos != QPoint(-1, -1)) {
         if (brushInterface) {
             QPainter painter(&theImage);
             setupPainter(painter);
@@ -131,7 +131,7 @@ void PaintArea::mouseMoveEvent(QMouseEvent *event)
 
 void PaintArea::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && lastPos != QPoint(-1, -1)) {
+    if (event->button() == BobUI::LeftButton && lastPos != QPoint(-1, -1)) {
         if (brushInterface) {
             QPainter painter(&theImage);
             setupPainter(painter);
@@ -147,6 +147,6 @@ void PaintArea::mouseReleaseEvent(QMouseEvent *event)
 void PaintArea::setupPainter(QPainter &painter)
 {
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(QPen(color, thickness, Qt::SolidLine, Qt::RoundCap,
-                   Qt::RoundJoin));
+    painter.setPen(QPen(color, thickness, BobUI::SolidLine, BobUI::RoundCap,
+                   BobUI::RoundJoin));
 }

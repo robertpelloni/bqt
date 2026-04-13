@@ -3,9 +3,9 @@
 // Copyright (C) 2016 Intel Corporation.
 // SPDX-License-Identifier: CC0-1.0
 
-#include <QtCore/qassert.h>
-#include <QtCore/qcompilerdetection.h>
-#include <QtCore/qendian.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/qcompilerdetection.h>
+#include <BobUICore/qendian.h>
 
 #ifdef Q_CC_GNU
 #  define DECL_HOT_FUNCTION       __attribute__((hot))
@@ -15,7 +15,7 @@
 
 #include <cstdint>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 namespace {
 
@@ -245,7 +245,7 @@ SipHash32<cROUNDS, dROUNDS>::finalize(const uint8_t *in, size_t left)
 #undef ROTL
 
 // Use SipHash-1-2, which has similar performance characteristics as
-// Qt 4's hash implementation, instead of the SipHash-2-4 default
+// BobUI 4's hash implementation, instead of the SipHash-2-4 default
 template <int cROUNDS = 1, int dROUNDS = 2>
 using SipHash = std::conditional_t<sizeof(void *) == 8,
                                    SipHash64<cROUNDS, dROUNDS>, SipHash32<cROUNDS, dROUNDS>>;

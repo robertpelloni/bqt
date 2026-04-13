@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <private/qringbuffer_p.h>
 #include <QByteArray>
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 class tst_QRingBuffer : public QObject
 {
@@ -41,6 +41,6 @@ void tst_QRingBuffer::free()
     }
 }
 
-QTEST_MAIN(tst_QRingBuffer)
+BOBUIEST_MAIN(tst_QRingBuffer)
 
 #include "tst_bench_qringbuffer.moc"

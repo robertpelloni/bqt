@@ -3,7 +3,7 @@ instructions:
   - type: ChangeDirectory
     directory: "{{.SourceDir}}_build"
   # If documentation feature is present, Coin installs top-level documentation
-  # built by product(qt5) build into <module_name>_doc_build/doc. Coin will
+  # built by product(bobui5) build into <module_name>_doc_build/doc. Coin will
   # silently omit installing the top-level documentations if not built by the product.
   - type: ExecuteCommand
     command: "rsync -a {{.SourceDir}}_doc_build/doc {{.SourceDir}}_build"

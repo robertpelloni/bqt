@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 
 # 
-# Copyright (C) 2016 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+# Copyright (C) 2016 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 # 
 
 ################################################################################
 ## Form generated from reading UI file 'config.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.0.0
+## Created by: BobUI User Interface Compiler version 6.0.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+from PySide6.BobUICore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QSize, BOBUIime, QUrl, BobUI)
+from PySide6.BobUIGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDialog,
+    QPalette, QPixmap, QRadialGradient, BOBUIransform)
+from PySide6.BobUIWidgets import (QApplication, QCheckBox, QComboBox, QDialog,
     QGridLayout, QGroupBox, QHBoxLayout, QLabel,
     QPushButton, QRadioButton, QSizePolicy, QSlider,
     QSpacerItem, QSpinBox, QVBoxLayout, QWidget)
@@ -246,43 +246,43 @@ class Ui_Config(object):
         self.bslider.setObjectName(u"bslider")
         palette = QPalette()
         brush = QBrush(QColor(128, 128, 128, 255))
-        brush.setStyle(Qt.BrushStyle.SolidPattern)
+        brush.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush)
         brush1 = QBrush(QColor(0, 0, 255, 255))
-        brush1.setStyle(Qt.BrushStyle.SolidPattern)
+        brush1.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush1)
         brush2 = QBrush(QColor(127, 127, 255, 255))
-        brush2.setStyle(Qt.BrushStyle.SolidPattern)
+        brush2.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Light, brush2)
         brush3 = QBrush(QColor(38, 38, 255, 255))
-        brush3.setStyle(Qt.BrushStyle.SolidPattern)
+        brush3.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Midlight, brush3)
         brush4 = QBrush(QColor(0, 0, 127, 255))
-        brush4.setStyle(Qt.BrushStyle.SolidPattern)
+        brush4.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Dark, brush4)
         brush5 = QBrush(QColor(0, 0, 170, 255))
-        brush5.setStyle(Qt.BrushStyle.SolidPattern)
+        brush5.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Mid, brush5)
         brush6 = QBrush(QColor(0, 0, 0, 255))
-        brush6.setStyle(Qt.BrushStyle.SolidPattern)
+        brush6.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush6)
         brush7 = QBrush(QColor(255, 255, 255, 255))
-        brush7.setStyle(Qt.BrushStyle.SolidPattern)
+        brush7.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.BrightText, brush7)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ButtonText, brush)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush7)
         brush8 = QBrush(QColor(220, 220, 220, 255))
-        brush8.setStyle(Qt.BrushStyle.SolidPattern)
+        brush8.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Window, brush8)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Shadow, brush6)
         brush9 = QBrush(QColor(10, 95, 137, 255))
-        brush9.setStyle(Qt.BrushStyle.SolidPattern)
+        brush9.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Highlight, brush9)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.HighlightedText, brush7)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Link, brush6)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.LinkVisited, brush6)
         brush10 = QBrush(QColor(232, 232, 232, 255))
-        brush10.setStyle(Qt.BrushStyle.SolidPattern)
+        brush10.setStyle(BobUI.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.AlternateBase, brush10)
         palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.WindowText, brush)
         palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Button, brush1)
@@ -321,7 +321,7 @@ class Ui_Config(object):
         self.bslider.setPalette(palette)
         self.bslider.setMaximum(400)
         self.bslider.setValue(100)
-        self.bslider.setOrientation(Qt.Orientation.Horizontal)
+        self.bslider.setOrientation(BobUI.Orientation.Horizontal)
 
         self.gridLayout.addWidget(self.bslider, 6, 1, 1, 1)
 
@@ -340,19 +340,19 @@ class Ui_Config(object):
         palette1 = QPalette()
         palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush)
         brush11 = QBrush(QColor(0, 255, 0, 255))
-        brush11.setStyle(Qt.BrushStyle.SolidPattern)
+        brush11.setStyle(BobUI.BrushStyle.SolidPattern)
         palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush11)
         brush12 = QBrush(QColor(127, 255, 127, 255))
-        brush12.setStyle(Qt.BrushStyle.SolidPattern)
+        brush12.setStyle(BobUI.BrushStyle.SolidPattern)
         palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Light, brush12)
         brush13 = QBrush(QColor(38, 255, 38, 255))
-        brush13.setStyle(Qt.BrushStyle.SolidPattern)
+        brush13.setStyle(BobUI.BrushStyle.SolidPattern)
         palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Midlight, brush13)
         brush14 = QBrush(QColor(0, 127, 0, 255))
-        brush14.setStyle(Qt.BrushStyle.SolidPattern)
+        brush14.setStyle(BobUI.BrushStyle.SolidPattern)
         palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Dark, brush14)
         brush15 = QBrush(QColor(0, 170, 0, 255))
-        brush15.setStyle(Qt.BrushStyle.SolidPattern)
+        brush15.setStyle(BobUI.BrushStyle.SolidPattern)
         palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Mid, brush15)
         palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush6)
         palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.BrightText, brush7)
@@ -402,7 +402,7 @@ class Ui_Config(object):
         self.gslider.setPalette(palette1)
         self.gslider.setMaximum(400)
         self.gslider.setValue(100)
-        self.gslider.setOrientation(Qt.Orientation.Horizontal)
+        self.gslider.setOrientation(BobUI.Orientation.Horizontal)
 
         self.gridLayout.addWidget(self.gslider, 4, 1, 1, 1)
 
@@ -429,10 +429,10 @@ class Ui_Config(object):
         palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Light, brush7)
         palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Midlight, brush7)
         brush16 = QBrush(QColor(127, 127, 127, 255))
-        brush16.setStyle(Qt.BrushStyle.SolidPattern)
+        brush16.setStyle(BobUI.BrushStyle.SolidPattern)
         palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Dark, brush16)
         brush17 = QBrush(QColor(170, 170, 170, 255))
-        brush17.setStyle(Qt.BrushStyle.SolidPattern)
+        brush17.setStyle(BobUI.BrushStyle.SolidPattern)
         palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Mid, brush17)
         palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush6)
         palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.BrightText, brush7)
@@ -482,7 +482,7 @@ class Ui_Config(object):
         self.gammaslider.setPalette(palette2)
         self.gammaslider.setMaximum(400)
         self.gammaslider.setValue(100)
-        self.gammaslider.setOrientation(Qt.Orientation.Horizontal)
+        self.gammaslider.setOrientation(BobUI.Orientation.Horizontal)
 
         self.gridLayout.addWidget(self.gammaslider, 0, 1, 1, 1)
 
@@ -501,19 +501,19 @@ class Ui_Config(object):
         palette3 = QPalette()
         palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush)
         brush18 = QBrush(QColor(255, 0, 0, 255))
-        brush18.setStyle(Qt.BrushStyle.SolidPattern)
+        brush18.setStyle(BobUI.BrushStyle.SolidPattern)
         palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush18)
         brush19 = QBrush(QColor(255, 127, 127, 255))
-        brush19.setStyle(Qt.BrushStyle.SolidPattern)
+        brush19.setStyle(BobUI.BrushStyle.SolidPattern)
         palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Light, brush19)
         brush20 = QBrush(QColor(255, 38, 38, 255))
-        brush20.setStyle(Qt.BrushStyle.SolidPattern)
+        brush20.setStyle(BobUI.BrushStyle.SolidPattern)
         palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Midlight, brush20)
         brush21 = QBrush(QColor(127, 0, 0, 255))
-        brush21.setStyle(Qt.BrushStyle.SolidPattern)
+        brush21.setStyle(BobUI.BrushStyle.SolidPattern)
         palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Dark, brush21)
         brush22 = QBrush(QColor(170, 0, 0, 255))
-        brush22.setStyle(Qt.BrushStyle.SolidPattern)
+        brush22.setStyle(BobUI.BrushStyle.SolidPattern)
         palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Mid, brush22)
         palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush6)
         palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.BrightText, brush7)
@@ -563,7 +563,7 @@ class Ui_Config(object):
         self.rslider.setPalette(palette3)
         self.rslider.setMaximum(400)
         self.rslider.setValue(100)
-        self.rslider.setOrientation(Qt.Orientation.Horizontal)
+        self.rslider.setOrientation(BobUI.Orientation.Horizontal)
 
         self.gridLayout.addWidget(self.rslider, 2, 1, 1, 1)
 

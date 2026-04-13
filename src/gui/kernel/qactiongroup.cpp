@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qactiongroup.h"
 
@@ -9,7 +9,7 @@
 #include "qevent.h"
 #include "qlist.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QActionGroupPrivate::QActionGroupPrivate() :
     enabled(1), visible(1)
@@ -55,7 +55,7 @@ void QActionGroup::_q_actionHovered()
     \brief The QActionGroup class groups actions together.
     \since 6.0
 
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     QActionGroup is a base class for classes grouping
     classes inhheriting QAction objects together.
@@ -347,6 +347,6 @@ bool QActionGroup::isVisible() const
     \sa QAction::activate()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qactiongroup.cpp"

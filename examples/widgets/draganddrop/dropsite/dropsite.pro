@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(tablewidget))
+BOBUI += widgets
+requires(bobuiConfig(tablewidget))
 
 HEADERS = droparea.h \
           dropsitewindow.h
@@ -8,5 +8,5 @@ SOURCES = droparea.cpp \
           main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/draganddrop/dropsite
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/draganddrop/dropsite
 INSTALLS += target

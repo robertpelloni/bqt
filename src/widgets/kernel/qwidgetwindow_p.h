@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGETWINDOW_P_H
 #define QWIDGETWINDOW_P_H
@@ -9,23 +9,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtGui/qwindow.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUIGui/qwindow.h>
 
-#include <QtCore/private/qobject_p.h>
-#include <QtGui/private/qevent_p.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUIGui/private/qevent_p.h>
+#include <BobUIWidgets/qwidget.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QCloseEvent;
@@ -41,7 +41,7 @@ public:
     ~QWidgetWindow();
 
     QWidget *widget() const { return m_widget; }
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessibleInterface *accessibleRoot() const override;
 #endif
 
@@ -59,13 +59,13 @@ protected:
     void handleKeyEvent(QKeyEvent *);
     void handleMouseEvent(QMouseEvent *);
     void handleNonClientAreaMouseEvent(QMouseEvent *);
-    void handleTouchEvent(QTouchEvent *);
+    void handleTouchEvent(BOBUIouchEvent *);
     void handleMoveEvent(QMoveEvent *);
     void handleResizeEvent(QResizeEvent *);
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void handleWheelEvent(QWheelEvent *);
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void handleDragEnterEvent(QDragMoveEvent *, QWidget *widget = nullptr);
     void handleDragMoveEvent(QDragMoveEvent *);
     void handleDragLeaveEvent(QDragLeaveEvent *);
@@ -74,13 +74,13 @@ protected:
     void handleExposeEvent(QExposeEvent *);
     void handleWindowStateChangedEvent(QWindowStateChangeEvent *event);
     bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
-#if QT_CONFIG(tabletevent)
-    void handleTabletEvent(QTabletEvent *);
+#if BOBUI_CONFIG(tabletevent)
+    void handleTabletEvent(BOBUIabletEvent *);
 #endif
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     void handleGestureEvent(QNativeGestureEvent *);
 #endif
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void handleContextMenuEvent(QContextMenuEvent *);
 #endif
 
@@ -103,11 +103,11 @@ private:
 
     QPointer<QWidget> m_widget;
     QPointer<QWidget> m_implicit_mouse_grabber;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QPointer<QWidget> m_dragTarget;
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWIDGETWINDOW_P_H

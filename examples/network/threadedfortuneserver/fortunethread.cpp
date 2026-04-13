@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "fortunethread.h"
 
-#include <QtNetwork>
+#include <BobUINetwork>
 
 //! [0]
 FortuneThread::FortuneThread(qintptr socketDescriptor, const QString &fortune, QObject *parent)
-    : QThread(parent), socketDescriptor(socketDescriptor), text(fortune)
+    : BOBUIhread(parent), socketDescriptor(socketDescriptor), text(fortune)
 {
 }
 //! [0]
@@ -15,7 +15,7 @@ FortuneThread::FortuneThread(qintptr socketDescriptor, const QString &fortune, Q
 //! [1]
 void FortuneThread::run()
 {
-    QTcpSocket tcpSocket;
+    BOBUIcpSocket tcpSocket;
 //! [1] //! [2]
     if (!tcpSocket.setSocketDescriptor(socketDescriptor)) {
         emit error(tcpSocket.error());
@@ -25,7 +25,7 @@ void FortuneThread::run()
 
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_5);
+    out.setVersion(QDataStream::BobUI_6_5);
     out << text;
 //! [3] //! [4]
 

@@ -77,7 +77,7 @@
        <item>
         <spacer>
          <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
+          <enum>BobUI::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -155,7 +155,7 @@
            <item>
             <spacer>
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>BobUI::Orientation::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -308,7 +308,7 @@
       <item>
        <spacer>
         <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
+         <enum>BobUI::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>

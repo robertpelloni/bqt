@@ -1,19 +1,19 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qopenglcontext.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/qopenglcontext.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformopenglcontext.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatformwindow_p.h>
 #include <qpa/qplatformscreen_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QNativeInterface::Private;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
 /*!
     \class QNativeInterface::QWGLContext
@@ -23,7 +23,7 @@ using namespace QNativeInterface::Private;
 
     Accessed through QOpenGLContext::nativeInterface().
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \inheaderfile QOpenGLContext
     \ingroup native-interfaces
     \ingroup native-interfaces-qopenglcontext
@@ -60,8 +60,8 @@ using namespace QNativeInterface::Private;
     \note This function requires that the QGuiApplication instance is already created.
 */
 
-QT_DEFINE_NATIVE_INTERFACE(QWGLContext);
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsGLIntegration);
+BOBUI_DEFINE_NATIVE_INTERFACE(QWGLContext);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsGLIntegration);
 
 HMODULE QNativeInterface::QWGLContext::openGLModuleHandle()
 {
@@ -75,18 +75,18 @@ QOpenGLContext *QNativeInterface::QWGLContext::fromNative(HGLRC context, HWND wi
         &QWindowsGLIntegration::createOpenGLContext>(context, window, shareContext);
 }
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 /*!
     \class QNativeInterface::Private::QWindowsApplication
     \since 6.0
     \internal
     \brief Native interface to QGuiApplication, to be retrieved from QPlatformIntegration.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
 */
 
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsApplication);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsApplication);
 
 /*!
     \class QNativeInterface::QWindowsScreen
@@ -94,7 +94,7 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsApplication);
     \brief Native interface to a screen.
 
     Accessed through QScreen::nativeInterface().
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
     \ingroup native-interfaces-qscreen
 */
@@ -102,7 +102,7 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsApplication);
  * \fn HWMONITOR QNativeInterface::QWindowsScreen::handle() const;
  * \return The underlying HWMONITOR of the screen.
  */
-QT_DEFINE_NATIVE_INTERFACE(QWindowsScreen);
+BOBUI_DEFINE_NATIVE_INTERFACE(QWindowsScreen);
 /*!
     \enum QNativeInterface::Private::QWindowsApplication::TouchWindowTouchType
 
@@ -270,11 +270,11 @@ QT_DEFINE_NATIVE_INTERFACE(QWindowsScreen);
     \since 6.0
     \internal
     \brief Native interface to QPlatformWindow.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
 */
 
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsWindow);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsWindow);
 
 /*!
     \fn void QNativeInterface::Private::QWindowsWindow::setHasBorderInFullScreen(bool border)
@@ -283,7 +283,7 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsWindow);
     Sets whether the WS_BORDER flag will be set for the window in full screen mode
     to \a border.
 
-    See also \l [QtDoc] {Fullscreen OpenGL Based Windows}
+    See also \l [BobUIDoc] {Fullscreen OpenGL Based Windows}
 */
 
 /*!
@@ -309,4 +309,4 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QWindowsWindow);
     possible to remove a frame border by specifying a negative value.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

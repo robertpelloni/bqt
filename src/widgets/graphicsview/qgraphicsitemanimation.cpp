@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsItemAnimation
@@ -8,7 +8,7 @@
     support for QGraphicsItem.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \deprecated
 
     The QGraphicsItemAnimation class animates a QGraphicsItem. You can
@@ -25,8 +25,8 @@
     line between these positions. The same is true for scaling and
     rotation.
 
-    It is usual to use the class with a QTimeLine. The timeline's
-    \l{QTimeLine::}{valueChanged()} signal is then connected to the
+    It is usual to use the class with a BOBUIimeLine. The timeline's
+    \l{BOBUIimeLine::}{valueChanged()} signal is then connected to the
     \c setStep() slot. For example, you can set up an item for rotation
     by calling \c setRotationAt() for different step values.
     The animations timeline is set with the setTimeLine() function.
@@ -36,25 +36,25 @@
     \snippet timeline/main.cpp 0
 
     Note that steps lie between 0.0 and 1.0. It may be necessary to use
-    \l{QTimeLine::}{setUpdateInterval()}. The default update interval
+    \l{BOBUIimeLine::}{setUpdateInterval()}. The default update interval
     is 40 ms. A scheduled transformation cannot be removed when set,
     so scheduling several transformations of the same kind (e.g.,
     rotations) at the same step is not recommended.
 
-    \sa QTimeLine, {Graphics View Framework}
+    \sa BOBUIimeLine, {Graphics View Framework}
 */
 
 #include "qgraphicsitemanimation.h"
 
 #include "qgraphicsitem.h"
 
-#include <QtCore/qtimeline.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qpointer.h>
+#include <BobUICore/bobuiimeline.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qpointer.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline bool check_step_valid(qreal step, const char *method)
 {
@@ -74,11 +74,11 @@ public:
 
     QGraphicsItemAnimation *q;
 
-    QPointer<QTimeLine> timeLine;
+    QPointer<BOBUIimeLine> timeLine;
     QGraphicsItem *item;
 
     QPointF startPos;
-    QTransform startTransform;
+    BOBUIransform startTransform;
 
     qreal step;
 
@@ -195,7 +195,7 @@ void QGraphicsItemAnimation::setItem(QGraphicsItem *item)
 
   \sa setTimeLine()
 */
-QTimeLine *QGraphicsItemAnimation::timeLine() const
+BOBUIimeLine *QGraphicsItemAnimation::timeLine() const
 {
     return d->timeLine;
 }
@@ -206,7 +206,7 @@ QTimeLine *QGraphicsItemAnimation::timeLine() const
 
   \sa timeLine()
 */
-void QGraphicsItemAnimation::setTimeLine(QTimeLine *timeLine)
+void QGraphicsItemAnimation::setTimeLine(BOBUIimeLine *timeLine)
 {
     if (d->timeLine == timeLine)
         return;
@@ -265,11 +265,11 @@ QList<std::pair<qreal, QPointF> > QGraphicsItemAnimation::posList() const
 
   \since 5.14
 */
-QTransform QGraphicsItemAnimation::transformAt(qreal step) const
+BOBUIransform QGraphicsItemAnimation::transformAt(qreal step) const
 {
     check_step_valid(step, "transformAt");
 
-    QTransform transform;
+    BOBUIransform transform;
     if (!d->rotation.isEmpty())
         transform.rotate(rotationAt(step));
     if (!d->verticalScale.isEmpty())
@@ -548,6 +548,6 @@ void QGraphicsItemAnimation::afterAnimationStep(qreal step)
     Q_UNUSED(step);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicsitemanimation.cpp"

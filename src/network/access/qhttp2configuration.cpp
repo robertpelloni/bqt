@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qhttp2configuration.h"
 
@@ -9,7 +9,7 @@
 
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QHttp2Configuration
@@ -17,7 +17,7 @@ QT_BEGIN_NAMESPACE
     \since 5.14
 
     \reentrant
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
     \ingroup shared
 
@@ -180,7 +180,7 @@ bool QHttp2Configuration::huffmanCompressionEnabled() const
 bool QHttp2Configuration::setSessionReceiveWindowSize(unsigned size)
 {
     if (!size || size > Http2::maxSessionReceiveWindowSize) { // RFC-7540, 6.9
-        qCWarning(QT_HTTP2) << "Invalid session window size";
+        qCWarning(BOBUI_HTTP2) << "Invalid session window size";
         return false;
     }
 
@@ -209,7 +209,7 @@ unsigned QHttp2Configuration::sessionReceiveWindowSize() const
 bool QHttp2Configuration::setStreamReceiveWindowSize(unsigned size)
 {
     if (!size || size > Http2::maxSessionReceiveWindowSize) { // RFC-7540, 6.9
-        qCWarning(QT_HTTP2) << "Invalid stream window size";
+        qCWarning(BOBUI_HTTP2) << "Invalid stream window size";
         return false;
     }
 
@@ -239,7 +239,7 @@ unsigned QHttp2Configuration::streamReceiveWindowSize() const
 bool QHttp2Configuration::setMaxFrameSize(unsigned size)
 {
     if (size < Http2::minPayloadLimit || size > Http2::maxPayloadSize) {
-        qCWarning(QT_HTTP2) << "Maximum frame size to advertise is invalid";
+        qCWarning(BOBUI_HTTP2) << "Maximum frame size to advertise is invalid";
         return false;
     }
 
@@ -316,4 +316,4 @@ bool QHttp2Configuration::isEqual(const QHttp2Configuration &other) const noexce
            && d->maxConcurrentStreams == other.d->maxConcurrentStreams;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

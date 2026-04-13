@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qdatetime.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qurl.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qurl.h>
 
-#include <QtNetwork/qhttpheaders.h>
-#include <QtNetwork/private/qhstsstore_p.h>
-#include <QtNetwork/private/qhsts_p.h>
+#include <BobUINetwork/qhttpheaders.h>
+#include <BobUINetwork/private/qhstsstore_p.h>
+#include <BobUINetwork/private/qhsts_p.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 class tst_QHsts : public QObject
 {
@@ -28,11 +28,11 @@ private Q_SLOTS:
 
 void tst_QHsts::testSingleKnownHost_data()
 {
-    QTest::addColumn<QUrl>("knownHost");
-    QTest::addColumn<QDateTime>("policyExpires");
-    QTest::addColumn<bool>("includeSubDomains");
-    QTest::addColumn<QUrl>("hostToTest");
-    QTest::addColumn<bool>("isKnown");
+    BOBUIest::addColumn<QUrl>("knownHost");
+    BOBUIest::addColumn<QDateTime>("policyExpires");
+    BOBUIest::addColumn<bool>("includeSubDomains");
+    BOBUIest::addColumn<QUrl>("hostToTest");
+    BOBUIest::addColumn<bool>("isKnown");
 
     const QDateTime currentUTC = QDateTime::currentDateTimeUtc();
     const QUrl knownHost(QLatin1String("http://example.com"));
@@ -41,36 +41,36 @@ void tst_QHsts::testSingleKnownHost_data()
     const QUrl subSubdomain(QLatin1String("https://level3.level2.example.com"));
 
     const QDateTime validDate(currentUTC.addSecs(1000));
-    QTest::newRow("same-known") << knownHost << validDate << false << knownHost << true;
-    QTest::newRow("subexcluded") << knownHost << validDate << false << validSubdomain << false;
-    QTest::newRow("subincluded") << knownHost << validDate << true << validSubdomain << true;
-    QTest::newRow("unknown-subexcluded") << knownHost << validDate << false << unknownDomain << false;
-    QTest::newRow("unknown-subincluded") << knownHost << validDate << true << unknownDomain << false;
-    QTest::newRow("sub-subdomain-subincluded") << knownHost << validDate << true << subSubdomain << true;
-    QTest::newRow("sub-subdomain-subexcluded") << knownHost << validDate << false << subSubdomain << false;
+    BOBUIest::newRow("same-known") << knownHost << validDate << false << knownHost << true;
+    BOBUIest::newRow("subexcluded") << knownHost << validDate << false << validSubdomain << false;
+    BOBUIest::newRow("subincluded") << knownHost << validDate << true << validSubdomain << true;
+    BOBUIest::newRow("unknown-subexcluded") << knownHost << validDate << false << unknownDomain << false;
+    BOBUIest::newRow("unknown-subincluded") << knownHost << validDate << true << unknownDomain << false;
+    BOBUIest::newRow("sub-subdomain-subincluded") << knownHost << validDate << true << subSubdomain << true;
+    BOBUIest::newRow("sub-subdomain-subexcluded") << knownHost << validDate << false << subSubdomain << false;
 
     const QDateTime invalidDate;
-    QTest::newRow("invalid-time") << knownHost << invalidDate << false << knownHost << false;
-    QTest::newRow("invalid-time-subexcluded") << knownHost << invalidDate << false
+    BOBUIest::newRow("invalid-time") << knownHost << invalidDate << false << knownHost << false;
+    BOBUIest::newRow("invalid-time-subexcluded") << knownHost << invalidDate << false
                                               << validSubdomain << false;
-    QTest::newRow("invalid-time-subincluded") << knownHost << invalidDate << true
+    BOBUIest::newRow("invalid-time-subincluded") << knownHost << invalidDate << true
                                               << validSubdomain << false;
 
     const QDateTime expiredDate(currentUTC.addSecs(-1000));
-    QTest::newRow("expired-time") << knownHost << expiredDate << false << knownHost << false;
-    QTest::newRow("expired-time-subexcluded") << knownHost << expiredDate << false
+    BOBUIest::newRow("expired-time") << knownHost << expiredDate << false << knownHost << false;
+    BOBUIest::newRow("expired-time-subexcluded") << knownHost << expiredDate << false
                                               << validSubdomain << false;
-    QTest::newRow("expired-time-subincluded") << knownHost << expiredDate << true
+    BOBUIest::newRow("expired-time-subincluded") << knownHost << expiredDate << true
                                               << validSubdomain << false;
     const QUrl ipAsHost(QLatin1String("http://127.0.0.1"));
-    QTest::newRow("ip-address-in-hostname") << ipAsHost << validDate << false
+    BOBUIest::newRow("ip-address-in-hostname") << ipAsHost << validDate << false
                                               << ipAsHost << false;
 
     const QUrl anyIPv4AsHost(QLatin1String("http://0.0.0.0"));
-    QTest::newRow("anyip4-address-in-hostname") << anyIPv4AsHost << validDate
+    BOBUIest::newRow("anyip4-address-in-hostname") << anyIPv4AsHost << validDate
                                                 << false << anyIPv4AsHost << false;
     const QUrl anyIPv6AsHost(QLatin1String("http://[::]"));
-    QTest::newRow("anyip6-address-in-hostname") << anyIPv6AsHost << validDate
+    BOBUIest::newRow("anyip6-address-in-hostname") << anyIPv6AsHost << validDate
                                                 << false << anyIPv6AsHost << false;
 
 }
@@ -160,7 +160,7 @@ void tst_QHsts::testPolicyExpiration()
     QVERIFY(cache.isKnownHost(exampleCom));
     QVERIFY(cache.isKnownHost(subdomain));
     // wait for approx. a half of lifetime:
-    QTest::qWait(lifeTimeMS / 2);
+    BOBUIest::qWait(lifeTimeMS / 2);
 
     if (QDateTime::currentDateTimeUtc() < currentUTC.addMSecs(lifeTimeMS)) {
         // Should still be valid:
@@ -168,7 +168,7 @@ void tst_QHsts::testPolicyExpiration()
         QVERIFY(cache.isKnownHost(subdomain));
     }
 
-    QTest::qWait(lifeTimeMS);
+    BOBUIest::qWait(lifeTimeMS);
     // expired:
     QVERIFY(!cache.isKnownHost(exampleCom));
     QVERIFY(!cache.isKnownHost(subdomain));
@@ -179,7 +179,7 @@ void tst_QHsts::testPolicyExpiration()
     cache.updateKnownHost(subdomain, currentUTC.addMSecs(lifeTimeMS), true);
     QVERIFY(cache.isKnownHost(exampleCom));
     QVERIFY(cache.isKnownHost(subdomain));
-    QTest::qWait(lifeTimeMS / 2);
+    BOBUIest::qWait(lifeTimeMS / 2);
     if (QDateTime::currentDateTimeUtc() < currentUTC.addMSecs(lifeTimeMS)) {
         QVERIFY(!cache.isKnownHost(exampleCom));
         QVERIFY(cache.isKnownHost(subdomain));
@@ -364,6 +364,6 @@ void tst_QHsts::testStore()
     }
 }
 
-QTEST_MAIN(tst_QHsts)
+BOBUIEST_MAIN(tst_QHsts)
 
 #include "tst_qhsts.moc"

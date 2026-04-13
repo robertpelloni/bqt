@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QTest>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BOBUIest>
 
-#include <QtGui/qpixelformat.h>
+#include <BobUIGui/qpixelformat.h>
 
 class tst_QPixelFormat : public QObject
 {
@@ -103,23 +103,23 @@ void tst_QPixelFormat::testHSLandHSV()
 Q_DECLARE_METATYPE(QPixelFormat::YUVLayout)
 void tst_QPixelFormat::testYUV_data()
 {
-    QTest::addColumn<QPixelFormat::YUVLayout>("yuv_layout");
-    QTest::newRow("YUV Layout YUV444") << QPixelFormat::YUV444;
-    QTest::newRow("YUV Layout YUV422") << QPixelFormat::YUV422;
-    QTest::newRow("YUV Layout YUV411") << QPixelFormat::YUV411;
-    QTest::newRow("YUV Layout YUV420P") << QPixelFormat::YUV420P;
-    QTest::newRow("YUV Layout YUV420SP") << QPixelFormat::YUV420SP;
-    QTest::newRow("YUV Layout YV12") << QPixelFormat::YV12;
-    QTest::newRow("YUV Layout UYVY") << QPixelFormat::UYVY;
-    QTest::newRow("YUV Layout YUYV") << QPixelFormat::YUYV;
-    QTest::newRow("YUV Layout NV12") << QPixelFormat::NV12;
-    QTest::newRow("YUV Layout NV21") << QPixelFormat::NV21;
-    QTest::newRow("YUV Layout IMC1") << QPixelFormat::IMC1;
-    QTest::newRow("YUV Layout IMC2") << QPixelFormat::IMC2;
-    QTest::newRow("YUV Layout IMC3") << QPixelFormat::IMC3;
-    QTest::newRow("YUV Layout IMC4") << QPixelFormat::IMC4;
-    QTest::newRow("YUV Layout Y8") << QPixelFormat::Y8;
-    QTest::newRow("YUV Layout Y16") << QPixelFormat::Y16;
+    BOBUIest::addColumn<QPixelFormat::YUVLayout>("yuv_layout");
+    BOBUIest::newRow("YUV Layout YUV444") << QPixelFormat::YUV444;
+    BOBUIest::newRow("YUV Layout YUV422") << QPixelFormat::YUV422;
+    BOBUIest::newRow("YUV Layout YUV411") << QPixelFormat::YUV411;
+    BOBUIest::newRow("YUV Layout YUV420P") << QPixelFormat::YUV420P;
+    BOBUIest::newRow("YUV Layout YUV420SP") << QPixelFormat::YUV420SP;
+    BOBUIest::newRow("YUV Layout YV12") << QPixelFormat::YV12;
+    BOBUIest::newRow("YUV Layout UYVY") << QPixelFormat::UYVY;
+    BOBUIest::newRow("YUV Layout YUYV") << QPixelFormat::YUYV;
+    BOBUIest::newRow("YUV Layout NV12") << QPixelFormat::NV12;
+    BOBUIest::newRow("YUV Layout NV21") << QPixelFormat::NV21;
+    BOBUIest::newRow("YUV Layout IMC1") << QPixelFormat::IMC1;
+    BOBUIest::newRow("YUV Layout IMC2") << QPixelFormat::IMC2;
+    BOBUIest::newRow("YUV Layout IMC3") << QPixelFormat::IMC3;
+    BOBUIest::newRow("YUV Layout IMC4") << QPixelFormat::IMC4;
+    BOBUIest::newRow("YUV Layout Y8") << QPixelFormat::Y8;
+    BOBUIest::newRow("YUV Layout Y16") << QPixelFormat::Y16;
 }
 
 void tst_QPixelFormat::testYUV()
@@ -202,4 +202,4 @@ void tst_QPixelFormat::testEnums()
 }
 
 #include <tst_qpixelformat.moc>
-QTEST_MAIN(tst_QPixelFormat);
+BOBUIEST_MAIN(tst_QPixelFormat);

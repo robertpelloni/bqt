@@ -1,14 +1,14 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 class TouchableItem : public QGraphicsRectItem
 {
 public:
     TouchableItem() : QGraphicsRectItem(50, 50, 400, 400)
     {
-        setBrush(Qt::yellow);
+        setBrush(BobUI::yellow);
         setAcceptTouchEvents(true);
     }
 protected:
@@ -20,7 +20,7 @@ protected:
             case QEvent::TouchUpdate:
             case QEvent::TouchEnd:
             {
-                QTouchEvent *te = static_cast<QTouchEvent *>(e);
+                BOBUIouchEvent *te = static_cast<BOBUIouchEvent *>(e);
                 for (const QEventPoint &tp : te->points()) {
                     QGraphicsEllipseItem *diameterItem = nullptr;
                     QSizeF ellipse = tp.ellipseDiameters();
@@ -29,17 +29,17 @@ protected:
                     } else {
                         diameterItem = new QGraphicsEllipseItem(QRectF(tp.position().x() - ellipse.width() / 2, tp.position().y() - ellipse.height() / 2,
                                                                        ellipse.width(), ellipse.height()), this);
-                        diameterItem->setPen(QPen(Qt::red));
-                        diameterItem->setBrush(QBrush(Qt::red));
+                        diameterItem->setPen(QPen(BobUI::red));
+                        diameterItem->setBrush(QBrush(BobUI::red));
                         if (ellipse.width() > qreal(2) && ellipse.height() > qreal(2))
-                            ellipse.scale(ellipse.width() - 2, ellipse.height() - 2, Qt::IgnoreAspectRatio);
+                            ellipse.scale(ellipse.width() - 2, ellipse.height() - 2, BobUI::IgnoreAspectRatio);
                     }
                     QGraphicsItem *parent = diameterItem ? static_cast<QGraphicsItem *>(diameterItem) : static_cast<QGraphicsItem *>(this);
                     QGraphicsEllipseItem *ellipseItem = new QGraphicsEllipseItem(QRectF(tp.position().x() - ellipse.width() / 2,
                                                                                         tp.position().y() - ellipse.height() / 2,
                                                                                         ellipse.width(), ellipse.height()), parent);
-                    ellipseItem->setPen(QPen(Qt::blue));
-                    ellipseItem->setBrush(QBrush(Qt::blue));
+                    ellipseItem->setPen(QPen(BobUI::blue));
+                    ellipseItem->setBrush(QBrush(BobUI::blue));
                 }
                 te->accept();
                 return true;
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
     for (const QInputDevice *device : QInputDevice::devices()) {
         const QPointingDevice *dev = qobject_cast<const QPointingDevice *>(device);
         QString result;
-        QTextStream str(&result);
+        BOBUIextStream str(&result);
         str << (device->type() == QInputDevice::DeviceType::TouchScreen ? "TouchScreen" : "TouchPad")
             << " \"" << device->name() << "\", max " << (dev ? dev->maximumPoints() : 0)
             << " touch points, capabilities:";
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
         qDebug() << "   " << result;
     }
     QGraphicsView *view = new QGraphicsView;
-    view->viewport()->setAttribute(Qt::WA_AcceptTouchEvents);
+    view->viewport()->setAttribute(BobUI::WA_AcceptTouchEvents);
     QGraphicsScene *scene = new QGraphicsScene(0, 0, 500, 500);
     TouchableItem *touchableItem = new TouchableItem;
     scene->addItem(touchableItem);

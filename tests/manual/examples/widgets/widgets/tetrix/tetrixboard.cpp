@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "tetrixboard.h"
 
@@ -12,7 +12,7 @@ TetrixBoard::TetrixBoard(QWidget *parent)
     : QFrame(parent), isStarted(false), isPaused(false)
 {
     setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    setFocusPolicy(Qt::StrongFocus);
+    setFocusPolicy(BobUI::StrongFocus);
     clearBoard();
 
     nextPiece.setRandomShape();
@@ -91,7 +91,7 @@ void TetrixBoard::paintEvent(QPaintEvent *event)
 //! [7]
 
     if (isPaused) {
-        painter.drawText(rect, Qt::AlignCenter, tr("Pause"));
+        painter.drawText(rect, BobUI::AlignCenter, tr("Pause"));
         return;
     }
 
@@ -135,22 +135,22 @@ void TetrixBoard::keyPressEvent(QKeyEvent *event)
 
 //! [14]
     switch (event->key()) {
-    case Qt::Key_Left:
+    case BobUI::Key_Left:
         tryMove(curPiece, curX - 1, curY);
         break;
-    case Qt::Key_Right:
+    case BobUI::Key_Right:
         tryMove(curPiece, curX + 1, curY);
         break;
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         tryMove(curPiece.rotatedRight(), curX, curY);
         break;
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         tryMove(curPiece.rotatedLeft(), curX, curY);
         break;
-    case Qt::Key_Space:
+    case BobUI::Key_Space:
         dropDown();
         break;
-    case Qt::Key_D:
+    case BobUI::Key_D:
         oneLineDown();
         break;
     default:
@@ -160,7 +160,7 @@ void TetrixBoard::keyPressEvent(QKeyEvent *event)
 }
 
 //! [15]
-void TetrixBoard::timerEvent(QTimerEvent *event)
+void TetrixBoard::timerEvent(BOBUIimerEvent *event)
 {
     if (event->timerId() == timer.timerId()) {
         if (isWaitingAfterLine) {

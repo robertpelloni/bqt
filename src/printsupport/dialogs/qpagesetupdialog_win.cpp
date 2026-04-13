@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qpagesetupdialog.h"
 
@@ -11,20 +11,20 @@
 #include "qprinter.h"
 #include <qpa/qplatformnativeinterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPageSetupDialog::QPageSetupDialog(QPrinter *printer, QWidget *parent)
     : QDialog(*(new QPageSetupDialogPrivate(printer)), parent)
 {
     setWindowTitle(QCoreApplication::translate("QPrintPreviewDialog", "Page Setup"));
-    setAttribute(Qt::WA_DontShowOnScreen);
+    setAttribute(BobUI::WA_DontShowOnScreen);
 }
 
 QPageSetupDialog::QPageSetupDialog(QWidget *parent)
     : QDialog(*(new QPageSetupDialogPrivate(nullptr)), parent)
 {
     setWindowTitle(QCoreApplication::translate("QPrintPreviewDialog", "Page Setup"));
-    setAttribute(Qt::WA_DontShowOnScreen);
+    setAttribute(BobUI::WA_DontShowOnScreen);
 }
 
 int QPageSetupDialog::exec()
@@ -62,7 +62,7 @@ int QPageSetupDialog::exec()
 
     QWidget *parent = parentWidget();
     parent = parent ? parent->window() : QApplication::activeWindow();
-    Q_ASSERT(!parent ||parent->testAttribute(Qt::WA_WState_Created));
+    Q_ASSERT(!parent ||parent->testAttribute(BobUI::WA_WState_Created));
 
     QWindow *parentWindow = parent ? parent->windowHandle() : nullptr;
     psd.hwndOwner = parentWindow
@@ -160,4 +160,4 @@ void QPageSetupDialog::setVisible(bool visible)
     exec();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

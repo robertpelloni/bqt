@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfbwindow_p.h"
 #include "qfbscreen_p.h"
 
-#include <QtGui/QScreen>
+#include <BobUIGui/QScreen>
 #include <qpa/qwindowsysteminterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_CONSTINIT static QBasicAtomicInt winIdGenerator = Q_BASIC_ATOMIC_INITIALIZER(0);
 
 QFbWindow::QFbWindow(QWindow *window)
-    : QPlatformWindow(window), mBackingStore(0), mWindowState(Qt::WindowNoState)
+    : QPlatformWindow(window), mBackingStore(0), mWindowState(BobUI::WindowNoState)
 {
     mWindowId = winIdGenerator.fetchAndAddRelaxed(1) + 1;
 }
@@ -45,12 +45,12 @@ void QFbWindow::setVisible(bool visible)
     QFbScreen *fbScreen = platformScreen();
     if (visible) {
         bool convOk = false;
-        static bool envDisableForceFullScreen = qEnvironmentVariableIntValue("QT_QPA_FB_FORCE_FULLSCREEN", &convOk) == 0 && convOk;
+        static bool envDisableForceFullScreen = qEnvironmentVariableIntValue("BOBUI_QPA_FB_FORCE_FULLSCREEN", &convOk) == 0 && convOk;
         const bool platformDisableForceFullScreen = fbScreen->flags().testFlag(QFbScreen::DontForceFirstWindowToFullScreen);
         const bool forceFullScreen = !envDisableForceFullScreen && !platformDisableForceFullScreen && fbScreen->windowCount() == 0;
-        if (forceFullScreen || (mWindowState & Qt::WindowFullScreen))
+        if (forceFullScreen || (mWindowState & BobUI::WindowFullScreen))
             newGeom = platformScreen()->geometry();
-        else if (mWindowState & Qt::WindowMaximized)
+        else if (mWindowState & BobUI::WindowMaximized)
             newGeom = platformScreen()->availableGeometry();
     }
     QPlatformWindow::setVisible(visible);
@@ -71,18 +71,18 @@ void QFbWindow::setVisible(bool visible)
     }
 }
 
-void QFbWindow::setWindowState(Qt::WindowStates state)
+void QFbWindow::setWindowState(BobUI::WindowStates state)
 {
     QPlatformWindow::setWindowState(state);
     mWindowState = state;
 }
 
-void QFbWindow::setWindowFlags(Qt::WindowFlags flags)
+void QFbWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
     mWindowFlags = flags;
 }
 
-Qt::WindowFlags QFbWindow::windowFlags() const
+BobUI::WindowFlags QFbWindow::windowFlags() const
 {
     return mWindowFlags;
 }
@@ -112,4 +112,4 @@ void QFbWindow::repaint(const QRegion &region)
         platformScreen()->setDirty(rect.translated(topLeft));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

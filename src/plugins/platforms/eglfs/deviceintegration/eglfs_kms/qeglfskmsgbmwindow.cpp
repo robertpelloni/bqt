@@ -1,13 +1,13 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsgbmwindow_p.h"
 #include "qeglfskmsgbmintegration_p.h"
 #include "qeglfskmsgbmscreen_p.h"
 
-#include <QtGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef EGL_EXT_platform_base
 typedef EGLSurface (EGLAPIENTRYP PFNEGLCREATEPLATFORMWINDOWSURFACEEXTPROC) (EGLDisplay dpy, EGLConfig config, void *native_window, const EGLint *attrib_list);
@@ -59,4 +59,4 @@ void QEglFSKmsGbmWindow::invalidateSurface()
     gbmScreen->resetSurface();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

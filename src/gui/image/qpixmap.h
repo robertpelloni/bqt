@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPIXMAP_H
 #define QPIXMAP_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qpaintdevice.h>
-#include <QtGui/qcolor.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qstring.h> // char*->QString conversion
-#include <QtGui/qimage.h>
-#include <QtGui/qtransform.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qpaintdevice.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qstring.h> // char*->QString conversion
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/bobuiransform.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QImageWriter;
@@ -21,7 +21,7 @@ class QImageReader;
 class QColor;
 class QVariant;
 class QPlatformPixmap;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QPlatformPixmap, Q_GUI_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QPlatformPixmap, Q_GUI_EXPORT)
 
 class Q_GUI_EXPORT QPixmap : public QPaintDevice
 {
@@ -30,8 +30,8 @@ public:
     explicit QPixmap(QPlatformPixmap *data);
     QPixmap(int w, int h);
     explicit QPixmap(const QSize &);
-    QPixmap(const QString& fileName, const char *format = nullptr, Qt::ImageConversionFlags flags = Qt::AutoColor);
-#ifndef QT_NO_IMAGEFORMAT_XPM
+    QPixmap(const QString& fileName, const char *format = nullptr, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
     explicit QPixmap(const char * const xpm[]);
 #endif
     QPixmap(const QPixmap &);
@@ -39,7 +39,7 @@ public:
     ~QPixmap();
 
     QPixmap &operator=(const QPixmap &);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QPixmap)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QPixmap)
     inline void swap(QPixmap &other) noexcept
     { data.swap(other.data); }
     bool operator==(const QPixmap &) const = delete;
@@ -58,7 +58,7 @@ public:
 
     static int defaultDepth();
 
-    void fill(const QColor &fillColor = Qt::white);
+    void fill(const QColor &fillColor = BobUI::white);
 
     QBitmap mask() const;
     void setMask(const QBitmap &);
@@ -70,36 +70,36 @@ public:
     bool hasAlpha() const;
     bool hasAlphaChannel() const;
 
-#ifndef QT_NO_IMAGE_HEURISTIC_MASK
+#ifndef BOBUI_NO_IMAGE_HEURISTIC_MASK
     QBitmap createHeuristicMask(bool clipTight = true) const;
 #endif
-    QBitmap createMaskFromColor(const QColor &maskColor, Qt::MaskMode mode = Qt::MaskInColor) const;
+    QBitmap createMaskFromColor(const QColor &maskColor, BobUI::MaskMode mode = BobUI::MaskInColor) const;
 
-    inline QPixmap scaled(int w, int h, Qt::AspectRatioMode aspectMode = Qt::IgnoreAspectRatio,
-                          Qt::TransformationMode mode = Qt::FastTransformation) const
+    inline QPixmap scaled(int w, int h, BobUI::AspectRatioMode aspectMode = BobUI::IgnoreAspectRatio,
+                          BobUI::TransformationMode mode = BobUI::FastTransformation) const
         { return scaled(QSize(w, h), aspectMode, mode); }
-    QPixmap scaled(const QSize &s, Qt::AspectRatioMode aspectMode = Qt::IgnoreAspectRatio,
-                   Qt::TransformationMode mode = Qt::FastTransformation) const;
-    QPixmap scaledToWidth(int w, Qt::TransformationMode mode = Qt::FastTransformation) const;
-    QPixmap scaledToHeight(int h, Qt::TransformationMode mode = Qt::FastTransformation) const;
-    QPixmap transformed(const QTransform &, Qt::TransformationMode mode = Qt::FastTransformation) const;
-    static QTransform trueMatrix(const QTransform &m, int w, int h);
+    QPixmap scaled(const QSize &s, BobUI::AspectRatioMode aspectMode = BobUI::IgnoreAspectRatio,
+                   BobUI::TransformationMode mode = BobUI::FastTransformation) const;
+    QPixmap scaledToWidth(int w, BobUI::TransformationMode mode = BobUI::FastTransformation) const;
+    QPixmap scaledToHeight(int h, BobUI::TransformationMode mode = BobUI::FastTransformation) const;
+    QPixmap transformed(const BOBUIransform &, BobUI::TransformationMode mode = BobUI::FastTransformation) const;
+    static BOBUIransform trueMatrix(const BOBUIransform &m, int w, int h);
 
     QImage toImage() const;
-    static QPixmap fromImage(const QImage &image, Qt::ImageConversionFlags flags = Qt::AutoColor);
-    static QPixmap fromImageReader(QImageReader *imageReader, Qt::ImageConversionFlags flags = Qt::AutoColor);
-    static QPixmap fromImage(QImage &&image, Qt::ImageConversionFlags flags = Qt::AutoColor)
+    static QPixmap fromImage(const QImage &image, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
+    static QPixmap fromImageReader(QImageReader *imageReader, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
+    static QPixmap fromImage(QImage &&image, BobUI::ImageConversionFlags flags = BobUI::AutoColor)
     {
         return fromImageInPlace(image, flags);
     }
 
-    bool load(const QString& fileName, const char *format = nullptr, Qt::ImageConversionFlags flags = Qt::AutoColor);
-    bool loadFromData(const uchar *buf, uint len, const char* format = nullptr, Qt::ImageConversionFlags flags = Qt::AutoColor);
-    inline bool loadFromData(const QByteArray &data, const char* format = nullptr, Qt::ImageConversionFlags flags = Qt::AutoColor);
+    bool load(const QString& fileName, const char *format = nullptr, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
+    bool loadFromData(const uchar *buf, uint len, const char* format = nullptr, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
+    inline bool loadFromData(const QByteArray &data, const char* format = nullptr, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
     bool save(const QString& fileName, const char* format = nullptr, int quality = -1) const;
     bool save(QIODevice* device, const char* format = nullptr, int quality = -1) const;
 
-    bool convertFromImage(const QImage &img, Qt::ImageConversionFlags flags = Qt::AutoColor);
+    bool convertFromImage(const QImage &img, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
 
     inline QPixmap copy(int x, int y, int width, int height) const;
     QPixmap copy(const QRect &rect = QRect()) const;
@@ -120,7 +120,7 @@ public:
 
 protected:
     int metric(PaintDeviceMetric) const override;
-    static QPixmap fromImageInPlace(QImage &image, Qt::ImageConversionFlags flags = Qt::AutoColor);
+    static QPixmap fromImageInPlace(QImage &image, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
 
 private:
     QExplicitlySharedDataPointer<QPlatformPixmap> data;
@@ -136,7 +136,7 @@ private:
     friend class QOpenGLWidget;
     friend class QWidgetPrivate;
     friend class QRasterBuffer;
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPixmap &);
 #endif
 
@@ -161,7 +161,7 @@ inline void QPixmap::scroll(int dx, int dy, int ax, int ay, int awidth, int ahei
 }
 
 inline bool QPixmap::loadFromData(const QByteArray &buf, const char *format,
-                                  Qt::ImageConversionFlags flags)
+                                  BobUI::ImageConversionFlags flags)
 {
     return loadFromData(reinterpret_cast<const uchar *>(buf.constData()), uint(buf.size()), format, flags);
 }
@@ -171,15 +171,15 @@ inline bool QPixmap::loadFromData(const QByteArray &buf, const char *format,
  QPixmap stream functions
 *****************************************************************************/
 
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QPixmap &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPixmap &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QPixmap &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPIXMAP_H

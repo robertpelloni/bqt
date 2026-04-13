@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCACHE_H
 #define QCACHE_H
 
-#include <QtCore/qhash.h>
+#include <BobUICore/qhash.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 template <class Key, class T>
@@ -29,7 +29,7 @@ class QCache
         }
         Value &operator=(Value &&other) noexcept
         {
-            qt_ptr_swap(t, other.t);
+            bobui_ptr_swap(t, other.t);
             std::swap(cost, other.cost);
             return *this;
         }
@@ -145,8 +145,8 @@ public:
     }
     inline ~QCache()
     {
-        static_assert(std::is_nothrow_destructible_v<Key>, "Types with throwing destructors are not supported in Qt containers.");
-        static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+        static_assert(std::is_nothrow_destructible_v<Key>, "Types with throwing destructors are not supported in BobUI containers.");
+        static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
 
         clear();
     }
@@ -249,6 +249,6 @@ public:
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCACHE_H

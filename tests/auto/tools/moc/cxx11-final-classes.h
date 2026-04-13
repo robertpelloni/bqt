@@ -1,9 +1,9 @@
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef TESTS_AUTO_CORELIB_TOOLS_MOC_CXX11_FINAL_CLASSES_H
 #define TESTS_AUTO_CORELIB_TOOLS_MOC_CXX11_FINAL_CLASSES_H
 
-#include <QtCore/QObject>
+#include <BobUICore/QObject>
 
 #ifndef Q_MOC_RUN // hide from moc
 # define final
@@ -12,28 +12,28 @@
 # define EXPORT_MACRO2(X,Y,Z)
 #endif
 
-class FinalTestClassQt Q_DECL_FINAL : public QObject
+class FinalTestClassBobUI Q_DECL_FINAL : public QObject
 {
     Q_OBJECT
 public:
-    explicit FinalTestClassQt(QObject *parent = nullptr)
+    explicit FinalTestClassBobUI(QObject *parent = nullptr)
         : QObject(parent) {}
 };
 
 
-class EXPORT_MACRO ExportedFinalTestClassQt Q_DECL_FINAL : public QObject
+class EXPORT_MACRO ExportedFinalTestClassBobUI Q_DECL_FINAL : public QObject
 {
     Q_OBJECT
 public:
-    explicit ExportedFinalTestClassQt(QObject *parent = nullptr)
+    explicit ExportedFinalTestClassBobUI(QObject *parent = nullptr)
         : QObject(parent) {}
 };
 
-class EXPORT_MACRO2(X,Y,Z) ExportedFinalTestClassQtX Q_DECL_FINAL : public QObject
+class EXPORT_MACRO2(X,Y,Z) ExportedFinalTestClassBobUIX Q_DECL_FINAL : public QObject
 {
     Q_OBJECT
 public:
-    explicit ExportedFinalTestClassQtX(QObject *parent = nullptr)
+    explicit ExportedFinalTestClassBobUIX(QObject *parent = nullptr)
         : QObject(parent) {}
 };
 

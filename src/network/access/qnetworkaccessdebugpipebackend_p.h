@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKACCESSDEBUGPIPEBACKEND_P_H
 #define QNETWORKACCESSDEBUGPIPEBACKEND_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 #include "qnetworkaccessbackend_p.h"
 #include "qnetworkrequest.h"
 #include "qnetworkreply.h"
-#include "qtcpsocket.h"
+#include "bobuicpsocket.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 
 class QNetworkAccessDebugPipeBackend: public QNetworkAccessBackend
 {
@@ -52,7 +52,7 @@ private slots:
     void socketConnected();
 
 private:
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
     bool bareProtocol;
     bool hasUploadFinished;
     bool hasDownloadFinished;
@@ -70,8 +70,8 @@ public:
                                           const QNetworkRequest &request) const override;
 };
 
-#endif  // QT_BUILD_INTERNAL
+#endif  // BOBUI_BUILD_INTERNAL
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

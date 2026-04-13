@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QTimer>
+#include <BOBUIest>
+#include <BOBUIimer>
 
 #include <qapplication.h>
-#include <qtoolbar.h>
+#include <bobuioolbar.h>
 #include <qcombobox.h>
 #include <qwidgetaction.h>
 #include <qlabel.h>
@@ -14,9 +14,9 @@
 #include <qmainwindow.h>
 #include <qmenubar.h>
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 class tst_QWidgetAction : public QObject
 {
@@ -38,8 +38,8 @@ void tst_QWidgetAction::initTestCase()
 {
     // Disable menu/combo animations to prevent the alpha widgets from getting in the
     // way in popup(), failing the top level leak check in cleanup().
-    QApplication::setEffectEnabled(Qt::UI_AnimateMenu, false);
-    QApplication::setEffectEnabled(Qt::UI_AnimateCombo, false);
+    QApplication::setEffectEnabled(BobUI::UI_AnimateMenu, false);
+    QApplication::setEffectEnabled(BobUI::UI_AnimateCombo, false);
 }
 
 void tst_QWidgetAction::cleanup()
@@ -51,7 +51,7 @@ void tst_QWidgetAction::defaultWidget()
 {
     // check that QWidgetAction deals with the widget being deleted before itself:
     {
-        QToolBar tb1;
+        BOBUIoolBar tb1;
 
         QComboBox combo(&tb1);
 
@@ -62,7 +62,7 @@ void tst_QWidgetAction::defaultWidget()
     }
     // check that QWidgetAction takes ownership of the widget:
     {
-        QToolBar tb1;
+        BOBUIoolBar tb1;
 
         QPointer<QComboBox> combo = new QComboBox(&tb1);
 
@@ -77,7 +77,7 @@ void tst_QWidgetAction::defaultWidget()
         QVERIFY(!combo);
     }
     {
-        QToolBar tb1;
+        BOBUIoolBar tb1;
 
         QPointer<QComboBox> combo = new QComboBox(&tb1);
         combo->hide();
@@ -104,10 +104,10 @@ void tst_QWidgetAction::defaultWidget()
         delete action;
     }
     {
-        QToolBar tb1;
+        BOBUIoolBar tb1;
         setFrameless(&tb1);
         tb1.show();
-        QToolBar tb2;
+        BOBUIoolBar tb2;
         setFrameless(&tb2);
         tb2.show();
 
@@ -170,8 +170,8 @@ void tst_QWidgetAction::defaultWidget()
 void tst_QWidgetAction::visibilityUpdate()
 {
     // actually keeping the widget's state in sync with the
-    // action in terms of visibility is QToolBar's responsibility.
-    QToolBar tb;
+    // action in terms of visibility is BOBUIoolBar's responsibility.
+    BOBUIoolBar tb;
     setFrameless(&tb);
     tb.show();
 
@@ -181,12 +181,12 @@ void tst_QWidgetAction::visibilityUpdate()
 
     tb.addAction(action);
     //the call to show is delayed by the toolbar layout
-    QTRY_VERIFY(combo->isVisible());
+    BOBUIRY_VERIFY(combo->isVisible());
     QVERIFY(action->isVisible());
 
     action->setVisible(false);
     //the call to hide is delayed by the toolbar layout
-    QTRY_VERIFY(!combo->isVisible());
+    BOBUIRY_VERIFY(!combo->isVisible());
 
     delete action;
     // action also deletes combo
@@ -210,10 +210,10 @@ QWidget *ComboAction::createWidget(QWidget *parent)
 
 void tst_QWidgetAction::customWidget()
 {
-    QToolBar tb1;
+    BOBUIoolBar tb1;
     setFrameless(&tb1);
     tb1.show();
-    QToolBar tb2;
+    BOBUIoolBar tb2;
     setFrameless(&tb2);
     tb2.show();
 
@@ -254,7 +254,7 @@ void tst_QWidgetAction::keepOwnership()
     action->setDefaultWidget(combo);
 
     {
-        QToolBar *tb = new QToolBar;
+        BOBUIoolBar *tb = new BOBUIoolBar;
         tb->addAction(action);
         QCOMPARE(combo->parent(), tb);
         delete tb;
@@ -272,7 +272,7 @@ void tst_QWidgetAction::visibility()
         QComboBox *combo = new QComboBox;
         a->setDefaultWidget(combo);
 
-        QToolBar *tb = new QToolBar;
+        BOBUIoolBar *tb = new BOBUIoolBar;
         setFrameless(tb);
         tb->addAction(a);
         QVERIFY(!combo->isVisible());
@@ -288,11 +288,11 @@ void tst_QWidgetAction::visibility()
         QComboBox *combo = new QComboBox;
         a->setDefaultWidget(combo);
 
-        QToolBar *tb = new QToolBar;
+        BOBUIoolBar *tb = new BOBUIoolBar;
         tb->addAction(a);
         QVERIFY(!combo->isVisible());
 
-        QToolBar *tb2 = new QToolBar;
+        BOBUIoolBar *tb2 = new BOBUIoolBar;
         setFrameless(tb2);
         tb->removeAction(a);
         tb2->addAction(a);
@@ -309,7 +309,7 @@ void tst_QWidgetAction::visibility()
 
 void tst_QWidgetAction::setEnabled()
 {
-    QToolBar toolbar;
+    BOBUIoolBar toolbar;
     setFrameless(&toolbar);
     QComboBox *combobox = new QComboBox;
     QAction *action = toolbar.addWidget(combobox);
@@ -343,22 +343,22 @@ void tst_QWidgetAction::setEnabled()
     QVERIFY(!aw.isEnabled());
     QVERIFY(!combobox->isEnabled());
 
-    // Make sure we don't change the default widget's Qt::WA_ForceDisabled attribute
+    // Make sure we don't change the default widget's BobUI::WA_ForceDisabled attribute
     // during a normal disable/enable operation (task 207433).
     {
-        QToolBar toolBar;
+        BOBUIoolBar toolBar;
         QWidget widget;
         toolBar.addWidget(&widget); // creates a QWidgetAction and sets 'widget' as the default widget.
-        QVERIFY(!widget.testAttribute(Qt::WA_ForceDisabled));
+        QVERIFY(!widget.testAttribute(BobUI::WA_ForceDisabled));
 
         toolBar.setEnabled(false);
-        QVERIFY(toolBar.testAttribute(Qt::WA_ForceDisabled));
+        QVERIFY(toolBar.testAttribute(BobUI::WA_ForceDisabled));
         QVERIFY(!widget.isEnabled());
-        QVERIFY(!widget.testAttribute(Qt::WA_ForceDisabled));
+        QVERIFY(!widget.testAttribute(BobUI::WA_ForceDisabled));
 
         toolBar.setEnabled(true);
         QVERIFY(widget.isEnabled());
-        QVERIFY(!widget.testAttribute(Qt::WA_ForceDisabled));
+        QVERIFY(!widget.testAttribute(BobUI::WA_ForceDisabled));
     }
 }
 
@@ -371,7 +371,7 @@ void tst_QWidgetAction::popup()
     {
         QMenu menu;
         menu.addAction(&action);
-        QTimer::singleShot(100, &menu, SLOT(close()));
+        BOBUIimer::singleShot(100, &menu, SLOT(close()));
         menu.exec();
     }
 
@@ -401,5 +401,5 @@ void tst_QWidgetAction::releaseWidgetCrash()
     delete w;
 }
 
-QTEST_MAIN(tst_QWidgetAction)
+BOBUIEST_MAIN(tst_QWidgetAction)
 #include "tst_qwidgetaction.moc"

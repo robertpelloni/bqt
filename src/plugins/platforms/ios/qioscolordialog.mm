@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #import <UIKit/UIKit.h>
 
-#include <QtGui/qwindow.h>
+#include <BobUIGui/qwindow.h>
 #include <QDebug>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include "qiosglobal.h"
 #include "qioscolordialog.h"
@@ -106,7 +106,7 @@ void QIOSColorDialog::exec()
     m_eventLoop.exec(QEventLoop::DialogExec);
 }
 
-bool QIOSColorDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QIOSColorDialog::show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
     Q_UNUSED(windowFlags);
 
@@ -116,7 +116,7 @@ bool QIOSColorDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality windo
             [m_viewController setQColor:m_currentColor];
     }
 
-    if (windowModality == Qt::ApplicationModal || windowModality == Qt::WindowModal)
+    if (windowModality == BobUI::ApplicationModal || windowModality == BobUI::WindowModal)
         m_viewController.modalInPresentation = YES;
 
     UIWindow *window = presentationWindow(parent);

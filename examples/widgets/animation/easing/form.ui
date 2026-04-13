@@ -29,7 +29,7 @@
       </size>
      </property>
      <property name="verticalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
+      <enum>BobUI::ScrollBarAlwaysOff</enum>
      </property>
      <property name="movement">
       <enum>QListView::Static</enum>
@@ -68,7 +68,7 @@
            </size>
           </property>
           <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
+           <enum>BobUI::LeftToRight</enum>
           </property>
           <property name="text">
            <string>Line</string>
@@ -238,7 +238,7 @@
      <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>BobUI::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>

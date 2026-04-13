@@ -1,9 +1,9 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
-#include <QtGui/QScreen>
-#include <QtGui/QRasterWindow>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QRasterWindow>
 
 using namespace MockCompositor;
 
@@ -24,7 +24,7 @@ private slots:
     {
         // There should be no wl_outputs in this test
         QCOMPOSITOR_COMPARE(getAll<Output>().size(), 0);
-        QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
+        BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
     }
     void noScreens();
 };
@@ -37,16 +37,16 @@ void tst_nooutput::noScreens()
 
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
 
-    QTRY_VERIFY(window.isVisible());
+    BOBUIRY_VERIFY(window.isVisible());
     // The window should not be exposed before the first xdg_surface configure event
-    QTRY_VERIFY(!window.isExposed());
+    BOBUIRY_VERIFY(!window.isExposed());
 
     exec([&] {
         xdgToplevel()->sendConfigure({0, 0}, {}); // Let the window decide the size
         xdgSurface()->sendConfigure(nextSerial());
     });
 
-    QTRY_VERIFY(window.isExposed());
+    BOBUIRY_VERIFY(window.isExposed());
 }
 
 QCOMPOSITOR_TEST_MAIN(tst_nooutput)

@@ -1,17 +1,17 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qmargins.h"
 #include "qdatastream.h"
 
 #include <private/qdebug_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QMargins
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup painting
     \since 4.6
 
@@ -387,7 +387,7 @@ QT_BEGIN_NAMESPACE
 /*****************************************************************************
   QMargins stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QMargins &m)
     \relates QMargins
@@ -395,7 +395,7 @@ QT_BEGIN_NAMESPACE
     Writes margin \a m to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QMargins &m)
@@ -411,7 +411,7 @@ QDataStream &operator<<(QDataStream &s, const QMargins &m)
     Reads a margin from the given \a stream into margin \a m
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QMargins &m)
@@ -423,15 +423,15 @@ QDataStream &operator>>(QDataStream &s, QMargins &m)
     s >> bottom; m.setBottom(bottom);
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QMargins &m)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace();
     dbg << "QMargins" << '(';
-    QtDebugUtils::formatQMargins(dbg, m);
+    BobUIDebugUtils::formatQMargins(dbg, m);
     dbg << ')';
     return dbg;
 }
@@ -439,7 +439,7 @@ QDebug operator<<(QDebug dbg, const QMargins &m)
 
 /*!
     \class QMarginsF
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup painting
     \since 5.3
 
@@ -493,7 +493,7 @@ QDebug operator<<(QDebug dbg, const QMargins &m)
     Returns \c true if all margins are very close to 0; otherwise returns
     false.
 
-    \sa {<QtNumeric>::}{qFuzzyIsNull()}
+    \sa {<BobUINumeric>::}{qFuzzyIsNull()}
 */
 
 
@@ -774,7 +774,7 @@ QDebug operator<<(QDebug dbg, const QMargins &m)
 /*****************************************************************************
   QMarginsF stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QMarginsF &m)
     \relates QMarginsF
@@ -782,7 +782,7 @@ QDebug operator<<(QDebug dbg, const QMargins &m)
     Writes margin \a m to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QMarginsF &m)
@@ -798,7 +798,7 @@ QDataStream &operator<<(QDataStream &s, const QMarginsF &m)
     Reads a margin from the given \a stream into margin \a m
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QMarginsF &m)
@@ -811,18 +811,18 @@ QDataStream &operator>>(QDataStream &s, QMarginsF &m)
     m = QMarginsF(qreal(left), qreal(top), qreal(right), qreal(bottom));
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QMarginsF &m)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace();
     dbg << "QMarginsF" << '(';
-    QtDebugUtils::formatQMargins(dbg, m);
+    BobUIDebugUtils::formatQMargins(dbg, m);
     dbg << ')';
     return dbg;
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

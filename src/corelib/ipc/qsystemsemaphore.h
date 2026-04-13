@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSYSTEMSEMAPHORE_H
 #define QSYSTEMSEMAPHORE_H
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qtipccommon.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qscopedpointer.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/bobuiipccommon.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qscopedpointer.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
 
 class QSystemSemaphorePrivate;
 
@@ -71,8 +71,8 @@ private:
     std::unique_ptr<QSystemSemaphorePrivate> d;
 };
 
-#endif // QT_CONFIG(systemsemaphore)
+#endif // BOBUI_CONFIG(systemsemaphore)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSYSTEMSEMAPHORE_H

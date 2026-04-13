@@ -1,20 +1,20 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSEQUENTIALITERABLE_H
 #define QSEQUENTIALITERABLE_H
 
-#include <QtCore/qiterable.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qiterable.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_DEPRECATED_SINCE(6, 15)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
-// Keep this a single long line, otherwise syncqt doesn't create a class forwarding header
-class Q_CORE_EXPORT QT_DEPRECATED_VERSION_X_6_15("Use QMetaSequence's iterables and iterators instead.") QSequentialIterator : public QIterator<QMetaSequence>
+// Keep this a single long line, otherwise syncbobui doesn't create a class forwarding header
+class Q_CORE_EXPORT BOBUI_DEPRECATED_VERSION_X_6_15("Use QMetaSequence's iterables and iterators instead.") QSequentialIterator : public QIterator<QMetaSequence>
 {
 public:
     using value_type = QVariant;
@@ -29,8 +29,8 @@ public:
     QVariantPointer<QSequentialIterator> operator->() const;
 };
 
-// Keep this a single long line, otherwise syncqt doesn't create a class forwarding header
-class Q_CORE_EXPORT QT_DEPRECATED_VERSION_X_6_15("Use QMetaSequence's iterables and iterators instead.") QSequentialConstIterator : public QConstIterator<QMetaSequence>
+// Keep this a single long line, otherwise syncbobui doesn't create a class forwarding header
+class Q_CORE_EXPORT BOBUI_DEPRECATED_VERSION_X_6_15("Use QMetaSequence's iterables and iterators instead.") QSequentialConstIterator : public QConstIterator<QMetaSequence>
 {
 public:
     using value_type = QVariant;
@@ -45,22 +45,22 @@ public:
     QVariantConstPointer operator->() const;
 };
 
-// Keep this a single long line, otherwise syncqt doesn't create a class forwarding header
-class Q_CORE_EXPORT QT_DEPRECATED_VERSION_X_6_15("Use QMetaSequence's iterables and iterators instead.") QSequentialIterable : public QIterable<QMetaSequence>
+// Keep this a single long line, otherwise syncbobui doesn't create a class forwarding header
+class Q_CORE_EXPORT BOBUI_DEPRECATED_VERSION_X_6_15("Use QMetaSequence's iterables and iterators instead.") QSequentialIterable : public QIterable<QMetaSequence>
 {
 public:
-    using iterator = QTaggedIterator<QSequentialIterator, void>;
-    using const_iterator = QTaggedIterator<QSequentialConstIterator, void>;
+    using iterator = BOBUIaggedIterator<QSequentialIterator, void>;
+    using const_iterator = BOBUIaggedIterator<QSequentialConstIterator, void>;
 
-    using RandomAccessIterator = QTaggedIterator<iterator, std::random_access_iterator_tag>;
-    using BidirectionalIterator = QTaggedIterator<iterator, std::bidirectional_iterator_tag>;
-    using ForwardIterator = QTaggedIterator<iterator, std::forward_iterator_tag>;
-    using InputIterator = QTaggedIterator<iterator, std::input_iterator_tag>;
+    using RandomAccessIterator = BOBUIaggedIterator<iterator, std::random_access_iterator_tag>;
+    using BidirectionalIterator = BOBUIaggedIterator<iterator, std::bidirectional_iterator_tag>;
+    using ForwardIterator = BOBUIaggedIterator<iterator, std::forward_iterator_tag>;
+    using InputIterator = BOBUIaggedIterator<iterator, std::input_iterator_tag>;
 
-    using RandomAccessConstIterator = QTaggedIterator<const_iterator, std::random_access_iterator_tag>;
-    using BidirectionalConstIterator = QTaggedIterator<const_iterator, std::bidirectional_iterator_tag>;
-    using ForwardConstIterator = QTaggedIterator<const_iterator, std::forward_iterator_tag>;
-    using InputConstIterator = QTaggedIterator<const_iterator, std::input_iterator_tag>;
+    using RandomAccessConstIterator = BOBUIaggedIterator<const_iterator, std::random_access_iterator_tag>;
+    using BidirectionalConstIterator = BOBUIaggedIterator<const_iterator, std::bidirectional_iterator_tag>;
+    using ForwardConstIterator = BOBUIaggedIterator<const_iterator, std::forward_iterator_tag>;
+    using InputConstIterator = BOBUIaggedIterator<const_iterator, std::input_iterator_tag>;
 
     template<class T>
     QSequentialIterable(const T *p)
@@ -147,7 +147,7 @@ inline QVariantRef<QSequentialIterator> &QVariantRef<QSequentialIterator>::opera
     if (m_pointer == nullptr)
         return *this;
 
-    QtPrivate::QVariantTypeCoercer coercer;
+    BobUIPrivate::QVariantTypeCoercer coercer;
     m_pointer->metaContainer().setValueAtIterator(
                 m_pointer->constIterator(),
                 coercer.coerce(value, m_pointer->metaContainer().valueMetaType()));
@@ -158,9 +158,9 @@ Q_DECLARE_TYPEINFO(QSequentialIterable, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(QSequentialIterable::iterator, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(QSequentialIterable::const_iterator, Q_RELOCATABLE_TYPE);
 
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 15)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSEQUENTIALITERABLE_H

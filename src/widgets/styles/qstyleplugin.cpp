@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstyleplugin.h"
 #include "qstyle.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QStylePlugin
     \brief The QStylePlugin class provides an abstract base for custom QStyle plugins.
 
     \ingroup plugins
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStylePlugin is a simple plugin interface that makes it easy
     to create custom styles that can be loaded dynamically into
@@ -30,7 +30,7 @@ QT_BEGIN_NAMESPACE
 
     \quotefile qstyleplugin/mystyleplugin.json
 
-    See \l {How to Create Qt Plugins} for details.
+    See \l {How to Create BobUI Plugins} for details.
 
     \sa QStyleFactory, QStyle
 */
@@ -62,13 +62,13 @@ QStylePlugin::QStylePlugin(QObject *parent)
 /*!
     Destroys the style plugin.
 
-    Note that Qt destroys a plugin automatically when it is no longer
+    Note that BobUI destroys a plugin automatically when it is no longer
     used, so there is no need for calling the destructor explicitly.
 */
 QStylePlugin::~QStylePlugin()
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstyleplugin.cpp"

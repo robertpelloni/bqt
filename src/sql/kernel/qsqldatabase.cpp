@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:credentials
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:credentials
 
 #include "qsqldatabase.h"
 #include "qsqlquery.h"
@@ -11,17 +11,17 @@
 #include "qsqldriver_p.h"
 #include "qsqldriverplugin.h"
 #include "qsqlindex.h"
-#include "QtCore/qapplicationstatic.h"
+#include "BobUICore/qapplicationstatic.h"
 #include "private/qfactoryloader_p.h"
 #include "private/qsqlnulldriver_p.h"
 #include "qhash.h"
-#include "qthread.h"
+#include "bobuihread.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcSqlDb, "qt.sql.qsqldatabase")
+Q_STATIC_LOGGING_CATEGORY(lcSqlDb, "bobui.sql.qsqldatabase")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define CHECK_QCOREAPPLICATION \
     if (Q_UNLIKELY(!QCoreApplication::instanceExists())) { \
@@ -38,9 +38,9 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
                           (QSqlDriverFactoryInterface_iid, "/sqldrivers"_L1))
 
 namespace {
-    struct QtSqlGlobals
+    struct BobUISqlGlobals
     {
-        ~QtSqlGlobals();
+        ~BobUISqlGlobals();
         QSqlDatabase connection(const QString &key) const
         {
           QReadLocker locker(&lock);
@@ -61,7 +61,7 @@ namespace {
         QHash<QString, QSqlDatabase> connections;
     };
 }
-Q_APPLICATION_STATIC(QtSqlGlobals, s_sqlGlobals)
+Q_APPLICATION_STATIC(BobUISqlGlobals, s_sqlGlobals)
 
 class QSqlDatabasePrivate
 {
@@ -122,7 +122,7 @@ QSqlDatabasePrivate::~QSqlDatabasePrivate()
         delete driver;
 }
 
-QtSqlGlobals::~QtSqlGlobals()
+BobUISqlGlobals::~BobUISqlGlobals()
 {
     qDeleteAll(registeredDrivers);
     for (const auto &[k, v] : std::as_const(connections).asKeyValueRange())
@@ -149,7 +149,7 @@ void QSqlDatabasePrivate::invalidateDb(const QSqlDatabase &db, const QString &na
 void QSqlDatabasePrivate::removeDatabase(const QString &name)
 {
     CHECK_QCOREAPPLICATION
-    QtSqlGlobals *sqlGlobals = s_sqlGlobals();
+    BobUISqlGlobals *sqlGlobals = s_sqlGlobals();
     QWriteLocker locker(&sqlGlobals->lock);
 
     if (!sqlGlobals->connections.contains(name))
@@ -161,7 +161,7 @@ void QSqlDatabasePrivate::removeDatabase(const QString &name)
 void QSqlDatabasePrivate::addDatabase(const QSqlDatabase &db, const QString &name)
 {
     CHECK_QCOREAPPLICATION
-    QtSqlGlobals *sqlGlobals = s_sqlGlobals();
+    BobUISqlGlobals *sqlGlobals = s_sqlGlobals();
     QWriteLocker locker(&sqlGlobals->lock);
 
     if (sqlGlobals->connections.contains(name)) {
@@ -183,7 +183,7 @@ QSqlDatabase QSqlDatabasePrivate::database(const QString& name, bool open)
     QSqlDatabase db = s_sqlGlobals()->connection(name);
     if (!db.isValid())
         return db;
-    if (db.driver()->thread() != QThread::currentThread()) {
+    if (db.driver()->thread() != BOBUIhread::currentThread()) {
         qCWarning(lcSqlDb, "QSqlDatabasePrivate::database: requested database does not belong to the calling thread.");
         return QSqlDatabase();
     }
@@ -228,7 +228,7 @@ void QSqlDatabasePrivate::disable()
     SQL driver factories.
 
     \ingroup database
-    \inmodule QtSql
+    \inmodule BobUISql
 
     Reimplement createObject() to return an instance of the specific
     QSqlDriver subclass that you want to provide.
@@ -259,7 +259,7 @@ QSqlDriverCreatorBase::~QSqlDriverCreatorBase()
     provides a SQL driver factory for a specific driver type.
 
     \ingroup database
-    \inmodule QtSql
+    \inmodule BobUISql
 
     QSqlDriverCreator\<T\> instantiates objects of type \a T, where \a T is a
     QSqlDriver subclass.
@@ -279,7 +279,7 @@ QSqlDriverCreatorBase::~QSqlDriverCreatorBase()
 
     \ingroup database
 
-    \inmodule QtSql
+    \inmodule BobUISql
 
     The QSqlDatabase class provides an interface for accessing a
     database through a connection. An instance of QSqlDatabase
@@ -387,7 +387,7 @@ QSqlDriverCreatorBase::~QSqlDriverCreatorBase()
     \note When using transactions, you must start the
     transaction before you create your query.
 
-    \sa QSqlDriver, QSqlQuery, {Qt SQL}, {Threads and the SQL Module}
+    \sa QSqlDriver, QSqlQuery, {BobUI SQL}, {Threads and the SQL Module}
 */
 
 /*! \fn QSqlDatabase QSqlDatabase::addDatabase(const QString &type, const QString &connectionName)
@@ -500,7 +500,7 @@ QStringList QSqlDatabase::drivers()
         }
     }
 
-    QtSqlGlobals *sqlGlobals = s_sqlGlobals();
+    BobUISqlGlobals *sqlGlobals = s_sqlGlobals();
     QReadLocker locker(&sqlGlobals->lock);
     const auto &dict = sqlGlobals->registeredDrivers;
     for (const auto &[k, _] : dict.asKeyValueRange()) {
@@ -527,7 +527,7 @@ QStringList QSqlDatabase::drivers()
 void QSqlDatabase::registerSqlDriver(const QString& name, QSqlDriverCreatorBase *creator)
 {
     CHECK_QCOREAPPLICATION
-    QtSqlGlobals *sqlGlobals = s_sqlGlobals();
+    BobUISqlGlobals *sqlGlobals = s_sqlGlobals();
     QWriteLocker locker(&sqlGlobals->lock);
     delete sqlGlobals->registeredDrivers.take(name);
     if (creator)
@@ -647,7 +647,7 @@ void QSqlDatabasePrivate::init(const QString &type)
     drvName = type;
 
     if (!driver) {
-        QtSqlGlobals *sqlGlobals = s_sqlGlobals();
+        BobUISqlGlobals *sqlGlobals = s_sqlGlobals();
         QReadLocker locker(&sqlGlobals->lock);
         const auto &dict = sqlGlobals->registeredDrivers;
         auto it = dict.find(type);
@@ -694,7 +694,7 @@ QSqlDatabase::~QSqlDatabase()
     \sa QSqlQuery, lastError()
     \deprecated [6.6] Use QSqlQuery::exec() instead.
 */
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 QSqlQuery QSqlDatabase::exec(const QString & query) const
 {
     QSqlQuery r(d->driver->createResult());
@@ -903,7 +903,7 @@ void QSqlDatabase::setUserName(const QString& name)
     There is no default value.
 
     \warning This function stores the password in plain text within
-    Qt. Use the open() call that takes a password as parameter to
+    BobUI. Use the open() call that takes a password as parameter to
     avoid this behavior.
 
     \sa password(), setUserName(), setDatabaseName(), setHostName(),
@@ -1061,7 +1061,7 @@ QStringList QSqlDatabase::tables(QSql::TableType type) const
     \note Some drivers, such as the \l {QPSQL Case Sensitivity}{QPSQL}
     driver, may may require you to pass \a tablename in lower case if
     the table was not quoted when created. See the
-    \l{sql-driver.html}{Qt SQL driver} documentation for more information.
+    \l{sql-driver.html}{BobUI SQL driver} documentation for more information.
 
     \sa tables(), record()
 */
@@ -1081,7 +1081,7 @@ QSqlIndex QSqlDatabase::primaryIndex(const QString& tablename) const
     \note Some drivers, such as the \l {QPSQL Case Sensitivity}{QPSQL}
     driver, may may require you to pass \a tablename in lower case if
     the table was not quoted when created. See the
-    \l{sql-driver.html}{Qt SQL driver} documentation for more information.
+    \l{sql-driver.html}{BobUI SQL driver} documentation for more information.
 */
 
 QSqlRecord QSqlDatabase::record(const QString& tablename) const
@@ -1145,7 +1145,7 @@ bool QSqlDatabase::isDriverAvailable(const QString& name)
     This overload is useful when you want to create a database
     connection with a \l{QSqlDriver} {driver} you instantiated
     yourself. It might be your own database driver, or you might just
-    need to instantiate one of the Qt drivers yourself. If you do
+    need to instantiate one of the BobUI drivers yourself. If you do
     this, it is recommended that you include the driver code in your
     application. For example, you can create a PostgreSQL connection
     with your own QPSQL driver like this:
@@ -1155,11 +1155,11 @@ bool QSqlDatabase::isDriverAvailable(const QString& name)
     The above code sets up a PostgreSQL connection and instantiates a
     QPSQLDriver object. Next, addDatabase() is called to add the
     connection to the known connections so that it can be used by the
-    Qt SQL classes. When a driver is instantiated with a connection
-    handle (or set of handles), Qt assumes that you have already
+    BobUI SQL classes. When a driver is instantiated with a connection
+    handle (or set of handles), BobUI assumes that you have already
     opened the database connection.
 
-    \note We assume that \c qtdir is the directory where Qt is
+    \note We assume that \c bobuidir is the directory where BobUI is
     installed. This will pull in the code that is needed to use the
     PostgreSQL client library and to instantiate a QPSQLDriver object,
     assuming that you have the PostgreSQL headers somewhere in your
@@ -1173,7 +1173,7 @@ bool QSqlDatabase::isDriverAvailable(const QString& name)
 
     The method described works for all the supplied drivers.  The only
     difference will be in the driver constructor arguments.  Here is a
-    table of the drivers included with Qt, their source code files,
+    table of the drivers included with BobUI, their source code files,
     and their constructor arguments:
 
     \table
@@ -1360,7 +1360,7 @@ QSql::NumericalPrecisionPolicy QSqlDatabase::numericalPrecisionPolicy() const
 
     \sa QObject::moveToThread(), {Threads and the SQL Module}
 */
-bool QSqlDatabase::moveToThread(QThread *targetThread)
+bool QSqlDatabase::moveToThread(BOBUIhread *targetThread)
 {
     if (auto drv = driver()) {
         if (drv != QSqlDatabasePrivate::shared_null()->driver) {
@@ -1379,9 +1379,9 @@ bool QSqlDatabase::moveToThread(QThread *targetThread)
 /*!
     \since 6.8
 
-    Returns a pointer to the associated QThread instance.
+    Returns a pointer to the associated BOBUIhread instance.
 */
-QThread *QSqlDatabase::thread() const
+BOBUIhread *QSqlDatabase::thread() const
 {
     if (auto drv = driver())
         return drv->thread();
@@ -1389,7 +1389,7 @@ QThread *QSqlDatabase::thread() const
 }
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QSqlDatabase &d)
 {
     QDebugStateSaver saver(dbg);
@@ -1407,6 +1407,6 @@ QDebug operator<<(QDebug dbg, const QSqlDatabase &d)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsqldatabase.cpp"

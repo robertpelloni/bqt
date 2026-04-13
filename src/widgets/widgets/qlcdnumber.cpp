@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qlcdnumber.h"
 
@@ -9,7 +9,7 @@
 #include "qpainter.h"
 #include "private/qframe_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QLCDNumberPrivate : public QFramePrivate
 {
@@ -38,7 +38,7 @@ public:
     \brief The QLCDNumber widget displays a number with LCD-like digits.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-lcdnumber.png {"1234" with LCD-like digital appearance}
 
@@ -68,7 +68,7 @@ public:
     signals that feed the display() slot to another slot as well and
     store the value there.
 
-    Incidentally, QLCDNumber is the very oldest part of Qt, tracing
+    Incidentally, QLCDNumber is the very oldest part of BobUI, tracing
     its roots back to a BASIC program on the \l{Sinclair Spectrum}{Sinclair Spectrum}.
 
     \sa QLabel, QFrame
@@ -115,7 +115,7 @@ static QString int2string(int number, int base, int ndigits, bool *oflow)
 {
     QString s;
     const bool negative = number < 0;
-    const uint num = QtPrivate::qUnsignedAbs(number);
+    const uint num = BobUIPrivate::qUnsignedAbs(number);
     switch(base) {
         case QLCDNumber::Hex:
             s = QString::asprintf("%*x", ndigits, num);
@@ -978,10 +978,10 @@ void QLCDNumberPrivate::drawSegment(const QPoint &pos, char segmentNo, QPainter 
                      q->objectName().toLocal8Bit().constData(), segmentNo);
         }
         // End exact copy
-        p.setPen(Qt::NoPen);
+        p.setPen(BobUI::NoPen);
         p.setBrush(fgColor);
         p.drawPolygon(a);
-        p.setBrush(Qt::NoBrush);
+        p.setBrush(BobUI::NoBrush);
 
         pt = pos;
     }
@@ -1169,6 +1169,6 @@ bool QLCDNumber::event(QEvent *e)
     return QFrame::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlcdnumber.cpp"

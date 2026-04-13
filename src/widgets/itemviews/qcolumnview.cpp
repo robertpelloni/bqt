@@ -1,11 +1,11 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qglobal.h>
 #include "qcolumnview.h"
 
-#if QT_CONFIG(columnview)
+#if BOBUI_CONFIG(columnview)
 
 #include "qcolumnview_p.h"
 #include "qcolumnviewgrip_p.h"
@@ -16,20 +16,20 @@
 #include <qpainter.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QColumnView
     \brief The QColumnView class provides a model/view implementation of a column view.
     \ingroup model-view
     \ingroup advanced
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QColumnView displays a model in a number of QListViews, one for each
     hierarchy in the tree.  This is sometimes referred to as a cascading list.
 
     The QColumnView class is one of the \l{Model/View Classes}
-    and is part of Qt's \l{Model/View Programming}{model/view framework}.
+    and is part of BobUI's \l{Model/View Programming}{model/view framework}.
 
     QColumnView implements the interfaces defined by the
     QAbstractItemView class to allow it to display data provided by
@@ -66,8 +66,8 @@ QColumnView::QColumnView(QColumnViewPrivate & dd, QWidget * parent)
 void QColumnViewPrivate::initialize()
 {
     Q_Q(QColumnView);
-    q->setTextElideMode(Qt::ElideMiddle);
-#if QT_CONFIG(animation)
+    q->setTextElideMode(BobUI::ElideMiddle);
+#if BOBUI_CONFIG(animation)
     animationConnection =
         QObjectPrivate::connect(&currentAnimation, &QPropertyAnimation::finished,
                                 this, &QColumnViewPrivate::changeCurrentColumn);
@@ -81,7 +81,7 @@ void QColumnViewPrivate::initialize()
 
 void QColumnViewPrivate::clearConnections()
 {
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     QObject::disconnect(animationConnection);
 #endif
     for (const QMetaObject::Connection &connection : gripConnections)
@@ -265,7 +265,7 @@ void QColumnView::scrollTo(const QModelIndex &index, ScrollHint hint)
     if (!index.isValid() || d->columns.isEmpty())
         return;
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     if (d->currentAnimation.state() == QPropertyAnimation::Running)
         return;
 
@@ -333,7 +333,7 @@ void QColumnView::scrollTo(const QModelIndex &index, ScrollHint hint)
         }
     }
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     if (const int animationDuration = style()->styleHint(QStyle::SH_Widget_Animation_Duration, nullptr, this)) {
         d->currentAnimation.setDuration(animationDuration);
         d->currentAnimation.setEndValue(newScrollbarValue);
@@ -350,7 +350,7 @@ void QColumnView::scrollTo(const QModelIndex &index, ScrollHint hint)
     Move left should go to the parent index
     Move right should go to the child index or down if there is no child
 */
-QModelIndex QColumnView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
+QModelIndex QColumnView::moveCursor(CursorAction cursorAction, BobUI::KeyboardModifiers modifiers)
 {
     // the child views which have focus get to deal with this first and if
     // they don't accept it then it comes up this view and we only grip left/right
@@ -409,7 +409,7 @@ void QColumnView::resizeEvent(QResizeEvent *event)
 void QColumnViewPrivate::updateScrollbars()
 {
     Q_Q(QColumnView);
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     if (currentAnimation.state() == QPropertyAnimation::Running)
         return;
 #endif // animation
@@ -708,7 +708,7 @@ QAbstractItemView *QColumnViewPrivate::createColumn(const QModelIndex &index, bo
         clickedConnection
     };
 
-    view->setFocusPolicy(Qt::NoFocus);
+    view->setFocusPolicy(BobUI::NoFocus);
     view->setParent(viewport);
     Q_ASSERT(view);
 
@@ -790,12 +790,12 @@ void QColumnView::initializeColumn(QAbstractItemView *column) const
     Q_D(const QColumnView);
 
     column->setFrameShape(QFrame::NoFrame);
-    column->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    column->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    column->setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    column->setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
     column->setMinimumWidth(100);
-    column->setAttribute(Qt::WA_MacShowFocusRect, false);
+    column->setAttribute(BobUI::WA_MacShowFocusRect, false);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     column->setDragDropMode(dragDropMode());
     column->setDragDropOverwriteMode(dragDropOverwriteMode());
     column->setDropIndicatorShown(showDropIndicator());
@@ -876,7 +876,7 @@ QColumnViewPreviewColumn *QColumnViewPrivate::createPreviewColumn()
     QColumnViewPreviewColumn *column = new QColumnViewPreviewColumn(q);
     column->hide();
     column->setFrameShape(QFrame::NoFrame);
-    column->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    column->setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
     column->setSelectionMode(QAbstractItemView::NoSelection);
     column->setMinimumWidth(qMax(column->verticalScrollBar()->width(),
                                  column->minimumWidth()));
@@ -1002,7 +1002,7 @@ void QColumnViewPrivate::changeCurrentColumn()
     int currentColumn = qMax(0, columns.size() - 2);
     QAbstractItemView *parentColumn = columns.at(currentColumn);
     if (q->hasFocus())
-        parentColumn->setFocus(Qt::OtherFocusReason);
+        parentColumn->setFocus(BobUI::OtherFocusReason);
     q->setFocusProxy(parentColumn);
 
     // find the column that is our current selection model and give it a new one.
@@ -1016,7 +1016,7 @@ void QColumnViewPrivate::changeCurrentColumn()
                 q->selectionModel()->selection(), QItemSelectionModel::Select);
             QAbstractItemView *view = columns.at(i);
             view->setSelectionModel(replacementSelectionModel);
-            view->setFocusPolicy(Qt::NoFocus);
+            view->setFocusPolicy(BobUI::NoFocus);
             if (columns.size() > i + 1) {
                 const QModelIndex newRootIndex = columns.at(i + 1)->rootIndex();
                 if (newRootIndex.isValid())
@@ -1026,7 +1026,7 @@ void QColumnViewPrivate::changeCurrentColumn()
         }
     }
     parentColumn->selectionModel()->deleteLater();
-    parentColumn->setFocusPolicy(Qt::StrongFocus);
+    parentColumn->setFocusPolicy(BobUI::StrongFocus);
     parentColumn->setSelectionModel(q->selectionModel());
     // We want the parent selection to stay highlighted (but dimmed depending upon the color theme)
     if (currentColumn > 0) {
@@ -1170,7 +1170,7 @@ void QColumnViewDelegate::paint(QPainter *painter,
                           const QStyleOptionViewItem &option,
                           const QModelIndex &index) const
 {
-    bool reverse = (option.direction == Qt::RightToLeft);
+    bool reverse = (option.direction == BobUI::RightToLeft);
     int width = ((option.rect.height() * 2) / 3);
     // Modify the options to give us room to add an arrow
     QStyleOptionViewItem opt = option;
@@ -1179,7 +1179,7 @@ void QColumnViewDelegate::paint(QPainter *painter,
     else
         opt.rect.adjust(0,0,-width,0);
 
-    if (!(index.model()->flags(index) & Qt::ItemIsEnabled)) {
+    if (!(index.model()->flags(index) & BobUI::ItemIsEnabled)) {
         opt.showDecorationSelected = true;
         opt.state |= QStyle::State_Selected;
     }
@@ -1200,8 +1200,8 @@ void QColumnViewDelegate::paint(QPainter *painter,
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcolumnview.cpp"
 
-#endif // QT_CONFIG(columnview)
+#endif // BOBUI_CONFIG(columnview)

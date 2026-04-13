@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdarwinpermissionplugin_p_p.h"
 
@@ -11,7 +11,7 @@
 @property (nonatomic, retain) CLLocationManager *manager;
 @end
 
-Q_STATIC_LOGGING_CATEGORY(lcLocationPermission, "qt.permissions.location");
+Q_STATIC_LOGGING_CATEGORY(lcLocationPermission, "bobui.permissions.location");
 
 namespace {
 
@@ -57,52 +57,52 @@ struct PermissionRequest
     return self;
 }
 
-- (Qt::PermissionStatus)checkPermission:(QPermission)permission
+- (BobUI::PermissionStatus)checkPermission:(QPermission)permission
 {
     const auto locationPermission = *permission.value<QLocationPermission>();
 
     auto status = [self authorizationStatus:locationPermission];
-    if (status != Qt::PermissionStatus::Granted)
+    if (status != BobUI::PermissionStatus::Granted)
         return status;
 
     return [self accuracyAuthorization:locationPermission];
 }
 
-- (Qt::PermissionStatus)authorizationStatus:(QLocationPermission)permission
+- (BobUI::PermissionStatus)authorizationStatus:(QLocationPermission)permission
 {
     NSString *bundleIdentifier = NSBundle.mainBundle.bundleIdentifier;
     if (!bundleIdentifier || !bundleIdentifier.length) {
         qCWarning(lcLocationPermission) << "Missing bundle identifier"
             << "in Info.plist. Can not use location permissions.";
-        return Qt::PermissionStatus::Denied;
+        return BobUI::PermissionStatus::Denied;
     }
 
 #if defined(Q_OS_VISIONOS)
     if (permission.availability() == QLocationPermission::Always)
-        return Qt::PermissionStatus::Denied;
+        return BobUI::PermissionStatus::Denied;
 #endif
 
     auto status = [self authorizationStatus];
     switch (status) {
     case kCLAuthorizationStatusRestricted:
     case kCLAuthorizationStatusDenied:
-        return Qt::PermissionStatus::Denied;
+        return BobUI::PermissionStatus::Denied;
     case kCLAuthorizationStatusNotDetermined:
-        return Qt::PermissionStatus::Undetermined;
+        return BobUI::PermissionStatus::Undetermined;
 #if !defined(Q_OS_VISIONOS)
     case kCLAuthorizationStatusAuthorizedAlways:
-        return Qt::PermissionStatus::Granted;
+        return BobUI::PermissionStatus::Granted;
 #endif
 #if defined(Q_OS_IOS) || defined(Q_OS_VISIONOS)
     case kCLAuthorizationStatusAuthorizedWhenInUse:
         if (permission.availability() == QLocationPermission::Always)
-            return Qt::PermissionStatus::Denied;
-        return Qt::PermissionStatus::Granted;
+            return BobUI::PermissionStatus::Denied;
+        return BobUI::PermissionStatus::Granted;
 #endif
     }
 
     qCWarning(lcPermissions) << "Unknown permission status" << status << "detected in" << self;
-    return Qt::PermissionStatus::Denied;
+    return BobUI::PermissionStatus::Denied;
 }
 
 - (CLAuthorizationStatus)authorizationStatus
@@ -110,25 +110,25 @@ struct PermissionRequest
     if (self.manager)
         return self.manager.authorizationStatus;
 
-    return QT_IGNORE_DEPRECATIONS(CLLocationManager.authorizationStatus);
+    return BOBUI_IGNORE_DEPRECATIONS(CLLocationManager.authorizationStatus);
 }
 
-- (Qt::PermissionStatus)accuracyAuthorization:(QLocationPermission)permission
+- (BobUI::PermissionStatus)accuracyAuthorization:(QLocationPermission)permission
 {
     auto status = self.manager.accuracyAuthorization;
 
     switch (status) {
     case CLAccuracyAuthorizationFullAccuracy:
-        return Qt::PermissionStatus::Granted;
+        return BobUI::PermissionStatus::Granted;
     case CLAccuracyAuthorizationReducedAccuracy:
         if (permission.accuracy() == QLocationPermission::Approximate)
-            return Qt::PermissionStatus::Granted;
+            return BobUI::PermissionStatus::Granted;
         else
-            return Qt::PermissionStatus::Denied;
+            return BobUI::PermissionStatus::Denied;
     }
 
     qCWarning(lcPermissions) << "Unknown accuracy status" << status << "detected in" << self;
-    return Qt::PermissionStatus::Denied;
+    return BobUI::PermissionStatus::Denied;
 }
 
 - (QStringList)usageDescriptionsFor:(QPermission)permission

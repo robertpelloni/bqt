@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 /*
     treemodel.cpp
@@ -13,7 +13,7 @@
 
 #include <QStringList>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [0]
 TreeModel::TreeModel(const QString &data, QObject *parent)
@@ -40,7 +40,7 @@ int TreeModel::columnCount(const QModelIndex &parent) const
 //! [3]
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || role != Qt::DisplayRole)
+    if (!index.isValid() || role != BobUI::DisplayRole)
         return {};
 
     const auto *item = static_cast<const TreeItem*>(index.internalPointer());
@@ -49,18 +49,18 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 //! [3]
 
 //! [4]
-Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
     return index.isValid()
-        ? QAbstractItemModel::flags(index) : Qt::ItemFlags(Qt::NoItemFlags);
+        ? QAbstractItemModel::flags(index) : BobUI::ItemFlags(BobUI::NoItemFlags);
 }
 //! [4]
 
 //! [5]
-QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
+QVariant TreeModel::headerData(int section, BobUI::Orientation orientation,
                                int role) const
 {
-    return orientation == Qt::Horizontal && role == Qt::DisplayRole
+    return orientation == BobUI::Horizontal && role == BobUI::DisplayRole
         ? rootItem->data(section) : QVariant{};
 }
 //! [5]
@@ -127,7 +127,7 @@ void TreeModel::setupModelData(const QList<QStringView> &lines, TreeItem *parent
         const QStringView lineData = line.sliced(position).trimmed();
         if (!lineData.isEmpty()) {
             // Read the column data from the rest of the line.
-            const auto columnStrings = lineData.split(u'\t', Qt::SkipEmptyParts);
+            const auto columnStrings = lineData.split(u'\t', BobUI::SkipEmptyParts);
             QVariantList columnData;
             columnData.reserve(columnStrings.count());
             for (const auto &columnString : columnStrings)

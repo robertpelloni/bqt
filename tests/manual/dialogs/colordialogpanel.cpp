@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "colordialogpanel.h"
 #include "utils.h"
@@ -12,7 +12,7 @@
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 #include <QComboBox>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QDebug>
 
 // SVG color keyword names provided by the World Wide Web Consortium
@@ -52,14 +52,14 @@ public:
     {
     }
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override
     {
-        if (role == Qt::DisplayRole) {
-            QString name = data(index, Qt::EditRole).toString();
+        if (role == BobUI::DisplayRole) {
+            QString name = data(index, BobUI::EditRole).toString();
             return tr("%1 (%2)").arg(name, QColor(name).name());
         }
-        if (role == Qt::DecorationRole)
-            return QColor(data(index, Qt::EditRole).toString());
+        if (role == BobUI::DecorationRole)
+            return QColor(data(index, BobUI::EditRole).toString());
         return QSortFilterProxyModel::data(index, role);
     }
 };
@@ -96,8 +96,8 @@ ColorDialogPanel::ColorDialogPanel(QWidget *parent)
     QVBoxLayout *buttonsLayout = new QVBoxLayout(buttonsGroupBox);
     addButton(tr("Exec modal"), buttonsLayout, this, SLOT(execModal()));
     addButton(tr("Show application modal"), buttonsLayout,
-              [this]() { showModal(Qt::ApplicationModal); });
-    addButton(tr("Show window modal"), buttonsLayout, [this]() { showModal(Qt::WindowModal); });
+              [this]() { showModal(BobUI::ApplicationModal); });
+    addButton(tr("Show window modal"), buttonsLayout, [this]() { showModal(BobUI::WindowModal); });
     m_deleteModalDialogButton =
         addButton(tr("Delete modal"), buttonsLayout, this, SLOT(deleteModalDialog()));
     addButton(tr("Show non-modal"), buttonsLayout, this, SLOT(showNonModal()));
@@ -127,11 +127,11 @@ void ColorDialogPanel::execModal()
     connect(&dialog, SIGNAL(accepted()), this, SLOT(accepted()));
     connect(&dialog, SIGNAL(rejected()), this, SLOT(rejected()));
     connect(&dialog, SIGNAL(currentColorChanged(const QColor&)), this, SLOT(currentColorChanged(const QColor&)));
-    dialog.setWindowTitle(tr("Modal Color Dialog Qt %1").arg(QLatin1String(QT_VERSION_STR)));
+    dialog.setWindowTitle(tr("Modal Color Dialog BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)));
     dialog.exec();
 }
 
-void ColorDialogPanel::showModal(Qt::WindowModality modality)
+void ColorDialogPanel::showModal(BobUI::WindowModality modality)
 {
     if (m_modalDialog.isNull()) {
         static int  n = 0;
@@ -140,9 +140,9 @@ void ColorDialogPanel::showModal(Qt::WindowModality modality)
         connect(m_modalDialog.data(), SIGNAL(accepted()), this, SLOT(accepted()));
         connect(m_modalDialog.data(), SIGNAL(rejected()), this, SLOT(rejected()));
         connect(m_modalDialog.data(), SIGNAL(currentColorChanged(const QColor&)), this, SLOT(currentColorChanged(const QColor&)));
-        m_modalDialog->setWindowTitle(tr("Modal Color Dialog #%1 Qt %2")
+        m_modalDialog->setWindowTitle(tr("Modal Color Dialog #%1 BobUI %2")
                                       .arg(++n)
-                                      .arg(QLatin1String(QT_VERSION_STR)));
+                                      .arg(QLatin1String(BOBUI_VERSION_STR)));
         enableDeleteModalDialogButton();
     }
     m_modalDialog->setWindowModality(modality);
@@ -158,9 +158,9 @@ void ColorDialogPanel::showNonModal()
         connect(m_nonModalDialog.data(), SIGNAL(accepted()), this, SLOT(accepted()));
         connect(m_nonModalDialog.data(), SIGNAL(rejected()), this, SLOT(rejected()));
         connect(m_nonModalDialog.data(), SIGNAL(currentColorChanged(const QColor&)), this, SLOT(currentColorChanged(const QColor&)));
-        m_nonModalDialog->setWindowTitle(tr("Non-Modal Color Dialog #%1 Qt %2")
+        m_nonModalDialog->setWindowTitle(tr("Non-Modal Color Dialog #%1 BobUI %2")
                                          .arg(++n)
-                                         .arg(QLatin1String(QT_VERSION_STR)));
+                                         .arg(QLatin1String(BOBUI_VERSION_STR)));
         enableDeleteNonModalDialogButton();
     }
     applySettings(m_nonModalDialog);
@@ -191,7 +191,7 @@ void ColorDialogPanel::accepted()
     QDebug(&m_result).nospace()
         << "Current color: " << d->currentColor()
         << "\nSelected color: " << d->selectedColor();
-    QTimer::singleShot(0, this, SLOT(showAcceptedResult())); // Avoid problems with the closing (modal) dialog as parent.
+    BOBUIimer::singleShot(0, this, SLOT(showAcceptedResult())); // Avoid problems with the closing (modal) dialog as parent.
 }
 
 void ColorDialogPanel::rejected()
@@ -232,5 +232,5 @@ void ColorDialogPanel::applySettings(QColorDialog *d) const
     d->setOption(QColorDialog::ShowAlphaChannel, m_showAlphaChannel->isChecked());
     d->setOption(QColorDialog::NoButtons, m_noButtons->isChecked());
     d->setOption(QColorDialog::DontUseNativeDialog, m_dontUseNativeDialog->isChecked());
-    d->setCurrentColor(QColor(m_colorComboBox->itemData(m_colorComboBox->currentIndex(), Qt::EditRole).toString()));
+    d->setCurrentColor(QColor(m_colorComboBox->itemData(m_colorComboBox->currentIndex(), BobUI::EditRole).toString()));
 }

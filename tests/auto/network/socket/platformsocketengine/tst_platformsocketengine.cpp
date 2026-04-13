@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdatastream.h>
@@ -56,10 +56,10 @@ private slots:
 
 void tst_PlatformSocketEngine::initTestCase()
 {
-#ifdef QT_TEST_SERVER
-     QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::imapServerName(), 143));
+#ifdef BOBUI_TEST_SERVER
+     QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::imapServerName(), 143));
 #else
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 #endif
 }
@@ -85,10 +85,10 @@ void tst_PlatformSocketEngine::construction()
     QCOMPARE(socketDevice.error(), QAbstractSocket::UnknownSocketError);
     QCOMPARE(socketDevice.option(QNativeSocketEngine::NonBlockingSocketOption), -1);
 
-    QTest::ignoreMessage(QtWarningMsg, PLATFORMSOCKETENGINESTRING "::bytesAvailable() was called in QAbstractSocket::UnconnectedState");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, PLATFORMSOCKETENGINESTRING "::bytesAvailable() was called in QAbstractSocket::UnconnectedState");
     QCOMPARE(socketDevice.bytesAvailable(), -1);
 
-    QTest::ignoreMessage(QtWarningMsg, PLATFORMSOCKETENGINESTRING "::hasPendingDatagrams() was called in QAbstractSocket::UnconnectedState");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, PLATFORMSOCKETENGINESTRING "::hasPendingDatagrams() was called in QAbstractSocket::UnconnectedState");
     QVERIFY(!socketDevice.hasPendingDatagrams());
 }
 
@@ -101,14 +101,14 @@ void tst_PlatformSocketEngine::simpleConnectToIMAP()
     QVERIFY(socketDevice.initialize(QAbstractSocket::TcpSocket, QAbstractSocket::IPv4Protocol));
     QCOMPARE(socketDevice.state(), QAbstractSocket::UnconnectedState);
 
-    const bool isConnected = socketDevice.connectToHost(QtNetworkSettings::imapServerIp(), 143);
+    const bool isConnected = socketDevice.connectToHost(BobUINetworkSettings::imapServerIp(), 143);
     if (!isConnected) {
         QCOMPARE(socketDevice.state(), QAbstractSocket::ConnectingState);
         QVERIFY(socketDevice.waitForWrite());
         QCOMPARE(socketDevice.state(), QAbstractSocket::ConnectedState);
     }
     QCOMPARE(socketDevice.state(), QAbstractSocket::ConnectedState);
-    QCOMPARE(socketDevice.peerAddress(), QtNetworkSettings::imapServerIp());
+    QCOMPARE(socketDevice.peerAddress(), BobUINetworkSettings::imapServerIp());
 
     // Wait for the greeting
     QVERIFY(socketDevice.waitForRead());
@@ -121,7 +121,7 @@ void tst_PlatformSocketEngine::simpleConnectToIMAP()
     QVERIFY(socketDevice.read(array.data(), array.size()) == available);
 
     // Check that the greeting is what we expect it to be
-    QVERIFY2(QtNetworkSettings::compareReplyIMAP(array), array.constData());
+    QVERIFY2(BobUINetworkSettings::compareReplyIMAP(array), array.constData());
 
     // Write a logout message
     QByteArray array2 = "ZZZ LOGOUT\r\n";
@@ -270,7 +270,7 @@ void tst_PlatformSocketEngine::broadcastTest()
                                          trollMessage.size(),
                                          QIpPacketHeader(QHostAddress::Broadcast, port));
 
-    QVERIFY2(written != -1, qt_error_string().toLocal8Bit());
+    QVERIFY2(written != -1, bobui_error_string().toLocal8Bit());
     QCOMPARE((int)written, trollMessage.size());
 
     // Wait until we receive it ourselves
@@ -504,8 +504,8 @@ void tst_PlatformSocketEngine::bind()
 {
     PLATFORMSOCKETENGINE binder;
     QVERIFY(binder.initialize(QAbstractSocket::TcpSocket, QAbstractSocket::IPv4Protocol));
-    QCOMPARE(binder.bind(QHostAddress::AnyIPv4, 82), QtNetworkSettings::canBindToLowPorts());
-    if (!QtNetworkSettings::canBindToLowPorts())
+    QCOMPARE(binder.bind(QHostAddress::AnyIPv4, 82), BobUINetworkSettings::canBindToLowPorts());
+    if (!BobUINetworkSettings::canBindToLowPorts())
         QCOMPARE(binder.error(), QAbstractSocket::SocketAccessError);
 
     PLATFORMSOCKETENGINE binder2;
@@ -517,11 +517,11 @@ void tst_PlatformSocketEngine::bind()
     QVERIFY(!binder3.bind(QHostAddress::AnyIPv4, 31180));
     QCOMPARE(binder3.error(), QAbstractSocket::AddressInUseError);
 
-    if (QtNetworkSettings::hasIPv6()) {
+    if (BobUINetworkSettings::hasIPv6()) {
         PLATFORMSOCKETENGINE binder;
         QVERIFY(binder.initialize(QAbstractSocket::TcpSocket, QAbstractSocket::IPv6Protocol));
-        QCOMPARE(binder.bind(QHostAddress::AnyIPv6, 82), QtNetworkSettings::canBindToLowPorts());
-        if (!QtNetworkSettings::canBindToLowPorts())
+        QCOMPARE(binder.bind(QHostAddress::AnyIPv6, 82), BobUINetworkSettings::canBindToLowPorts());
+        if (!BobUINetworkSettings::canBindToLowPorts())
             QCOMPARE(binder.error(), QAbstractSocket::SocketAccessError);
 
         PLATFORMSOCKETENGINE binder4;
@@ -546,7 +546,7 @@ void tst_PlatformSocketEngine::networkError()
 
     QVERIFY(client.initialize(QAbstractSocket::TcpSocket, QAbstractSocket::IPv4Protocol));
 
-    const bool isConnected = client.connectToHost(QtNetworkSettings::imapServerIp(), 143);
+    const bool isConnected = client.connectToHost(BobUINetworkSettings::imapServerIp(), 143);
     if (!isConnected) {
         QCOMPARE(client.state(), QAbstractSocket::ConnectingState);
         QVERIFY(client.waitForWrite());
@@ -581,7 +581,7 @@ void tst_PlatformSocketEngine::invalidSend()
     PLATFORMSOCKETENGINE socket;
     QVERIFY(socket.initialize(QAbstractSocket::TcpSocket));
 
-    QTest::ignoreMessage(QtWarningMsg, PLATFORMSOCKETENGINESTRING "::writeDatagram() was called"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, PLATFORMSOCKETENGINESTRING "::writeDatagram() was called"
                          " not in QAbstractSocket::BoundState or QAbstractSocket::ConnectedState");
     QCOMPARE(socket.writeDatagram("hei", 3, QIpPacketHeader(QHostAddress::LocalHost, 143)),
             (qlonglong) -1);
@@ -651,5 +651,5 @@ void tst_PlatformSocketEngine::receiveUrgentData()
 #endif
 }
 
-QTEST_MAIN(tst_PlatformSocketEngine)
+BOBUIEST_MAIN(tst_PlatformSocketEngine)
 #include "tst_platformsocketengine.moc"

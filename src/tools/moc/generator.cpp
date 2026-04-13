@@ -1,20 +1,20 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2019 Olivier Goffart <ogoffart@woboq.com>
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "generator.h"
 #include "cbordevice.h"
 #include "outputrevision.h"
 #include "utils.h"
-#include <QtCore/qmetatype.h>
-#include <QtCore/qjsondocument.h>
-#include <QtCore/qjsonobject.h>
-#include <QtCore/qjsonvalue.h>
-#include <QtCore/qjsonarray.h>
-#include <QtCore/qplugin.h>
-#include <QtCore/qstringview.h>
-#include <QtCore/qtmocconstants.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qjsondocument.h>
+#include <BobUICore/qjsonobject.h>
+#include <BobUICore/qjsonvalue.h>
+#include <BobUICore/qjsonarray.h>
+#include <BobUICore/qplugin.h>
+#include <BobUICore/qstringview.h>
+#include <BobUICore/bobuimocconstants.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -22,9 +22,9 @@
 #include <private/qmetaobject_p.h> //for the flags.
 #include <private/qplugin_p.h> //for the flags.
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtMiscUtils;
+using namespace BobUIMiscUtils;
 
 static int nameToBuiltinType(const QByteArray &name)
 {
@@ -32,10 +32,10 @@ static int nameToBuiltinType(const QByteArray &name)
         return 0;
 
     uint tp = QMetaType::UnknownType;
-    if (const QtPrivate::QMetaTypeInterface *iface = QMetaType::fromName(name).iface())
+    if (const BobUIPrivate::QMetaTypeInterface *iface = QMetaType::fromName(name).iface())
         tp = iface->typeId.loadRelaxed(); // always registered
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     if (tp >= uint(QMetaType::User))
         tp = QMetaType::UnknownType;
 #endif
@@ -72,7 +72,7 @@ static const char *metaTypeEnumValueString(int type)
     case QMetaType::MetaTypeName: return #MetaTypeName;
 
     switch (type) {
-QT_FOR_EACH_STATIC_TYPE(RETURN_METATYPENAME_STRING)
+BOBUI_FOR_EACH_STATIC_TYPE(RETURN_METATYPENAME_STRING)
     }
 #undef RETURN_METATYPENAME_STRING
     return nullptr;
@@ -170,7 +170,7 @@ bool Generator::registerableMetaType(const QByteArray &propertyType)
 
     static const QList<QByteArray> smartPointers = QList<QByteArray>()
 #define STREAM_SMART_POINTER(SMART_POINTER) << #SMART_POINTER
-            QT_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(STREAM_SMART_POINTER)
+            BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(STREAM_SMART_POINTER)
 #undef STREAM_SMART_POINTER
             ;
 
@@ -182,7 +182,7 @@ bool Generator::registerableMetaType(const QByteArray &propertyType)
 
     static const QList<QByteArray> oneArgTemplates = QList<QByteArray>()
 #define STREAM_1ARG_TEMPLATE(TEMPLATENAME) << #TEMPLATENAME
-            QT_FOR_EACH_AUTOMATIC_TEMPLATE_1ARG(STREAM_1ARG_TEMPLATE)
+            BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_1ARG(STREAM_1ARG_TEMPLATE)
 #undef STREAM_1ARG_TEMPLATE
             ;
     for (const QByteArray &oneArgTemplateType : oneArgTemplates) {
@@ -217,7 +217,7 @@ static QByteArray generateQualifiedClassNameIdentifier(const QByteArray &identif
     // This is similar to the IA-64 C++ ABI mangling scheme.
     QByteArray qualifiedClassNameIdentifier = "ZN";
     for (const auto scope : qTokenize(QLatin1StringView(identifier), QLatin1Char(':'),
-                                      Qt::SkipEmptyParts)) {
+                                      BobUI::SkipEmptyParts)) {
         qualifiedClassNameIdentifier += QByteArray::number(scope.size());
         qualifiedClassNameIdentifier += scope;
     }
@@ -248,7 +248,7 @@ void Generator::generateCode()
     bool hasStaticMetaCall =
             (cdef->hasQObject || !cdef->methodList.isEmpty()
              || !cdef->propertyList.isEmpty() || !cdef->constructorList.isEmpty());
-    if (parser->activeQtMode)
+    if (parser->activeBobUIMode)
         hasStaticMetaCall = false;
 
     const QByteArray qualifiedClassNameIdentifier = generateQualifiedClassNameIdentifier(cdef->qualified);
@@ -256,9 +256,9 @@ void Generator::generateCode()
     // type name for the Q_OJBECT/GADGET itself, void for namespaces
     const char *ownType = !cdef->hasQNamespace ? cdef->classname.data() : "void";
 
-    // ensure the qt_meta_tag_XXXX_t type is local
+    // ensure the bobui_meta_tag_XXXX_t type is local
     fprintf(out, "namespace {\n"
-                 "struct qt_meta_tag_%s_t {};\n"
+                 "struct bobui_meta_tag_%s_t {};\n"
                  "} // unnamed namespace\n\n",
             qualifiedClassNameIdentifier.constData());
 
@@ -270,48 +270,48 @@ void Generator::generateCode()
     // creating the meta object for, so we get access to everything it has
     // access to and with the same contexts (for example, member enums and
     // types).
-    fprintf(out, "template <> constexpr inline auto %s::qt_create_metaobjectdata<qt_meta_tag_%s_t>()\n"
+    fprintf(out, "template <> constexpr inline auto %s::bobui_create_metaobjectdata<bobui_meta_tag_%s_t>()\n"
                  "{\n"
-                 "    namespace QMC = QtMocConstants;\n",
+                 "    namespace QMC = BobUIMocConstants;\n",
             cdef->qualified.constData(), qualifiedClassNameIdentifier.constData());
 
-    fprintf(out, "    QtMocHelpers::StringRefStorage qt_stringData {");
+    fprintf(out, "    BobUIMocHelpers::StringRefStorage bobui_stringData {");
     addStrings(strings);
     fprintf(out, "\n    };\n\n");
 
-    fprintf(out, "    QtMocHelpers::UintData qt_methods {\n");
+    fprintf(out, "    BobUIMocHelpers::UintData bobui_methods {\n");
 
     // Build signals array first, otherwise the signal indices would be wrong
     addFunctions(cdef->signalList, "Signal");
     addFunctions(cdef->slotList, "Slot");
     addFunctions(cdef->methodList, "Method");
     fprintf(out, "    };\n"
-                 "    QtMocHelpers::UintData qt_properties {\n");
+                 "    BobUIMocHelpers::UintData bobui_properties {\n");
     addProperties();
     fprintf(out, "    };\n"
-                 "    QtMocHelpers::UintData qt_enums {\n");
+                 "    BobUIMocHelpers::UintData bobui_enums {\n");
     addEnums();
     fprintf(out, "    };\n");
 
-    fprintf(out, "    int qt_metaObjectHashIndex = %d;\n", stridx(hashes[cdef->qualified]));
+    fprintf(out, "    int bobui_metaObjectHashIndex = %d;\n", stridx(hashes[cdef->qualified]));
 
     const char *uintDataParams = "";
     if (isConstructible || !cdef->classInfoList.isEmpty()) {
         if (isConstructible) {
-            fprintf(out, "    using Constructor = QtMocHelpers::NoType;\n"
-                         "    QtMocHelpers::UintData qt_constructors {\n");
+            fprintf(out, "    using Constructor = BobUIMocHelpers::NoType;\n"
+                         "    BobUIMocHelpers::UintData bobui_constructors {\n");
             addFunctions(cdef->constructorList, "Constructor");
             fprintf(out, "    };\n");
         } else {
-            fputs("    QtMocHelpers::UintData qt_constructors {};\n", out);
+            fputs("    BobUIMocHelpers::UintData bobui_constructors {};\n", out);
         }
 
-        uintDataParams = ", qt_constructors";
+        uintDataParams = ", bobui_constructors";
         if (!cdef->classInfoList.isEmpty()) {
-            fprintf(out, "    QtMocHelpers::ClassInfos qt_classinfo({\n");
+            fprintf(out, "    BobUIMocHelpers::ClassInfos bobui_classinfo({\n");
             addClassInfos();
             fprintf(out, "    });\n");
-            uintDataParams = ", qt_constructors, qt_classinfo";
+            uintDataParams = ", bobui_constructors, bobui_classinfo";
         }
     }
 
@@ -319,15 +319,15 @@ void Generator::generateCode()
     if (cdef->hasQGadget || cdef->hasQNamespace) {
         // Ideally, all the classes could have that flag. But this broke
         // classes generated by qdbusxml2cpp which generate code that require
-        // that we call qt_metacall for properties.
+        // that we call bobui_metacall for properties.
         metaObjectFlags = "QMC::PropertyAccessInStaticMetaCall";
     }
     {
         QByteArray tagType = QByteArrayLiteral("void");
         if (!requireCompleteness)
-            tagType = "qt_meta_tag_" + qualifiedClassNameIdentifier +  "_t";
-        fprintf(out, "    return QtMocHelpers::metaObjectData<%s, %s>(%s, qt_stringData,\n"
-                     "            qt_methods, qt_properties, qt_enums, qt_metaObjectHashIndex%s);\n"
+            tagType = "bobui_meta_tag_" + qualifiedClassNameIdentifier +  "_t";
+        fprintf(out, "    return BobUIMocHelpers::metaObjectData<%s, %s>(%s, bobui_stringData,\n"
+                     "            bobui_methods, bobui_properties, bobui_enums, bobui_metaObjectHashIndex%s);\n"
                      "}\n",
                 ownType, tagType.constData(), metaObjectFlags, uintDataParams);
     }
@@ -339,12 +339,12 @@ void Generator::generateCode()
         metaVarNameSuffix = '_' + qualifiedClassNameIdentifier;
         const char *n = metaVarNameSuffix.constData();
         fprintf(out, R"(
-static constexpr auto qt_staticMetaObjectContent%s =
-    %s::qt_create_metaobjectdata<qt_meta_tag%s_t>();
-static constexpr auto qt_staticMetaObjectStaticContent%s =
-    qt_staticMetaObjectContent%s.staticData;
-static constexpr auto qt_staticMetaObjectRelocatingContent%s =
-    qt_staticMetaObjectContent%s.relocatingData;
+static constexpr auto bobui_staticMetaObjectContent%s =
+    %s::bobui_create_metaobjectdata<bobui_meta_tag%s_t>();
+static constexpr auto bobui_staticMetaObjectStaticContent%s =
+    bobui_staticMetaObjectContent%s.staticData;
+static constexpr auto bobui_staticMetaObjectRelocatingContent%s =
+    bobui_staticMetaObjectContent%s.relocatingData;
 
 )",
                 n, cdef->qualified.constData(), n,
@@ -352,7 +352,7 @@ static constexpr auto qt_staticMetaObjectRelocatingContent%s =
                 n, n);
     } else {
         // Q_OBJECT and Q_GADGET do declare them, so we just use the templates.
-        metaVarNameSuffix = "<qt_meta_tag_" + qualifiedClassNameIdentifier + "_t>";
+        metaVarNameSuffix = "<bobui_meta_tag_" + qualifiedClassNameIdentifier + "_t>";
     }
 
 //
@@ -375,7 +375,7 @@ static constexpr auto qt_staticMetaObjectRelocatingContent%s =
 
         QByteArray unqualifiedScope = p.type.left(s);
 
-        // The scope may be a namespace for example, so it's only safe to include scopes that are known QObjects (QTBUG-2151)
+        // The scope may be a namespace for example, so it's only safe to include scopes that are known QObjects (BOBUIBUG-2151)
         QMultiHash<QByteArray, QByteArray>::ConstIterator scopeIt;
 
         QByteArray thisScope = cdef->qualified;
@@ -391,7 +391,7 @@ static constexpr auto qt_staticMetaObjectRelocatingContent%s =
 
         const QByteArray &scope = *scopeIt;
 
-        if (scope == "Qt")
+        if (scope == "BobUI")
             continue;
         if (qualifiedNameEquals(cdef->qualified, scope))
             continue;
@@ -400,7 +400,7 @@ static constexpr auto qt_staticMetaObjectRelocatingContent%s =
             extraList += scope;
     }
 
-    // QTBUG-20639 - Accept non-local enums for QML signal/slot parameters.
+    // BOBUIBUG-20639 - Accept non-local enums for QML signal/slot parameters.
     // Look for any scoped enum declarations, and add those to the list
     // of extra/related metaobjects for this object.
     for (auto it = cdef->enumDeclarations.keyBegin(),
@@ -409,7 +409,7 @@ static constexpr auto qt_staticMetaObjectRelocatingContent%s =
         const qsizetype s = enumKey.lastIndexOf("::");
         if (s > 0) {
             QByteArray scope = enumKey.left(s);
-            if (scope != "Qt" && !qualifiedNameEquals(cdef->qualified, scope) && !extraList.contains(scope))
+            if (scope != "BobUI" && !qualifiedNameEquals(cdef->qualified, scope) && !extraList.contains(scope))
                 extraList += scope;
         }
     }
@@ -419,7 +419,7 @@ static constexpr auto qt_staticMetaObjectRelocatingContent%s =
 //
 
     if (!extraList.isEmpty()) {
-        fprintf(out, "Q_CONSTINIT static const QMetaObject::SuperData qt_meta_extradata_%s[] = {\n",
+        fprintf(out, "Q_CONSTINIT static const QMetaObject::SuperData bobui_meta_extradata_%s[] = {\n",
                 qualifiedClassNameIdentifier.constData());
         for (const QByteArray &ba : std::as_const(extraList))
             fprintf(out, "    QMetaObject::SuperData::link<%s::staticMetaObject>(),\n", ba.constData());
@@ -438,30 +438,30 @@ static constexpr auto qt_staticMetaObjectRelocatingContent%s =
     else if (cdef->superclassList.size() && !cdef->hasQGadget && !cdef->hasQNamespace) // for qobject, we know the super class must have a static metaobject
         fprintf(out, "    QMetaObject::SuperData::link<%s::staticMetaObject>(),\n", purestSuperClass.constData());
     else if (cdef->superclassList.size()) // for gadgets we need to query at compile time for it
-        fprintf(out, "    QtPrivate::MetaObjectForType<%s>::value,\n", purestSuperClass.constData());
+        fprintf(out, "    BobUIPrivate::MetaObjectForType<%s>::value,\n", purestSuperClass.constData());
     else
         fprintf(out, "    nullptr,\n");
-    fprintf(out, "    qt_staticMetaObjectStaticContent%s.stringdata,\n"
-            "    qt_staticMetaObjectStaticContent%s.data,\n",
+    fprintf(out, "    bobui_staticMetaObjectStaticContent%s.stringdata,\n"
+            "    bobui_staticMetaObjectStaticContent%s.data,\n",
             metaVarNameSuffix.constData(),
             metaVarNameSuffix.constData());
     if (hasStaticMetaCall)
-        fprintf(out, "    qt_static_metacall,\n");
+        fprintf(out, "    bobui_static_metacall,\n");
     else
         fprintf(out, "    nullptr,\n");
 
     if (extraList.isEmpty())
         fprintf(out, "    nullptr,\n");
     else
-        fprintf(out, "    qt_meta_extradata_%s,\n", qualifiedClassNameIdentifier.constData());
+        fprintf(out, "    bobui_meta_extradata_%s,\n", qualifiedClassNameIdentifier.constData());
 
-    fprintf(out, "    qt_staticMetaObjectRelocatingContent%s.metaTypes,\n",
+    fprintf(out, "    bobui_staticMetaObjectRelocatingContent%s.metaTypes,\n",
             metaVarNameSuffix.constData());
 
     fprintf(out, "    nullptr\n} };\n\n");
 
 //
-// Generate internal qt_static_metacall() function
+// Generate internal bobui_static_metacall() function
 //
     if (hasStaticMetaCall)
         generateStaticMetacall();
@@ -477,9 +477,9 @@ static constexpr auto qt_staticMetaObjectRelocatingContent%s =
 //
 // Generate smart cast function
 //
-    fprintf(out, "\nvoid *%s::qt_metacast(const char *_clname)\n{\n", cdef->qualified.constData());
+    fprintf(out, "\nvoid *%s::bobui_metacast(const char *_clname)\n{\n", cdef->qualified.constData());
     fprintf(out, "    if (!_clname) return nullptr;\n");
-    fprintf(out, "    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_%s_t>.strings))\n"
+    fprintf(out, "    if (!strcmp(_clname, bobui_staticMetaObjectStaticContent<bobui_meta_tag_%s_t>.strings))\n"
                   "        return static_cast<void*>(this);\n",
             qualifiedClassNameIdentifier.constData());
 
@@ -506,17 +506,17 @@ static constexpr auto qt_staticMetaObjectRelocatingContent%s =
     }
     if (!purestSuperClass.isEmpty() && !isQObject) {
         QByteArray superClass = purestSuperClass;
-        fprintf(out, "    return %s::qt_metacast(_clname);\n", superClass.constData());
+        fprintf(out, "    return %s::bobui_metacast(_clname);\n", superClass.constData());
     } else {
         fprintf(out, "    return nullptr;\n");
     }
     fprintf(out, "}\n");
 
-    if (parser->activeQtMode)
+    if (parser->activeBobUIMode)
         return;
 
 //
-// Generate internal qt_metacall()  function
+// Generate internal bobui_metacall()  function
 //
     generateMetacall();
 
@@ -615,7 +615,7 @@ void Generator::addFunctions(const QList<FunctionDef> &list, const char *functyp
     for (const FunctionDef &f : list) {
         if (!f.isConstructor)
             fprintf(out, "        // %s '%s'\n", functype, f.name.constData());
-        fprintf(out, "        QtMocHelpers::%s%sData<",
+        fprintf(out, "        BobUIMocHelpers::%s%sData<",
                 f.revision > 0 ? "Revisioned" : "", functype);
 
         if (f.isConstructor)
@@ -649,7 +649,7 @@ void Generator::addFunctions(const QList<FunctionDef> &list, const char *functyp
         if (f.isScriptable)
             fprintf(out, " | QMC::MethodScriptable");
 
-        // QtMocConstants::MethodRevisioned is implied by the call we're making
+        // BobUIMocConstants::MethodRevisioned is implied by the call we're making
         if (f.revision > 0)
             fprintf(out, ", %#x", f.revision);
 
@@ -715,7 +715,7 @@ void Generator::addProperties()
 {
     for (const PropertyDef &p : std::as_const(cdef->propertyList)) {
         fprintf(out, "        // property '%s'\n"
-                     "        QtMocHelpers::PropertyData<%s%s>(%d, ",
+                     "        BobUIMocHelpers::PropertyData<%s%s>(%d, ",
                 p.name.constData(), cxxTypeTag(p.typeTag),
                 disambiguatedTypeName(p.type, p.typeTag).constData(),
                 stridx(p.name));
@@ -805,7 +805,7 @@ void Generator::addEnums()
     for (const EnumDef &e : std::as_const(cdef->enumList)) {
         const QByteArray &typeName = e.enumName.isNull() ? e.name : e.enumName;
         fprintf(out, "        // %s '%s'\n"
-                     "        QtMocHelpers::EnumData<%s>(%d, %d,",
+                     "        BobUIMocHelpers::EnumData<%s>(%d, %d,",
                 e.flags & EnumIsFlag ? "flag" : "enum", e.name.constData(),
                 disambiguatedTypeName(e.name).constData(), stridx(e.name), stridx(typeName));
 
@@ -844,12 +844,12 @@ void Generator::generateMetacall()
 {
     bool isQObject = (cdef->classname == "QObject");
 
-    fprintf(out, "\nint %s::qt_metacall(QMetaObject::Call _c, int _id, void **_a)\n{\n",
+    fprintf(out, "\nint %s::bobui_metacall(QMetaObject::Call _c, int _id, void **_a)\n{\n",
              cdef->qualified.constData());
 
     if (!purestSuperClass.isEmpty() && !isQObject) {
         QByteArray superClass = purestSuperClass;
-        fprintf(out, "    _id = %s::qt_metacall(_c, _id, _a);\n", superClass.constData());
+        fprintf(out, "    _id = %s::bobui_metacall(_c, _id, _a);\n", superClass.constData());
     }
 
 
@@ -868,7 +868,7 @@ void Generator::generateMetacall()
     if (methodList.size()) {
         fprintf(out, "    if (_c == QMetaObject::InvokeMetaMethod) {\n");
         fprintf(out, "        if (_id < %d)\n", int(methodList.size()));
-        fprintf(out, "            qt_static_metacall(this, _c, _id, _a);\n");
+        fprintf(out, "            bobui_static_metacall(this, _c, _id, _a);\n");
         fprintf(out, "        _id -= %d;\n    }\n", int(methodList.size()));
 
         fprintf(out, "    if (_c == QMetaObject::RegisterMethodArgumentMetaType) {\n");
@@ -877,7 +877,7 @@ void Generator::generateMetacall()
         if (methodsWithAutomaticTypesHelper(methodList).isEmpty())
             fprintf(out, "            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();\n");
         else
-            fprintf(out, "            qt_static_metacall(this, _c, _id, _a);\n");
+            fprintf(out, "            bobui_static_metacall(this, _c, _id, _a);\n");
         fprintf(out, "        _id -= %d;\n    }\n", int(methodList.size()));
 
     }
@@ -887,14 +887,14 @@ void Generator::generateMetacall()
             "    if (_c == QMetaObject::ReadProperty || _c == QMetaObject::WriteProperty\n"
             "            || _c == QMetaObject::ResetProperty || _c == QMetaObject::BindableProperty\n"
             "            || _c == QMetaObject::RegisterPropertyMetaType) {\n"
-            "        qt_static_metacall(this, _c, _id, _a);\n"
+            "        bobui_static_metacall(this, _c, _id, _a);\n"
             "        _id -= %d;\n    }\n", int(cdef->propertyList.size()));
     }
     fprintf(out,"    return _id;\n}\n");
 }
 
 
-// ### Qt 7 (6.x?): remove
+// ### BobUI 7 (6.x?): remove
 QMultiMap<QByteArray, int> Generator::automaticPropertyMetaTypesHelper()
 {
     QMultiMap<QByteArray, int> automaticPropertyMetaTypes;
@@ -924,7 +924,7 @@ Generator::methodsWithAutomaticTypesHelper(const QList<FunctionDef> &methodList)
 
 void Generator::generateStaticMetacall()
 {
-    fprintf(out, "void %s::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)\n{\n",
+    fprintf(out, "void %s::bobui_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)\n{\n",
             cdef->qualified.constData());
 
     enum UsedArgs {
@@ -936,7 +936,7 @@ void Generator::generateStaticMetacall()
     uint usedArgs = 0;
 
     if (cdef->hasQObject) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         fprintf(out, "    Q_ASSERT(_o == nullptr || staticMetaObject.cast(_o));\n");
 #endif
         fprintf(out, "    auto *_t = static_cast<%s *>(_o);\n", cdef->classname.constData());
@@ -1078,7 +1078,7 @@ void Generator::generateStaticMetacall()
             const FunctionDef &f = cdef->signalList.at(methodindex);
             if (f.wasCloned || !f.inPrivateClass.isEmpty() || f.isStatic)
                 continue;
-            fprintf(out, "        if (QtMocHelpers::indexOfMethod<%s (%s::*)(",
+            fprintf(out, "        if (BobUIMocHelpers::indexOfMethod<%s (%s::*)(",
                     f.type.rawName.constData() , cdef->classname.constData());
 
             const auto begin = f.arguments.cbegin();
@@ -1163,9 +1163,9 @@ void Generator::generateStaticMetacall()
                 else if (p.gspec == PropertyDef::ReferenceSpec)
                     fprintf(out, "        case %d: _a[0] = const_cast<void*>(reinterpret_cast<const void*>(&%s%s())); break;\n",
                             propindex, prefix.constData(), p.read.constData());
-#if QT_VERSION <= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION <= BOBUI_VERSION_CHECK(7, 0, 0)
                 else if (auto eflags = cdef->enumDeclarations.value(p.type); eflags & EnumIsFlag)
-                    fprintf(out, "        case %d: QtMocHelpers::assignFlags<%s>(_v, %s%s()); break;\n",
+                    fprintf(out, "        case %d: BobUIMocHelpers::assignFlags<%s>(_v, %s%s()); break;\n",
                             propindex, disambiguatedTypeName(p.type, p.typeTag).constData(), prefix.constData(), p.read.constData());
 #endif
                 else if (p.read == "default")
@@ -1214,11 +1214,11 @@ void Generator::generateStaticMetacall()
                 } else {
                     fprintf(out, "        case %d:", propindex);
                     if (p.notify.isEmpty()) {
-                        fprintf(out, " QtMocHelpers::setProperty(%s%s, *reinterpret_cast<%s%s*>(_v)); break;\n",
+                        fprintf(out, " BobUIMocHelpers::setProperty(%s%s, *reinterpret_cast<%s%s*>(_v)); break;\n",
                                 prefix.constData(), p.member.constData(), cxxTypeTag(p.typeTag),
                                 disambiguatedTypeName(p.type, p.typeTag).constData());
                     } else {
-                        fprintf(out, "\n            if (QtMocHelpers::setProperty(%s%s, *reinterpret_cast<%s%s*>(_v)))\n",
+                        fprintf(out, "\n            if (BobUIMocHelpers::setProperty(%s%s, *reinterpret_cast<%s%s*>(_v)))\n",
                                 prefix.constData(), p.member.constData(), cxxTypeTag(p.typeTag),
                                 disambiguatedTypeName(p.type, p.typeTag).constData());
                         fprintf(out, "                Q_EMIT _t->%s(", p.notify.constData());
@@ -1420,23 +1420,23 @@ void Generator::generatePluginMetaData()
         cbor_encoder_create_map(&enc, &map, CborIndefiniteLength);
 
         dev.nextItem("\"IID\"");
-        cbor_encode_int(&map, int(QtPluginMetaDataKeys::IID));
+        cbor_encode_int(&map, int(BobUIPluginMetaDataKeys::IID));
         cbor_encode_text_string(&map, cdef->pluginData.iid.constData(), cdef->pluginData.iid.size());
 
         dev.nextItem("\"className\"");
-        cbor_encode_int(&map, int(QtPluginMetaDataKeys::ClassName));
+        cbor_encode_int(&map, int(BobUIPluginMetaDataKeys::ClassName));
         cbor_encode_text_string(&map, cdef->classname.constData(), cdef->classname.size());
 
         QJsonObject o = cdef->pluginData.metaData.object();
         if (!o.isEmpty()) {
             dev.nextItem("\"MetaData\"");
-            cbor_encode_int(&map, int(QtPluginMetaDataKeys::MetaData));
+            cbor_encode_int(&map, int(BobUIPluginMetaDataKeys::MetaData));
             jsonObjectToCbor(&map, o);
         }
 
         if (!cdef->pluginData.uri.isEmpty()) {
             dev.nextItem("\"URI\"");
-            cbor_encode_int(&map, int(QtPluginMetaDataKeys::URI));
+            cbor_encode_int(&map, int(BobUIPluginMetaDataKeys::URI));
             cbor_encode_text_string(&map, cdef->pluginData.uri.constData(), cdef->pluginData.uri.size());
         }
 
@@ -1459,25 +1459,25 @@ void Generator::generatePluginMetaData()
     for ( ; pos != -1 ; pos = cdef->qualified.indexOf("::", pos + 2) )
         fprintf(out, "using namespace %s;\n", cdef->qualified.left(pos).constData());
 
-    fputs("\n#ifdef QT_MOC_EXPORT_PLUGIN_V2", out);
+    fputs("\n#ifdef BOBUI_MOC_EXPORT_PLUGIN_V2", out);
 
-    // Qt 6.3+ output
-    fprintf(out, "\nstatic constexpr unsigned char qt_pluginMetaDataV2_%s[] = {",
+    // BobUI 6.3+ output
+    fprintf(out, "\nstatic constexpr unsigned char bobui_pluginMetaDataV2_%s[] = {",
           cdef->classname.constData());
     outputCborData();
-    fprintf(out, "\n};\nQT_MOC_EXPORT_PLUGIN_V2(%s, %s, qt_pluginMetaDataV2_%s)\n",
+    fprintf(out, "\n};\nBOBUI_MOC_EXPORT_PLUGIN_V2(%s, %s, bobui_pluginMetaDataV2_%s)\n",
             cdef->qualified.constData(), cdef->classname.constData(), cdef->classname.constData());
 
-    // compatibility with Qt 6.0-6.2
-    fprintf(out, "#else\nQT_PLUGIN_METADATA_SECTION\n"
-          "Q_CONSTINIT static constexpr unsigned char qt_pluginMetaData_%s[] = {\n"
+    // compatibility with BobUI 6.0-6.2
+    fprintf(out, "#else\nBOBUI_PLUGIN_METADATA_SECTION\n"
+          "Q_CONSTINIT static constexpr unsigned char bobui_pluginMetaData_%s[] = {\n"
           "    'Q', 'T', 'M', 'E', 'T', 'A', 'D', 'A', 'T', 'A', ' ', '!',\n"
-          "    // metadata version, Qt version, architectural requirements\n"
-          "    0, QT_VERSION_MAJOR, QT_VERSION_MINOR, qPluginArchRequirements(),",
+          "    // metadata version, BobUI version, architectural requirements\n"
+          "    0, BOBUI_VERSION_MAJOR, BOBUI_VERSION_MINOR, qPluginArchRequirements(),",
           cdef->classname.constData());
     outputCborData();
-    fprintf(out, "\n};\nQT_MOC_EXPORT_PLUGIN(%s, %s)\n"
-                 "#endif  // QT_MOC_EXPORT_PLUGIN_V2\n",
+    fprintf(out, "\n};\nBOBUI_MOC_EXPORT_PLUGIN(%s, %s)\n"
+                 "#endif  // BOBUI_MOC_EXPORT_PLUGIN_V2\n",
             cdef->qualified.constData(), cdef->classname.constData());
 
     fputs("\n", out);
@@ -1504,15 +1504,15 @@ QByteArray Generator::disambiguatedTypeNameForCast(const QByteArray &name)
     return QByteArray("std::add_pointer_t<"+ disambiguatedTypeName(name) +">");
 }
 
-QT_WARNING_DISABLE_GCC("-Wunused-function")
-QT_WARNING_DISABLE_CLANG("-Wunused-function")
-QT_WARNING_DISABLE_CLANG("-Wundefined-internal")
-QT_WARNING_DISABLE_MSVC(4334) // '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+BOBUI_WARNING_DISABLE_GCC("-Wunused-function")
+BOBUI_WARNING_DISABLE_CLANG("-Wunused-function")
+BOBUI_WARNING_DISABLE_CLANG("-Wundefined-internal")
+BOBUI_WARNING_DISABLE_MSVC(4334) // '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
 
 #define CBOR_NO_HALF_FLOAT_TYPE         1
 #define CBOR_ENCODER_WRITER_CONTROL     1
 #define CBOR_ENCODER_WRITE_FUNCTION     CborDevice::callback
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "cborencoder.c"

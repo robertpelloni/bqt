@@ -1,17 +1,17 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSUIASELECTIONPROVIDER_H
 #define QWINDOWSUIASELECTIONPROVIDER_H
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(accessibility)
 
 #include "qwindowsuiabaseprovider.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <>
 struct QComObjectTraits<ISelectionProvider2>
@@ -22,7 +22,7 @@ struct QComObjectTraits<ISelectionProvider2>
     }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 // Implements the Selection control pattern provider. Used for Lists.
 class QWindowsUiaSelectionProvider : public QWindowsUiaBaseProvider,
@@ -45,8 +45,8 @@ public:
     HRESULT STDMETHODCALLTYPE get_ItemCount(__RPC__out int *pRetVal) override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
 #endif // QWINDOWSUIASELECTIONPROVIDER_H

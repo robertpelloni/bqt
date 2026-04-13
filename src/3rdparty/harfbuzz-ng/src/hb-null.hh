@@ -115,10 +115,10 @@ struct Null {
     return *reinterpret_cast<Type const *> (_hb_NullPool);
   }
 };
-template <typename QType>
+template <typename BOBUIype>
 struct NullHelper
 {
-  typedef hb_remove_const<hb_remove_reference<QType>> Type;
+  typedef hb_remove_const<hb_remove_reference<BOBUIype>> Type;
   static const Type & get_null () { return Null<Type>::get_null (); }
 };
 #define Null(Type) NullHelper<Type>::get_null ()
@@ -179,10 +179,10 @@ static inline Type& Crap () {
   memcpy (reinterpret_cast<void*>(obj), std::addressof (Null (Type)), sizeof (*obj));
   return *obj;
 }
-template <typename QType>
+template <typename BOBUIype>
 struct CrapHelper
 {
-  typedef hb_remove_const<hb_remove_reference<QType>> Type;
+  typedef hb_remove_const<hb_remove_reference<BOBUIype>> Type;
   static Type & get_crap () { return Crap<Type> (); }
 };
 #define Crap(Type) CrapHelper<Type>::get_crap ()

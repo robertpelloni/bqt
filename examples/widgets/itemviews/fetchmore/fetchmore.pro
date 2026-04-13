@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(listview))
+BOBUI += widgets
+requires(bobuiConfig(listview))
 
 HEADERS   = filelistmodel.h \
             window.h
@@ -8,5 +8,5 @@ SOURCES   = filelistmodel.cpp \
             window.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/fetchmore
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/fetchmore
 INSTALLS += target

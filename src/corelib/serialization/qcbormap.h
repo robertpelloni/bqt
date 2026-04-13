@@ -1,23 +1,23 @@
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QCBORMAP_H
 #define QCBORMAP_H
 
-#include <QtCore/qcborvalue.h>
-#include <QtCore/qpair.h>
+#include <BobUICore/qcborvalue.h>
+#include <BobUICore/qpair.h>
 
 #include <initializer_list>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QJsonObject;
 class QDataStream;
 
 namespace QJsonPrivate { class Variant; }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename T, typename Iterator>
 struct QCborMapKeyValues
@@ -28,7 +28,7 @@ struct QCborMapKeyValues
     static T value(Iterator &it) { return it.value(); }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 class QCborContainerPrivate;
 class Q_CORE_EXPORT QCborMap
@@ -67,7 +67,7 @@ public:
         value_type operator[](qsizetype j) const { return *(*this + j); }
         QCborValueRef *operator->() { return &item; }
         const QCborValueConstRef *operator->() const { return &item; }
-#if QT_VERSION >= QT_VERSION_CHECK(7,0,0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7,0,0)
         QCborValueConstRef
 #else
         QCborValue
@@ -76,7 +76,7 @@ public:
         QCborValueConstRef keyRef() const { return QCborValueRef(item.d, item.i - 1); }
         QCborValueRef value() const { return item; }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         bool operator==(const Iterator &o) const { return item.d == o.item.d && item.i == o.item.i; }
         bool operator!=(const Iterator &o) const { return !operator==(o); }
         bool operator<(const Iterator& other) const { Q_ASSERT(item.d == other.item.d); return item.i < other.item.i; }
@@ -112,18 +112,18 @@ public:
             return lhs.item.d == rhs.item.d && lhs.item.i == rhs.item.i;
         }
 
-        static Qt::strong_ordering compareThreeWay_helper(const Iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const Iterator &lhs,
                                                           const Iterator &rhs)
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.i, rhs.item.i);
+            return BobUI::compareThreeWay(lhs.item.i, rhs.item.i);
         }
 
-        static Qt::strong_ordering compareThreeWay_helper(const Iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const Iterator &lhs,
                                                           const ConstIterator &rhs)
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.i, rhs.item.i);
+            return BobUI::compareThreeWay(lhs.item.i, rhs.item.i);
         }
 
         // Compare friends
@@ -131,7 +131,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const Iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const Iterator &lhs,
                                                    const Iterator &rhs)
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -141,7 +141,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const Iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const Iterator &lhs,
                                                    const ConstIterator &rhs)
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -178,7 +178,7 @@ public:
         value_type operator*() const { return { QCborValueRef(item.d, item.i - 1), item }; }
         value_type operator[](qsizetype j) const { return *(*this + j); }
         const QCborValueConstRef *operator->() const { return &item; }
-#if QT_VERSION >= QT_VERSION_CHECK(7,0,0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7,0,0)
         QCborValueConstRef
 #else
         QCborValue
@@ -187,7 +187,7 @@ public:
         QCborValueConstRef keyRef() const { return QCborValueRef(item.d, item.i - 1); }
         QCborValueConstRef value() const { return item; }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         bool operator==(const Iterator &o) const { return item.d == o.item.d && item.i == o.item.i; }
         bool operator!=(const Iterator &o) const { return !operator==(o); }
         bool operator<(const Iterator& other) const { Q_ASSERT(item.d == other.item.d); return item.i < other.item.i; }
@@ -217,11 +217,11 @@ public:
         {
             return lhs.item.d == rhs.item.d && lhs.item.i == rhs.item.i;
         }
-        static Qt::strong_ordering compareThreeWay_helper(const ConstIterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const ConstIterator &lhs,
                                                           const ConstIterator &rhs)
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.i, rhs.item.i);
+            return BobUI::compareThreeWay(lhs.item.i, rhs.item.i);
         }
 
         // Compare friends
@@ -229,7 +229,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const ConstIterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const ConstIterator &lhs,
                                                    const ConstIterator &rhs)
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -241,7 +241,7 @@ public:
     QCborMap(const QCborMap &other) noexcept;
     QCborMap(QCborMap &&other) noexcept = default;
     QCborMap &operator=(const QCborMap &other) noexcept;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QCborMap)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QCborMap)
     QCborMap(std::initializer_list<value_type> args)
         : QCborMap()
     {
@@ -271,8 +271,8 @@ public:
     { const_iterator it = find(key); return comparesEqual(it, end()) ? QCborValue() : it.value(); }
     QCborValue value(const QCborValue &key) const
     { const_iterator it = find(key); return comparesEqual(it, end()) ? QCborValue() : it.value(); }
-#if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
-    template<size_t N> QT_ASCII_CAST_WARN const QCborValue value(const char (&key)[N]) const
+#if !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+    template<size_t N> BOBUI_ASCII_CAST_WARN const QCborValue value(const char (&key)[N]) const
     { return value(QString::fromUtf8(key, N - 1)); }
 #endif
     const QCborValue operator[](qint64 key) const
@@ -283,8 +283,8 @@ public:
     { const_iterator it = find(key); return comparesEqual(it, end()) ? QCborValue() : it.value(); }
     const QCborValue operator[](const QCborValue &key) const
     { const_iterator it = find(key); return comparesEqual(it, end()) ? QCborValue() : it.value(); }
-#if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
-    template<size_t N> QT_ASCII_CAST_WARN const QCborValue operator[](const char (&key)[N]) const
+#if !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+    template<size_t N> BOBUI_ASCII_CAST_WARN const QCborValue operator[](const char (&key)[N]) const
     { return operator[](QString::fromUtf8(key, N - 1)); }
 #endif
     QCborValueRef operator[](qint64 key);
@@ -318,7 +318,7 @@ public:
     { const_iterator it = find(key); return !comparesEqual(it, end()); }
 
     Q_DECL_PURE_FUNCTION int compare(const QCborMap &other) const noexcept;
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QCborMap &other) const noexcept
     { return compare(other) == 0; }
     bool operator!=(const QCborMap &other) const noexcept
@@ -344,10 +344,10 @@ public:
     bool empty() const { return isEmpty(); }
 
     typedef QKeyValueIterator<QCborValueConstRef, QCborValueConstRef, const_iterator,
-                              QtPrivate::QCborMapKeyValues<QCborValueConstRef, ConstIterator>>
+                              BobUIPrivate::QCborMapKeyValues<QCborValueConstRef, ConstIterator>>
             const_key_value_iterator;
     typedef QKeyValueIterator<QCborValueConstRef, QCborValueRef, iterator,
-                              QtPrivate::QCborMapKeyValues<QCborValueRef, Iterator>>
+                              BobUIPrivate::QCborMapKeyValues<QCborValueRef, Iterator>>
             key_value_iterator;
 
     key_value_iterator keyValueBegin() { return key_value_iterator(begin()); }
@@ -360,12 +360,12 @@ public:
     const_key_value_iterator keyValueEnd() const { return const_key_value_iterator(end()); }
     const_key_value_iterator constKeyValueEnd() const { return const_key_value_iterator(end()); }
 
-    auto asKeyValueRange() & { return QtPrivate::QKeyValueRange<QCborMap &>(*this); }
-    auto asKeyValueRange() const & { return QtPrivate::QKeyValueRange<const QCborMap &>(*this); }
-    auto asKeyValueRange() && { return QtPrivate::QKeyValueRange<QCborMap>(std::move(*this)); }
+    auto asKeyValueRange() & { return BobUIPrivate::QKeyValueRange<QCborMap &>(*this); }
+    auto asKeyValueRange() const & { return BobUIPrivate::QKeyValueRange<const QCborMap &>(*this); }
+    auto asKeyValueRange() && { return BobUIPrivate::QKeyValueRange<QCborMap>(std::move(*this)); }
     auto asKeyValueRange() const &&
     {
-        return QtPrivate::QKeyValueRange<QCborMap>(std::move(*this));
+        return BobUIPrivate::QKeyValueRange<QCborMap>(std::move(*this));
     }
 
     iterator find(qint64 key);
@@ -424,24 +424,24 @@ private:
 
     friend Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool
     comparesEqual(const QCborMap &lhs, const QCborMap &rhs) noexcept;
-    friend Qt::strong_ordering compareThreeWay(const QCborMap &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QCborMap &lhs,
                                                const QCborMap &rhs) noexcept
     {
         int c = lhs.compare(rhs);
-        return Qt::compareThreeWay(c, 0);
+        return BobUI::compareThreeWay(c, 0);
     }
     Q_DECLARE_STRONGLY_ORDERED(QCborMap)
 
     static Q_DECL_PURE_FUNCTION bool
     comparesEqual_helper(const QCborMap &lhs, const QCborValue &rhs) noexcept;
-    static Q_DECL_PURE_FUNCTION Qt::strong_ordering
+    static Q_DECL_PURE_FUNCTION BobUI::strong_ordering
     compareThreeWay_helper(const QCborMap &lhs, const QCborValue &rhs) noexcept;
     friend bool comparesEqual(const QCborMap &lhs,
                               const QCborValue &rhs) noexcept
     {
         return comparesEqual_helper(lhs, rhs);
     }
-    friend Qt::strong_ordering compareThreeWay(const QCborMap &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QCborMap &lhs,
                                                const QCborValue &rhs) noexcept
     {
         return compareThreeWay_helper(lhs, rhs);
@@ -450,14 +450,14 @@ private:
 
     static Q_DECL_PURE_FUNCTION bool
     comparesEqual_helper(const QCborMap &lhs, QCborValueConstRef rhs) noexcept;
-    static Q_DECL_PURE_FUNCTION Qt::strong_ordering
+    static Q_DECL_PURE_FUNCTION BobUI::strong_ordering
     compareThreeWay_helper(const QCborMap &lhs, QCborValueConstRef rhs) noexcept;
     friend bool comparesEqual(const QCborMap &lhs,
                               const QCborValueConstRef &rhs) noexcept
     {
         return comparesEqual_helper(lhs, rhs);
     }
-    friend Qt::strong_ordering compareThreeWay(const QCborMap &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QCborMap &lhs,
                                                const QCborValueConstRef &rhs) noexcept
     {
         return compareThreeWay_helper(lhs, rhs);
@@ -475,7 +475,7 @@ inline QCborValue::QCborValue(QCborMap &&m)
 {
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
 inline QCborMap QCborValueRef::toMap() const
 {
     return concrete().toMap();
@@ -499,18 +499,18 @@ inline QCborMap QCborValueConstRef::toMap(const QCborMap &m) const
 
 Q_CORE_EXPORT size_t qHash(const QCborMap &map, size_t seed = 0);
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QCborMap &m);
 #endif
 
-#ifndef QT_NO_DATASTREAM
-#if QT_CONFIG(cborstreamwriter)
+#ifndef BOBUI_NO_DATASTREAM
+#if BOBUI_CONFIG(cborstreamwriter)
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QCborMap &);
 #endif
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QCborMap &);
 #endif
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCBORMAP_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "coloritem.h"
 
@@ -20,8 +20,8 @@ ColorItem::ColorItem()
     setToolTip(QString("QColor(%1, %2, %3)\n%4")
               .arg(color.red()).arg(color.green()).arg(color.blue())
               .arg("Click and drag this color onto the robot!"));
-    setCursor(Qt::OpenHandCursor);
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setCursor(BobUI::OpenHandCursor);
+    setAcceptedMouseButtons(BobUI::LeftButton);
 }
 //! [0]
 
@@ -37,10 +37,10 @@ void ColorItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::darkGray);
+    painter->setPen(BobUI::NoPen);
+    painter->setBrush(BobUI::darkGray);
     painter->drawEllipse(-12, -12, 30, 30);
-    painter->setPen(QPen(Qt::black, 1));
+    painter->setPen(QPen(BobUI::black, 1));
     painter->setBrush(QBrush(color));
     painter->drawEllipse(-15, -15, 30, 30);
 }
@@ -49,14 +49,14 @@ void ColorItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 //! [3]
 void ColorItem::mousePressEvent(QGraphicsSceneMouseEvent *)
 {
-    setCursor(Qt::ClosedHandCursor);
+    setCursor(BobUI::ClosedHandCursor);
 }
 //! [3]
 
 //! [5]
 void ColorItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton))
+    if (QLineF(event->screenPos(), event->buttonDownScreenPos(BobUI::LeftButton))
         .length() < QApplication::startDragDistance()) {
         return;
     }
@@ -84,7 +84,7 @@ void ColorItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                       .arg(color.blue(), 2, 16, QLatin1Char('0')));
 
         QPixmap pixmap(34, 34);
-        pixmap.fill(Qt::white);
+        pixmap.fill(BobUI::white);
 
         QPainter painter(&pixmap);
         painter.translate(15, 15);
@@ -101,13 +101,13 @@ void ColorItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 //! [8]
     drag->exec();
-    setCursor(Qt::OpenHandCursor);
+    setCursor(BobUI::OpenHandCursor);
 }
 //! [8]
 
 //! [4]
 void ColorItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    setCursor(Qt::OpenHandCursor);
+    setCursor(BobUI::OpenHandCursor);
 }
 //! [4]

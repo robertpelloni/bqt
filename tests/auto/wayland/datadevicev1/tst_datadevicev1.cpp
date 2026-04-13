@@ -1,11 +1,11 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
 
-#include <QtGui/QRasterWindow>
-#include <QtGui/QClipboard>
-#include <QtGui/QDrag>
+#include <BobUIGui/QRasterWindow>
+#include <BobUIGui/QClipboard>
+#include <BobUIGui/QDrag>
 
 using namespace MockCompositor;
 
@@ -27,7 +27,7 @@ class tst_datadevicev1 : public QObject, private DataDeviceCompositor
 {
     Q_OBJECT
 private slots:
-    void cleanup() { QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
     void initTestCase();
     void pasteAscii();
     void pasteUtf8();
@@ -71,7 +71,7 @@ void tst_datadevicev1::pasteAscii()
             QCOMPARE(mimeType, "text/plain");
             file.write(QByteArray("normal ascii"));
             file.close();
-        }, Qt::DirectConnection);
+        }, BobUI::DirectConnection);
         dataDevice()->sendSelection(offer);
 
         auto *surface = xdgSurface()->m_surface;
@@ -84,7 +84,7 @@ void tst_datadevicev1::pasteAscii()
         pointer()->sendButton(client, BTN_LEFT, 0);
         pointer()->sendFrame(client);
     });
-    QTRY_COMPARE(window.m_text, "normal ascii");
+    BOBUIRY_COMPARE(window.m_text, "normal ascii");
 }
 
 void tst_datadevicev1::pasteUtf8()
@@ -109,7 +109,7 @@ void tst_datadevicev1::pasteUtf8()
             QCOMPARE(mimeType, "text/plain;charset=utf-8");
             file.write(QByteArray("face with tears of joy: 😂"));
             file.close();
-        }, Qt::DirectConnection);
+        }, BobUI::DirectConnection);
         dataDevice()->sendSelection(offer);
 
         auto *surface = xdgSurface()->m_surface;
@@ -122,7 +122,7 @@ void tst_datadevicev1::pasteUtf8()
         pointer()->sendButton(client, BTN_LEFT, 0);
         pointer()->sendFrame(client);
     });
-    QTRY_COMPARE(window.m_text, "face with tears of joy: 😂");
+    BOBUIRY_COMPARE(window.m_text, "face with tears of joy: 😂");
 }
 
 void tst_datadevicev1::pasteMozUrl()
@@ -145,11 +145,11 @@ void tst_datadevicev1::pasteMozUrl()
             QFile file;
             QVERIFY(file.open(fd, QIODevice::WriteOnly, QFile::FileHandleFlag::AutoCloseHandle));
             QCOMPARE(mimeType, "text/x-moz-url");
-            const QString content("https://www.qt.io/\nQt\nhttps://www.example.com/\nExample Website");
+            const QString content("https://www.bobui.io/\nBobUI\nhttps://www.example.com/\nExample Website");
             // Need UTF-16.
             file.write(reinterpret_cast<const char *>(content.data()), content.size() * 2);
             file.close();
-        }, Qt::DirectConnection);
+        }, BobUI::DirectConnection);
         dataDevice()->sendSelection(offer);
 
         auto *surface = xdgSurface()->m_surface;
@@ -163,8 +163,8 @@ void tst_datadevicev1::pasteMozUrl()
         pointer()->sendFrame(client);
     });
 
-    QTRY_COMPARE(window.m_urls.count(), 2);
-    QCOMPARE(window.m_urls.at(0), QUrl("https://www.qt.io/"));
+    BOBUIRY_COMPARE(window.m_urls.count(), 2);
+    QCOMPARE(window.m_urls.at(0), QUrl("https://www.bobui.io/"));
     QCOMPARE(window.m_urls.at(1), QUrl("https://www.example.com/"));
 }
 
@@ -188,10 +188,10 @@ void tst_datadevicev1::pasteSingleUtf8MozUrl()
             QFile file;
             QVERIFY(file.open(fd, QIODevice::WriteOnly, QFile::FileHandleFlag::AutoCloseHandle));
             QCOMPARE(mimeType, "text/x-moz-url");
-            const QString content("https://www.qt.io/");
+            const QString content("https://www.bobui.io/");
             file.write(content.toUtf8());
             file.close();
-        }, Qt::DirectConnection);
+        }, BobUI::DirectConnection);
         dataDevice()->sendSelection(offer);
 
         auto *surface = xdgSurface()->m_surface;
@@ -205,8 +205,8 @@ void tst_datadevicev1::pasteSingleUtf8MozUrl()
         pointer()->sendFrame(client);
     });
 
-    QTRY_COMPARE(window.m_urls.count(), 1);
-    QCOMPARE(window.m_urls.at(0), QUrl("https://www.qt.io/"));
+    BOBUIRY_COMPARE(window.m_urls.count(), 1);
+    QCOMPARE(window.m_urls.at(0), QUrl("https://www.bobui.io/"));
 }
 
 void tst_datadevicev1::destroysPreviousSelection()
@@ -288,8 +288,8 @@ void tst_datadevicev1::destroysSelectionOnLeave()
         keyboard()->sendEnter(surface); // Need to set keyboard focus according to protocol
     });
 
-    QTRY_VERIFY(QGuiApplication::clipboard()->mimeData(QClipboard::Clipboard));
-    QTRY_VERIFY(QGuiApplication::clipboard()->mimeData(QClipboard::Clipboard)->hasText());
+    BOBUIRY_VERIFY(QGuiApplication::clipboard()->mimeData(QClipboard::Clipboard));
+    BOBUIRY_VERIFY(QGuiApplication::clipboard()->mimeData(QClipboard::Clipboard)->hasText());
 
     QSignalSpy dataChangedSpy(QGuiApplication::clipboard(), &QClipboard::dataChanged);
 
@@ -298,12 +298,12 @@ void tst_datadevicev1::destroysSelectionOnLeave()
         keyboard()->sendLeave(surface);
     });
 
-    QTRY_COMPARE(dataChangedSpy.size(), 1);
+    BOBUIRY_COMPARE(dataChangedSpy.size(), 1);
     QVERIFY(!QGuiApplication::clipboard()->mimeData(QClipboard::Clipboard)->hasText());
 }
 
 // The application should not crash if it attempts to start a drag operation
-// when it doesn't have input focus (QTBUG-76368)
+// when it doesn't have input focus (BOBUIBUG-76368)
 void tst_datadevicev1::dragWithoutFocus()
 {
     QRasterWindow window;

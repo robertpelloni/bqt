@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPLATFORMINTEGRATION_DIRECTFB_H
 #define QPLATFORMINTEGRATION_DIRECTFB_H
@@ -13,9 +13,9 @@
 #include <directfb.h>
 #include <directfb_version.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QThread;
+class BOBUIhread;
 class QAbstractEventDispatcher;
 
 class QDirectFbIntegration : public QPlatformIntegration, public QPlatformNativeInterface
@@ -46,12 +46,12 @@ protected:
     QDirectFBPointer<IDirectFB> m_dfb;
     QScopedPointer<QDirectFbScreen> m_primaryScreen;
     QScopedPointer<QDirectFbInput> m_input;
-    QScopedPointer<QThread> m_inputRunner;
+    QScopedPointer<BOBUIhread> m_inputRunner;
     QScopedPointer<QPlatformFontDatabase> m_fontDb;
     mutable QScopedPointer<QPlatformServices> m_services;
     QPlatformInputContext *m_inputContext;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

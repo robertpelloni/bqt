@@ -1,25 +1,25 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qdirlisting Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qdirlisting LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Collect test data
 list(APPEND test_data "entrylist")
 
-qt_internal_add_test(tst_qdirlisting
+bobui_internal_add_test(tst_qdirlisting
     SOURCES
         tst_qdirlisting.cpp
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
+        BobUI::Core
+        BobUI::CorePrivate
     TESTDATA ${test_data}
 )
 
@@ -29,7 +29,7 @@ set(qdirlisting_resource_files
     "entrylist/file"
 )
 
-qt_internal_add_resource(tst_qdirlisting "qdirlisting"
+bobui_internal_add_resource(tst_qdirlisting "qdirlisting"
     PREFIX
         "/testdata/"
     FILES
@@ -40,7 +40,7 @@ qt_internal_add_resource(tst_qdirlisting "qdirlisting"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qdirlisting CONDITION CONFIG___contains___builtin_testdata
+bobui_internal_extend_target(tst_qdirlisting CONDITION CONFIG___contains___builtin_testdata
     DEFINES
         BUILTIN_TESTDATA
 )

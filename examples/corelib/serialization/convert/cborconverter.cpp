@@ -1,5 +1,5 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "cborconverter.h"
 #include "variantorderedmap.h"
@@ -14,11 +14,11 @@
 #include <QFile>
 #include <QFloat16>
 #include <QMetaType>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 #include <stdio.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static CborConverter cborConverter;
 static CborDiagnosticDumper cborDiagnosticDumper;
@@ -38,7 +38,7 @@ static const char diagnosticHelp[] =
         "line-wrap=yes|no               Split output into multiple lines.\n"
         ;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QDataStream &operator<<(QDataStream &ds, QCborTag tag)
 {
@@ -53,7 +53,7 @@ QDataStream &operator>>(QDataStream &ds, QCborTag &tag)
     return ds;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // We can't use QCborValue::toVariant directly because that would destroy
 // non-string keys in CBOR maps (QVariantMap can't handle those). Instead, we
@@ -171,8 +171,8 @@ void CborDiagnosticDumper::saveFile(QIODevice *f, const QVariant &contents,
                qPrintable(s), diagnosticHelp);
     }
 
-    QTextStream out(f);
-    out << convertFromVariant(contents, Double).toDiagnosticNotation(opts) << Qt::endl;
+    BOBUIextStream out(f);
+    out << convertFromVariant(contents, Double).toDiagnosticNotation(opts) << BobUI::endl;
 }
 
 CborConverter::CborConverter()

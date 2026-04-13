@@ -1,20 +1,20 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaccessiblehelper_p.h"
 
-#include <QtGui/qtextcursor.h>
+#include <BobUIGui/bobuiextcursor.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /* This function will return the offset of the '&' in the text that would be
    preceding the accelerator character.
    If this text does not have an accelerator, -1 will be returned. */
-static qsizetype qt_accAmpIndex(const QString &text)
+static qsizetype bobui_accAmpIndex(const QString &text)
 {
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (text.isEmpty())
         return -1;
 
@@ -40,18 +40,18 @@ static qsizetype qt_accAmpIndex(const QString &text)
 #endif
 }
 
-QString qt_accStripAmp(const QString &text)
+QString bobui_accStripAmp(const QString &text)
 {
     QString newText(text);
-    qsizetype ampIndex = qt_accAmpIndex(newText);
+    qsizetype ampIndex = bobui_accAmpIndex(newText);
     if (ampIndex != -1)
         newText.remove(ampIndex, 1);
 
     return newText.replace("&&"_L1, "&"_L1);
 }
 
-QString qt_accTextBeforeOffsetHelper(const QAccessibleTextInterface &textInterface,
-                                     const QTextCursor &textCursor, int offset,
+QString bobui_accTextBeforeOffsetHelper(const QAccessibleTextInterface &textInterface,
+                                     const BOBUIextCursor &textCursor, int offset,
                                      QAccessible::TextBoundaryType boundaryType, int *startOffset,
                                      int *endOffset)
 {
@@ -59,14 +59,14 @@ QString qt_accTextBeforeOffsetHelper(const QAccessibleTextInterface &textInterfa
     Q_ASSERT(endOffset);
     *startOffset = *endOffset = -1;
 
-    QTextCursor cursor = textCursor;
+    BOBUIextCursor cursor = textCursor;
     cursor.setPosition(offset);
     std::pair<int, int> boundaries =
             QAccessible::qAccessibleTextBoundaryHelper(cursor, boundaryType);
     if (boundaries.second > offset) {
         cursor.setPosition(boundaries.first);
         while (boundaries.second > offset) {
-            if (!cursor.movePosition(QTextCursor::PreviousCharacter))
+            if (!cursor.movePosition(BOBUIextCursor::PreviousCharacter))
                 return QString();
             boundaries = QAccessible::qAccessibleTextBoundaryHelper(cursor, boundaryType);
         }
@@ -78,8 +78,8 @@ QString qt_accTextBeforeOffsetHelper(const QAccessibleTextInterface &textInterfa
     return textInterface.text(boundaries.first, boundaries.second);
 }
 
-QString qt_accTextAfterOffsetHelper(const QAccessibleTextInterface &textInterface,
-                                    const QTextCursor &textCursor, int offset,
+QString bobui_accTextAfterOffsetHelper(const QAccessibleTextInterface &textInterface,
+                                    const BOBUIextCursor &textCursor, int offset,
                                     QAccessible::TextBoundaryType boundaryType, int *startOffset,
                                     int *endOffset)
 {
@@ -87,14 +87,14 @@ QString qt_accTextAfterOffsetHelper(const QAccessibleTextInterface &textInterfac
     Q_ASSERT(endOffset);
     *startOffset = *endOffset = -1;
 
-    QTextCursor cursor = textCursor;
+    BOBUIextCursor cursor = textCursor;
     cursor.setPosition(offset);
     std::pair<int, int> boundaries =
             QAccessible::qAccessibleTextBoundaryHelper(cursor, boundaryType);
     if (boundaries.first <= offset) {
         cursor.setPosition(boundaries.second);
         while (boundaries.first <= offset) {
-            if (!cursor.movePosition(QTextCursor::NextCharacter))
+            if (!cursor.movePosition(BOBUIextCursor::NextCharacter))
                 return QString();
             boundaries = QAccessible::qAccessibleTextBoundaryHelper(cursor, boundaryType);
         }
@@ -106,15 +106,15 @@ QString qt_accTextAfterOffsetHelper(const QAccessibleTextInterface &textInterfac
     return textInterface.text(boundaries.first, boundaries.second);
 }
 
-QString qt_accTextAtOffsetHelper(const QAccessibleTextInterface &textInterface,
-                                 const QTextCursor &textCursor, int offset,
+QString bobui_accTextAtOffsetHelper(const QAccessibleTextInterface &textInterface,
+                                 const BOBUIextCursor &textCursor, int offset,
                                  QAccessible::TextBoundaryType boundaryType, int *startOffset,
                                  int *endOffset)
 {
     Q_ASSERT(startOffset);
     Q_ASSERT(endOffset);
 
-    QTextCursor cursor = textCursor;
+    BOBUIextCursor cursor = textCursor;
     cursor.setPosition(offset);
     std::pair<int, int> boundaries =
             QAccessible::qAccessibleTextBoundaryHelper(cursor, boundaryType);
@@ -125,4 +125,4 @@ QString qt_accTextAtOffsetHelper(const QAccessibleTextInterface &textInterface,
     return textInterface.text(boundaries.first, boundaries.second);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

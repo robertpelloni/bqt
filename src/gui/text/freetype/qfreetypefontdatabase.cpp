@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfreetypefontdatabase_p.h"
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformscreen.h>
 
-#include <QtCore/QFile>
-#include <QtCore/QLibraryInfo>
-#include <QtCore/QDir>
-#include <QtCore/QtEndian>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QUuid>
+#include <BobUICore/QFile>
+#include <BobUICore/QLibraryInfo>
+#include <BobUICore/QDir>
+#include <BobUICore/BobUIEndian>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/QUuid>
 
-#undef QT_NO_FREETYPE
+#undef BOBUI_NO_FREETYPE
 #include "qfontengine_ft_p.h"
 
 #include <ft2build.h>
@@ -24,9 +24,9 @@
 #include FT_SFNT_NAMES_H
 #include FT_TRUETYPE_IDS_H
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 void QFreeTypeFontDatabase::populateFontDatabase()
 {
@@ -35,7 +35,7 @@ void QFreeTypeFontDatabase::populateFontDatabase()
 
     if (!dir.exists()) {
         qWarning("QFontDatabase: Cannot find font directory %s.\n"
-                 "Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.",
+                 "Note that BobUI no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.",
                  qPrintable(fontpath));
         return;
     }
@@ -91,7 +91,7 @@ void QFreeTypeFontDatabase::releaseHandle(void *handle)
     delete file;
 }
 
-extern FT_Library qt_getFreetype();
+extern FT_Library bobui_getFreetype();
 
 void QFreeTypeFontDatabase::addNamedInstancesForFace(void *face_,
                                                      int faceIndex,
@@ -117,7 +117,7 @@ void QFreeTypeFontDatabase::addNamedInstancesForFace(void *face_,
     FT_Get_MM_Var(face, &var);
     if (var != nullptr) {
         std::unique_ptr<FT_MM_Var, void(*)(FT_MM_Var*)> varGuard(var, [](FT_MM_Var *res) {
-            FT_Done_MM_Var(qt_getFreetype(), res);
+            FT_Done_MM_Var(bobui_getFreetype(), res);
         });
 
         for (FT_UInt i = 0; i < var->num_namedstyles; ++i) {
@@ -205,7 +205,7 @@ void QFreeTypeFontDatabase::addNamedInstancesForFace(void *face_,
 
 QStringList QFreeTypeFontDatabase::addTTFile(const QByteArray &fontData, const QByteArray &file, QFontDatabasePrivate::ApplicationFont *applicationFont)
 {
-    FT_Library library = qt_getFreetype();
+    FT_Library library = bobui_getFreetype();
 
     int index = 0;
     int numFaces = 0;
@@ -219,7 +219,7 @@ QStringList QFreeTypeFontDatabase::addTTFile(const QByteArray &fontData, const Q
             error = FT_New_Face(library, file.constData(), index, &face);
         }
         if (error != FT_Err_Ok) {
-            qDebug() << "FT_New_Face failed with index" << index << ':' << Qt::hex << error;
+            qDebug() << "FT_New_Face failed with index" << index << ':' << BobUI::hex << error;
             break;
         }
         numFaces = face->num_faces;
@@ -373,4 +373,4 @@ bool QFreeTypeFontDatabase::supportsVariableApplicationFonts() const
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

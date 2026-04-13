@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
 QString tr(const char *text)
 {
@@ -11,15 +11,15 @@ QString tr(const char *text)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QTextEdit *editor = new QTextEdit;
+    BOBUIextEdit *editor = new BOBUIextEdit;
 
 //! [0]
-    QTextDocument *document = new QTextDocument(editor);
-    QTextCursor cursor(document);
+    BOBUIextDocument *document = new BOBUIextDocument(editor);
+    BOBUIextCursor cursor(document);
 //! [0]
 
 //! [1]
-    QTextImageFormat imageFormat;
+    BOBUIextImageFormat imageFormat;
     imageFormat.setName(":/images/advert.png");
     cursor.insertImage(imageFormat);
 //! [1]

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "widget.h"
 #include "ui_widget.h"
@@ -32,7 +32,7 @@ Widget::Widget(QWidget *parent) :
     scene = new CustomScene;
     scene->setSceneRect(-250,-250,500,500);
     ui->view->setScene(scene);
-    scene->setBackgroundBrush(Qt::white);
+    scene->setBackgroundBrush(BobUI::white);
     ui->view->setInteractive(true);
     ui->view->setDragMode(QGraphicsView::RubberBandDrag);
     ui->view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);

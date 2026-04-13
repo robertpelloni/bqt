@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import BobUIQuick 2.15
 import OmniUI 1.0
 import OmniNodes 1.0
 import OmniAI 1.0
@@ -47,8 +47,8 @@ ApplicationWindow {
             }
 
             ConnectionLine {
-                start: Qt.point(250, 150)
-                end: Qt.point(400, 250)
+                start: BobUI.point(250, 150)
+                end: BobUI.point(400, 250)
                 color: "cyan"
             }
         }

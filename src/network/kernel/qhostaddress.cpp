@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qhostaddress.h"
 #include "qhostaddress_p.h"
@@ -16,27 +16,27 @@
 #include "qplatformdefs.h"
 #include "qstringlist.h"
 #include "qendian.h"
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 #include <qdatastream.h>
 #endif
 #ifdef __SSE2__
 #  include <private/qsimd_p.h>
 #endif
 
-#ifdef QT_LINUXBASE
+#ifdef BOBUI_LINUXBASE
 #  include <arpa/inet.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 const QAbstractSocket::NetworkLayerProtocol QHostAddress::IPv4Protocol;
 const QAbstractSocket::NetworkLayerProtocol QHostAddress::IPv6Protocol;
 const QAbstractSocket::NetworkLayerProtocol QHostAddress::AnyIPProtocol;
 const QAbstractSocket::NetworkLayerProtocol QHostAddress::UnknownNetworkLayerProtocol;
 #endif
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QHostAddressPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QHostAddressPrivate)
 
 void QHostAddressPrivate::setAddress(quint32 a_)
 {
@@ -323,12 +323,12 @@ QHostAddress QNetmask::address(QHostAddress::NetworkLayerProtocol protocol) cons
     \brief The QHostAddress class provides an IP address.
     \ingroup network
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     This class holds an IPv4 or IPv6 address in a platform- and
     protocol-independent manner.
 
-    QHostAddress is normally used with the QTcpSocket, QTcpServer,
+    QHostAddress is normally used with the BOBUIcpSocket, BOBUIcpServer,
     and QUdpSocket to connect to a host or to set up a server.
 
     A host address is set with setAddress(), and retrieved with
@@ -341,7 +341,7 @@ QHostAddress QNetmask::address(QHostAddress::NetworkLayerProtocol protocol) cons
     The class also supports common predefined addresses: \l Null, \l
     LocalHost, \l LocalHostIPv6, \l Broadcast, and \l Any.
 
-    \sa QHostInfo, QTcpSocket, QTcpServer, QUdpSocket
+    \sa QHostInfo, BOBUIcpSocket, BOBUIcpServer, QUdpSocket
 */
 
 /*! \enum QHostAddress::SpecialAddress
@@ -765,7 +765,7 @@ QString QHostAddress::scopeId() const
     Sets the IPv6 scope ID of the address to \a id. If the address protocol is
     not IPv6, this function does nothing. The scope ID may be set as an
     interface name (such as "eth0" or "en1") or as an integer representing the
-    interface index. If \a id is an interface name, QtNetwork will convert to
+    interface index. If \a id is an interface name, BobUINetwork will convert to
     an interface index using QNetworkInterface::interfaceIndexFromName() before
     calling the operating system networking functions.
 
@@ -1241,7 +1241,7 @@ bool QHostAddress::isPrivateUse() const
     return (classification == PrivateNetworkAddress) || (classification == UniqueLocalAddress);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QHostAddress &address)
 {
     QDebugStateSaver saver(d);
@@ -1282,14 +1282,14 @@ size_t qHash(const QHostAddress &key, size_t seed) noexcept
     \sa isEqual()
 */
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*! \relates QHostAddress
 
     Writes host address \a address to the stream \a out and returns a reference
     to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &out, const QHostAddress &address)
 {
@@ -1320,7 +1320,7 @@ QDataStream &operator<<(QDataStream &out, const QHostAddress &address)
     Reads a host address into \a address from the stream \a in and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator>>(QDataStream &in, QHostAddress &address)
 {
@@ -1359,8 +1359,8 @@ QDataStream &operator>>(QDataStream &in, QHostAddress &address)
     return in;
 }
 
-#endif //QT_NO_DATASTREAM
+#endif //BOBUI_NO_DATASTREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhostaddress.cpp"

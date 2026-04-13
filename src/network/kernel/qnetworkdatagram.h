@@ -1,16 +1,16 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKDATAGRAM_H
 #define QNETWORKDATAGRAM_H
 
-#include <QtCore/qbytearray.h>
-#include <QtNetwork/qhostaddress.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUINetwork/qhostaddress.h>
 
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QNetworkDatagramPrivate;
 class QUdpSocketPrivate;
@@ -33,7 +33,7 @@ public:
     { swap(other); return *this; }
 
     void swap(QNetworkDatagram &other) noexcept
-    { qt_ptr_swap(d, other.d); }
+    { bobui_ptr_swap(d, other.d); }
 
     void clear();
     bool isValid() const;
@@ -79,10 +79,10 @@ private:
 
 Q_DECLARE_SHARED(QNetworkDatagram)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QNetworkDatagram, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QNetworkDatagram, Q_NETWORK_EXPORT)
 
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
 #endif // QNETWORKDATAGRAM_H

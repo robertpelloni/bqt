@@ -106,19 +106,19 @@
     padding:0 2%
   }
 }
-#navbar .navbar-oneQt {
+#navbar .navbar-oneBobUI {
   display:inline;
   float:left;
   width:31px;
   color:#41cd52
 }
-#navbar .navbar-oneQt:before {
+#navbar .navbar-oneBobUI:before {
   content:attr(data-icon);
   position:absolute;
   top:14px;
   left:0;
   color:#41cd52;
-  font-family:'Qt Icons';
+  font-family:'BobUI Icons';
   line-height:1;
   font-size:40px;
   transition:all 0.3s ease-in-out;
@@ -191,7 +191,7 @@
     height:50px;
     line-height:50px
   }
-  #navbar.fixed .navbar-oneQt:before {
+  #navbar.fixed .navbar-oneBobUI:before {
     font-size:35px;
     top:7px
   }
@@ -207,7 +207,7 @@
     padding:0;
     position:relative
   }
-  #navbar .navbar-oneQt:before {
+  #navbar .navbar-oneBobUI:before {
     left:10px
   }
   #navbar .container {
@@ -227,7 +227,7 @@
     display:block;
     width:auto
   }
-  #footerbar .footer-main .theqtcompany {
+  #footerbar .footer-main .thebobuicompany {
     clear:both;
     float:left;
     margin:30px 0 8px 3%
@@ -316,8 +316,8 @@
 #footerbar .footer-main .footer-nav .sub-menu li a:hover,#footerbar .footer-main .footer-nav .sub-menu li.current-menu-item a {
   color:#eee
 }
-#footerbar .theqtcompany {
-  background:url("theqtcompany.png") no-repeat;
+#footerbar .thebobuicompany {
+  background:url("thebobuicompany.png") no-repeat;
   background-size:100%;
   width:215px;
   height:68px;
@@ -371,9 +371,9 @@
   font-family: 'Titillium Web';
   font-style: normal;
   font-weight: 400;
-  src: url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.eot");
+  src: url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-regular.eot");
   /* IE9 Compat Modes */
-  src: local("Titillium Web"), local("TitilliumWeb-Regular"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.eot?#iefix") format("embedded-opentype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.woff2") format("woff2"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.woff") format("woff"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.ttf") format("truetype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.svg#TitilliumWeb") format("svg");
+  src: local("Titillium Web"), local("TitilliumWeb-Regular"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-regular.eot?#iefix") format("embedded-opentype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-regular.woff2") format("woff2"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-regular.woff") format("woff"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-regular.ttf") format("truetype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-regular.svg#TitilliumWeb") format("svg");
   /* Legacy iOS */
 }
 /* titillium-web-italic - latin_latin-ext */
@@ -381,9 +381,9 @@
   font-family: 'Titillium Web';
   font-style: italic;
   font-weight: 400;
-  src: url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.eot");
+  src: url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-italic.eot");
   /* IE9 Compat Modes */
-  src: local("Titillium WebItalic"), local("TitilliumWeb-Italic"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.eot?#iefix") format("embedded-opentype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.woff2") format("woff2"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.woff") format("woff"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.ttf") format("truetype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.svg#TitilliumWeb") format("svg");
+  src: local("Titillium WebItalic"), local("TitilliumWeb-Italic"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-italic.eot?#iefix") format("embedded-opentype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-italic.woff2") format("woff2"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-italic.woff") format("woff"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-italic.ttf") format("truetype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-italic.svg#TitilliumWeb") format("svg");
   /* Legacy iOS */
 }
 /* titillium-web-600 - latin_latin-ext */
@@ -391,9 +391,9 @@
   font-family: 'Titillium Web';
   font-style: normal;
   font-weight: 600;
-  src: url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.eot");
+  src: url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-600.eot");
   /* IE9 Compat Modes */
-  src: local("Titillium WebSemiBold"), local("TitilliumWeb-SemiBold"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.eot?#iefix") format("embedded-opentype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.woff2") format("woff2"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.woff") format("woff"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.ttf") format("truetype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.svg#TitilliumWeb") format("svg");
+  src: local("Titillium WebSemiBold"), local("TitilliumWeb-SemiBold"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-600.eot?#iefix") format("embedded-opentype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-600.woff2") format("woff2"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-600.woff") format("woff"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-600.ttf") format("truetype"), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/fonts/titillium-web-v4-latin_latin-ext-600.svg#TitilliumWeb") format("svg");
   /* Legacy iOS */
 }
 @font-face {
@@ -403,7 +403,7 @@
   src:local("Droid Sans Mono"),local("DroidSansMono"),url(//fonts.gstatic.com/s/droidsansmono/v7/ns-m2xQYezAtqh7ai59hJUYuTAAIFFn5GTWtryCmBQ4.woff) format("woff")
 }
 @font-face {
-  font-family:'Qt Icons';
+  font-family:'BobUI Icons';
   src:url("../style/icomoon.eot?-tgjuoj");
   src:url("../style/icomoon.eot?#iefix-tgjuoj") format("embedded-opentype"),url("../style/icomoon.woff?-tgjuoj") format("woff"),url("../style/icomoon.ttf?-tgjuoj") format("truetype"),url("../style/icomoon.svg?-tgjuoj#icomoon") format("svg");
   font-weight:normal;
@@ -960,7 +960,7 @@ div.table {
 .context tr > td > pre {
   font-size:0.75em
 }
-p.qt_commercial {
+p.bobui_commercial {
   border:3px solid #5caa15;
   margin:0 auto;
   padding:15px;
@@ -968,7 +968,7 @@ p.qt_commercial {
   text-align:center;
   clear:both
 }
-h1.qt_commercial {
+h1.bobui_commercial {
   padding:20px;
   background-color:#5caa15;
   display:inline;
@@ -978,7 +978,7 @@ h1.qt_commercial {
   height:1.25em;
   color:#fff
 }
-div.qt_commercial {
+div.bobui_commercial {
   border-top:5px solid #5caa15;
   margin-bottom:50px
 }

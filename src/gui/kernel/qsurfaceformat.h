@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QSURFACEFORMAT_H
 #define QSURFACEFORMAT_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobjectdefs.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobjectdefs.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QColorSpace;
 class QOpenGLContext;
@@ -49,7 +49,7 @@ public:
     };
     Q_ENUM(OpenGLContextProfile)
 
-#if QT_DEPRECATED_SINCE(6,0)
+#if BOBUI_DEPRECATED_SINCE(6,0)
     enum ColorSpace {
         DefaultColorSpace,
         sRGBColorSpace
@@ -114,7 +114,7 @@ public:
 
     const QColorSpace &colorSpace() const;
     void setColorSpace(const QColorSpace &colorSpace);
-#if QT_DEPRECATED_SINCE(6,0)
+#if BOBUI_DEPRECATED_SINCE(6,0)
     Q_DECL_DEPRECATED_X("Use setColorSpace(QColorSpace) instead.")
     void setColorSpace(ColorSpace colorSpace);
 #endif
@@ -132,12 +132,12 @@ private:
     { return lhs.equals(rhs); }
     friend inline bool operator!=(const QSurfaceFormat &lhs, const QSurfaceFormat &rhs) noexcept
     { return !lhs.equals(rhs); }
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug, const QSurfaceFormat &);
 #endif
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QSurfaceFormat &);
 #endif
 
@@ -148,6 +148,6 @@ inline bool QSurfaceFormat::stereo() const
     return testOption(QSurfaceFormat::StereoBuffers);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QSURFACEFORMAT_H

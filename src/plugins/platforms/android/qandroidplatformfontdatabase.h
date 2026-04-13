@@ -1,12 +1,12 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMFONTDATABASE_H
 #define QANDROIDPLATFORMFONTDATABASE_H
 
-#include <QtGui/private/qfreetypefontdatabase_p.h>
+#include <BobUIGui/private/qfreetypefontdatabase_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidPlatformFontDatabase: public QFreeTypeFontDatabase
 {
@@ -20,6 +20,6 @@ public:
                                    QFontDatabasePrivate::ExtendedScript script) const override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDPLATFORMFONTDATABASE_H

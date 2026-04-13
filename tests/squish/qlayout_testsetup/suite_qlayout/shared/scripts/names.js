@@ -1,11 +1,11 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 import { RegularExpression, Wildcard } from 'objectmaphelper.js';
 
 export var mainWindow = {"type": "MainWindow", "unnamed": 1, "visible": 1};
-export var qtSpinboxLineeditQLineEdit = {"name": "qt_spinbox_lineedit", "type": "QLineEdit", "visible": 1, "window": mainWindow};
-export var qtSpinboxLineeditQLineEdit_2 = {"name": "qt_spinbox_lineedit", "occurrence": 2, "type": "QLineEdit", "visible": 1, "window": mainWindow};
+export var bobuiSpinboxLineeditQLineEdit = {"name": "bobui_spinbox_lineedit", "type": "QLineEdit", "visible": 1, "window": mainWindow};
+export var bobuiSpinboxLineeditQLineEdit_2 = {"name": "bobui_spinbox_lineedit", "occurrence": 2, "type": "QLineEdit", "visible": 1, "window": mainWindow};
 export var o123QLabel = {"text": 123, "type": "QLabel", "unnamed": 1, "visible": 1, "window": mainWindow};
 export var o123QLineEdit = {"aboveWidget": o123QLabel, "type": "QLineEdit", "unnamed": 1, "visible": 1, "window": mainWindow};
 export var qComboBox = {"occurrence": 2, "type": "QComboBox", "unnamed": 1, "visible": 1, "window": mainWindow};

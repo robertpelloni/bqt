@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = qopengltextureblitter
 INCLUDEPATH += .
 
-QT+=gui-private
+BOBUI+=gui-private
 # Input
 HEADERS += \
     qopengltextureblitwindow.h

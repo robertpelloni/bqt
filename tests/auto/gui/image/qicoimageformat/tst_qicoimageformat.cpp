@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtGui/qcolorspace.h>
-#include <QtGui/qimagereader.h>
-#include <QtGui/qimagewriter.h>
+#include <BobUIGui/qcolorspace.h>
+#include <BobUIGui/qimagereader.h>
+#include <BobUIGui/qimagewriter.h>
 
-#include <QtCore/qbuffer.h>
-#include <QtCore/qfile.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUICore/qfile.h>
 
 class tst_QIcoImageFormat : public QObject
 {
@@ -66,22 +66,22 @@ void tst_QIcoImageFormat::format()
 
 void tst_QIcoImageFormat::canRead_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<int>("isValid");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("isValid");
 
-    QTest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 1;
-    QTest::newRow("16px,32px,48px - 256,16M colors") << "valid/abcardWindow.ico" << 1;
-    QTest::newRow("16px - 16 colors") << "valid/App.ico" << 1;
-    QTest::newRow("16px,32px,48px - 16,256,16M colors") << "valid/Obj_N2_Internal_Mem.ico" << 1;
-    QTest::newRow("16px - 16,256,16M colors") << "valid/Status_Play.ico" << 1;
-    QTest::newRow("16px,32px - 16 colors") << "valid/TIMER01.ICO" << 1;
-    QTest::newRow("16px16c, 32px32c, 32px256c 1") << "valid/WORLD.ico" << 1;
-    QTest::newRow("16px16c, 32px32c, 32px256c 2") << "valid/WORLDH.ico" << 1;
-    QTest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << 0;
-    QTest::newRow("103x16px, 24BPP") << "valid/trolltechlogo_tiny.ico" << 1;
-    QTest::newRow("includes 32BPP w/alpha") << "valid/semitransparent.ico" << 1;
-    QTest::newRow("PNG compression") << "valid/Qt.ico" << 1;
-    QTest::newRow("CUR file") << "valid/yellow.cur" << 1;
+    BOBUIest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 1;
+    BOBUIest::newRow("16px,32px,48px - 256,16M colors") << "valid/abcardWindow.ico" << 1;
+    BOBUIest::newRow("16px - 16 colors") << "valid/App.ico" << 1;
+    BOBUIest::newRow("16px,32px,48px - 16,256,16M colors") << "valid/Obj_N2_Internal_Mem.ico" << 1;
+    BOBUIest::newRow("16px - 16,256,16M colors") << "valid/Status_Play.ico" << 1;
+    BOBUIest::newRow("16px,32px - 16 colors") << "valid/TIMER01.ICO" << 1;
+    BOBUIest::newRow("16px16c, 32px32c, 32px256c 1") << "valid/WORLD.ico" << 1;
+    BOBUIest::newRow("16px16c, 32px32c, 32px256c 2") << "valid/WORLDH.ico" << 1;
+    BOBUIest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << 0;
+    BOBUIest::newRow("103x16px, 24BPP") << "valid/trolltechlogo_tiny.ico" << 1;
+    BOBUIest::newRow("includes 32BPP w/alpha") << "valid/semitransparent.ico" << 1;
+    BOBUIest::newRow("PNG compression") << "valid/BobUI.ico" << 1;
+    BOBUIest::newRow("CUR file") << "valid/yellow.cur" << 1;
 }
 
 void tst_QIcoImageFormat::canRead()
@@ -109,12 +109,12 @@ public:
 
 void tst_QIcoImageFormat::SequentialFile_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<int>("isValid");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("isValid");
 
-    QTest::newRow("floppy (16,32 pixels - 16 colors)") << "valid/35FLOPPY.ICO" << 1;
+    BOBUIest::newRow("floppy (16,32 pixels - 16 colors)") << "valid/35FLOPPY.ICO" << 1;
 
-    QTest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << 0;
+    BOBUIest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << 0;
 
 
 }
@@ -139,21 +139,21 @@ void tst_QIcoImageFormat::SequentialFile()
 
 void tst_QIcoImageFormat::imageCount_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 2;
-    QTest::newRow("16px,32px,48px - 256,16M colors") << "valid/abcardWindow.ico" << 6;
-    QTest::newRow("16px - 16 colors") << "valid/App.ico" << 1;
-    QTest::newRow("16px,32px,48px - 16,256,16M colors") << "valid/Obj_N2_Internal_Mem.ico" << 9;
-    QTest::newRow("16px - 16,256,16M colors") << "valid/Status_Play.ico" << 3;
-    QTest::newRow("16px,32px - 16 colors") << "valid/TIMER01.ICO" << 2;
-    QTest::newRow("16px16c, 32px32c, 32px256c 1") << "valid/WORLD.ico" << 3;
-    QTest::newRow("16px16c, 32px32c, 32px256c 2") << "valid/WORLDH.ico" << 3;
-    QTest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << -1;
-    QTest::newRow("includes 32BPP w/alpha") << "valid/semitransparent.ico" << 9;
-    QTest::newRow("PNG compression") << "valid/Qt.ico" << 4;
-    QTest::newRow("CUR file") << "valid/yellow.cur" << 1;
+    BOBUIest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 2;
+    BOBUIest::newRow("16px,32px,48px - 256,16M colors") << "valid/abcardWindow.ico" << 6;
+    BOBUIest::newRow("16px - 16 colors") << "valid/App.ico" << 1;
+    BOBUIest::newRow("16px,32px,48px - 16,256,16M colors") << "valid/Obj_N2_Internal_Mem.ico" << 9;
+    BOBUIest::newRow("16px - 16,256,16M colors") << "valid/Status_Play.ico" << 3;
+    BOBUIest::newRow("16px,32px - 16 colors") << "valid/TIMER01.ICO" << 2;
+    BOBUIest::newRow("16px16c, 32px32c, 32px256c 1") << "valid/WORLD.ico" << 3;
+    BOBUIest::newRow("16px16c, 32px32c, 32px256c 2") << "valid/WORLDH.ico" << 3;
+    BOBUIest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << -1;
+    BOBUIest::newRow("includes 32BPP w/alpha") << "valid/semitransparent.ico" << 9;
+    BOBUIest::newRow("PNG compression") << "valid/BobUI.ico" << 4;
+    BOBUIest::newRow("CUR file") << "valid/yellow.cur" << 1;
 }
 
 void tst_QIcoImageFormat::imageCount()
@@ -167,20 +167,20 @@ void tst_QIcoImageFormat::imageCount()
 
 void tst_QIcoImageFormat::jumpToNextImage_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 2;
-    QTest::newRow("16px,32px,48px - 256,16M colors") << "valid/abcardWindow.ico" << 6;
-    QTest::newRow("16px - 16 colors") << "valid/App.ico" << 1;
-    QTest::newRow("16px,32px,48px - 16,256,16M colors") << "valid/Obj_N2_Internal_Mem.ico" << 9;
-    QTest::newRow("16px - 16,256,16M colors") << "valid/Status_Play.ico" << 3;
-    QTest::newRow("16px,32px - 16 colors") << "valid/TIMER01.ICO" << 2;
-    QTest::newRow("16px16c, 32px32c, 32px256c 1") << "valid/WORLD.ico" << 3;
-    QTest::newRow("16px16c, 32px32c, 32px256c 2") << "valid/WORLDH.ico" << 3;
-    QTest::newRow("includes 32BPP w/alpha") << "valid/semitransparent.ico" << 9;
-    QTest::newRow("PNG compression") << "valid/Qt.ico" << 4;
-    QTest::newRow("CUR file") << "valid/yellow.cur" << 1;
+    BOBUIest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 2;
+    BOBUIest::newRow("16px,32px,48px - 256,16M colors") << "valid/abcardWindow.ico" << 6;
+    BOBUIest::newRow("16px - 16 colors") << "valid/App.ico" << 1;
+    BOBUIest::newRow("16px,32px,48px - 16,256,16M colors") << "valid/Obj_N2_Internal_Mem.ico" << 9;
+    BOBUIest::newRow("16px - 16,256,16M colors") << "valid/Status_Play.ico" << 3;
+    BOBUIest::newRow("16px,32px - 16 colors") << "valid/TIMER01.ICO" << 2;
+    BOBUIest::newRow("16px16c, 32px32c, 32px256c 1") << "valid/WORLD.ico" << 3;
+    BOBUIest::newRow("16px16c, 32px32c, 32px256c 2") << "valid/WORLDH.ico" << 3;
+    BOBUIest::newRow("includes 32BPP w/alpha") << "valid/semitransparent.ico" << 9;
+    BOBUIest::newRow("PNG compression") << "valid/BobUI.ico" << 4;
+    BOBUIest::newRow("CUR file") << "valid/yellow.cur" << 1;
 }
 
 void tst_QIcoImageFormat::jumpToNextImage()
@@ -199,11 +199,11 @@ void tst_QIcoImageFormat::jumpToNextImage()
 
 void tst_QIcoImageFormat::loopCount_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 0;
-    QTest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << -1;
+    BOBUIest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 0;
+    BOBUIest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << -1;
 }
 
 void tst_QIcoImageFormat::loopCount()
@@ -218,21 +218,21 @@ void tst_QIcoImageFormat::loopCount()
 
 void tst_QIcoImageFormat::nextImageDelay_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 2;
-    QTest::newRow("16px,32px,48px - 256,16M colors") << "valid/abcardWindow.ico" << 6;
-    QTest::newRow("16px - 16 colors") << "valid/App.ico" << 1;
-    QTest::newRow("16px,32px,48px - 16,256,16M colors") << "valid/Obj_N2_Internal_Mem.ico" << 9;
-    QTest::newRow("16px - 16,256,16M colors") << "valid/Status_Play.ico" << 3;
-    QTest::newRow("16px,32px - 16 colors") << "valid/TIMER01.ICO" << 2;
-    QTest::newRow("16px16c, 32px32c, 32px256c 1") << "valid/WORLD.ico" << 3;
-    QTest::newRow("16px16c, 32px32c, 32px256c 2") << "valid/WORLDH.ico" << 3;
-    QTest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << -1;
-    QTest::newRow("includes 32BPP w/alpha") << "valid/semitransparent.ico" << 9;
-    QTest::newRow("PNG compression") << "valid/Qt.ico" << 4;
-    QTest::newRow("CUR file") << "valid/yellow.cur" << 1;
+    BOBUIest::newRow("floppy (16px,32px - 16 colors)") << "valid/35FLOPPY.ICO" << 2;
+    BOBUIest::newRow("16px,32px,48px - 256,16M colors") << "valid/abcardWindow.ico" << 6;
+    BOBUIest::newRow("16px - 16 colors") << "valid/App.ico" << 1;
+    BOBUIest::newRow("16px,32px,48px - 16,256,16M colors") << "valid/Obj_N2_Internal_Mem.ico" << 9;
+    BOBUIest::newRow("16px - 16,256,16M colors") << "valid/Status_Play.ico" << 3;
+    BOBUIest::newRow("16px,32px - 16 colors") << "valid/TIMER01.ICO" << 2;
+    BOBUIest::newRow("16px16c, 32px32c, 32px256c 1") << "valid/WORLD.ico" << 3;
+    BOBUIest::newRow("16px16c, 32px32c, 32px256c 2") << "valid/WORLDH.ico" << 3;
+    BOBUIest::newRow("invalid floppy (first 8 bytes = 0xff)") << "invalid/35floppy.ico" << -1;
+    BOBUIest::newRow("includes 32BPP w/alpha") << "valid/semitransparent.ico" << 9;
+    BOBUIest::newRow("PNG compression") << "valid/BobUI.ico" << 4;
+    BOBUIest::newRow("CUR file") << "valid/yellow.cur" << 1;
 }
 
 void tst_QIcoImageFormat::nextImageDelay()
@@ -254,12 +254,12 @@ void tst_QIcoImageFormat::nextImageDelay()
 
 void tst_QIcoImageFormat::pngCompression_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<int>("index");
-    QTest::addColumn<int>("width");
-    QTest::addColumn<int>("height");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("index");
+    BOBUIest::addColumn<int>("width");
+    BOBUIest::addColumn<int>("height");
 
-    QTest::newRow("PNG compression") << "valid/Qt.ico" << 4 << 256 << 256;
+    BOBUIest::newRow("PNG compression") << "valid/BobUI.ico" << 4 << 256 << 256;
 }
 
 void tst_QIcoImageFormat::pngCompression()
@@ -286,13 +286,13 @@ void tst_QIcoImageFormat::pngCompression()
 
 void tst_QIcoImageFormat::write_data()
 {
-    QTest::addColumn<QSize>("inSize");
-    QTest::addColumn<QSize>("outSize");
+    BOBUIest::addColumn<QSize>("inSize");
+    BOBUIest::addColumn<QSize>("outSize");
 
-    QTest::newRow("64x64") << QSize(64, 64) << QSize(64, 64);
-    QTest::newRow("128x200") << QSize(128, 200) << QSize(128, 200);
-    QTest::newRow("256x256") << QSize(256, 256) << QSize(256, 256);
-    QTest::newRow("400x400") << QSize(400, 400) << QSize(256, 256);
+    BOBUIest::newRow("64x64") << QSize(64, 64) << QSize(64, 64);
+    BOBUIest::newRow("128x200") << QSize(128, 200) << QSize(128, 200);
+    BOBUIest::newRow("256x256") << QSize(256, 256) << QSize(256, 256);
+    BOBUIest::newRow("400x400") << QSize(400, 400) << QSize(256, 256);
 }
 
 void tst_QIcoImageFormat::write()
@@ -302,7 +302,7 @@ void tst_QIcoImageFormat::write()
 
     QImage inImg;
     {
-        QImageReader reader(m_IconPath + "/valid/Qt.ico");
+        QImageReader reader(m_IconPath + "/valid/BobUI.ico");
         reader.jumpToImage(4);
         reader.setScaledSize(inSize);
         inImg = reader.read();
@@ -331,11 +331,11 @@ void tst_QIcoImageFormat::write()
 
 void tst_QIcoImageFormat::icoMask_data()
 {
-    QTest::addColumn<QString>("inFile");
-    QTest::addColumn<QString>("outFile");
+    BOBUIest::addColumn<QString>("inFile");
+    BOBUIest::addColumn<QString>("outFile");
 
-    QTest::newRow("24bpp") << "masked/24bpp.ico" << "masked/24bpp.png";
-    QTest::newRow("32bpp") << "masked/32bpp.ico" << "masked/32bpp.png";
+    BOBUIest::newRow("24bpp") << "masked/24bpp.ico" << "masked/24bpp.png";
+    BOBUIest::newRow("32bpp") << "masked/32bpp.ico" << "masked/32bpp.png";
 }
 
 void tst_QIcoImageFormat::icoMask()
@@ -358,21 +358,21 @@ void tst_QIcoImageFormat::icoMask()
 
 void tst_QIcoImageFormat::origBitDepth_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QList<int>>("origBitDepths");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QList<int>>("origBitDepths");
 
-    QTest::newRow("35FLOPPY") << "35FLOPPY.ICO" << QList<int>{4};
-    QTest::newRow("abcardWindow") << "abcardWindow.ico" << QList<int>{8};
-    QTest::newRow("AddPerf") << "AddPerfMon.ico" << QList<int>{4};
-    QTest::newRow("App") << "App.ico" << QList<int>{4};
-    QTest::newRow("Obj_N2_Internal_Mem") << "Obj_N2_Internal_Mem.ico" << QList<int>{4, 8, 32};
-    QTest::newRow("Qt") << "Qt.ico" << QList<int>{32};
-    QTest::newRow("semitransparent") << "semitransparent.ico" << QList<int>{4};
-    QTest::newRow("Status_Play") << "Status_Play.ico" << QList<int>{4, 8, 32};
-    QTest::newRow("TIMER01") << "TIMER01.ICO" << QList<int>{4};
-    QTest::newRow("trolltechlogo_tiny") << "trolltechlogo_tiny.ico" << QList<int>{8};
-    QTest::newRow("WORLD") << "WORLD.ico" << QList<int>{8, 4, 4};
-    QTest::newRow("yellow") << "yellow.cur" << QList<int>{32};
+    BOBUIest::newRow("35FLOPPY") << "35FLOPPY.ICO" << QList<int>{4};
+    BOBUIest::newRow("abcardWindow") << "abcardWindow.ico" << QList<int>{8};
+    BOBUIest::newRow("AddPerf") << "AddPerfMon.ico" << QList<int>{4};
+    BOBUIest::newRow("App") << "App.ico" << QList<int>{4};
+    BOBUIest::newRow("Obj_N2_Internal_Mem") << "Obj_N2_Internal_Mem.ico" << QList<int>{4, 8, 32};
+    BOBUIest::newRow("BobUI") << "BobUI.ico" << QList<int>{32};
+    BOBUIest::newRow("semitransparent") << "semitransparent.ico" << QList<int>{4};
+    BOBUIest::newRow("Status_Play") << "Status_Play.ico" << QList<int>{4, 8, 32};
+    BOBUIest::newRow("TIMER01") << "TIMER01.ICO" << QList<int>{4};
+    BOBUIest::newRow("trolltechlogo_tiny") << "trolltechlogo_tiny.ico" << QList<int>{8};
+    BOBUIest::newRow("WORLD") << "WORLD.ico" << QList<int>{8, 4, 4};
+    BOBUIest::newRow("yellow") << "yellow.cur" << QList<int>{32};
 }
 
 void tst_QIcoImageFormat::origBitDepth()
@@ -390,6 +390,6 @@ void tst_QIcoImageFormat::origBitDepth()
     }
 }
 
-QTEST_MAIN(tst_QIcoImageFormat)
+BOBUIEST_MAIN(tst_QIcoImageFormat)
 #include "tst_qicoimageformat.moc"
 

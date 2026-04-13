@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef GUITEST_H
 #define GUITEST_H
 
@@ -8,11 +8,11 @@
 #include <QWidget>
 #include <QPainter>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 /*
     GuiTest provides tools for:
-     - navigating the Qt Widget hiearchy using the accessibilty APIs.
+     - navigating the BobUI Widget hiearchy using the accessibilty APIs.
      - Simulating platform mouse and keybord events.
 */
 
@@ -23,7 +23,7 @@ public:
 };
 
 /*
-    WidgetNavigator navigates a Qt GUI hierarchy using the QAccessibility APIs.
+    WidgetNavigator navigates a BobUI GUI hierarchy using the QAccessibility APIs.
 */
 class WidgetNavigator {
 public:
@@ -51,13 +51,13 @@ namespace NativeEvents {
     /*
         Simulates a mouse click with button at globalPos.
     */
-    void mouseClick(const QPoint &globalPos, Qt::MouseButtons buttons);
+    void mouseClick(const QPoint &globalPos, BobUI::MouseButtons buttons);
 };
 
 class ColorWidget : public QWidget
 {
 public:
-    ColorWidget(QWidget *parent = nullptr, QColor color = QColor(Qt::red))
+    ColorWidget(QWidget *parent = nullptr, QColor color = QColor(BobUI::red))
        : QWidget(parent), color(color) {}
 
     QColor color;
@@ -87,15 +87,15 @@ class ClickLaterAction : public DelayedAction
 {
 Q_OBJECT
 public:
-    ClickLaterAction(QAccessibleInterface *interface, Qt::MouseButtons buttons = Qt::LeftButton);
-    ClickLaterAction(QWidget *widget, Qt::MouseButtons buttons = Qt::LeftButton);
+    ClickLaterAction(QAccessibleInterface *interface, BobUI::MouseButtons buttons = BobUI::LeftButton);
+    ClickLaterAction(QWidget *widget, BobUI::MouseButtons buttons = BobUI::LeftButton);
 protected slots:
     void run();
 private:
     bool useInterface;
     QAccessibleInterface *interface;
     QWidget *widget;
-    Qt::MouseButtons buttons;
+    BobUI::MouseButtons buttons;
 };
 
 /*
@@ -114,8 +114,8 @@ public:
 protected slots:
     void exitLoopSlot();
 protected:
-    void clickLater(QAccessibleInterface *interface, Qt::MouseButtons buttons = Qt::LeftButton, int delay = 300);
-    void clickLater(QWidget *widget, Qt::MouseButtons buttons = Qt::LeftButton, int delay = 300);
+    void clickLater(QAccessibleInterface *interface, BobUI::MouseButtons buttons = BobUI::LeftButton, int delay = 300);
+    void clickLater(QWidget *widget, BobUI::MouseButtons buttons = BobUI::LeftButton, int delay = 300);
 
     void clearSequence();
     void addToSequence(DelayedAction *action, int delay = 0);

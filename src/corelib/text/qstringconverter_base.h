@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QSTRINGCONVERTER_BASE_H
 #define QSTRINGCONVERTER_BASE_H
@@ -8,26 +8,26 @@
 #if 0
 // IWYU pragma: private, include "qstringconverter.h"
 // QStringConverter(Base) class are handled in qstringconverter
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_stop_processing
 #endif
 
 #include <optional>
 
-#include <QtCore/qglobal.h> // QT_{BEGIN,END}_NAMESPACE
-#include <QtCore/qflags.h> // Q_DECLARE_FLAGS
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qstringfwd.h>
+#include <BobUICore/qglobal.h> // BOBUI_{BEGIN,END}_NAMESPACE
+#include <BobUICore/qflags.h> // Q_DECLARE_FLAGS
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/qstringfwd.h>
 
 #include <cstring>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QByteArrayView;
 class QChar;
 class QByteArrayView;
 class QStringView;
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(Q_QDOC) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(Q_QDOC) && !defined(BOBUI_BOOTSTRAPPED)
 class QStringConverterBase
 #else
 class QStringConverter
@@ -86,7 +86,7 @@ public:
         Q_DISABLE_COPY(State)
     };
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(Q_QDOC) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(Q_QDOC) && !defined(BOBUI_BOOTSTRAPPED)
 protected:
     QStringConverterBase() = default;
     ~QStringConverterBase() = default;
@@ -97,11 +97,11 @@ protected:
 class QStringConverter : public QStringConverterBase
 {
 public:
-#endif // Qt 6 compat for QStringConverterBase
+#endif // BobUI 6 compat for QStringConverterBase
 
     enum Encoding {
         Utf8,
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
         Utf16,
         Utf16LE,
         Utf16BE,
@@ -137,7 +137,7 @@ protected:
     constexpr explicit QStringConverter(const Interface *i) noexcept
         : iface(i)
     {}
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     Q_CORE_EXPORT explicit QStringConverter(const char *name, Flags f);
 #endif
     Q_CORE_EXPORT explicit QStringConverter(QAnyStringView name, Flags f);
@@ -159,7 +159,7 @@ public:
 
     Q_CORE_EXPORT const char *name() const noexcept;
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     Q_CORE_EXPORT static std::optional<Encoding> encodingForName(const char *name) noexcept;
 #endif
     Q_CORE_EXPORT static std::optional<Encoding> encodingForName(QAnyStringView name) noexcept;
@@ -198,6 +198,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStringConverter::Flags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,12 +1,12 @@
 // Copyright (C) 2023 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "cursorshapev1.h"
 
 namespace MockCompositor {
 
 CursorShapeManager::CursorShapeManager(CoreCompositor *compositor, int version)
-    : QtWaylandServer::wp_cursor_shape_manager_v1(compositor->m_display, version)
+    : BobUIWaylandServer::wp_cursor_shape_manager_v1(compositor->m_display, version)
 {
 }
 
@@ -21,7 +21,7 @@ void CursorShapeManager::wp_cursor_shape_manager_v1_get_pointer(Resource *resour
 }
 
 CursorShapeDevice::CursorShapeDevice(Pointer *pointer, wl_client *client, int id, int version)
-    : QtWaylandServer::wp_cursor_shape_device_v1(client, id, version)
+    : BobUIWaylandServer::wp_cursor_shape_device_v1(client, id, version)
     , m_pointer(pointer)
 {
 }

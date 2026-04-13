@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsdirect2dbitmap.h"
 #include "qwindowsdirect2dcontext.h"
 #include "qwindowsdirect2dhelpers.h"
 #include "qwindowsdirect2ddevicecontext.h"
 
-#include <QtCore/private/qcomptr_p.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qcolor.h>
+#include <BobUICore/private/qcomptr_p.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/qcolor.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsDirect2DBitmapPrivate
 {
@@ -26,11 +26,11 @@ public:
 
     D2D1_BITMAP_PROPERTIES1 bitmapProperties() const
     {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED // see QTBUG-94043
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED // see BOBUIBUG-94043
         FLOAT dpiX, dpiY;
         QWindowsDirect2DContext::instance()->d2dFactory()->GetDesktopDpi(&dpiX, &dpiY);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
         return D2D1::BitmapProperties1(
                     D2D1_BITMAP_OPTIONS_TARGET,
@@ -122,7 +122,7 @@ bool QWindowsDirect2DBitmap::resize(int width, int height)
     return d->resize(width, height);
 }
 
-bool QWindowsDirect2DBitmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
+bool QWindowsDirect2DBitmap::fromImage(const QImage &image, BobUI::ImageConversionFlags flags)
 {
     Q_D(QWindowsDirect2DBitmap);
 
@@ -166,4 +166,4 @@ QSize QWindowsDirect2DBitmap::size() const
     return QSize(int(size.width), int(size.height));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

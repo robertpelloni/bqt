@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopengl.h"
 #include "qopengl_p.h"
@@ -9,21 +9,21 @@
 #include "qoperatingsystemversion.h"
 #include "qoffscreensurface.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonValue>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonArray>
-#include <QtCore/QTextStream>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
+#include <BobUICore/QDebug>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QJsonValue>
+#include <BobUICore/QJsonObject>
+#include <BobUICore/QJsonArray>
+#include <BobUICore/BOBUIextStream>
+#include <BobUICore/QFile>
+#include <BobUICore/QDir>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if defined(QT_OPENGL_3)
-typedef const GLubyte * (QOPENGLF_APIENTRYP qt_glGetStringi)(GLenum, GLuint);
+#if defined(BOBUI_OPENGL_3)
+typedef const GLubyte * (QOPENGLF_APIENTRYP bobui_glGetStringi)(GLenum, GLuint);
 #endif
 
 #ifndef GL_CONTEXT_LOST
@@ -48,7 +48,7 @@ QOpenGLExtensionMatcher::QOpenGLExtensionMatcher()
         QList<QByteArray> extensions = ba.split(' ');
         m_extensions = QSet<QByteArray>(extensions.constBegin(), extensions.constEnd());
     } else {
-#ifdef QT_OPENGL_3
+#ifdef BOBUI_OPENGL_3
         // clear error state
         while (true) { // Clear error state.
             GLenum error = funcs->glGetError();
@@ -57,7 +57,7 @@ QOpenGLExtensionMatcher::QOpenGLExtensionMatcher()
             if (error == GL_CONTEXT_LOST)
                 return;
         };
-        qt_glGetStringi glGetStringi = (qt_glGetStringi)ctx->getProcAddress("glGetStringi");
+        bobui_glGetStringi glGetStringi = (bobui_glGetStringi)ctx->getProcAddress("glGetStringi");
 
         if (!glGetStringi)
             return;
@@ -69,7 +69,7 @@ QOpenGLExtensionMatcher::QOpenGLExtensionMatcher()
             const char *str = reinterpret_cast<const char *>(glGetStringi(GL_EXTENSIONS, i));
             m_extensions.insert(str);
         }
-#endif // QT_OPENGL_3
+#endif // BOBUI_OPENGL_3
     }
 }
 
@@ -102,7 +102,7 @@ QDebug operator<<(QDebug d, const QOpenGLConfig::Gpu &g)
     d.nospace();
     d << "Gpu(";
     if (g.isValid()) {
-        d << "vendor=" << Qt::hex << Qt::showbase <<g.vendorId << ", device=" << g.deviceId
+        d << "vendor=" << BobUI::hex << BobUI::showbase <<g.vendorId << ", device=" << g.deviceId
           << "version=" << g.driverVersion;
     } else {
         d << 0;
@@ -258,7 +258,7 @@ QString OsTypeTerm::hostOs()
 static QString msgSyntaxWarning(const QJsonObject &object, const QString &what)
 {
     QString result;
-    QTextStream(&result) << "Id " << object.value("id"_L1).toInt()
+    BOBUIextStream(&result) << "Id " << object.value("id"_L1).toInt()
         << " (\"" << object.value("description"_L1).toString()
         << "\"): " << what;
     return result;
@@ -387,7 +387,7 @@ static bool readGpuFeatures(const QOpenGLConfig::Gpu &gpu,
     if (document.isNull()) {
         const qsizetype lineNumber =
                 QByteArrayView(jsonAsciiData).left(error.offset).count('\n') + 1;
-        QTextStream str(errorMessage);
+        BOBUIextStream str(errorMessage);
         str << "Failed to parse data: \"" << error.errorString()
             << "\" at line " << lineNumber << " (offset: "
             << error.offset << ").";
@@ -407,7 +407,7 @@ static bool readGpuFeatures(const QOpenGLConfig::Gpu &gpu,
     errorMessage->clear();
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        QTextStream str(errorMessage);
+        BOBUIextStream str(errorMessage);
         str << "Cannot open \"" << QDir::toNativeSeparators(fileName) << "\": "
             << file.errorString();
         return false;
@@ -483,4 +483,4 @@ QOpenGLConfig::Gpu QOpenGLConfig::Gpu::fromContext()
     return gpu;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

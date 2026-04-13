@@ -71,7 +71,7 @@
        <item row="1" column="3" >
         <spacer>
          <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
+          <enum>BobUI::Horizontal</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -157,7 +157,7 @@
        <item row="7" column="2" colspan="2" >
         <widget class="QDialogButtonBox" name="buttonBox" >
          <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
+          <enum>BobUI::Horizontal</enum>
          </property>
          <property name="standardButtons" >
           <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
@@ -317,7 +317,7 @@
     </property>
     <addaction name="aboutAction" />
     <addaction name="separator" />
-    <addaction name="aboutQtAction" />
+    <addaction name="aboutBobUIAction" />
    </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Help" />
@@ -328,9 +328,9 @@
     <string>&amp;Exit</string>
    </property>
   </action>
-  <action name="aboutQtAction" >
+  <action name="aboutBobUIAction" >
    <property name="text" >
-    <string>About Qt</string>
+    <string>About BobUI</string>
    </property>
   </action>
   <action name="editStyleAction" >

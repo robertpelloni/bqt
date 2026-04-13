@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import BobUIQuick 2.15
 import OmniUI 1.0
 import Omni3D 1.0
 
@@ -38,8 +38,8 @@ ApplicationWindow {
 
             Mesh {
                 source: "models/cube.obj"
-                position: Qt.vector3d(0, 0, -5)
-                scale: Qt.vector3d(2, 2, 2)
+                position: BobUI.vector3d(0, 0, -5)
+                scale: BobUI.vector3d(2, 2, 2)
             }
         }
     }

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QACCESSIBLEBRIDGE_H
 #define QACCESSIBLEBRIDGE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qplugin.h>
-#include <QtCore/qfactoryinterface.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qplugin.h>
+#include <BobUICore/qfactoryinterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 class QAccessibleInterface;
 class QAccessibleEvent;
@@ -24,7 +24,7 @@ public:
     virtual void notifyAccessibilityUpdate(QAccessibleEvent *event) = 0;
 };
 
-#define QAccessibleBridgeFactoryInterface_iid "org.qt-project.Qt.QAccessibleBridgeFactoryInterface"
+#define QAccessibleBridgeFactoryInterface_iid "org.bobui-project.BobUI.QAccessibleBridgeFactoryInterface"
 
 class Q_GUI_EXPORT QAccessibleBridgePlugin : public QObject
 {
@@ -36,8 +36,8 @@ public:
     virtual QAccessibleBridge *create(const QString &key) = 0;
 };
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QACCESSIBLEBRIDGE_H

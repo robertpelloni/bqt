@@ -1,20 +1,20 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtGlobal>
+#include <BOBUIest>
+#include <BobUIGlobal>
 #include "private/qnumeric_p.h"
 
 #include <math.h>
 #include <float.h>
 #include <limits.h>
 
-#include <QtCore/q26numeric.h>
+#include <BobUICore/q26numeric.h>
 
-#if QT_POINTER_SIZE == 8 || defined(Q_INTRINSIC_MUL_OVERFLOW64)
-# define QT_HAS_128_BIT_MULTIPLICATION
+#if BOBUI_POINTER_SIZE == 8 || defined(Q_INTRINSIC_MUL_OVERFLOW64)
+# define BOBUI_HAS_128_BIT_MULTIPLICATION
 #endif
 
 namespace {
@@ -39,7 +39,7 @@ class tst_QNumeric: public QObject
     template<typename F> inline void checkNaN(F nan);
     template<typename F> inline void rawNaN_data();
     template<typename F> inline void rawNaN();
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
     template<typename F> inline void distinctNaN();
 #endif
     template<typename F, typename Whole> inline void generalNaN_data();
@@ -63,7 +63,7 @@ private slots:
     void rawNaNF() { rawNaN<float>(); }
     void rawNaND_data() { rawNaN_data<double>(); }
     void rawNaND() { rawNaN<double>(); }
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
     void distinctNaNF();
     void distinctNaND() { distinctNaN<double>(); }
 #endif
@@ -94,29 +94,29 @@ private slots:
 template<typename F>
 void tst_QNumeric::fuzzyCompare_data()
 {
-    QTest::addColumn<F>("val1");
-    QTest::addColumn<F>("val2");
-    QTest::addColumn<bool>("isEqual");
+    BOBUIest::addColumn<F>("val1");
+    BOBUIest::addColumn<F>("val2");
+    BOBUIest::addColumn<bool>("isEqual");
     const F zero(0), one(1), ten(10);
     const F huge = Fuzzy<F>::scale, tiny = one / huge;
     const F deci(.1f), giga(1e9f), nano(1e-9f), big(1e7f), small(1e-10f);
 
-    QTest::newRow("zero") << zero << zero << true;
-    QTest::newRow("ten") << ten << ten << true;
-    QTest::newRow("large") << giga << giga << true;
-    QTest::newRow("small") << small << small << true;
-    QTest::newRow("10+9*tiny==10") << (ten + 9 * tiny) << ten << true;
-    QTest::newRow("huge+.9==huge") << (huge + 9 * deci) << huge << true;
-    QTest::newRow("eps2") << (ten + tiny) << (ten + 2 * tiny) << true;
-    QTest::newRow("eps9") << (ten + tiny) << (ten + 9 * tiny) << true;
+    BOBUIest::newRow("zero") << zero << zero << true;
+    BOBUIest::newRow("ten") << ten << ten << true;
+    BOBUIest::newRow("large") << giga << giga << true;
+    BOBUIest::newRow("small") << small << small << true;
+    BOBUIest::newRow("10+9*tiny==10") << (ten + 9 * tiny) << ten << true;
+    BOBUIest::newRow("huge+.9==huge") << (huge + 9 * deci) << huge << true;
+    BOBUIest::newRow("eps2") << (ten + tiny) << (ten + 2 * tiny) << true;
+    BOBUIest::newRow("eps9") << (ten + tiny) << (ten + 9 * tiny) << true;
 
-    QTest::newRow("0!=1") << zero << one << false;
-    QTest::newRow("0!=big") << zero << big << false;
-    QTest::newRow("0!=nano") << zero << nano << false;
-    QTest::newRow("giga!=nano") << giga << nano << false;
-    QTest::newRow("small!=nano") << small << nano << false;
-    QTest::newRow("huge+1.1!=huge") << (huge + 1 + deci) << huge << false;
-    QTest::newRow("1+1.1*tiny!=1") << (one + tiny * (one + deci)) << one << false;
+    BOBUIest::newRow("0!=1") << zero << one << false;
+    BOBUIest::newRow("0!=big") << zero << big << false;
+    BOBUIest::newRow("0!=nano") << zero << nano << false;
+    BOBUIest::newRow("giga!=nano") << giga << nano << false;
+    BOBUIest::newRow("small!=nano") << small << nano << false;
+    BOBUIest::newRow("huge+1.1!=huge") << (huge + 1 + deci) << huge << false;
+    BOBUIest::newRow("1+1.1*tiny!=1") << (one + tiny * (one + deci)) << one << false;
 }
 
 template<typename F>
@@ -135,21 +135,21 @@ void tst_QNumeric::fuzzyCompare()
 template<typename F>
 void tst_QNumeric::fuzzyIsNull_data()
 {
-    QTest::addColumn<F>("value");
-    QTest::addColumn<bool>("isNull");
+    BOBUIest::addColumn<F>("value");
+    BOBUIest::addColumn<bool>("isNull");
     using Bounds = std::numeric_limits<F>;
     const F one(1), huge = Fuzzy<F>::scale, tiny = one / huge;
 
-    QTest::newRow("zero") << F(0) << true;
-    QTest::newRow("min") << Bounds::min() << true;
-    QTest::newRow("denorm_min") << Bounds::denorm_min() << true;
-    QTest::newRow("tiny") << tiny << true;
+    BOBUIest::newRow("zero") << F(0) << true;
+    BOBUIest::newRow("min") << Bounds::min() << true;
+    BOBUIest::newRow("denorm_min") << Bounds::denorm_min() << true;
+    BOBUIest::newRow("tiny") << tiny << true;
 
-    QTest::newRow("deci") << F(.1) << false;
-    QTest::newRow("one") << one << false;
-    QTest::newRow("ten") << F(10) << false;
-    QTest::newRow("large") << F(1e9) << false;
-    QTest::newRow("huge") << huge << false;
+    BOBUIest::newRow("deci") << F(.1) << false;
+    BOBUIest::newRow("one") << one << false;
+    BOBUIest::newRow("ten") << F(10) << false;
+    BOBUIest::newRow("large") << F(1e9) << false;
+    BOBUIest::newRow("huge") << huge << false;
 }
 
 template<typename F>
@@ -219,11 +219,11 @@ void tst_QNumeric::rawNaN_data()
 #if defined __FAST_MATH__ && (__GNUC__ * 100 + __GNUC_MINOR__ < 404)
     QSKIP("Non-conformant fast math mode is enabled, cannot run test");
 #endif
-    QTest::addColumn<F>("nan");
+    BOBUIest::addColumn<F>("nan");
 
-    QTest::newRow("quiet") << F(qQNaN());
-#if QT_CONFIG(signaling_nan)
-    QTest::newRow("signaling") << F(qSNaN());
+    BOBUIest::newRow("quiet") << F(qQNaN());
+#if BOBUI_CONFIG(signaling_nan)
+    BOBUIest::newRow("signaling") << F(qSNaN());
 #endif
 }
 
@@ -239,7 +239,7 @@ void tst_QNumeric::rawNaN()
     checkNaN(nan);
 }
 
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
 template<typename F>
 void tst_QNumeric::distinctNaN()
 {
@@ -260,7 +260,7 @@ template<typename F, typename Whole>
 void tst_QNumeric::generalNaN_data()
 {
     static_assert(sizeof(F) == sizeof(Whole));
-    QTest::addColumn<Whole>("whole");
+    BOBUIest::addColumn<Whole>("whole");
     // Every value with every bit of the exponent set is a NaN.
     // Sign and mantissa can be anything without interfering with that.
     using Bounds = std::numeric_limits<F>;
@@ -273,10 +273,10 @@ void tst_QNumeric::generalNaN_data()
     const Whole sign = Whole(1) << (exponentBits + mantissaBits);
     const Whole mantissaTop = Whole(1) << (mantissaBits - 1);
 
-    QTest::newRow("lowload") << (exponent | 1);
-    QTest::newRow("sign-lowload") << (sign | exponent | 1);
-    QTest::newRow("highload") << (exponent | mantissaTop);
-    QTest::newRow("sign-highload") << (sign | exponent | mantissaTop);
+    BOBUIest::newRow("lowload") << (exponent | 1);
+    BOBUIest::newRow("sign-lowload") << (sign | exponent | 1);
+    BOBUIest::newRow("highload") << (exponent | mantissaTop);
+    BOBUIest::newRow("sign-highload") << (sign | exponent | mantissaTop);
 }
 
 template<typename F, typename Whole>
@@ -329,18 +329,18 @@ void tst_QNumeric::classifyfp()
 
     QCOMPARE(qFpClassify(inf), FP_INFINITE);
     QCOMPARE(qFpClassify(-inf), FP_INFINITE);
-    QT_WARNING_PUSH;
-    QT_WARNING_DISABLE_MSVC(4056);
+    BOBUI_WARNING_PUSH;
+    BOBUI_WARNING_DISABLE_MSVC(4056);
     QCOMPARE(qFpClassify(huge * two), FP_INFINITE);
     QCOMPARE(qFpClassify(huge * -two), FP_INFINITE);
-    QT_WARNING_POP;
+    BOBUI_WARNING_POP;
 
     QCOMPARE(qFpClassify(one), FP_NORMAL);
     QCOMPARE(qFpClassify(huge), FP_NORMAL);
     QCOMPARE(qFpClassify(-huge), FP_NORMAL);
     QCOMPARE(qFpClassify(tiny), FP_NORMAL);
     QCOMPARE(qFpClassify(-tiny), FP_NORMAL);
-    QT_IGNORE_DEPRECATIONS(const bool has_denorm = Bounds::has_denorm == std::denorm_present;)
+    BOBUI_IGNORE_DEPRECATIONS(const bool has_denorm = Bounds::has_denorm == std::denorm_present;)
     if (has_denorm) {
         QCOMPARE(qFpClassify(tiny / two), FP_SUBNORMAL);
         QCOMPARE(qFpClassify(tiny / -two), FP_SUBNORMAL);
@@ -354,9 +354,9 @@ void tst_QNumeric::distance_data()
     const F huge = Bounds::max();
     const F tiny = Bounds::min();
 
-    QTest::addColumn<F>("from");
-    QTest::addColumn<F>("stop");
-    QTest::addColumn<Count>("expectedDistance");
+    BOBUIest::addColumn<F>("from");
+    BOBUIest::addColumn<F>("stop");
+    BOBUIest::addColumn<Count>("expectedDistance");
 
     using Bounds = std::numeric_limits<F>;
     const int mantissaBits = Bounds::digits - 1;
@@ -381,20 +381,20 @@ void tst_QNumeric::distance_data()
     const F zero(0), half(.5), one(1), sesqui(1.5), two(2);
     const F denormal = tiny / two;
 
-    QTest::newRow("[0,tiny]") << zero << tiny << count_0_to_tiny;
-    QTest::newRow("[0,huge]") << zero << huge << count_0_to_huge;
-    QTest::newRow("[1,1.5]") << one << sesqui << (Count(1) << (mantissaBits - 1));
-    QTest::newRow("[0,1]") << zero << one << count_0_to_1;
-    QTest::newRow("[0.5,1]") << half << one << (Count(1) << mantissaBits);
-    QTest::newRow("[1,2]") << one << two << count_1_to_2;
-    QTest::newRow("[-1,+1]") << -one << +one << 2 * count_0_to_1;
-    QTest::newRow("[-1,0]") << -one << zero << count_0_to_1;
-    QTest::newRow("[-1,huge]") << -one << huge << count_0_to_1 + count_0_to_huge;
-    QTest::newRow("[-2,-1") << -two << -one << count_1_to_2;
-    QTest::newRow("[-1,-2") << -one << -two << count_1_to_2;
-    QTest::newRow("[tiny,huge]") << tiny << huge << count_0_to_huge - count_0_to_tiny;
-    QTest::newRow("[-huge,huge]") << -huge << huge << (2 * count_0_to_huge);
-    QTest::newRow("denormal") << zero << denormal << count_0_to_tiny / 2;
+    BOBUIest::newRow("[0,tiny]") << zero << tiny << count_0_to_tiny;
+    BOBUIest::newRow("[0,huge]") << zero << huge << count_0_to_huge;
+    BOBUIest::newRow("[1,1.5]") << one << sesqui << (Count(1) << (mantissaBits - 1));
+    BOBUIest::newRow("[0,1]") << zero << one << count_0_to_1;
+    BOBUIest::newRow("[0.5,1]") << half << one << (Count(1) << mantissaBits);
+    BOBUIest::newRow("[1,2]") << one << two << count_1_to_2;
+    BOBUIest::newRow("[-1,+1]") << -one << +one << 2 * count_0_to_1;
+    BOBUIest::newRow("[-1,0]") << -one << zero << count_0_to_1;
+    BOBUIest::newRow("[-1,huge]") << -one << huge << count_0_to_1 + count_0_to_huge;
+    BOBUIest::newRow("[-2,-1") << -two << -one << count_1_to_2;
+    BOBUIest::newRow("[-1,-2") << -one << -two << count_1_to_2;
+    BOBUIest::newRow("[tiny,huge]") << tiny << huge << count_0_to_huge - count_0_to_tiny;
+    BOBUIest::newRow("[-huge,huge]") << -huge << huge << (2 * count_0_to_huge);
+    BOBUIest::newRow("denormal") << zero << denormal << count_0_to_tiny / 2;
 }
 
 template<typename F, typename Count>
@@ -403,9 +403,9 @@ void tst_QNumeric::distance()
     QFETCH(F, from);
     QFETCH(F, stop);
     QFETCH(Count, expectedDistance);
-    QT_IGNORE_DEPRECATIONS(constexpr bool has_denorm = std::numeric_limits<F>::has_denorm != std::denorm_present;)
+    BOBUI_IGNORE_DEPRECATIONS(constexpr bool has_denorm = std::numeric_limits<F>::has_denorm != std::denorm_present;)
     if constexpr (has_denorm) {
-        if (qstrcmp(QTest::currentDataTag(), "denormal") == 0) {
+        if (qstrcmp(BOBUIest::currentDataTag(), "denormal") == 0) {
             QSKIP("Skipping 'denorm' as this type lacks denormals on this system");
         }
     }
@@ -417,25 +417,25 @@ void tst_QNumeric::distance()
 
 void tst_QNumeric::addOverflow_data()
 {
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<int>("size");
 
     // for unsigned, all sizes are supported
-    QTest::newRow("quint8") << 8;
-    QTest::newRow("quint16") << 16;
-    QTest::newRow("quint32") << 32;
-    QTest::newRow("quint64") << 64;
-    QTest::newRow("ulong") << 48;   // it's either 32- or 64-bit, so on average it's 48 :-)
+    BOBUIest::newRow("quint8") << 8;
+    BOBUIest::newRow("quint16") << 16;
+    BOBUIest::newRow("quint32") << 32;
+    BOBUIest::newRow("quint64") << 64;
+    BOBUIest::newRow("ulong") << 48;   // it's either 32- or 64-bit, so on average it's 48 :-)
 
     // for signed, we can't guarantee 64-bit
-    QTest::newRow("qint8") << -8;
-    QTest::newRow("qint16") << -16;
-    QTest::newRow("qint32") << -32;
+    BOBUIest::newRow("qint8") << -8;
+    BOBUIest::newRow("qint16") << -16;
+    BOBUIest::newRow("qint32") << -32;
     if (sizeof(void *) == sizeof(qint64))
-        QTest::newRow("qint64") << -64;
+        BOBUIest::newRow("qint64") << -64;
 }
 
 // Note: in release mode, all the tests may be statically determined and only the calls
-// to QTest::toString and QTest::qCompare will remain.
+// to BOBUIest::toString and BOBUIest::qCompare will remain.
 template <typename Int> static void addOverflow_template()
 {
 #if defined(Q_CC_MSVC) && Q_CC_MSVC < 2000
@@ -606,7 +606,7 @@ void tst_QNumeric::mulOverflow_data()
 }
 
 // Note: in release mode, all the tests may be statically determined and only the calls
-// to QTest::toString and QTest::qCompare will remain.
+// to BOBUIest::toString and BOBUIest::qCompare will remain.
 template <typename Int> static void mulOverflow_template()
 {
 #if defined(Q_CC_MSVC) && Q_CC_MSVC < 1900
@@ -722,7 +722,7 @@ void tst_QNumeric::mulOverflow()
     if (size == -32)
         MulOverflowDispatch<qint32>()();
     if (size == -64) {
-#ifdef QT_HAS_128_BIT_MULTIPLICATION
+#ifdef BOBUI_HAS_128_BIT_MULTIPLICATION
         MulOverflowDispatch<qint64>()();
 #else
         QFAIL("128-bit multiplication not supported on this platform");
@@ -769,7 +769,7 @@ static bool genericWideMultiplication_impl_impl(T lhs, T rhs)
                                          &expectedResult);
 
     T actualResult;
-    bool actualOverflow = QtPrivate::qMulOverflowWideMultiplication(lhs, rhs, &actualResult);
+    bool actualOverflow = BobUIPrivate::qMulOverflowWideMultiplication(lhs, rhs, &actualResult);
 
     if (actualResult != expectedResult || actualOverflow != expectedOverflow) {
         qDebug() << "LHS" << lhs << "RHS" << rhs;
@@ -834,7 +834,7 @@ void tst_QNumeric::genericWideMultiplication()
     QVERIFY(genericWideMultiplication_impl<int>());
     QVERIFY(genericWideMultiplication_impl<unsigned int>());
 
-#if defined(QT_HAS_128_BIT_MULTIPLICATION)
+#if defined(BOBUI_HAS_128_BIT_MULTIPLICATION)
     QVERIFY(genericWideMultiplication_impl<long>());
     QVERIFY(genericWideMultiplication_impl<unsigned long>());
 
@@ -999,7 +999,7 @@ UNSIGNED_TYPE_TEST(ushort, USHRT_MAX)
 SIGNED_TYPE_TEST(int, INT_MIN, INT_MAX)
 UNSIGNED_TYPE_TEST(uint, UINT_MAX)
 
-#if LONG_MAX == 2147483647 || defined(QT_HAS_128_BIT_MULTIPLICATION)
+#if LONG_MAX == 2147483647 || defined(BOBUI_HAS_128_BIT_MULTIPLICATION)
 SIGNED_TYPE_TEST(long, LONG_MIN, LONG_MAX)
 UNSIGNED_TYPE_TEST(ulong, ULONG_MAX)
 #else
@@ -1009,7 +1009,7 @@ ADD_OVERFLOW_UNSIGNED_TYPE_TEST(ulong, ULONG_MAX)
 SUB_OVERFLOW_UNSIGNED_TYPE_TEST(ulong, ULONG_MAX)
 #endif
 
-#if defined(QT_HAS_128_BIT_MULTIPLICATION)
+#if defined(BOBUI_HAS_128_BIT_MULTIPLICATION)
 // Compiling this causes an ICE in MSVC, so skipping it
 #if !defined(Q_CC_MSVC) || Q_CC_MSVC > 1950
 SIGNED_TYPE_TEST(qlonglong, LLONG_MIN, LLONG_MAX)
@@ -1076,7 +1076,7 @@ static_assert(q26::saturate_cast<quint64>(min<qint64>) == 0);
 } // namespace SaturateCastTest
 
 namespace UnsignedAbsTest {
-using QtPrivate::qUnsignedAbs;
+using BobUIPrivate::qUnsignedAbs;
 
 static_assert(std::is_same_v<decltype(qUnsignedAbs((char)0)), unsigned char>);
 static_assert(std::is_same_v<decltype(qUnsignedAbs((signed char)0)), unsigned char>);
@@ -1120,5 +1120,5 @@ TEST_TYPE(qlonglong, qulonglong, LLONG_MIN, LLONG_MAX)
 #undef TEST_TYPE
 } // namespace UnsignedAbsTest
 
-QTEST_APPLESS_MAIN(tst_QNumeric)
+BOBUIEST_APPLESS_MAIN(tst_QNumeric)
 #include "tst_qnumeric.moc"

@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandbrcmeglwindow.h"
 
-#include <QtWaylandClient/private/qwaylandbuffer_p.h>
-#include <QtWaylandClient/private/qwaylandscreen_p.h>
+#include <BobUIWaylandClient/private/qwaylandbuffer_p.h>
+#include <BobUIWaylandClient/private/qwaylandscreen_p.h>
 #include "qwaylandbrcmglcontext.h"
 
-#include <QtGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
 
-#include <QtGui/QWindow>
+#include <BobUIGui/QWindow>
 #include <qpa/qwindowsysteminterface.h>
 
 #include <EGL/eglext_brcm.h>
 
 #include "wayland-brcm-client-protocol.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandBrcmBuffer : public QWaylandBuffer
 {
 public:
     QWaylandBrcmBuffer(QWaylandDisplay *display,
-                       struct qt_brcm *brcm,
+                       struct bobui_brcm *brcm,
                        const QSize &size,
                        EGLint *data,
                        int count,
@@ -39,7 +39,7 @@ public:
         for (int i = 0; i < count; ++i)
             m_data[i] = data[i];
 
-        mBuffer = qt_brcm_create_buffer(brcm, size.width(), size.height(), &m_array);
+        mBuffer = bobui_brcm_create_buffer(brcm, size.width(), size.height(), &m_array);
         wl_proxy_set_queue(reinterpret_cast<struct wl_proxy*>(mBuffer), m_eventQueue);
 
         static const struct wl_buffer_listener buffer_listener = {
@@ -227,4 +227,4 @@ bool QWaylandBrcmEglWindow::makeCurrent(EGLContext context)
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -15,12 +15,12 @@ These endpoints are routed into our `OmniInputManager`, establishing completely 
 ### 2. Hardware-Accelerated QML Supremacy
 The legacy concept of embedding standard desktop `QWidget`s has been completely eradicated. 
 The entire OmniUI framework—including `OmniCodeEditor`, `OmniCalendar`, `OmniDial`, and `OmniSlider`—was written from scratch in native C++ inheriting from `QQuickPaintedItem`. 
-The entire OS renders physically within the hardware-accelerated Qt SceneGraph, granting native performance on Desktop while remaining completely isolated from windowing limitations, perfectly poising it for WebAssembly cross-compilation.
+The entire OS renders physically within the hardware-accelerated BobUI SceneGraph, granting native performance on Desktop while remaining completely isolated from windowing limitations, perfectly poising it for WebAssembly cross-compilation.
 
 ### 3. DSP Multimedia Perfection (The JUCE Bridge)
 Standard UI timers cause jitter when rendering high-end audio interfaces.
-We built `OmniMasterClock` and `OmniJuceView`. The C++ audio thread (running JUCE filters and MIDI handlers) bypasses standard QTimers, syncing the visual rendering frame rate atomically to the DSP block rate. 
-Furthermore, raw C++ `juce::Component`s are now mounted dynamically into `QQuickPaintedItem::FramebufferObject` (FBO) targets, natively bridging JUCE software rasterization into the Qt GPU SceneGraph instantly.
+We built `OmniMasterClock` and `OmniJuceView`. The C++ audio thread (running JUCE filters and MIDI handlers) bypasses standard BOBUIimers, syncing the visual rendering frame rate atomically to the DSP block rate. 
+Furthermore, raw C++ `juce::Component`s are now mounted dynamically into `QQuickPaintedItem::FramebufferObject` (FBO) targets, natively bridging JUCE software rasterization into the BobUI GPU SceneGraph instantly.
 
 ### 4. Zero-Latency Inter-Process Communication (Global IPC)
 Different applications running OmniUI can communicate instantly on the same machine without the overhead of TCP or WebSockets. `OmniIPC` taps into the host OS's RAM via `QSharedMemory`, allowing QML developers to establish named memory buses (`"Omni_Bus_1"`) and broadcast string payloads securely and instantly across multiple separated `.exe` instances.

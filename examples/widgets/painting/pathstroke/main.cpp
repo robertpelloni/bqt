@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "pathstroke.h"
 
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     const QList<QWidget *> widgets = pathStrokeWidget.findChildren<QWidget *>();
     for (QWidget *w : widgets) {
         w->setStyle(arthurStyle);
-        w->setAttribute(Qt::WA_AcceptTouchEvents);
+        w->setAttribute(BobUI::WA_AcceptTouchEvents);
     }
 
     if (smallScreen)
@@ -25,8 +25,8 @@ int main(int argc, char **argv)
     else
         pathStrokeWidget.show();
 
-#ifdef QT_KEYPAD_NAVIGATION
-    QApplication::setNavigationMode(Qt::NavigationModeCursorAuto);
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    QApplication::setNavigationMode(BobUI::NavigationModeCursorAuto);
 #endif
     return app.exec();
 }

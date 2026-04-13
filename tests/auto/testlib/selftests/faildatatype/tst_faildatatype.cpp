@@ -1,8 +1,8 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_FailDataType: public QObject
 {
@@ -14,9 +14,9 @@ private slots:
 
 void tst_FailDataType::value_data() const
 {
-    QTest::addColumn<QString>("value");
+    BOBUIest::addColumn<QString>("value");
 
-    QTest::newRow("bool-as-string") << true; // assertion should fail here
+    BOBUIest::newRow("bool-as-string") << true; // assertion should fail here
 }
 
 /*! \internal
@@ -27,6 +27,6 @@ void tst_FailDataType::value() const
     QFAIL("ERROR: this function is NOT supposed to be run.");
 }
 
-QTEST_APPLESS_MAIN(tst_FailDataType)
+BOBUIEST_APPLESS_MAIN(tst_FailDataType)
 
 #include "tst_faildatatype.moc"

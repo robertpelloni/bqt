@@ -1,16 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSCONNECTION_H
 #define QDBUSCONNECTION_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
+<<<<<<< HEAD
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qstring.h>
+=======
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qstring.h>
+>>>>>>> origin/dev
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 #ifdef interface
 #  undef interface
@@ -69,7 +74,7 @@ public:
         ExportAllContents = ExportScriptableContents|ExportNonScriptableContents,
 
 #ifndef Q_QDOC
-        // Qt 4.2 had a misspelling here
+        // BobUI 4.2 had a misspelling here
         ExportAllSignal = ExportAllSignals,
 #endif
         ExportChildObjects = 0x1000
@@ -103,7 +108,7 @@ public:
     QDBusConnection &operator=(const QDBusConnection &other);
     ~QDBusConnection();
 
-    void swap(QDBusConnection &other) noexcept { qt_ptr_swap(d, other.d); }
+    void swap(QDBusConnection &other) noexcept { bobui_ptr_swap(d, other.d); }
 
     bool isConnected() const;
     QString baseService() const;
@@ -182,5 +187,5 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QDBusConnection::ConnectionCapabilities)
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

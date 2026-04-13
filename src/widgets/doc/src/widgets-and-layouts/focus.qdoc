@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page focus.html
@@ -9,7 +9,7 @@
 
     \keyword keyboard focus
 
-    Qt's widgets handle keyboard focus in ways that have become
+    BobUI's widgets handle keyboard focus in ways that have become
     customary in GUIs.
 
     The basic issue is that the user's key strokes can be directed at any
@@ -43,7 +43,7 @@
 
     Pressing \uicontrol Tab is by far the most common way to move focus
     using the keyboard. (Sometimes in data-entry applications Enter
-    does the same as \uicontrol{Tab}; this can easily be achieved in Qt by
+    does the same as \uicontrol{Tab}; this can easily be achieved in BobUI by
     implementing an \l{The Event System}{event filter}.)
 
     Pressing \uicontrol Tab, in all window systems in common use today,
@@ -83,7 +83,7 @@
 
     Another exception to \uicontrol Tab support is text-entry widgets that
     must support the insertion of tabs; almost all text editors fall
-    into this class. Qt treats \uicontrol Ctrl+Tab as \uicontrol Tab and \uicontrol
+    into this class. BobUI treats \uicontrol Ctrl+Tab as \uicontrol Tab and \uicontrol
     Ctrl+Shift+Tab as \uicontrol Shift+Tab, and such widgets can
     reimplement QWidget::event() and handle Tab before calling
     QWidget::event() to get normal processing of all other keys.
@@ -116,7 +116,7 @@
     different effect. (For buttons, we also recommend adding a keyboard
     shortcut: QAbstractButton and its subclasses make this very easy.)
 
-    In Qt, only the QWidget::setFocusPolicy() function affects
+    In BobUI, only the QWidget::setFocusPolicy() function affects
     click-to-focus.
 
     \section2 The User Presses a Keyboard Shortcut
@@ -124,7 +124,7 @@
     It's not unusual for keyboard shortcuts to move the focus. This
     can happen implicitly by opening modal dialogs, but also
     explicitly using focus accelerators such as those provided by
-    QLabel::setBuddy(), QGroupBox, and QTabBar.
+    QLabel::setBuddy(), QGroupBox, and BOBUIabBar.
 
     Your application can support shortcut focus for all widgets that the user
     may want to jump to. For example, a tab dialog can have keyboard
@@ -144,7 +144,7 @@
     widget that has keyboard focus. On \macos and X11, it's handled by
     the widget that gets other mouse events.
 
-    The way Qt handles this platform difference is by letting widgets move
+    The way BobUI handles this platform difference is by letting widgets move
     the keyboard focus when the wheel is used. With the right focus policy
     on each widget, applications can work idiomatically correctly on
     Windows, \macos, and X11.
@@ -155,11 +155,11 @@
     the window should receive the focus.
 
     This can be simple: If the focus has been in this window before,
-    then the last widget to have focus should regain it. Qt does this
+    then the last widget to have focus should regain it. BobUI does this
     automatically.
 
     If focus has never been in this window before and you know where
     focus should start out, call QWidget::setFocus() on the widget
     which should receive focus before you call QWidget::show() it. If
-    you don't, Qt will pick a suitable widget.
+    you don't, BobUI will pick a suitable widget.
 */

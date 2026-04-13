@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeventdispatcher_win_p.h"
 
@@ -13,11 +13,11 @@
 
 #include "qelapsedtimer.h"
 #include "qcoreapplication_p.h"
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 
 #include "q26numeric.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef TIME_KILL_SYNCHRONOUS
 #  define TIME_KILL_SYNCHRONOUS 0x0100
@@ -30,19 +30,19 @@ QT_BEGIN_NAMESPACE
 #ifndef WM_TOUCH
 #  define WM_TOUCH 0x0240
 #endif
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 #ifndef WM_GESTURE
 #  define WM_GESTURE 0x0119
 #endif
 #ifndef WM_GESTURENOTIFY
 #  define WM_GESTURENOTIFY 0x011A
 #endif
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 enum {
-    WM_QT_SOCKETNOTIFIER = WM_USER,
-    WM_QT_SENDPOSTEDEVENTS = WM_USER + 1,
-    WM_QT_ACTIVATENOTIFIERS = WM_USER + 2
+    WM_BOBUI_SOCKETNOTIFIER = WM_USER,
+    WM_BOBUI_SENDPOSTEDEVENTS = WM_USER + 1,
+    WM_BOBUI_ACTIVATENOTIFIERS = WM_USER + 2
 };
 
 enum {
@@ -55,9 +55,9 @@ class QEventDispatcherWin32Private;
 #define DWORD_PTR DWORD
 #endif
 
-LRESULT QT_WIN_CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp);
+LRESULT BOBUI_WIN_CALLBACK bobui_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp);
 
-static quint64 qt_msectime()
+static quint64 bobui_msectime()
 {
     using namespace std::chrono;
     auto t = duration_cast<milliseconds>(steady_clock::now().time_since_epoch());
@@ -78,16 +78,16 @@ QEventDispatcherWin32Private::~QEventDispatcherWin32Private()
 }
 
 // This function is called by a workerthread
-void WINAPI QT_WIN_CALLBACK qt_fast_timer_proc(uint timerId, uint /*reserved*/, DWORD_PTR user, DWORD_PTR /*reserved*/, DWORD_PTR /*reserved*/)
+void WINAPI BOBUI_WIN_CALLBACK bobui_fast_timer_proc(uint timerId, uint /*reserved*/, DWORD_PTR user, DWORD_PTR /*reserved*/, DWORD_PTR /*reserved*/)
 {
     if (!timerId) // sanity check
         return;
     auto t = reinterpret_cast<WinTimerInfo*>(user);
     Q_ASSERT(t);
-    QCoreApplication::postEvent(t->dispatcher, new QTimerEvent(t->timerId));
+    QCoreApplication::postEvent(t->dispatcher, new BOBUIimerEvent(t->timerId));
 }
 
-LRESULT QT_WIN_CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp)
+LRESULT BOBUI_WIN_CALLBACK bobui_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp)
 {
     if (message == WM_NCCREATE)
         return true;
@@ -113,7 +113,7 @@ LRESULT QT_WIN_CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPA
         d = q->d_func();
 
     switch (message) {
-    case WM_QT_SOCKETNOTIFIER: {
+    case WM_BOBUI_SOCKETNOTIFIER: {
         // socket notifier message
         int type = -1;
         switch (WSAGETSELECTEVENT(lp)) {
@@ -162,15 +162,15 @@ LRESULT QT_WIN_CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPA
         }
         return 0;
     }
-    case WM_QT_ACTIVATENOTIFIERS: {
+    case WM_BOBUI_ACTIVATENOTIFIERS: {
         Q_ASSERT(d != nullptr);
 
         // Postpone activation if we have unhandled socket notifier messages
-        // in the queue. WM_QT_ACTIVATENOTIFIERS will be posted again as a result of
+        // in the queue. WM_BOBUI_ACTIVATENOTIFIERS will be posted again as a result of
         // event processing.
         MSG msg;
         if (!PeekMessage(&msg, d->internalHwnd,
-                         WM_QT_SOCKETNOTIFIER, WM_QT_SOCKETNOTIFIER, PM_NOREMOVE)
+                         WM_BOBUI_SOCKETNOTIFIER, WM_BOBUI_SOCKETNOTIFIER, PM_NOREMOVE)
             && d->queuedSocketEvents.isEmpty()) {
             // register all socket notifiers
             for (QSFDict::iterator it = d->active_fd.begin(), end = d->active_fd.end();
@@ -195,7 +195,7 @@ LRESULT QT_WIN_CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPA
         else
             d->sendTimerEvent(wp);
         return 0;
-    case WM_QT_SENDPOSTEDEVENTS:
+    case WM_BOBUI_SENDPOSTEDEVENTS:
         Q_ASSERT(d != nullptr);
 
         // We send posted events manually, if the window procedure was invoked
@@ -215,7 +215,7 @@ LRESULT QT_WIN_CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPA
 
 void QEventDispatcherWin32Private::startPostedEventsTimer()
 {
-    // we received WM_QT_SENDPOSTEDEVENTS, so allow posting it again
+    // we received WM_BOBUI_SENDPOSTEDEVENTS, so allow posting it again
     wakeUps.storeRelaxed(0);
     if (sendPostedEventsTimerId == 0) {
         // Start a timer to deliver posted events when the message queue is emptied.
@@ -238,16 +238,16 @@ struct QWindowsMessageWindowClassContext
 QWindowsMessageWindowClassContext::QWindowsMessageWindowClassContext()
     : atom(0), className(0)
 {
-    // make sure that multiple Qt's can coexist in the same process
+    // make sure that multiple BobUI's can coexist in the same process
     const QString qClassName = QStringLiteral("QEventDispatcherWin32_Internal_Widget")
-        + QString::number(quintptr(qt_internal_proc));
+        + QString::number(quintptr(bobui_internal_proc));
     className = new wchar_t[qClassName.size() + 1];
     qClassName.toWCharArray(className);
     className[qClassName.size()] = 0;
 
     WNDCLASS wc;
     wc.style = 0;
-    wc.lpfnWndProc = qt_internal_proc;
+    wc.lpfnWndProc = bobui_internal_proc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = GetModuleHandle(0);
@@ -274,7 +274,7 @@ QWindowsMessageWindowClassContext::~QWindowsMessageWindowClassContext()
 
 Q_GLOBAL_STATIC(QWindowsMessageWindowClassContext, qWindowsMessageWindowClassContext)
 
-static HWND qt_create_internal_window(const QEventDispatcherWin32 *eventDispatcher)
+static HWND bobui_create_internal_window(const QEventDispatcherWin32 *eventDispatcher)
 {
     QWindowsMessageWindowClassContext *ctx = qWindowsMessageWindowClassContext();
     if (!ctx->atom)
@@ -303,28 +303,28 @@ static ULONG calculateNextTimeout(WinTimerInfo *t, quint64 currentTime)
     qint64 interval = t->interval;
     ULONG tolerance = TIMERV_DEFAULT_COALESCING;
     switch (t->timerType) {
-    case Qt::PreciseTimer:
+    case BobUI::PreciseTimer:
         // high precision timer is based on millisecond precision
         // so no adjustment is necessary
         break;
 
-    case Qt::CoarseTimer:
+    case BobUI::CoarseTimer:
         // this timer has up to 5% coarseness
         // so our boundaries are 20 ms and 20 s
         // below 20 ms, 5% inaccuracy is below 1 ms, so we convert to high precision
         // above 20 s, 5% inaccuracy is above 1 s, so we convert to VeryCoarseTimer
         if (interval >= 20000) {
-            t->timerType = Qt::VeryCoarseTimer;
+            t->timerType = BobUI::VeryCoarseTimer;
         } else if (interval <= 20) {
             // no adjustment necessary
-            t->timerType = Qt::PreciseTimer;
+            t->timerType = BobUI::PreciseTimer;
             break;
         } else {
             tolerance = interval / 20;
             break;
         }
         Q_FALLTHROUGH();
-    case Qt::VeryCoarseTimer:
+    case BobUI::VeryCoarseTimer:
         // the very coarse timer is based on full second precision,
         // so we round to closest second (but never to zero)
         tolerance = 1000;
@@ -348,7 +348,7 @@ void QEventDispatcherWin32Private::registerTimer(WinTimerInfo *t)
     Q_Q(QEventDispatcherWin32);
 
     bool ok = false;
-    ULONG tolerance = calculateNextTimeout(t, qt_msectime());
+    ULONG tolerance = calculateNextTimeout(t, bobui_msectime());
     uint interval = q26::saturate_cast<uint>(t->interval);
     if (interval != t->interval) {
         // Now we'll need to post the timer event at each second timeout.
@@ -363,7 +363,7 @@ void QEventDispatcherWin32Private::registerTimer(WinTimerInfo *t)
     } else if (tolerance == TIMERV_DEFAULT_COALESCING) {
         // 3/2016: Although MSDN states timeSetEvent() is deprecated, the function
         // is still deemed to be the most reliable precision timer.
-        t->fastTimerId = timeSetEvent(interval, 1, qt_fast_timer_proc, DWORD_PTR(t),
+        t->fastTimerId = timeSetEvent(interval, 1, bobui_fast_timer_proc, DWORD_PTR(t),
                                       TIME_CALLBACK_FUNCTION | TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
         ok = t->fastTimerId;
     }
@@ -408,9 +408,9 @@ void QEventDispatcherWin32Private::sendTimerEvent(int timerId)
         t->inTimerEvent = true;
 
         // recalculate next emission
-        calculateNextTimeout(t, qt_msectime());
+        calculateNextTimeout(t, bobui_msectime());
 
-        QTimerEvent e(t->timerId);
+        BOBUIimerEvent e(t->timerId);
         QCoreApplication::sendEvent(t->obj, &e);
 
         // timer could have been removed
@@ -427,14 +427,14 @@ void QEventDispatcherWin32Private::doWsaAsyncSelect(qintptr socket, long event)
 {
     Q_ASSERT(internalHwnd);
     // BoundsChecker may emit a warning for WSAAsyncSelect when event == 0
-    // This is a BoundsChecker bug and not a Qt bug
-    WSAAsyncSelect(socket, internalHwnd, event ? int(WM_QT_SOCKETNOTIFIER) : 0, event);
+    // This is a BoundsChecker bug and not a BobUI bug
+    WSAAsyncSelect(socket, internalHwnd, event ? int(WM_BOBUI_SOCKETNOTIFIER) : 0, event);
 }
 
 void QEventDispatcherWin32Private::postActivateSocketNotifiers()
 {
     if (!activateNotifiersPosted)
-        activateNotifiersPosted = PostMessage(internalHwnd, WM_QT_ACTIVATENOTIFIERS, 0, 0);
+        activateNotifiersPosted = PostMessage(internalHwnd, WM_BOBUI_ACTIVATENOTIFIERS, 0, 0);
 }
 
 QEventDispatcherWin32::QEventDispatcherWin32(QObject *parent)
@@ -447,7 +447,7 @@ QEventDispatcherWin32::QEventDispatcherWin32(QEventDispatcherWin32Private &dd, Q
 {
     Q_D(QEventDispatcherWin32);
 
-    d->internalHwnd = qt_create_internal_window(this);
+    d->internalHwnd = bobui_create_internal_window(this);
 }
 
 QEventDispatcherWin32::~QEventDispatcherWin32()
@@ -461,7 +461,7 @@ static bool isUserInputMessage(UINT message)
         || message == WM_MOUSEWHEEL
         || message == WM_MOUSEHWHEEL
         || message == WM_TOUCH
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
         || message == WM_GESTURE
         || message == WM_GESTURENOTIFY
 #endif
@@ -507,7 +507,7 @@ bool QEventDispatcherWin32::processEvents(QEventLoop::ProcessEventsFlags flags)
                     continue;
                 }
                 if ((flags & QEventLoop::ExcludeSocketNotifiers)
-                    && (msg.message == WM_QT_SOCKETNOTIFIER && msg.hwnd == d->internalHwnd)) {
+                    && (msg.message == WM_BOBUI_SOCKETNOTIFIER && msg.hwnd == d->internalHwnd)) {
                     // queue socket events for later processing
                     d->queuedSocketEvents.append(msg);
                     continue;
@@ -521,7 +521,7 @@ bool QEventDispatcherWin32::processEvents(QEventLoop::ProcessEventsFlags flags)
                 break;
             }
 
-            if (d->internalHwnd == msg.hwnd && msg.message == WM_QT_SENDPOSTEDEVENTS) {
+            if (d->internalHwnd == msg.hwnd && msg.message == WM_BOBUI_SENDPOSTEDEVENTS) {
                 d->startPostedEventsTimer();
                 // Set result to 'true' because the message was sent by wakeUp().
                 retVal = true;
@@ -574,12 +574,12 @@ void QEventDispatcherWin32::registerSocketNotifier(QSocketNotifier *notifier)
     Q_ASSERT(notifier);
     qintptr sockfd = notifier->socket();
     int type = notifier->type();
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (sockfd < 0) {
         qWarning("QEventDispatcherWin32::registerSocketNotifier: invalid socket identifier");
         return;
     }
-    if (notifier->thread() != thread() || thread() != QThread::currentThread()) {
+    if (notifier->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherWin32: socket notifiers cannot be enabled from another thread");
         return;
     }
@@ -639,13 +639,13 @@ void QEventDispatcherWin32::registerSocketNotifier(QSocketNotifier *notifier)
 void QEventDispatcherWin32::unregisterSocketNotifier(QSocketNotifier *notifier)
 {
     Q_ASSERT(notifier);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     qintptr sockfd = notifier->socket();
     if (sockfd < 0) {
         qWarning("QEventDispatcherWin32::unregisterSocketNotifier: invalid socket identifier");
         return;
     }
-    if (notifier->thread() != thread() || thread() != QThread::currentThread()) {
+    if (notifier->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherWin32: socket notifiers cannot be disabled from another thread");
         return;
     }
@@ -685,15 +685,15 @@ void QEventDispatcherWin32::doUnregisterSocketNotifier(QSocketNotifier *notifier
     delete sn;
 }
 
-void QEventDispatcherWin32::registerTimer(Qt::TimerId timerId, Duration interval,
-                                          Qt::TimerType timerType, QObject *object)
+void QEventDispatcherWin32::registerTimer(BobUI::TimerId timerId, Duration interval,
+                                          BobUI::TimerType timerType, QObject *object)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1 || interval.count() < 0 || !object) {
         qWarning("QEventDispatcherWin32::registerTimer: invalid arguments");
         return;
     }
-    if (object->thread() != thread() || thread() != QThread::currentThread()) {
+    if (object->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherWin32::registerTimer: timers cannot be started from another thread");
         return;
     }
@@ -725,14 +725,14 @@ void QEventDispatcherWin32::registerTimer(Qt::TimerId timerId, Duration interval
     d->timerDict.insert(t->timerId, t);          // store timers in dict
 }
 
-bool QEventDispatcherWin32::unregisterTimer(Qt::TimerId timerId)
+bool QEventDispatcherWin32::unregisterTimer(BobUI::TimerId timerId)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1) {
         qWarning("QEventDispatcherWin32::unregisterTimer: invalid argument");
         return false;
     }
-    if (thread() != QThread::currentThread()) {
+    if (thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherWin32::unregisterTimer: timers cannot be stopped from another thread");
         return false;
     }
@@ -750,12 +750,12 @@ bool QEventDispatcherWin32::unregisterTimer(Qt::TimerId timerId)
 
 bool QEventDispatcherWin32::unregisterTimers(QObject *object)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!object) {
         qWarning("QEventDispatcherWin32::unregisterTimers: invalid argument");
         return false;
     }
-    if (object->thread() != thread() || thread() != QThread::currentThread()) {
+    if (object->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherWin32::unregisterTimers: timers cannot be stopped from another thread");
         return false;
     }
@@ -782,7 +782,7 @@ bool QEventDispatcherWin32::unregisterTimers(QObject *object)
 QList<QEventDispatcherWin32::TimerInfoV2>
 QEventDispatcherWin32::timersForObject(QObject *object) const
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!object) {
         qWarning("QEventDispatcherWin32:registeredTimers: invalid argument");
         return QList<TimerInfoV2>();
@@ -795,16 +795,16 @@ QEventDispatcherWin32::timersForObject(QObject *object) const
         Q_ASSERT(t);
         if (t->obj == object) {
             list << TimerInfoV2{std::chrono::milliseconds{t->interval},
-                                Qt::TimerId{t->timerId},
+                                BobUI::TimerId{t->timerId},
                                 t->timerType};
         }
     }
     return list;
 }
 
-QEventDispatcherWin32::Duration QEventDispatcherWin32::remainingTime(Qt::TimerId timerId) const
+QEventDispatcherWin32::Duration QEventDispatcherWin32::remainingTime(BobUI::TimerId timerId) const
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1) {
         qWarning("QEventDispatcherWin32::remainingTime: invalid argument");
         return Duration::min();
@@ -823,7 +823,7 @@ QEventDispatcherWin32::Duration QEventDispatcherWin32::remainingTime(Qt::TimerId
         return timeoutMs > currentTimeMs ? milliseconds{timeoutMs - currentTimeMs} : 0ms;
     }
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     qWarning("QEventDispatcherWin32::remainingTime: timer id %d not found", qToUnderlying(timerId));
 #endif
 
@@ -834,8 +834,8 @@ void QEventDispatcherWin32::wakeUp()
 {
     Q_D(QEventDispatcherWin32);
     if (d->wakeUps.testAndSetRelaxed(0, 1)) {
-        // post a WM_QT_SENDPOSTEDEVENTS to this thread if there isn't one already pending
-        if (!PostMessage(d->internalHwnd, WM_QT_SENDPOSTEDEVENTS, 0, 0))
+        // post a WM_BOBUI_SENDPOSTEDEVENTS to this thread if there isn't one already pending
+        if (!PostMessage(d->internalHwnd, WM_BOBUI_SENDPOSTEDEVENTS, 0, 0))
             qErrnoWarning("QEventDispatcherWin32::wakeUp: Failed to post a message");
     }
 }
@@ -885,7 +885,7 @@ bool QEventDispatcherWin32::event(QEvent *e)
         if (t) {
             t->inTimerEvent = true;
 
-            QTimerEvent te(zte->timerId());
+            BOBUIimerEvent te(zte->timerId());
             QCoreApplication::sendEvent(t->obj, &te);
 
             // timer could have been removed
@@ -903,7 +903,7 @@ bool QEventDispatcherWin32::event(QEvent *e)
         return true;
     }
     case QEvent::Timer:
-        d->sendTimerEvent(static_cast<const QTimerEvent*>(e)->timerId());
+        d->sendTimerEvent(static_cast<const BOBUIimerEvent*>(e)->timerId());
         break;
     default:
         break;
@@ -919,7 +919,7 @@ void QEventDispatcherWin32::sendPostedEvents()
         KillTimer(d->internalHwnd, d->sendPostedEventsTimerId);
     d->sendPostedEventsTimerId = 0;
 
-    // Allow posting WM_QT_SENDPOSTEDEVENTS message.
+    // Allow posting WM_BOBUI_SENDPOSTEDEVENTS message.
     d->wakeUps.storeRelaxed(0);
 
     QCoreApplicationPrivate::sendPostedEvents(0, 0, d->threadData.loadRelaxed());
@@ -930,6 +930,6 @@ HWND QEventDispatcherWin32::internalHwnd()
     return d_func()->internalHwnd;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeventdispatcher_win_p.cpp"

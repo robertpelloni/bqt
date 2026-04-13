@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 
@@ -9,7 +9,7 @@
 #include <QMap>
 #include <QDebug>
 
-void render_qt_text(QPainter *painter, int w, int h, const QColor &color)
+void render_bobui_text(QPainter *painter, int w, int h, const QColor &color)
 {
     QPainterPath path;
     path.moveTo(-0.083695, 0.283849);
@@ -75,7 +75,7 @@ void render_qt_text(QPainter *painter, int w, int h, const QColor &color)
     painter->restore();
 
     painter->setBrush(color);
-    painter->setPen(QPen(Qt::black, 0.02, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin));
+    painter->setPen(QPen(BobUI::black, 0.02, BobUI::SolidLine, BobUI::FlatCap, BobUI::RoundJoin));
     painter->drawPath(path);
 }
 

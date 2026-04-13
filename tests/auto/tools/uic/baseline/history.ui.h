@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'history.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,20 +9,20 @@
 #ifndef HISTORY_H
 #define HISTORY_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
 #include "edittreeview.h"
 #include "searchlineedit.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_HistoryDialog
 {
@@ -103,6 +103,6 @@ namespace Ui {
     class HistoryDialog: public Ui_HistoryDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // HISTORY_H

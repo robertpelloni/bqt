@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qcommandlinkbutton.h"
 #include "qstylepainter.h"
 #include "qstyleoption.h"
-#include "qtextdocument.h"
-#include "qtextlayout.h"
+#include "bobuiextdocument.h"
+#include "bobuiextlayout.h"
 #include "qcolor.h"
 #include "qfont.h"
 #include <qmath.h>
@@ -14,7 +14,7 @@
 #include "private/qpushbutton_p.h"
 #include "private/qstylesheetstyle_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QCommandLinkButton
@@ -22,7 +22,7 @@ QT_BEGIN_NAMESPACE
     \brief The QCommandLinkButton widget provides a Vista style command link button.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The command link is a new control that was introduced by Windows Vista. Its
     intended use is similar to that of a radio button in that it is used to choose
@@ -173,7 +173,7 @@ bool QCommandLinkButtonPrivate::usingVistaStyle() const
     Q_Q(const QCommandLinkButton);
     //### This is a hack to detect if we are indeed running Vista style themed and not in classic
     // When we add api to query for this, we should change this implementation to use it.
-    return q->property("_qt_usingVistaStyle").toBool()
+    return q->property("_bobui_usingVistaStyle").toBool()
         && q->style()->pixelMetric(QStyle::PM_ButtonShiftHorizontal, nullptr, q) == 0;
 }
 
@@ -181,8 +181,8 @@ void QCommandLinkButtonPrivate::init()
 {
     Q_Q(QCommandLinkButton);
     QPushButtonPrivate::init();
-    q->setAttribute(Qt::WA_Hover);
-    q->setAttribute(Qt::WA_MacShowFocusRect, false);
+    q->setAttribute(BobUI::WA_Hover);
+    q->setAttribute(BobUI::WA_MacShowFocusRect, false);
 
     QSizePolicy policy(QSizePolicy::Preferred, QSizePolicy::Preferred, QSizePolicy::PushButton);
     policy.setHeightForWidth(true);
@@ -202,11 +202,11 @@ int QCommandLinkButtonPrivate::descriptionHeight(int widgetWidth) const
 
     qreal descriptionheight = 0;
     if (!description.isEmpty()) {
-        QTextLayout layout(description);
+        BOBUIextLayout layout(description);
         layout.setFont(descriptionFont());
         layout.beginLayout();
         while (true) {
-            QTextLine line = layout.createLine();
+            BOBUIextLine line = layout.createLine();
             if (!line.isValid())
                 break;
             line.setLineWidth(lineWidth);
@@ -352,7 +352,7 @@ void QCommandLinkButton::paintEvent(QPaintEvent *)
         const auto state = isChecked() ? QIcon::On : QIcon::Off;
         const auto rect = QRect(d->leftMargin() + hOffset, d->topMargin() + vOffset,
                                 size.width(), size.height());
-        icon().paint(&p, rect, Qt::AlignCenter, mode, state);
+        icon().paint(&p, rect, BobUI::AlignCenter, mode, state);
     }
 
     //Draw title
@@ -366,16 +366,16 @@ void QCommandLinkButton::paintEvent(QPaintEvent *)
         option.palette.setColor(QPalette::ButtonText, d->currentColor);
     }
 
-    int textflags = Qt::TextShowMnemonic;
+    int textflags = BobUI::TextShowMnemonic;
     if (!style()->styleHint(QStyle::SH_UnderlineShortcut, &option, this))
-        textflags |= Qt::TextHideMnemonic;
+        textflags |= BobUI::TextHideMnemonic;
 
     p.setFont(d->titleFont());
     p.drawItemText(d->titleRect().translated(hOffset, vOffset),
                     textflags, option.palette, isEnabled(), text(), QPalette::ButtonText);
 
     //Draw description
-    textflags |= Qt::TextWordWrap | Qt::ElideRight;
+    textflags |= BobUI::TextWordWrap | BobUI::ElideRight;
     p.setFont(d->descriptionFont());
     p.drawItemText(d->descriptionRect().translated(hOffset, vOffset), textflags,
                     option.palette, isEnabled(), description(), QPalette::ButtonText);
@@ -395,6 +395,6 @@ QString QCommandLinkButton::description() const
     return d->description;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcommandlinkbutton.cpp"

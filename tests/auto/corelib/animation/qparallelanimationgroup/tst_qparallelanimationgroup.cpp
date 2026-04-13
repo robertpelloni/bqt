@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QVariantAnimation>
 #include <QPropertyAnimation>
 #include <QSignalSpy>
 
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qparallelanimationgroup.h>
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qparallelanimationgroup.h>
+#include <BobUICore/qscopeguard.h>
 
 using namespace std::chrono_literals;
 
@@ -46,7 +46,7 @@ void tst_QParallelAnimationGroup::initTestCase()
     qRegisterMetaType<QAbstractAnimation::State>("QAbstractAnimation::State");
 #if defined(Q_OS_DARWIN)
     // give the Darwin app start event queue time to clear
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
 #endif
 }
 
@@ -119,7 +119,7 @@ public:
     int duration() const override { return -1; /* not time driven */ }
 
 protected:
-    void timerEvent(QTimerEvent *event) override
+    void timerEvent(BOBUIimerEvent *event) override
     {
         if (event->id() == timer.id())
             stop();
@@ -463,7 +463,7 @@ void tst_QParallelAnimationGroup::deleteChildrenWithRunningGroup()
     QCOMPARE(group.state(), QAnimationGroup::Running);
     QCOMPARE(anim1->state(), QAnimationGroup::Running);
 
-    QVERIFY(QTest::qWaitFor([&] { return group.currentLoopTime() > 0; }, 200ms));
+    QVERIFY(BOBUIest::qWaitFor([&] { return group.currentLoopTime() > 0; }, 200ms));
 
     delete anim1;
     QCOMPARE(group.animationCount(), 0);
@@ -766,9 +766,9 @@ struct AnimState {
     int time;
     int state;
 };
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(AnimState, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #define Running QAbstractAnimation::Running
 #define Stopped QAbstractAnimation::Stopped
@@ -776,72 +776,72 @@ QT_END_NAMESPACE
 Q_DECLARE_METATYPE(AnimState)
 void tst_QParallelAnimationGroup::loopCount_data()
 {
-    QTest::addColumn<bool>("directionBackward");
-    QTest::addColumn<int>("setLoopCount");
-    QTest::addColumn<int>("initialGroupTime");
-    QTest::addColumn<int>("currentGroupTime");
-    QTest::addColumn<AnimState>("expected1");
-    QTest::addColumn<AnimState>("expected2");
-    QTest::addColumn<AnimState>("expected3");
+    BOBUIest::addColumn<bool>("directionBackward");
+    BOBUIest::addColumn<int>("setLoopCount");
+    BOBUIest::addColumn<int>("initialGroupTime");
+    BOBUIest::addColumn<int>("currentGroupTime");
+    BOBUIest::addColumn<AnimState>("expected1");
+    BOBUIest::addColumn<AnimState>("expected2");
+    BOBUIest::addColumn<AnimState>("expected3");
 
     //                                                                                  D U R A T I O N
     //                                                              100                           60*2                           0
     // direction = Forward
-    QTest::newRow("50")  << false << 3 << 0 <<  50 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("100") << false << 3 << 0 << 100 << AnimState(100         ) << AnimState( 40, Running) << AnimState(  0, Stopped);
-    QTest::newRow("110") << false << 3 << 0 << 110 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("120") << false << 3 << 0 << 120 << AnimState(  0, Running) << AnimState(  0, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("50")  << false << 3 << 0 <<  50 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("100") << false << 3 << 0 << 100 << AnimState(100         ) << AnimState( 40, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("110") << false << 3 << 0 << 110 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("120") << false << 3 << 0 << 120 << AnimState(  0, Running) << AnimState(  0, Running) << AnimState(  0, Stopped);
 
-    QTest::newRow("170") << false << 3 << 0 << 170 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("220") << false << 3 << 0 << 220 << AnimState(100         ) << AnimState( 40, Running) << AnimState(  0, Stopped);
-    QTest::newRow("230") << false << 3 << 0 << 230 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("240") << false << 3 << 0 << 240 << AnimState(  0, Running) << AnimState(  0, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("170") << false << 3 << 0 << 170 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("220") << false << 3 << 0 << 220 << AnimState(100         ) << AnimState( 40, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("230") << false << 3 << 0 << 230 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("240") << false << 3 << 0 << 240 << AnimState(  0, Running) << AnimState(  0, Running) << AnimState(  0, Stopped);
 
-    QTest::newRow("290") << false << 3 << 0 << 290 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("340") << false << 3 << 0 << 340 << AnimState(100         ) << AnimState( 40, Running) << AnimState(  0, Stopped);
-    QTest::newRow("350") << false << 3 << 0 << 350 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("360") << false << 3 << 0 << 360 << AnimState(100, Stopped) << AnimState( 60         ) << AnimState(  0, Stopped);
+    BOBUIest::newRow("290") << false << 3 << 0 << 290 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("340") << false << 3 << 0 << 340 << AnimState(100         ) << AnimState( 40, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("350") << false << 3 << 0 << 350 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("360") << false << 3 << 0 << 360 << AnimState(100, Stopped) << AnimState( 60         ) << AnimState(  0, Stopped);
 
-    QTest::newRow("410") << false << 3 << 0 << 410 << AnimState(100, Stopped) << AnimState( 60, Stopped) << AnimState(  0, Stopped);
-    QTest::newRow("460") << false << 3 << 0 << 460 << AnimState(100, Stopped) << AnimState( 60, Stopped) << AnimState(  0, Stopped);
-    QTest::newRow("470") << false << 3 << 0 << 470 << AnimState(100, Stopped) << AnimState( 60, Stopped) << AnimState(  0, Stopped);
-    QTest::newRow("480") << false << 3 << 0 << 480 << AnimState(100, Stopped) << AnimState( 60, Stopped) << AnimState(  0, Stopped);
+    BOBUIest::newRow("410") << false << 3 << 0 << 410 << AnimState(100, Stopped) << AnimState( 60, Stopped) << AnimState(  0, Stopped);
+    BOBUIest::newRow("460") << false << 3 << 0 << 460 << AnimState(100, Stopped) << AnimState( 60, Stopped) << AnimState(  0, Stopped);
+    BOBUIest::newRow("470") << false << 3 << 0 << 470 << AnimState(100, Stopped) << AnimState( 60, Stopped) << AnimState(  0, Stopped);
+    BOBUIest::newRow("480") << false << 3 << 0 << 480 << AnimState(100, Stopped) << AnimState( 60, Stopped) << AnimState(  0, Stopped);
 
     // direction = Forward, rewind
-    QTest::newRow("120-110") << false << 3 << 120 << 110 << AnimState(   0, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("120-50")  << false << 3 << 120 <<  50 << AnimState(  50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("120-0")   << false << 3 << 120 <<  0  << AnimState(   0, Running) << AnimState(  0, Running) << AnimState(  0, Stopped);
-    QTest::newRow("300-110") << false << 3 << 300 << 110 << AnimState(   0, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("300-50")  << false << 3 << 300 <<  50 << AnimState(  50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("300-0")   << false << 3 << 300 <<  0  << AnimState(   0, Running) << AnimState(  0, Running) << AnimState(  0, Stopped);
-    QTest::newRow("115-105") << false << 3 << 115 << 105 << AnimState(  42, Stopped) << AnimState( 45, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("120-110") << false << 3 << 120 << 110 << AnimState(   0, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("120-50")  << false << 3 << 120 <<  50 << AnimState(  50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("120-0")   << false << 3 << 120 <<  0  << AnimState(   0, Running) << AnimState(  0, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("300-110") << false << 3 << 300 << 110 << AnimState(   0, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("300-50")  << false << 3 << 300 <<  50 << AnimState(  50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("300-0")   << false << 3 << 300 <<  0  << AnimState(   0, Running) << AnimState(  0, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("115-105") << false << 3 << 115 << 105 << AnimState(  42, Stopped) << AnimState( 45, Running) << AnimState(  0, Stopped);
 
     // direction = Backward
-    QTest::newRow("b120-120") << true << 3 << 120 << 120 << AnimState( 42, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b120-110") << true << 3 << 120 << 110 << AnimState( 42, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b120-100") << true << 3 << 120 << 100 << AnimState(100, Running) << AnimState( 40, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b120-50")  << true << 3 << 120 <<  50 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b120-0")   << true << 3 << 120 <<   0 << AnimState(  0, Stopped) << AnimState(  0, Stopped) << AnimState(  0, Stopped);
-    QTest::newRow("b360-170") << true << 3 << 360 << 170 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b360-220") << true << 3 << 360 << 220 << AnimState(100, Running) << AnimState( 40, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b360-210") << true << 3 << 360 << 210 << AnimState( 90, Running) << AnimState( 30, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b360-120") << true << 3 << 360 << 120 << AnimState(  0, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b120-120") << true << 3 << 120 << 120 << AnimState( 42, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b120-110") << true << 3 << 120 << 110 << AnimState( 42, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b120-100") << true << 3 << 120 << 100 << AnimState(100, Running) << AnimState( 40, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b120-50")  << true << 3 << 120 <<  50 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b120-0")   << true << 3 << 120 <<   0 << AnimState(  0, Stopped) << AnimState(  0, Stopped) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b360-170") << true << 3 << 360 << 170 << AnimState( 50, Running) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b360-220") << true << 3 << 360 << 220 << AnimState(100, Running) << AnimState( 40, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b360-210") << true << 3 << 360 << 210 << AnimState( 90, Running) << AnimState( 30, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b360-120") << true << 3 << 360 << 120 << AnimState(  0, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
 
     // rewind, direction = Backward
-    QTest::newRow("b50-110")  << true << 3 <<  50 << 110 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b50-120")  << true << 3 <<  50 << 120 << AnimState(100, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b50-140")  << true << 3 <<  50 << 140 << AnimState( 20, Running) << AnimState( 20, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b50-240")  << true << 3 <<  50 << 240 << AnimState(100, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b50-260")  << true << 3 <<  50 << 260 << AnimState( 20, Running) << AnimState( 20, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b50-350")  << true << 3 <<  50 << 350 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b50-110")  << true << 3 <<  50 << 110 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b50-120")  << true << 3 <<  50 << 120 << AnimState(100, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b50-140")  << true << 3 <<  50 << 140 << AnimState( 20, Running) << AnimState( 20, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b50-240")  << true << 3 <<  50 << 240 << AnimState(100, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b50-260")  << true << 3 <<  50 << 260 << AnimState( 20, Running) << AnimState( 20, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b50-350")  << true << 3 <<  50 << 350 << AnimState(100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
 
     // infinite looping
-    QTest::newRow("inf1220")  << false << -1 <<  0 << 1220 << AnimState( 20, Running) << AnimState( 20, Running) << AnimState(  0, Stopped);
-    QTest::newRow("inf1310")  << false << -1 <<  0 << 1310 << AnimState( 100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("inf1220")  << false << -1 <<  0 << 1220 << AnimState( 20, Running) << AnimState( 20, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("inf1310")  << false << -1 <<  0 << 1310 << AnimState( 100, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
     // infinite looping, direction = Backward (will only loop once)
-    QTest::newRow("b.inf120-120") << true  << -1 << 120 << 120 << AnimState( 42, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b.inf120-20")  << true  << -1 << 120 <<  20 << AnimState( 20, Running) << AnimState( 20, Running) << AnimState(  0, Stopped);
-    QTest::newRow("b.inf120-110") << true  << -1 << 120 << 110 << AnimState( 42, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b.inf120-120") << true  << -1 << 120 << 120 << AnimState( 42, Stopped) << AnimState( 60, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b.inf120-20")  << true  << -1 << 120 <<  20 << AnimState( 20, Running) << AnimState( 20, Running) << AnimState(  0, Stopped);
+    BOBUIest::newRow("b.inf120-110") << true  << -1 << 120 << 110 << AnimState( 42, Stopped) << AnimState( 50, Running) << AnimState(  0, Stopped);
 
 
 }
@@ -943,7 +943,7 @@ void tst_QParallelAnimationGroup::pauseResume()
     QVERIFY(spy.isValid());
     QCOMPARE(group.duration(), 250);
     group.start();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QCOMPARE(group.state(), QAnimationGroup::Running);
     QCOMPARE(anim->state(), QAnimationGroup::Running);
     QCOMPARE(spy.size(), 1);
@@ -981,7 +981,7 @@ void tst_QParallelAnimationGroup::pauseResume()
     QCOMPARE(spy.size(), 2); //this shouldn't have changed
 }
 
-// This is a regression test for QTBUG-8910, where a crash occurred when the
+// This is a regression test for BOBUIBUG-8910, where a crash occurred when the
 // last animation was removed from a group.
 void tst_QParallelAnimationGroup::crashWhenRemovingUncontrolledAnimation()
 {
@@ -999,5 +999,5 @@ void tst_QParallelAnimationGroup::crashWhenRemovingUncontrolledAnimation()
 }
 
 
-QTEST_MAIN(tst_QParallelAnimationGroup)
+BOBUIEST_MAIN(tst_QParallelAnimationGroup)
 #include "tst_qparallelanimationgroup.moc"

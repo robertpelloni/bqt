@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDDND_H
 #define QWAYLANDDND_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,19 +16,19 @@
 //
 
 #include <qpa/qplatformdrag.h>
-#include <QtGui/private/qsimpledrag_p.h>
+#include <BobUIGui/private/qsimpledrag_p.h>
 
-#include <QtGui/QDrag>
-#include <QtCore/QMimeData>
+#include <BobUIGui/QDrag>
+#include <BobUICore/QMimeData>
 
-#include <QtWaylandClient/qtwaylandclientglobal.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 class Q_WAYLANDCLIENT_EXPORT QWaylandDrag : public QBasicDrag
 {
 public:
@@ -36,15 +36,15 @@ public:
     ~QWaylandDrag() override;
 
     void setResponse(bool accepted);
-    void setResponse(const QPlatformDropQtResponse &response);
-    void setDropResponse(const QPlatformDropQtResponse &response);
+    void setResponse(const QPlatformDropBobUIResponse &response);
+    void setDropResponse(const QPlatformDropBobUIResponse &response);
     void finishDrag();
 
 protected:
     void startDrag() override;
     void cancel() override;
-    void move(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods) override;
-    void drop(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods) override;
+    void move(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods) override;
+    void drop(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods) override;
     void endDrag() override;
 
     bool ownsDragObject() const override;
@@ -55,6 +55,6 @@ private:
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDDND_H

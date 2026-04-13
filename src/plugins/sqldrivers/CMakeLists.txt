@@ -1,83 +1,83 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
-if(NOT PROJECT_NAME STREQUAL "QtBase" AND NOT PROJECT_NAME STREQUAL "Qt")
+if(NOT PROJECT_NAME STREQUAL "BobUIBase" AND NOT PROJECT_NAME STREQUAL "BobUI")
     include(.cmake.conf)
     # Store initial build type (if any is specified) to be read by
-    # qt_internal_set_cmake_build_type().
-    # See qt_internal_set_cmake_build_type() for details.
+    # bobui_internal_set_cmake_build_type().
+    # See bobui_internal_set_cmake_build_type() for details.
     if(DEFINED CACHE{CMAKE_BUILD_TYPE})
-        set(__qt_internal_standalone_project_cmake_build_type_before_project_call
+        set(__bobui_internal_standalone_project_cmake_build_type_before_project_call
             "${CMAKE_BUILD_TYPE}")
     endif()
 
     project(QSQLiteDriverPlugins
-        VERSION "${QT_REPO_MODULE_VERSION}"
-        DESCRIPTION "Qt6 SQL driver plugins"
-        HOMEPAGE_URL "https://qt.io/"
+        VERSION "${BOBUI_REPO_MODULE_VERSION}"
+        DESCRIPTION "BobUI6 SQL driver plugins"
+        HOMEPAGE_URL "https://bobui.io/"
         LANGUAGES CXX C
     )
-    find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS
+    find_package(BobUI6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS
         BuildInternals
         Core
         Sql
     )
-    # Use qtbase license files for standalone builds.
-    set(QT_SBOM_LICENSE_DIRS "${PROJECT_SOURCE_DIR}/../../../LICENSES")
-    qt_build_repo_begin()
+    # Use bobuibase license files for standalone builds.
+    set(BOBUI_SBOM_LICENSE_DIRS "${PROJECT_SOURCE_DIR}/../../../LICENSES")
+    bobui_build_repo_begin()
 else()
-    qt_internal_upgrade_cmake_policies()
+    bobui_internal_upgrade_cmake_policies()
 endif()
 
 # Currently handled completely manually.
 
 # TODO sqldrivers_standalone {
 #     _QMAKE_CACHE_ = $$shadowed($$SQLDRV_SRC_TREE)/.qmake.conf
-#     load(qt_configure)
+#     load(bobui_configure)
 # }
 
-qt_feature_module_begin(
+bobui_feature_module_begin(
     NO_MODULE
-    PUBLIC_FILE "qtsqldrivers-config.h"
-    PRIVATE_FILE "qtsqldrivers-config_p.h"
+    PUBLIC_FILE "bobuisqldrivers-config.h"
+    PRIVATE_FILE "bobuisqldrivers-config_p.h"
 )
 include(configure.cmake)
-qt_feature_module_end(NO_MODULE)
+bobui_feature_module_end(NO_MODULE)
 
 
-if(QT_FEATURE_sql_psql AND QT_FEATURE_regularexpression)
+if(BOBUI_FEATURE_sql_psql AND BOBUI_FEATURE_regularexpression)
     add_subdirectory(psql)
 endif()
 
-if(QT_FEATURE_sql_mysql)
+if(BOBUI_FEATURE_sql_mysql)
      add_subdirectory(mysql)
 endif()
 
-if(QT_FEATURE_sql_odbc)
+if(BOBUI_FEATURE_sql_odbc)
     add_subdirectory(odbc)
 endif()
 
-if(QT_FEATURE_sql_oci)
+if(BOBUI_FEATURE_sql_oci)
     add_subdirectory(oci)
 endif()
 
-if(QT_FEATURE_sql_db2)
+if(BOBUI_FEATURE_sql_db2)
     add_subdirectory(db2)
 endif()
 
-if(QT_FEATURE_sql_sqlite)
+if(BOBUI_FEATURE_sql_sqlite)
     add_subdirectory(sqlite)
 endif()
 
-if(QT_FEATURE_sql_ibase)
+if(BOBUI_FEATURE_sql_ibase)
     add_subdirectory(ibase)
 endif()
 
-if(QT_FEATURE_sql_mimer)
+if(BOBUI_FEATURE_sql_mimer)
     add_subdirectory(mimer)
 endif()
 
-if(NOT PROJECT_NAME STREQUAL "QtBase" AND NOT PROJECT_NAME STREQUAL "Qt")
-    qt_build_repo_end()
+if(NOT PROJECT_NAME STREQUAL "BobUIBase" AND NOT PROJECT_NAME STREQUAL "BobUI")
+    bobui_build_repo_end()
 endif()

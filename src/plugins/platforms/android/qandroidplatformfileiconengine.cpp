@@ -1,25 +1,25 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformfileiconengine.h"
 
-#ifndef QT_NO_ICON
+#ifndef BOBUI_NO_ICON
 
 #include "androidjnimain.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qscopeguard.h>
 
 #include <android/bitmap.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcAndroidFileIconEngine, "qt.qpa.theme.fileiconengine")
+Q_STATIC_LOGGING_CATEGORY(lcAndroidFileIconEngine, "bobui.qpa.theme.fileiconengine")
 
-using namespace Qt::StringLiterals;
-using namespace QtJniTypes;
+using namespace BobUI::StringLiterals;
+using namespace BobUIJniTypes;
 
 Q_DECLARE_JNI_CLASS(CharSequence, "java/lang/CharSequence")
 Q_DECLARE_JNI_CLASS(Icon, "android/graphics/drawable/Icon")
@@ -43,7 +43,7 @@ QAndroidPlatformFileIconEngine::QAndroidPlatformFileIconEngine(const QFileInfo &
     if (!hasMimeTypeInfo)
         return;
 
-    const auto context = QtAndroidPrivate::context();
+    const auto context = BobUIAndroidPrivate::context();
     if (!context.isValid()) {
         qCWarning(lcAndroidFileIconEngine) << "Couldn't get context";
         return;
@@ -88,7 +88,7 @@ QPixmap QAndroidPlatformFileIconEngine::filePixmap(const QSize &size, QIcon::Mod
 
     JNIEnv *jniEnv = QJniEnvironment::getJniEnv();
     // createBitmap doesn't support ARGB32, but it doesn't matter here
-    Bitmap bitmap = QtAndroid::createBitmap(size.width(), size.height(),
+    Bitmap bitmap = BobUIAndroid::createBitmap(size.width(), size.height(),
                                             QImage::Format_RGBA8888, jniEnv);
     if (!bitmap.isValid()) {
         qCWarning(lcAndroidFileIconEngine) << "Failed to create bitmap";
@@ -112,6 +112,6 @@ QPixmap QAndroidPlatformFileIconEngine::filePixmap(const QSize &size, QIcon::Mod
     return m_pixmap;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_ICON
+#endif // BOBUI_NO_ICON

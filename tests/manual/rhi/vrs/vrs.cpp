@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #define EXAMPLEFW_IMGUI
 #define EXAMPLEFW_BEFORE_FRAME
@@ -10,7 +10,7 @@
 #include <QPainter>
 #include <QRandomGenerator>
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
 void *makeRateMap(QRhi *rhi, const QSize &outputSizeInPixels);
 void releaseRateMap(void *map);
 #endif
@@ -77,7 +77,7 @@ void Window::customInit()
     d.ubuf->create();
     d.releasePool << d.ubuf;
 
-    QImage image = QImage(QLatin1String(":/qt256.png")).convertToFormat(QImage::Format_RGBA8888).flipped();
+    QImage image = QImage(QLatin1String(":/bobui256.png")).convertToFormat(QImage::Format_RGBA8888).flipped();
     d.tex = m_r->newTexture(QRhiTexture::RGBA8, QSize(image.width(), image.height()), 1, {});
     d.releasePool << d.tex;
     d.tex->create();
@@ -146,7 +146,7 @@ void Window::customRelease()
     qDeleteAll(d.releasePool);
     d.releasePool.clear();
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     if (d.nativeRateMap)
         releaseRateMap(d.nativeRateMap);
 #endif
@@ -257,7 +257,7 @@ void Window::customRender()
     cb->resourceUpdate(u);
 
     if (d.textureBased) {
-        cb->beginPass(d.texRt, Qt::black, { 1.0f, 0 }, nullptr);
+        cb->beginPass(d.texRt, BobUI::black, { 1.0f, 0 }, nullptr);
         renderCube(cb, d.texRt->pixelSize(), d.ubufAlignedSize);
         cb->endPass();
     }
@@ -382,7 +382,7 @@ void Window::customGui()
             }
         }
     } else if (d.vrsMapSupported) {
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
         if (ImGui::Checkbox("Apply a MTLRasterizationRateMap (no scaling, incomplete!)", &d.applyRateMapNative)) {
             d.applyRateMapPending = true;
             const QSize outputSizeInPixels = d.textureBased ? d.texRt->pixelSize() : m_sc->currentPixelSize();

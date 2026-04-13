@@ -1,19 +1,19 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef Q23FUNCTIONAL_H
 #define Q23FUNCTIONAL_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/q20functional.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/q20functional.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. Types and functions defined in this
+// This file is not part of the BobUI API. Types and functions defined in this
 // file can reliably be replaced by their std counterparts, once available.
 // You may use these definitions in your own code, but be aware that we
-// will remove them once Qt depends on the C++ version that supports
+// will remove them once BobUI depends on the C++ version that supports
 // them in namespace std. There will be NO deprecation warning, the
 // definitions will JUST go away.
 //
@@ -22,7 +22,7 @@
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace q23 {
 // like std::invoke_r
@@ -44,6 +44,6 @@ invoke_r(F&& f, Args&&... args)
 #endif // __cpp_lib_invoke_r
 } // namespace q23
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* Q23FUNCTIONAL_H */

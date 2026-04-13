@@ -1,31 +1,31 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtNetwork/private/http2protocol_p.h>
-#include <QtNetwork/private/bitstreams_p.h>
+#include <BobUINetwork/private/http2protocol_p.h>
+#include <BobUINetwork/private/bitstreams_p.h>
 
 #include "http2srv.h"
 
-#ifndef QT_NO_SSL
-#include <QtNetwork/qsslconfiguration.h>
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qsslkey.h>
+#ifndef BOBUI_NO_SSL
+#include <BobUINetwork/qsslconfiguration.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qsslkey.h>
 #endif
 
-#include <QtNetwork/qtcpsocket.h>
+#include <BobUINetwork/bobuicpsocket.h>
 
-#include <QtCore/qtimer.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qfile.h>
+#include <BobUICore/bobuiimer.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qfile.h>
 
 #include <cstdlib>
 #include <cstring>
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Http2;
 using namespace HPack;
@@ -56,7 +56,7 @@ Http2Server::Http2Server(H2Type type, const RawSettings &ss, const RawSettings &
       serverSettings(ss),
       expectedClientSettings(cs)
 {
-#if !QT_CONFIG(ssl)
+#if !BOBUI_CONFIG(ssl)
     Q_ASSERT(type != H2Type::h2Alpn && type != H2Type::h2Direct);
 #endif
 
@@ -310,16 +310,16 @@ void Http2Server::sendWINDOW_UPDATE(quint32 streamID, quint32 delta)
 void Http2Server::incomingConnection(qintptr socketDescriptor)
 {
     if (isClearText()) {
-        socket.reset(new QTcpSocket);
+        socket.reset(new BOBUIcpSocket);
         const bool set = socket->setSocketDescriptor(socketDescriptor);
         Q_ASSERT(set);
         // Stop listening:
         close();
         upgradeProtocol = connectionType == H2Type::h2c;
         QMetaObject::invokeMethod(this, "connectionEstablished",
-                                  Qt::QueuedConnection);
+                                  BobUI::QueuedConnection);
     } else {
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
         socket.reset(new QSslSocket);
         QSslSocket *sslSocket = static_cast<QSslSocket *>(socket.get());
 
@@ -336,12 +336,12 @@ void Http2Server::incomingConnection(qintptr socketDescriptor)
         sslSocket->setProtocol(QSsl::TlsV1_2OrLater);
         connect(sslSocket, SIGNAL(sslErrors(QList<QSslError>)),
                 this, SLOT(ignoreErrorSlot()));
-        QFile file(QT_TESTCASE_SOURCEDIR "/certs/fluke.key");
+        QFile file(BOBUI_TESTCASE_SOURCEDIR "/certs/fluke.key");
         if (!file.open(QIODevice::ReadOnly))
             qFatal("Cannot open certificate file %s", qPrintable(file.fileName()));
         QSslKey key(file.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
         sslSocket->setPrivateKey(key);
-        auto localCert = QSslCertificate::fromPath(QT_TESTCASE_SOURCEDIR "/certs/fluke.cert");
+        auto localCert = QSslCertificate::fromPath(BOBUI_TESTCASE_SOURCEDIR "/certs/fluke.cert");
         sslSocket->setLocalCertificateChain(localCert);
         sslSocket->setSocketDescriptor(socketDescriptor, QAbstractSocket::ConnectedState);
         // Stop listening.
@@ -365,7 +365,7 @@ quint32 Http2Server::clientSetting(Http2::Settings identifier, quint32 defaultVa
 
 bool Http2Server::readMethodLine()
 {
-    // We know for sure that Qt did the right thing sending us the correct
+    // We know for sure that BobUI did the right thing sending us the correct
     // Request-line with CRLF at the end ...
     // We're overly simplistic here but all we need to know - the method.
     while (socket->bytesAvailable()) {
@@ -412,9 +412,9 @@ bool Http2Server::verifyProtocolUpgradeRequest()
 void Http2Server::triggerGOAWAYEmulation()
 {
     Q_ASSERT(testingGOAWAY);
-    auto timer = new QTimer(this);
+    auto timer = new BOBUIimer(this);
     timer->setSingleShot(true);
-    connect(timer, &QTimer::timeout, [this]() {
+    connect(timer, &BOBUIimer::timeout, [this]() {
         sendGOAWAY(quint32(connectionStreamID), quint32(goawayCode), 0);
     });
     timer->start(goawayTimeout);
@@ -456,7 +456,7 @@ void Http2Server::connectionEstablished()
 
 void Http2Server::ignoreErrorSlot()
 {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     static_cast<QSslSocket *>(socket.get())->ignoreSslErrors();
 #endif
 }
@@ -504,7 +504,7 @@ void Http2Server::readReady()
     }
 
     if (socket->bytesAvailable())
-        QMetaObject::invokeMethod(this, "readReady", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "readReady", BobUI::QueuedConnection);
 }
 
 void Http2Server::handleProtocolUpgrade()
@@ -1041,4 +1041,4 @@ void Http2Server::processRequest()
     continuedRequest.clear();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QMetaProperty>
-#include <QtAssert>
+#include <BobUIAssert>
 #include <QBrush>
 #include <QFile>
 
@@ -175,7 +175,7 @@ bool examples()
 //! [17&19_include_open]
 // File: div.cpp
 
-#include <QtGlobal>
+#include <BobUIGlobal>
 
 int divide(int a, int b)
 {
@@ -234,7 +234,7 @@ const TInputType &myMin(const TInputType &value1, const TInputType &value2)
 void debug_info_example()
 {
     QList<int> myList;
-    QBrush myQBrush(Qt::red);
+    QBrush myQBrush(BobUI::red);
     int i = 0;
     //! [24]
     qDebug("Items in list: %d", myList.size());
@@ -265,7 +265,7 @@ void f(int c)
 
 void warning_example()
 {
-    QBrush myQBrush(Qt::red);
+    QBrush myQBrush(BobUI::red);
     int i = 0;
     //! [27]
     qWarning() << "Brush:" << myQBrush << "Other value:" << i;
@@ -283,7 +283,7 @@ void load(const QString &fileName)
 
 void critical_example()
 {
-    QBrush myQBrush(Qt::red);
+    QBrush myQBrush(BobUI::red);
     int i = 0;
     //! [29]
     qCritical() << "Brush:" << myQBrush << "Other value:" << i;
@@ -331,8 +331,8 @@ namespace snippet_34
     QString FriendlyConversation::greeting(int type)
     {
         static const char *greeting_strings[] = {
-            QT_TR_NOOP("Hello"),
-            QT_TR_NOOP("Goodbye")
+            BOBUI_TR_NOOP("Hello"),
+            BOBUI_TR_NOOP("Goodbye")
         };
         return tr(greeting_strings[type]);
     }
@@ -340,7 +340,7 @@ namespace snippet_34
 }
 
 
-namespace snippet_qttrnnoop
+namespace snippet_bobuitrnnoop
 {
     class StatusClass
     {
@@ -353,17 +353,17 @@ namespace snippet_qttrnnoop
     {
         return "";
     }
-    //! [qttrnnoop]
+    //! [bobuitrnnoop]
     const char * const StatusClass::status_strings[] = {
-        QT_TR_N_NOOP("There are %n new message(s)"),
-        QT_TR_N_NOOP("There are %n total message(s)")
+        BOBUI_TR_N_NOOP("There are %n new message(s)"),
+        BOBUI_TR_N_NOOP("There are %n total message(s)")
     };
 
     QString StatusClass::status(int type, int count)
     {
         return tr(status_strings[type], nullptr, count);
     }
-    //! [qttrnnoop]
+    //! [bobuitrnnoop]
 }
 
 QString translate(const char *, const char *, const char *, int)
@@ -371,49 +371,49 @@ QString translate(const char *, const char *, const char *, int)
     return "";
 }
 
-//! [qttranslatennoop]
+//! [bobuitranslatennoop]
 static const char * const greeting_strings[] = {
-    QT_TRANSLATE_N_NOOP("Welcome Msg", "Hello, you have %n message(s)"),
-    QT_TRANSLATE_N_NOOP("Welcome Msg", "Hi, you have %n message(s)")
+    BOBUI_TRANSLATE_N_NOOP("Welcome Msg", "Hello, you have %n message(s)"),
+    BOBUI_TRANSLATE_N_NOOP("Welcome Msg", "Hi, you have %n message(s)")
 };
 
 QString global_greeting(int type, int msgcnt)
 {
     return translate("Welcome Msg", greeting_strings[type], nullptr, msgcnt);
 }
-//! [qttranslatennoop]
+//! [bobuitranslatennoop]
 
 
-void qttrid_example()
+void bobuitrid_example()
 {
     int n = 0;
-    //! [qttrid]
+    //! [bobuitrid]
     //% "%n fooish bar(s) found.\n"
     //% "Do you want to continue?"
-    QString text = qtTrId("qtn_foo_bar", n);
-    //! [qttrid]
+    QString text = bobuiTrId("bobuin_foo_bar", n);
+    //! [bobuitrid]
 }
 
 
-namespace qttrid_n_noop
+namespace bobuitrid_n_noop
 {
-    //! [qttrid_n_noop]
+    //! [bobuitrid_n_noop]
     static const char * const ids[] = {
         //% "%n foo(s) found."
-        QT_TRID_N_NOOP("qtn_foo"),
+        BOBUI_TRID_N_NOOP("bobuin_foo"),
         //% "%n bar(s) found."
-        QT_TRID_N_NOOP("qtn_bar"),
+        BOBUI_TRID_N_NOOP("bobuin_bar"),
         0
     };
 
     QString result(int type, int n)
     {
-        return qtTrId(ids[type], n);
+        return bobuiTrId(ids[type], n);
     }
-    //! [qttrid_n_noop]
+    //! [bobuitrid_n_noop]
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //! [38]
 struct Point3D
@@ -478,7 +478,7 @@ Q_DECLARE_TYPEINFO(Point2D, Q_RELOCATABLE_TYPE);
 //! [42]
 
 //! [begin namespace macro]
-namespace QT_NAMESPACE {
+namespace BOBUI_NAMESPACE {
 //! [begin namespace macro]
 
 //! [end namespace macro]
@@ -518,7 +518,7 @@ void qfuzzycompare_example()
 }
 
 //! [49]
-void myMessageHandler(QtMsgType, const QMessageLogContext &, const QString &);
+void myMessageHandler(BobUIMsgType, const QMessageLogContext &, const QString &);
 //! [49]
 
 //! [50]
@@ -532,10 +532,10 @@ struct A : public B {
 //! [50]
 
 //! [51]
-template<> class QTypeInfo<A> : public QTypeInfoMerger<A, B, C, D> {};
+template<> class BOBUIypeInfo<A> : public BOBUIypeInfoMerger<A, B, C, D> {};
 //! [51]
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 namespace snippet_52
 {
@@ -658,7 +658,7 @@ void process(const QChar &ch) { }
 
 void qchar_examples()
 {
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
     {
     //! [as-const-0]
         QString s = "...";
@@ -668,7 +668,7 @@ void qchar_examples()
             process(ch);
     //! [as-const-0]
     }
-#endif // QT_DEPRECATED_SINCE(6, 6)
+#endif // BOBUI_DEPRECATED_SINCE(6, 6)
 
     //! [as-const-1]
         const QString s = "...";

@@ -10,7 +10,7 @@ void OmniStyleSheet::parse(const QString& styleString) {
     if (styleString.isEmpty()) return;
 
     // Simple parser for "-omni-background-color: #FF0000; -omni-border-radius: 5px;"
-    QStringList declarations = styleString.split(';', Qt::SkipEmptyParts);
+    QStringList declarations = styleString.split(';', BobUI::SkipEmptyParts);
     for (const QString& decl : declarations) {
         int colonIdx = decl.indexOf(':');
         if (colonIdx > 0) {

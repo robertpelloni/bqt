@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [0]
 content-type: text/html
@@ -14,14 +14,14 @@ QString contentType = header.value("content-type");
 
 //! [2]
 QHttpRequestHeader header("GET", QUrl::toPercentEncoding("/index.html"));
-header.setValue("Host", "qt-project.org");
-http->setHost("qt-project.org");
+header.setValue("Host", "bobui-project.org");
+http->setHost("bobui-project.org");
 http->request(header);
 //! [2]
 
 
 //! [3]
-http->setHost("qt-project.org");                // id == 1
+http->setHost("bobui-project.org");                // id == 1
 http->get(QUrl::toPercentEncoding("/index.html")); // id == 2
 //! [3]
 

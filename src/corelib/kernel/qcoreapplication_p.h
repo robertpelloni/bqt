@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCOREAPPLICATION_P_H
 #define QCOREAPPLICATION_P_H
@@ -8,20 +8,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtCore/qcoreapplication.h"
-#if QT_CONFIG(commandlineparser)
-#include "QtCore/qcommandlineoption.h"
+#include "BobUICore/qcoreapplication.h"
+#if BOBUI_CONFIG(commandlineparser)
+#include "BobUICore/qcommandlineoption.h"
 #endif
-#include "QtCore/qreadwritelock.h"
-#include "QtCore/qtranslator.h"
-#ifndef QT_NO_QOBJECT
+#include "BobUICore/qreadwritelock.h"
+#include "BobUICore/bobuiranslator.h"
+#ifndef BOBUI_NO_QOBJECT
 #include "private/qobject_p.h"
 #include "private/qlocking_p.h"
 #endif
@@ -30,18 +30,18 @@
 #include "private/qcore_mac_p.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-typedef QList<QTranslator*> QTranslatorList;
+typedef QList<BOBUIranslator*> BOBUIranslatorList;
 
 class QAbstractEventDispatcher;
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 class QEvent;
 #endif
 
 class Q_CORE_EXPORT QCoreApplicationPrivate
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     : public QObjectPrivate
 #endif
 {
@@ -56,7 +56,7 @@ public:
     QCoreApplicationPrivate(int &aargc,  char **aargv);
 
     // If not inheriting from QObjectPrivate: force this class to be polymorphic
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
     virtual
 #endif
     ~QCoreApplicationPrivate();
@@ -78,11 +78,11 @@ public:
 
     static bool checkInstance(const char *method);
 
-#if QT_CONFIG(commandlineparser)
-    virtual void addQtOptions(QList<QCommandLineOption> *options);
+#if BOBUI_CONFIG(commandlineparser)
+    virtual void addBobUIOptions(QList<QCommandLineOption> *options);
 #endif
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     bool sendThroughApplicationEventFilters(QObject *, QEvent *);
     static bool sendThroughObjectEventFilters(QObject *, QEvent *);
     static bool notify_helper(QObject *, QEvent *);
@@ -103,24 +103,24 @@ public:
     void quitAutomatically();
     virtual void quit();
 
-    static QBasicAtomicPointer<QThread> theMainThread;
+    static QBasicAtomicPointer<BOBUIhread> theMainThread;
     static QBasicAtomicPointer<void> theMainThreadId;
-    static QThread *mainThread();
+    static BOBUIhread *mainThread();
 
-    static void sendPostedEvents(QObject *receiver, int event_type, QThreadData *data);
+    static void sendPostedEvents(QObject *receiver, int event_type, BOBUIhreadData *data);
 
     static void checkReceiverThread(QObject *receiver);
     void cleanupThreadData();
 
     struct QPostEventListLocker
     {
-        QThreadData *threadData;
+        BOBUIhreadData *threadData;
         std::unique_lock<QMutex> locker;
 
         void unlock() { locker.unlock(); }
     };
     static QPostEventListLocker lockThreadPostEventList(QObject *object);
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
     int &argc;
     char **argv;
@@ -135,7 +135,7 @@ public:
 
     Type application_type = Tty;
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     void execCleanup();
 
     bool in_exec = false;
@@ -146,10 +146,10 @@ public:
     static bool is_app_running;
     static bool is_app_closing;
 #endif
-#ifndef QT_NO_TRANSLATION
-    QTranslatorList translators;
+#ifndef BOBUI_NO_TRANSLATION
+    BOBUIranslatorList translators;
     QReadWriteLock translateMutex;
-    static bool isTranslatorInstalled(QTranslator *translator);
+    static bool isTranslatorInstalled(BOBUIranslator *translator);
 #endif
 
     static bool setuidAllowed;
@@ -161,11 +161,11 @@ public:
     QString qmljs_debug_arguments; // a string containing arguments for js/qml debugging.
     inline QString qmljsDebugArgumentsString() const { return qmljs_debug_arguments; }
 
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
     QCoreApplication *q_ptr = nullptr;
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOREAPPLICATION_P_H

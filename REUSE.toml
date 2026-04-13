@@ -4,58 +4,58 @@ version = 1
 path = ["tests/auto/opengl/CMakeLists.txt",
         "tests/benchmarks/widgets/graphicsview/functional/CMakeLists.txt"]
 precedence = "closest"
-SPDX-FileCopyrightText = "Copyright (C) 20242 The Qt Company Ltd."
+SPDX-FileCopyrightText = "Copyright (C) 20242 The BobUI Company Ltd."
 SPDX-License-Identifier = "BSD-3-Clause"
 
 [[annotations]]
 path = ["**tools/**", "util/**", "doc/global/template/scripts/extras.js",
         "doc/global/template/scripts/main.js"]
 precedence = "closest"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0"
 
 [[annotations]]
 path = ["tests/**"]
 precedence = "closest"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR GPL-3.0-only"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR GPL-3.0-only"
 
 [[annotations]]
 path = ["bin/*", "coin/**","libexec/*","**_clang-format", "**.cmake", "**.conf", "**.cmake.in",
-        "**.prf", "libexec/qt-internal-configure-*", "config.tests/.qmake.conf",
+        "**.prf", "libexec/bobui-internal-configure-*", "config.tests/.qmake.conf",
         "**.pro", "**.pri", "**.yaml", "cmake/**.in", "cmake/ios/LaunchScreen.storyboard",
         "cmake/**md", "**.yml", "**.dynlist.in", "cmake/**.plist",
-        "src/corelib/global/qconfig.cpp.in", "src/corelib/Qt6CoreConfigureFileTemplate.in",
+        "src/corelib/global/qconfig.cpp.in", "src/corelib/BobUI6CoreConfigureFileTemplate.in",
         "**.cfg", "**/Makefile", "**/CMakeLists.txt", "**.qrc", ".tag"]
 precedence = "closest"
 comment = "build system"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
 SPDX-License-Identifier = "BSD-3-Clause"
 
 [[annotations]]
 path = ["**PrivacyInfo.xcprivacy"]
 precedence = "closest"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
 SPDX-License-Identifier = "CC0-1.0"
 
 [[annotations]]
 path = ["**/.gitattributes", "**.gitignore", "**.gitreview"]
 precedence = "closest"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR BSD-3-Clause"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR BSD-3-Clause"
 
 [[annotations]]
 path = ["**/snippets/**", "examples/**", "src/tools/qlalr/examples/**"]
 comment = "this must be after the build system table because example and snippets take precedence over build system"
 precedence = "closest"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR BSD-3-Clause"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR BSD-3-Clause"
 
 [[annotations]]
 path = ["tests/manual/examples/**", "**/snippets/**"]
 precedence = "closest"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR BSD-3-Clause"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR BSD-3-Clause"
 
 [[annotations]]
 path = ["**/README*", "src/plugins/**/README*", "examples/**/README*",# "tests/**/README*",
@@ -65,8 +65,8 @@ path = ["**/README*", "src/plugins/**/README*", "examples/**/README*",# "tests/*
         "doc/global/template/style/*", "**/doc/**/images/**"]
 comment = "documentation"
 precedence = "closest"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only"
 
 [[annotations]]
 path = ["src/corelib/global/patches/tlexpected/**", "src/corelib/global/qexpected_p.h"]
@@ -78,44 +78,44 @@ SPDX-License-Identifier = "CC0-1.0"
 path = ["src/gui/doc/snippets/textdocument-images/images.qrc"]
 precedence = "closest"
 comment = "falls under **/doc/**/images/**, which is wrong"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR BSD-3-Clause"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR BSD-3-Clause"
 
 [[annotations]]
 path = ["src/assets/icons/**.png", "src/assets/icons/**.svg",
         "src/gui/**.xml",
         "src/assets/icons/index.theme", "src/gui/rhi/test.hlsl",
-        "src/corelib/doc/include/QtCoreDoc",
-        "src/gui/doc/includes/QtGuiDoc",
-        "src/opengl/doc/QtOpenGLDoc"]
+        "src/corelib/doc/include/BobUICoreDoc",
+        "src/gui/doc/includes/BobUIGuiDoc",
+        "src/opengl/doc/BobUIOpenGLDoc"]
 precedence = "closest"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only"
 
 [[annotations]]
 path = ["tests/auto/tools/rcc/data/legal/legal.qrc"]
 precedence = "override"
 comment = "license in file not referring to the file itself"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
 SPDX-License-Identifier = "BSD-3-Clause"
 
 [[annotations]]
-path = ["**/qt_attribution.json"]
+path = ["**/bobui_attribution.json"]
 precedence = "override"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only"
 
 [[annotations]]
 path = ["**/*.index", "**/*.tags"]
 comment = "QDoc generated documentation metadata files"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only"
 
 [[annotations]]
 path = ["**.toml", "licenseRule.json"]
 precedence = "override"
-SPDX-FileCopyrightText = "Copyright (C) The Qt Company Ltd."
-SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR BSD-3-Clause"
+SPDX-FileCopyrightText = "Copyright (C) The BobUI Company Ltd."
+SPDX-License-Identifier = "LicenseRef-BobUI-Commercial OR BSD-3-Clause"
 
 [[annotations]]
 path = ["**LICENSE*", "cmake/3rdparty/**/COPYING-CMAKE-SCRIPTS"]

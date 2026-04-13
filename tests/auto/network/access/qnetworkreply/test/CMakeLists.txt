@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
@@ -18,18 +18,18 @@ list(APPEND test_data "../certs")
 list(APPEND test_data "../index.html")
 list(APPEND test_data "../smb-file.txt")
 
-qt_internal_add_test(tst_qnetworkreply
+bobui_internal_add_test(tst_qnetworkreply
     OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../"
     SOURCES
         ../tst_qnetworkreply.cpp
         ../data/gzip.rcc.cpp
         ../data/zstandard.rcc.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::NetworkPrivate
-        Qt::TestPrivate
+        BobUI::CorePrivate
+        BobUI::NetworkPrivate
+        BobUI::TestPrivate
     TESTDATA ${test_data}
-    QT_TEST_SERVER_LIST "vsftpd" "apache2" "ftp-proxy" "danted" "squid"
+    BOBUI_TEST_SERVER_LIST "vsftpd" "apache2" "ftp-proxy" "danted" "squid"
     BUNDLE_ANDROID_OPENSSL_LIBS
 )
 add_dependencies(tst_qnetworkreply echo)
@@ -39,7 +39,7 @@ set(qnetworkreply_resource_files
     "../resource"
 )
 
-qt_internal_add_resource(tst_qnetworkreply "qnetworkreply"
+bobui_internal_add_resource(tst_qnetworkreply "qnetworkreply"
     PREFIX
         "/"
     BASE

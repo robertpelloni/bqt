@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = tst_manual_qhttpnetworkconnection
 
-QT -= gui
-QT += network testlib
+BOBUI -= gui
+BOBUI += network testlib
 
 SOURCES += main.cpp

@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
 // Copyright (C) 2019 Klarälvdalens Datakonsult AB.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef Q_QDOC
 
@@ -11,29 +11,29 @@
 #endif
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
 #if 0
-// These macros are duplicated here to make syncqt not complain a about
-// this header, as we have a "qt_sync_stop_processing" below, which in turn
+// These macros are duplicated here to make syncbobui not complain a about
+// this header, as we have a "bobui_sync_stop_processing" below, which in turn
 // is here because this file contains a template mess and duplicates the
 // classes found in qsharedpointer.h
-QT_BEGIN_NAMESPACE
-QT_END_NAMESPACE
-#pragma qt_sync_stop_processing
+BOBUI_BEGIN_NAMESPACE
+BOBUI_END_NAMESPACE
+#pragma bobui_sync_stop_processing
 #endif
 
 #include <new>
-#include <QtCore/qatomic.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qmetatype.h> // for IsPointerToTypeDerivedFromQObject
-#include <QtCore/qxptype_traits.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qmetatype.h> // for IsPointerToTypeDerivedFromQObject
+#include <BobUICore/qxptype_traits.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QObject;
 template <class T>
@@ -61,18 +61,18 @@ QSharedPointer<X> qSharedPointerConstCast(const QSharedPointer<T> &ptr);
 template <class X, class T>
 QSharedPointer<X> qSharedPointerConstCast(QSharedPointer<T> &&ptr);
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 template <class X, class T>
 QSharedPointer<X> qSharedPointerObjectCast(const QSharedPointer<T> &ptr);
 template <class X, class T>
 QSharedPointer<X> qSharedPointerObjectCast(QSharedPointer<T> &&ptr);
 #endif
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 struct EnableInternalData;
 }
 
-namespace QtSharedPointer {
+namespace BobUISharedPointer {
     template <class T> class ExternalRefCount;
 
     template <class X, class Y> QSharedPointer<X> copyAndSetPointer(X * ptr, const QSharedPointer<Y> &src);
@@ -119,17 +119,17 @@ namespace QtSharedPointer {
             strongref.storeRelaxed(1);
             weakref.storeRelaxed(1);
         }
-        inline ExternalRefCountData(Qt::Initialization) { }
+        inline ExternalRefCountData(BobUI::Initialization) { }
         ~ExternalRefCountData() { Q_ASSERT(!weakref.loadRelaxed()); Q_ASSERT(strongref.loadRelaxed() <= 0); }
 
         void destroy() { destroyer(this); }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
         Q_CORE_EXPORT static ExternalRefCountData *getAndRef(const QObject *);
-        QT6_ONLY(
+        BOBUI6_ONLY(
         Q_CORE_EXPORT void setQObjectShared(const QObject *, bool enable);
         )
-        QT6_ONLY(Q_CORE_EXPORT void checkQObjectShared(const QObject *);)
+        BOBUI6_ONLY(Q_CORE_EXPORT void checkQObjectShared(const QObject *);)
 #endif
         inline void checkQObjectShared(...) { }
         inline void setQObjectShared(...) { }
@@ -259,15 +259,15 @@ namespace QtSharedPointer {
         Q_DISABLE_COPY(ExternalRefCountWithContiguousData)
     };
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_CORE_EXPORT QWeakPointer<QObject> weakPointerFromVariant_internal(const QVariant &variant);
     Q_CORE_EXPORT QSharedPointer<QObject> sharedPointerFromVariant_internal(const QVariant &variant);
 #endif
-} // namespace QtSharedPointer
+} // namespace BobUISharedPointer
 
 template <class T> class QSharedPointer
 {
-    typedef QtSharedPointer::ExternalRefCountData Data;
+    typedef BobUISharedPointer::ExternalRefCountData Data;
     template <typename X>
     using IfCompatible = typename std::enable_if<std::is_convertible<X*, T*>::value, bool>::type;
 
@@ -299,7 +299,7 @@ public:
     template <class X, IfCompatible<X> = true>
     Q_NODISCARD_CTOR
     inline explicit QSharedPointer(X *ptr) : value(ptr) // noexcept
-    { internalConstruct(ptr, QtSharedPointer::NormalDeleter()); }
+    { internalConstruct(ptr, BobUISharedPointer::NormalDeleter()); }
 
     template <class X, typename Deleter, IfCompatible<X> = true>
     Q_NODISCARD_CTOR
@@ -327,7 +327,7 @@ public:
         other.d = nullptr;
         other.value = nullptr;
     }
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSharedPointer)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSharedPointer)
 
     template <class X, IfCompatible<X> = true>
     Q_NODISCARD_CTOR
@@ -414,7 +414,7 @@ public:
         return qSharedPointerConstCast<X>(std::move(*this));
     }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     template <class X>
     QSharedPointer<X> objectCast() const &
     {
@@ -435,14 +435,14 @@ public:
     template <typename... Args>
     [[nodiscard]] static QSharedPointer create(Args && ...arguments)
     {
-        typedef QtSharedPointer::ExternalRefCountWithContiguousData<T> Private;
-# ifdef QT_SHAREDPOINTER_TRACK_POINTERS
+        typedef BobUISharedPointer::ExternalRefCountWithContiguousData<T> Private;
+# ifdef BOBUI_SHAREDPOINTER_TRACK_POINTERS
         typename Private::DestroyerFn destroy = &Private::safetyCheckDeleter;
 # else
         typename Private::DestroyerFn destroy = &Private::deleter;
 # endif
         typename Private::DestroyerFn noDestroy = &Private::noDeleter;
-        QSharedPointer result(Qt::Uninitialized);
+        QSharedPointer result(BobUI::Uninitialized);
         typename std::remove_cv<T>::type *ptr;
         result.d = Private::create(&ptr, noDestroy);
 
@@ -451,7 +451,7 @@ public:
         result.value.reset(ptr);
         result.d->destroyer = destroy;
         result.d->setQObjectShared(result.value.get(), true);
-# ifdef QT_SHAREDPOINTER_TRACK_POINTERS
+# ifdef BOBUI_SHAREDPOINTER_TRACK_POINTERS
         internalSafetyCheckAdd(result.d, result.value.get());
 # endif
         result.enableSharedFromThis(result.data());
@@ -480,12 +480,12 @@ private:
     friend bool comparesEqual(const QSharedPointer &lhs, const QSharedPointer<X> &rhs) noexcept
     { return lhs.data() == rhs.data(); }
     template <typename X>
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QSharedPointer &lhs, const QSharedPointer<X> &rhs) noexcept
     {
-        return Qt::compareThreeWay(lhs.value, rhs.data());
+        return BobUI::compareThreeWay(lhs.value, rhs.data());
     }
-    QT_DECLARE_ORDERING_OPERATORS_HELPER(STRONG, QSharedPointer<T>, QSharedPointer<X>,
+    BOBUI_DECLARE_ORDERING_OPERATORS_HELPER(STRONG, QSharedPointer<T>, QSharedPointer<X>,
                                          /* non-constexpr */, noexcept(true),
                                          template <typename X>)
 
@@ -493,19 +493,19 @@ private:
     friend bool comparesEqual(const QSharedPointer &lhs, X *rhs) noexcept
     { return lhs.data() == rhs; }
     template <typename X>
-    friend Qt::strong_ordering compareThreeWay(const QSharedPointer &lhs, X *rhs) noexcept
-    { return Qt::compareThreeWay(lhs.value, rhs); }
+    friend BobUI::strong_ordering compareThreeWay(const QSharedPointer &lhs, X *rhs) noexcept
+    { return BobUI::compareThreeWay(lhs.value, rhs); }
     Q_DECLARE_STRONGLY_ORDERED(QSharedPointer, X*, template <typename X>)
 
     friend bool comparesEqual(const QSharedPointer &lhs, std::nullptr_t) noexcept
     { return lhs.data() == nullptr; }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QSharedPointer &lhs, std::nullptr_t) noexcept
-    { return Qt::compareThreeWay(lhs.value, nullptr); }
+    { return BobUI::compareThreeWay(lhs.value, nullptr); }
     Q_DECLARE_STRONGLY_ORDERED(QSharedPointer, std::nullptr_t)
 
     Q_NODISCARD_CTOR
-    explicit QSharedPointer(Qt::Initialization) {}
+    explicit QSharedPointer(BobUI::Initialization) {}
 
     void deref() noexcept
     { deref(d); }
@@ -530,15 +530,15 @@ private:
     template <typename X, typename Deleter>
     inline void internalConstruct(X *ptr, Deleter deleter)
     {
-        typedef QtSharedPointer::ExternalRefCountWithCustomDeleter<X, Deleter> Private;
-# ifdef QT_SHAREDPOINTER_TRACK_POINTERS
+        typedef BobUISharedPointer::ExternalRefCountWithCustomDeleter<X, Deleter> Private;
+# ifdef BOBUI_SHAREDPOINTER_TRACK_POINTERS
         typename Private::DestroyerFn actualDeleter = &Private::safetyCheckDeleter;
 # else
         typename Private::DestroyerFn actualDeleter = &Private::deleter;
 # endif
         d = Private::create(ptr, deleter, actualDeleter);
 
-#ifdef QT_SHAREDPOINTER_TRACK_POINTERS
+#ifdef BOBUI_SHAREDPOINTER_TRACK_POINTERS
         internalSafetyCheckAdd(d, ptr);
 #endif
         enableSharedFromThis(ptr);
@@ -546,14 +546,14 @@ private:
 
     void internalSwap(QSharedPointer &other) noexcept
     {
-        qt_ptr_swap(d, other.d);
-        qt_ptr_swap(this->value, other.value);
+        bobui_ptr_swap(d, other.d);
+        bobui_ptr_swap(this->value, other.value);
     }
 
     template <class X> friend class QSharedPointer;
     template <class X> friend class QWeakPointer;
-    template <class X, class Y> friend QSharedPointer<X> QtSharedPointer::copyAndSetPointer(X * ptr, const QSharedPointer<Y> &src);
-    template <class X, class Y> friend QSharedPointer<X> QtSharedPointer::movePointer(X * ptr, QSharedPointer<Y> &&src);
+    template <class X, class Y> friend QSharedPointer<X> BobUISharedPointer::copyAndSetPointer(X * ptr, const QSharedPointer<Y> &src);
+    template <class X, class Y> friend QSharedPointer<X> BobUISharedPointer::movePointer(X * ptr, QSharedPointer<Y> &&src);
     void ref() const noexcept { d->weakref.ref(); d->strongref.ref(); }
 
     inline void internalSet(Data *o, T *actual)
@@ -575,7 +575,7 @@ private:
                 o = nullptr;
         }
 
-        qt_ptr_swap(d, o);
+        bobui_ptr_swap(d, o);
         this->value.reset(actual);
         if (!d || d->strongref.loadRelaxed() == 0)
             this->value = nullptr;
@@ -584,14 +584,14 @@ private:
         deref(o);
     }
 
-    Qt::totally_ordered_wrapper<Type *> value;
+    BobUI::totally_ordered_wrapper<Type *> value;
     Data *d;
 };
 
 template <class T>
 class QWeakPointer
 {
-    typedef QtSharedPointer::ExternalRefCountData Data;
+    typedef BobUISharedPointer::ExternalRefCountData Data;
     template <typename X>
     using IfCompatible = std::enable_if_t<std::conjunction_v<
             std::negation<std::is_same<T, X>>, // don't make accidental copy/move SMFs
@@ -631,7 +631,7 @@ public:
         other.d = nullptr;
         other.value = nullptr;
     }
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QWeakPointer)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QWeakPointer)
 
     template <class X, IfCompatible<X> = true, IfNotVirtualBase<X> = true>
     Q_NODISCARD_CTOR
@@ -667,8 +667,8 @@ public:
 
     void swap(QWeakPointer &other) noexcept
     {
-        qt_ptr_swap(this->d, other.d);
-        qt_ptr_swap(this->value, other.value);
+        bobui_ptr_swap(this->d, other.d);
+        bobui_ptr_swap(this->value, other.value);
     }
 
     Q_NODISCARD_CTOR
@@ -762,7 +762,7 @@ public:
     { return std::hash<Data *>()(d); }
 
 private:
-    friend struct QtPrivate::EnableInternalData;
+    friend struct BobUIPrivate::EnableInternalData;
     template <class X> friend class QSharedPointer;
     template <class X> friend class QWeakPointer;
     template <class X> friend class QPointer;
@@ -771,7 +771,7 @@ private:
     inline QWeakPointer &assign(X *ptr)
     { return *this = QWeakPointer<T>(ptr, true); }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_NODISCARD_CTOR
     QWeakPointer(T *ptr, bool)
         : d{ptr ? Data::getAndRef(ptr) : nullptr}, value{ptr}
@@ -794,7 +794,7 @@ private:
         value = actual;
     }
 
-    // ### TODO - QTBUG-88102: remove all users of this API; no one should ever
+    // ### TODO - BOBUIBUG-88102: remove all users of this API; no one should ever
     // access a weak pointer's data but the weak pointer itself
     inline T *internalData() const noexcept
     {
@@ -805,7 +805,7 @@ private:
     T *value;
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 struct EnableInternalData {
     template <typename T>
     static T *internalData(const QWeakPointer<T> &p) noexcept { return p.internalData(); }
@@ -882,7 +882,7 @@ template <class T>
 inline void swap(QWeakPointer<T> &p1, QWeakPointer<T> &p2) noexcept
 { p1.swap(p2); }
 
-namespace QtSharedPointer {
+namespace BobUISharedPointer {
 // helper functions:
     template <class X, class T>
     Q_INLINE_TEMPLATE QSharedPointer<X> copyAndSetPointer(X *ptr, const QSharedPointer<T> &src)
@@ -908,13 +908,13 @@ template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerCast(const QSharedPointer<T> &src)
 {
     X *ptr = static_cast<X *>(src.data()); // if you get an error in this line, the cast is invalid
-    return QtSharedPointer::copyAndSetPointer(ptr, src);
+    return BobUISharedPointer::copyAndSetPointer(ptr, src);
 }
 template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerCast(QSharedPointer<T> &&src)
 {
     X *ptr = static_cast<X *>(src.data()); // if you get an error in this line, the cast is invalid
-    return QtSharedPointer::movePointer(ptr, std::move(src));
+    return BobUISharedPointer::movePointer(ptr, std::move(src));
 }
 template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerCast(const QWeakPointer<T> &src)
@@ -928,7 +928,7 @@ Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerDynamicCast(const QSharedPoint
     X *ptr = dynamic_cast<X *>(src.data()); // if you get an error in this line, the cast is invalid
     if (!ptr)
         return QSharedPointer<X>();
-    return QtSharedPointer::copyAndSetPointer(ptr, src);
+    return BobUISharedPointer::copyAndSetPointer(ptr, src);
 }
 template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerDynamicCast(QSharedPointer<T> &&src)
@@ -936,7 +936,7 @@ Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerDynamicCast(QSharedPointer<T> 
     X *ptr = dynamic_cast<X *>(src.data()); // if you get an error in this line, the cast is invalid
     if (!ptr)
         return QSharedPointer<X>();
-    return QtSharedPointer::movePointer(ptr, std::move(src));
+    return BobUISharedPointer::movePointer(ptr, std::move(src));
 }
 template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerDynamicCast(const QWeakPointer<T> &src)
@@ -948,13 +948,13 @@ template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerConstCast(const QSharedPointer<T> &src)
 {
     X *ptr = const_cast<X *>(src.data()); // if you get an error in this line, the cast is invalid
-    return QtSharedPointer::copyAndSetPointer(ptr, src);
+    return BobUISharedPointer::copyAndSetPointer(ptr, src);
 }
 template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerConstCast(QSharedPointer<T> &&src)
 {
     X *ptr = const_cast<X *>(src.data()); // if you get an error in this line, the cast is invalid
-    return QtSharedPointer::movePointer(ptr, std::move(src));
+    return BobUISharedPointer::movePointer(ptr, std::move(src));
 }
 template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerConstCast(const QWeakPointer<T> &src)
@@ -969,14 +969,14 @@ QWeakPointer<X> qWeakPointerCast(const QSharedPointer<T> &src)
     return qSharedPointerCast<X>(src).toWeakRef();
 }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerObjectCast(const QSharedPointer<T> &src)
 {
     X *ptr = qobject_cast<X *>(src.data());
     if (!ptr)
         return QSharedPointer<X>();
-    return QtSharedPointer::copyAndSetPointer(ptr, src);
+    return BobUISharedPointer::copyAndSetPointer(ptr, src);
 }
 template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerObjectCast(QSharedPointer<T> &&src)
@@ -984,7 +984,7 @@ Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerObjectCast(QSharedPointer<T> &
     X *ptr = qobject_cast<X *>(src.data());
     if (!ptr)
         return QSharedPointer<X>();
-    return QtSharedPointer::movePointer(ptr, std::move(src));
+    return BobUISharedPointer::movePointer(ptr, std::move(src));
 }
 template <class X, class T>
 Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerObjectCast(const QWeakPointer<T> &src)
@@ -993,37 +993,37 @@ Q_INLINE_TEMPLATE QSharedPointer<X> qSharedPointerObjectCast(const QWeakPointer<
 }
 
 template <class X, class T>
-inline QSharedPointer<typename QtSharedPointer::RemovePointer<X>::Type>
+inline QSharedPointer<typename BobUISharedPointer::RemovePointer<X>::Type>
 qobject_cast(const QSharedPointer<T> &src)
 {
-    return qSharedPointerObjectCast<typename QtSharedPointer::RemovePointer<X>::Type>(src);
+    return qSharedPointerObjectCast<typename BobUISharedPointer::RemovePointer<X>::Type>(src);
 }
 template <class X, class T>
-inline QSharedPointer<typename QtSharedPointer::RemovePointer<X>::Type>
+inline QSharedPointer<typename BobUISharedPointer::RemovePointer<X>::Type>
 qobject_cast(QSharedPointer<T> &&src)
 {
-    return qSharedPointerObjectCast<typename QtSharedPointer::RemovePointer<X>::Type>(std::move(src));
+    return qSharedPointerObjectCast<typename BobUISharedPointer::RemovePointer<X>::Type>(std::move(src));
 }
 template <class X, class T>
-inline QSharedPointer<typename QtSharedPointer::RemovePointer<X>::Type>
+inline QSharedPointer<typename BobUISharedPointer::RemovePointer<X>::Type>
 qobject_cast(const QWeakPointer<T> &src)
 {
-    return qSharedPointerObjectCast<typename QtSharedPointer::RemovePointer<X>::Type>(src);
+    return qSharedPointerObjectCast<typename BobUISharedPointer::RemovePointer<X>::Type>(src);
 }
 
-/// ### TODO - QTBUG-88102: make this use toStrongRef() (once support for
+/// ### TODO - BOBUIBUG-88102: make this use toStrongRef() (once support for
 /// storing non-managed QObjects in QWeakPointer is removed)
 template<typename T>
-QWeakPointer<typename std::enable_if<QtPrivate::IsPointerToTypeDerivedFromQObject<T*>::Value, T>::type>
+QWeakPointer<typename std::enable_if<BobUIPrivate::IsPointerToTypeDerivedFromQObject<T*>::Value, T>::type>
 qWeakPointerFromVariant(const QVariant &variant)
 {
-    return QWeakPointer<T>(qobject_cast<T*>(QtPrivate::EnableInternalData::internalData(QtSharedPointer::weakPointerFromVariant_internal(variant))));
+    return QWeakPointer<T>(qobject_cast<T*>(BobUIPrivate::EnableInternalData::internalData(BobUISharedPointer::weakPointerFromVariant_internal(variant))));
 }
 template<typename T>
-QSharedPointer<typename std::enable_if<QtPrivate::IsPointerToTypeDerivedFromQObject<T*>::Value, T>::type>
+QSharedPointer<typename std::enable_if<BobUIPrivate::IsPointerToTypeDerivedFromQObject<T*>::Value, T>::type>
 qSharedPointerFromVariant(const QVariant &variant)
 {
-    return qSharedPointerObjectCast<T>(QtSharedPointer::sharedPointerFromVariant_internal(variant));
+    return qSharedPointerObjectCast<T>(BobUISharedPointer::sharedPointerFromVariant_internal(variant));
 }
 
 // std::shared_ptr helpers
@@ -1070,6 +1070,6 @@ template<typename T> Q_DECLARE_TYPEINFO_BODY(QWeakPointer<T>, Q_RELOCATABLE_TYPE
 template<typename T> Q_DECLARE_TYPEINFO_BODY(QSharedPointer<T>, Q_RELOCATABLE_TYPE);
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

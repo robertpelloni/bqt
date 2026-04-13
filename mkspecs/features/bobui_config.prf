@@ -1,0 +1,43 @@
+# This file is loaded as one of the last things by all qmakespecs.
+
+QMAKE_BOBUI_CONFIG = $$[BOBUI_HOST_DATA/get]/mkspecs/qconfig.pri
+!exists($$QMAKE_BOBUI_CONFIG)|!include($$QMAKE_BOBUI_CONFIG, "", true) {
+   debug(1, "Cannot load qconfig.pri!")
+} else {
+   debug(1, "Loaded .qconfig.pri from ($$QMAKE_BOBUI_CONFIG)")
+   dirs = $$(QMAKEMODULES)
+   QMAKE_MODULE_PATH = $$split(dirs, $$DIRLIST_SEPARATOR)
+   QMAKE_MODULE_PATH += $$QMAKEMODULES
+   dirs = $$[QMAKEMODULES]
+   QMAKE_MODULE_PATH += $$split(dirs, $$DIRLIST_SEPARATOR)
+   dirs = $$[QMAKE_MKSPECS]
+   dirs = $$split(dirs, $$DIRLIST_SEPARATOR)
+   QMAKE_MODULE_PATH += $$replace(dirs, \$, /modules)
+   unset(dirs)
+   QMAKE_MODULE_PATH = $$unique(QMAKE_MODULE_PATH)
+   QMAKE_MODULE_PATH = $$reverse(QMAKE_MODULE_PATH)
+   for(dir, QMAKE_MODULE_PATH) {
+      debug(1, "Loading modules from $${dir}")
+      mods = $$files($$dir/bobui_*.pri)
+      for (mod, mods) {
+         # For installed BobUI these paths will be common for all modules.
+         # For uninstalled prefix builds these will vary per module, via the
+         # forwarding module pri files. Keep bobui_module_pris.prf in sync with this!
+         BOBUI_MODULE_INCLUDE_BASE = $$[BOBUI_INSTALL_HEADERS]
+         BOBUI_MODULE_LIB_BASE = $$[BOBUI_INSTALL_LIBS]
+         BOBUI_MODULE_HOST_LIB_BASE = $$[BOBUI_HOST_LIBS]
+         BOBUI_MODULE_HOST_LIBEXEC_BASE = $$[BOBUI_HOST_LIBEXECS]
+         BOBUI_MODULE_BIN_BASE = $$[BOBUI_INSTALL_BINS]
+         include($$mod)
+      }
+      unset(mods)
+   }
+   BOBUI_MODULES = $$unique(BOBUI_MODULES)   # In case modules appear in multiple places
+   unset(BOBUI_MODULE_INCLUDE_BASE)
+   unset(BOBUI_MODULE_LIB_BASE)
+   unset(BOBUI_MODULE_HOST_LIB_BASE)
+   unset(BOBUI_MODULE_HOST_LIBEXEC_BASE)
+   unset(BOBUI_MODULE_BIN_BASE)
+}
+
+load(bobui_functions)

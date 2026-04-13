@@ -1,10 +1,10 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "window.h"
 #include <QPlatformSurfaceEvent>
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 extern QVulkanInstance *instance;
 #endif
 
@@ -16,7 +16,7 @@ Window::Window(const QString &title, GraphicsApi api)
         break;
     case Vulkan:
         setSurfaceType(VulkanSurface);
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
         setVulkanInstance(instance);
 #endif
         break;

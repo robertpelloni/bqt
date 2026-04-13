@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDDATASOURCE_H
 #define QWAYLANDDATASOURCE_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -17,21 +17,21 @@
 
 #include <QObject>
 
-#include <QtWaylandClient/private/qwayland-wayland.h>
-#include <QtWaylandClient/private/qtwaylandclientglobal_p.h>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
+#include <BobUIWaylandClient/private/bobuiwaylandclientglobal_p.h>
 
-QT_REQUIRE_CONFIG(wayland_datadevice);
+BOBUI_REQUIRE_CONFIG(wayland_datadevice);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDataDeviceManager;
 class QWaylandDisplay;
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandDataSource : public QObject, public QtWayland::wl_data_source
+class Q_WAYLANDCLIENT_EXPORT QWaylandDataSource : public QObject, public BobUIWayland::wl_data_source
 {
     Q_OBJECT
 public:
@@ -42,8 +42,8 @@ Q_SIGNALS:
     void cancelled();
     void finished();
 
-    void dndResponseUpdated(bool accepted, Qt::DropAction action);
-    void dndDropped(bool accepted, Qt::DropAction action);
+    void dndResponseUpdated(bool accepted, BobUI::DropAction action);
+    void dndDropped(bool accepted, BobUI::DropAction action);
 
 protected:
     void data_source_cancelled() override;
@@ -56,11 +56,11 @@ protected:
 private:
     QMimeData *m_mime_data = nullptr;
     bool m_accepted = false;
-    Qt::DropAction m_dropAction = Qt::IgnoreAction;
+    BobUI::DropAction m_dropAction = BobUI::IgnoreAction;
 };
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDDATASOURCE_H

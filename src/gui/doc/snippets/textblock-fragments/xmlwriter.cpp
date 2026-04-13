@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include "xmlwriter.h"
 
-#include <QTextDocument>
+#include <BOBUIextDocument>
 
 QDomDocument *XmlWriter::toXml()
 {
     QDomImplementation implementation;
     QDomDocumentType docType = implementation.createDocumentType(
-        "scribe-document", "scribe", "qt.nokia.com/scribe");
+        "scribe-document", "scribe", "bobui.nokia.com/scribe");
 
     document = new QDomDocument(docType);
 
@@ -22,7 +22,7 @@ QDomDocument *XmlWriter::toXml()
     document->appendChild(documentElement);
 
 //! [0]
-    QTextBlock currentBlock = textDocument->begin();
+    BOBUIextBlock currentBlock = textDocument->begin();
 
     while (currentBlock.isValid()) {
 //! [0]
@@ -43,14 +43,14 @@ QDomDocument *XmlWriter::toXml()
     return document;
 }
 
-void XmlWriter::readFragment(const QTextBlock &currentBlock,
+void XmlWriter::readFragment(const BOBUIextBlock &currentBlock,
                              QDomElement blockElement,
                              QDomDocument *document)
 {
 //! [3] //! [4]
-    QTextBlock::iterator it;
+    BOBUIextBlock::iterator it;
     for (it = currentBlock.begin(); !(it.atEnd()); ++it) {
-        QTextFragment currentFragment = it.fragment();
+        BOBUIextFragment currentFragment = it.fragment();
         if (currentFragment.isValid())
 //! [3] //! [5]
             processFragment(currentFragment);
@@ -70,17 +70,17 @@ void XmlWriter::readFragment(const QTextBlock &currentBlock,
 //! [7] //! [6]
 }
 
-void XmlWriter::processBlock(const QTextBlock &currentBlock)
+void XmlWriter::processBlock(const BOBUIextBlock &currentBlock)
 {
    // Dummy use of specified parameter currentBlock
-   QTextBlock localBlock;
+   BOBUIextBlock localBlock;
    localBlock = currentBlock;
 
 }
 
-void XmlWriter::processFragment(const QTextFragment &currentFragment)
+void XmlWriter::processFragment(const BOBUIextFragment &currentFragment)
 {
    // Dummy use of specified parameter currentFragment
-   QTextFragment localFragment;
+   BOBUIextFragment localFragment;
    localFragment = currentFragment;
 }

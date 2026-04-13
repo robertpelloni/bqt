@@ -1,28 +1,28 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## lance Binary:
 #####################################################################
 
-qt_internal_add_manual_test(lance
+bobui_internal_add_manual_test(lance
     SOURCES
         ../../baseline/shared/paintcommands.cpp ../../baseline/shared/paintcommands.h
         interactivewidget.cpp interactivewidget.h
         main.cpp
         widgets.h
     NO_PCH_SOURCES
-        interactivewidget.cpp # undef QT_NO_FOREACH
+        interactivewidget.cpp # undef BOBUI_NO_FOREACH
     INCLUDE_DIRECTORIES
         .
         ../../baseline/shared
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::OpenGLWidgets
-        Qt::PrintSupport
-        Qt::Widgets
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::OpenGLWidgets
+        BobUI::PrintSupport
+        BobUI::Widgets
 )
 
 # Resources:
@@ -31,7 +31,7 @@ set(icons_resource_files
     "tools.png"
 )
 
-qt_internal_add_resource(lance "icons"
+bobui_internal_add_resource(lance "icons"
     PREFIX
         "/icons"
     FILES
@@ -68,7 +68,7 @@ set(images_resource_files
     "../../baseline/painting/images/struct-image-01.png"
     "../../baseline/painting/images/zebra.png"
 )
-qt_internal_add_resource(lance "images"
+bobui_internal_add_resource(lance "images"
     PREFIX
         "/"
     BASE
@@ -80,7 +80,7 @@ qt_internal_add_resource(lance "images"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(lance CONDITION TARGET Qt::OpenGL
+bobui_internal_extend_target(lance CONDITION TARGET BobUI::OpenGL
     LIBRARIES
-        Qt::OpenGL
+        BobUI::OpenGL
 )

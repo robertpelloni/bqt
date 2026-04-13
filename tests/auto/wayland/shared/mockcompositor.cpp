@@ -1,6 +1,6 @@
 // Copyright (C) 2021 David Edmundson <davidedmundson@kde.org>
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
 
@@ -56,7 +56,7 @@ DefaultCompositor::DefaultCompositor(CompositorType t, int socketFd)
         QObject::connect(get<XdgWmBase>(), &XdgWmBase::toplevelCreated, get<XdgWmBase>(), [this] (XdgToplevel *toplevel) {
             if (m_config.autoConfigure)
                 toplevel->sendCompleteConfigure();
-        }, Qt::DirectConnection);
+        }, BobUI::DirectConnection);
     }
     Q_ASSERT(isClean());
 }
@@ -99,8 +99,8 @@ void DefaultCompositor::xdgPingAndWaitForPong()
 {
     QSignalSpy pongSpy(exec([&] { return get<XdgWmBase>(); }), &XdgWmBase::pong);
     uint serial = exec([&] { return sendXdgShellPing(); });
-    QTRY_COMPARE(pongSpy.size(), 1);
-    QTRY_COMPARE(pongSpy.first().at(0).toUInt(), serial);
+    BOBUIRY_COMPARE(pongSpy.size(), 1);
+    BOBUIRY_COMPARE(pongSpy.first().at(0).toUInt(), serial);
 }
 
 void DefaultCompositor::sendShellSurfaceConfigure(Surface *surface)

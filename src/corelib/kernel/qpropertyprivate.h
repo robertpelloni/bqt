@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPROPERTYPRIVATE_H
 #define QPROPERTYPRIVATE_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qtaggedpointer.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qttypetraits.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/bobuiaggedpointer.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <functional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QBindingStorage;
 
@@ -33,7 +33,7 @@ class QObjectCompatProperty;
 class QPropertyBindingPrivatePtr;
 using PendingBindingObserverList = QVarLengthArray<QPropertyBindingPrivatePtr>;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 // QPropertyBindingPrivatePtr operates on a RefCountingMixin solely so that we can inline
 // the constructor and copy constructor
 struct RefCounted {
@@ -52,7 +52,7 @@ class QPropertyBindingPrivate;
 class QPropertyBindingPrivatePtr
 {
 public:
-    using T = QtPrivate::RefCounted;
+    using T = BobUIPrivate::RefCounted;
     T &operator*() const { return *d; }
     T *operator->() noexcept { return d; }
     T *operator->() const noexcept { return d; }
@@ -88,13 +88,13 @@ public:
         return *this;
     }
     QPropertyBindingPrivatePtr(QPropertyBindingPrivatePtr &&o) noexcept : d(std::exchange(o.d, nullptr)) {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QPropertyBindingPrivatePtr)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QPropertyBindingPrivatePtr)
 
     operator bool () const noexcept { return d != nullptr; }
     bool operator!() const noexcept { return d == nullptr; }
 
     void swap(QPropertyBindingPrivatePtr &other) noexcept
-    { qt_ptr_swap(d, other.d); }
+    { bobui_ptr_swap(d, other.d); }
 
 private:
     friend bool comparesEqual(const QPropertyBindingPrivatePtr &lhs,
@@ -110,7 +110,7 @@ private:
     { return !lhs; }
     Q_DECLARE_EQUALITY_COMPARABLE(QPropertyBindingPrivatePtr, std::nullptr_t)
 
-    QtPrivate::RefCounted *d;
+    BobUIPrivate::RefCounted *d;
 };
 
 class QUntypedPropertyBinding;
@@ -123,7 +123,7 @@ class QUntypedPropertyData
 {
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T>
 using IsUntypedPropertyData = std::enable_if_t<std::is_base_of_v<QUntypedPropertyData, T>, bool>;
 }
@@ -132,7 +132,7 @@ template <typename T>
 class QPropertyData;
 
 // Used for grouped property evaluations
-namespace QtPrivate {
+namespace BobUIPrivate {
 class QPropertyBindingData;
 }
 struct QPropertyDelayedNotifications;
@@ -145,11 +145,11 @@ struct QPropertyProxyBindingData
         data pointer of the property which gets proxied.
         They are set in QPropertyDelayedNotifications::addProperty
     */
-    const QtPrivate::QPropertyBindingData *originalBindingData;
+    const BobUIPrivate::QPropertyBindingData *originalBindingData;
     QUntypedPropertyData *propertyData;
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 struct BindingEvaluationState;
 
 /*  used in BindingFunctionVTable::createFor; on all other compilers, void would work, but on
@@ -185,7 +185,7 @@ struct BindingFunctionVTable
                     // That is allowed by POSIX even if Callable is a function pointer
                     auto evaluationFunction = static_cast<Callable *>(f);
                     PropertyType newValue = std::invoke(*evaluationFunction);
-                    if constexpr (QTypeTraits::has_operator_equal_v<PropertyType>) {
+                    if constexpr (BOBUIypeTraits::has_operator_equal_v<PropertyType>) {
                         if (newValue == propertyPtr->valueBypassingBindings())
                             return false;
                     }
@@ -211,7 +211,7 @@ inline constexpr BindingFunctionVTable bindingFunctionVTable = BindingFunctionVT
 
 // writes binding result into dataPtr
 struct QPropertyBindingFunction {
-    const QtPrivate::BindingFunctionVTable *vtable;
+    const BobUIPrivate::BindingFunctionVTable *vtable;
     void *functor;
 };
 
@@ -233,12 +233,12 @@ class Q_CORE_EXPORT QPropertyBindingData
     // Mutable because the address of the observer of the currently evaluating binding is stored here, for
     // notification later when the value changes.
     mutable quintptr d_ptr = 0;
-    friend struct QT_PREPEND_NAMESPACE(QPropertyBindingDataPointer);
-    friend class QT_PREPEND_NAMESPACE(QQmlPropertyBinding);
-    friend struct QT_PREPEND_NAMESPACE(QPropertyDelayedNotifications);
+    friend struct BOBUI_PREPEND_NAMESPACE(QPropertyBindingDataPointer);
+    friend class BOBUI_PREPEND_NAMESPACE(QQmlPropertyBinding);
+    friend struct BOBUI_PREPEND_NAMESPACE(QPropertyDelayedNotifications);
 
     template<typename Class, typename T, auto Offset, auto Setter, auto Signal, auto Getter>
-    friend class QT_PREPEND_NAMESPACE(QObjectCompatProperty);
+    friend class BOBUI_PREPEND_NAMESPACE(QObjectCompatProperty);
 
     Q_DISABLE_COPY(QPropertyBindingData)
 public:
@@ -277,7 +277,7 @@ public:
             removeBinding_helper();
     }
 
-    void registerWithCurrentlyEvaluatingBinding(QtPrivate::BindingEvaluationState *currentBinding) const
+    void registerWithCurrentlyEvaluatingBinding(BobUIPrivate::BindingEvaluationState *currentBinding) const
     {
         if (!currentBinding)
             return;
@@ -322,22 +322,22 @@ private:
 };
 
 template <typename T, typename Tag>
-class QTagPreservingPointerToPointer
+class BOBUIagPreservingPointerToPointer
 {
 public:
-    constexpr QTagPreservingPointerToPointer() = default;
+    constexpr BOBUIagPreservingPointerToPointer() = default;
 
-    QTagPreservingPointerToPointer(T **ptr)
+    BOBUIagPreservingPointerToPointer(T **ptr)
         : d(reinterpret_cast<quintptr*>(ptr))
     {}
 
-    QTagPreservingPointerToPointer<T, Tag> &operator=(T **ptr)
+    BOBUIagPreservingPointerToPointer<T, Tag> &operator=(T **ptr)
     {
         d = reinterpret_cast<quintptr *>(ptr);
         return *this;
     }
 
-    QTagPreservingPointerToPointer<T, Tag> &operator=(QTaggedPointer<T, Tag> *ptr)
+    BOBUIagPreservingPointerToPointer<T, Tag> &operator=(BOBUIaggedPointer<T, Tag> *ptr)
     {
         d = reinterpret_cast<quintptr *>(ptr);
         return *this;
@@ -350,12 +350,12 @@ public:
 
     void setPointer(T *ptr)
     {
-        *d = reinterpret_cast<quintptr>(ptr) | (*d & QTaggedPointer<T, Tag>::tagMask());
+        *d = reinterpret_cast<quintptr>(ptr) | (*d & BOBUIaggedPointer<T, Tag>::tagMask());
     }
 
     T *get() const
     {
-        return reinterpret_cast<T*>(*d & QTaggedPointer<T, Tag>::pointerMask());
+        return reinterpret_cast<T*>(*d & BOBUIaggedPointer<T, Tag>::pointerMask());
     }
 
     explicit operator bool() const
@@ -384,8 +384,8 @@ namespace detail {
     }
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPROPERTYPRIVATE_H

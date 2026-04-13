@@ -1,24 +1,24 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
-#include <QtCore/qstring.h>
+#include <BobUICore/qstring.h>
 
 #ifndef QSTRINGBUILDER_H
 #define QSTRINGBUILDER_H
 
 #if 0
-// syncqt can not handle the templates in this file, and it doesn't need to
+// syncbobui can not handle the templates in this file, and it doesn't need to
 // process them anyway because they are internal.
-#pragma qt_class(QStringBuilder)
-#pragma qt_sync_stop_processing
+#pragma bobui_class(QStringBuilder)
+#pragma bobui_sync_stop_processing
 #endif
 
-#include <QtCore/qbytearray.h>
+#include <BobUICore/qbytearray.h>
 
 #include <string.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 struct Q_CORE_EXPORT QAbstractConcatenable
@@ -37,7 +37,7 @@ template <typename T> struct QConcatenable;
 template <typename T>
 using QConcatenableEx = QConcatenable<q20::remove_cvref_t<T>>;
 
-namespace QtStringBuilder {
+namespace BobUIStringBuilder {
     template <typename A, typename B> struct ConvertToTypeHelper
     { typedef A ConvertTo; };
     template <typename T> struct ConvertToTypeHelper<T, QString>
@@ -78,7 +78,7 @@ struct QStringBuilderBase<Builder, QString> : public QStringBuilderCommon<Builde
 
 template <typename A, typename B>
 class QStringBuilder : public QStringBuilderBase<QStringBuilder<A, B>,
-                                                 typename QtStringBuilder::ConvertToTypeHelper<
+                                                 typename BobUIStringBuilder::ConvertToTypeHelper<
                                                          typename QConcatenableEx<A>::ConvertTo,
                                                          typename QConcatenableEx<B>::ConvertTo
                                                          >::ConvertTo
@@ -98,14 +98,14 @@ private:
     {
         if (isNull()) {
             // appending two null strings must give back a null string,
-            // so we're special casing this one out, QTBUG-114206
+            // so we're special casing this one out, BOBUIBUG-114206
             return T();
         }
         return convertToImpl<T>(Concatenable::size(*this));
     }
     template <typename T> T convertToImpl(const qsizetype len) const
     {
-        T s(len, Qt::Uninitialized);
+        T s(len, BobUI::Uninitialized);
 
         // Using data_ptr() here (private API) so we can bypass the
         // isDetached() and the replacement of a null pointer with _empty in
@@ -136,7 +136,7 @@ public:
 
     bool isNull() const
     {
-        return QtStringBuilder::isNull(a) && QtStringBuilder::isNull(b);
+        return BobUIStringBuilder::isNull(a) && BobUIStringBuilder::isNull(b);
     }
 
     A a;
@@ -153,8 +153,8 @@ template <> struct QConcatenable<char> : private QAbstractConcatenable
     typedef QByteArray ConvertTo;
     enum { ExactSize = true };
     static qsizetype size(const char) { return 1; }
-#ifndef QT_NO_CAST_FROM_ASCII
-    QT_ASCII_CAST_WARN static inline void appendTo(const char c, QChar *&out)
+#ifndef BOBUI_NO_CAST_FROM_ASCII
+    BOBUI_ASCII_CAST_WARN static inline void appendTo(const char c, QChar *&out)
     {
         QAbstractConcatenable::convertFromAscii(c, out);
     }
@@ -169,8 +169,8 @@ template <> struct QConcatenable<QByteArrayView> : private QAbstractConcatenable
     typedef QByteArray ConvertTo;
     enum { ExactSize = true };
     static qsizetype size(QByteArrayView bav) { return bav.size(); }
-#ifndef QT_NO_CAST_FROM_ASCII
-    QT_ASCII_CAST_WARN static inline void appendTo(QByteArrayView bav, QChar *&out)
+#ifndef BOBUI_NO_CAST_FROM_ASCII
+    BOBUI_ASCII_CAST_WARN static inline void appendTo(QByteArrayView bav, QChar *&out)
     {
         QAbstractConcatenable::convertFromUtf8(bav, out);
     }
@@ -282,8 +282,8 @@ template <qsizetype N> struct QConcatenable<const char[N]> : private QAbstractCo
     typedef QByteArray ConvertTo;
     enum { ExactSize = false };
     static qsizetype size(const char[N]) { return N - 1; }
-#ifndef QT_NO_CAST_FROM_ASCII
-    QT_ASCII_CAST_WARN static inline void appendTo(const char a[N], QChar *&out)
+#ifndef BOBUI_NO_CAST_FROM_ASCII
+    BOBUI_ASCII_CAST_WARN static inline void appendTo(const char a[N], QChar *&out)
     {
         QAbstractConcatenable::convertFromUtf8(QByteArrayView(a, N - 1), out);
     }
@@ -306,8 +306,8 @@ template <> struct QConcatenable<const char *> : private QAbstractConcatenable
     typedef QByteArray ConvertTo;
     enum { ExactSize = false };
     static qsizetype size(const char *a) { return qstrlen(a); }
-#ifndef QT_NO_CAST_FROM_ASCII
-    QT_ASCII_CAST_WARN static inline void appendTo(const char *a, QChar *&out)
+#ifndef BOBUI_NO_CAST_FROM_ASCII
+    BOBUI_ASCII_CAST_WARN static inline void appendTo(const char *a, QChar *&out)
     { QAbstractConcatenable::convertFromUtf8(QByteArrayView(a), out); }
 #endif
     static inline void appendTo(const char *a, char *&out)
@@ -348,7 +348,7 @@ template <> struct QConcatenable<const char16_t *> : private QAbstractConcatenab
     using ConvertTo = QString;
     enum { ExactSize = true };
     static qsizetype size(const char16_t *a) { return QStringView(a).size(); }
-    QT_ASCII_CAST_WARN static inline void appendTo(const char16_t *a, QChar *&out)
+    BOBUI_ASCII_CAST_WARN static inline void appendTo(const char16_t *a, QChar *&out)
     {
         if (!a)
             return;
@@ -368,8 +368,8 @@ template <> struct QConcatenable<QByteArray> : private QAbstractConcatenable
     typedef QByteArray ConvertTo;
     enum { ExactSize = false };
     static qsizetype size(const QByteArray &ba) { return ba.size(); }
-#ifndef QT_NO_CAST_FROM_ASCII
-    QT_ASCII_CAST_WARN static inline void appendTo(const QByteArray &ba, QChar *&out)
+#ifndef BOBUI_NO_CAST_FROM_ASCII
+    BOBUI_ASCII_CAST_WARN static inline void appendTo(const QByteArray &ba, QChar *&out)
     {
         QAbstractConcatenable::convertFromUtf8(ba, out);
     }
@@ -388,7 +388,7 @@ template <typename A, typename B>
 struct QConcatenable< QStringBuilder<A, B> >
 {
     typedef QStringBuilder<A, B> type;
-    using ConvertTo = typename QtStringBuilder::ConvertToTypeHelper<
+    using ConvertTo = typename BobUIStringBuilder::ConvertToTypeHelper<
                 typename QConcatenableEx<A>::ConvertTo,
                 typename QConcatenableEx<B>::ConvertTo
             >::ConvertTo;
@@ -411,9 +411,9 @@ auto operator%(A &&a, B &&b)
     return QStringBuilder<A, B>(std::forward<A>(a), std::forward<B>(b));
 }
 
-// QT_USE_FAST_OPERATOR_PLUS was introduced in 4.7, QT_USE_QSTRINGBUILDER is to be used from 4.8 onwards
-// QT_USE_FAST_OPERATOR_PLUS does not remove the normal operator+ for QByteArray
-#if defined(QT_USE_FAST_OPERATOR_PLUS) || defined(QT_USE_QSTRINGBUILDER)
+// BOBUI_USE_FAST_OPERATOR_PLUS was introduced in 4.7, BOBUI_USE_QSTRINGBUILDER is to be used from 4.8 onwards
+// BOBUI_USE_FAST_OPERATOR_PLUS does not remove the normal operator+ for QByteArray
+#if defined(BOBUI_USE_FAST_OPERATOR_PLUS) || defined(BOBUI_USE_QSTRINGBUILDER)
 template <typename A, typename B,
          typename = std::void_t<typename QConcatenableEx<A>::type, typename QConcatenableEx<B>::type>>
 auto operator+(A &&a, B &&b)
@@ -422,7 +422,7 @@ auto operator+(A &&a, B &&b)
 }
 #endif
 
-namespace QtStringBuilder {
+namespace BobUIStringBuilder {
 template <typename A, typename B>
 QByteArray &appendToByteArray(QByteArray &a, const QStringBuilder<A, B> &b, char)
 {
@@ -437,7 +437,7 @@ QByteArray &appendToByteArray(QByteArray &a, const QStringBuilder<A, B> &b, char
     return a;
 }
 
-#ifndef QT_NO_CAST_TO_ASCII
+#ifndef BOBUI_NO_CAST_TO_ASCII
 template <typename A, typename B>
 QByteArray &appendToByteArray(QByteArray &a, const QStringBuilder<A, B> &b, QChar)
 {
@@ -449,7 +449,7 @@ QByteArray &appendToByteArray(QByteArray &a, const QStringBuilder<A, B> &b, QCha
 template <typename A, typename B>
 QByteArray &operator+=(QByteArray &a, const QStringBuilder<A, B> &b)
 {
-    return QtStringBuilder::appendToByteArray(a, b,
+    return BobUIStringBuilder::appendToByteArray(a, b,
                                               typename QConcatenable< QStringBuilder<A, B> >::ConvertTo::value_type());
 }
 
@@ -467,6 +467,6 @@ QString &operator+=(QString &a, const QStringBuilder<A, B> &b)
     return a;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTRINGBUILDER_H

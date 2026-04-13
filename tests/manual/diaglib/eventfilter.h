@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef _EVENTFILTER_
 #define _EVENTFILTER_
 
-#include <QtCore/QObject>
-#include <QtCore/QEvent>
-#include <QtCore/QList>
+#include <BobUICore/QObject>
+#include <BobUICore/QEvent>
+#include <BobUICore/QList>
 
-QT_FORWARD_DECLARE_CLASS(QDebug)
+BOBUI_FORWARD_DECLARE_CLASS(QDebug)
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 // Event filter that can for example be installed on QApplication
 // to log relevant events.
@@ -72,6 +72,6 @@ struct formatQObject
 
 QDebug operator<<(QDebug d, const formatQObject &fo);
 
-} // namespace QtDiag
+} // namespace BobUIDiag
 
 #endif

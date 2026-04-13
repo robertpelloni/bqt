@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_find_package(X11_XCB MODULE)
-qt_find_package(WrapHarfbuzz MODULE PROVIDED_TARGETS WrapHarfbuzz::WrapHarfbuzz)
-qt_find_package(WrapPNG MODULE PROVIDED_TARGETS WrapPNG::WrapPNG)
-qt_find_package(WrapFreetype MODULE PROVIDED_TARGETS WrapFreetype::WrapFreetype)
+bobui_find_package(X11_XCB MODULE)
+bobui_find_package(WrapHarfbuzz MODULE PROVIDED_TARGETS WrapHarfbuzz::WrapHarfbuzz)
+bobui_find_package(WrapPNG MODULE PROVIDED_TARGETS WrapPNG::WrapPNG)
+bobui_find_package(WrapFreetype MODULE PROVIDED_TARGETS WrapFreetype::WrapFreetype)
 
-if (QT_FEATURE_gui)
-    if(QT_QPA_PLATFORMS)
-        list(GET QT_QPA_PLATFORMS 0 _default_platform)
+if (BOBUI_FEATURE_gui)
+    if(BOBUI_QPA_PLATFORMS)
+        list(GET BOBUI_QPA_PLATFORMS 0 _default_platform)
     elseif(WIN32)
         set(_default_platform "windows")
     elseif(ANDROID)
@@ -31,10 +31,10 @@ if (QT_FEATURE_gui)
         set(_default_platform "xcb")
     endif()
 
-    set(QT_QPA_DEFAULT_PLATFORM "${_default_platform}" CACHE STRING "QPA default platform")
-    if(NOT "${QT_QPA_DEFAULT_PLATFORM}" IN_LIST QT_QPA_PLATFORMS)
-        list(APPEND QT_QPA_PLATFORMS "${QT_QPA_DEFAULT_PLATFORM}")
-        set(QT_QPA_PLATFORMS "${QT_QPA_PLATFORMS}" CACHE STRING
+    set(BOBUI_QPA_DEFAULT_PLATFORM "${_default_platform}" CACHE STRING "QPA default platform")
+    if(NOT "${BOBUI_QPA_DEFAULT_PLATFORM}" IN_LIST BOBUI_QPA_PLATFORMS)
+        list(APPEND BOBUI_QPA_PLATFORMS "${BOBUI_QPA_DEFAULT_PLATFORM}")
+        set(BOBUI_QPA_PLATFORMS "${BOBUI_QPA_PLATFORMS}" CACHE STRING
             "QPA platforms deployed by default" FORCE)
     endif()
 endif()
@@ -47,17 +47,17 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}
 endif()
 
 # Silence AUTOMOC warning 'No relevant classes found. No output generated.'
-if (NOT QT_FEATURE_wayland)
+if (NOT BOBUI_FEATURE_wayland)
     set_source_files_properties(kernel/qplatformwindow_p.h
                                 PROPERTIES SKIP_AUTOMOC TRUE)
 endif()
 
 unset(qmake_module_config)
-if(QT_FEATURE_opengl)
+if(BOBUI_FEATURE_opengl)
     list(APPEND qmake_module_config opengl)
 endif()
 
-qt_internal_add_module(Gui
+bobui_internal_add_module(Gui
     PLUGIN_TYPES accessiblebridge platforms platforms/darwin xcbglintegrations platformthemes platforminputcontexts generic iconengines imageformats egldeviceintegrations
     QMAKE_MODULE_CONFIG "${qmake_module_config}"
     SOURCES
@@ -143,8 +143,8 @@ qt_internal_add_module(Gui
         kernel/qstylehints.cpp kernel/qstylehints.h kernel/qstylehints_p.h
         kernel/qsurface.cpp kernel/qsurface.h
         kernel/qsurfaceformat.cpp kernel/qsurfaceformat.h
-        kernel/qtestsupport_gui.cpp kernel/qtestsupport_gui.h
-        kernel/qtguiglobal.h kernel/qtguiglobal_p.h
+        kernel/bobuiestsupport_gui.cpp kernel/bobuiestsupport_gui.h
+        kernel/bobuiguiglobal.h kernel/bobuiguiglobal_p.h
         kernel/qwindow.cpp kernel/qwindow.h kernel/qwindow_p.h
         kernel/qwindowdefs.h
         kernel/qwindowsysteminterface.cpp kernel/qwindowsysteminterface.h kernel/qwindowsysteminterface_p.h
@@ -223,10 +223,10 @@ qt_internal_add_module(Gui
         painting/qrgba64.h painting/qrgba64_p.h
         painting/qrgbafloat.h
         painting/qstroker.cpp painting/qstroker_p.h
-        painting/qtextureglyphcache.cpp painting/qtextureglyphcache_p.h
-        painting/qtransform.cpp painting/qtransform.h
-        painting/qtriangulatingstroker.cpp painting/qtriangulatingstroker_p.h
-        painting/qtriangulator.cpp painting/qtriangulator_p.h
+        painting/bobuiextureglyphcache.cpp painting/bobuiextureglyphcache_p.h
+        painting/bobuiransform.cpp painting/bobuiransform.h
+        painting/bobuiriangulatingstroker.cpp painting/bobuiriangulatingstroker_p.h
+        painting/bobuiriangulator.cpp painting/bobuiriangulator_p.h
         painting/qvectorpath_p.h
         rhi/qrhi.cpp rhi/qrhi.h rhi/qrhi_platform.h rhi/qrhi_p.h
         rhi/qrhinull.cpp rhi/qrhinull_p.h
@@ -250,20 +250,20 @@ qt_internal_add_module(Gui
         text/qrawfont.cpp text/qrawfont.h text/qrawfont_p.h
         text/qstatictext.cpp text/qstatictext.h text/qstatictext_p.h
         text/qsyntaxhighlighter.cpp text/qsyntaxhighlighter.h
-        text/qtextcursor.cpp text/qtextcursor.h text/qtextcursor_p.h
-        text/qtextdocument.cpp text/qtextdocument.h text/qtextdocument_p.cpp text/qtextdocument_p.h
-        text/qtextdocumentfragment.cpp text/qtextdocumentfragment.h text/qtextdocumentfragment_p.h
-        text/qtextdocumentlayout.cpp text/qtextdocumentlayout_p.h
-        text/qtextdocumentwriter.cpp text/qtextdocumentwriter.h
-        text/qtextengine.cpp text/qtextengine_p.h
-        text/qtextformat.cpp text/qtextformat.h text/qtextformat_p.h
-        text/qtexthtmlparser.cpp text/qtexthtmlparser_p.h
-        text/qtextimagehandler.cpp text/qtextimagehandler_p.h
-        text/qtextlayout.cpp text/qtextlayout.h
-        text/qtextlist.cpp text/qtextlist.h
-        text/qtextobject.cpp text/qtextobject.h text/qtextobject_p.h
-        text/qtextoption.cpp text/qtextoption.h
-        text/qtexttable.cpp text/qtexttable.h text/qtexttable_p.h
+        text/bobuiextcursor.cpp text/bobuiextcursor.h text/bobuiextcursor_p.h
+        text/bobuiextdocument.cpp text/bobuiextdocument.h text/bobuiextdocument_p.cpp text/bobuiextdocument_p.h
+        text/bobuiextdocumentfragment.cpp text/bobuiextdocumentfragment.h text/bobuiextdocumentfragment_p.h
+        text/bobuiextdocumentlayout.cpp text/bobuiextdocumentlayout_p.h
+        text/bobuiextdocumentwriter.cpp text/bobuiextdocumentwriter.h
+        text/bobuiextengine.cpp text/bobuiextengine_p.h
+        text/bobuiextformat.cpp text/bobuiextformat.h text/bobuiextformat_p.h
+        text/bobuiexthtmlparser.cpp text/bobuiexthtmlparser_p.h
+        text/bobuiextimagehandler.cpp text/bobuiextimagehandler_p.h
+        text/bobuiextlayout.cpp text/bobuiextlayout.h
+        text/bobuiextlist.cpp text/bobuiextlist.h
+        text/bobuiextobject.cpp text/bobuiextobject.h text/bobuiextobject_p.h
+        text/bobuiextoption.cpp text/bobuiextoption.h
+        text/bobuiexttable.cpp text/bobuiexttable.h text/bobuiexttable_p.h
         util/qabstractlayoutstyleinfo.cpp util/qabstractlayoutstyleinfo_p.h
         util/qastchandler.cpp util/qastchandler_p.h
         util/qdesktopservices.cpp util/qdesktopservices.h
@@ -272,31 +272,31 @@ qt_internal_add_module(Gui
         util/qktxhandler.cpp util/qktxhandler_p.h
         util/qlayoutpolicy.cpp util/qlayoutpolicy_p.h
         util/qpkmhandler.cpp util/qpkmhandler_p.h
-        util/qtexturefiledata.cpp util/qtexturefiledata_p.h
-        util/qtexturefilehandler_p.h
-        util/qtexturefilereader.cpp util/qtexturefilereader_p.h
+        util/bobuiexturefiledata.cpp util/bobuiexturefiledata_p.h
+        util/bobuiexturefilehandler_p.h
+        util/bobuiexturefilereader.cpp util/bobuiexturefilereader_p.h
         util/qvalidator.cpp util/qvalidator.h
     DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
-        QT_NO_USING_NAMESPACE
-        QT_USE_NODISCARD_FILE_OPEN
-        QT_QPA_DEFAULT_PLATFORM_NAME="${QT_QPA_DEFAULT_PLATFORM}"
+        BOBUI_NO_CONTEXTLESS_CONNECT
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
+        BOBUI_NO_USING_NAMESPACE
+        BOBUI_USE_NODISCARD_FILE_OPEN
+        BOBUI_QPA_DEFAULT_PLATFORM_NAME="${BOBUI_QPA_DEFAULT_PLATFORM}"
     INCLUDE_DIRECTORIES
         ../3rdparty/VulkanMemoryAllocator
         ../3rdparty/D3D12MemoryAllocator
     LIBRARIES
-        Qt::CorePrivate
+        BobUI::CorePrivate
     PUBLIC_LIBRARIES
-        Qt::Core
+        BobUI::Core
     PRIVATE_MODULE_INTERFACE
-        Qt::CorePrivate
+        BobUI::CorePrivate
     NO_PCH_SOURCES
         compat/removed_api.cpp
         painting/qdrawhelper.cpp
     PRECOMPILED_HEADER
-        "kernel/qt_gui_pch.h"
+        "kernel/bobui_gui_pch.h"
     QPA_HEADER_FILTERS
         "(^|/)qplatform.+\\.h$|(^|/)qwindowsystem.+\\.h$"
     RHI_HEADER_FILTERS
@@ -311,23 +311,23 @@ qt_internal_add_module(Gui
         # Used by qbrush.cpp -> painting/webgradients.cpp which is generated by the JS script
         ../../util/gradientgen
     ELF_LINKER_DYNAMIC_LIST
-        QtGui.dynlist.in
+        BobUIGui.dynlist.in
 )
 
 # Resources:
-if(QT_FEATURE_pdf)
+if(BOBUI_FEATURE_pdf)
     set_source_files_properties("../3rdparty/icc/sRGB2014.icc"
-        PROPERTIES QT_RESOURCE_ALIAS "sRGB2014.icc"
+        PROPERTIES BOBUI_RESOURCE_ALIAS "sRGB2014.icc"
     )
     set(qpdf_resource_files
         "../3rdparty/icc/sRGB2014.icc"
     )
-    qt_internal_extend_target(Gui
+    bobui_internal_extend_target(Gui
         ATTRIBUTION_FILE_DIR_PATHS
             ../3rdparty/icc
     )
 
-    qt_internal_add_resource(Gui "qpdf"
+    bobui_internal_add_resource(Gui "qpdf"
        PREFIX
            "/qpdf/"
        BASE
@@ -341,15 +341,15 @@ if(UNIX AND NOT APPLE)
     set_target_properties(Gui PROPERTIES UNITY_BUILD OFF) # X11 define clashes.
 endif()
 
-qt_internal_add_resource(Gui "gui_shaders"
+bobui_internal_add_resource(Gui "gui_shaders"
     PREFIX
-        "/qt-project.org/gui"
+        "/bobui-project.org/gui"
     FILES
         "painting/shaders/backingstorecompose.vert.qsb"
         "painting/shaders/backingstorecompose.frag.qsb"
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_standarditemmodel
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_standarditemmodel
     SOURCES
         itemmodels/qstandarditemmodel.cpp itemmodels/qstandarditemmodel.h itemmodels/qstandarditemmodel_p.h
 )
@@ -360,24 +360,24 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_standarditemmodel
 # feature is available).
 # On Windows with 'dynamic' OpenGL we must not link to opengl32.
 # DO NOT MOVE THIS TO THE BEGINNING OF THE FILE, the feature variables are not
-# available until the qt_internal_add_module call.
-if(QT_FEATURE_opengl)
-    if(QT_FEATURE_opengles2)
+# available until the bobui_internal_add_module call.
+if(BOBUI_FEATURE_opengl)
+    if(BOBUI_FEATURE_opengles2)
         find_package(GLESv2)
         target_link_libraries(Gui PUBLIC GLESv2::GLESv2)
 
         if(TARGET PlatformGraphics::PlatformGraphics)
-            qt_internal_extend_target(Gui
+            bobui_internal_extend_target(Gui
                 LIBRARIES
                     PlatformGraphics::PlatformGraphics
             )
         endif()
-    elseif(NOT QT_FEATURE_opengl_dynamic)
+    elseif(NOT BOBUI_FEATURE_opengl_dynamic)
         target_link_libraries(Gui PUBLIC WrapOpenGL::WrapOpenGL)
     endif()
 endif()
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_opengl
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_opengl
     SOURCES
         kernel/qopenglcontext.cpp kernel/qopenglcontext_p.h
         kernel/qopenglcontext_platform.h
@@ -389,7 +389,7 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_opengl
         rhi/qrhigles2.cpp rhi/qrhigles2_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION MACOS
+bobui_internal_extend_target(Gui CONDITION MACOS
     SOURCES
         platform/macos/qcocoanativeinterface.mm
         platform/macos/qmacstyle_p.h
@@ -400,22 +400,22 @@ qt_internal_extend_target(Gui CONDITION MACOS
         ${FWAppKit}
 )
 
-qt_internal_extend_target(Gui CONDITION MACOS AND QT_FEATURE_opengl
+bobui_internal_extend_target(Gui CONDITION MACOS AND BOBUI_FEATURE_opengl
     PUBLIC_LIBRARIES
         ${FWOpenGL}
 )
 
-qt_internal_extend_target(Gui CONDITION UIKIT
+bobui_internal_extend_target(Gui CONDITION UIKIT
     SOURCES
         platform/ios/qiosnativeinterface.cpp
 )
 
-qt_internal_extend_target(Gui CONDITION WASM
+bobui_internal_extend_target(Gui CONDITION WASM
     SOURCES
         platform/wasm/qwasmnativeinterface.cpp
 )
 
-qt_internal_extend_target(Gui CONDITION APPLE
+bobui_internal_extend_target(Gui CONDITION APPLE
     SOURCES
         image/qimage_darwin.mm
         painting/qcoregraphics.mm painting/qcoregraphics_p.h
@@ -438,25 +438,25 @@ qt_internal_extend_target(Gui CONDITION APPLE
         ${FWImageIO}
 )
 
-qt_internal_extend_target(Gui CONDITION APPLE AND QT_FEATURE_metal
+bobui_internal_extend_target(Gui CONDITION APPLE AND BOBUI_FEATURE_metal
     SOURCES
         platform/darwin/qmetallayer.mm platform/darwin/qmetallayer_p.h
     LIBRARIES
         ${FWQuartzCore}
 )
 
-qt_internal_extend_target(Gui CONDITION QNX
+bobui_internal_extend_target(Gui CONDITION QNX
     SOURCES
         painting/qrasterbackingstore.cpp painting/qrasterbackingstore_p.h
         painting/qrhibackingstore.cpp painting/qrhibackingstore_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_animation
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_animation
     SOURCES
         animation/qguivariantanimation.cpp
 )
 
-qt_internal_extend_target(Gui CONDITION WIN32
+bobui_internal_extend_target(Gui CONDITION WIN32
     SOURCES
         image/qpixmap_win.cpp image/qpixmap_win_p.h
         kernel/qwindowdefs_win.h
@@ -496,21 +496,21 @@ qt_internal_extend_target(Gui CONDITION WIN32
         ../3rdparty/D3D12MemoryAllocator
 )
 
-if(QT_FEATURE_graphicsframecapture)
-    qt_internal_extend_target(Gui
+if(BOBUI_FEATURE_graphicsframecapture)
+    bobui_internal_extend_target(Gui
         SOURCES
             util/qgraphicsframecapture_p.h util/qgraphicsframecapture.cpp
             util/qgraphicsframecapture_p_p.h
     )
 
-    qt_internal_extend_target(Gui CONDITION (WIN32 OR (UNIX AND NOT APPLE)) AND QT_FEATURE_library
+    bobui_internal_extend_target(Gui CONDITION (WIN32 OR (UNIX AND NOT APPLE)) AND BOBUI_FEATURE_library
         LIBRARIES
             RenderDoc::RenderDoc
         SOURCES
             util/qgraphicsframecapturerenderdoc_p_p.h util/qgraphicsframecapturerenderdoc.cpp
     )
 
-    qt_internal_extend_target(Gui CONDITION IOS OR MACOS
+    bobui_internal_extend_target(Gui CONDITION IOS OR MACOS
         SOURCES
             util/qgraphicsframecapturemetal_p_p.h util/qgraphicsframecapturemetal.mm
         PUBLIC_LIBRARIES
@@ -518,28 +518,28 @@ if(QT_FEATURE_graphicsframecapture)
     )
 endif()
 
-if(QT_FEATURE_egl)
-    qt_find_package(EGL MODULE)
+if(BOBUI_FEATURE_egl)
+    bobui_find_package(EGL MODULE)
 endif()
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_egl
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_egl
     SOURCES
         opengl/platform/egl/qeglconvenience.cpp opengl/platform/egl/qeglconvenience_p.h
         opengl/platform/egl/qeglstreamconvenience.cpp opengl/platform/egl/qeglstreamconvenience_p.h
-        opengl/platform/egl/qt_egl_p.h
+        opengl/platform/egl/bobui_egl_p.h
     LIBRARIES
         EGL::EGL
 )
 
 # These two headers are always installed, their contents are guarded with
-# "#if QT_CONFIG(accessibility)", so if QT_FEATURE_accessibility is not
+# "#if BOBUI_CONFIG(accessibility)", so if BOBUI_FEATURE_accessibility is not
 # enabled, they are just duds.
-qt_internal_extend_target(Gui
+bobui_internal_extend_target(Gui
     SOURCES
         accessible/qaccessible.h accessible/qplatformaccessibility.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_accessibility
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_accessibility
     SOURCES
         accessible/qaccessible.cpp accessible/qaccessible_base.h
         accessible/qaccessiblebridge.cpp accessible/qaccessiblebridge.h
@@ -551,20 +551,20 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_accessibility
         accessible/qplatformaccessibility.cpp
 )
 
-qt_internal_extend_target(Gui CONDITION APPLE AND QT_FEATURE_accessibility
+bobui_internal_extend_target(Gui CONDITION APPLE AND BOBUI_FEATURE_accessibility
     SOURCES
         accessible/qaccessiblecache_mac.mm
     LIBRARIES
         ${FWFoundation}
 )
 
-if(QT_FEATURE_accessibility AND QT_FEATURE_accessibility_atspi_bridge)
+if(BOBUI_FEATURE_accessibility AND BOBUI_FEATURE_accessibility_atspi_bridge)
     set(atspi_accessibility ON)
 else()
     set(atspi_accessibility OFF)
 endif()
 
-qt_internal_extend_target(Gui CONDITION atspi_accessibility
+bobui_internal_extend_target(Gui CONDITION atspi_accessibility
     SOURCES
         accessible/linux/atspiadaptor.cpp accessible/linux/atspiadaptor_p.h
         accessible/linux/dbusconnection.cpp accessible/linux/dbusconnection_p.h
@@ -578,28 +578,28 @@ qt_internal_extend_target(Gui CONDITION atspi_accessibility
         accessible/linux/dbusxml/Cache.xml
         accessible/linux/dbusxml/DeviceEventController.xml
     DBUS_ADAPTOR_FLAGS
-        "-i" "QtGui/private/qspi_struct_marshallers_p.h"
-        "--namespace" "QtGuiPrivate"
+        "-i" "BobUIGui/private/qspi_struct_marshallers_p.h"
+        "--namespace" "BobUIGuiPrivate"
     DBUS_INTERFACE_SOURCES
         accessible/linux/dbusxml/Bus.xml
         accessible/linux/dbusxml/Socket.xml
         accessible/linux/dbusxml/org.freedesktop.DBus.Properties.xml
     DBUS_INTERFACE_FLAGS
-        "-i" "QtGui/private/qspi_struct_marshallers_p.h"
-        "--namespace" "QtGuiPrivate"
+        "-i" "BobUIGui/private/qspi_struct_marshallers_p.h"
+        "--namespace" "BobUIGuiPrivate"
 )
 
 if(atspi_accessibility)
-    qt_internal_add_target_include_dirs(Gui PkgConfig::ATSPI2)
+    bobui_internal_add_target_include_dirs(Gui PkgConfig::ATSPI2)
 endif()
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_action
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_action
     SOURCES
         kernel/qaction.cpp kernel/qaction.h kernel/qaction_p.h
         kernel/qactiongroup.cpp kernel/qactiongroup.h kernel/qactiongroup_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_draganddrop
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_draganddrop
     SOURCES
         kernel/qdnd.cpp kernel/qdnd_p.h
         kernel/qdrag.cpp kernel/qdrag.h
@@ -608,93 +608,93 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_draganddrop
         kernel/qsimpledrag.cpp kernel/qsimpledrag_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_shortcut
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_shortcut
     SOURCES
         kernel/qkeysequence.cpp kernel/qkeysequence.h kernel/qkeysequence_p.h
         kernel/qshortcut.cpp kernel/qshortcut.h kernel/qshortcut_p.h
         kernel/qshortcutmap.cpp kernel/qshortcutmap_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_movie
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_movie
     SOURCES
         image/qmovie.cpp image/qmovie.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_png
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_png
     SOURCES
         image/qpnghandler.cpp image/qpnghandler_p.h
     LIBRARIES
         WrapPNG::WrapPNG
 )
 
-qt_internal_extend_target(Gui
+bobui_internal_extend_target(Gui
     CONDITION
-        QT_FEATURE_png AND WIN32 AND MINGW AND
+        BOBUI_FEATURE_png AND WIN32 AND MINGW AND
         (CMAKE_CXX_COMPILER_VESION VERSION_EQUAL "8.1.0")
     COMPILE_OPTIONS
         -fno-reorder-blocks-and-partition
 )
 
 if(TEST_architecture_arch STREQUAL x86_64)
-    qt_internal_extend_target(Gui
+    bobui_internal_extend_target(Gui
        SOURCES
             painting/qdrawhelper_sse2.cpp
     )
 else()
-    qt_internal_add_simd_part(Gui SIMD sse2
+    bobui_internal_add_simd_part(Gui SIMD sse2
         SOURCES
             painting/qdrawhelper_sse2.cpp
     )
 endif()
 
-qt_internal_add_simd_part(Gui SIMD ssse3
+bobui_internal_add_simd_part(Gui SIMD ssse3
     SOURCES
         image/qimage_ssse3.cpp
         painting/qdrawhelper_ssse3.cpp
 )
 
-qt_internal_add_simd_part(Gui SIMD sse4_1
+bobui_internal_add_simd_part(Gui SIMD sse4_1
     SOURCES
         painting/qdrawhelper_sse4.cpp
         painting/qimagescale_sse4.cpp
 )
 
-qt_internal_add_simd_part(Gui SIMD arch_haswell
+bobui_internal_add_simd_part(Gui SIMD arch_haswell
     SOURCES
         painting/qdrawhelper_avx2.cpp
     EXCLUDE_OSX_ARCHITECTURES
         arm64
 )
 
-qt_internal_add_simd_part(Gui SIMD neon
+bobui_internal_add_simd_part(Gui SIMD neon
     SOURCES
         image/qimage_neon.cpp
         painting/qdrawhelper_neon.cpp painting/qdrawhelper_neon_p.h
         painting/qimagescale_neon.cpp
 )
 
-qt_internal_add_simd_part(Gui SIMD lsx
+bobui_internal_add_simd_part(Gui SIMD lsx
     SOURCES
         image/qimage_lsx.cpp
         painting/qdrawhelper_lsx.cpp
         painting/qimagescale_lsx.cpp
 )
 
-qt_internal_add_simd_part(Gui SIMD lasx
+bobui_internal_add_simd_part(Gui SIMD lasx
     SOURCES
         image/qimage_lasx.cpp
         painting/qdrawhelper_lasx.cpp
 )
 
 if(NOT ANDROID)
-    qt_internal_add_simd_part(Gui SIMD mips_dsp
+    bobui_internal_add_simd_part(Gui SIMD mips_dsp
         SOURCES
             painting/qdrawhelper_mips_dsp.cpp painting/qdrawhelper_mips_dsp_p.h
             painting/qdrawhelper_mips_dsp_asm.S
-            painting/qt_mips_asm_dsp_p.h
+            painting/bobui_mips_asm_dsp_p.h
     )
 
-    qt_internal_add_simd_part(Gui SIMD mips_dspr2
+    bobui_internal_add_simd_part(Gui SIMD mips_dspr2
         SOURCES
             image/qimage_mips_dspr2.cpp
             image/qimage_mips_dspr2_asm.S
@@ -702,29 +702,29 @@ if(NOT ANDROID)
     )
 endif()
 
-qt_internal_extend_target(Gui CONDITION ANDROID
+bobui_internal_extend_target(Gui CONDITION ANDROID
     SOURCES
         platform/android/qandroidnativeinterface.cpp
         painting/qrasterbackingstore.cpp painting/qrasterbackingstore_p.h
         painting/qrhibackingstore.cpp painting/qrhibackingstore_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION ANDROID AND (TEST_architecture_arch STREQUAL arm64 OR TEST_architecture_arch STREQUAL arm)
+bobui_internal_extend_target(Gui CONDITION ANDROID AND (TEST_architecture_arch STREQUAL arm64 OR TEST_architecture_arch STREQUAL arm)
     SOURCES
         image/qimage_neon.cpp
         painting/qdrawhelper_neon.cpp painting/qdrawhelper_neon_p.h
         painting/qimagescale_neon.cpp
 )
 
-qt_internal_extend_target(Gui CONDITION ANDROID AND (TEST_architecture_arch STREQUAL i386 OR TEST_architecture_arch STREQUAL x86_64)
+bobui_internal_extend_target(Gui CONDITION ANDROID AND (TEST_architecture_arch STREQUAL i386 OR TEST_architecture_arch STREQUAL x86_64)
     SOURCES
         image/qimage_ssse3.cpp
         painting/qdrawhelper_sse2.cpp
         painting/qdrawhelper_ssse3.cpp
     DEFINES
-        QT_COMPILER_SUPPORTS_SSE2 QT_COMPILER_SUPPORTS_SSE2
-        QT_COMPILER_SUPPORTS_SSE3 QT_COMPILER_SUPPORTS_SSE3
-        QT_COMPILER_SUPPORTS_SSSE3 QT_COMPILER_SUPPORTS_SSSE3
+        BOBUI_COMPILER_SUPPORTS_SSE2 BOBUI_COMPILER_SUPPORTS_SSE2
+        BOBUI_COMPILER_SUPPORTS_SSE3 BOBUI_COMPILER_SUPPORTS_SSE3
+        BOBUI_COMPILER_SUPPORTS_SSSE3 BOBUI_COMPILER_SUPPORTS_SSSE3
 )
 
 if (MINGW AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 8.1.0)
@@ -734,34 +734,34 @@ if (MINGW AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 8.1.0)
   )
 endif()
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_harfbuzz
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_harfbuzz
     SOURCES
         text/qharfbuzzng.cpp text/qharfbuzzng_p.h
     LIBRARIES
         WrapHarfbuzz::WrapHarfbuzz
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_harfbuzz AND UIKIT
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_harfbuzz AND UIKIT
     LIBRARIES
         ${FWCoreText}
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_textodfwriter
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_textodfwriter
     SOURCES
-        text/qtextodfwriter.cpp text/qtextodfwriter_p.h
+        text/bobuiextodfwriter.cpp text/bobuiextodfwriter_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_textmarkdownreader
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_textmarkdownreader
     SOURCES
-        text/qtextmarkdownimporter.cpp text/qtextmarkdownimporter_p.h
+        text/bobuiextmarkdownimporter.cpp text/bobuiextmarkdownimporter_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_system_textmarkdownreader AND QT_FEATURE_textmarkdownreader
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_system_textmarkdownreader AND BOBUI_FEATURE_textmarkdownreader
     LIBRARIES
         WrapSystemMd4c::WrapSystemMd4c
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_textmarkdownreader AND NOT QT_FEATURE_system_textmarkdownreader
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_textmarkdownreader AND NOT BOBUI_FEATURE_system_textmarkdownreader
     SOURCES
         ../3rdparty/md4c/md4c.c ../3rdparty/md4c/md4c.h
     DEFINES
@@ -772,18 +772,18 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_textmarkdownreader AND NOT QT
         ../3rdparty/md4c
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_textmarkdownwriter
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_textmarkdownwriter
     SOURCES
-        text/qtextmarkdownwriter.cpp text/qtextmarkdownwriter_p.h
+        text/bobuiextmarkdownwriter.cpp text/bobuiextmarkdownwriter_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_cssparser
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_cssparser
     SOURCES
         painting/qcssutil.cpp painting/qcssutil_p.h
         text/qcssparser.cpp text/qcssparser_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_freetype
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_freetype
     SOURCES
         text/freetype/qfontengine_ft.cpp text/freetype/qfontengine_ft_p.h
         text/freetype/qfreetypefontdatabase.cpp text/freetype/qfreetypefontdatabase_p.h
@@ -791,12 +791,12 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_freetype
         WrapFreetype::WrapFreetype
 )
 
-qt_internal_extend_target(Gui CONDITION UNIX AND NOT APPLE
+bobui_internal_extend_target(Gui CONDITION UNIX AND NOT APPLE
     SOURCES
         text/unix/qgenericunixfontdatabase_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_fontconfig AND QT_FEATURE_freetype AND UNIX AND NOT APPLE
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_fontconfig AND BOBUI_FEATURE_freetype AND UNIX AND NOT APPLE
     SOURCES
         text/unix/qfontconfigdatabase.cpp text/unix/qfontconfigdatabase_p.h
         text/unix/qfontenginemultifontconfig.cpp text/unix/qfontenginemultifontconfig_p.h
@@ -804,24 +804,24 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_fontconfig AND QT_FEATURE_fre
         Fontconfig::Fontconfig
 )
 
-qt_internal_extend_target(Gui CONDITION APPLE AND NOT MACOS
+bobui_internal_extend_target(Gui CONDITION APPLE AND NOT MACOS
     LIBRARIES
         ${FWUIKit}
 )
 
-qt_internal_extend_target(Gui CONDITION APPLE AND QT_FEATURE_freetype
+bobui_internal_extend_target(Gui CONDITION APPLE AND BOBUI_FEATURE_freetype
     LIBRARIES
         WrapFreetype::WrapFreetype
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_freetype AND WIN32
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_freetype AND WIN32
     SOURCES
         text/windows/qwindowsfontdatabase_ft.cpp text/windows/qwindowsfontdatabase_ft_p.h
     LIBRARIES
         WrapFreetype::WrapFreetype
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_direct2d AND QT_FEATURE_directwrite AND WIN32
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_direct2d AND BOBUI_FEATURE_directwrite AND WIN32
     SOURCES
         text/windows/qwindowsfontenginedirectwrite.cpp text/windows/qwindowsfontenginedirectwrite_p.h
     NO_UNITY_BUILD_SOURCES
@@ -830,19 +830,19 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_direct2d AND QT_FEATURE_direc
         d2d1
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_direct2d AND QT_FEATURE_directwrite AND QT_FEATURE_directwrite3 AND WIN32
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_direct2d AND BOBUI_FEATURE_directwrite AND BOBUI_FEATURE_directwrite3 AND WIN32
     SOURCES
         text/windows/qwindowsdirectwritefontdatabase.cpp text/windows/qwindowsdirectwritefontdatabase_p.h
     LIBRARIES
         dwrite
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_direct2d AND QT_FEATURE_directwrite AND WIN32 AND NOT QT_FEATURE_directwrite3
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_direct2d AND BOBUI_FEATURE_directwrite AND WIN32 AND NOT BOBUI_FEATURE_directwrite3
     LIBRARIES
         dwrite
 )
 
-qt_internal_extend_target(Gui CONDITION MINGW AND WIN32
+bobui_internal_extend_target(Gui CONDITION MINGW AND WIN32
     LIBRARIES
         uuid
 )
@@ -850,96 +850,96 @@ qt_internal_extend_target(Gui CONDITION MINGW AND WIN32
 # Only enable the Pixman draw-helpers on platforms that support the GAS syntax of their asm files
 # Note: These helpers are only used for 16-bit surfaces, so excluding them does not generally
 # exclude neon-drawhelpers on these platforms.
-if(UNIX AND NOT ANDROID AND NOT INTEGRITY AND NOT (TEST_architecture_arch STREQUAL "arm64") AND NOT UIKIT AND NOT QT_IS_MACOS_UNIVERSAL)
-    qt_internal_extend_target(Gui
+if(UNIX AND NOT ANDROID AND NOT INTEGRITY AND NOT (TEST_architecture_arch STREQUAL "arm64") AND NOT UIKIT AND NOT BOBUI_IS_MACOS_UNIVERSAL)
+    bobui_internal_extend_target(Gui
         DEFINES
             ENABLE_PIXMAN_DRAWHELPERS
         ATTRIBUTION_FILE_DIR_PATHS
             ../3rdparty/pixman
     )
-    qt_internal_add_simd_part(Gui SIMD neon
+    bobui_internal_add_simd_part(Gui SIMD neon
         SOURCES
             ../3rdparty/pixman/pixman-arm-neon-asm.S
             painting/qdrawhelper_neon_asm.S
     )
 endif()
 
-qt_internal_extend_target(Gui CONDITION ANDROID AND TEST_architecture_arch STREQUAL x86_64
+bobui_internal_extend_target(Gui CONDITION ANDROID AND TEST_architecture_arch STREQUAL x86_64
     SOURCES
         painting/qdrawhelper_sse4.cpp
         painting/qimagescale_sse4.cpp
     DEFINES
-        QT_COMPILER_SUPPORTS_SSE4_1
-        QT_COMPILER_SUPPORTS_SSE4_2
+        BOBUI_COMPILER_SUPPORTS_SSE4_1
+        BOBUI_COMPILER_SUPPORTS_SSE4_2
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_system_zlib
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_system_zlib
     LIBRARIES
         WrapZLIB::WrapZLIB
 )
 
-qt_internal_extend_target(Gui CONDITION NOT QT_FEATURE_system_zlib
+bobui_internal_extend_target(Gui CONDITION NOT BOBUI_FEATURE_system_zlib
     INCLUDE_DIRECTORIES
         ../3rdparty/zlib/src
     ATTRIBUTION_FILE_DIR_PATHS
         ../3rdparty/zlib
 )
 
-qt_internal_extend_target(Gui CONDITION NOT QT_FEATURE_system_zlib
+bobui_internal_extend_target(Gui CONDITION NOT BOBUI_FEATURE_system_zlib
     LIBRARIES
-        Qt::Core
+        BobUI::Core
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_undocommand
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_undocommand
     SOURCES
         util/qundostack.cpp util/qundostack.h util/qundostack_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_undogroup
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_undogroup
     SOURCES
         util/qundogroup.cpp util/qundogroup.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_opengl AND QT_FEATURE_xlib AND NOT QT_FEATURE_opengles2
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_opengl AND BOBUI_FEATURE_xlib AND NOT BOBUI_FEATURE_opengles2
     SOURCES
         opengl/platform/unix/qglxconvenience.cpp opengl/platform/unix/qglxconvenience_p.h
     LIBRARIES
         X11::X11
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_opengles2
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_opengles2
     SOURCES
         opengl/qopengles2ext.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_egl AND QT_FEATURE_opengl AND NOT WASM
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_egl AND BOBUI_FEATURE_opengl AND NOT WASM
     SOURCES
         opengl/platform/egl/qeglpbuffer.cpp opengl/platform/egl/qeglpbuffer_p.h
         opengl/platform/egl/qeglplatformcontext.cpp opengl/platform/egl/qeglplatformcontext_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_egl AND NOT QT_FEATURE_egl_x11
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_egl AND NOT BOBUI_FEATURE_egl_x11
     DEFINES
-        QT_EGL_NO_X11
+        BOBUI_EGL_NO_X11
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_dlopen AND QT_FEATURE_egl
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_dlopen AND BOBUI_FEATURE_egl
     LIBRARIES
         ${CMAKE_DL_LIBS}
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_standarditemmodel
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_standarditemmodel
     SOURCES
         itemmodels/qstandarditemmodel.cpp itemmodels/qstandarditemmodel.h itemmodels/qstandarditemmodel_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_filesystemmodel
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_filesystemmodel
     SOURCES
         itemmodels/qfileinfogatherer.cpp itemmodels/qfileinfogatherer_p.h
         itemmodels/qfilesystemmodel.cpp itemmodels/qfilesystemmodel.h itemmodels/qfilesystemmodel_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_vulkan
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_vulkan
     SOURCES
         rhi/qrhivulkan.cpp rhi/qrhivulkan_p.h
         vulkan/qbasicvulkanplatforminstance.cpp vulkan/qbasicvulkanplatforminstance_p.h
@@ -951,38 +951,38 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_vulkan
     ATTRIBUTION_FILE_DIR_PATHS
         vulkan
 )
-if(QT_FEATURE_vulkan)
-    qt_internal_add_target_include_dirs_and_optionally_propagate(
+if(BOBUI_FEATURE_vulkan)
+    bobui_internal_add_target_include_dirs_and_optionally_propagate(
         Gui WrapVulkanHeaders::WrapVulkanHeaders)
 endif()
 
-# We must always generate syncqt-injected header files,
+# We must always generate syncbobui-injected header files,
 # because we added a custom command earlier for those for framework builds.
 set(vulkan_fun "qvulkanfunctions.h")
 set(vulkan_fun_p "qvulkanfunctions_p.h")
 set(vulkan_fun_outputs "vulkan/${vulkan_fun}" "vulkan/${vulkan_fun_p}")
 set(vulkan_fun_command_content COMMAND "${CMAKE_COMMAND}" -E make_directory "vulkan")
-if (QT_FEATURE_vulkan)
+if (BOBUI_FEATURE_vulkan)
     set(vulkan_fun_p_cpp "qvulkanfunctions_p.cpp")
     list(APPEND vulkan_fun_outputs "vulkan/${vulkan_fun_p_cpp}")
 
-    if(NOT "${QT_HOST_PATH}" STREQUAL "")
+    if(NOT "${BOBUI_HOST_PATH}" STREQUAL "")
         set(host_executable_suffix "")
         if(CMAKE_HOST_WIN32)
             set(host_executable_suffix ".exe")
         endif()
-        qt_internal_get_host_info_var_prefix(host_info_var_prefix)
-        qt_path_join(qvkgen
-            "${QT_HOST_PATH}"
+        bobui_internal_get_host_info_var_prefix(host_info_var_prefix)
+        bobui_path_join(qvkgen
+            "${BOBUI_HOST_PATH}"
             "${${host_info_var_prefix}_LIBEXECDIR}"
             "qvkgen${host_executable_suffix}")
-    elseif(QT_OPTIONAL_TOOLS_PATH)
-        qt_path_join(qvkgen
-            "${QT_OPTIONAL_TOOLS_PATH}"
+    elseif(BOBUI_OPTIONAL_TOOLS_PATH)
+        bobui_path_join(qvkgen
+            "${BOBUI_OPTIONAL_TOOLS_PATH}"
             "${INSTALL_LIBEXECDIR}"
             "qvkgen${host_executable_suffix}")
     else()
-        set(qvkgen "${QT_CMAKE_EXPORT_NAMESPACE}::qvkgen")
+        set(qvkgen "${BOBUI_CMAKE_EXPORT_NAMESPACE}::qvkgen")
     endif()
 
     list(APPEND vulkan_fun_command_content
@@ -994,7 +994,7 @@ if (QT_FEATURE_vulkan)
         COMMENT "Generating vulkan data"
     )
 
-    qt_internal_extend_target(Gui
+    bobui_internal_extend_target(Gui
         SOURCES
             "${CMAKE_CURRENT_BINARY_DIR}/vulkan/${vulkan_fun}"
             "${CMAKE_CURRENT_BINARY_DIR}/vulkan/${vulkan_fun_p}"
@@ -1012,60 +1012,60 @@ add_custom_command(
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     VERBATIM
 )
-set_source_files_properties(${vulkan_fun_outputs} PROPERTIES _qt_syncqt_exclude_from_docs TRUE)
+set_source_files_properties(${vulkan_fun_outputs} PROPERTIES _bobui_syncbobui_exclude_from_docs TRUE)
 
-qt_internal_extend_target(Gui CONDITION WASM
+bobui_internal_extend_target(Gui CONDITION WASM
     SOURCES
         platform/wasm/qlocalfileapi.cpp platform/wasm/qlocalfileapi_p.h
         platform/wasm/qwasmlocalfileaccess.cpp platform/wasm/qwasmlocalfileaccess_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION UNIX
+bobui_internal_extend_target(Gui CONDITION UNIX
     SOURCES
         platform/unix/qunixnativeinterface.cpp
 )
 
-qt_internal_extend_target(Gui CONDITION UNIX AND NOT WASM
+bobui_internal_extend_target(Gui CONDITION UNIX AND NOT WASM
     SOURCES
         platform/unix/qgenericunixeventdispatcher.cpp platform/unix/qgenericunixeventdispatcher_p.h
         platform/unix/qunixeventdispatcher.cpp
         platform/unix/qunixeventdispatcher_qpa_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_glib AND UNIX
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_glib AND UNIX
     SOURCES
         platform/unix/qeventdispatcher_glib.cpp platform/unix/qeventdispatcher_glib_p.h
     LIBRARIES
         GLIB2::GLIB2
 )
 
-qt_internal_extend_target(Gui CONDITION UNIX AND (QT_FEATURE_xcb OR NOT UIKIT)
+bobui_internal_extend_target(Gui CONDITION UNIX AND (BOBUI_FEATURE_xcb OR NOT UIKIT)
     SOURCES
         platform/unix/qdesktopunixservices.cpp platform/unix/qdesktopunixservices_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION UNIX AND (QT_FEATURE_xcb)
+bobui_internal_extend_target(Gui CONDITION UNIX AND (BOBUI_FEATURE_xcb)
     SOURCES
-        platform/unix/qtx11extras.cpp platform/unix/qtx11extras_p.h
+        platform/unix/bobuix11extras.cpp platform/unix/bobuix11extras_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION TARGET Qt::DBus AND UNIX AND (QT_FEATURE_xcb OR NOT UIKIT)
+bobui_internal_extend_target(Gui CONDITION TARGET BobUI::DBus AND UNIX AND (BOBUI_FEATURE_xcb OR NOT UIKIT)
     LIBRARIES
-        Qt::DBus
+        BobUI::DBus
 )
 
-qt_internal_extend_target(Gui CONDITION UNIX AND QT_FEATURE_settings AND QT_FEATURE_dbus AND (QT_FEATURE_xcb OR QT_FEATURE_wayland)
+bobui_internal_extend_target(Gui CONDITION UNIX AND BOBUI_FEATURE_settings AND BOBUI_FEATURE_dbus AND (BOBUI_FEATURE_xcb OR BOBUI_FEATURE_wayland)
     SOURCES
         platform/unix/qkdetheme_p.h platform/unix/qkdetheme.cpp
 )
 
-qt_internal_extend_target(Gui CONDITION UNIX AND (((QT_FEATURE_xcb OR NOT MACOS) AND (QT_FEATURE_xcb OR NOT UIKIT)) OR QT_FEATURE_wayland)
+bobui_internal_extend_target(Gui CONDITION UNIX AND (((BOBUI_FEATURE_xcb OR NOT MACOS) AND (BOBUI_FEATURE_xcb OR NOT UIKIT)) OR BOBUI_FEATURE_wayland)
     SOURCES
         platform/unix/qgenericunixtheme.cpp platform/unix/qgenericunixtheme_p.h
         platform/unix/qgnometheme_p.h platform/unix/qgnometheme.cpp
 )
 
-qt_internal_extend_target(Gui CONDITION TARGET Qt::DBus AND UNIX AND (QT_FEATURE_xcb OR NOT MACOS) AND (QT_FEATURE_xcb OR NOT UIKIT)
+bobui_internal_extend_target(Gui CONDITION TARGET BobUI::DBus AND UNIX AND (BOBUI_FEATURE_xcb OR NOT MACOS) AND (BOBUI_FEATURE_xcb OR NOT UIKIT)
     SOURCES
         platform/unix/dbusmenu/qdbusmenuadaptor.cpp platform/unix/dbusmenu/qdbusmenuadaptor_p.h
         platform/unix/dbusmenu/qdbusmenubar.cpp platform/unix/dbusmenu/qdbusmenubar_p.h
@@ -1078,7 +1078,7 @@ qt_internal_extend_target(Gui CONDITION TARGET Qt::DBus AND UNIX AND (QT_FEATURE
         platform/unix/qgnomeportalinterface.cpp platform/unix/qgnomeportalinterface_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_systemtrayicon AND TARGET Qt::DBus AND UNIX AND (QT_FEATURE_xcb OR NOT MACOS) AND (QT_FEATURE_xcb OR NOT UIKIT)
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_systemtrayicon AND TARGET BobUI::DBus AND UNIX AND (BOBUI_FEATURE_xcb OR NOT MACOS) AND (BOBUI_FEATURE_xcb OR NOT UIKIT)
     SOURCES
         platform/unix/dbustray/qdbustrayicon.cpp platform/unix/dbustray/qdbustrayicon_p.h
         platform/unix/dbustray/qdbustraytypes.cpp platform/unix/dbustray/qdbustraytypes_p.h
@@ -1086,7 +1086,7 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_systemtrayicon AND TARGET Qt:
         platform/unix/dbustray/qxdgnotificationproxy.cpp platform/unix/dbustray/qxdgnotificationproxy_p.h
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_xkbcommon AND UNIX
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_xkbcommon AND UNIX
     SOURCES
         platform/unix/qxkbcommon.cpp platform/unix/qxkbcommon_p.h
         platform/unix/qxkbcommon_3rdparty.cpp
@@ -1096,42 +1096,42 @@ qt_internal_extend_target(Gui CONDITION QT_FEATURE_xkbcommon AND UNIX
         XKB::XKB
 )
 
-qt_internal_extend_target(Gui CONDITION QT_FEATURE_metal
+bobui_internal_extend_target(Gui CONDITION BOBUI_FEATURE_metal
     SOURCES
         rhi/qrhimetal.mm rhi/qrhimetal_p.h
     PUBLIC_LIBRARIES
         ${FWMetal}
 )
 
-qt_internal_extend_target(Gui
+bobui_internal_extend_target(Gui
     SOURCES
         painting/qdrawhelper.cpp painting/qdrawhelper_neon_p.h
     NO_PCH_SOURCES
         "painting/qdrawhelper.cpp"
 )
 
-qt_internal_extend_target(Gui CONDITION (QT_FEATURE_eglfs OR QT_FEATURE_xcb OR QT_FEATURE_direct2d OR WIN32)
+bobui_internal_extend_target(Gui CONDITION (BOBUI_FEATURE_eglfs OR BOBUI_FEATURE_xcb OR BOBUI_FEATURE_direct2d OR WIN32)
     SOURCES
         util/qedidparser.cpp util/qedidparser_p.h
         util/qedidvendortable_p.h
 )
 
-qt_internal_generate_tracepoints(Gui gui
+bobui_internal_generate_tracepoints(Gui gui
     SOURCES
         image/qimage.cpp image/qimagereader.cpp image/qpixmap.cpp kernel/qguiapplication.cpp
         text/qfontdatabase.cpp
 )
-qt_internal_add_docs(Gui
-    doc/qtgui.qdocconf
+bobui_internal_add_docs(Gui
+    doc/bobuigui.qdocconf
 )
 
 if(IOS)
-    qt_internal_set_apple_privacy_manifest(Gui
+    bobui_internal_set_apple_privacy_manifest(Gui
         "${CMAKE_CURRENT_SOURCE_DIR}/platform/ios/PrivacyInfo.xcprivacy")
 endif()
 
-qt_internal_add_optimize_full_flags()
+bobui_internal_add_optimize_full_flags()
 
-if(QT_FEATURE_doc_snippets)
+if(BOBUI_FEATURE_doc_snippets)
     add_subdirectory(doc/snippets)
 endif()

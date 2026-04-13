@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCALENDAR_BACKEND_P_H
 #define QCALENDAR_BACKEND_P_H
@@ -8,24 +8,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of calendar implementations.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qcalendar.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qanystringview.h>
-#include <QtCore/private/qlocale_p.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qcalendar.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qanystringview.h>
+#include <BobUICore/private/qlocale_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 class QCalendarRegistry;
 }
 
@@ -72,7 +72,7 @@ struct QCalendarLocale {
 class Q_CORE_EXPORT QCalendarBackend
 {
     friend class QCalendar;
-    friend class QtPrivate::QCalendarRegistry;
+    friend class BobUIPrivate::QCalendarRegistry;
     Q_DISABLE_COPY_MOVE(QCalendarBackend)
 
 public:
@@ -118,7 +118,7 @@ public:
 
     // Formatting of date-times (implemented in qlocale.cpp):
     virtual QString dateTimeToString(QStringView format, const QDateTime &datetime,
-                                     QDate dateOnly, QTime timeOnly,
+                                     QDate dateOnly, BOBUIime timeOnly,
                                      const QLocale &locale) const;
 
     bool isGregorian() const;
@@ -146,6 +146,6 @@ private:
     static const QCalendarBackend *gregorian();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCALENDAR_BACKEND_P_H

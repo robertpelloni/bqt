@@ -1,11 +1,11 @@
 #!/bin/sh
-# Copyright (C) 2016 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
-# Qt-Security score:insignificant reason:build-tool-containing-no-compiled-source
+# Copyright (C) 2016 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
+# BobUI-Security score:insignificant reason:build-tool-containing-no-compiled-source
 
 me=$(dirname $0)
 mkdir -p $me/out
-(cd $me/out && ../../../../util/qlalr/qlalr --qt --no-debug --no-lines ../qxmlstream.g)
+(cd $me/out && ../../../../util/qlalr/qlalr --bobui --no-debug --no-lines ../qxmlstream.g)
 
 for f in $me/out/*.h; do
     n=$(basename $f)

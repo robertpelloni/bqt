@@ -1,10 +1,10 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 HEADERS       = dialog.h
 SOURCES       = dialog.cpp \
                 main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/dialogs/standarddialogs
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/dialogs/standarddialogs
 INSTALLS += target

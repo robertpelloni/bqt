@@ -2,7 +2,7 @@
 ubuntu
 rhel
 
-# QTBUG-87436
+# BOBUIBUG-87436
 [clearAndGrab]
 android
 [stackWidgetOpaqueChildIsVisible]

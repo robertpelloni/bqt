@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 #import <QuartzCore/CAMetalLayer.h>
@@ -8,7 +8,7 @@
 #include "qcocoavulkaninstance.h"
 #include "qcocoawindow.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QCocoaVulkanInstance::QCocoaVulkanInstance(QVulkanInstance *instance)
     : m_instance(instance)
@@ -43,7 +43,7 @@ VkSurfaceKHR QCocoaVulkanInstance::createSurface(CALayer *layer)
     if (m_createMetalSurface) {
         VkMetalSurfaceCreateInfoEXT info = {};
         info.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT;
-        info.pLayer = qt_objc_cast<CAMetalLayer*>(layer);
+        info.pLayer = bobui_objc_cast<CAMetalLayer*>(layer);
         VkResult err = m_createMetalSurface(m_vkInst, &info, nullptr, &surface);
         if (err == VK_SUCCESS)
             return surface;
@@ -72,4 +72,4 @@ VkSurfaceKHR QCocoaVulkanInstance::createSurface(CALayer *layer)
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

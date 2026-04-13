@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNTDLL_P_H
 #define QNTDLL_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include <winternl.h>
 
-QT_BEGIN_NAMESPACE
-// Empty namespace scope just to suppress syncqt
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+// Empty namespace scope just to suppress syncbobui
+BOBUI_END_NAMESPACE
 
 // keep the following structure as is, taken from
 // https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/ns-ntddk-_file_fs_sector_size_information

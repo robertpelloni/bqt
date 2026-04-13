@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPROGRESSBAR_H
 #define QPROGRESSBAR_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qframe.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qframe.h>
 
-QT_REQUIRE_CONFIG(progressbar);
+BOBUI_REQUIRE_CONFIG(progressbar);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QProgressBarPrivate;
 class QStyleOptionProgressBar;
@@ -22,9 +22,9 @@ class Q_WIDGETS_EXPORT QProgressBar : public QWidget
     Q_PROPERTY(int maximum READ maximum WRITE setMaximum)
     Q_PROPERTY(QString text READ text)
     Q_PROPERTY(int value READ value WRITE setValue NOTIFY valueChanged)
-    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
+    Q_PROPERTY(BobUI::Alignment alignment READ alignment WRITE setAlignment)
     Q_PROPERTY(bool textVisible READ isTextVisible WRITE setTextVisible)
-    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(BobUI::Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(bool invertedAppearance READ invertedAppearance WRITE setInvertedAppearance)
     Q_PROPERTY(Direction textDirection READ textDirection WRITE setTextDirection)
     Q_PROPERTY(QString format READ format WRITE setFormat RESET resetFormat)
@@ -45,13 +45,13 @@ public:
     void setTextVisible(bool visible);
     bool isTextVisible() const;
 
-    Qt::Alignment alignment() const;
-    void setAlignment(Qt::Alignment alignment);
+    BobUI::Alignment alignment() const;
+    void setAlignment(BobUI::Alignment alignment);
 
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
 
-    Qt::Orientation orientation() const;
+    BobUI::Orientation orientation() const;
 
     void setInvertedAppearance(bool invert);
     bool invertedAppearance() const;
@@ -68,7 +68,7 @@ public Q_SLOTS:
     void setMinimum(int minimum);
     void setMaximum(int maximum);
     void setValue(int value);
-    void setOrientation(Qt::Orientation);
+    void setOrientation(BobUI::Orientation);
 
 Q_SIGNALS:
     void valueChanged(int value);
@@ -83,6 +83,6 @@ private:
     Q_DISABLE_COPY(QProgressBar)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPROGRESSBAR_H

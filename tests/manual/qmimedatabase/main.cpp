@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
-#include <QtCore/QMimeDatabase>
-#include <QtCore/QMimeType>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QCommandLineParser>
-#include <QtCore/QCommandLineOption>
-#include <QtCore/QDebug>
+#include <BobUICore/QMimeDatabase>
+#include <BobUICore/QMimeType>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QCommandLineParser>
+#include <BobUICore/QCommandLineOption>
+#include <BobUICore/QDebug>
 
 #include <iostream>
 #include <algorithm>
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 std::wostream &operator<<(std::wostream &str, const QString &s)
 {
@@ -68,12 +68,12 @@ bool operator<(const QMimeType &t1, const QMimeType &t2)
     return t1.name() < t2.name();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setApplicationVersion(BOBUI_VERSION_STR);
 
     QCommandLineParser parser;
     parser.addHelpOption();

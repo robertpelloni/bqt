@@ -1,22 +1,22 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "glyphruninspector.h"
 #include "singleglyphrun.h"
 
-#include <QTextLayout>
-#include <QtWidgets>
+#include <BOBUIextLayout>
+#include <BobUIWidgets>
 
 GlyphRunInspector::GlyphRunInspector(QWidget *parent)
     : QWidget{parent}
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
 
-    m_tabWidget = new QTabWidget;
+    m_tabWidget = new BOBUIabWidget;
     layout->addWidget(m_tabWidget);
 
     connect(m_tabWidget,
-            &QTabWidget::currentChanged,
+            &BOBUIabWidget::currentChanged,
             this,
             &GlyphRunInspector::updateVisualizationForTab);
 }
@@ -29,9 +29,9 @@ void GlyphRunInspector::updateVisualizationForTab()
         emit updateBounds(gr->bounds());
 }
 
-void GlyphRunInspector::updateLayout(QTextLayout *layout, int start, int length)
+void GlyphRunInspector::updateLayout(BOBUIextLayout *layout, int start, int length)
 {
-    QList<QGlyphRun> glyphRuns = layout->glyphRuns(start, length, QTextLayout::RetrieveAll);
+    QList<QGlyphRun> glyphRuns = layout->glyphRuns(start, length, BOBUIextLayout::RetrieveAll);
 
     m_tabWidget->clear();
     qDeleteAll(m_content);

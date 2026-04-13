@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSplashScreen>
-#include <QTimer>
+#include <BOBUIimer>
 
 class tst_QSplashScreen : public QObject
 {
@@ -31,12 +31,12 @@ protected:
 void tst_QSplashScreen::checkCloseTime()
 {
     QPixmap pix(100, 100);
-    pix.fill(Qt::red);
+    pix.fill(BobUI::red);
     CloseEventSplash splash(pix);
     QVERIFY(!splash.receivedCloseEvent);
     QWidget w;
     splash.show();
-    QTimer::singleShot(10, &w, &QWidget::show);
+    BOBUIimer::singleShot(10, &w, &QWidget::show);
     QVERIFY(!splash.receivedCloseEvent);
     splash.finish(&w);
     QVERIFY(splash.receivedCloseEvent);
@@ -49,7 +49,7 @@ void tst_QSplashScreen::checkCloseTime()
 void tst_QSplashScreen::checkConstructorAndShow()
 {
     QPixmap pix(100, 100);
-    pix.fill(Qt::red);
+    pix.fill(BobUI::red);
     for (auto *screen : QGuiApplication::screens()) {
         QSplashScreen splash(screen, pix);
         splash.show();
@@ -60,5 +60,5 @@ void tst_QSplashScreen::checkConstructorAndShow()
     }
 }
 
-QTEST_MAIN(tst_QSplashScreen)
+BOBUIEST_MAIN(tst_QSplashScreen)
 #include "tst_qsplashscreen.moc"

@@ -1,20 +1,20 @@
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QDBUSCPP2XML_TEST1_H
 #define QDBUSCPP2XML_TEST1_H
 
 #include <QObject>
-#include <QtDBus/QDBusSignature>
-#include <QtDBus/QDBusObjectPath>
-#include <QtDBus/QDBusUnixFileDescriptor>
+#include <BobUIDBus/QDBusSignature>
+#include <BobUIDBus/QDBusObjectPath>
+#include <BobUIDBus/QDBusUnixFileDescriptor>
 
 class Test1 : public QObject
 {
     Q_OBJECT
-    Q_MOC_INCLUDE(<QtDBus/qdbusextratypes.h>)
-    Q_MOC_INCLUDE(<QtDBus/qdbusunixfiledescriptor.h>)
-    Q_CLASSINFO("D-Bus Interface", "org.qtProject.qdbuscpp2xmlTests.Test1")
+    Q_MOC_INCLUDE(<BobUIDBus/qdbusextratypes.h>)
+    Q_MOC_INCLUDE(<BobUIDBus/qdbusunixfiledescriptor.h>)
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiProject.qdbuscpp2xmlTests.Test1")
     Q_PROPERTY(int numProperty1 READ numProperty1 CONSTANT)
     Q_PROPERTY(int numProperty2 READ numProperty2 WRITE setNumProperty2)
     Q_PROPERTY(int numProperty3 MEMBER m_numProperty3)
@@ -42,9 +42,9 @@ signals:
     int signalIntType();
     void signal_primitive_args(int a1, bool a2, short a3, ushort a4, uint a5, qlonglong a6, double a7, qlonglong a8 = 0);
     void signal_string_args(const QByteArray &ba, const QString &a2);
-    void signal_Qt_args1(const QDate &a1, const QTime &a2, const QDateTime &a3,
+    void signal_BobUI_args1(const QDate &a1, const BOBUIime &a2, const QDateTime &a3,
         const QRect &a4, const QRectF &a5, const QSize &a6, const QSizeF &a7);
-    void signal_Qt_args2(const QPoint &a1, const QPointF &a2, const QLine &a3, const QLineF &a4,
+    void signal_BobUI_args2(const QPoint &a1, const QPointF &a2, const QLine &a3, const QLineF &a4,
         const QVariantList &a5, const QVariantMap &a6, const QVariantHash &a7);
 
     void signal_QDBus_args(const QDBusObjectPath &a1, const QDBusSignature &a2, const QDBusUnixFileDescriptor &a3);
@@ -56,9 +56,9 @@ signals:
     Q_SCRIPTABLE int signalIntType_scriptable();
     Q_SCRIPTABLE void signal_primitive_args_scriptable(int a1, bool a2, short a3, ushort a4, uint a5, qlonglong a6, double a7, qlonglong a8 = 0);
     Q_SCRIPTABLE void signal_string_args_scriptable(const QByteArray &ba, const QString &a2);
-    Q_SCRIPTABLE void signal_Qt_args1_scriptable(const QDate &a1, const QTime &a2, const QDateTime &a3,
+    Q_SCRIPTABLE void signal_BobUI_args1_scriptable(const QDate &a1, const BOBUIime &a2, const QDateTime &a3,
         const QRect &a4, const QRectF &a5, const QSize &a6, const QSizeF &a7);
-    Q_SCRIPTABLE void signal_Qt_args2_scriptable(const QPoint &a1, const QPointF &a2, const QLine &a3, const QLineF &a4,
+    Q_SCRIPTABLE void signal_BobUI_args2_scriptable(const QPoint &a1, const QPointF &a2, const QLine &a3, const QLineF &a4,
         const QVariantList &a5, const QVariantMap &a6, const QVariantHash &a7);
 
     Q_SCRIPTABLE void signal_QDBus_args_scriptable(const QDBusObjectPath &a1, const QDBusSignature &a2, const QDBusUnixFileDescriptor &a3);

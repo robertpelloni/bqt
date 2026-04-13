@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "controls.h"
 
@@ -94,68 +94,68 @@ HintControl::HintControl(QWidget *parent)
     layout->addWidget(customizeWindowGroup);
 }
 
-Qt::WindowFlags HintControl::hints() const
+BobUI::WindowFlags HintControl::hints() const
 {
-    Qt::WindowFlags flags;
+    BobUI::WindowFlags flags;
     if (msWindowsFixedSizeDialogCheckBox->isChecked())
-        flags |= Qt::MSWindowsFixedSizeDialogHint;
+        flags |= BobUI::MSWindowsFixedSizeDialogHint;
     if (x11BypassWindowManagerCheckBox->isChecked())
-        flags |= Qt::X11BypassWindowManagerHint;
+        flags |= BobUI::X11BypassWindowManagerHint;
     if (framelessWindowCheckBox->isChecked())
-        flags |= Qt::FramelessWindowHint;
+        flags |= BobUI::FramelessWindowHint;
     if (windowTitleCheckBox->isChecked())
-        flags |= Qt::WindowTitleHint;
+        flags |= BobUI::WindowTitleHint;
     if (windowSystemMenuCheckBox->isChecked())
-        flags |= Qt::WindowSystemMenuHint;
+        flags |= BobUI::WindowSystemMenuHint;
     if (windowMinimizeButtonCheckBox->isChecked())
-        flags |= Qt::WindowMinimizeButtonHint;
+        flags |= BobUI::WindowMinimizeButtonHint;
     if (windowMaximizeButtonCheckBox->isChecked())
-        flags |= Qt::WindowMaximizeButtonHint;
+        flags |= BobUI::WindowMaximizeButtonHint;
     if (windowFullscreenButtonCheckBox->isChecked())
-        flags |= Qt::WindowFullscreenButtonHint;
+        flags |= BobUI::WindowFullscreenButtonHint;
     if (windowCloseButtonCheckBox->isChecked())
-        flags |= Qt::WindowCloseButtonHint;
+        flags |= BobUI::WindowCloseButtonHint;
     if (windowContextHelpButtonCheckBox->isChecked())
-        flags |= Qt::WindowContextHelpButtonHint;
+        flags |= BobUI::WindowContextHelpButtonHint;
     if (windowShadeButtonCheckBox->isChecked())
-        flags |= Qt::WindowShadeButtonHint;
+        flags |= BobUI::WindowShadeButtonHint;
     if (windowStaysOnTopCheckBox->isChecked())
-        flags |= Qt::WindowStaysOnTopHint;
+        flags |= BobUI::WindowStaysOnTopHint;
     if (windowStaysOnBottomCheckBox->isChecked())
-        flags |= Qt::WindowStaysOnBottomHint;
+        flags |= BobUI::WindowStaysOnBottomHint;
     if (customizeWindowGroup->isChecked())
-        flags |= Qt::CustomizeWindowHint;
+        flags |= BobUI::CustomizeWindowHint;
     if (transparentForInputCheckBox->isChecked())
-        flags |= Qt::WindowTransparentForInput;
+        flags |= BobUI::WindowTransparentForInput;
     if (noDropShadowCheckBox->isChecked())
-        flags |= Qt::NoDropShadowWindowHint;
+        flags |= BobUI::NoDropShadowWindowHint;
     if (expandedClientAreaCheckBox->isChecked())
-        flags |= Qt::ExpandedClientAreaHint;
+        flags |= BobUI::ExpandedClientAreaHint;
     if (noTitleBarBackgroundCheckBox->isChecked())
-        flags |= Qt::NoTitleBarBackgroundHint;
+        flags |= BobUI::NoTitleBarBackgroundHint;
     return flags;
 }
 
-void HintControl::setHints(Qt::WindowFlags flags)
+void HintControl::setHints(BobUI::WindowFlags flags)
 {
-    msWindowsFixedSizeDialogCheckBox->setChecked(flags & Qt::MSWindowsFixedSizeDialogHint);
-    x11BypassWindowManagerCheckBox->setChecked(flags & Qt::X11BypassWindowManagerHint);
-    framelessWindowCheckBox->setChecked(flags & Qt::FramelessWindowHint);
-    windowTitleCheckBox->setChecked(flags & Qt::WindowTitleHint);
-    windowSystemMenuCheckBox->setChecked(flags & Qt::WindowSystemMenuHint);
-    windowMinimizeButtonCheckBox->setChecked(flags & Qt::WindowMinimizeButtonHint);
-    windowMaximizeButtonCheckBox->setChecked(flags & Qt::WindowMaximizeButtonHint);
-    windowFullscreenButtonCheckBox->setChecked(flags & Qt::WindowFullscreenButtonHint);
-    windowCloseButtonCheckBox->setChecked(flags & Qt::WindowCloseButtonHint);
-    windowContextHelpButtonCheckBox->setChecked(flags & Qt::WindowContextHelpButtonHint);
-    windowShadeButtonCheckBox->setChecked(flags & Qt::WindowShadeButtonHint);
-    windowStaysOnTopCheckBox->setChecked(flags & Qt::WindowStaysOnTopHint);
-    windowStaysOnBottomCheckBox->setChecked(flags & Qt::WindowStaysOnBottomHint);
-    customizeWindowGroup->setChecked(flags & Qt::CustomizeWindowHint);
-    transparentForInputCheckBox->setChecked(flags & Qt::WindowTransparentForInput);
-    noDropShadowCheckBox->setChecked(flags & Qt::NoDropShadowWindowHint);
-    expandedClientAreaCheckBox->setChecked(flags & Qt::ExpandedClientAreaHint);
-    noTitleBarBackgroundCheckBox->setChecked(flags & Qt::NoTitleBarBackgroundHint);
+    msWindowsFixedSizeDialogCheckBox->setChecked(flags & BobUI::MSWindowsFixedSizeDialogHint);
+    x11BypassWindowManagerCheckBox->setChecked(flags & BobUI::X11BypassWindowManagerHint);
+    framelessWindowCheckBox->setChecked(flags & BobUI::FramelessWindowHint);
+    windowTitleCheckBox->setChecked(flags & BobUI::WindowTitleHint);
+    windowSystemMenuCheckBox->setChecked(flags & BobUI::WindowSystemMenuHint);
+    windowMinimizeButtonCheckBox->setChecked(flags & BobUI::WindowMinimizeButtonHint);
+    windowMaximizeButtonCheckBox->setChecked(flags & BobUI::WindowMaximizeButtonHint);
+    windowFullscreenButtonCheckBox->setChecked(flags & BobUI::WindowFullscreenButtonHint);
+    windowCloseButtonCheckBox->setChecked(flags & BobUI::WindowCloseButtonHint);
+    windowContextHelpButtonCheckBox->setChecked(flags & BobUI::WindowContextHelpButtonHint);
+    windowShadeButtonCheckBox->setChecked(flags & BobUI::WindowShadeButtonHint);
+    windowStaysOnTopCheckBox->setChecked(flags & BobUI::WindowStaysOnTopHint);
+    windowStaysOnBottomCheckBox->setChecked(flags & BobUI::WindowStaysOnBottomHint);
+    customizeWindowGroup->setChecked(flags & BobUI::CustomizeWindowHint);
+    transparentForInputCheckBox->setChecked(flags & BobUI::WindowTransparentForInput);
+    noDropShadowCheckBox->setChecked(flags & BobUI::NoDropShadowWindowHint);
+    expandedClientAreaCheckBox->setChecked(flags & BobUI::ExpandedClientAreaHint);
+    noTitleBarBackgroundCheckBox->setChecked(flags & BobUI::NoTitleBarBackgroundHint);
 }
 
 void HintControl::slotCheckBoxChanged()
@@ -175,35 +175,35 @@ WindowStateControl::WindowStateControl(QWidget *parent)
     group->setExclusive(false);
     layout->setContentsMargins(ControlLayoutMargin, ControlLayoutMargin,
                                ControlLayoutMargin, ControlLayoutMargin);
-    group->addButton(restoreButton, Qt::WindowNoState);
+    group->addButton(restoreButton, BobUI::WindowNoState);
     restoreButton->setEnabled(false);
     layout->addWidget(restoreButton);
-    group->addButton(minimizeButton, Qt::WindowMinimized);
+    group->addButton(minimizeButton, BobUI::WindowMinimized);
     layout->addWidget(minimizeButton);
-    group->addButton(maximizeButton, Qt::WindowMaximized);
+    group->addButton(maximizeButton, BobUI::WindowMaximized);
     layout->addWidget(maximizeButton);
-    group->addButton(fullscreenButton, Qt::WindowFullScreen);
+    group->addButton(fullscreenButton, BobUI::WindowFullScreen);
     layout->addWidget(fullscreenButton);
     connect(group, &QButtonGroup::idReleased, this, &WindowStateControl::stateChanged);
 }
 
-Qt::WindowStates WindowStateControl::state() const
+BobUI::WindowStates WindowStateControl::state() const
 {
-    Qt::WindowStates states;
+    BobUI::WindowStates states;
     foreach (QAbstractButton *button, group->buttons()) {
         if (button->isChecked())
-            states |= Qt::WindowState(group->id(button));
+            states |= BobUI::WindowState(group->id(button));
     }
     return states;
 }
 
-void WindowStateControl::setState(Qt::WindowStates s)
+void WindowStateControl::setState(BobUI::WindowStates s)
 {
     group->blockSignals(true);
     foreach (QAbstractButton *button, group->buttons())
-        button->setChecked(s & Qt::WindowState(group->id(button)));
+        button->setChecked(s & BobUI::WindowState(group->id(button)));
 
-    if (!(s & (Qt::WindowMaximized | Qt::WindowFullScreen)))
+    if (!(s & (BobUI::WindowMaximized | BobUI::WindowFullScreen)))
         restoreButton->setChecked(true);
 
     group->blockSignals(false);
@@ -227,18 +227,18 @@ WindowStatesControl::WindowStatesControl(QWidget *parent)
     connect(stateControl, SIGNAL(stateChanged(int)), this, SIGNAL(changed()));
 }
 
-Qt::WindowStates WindowStatesControl::states() const
+BobUI::WindowStates WindowStatesControl::states() const
 {
-    Qt::WindowStates s = stateControl->state();
+    BobUI::WindowStates s = stateControl->state();
     if (activeValue())
-        s |= Qt::WindowActive;
+        s |= BobUI::WindowActive;
     return s;
 }
 
-void WindowStatesControl::setStates(Qt::WindowStates s)
+void WindowStatesControl::setStates(BobUI::WindowStates s)
 {
     stateControl->setState(s);
-    setActiveValue(s & Qt::WindowActive);
+    setActiveValue(s & BobUI::WindowActive);
 }
 
 bool WindowStatesControl::visibleValue() const
@@ -286,33 +286,33 @@ TypeControl::TypeControl(QWidget *parent)
     layout->setSpacing(0);
     layout->setContentsMargins(ControlLayoutMargin, ControlLayoutMargin,
                                ControlLayoutMargin, ControlLayoutMargin);
-    group->addButton(windowRadioButton, Qt::Window);
+    group->addButton(windowRadioButton, BobUI::Window);
     layout->addWidget(windowRadioButton, 0, 0);
-    group->addButton(dialogRadioButton, Qt::Dialog);
+    group->addButton(dialogRadioButton, BobUI::Dialog);
     layout->addWidget(dialogRadioButton, 1, 0);
-    group->addButton(sheetRadioButton, Qt::Sheet);
+    group->addButton(sheetRadioButton, BobUI::Sheet);
     layout->addWidget(sheetRadioButton, 2, 0);
-    group->addButton(drawerRadioButton, Qt::Drawer);
+    group->addButton(drawerRadioButton, BobUI::Drawer);
     layout->addWidget(drawerRadioButton, 3, 0);
-    group->addButton(popupRadioButton, Qt::Popup);
+    group->addButton(popupRadioButton, BobUI::Popup);
     layout->addWidget(popupRadioButton, 0, 1);
-    group->addButton(toolRadioButton, Qt::Tool);
+    group->addButton(toolRadioButton, BobUI::Tool);
     layout->addWidget(toolRadioButton, 1, 1);
-    group->addButton(toolTipRadioButton, Qt::ToolTip);
+    group->addButton(toolTipRadioButton, BobUI::ToolTip);
     layout->addWidget(toolTipRadioButton, 2, 1);
-    group->addButton(splashScreenRadioButton, Qt::SplashScreen);
+    group->addButton(splashScreenRadioButton, BobUI::SplashScreen);
     layout->addWidget(splashScreenRadioButton, 3, 1);
     connect(group, &QButtonGroup::idReleased, this, &TypeControl::slotChanged);
 }
 
-Qt::WindowFlags TypeControl::type() const
+BobUI::WindowFlags TypeControl::type() const
 {
-    return Qt::WindowFlags(group->checkedId());
+    return BobUI::WindowFlags(group->checkedId());
 }
 
-void TypeControl::setType(Qt::WindowFlags s)
+void TypeControl::setType(BobUI::WindowFlags s)
 {
-    if (QAbstractButton *b = group->button(s & Qt::WindowType_Mask))
+    if (QAbstractButton *b = group->button(s & BobUI::WindowType_Mask))
         b->setChecked(true);
 }
 

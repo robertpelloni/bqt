@@ -1,15 +1,15 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(QT_FEATURE_securetransport AND QT_FEATURE_ssl)
+if(BOBUI_FEATURE_securetransport AND BOBUI_FEATURE_ssl)
     add_subdirectory(securetransport)
 endif()
 
-if ((QT_FEATURE_openssl OR QT_FEATURE_openssl_linked) AND QT_FEATURE_ssl)
+if ((BOBUI_FEATURE_openssl OR BOBUI_FEATURE_openssl_linked) AND BOBUI_FEATURE_ssl)
     add_subdirectory(openssl)
 endif()
 
-if (QT_FEATURE_schannel AND QT_FEATURE_ssl)
+if (BOBUI_FEATURE_schannel AND BOBUI_FEATURE_ssl)
     add_subdirectory(schannel)
 endif()
 

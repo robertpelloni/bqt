@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2017 Eurogiciel, author: <philippe.coval@eurogiciel.fr>
 // Copyright (C) 2023 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandxdgshell_p.h"
 
@@ -10,19 +10,19 @@
 #include "qwaylandxdgtopleveliconv1_p.h"
 #include "qwaylandsessionmanager_p.h"
 
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtWaylandClient/private/qwaylandwindow_p.h>
-#include <QtWaylandClient/private/qwaylandinputdevice_p.h>
-#include <QtWaylandClient/private/qwaylandscreen_p.h>
-#include <QtWaylandClient/private/qwaylandcursor_p.h>
-#include <QtWaylandClient/private/qwaylandabstractdecoration_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylandwindow_p.h>
+#include <BobUIWaylandClient/private/qwaylandinputdevice_p.h>
+#include <BobUIWaylandClient/private/qwaylandscreen_p.h>
+#include <BobUIWaylandClient/private/qwaylandcursor_p.h>
+#include <BobUIWaylandClient/private/qwaylandabstractdecoration_p.h>
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/private/qwindow_p.h>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/private/qwindow_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 template <typename T, auto f>
 struct WithDestructor : public T
@@ -35,12 +35,12 @@ struct WithDestructor : public T
 };
 
 QWaylandXdgSurface::Toplevel::Toplevel(QWaylandXdgSurface *xdgSurface)
-    : QtWayland::xdg_toplevel(xdgSurface->get_toplevel())
+    : BobUIWayland::xdg_toplevel(xdgSurface->get_toplevel())
     , m_xdgSurface(xdgSurface)
 {
     QWindow *window = xdgSurface->window()->window();
     if (auto *decorationManager = m_xdgSurface->m_shell->decorationManager()) {
-        if (!(window->flags() & Qt::FramelessWindowHint))
+        if (!(window->flags() & BobUI::FramelessWindowHint))
             m_decoration = decorationManager->createToplevelDecoration(object());
     }
     requestWindowStates(window->windowStates());
@@ -52,15 +52,15 @@ QWaylandXdgSurface::Toplevel::Toplevel(QWaylandXdgSurface *xdgSurface)
     }
 
     // Always use XDG Dialog, a window could be assigned a parent through XDG Foreign.
-    if (window->modality() != Qt::NonModal && m_xdgSurface->m_shell->m_xdgDialogWm) {
+    if (window->modality() != BobUI::NonModal && m_xdgSurface->m_shell->m_xdgDialogWm) {
         m_xdgDialog.reset(m_xdgSurface->m_shell->m_xdgDialogWm->getDialog(object()));
         m_xdgDialog->set_modal();
     }
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     const QString sessionRestoreId = xdgSurface->window()->sessionRestoreId();
     if (!sessionRestoreId.isEmpty() && QWaylandSessionManager::instance()->session())
-        m_session.reset(new WithDestructor<QtWayland::xx_toplevel_session_v1, xx_toplevel_session_v1_destroy>(QWaylandSessionManager::instance()->session()->restore_toplevel(object(), sessionRestoreId)));
+        m_session.reset(new WithDestructor<BobUIWayland::xx_toplevel_session_v1, xx_toplevel_session_v1_destroy>(QWaylandSessionManager::instance()->session()->restore_toplevel(object(), sessionRestoreId)));
 #endif
 }
 
@@ -76,18 +76,18 @@ QWaylandXdgSurface::Toplevel::~Toplevel()
 
 void QWaylandXdgSurface::Toplevel::applyConfigure()
 {
-    if ((m_pending.states & Qt::WindowActive) && !(m_applied.states & Qt::WindowActive)
+    if ((m_pending.states & BobUI::WindowActive) && !(m_applied.states & BobUI::WindowActive)
         && !m_xdgSurface->m_window->display()->isKeyboardAvailable())
         m_xdgSurface->m_window->display()->handleWindowActivated(m_xdgSurface->m_window);
 
-    if (!(m_pending.states & Qt::WindowActive) && (m_applied.states & Qt::WindowActive)
+    if (!(m_pending.states & BobUI::WindowActive) && (m_applied.states & BobUI::WindowActive)
         && !m_xdgSurface->m_window->display()->isKeyboardAvailable())
         m_xdgSurface->m_window->display()->handleWindowDeactivated(m_xdgSurface->m_window);
 
     m_xdgSurface->m_window->handleToplevelWindowTilingStatesChanged(m_toplevelStates);
     m_xdgSurface->m_window->handleWindowStatesChanged(m_pending.states);
 
-    if (!(m_applied.states & (Qt::WindowMaximized|Qt::WindowFullScreen)))
+    if (!(m_applied.states & (BobUI::WindowMaximized|BobUI::WindowFullScreen)))
         m_normalSize = m_xdgSurface->m_window->windowContentGeometry().size();
 
     // If the width or height is zero, the client should decide the size on its own.
@@ -96,7 +96,7 @@ void QWaylandXdgSurface::Toplevel::applyConfigure()
     if (m_pending.size.width() > 0) {
         surfaceSize.setWidth(m_pending.size.width());
     } else {
-        if (Q_UNLIKELY(m_pending.states & (Qt::WindowMaximized | Qt::WindowFullScreen))) {
+        if (Q_UNLIKELY(m_pending.states & (BobUI::WindowMaximized | BobUI::WindowFullScreen))) {
             qCWarning(lcQpaWayland) << "Configure event with maximized or fullscreen state contains invalid width:" << m_pending.size.width();
         } else {
             int width = m_normalSize.width();
@@ -109,7 +109,7 @@ void QWaylandXdgSurface::Toplevel::applyConfigure()
     if (m_pending.size.height() > 0) {
         surfaceSize.setHeight(m_pending.size.height());
     } else {
-        if (Q_UNLIKELY(m_pending.states & (Qt::WindowMaximized | Qt::WindowFullScreen))) {
+        if (Q_UNLIKELY(m_pending.states & (BobUI::WindowMaximized | BobUI::WindowFullScreen))) {
             qCWarning(lcQpaWayland) << "Configure event with maximized or fullscreen state contains invalid height:" << m_pending.size.height();
         } else {
             int height = m_normalSize.height();
@@ -135,7 +135,7 @@ bool QWaylandXdgSurface::Toplevel::wantsDecorations()
                          || !m_decoration->isConfigured()))
         return false;
 
-    return !(m_pending.states & Qt::WindowFullScreen);
+    return !(m_pending.states & BobUI::WindowFullScreen);
 }
 
 void QWaylandXdgSurface::Toplevel::xdg_toplevel_configure_bounds(int32_t width, int32_t height)
@@ -151,19 +151,19 @@ void QWaylandXdgSurface::Toplevel::xdg_toplevel_configure(int32_t width, int32_t
     size_t numStates = states->size / sizeof(uint32_t);
 
     m_pending.suspended = false;
-    m_pending.states = Qt::WindowNoState;
+    m_pending.states = BobUI::WindowNoState;
     m_toplevelStates = QWaylandWindow::WindowNoState;
 
     for (size_t i = 0; i < numStates; i++) {
         switch (xdgStates[i]) {
         case XDG_TOPLEVEL_STATE_ACTIVATED:
-            m_pending.states |= Qt::WindowActive;
+            m_pending.states |= BobUI::WindowActive;
             break;
         case XDG_TOPLEVEL_STATE_MAXIMIZED:
-            m_pending.states |= Qt::WindowMaximized;
+            m_pending.states |= BobUI::WindowMaximized;
             break;
         case XDG_TOPLEVEL_STATE_FULLSCREEN:
-            m_pending.states |= Qt::WindowFullScreen;
+            m_pending.states |= BobUI::WindowFullScreen;
             break;
         case XDG_TOPLEVEL_STATE_TILED_LEFT:
             m_toplevelStates |= QWaylandWindow::WindowTiledLeft;
@@ -194,10 +194,10 @@ void QWaylandXdgSurface::Toplevel::xdg_toplevel_close()
     QWindowSystemInterface::handleCloseEvent(m_xdgSurface->m_window->window());
 }
 
-void QWaylandXdgSurface::Toplevel::requestWindowFlags(Qt::WindowFlags flags)
+void QWaylandXdgSurface::Toplevel::requestWindowFlags(BobUI::WindowFlags flags)
 {
     if (m_decoration) {
-        if (flags & Qt::FramelessWindowHint) {
+        if (flags & BobUI::FramelessWindowHint) {
             delete m_decoration;
             m_decoration = nullptr;
         } else {
@@ -206,29 +206,29 @@ void QWaylandXdgSurface::Toplevel::requestWindowFlags(Qt::WindowFlags flags)
     }
 }
 
-void QWaylandXdgSurface::Toplevel::requestWindowStates(Qt::WindowStates states)
+void QWaylandXdgSurface::Toplevel::requestWindowStates(BobUI::WindowStates states)
 {
     // Re-send what's different from the applied state
-    Qt::WindowStates changedStates = m_applied.states ^ states;
+    BobUI::WindowStates changedStates = m_applied.states ^ states;
 
     // Minimized state is not reported by the protocol, so always send it
-    if (states & Qt::WindowMinimized) {
+    if (states & BobUI::WindowMinimized) {
         set_minimized();
-        m_xdgSurface->window()->handleWindowStatesChanged(states & ~Qt::WindowMinimized);
+        m_xdgSurface->window()->handleWindowStatesChanged(states & ~BobUI::WindowMinimized);
         // The internal window state whilst minimized is not maximised or fullscreen, but we don't want to
         // update the compositors cached version of this state
         return;
     }
 
-    if (changedStates & Qt::WindowMaximized) {
-        if (states & Qt::WindowMaximized)
+    if (changedStates & BobUI::WindowMaximized) {
+        if (states & BobUI::WindowMaximized)
             set_maximized();
         else
             unset_maximized();
     }
 
-    if (changedStates & Qt::WindowFullScreen) {
-        if (states & Qt::WindowFullScreen) {
+    if (changedStates & BobUI::WindowFullScreen) {
+        if (states & BobUI::WindowFullScreen) {
             auto screen = m_xdgSurface->window()->waylandScreen();
             if (screen) {
                 set_fullscreen(screen->output());
@@ -240,13 +240,13 @@ void QWaylandXdgSurface::Toplevel::requestWindowStates(Qt::WindowStates states)
 
 }
 
-QtWayland::xdg_toplevel::resize_edge QWaylandXdgSurface::Toplevel::convertToResizeEdges(Qt::Edges edges)
+BobUIWayland::xdg_toplevel::resize_edge QWaylandXdgSurface::Toplevel::convertToResizeEdges(BobUI::Edges edges)
 {
     return static_cast<enum resize_edge>(
-                ((edges & Qt::TopEdge) ? resize_edge_top : 0)
-                | ((edges & Qt::BottomEdge) ? resize_edge_bottom : 0)
-                | ((edges & Qt::LeftEdge) ? resize_edge_left : 0)
-                | ((edges & Qt::RightEdge) ? resize_edge_right : 0));
+                ((edges & BobUI::TopEdge) ? resize_edge_top : 0)
+                | ((edges & BobUI::BottomEdge) ? resize_edge_bottom : 0)
+                | ((edges & BobUI::LeftEdge) ? resize_edge_left : 0)
+                | ((edges & BobUI::RightEdge) ? resize_edge_right : 0));
 }
 
 QWaylandXdgSurface::Popup::Popup(QWaylandXdgSurface *xdgSurface, QWaylandWindow *parent,
@@ -268,7 +268,7 @@ QWaylandXdgSurface::Popup::~Popup()
     if (m_grabbing) {
         m_grabbing = false;
 
-        // Synthesize Qt enter/leave events for popup
+        // Synthesize BobUI enter/leave events for popup
         QWindow *leave = nullptr;
         if (m_xdgSurface && m_xdgSurface->window())
             leave = m_xdgSurface->window()->window();
@@ -328,12 +328,12 @@ QWaylandXdgSurface::QWaylandXdgSurface(QWaylandXdgShell *shell, ::xdg_surface *s
     , m_window(window)
 {
     QWaylandDisplay *display = window->display();
-    Qt::WindowType type =  static_cast<Qt::WindowType>(int(window->windowFlags() & Qt::WindowType_Mask));
+    BobUI::WindowType type =  static_cast<BobUI::WindowType>(int(window->windowFlags() & BobUI::WindowType_Mask));
     auto *transientParent = window->transientParent();
 
-    if (type == Qt::ToolTip)
+    if (type == BobUI::ToolTip)
         setPopup(transientParent);
-    else if (type == Qt::Popup)
+    else if (type == BobUI::Popup)
         setGrabPopup(transientParent, display->lastInputDevice(), display->lastInputSerial());
     else
         setToplevel();
@@ -354,7 +354,7 @@ QWaylandXdgSurface::~QWaylandXdgSurface()
     destroy();
 }
 
-bool QWaylandXdgSurface::resize(QWaylandInputDevice *inputDevice, Qt::Edges edges)
+bool QWaylandXdgSurface::resize(QWaylandInputDevice *inputDevice, BobUI::Edges edges)
 {
     if (!m_toplevel || !m_toplevel->isInitialized())
         return false;
@@ -397,7 +397,7 @@ void QWaylandXdgSurface::setAppId(const QString &appId)
     m_appId = appId;
 }
 
-void QWaylandXdgSurface::setWindowFlags(Qt::WindowFlags flags)
+void QWaylandXdgSurface::setWindowFlags(BobUI::WindowFlags flags)
 {
     if (m_toplevel)
         m_toplevel->requestWindowFlags(flags);
@@ -502,7 +502,7 @@ std::any QWaylandXdgSurface::surfaceRole() const
     return {};
 }
 
-void QWaylandXdgSurface::requestWindowStates(Qt::WindowStates states)
+void QWaylandXdgSurface::requestWindowStates(BobUI::WindowStates states)
 {
     if (m_toplevel)
         m_toplevel->requestWindowStates(states);
@@ -529,7 +529,7 @@ void QWaylandXdgSurface::setGrabPopup(QWaylandWindow *parent, QWaylandInputDevic
     setPopup(parent);
     m_popup->grab(device, serial);
 
-    // Synthesize Qt enter/leave events for popup
+    // Synthesize BobUI enter/leave events for popup
     if (!parent)
         return;
     QWindow *leave = parent->window();
@@ -600,12 +600,12 @@ bool QWaylandXdgSurface::requestActivate()
 
 bool QWaylandXdgSurface::requestActivateOnShow()
 {
-    const Qt::WindowType type = m_window->window()->type();
-    if (type == Qt::ToolTip || type == Qt::Popup || type == Qt::SplashScreen)
+    const BobUI::WindowType type = m_window->window()->type();
+    if (type == BobUI::ToolTip || type == BobUI::Popup || type == BobUI::SplashScreen)
         return false;
 
-    const Qt::WindowFlags flags = m_window->window()->flags();
-    if (flags & Qt::WindowDoesNotAcceptFocus)
+    const BobUI::WindowFlags flags = m_window->window()->flags();
+    if (flags & BobUI::WindowDoesNotAcceptFocus)
         return false;
 
     if (m_window->window()->property("_q_showWithoutActivating").toBool())
@@ -697,56 +697,56 @@ void QWaylandXdgSurface::setWindowPosition(const QPoint &position)
     window()->updateExposure();
 }
 
-static QtWayland::xdg_positioner::gravity gravityFromEdge(Qt::Edges edges)
+static BobUIWayland::xdg_positioner::gravity gravityFromEdge(BobUI::Edges edges)
 {
     switch (edges) {
-    case Qt::Edges():
-        return QtWayland::xdg_positioner::gravity_none;
-    case Qt::TopEdge:
-        return QtWayland::xdg_positioner::gravity_top;
-    case Qt::TopEdge | Qt::RightEdge:
-        return QtWayland::xdg_positioner::gravity_top_right;
-    case Qt::RightEdge:
-        return QtWayland::xdg_positioner::gravity_right;
-    case Qt::BottomEdge | Qt::RightEdge:
-        return QtWayland::xdg_positioner::gravity_bottom_right;
-    case Qt::BottomEdge:
-        return QtWayland::xdg_positioner::gravity_bottom;
-    case Qt::BottomEdge | Qt::LeftEdge:
-        return QtWayland::xdg_positioner::gravity_bottom_left;
-    case Qt::LeftEdge:
-        return QtWayland::xdg_positioner::gravity_left;
-    case Qt::TopEdge | Qt::LeftEdge:
-        return QtWayland::xdg_positioner::gravity_top_left;
+    case BobUI::Edges():
+        return BobUIWayland::xdg_positioner::gravity_none;
+    case BobUI::TopEdge:
+        return BobUIWayland::xdg_positioner::gravity_top;
+    case BobUI::TopEdge | BobUI::RightEdge:
+        return BobUIWayland::xdg_positioner::gravity_top_right;
+    case BobUI::RightEdge:
+        return BobUIWayland::xdg_positioner::gravity_right;
+    case BobUI::BottomEdge | BobUI::RightEdge:
+        return BobUIWayland::xdg_positioner::gravity_bottom_right;
+    case BobUI::BottomEdge:
+        return BobUIWayland::xdg_positioner::gravity_bottom;
+    case BobUI::BottomEdge | BobUI::LeftEdge:
+        return BobUIWayland::xdg_positioner::gravity_bottom_left;
+    case BobUI::LeftEdge:
+        return BobUIWayland::xdg_positioner::gravity_left;
+    case BobUI::TopEdge | BobUI::LeftEdge:
+        return BobUIWayland::xdg_positioner::gravity_top_left;
     }
     qCWarning(lcQpaWayland) << "Cannot map positioner gravity " << edges;
-    return QtWayland::xdg_positioner::gravity_none;
+    return BobUIWayland::xdg_positioner::gravity_none;
 }
 
-static QtWayland::xdg_positioner::anchor anchorFromEdge(Qt::Edges edges)
+static BobUIWayland::xdg_positioner::anchor anchorFromEdge(BobUI::Edges edges)
 {
     switch (edges) {
-    case Qt::Edges():
-        return QtWayland::xdg_positioner::anchor_none;
-    case Qt::TopEdge:
-        return QtWayland::xdg_positioner::anchor_top;
-    case Qt::TopEdge | Qt::RightEdge:
-        return QtWayland::xdg_positioner::anchor_top_right;
-    case Qt::RightEdge:
-        return QtWayland::xdg_positioner::anchor_right;
-    case Qt::BottomEdge | Qt::RightEdge:
-        return QtWayland::xdg_positioner::anchor_bottom_right;
-    case Qt::BottomEdge:
-        return QtWayland::xdg_positioner::anchor_bottom;
-    case Qt::BottomEdge | Qt::LeftEdge:
-        return QtWayland::xdg_positioner::anchor_bottom_left;
-    case Qt::LeftEdge:
-        return QtWayland::xdg_positioner::anchor_left;
-    case Qt::TopEdge | Qt::LeftEdge:
-        return QtWayland::xdg_positioner::anchor_top_left;
+    case BobUI::Edges():
+        return BobUIWayland::xdg_positioner::anchor_none;
+    case BobUI::TopEdge:
+        return BobUIWayland::xdg_positioner::anchor_top;
+    case BobUI::TopEdge | BobUI::RightEdge:
+        return BobUIWayland::xdg_positioner::anchor_top_right;
+    case BobUI::RightEdge:
+        return BobUIWayland::xdg_positioner::anchor_right;
+    case BobUI::BottomEdge | BobUI::RightEdge:
+        return BobUIWayland::xdg_positioner::anchor_bottom_right;
+    case BobUI::BottomEdge:
+        return BobUIWayland::xdg_positioner::anchor_bottom;
+    case BobUI::BottomEdge | BobUI::LeftEdge:
+        return BobUIWayland::xdg_positioner::anchor_bottom_left;
+    case BobUI::LeftEdge:
+        return BobUIWayland::xdg_positioner::anchor_left;
+    case BobUI::TopEdge | BobUI::LeftEdge:
+        return BobUIWayland::xdg_positioner::anchor_top_left;
     }
     qCWarning(lcQpaWayland) << "Cannot map positioner anchor" << edges;
-    return QtWayland::xdg_positioner::anchor_none;
+    return BobUIWayland::xdg_positioner::anchor_none;
 }
 
 std::unique_ptr<QWaylandXdgSurface::Positioner> QWaylandXdgSurface::createPositioner(QWaylandWindow *parent)
@@ -755,9 +755,9 @@ std::unique_ptr<QWaylandXdgSurface::Positioner> QWaylandXdgSurface::createPositi
 
     // Default case, map the guessed global position to a relative position
     QRect placementAnchor = QRect(m_window->geometry().topLeft() - parent->geometry().topLeft(), QSize(1,1));
-    Qt::Edges anchor = Qt::TopEdge | Qt::RightEdge;
-    Qt::Edges gravity = Qt::BottomEdge | Qt::RightEdge;
-    uint32_t constraintAdjustment = QtWayland::xdg_positioner::constraint_adjustment_slide_x | QtWayland::xdg_positioner::constraint_adjustment_slide_y;
+    BobUI::Edges anchor = BobUI::TopEdge | BobUI::RightEdge;
+    BobUI::Edges gravity = BobUI::BottomEdge | BobUI::RightEdge;
+    uint32_t constraintAdjustment = BobUIWayland::xdg_positioner::constraint_adjustment_slide_x | BobUIWayland::xdg_positioner::constraint_adjustment_slide_y;
 
     // Compensate the margins to appear exactly at the position provided by QPlatformWindow::geometry
     // These marnings have nothing to do with parent controls, don't apply them when positioning via parent control geometry
@@ -771,32 +771,32 @@ std::unique_ptr<QWaylandXdgSurface::Positioner> QWaylandXdgSurface::createPositi
     switch (m_window->extendedWindowType()) {
     case QNativeInterface::Private::QWaylandWindow::Menu:
     case QNativeInterface::Private::QWaylandWindow::WindowType::ComboBox:
-        anchor = Qt::BottomEdge | Qt::LeftEdge;
-        gravity = Qt::BottomEdge | Qt::RightEdge;
-        constraintAdjustment = QtWayland::xdg_positioner::constraint_adjustment_slide_x |
-                QtWayland::xdg_positioner::constraint_adjustment_flip_y | QtWayland::xdg_positioner::constraint_adjustment_slide_y;
+        anchor = BobUI::BottomEdge | BobUI::LeftEdge;
+        gravity = BobUI::BottomEdge | BobUI::RightEdge;
+        constraintAdjustment = BobUIWayland::xdg_positioner::constraint_adjustment_slide_x |
+                BobUIWayland::xdg_positioner::constraint_adjustment_flip_y | BobUIWayland::xdg_positioner::constraint_adjustment_slide_y;
         break;
     case QNativeInterface::Private::QWaylandWindow::SubMenu:
-        anchor = Qt::TopEdge | Qt::RightEdge;
-        gravity = Qt::BottomEdge | Qt::RightEdge;
-        constraintAdjustment = QtWayland::xdg_positioner::constraint_adjustment_flip_x |
-                QtWayland::xdg_positioner::constraint_adjustment_slide_y;
+        anchor = BobUI::TopEdge | BobUI::RightEdge;
+        gravity = BobUI::BottomEdge | BobUI::RightEdge;
+        constraintAdjustment = BobUIWayland::xdg_positioner::constraint_adjustment_flip_x |
+                BobUIWayland::xdg_positioner::constraint_adjustment_slide_y;
         break;
     case QNativeInterface::Private::QWaylandWindow::ToolTip:
-        anchor = Qt::BottomEdge | Qt::RightEdge;
-        gravity = Qt::BottomEdge | Qt::RightEdge;
-        constraintAdjustment = QtWayland::xdg_positioner::constraint_adjustment_flip_x | QtWayland::xdg_positioner::constraint_adjustment_slide_x |
-                QtWayland::xdg_positioner::constraint_adjustment_flip_y | QtWayland::xdg_positioner::constraint_adjustment_slide_y;
+        anchor = BobUI::BottomEdge | BobUI::RightEdge;
+        gravity = BobUI::BottomEdge | BobUI::RightEdge;
+        constraintAdjustment = BobUIWayland::xdg_positioner::constraint_adjustment_flip_x | BobUIWayland::xdg_positioner::constraint_adjustment_slide_x |
+                BobUIWayland::xdg_positioner::constraint_adjustment_flip_y | BobUIWayland::xdg_positioner::constraint_adjustment_slide_y;
         break;
     default:
         break;
     }
 
-    if (qApp->layoutDirection() == Qt::RightToLeft) {
-        if (anchor & (Qt::RightEdge | Qt::LeftEdge))
-            anchor ^= (Qt::RightEdge | Qt::LeftEdge);
-        if (gravity & (Qt::RightEdge | Qt::LeftEdge))
-            gravity ^= (Qt::RightEdge | Qt::LeftEdge);
+    if (qApp->layoutDirection() == BobUI::RightToLeft) {
+        if (anchor & (BobUI::RightEdge | BobUI::LeftEdge))
+            anchor ^= (BobUI::RightEdge | BobUI::LeftEdge);
+        if (gravity & (BobUI::RightEdge | BobUI::LeftEdge))
+            gravity ^= (BobUI::RightEdge | BobUI::LeftEdge);
     }
 
     // Override with properties fauxAPI
@@ -805,10 +805,10 @@ std::unique_ptr<QWaylandXdgSurface::Positioner> QWaylandXdgSurface::createPositi
         placementAnchor = placementAnchorVariant.toRect();
     const QVariant anchorVariant = m_window->window()->property("_q_waylandPopupAnchor");
     if (anchorVariant.isValid())
-        anchor = anchorVariant.value<Qt::Edges>();
+        anchor = anchorVariant.value<BobUI::Edges>();
     const QVariant popupGravityVariant = m_window->window()->property("_q_waylandPopupGravity");
     if (popupGravityVariant.isValid())
-        gravity = popupGravityVariant.value<Qt::Edges>();
+        gravity = popupGravityVariant.value<BobUI::Edges>();
     const QVariant constraintAdjustmentVariant = m_window->window()->property("_q_waylandPopupConstraintAdjustment");
     if (constraintAdjustmentVariant.isValid())
         constraintAdjustment = constraintAdjustmentVariant.toUInt();
@@ -837,7 +837,7 @@ void QWaylandXdgSurface::setIcon(const QIcon &icon)
     m_shell->m_topLevelIconManager->setIcon(icon, m_toplevel->object());
 }
 
-QWaylandXdgShell::QWaylandXdgShell(QWaylandDisplay *display, QtWayland::xdg_wm_base *xdgWmBase)
+QWaylandXdgShell::QWaylandXdgShell(QWaylandDisplay *display, BobUIWayland::xdg_wm_base *xdgWmBase)
     : m_display(display), m_xdgWmBase(xdgWmBase)
 {
     display->addRegistryListener(&QWaylandXdgShell::handleRegistryGlobal, this);
@@ -866,14 +866,14 @@ void QWaylandXdgShell::handleRegistryGlobal(void *data, wl_registry *registry, u
     if (interface == QLatin1String(QWaylandXdgDialogWmV1::interface()->name)) {
         xdgShell->m_xdgDialogWm.reset(new QWaylandXdgDialogWmV1(registry, id, version));
     }
-    if (interface == QLatin1String(QtWayland::xdg_toplevel_icon_manager_v1::interface()->name)) {
+    if (interface == QLatin1String(BobUIWayland::xdg_toplevel_icon_manager_v1::interface()->name)) {
         xdgShell->m_topLevelIconManager.reset(
                 new QWaylandXdgToplevelIconManagerV1(xdgShell->m_display, registry, id, version));
     }
 }
 
 QWaylandXdgSurface::Positioner::Positioner(QWaylandXdgShell *xdgShell)
-    : QtWayland::xdg_positioner(xdgShell->m_xdgWmBase->create_positioner())
+    : BobUIWayland::xdg_positioner(xdgShell->m_xdgWmBase->create_positioner())
 {
 }
 
@@ -884,6 +884,6 @@ QWaylandXdgSurface::Positioner::~Positioner()
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandxdgshell_p.cpp"

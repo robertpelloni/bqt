@@ -1,33 +1,33 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:provides-trusted-directory-paths
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:provides-trusted-directory-paths
 
 #include "qstandardpaths.h"
 #include <qdir.h>
 #include <qfile.h>
 #include <qhash.h>
-#include <qtextstream.h>
-#if QT_CONFIG(regularexpression)
+#include <bobuiextstream.h>
+#if BOBUI_CONFIG(regularexpression)
 #include <qregularexpression.h>
 #endif
 #include <private/qfilesystemengine_p.h>
 #include <errno.h>
 #include <stdlib.h>
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include <qcoreapplication.h>
 #endif
 
-#ifndef QT_NO_STANDARDPATHS
+#ifndef BOBUI_NO_STANDARDPATHS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static void appendOrganizationAndApp(QString &path)
 {
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     const QString org = QCoreApplication::organizationName();
     if (!org.isEmpty())
         path += u'/' + org;
@@ -39,7 +39,7 @@ static void appendOrganizationAndApp(QString &path)
 #endif
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 static QLatin1StringView xdg_key_name(QStandardPaths::StandardLocation type)
 {
     switch (type) {
@@ -127,7 +127,7 @@ static bool checkXdgRuntimeDir(const QString &xdgRuntimeDir)
     // A stat() before mkdir() that concluded it doesn't exist is a meaningless
     // result: we'd race against someone else attempting to create it.
     // ### QFileSystemEngine::createDirectory cannot take the extra mode argument.
-    if (QT_MKDIR(entry.nativeFilePath(), 0700) == 0)
+    if (BOBUI_MKDIR(entry.nativeFilePath(), 0700) == 0)
         return true;
     if (errno != EEXIST) {
         qErrnoWarning("QStandardPaths: error creating runtime directory '%ls'",
@@ -183,7 +183,7 @@ QString QStandardPaths::writableLocation(StandardLocation type)
     {
         QString xdgCacheHome;
         if (isTestModeEnabled()) {
-            xdgCacheHome = QDir::homePath() + "/.qttest/cache"_L1;
+            xdgCacheHome = QDir::homePath() + "/.bobuitest/cache"_L1;
         } else {
             // http://standards.freedesktop.org/basedir-spec/basedir-spec-0.6.html
             xdgCacheHome = qEnvironmentVariable("XDG_CACHE_HOME");
@@ -202,7 +202,7 @@ QString QStandardPaths::writableLocation(StandardLocation type)
     {
         QString xdgStateHome;
         if (isTestModeEnabled()) {
-            xdgStateHome = QDir::homePath() + "/.qttest/state"_L1;
+            xdgStateHome = QDir::homePath() + "/.bobuitest/state"_L1;
         } else {
             // http://standards.freedesktop.org/basedir-spec/basedir-spec-0.8.html
             xdgStateHome = qEnvironmentVariable("XDG_STATE_HOME");
@@ -222,7 +222,7 @@ QString QStandardPaths::writableLocation(StandardLocation type)
     {
         QString xdgDataHome;
         if (isTestModeEnabled()) {
-            xdgDataHome = QDir::homePath() + "/.qttest/share"_L1;
+            xdgDataHome = QDir::homePath() + "/.bobuitest/share"_L1;
         } else {
             xdgDataHome = qEnvironmentVariable("XDG_DATA_HOME");
             if (!xdgDataHome.startsWith(u'/'))
@@ -241,7 +241,7 @@ QString QStandardPaths::writableLocation(StandardLocation type)
     {
         QString xdgConfigHome;
         if (isTestModeEnabled()) {
-            xdgConfigHome = QDir::homePath() + "/.qttest/config"_L1;
+            xdgConfigHome = QDir::homePath() + "/.bobuitest/config"_L1;
         } else {
             // http://standards.freedesktop.org/basedir-spec/latest/
             xdgConfigHome = qEnvironmentVariable("XDG_CONFIG_HOME");
@@ -284,7 +284,7 @@ QString QStandardPaths::writableLocation(StandardLocation type)
         break;
     }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     // http://www.freedesktop.org/wiki/Software/xdg-user-dirs
     QString xdgConfigHome = qEnvironmentVariable("XDG_CONFIG_HOME");
     if (!xdgConfigHome.startsWith(u'/'))
@@ -295,7 +295,7 @@ QString QStandardPaths::writableLocation(StandardLocation type)
     QFile file(xdgConfigHome + "/user-dirs.dirs"_L1);
     const QLatin1StringView key = xdg_key_name(type);
     if (!key.isEmpty() && !isTestModeEnabled() && file.open(QIODevice::ReadOnly)) {
-        QTextStream stream(&file);
+        BOBUIextStream stream(&file);
         // Only look for lines like: XDG_DESKTOP_DIR="$HOME/Desktop"
         static const QRegularExpression exp(u"^XDG_(.*)_DIR=(.*)$"_s);
         QString result;
@@ -320,7 +320,7 @@ QString QStandardPaths::writableLocation(StandardLocation type)
         if (!result.isNull())
             return result;
     }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
     QString path;
     switch (type) {
@@ -453,6 +453,6 @@ QStringList QStandardPaths::standardLocations(StandardLocation type)
     return dirs;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_STANDARDPATHS
+#endif // BOBUI_NO_STANDARDPATHS

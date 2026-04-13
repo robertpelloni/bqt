@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbeglnativeinterfacehandler.h"
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include "qxcbeglwindow.h"
 #include "qxcbintegration.h"
 #include "qxcbeglintegration.h"
 #include "qxcbeglcontext.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static int resourceType(const QByteArray &key)
 {
@@ -100,4 +100,4 @@ void *QXcbEglNativeInterfaceHandler::eglConfigForContext(QOpenGLContext *context
     return static_cast<QXcbEglContext *>(context->handle())->eglConfig();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

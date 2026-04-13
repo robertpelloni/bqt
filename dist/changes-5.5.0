@@ -1,16 +1,16 @@
-Qt 5.5 introduces many new features and improvements as well as bugfixes
+BobUI 5.5 introduces many new features and improvements as well as bugfixes
 over the 5.4.x series. For more details, refer to the online documentation
 included in this distribution. The documentation is also available online:
 
-  http://doc.qt.io/qt-5.5
+  http://doc.bobui.io/bobui-5.5
 
-The Qt version 5.5 series is binary compatible with the 5.4.x series.
+The BobUI version 5.5 series is binary compatible with the 5.4.x series.
 Applications compiled for 5.4 will continue to run with 5.5.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-  http://bugreports.qt.io/
+  http://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -19,14 +19,14 @@ information about a particular change.
 *                          Deprecation Notice                              *
 ****************************************************************************
 
- - Support for the following platforms or toolchains is deprecated in Qt
-   5.5 and will be removed as of Qt 5.6:
+ - Support for the following platforms or toolchains is deprecated in BobUI
+   5.5 and will be removed as of BobUI 5.6:
    * Apple OS X builds using GNU libstdc++
    * BlackBerry 10
    * QNX 6.5
 
    The following platforms or toolchains are deprecated and will be
-   removed as of Qt 5.7:
+   removed as of BobUI 5.7:
    * Apple OS X 10.7 (Lion)
    * GNU Compiler Collection (GCC) versions 4.6 and earlier
    * Microsoft Visual Studio compiler versions 2008 and 2010
@@ -35,20 +35,20 @@ information about a particular change.
 
    Deprecated platforms and toolchains continue to work until removed.
 
- - The QtWebKit and QtQuick1 modules and support for the QML 1 language
-   are deprecated and Qt 5.5 will be the last release to include
-   them. Starting with Qt 5.6, the source code for those modules will
-   not be included in Qt's packaging. Compiling the 5.5 release of
-   QtWebKit modules along with Qt 5.6 or future versions should
-   work. QtQuick1 is not guaranteed to work in future versions after
-   Qt 5.6.
+ - The BobUIWebKit and BobUIQuick1 modules and support for the QML 1 language
+   are deprecated and BobUI 5.5 will be the last release to include
+   them. Starting with BobUI 5.6, the source code for those modules will
+   not be included in BobUI's packaging. Compiling the 5.5 release of
+   BobUIWebKit modules along with BobUI 5.6 or future versions should
+   work. BobUIQuick1 is not guaranteed to work in future versions after
+   BobUI 5.6.
 
- - The QtScript module is deprecated and will be removed from Qt's
+ - The BobUIScript module is deprecated and will be removed from BobUI's
    packaging starting with version 5.7. The 5.5 and 5.6 releases of
-   QtScript should continue to work along with Qt 5.7 and future
+   BobUIScript should continue to work along with BobUI 5.7 and future
    versions.
 
- - [QTBUG-25121] The usage of the QStyleOptionProgressBar::orientation
+ - [BOBUIBUG-25121] The usage of the QStyleOptionProgressBar::orientation
    member has been deprecated.
 
  - QLibraryInfo::buildDate() was deprecated and will return a constant
@@ -58,7 +58,7 @@ information about a particular change.
 *                          Future Direction Notice                         *
 ****************************************************************************
 
- - In Qt 6, QCoreApplication::notify() will not be called for events being
+ - In BobUI 6, QCoreApplication::notify() will not be called for events being
    delivered to objects outside the main thread. The reason for that is
    that the main application object may begin destruction while those
    threads are still delivering events, which is undefined behavior.
@@ -66,7 +66,7 @@ information about a particular change.
    outside the main thread are advised to find other solutions in the mean
    time.
 
- - Qt 5.7 will begin requiring certain C++11 features in order to
+ - BobUI 5.7 will begin requiring certain C++11 features in order to
    compile. The minimum compiler versions for that release will be:
    * Clang 3.2 (included in XCode 5.0)
    * GCC 4.7
@@ -82,8 +82,8 @@ information about a particular change.
    warnings about variables and functions that were unused in release mode
    because they were only used in assertions. Unfortunately, codebases that
    hid those functions and variables via #ifndef will need to remove the
-   conditionals to compile with Qt 5.5.
- - QDBusConnection::sender() (deprecated since Qt 4.3) has changed to
+   conditionals to compile with BobUI 5.5.
+ - QDBusConnection::sender() (deprecated since BobUI 4.3) has changed to
    always return an invalid QDBusConnection. To know what connection the
    incoming call was received from, use QDBusContext.
  - QHostAddress will no longer convert IPv6 addresses of type "v4-mapped"
@@ -100,12 +100,12 @@ information about a particular change.
    to avoid calling parent() (which returns a constant). Subclasses of
    these models that override parent(), will likely also need to
    override sibling() now.
--  Qt 5.5 received some header #include cleanups. Code that relied on indirect
-   includes from Qt headers may need to include some headers explicitly now.
+-  BobUI 5.5 received some header #include cleanups. Code that relied on indirect
+   includes from BobUI headers may need to include some headers explicitly now.
    For example, qstringlist.h no longer includes QDataStream and QObject.
 
  - QCoreApplication:
-   * [QTBUG-30330][QTSOLBUG-184] On Windows, QCoreApplication::arguments()
+   * [BOBUIBUG-30330][BOBUISOLBUG-184] On Windows, QCoreApplication::arguments()
      now returns a list built from argv on Windows as well if a modified
      argv was passed to the class' constructor.
 
@@ -114,24 +114,24 @@ information about a particular change.
      correctly indicate that the files are not writable.
 
  - QItemDelegate:
-   * [QTBUG-3305] QItemDelegate will now not close a
-     QTextEdit/QPlainTextEdit editor when the tab key is pressed; instead,
+   * [BOBUIBUG-3305] QItemDelegate will now not close a
+     BOBUIextEdit/QPlainTextEdit editor when the tab key is pressed; instead,
      the key will reach the editor.
 
  - QProgressDialog:
-   * [QTBUG-17427][QTBUG-25316] The timer for estimating the duration of
+   * [BOBUIBUG-17427][BOBUIBUG-25316] The timer for estimating the duration of
      the progress dialog is now started in the constructor and in
      setValue(minimum()), as well as when calling setValue(0), as
      previously documented.
 
  - QSaveFile:
-   * [QTBUG-44086] Files created by QSaveFile do now have the same
+   * [BOBUIBUG-44086] Files created by QSaveFile do now have the same
      rights as files created by QFile. This also fixes a regression in
-     QSettings: In the Qt 5.4 series, new files created by QSettings
+     QSettings: In the BobUI 5.4 series, new files created by QSettings
      were only readable by the current user.
 
  - QVariant:
-   * [QTBUG-42722] QVariant now obeys the C++ type promotion rules when
+   * [BOBUIBUG-42722] QVariant now obeys the C++ type promotion rules when
      comparing numeric types (integrals, float and double), including the
      fact that unsigned comparisons are preferred for types of the same
      rank (that is, now QVariant(-1) > QVariant(0U)).
@@ -142,10 +142,10 @@ information about a particular change.
      primary screen.
 
  - qmake:
-   * For commercial builds, qmake now checks for a valid Qt license. This
-     requires setting up a Qt Account (or .qt-license file) on the
+   * For commercial builds, qmake now checks for a valid BobUI license. This
+     requires setting up a BobUI Account (or .bobui-license file) on the
      development machine.
-   * Qt configure and qmake used with a MinGW spec will no longer emulate
+   * BobUI configure and qmake used with a MinGW spec will no longer emulate
      MSVC by picking up the INCLUDE and LIB environment variables. Use the
      -I/-L configure options to pass additional paths, as you would under
      Unix.
@@ -158,7 +158,7 @@ information about a particular change.
 *                               Library                                    *
 ****************************************************************************
 
-QtCore
+BobUICore
 ------
 
  - Added qEnvironmentVariableIntValue().
@@ -167,29 +167,29 @@ QtCore
    implementing qHash() overloads for custom types.
  - Q_ENUMS and Q_FLAGS have been deprecated, and replaced by Q_ENUM and
    Q_FLAG macros. These two new macros automatically register the enum with
-   the Qt metatype system, allowing automatic conversion to or from string
+   the BobUI metatype system, allowing automatic conversion to or from string
    in QVariant, or to show the strings by QDebug operators. They also
    enable the new QMetaEnum::fromType function.
  - QPersistentModel index becomes an built-in meta-type, including QVariant
    support.
  - Updated Unicode data to v.7.0
  - Updated QLocale data to CLDR v.27
- - Updated QTimeZone data to CLDR v.27
+ - Updated BOBUIimeZone data to CLDR v.27
 
  - Item Models:
    * QItemSelectionModel can now be created without a model and have one
      set later.
 
  - Logging:
-   * QtInfoMsg got added as a new QtMsgType. Use the new qInfo(), qCInfo()
+   * BobUIInfoMsg got added as a new BobUIMsgType. Use the new qInfo(), qCInfo()
      macros to log to it.
 
  - Logging framework:
    * %{threadid} now prints the real thread ID. On Linux, OS X, iOS,
      FreeBSD and Windows, the value is unique system-wide. On other
      systems, it will print something that may be process-specific (the
-     value of pthread_self(3)). To print the pointer to QThread::current(),
-     use %{qthreadptr}.
+     value of pthread_self(3)). To print the pointer to BOBUIhread::current(),
+     use %{bobuihreadptr}.
 
  - moc
    * Classes annotated with Q_GADGET can now have Q_PROPERTY and Q_INVOKABLE
@@ -197,7 +197,7 @@ QtCore
      QMetaMethod::invokeOnGadget can be used with those.
 
  - Objective-C:
-   * [QTBUG-37116] Added NSDate/CDateRef converters for QDateTime
+   * [BOBUIBUG-37116] Added NSDate/CDateRef converters for QDateTime
 
  - QAssociativeIterable:
    * Added find().
@@ -211,7 +211,7 @@ QtCore
      now prints the strings in a format that can be copied back to C++
      code. All characters that aren't printable in US-ASCII are escaped
      (this includes printable Unicode characters outside of US-ASCII).
-     Pretty-printing will not respect QTextFormat padding or field widths.
+     Pretty-printing will not respect BOBUIextFormat padding or field widths.
    * Similarly, printing of QByteArrays whenever "noquote" is not active now
      prints the arrays in a format consumable in C++, with all non-printable
      characters printed in hex escape sequences.
@@ -222,10 +222,10 @@ QtCore
  - QLibrary:
    * Added DeepBindHint which maps to RTLD_DEEPBIND on Linux making it
      possible to load libraries with external symbols that clash with
-     already loaded ones, such as plugins linked to Qt4.
+     already loaded ones, such as plugins linked to BobUI4.
 
  - QLockFile:
-   * [QTBUG-45497] Detection of stale lock files got more robust and takes
+   * [BOBUIBUG-45497] Detection of stale lock files got more robust and takes
      the name of the process that belongs to the stored PID into account.
 
  - QRegularExpression:
@@ -236,29 +236,29 @@ QtCore
    * Can now be used as the key in QSet and QHash.
 
  - QSortFilterProxyModel:
-   * [QTBUG-35440] QSortFilterProxyModel now properly forwards the roles
+   * [BOBUIBUG-35440] QSortFilterProxyModel now properly forwards the roles
      that have been changed when the source model emits dataChanged().
 
  - QStandardPaths:
-   * [QTBUG-38872][QTBUG-38845] Added QStandardPaths::AppConfigLocation,
+   * [BOBUIBUG-38872][BOBUIBUG-38845] Added QStandardPaths::AppConfigLocation,
      for application-specific configuration directory. ConfigLocation was
      inconsistent.
 
  - QString:
    * Added support for retrieving the QRegularExpressionMatch to indexOf
      and lastIndexOf.
-   * Added QT_RESTRICTED_CAST_FROM_ASCII macro as less intrusive
-     alternative to QT_NO_CAST_FROM_ASCII.
+   * Added BOBUI_RESTRICTED_CAST_FROM_ASCII macro as less intrusive
+     alternative to BOBUI_NO_CAST_FROM_ASCII.
    * Added methods for convenient conversion to and from std::u16string and
      std::u32string.
    * Added asprintf(), vasprintf().
 
- - QThreadPool:
-   * Added QThreadPool::cancel() which allows removing from the job queue a
+ - BOBUIhreadPool:
+   * Added BOBUIhreadPool::cancel() which allows removing from the job queue a
      job that hasn't been started yet.
 
- - QTimeZone:
-   * Added methods systemTimeZone() and utc() that return QTimeZone objects
+ - BOBUIimeZone:
+   * Added methods systemTimeZone() and utc() that return BOBUIimeZone objects
      for the system time zone and for UTC, respectively.
 
  - QVector:
@@ -268,18 +268,18 @@ QtCore
    * Added convenience project and unproject methods to use like gluProject
      and gluUnproject
 
- - QtMath:
+ - BobUIMath:
    * qmath.h no longer includes math.h, so any sources depending on that
      indirect inclusion may fail to build.
 
  - State Machine:
    * Added support for internal transitions.
-   * [QTBUG-40293] Added an addTransition() overload that takes a
+   * [BOBUIBUG-40293] Added an addTransition() overload that takes a
      pointer-to-member for the signal triggering the transition.
-   * [QTBUG-44963] Fixed an issue where a history state restore would
+   * [BOBUIBUG-44963] Fixed an issue where a history state restore would
      activate too many states, possibly putting the state machine in an
      invalid state.
-   * QTBUG-44783] Fixed an issue where the state machine could end up in
+   * BOBUIBUG-44783] Fixed an issue where the state machine could end up in
      an invalid state when transitions from a parallel state were not
      checked for conflicts.
    * Fixed a case where a parallel state was not exited and re-entered
@@ -287,14 +287,14 @@ QtCore
    * Fixed the non-deterministic behavior of picking a transition from a
      set of conflicting transitions.
 
-QtDBus
+BobUIDBus
 ------
 
- - Added annotation org.qtproject.QtDBus.MethodName to allow
+ - Added annotation org.bobuiproject.BobUIDBus.MethodName to allow
    autogenerating C++ methods with different names to the original DBus
    method
 
-QtGui
+BobUIGui
 -----
 
  - Added support for device-specific backend plugins in eglfs.
@@ -314,32 +314,32 @@ QtGui
  - Added version function classes for OpenGL 4.4 and 4.5 and deprecate some
    erroneously classified functions.
  - Exposed TabFocusBehavior in QStyleHints
- - [QTBUG-42240][QTBUG-43263] Qt now contains a built-in GPU driver
+ - [BOBUIBUG-42240][BOBUIBUG-43263] BobUI now contains a built-in GPU driver
    blacklist for Windows that disables the usage of desktop OpenGL with
    some older cards that are known to be unstable with opengl32.dll.
- - [QTBUG-44937] Support for QScreen::grabWindow() is now available on
+ - [BOBUIBUG-44937] Support for QScreen::grabWindow() is now available on
    embedded platforms (eglfs, linuxfb).
  - Added QStyleHints::singleClickActivation to access whether the platform
    expects item activation to occur on single clicks rather than double
    clicks.
- - [QTBUG-40034] QOpenGLWidget and QQuickWidget are now supported on iOS.
+ - [BOBUIBUG-40034] QOpenGLWidget and QQuickWidget are now supported on iOS.
 
  - Accessibility:
-   * [QTBUG-44479] Qt now reports text attributes correctly on Linux, so
-     ORCA+F now works properly in QTextEdit and other text controls.
+   * [BOBUIBUG-44479] BobUI now reports text attributes correctly on Linux, so
+     ORCA+F now works properly in BOBUIextEdit and other text controls.
 
  - Accessibility / OS X:
-   * QTextEdit now properly reports to accessibility visual lines
+   * BOBUIextEdit now properly reports to accessibility visual lines
      (softlines) as lines, instead of whole paragraphs. This allows better
      VoiceOver user experience when reading text line by line using arrows
      up/down.
-   * Visual bounds returned by QTextEdit were singificantly improved; this
+   * Visual bounds returned by BOBUIextEdit were singificantly improved; this
      enables VoiceOver to draw properly positioned VoiceOver cursor.
 
  - Image plugins:
-   * [QTBUG-37946][QTBUG-43563][QTBUG-45552][QTBUG-45865] An option has
+   * [BOBUIBUG-37946][BOBUIBUG-43563][BOBUIBUG-45552][BOBUIBUG-45865] An option has
      been added to QImageReader to enable automatic application of EXIF
-     orientation. This behavior was default in Qt 5.4.1, but reverted in Qt
+     orientation. This behavior was default in BobUI 5.4.1, but reverted in BobUI
      5.4.2.
 
  - QFontDatabase:
@@ -350,11 +350,11 @@ QtGui
      rendered to.
 
  - QPainter:
-   * [QTBUG-35830] QPainter will no longer try to replace IntersectClip
+   * [BOBUIBUG-35830] QPainter will no longer try to replace IntersectClip
      with ReplaceClip if the paint engine is a QPicture.
 
  - QPlatformSurfaceEvent:
-   * [QTBUG-42476][QTBUG-42483] Added event class QPlatformSurfaceEvent,
+   * [BOBUIBUG-42476][BOBUIBUG-42483] Added event class QPlatformSurfaceEvent,
      which is sent to QWindow and QOffscreenSurface when native surface is
      created or about to be destroyed.
 
@@ -365,7 +365,7 @@ QtGui
  - QScreen:
    * Added devicePixelRatio property.
 
- - QTextDocument:
+ - BOBUIextDocument:
    * Support for searching with a QRegularExpression in a document has been
      added.
 
@@ -376,37 +376,37 @@ QtGui
      events (inertial scrolling).
 
  - QWindow:
-   * [QTBUG-32956] lastWindowClosed will now be emitted even if
+   * [BOBUIBUG-32956] lastWindowClosed will now be emitted even if
      quitOnLastWindowClosed is not set.
 
  - Windows:
-   * [QTBUG-43263] Introduced experimental feature allowing the user to
+   * [BOBUIBUG-43263] Introduced experimental feature allowing the user to
      specify a GPU driver buglist with some additional keywords to chooose
      the GL renderer backend depending on GPU.
 
  - i18n:
-   * [QTBUG-43447] Fixed bug where layout direction did not switch
+   * [BOBUIBUG-43447] Fixed bug where layout direction did not switch
      according to the instruction in the translation file.
 
  - Text:
-   * [QTBUG-39286] Fixed position of underline on centered text when the
+   * [BOBUIBUG-39286] Fixed position of underline on centered text when the
      text layout's width is an even number.
 
-QtNetwork
+BobUINetwork
 ---------
 
- - [QTBUG-26295] Introduced libproxy backend for Unix platforms, enabled
+ - [BOBUIBUG-26295] Introduced libproxy backend for Unix platforms, enabled
    automatically if the required dev package is present
- - As some legacy ifdefs for OpenSSL 0.9.7 and 0.9.8f were removed, Qt
+ - As some legacy ifdefs for OpenSSL 0.9.7 and 0.9.8f were removed, BobUI
    will no longer build with these versions. In addition, there is no
    longer support for an OpenSSL library built with NO_TLSEXT.
- - [QTBUG-26538] Fixed a bug that caused both QTcpSocket and QUdpSocket to
+ - [BOBUIBUG-26538] Fixed a bug that caused both BOBUIcpSocket and QUdpSocket to
    close the socket and lose any bound ports before connecting. Now
    bind()/setSocketDescriptor() followed by connect() will retain the
    original file descriptor.
 
  - QLocalSocket:
-   * [QTBUG-16688] On Windows, waitForReadyRead now always waits for more
+   * [BOBUIBUG-16688] On Windows, waitForReadyRead now always waits for more
      data, even if bytes are still in the buffer.
 
  - QNetworkAccessManager:
@@ -414,27 +414,27 @@ QtNetwork
      similar protocols working over SSL).
 
  - QSslSocket:
-   * [QTBUG-39077] It is now possible to use TLS PSK ciphersuites in client
+   * [BOBUIBUG-39077] It is now possible to use TLS PSK ciphersuites in client
      sockets.
    * A new SSL backend for iOS and OS X, implemented with Apple's Secure
      Transport (Security Framework).
 
  - SSL/TLS support:
-   * [QTBUG-18972] It is now possible to parse elliptic curve certificates.
+   * [BOBUIBUG-18972] It is now possible to parse elliptic curve certificates.
    * It is now possible to choose which elliptic curves should be used by
      an elliptic curve cipher.
 
-QtTest
+BobUITest
 ------
 
  - QCOMPARE now pretty-prints QSizePolicy{,::Policy,::ControlType{,s}}.
- - QtTest now prints an escaped version of QByteArrays that failed to
+ - BobUITest now prints an escaped version of QByteArrays that failed to
    compare with QCOMPARE, instead of the hex dump.
- - QTest::toString() can now be overloaded (instead of just specialized)
+ - BOBUIest::toString() can now be overloaded (instead of just specialized)
    for custom types, and is now reliably found through argument-dependent
    lookup (ADL).
 
-QtWidgets
+BobUIWidgets
 ---------
 
  - Added QPlainTextEdit::createStandardContextMenu(QPoint) overload that
@@ -443,37 +443,37 @@ QtWidgets
    clicked.
 
  - Accessibility / OS X:
-   * VoiceOver users of QTextEdit can now use mouse and touch exploration
+   * VoiceOver users of BOBUIextEdit can now use mouse and touch exploration
      on trackpad to point at text to have spoken to them.
 
  - Layouts:
-   * [QTBUG-43099] Fixed a bug where spans sometimes didn't distribute
+   * [BOBUIBUG-43099] Fixed a bug where spans sometimes didn't distribute
      themselves to the last cells they covered.
 
  - QAbstractItemView:
    * Added iconSizeChanged signal.
 
  - QAbstractScrollArea:
-   * [QTBUG-8315] A getter for the viewport margins has been added.
+   * [BOBUIBUG-8315] A getter for the viewport margins has been added.
 
  - QComboBox:
    * A QComboBox does not reset itself any more when setting the same model
      more than once.
-   * [QTBUG-43350] QComboBox will now reset its root model index when a new
+   * [BOBUIBUG-43350] QComboBox will now reset its root model index when a new
      model is set on it.
 
  - QHeaderView:
-   * [QTBUG-21201] Auto-scroll the view when making extended row/column
+   * [BOBUIBUG-21201] Auto-scroll the view when making extended row/column
      selections.
    * Default section size is now style-dependent by default.
    * Added resetDefaultSectionSize().
 
  - QMenu:
-   * [QTBUG-20094] QMenu now pick up how "sloppy" submenus behave from the
+   * [BOBUIBUG-20094] QMenu now pick up how "sloppy" submenus behave from the
      style.
 
  - QOpenGLWidget:
-   * [QTBUG-40717] Added an UpdateBehavior flag to QOpenGLWidget and
+   * [BOBUIBUG-40717] Added an UpdateBehavior flag to QOpenGLWidget and
      enabled support for NoParitalUpdate for QOpenGLWidget. NoPartialUpdate
      is the default update behavior for QOpenGLWidget.
 
@@ -481,11 +481,11 @@ QtWidgets
    * QSizePolicy::ControlTypes is now introspectable through QSizePolicy's
      meta object.
 
- - QToolButton:
-   * [QTBUG-23396] Fixed the double removal of ampersands.
+ - BOBUIoolButton:
+   * [BOBUIBUG-23396] Fixed the double removal of ampersands.
 
- - QTreeWidget:
-   * [QTBUG-40060] Restored Qt 5.1 behavior of QTreeWidgetItems with
+ - BOBUIreeWidget:
+   * [BOBUIBUG-40060] Restored BobUI 5.1 behavior of BOBUIreeWidgetItems with
      ItemIsTristate to enable automatic management of the check state.
      User-editable tristate checkboxes are now enabled by setting the new
      flag ItemIsUserTristate.
@@ -499,44 +499,44 @@ QtWidgets
 Android
 -------
 
- - [QTBUG-43705] Fixed canonical path for nonexistent paths on some
+ - [BOBUIBUG-43705] Fixed canonical path for nonexistent paths on some
    devices.
- - [QTBUG-38700] On devices with translucent system UI, Qt's windows are now
+ - [BOBUIBUG-38700] On devices with translucent system UI, BobUI's windows are now
    positioned to avoid overlapping it. This behavior can be
    overridden in the application's AndroidManifest.xml.
- - [QTBUG-45430] Fixed a bug that caused applications not to be resumable
+ - [BOBUIBUG-45430] Fixed a bug that caused applications not to be resumable
    after user changed language in system settings.
 
- - QtCore / QTimeZone:
-   * [QTBUG-35908] Android timezones are now available in QTimeZone.
+ - BobUICore / BOBUIimeZone:
+   * [BOBUIBUG-35908] Android timezones are now available in BOBUIimeZone.
 
- - QtWidgets:
+ - BobUIWidgets:
    * Enable QDockWidget window decorations.
 
- - The QtDBus module is now disabled by default.
+ - The BobUIDBus module is now disabled by default.
 
  - Added support for arm64-v8a, x86_64, and mips64 with gcc 4.9.
 
 OS X
 ----
 
- - [QTBUG-43999] QApplication::setWindowIcon now changes the icon for the
+ - [BOBUIBUG-43999] QApplication::setWindowIcon now changes the icon for the
    application in the dock.
 
  - Text:
-   * [QTBUG-44708] Fixed appending text with a different writing system and
+   * [BOBUIBUG-44708] Fixed appending text with a different writing system and
      formatting to a latin ligature.
 
 Windows
 -------
 
  - QMimeData:
-   * [QTBUG-17373] Added support for handling dropping of multiple mail
+   * [BOBUIBUG-17373] Added support for handling dropping of multiple mail
      attachments, adding ;index=N to the mimetype string
-     application/x-qt-windows-mime;value="FileContents"
+     application/x-bobui-windows-mime;value="FileContents"
 
  - Text:
-   * [QTBUG-44501] Fixed design metrics for text
+   * [BOBUIBUG-44501] Fixed design metrics for text
 
 X11/XCB
 -------
@@ -544,12 +544,12 @@ X11/XCB
  - GLX and EGL code paths are now dynamically resolved, making it possible
    for one build of a plugin to use both code paths. The default is to use
    the GLX code path if available. This can be overridden by specifying
-   QT_XCB_GL_INTEGRATION=xcb_egl as an environment variable.  Enable the
-   logging category qt.xcb.glintegration.debug to get debug log output of
+   BOBUI_XCB_GL_INTEGRATION=xcb_egl as an environment variable.  Enable the
+   logging category bobui.xcb.glintegration.debug to get debug log output of
    what integration is used.
- - [QTBUG-31762] QSystemTrayIcon now uses StatusNotifier D-Bus protocol
+ - [BOBUIBUG-31762] QSystemTrayIcon now uses StatusNotifier D-Bus protocol
    when the desktop environment supports it
- - [QTBUG-40174][QTBUG-42985] If all QScreens (xcb outputs) are
+ - [BOBUIBUG-40174][BOBUIBUG-42985] If all QScreens (xcb outputs) are
    disconnected while an application is running,
    QGuiApplication::primaryScreen() will now return null until a screen is
    connected again.
@@ -558,9 +558,9 @@ X11/XCB
 *                      Compiler Specific Changes                           *
 ****************************************************************************
 
- - Qt 5.5 now unconditionally uses the "using" keyword. Compilers that do
+ - BobUI 5.5 now unconditionally uses the "using" keyword. Compilers that do
    not support this keyword are deprecated and will not be able to build
-   Qt. Previous versions of Qt may or may not compile, as no testing was
+   BobUI. Previous versions of BobUI may or may not compile, as no testing was
    done to ensure it worked.
  - Visual Studio: -Zm200 (an option to specify the precompiled header
    memory allocation limit) is not added anymore by qmake to the compiler
@@ -575,45 +575,45 @@ configure & build system
 ------------------------
 
  - Added support for VS2015.
- - [QTBUG-31814][OS X/iOS] Qt is now built with a relative RPATH.
- - [VS2012+] Qt is now always built with C++11 with these compilers.
+ - [BOBUIBUG-31814][OS X/iOS] BobUI is now built with a relative RPATH.
+ - [VS2012+] BobUI is now always built with C++11 with these compilers.
  - [Windows] Added -static-runtime option.
  - Added support for GCC/Clang -fsanitize= options.
  - Enabled tslib autodetection by default.
  - Added configure-time check for IPC support.
- - [QTBUG-44690][QNX] Fixed NEON detection when cross-compiling on Windows.
+ - [BOBUIBUG-44690][QNX] Fixed NEON detection when cross-compiling on Windows.
  - On-device compilation should work better on RaspPi and some other
    devices now (use linux-g++ mkspec).
  - configure -redo and config.status support spaces in arguments now.
- - Qt can be now built in and installed to directories with spaces.
+ - BobUI can be now built in and installed to directories with spaces.
    Note that source directories with spaces are still not supported.
 
 qmake
 -----
 
- - [QTBUG-3069][Linux] Building with -rpath will now create DT_RUNPATH tags
+ - [BOBUIBUG-3069][Linux] Building with -rpath will now create DT_RUNPATH tags
    instead of DT_RPATH, allowing LD_LIBRARY_PATH to override the rpath.
- - [QTBUG-41917][VS] Fixed project generation when PRECOMPILED_SOURCE is
+ - [BOBUIBUG-41917][VS] Fixed project generation when PRECOMPILED_SOURCE is
    in a different directory than PRECOMPILED_HEADER.
- - [QTBUG-42454][MinGW] Added handling of QMAKE_MANIFEST.
- - [QTBUG-13496][MSVC] CONFIG+=no_batch is now automatically added when
+ - [BOBUIBUG-42454][MinGW] Added handling of QMAKE_MANIFEST.
+ - [BOBUIBUG-13496][MSVC] CONFIG+=no_batch is now automatically added when
    multiple sources with the same base name exist.
- - Added $$[QT_INSTALL_PREFIX/dev], etc. properties which reflect the
-   on-device locations of Qt (the -prefix, etc. passed to configure).
+ - Added $$[BOBUI_INSTALL_PREFIX/dev], etc. properties which reflect the
+   on-device locations of BobUI (the -prefix, etc. passed to configure).
  - Building under MSys is less problematic now.
- - [QTBUG-37269] Fixed cross-compilation for Unix on Windows/MinGW.
- - [QTBUG-8202][QTBUG-20566][QTBUG-44685] Fixed distclean targets.
- - [QTBUG-43162][VS] Added DISTFILES support for Visual Studio projects.
- - [QTBUG-41753][VS][WinPhone] Fixed MdilXapCompile deployment step.
- - [QTBUG-44960][VS] Reworked .dll deployment. Added $$QMAKE_DLL_PATHS.
- - [QTBUG-44823][MSVC] Fixed unreasonable values being passed in /VERSION.
+ - [BOBUIBUG-37269] Fixed cross-compilation for Unix on Windows/MinGW.
+ - [BOBUIBUG-8202][BOBUIBUG-20566][BOBUIBUG-44685] Fixed distclean targets.
+ - [BOBUIBUG-43162][VS] Added DISTFILES support for Visual Studio projects.
+ - [BOBUIBUG-41753][VS][WinPhone] Fixed MdilXapCompile deployment step.
+ - [BOBUIBUG-44960][VS] Reworked .dll deployment. Added $$QMAKE_DLL_PATHS.
+ - [BOBUIBUG-44823][MSVC] Fixed unreasonable values being passed in /VERSION.
    Added $$VERSION_PE_HEADER to override the value.
  - [WinRT] The icon handling was reworked/extended.
- - [QTBUG-12711] Fixed infinite recursion on malformed .prl files.
+ - [BOBUIBUG-12711] Fixed infinite recursion on malformed .prl files.
 
 ****************************************************************************
 *                          Third-party libraries                           *
 ****************************************************************************
 
- - [QTBUG-44815][QTBUG-37660][QTBUG-44694][QTBUG-42443] ANGLE was updated
+ - [BOBUIBUG-44815][BOBUIBUG-37660][BOBUIBUG-44694][BOBUIBUG-42443] ANGLE was updated
    to Chromium branch 2356 (2.1~99f075dade7c).

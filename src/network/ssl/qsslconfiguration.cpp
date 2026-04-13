@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qssl_p.h"
 #include "qsslconfiguration.h"
@@ -11,9 +11,9 @@
 #include "qmutex.h"
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QSslConfiguration)
+BOBUI_IMPL_METATYPE_EXTERN(QSslConfiguration)
 
 const QSsl::SslOptions QSslConfigurationPrivate::defaultSslOptions = QSsl::SslOptionDisableEmptyFragments
                                                                     |QSsl::SslOptionDisableLegacyRenegotiation
@@ -29,12 +29,12 @@ const char QSslConfiguration::NextProtocolHttp1_1[] = "http/1.1";
     \since 4.4
 
     \reentrant
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
     \ingroup ssl
     \ingroup shared
 
-    QSslConfiguration is used by Qt networking classes to relay
+    QSslConfiguration is used by BobUI networking classes to relay
     information about an open SSL connection and to allow the
     application to control certain features of that connection.
 
@@ -597,7 +597,7 @@ void QSslConfiguration::setCiphers(const QString &ciphers)
 {
     auto *p = d.data();
     p->ciphers.clear();
-    const auto cipherNames = ciphers.split(u':', Qt::SkipEmptyParts);
+    const auto cipherNames = ciphers.split(u':', BobUI::SkipEmptyParts);
     for (const QString &cipherName : cipherNames) {
         QSslCipher cipher(cipherName);
         if (!cipher.isNull())
@@ -923,8 +923,8 @@ void QSslConfiguration::setPreSharedKeyIdentityHint(const QByteArray &hint)
     If no Diffie-Hellman parameters have been set, the QSslConfiguration object
     defaults to using the 2048-bit MODP group from RFC 3526.
 
-    \note The default parameters may change in future Qt versions.
-    Please check the documentation of the \e{exact Qt version} that you
+    \note The default parameters may change in future BobUI versions.
+    Please check the documentation of the \e{exact BobUI version} that you
     are using in order to know what defaults that version uses.
  */
 QSslDiffieHellmanParameters QSslConfiguration::diffieHellmanParameters() const
@@ -944,8 +944,8 @@ QSslDiffieHellmanParameters QSslConfiguration::diffieHellmanParameters() const
     Since 6.7 you can provide an empty Diffie-Hellman parameter to use auto selection
     (see SSL_CTX_set_dh_auto of openssl) if the tls backend supports it.
 
-    \note The default parameters may change in future Qt versions.
-    Please check the documentation of the \e{exact Qt version} that you
+    \note The default parameters may change in future BobUI versions.
+    Please check the documentation of the \e{exact BobUI version} that you
     are using in order to know what defaults that version uses.
  */
 void QSslConfiguration::setDiffieHellmanParameters(const QSslDiffieHellmanParameters &dhparams)
@@ -1108,7 +1108,7 @@ void QSslConfiguration::setDefaultConfiguration(const QSslConfiguration &configu
     QSslConfigurationPrivate::setDefaultConfiguration(configuration);
 }
 
-#if QT_CONFIG(dtls) || defined(Q_QDOC)
+#if BOBUI_CONFIG(dtls) || defined(Q_QDOC)
 
 /*!
   This function returns true if DTLS cookie verification was enabled on a
@@ -1178,7 +1178,7 @@ void QSslConfiguration::setDefaultDtlsConfiguration(const QSslConfiguration &con
 */
 void QSslConfiguration::setOcspStaplingEnabled(bool enabled)
 {
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
     d->ocspStaplingEnabled = enabled;
 #else
     if (enabled)
@@ -1237,7 +1237,7 @@ bool QSslConfiguration::handshakeMustInterruptOnError() const
 */
 void QSslConfiguration::setHandshakeMustInterruptOnError(bool interrupt)
 {
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     d->reportFromCallback = interrupt;
 #else
     Q_UNUSED(interrupt);
@@ -1269,13 +1269,13 @@ bool QSslConfiguration::missingCertificateIsFatal() const
     treated as an unrecoverable error that cannot be ignored. A proper
     alert message will be sent to the peer before closing the connection.
 
-    \note Only available if Qt was configured and built with OpenSSL backend.
+    \note Only available if BobUI was configured and built with OpenSSL backend.
 
     \sa QSslSocket::ignoreSslErrors(), QSslSocket::PeerVerifyMode, missingCertificateIsFatal()
 */
 void QSslConfiguration::setMissingCertificateIsFatal(bool cannotRecover)
 {
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     d->missingCertIsFatal = cannotRecover;
 #else
     Q_UNUSED(cannotRecover);
@@ -1289,4 +1289,4 @@ bool QSslConfigurationPrivate::peerSessionWasShared(const QSslConfiguration &con
         return configuration.d->peerSessionShared;
     }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

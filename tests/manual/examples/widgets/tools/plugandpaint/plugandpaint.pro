@@ -1,5 +1,5 @@
-QT_FOR_CONFIG += widgets
-requires(qtConfig(inputdialog))
+BOBUI_FOR_CONFIG += widgets
+requires(bobuiConfig(inputdialog))
 
 TEMPLATE = subdirs
 SUBDIRS = plugins app

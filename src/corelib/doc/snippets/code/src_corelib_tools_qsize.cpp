@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QSize>
 
@@ -8,15 +8,15 @@ void examples()
     {
         //! [0]
         QSize t1(10, 12);
-        t1.scale(60, 60, Qt::IgnoreAspectRatio);
+        t1.scale(60, 60, BobUI::IgnoreAspectRatio);
         // t1 is (60, 60)
 
         QSize t2(10, 12);
-        t2.scale(60, 60, Qt::KeepAspectRatio);
+        t2.scale(60, 60, BobUI::KeepAspectRatio);
         // t2 is (50, 60)
 
         QSize t3(10, 12);
-        t3.scale(60, 60, Qt::KeepAspectRatioByExpanding);
+        t3.scale(60, 60, BobUI::KeepAspectRatioByExpanding);
         // t3 is (60, 72)
         //! [0]
     }
@@ -62,15 +62,15 @@ void examples()
     {
         //! [5]
         QSizeF t1(10, 12);
-        t1.scale(60, 60, Qt::IgnoreAspectRatio);
+        t1.scale(60, 60, BobUI::IgnoreAspectRatio);
         // t1 is (60, 60)
 
         QSizeF t2(10, 12);
-        t2.scale(60, 60, Qt::KeepAspectRatio);
+        t2.scale(60, 60, BobUI::KeepAspectRatio);
         // t2 is (50, 60)
 
         QSizeF t3(10, 12);
-        t3.scale(60, 60, Qt::KeepAspectRatioByExpanding);
+        t3.scale(60, 60, BobUI::KeepAspectRatioByExpanding);
         // t3 is (60, 72)
         //! [5]
     }

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <private/qpaintengine_preview_p.h>
 #include <private/qpainter_p.h>
 #include <private/qpaintengine_p.h>
 #include <private/qpicture_p.h>
 
-#include <QtPrintSupport/qprintengine.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpicture.h>
+#include <BobUIPrintSupport/qprintengine.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpicture.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPreviewPaintEnginePrivate : public QPaintEnginePrivate
 {
@@ -91,7 +91,7 @@ void QPreviewPaintEngine::drawPolygon(const QPointF *points, int pointCount, Pol
     d->engine->drawPolygon(points, pointCount, mode);
 }
 
-void QPreviewPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
+void QPreviewPaintEngine::drawTextItem(const QPointF &p, const BOBUIextItem &textItem)
 {
     Q_D(QPreviewPaintEngine);
     d->engine->drawTextItem(p, textItem);
@@ -181,4 +181,4 @@ QPrinter::PrinterState QPreviewPaintEngine::printerState() const
     return d->state;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

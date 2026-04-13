@@ -1,6 +1,6 @@
 // Copyright (C) 2014 Ivan Komissarov <ABBAPOH@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTORAGEINFO_P_H
 #define QSTORAGEINFO_P_H
@@ -9,24 +9,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qsystemdetection.h>
-#include <QtCore/qtenvironmentvariables.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qsystemdetection.h>
+#include <BobUICore/bobuienvironmentvariables.h>
+#include <BobUICore/private/qglobal_p.h>
 #include "qstorageinfo.h"
 
 #ifdef Q_OS_UNIX
 #include <sys/types.h> // dev_t
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcStorageInfo)
 
@@ -131,7 +131,7 @@ bool QStorageInfoPrivate::shouldIncludeFs(const QString &mountDir, const QByteAr
     static constexpr char RootFsStr[] = "rootfs";
 #endif
 
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
     /*
      * This function implements a heuristic algorithm to determine whether a
      * given mount should be reported to the user. Our objective is to list
@@ -165,6 +165,6 @@ bool QStorageInfoPrivate::shouldIncludeFs(const QString &mountDir, const QByteAr
 }
 #endif // Q_OS_UNIX
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTORAGEINFO_P_H

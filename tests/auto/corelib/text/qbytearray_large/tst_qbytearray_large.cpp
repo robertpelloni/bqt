@@ -1,8 +1,8 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qbytearray.h>
 
@@ -16,7 +16,7 @@ class tst_QByteArrayLarge : public QObject
 
 private slots:
     void initTestCase();
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
     void qCompress_data();
     void qCompress();
     void qUncompressCorruptedData_data();
@@ -29,61 +29,61 @@ private slots:
 
 void tst_QByteArrayLarge::initTestCase()
 {
-#if defined(QT_ASAN_ENABLED)
+#if defined(BOBUI_ASAN_ENABLED)
     QSKIP("Skipping QByteArray tests under ASAN as they are too slow");
 #endif
 }
 
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
 void tst_QByteArrayLarge::qCompress_data()
 {
-    QTest::addColumn<QByteArray>("ba");
+    BOBUIest::addColumn<QByteArray>("ba");
 
     const int size1 = 1024*1024;
     QByteArray ba1( size1, 0 );
 
-    QTest::newRow( "00" ) << QByteArray();
+    BOBUIest::newRow( "00" ) << QByteArray();
 
     int i;
     for ( i=0; i<size1; i++ )
         ba1[i] = (char)( i / 1024 );
-    QTest::newRow( "01" ) << ba1;
+    BOBUIest::newRow( "01" ) << ba1;
 
     for ( i=0; i<size1; i++ )
         ba1[i] = (char)( i % 256 );
-    QTest::newRow( "02" ) << ba1;
+    BOBUIest::newRow( "02" ) << ba1;
 
     ba1.fill( 'A' );
-    QTest::newRow( "03" ) << ba1;
+    BOBUIest::newRow( "03" ) << ba1;
 
     QFile file( QFINDTESTDATA("rfc3252.txt") );
     QVERIFY( file.open(QIODevice::ReadOnly) );
-    QTest::newRow( "04" ) << file.readAll();
+    BOBUIest::newRow( "04" ) << file.readAll();
 }
 
 void tst_QByteArrayLarge::qCompress()
 {
     QFETCH( QByteArray, ba );
     QByteArray compressed = ::qCompress( ba );
-    QTEST( ::qUncompress( compressed ), "ba" );
+    BOBUIEST( ::qUncompress( compressed ), "ba" );
 }
 
 void tst_QByteArrayLarge::qUncompressCorruptedData_data()
 {
-    QTest::addColumn<QByteArray>("in");
+    BOBUIest::addColumn<QByteArray>("in");
 
-    QTest::newRow("0x00000000") << QByteArray("\x00\x00\x00\x00", 4);
-    QTest::newRow("0x000000ff") << QByteArray("\x00\x00\x00\xff", 4);
-    QTest::newRow("0x3f000000") << QByteArray("\x3f\x00\x00\x00", 4);
-    QTest::newRow("0x3fffffff") << QByteArray("\x3f\xff\xff\xff", 4);
-    QTest::newRow("0x7fffff00") << QByteArray("\x7f\xff\xff\x00", 4);
-    QTest::newRow("0x7fffffff") << QByteArray("\x7f\xff\xff\xff", 4);
-    QTest::newRow("0x80000000") << QByteArray("\x80\x00\x00\x00", 4);
-    QTest::newRow("0x800000ff") << QByteArray("\x80\x00\x00\xff", 4);
-    QTest::newRow("0xcf000000") << QByteArray("\xcf\x00\x00\x00", 4);
-    QTest::newRow("0xcfffffff") << QByteArray("\xcf\xff\xff\xff", 4);
-    QTest::newRow("0xffffff00") << QByteArray("\xff\xff\xff\x00", 4);
-    QTest::newRow("0xffffffff") << QByteArray("\xff\xff\xff\xff", 4);
+    BOBUIest::newRow("0x00000000") << QByteArray("\x00\x00\x00\x00", 4);
+    BOBUIest::newRow("0x000000ff") << QByteArray("\x00\x00\x00\xff", 4);
+    BOBUIest::newRow("0x3f000000") << QByteArray("\x3f\x00\x00\x00", 4);
+    BOBUIest::newRow("0x3fffffff") << QByteArray("\x3f\xff\xff\xff", 4);
+    BOBUIest::newRow("0x7fffff00") << QByteArray("\x7f\xff\xff\x00", 4);
+    BOBUIest::newRow("0x7fffffff") << QByteArray("\x7f\xff\xff\xff", 4);
+    BOBUIest::newRow("0x80000000") << QByteArray("\x80\x00\x00\x00", 4);
+    BOBUIest::newRow("0x800000ff") << QByteArray("\x80\x00\x00\xff", 4);
+    BOBUIest::newRow("0xcf000000") << QByteArray("\xcf\x00\x00\x00", 4);
+    BOBUIest::newRow("0xcfffffff") << QByteArray("\xcf\xff\xff\xff", 4);
+    BOBUIest::newRow("0xffffff00") << QByteArray("\xff\xff\xff\x00", 4);
+    BOBUIest::newRow("0xffffffff") << QByteArray("\xff\xff\xff\xff", 4);
 }
 
 // This test is expected to produce some warning messages in the test output.
@@ -220,5 +220,5 @@ void tst_QByteArrayLarge::base64_2GiB()
     }
 }
 
-QTEST_MAIN(tst_QByteArrayLarge)
+BOBUIEST_MAIN(tst_QByteArrayLarge)
 #include "tst_qbytearray_large.moc"

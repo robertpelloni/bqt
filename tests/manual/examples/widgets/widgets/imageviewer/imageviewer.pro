@@ -1,11 +1,11 @@
-QT += widgets
-requires(qtConfig(filedialog))
-qtHaveModule(printsupport): QT += printsupport
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
+bobuiHaveModule(printsupport): BOBUI += printsupport
 
 HEADERS       = imageviewer.h
 SOURCES       = imageviewer.cpp \
                 main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/imageviewer
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/imageviewer
 INSTALLS += target

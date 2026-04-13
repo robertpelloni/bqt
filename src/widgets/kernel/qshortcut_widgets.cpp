@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qshortcut.h"
 #include "private/qshortcut_p.h"
@@ -8,32 +8,32 @@
 #include "private/qwidget_p.h"
 
 #include <qevent.h>
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #include <qwhatsthis.h>
 #endif
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <qmenu.h>
 #endif
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 #include <qmenubar.h>
 #endif
 #include <qapplication.h>
 #include <private/qapplication_p.h>
 #include <private/qshortcutmap_p.h>
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 #  include <private/qaction_p.h>
 #endif
 #include <private/qwidgetwindow_p.h>
 #include <qpa/qplatformmenu.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static bool correctWidgetContext(Qt::ShortcutContext context, QWidget *w, QWidget *active_window);
-#if QT_CONFIG(graphicsview)
-static bool correctGraphicsWidgetContext(Qt::ShortcutContext context, QGraphicsWidget *w, QWidget *active_window);
+static bool correctWidgetContext(BobUI::ShortcutContext context, QWidget *w, QWidget *active_window);
+#if BOBUI_CONFIG(graphicsview)
+static bool correctGraphicsWidgetContext(BobUI::ShortcutContext context, QGraphicsWidget *w, QWidget *active_window);
 #endif
-#if QT_CONFIG(action)
-static bool correctActionContext(Qt::ShortcutContext context, QAction *a, QWidget *active_window);
+#if BOBUI_CONFIG(action)
+static bool correctActionContext(BobUI::ShortcutContext context, QAction *a, QWidget *active_window);
 #endif
 
 
@@ -41,7 +41,7 @@ static bool correctActionContext(Qt::ShortcutContext context, QAction *a, QWidge
     Returns \c true if the widget \a w is a logical sub window of the current
     top-level widget.
 */
-bool qWidgetShortcutContextMatcher(QObject *object, Qt::ShortcutContext context)
+bool qWidgetShortcutContextMatcher(QObject *object, BobUI::ShortcutContext context)
 {
     Q_ASSERT_X(object, "QShortcutMap", "Shortcut has no owner. Illegal map state!");
 
@@ -66,12 +66,12 @@ bool qWidgetShortcutContextMatcher(QObject *object, Qt::ShortcutContext context)
         }
     }
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     if (auto a = qobject_cast<QAction *>(object))
         return correctActionContext(context, a, active_window);
 #endif
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (auto gw = qobject_cast<QGraphicsWidget *>(object))
         return correctGraphicsWidgetContext(context, gw, active_window);
 #endif
@@ -99,13 +99,13 @@ bool qWidgetShortcutContextMatcher(QObject *object, Qt::ShortcutContext context)
     return QShortcutPrivate::simpleContextMatcher(object, context);
 }
 
-static bool correctWidgetContext(Qt::ShortcutContext context, QWidget *w, QWidget *active_window)
+static bool correctWidgetContext(BobUI::ShortcutContext context, QWidget *w, QWidget *active_window)
 {
     if (!active_window)
         return false;
 
     bool visible = w->isVisible();
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     if (auto menuBar = qobject_cast<QMenuBar *>(w)) {
         if (auto *pmb = menuBar->platformMenuBar()) {
             if (menuBar->parentWidget()) {
@@ -123,22 +123,22 @@ static bool correctWidgetContext(Qt::ShortcutContext context, QWidget *w, QWidge
     if (!visible || !w->isEnabled())
         return false;
 
-    if (context == Qt::ApplicationShortcut)
+    if (context == BobUI::ApplicationShortcut)
         return QApplicationPrivate::tryModalHelper(w, nullptr); // true, unless w is shadowed by a modal dialog
 
-    if (context == Qt::WidgetShortcut)
+    if (context == BobUI::WidgetShortcut)
         return w == QApplication::focusWidget();
 
-    if (context == Qt::WidgetWithChildrenShortcut) {
+    if (context == BobUI::WidgetWithChildrenShortcut) {
         const QWidget *tw = QApplication::focusWidget();
-        while (tw && tw != w && (tw->windowType() == Qt::Widget || tw->windowType() == Qt::Popup || tw->windowType() == Qt::SubWindow))
+        while (tw && tw != w && (tw->windowType() == BobUI::Widget || tw->windowType() == BobUI::Popup || tw->windowType() == BobUI::SubWindow))
             tw = tw->parentWidget();
         return tw == w;
     }
 
-    // Below is Qt::WindowShortcut context
+    // Below is BobUI::WindowShortcut context
     QWidget *tlw = w->window();
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (auto topData = static_cast<QWidgetPrivate *>(QObjectPrivate::get(tlw))->extra.get()) {
         if (topData->proxyWidget) {
             bool res = correctGraphicsWidgetContext(context, topData->proxyWidget, active_window);
@@ -151,15 +151,15 @@ static bool correctWidgetContext(Qt::ShortcutContext context, QWidget *w, QWidge
         /* if a floating tool window is active, keep shortcuts on the parent working.
          * and if a popup window is active (f.ex a completer), keep shortcuts on the
          * focus proxy working */
-        if (active_window->windowType() == Qt::Tool && active_window->parentWidget()) {
+        if (active_window->windowType() == BobUI::Tool && active_window->parentWidget()) {
             active_window = active_window->parentWidget()->window();
-        } else if (active_window->windowType() == Qt::Popup && active_window->focusProxy()) {
+        } else if (active_window->windowType() == BobUI::Popup && active_window->focusProxy()) {
             active_window = active_window->focusProxy()->window();
         }
     }
 
     if (active_window != tlw) {
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
         // If the tlw is a QMenuBar then we allow it to proceed as this indicates that
         // the QMenuBar is a parentless one and is therefore used for multiple top level
         // windows in the application. This is common on macOS platforms for example.
@@ -171,9 +171,9 @@ static bool correctWidgetContext(Qt::ShortcutContext context, QWidget *w, QWidge
     /* if we live in a MDI subwindow, ignore the event if we are
        not the active document window */
     const QWidget* sw = w;
-    while (sw && !(sw->windowType() == Qt::SubWindow) && !sw->isWindow())
+    while (sw && !(sw->windowType() == BobUI::SubWindow) && !sw->isWindow())
         sw = sw->parentWidget();
-    if (sw && (sw->windowType() == Qt::SubWindow)) {
+    if (sw && (sw->windowType() == BobUI::SubWindow)) {
         QWidget *focus_widget = QApplication::focusWidget();
         while (focus_widget && focus_widget != sw)
             focus_widget = focus_widget->parentWidget();
@@ -186,22 +186,22 @@ static bool correctWidgetContext(Qt::ShortcutContext context, QWidget *w, QWidge
     return QApplicationPrivate::tryModalHelper(w, nullptr);
 }
 
-#if QT_CONFIG(graphicsview)
-static bool correctGraphicsWidgetContext(Qt::ShortcutContext context, QGraphicsWidget *w, QWidget *active_window)
+#if BOBUI_CONFIG(graphicsview)
+static bool correctGraphicsWidgetContext(BobUI::ShortcutContext context, QGraphicsWidget *w, QWidget *active_window)
 {
     if (!active_window)
         return false;
 
     bool visible = w->isVisible();
-#if defined(Q_OS_DARWIN) && QT_CONFIG(menubar)
-    if (!QCoreApplication::testAttribute(Qt::AA_DontUseNativeMenuBar) && qobject_cast<QMenuBar *>(w))
+#if defined(Q_OS_DARWIN) && BOBUI_CONFIG(menubar)
+    if (!QCoreApplication::testAttribute(BobUI::AA_DontUseNativeMenuBar) && qobject_cast<QMenuBar *>(w))
         visible = true;
 #endif
 
     if (!visible || !w->isEnabled() || !w->scene())
         return false;
 
-    if (context == Qt::ApplicationShortcut) {
+    if (context == BobUI::ApplicationShortcut) {
         // Applicationwide shortcuts are always reachable unless their owner
         // is shadowed by modality. In QGV there's no modality concept, but we
         // must still check if all views are shadowed.
@@ -213,21 +213,21 @@ static bool correctGraphicsWidgetContext(Qt::ShortcutContext context, QGraphicsW
         return false;
     }
 
-    if (context == Qt::WidgetShortcut)
+    if (context == BobUI::WidgetShortcut)
         return static_cast<QGraphicsItem *>(w) == w->scene()->focusItem();
 
-    if (context == Qt::WidgetWithChildrenShortcut) {
+    if (context == BobUI::WidgetWithChildrenShortcut) {
         const QGraphicsItem *ti = w->scene()->focusItem();
         if (ti && ti->isWidget()) {
             const auto *tw = static_cast<const QGraphicsWidget *>(ti);
-            while (tw && tw != w && (tw->windowType() == Qt::Widget || tw->windowType() == Qt::Popup))
+            while (tw && tw != w && (tw->windowType() == BobUI::Widget || tw->windowType() == BobUI::Popup))
                 tw = tw->parentWidget();
             return tw == w;
         }
         return false;
     }
 
-    // Below is Qt::WindowShortcut context
+    // Below is BobUI::WindowShortcut context
 
     // Find the active view (if any).
     const auto &views = w->scene()->views();
@@ -248,8 +248,8 @@ static bool correctGraphicsWidgetContext(Qt::ShortcutContext context, QGraphicsW
 }
 #endif
 
-#if QT_CONFIG(action)
-static bool correctActionContext(Qt::ShortcutContext context, QAction *a, QWidget *active_window)
+#if BOBUI_CONFIG(action)
+static bool correctActionContext(BobUI::ShortcutContext context, QAction *a, QWidget *active_window)
 {
     if (!active_window)
         return false;
@@ -260,7 +260,7 @@ static bool correctActionContext(Qt::ShortcutContext context, QAction *a, QWidge
         qDebug() << a << "not connected to any widgets; won't trigger";
 #endif
     for (auto object : associatedObjects) {
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
         if (auto menu = qobject_cast<QMenu *>(object)) {
 #ifdef Q_OS_DARWIN
             // On Mac, menu item shortcuts are processed before reaching any window.
@@ -286,7 +286,7 @@ static bool correctActionContext(Qt::ShortcutContext context, QAction *a, QWidge
             if (correctWidgetContext(context, widget, active_window))
                 return true;
         }
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         else if (auto graphicsWidget = qobject_cast<QGraphicsWidget*>(object)) {
             if (correctGraphicsWidgetContext(context, graphicsWidget, active_window))
                 return true;
@@ -296,13 +296,13 @@ static bool correctActionContext(Qt::ShortcutContext context, QAction *a, QWidge
 
     return false;
 }
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 
-class QtWidgetsShortcutPrivate : public QShortcutPrivate
+class BobUIWidgetsShortcutPrivate : public QShortcutPrivate
 {
     Q_DECLARE_PUBLIC(QShortcut)
 public:
-    QtWidgetsShortcutPrivate() = default;
+    BobUIWidgetsShortcutPrivate() = default;
 
     QShortcutMap::ContextMatcher contextMatcher() const override
     { return qWidgetShortcutContextMatcher; }
@@ -310,9 +310,9 @@ public:
     bool handleWhatsThis() override;
 };
 
-bool QtWidgetsShortcutPrivate::handleWhatsThis()
+bool BobUIWidgetsShortcutPrivate::handleWhatsThis()
 {
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     if (QWhatsThis::inWhatsThisMode()) {
         QWhatsThis::showText(QCursor::pos(), sc_whatsthis);
         return true;
@@ -323,7 +323,7 @@ bool QtWidgetsShortcutPrivate::handleWhatsThis()
 
 QShortcutPrivate *QApplicationPrivate::createShortcutPrivate() const
 {
-    return new QtWidgetsShortcutPrivate;
+    return new BobUIWidgetsShortcutPrivate;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

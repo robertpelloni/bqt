@@ -1,9 +1,9 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxabstractvirtualkeyboard.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QQnxAbstractVirtualKeyboard::QQnxAbstractVirtualKeyboard(QObject *parent)
     : QObject(parent)
@@ -39,17 +39,17 @@ void QQnxAbstractVirtualKeyboard::setEnterKeyType(EnterKeyType type)
 
 void QQnxAbstractVirtualKeyboard::setInputHints(int inputHints)
 {
-    if (inputHints & Qt::ImhEmailCharactersOnly) {
+    if (inputHints & BobUI::ImhEmailCharactersOnly) {
         setKeyboardMode(QQnxAbstractVirtualKeyboard::Email);
-    } else if (inputHints & Qt::ImhDialableCharactersOnly) {
+    } else if (inputHints & BobUI::ImhDialableCharactersOnly) {
         setKeyboardMode(QQnxAbstractVirtualKeyboard::Phone);
-    } else if (inputHints & Qt::ImhUrlCharactersOnly) {
+    } else if (inputHints & BobUI::ImhUrlCharactersOnly) {
         setKeyboardMode(QQnxAbstractVirtualKeyboard::Url);
-    } else if (inputHints & Qt::ImhFormattedNumbersOnly || inputHints & Qt::ImhDigitsOnly) {
+    } else if (inputHints & BobUI::ImhFormattedNumbersOnly || inputHints & BobUI::ImhDigitsOnly) {
         setKeyboardMode(QQnxAbstractVirtualKeyboard::Number);
-    } else if (inputHints & Qt::ImhDate || inputHints & Qt::ImhTime) {
+    } else if (inputHints & BobUI::ImhDate || inputHints & BobUI::ImhTime) {
         setKeyboardMode(QQnxAbstractVirtualKeyboard::NumPunc); // Use NumPunc so that : is available.
-    } else if (inputHints & Qt::ImhHiddenText) {
+    } else if (inputHints & BobUI::ImhHiddenText) {
         setKeyboardMode(QQnxAbstractVirtualKeyboard::Password);
     } else {
         setKeyboardMode(QQnxAbstractVirtualKeyboard::Default);
@@ -95,26 +95,26 @@ void QQnxAbstractVirtualKeyboard::setLocale(const QLocale &locale)
 }
 
 QQnxAbstractVirtualKeyboard::EnterKeyType
-    QQnxAbstractVirtualKeyboard::qtEnterKeyTypeToQnx(Qt::EnterKeyType type)
+    QQnxAbstractVirtualKeyboard::bobuiEnterKeyTypeToQnx(BobUI::EnterKeyType type)
 {
     switch (type) {
-    case Qt::EnterKeyDone:
+    case BobUI::EnterKeyDone:
         return Done;
-    case Qt::EnterKeyGo:
+    case BobUI::EnterKeyGo:
         return Go;
-    case Qt::EnterKeyNext:
+    case BobUI::EnterKeyNext:
         return Next;
-    case Qt::EnterKeySearch:
+    case BobUI::EnterKeySearch:
         return Search;
-    case Qt::EnterKeySend:
+    case BobUI::EnterKeySend:
         return Send;
-    case Qt::EnterKeyDefault:
-    case Qt::EnterKeyReturn:
-    case Qt::EnterKeyPrevious: // unsupported
+    case BobUI::EnterKeyDefault:
+    case BobUI::EnterKeyReturn:
+    case BobUI::EnterKeyPrevious: // unsupported
         return DefaultReturn;
     }
     Q_UNREACHABLE();
     return DefaultReturn;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

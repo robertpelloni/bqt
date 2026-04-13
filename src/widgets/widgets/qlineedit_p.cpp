@@ -1,36 +1,36 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlineedit.h"
 #include "qlineedit_p.h"
 
 #include "qvariant.h"
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 #include "qabstractitemview.h"
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include "qdrag.h"
 #endif
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 #  include "qwidgetaction.h"
 #endif
 #include "qclipboard.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
 #include "qinputmethod.h"
 #include "qlist.h"
 #endif
 #include <qpainter.h>
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
 #include <qpropertyanimation.h>
 #endif
 #include <qstylehints.h>
 #include <qvalidator.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 const int QLineEditPrivate::verticalMargin(1);
 const int QLineEditPrivate::horizontalMargin(2);
@@ -44,7 +44,7 @@ QRect QLineEditPrivate::adjustedControlRect(const QRect &rect) const
     return widgetRect.translated(QPoint(cix, vscroll - control->ascent() + q_func()->fontMetrics().ascent()));
 }
 
-int QLineEditPrivate::xToPos(int x, QTextLine::CursorPosition betweenOrOn) const
+int QLineEditPrivate::xToPos(int x, BOBUIextLine::CursorPosition betweenOrOn) const
 {
     QRect cr = adjustedContentsRect();
     x-= cr.x() - hscroll + horizontalMargin;
@@ -74,7 +74,7 @@ QRect QLineEditPrivate::cursorRect() const
     return adjustedControlRect(control->cursorRect());
 }
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
 void QLineEditPrivate::connectCompleter()
 {
     Q_Q(const QLineEdit);
@@ -106,13 +106,13 @@ void QLineEditPrivate::completionHighlighted(const QString &newText)
 #ifndef Q_OS_ANDROID
         const bool mark = true;
 #else
-        const bool mark = (imHints & Qt::ImhNoPredictiveText);
+        const bool mark = (imHints & BobUI::ImhNoPredictiveText);
 #endif
         control->moveCursor(c, mark);
     }
 }
 
-#endif // QT_CONFIG(completer)
+#endif // BOBUI_CONFIG(completer)
 
 void QLineEditPrivate::handleWindowActivate()
 {
@@ -126,7 +126,7 @@ void QLineEditPrivate::textEdited(const QString &text)
     Q_Q(QLineEdit);
     edited = true;
     emit q->textEdited(text);
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     if (control->completer()
         && control->completer()->completionMode() != QCompleter::InlineCompletion)
         control->complete(-1); // update the popup on cut/paste/del
@@ -140,7 +140,7 @@ void QLineEditPrivate::cursorPositionChanged(int from, int to)
     emit q->cursorPositionChanged(from, to);
 }
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
 void QLineEditPrivate::editFocusChange(bool e)
 {
     Q_Q(QLineEdit);
@@ -161,7 +161,7 @@ void QLineEditPrivate::selectionChanged()
     }
 
     emit q->selectionChanged();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessibleTextSelectionEvent ev(q, control->selectionStart(), control->selectionEnd());
     ev.setCursorPosition(control->cursorPosition());
     QAccessible::updateAccessibility(&ev);
@@ -194,7 +194,7 @@ void QLineEditPrivate::init(const QString& txt)
                             this, &QLineEditPrivate::selectionChanged);
     QObjectPrivate::connect(control, &QWidgetLineControl::editingFinished,
                             this, &QLineEditPrivate::controlEditingFinished);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     QObject::connect(control, &QWidgetLineControl::editFocusChange,
                      this, &QLineEditPrivate::editFocusChange);
 #endif
@@ -226,20 +226,20 @@ void QLineEditPrivate::init(const QString& txt)
     q->initStyleOption(&opt);
     control->setPasswordCharacter(char16_t(q->style()->styleHint(QStyle::SH_LineEdit_PasswordCharacter, &opt, q)));
     control->setPasswordMaskDelay(q->style()->styleHint(QStyle::SH_LineEdit_PasswordMaskDelay, &opt, q));
-#ifndef QT_NO_CURSOR
-    q->setCursor(Qt::IBeamCursor);
+#ifndef BOBUI_NO_CURSOR
+    q->setCursor(BobUI::IBeamCursor);
 #endif
-    q->setFocusPolicy(Qt::StrongFocus);
-    q->setAttribute(Qt::WA_InputMethodEnabled);
+    q->setFocusPolicy(BobUI::StrongFocus);
+    q->setAttribute(BobUI::WA_InputMethodEnabled);
     //   Specifies that this widget can use more, but is able to survive on
     //   less, horizontal space; and is fixed vertically.
     q->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed, QSizePolicy::LineEdit));
     q->setBackgroundRole(QPalette::Base);
-    q->setAttribute(Qt::WA_KeyCompression);
+    q->setAttribute(BobUI::WA_KeyCompression);
     q->setMouseTracking(true);
     q->setAcceptDrops(true);
 
-    q->setAttribute(Qt::WA_MacShowFocusRect);
+    q->setAttribute(BobUI::WA_MacShowFocusRect);
 
     initMouseYThreshold();
 }
@@ -281,7 +281,7 @@ void QLineEditPrivate::updatePasswordEchoEditing(bool editing)
 {
     Q_Q(QLineEdit);
     control->updatePasswordEchoEditing(editing);
-    q->setAttribute(Qt::WA_InputMethodEnabled, shouldEnableInputMethod());
+    q->setAttribute(BobUI::WA_InputMethodEnabled, shouldEnableInputMethod());
 }
 
 void QLineEditPrivate::resetInputMethod()
@@ -294,7 +294,7 @@ void QLineEditPrivate::resetInputMethod()
 
 /*!
     \class QLineEditPrivate
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 
@@ -305,7 +305,7 @@ void QLineEditPrivate::resetInputMethod()
 */
 bool QLineEditPrivate::sendMouseEventToInputContext( QMouseEvent *e )
 {
-#if !defined QT_NO_IM
+#if !defined BOBUI_NO_IM
     if ( control->composeMode() ) {
         int tmp_cursor = xToPos(e->position().toPoint().x());
         int mousePos = tmp_cursor - control->cursor();
@@ -326,7 +326,7 @@ bool QLineEditPrivate::sendMouseEventToInputContext( QMouseEvent *e )
     return false;
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void QLineEditPrivate::drag()
 {
     Q_Q(QLineEdit);
@@ -335,25 +335,25 @@ void QLineEditPrivate::drag()
     data->setText(control->selectedText());
     QDrag *drag = new QDrag(q);
     drag->setMimeData(data);
-    Qt::DropAction action = drag->exec(Qt::CopyAction);
-    if (action == Qt::MoveAction && !control->isReadOnly() && drag->target() != q)
+    BobUI::DropAction action = drag->exec(BobUI::CopyAction);
+    if (action == BobUI::MoveAction && !control->isReadOnly() && drag->target() != q)
         control->removeSelection();
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 
-#if QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(toolbutton)
 QLineEditIconButton::QLineEditIconButton(QWidget *parent)
-    : QToolButton(parent)
+    : BOBUIoolButton(parent)
     , m_opacity(0)
 {
-    setFocusPolicy(Qt::NoFocus);
+    setFocusPolicy(BobUI::NoFocus);
 }
 
 QLineEditPrivate *QLineEditIconButton::lineEditPrivate() const
 {
     QLineEdit *le = qobject_cast<QLineEdit *>(parentWidget());
-    return le ? static_cast<QLineEditPrivate *>(qt_widget_private(le)) : nullptr;
+    return le ? static_cast<QLineEditPrivate *>(bobui_widget_private(le)) : nullptr;
 }
 
 void QLineEditIconButton::paintEvent(QPaintEvent *)
@@ -368,7 +368,7 @@ void QLineEditIconButton::paintEvent(QPaintEvent *)
     QRect pixmapRect = QRect(QPoint(0, 0), iconSize);
     pixmapRect.moveCenter(rect().center());
     painter.setOpacity(m_opacity);
-    icon().paint(&painter, pixmapRect, Qt::AlignCenter, mode, QIcon::Off);
+    icon().paint(&painter, pixmapRect, BobUI::AlignCenter, mode, QIcon::Off);
 }
 
 void QLineEditIconButton::actionEvent(QActionEvent *e)
@@ -386,7 +386,7 @@ void QLineEditIconButton::actionEvent(QActionEvent *e)
     default:
         break;
     }
-    QToolButton::actionEvent(e);
+    BOBUIoolButton::actionEvent(e);
 }
 
 void QLineEditIconButton::setOpacity(qreal value)
@@ -398,7 +398,7 @@ void QLineEditIconButton::setOpacity(qreal value)
     }
 }
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
 bool QLineEditIconButton::shouldHideWithText() const
 {
     return m_hideWithText;
@@ -449,13 +449,13 @@ void QLineEditIconButton::startOpacityAnimation(qreal endValue)
 
 void QLineEditIconButton::updateCursor()
 {
-#ifndef QT_NO_CURSOR
-    setCursor(qFuzzyCompare(m_opacity, qreal(1.0)) || !parentWidget() ? QCursor(Qt::ArrowCursor) : parentWidget()->cursor());
+#ifndef BOBUI_NO_CURSOR
+    setCursor(qFuzzyCompare(m_opacity, qreal(1.0)) || !parentWidget() ? QCursor(BobUI::ArrowCursor) : parentWidget()->cursor());
 #endif
 }
-#endif // QT_CONFIG(toolbutton)
+#endif // BOBUI_CONFIG(toolbutton)
 
-#if QT_CONFIG(animation) && QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(animation) && BOBUI_CONFIG(toolbutton)
 static void displayWidgets(const QLineEditPrivate::SideWidgetEntryList &widgets, bool display)
 {
     for (const auto &e : widgets) {
@@ -471,7 +471,7 @@ void QLineEditPrivate::textChanged(const QString &text)
         const int newTextSize = text.size();
         if (!newTextSize || !lastTextSize) {
             lastTextSize = newTextSize;
-#if QT_CONFIG(animation) && QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(animation) && BOBUI_CONFIG(toolbutton)
             const bool display = newTextSize > 0;
             displayWidgets(leadingSideWidgets, display);
             displayWidgets(trailingSideWidgets, display);
@@ -518,7 +518,7 @@ QIcon QLineEditPrivate::clearButtonIcon() const
 
 void QLineEditPrivate::setClearButtonEnabled(bool enabled)
 {
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     for (const SideWidgetEntry &e : trailingSideWidgets) {
         if (e.flags & SideWidgetClearButton) {
             e.action->setEnabled(enabled);
@@ -541,7 +541,7 @@ void QLineEditPrivate::positionSideWidgets()
                              QSize(p.widgetWidth, p.widgetHeight));
         for (const SideWidgetEntry &e : leftSideWidgetList()) {
             e.widget->setGeometry(widgetGeometry);
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
             if (e.action->isVisible())
                 widgetGeometry.moveLeft(widgetGeometry.left() + delta);
 #else
@@ -551,7 +551,7 @@ void QLineEditPrivate::positionSideWidgets()
         widgetGeometry.moveLeft(contentRect.width() - p.widgetWidth - p.margin);
         for (const SideWidgetEntry &e : rightSideWidgetList()) {
             e.widget->setGeometry(widgetGeometry);
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
             if (e.action->isVisible())
                 widgetGeometry.moveLeft(widgetGeometry.left() - delta);
 #endif
@@ -559,7 +559,7 @@ void QLineEditPrivate::positionSideWidgets()
     }
 }
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 QLineEditPrivate::SideWidgetLocation QLineEditPrivate::findSideWidget(const QAction *a) const
 {
     int i = 0;
@@ -595,15 +595,15 @@ QWidget *QLineEditPrivate::addAction(QAction *newAction, QAction *before, QLineE
             flags |= SideWidgetCreatedByWidgetAction;
     }
     if (!w) {
-#if QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(toolbutton)
         QLineEditIconButton *toolButton = new QLineEditIconButton(q);
         toolButton->setIcon(newAction->icon());
         toolButton->setOpacity(lastTextSize > 0 || !(flags & SideWidgetFadeInWithText) ? 1 : 0);
         if (flags & SideWidgetClearButton) {
-            QObjectPrivate::connect(toolButton, &QToolButton::clicked,
+            QObjectPrivate::connect(toolButton, &BOBUIoolButton::clicked,
                                     this, &QLineEditPrivate::clearButtonClicked);
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
             // The clear button is handled only by this widget. The button should be really
             // shown/hidden in order to calculate size hints correctly.
             toolButton->setHideWithText(true);
@@ -616,7 +616,7 @@ QWidget *QLineEditPrivate::addAction(QAction *newAction, QAction *before, QLineE
 #endif
     }
 
-    // QTBUG-59957: clear button should be the leftmost action.
+    // BOBUIBUG-59957: clear button should be the leftmost action.
     if (!before && !(flags & SideWidgetClearButton) && position == QLineEdit::TrailingPosition) {
         for (const SideWidgetEntry &e : trailingSideWidgets) {
             if (e.flags & SideWidgetClearButton) {
@@ -674,7 +674,7 @@ void QLineEditPrivate::removeAction(QAction *action)
                                  this, &QLineEditPrivate::textChanged);
      q->update();
 }
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 
 static int effectiveTextMargin(int defaultMargin, const QLineEditPrivate::SideWidgetEntryList &widgets,
                                const QLineEditPrivate::SideWidgetParameters &parameters)
@@ -684,7 +684,7 @@ static int effectiveTextMargin(int defaultMargin, const QLineEditPrivate::SideWi
 
     const auto visibleSideWidgetCount = std::count_if(widgets.begin(), widgets.end(),
                              [](const QLineEditPrivate::SideWidgetEntry &e) {
-#if QT_CONFIG(toolbutton) && QT_CONFIG(animation)
+#if BOBUI_CONFIG(toolbutton) && BOBUI_CONFIG(animation)
         // a button that's fading out doesn't get any space
         if (auto* iconButton = qobject_cast<QLineEditIconButton*>(e.widget))
             return iconButton->needsSpace();
@@ -705,6 +705,6 @@ QMargins QLineEditPrivate::effectiveTextMargins() const
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlineedit_p.cpp"

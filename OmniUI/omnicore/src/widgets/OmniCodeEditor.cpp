@@ -16,14 +16,14 @@ OmniCodeEditor::OmniCodeEditor(QQuickItem *parent)
       m_scrollY(0)
 {
     setObjectName("OmniCodeEditor");
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setFlag(ItemAcceptsInputMethod, true);
     setFlag(ItemHasContents, true);
     setFocusOnTouch(true);
 
     m_lines.append("");
 
-    connect(&m_blinkTimer, &QTimer::timeout, this, &OmniCodeEditor::blinkCursor);
+    connect(&m_blinkTimer, &BOBUIimer::timeout, this, &OmniCodeEditor::blinkCursor);
     m_blinkTimer.setInterval(500);
 
     setWidth(600);
@@ -101,7 +101,7 @@ void OmniCodeEditor::wheelEvent(QWheelEvent *event) {
 void OmniCodeEditor::keyPressEvent(QKeyEvent *event) {
     m_cursorVisible = true; // Force visible while typing
 
-    if (event->key() == Qt::Key_Backspace) {
+    if (event->key() == BobUI::Key_Backspace) {
         if (m_cursorCol > 0) {
             m_lines[m_cursorLine].remove(m_cursorCol - 1, 1);
             m_cursorCol--;
@@ -114,34 +114,34 @@ void OmniCodeEditor::keyPressEvent(QKeyEvent *event) {
             m_cursorCol = prevLen;
             update();
         }
-    } else if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+    } else if (event->key() == BobUI::Key_Return || event->key() == BobUI::Key_Enter) {
         QString remainder = m_lines[m_cursorLine].mid(m_cursorCol);
         m_lines[m_cursorLine].truncate(m_cursorCol);
         m_lines.insert(m_cursorLine + 1, remainder);
         m_cursorLine++;
         m_cursorCol = 0;
         update();
-    } else if (event->key() == Qt::Key_Left) {
+    } else if (event->key() == BobUI::Key_Left) {
         if (m_cursorCol > 0) m_cursorCol--;
         else if (m_cursorLine > 0) {
             m_cursorLine--;
             m_cursorCol = m_lines[m_cursorLine].length();
         }
         update();
-    } else if (event->key() == Qt::Key_Right) {
+    } else if (event->key() == BobUI::Key_Right) {
         if (m_cursorCol < m_lines[m_cursorLine].length()) m_cursorCol++;
         else if (m_cursorLine < m_lines.size() - 1) {
             m_cursorLine++;
             m_cursorCol = 0;
         }
         update();
-    } else if (event->key() == Qt::Key_Up) {
+    } else if (event->key() == BobUI::Key_Up) {
         if (m_cursorLine > 0) {
             m_cursorLine--;
             m_cursorCol = std::min(m_cursorCol, (int)m_lines[m_cursorLine].length());
             update();
         }
-    } else if (event->key() == Qt::Key_Down) {
+    } else if (event->key() == BobUI::Key_Down) {
         if (m_cursorLine < m_lines.size() - 1) {
             m_cursorLine++;
             m_cursorCol = std::min(m_cursorCol, (int)m_lines[m_cursorLine].length());
@@ -162,7 +162,7 @@ void OmniCodeEditor::highlightSyntax(QPainter* painter, const QString& line, con
     
     // In a real implementation, we would tokenize the string.
     // Here we just draw the string directly, but color it if it starts with a keyword (simulation).
-    painter->setPen(Qt::white);
+    painter->setPen(BobUI::white);
     
     for (const QString& kw : keywords) {
         if (line.trimmed().startsWith(kw)) {
@@ -171,7 +171,7 @@ void OmniCodeEditor::highlightSyntax(QPainter* painter, const QString& line, con
         }
     }
     
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, line);
+    painter->drawText(rect, BobUI::AlignLeft | BobUI::AlignVCenter, line);
 }
 
 void OmniCodeEditor::paint(QPainter *painter) {
@@ -201,7 +201,7 @@ void OmniCodeEditor::paint(QPainter *painter) {
         
         // Line number
         painter->setPen(QColor("#858585"));
-        painter->drawText(QRectF(0, y, leftMargin - 5, lineHeight), Qt::AlignRight | Qt::AlignVCenter, QString::number(i + 1));
+        painter->drawText(QRectF(0, y, leftMargin - 5, lineHeight), BobUI::AlignRight | BobUI::AlignVCenter, QString::number(i + 1));
         
         // Syntax Highlighted Text
         highlightSyntax(painter, m_lines[i], lineRect);
@@ -210,7 +210,7 @@ void OmniCodeEditor::paint(QPainter *painter) {
         if (m_isFocused && m_cursorVisible && i == m_cursorLine) {
             QString textBeforeCursor = m_lines[i].left(m_cursorCol);
             int cursorX = leftMargin + 10 + metrics.horizontalAdvance(textBeforeCursor);
-            painter->fillRect(QRectF(cursorX, y + 2, 2, lineHeight - 4), Qt::white);
+            painter->fillRect(QRectF(cursorX, y + 2, 2, lineHeight - 4), BobUI::white);
         }
     }
 }

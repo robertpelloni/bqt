@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "colorswatch.h"
 
 #include <QActionGroup>
-#include <QtEvents>
+#include <BobUIEvents>
 #include <QFrame>
 #include <QMainWindow>
 #include <QMenu>
@@ -21,7 +21,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QBitmap>
-#include <QtDebug>
+#include <BobUIDebug>
 
 #undef DEBUG_SIZEHINTS
 
@@ -101,8 +101,8 @@ void ColorDock::paintEvent(QPaintEvent *)
 
     p.save();
 
-    extern void render_qt_text(QPainter *, int, int, const QColor &);
-    render_qt_text(&p, width(), height(), fgColorForName(color));
+    extern void render_bobui_text(QPainter *, int, int, const QColor &);
+    render_bobui_text(&p, width(), height(), fgColorForName(color));
 
     p.restore();
 
@@ -120,15 +120,15 @@ void ColorDock::paintEvent(QPaintEvent *)
                     .arg(minSzHint.width()).arg(minSzHint.height())
                     .arg(maxSz.width()).arg(maxSz.height());
 
-    QRect r = fontMetrics().boundingRect(rect(), Qt::AlignLeft|Qt::AlignTop, text);
+    QRect r = fontMetrics().boundingRect(rect(), BobUI::AlignLeft|BobUI::AlignTop, text);
     r.adjust(-2, -2, 1, 1);
     p.translate(4, 4);
-    QColor bg = Qt::yellow;
+    QColor bg = BobUI::yellow;
     bg.setAlpha(120);
     p.setBrush(bg);
-    p.setPen(Qt::black);
+    p.setPen(BobUI::black);
     p.drawRect(r);
-    p.drawText(rect(), Qt::AlignLeft|Qt::AlignTop, text);
+    p.drawText(rect(), BobUI::AlignLeft|BobUI::AlignTop, text);
 #endif // DEBUG_SIZEHINTS
 }
 
@@ -144,7 +144,7 @@ static QSpinBox *createSpinBox(int value, QWidget *parent, int max = 1000)
 void ColorDock::changeSizeHints()
 {
     QDialog dialog(this);
-    dialog.setWindowFlags(dialog.windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    dialog.setWindowFlags(dialog.windowFlags() & ~BobUI::WindowContextHelpButtonHint);
     dialog.setWindowTitle(color);
 
     QVBoxLayout *topLayout = new QVBoxLayout(&dialog);
@@ -211,7 +211,7 @@ void ColorDock::setCustomSizeHint(const QSize &size)
     }
 }
 
-ColorSwatch::ColorSwatch(const QString &colorName, QMainWindow *parent, Qt::WindowFlags flags)
+ColorSwatch::ColorSwatch(const QString &colorName, QMainWindow *parent, BobUI::WindowFlags flags)
     : QDockWidget(parent, flags), mainWindow(parent)
 {
     setObjectName(colorName + QLatin1String(" Dock Widget"));
@@ -342,19 +342,19 @@ ColorSwatch::ColorSwatch(const QString &colorName, QMainWindow *parent, Qt::Wind
     connect(menu, &QMenu::aboutToShow, this, &ColorSwatch::updateContextMenu);
 
     if (colorName == QLatin1String("Black")) {
-        leftAction->setShortcut(Qt::CTRL | Qt::Key_W);
-        rightAction->setShortcut(Qt::CTRL | Qt::Key_E);
-        toggleViewAction()->setShortcut(Qt::CTRL | Qt::Key_R);
+        leftAction->setShortcut(BobUI::CTRL | BobUI::Key_W);
+        rightAction->setShortcut(BobUI::CTRL | BobUI::Key_E);
+        toggleViewAction()->setShortcut(BobUI::CTRL | BobUI::Key_R);
     }
 }
 
 void ColorSwatch::updateContextMenu()
 {
-    const Qt::DockWidgetArea area = mainWindow->dockWidgetArea(this);
-    const Qt::DockWidgetAreas areas = allowedAreas();
+    const BobUI::DockWidgetArea area = mainWindow->dockWidgetArea(this);
+    const BobUI::DockWidgetAreas areas = allowedAreas();
 
     closableAction->setChecked(features() & QDockWidget::DockWidgetClosable);
-    if (windowType() == Qt::Drawer) {
+    if (windowType() == BobUI::Drawer) {
         floatableAction->setEnabled(false);
         floatingAction->setEnabled(false);
         movableAction->setEnabled(false);
@@ -368,40 +368,40 @@ void ColorSwatch::updateContextMenu()
             ->setChecked(features() & QDockWidget::DockWidgetVerticalTitleBar);
     }
 
-    allowLeftAction->setChecked(isAreaAllowed(Qt::LeftDockWidgetArea));
-    allowRightAction->setChecked(isAreaAllowed(Qt::RightDockWidgetArea));
-    allowTopAction->setChecked(isAreaAllowed(Qt::TopDockWidgetArea));
-    allowBottomAction->setChecked(isAreaAllowed(Qt::BottomDockWidgetArea));
+    allowLeftAction->setChecked(isAreaAllowed(BobUI::LeftDockWidgetArea));
+    allowRightAction->setChecked(isAreaAllowed(BobUI::RightDockWidgetArea));
+    allowTopAction->setChecked(isAreaAllowed(BobUI::TopDockWidgetArea));
+    allowBottomAction->setChecked(isAreaAllowed(BobUI::BottomDockWidgetArea));
 
     if (allowedAreasActions->isEnabled()) {
-        allowLeftAction->setEnabled(area != Qt::LeftDockWidgetArea);
-        allowRightAction->setEnabled(area != Qt::RightDockWidgetArea);
-        allowTopAction->setEnabled(area != Qt::TopDockWidgetArea);
-        allowBottomAction->setEnabled(area != Qt::BottomDockWidgetArea);
+        allowLeftAction->setEnabled(area != BobUI::LeftDockWidgetArea);
+        allowRightAction->setEnabled(area != BobUI::RightDockWidgetArea);
+        allowTopAction->setEnabled(area != BobUI::TopDockWidgetArea);
+        allowBottomAction->setEnabled(area != BobUI::BottomDockWidgetArea);
     }
 
     {
         const QSignalBlocker blocker(leftAction);
-        leftAction->setChecked(area == Qt::LeftDockWidgetArea);
+        leftAction->setChecked(area == BobUI::LeftDockWidgetArea);
     }
     {
         const QSignalBlocker blocker(rightAction);
-        rightAction->setChecked(area == Qt::RightDockWidgetArea);
+        rightAction->setChecked(area == BobUI::RightDockWidgetArea);
     }
     {
         const QSignalBlocker blocker(topAction);
-        topAction->setChecked(area == Qt::TopDockWidgetArea);
+        topAction->setChecked(area == BobUI::TopDockWidgetArea);
     }
     {
         const QSignalBlocker blocker(bottomAction);
-        bottomAction->setChecked(area == Qt::BottomDockWidgetArea);
+        bottomAction->setChecked(area == BobUI::BottomDockWidgetArea);
     }
 
     if (areaActions->isEnabled()) {
-        leftAction->setEnabled(areas & Qt::LeftDockWidgetArea);
-        rightAction->setEnabled(areas & Qt::RightDockWidgetArea);
-        topAction->setEnabled(areas & Qt::TopDockWidgetArea);
-        bottomAction->setEnabled(areas & Qt::BottomDockWidgetArea);
+        leftAction->setEnabled(areas & BobUI::LeftDockWidgetArea);
+        rightAction->setEnabled(areas & BobUI::RightDockWidgetArea);
+        topAction->setEnabled(areas & BobUI::TopDockWidgetArea);
+        bottomAction->setEnabled(areas & BobUI::BottomDockWidgetArea);
     }
 
     tabMenu->clear();
@@ -431,8 +431,8 @@ void ColorSwatch::splitInto(QAction *action)
     if (!target)
         return;
 
-    const Qt::Orientation o = action->parent() == splitHMenu
-        ? Qt::Horizontal : Qt::Vertical;
+    const BobUI::Orientation o = action->parent() == splitHMenu
+        ? BobUI::Horizontal : BobUI::Vertical;
     mainWindow->splitDockWidget(target, this, o);
 }
 
@@ -442,13 +442,13 @@ void ColorSwatch::tabInto(QAction *action)
         mainWindow->tabifyDockWidget(target, this);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 void ColorSwatch::contextMenuEvent(QContextMenuEvent *event)
 {
     event->accept();
     menu->popup(event->globalPos());
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 void ColorSwatch::resizeEvent(QResizeEvent *e)
 {
@@ -458,21 +458,21 @@ void ColorSwatch::resizeEvent(QResizeEvent *e)
     QDockWidget::resizeEvent(e);
 }
 
-void ColorSwatch::allow(Qt::DockWidgetArea area, bool a)
+void ColorSwatch::allow(BobUI::DockWidgetArea area, bool a)
 {
-    Qt::DockWidgetAreas areas = allowedAreas();
+    BobUI::DockWidgetAreas areas = allowedAreas();
     areas = a ? areas | area : areas & ~area;
     setAllowedAreas(areas);
 
     if (areaActions->isEnabled()) {
-        leftAction->setEnabled(areas & Qt::LeftDockWidgetArea);
-        rightAction->setEnabled(areas & Qt::RightDockWidgetArea);
-        topAction->setEnabled(areas & Qt::TopDockWidgetArea);
-        bottomAction->setEnabled(areas & Qt::BottomDockWidgetArea);
+        leftAction->setEnabled(areas & BobUI::LeftDockWidgetArea);
+        rightAction->setEnabled(areas & BobUI::RightDockWidgetArea);
+        topAction->setEnabled(areas & BobUI::TopDockWidgetArea);
+        bottomAction->setEnabled(areas & BobUI::BottomDockWidgetArea);
     }
 }
 
-void ColorSwatch::place(Qt::DockWidgetArea area, bool p)
+void ColorSwatch::place(BobUI::DockWidgetArea area, bool p)
 {
     if (!p)
         return;
@@ -480,10 +480,10 @@ void ColorSwatch::place(Qt::DockWidgetArea area, bool p)
     mainWindow->addDockWidget(area, this);
 
     if (allowedAreasActions->isEnabled()) {
-        allowLeftAction->setEnabled(area != Qt::LeftDockWidgetArea);
-        allowRightAction->setEnabled(area != Qt::RightDockWidgetArea);
-        allowTopAction->setEnabled(area != Qt::TopDockWidgetArea);
-        allowBottomAction->setEnabled(area != Qt::BottomDockWidgetArea);
+        allowLeftAction->setEnabled(area != BobUI::LeftDockWidgetArea);
+        allowRightAction->setEnabled(area != BobUI::RightDockWidgetArea);
+        allowTopAction->setEnabled(area != BobUI::TopDockWidgetArea);
+        allowBottomAction->setEnabled(area != BobUI::BottomDockWidgetArea);
     }
 }
 
@@ -506,28 +506,28 @@ void ColorSwatch::changeFloating(bool floating)
 { setFloating(floating); }
 
 void ColorSwatch::allowLeft(bool a)
-{ allow(Qt::LeftDockWidgetArea, a); }
+{ allow(BobUI::LeftDockWidgetArea, a); }
 
 void ColorSwatch::allowRight(bool a)
-{ allow(Qt::RightDockWidgetArea, a); }
+{ allow(BobUI::RightDockWidgetArea, a); }
 
 void ColorSwatch::allowTop(bool a)
-{ allow(Qt::TopDockWidgetArea, a); }
+{ allow(BobUI::TopDockWidgetArea, a); }
 
 void ColorSwatch::allowBottom(bool a)
-{ allow(Qt::BottomDockWidgetArea, a); }
+{ allow(BobUI::BottomDockWidgetArea, a); }
 
 void ColorSwatch::placeLeft(bool p)
-{ place(Qt::LeftDockWidgetArea, p); }
+{ place(BobUI::LeftDockWidgetArea, p); }
 
 void ColorSwatch::placeRight(bool p)
-{ place(Qt::RightDockWidgetArea, p); }
+{ place(BobUI::RightDockWidgetArea, p); }
 
 void ColorSwatch::placeTop(bool p)
-{ place(Qt::TopDockWidgetArea, p); }
+{ place(BobUI::TopDockWidgetArea, p); }
 
 void ColorSwatch::placeBottom(bool p)
-{ place(Qt::BottomDockWidgetArea, p); }
+{ place(BobUI::BottomDockWidgetArea, p); }
 
 void ColorSwatch::changeVerticalTitleBar(bool on)
 {
@@ -639,13 +639,13 @@ void BlueTitleBar::updateMask()
         QPainter painter(&bitmap);
 
         // initialize to transparent
-        painter.fillRect(rect, Qt::color0);
+        painter.fillRect(rect, BobUI::color0);
 
         QRect contents = rect;
         contents.setTopLeft(geometry().bottomLeft());
         contents.setRight(geometry().right());
         contents.setBottom(contents.bottom()-y());
-        painter.fillRect(contents, Qt::color1);
+        painter.fillRect(contents, BobUI::color1);
 
         // let's paint the titlebar
         QRect titleRect = this->geometry();
@@ -673,10 +673,10 @@ void BlueTitleBar::updateMask()
         painter.drawPixmap(rect.topLeft(), leftPm.mask());
         painter.fillRect(rect.left() + leftPm.width(), rect.top(),
             rect.width() - leftPm.width() - rightPm.width(),
-            centerPm.height(), Qt::color1);
+            centerPm.height(), BobUI::color1);
         painter.drawPixmap(rect.topRight() - QPoint(rightPm.width() - 1, 0), rightPm.mask());
 
-        painter.fillRect(contents, Qt::color1);
+        painter.fillRect(contents, BobUI::color1);
     }
 
     dw->setMask(bitmap);

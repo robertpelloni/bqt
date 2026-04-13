@@ -4,7 +4,7 @@ base_dir = r"C:\Users\hyper\workspace\bobui\OmniUI\omnicore"
 include_dir = os.path.join(base_dir, "include")
 src_dir = os.path.join(base_dir, "src")
 
-# Map of Qt Widget bases to Quick Item bases
+# Map of BobUI Widget bases to Quick Item bases
 replacements = {
     "QPushButton": "QQuickItem",
     "QSlider": "QQuickItem",

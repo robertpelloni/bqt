@@ -25,7 +25,7 @@
     <widget class="QLineEdit" name="lineEdit"/>
    </item>
    <item>
-    <widget class="QTextEdit" name="textEdit"/>
+    <widget class="BOBUIextEdit" name="textEdit"/>
    </item>
   </layout>
  </widget>

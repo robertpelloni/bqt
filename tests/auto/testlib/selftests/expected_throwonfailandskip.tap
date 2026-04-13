@@ -9,8 +9,8 @@ not ok 2 - throwOnFail()
   found: 17 (i)
   expected: 42 (42)
   actual: 17 (i)
-  at: tst_ThrowOnFailAndSkip::throwOnFail() (qtbase-submit/tests/auto/testlib/selftests/throwonfailandskip/tst_throwonfailandskip.cpp:0)
-  file: qtbase-submit/tests/auto/testlib/selftests/throwonfailandskip/tst_throwonfailandskip.cpp
+  at: tst_ThrowOnFailAndSkip::throwOnFail() (bobuibase-submit/tests/auto/testlib/selftests/throwonfailandskip/tst_throwonfailandskip.cpp:0)
+  file: bobuibase-submit/tests/auto/testlib/selftests/throwonfailandskip/tst_throwonfailandskip.cpp
   line: 0
   ...
 ok 3 - throwOnSkip() # SKIP skipped
@@ -22,11 +22,11 @@ not ok 4 - throwOnFailWorksFromConcurrent()
   found: 42 (i)
   expected: != 42 (42)
   actual: 42 (i)
-  at: tst_ThrowOnFailAndSkip::throwOnFailWorksFromConcurrent() (qtbase-submit/tests/auto/testlib/selftests/throwonfailandskip/tst_throwonfailandskip.cpp:0)
-  file: qtbase-submit/tests/auto/testlib/selftests/throwonfailandskip/tst_throwonfailandskip.cpp
+  at: tst_ThrowOnFailAndSkip::throwOnFailWorksFromConcurrent() (bobuibase-submit/tests/auto/testlib/selftests/throwonfailandskip/tst_throwonfailandskip.cpp:0)
+  file: bobuibase-submit/tests/auto/testlib/selftests/throwonfailandskip/tst_throwonfailandskip.cpp
   line: 0
   ...
-ok 5 - throwOnSkipWorksFromConcurrent() # SKIP skipped from QtConcurrent::run()
+ok 5 - throwOnSkipWorksFromConcurrent() # SKIP skipped from BobUIConcurrent::run()
 ok 6 - cleanupTestCase()
 1..6
 # tests 6

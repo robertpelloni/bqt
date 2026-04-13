@@ -1,26 +1,26 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 
 #include "dbusconnection_p.h"
 
-#include <QtDBus/QDBusMessage>
-#include <QtDBus/QDBusServiceWatcher>
+#include <BobUIDBus/QDBusMessage>
+#include <BobUIDBus/QDBusServiceWatcher>
 #include <qdebug.h>
 
 #include <QDBusConnectionInterface>
 
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qguiapplication.h>
 #include <qpa/qplatformnativeinterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtGuiPrivate; // for D-Bus accessibility wrappers
+using namespace BobUI::StringLiterals;
+using namespace BobUIGuiPrivate; // for D-Bus accessibility wrappers
 
 /* note: do not change these to QStringLiteral;
-   we are unloaded before QtDBus is done using the strings.
+   we are unloaded before BobUIDBus is done using the strings.
  */
 #define A11Y_SERVICE "org.a11y.Bus"_L1
 #define A11Y_PATH "/org/a11y/bus"_L1
@@ -98,7 +98,7 @@ void QAtSpiDBusConnection::checkEnabledState()
     //The variable was introduced because on some embedded platforms there are custom accessibility
     //clients which don't set Status.ScreenReaderEnabled to true. The variable is also useful for
     //debugging.
-    static const bool a11yAlwaysOn = qEnvironmentVariableIsSet("QT_LINUX_ACCESSIBILITY_ALWAYS_ON");
+    static const bool a11yAlwaysOn = qEnvironmentVariableIsSet("BOBUI_LINUX_ACCESSIBILITY_ALWAYS_ON");
 
     bool enabled = a11yAlwaysOn || m_a11yStatus->screenReaderEnabled() || m_a11yStatus->isEnabled();
 
@@ -146,6 +146,6 @@ QDBusConnection QAtSpiDBusConnection::connection() const
     return m_a11yConnection;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_dbusconnection_p.cpp"

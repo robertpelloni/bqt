@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpdf_p.h"
 
-#ifndef QT_NO_PDF
+#ifndef BOBUI_NO_PDF
 
 #include "qplatformdefs.h"
 
@@ -19,19 +19,19 @@
 #include <qfile.h>
 #include <qimagewriter.h>
 #include <qnumeric.h>
-#include <qtemporaryfile.h>
-#include <qtimezone.h>
+#include <bobuiemporaryfile.h>
+#include <bobuiimezone.h>
 #include <quuid.h>
 #include <qxmlstream.h>
 
 #include <cstdio>
 #include <map>
 
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
 #include <zlib.h>
 #endif
 
-#ifdef QT_NO_COMPRESS
+#ifdef BOBUI_NO_COMPRESS
 static const bool do_compress = false;
 #else
 static const bool do_compress = true;
@@ -46,11 +46,11 @@ static void initResources()
     Q_INIT_RESOURCE(qpdf);
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-constexpr QPaintEngine::PaintEngineFeatures qt_pdf_decide_features()
+constexpr QPaintEngine::PaintEngineFeatures bobui_pdf_decide_features()
 {
     QPaintEngine::PaintEngineFeatures f = QPaintEngine::AllFeatures;
     f &= ~(QPaintEngine::PorterDuff
@@ -60,12 +60,12 @@ constexpr QPaintEngine::PaintEngineFeatures qt_pdf_decide_features()
     return f;
 }
 
-extern bool qt_isExtendedRadialGradient(const QBrush &brush);
+extern bool bobui_isExtendedRadialGradient(const QBrush &brush);
 
 // helper function to remove transparency from brush in PDF/A-1b mode
 static void removeTransparencyFromBrush(QBrush &brush)
 {
-    if (brush.style() == Qt::SolidPattern) {
+    if (brush.style() == BobUI::SolidPattern) {
         QColor color = brush.color();
         if (color.alpha() != 255) {
             color.setAlpha(255);
@@ -75,14 +75,14 @@ static void removeTransparencyFromBrush(QBrush &brush)
         return;
     }
 
-    if (qt_isExtendedRadialGradient(brush)) {
-        brush = QBrush(Qt::black); // the safest we can do so far...
+    if (bobui_isExtendedRadialGradient(brush)) {
+        brush = QBrush(BobUI::black); // the safest we can do so far...
         return;
     }
 
-    if (brush.style() == Qt::LinearGradientPattern
-        || brush.style() == Qt::RadialGradientPattern
-        || brush.style() == Qt::ConicalGradientPattern) {
+    if (brush.style() == BobUI::LinearGradientPattern
+        || brush.style() == BobUI::RadialGradientPattern
+        || brush.style() == BobUI::ConicalGradientPattern) {
 
         QGradientStops stops = brush.gradient()->stops();
         for (int i = 0; i < stops.size(); ++i) {
@@ -94,7 +94,7 @@ static void removeTransparencyFromBrush(QBrush &brush)
         return;
     }
 
-    if (brush.style() == Qt::TexturePattern) {
+    if (brush.style() == BobUI::TexturePattern) {
         // handled inside QPdfEnginePrivate::addImage() already
         return;
     }
@@ -102,7 +102,7 @@ static void removeTransparencyFromBrush(QBrush &brush)
 
 
 /* also adds a space at the end of the number */
-const char *qt_real_to_string(qreal val, char *buf) {
+const char *bobui_real_to_string(qreal val, char *buf) {
     const char *ret = buf;
 
     if (!qIsFinite(val) || std::abs(val) > std::numeric_limits<quint32>::max()) {
@@ -154,7 +154,7 @@ const char *qt_real_to_string(qreal val, char *buf) {
     return ret;
 }
 
-const char *qt_int_to_string(int val, char *buf) {
+const char *bobui_int_to_string(int val, char *buf) {
     const char *ret = buf;
     if (val < 0) {
         *(buf++) = '-';
@@ -243,23 +243,23 @@ namespace QPdf {
 
     ByteStream &ByteStream::operator <<(qreal val) {
         char buf[256];
-        qt_real_to_string(val, buf);
+        bobui_real_to_string(val, buf);
         *this << buf;
         return *this;
     }
 
     ByteStream &ByteStream::operator <<(int val) {
         char buf[256];
-        qt_int_to_string(val, buf);
+        bobui_int_to_string(val, buf);
         *this << buf;
         return *this;
     }
 
     ByteStream &ByteStream::operator <<(const QPointF &p) {
         char buf[256];
-        qt_real_to_string(p.x(), buf);
+        bobui_real_to_string(p.x(), buf);
         *this << buf;
-        qt_real_to_string(p.y(), buf);
+        bobui_real_to_string(p.y(), buf);
         *this << buf;
         return *this;
     }
@@ -283,7 +283,7 @@ namespace QPdf {
         if (fileBackingEnabled && !fileBackingActive
                 && size > maxMemorySize()) {
             // Switch to file backing.
-            QTemporaryFile *newFile = new QTemporaryFile;
+            BOBUIemporaryFile *newFile = new BOBUIemporaryFile;
             if (newFile->open()) {
                 dev->reset();
                 while (!dev->atEnd()) {
@@ -303,9 +303,9 @@ namespace QPdf {
     }
 }
 
-#define QT_PATH_ELEMENT(elm)
+#define BOBUI_PATH_ELEMENT(elm)
 
-QByteArray QPdf::generatePath(const QPainterPath &path, const QTransform &matrix, PathFlags flags)
+QByteArray QPdf::generatePath(const QPainterPath &path, const BOBUIransform &matrix, PathFlags flags)
 {
     QByteArray result;
     if (!path.elementCount())
@@ -346,28 +346,28 @@ QByteArray QPdf::generatePath(const QPainterPath &path, const QTransform &matrix
         && path.elementAt(start).y == path.elementAt(path.elementCount()-1).y)
         s << "h\n";
 
-    Qt::FillRule fillRule = path.fillRule();
+    BobUI::FillRule fillRule = path.fillRule();
 
     const char *op = "";
     switch (flags) {
     case ClipPath:
-        op = (fillRule == Qt::WindingFill) ? "W n\n" : "W* n\n";
+        op = (fillRule == BobUI::WindingFill) ? "W n\n" : "W* n\n";
         break;
     case FillPath:
-        op = (fillRule == Qt::WindingFill) ? "f\n" : "f*\n";
+        op = (fillRule == BobUI::WindingFill) ? "f\n" : "f*\n";
         break;
     case StrokePath:
         op = "S\n";
         break;
     case FillAndStrokePath:
-        op = (fillRule == Qt::WindingFill) ? "B\n" : "B*\n";
+        op = (fillRule == BobUI::WindingFill) ? "B\n" : "B*\n";
         break;
     }
     s << op;
     return result;
 }
 
-QByteArray QPdf::generateMatrix(const QTransform &matrix)
+QByteArray QPdf::generateMatrix(const BOBUIransform &matrix)
 {
     QByteArray result;
     ByteStream s(&result);
@@ -560,7 +560,7 @@ static const char* const pattern_for_brush[] = {
 QByteArray QPdf::patternForBrush(const QBrush &b)
 {
     int style = b.style();
-    if (style > Qt::DiagCrossPattern)
+    if (style > BobUI::DiagCrossPattern)
         return QByteArray();
     return pattern_for_brush[style];
 }
@@ -617,7 +617,7 @@ QPdf::Stroker::Stroker()
 
 void QPdf::Stroker::setPen(const QPen &pen, QPainter::RenderHints)
 {
-    if (pen.style() == Qt::NoPen) {
+    if (pen.style() == BobUI::NoPen) {
         stroker = nullptr;
         return;
     }
@@ -652,7 +652,7 @@ void QPdf::Stroker::strokePath(const QPainterPath &path)
         return;
     first = true;
 
-    stroker->strokePath(path, this, cosmeticPen ? matrix : QTransform());
+    stroker->strokePath(path, this, cosmeticPen ? matrix : BOBUIransform());
     *stream << "h f\n";
 }
 
@@ -759,12 +759,12 @@ void QPdfPage::streamImage(int w, int h, uint object)
 
 
 QPdfEngine::QPdfEngine(QPdfEnginePrivate &dd)
-    : QPaintEngine(dd, qt_pdf_decide_features())
+    : QPaintEngine(dd, bobui_pdf_decide_features())
 {
 }
 
 QPdfEngine::QPdfEngine()
-    : QPaintEngine(*new QPdfEnginePrivate(), qt_pdf_decide_features())
+    : QPaintEngine(*new QPdfEnginePrivate(), bobui_pdf_decide_features())
 {
 }
 
@@ -851,11 +851,11 @@ void QPdfEngine::drawPolygon(const QPointF *points, int pointCount, PolygonDrawM
 
     switch(mode) {
         case OddEvenMode:
-            p.setFillRule(Qt::OddEvenFill);
+            p.setFillRule(BobUI::OddEvenFill);
             break;
         case ConvexMode:
         case WindingMode:
-            p.setFillRule(Qt::WindingFill);
+            p.setFillRule(BobUI::WindingFill);
             break;
         case PolylineMode:
             d->hasBrush = false;
@@ -886,7 +886,7 @@ void QPdfEngine::drawPath (const QPainterPath &p)
 
     if (d->simplePen) {
         // draw strokes natively in this case for better output
-        *d->currentPage << QPdf::generatePath(p, d->needsTransform ? d->stroker.matrix : QTransform(),
+        *d->currentPage << QPdf::generatePath(p, d->needsTransform ? d->stroker.matrix : BOBUIransform(),
                                               d->hasBrush ? QPdf::FillAndStrokePath : QPdf::StrokePath);
     } else {
         if (d->hasBrush)
@@ -933,8 +933,8 @@ void QPdfEngine::drawPixmap (const QRectF &rectangle, const QPixmap &pixmap, con
     }
 
     *d->currentPage
-        << QPdf::generateMatrix(QTransform(rectangle.width() / sr.width(), 0, 0, rectangle.height() / sr.height(),
-                                           rectangle.x(), rectangle.y()) * (!d->needsTransform ? QTransform() : d->stroker.matrix));
+        << QPdf::generateMatrix(BOBUIransform(rectangle.width() / sr.width(), 0, 0, rectangle.height() / sr.height(),
+                                           rectangle.x(), rectangle.y()) * (!d->needsTransform ? BOBUIransform() : d->stroker.matrix));
     if (bitmap) {
         // set current pen as d->brush
         d->brush = d->pen.brush();
@@ -946,7 +946,7 @@ void QPdfEngine::drawPixmap (const QRectF &rectangle, const QPixmap &pixmap, con
     d->brush = b;
 }
 
-void QPdfEngine::drawImage(const QRectF &rectangle, const QImage &image, const QRectF &sr, Qt::ImageConversionFlags)
+void QPdfEngine::drawImage(const QRectF &rectangle, const QImage &image, const QRectF &sr, BobUI::ImageConversionFlags)
 {
     if (sr.isEmpty() || rectangle.isEmpty() || image.isNull())
         return;
@@ -973,8 +973,8 @@ void QPdfEngine::drawImage(const QRectF &rectangle, const QImage &image, const Q
     }
 
     *d->currentPage
-        << QPdf::generateMatrix(QTransform(rectangle.width() / sr.width(), 0, 0, rectangle.height() / sr.height(),
-                                           rectangle.x(), rectangle.y()) * (!d->needsTransform ? QTransform() : d->stroker.matrix));
+        << QPdf::generateMatrix(BOBUIransform(rectangle.width() / sr.width(), 0, 0, rectangle.height() / sr.height(),
+                                           rectangle.x(), rectangle.y()) * (!d->needsTransform ? BOBUIransform() : d->stroker.matrix));
     setBrush();
     d->currentPage->streamImage(im.width(), im.height(), object);
     *d->currentPage << "Q\n";
@@ -1010,14 +1010,14 @@ void QPdfEngine::drawTiledPixmap (const QRectF &rectangle, const QPixmap &pixmap
     d->brushOrigin = bo;
 }
 
-void QPdfEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
+void QPdfEngine::drawTextItem(const QPointF &p, const BOBUIextItem &textItem)
 {
     Q_D(QPdfEngine);
 
     if (!d->hasPen || (d->clipEnabled && d->allClipped))
         return;
 
-    if (d->stroker.matrix.type() >= QTransform::TxProject) {
+    if (d->stroker.matrix.type() >= BOBUIransform::TxProject) {
         QPaintEngine::drawTextItem(p, textItem);
         return;
     }
@@ -1032,7 +1032,7 @@ void QPdfEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
     d->brush = d->pen.brush();
     setBrush();
 
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
+    const BOBUIextItemInt &ti = static_cast<const BOBUIextItemInt &>(textItem);
     Q_ASSERT(ti.fontEngine->type() != QFontEngine::Multi);
     d->drawTextItem(p, ti);
     d->hasPen = hp;
@@ -1040,7 +1040,7 @@ void QPdfEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
     *d->currentPage << "Q\n";
 }
 
-// Used by QtWebKit
+// Used by BobUIWebKit
 void QPdfEngine::drawHyperlink(const QRectF &r, const QUrl &url)
 {
     Q_D(QPdfEngine);
@@ -1071,10 +1071,10 @@ void QPdfEngine::drawHyperlink(const QRectF &r, const QUrl &url)
         d->xprintf("/F 4\n"); // enable print flag, disable all other
 
     d->xprintf("/Rect [");
-    d->xprintf("%s ", qt_real_to_string(rr.left(), buf));
-    d->xprintf("%s ", qt_real_to_string(rr.top(), buf));
-    d->xprintf("%s ", qt_real_to_string(rr.right(), buf));
-    d->xprintf("%s", qt_real_to_string(rr.bottom(), buf));
+    d->xprintf("%s ", bobui_real_to_string(rr.left(), buf));
+    d->xprintf("%s ", bobui_real_to_string(rr.top(), buf));
+    d->xprintf("%s ", bobui_real_to_string(rr.right(), buf));
+    d->xprintf("%s", bobui_real_to_string(rr.bottom(), buf));
     d->xprintf("]\n/Border [0 0 0]\n/A <<\n");
     d->xprintf("/Type /Action\n/S /URI\n/URI (%s)\n", url_esc.constData());
     d->xprintf(">>\n>>\n");
@@ -1111,12 +1111,12 @@ void QPdfEngine::updateState(const QPaintEngineState &state)
         } else {
             d->pen = state.pen();
         }
-        d->hasPen = d->pen.style() != Qt::NoPen;
+        d->hasPen = d->pen.style() != BobUI::NoPen;
         bool oldCosmetic = d->stroker.cosmeticPen;
         d->stroker.setPen(d->pen, state.renderHints());
         QBrush penBrush = d->pen.brush();
         bool oldSimple = d->simplePen;
-        d->simplePen = (d->hasPen && (penBrush.style() == Qt::SolidPattern) && penBrush.isOpaque() && d->opacity == 1.0);
+        d->simplePen = (d->hasPen && (penBrush.style() == BobUI::SolidPattern) && penBrush.isOpaque() && d->opacity == 1.0);
         if (oldSimple != d->simplePen || oldCosmetic != d->stroker.cosmeticPen)
             flags |= DirtyTransform;
     } else if (flags & DirtyHints) {
@@ -1130,9 +1130,9 @@ void QPdfEngine::updateState(const QPaintEngineState &state)
         } else {
             d->brush = state.brush();
         }
-        if (d->brush.color().alpha() == 0 && d->brush.style() == Qt::SolidPattern)
-            d->brush.setStyle(Qt::NoBrush);
-        d->hasBrush = d->brush.style() != Qt::NoBrush;
+        if (d->brush.color().alpha() == 0 && d->brush.style() == BobUI::SolidPattern)
+            d->brush.setStyle(BobUI::NoBrush);
+        d->hasBrush = d->brush.style() != BobUI::NoBrush;
     }
     if (flags & DirtyBrushOrigin) {
         d->brushOrigin = state.brushOrigin();
@@ -1193,7 +1193,7 @@ void QPdfEngine::setupGraphicsState(QPaintEngine::DirtyFlags flags)
             }
             if (!d->allClipped) {
                 for (int i = 0; i < d->clips.size(); ++i) {
-                    *d->currentPage << QPdf::generatePath(d->clips.at(i), QTransform(), QPdf::ClipPath);
+                    *d->currentPage << QPdf::generatePath(d->clips.at(i), BOBUIransform(), QPdf::ClipPath);
                 }
             }
         }
@@ -1215,22 +1215,22 @@ void QPdfEngine::setupGraphicsState(QPaintEngine::DirtyFlags flags)
         setPen();
 }
 
-void QPdfEngine::updateClipPath(const QPainterPath &p, Qt::ClipOperation op)
+void QPdfEngine::updateClipPath(const QPainterPath &p, BobUI::ClipOperation op)
 {
     Q_D(QPdfEngine);
     QPainterPath path = d->stroker.matrix.map(p);
     //qDebug() << "updateClipPath: " << d->stroker.matrix << p.boundingRect() << path.boundingRect() << op;
 
     switch (op) {
-    case Qt::NoClip:
+    case BobUI::NoClip:
         d->clipEnabled = false;
         d->clips.clear();
         break;
-    case Qt::ReplaceClip:
+    case BobUI::ReplaceClip:
         d->clips.clear();
         d->clips.append(path);
         break;
-    case Qt::IntersectClip:
+    case BobUI::IntersectClip:
         d->clips.append(path);
         break;
     }
@@ -1239,10 +1239,10 @@ void QPdfEngine::updateClipPath(const QPainterPath &p, Qt::ClipOperation op)
 void QPdfEngine::setPen()
 {
     Q_D(QPdfEngine);
-    if (d->pen.style() == Qt::NoPen)
+    if (d->pen.style() == BobUI::NoPen)
         return;
     QBrush b = d->pen.brush();
-    Q_ASSERT(b.style() == Qt::SolidPattern && b.isOpaque());
+    Q_ASSERT(b.style() == BobUI::SolidPattern && b.isOpaque());
 
     d->writeColor(QPdfEnginePrivate::ColorDomain::Stroking, b.color());
     *d->currentPage << "SCN\n";
@@ -1250,13 +1250,13 @@ void QPdfEngine::setPen()
 
     int pdfCapStyle = 0;
     switch(d->pen.capStyle()) {
-    case Qt::FlatCap:
+    case BobUI::FlatCap:
         pdfCapStyle = 0;
         break;
-    case Qt::SquareCap:
+    case BobUI::SquareCap:
         pdfCapStyle = 2;
         break;
-    case Qt::RoundCap:
+    case BobUI::RoundCap:
         pdfCapStyle = 1;
         break;
     default:
@@ -1266,15 +1266,15 @@ void QPdfEngine::setPen()
 
     int pdfJoinStyle = 0;
     switch(d->pen.joinStyle()) {
-    case Qt::MiterJoin:
-    case Qt::SvgMiterJoin:
+    case BobUI::MiterJoin:
+    case BobUI::SvgMiterJoin:
         *d->currentPage << qMax(qreal(1.0), d->pen.miterLimit()) << "M ";
         pdfJoinStyle = 0;
         break;
-    case Qt::BevelJoin:
+    case BobUI::BevelJoin:
         pdfJoinStyle = 2;
         break;
-    case Qt::RoundJoin:
+    case BobUI::RoundJoin:
         pdfJoinStyle = 1;
         break;
     default:
@@ -1289,8 +1289,8 @@ void QPdfEngine::setPen()
 void QPdfEngine::setBrush()
 {
     Q_D(QPdfEngine);
-    Qt::BrushStyle style = d->brush.style();
-    if (style == Qt::NoBrush)
+    BobUI::BrushStyle style = d->brush.style();
+    if (style == BobUI::NoBrush)
         return;
 
     bool specifyColor;
@@ -1570,8 +1570,8 @@ void QPdfEnginePrivate::writeHeader()
     xprintf("%%PDF-%s\n", verStr);
     xprintf("%%\303\242\303\243\n");
 
-#if QT_CONFIG(timezone)
-    const QDateTime now = QDateTime::currentDateTime(QTimeZone::systemTimeZone());
+#if BOBUI_CONFIG(timezone)
+    const QDateTime now = QDateTime::currentDateTime(BOBUIimeZone::systemTimeZone());
 #else
     const QDateTime now = QDateTime::currentDateTimeUtc();
 #endif
@@ -1743,9 +1743,9 @@ void QPdfEnginePrivate::writeInfo(const QDateTime &date)
     write("\n/Author ");
     printString(author);
     write("\n/Producer ");
-    printString(QString::fromLatin1("Qt " QT_VERSION_STR));
+    printString(QString::fromLatin1("BobUI " BOBUI_VERSION_STR));
 
-    const QTime t = date.time();
+    const BOBUIime t = date.time();
     const QDate d = date.date();
     // (D:YYYYMMDDHHmmSSOHH'mm')
     constexpr size_t formattedDateSize = 26;
@@ -1795,10 +1795,10 @@ int QPdfEnginePrivate::writeXmpDocumentMetaData(const QDateTime &date)
     if (!xmpDocumentMetadata.isEmpty()) {
         metaDataContent = xmpDocumentMetadata;
     } else {
-        const QString producer(QString::fromLatin1("Qt " QT_VERSION_STR));
-        const QString metaDataDate = date.toString(Qt::ISODate);
+        const QString producer(QString::fromLatin1("BobUI " BOBUI_VERSION_STR));
+        const QString metaDataDate = date.toString(BobUI::ISODate);
 
-        using namespace Qt::Literals;
+        using namespace BobUI::Literals;
         constexpr QLatin1String xmlNS = "http://www.w3.org/XML/1998/namespace"_L1;
 
         constexpr QLatin1String adobeNS = "adobe:ns:meta/"_L1;
@@ -2498,7 +2498,7 @@ void QPdfEnginePrivate::xprintf(const char* fmt, ...)
 
 int QPdfEnginePrivate::writeCompressed(QIODevice *dev)
 {
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
     if (do_compress) {
         int size = QPdfPage::chunkSize();
         int sum = 0;
@@ -2572,7 +2572,7 @@ int QPdfEnginePrivate::writeCompressed(QIODevice *dev)
 
 int QPdfEnginePrivate::writeCompressed(const char *src, int len)
 {
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
     if (do_compress) {
         const QByteArray data = qCompress(reinterpret_cast<const uchar *>(src), len);
         constexpr qsizetype HeaderSize = 4;
@@ -2684,8 +2684,8 @@ QPdfEnginePrivate::createShadingFunction(const QGradient *gradient, int from, in
 {
     QGradientStops stops = gradient->stops();
     if (stops.isEmpty()) {
-        stops << QGradientStop(0, Qt::black);
-        stops << QGradientStop(1, Qt::white);
+        stops << QGradientStop(0, BobUI::black);
+        stops << QGradientStop(1, BobUI::white);
     }
     if (stops.at(0).first > 0)
         stops.prepend(QGradientStop(0, stops.at(0).second));
@@ -2834,7 +2834,7 @@ QPdfEnginePrivate::createShadingFunction(const QGradient *gradient, int from, in
     return result;
 }
 
-int QPdfEnginePrivate::generateLinearGradientShader(const QLinearGradient *gradient, const QTransform &matrix, bool alpha)
+int QPdfEnginePrivate::generateLinearGradientShader(const QLinearGradient *gradient, const BOBUIransform &matrix, bool alpha)
 {
     QPointF start = gradient->start();
     QPointF stop = gradient->finalStop();
@@ -2853,7 +2853,7 @@ int QPdfEnginePrivate::generateLinearGradientShader(const QLinearGradient *gradi
     case QGradient::RepeatSpread: {
         // calculate required bounds
         QRectF pageRect = m_pageLayout.fullRectPixels(resolution);
-        QTransform inv = matrix.inverted();
+        BOBUIransform inv = matrix.inverted();
         QPointF page_rect[4] = { inv.map(pageRect.topLeft()),
                                  inv.map(pageRect.topRight()),
                                  inv.map(pageRect.bottomLeft()),
@@ -2900,7 +2900,7 @@ int QPdfEnginePrivate::generateLinearGradientShader(const QLinearGradient *gradi
     return shaderObject;
 }
 
-int QPdfEnginePrivate::generateRadialGradientShader(const QRadialGradient *gradient, const QTransform &matrix, bool alpha)
+int QPdfEnginePrivate::generateRadialGradientShader(const QRadialGradient *gradient, const BOBUIransform &matrix, bool alpha)
 {
     QPointF p1 = gradient->center();
     qreal r1 = gradient->centerRadius();
@@ -2922,7 +2922,7 @@ int QPdfEnginePrivate::generateRadialGradientShader(const QRadialGradient *gradi
         Q_ASSERT(qFuzzyIsNull(r0)); // QPainter emulates if this is not 0
 
         QRectF pageRect = m_pageLayout.fullRectPixels(resolution);
-        QTransform inv = matrix.inverted();
+        BOBUIransform inv = matrix.inverted();
         QPointF page_rect[4] = { inv.map(pageRect.topLeft()),
                                  inv.map(pageRect.topRight()),
                                  inv.map(pageRect.bottomLeft()),
@@ -2974,7 +2974,7 @@ int QPdfEnginePrivate::generateRadialGradientShader(const QRadialGradient *gradi
     return shaderObject;
 }
 
-int QPdfEnginePrivate::generateGradientShader(const QGradient *gradient, const QTransform &matrix, bool alpha)
+int QPdfEnginePrivate::generateGradientShader(const QGradient *gradient, const BOBUIransform &matrix, bool alpha)
 {
     switch (gradient->type()) {
     case QGradient::LinearGradient:
@@ -2990,7 +2990,7 @@ int QPdfEnginePrivate::generateGradientShader(const QGradient *gradient, const Q
     return 0;
 }
 
-int QPdfEnginePrivate::gradientBrush(const QBrush &b, const QTransform &matrix, int *gStateObject)
+int QPdfEnginePrivate::gradientBrush(const QBrush &b, const BOBUIransform &matrix, int *gStateObject)
 {
     const QGradient *gradient = b.gradient();
 
@@ -2999,7 +2999,7 @@ int QPdfEnginePrivate::gradientBrush(const QBrush &b, const QTransform &matrix, 
 
     QRectF pageRect = m_pageLayout.fullRectPixels(resolution);
 
-    QTransform m = b.transform() * matrix;
+    BOBUIransform m = b.transform() * matrix;
     int shaderObject = generateGradientShader(gradient, m);
 
     QByteArray str;
@@ -3092,7 +3092,7 @@ int QPdfEnginePrivate::addConstantAlphaObject(int brushAlpha, int penAlpha)
 }
 
 
-int QPdfEnginePrivate::addBrushPattern(const QTransform &m, bool *specifyColor, int *gStateObject)
+int QPdfEnginePrivate::addBrushPattern(const BOBUIransform &m, bool *specifyColor, int *gStateObject)
 {
     Q_Q(QPdfEngine);
 
@@ -3103,16 +3103,16 @@ int QPdfEnginePrivate::addBrushPattern(const QTransform &m, bool *specifyColor, 
     *specifyColor = true;
     *gStateObject = 0;
 
-    const Qt::BrushStyle style = brush.style();
-    const bool isCosmetic = style >= Qt::Dense1Pattern && style <= Qt::DiagCrossPattern
+    const BobUI::BrushStyle style = brush.style();
+    const bool isCosmetic = style >= BobUI::Dense1Pattern && style <= BobUI::DiagCrossPattern
                             && !q->painter()->testRenderHint(QPainter::NonCosmeticBrushPatterns);
-    QTransform matrix;
+    BOBUIransform matrix;
     if (!isCosmetic)
         matrix = m;
     matrix.translate(brushOrigin.x(), brushOrigin.y());
     matrix = matrix * pageMatrix();
 
-    if (style == Qt::LinearGradientPattern || style == Qt::RadialGradientPattern) {// && style <= Qt::ConicalGradientPattern) {
+    if (style == BobUI::LinearGradientPattern || style == BobUI::RadialGradientPattern) {// && style <= BobUI::ConicalGradientPattern) {
         *specifyColor = false;
         return gradientBrush(brush, matrix, gStateObject);
     }
@@ -3120,14 +3120,14 @@ int QPdfEnginePrivate::addBrushPattern(const QTransform &m, bool *specifyColor, 
     if (!isCosmetic)
         matrix = brush.transform() * matrix;
 
-    if ((!brush.isOpaque() && brush.style() < Qt::LinearGradientPattern) || opacity != 1.0)
+    if ((!brush.isOpaque() && brush.style() < BobUI::LinearGradientPattern) || opacity != 1.0)
         *gStateObject = addConstantAlphaObject(qRound(brush.color().alpha() * opacity),
                                                qRound(pen.color().alpha() * opacity));
 
     int imageObject = -1;
     QByteArray pattern = QPdf::patternForBrush(brush);
     if (pattern.isEmpty()) {
-        if (brush.style() != Qt::TexturePattern)
+        if (brush.style() != BobUI::TexturePattern)
             return 0;
         QImage image = brush.textureImage();
         bool bitmap = true;
@@ -3141,7 +3141,7 @@ int QPdfEnginePrivate::addBrushPattern(const QTransform &m, bool *specifyColor, 
             }
             w = image.width();
             h = image.height();
-            QTransform m(w, 0, 0, -h, 0, h);
+            BOBUIransform m(w, 0, 0, -h, 0, h);
             QPdf::ByteStream s(&pattern);
             s << QPdf::generateMatrix(m);
             s << "/Im" << imageObject << " Do\n";
@@ -3186,8 +3186,8 @@ int QPdfEnginePrivate::addBrushPattern(const QTransform &m, bool *specifyColor, 
 static inline bool is_monochrome(const QList<QRgb> &colorTable)
 {
     return colorTable.size() == 2
-        && colorTable.at(0) == QColor(Qt::black).rgba()
-        && colorTable.at(1) == QColor(Qt::white).rgba()
+        && colorTable.at(0) == QColor(BobUI::black).rgba()
+        && colorTable.at(1) == QColor(BobUI::white).rgba()
         ;
 }
 
@@ -3215,7 +3215,7 @@ int QPdfEnginePrivate::addImage(const QImage &img, bool *bitmap, bool lossless, 
 
             QImage alphaLessImage(image.width(), image.height(), QImage::Format_RGB32);
             alphaLessImage.setDevicePixelRatio(image.devicePixelRatioF());
-            alphaLessImage.fill(Qt::white);
+            alphaLessImage.fill(BobUI::white);
 
             QPainter p(&alphaLessImage);
             p.drawImage(0, 0, image);
@@ -3369,12 +3369,12 @@ int QPdfEnginePrivate::addImage(const QImage &img, bool *bitmap, bool lossless, 
     return object;
 }
 
-void QPdfEnginePrivate::drawTextItem(const QPointF &p, const QTextItemInt &ti)
+void QPdfEnginePrivate::drawTextItem(const QPointF &p, const BOBUIextItemInt &ti)
 {
     Q_Q(QPdfEngine);
 
-    const bool isLink = ti.charFormat.hasProperty(QTextFormat::AnchorHref);
-    const bool isAnchor = ti.charFormat.hasProperty(QTextFormat::AnchorName);
+    const bool isLink = ti.charFormat.hasProperty(BOBUIextFormat::AnchorHref);
+    const bool isAnchor = ti.charFormat.hasProperty(BOBUIextFormat::AnchorName);
     // PDF/X-4 (§ 6.17) does not allow annotations that don't lie
     // outside the BleedBox/TrimBox, so don't emit an hyperlink
     // annotation at all.
@@ -3385,12 +3385,12 @@ void QPdfEnginePrivate::drawTextItem(const QPointF &p, const QTextItemInt &ti)
         qreal stretch = synthesized & QFontEngine::SynthesizedStretch ? ti.fontEngine->fontDef.stretch/100. : 1.;
         Q_ASSERT(stretch > qreal(0));
 
-        QTransform trans;
+        BOBUIransform trans;
         // Build text rendering matrix (Trm). We need it to map the text area to user
         // space units on the PDF page.
-        trans = QTransform(size*stretch, 0, 0, size, 0, 0);
+        trans = BOBUIransform(size*stretch, 0, 0, size, 0, 0);
         // Apply text matrix (Tm).
-        trans *= QTransform(1,0,0,-1,p.x(),p.y());
+        trans *= BOBUIransform(1,0,0,-1,p.x(),p.y());
         // Apply page displacement (Identity for first page).
         trans *= stroker.matrix;
         // Apply Current Transformation Matrix (CTM)
@@ -3473,7 +3473,7 @@ void QPdfEnginePrivate::drawTextItem(const QPointF &p, const QTextItemInt &ti)
 
     QVarLengthArray<glyph_t> glyphs;
     QVarLengthArray<QFixedPoint> positions;
-    QTransform m = QTransform::fromTranslate(p.x(), p.y());
+    BOBUIransform m = BOBUIransform::fromTranslate(p.x(), p.y());
     ti.fontEngine->getGlyphPositions(ti.glyphs, m, ti.flags,
                                      glyphs, positions);
     if (glyphs.size() == 0)
@@ -3554,11 +3554,11 @@ void QPdfEnginePrivate::drawTextItem(const QPointF &p, const QTextItemInt &ti)
     *currentPage << "ET\n";
 }
 
-QTransform QPdfEnginePrivate::pageMatrix() const
+BOBUIransform QPdfEnginePrivate::pageMatrix() const
 {
     qreal userUnit = calcUserUnit();
     qreal scale = 72. / userUnit / resolution;
-    QTransform tmp(scale, 0.0, 0.0, -scale, 0.0, m_pageLayout.fullRectPoints().height() / userUnit);
+    BOBUIransform tmp(scale, 0.0, 0.0, -scale, 0.0, m_pageLayout.fullRectPoints().height() / userUnit);
     if (m_pageLayout.mode() != QPageLayout::FullPageMode) {
         QRect r = m_pageLayout.paintRectPixels(resolution);
         tmp.translate(r.left(), r.top());
@@ -3583,6 +3583,6 @@ void QPdfEnginePrivate::newPage()
                  << "q q\n";
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PDF
+#endif // BOBUI_NO_PDF

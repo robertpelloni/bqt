@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsqldriver.h"
 
@@ -9,13 +9,13 @@
 #include "qsqlfield.h"
 #include "qsqlindex.h"
 #include "private/qsqldriver_p.h"
-#include "private/qtools_p.h"
+#include "private/bobuiools_p.h"
 
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QString prepareIdentifier(const QString &identifier,
         QSqlDriver::IdentifierType type, const QSqlDriver *driver)
@@ -33,7 +33,7 @@ static QString prepareIdentifier(const QString &identifier,
     specific SQL databases.
 
     \ingroup database
-    \inmodule QtSql
+    \inmodule BobUISql
 
     This class should not be used directly. Use QSqlDatabase instead.
 
@@ -164,7 +164,7 @@ bool QSqlDriver::isOpenError() const
     \value CancelQuery Whether the driver allows cancelling a running query.
 
     More information about supported features can be found in the
-    \l{sql-driver.html}{Qt SQL driver} documentation.
+    \l{sql-driver.html}{BobUI SQL driver} documentation.
 
     \sa hasFeature()
 */
@@ -575,22 +575,22 @@ QString QSqlDriver::formatValue(const QSqlField &field, bool trimStrings) const
             else
                 r = field.value().toString();
             break;
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
         case QMetaType::QDate:
             if (field.value().toDate().isValid())
-                r = u'\'' + field.value().toDate().toString(Qt::ISODate) + u'\'';
+                r = u'\'' + field.value().toDate().toString(BobUI::ISODate) + u'\'';
             else
                 r = nullTxt;
             break;
-        case QMetaType::QTime:
+        case QMetaType::BOBUIime:
             if (field.value().toTime().isValid())
-                r =  u'\'' + field.value().toTime().toString(Qt::ISODate) + u'\'';
+                r =  u'\'' + field.value().toTime().toString(BobUI::ISODate) + u'\'';
             else
                 r = nullTxt;
             break;
         case QMetaType::QDateTime:
             if (field.value().toDateTime().isValid())
-                r = u'\'' + field.value().toDateTime().toString(Qt::ISODate) + u'\'';
+                r = u'\'' + field.value().toDateTime().toString(BobUI::ISODate) + u'\'';
             else
                 r = nullTxt;
             break;
@@ -620,8 +620,8 @@ QString QSqlDriver::formatValue(const QSqlField &field, bool trimStrings) const
                 r += u'\'';
                 for (const char c : ba) {
                     const uchar s = uchar(c);
-                    r += QLatin1Char(QtMiscUtils::toHexLower(s >> 4));
-                    r += QLatin1Char(QtMiscUtils::toHexLower(s & 0x0f));
+                    r += QLatin1Char(BobUIMiscUtils::toHexLower(s >> 4));
+                    r += QLatin1Char(BobUIMiscUtils::toHexLower(s & 0x0f));
                 }
                 r += u'\'';
                 break;
@@ -775,7 +775,7 @@ QSqlDriver::DbmsType QSqlDriver::dbmsType() const
 
     This function can be called from a different thread.
 
-    If you use this function as a slot, you need to use a Qt::DirectConnection
+    If you use this function as a slot, you need to use a BobUI::DirectConnection
     from a different thread.
 
     Reimplement this function to support canceling running queries in
@@ -814,6 +814,6 @@ QString QSqlDriver::connectionName() const
     return d->connectionName;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsqldriver.cpp"

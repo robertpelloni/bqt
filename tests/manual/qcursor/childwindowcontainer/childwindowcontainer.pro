@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = childwindowcontainer
 INCLUDEPATH += .
-QT += widgets
+BOBUI += widgets
 
 SOURCES += main.cpp

@@ -13,9 +13,9 @@ extensions/nsplugin/doc/classes.doc    1.2  agulbra  +2 -2
 extensions/opengl/src/qgl.cpp    1.20  agulbra  +5 -6
 extensions/xt/doc/annotated.doc    1.2  agulbra  +2 -2
 extensions/xt/doc/classes.doc    1.2  agulbra  +2 -2
-src/tools/qtextstream.cpp    2.16  agulbra  +1 -2
+src/tools/bobuiextstream.cpp    2.16  agulbra  +1 -2
 
-  finished merge of qt/extensions documentation in one directory.
+  finished merge of bobui/extensions documentation in one directory.
 
 
 doc/indices.doc    2.20  aavit  +3 -3
@@ -46,7 +46,7 @@ examples/dragdrop/main.cpp    1.7  paul  +8 -3
 
 examples/dragdrop/dropsite.cpp    1.9  warwick  +36 -81
 examples/dragdrop/dropsite.h    1.4  warwick  +7 -9
-src/qt.pro    2.30  warwick  +2 -0
+src/bobui.pro    2.30  warwick  +2 -0
 src/kernel/qclipboard_x11.cpp    2.15  warwick  +10 -8
 src/kernel/qdnd_win.cpp    2.15  warwick  +1 -18
 src/kernel/qdnd_x11.cpp    2.33  warwick  +62 -67
@@ -151,8 +151,8 @@ src/kernel/qdnd_x11.cpp    2.39  hanord  +2 -2
 src/kernel/qdnd_x11.cpp    2.40  hanord  +5 -5
 src/widgets/qheader.cpp    2.47  hanord  +5 -5
 src/widgets/qstatusbar.cpp    2.15  hanord  +12 -12
-src/widgets/qtoolbar.cpp    2.24  hanord  +14 -15
-src/widgets/qtoolbutton.cpp    2.29  hanord  +4 -4
+src/widgets/bobuioolbar.cpp    2.24  hanord  +14 -15
+src/widgets/bobuioolbutton.cpp    2.29  hanord  +4 -4
 src/widgets/qwellarray.cpp    1.5  hanord  +8 -10
 
   Removed Sun CC warnings. All these warnings come from use of local
@@ -187,7 +187,7 @@ src/kernel/qmovie.cpp    1.38  agulbra  +8 -7
 src/kernel/qmovie.cpp    1.37  agulbra  +12 -3
 
   warn about unisys $#@! and about possible removal of gif support in a
-  future version of qt.
+  future version of bobui.
 
 
 src/kernel/qpainter_win.cpp    2.38  hanord  +2 -3
@@ -231,13 +231,13 @@ src/moc/moc.y    2.24  hanord  +22 -12
   Warwick's support for #ifdef and #ifndef added
 
 
-src/qt.pro    2.33  hanord  +8 -7
+src/bobui.pro    2.33  hanord  +8 -7
 
   Changed DEPENDPATH to relative, makes makefiles movable.
   Sorted a couple of filenames.
 
 
-src/qt.pro    2.34  hanord  +1 -1
+src/bobui.pro    2.34  hanord  +1 -1
 
   Changed version number to 1.40
 
@@ -302,7 +302,7 @@ src/widgets/qlistview.cpp    2.130  agulbra  +8 -9
 
 
 src/widgets/qprogressbar.cpp    2.21  aavit  +10 -1
-src/widgets/qtableview.cpp    2.51  aavit  +2 -2
+src/widgets/bobuiableview.cpp    2.51  aavit  +2 -2
 
   Progressbar: allow changing of guistyle before show(). Should really
   implement styleChanged(); in 2.0.

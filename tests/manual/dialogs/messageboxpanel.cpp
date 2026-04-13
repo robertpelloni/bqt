@@ -1,5 +1,5 @@
 // Copyright (C) 2013 Thorbjørn Lund Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "messageboxpanel.h"
 
@@ -106,7 +106,7 @@ void MessageBoxPanel::setupMessageBox(QMessageBox &box)
     box.setDetailedText(m_detailedtext->text());
 
     QString btnHexText = m_buttonsMask->text();
-    btnHexText = btnHexText.replace(QString::fromLatin1("0x"), QString(), Qt::CaseInsensitive);
+    btnHexText = btnHexText.replace(QString::fromLatin1("0x"), QString(), BobUI::CaseInsensitive);
     bool ok;
     QMessageBox::StandardButtons btns = (QMessageBox::StandardButtons) btnHexText.toUInt(&ok, 16);
     box.setStandardButtons((QMessageBox::StandardButtons) btns);
@@ -134,7 +134,7 @@ void MessageBoxPanel::doExec()
         m_msgbox = new QMessageBox;
     }
     setupMessageBox(*m_msgbox);
-    m_msgbox->setWindowModality(Qt::NonModal);
+    m_msgbox->setWindowModality(BobUI::NonModal);
 
     int res = m_msgbox->exec();
     QString sres;
@@ -157,7 +157,7 @@ void MessageBoxPanel::doShowApply()
     }
     setupMessageBox(*m_msgbox);
     if (!m_msgbox->isVisible()) {
-        m_msgbox->setWindowModality(Qt::NonModal);
+        m_msgbox->setWindowModality(BobUI::NonModal);
         m_msgbox->show();
     }
 }

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qgtk3dialoghelpers.h"
 #include "qgtk3theme.h"
@@ -24,7 +24,7 @@
 #include <gdk/gdk.h>
 #include <pango/pango.h>
 
-#if QT_CONFIG(xlib) && defined(GDK_WINDOWING_X11)
+#if BOBUI_CONFIG(xlib) && defined(GDK_WINDOWING_X11)
 #include <gdk/gdkx.h>
 #endif
 
@@ -40,9 +40,9 @@
 #define PREVIEW_WIDTH 256
 #define PREVIEW_HEIGHT 512
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QGtk3Dialog
 {
@@ -53,7 +53,7 @@ public:
     GtkDialog *gtkDialog() const;
 
     void exec();
-    bool show(Qt::WindowFlags flags, Qt::WindowModality modality, QWindow *parent);
+    bool show(BobUI::WindowFlags flags, BobUI::WindowModality modality, QWindow *parent);
     void hide();
 
 protected:
@@ -62,7 +62,7 @@ protected:
 private:
     GtkWidget *gtkWidget;
     QPlatformDialogHelper *helper;
-    Qt::WindowModality modality;
+    BobUI::WindowModality modality;
 };
 
 QGtk3Dialog::QGtk3Dialog(GtkWidget *gtkWidget, QPlatformDialogHelper *helper)
@@ -86,7 +86,7 @@ GtkDialog *QGtk3Dialog::gtkDialog() const
 
 void QGtk3Dialog::exec()
 {
-    if (modality == Qt::ApplicationModal) {
+    if (modality == BobUI::ApplicationModal) {
         // block input to the whole app, including other GTK dialogs
         gtk_dialog_run(gtkDialog());
     } else {
@@ -98,7 +98,7 @@ void QGtk3Dialog::exec()
     }
 }
 
-bool QGtk3Dialog::show(Qt::WindowFlags flags, Qt::WindowModality modality, QWindow *parent)
+bool QGtk3Dialog::show(BobUI::WindowFlags flags, BobUI::WindowModality modality, QWindow *parent)
 {
     Q_UNUSED(flags);
     this->modality = modality;
@@ -120,7 +120,7 @@ bool QGtk3Dialog::show(Qt::WindowFlags flags, Qt::WindowModality modality, QWind
                 }
             }
 #endif
-#if QT_CONFIG(xlib) && defined(GDK_WINDOWING_X11)
+#if BOBUI_CONFIG(xlib) && defined(GDK_WINDOWING_X11)
         } else if (GDK_IS_X11_WINDOW(gdkWindow)) {
             GdkDisplay *gdkDisplay = gdk_window_get_display(gdkWindow);
             XSetTransientForHint(gdk_x11_display_get_xdisplay(gdkDisplay),
@@ -130,7 +130,7 @@ bool QGtk3Dialog::show(Qt::WindowFlags flags, Qt::WindowModality modality, QWind
         }
     }
 
-    if (modality != Qt::NonModal) {
+    if (modality != BobUI::NonModal) {
         gdk_window_set_modal_hint(gdkWindow, true);
     }
 
@@ -162,7 +162,7 @@ QGtk3ColorDialogHelper::~QGtk3ColorDialogHelper()
 {
 }
 
-bool QGtk3ColorDialogHelper::show(Qt::WindowFlags flags, Qt::WindowModality modality, QWindow *parent)
+bool QGtk3ColorDialogHelper::show(BobUI::WindowFlags flags, BobUI::WindowModality modality, QWindow *parent)
 {
     applyOptions();
     return d->show(flags, modality, parent);
@@ -233,7 +233,7 @@ QGtk3FileDialogHelper::~QGtk3FileDialogHelper()
 {
 }
 
-bool QGtk3FileDialogHelper::show(Qt::WindowFlags flags, Qt::WindowModality modality, QWindow *parent)
+bool QGtk3FileDialogHelper::show(BobUI::WindowFlags flags, BobUI::WindowModality modality, QWindow *parent)
 {
     _dir.clear();
     _selection.clear();
@@ -505,7 +505,7 @@ QGtk3FontDialogHelper::~QGtk3FontDialogHelper()
 {
 }
 
-bool QGtk3FontDialogHelper::show(Qt::WindowFlags flags, Qt::WindowModality modality, QWindow *parent)
+bool QGtk3FontDialogHelper::show(BobUI::WindowFlags flags, BobUI::WindowModality modality, QWindow *parent)
 {
     applyOptions();
     return d->show(flags, modality, parent);
@@ -521,7 +521,7 @@ void QGtk3FontDialogHelper::hide()
     d->hide();
 }
 
-static QString qt_fontToString(const QFont &font)
+static QString bobui_fontToString(const QFont &font)
 {
     PangoFontDescription *desc = pango_font_description_new();
     pango_font_description_set_size(desc, (font.pointSizeF() > 0.0 ? font.pointSizeF() : QFontInfo(font).pointSizeF()) * PANGO_SCALE);
@@ -562,7 +562,7 @@ static QString qt_fontToString(const QFont &font)
     return name;
 }
 
-static QFont qt_fontFromString(const QString &name)
+static QFont bobui_fontFromString(const QString &name)
 {
     QFont font;
     PangoFontDescription *desc = pango_font_description_from_string(qUtf8Printable(name));
@@ -589,14 +589,14 @@ static QFont qt_fontFromString(const QString &name)
 void QGtk3FontDialogHelper::setCurrentFont(const QFont &font)
 {
     GtkFontChooser *gtkDialog = GTK_FONT_CHOOSER(d->gtkDialog());
-    gtk_font_chooser_set_font(gtkDialog, qUtf8Printable(qt_fontToString(font)));
+    gtk_font_chooser_set_font(gtkDialog, qUtf8Printable(bobui_fontToString(font)));
 }
 
 QFont QGtk3FontDialogHelper::currentFont() const
 {
     GtkFontChooser *gtkDialog = GTK_FONT_CHOOSER(d->gtkDialog());
     gchar *name = gtk_font_chooser_get_font(gtkDialog);
-    QFont font = qt_fontFromString(QString::fromUtf8(name));
+    QFont font = bobui_fontFromString(QString::fromUtf8(name));
     g_free(name);
     return font;
 }
@@ -614,6 +614,6 @@ void QGtk3FontDialogHelper::applyOptions()
     gtk_window_set_title(GTK_WINDOW(gtkDialog), qUtf8Printable(opts->windowTitle()));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgtk3dialoghelpers.cpp"

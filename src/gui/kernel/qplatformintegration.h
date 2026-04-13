@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMINTEGRATION_H
 #define QPLATFORMINTEGRATION_H
@@ -10,16 +10,16 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qwindowdefs.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qwindowdefs.h>
 #include <qpa/qplatformscreen.h>
-#include <QtGui/qsurfaceformat.h>
-#include <QtGui/qopenglcontext.h>
+#include <BobUIGui/qsurfaceformat.h>
+#include <BobUIGui/qopenglcontext.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPlatformWindow;
@@ -90,7 +90,7 @@ public:
         WindowManagement,
         WindowActivation, // whether requestActivate is supported
         SyncState,
-#if QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 11)
+#if BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 11)
         RasterGLSurface Q_DECL_ENUMERATOR_DEPRECATED_X("This capability is no longer used"),
 #endif
         AllGLFunctionsQueryable,
@@ -114,7 +114,7 @@ public:
     virtual QPlatformWindow *createPlatformWindow(QWindow *window) const = 0;
     virtual QPlatformWindow *createForeignWindow(QWindow *, WId) const { return nullptr; }
     virtual QPlatformBackingStore *createPlatformBackingStore(QWindow *window) const = 0;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     virtual QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const;
 #endif
     virtual QPlatformSharedGraphicsCache *createPlatformSharedGraphicsCache(const char *cacheId) const;
@@ -127,14 +127,14 @@ public:
 
 //Deeper window system integrations
     virtual QPlatformFontDatabase *fontDatabase() const;
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     virtual QPlatformClipboard *clipboard() const;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     virtual QPlatformDrag *drag() const;
 #endif
     virtual QPlatformInputContext *inputContext() const;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     virtual QPlatformAccessibility *accessibility() const;
 #endif
 
@@ -174,10 +174,10 @@ public:
     };
 
     virtual QVariant styleHint(StyleHint hint) const;
-    virtual Qt::WindowState defaultWindowState(Qt::WindowFlags) const;
+    virtual BobUI::WindowState defaultWindowState(BobUI::WindowFlags) const;
 
 protected:
-    virtual Qt::KeyboardModifiers queryKeyboardModifiers() const;
+    virtual BobUI::KeyboardModifiers queryKeyboardModifiers() const;
     virtual QList<int> possibleKeys(const QKeyEvent *) const;
     friend class QPlatformKeyMapper;
 public:
@@ -188,13 +188,13 @@ public:
 
     virtual QPlatformOffscreenSurface *createPlatformOffscreenSurface(QOffscreenSurface *surface) const;
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     virtual QPlatformSessionManager *createPlatformSessionManager(const QString &id, const QString &key) const;
 #endif
 
     virtual void sync();
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     virtual QOpenGLContext::OpenGLModuleType openGLModuleType();
 #endif
     virtual void setApplicationIcon(const QIcon &icon) const;
@@ -203,7 +203,7 @@ public:
     virtual void beep() const;
     virtual void quit() const;
 
-#if QT_CONFIG(vulkan) || defined(Q_QDOC)
+#if BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
     virtual QPlatformVulkanInstance *createPlatformVulkanInstance(QVulkanInstance *instance) const;
 #endif
 
@@ -218,6 +218,6 @@ protected:
     QPlatformIntegration() = default;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMINTEGRATION_H

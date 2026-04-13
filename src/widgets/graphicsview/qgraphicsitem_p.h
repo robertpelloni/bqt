@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSITEM_P_H
 #define QGRAPHICSITEM_P_H
@@ -9,14 +9,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qgraphicsitem.h"
 #include "qset.h"
 #include "qpixmapcache.h"
@@ -24,11 +24,11 @@
 #include "qgraphicstransform.h"
 #include <private/qgraphicstransform_p.h>
 
-#include <QtCore/qpoint.h>
+#include <BobUICore/qpoint.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsItemPrivate;
 
@@ -45,7 +45,7 @@ public:
     // DeviceCoordinateCache only
     struct DeviceData {
         DeviceData() {}
-        QTransform lastTransform;
+        BOBUIransform lastTransform;
         QPoint cacheIndent;
         QPixmapCache::Key key;
     };
@@ -98,7 +98,7 @@ public:
     void updateAncestorFlags();
     void setIsMemberOfGroup(bool enabled);
     void remapItemPos(QEvent *event, QGraphicsItem *item);
-    QTransform genericMapFromSceneTransform(const QWidget *viewport = nullptr) const;
+    BOBUIransform genericMapFromSceneTransform(const QWidget *viewport = nullptr) const;
     QPointF genericMapFromScene(const QPointF &pos, const QWidget *viewport) const;
     inline bool itemIsUntransformable() const
     {
@@ -106,14 +106,14 @@ public:
             || (ancestorFlags & AncestorIgnoresTransformations);
     }
 
-    void combineTransformToParent(QTransform *x, const QTransform *viewTransform = nullptr) const;
-    void combineTransformFromParent(QTransform *x, const QTransform *viewTransform = nullptr) const;
+    void combineTransformToParent(BOBUIransform *x, const BOBUIransform *viewTransform = nullptr) const;
+    void combineTransformFromParent(BOBUIransform *x, const BOBUIransform *viewTransform = nullptr) const;
     virtual void updateSceneTransformFromParent();
 
     static bool movableAncestorIsSelected(const QGraphicsItem *item);
 
     virtual void setPosHelper(const QPointF &pos);
-    void setTransformHelper(const QTransform &transform);
+    void setTransformHelper(const BOBUIransform &transform);
     void prependGraphicsTransform(QGraphicsTransform *t);
     void appendGraphicsTransform(QGraphicsTransform *t);
     void setVisibleHelper(bool newVisible, bool explicitly, bool update = true,
@@ -123,21 +123,21 @@ public:
                               bool ignoreDirtyBit = false, bool ignoreOpacity = false) const;
     virtual void transformChanged() {}
     int depth() const;
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     enum InvalidateReason {
         OpacityChanged
     };
     void invalidateParentGraphicsEffectsRecursively();
     void invalidateChildGraphicsEffectsRecursively(InvalidateReason reason);
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
     void invalidateDepthRecursively();
     void resolveDepth();
     void addChild(QGraphicsItem *child);
     void removeChild(QGraphicsItem *child);
     void setParentItemHelper(QGraphicsItem *parent, const QVariant *newParentVariant,
                              const QVariant *thisPointerVariant);
-    void childrenBoundingRectHelper(QTransform *x, QRectF *rect, QGraphicsItem *topMostEffectItem);
-    void initStyleOption(QStyleOptionGraphicsItem *option, const QTransform &worldTransform,
+    void childrenBoundingRectHelper(BOBUIransform *x, QRectF *rect, QGraphicsItem *topMostEffectItem);
+    void initStyleOption(QStyleOptionGraphicsItem *option, const BOBUIransform &worldTransform,
                          const QRegion &exposedRegion, bool allItems = false) const;
     QRectF effectiveBoundingRect(QGraphicsItem *topMostEffectItem = nullptr) const;
     QRectF sceneEffectiveBoundingRect() const;
@@ -313,7 +313,7 @@ public:
 
     inline void markParentDirty(bool updateBoundingRect = false);
 
-    void setFocusHelper(Qt::FocusReason focusReason, bool climb, bool focusFromHide);
+    void setFocusHelper(BobUI::FocusReason focusReason, bool climb, bool focusFromHide);
     void clearFocusHelper(bool giveFocusToParent, bool hiddenByParentPanel);
     void setSubFocus(QGraphicsItem *rootItem = nullptr, QGraphicsItem *stopItem = nullptr);
     void clearSubFocus(QGraphicsItem *rootItem = nullptr, QGraphicsItem *stopItem = nullptr);
@@ -321,7 +321,7 @@ public:
     virtual void subFocusItemChange();
     virtual void focusScopeItemChange(bool isSubFocusItem);
 
-    inline QTransform transformToParent() const;
+    inline BOBUIransform transformToParent() const;
     inline void ensureSortedChildren();
     static inline bool insertionOrder(QGraphicsItem *a, QGraphicsItem *b);
     void ensureSequentialSiblingIndex();
@@ -349,7 +349,7 @@ public:
     struct TransformData;
     TransformData *transformData;
     QGraphicsEffect *graphicsEffect;
-    QTransform sceneTransform;
+    BOBUIransform sceneTransform;
     int index;
     int siblingIndex;
     int itemDepth;  // Lazily calculated when calling depth().
@@ -357,10 +357,10 @@ public:
     QList<QGraphicsItem **> focusProxyRefs;
     QGraphicsItem *subFocusItem;
     QGraphicsItem *focusScopeItem;
-    Qt::InputMethodHints imHints;
+    BobUI::InputMethodHints imHints;
     QGraphicsItem::PanelModality panelModality;
-#ifndef QT_NO_GESTURES
-    QMap<Qt::GestureType, Qt::GestureFlags> gestureContext;
+#ifndef BOBUI_NO_GESTURES
+    QMap<BobUI::GestureType, BobUI::GestureFlags> gestureContext;
 #endif
 
     // Packed 32 bits
@@ -403,7 +403,7 @@ public:
     quint32 sceneTransformTranslateOnly : 1;
     quint32 notifyBoundingRectChanged : 1;
 #ifdef Q_OS_WASM
-    unsigned char :0; //this aligns 64bit field for wasm see QTBUG-65259
+    unsigned char :0; //this aligns 64bit field for wasm see BOBUIBUG-65259
 #endif
     // New 32 bits
     quint32 notifyInvalidated : 1;
@@ -428,7 +428,7 @@ Q_DECLARE_TYPEINFO(QGraphicsItemPrivate::ExtraStruct, Q_RELOCATABLE_TYPE);
 
 struct QGraphicsItemPrivate::TransformData
 {
-    QTransform transform;
+    BOBUIransform transform;
     qreal scale;
     qreal rotation;
     qreal xOrigin;
@@ -442,7 +442,7 @@ struct QGraphicsItemPrivate::TransformData
         onlyTransform(true)
     { }
 
-    QTransform computedFullTransform(QTransform *postmultiplyTransform = nullptr) const
+    BOBUIransform computedFullTransform(BOBUIransform *postmultiplyTransform = nullptr) const
     {
         if (onlyTransform) {
             if (!postmultiplyTransform || postmultiplyTransform->isIdentity())
@@ -452,7 +452,7 @@ struct QGraphicsItemPrivate::TransformData
             return transform * *postmultiplyTransform;
         }
 
-        QTransform x(transform);
+        BOBUIransform x(transform);
         if (!graphicsTransforms.isEmpty()) {
             QMatrix4x4 m;
             for (int i = 0; i < graphicsTransforms.size(); ++i)
@@ -471,17 +471,17 @@ struct QGraphicsItemPrivate::TransformData
 
 struct QGraphicsItemPaintInfo
 {
-    inline QGraphicsItemPaintInfo(const QTransform *const xform1, const QTransform *const xform2,
-                                  const QTransform *const xform3,
+    inline QGraphicsItemPaintInfo(const BOBUIransform *const xform1, const BOBUIransform *const xform2,
+                                  const BOBUIransform *const xform3,
                                   QRegion *r, QWidget *w, QStyleOptionGraphicsItem *opt,
                                   QPainter *p, qreal o, bool b1, bool b2)
         : viewTransform(xform1), transformPtr(xform2), effectTransform(xform3), exposedRegion(r), widget(w),
           option(opt), painter(p), opacity(o), wasDirtySceneTransform(b1), drawItem(b2)
     {}
 
-    const QTransform *viewTransform;
-    const QTransform *transformPtr;
-    const QTransform *effectTransform;
+    const BOBUIransform *viewTransform;
+    const BOBUIransform *transformPtr;
+    const BOBUIransform *effectTransform;
     QRegion *exposedRegion;
     QWidget *widget;
     QStyleOptionGraphicsItem *option;
@@ -491,7 +491,7 @@ struct QGraphicsItemPaintInfo
     quint32 drawItem : 1;
 };
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
 class QGraphicsItemEffectSourcePrivate : public QGraphicsEffectSourcePrivate
 {
 public:
@@ -539,18 +539,18 @@ public:
         return info->widget->rect();
     }
 
-    QRectF boundingRect(Qt::CoordinateSystem system) const override;
+    QRectF boundingRect(BobUI::CoordinateSystem system) const override;
     void draw(QPainter *) override;
-    QPixmap pixmap(Qt::CoordinateSystem system,
+    QPixmap pixmap(BobUI::CoordinateSystem system,
                    QPoint *offset,
                    QGraphicsEffect::PixmapPadMode mode) const override;
-    QRectF paddedEffectRect(Qt::CoordinateSystem system, QGraphicsEffect::PixmapPadMode mode, const QRectF &sourceRect, bool *unpadded = nullptr) const;
+    QRectF paddedEffectRect(BobUI::CoordinateSystem system, QGraphicsEffect::PixmapPadMode mode, const QRectF &sourceRect, bool *unpadded = nullptr) const;
 
     QGraphicsItem *item;
     QGraphicsItemPaintInfo *info;
-    QTransform lastEffectTransform;
+    BOBUIransform lastEffectTransform;
 };
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
 /*!
     Returns \c true if \a item1 is on top of \a item2.
@@ -558,13 +558,13 @@ public:
 
     \internal
 */
-inline bool qt_closestItemFirst(const QGraphicsItem *item1, const QGraphicsItem *item2)
+inline bool bobui_closestItemFirst(const QGraphicsItem *item1, const QGraphicsItem *item2)
 {
     // Siblings? Just check their z-values.
     const QGraphicsItemPrivate *d1 = item1->d_ptr.data();
     const QGraphicsItemPrivate *d2 = item2->d_ptr.data();
     if (d1->parent == d2->parent)
-        return qt_closestLeaf(item1, item2);
+        return bobui_closestLeaf(item1, item2);
 
     // Find common ancestor, and each item's ancestor closest to the common
     // ancestor.
@@ -603,7 +603,7 @@ inline bool qt_closestItemFirst(const QGraphicsItem *item1, const QGraphicsItem 
 
     // in case we have a common ancestor, we compare the immediate children in the ancestor's path.
     // otherwise we compare the respective items' topLevelItems directly.
-    return qt_closestLeaf(p1, p2);
+    return bobui_closestLeaf(p1, p2);
 }
 
 /*!
@@ -612,15 +612,15 @@ inline bool qt_closestItemFirst(const QGraphicsItem *item1, const QGraphicsItem 
 
     \internal
 */
-inline bool qt_closestItemLast(const QGraphicsItem *item1, const QGraphicsItem *item2)
+inline bool bobui_closestItemLast(const QGraphicsItem *item1, const QGraphicsItem *item2)
 {
-    return qt_closestItemFirst(item2, item1);
+    return bobui_closestItemFirst(item2, item1);
 }
 
 /*!
     \internal
 */
-inline bool qt_closestLeaf(const QGraphicsItem *item1, const QGraphicsItem *item2)
+inline bool bobui_closestLeaf(const QGraphicsItem *item1, const QGraphicsItem *item2)
 {
     // Return true if sibling item1 is on top of item2.
     const QGraphicsItemPrivate *d1 = item1->d_ptr.data();
@@ -637,15 +637,15 @@ inline bool qt_closestLeaf(const QGraphicsItem *item1, const QGraphicsItem *item
 /*!
     \internal
 */
-inline bool qt_notclosestLeaf(const QGraphicsItem *item1, const QGraphicsItem *item2)
-{ return qt_closestLeaf(item2, item1); }
+inline bool bobui_notclosestLeaf(const QGraphicsItem *item1, const QGraphicsItem *item2)
+{ return bobui_closestLeaf(item2, item1); }
 
 /*
    return the full transform of the item to the parent.  This include the position and all the transform data
 */
-inline QTransform QGraphicsItemPrivate::transformToParent() const
+inline BOBUIransform QGraphicsItemPrivate::transformToParent() const
 {
-    QTransform matrix;
+    BOBUIransform matrix;
     combineTransformToParent(&matrix);
     return matrix;
 }
@@ -660,7 +660,7 @@ inline void QGraphicsItemPrivate::ensureSortedChildren()
         sequentialOrdering = 1;
         if (children.isEmpty())
             return;
-        std::sort(children.begin(), children.end(), qt_notclosestLeaf);
+        std::sort(children.begin(), children.end(), bobui_notclosestLeaf);
         for (int i = 0; i < children.size(); ++i) {
             if (children.at(i)->d_ptr->siblingIndex != i) {
                 sequentialOrdering = 0;
@@ -684,7 +684,7 @@ inline bool QGraphicsItemPrivate::insertionOrder(QGraphicsItem *a, QGraphicsItem
 inline void QGraphicsItemPrivate::markParentDirty(bool updateBoundingRect)
 {
     QGraphicsItemPrivate *parentp = this;
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     if (updateBoundingRect && parentp->graphicsEffect && !parentp->inSetPosHelper) {
         parentp->notifyInvalidated = 1;
         static_cast<QGraphicsItemEffectSourcePrivate *>(parentp->graphicsEffect->d_func()
@@ -700,7 +700,7 @@ inline void QGraphicsItemPrivate::markParentDirty(bool updateBoundingRect)
             // ### Only do this if the parent's effect applies to the entire subtree.
             parentp->notifyBoundingRectChanged = 1;
         }
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
         if (parentp->graphicsEffect) {
             if (updateBoundingRect) {
                 static_cast<QGraphicsItemEffectSourcePrivate *>(parentp->graphicsEffect->d_func()
@@ -716,6 +716,6 @@ inline void QGraphicsItemPrivate::markParentDirty(bool updateBoundingRect)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

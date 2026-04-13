@@ -1,33 +1,33 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QMinimalIntegrationPlugin Plugin:
 #####################################################################
 
-qt_find_package(WrapFreetype MODULE PROVIDED_TARGETS WrapFreetype::WrapFreetype)
+bobui_find_package(WrapFreetype MODULE PROVIDED_TARGETS WrapFreetype::WrapFreetype)
 
-qt_internal_add_plugin(QMinimalIntegrationPlugin
+bobui_internal_add_plugin(QMinimalIntegrationPlugin
     OUTPUT_NAME qminimal
     PLUGIN_TYPE platforms
-    DEFAULT_IF "minimal" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "minimal" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         main.cpp
         qminimalbackingstore.cpp qminimalbackingstore.h
         qminimalintegration.cpp qminimalintegration.h
     DEFINES
-        QT_NO_FOREACH
+        BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QMinimalIntegrationPlugin CONDITION QT_FEATURE_freetype
+bobui_internal_extend_target(QMinimalIntegrationPlugin CONDITION BOBUI_FEATURE_freetype
     LIBRARIES
         WrapFreetype::WrapFreetype
 )

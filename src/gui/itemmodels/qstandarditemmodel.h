@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTANDARDITEMMODEL_H
 #define QSTANDARDITEMMODEL_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtGui/qbrush.h>
-#include <QtGui/qfont.h>
-#include <QtGui/qicon.h>
-#ifndef QT_NO_DATASTREAM
-#include <QtCore/qdatastream.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUIGui/qbrush.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/qicon.h>
+#ifndef BOBUI_NO_DATASTREAM
+#include <BobUICore/qdatastream.h>
 #endif
 
-QT_REQUIRE_CONFIG(standarditemmodel);
+BOBUI_REQUIRE_CONFIG(standarditemmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStandardItemModel;
 
@@ -30,124 +30,124 @@ public:
     explicit QStandardItem(int rows, int columns = 1);
     virtual ~QStandardItem();
 
-    virtual QVariant data(int role = Qt::UserRole + 1) const;
+    virtual QVariant data(int role = BobUI::UserRole + 1) const;
     virtual void multiData(QModelRoleDataSpan roleDataSpan) const;
-    virtual void setData(const QVariant &value, int role = Qt::UserRole + 1);
+    virtual void setData(const QVariant &value, int role = BobUI::UserRole + 1);
     void clearData();
 
     inline QString text() const {
-        return qvariant_cast<QString>(data(Qt::DisplayRole));
+        return qvariant_cast<QString>(data(BobUI::DisplayRole));
     }
     inline void setText(const QString &text);
 
     inline QIcon icon() const {
-        return qvariant_cast<QIcon>(data(Qt::DecorationRole));
+        return qvariant_cast<QIcon>(data(BobUI::DecorationRole));
     }
     inline void setIcon(const QIcon &icon);
 
     inline QString toolTip() const {
-        return qvariant_cast<QString>(data(Qt::ToolTipRole));
+        return qvariant_cast<QString>(data(BobUI::ToolTipRole));
     }
     inline void setToolTip(const QString &toolTip);
 
-#ifndef QT_NO_STATUSTIP
+#ifndef BOBUI_NO_STATUSTIP
     inline QString statusTip() const {
-        return qvariant_cast<QString>(data(Qt::StatusTipRole));
+        return qvariant_cast<QString>(data(BobUI::StatusTipRole));
     }
     inline void setStatusTip(const QString &statusTip);
 #endif
 
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     inline QString whatsThis() const {
-        return qvariant_cast<QString>(data(Qt::WhatsThisRole));
+        return qvariant_cast<QString>(data(BobUI::WhatsThisRole));
     }
     inline void setWhatsThis(const QString &whatsThis);
 #endif
 
     inline QSize sizeHint() const {
-        return qvariant_cast<QSize>(data(Qt::SizeHintRole));
+        return qvariant_cast<QSize>(data(BobUI::SizeHintRole));
     }
     inline void setSizeHint(const QSize &sizeHint);
 
     inline QFont font() const {
-        return qvariant_cast<QFont>(data(Qt::FontRole));
+        return qvariant_cast<QFont>(data(BobUI::FontRole));
     }
     inline void setFont(const QFont &font);
 
-    inline Qt::Alignment textAlignment() const {
-        return qvariant_cast<Qt::Alignment>(data(Qt::TextAlignmentRole));
+    inline BobUI::Alignment textAlignment() const {
+        return qvariant_cast<BobUI::Alignment>(data(BobUI::TextAlignmentRole));
     }
-    inline void setTextAlignment(Qt::Alignment textAlignment);
+    inline void setTextAlignment(BobUI::Alignment textAlignment);
 
     inline QBrush background() const {
-        return qvariant_cast<QBrush>(data(Qt::BackgroundRole));
+        return qvariant_cast<QBrush>(data(BobUI::BackgroundRole));
     }
     inline void setBackground(const QBrush &brush);
 
     inline QBrush foreground() const {
-        return qvariant_cast<QBrush>(data(Qt::ForegroundRole));
+        return qvariant_cast<QBrush>(data(BobUI::ForegroundRole));
     }
     inline void setForeground(const QBrush &brush);
 
-    inline Qt::CheckState checkState() const {
-        return Qt::CheckState(qvariant_cast<int>(data(Qt::CheckStateRole)));
+    inline BobUI::CheckState checkState() const {
+        return BobUI::CheckState(qvariant_cast<int>(data(BobUI::CheckStateRole)));
     }
-    inline void setCheckState(Qt::CheckState checkState);
+    inline void setCheckState(BobUI::CheckState checkState);
 
     inline QString accessibleText() const {
-        return qvariant_cast<QString>(data(Qt::AccessibleTextRole));
+        return qvariant_cast<QString>(data(BobUI::AccessibleTextRole));
     }
     inline void setAccessibleText(const QString &accessibleText);
 
     inline QString accessibleDescription() const {
-        return qvariant_cast<QString>(data(Qt::AccessibleDescriptionRole));
+        return qvariant_cast<QString>(data(BobUI::AccessibleDescriptionRole));
     }
     inline void setAccessibleDescription(const QString &accessibleDescription);
 
-    Qt::ItemFlags flags() const;
-    void setFlags(Qt::ItemFlags flags);
+    BobUI::ItemFlags flags() const;
+    void setFlags(BobUI::ItemFlags flags);
 
     inline bool isEnabled() const {
-        return bool(flags() & Qt::ItemIsEnabled);
+        return bool(flags() & BobUI::ItemIsEnabled);
     }
     void setEnabled(bool enabled);
 
     inline bool isEditable() const {
-        return bool(flags() & Qt::ItemIsEditable);
+        return bool(flags() & BobUI::ItemIsEditable);
     }
     void setEditable(bool editable);
 
     inline bool isSelectable() const {
-        return bool(flags() & Qt::ItemIsSelectable);
+        return bool(flags() & BobUI::ItemIsSelectable);
     }
     void setSelectable(bool selectable);
 
     inline bool isCheckable() const {
-        return bool(flags() & Qt::ItemIsUserCheckable);
+        return bool(flags() & BobUI::ItemIsUserCheckable);
     }
     void setCheckable(bool checkable);
 
     inline bool isAutoTristate() const {
-        return bool(flags() & Qt::ItemIsAutoTristate);
+        return bool(flags() & BobUI::ItemIsAutoTristate);
     }
     void setAutoTristate(bool tristate);
 
     inline bool isUserTristate() const {
-        return bool(flags() & Qt::ItemIsUserTristate);
+        return bool(flags() & BobUI::ItemIsUserTristate);
     }
     void setUserTristate(bool tristate);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     inline bool isDragEnabled() const {
-        return bool(flags() & Qt::ItemIsDragEnabled);
+        return bool(flags() & BobUI::ItemIsDragEnabled);
     }
     void setDragEnabled(bool dragEnabled);
 
     inline bool isDropEnabled() const {
-        return bool(flags() & Qt::ItemIsDropEnabled);
+        return bool(flags() & BobUI::ItemIsDropEnabled);
     }
     void setDropEnabled(bool dropEnabled);
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
     QStandardItem *parent() const;
     int row() const;
@@ -186,14 +186,14 @@ public:
     QList<QStandardItem*> takeRow(int row);
     QList<QStandardItem*> takeColumn(int column);
 
-    void sortChildren(int column, Qt::SortOrder order = Qt::AscendingOrder);
+    void sortChildren(int column, BobUI::SortOrder order = BobUI::AscendingOrder);
 
     virtual QStandardItem *clone() const;
 
     enum ItemType { Type = 0, UserType = 1000 };
     virtual int type() const;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     virtual void read(QDataStream &in);
     virtual void write(QDataStream &out) const;
 #endif
@@ -214,47 +214,47 @@ private:
 };
 
 inline void QStandardItem::setText(const QString &atext)
-{ setData(atext, Qt::DisplayRole); }
+{ setData(atext, BobUI::DisplayRole); }
 
 inline void QStandardItem::setIcon(const QIcon &aicon)
-{ setData(aicon, Qt::DecorationRole); }
+{ setData(aicon, BobUI::DecorationRole); }
 
 inline void QStandardItem::setToolTip(const QString &atoolTip)
-{ setData(atoolTip, Qt::ToolTipRole); }
+{ setData(atoolTip, BobUI::ToolTipRole); }
 
-#ifndef QT_NO_STATUSTIP
+#ifndef BOBUI_NO_STATUSTIP
 inline void QStandardItem::setStatusTip(const QString &astatusTip)
-{ setData(astatusTip, Qt::StatusTipRole); }
+{ setData(astatusTip, BobUI::StatusTipRole); }
 #endif
 
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 inline void QStandardItem::setWhatsThis(const QString &awhatsThis)
-{ setData(awhatsThis, Qt::WhatsThisRole); }
+{ setData(awhatsThis, BobUI::WhatsThisRole); }
 #endif
 
 inline void QStandardItem::setSizeHint(const QSize &asizeHint)
-{ setData(asizeHint, Qt::SizeHintRole); }
+{ setData(asizeHint, BobUI::SizeHintRole); }
 
 inline void QStandardItem::setFont(const QFont &afont)
-{ setData(afont, Qt::FontRole); }
+{ setData(afont, BobUI::FontRole); }
 
-inline void QStandardItem::setTextAlignment(Qt::Alignment atextAlignment)
-{ setData(QVariant::fromValue(atextAlignment), Qt::TextAlignmentRole); }
+inline void QStandardItem::setTextAlignment(BobUI::Alignment atextAlignment)
+{ setData(QVariant::fromValue(atextAlignment), BobUI::TextAlignmentRole); }
 
 inline void QStandardItem::setBackground(const QBrush &abrush)
-{ setData(abrush, Qt::BackgroundRole); }
+{ setData(abrush, BobUI::BackgroundRole); }
 
 inline void QStandardItem::setForeground(const QBrush &abrush)
-{ setData(abrush, Qt::ForegroundRole); }
+{ setData(abrush, BobUI::ForegroundRole); }
 
-inline void QStandardItem::setCheckState(Qt::CheckState acheckState)
-{ setData(acheckState, Qt::CheckStateRole); }
+inline void QStandardItem::setCheckState(BobUI::CheckState acheckState)
+{ setData(acheckState, BobUI::CheckStateRole); }
 
 inline void QStandardItem::setAccessibleText(const QString &aaccessibleText)
-{ setData(aaccessibleText, Qt::AccessibleTextRole); }
+{ setData(aaccessibleText, BobUI::AccessibleTextRole); }
 
 inline void QStandardItem::setAccessibleDescription(const QString &aaccessibleDescription)
-{ setData(aaccessibleDescription, Qt::AccessibleDescriptionRole); }
+{ setData(aaccessibleDescription, BobUI::AccessibleDescriptionRole); }
 
 inline void QStandardItem::setChild(int arow, QStandardItem *aitem)
 { setChild(arow, 0, aitem); }
@@ -296,23 +296,23 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
     void multiData(const QModelIndex &index, QModelRoleDataSpan roleDataSpan) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = BobUI::EditRole) override;
     bool clearItemData(const QModelIndex &index) override;
 
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const override;
-    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
-                       int role = Qt::EditRole) override;
+    QVariant headerData(int section, BobUI::Orientation orientation,
+                        int role = BobUI::DisplayRole) const override;
+    bool setHeaderData(int section, BobUI::Orientation orientation, const QVariant &value,
+                       int role = BobUI::EditRole) override;
 
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    Qt::DropActions supportedDropActions() const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::DropActions supportedDropActions() const override;
 
     QMap<int, QVariant> itemData(const QModelIndex &index) const override;
     bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles) override;
@@ -321,7 +321,7 @@ public:
 
     using QObject::parent;
 
-    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+    void sort(int column, BobUI::SortOrder order = BobUI::AscendingOrder) override;
 
     QStandardItem *itemFromIndex(const QModelIndex &index) const;
     QModelIndex indexFromItem(const QStandardItem *item) const;
@@ -364,7 +364,7 @@ public:
     void setItemPrototype(const QStandardItem *item);
 
     QList<QStandardItem*> findItems(const QString &text,
-                                    Qt::MatchFlags flags = Qt::MatchExactly,
+                                    BobUI::MatchFlags flags = BobUI::MatchExactly,
                                     int column = 0) const;
 
     int sortRole() const;
@@ -373,7 +373,7 @@ public:
 
     QStringList mimeTypes() const override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
-    bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
+    bool dropMimeData (const QMimeData *data, BobUI::DropAction action, int row, int column, const QModelIndex &parent) override;
 
 Q_SIGNALS:
     void itemChanged(QStandardItem *item);
@@ -405,11 +405,11 @@ inline bool QStandardItemModel::insertRow(int arow, const QModelIndex &aparent)
 inline bool QStandardItemModel::insertColumn(int acolumn, const QModelIndex &aparent)
 { return QAbstractItemModel::insertColumn(acolumn, aparent); }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &in, QStandardItem &item);
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &out, const QStandardItem &item);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QSTANDARDITEMMODEL_H

@@ -7,7 +7,7 @@ Enable a true multi-user, collaborative operating system experience where multip
 
 ### 2.1 Input Device Identity
 Every input event (mouse, touch, key, tablet) must be tagged with a unique `DeviceId`.
-- **Qt 6 Foundation**: Leverage `QInputDevice` and `QPointingDevice`.
+- **BobUI 6 Foundation**: Leverage `QInputDevice` and `QPointingDevice`.
 - **Extension**: Ensure every `QInputEvent` carries a valid `QInputDevice` pointer that correctly identifies the physical or virtual source.
 
 ### 2.2 Independent Focus Trees

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 /*!
@@ -12,7 +12,7 @@
     \ingroup network
     \ingroup ssl
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QSslError provides a simple API for managing errors during QSslSocket's
     SSL handshake.
@@ -70,14 +70,14 @@
 
 #include "qsslerror.h"
 #include "qsslsocket.h"
-#ifndef QT_NO_DEBUG_STREAM
-#include <QtCore/qdebug.h>
+#ifndef BOBUI_NO_DEBUG_STREAM
+#include <BobUICore/qdebug.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_SSL
-QT_IMPL_METATYPE_EXTERN_TAGGED(QList<QSslError>, QList_QSslError)
+#ifndef BOBUI_NO_SSL
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QList<QSslError>, QList_QSslError)
 #endif
 
 class QSslErrorPrivate
@@ -327,13 +327,13 @@ QSslCertificate QSslError::certificate() const
 */
 size_t qHash(const QSslError &key, size_t seed) noexcept
 {
-    QtPrivate::QHashCombine hash(seed);
+    BobUIPrivate::QHashCombine hash(seed);
     seed = hash(seed, key.error());
     seed = hash(seed, key.certificate());
     return seed;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 //class QDebug;
 QDebug operator<<(QDebug debug, const QSslError &error)
 {
@@ -348,6 +348,6 @@ QDebug print(QDebug debug, QSslError::SslError error)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsslerror.cpp"

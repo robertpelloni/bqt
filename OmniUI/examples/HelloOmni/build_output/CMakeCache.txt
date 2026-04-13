@@ -203,11 +203,16 @@ HelloOmni_IS_TOP_LEVEL:STATIC=ON
 <<<<<<< HEAD
 HelloOmni_SOURCE_DIR:STATIC=C:/Users/hyper/workspace/bobui/OmniUI/examples/HelloOmni
 
+<<<<<<< HEAD
 //The directory containing a CMake configuration file for Qt6.
 Qt6_DIR:PATH=Qt6_DIR-NOTFOUND
 =======
 HelloOmni_SOURCE_DIR:STATIC=C:/Users/hyper/workspace/bobfilez/libs/bobui/OmniUI/examples/HelloOmni
 >>>>>>> feature/omni-ui-framework-18001284211800334382
+=======
+//The directory containing a CMake configuration file for BobUI6.
+BobUI6_DIR:PATH=BobUI6_DIR-NOTFOUND
+>>>>>>> origin/dev
 
 
 ########################

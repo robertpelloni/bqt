@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQL_IBASE_H
 #define QSQL_IBASE_H
@@ -9,25 +9,25 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtSql/qsqldriver.h>
+#include <BobUISql/qsqldriver.h>
 #include <ibase.h>
 
-#ifdef QT_PLUGIN
+#ifdef BOBUI_PLUGIN
 #define Q_EXPORT_SQLDRIVER_IBASE
 #else
 #define Q_EXPORT_SQLDRIVER_IBASE Q_SQL_EXPORT
 #endif
 
-static_assert(FB_API_VER >= 20, "Qt requires at least the Firebird 2.0 client APIs.");
+static_assert(FB_API_VER >= 20, "BobUI requires at least the Firebird 2.0 client APIs.");
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSqlResult;
 class QIBaseDriverPrivate;
@@ -76,6 +76,6 @@ private Q_SLOTS:
     void qHandleEventNotification(void* updatedResultBuffer);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQL_IBASE_H

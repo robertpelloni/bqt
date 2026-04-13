@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef HELLOVULKANWIDGET_H
 #define HELLOVULKANWIDGET_H
@@ -7,9 +7,9 @@
 #include "../shared/trianglerenderer.h"
 #include <QWidget>
 
-QT_FORWARD_DECLARE_CLASS(QTabWidget)
-QT_FORWARD_DECLARE_CLASS(QPlainTextEdit)
-QT_FORWARD_DECLARE_CLASS(QLCDNumber)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIabWidget)
+BOBUI_FORWARD_DECLARE_CLASS(QPlainTextEdit)
+BOBUI_FORWARD_DECLARE_CLASS(QLCDNumber)
 
 class VulkanWindow;
 
@@ -27,7 +27,7 @@ public slots:
 
 private:
     VulkanWindow *m_window;
-    QTabWidget *m_infoTab;
+    BOBUIabWidget *m_infoTab;
     QPlainTextEdit *m_info;
     QLCDNumber *m_number;
 };

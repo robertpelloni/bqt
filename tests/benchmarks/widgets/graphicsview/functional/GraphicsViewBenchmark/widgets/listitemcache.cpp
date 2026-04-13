@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QGraphicsItem>
 #include <QPainter>
@@ -17,7 +17,7 @@ ListItemCache::~ListItemCache()
 
 void ListItemCache::draw(QPainter * painter)
 {
-    QRectF irect = sourceBoundingRect(Qt::LogicalCoordinates);
+    QRectF irect = sourceBoundingRect(BobUI::LogicalCoordinates);
     QRectF vrect = painter->clipPath().boundingRect();
 
     if (vrect.intersects(irect)) {
@@ -30,7 +30,7 @@ void ListItemCache::draw(QPainter * painter)
             //    << "->" << newVisibleRect;
 
             pixmap = QPixmap(sourceBoundingRect().toRect().size());
-            pixmap.fill(Qt::transparent);
+            pixmap.fill(BobUI::transparent);
 
             QPainter pixmapPainter(&pixmap);
             drawSource(&pixmapPainter);

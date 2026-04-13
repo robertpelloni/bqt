@@ -6,7 +6,7 @@ Unicode consortium.
 
 See cldr2qlocalexml.py for how to run it and qlocalexml2cpp.py to
 update the locale data tables (principally text/qlocale_data_p.h,
-time/q*calendar_data_p.h and time/qtimezone*_data_p.h under
+time/q*calendar_data_p.h and time/bobuiimezone*_data_p.h under
 src/corelib/). See enumdata.py and zonedata.py for when and how to
 update the data they provide. You shall definitely need to pass
 --no-verify or -n to git commit for these changes.

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TST_QVARIANT_COMMON
 #define TST_QVARIANT_COMMON
@@ -8,7 +8,7 @@
 
 class MessageHandler {
 public:
-    MessageHandler(const int typeId, QtMessageHandler msgHandler = handler)
+    MessageHandler(const int typeId, BobUIMessageHandler msgHandler = handler)
         : oldMsgHandler(qInstallMessageHandler(msgHandler))
     {
         currentId = typeId;
@@ -24,7 +24,7 @@ public:
         return ok;
     }
 protected:
-    static void handler(QtMsgType, const QMessageLogContext &, const QString &msg)
+    static void handler(BobUIMsgType, const QMessageLogContext &, const QString &msg)
     {
         // Format itself is not important, but basic data as a type name should be included in the output
         ok = msg.startsWith("QVariant(");
@@ -46,44 +46,44 @@ protected:
 
     }
 
-    QtMessageHandler oldMsgHandler;
+    BobUIMessageHandler oldMsgHandler;
     inline static int currentId = {};
     inline static bool ok = {};
 };
 
 #define TST_QVARIANT_CANCONVERT_DATATABLE_HEADERS \
-    QTest::addColumn<QVariant>("val"); \
-    QTest::addColumn<bool>("BitArrayCast"); \
-    QTest::addColumn<bool>("BitmapCast"); \
-    QTest::addColumn<bool>("BoolCast"); \
-    QTest::addColumn<bool>("BrushCast"); \
-    QTest::addColumn<bool>("ByteArrayCast"); \
-    QTest::addColumn<bool>("ColorCast"); \
-    QTest::addColumn<bool>("CursorCast"); \
-    QTest::addColumn<bool>("DateCast"); \
-    QTest::addColumn<bool>("DateTimeCast"); \
-    QTest::addColumn<bool>("DoubleCast"); \
-    QTest::addColumn<bool>("FontCast"); \
-    QTest::addColumn<bool>("ImageCast"); \
-    QTest::addColumn<bool>("IntCast"); \
-    QTest::addColumn<bool>("InvalidCast"); \
-    QTest::addColumn<bool>("KeySequenceCast"); \
-    QTest::addColumn<bool>("ListCast"); \
-    QTest::addColumn<bool>("LongLongCast"); \
-    QTest::addColumn<bool>("MapCast"); \
-    QTest::addColumn<bool>("PaletteCast"); \
-    QTest::addColumn<bool>("PenCast"); \
-    QTest::addColumn<bool>("PixmapCast"); \
-    QTest::addColumn<bool>("PointCast"); \
-    QTest::addColumn<bool>("RectCast"); \
-    QTest::addColumn<bool>("RegionCast"); \
-    QTest::addColumn<bool>("SizeCast"); \
-    QTest::addColumn<bool>("SizePolicyCast"); \
-    QTest::addColumn<bool>("StringCast"); \
-    QTest::addColumn<bool>("StringListCast"); \
-    QTest::addColumn<bool>("TimeCast"); \
-    QTest::addColumn<bool>("UIntCast"); \
-    QTest::addColumn<bool>("ULongLongCast");
+    BOBUIest::addColumn<QVariant>("val"); \
+    BOBUIest::addColumn<bool>("BitArrayCast"); \
+    BOBUIest::addColumn<bool>("BitmapCast"); \
+    BOBUIest::addColumn<bool>("BoolCast"); \
+    BOBUIest::addColumn<bool>("BrushCast"); \
+    BOBUIest::addColumn<bool>("ByteArrayCast"); \
+    BOBUIest::addColumn<bool>("ColorCast"); \
+    BOBUIest::addColumn<bool>("CursorCast"); \
+    BOBUIest::addColumn<bool>("DateCast"); \
+    BOBUIest::addColumn<bool>("DateTimeCast"); \
+    BOBUIest::addColumn<bool>("DoubleCast"); \
+    BOBUIest::addColumn<bool>("FontCast"); \
+    BOBUIest::addColumn<bool>("ImageCast"); \
+    BOBUIest::addColumn<bool>("IntCast"); \
+    BOBUIest::addColumn<bool>("InvalidCast"); \
+    BOBUIest::addColumn<bool>("KeySequenceCast"); \
+    BOBUIest::addColumn<bool>("ListCast"); \
+    BOBUIest::addColumn<bool>("LongLongCast"); \
+    BOBUIest::addColumn<bool>("MapCast"); \
+    BOBUIest::addColumn<bool>("PaletteCast"); \
+    BOBUIest::addColumn<bool>("PenCast"); \
+    BOBUIest::addColumn<bool>("PixmapCast"); \
+    BOBUIest::addColumn<bool>("PointCast"); \
+    BOBUIest::addColumn<bool>("RectCast"); \
+    BOBUIest::addColumn<bool>("RegionCast"); \
+    BOBUIest::addColumn<bool>("SizeCast"); \
+    BOBUIest::addColumn<bool>("SizePolicyCast"); \
+    BOBUIest::addColumn<bool>("StringCast"); \
+    BOBUIest::addColumn<bool>("StringListCast"); \
+    BOBUIest::addColumn<bool>("TimeCast"); \
+    BOBUIest::addColumn<bool>("UIntCast"); \
+    BOBUIest::addColumn<bool>("ULongLongCast");
 
 #define TST_QVARIANT_CANCONVERT_FETCH_DATA \
     QFETCH(QVariant, val); \
@@ -119,7 +119,7 @@ protected:
     QFETCH(bool, UIntCast); \
     QFETCH(bool, ULongLongCast);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #define QMETATYPE_QKEYSEQUENCE \
     QCOMPARE(val.canConvert(QMetaType(QMetaType::QKeySequence)), KeySequenceCast);
 #else
@@ -156,7 +156,7 @@ protected:
     QCOMPARE(val.canConvert(QMetaType(QMetaType::QSizePolicy)), SizePolicyCast); \
     QCOMPARE(val.canConvert(QMetaType(QMetaType::QString)), StringCast); \
     QCOMPARE(val.canConvert(QMetaType(QMetaType::QStringList)), StringListCast); \
-    QCOMPARE(val.canConvert(QMetaType(QMetaType::QTime)), TimeCast); \
+    QCOMPARE(val.canConvert(QMetaType(QMetaType::BOBUIime)), TimeCast); \
     QCOMPARE(val.canConvert(QMetaType(QMetaType::UInt)), UIntCast); \
     QCOMPARE(val.canConvert(QMetaType(QMetaType::ULongLong)), ULongLongCast);
 

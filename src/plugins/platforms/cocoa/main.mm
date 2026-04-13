@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -9,11 +9,11 @@
 #include "qcocoaintegration.h"
 #include "qcocoatheme.h"
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QCocoaIntegrationPlugin : public QPlatformIntegrationPlugin
 {
@@ -26,12 +26,12 @@ public:
 QPlatformIntegration * QCocoaIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     QMacAutoReleasePool pool;
-    if (system.compare("cocoa"_L1, Qt::CaseInsensitive) == 0)
+    if (system.compare("cocoa"_L1, BobUI::CaseInsensitive) == 0)
         return new QCocoaIntegration(paramList);
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

@@ -1,7 +1,7 @@
 // Copyright (C) 2017 Intel Corporation.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#define T(x)                      (QT_COMPILER_SUPPORTS_ ## x)
+#define T(x)                      (BOBUI_COMPILER_SUPPORTS_ ## x)
 
 #if T(LSX)
 #include <lsxintrin.h>

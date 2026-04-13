@@ -1,11 +1,11 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglversionprofile.h"
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLVersionProfilePrivate
 {
@@ -23,7 +23,7 @@ public:
 
 /*!
     \class QOpenGLVersionProfile
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
     \since 5.1
     \brief The QOpenGLVersionProfile class represents the version and if applicable
            the profile of an OpenGL context.
@@ -158,7 +158,7 @@ bool QOpenGLVersionProfile::isValid() const
     return d->majorVersion > 0 && d->minorVersion >= 0;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QOpenGLVersionProfile &vp)
 {
     QDebugStateSaver saver(debug);
@@ -174,5 +174,5 @@ QDebug operator<<(QDebug debug, const QOpenGLVersionProfile &vp)
     return debug;
 }
 
-#endif // QT_NO_DEBUG_STREAM
-QT_END_NAMESPACE
+#endif // BOBUI_NO_DEBUG_STREAM
+BOBUI_END_NAMESPACE

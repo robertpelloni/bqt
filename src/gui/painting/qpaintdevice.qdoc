@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QPaintDevice
@@ -7,7 +7,7 @@
     can be painted on with QPainter.
 
     \ingroup painting
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     A paint device is an abstraction of a two-dimensional space that
     can be drawn on using a QPainter.  Its default coordinate system has
@@ -24,7 +24,7 @@
     paint engine to be able to draw on the device, i.e derive from
     QPaintEngine and reimplement its virtual functions.
 
-    \warning Qt requires that a QGuiApplication object exists before
+    \warning BobUI requires that a QGuiApplication object exists before
     any paint devices can be created. Paint devices access window
     system resources, and these resources are not initialized before
     an application object is created.
@@ -97,7 +97,7 @@
     This is identical to PdmDevicePixelRatio, except that the value is scaled by a
     constant factor in order to support paint devices with fractional scale factors.
     The constant scaling factor used is devicePixelRatioFScale(). This enum value
-    has been introduced in Qt 5.6.
+    has been introduced in BobUI 5.6.
 
     \value [since 6.8] PdmDevicePixelRatioF_EncodedA This enum item, together with the
     corresponding \c B item, are used together for the device pixel ratio of the device, as an

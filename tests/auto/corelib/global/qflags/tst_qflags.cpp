@@ -1,18 +1,18 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifdef QFLAGS_TEST_NO_TYPESAFE_FLAGS
-# ifdef QT_TYPESAFE_FLAGS
-#  undef QT_TYPESAFE_FLAGS
+# ifdef BOBUI_TYPESAFE_FLAGS
+#  undef BOBUI_TYPESAFE_FLAGS
 # endif
 # define tst_QFlags tst_QFlagsNotTypesafe
 #else
-# ifndef QT_TYPESAFE_FLAGS
-#  define QT_TYPESAFE_FLAGS
+# ifndef BOBUI_TYPESAFE_FLAGS
+#  define BOBUI_TYPESAFE_FLAGS
 # endif
 #endif
 
-#include <QTest>
+#include <BOBUIest>
 
 #if defined(__cpp_concepts) && __has_include(<concepts>)
 #  include <concepts>
@@ -155,7 +155,7 @@ void tst_QFlags::compareToZero() const
 {
     SignedFlags sf;
     UnsignedFlags uf;
-    // Don't change these to QT_TEST_EQUALITY_OPS
+    // Don't change these to BOBUI_TEST_EQUALITY_OPS
     QVERIFY(sf == 0);
     QVERIFY(0 == sf);
     QVERIFY(!(sf != 0));
@@ -185,7 +185,7 @@ void tst_QFlags::mixingDifferentEnums() const
     }
     // QFlags<AlignmentFlags> <-> TextFlags
     {
-#ifndef QT_TYPESAFE_FLAGS // QTBUG-101344
+#ifndef BOBUI_TYPESAFE_FLAGS // BOBUIBUG-101344
         UnsignedFlags flag30 = UnsignedFlag30; // convert enum to QFlags
         CHECK(|, flag30, MixingFlag100, 0x0130U); // yes, unsigned!
         CHECK(&, flag30, MixingFlag100, 0x0000U); // yes, unsigned!
@@ -194,9 +194,9 @@ void tst_QFlags::mixingDifferentEnums() const
     }
     // TextElideMode <-> TextFlags
     {
-        CHECK(|, Qt::ElideNone, Qt::TextSingleLine, 0x0103);
-        CHECK(&, Qt::ElideNone, Qt::TextSingleLine, 0x0000);
-        CHECK(^, Qt::ElideNone, Qt::TextSingleLine, 0x0103);
+        CHECK(|, BobUI::ElideNone, BobUI::TextSingleLine, 0x0103);
+        CHECK(&, BobUI::ElideNone, BobUI::TextSingleLine, 0x0000);
+        CHECK(^, BobUI::ElideNone, BobUI::TextSingleLine, 0x0103);
     }
 #undef CHECK
 }
@@ -234,74 +234,74 @@ void tst_QFlags::testFlagZeroFlag() const
 
 void tst_QFlags::testFlagMultiBits() const
 {
-    /* Qt::Window is 0x00000001
-     * Qt::Dialog is 0x00000002 | Window
+    /* BobUI::Window is 0x00000001
+     * BobUI::Dialog is 0x00000002 | Window
      */
     {
-        const Qt::WindowFlags onlyWindow(Qt::Window);
-        QVERIFY(!onlyWindow.testFlag(Qt::Dialog));
+        const BobUI::WindowFlags onlyWindow(BobUI::Window);
+        QVERIFY(!onlyWindow.testFlag(BobUI::Dialog));
     }
 
     {
-        const Qt::WindowFlags hasDialog(Qt::Dialog);
-        QVERIFY(hasDialog.testFlag(Qt::Dialog));
+        const BobUI::WindowFlags hasDialog(BobUI::Dialog);
+        QVERIFY(hasDialog.testFlag(BobUI::Dialog));
     }
 }
 
 void tst_QFlags::testFlags()
 {
-    using Int = Qt::TextInteractionFlags::Int;
+    using Int = BobUI::TextInteractionFlags::Int;
     constexpr Int Zero(0);
 
-    Qt::TextInteractionFlags flags;
+    BobUI::TextInteractionFlags flags;
     QCOMPARE(flags.toInt(), Zero);
     QVERIFY(flags.testFlags(flags));
-    QVERIFY(Qt::TextInteractionFlags::fromInt(Zero).testFlags(flags));
-    QVERIFY(!flags.testFlags(Qt::TextSelectableByMouse));
-    QVERIFY(!flags.testFlags(Qt::TextSelectableByKeyboard));
-    QVERIFY(!flags.testFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard));
-    QVERIFY(flags.testFlags(Qt::TextInteractionFlags::fromInt(Zero)));
-    QVERIFY(flags.testFlags(Qt::TextInteractionFlags(Qt::TextSelectableByMouse) & ~Qt::TextSelectableByMouse));
+    QVERIFY(BobUI::TextInteractionFlags::fromInt(Zero).testFlags(flags));
+    QVERIFY(!flags.testFlags(BobUI::TextSelectableByMouse));
+    QVERIFY(!flags.testFlags(BobUI::TextSelectableByKeyboard));
+    QVERIFY(!flags.testFlags(BobUI::TextSelectableByMouse | BobUI::TextSelectableByKeyboard));
+    QVERIFY(flags.testFlags(BobUI::TextInteractionFlags::fromInt(Zero)));
+    QVERIFY(flags.testFlags(BobUI::TextInteractionFlags(BobUI::TextSelectableByMouse) & ~BobUI::TextSelectableByMouse));
 
-    flags = Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard;
+    flags = BobUI::TextSelectableByMouse | BobUI::TextSelectableByKeyboard;
     QVERIFY(flags.toInt() != Zero);
     QVERIFY(flags.testFlags(flags));
-    QVERIFY(flags.testFlags(Qt::TextSelectableByMouse));
-    QVERIFY(flags.testFlags(Qt::TextSelectableByKeyboard));
-    QVERIFY(flags.testFlags(Qt::TextSelectableByKeyboard | Qt::TextSelectableByMouse));
-    QVERIFY(!flags.testFlags(Qt::TextSelectableByKeyboard | Qt::TextSelectableByMouse | Qt::TextEditable));
-    QVERIFY(!flags.testFlags(Qt::TextInteractionFlags()));
-    QVERIFY(!flags.testFlags(Qt::TextInteractionFlags::fromInt(Zero)));
-    QVERIFY(!flags.testFlags(Qt::TextEditable));
-    QVERIFY(!flags.testFlags(Qt::TextSelectableByMouse | Qt::TextEditable));
+    QVERIFY(flags.testFlags(BobUI::TextSelectableByMouse));
+    QVERIFY(flags.testFlags(BobUI::TextSelectableByKeyboard));
+    QVERIFY(flags.testFlags(BobUI::TextSelectableByKeyboard | BobUI::TextSelectableByMouse));
+    QVERIFY(!flags.testFlags(BobUI::TextSelectableByKeyboard | BobUI::TextSelectableByMouse | BobUI::TextEditable));
+    QVERIFY(!flags.testFlags(BobUI::TextInteractionFlags()));
+    QVERIFY(!flags.testFlags(BobUI::TextInteractionFlags::fromInt(Zero)));
+    QVERIFY(!flags.testFlags(BobUI::TextEditable));
+    QVERIFY(!flags.testFlags(BobUI::TextSelectableByMouse | BobUI::TextEditable));
 }
 
 void tst_QFlags::testAnyFlag()
 {
-    Qt::TextInteractionFlags flags;
-    QVERIFY(!flags.testAnyFlags(Qt::NoTextInteraction));
-    QVERIFY(!flags.testAnyFlags(Qt::TextSelectableByMouse));
-    QVERIFY(!flags.testAnyFlags(Qt::TextSelectableByKeyboard));
-    QVERIFY(!flags.testAnyFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard));
-    QVERIFY(!flags.testAnyFlag(Qt::TextEditorInteraction));
-    QVERIFY(!flags.testAnyFlag(Qt::TextBrowserInteraction));
+    BobUI::TextInteractionFlags flags;
+    QVERIFY(!flags.testAnyFlags(BobUI::NoTextInteraction));
+    QVERIFY(!flags.testAnyFlags(BobUI::TextSelectableByMouse));
+    QVERIFY(!flags.testAnyFlags(BobUI::TextSelectableByKeyboard));
+    QVERIFY(!flags.testAnyFlags(BobUI::TextSelectableByMouse | BobUI::TextSelectableByKeyboard));
+    QVERIFY(!flags.testAnyFlag(BobUI::TextEditorInteraction));
+    QVERIFY(!flags.testAnyFlag(BobUI::TextBrowserInteraction));
 
-    flags = Qt::TextSelectableByMouse;
-    QVERIFY(!flags.testAnyFlags(Qt::NoTextInteraction));
-    QVERIFY(flags.testAnyFlags(Qt::TextSelectableByMouse));
-    QVERIFY(!flags.testAnyFlags(Qt::TextSelectableByKeyboard));
-    QVERIFY(flags.testAnyFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard));
-    QVERIFY(flags.testAnyFlag(Qt::TextEditorInteraction));
-    QVERIFY(flags.testAnyFlag(Qt::TextBrowserInteraction));
+    flags = BobUI::TextSelectableByMouse;
+    QVERIFY(!flags.testAnyFlags(BobUI::NoTextInteraction));
+    QVERIFY(flags.testAnyFlags(BobUI::TextSelectableByMouse));
+    QVERIFY(!flags.testAnyFlags(BobUI::TextSelectableByKeyboard));
+    QVERIFY(flags.testAnyFlags(BobUI::TextSelectableByMouse | BobUI::TextSelectableByKeyboard));
+    QVERIFY(flags.testAnyFlag(BobUI::TextEditorInteraction));
+    QVERIFY(flags.testAnyFlag(BobUI::TextBrowserInteraction));
 
-    flags = Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard;
-    QVERIFY(!flags.testAnyFlags(Qt::NoTextInteraction));
-    QVERIFY(flags.testAnyFlags(Qt::TextSelectableByMouse));
-    QVERIFY(flags.testAnyFlags(Qt::TextSelectableByKeyboard));
-    QVERIFY(flags.testAnyFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard));
-    QVERIFY(flags.testAnyFlag(Qt::TextEditorInteraction));
-    QVERIFY(flags.testAnyFlag(Qt::TextEditorInteraction));
-    QVERIFY(flags.testAnyFlag(Qt::TextBrowserInteraction));
+    flags = BobUI::TextSelectableByMouse | BobUI::TextSelectableByKeyboard;
+    QVERIFY(!flags.testAnyFlags(BobUI::NoTextInteraction));
+    QVERIFY(flags.testAnyFlags(BobUI::TextSelectableByMouse));
+    QVERIFY(flags.testAnyFlags(BobUI::TextSelectableByKeyboard));
+    QVERIFY(flags.testAnyFlags(BobUI::TextSelectableByMouse | BobUI::TextSelectableByKeyboard));
+    QVERIFY(flags.testAnyFlag(BobUI::TextEditorInteraction));
+    QVERIFY(flags.testAnyFlag(BobUI::TextEditorInteraction));
+    QVERIFY(flags.testAnyFlag(BobUI::TextBrowserInteraction));
 }
 
 constexpr SignedFlags testRelaxedConstExpr()
@@ -337,7 +337,7 @@ void tst_QFlags::constExpr()
     // only works with QFlag help
     VERIFY_CONSTEXPR(SignedFlags(0), 0);
 #endif
-#ifndef QT_TYPESAFE_FLAGS
+#ifndef BOBUI_TYPESAFE_FLAGS
     VERIFY_CONSTEXPR(SignedFlags(RightSignedFlag) & 0xff, RightSignedFlag);
     VERIFY_CONSTEXPR(SignedFlags(RightSignedFlag) | 0xff, 0xff);
 #endif
@@ -371,8 +371,8 @@ enum class MyStrictNoOpEnum : IntegerSize::Unsigned
 { StrictZero, StrictOne, StrictTwo, StrictFour=4 };
 Q_DECLARE_FLAGS( MyStrictNoOpFlags, MyStrictNoOpEnum )
 
-static_assert( !QTypeInfo<MyStrictFlags>::isComplex );
-static_assert( QTypeInfo<MyStrictFlags>::isRelocatable );
+static_assert( !BOBUIypeInfo<MyStrictFlags>::isComplex );
+static_assert( BOBUIypeInfo<MyStrictFlags>::isRelocatable );
 static_assert( !std::is_pointer_v<MyStrictFlags> );
 
 void tst_QFlags::size()
@@ -499,14 +499,14 @@ void tst_QFlags::classEnum()
 
     QVERIFY(!f0);
 
-#ifndef QT_TYPESAFE_FLAGS
+#ifndef BOBUI_TYPESAFE_FLAGS
     QCOMPARE(f3 & int(1), 1);
     QCOMPARE(f3 & uint(1), 1);
 #endif
     QCOMPARE(f3 & MyStrictEnum::StrictOne, 1);
 
     MyStrictFlags aux;
-#ifndef QT_TYPESAFE_FLAGS
+#ifndef BOBUI_TYPESAFE_FLAGS
     aux = f3;
     aux &= int(1);
     QCOMPARE(aux, 1);
@@ -640,14 +640,14 @@ void tst_QFlags::adl()
     QCOMPARE(SomeNS::unsignedFlags(), UnsignedFlag01 | UnsignedFlag04);
 }
 
-// (statically) check QTypeInfo for QFlags instantiations:
+// (statically) check BOBUIypeInfo for QFlags instantiations:
 enum MyEnum : IntegerSize::Unsigned { Zero, One, Two, Four=4 };
 Q_DECLARE_FLAGS( MyFlags, MyEnum )
 Q_DECLARE_OPERATORS_FOR_FLAGS( MyFlags )
 
-static_assert( !QTypeInfo<MyFlags>::isComplex );
-static_assert( QTypeInfo<MyFlags>::isRelocatable );
+static_assert( !BOBUIypeInfo<MyFlags>::isComplex );
+static_assert( BOBUIypeInfo<MyFlags>::isRelocatable );
 static_assert( !std::is_pointer_v<MyFlags> );
 
-QTEST_MAIN(tst_QFlags)
+BOBUIEST_MAIN(tst_QFlags)
 #include "tst_qflags.moc"

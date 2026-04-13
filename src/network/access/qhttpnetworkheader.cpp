@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qhttpnetworkheader_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QHttpNetworkHeader::~QHttpNetworkHeader()
     = default;
@@ -18,7 +18,7 @@ qint64 QHttpNetworkHeaderPrivate::contentLength() const
 {
     bool ok = false;
     // We are not using the headerField() method here because servers might send us multiple content-length
-    // headers which is crap (see QTBUG-15311). Therefore just take the first content-length header field.
+    // headers which is crap (see BOBUIBUG-15311). Therefore just take the first content-length header field.
     QByteArray value = parser.firstHeaderField("content-length");
     qint64 length = value.toULongLong(&ok);
     if (ok)
@@ -71,4 +71,4 @@ bool QHttpNetworkHeaderPrivate::operator==(const QHttpNetworkHeaderPrivate &othe
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,13 +1,13 @@
 // Copyright (C) 2017 QNX Software Systems. All rights reserved.
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxglobal.h"
 
 #include "qqnxscreeneventthread.h"
 #include "qqnxscreeneventhandler.h"
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 #include <errno.h>
 #include <unistd.h>
@@ -31,7 +31,7 @@ int screen_unregister_event(struct sigevent *event)
 #endif
 
 QQnxScreenEventThread::QQnxScreenEventThread(screen_context_t context)
-    : QThread()
+    : BOBUIhread()
     , m_screenContext(context)
 {
     m_channelId = ChannelCreate(_NTO_CHF_DISCONNECT | _NTO_CHF_UNBLOCK | _NTO_CHF_PRIVATE);

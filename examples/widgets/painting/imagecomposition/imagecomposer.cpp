@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "imagecomposer.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 //! [0]
 static const QSize resultSize(200, 200);
@@ -12,7 +12,7 @@ static const QSize resultSize(200, 200);
 //! [1]
 ImageComposer::ImageComposer()
 {
-    sourceButton = new QToolButton;
+    sourceButton = new BOBUIoolButton;
     sourceButton->setIconSize(resultSize);
 
     operatorComboBox = new QComboBox;
@@ -43,7 +43,7 @@ ImageComposer::ImageComposer()
 //! [1]
 
 //! [2]
-    destinationButton = new QToolButton;
+    destinationButton = new BOBUIoolButton;
     destinationButton->setIconSize(resultSize);
 
     equalLabel = new QLabel(tr("="));
@@ -103,13 +103,13 @@ void ImageComposer::recalculateResult()
 
     QPainter painter(&resultImage);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.fillRect(resultImage.rect(), Qt::transparent);
+    painter.fillRect(resultImage.rect(), BobUI::transparent);
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter.drawImage(0, 0, destinationImage);
     painter.setCompositionMode(mode);
     painter.drawImage(0, 0, sourceImage);
     painter.setCompositionMode(QPainter::CompositionMode_DestinationOver);
-    painter.fillRect(resultImage.rect(), Qt::white);
+    painter.fillRect(resultImage.rect(), BobUI::white);
     painter.end();
 
     resultLabel->setPixmap(QPixmap::fromImage(resultImage));
@@ -125,7 +125,7 @@ void ImageComposer::addOp(QPainter::CompositionMode mode, const QString &name)
 
 //! [10]
 void ImageComposer::chooseImage(const QString &title, QImage *image,
-                                QToolButton *button)
+                                BOBUIoolButton *button)
 {
     QString fileName = QFileDialog::getOpenFileName(this, title);
     if (!fileName.isEmpty())
@@ -135,17 +135,17 @@ void ImageComposer::chooseImage(const QString &title, QImage *image,
 
 //! [11]
 void ImageComposer::loadImage(const QString &fileName, QImage *image,
-                              QToolButton *button)
+                              BOBUIoolButton *button)
 {
     image->load(fileName);
 
     // Scale the image to given size
-    *image = image->scaled(resultSize, Qt::KeepAspectRatio);
+    *image = image->scaled(resultSize, BobUI::KeepAspectRatio);
 
     QImage fixedImage(resultSize, QImage::Format_ARGB32_Premultiplied);
     QPainter painter(&fixedImage);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.fillRect(fixedImage.rect(), Qt::transparent);
+    painter.fillRect(fixedImage.rect(), BobUI::transparent);
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter.drawImage(imagePos(*image), *image);
     painter.end();

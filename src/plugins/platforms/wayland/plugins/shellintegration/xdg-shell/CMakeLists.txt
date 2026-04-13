@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Generated from xdg-shell.pro.
@@ -7,7 +7,7 @@
 ## QWaylandXdgShellIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QWaylandXdgShellIntegrationPlugin
+bobui_internal_add_plugin(QWaylandXdgShellIntegrationPlugin
     OUTPUT_NAME xdg-shell
     PLUGIN_TYPE wayland-shell-integration
     SOURCES
@@ -20,12 +20,12 @@ qt_internal_add_plugin(QWaylandXdgShellIntegrationPlugin
         qwaylandxdgdialogv1.cpp qwaylandxdgdialogv1_p.h
         qwaylandxdgtopleveliconv1.cpp qwaylandxdgtopleveliconv1_p.h
     LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::WaylandClientPrivate
+        BobUI::Core
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::WaylandClientPrivate
         Wayland::Client
-    QT_LICENSE_ID QT_COMMERCIAL_OR_LGPL3
+    BOBUI_LICENSE_ID BOBUI_COMMERCIAL_OR_LGPL3
     ATTRIBUTION_FILE_DIR_PATHS
         ../../../../../../3rdparty/wayland/protocols/xdg-decoration
         ../../../../../../3rdparty/wayland/protocols/xdg-shell
@@ -34,7 +34,7 @@ qt_internal_add_plugin(QWaylandXdgShellIntegrationPlugin
         ../../../../../../3rdparty/wayland/protocols/xdg-dialog
 )
 
-qt6_generate_wayland_protocol_client_sources(QWaylandXdgShellIntegrationPlugin
+bobui6_generate_wayland_protocol_client_sources(QWaylandXdgShellIntegrationPlugin
     PRIVATE_CODE
     FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../3rdparty/wayland/protocols/xdg-decoration/xdg-decoration-unstable-v1.xml
@@ -51,7 +51,7 @@ qt6_generate_wayland_protocol_client_sources(QWaylandXdgShellIntegrationPlugin
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QWaylandXdgShellIntegrationPlugin CONDITION QT_FEATURE_xkbcommon
+bobui_internal_extend_target(QWaylandXdgShellIntegrationPlugin CONDITION BOBUI_FEATURE_xkbcommon
     LIBRARIES
         XKB::XKB
 )

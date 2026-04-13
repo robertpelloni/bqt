@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qpa/qplatformthemeplugin.h>
 #include "qgtk3theme.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGtk3ThemePlugin : public QPlatformThemePlugin
 {
@@ -19,12 +19,12 @@ public:
 QPlatformTheme *QGtk3ThemePlugin::create(const QString &key, const QStringList &params)
 {
     Q_UNUSED(params);
-    if (!key.compare(QLatin1StringView(QGtk3Theme::name), Qt::CaseInsensitive))
+    if (!key.compare(QLatin1StringView(QGtk3Theme::name), BobUI::CaseInsensitive))
         return new QGtk3Theme;
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

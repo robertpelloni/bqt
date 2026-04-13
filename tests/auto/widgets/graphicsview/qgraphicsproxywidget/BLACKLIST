@@ -1,6 +1,6 @@
 [scrollUpdate]
 android
-b2qt
+b2bobui
 [wheelEventPropagation]
 android
 [forwardTouchEvent]
@@ -8,4 +8,4 @@ android
 [touchEventPropagation]
 android
 [windowOpacity]
-macos # QTBUG-139950
+macos # BOBUIBUG-139950

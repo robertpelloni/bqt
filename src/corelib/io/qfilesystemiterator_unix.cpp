@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qplatformdefs.h"
 #include "qfilesystemiterator_p.h"
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
 
 #include <qvarlengtharray.h>
 
@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     Native filesystem iterator, which uses ::opendir()/readdir()/dirent from the system
@@ -24,7 +24,7 @@ QFileSystemIterator::QFileSystemIterator(const QFileSystemEntry &entry)
     : dirPath(entry.filePath()),
       toUtf16(QStringDecoder::Utf8)
 {
-    dir.reset(QT_OPENDIR(entry.nativeFilePath().constData()));
+    dir.reset(BOBUI_OPENDIR(entry.nativeFilePath().constData()));
     if (!dir) {
         lastError = errno;
     } else {
@@ -64,7 +64,7 @@ bool QFileSystemIterator::advance(QFileSystemEntry &fileEntry, QFileSystemMetaDa
         // the error. To distinguish end of stream from an error, set errno to zero before
         // calling readdir() and then check the value of errno if NULL is returned.
         errno = 0;
-        dirEntry = QT_READDIR(dir.get());
+        dirEntry = BOBUI_READDIR(dir.get());
 
         if (dirEntry) {
             // POSIX allows readdir() to return a file name in struct dirent that
@@ -93,6 +93,6 @@ bool QFileSystemIterator::advance(QFileSystemEntry &fileEntry, QFileSystemMetaDa
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_FILESYSTEMITERATOR
+#endif // BOBUI_NO_FILESYSTEMITERATOR

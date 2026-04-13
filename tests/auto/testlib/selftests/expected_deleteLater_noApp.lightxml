@@ -1,21 +1,21 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
     <Duration msecs="0"/>
   </TestFunction>
-  <TestFunction name="qtestLibShouldNotFlushDeleteLaterBetweenTests_setup">
+  <TestFunction name="bobuiestLibShouldNotFlushDeleteLaterBetweenTests_setup">
     <Incident type="pass" file="" line="0" />
     <Duration msecs="0"/>
   </TestFunction>
-  <TestFunction name="qtestLibShouldNotFlushDeleteLaterBetweenTests_check">
+  <TestFunction name="bobuiestLibShouldNotFlushDeleteLaterBetweenTests_check">
     <Incident type="pass" file="" line="0" />
     <Duration msecs="0"/>
   </TestFunction>
-  <TestFunction name="qtestLibShouldNotFlushDeleteLaterOnExit">
+  <TestFunction name="bobuiestLibShouldNotFlushDeleteLaterOnExit">
     <Incident type="pass" file="" line="0" />
     <Duration msecs="0"/>
   </TestFunction>

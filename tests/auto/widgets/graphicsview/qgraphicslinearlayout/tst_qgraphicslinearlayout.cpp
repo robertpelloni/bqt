@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qgraphicslinearlayout.h>
 #include <qgraphicsproxywidget.h>
 #include <qgraphicswidget.h>
 #include <qgraphicsscene.h>
 #include <qgraphicsview.h>
 #include <qapplication.h>
-#include <QtWidgets/qstyle.h>
-#include <QtWidgets/qproxystyle.h>
+#include <BobUIWidgets/qstyle.h>
+#include <BobUIWidgets/qproxystyle.h>
 
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qvarlengtharray.h>
 
 class tst_QGraphicsLinearLayout : public QObject {
 Q_OBJECT
@@ -75,7 +75,7 @@ private slots:
 // Subclass that exposes the protected functions.
 class SubQGraphicsLinearLayout : public QGraphicsLinearLayout {
 public:
-    SubQGraphicsLinearLayout(Qt::Orientation orientation = Qt::Horizontal) : QGraphicsLinearLayout(orientation),
+    SubQGraphicsLinearLayout(BobUI::Orientation orientation = BobUI::Horizontal) : QGraphicsLinearLayout(orientation),
         graphicsSceneResize(0),
         layoutRequest(0),
         layoutDirectionChange(0)
@@ -124,15 +124,15 @@ public:
         Q_UNUSED(option);
         Q_UNUSED(widget);
         painter->setBrush(m_brush);
-        painter->drawRoundedRect(rect(), 25, 25, Qt::RelativeSize);
+        painter->drawRoundedRect(rect(), 25, 25, BobUI::RelativeSize);
     }
 
-    void setSizeHint(Qt::SizeHint which, const QSizeF &size) {
+    void setSizeHint(BobUI::SizeHint which, const QSizeF &size) {
         m_sizeHints[which] = size;
         updateGeometry();
     }
 
-    virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override
+    virtual QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override
     {
         if (m_sizeHints[which].isValid()) {
             return m_sizeHints[which];
@@ -141,22 +141,22 @@ public:
     }
 
     // Initializer {} is a workaround for gcc bug 68949
-    QSizeF m_sizeHints[Qt::NSizeHints] {};
+    QSizeF m_sizeHints[BobUI::NSizeHints] {};
     QBrush m_brush;
 };
 
 
-Q_DECLARE_METATYPE(Qt::Orientation)
+Q_DECLARE_METATYPE(BobUI::Orientation)
 void tst_QGraphicsLinearLayout::qgraphicslinearlayout_data()
 {
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::newRow("vertical") << Qt::Vertical;
-    QTest::newRow("horizontal") << Qt::Horizontal;
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::newRow("vertical") << BobUI::Vertical;
+    BOBUIest::newRow("horizontal") << BobUI::Horizontal;
 }
 
 void tst_QGraphicsLinearLayout::qgraphicslinearlayout()
 {
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Orientation, orientation);
     SubQGraphicsLinearLayout layout(orientation);
     QVERIFY(layout.isLayout());
 
@@ -165,93 +165,93 @@ void tst_QGraphicsLinearLayout::qgraphicslinearlayout()
     QCOMPARE(layout.layoutRequest, 0);
     QCOMPARE(layout.layoutDirectionChange, 0);
 
-    layout.setOrientation(Qt::Vertical);
+    layout.setOrientation(BobUI::Vertical);
     layout.orientation();
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsLinearLayout::insertItem: cannot insert null item");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsLinearLayout::insertItem: cannot insert null item");
     QCOMPARE(layout.count(), 0);
     layout.addItem(0);
     QCOMPARE(layout.count(), 0);
     layout.addStretch(0);
     QCOMPARE(layout.count(), 0);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsLinearLayout::insertItem: cannot insert null item");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsLinearLayout::insertItem: cannot insert null item");
     layout.insertItem(0, 0);
     layout.insertStretch(0, 0);
     layout.removeItem(0);
     QCOMPARE(layout.count(), 0);
     layout.setSpacing(0);
     layout.spacing();
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsLinearLayout::setStretchFactor: cannot assign a stretch factor to a null item");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsLinearLayout::setStretchFactor: cannot assign a stretch factor to a null item");
     layout.setStretchFactor(0, 0);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsLinearLayout::setStretchFactor: cannot return a stretch factor for a null item");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsLinearLayout::setStretchFactor: cannot return a stretch factor for a null item");
     layout.stretchFactor(0);
-    layout.setAlignment(0, Qt::AlignHCenter);
+    layout.setAlignment(0, BobUI::AlignHCenter);
     QCOMPARE(layout.alignment(0), 0);
     layout.setGeometry(QRectF());
     layout.geometry();
     QCOMPARE(layout.count(), 0);
     layout.invalidate();
-    layout.sizeHint(Qt::MinimumSize, QSizeF());
+    layout.sizeHint(BobUI::MinimumSize, QSizeF());
 }
 
-Q_DECLARE_METATYPE(Qt::AlignmentFlag)
+Q_DECLARE_METATYPE(BobUI::AlignmentFlag)
 void tst_QGraphicsLinearLayout::alignment_data()
 {
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::addColumn<QSize>("newSize");
-    QTest::newRow("h-defaultsize") << Qt::Horizontal << QSize();
-    QTest::newRow("v-defaultsize") << Qt::Vertical << QSize();
-    QTest::newRow("h-300") << Qt::Horizontal << QSize(300,100);
-    QTest::newRow("v-300") << Qt::Vertical << QSize(100, 300);
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::addColumn<QSize>("newSize");
+    BOBUIest::newRow("h-defaultsize") << BobUI::Horizontal << QSize();
+    BOBUIest::newRow("v-defaultsize") << BobUI::Vertical << QSize();
+    BOBUIest::newRow("h-300") << BobUI::Horizontal << QSize(300,100);
+    BOBUIest::newRow("v-300") << BobUI::Vertical << QSize(100, 300);
 }
 
 void tst_QGraphicsLinearLayout::alignment()
 {
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Orientation, orientation);
     QFETCH(QSize, newSize);
 
-    //if (alignment == Qt::AlignAbsolute)
-    //    QApplication::setLayoutDirection(Qt::RightToLeft);
+    //if (alignment == BobUI::AlignAbsolute)
+    //    QApplication::setLayoutDirection(BobUI::RightToLeft);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
     view.setSceneRect(0, 0, 320, 240);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout &layout = *(new SubQGraphicsLinearLayout(orientation));
     scene.addItem(widget);
     widget->setLayout(&layout);
 
-    static const Qt::Alignment alignmentsToTest[] = {
-        Qt::Alignment{},
-        Qt::AlignLeft,
-        Qt::AlignRight,
-        Qt::AlignHCenter,
-        Qt::AlignTop,
-        Qt::AlignBottom,
-        Qt::AlignVCenter,
-        Qt::AlignCenter,
-        Qt::Alignment{},
-        Qt::AlignLeft,
-        Qt::AlignRight,
-        Qt::AlignHCenter,
-        Qt::AlignTop,
-        Qt::AlignBottom,
-        Qt::AlignVCenter,
-        Qt::AlignCenter
+    static const BobUI::Alignment alignmentsToTest[] = {
+        BobUI::Alignment{},
+        BobUI::AlignLeft,
+        BobUI::AlignRight,
+        BobUI::AlignHCenter,
+        BobUI::AlignTop,
+        BobUI::AlignBottom,
+        BobUI::AlignVCenter,
+        BobUI::AlignCenter,
+        BobUI::Alignment{},
+        BobUI::AlignLeft,
+        BobUI::AlignRight,
+        BobUI::AlignHCenter,
+        BobUI::AlignTop,
+        BobUI::AlignBottom,
+        BobUI::AlignVCenter,
+        BobUI::AlignCenter
     };
 
     int i;
     bool addWidget = true;
-    for (size_t i = 0; i < sizeof(alignmentsToTest)/sizeof(Qt::Alignment); ++i) {
+    for (size_t i = 0; i < sizeof(alignmentsToTest)/sizeof(BobUI::Alignment); ++i) {
         QGraphicsLayoutItem *loutItem;
-        Qt::Alignment align = alignmentsToTest[i];
+        BobUI::Alignment align = alignmentsToTest[i];
         if (!align && i > 0)
             addWidget = false;
         if (addWidget)
-            loutItem = new RectWidget(widget, QBrush(Qt::blue));
+            loutItem = new RectWidget(widget, QBrush(BobUI::blue));
         else {
-            SubQGraphicsLinearLayout *lay = new SubQGraphicsLinearLayout(Qt::Vertical);
+            SubQGraphicsLinearLayout *lay = new SubQGraphicsLinearLayout(BobUI::Vertical);
             lay->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, QSizePolicy::DefaultType);
             lay->setContentsMargins(0,0,0,0);
-            QGraphicsWidget *w = new RectWidget(widget, QBrush(Qt::red));
+            QGraphicsWidget *w = new RectWidget(widget, QBrush(BobUI::red));
             if (align) {
                 w->setMinimumSize(QSizeF(10,10));
                 w->setMaximumSize(QSizeF(10,10));
@@ -280,40 +280,40 @@ void tst_QGraphicsLinearLayout::alignment()
         widget->resize(newSize);
     view.show();
     widget->show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QApplication::processEvents();
 
     int x = 0;
     int y = 0;
     for (i = 0; i < layout.count(); ++i) {
         QGraphicsLayoutItem *item = layout.itemAt(i);
-        Qt::Alignment align = layout.alignment(item);
+        BobUI::Alignment align = layout.alignment(item);
 
         int w = 10;
         int h = 10;
         switch(align) {
-            case Qt::AlignLeft:
+            case BobUI::AlignLeft:
                 break;
-            case Qt::AlignRight:
-                if (orientation == Qt::Vertical)
+            case BobUI::AlignRight:
+                if (orientation == BobUI::Vertical)
                     x += 40;
                 break;
-            case Qt::AlignHCenter:
-                if (orientation == Qt::Vertical)
+            case BobUI::AlignHCenter:
+                if (orientation == BobUI::Vertical)
                     x += 20;
                 break;
-            case Qt::AlignTop:
+            case BobUI::AlignTop:
                 break;
-            case Qt::AlignBottom:
-                if (orientation == Qt::Horizontal)
+            case BobUI::AlignBottom:
+                if (orientation == BobUI::Horizontal)
                     y += 40;
                 break;
-            case Qt::AlignVCenter:
-                if (orientation == Qt::Horizontal)
+            case BobUI::AlignVCenter:
+                if (orientation == BobUI::Horizontal)
                     y += 20;
                 break;
-            case Qt::AlignCenter:
-                if (orientation == Qt::Horizontal)
+            case BobUI::AlignCenter:
+                if (orientation == BobUI::Horizontal)
                     y += 20;
                 else
                     x += 20;
@@ -327,7 +327,7 @@ void tst_QGraphicsLinearLayout::alignment()
         }
         QRectF expectedGeometry(x, y, w, h);
         QCOMPARE(item->geometry(), expectedGeometry);
-        if (orientation == Qt::Horizontal) {
+        if (orientation == BobUI::Horizontal) {
             x += w;
             y = 0;
             x += spacing;
@@ -341,12 +341,12 @@ void tst_QGraphicsLinearLayout::alignment()
 
 void tst_QGraphicsLinearLayout::count_data()
 {
-    QTest::addColumn<int>("itemCount");
-    QTest::addColumn<int>("layoutCount");
-    QTest::newRow("0, 0") << 0 << 0;
-    QTest::newRow("0, 5") << 0 << 5;
-    QTest::newRow("5, 0") << 5 << 0;
-    QTest::newRow("5, 5") << 5 << 5;
+    BOBUIest::addColumn<int>("itemCount");
+    BOBUIest::addColumn<int>("layoutCount");
+    BOBUIest::newRow("0, 0") << 0 << 0;
+    BOBUIest::newRow("0, 5") << 0 << 5;
+    BOBUIest::newRow("5, 0") << 5 << 0;
+    BOBUIest::newRow("5, 5") << 5 << 5;
 }
 
 // int count() const public
@@ -373,25 +373,25 @@ void tst_QGraphicsLinearLayout::count()
 
 void tst_QGraphicsLinearLayout::geometry_data()
 {
-    QTest::addColumn<int>("itemCount");
-    QTest::addColumn<int>("layoutCount");
-    QTest::addColumn<int>("itemSpacing");
-    QTest::addColumn<int>("spacing");
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::addColumn<QRectF>("rect");
+    BOBUIest::addColumn<int>("itemCount");
+    BOBUIest::addColumn<int>("layoutCount");
+    BOBUIest::addColumn<int>("itemSpacing");
+    BOBUIest::addColumn<int>("spacing");
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::addColumn<QRectF>("rect");
 
-    QTest::newRow("null") << 0 << 0 << 0 << 0 << Qt::Horizontal << QRectF();
+    BOBUIest::newRow("null") << 0 << 0 << 0 << 0 << BobUI::Horizontal << QRectF();
 
-    QTest::newRow("one item") << 1 << 0 << 0 << 0 << Qt::Horizontal << QRectF(0, 0, 10, 10);
-    QTest::newRow("one layout") << 0 << 1 << 0 << 0 << Qt::Horizontal << QRectF(0, 0, 10, 10);
-    QTest::newRow("two h") << 1 << 1 << 0 << 0 << Qt::Horizontal << QRectF(0, 0, 20, 10);
-    QTest::newRow("two v") << 1 << 1 << 0 << 0 << Qt::Vertical << QRectF(0, 0, 10, 20);
+    BOBUIest::newRow("one item") << 1 << 0 << 0 << 0 << BobUI::Horizontal << QRectF(0, 0, 10, 10);
+    BOBUIest::newRow("one layout") << 0 << 1 << 0 << 0 << BobUI::Horizontal << QRectF(0, 0, 10, 10);
+    BOBUIest::newRow("two h") << 1 << 1 << 0 << 0 << BobUI::Horizontal << QRectF(0, 0, 20, 10);
+    BOBUIest::newRow("two v") << 1 << 1 << 0 << 0 << BobUI::Vertical << QRectF(0, 0, 10, 20);
 
-    QTest::newRow("two w/itemspacing") << 1 << 1 << 5 << 0 << Qt::Horizontal << QRectF(0, 0, 25, 10);
-    QTest::newRow("two w/spacing") << 1 << 1 << 8 << 0 << Qt::Horizontal << QRectF(0, 0, 28, 10);
+    BOBUIest::newRow("two w/itemspacing") << 1 << 1 << 5 << 0 << BobUI::Horizontal << QRectF(0, 0, 25, 10);
+    BOBUIest::newRow("two w/spacing") << 1 << 1 << 8 << 0 << BobUI::Horizontal << QRectF(0, 0, 28, 10);
 
-    QTest::newRow("two w/itemspacing v") << 1 << 1 << 5 << 0 << Qt::Vertical << QRectF(0, 0, 10, 25);
-    QTest::newRow("two w/spacing v") << 1 << 1 << 8 << 0 << Qt::Vertical << QRectF(0, 0, 10, 28);
+    BOBUIest::newRow("two w/itemspacing v") << 1 << 1 << 5 << 0 << BobUI::Vertical << QRectF(0, 0, 10, 25);
+    BOBUIest::newRow("two w/spacing v") << 1 << 1 << 8 << 0 << BobUI::Vertical << QRectF(0, 0, 10, 28);
 }
 
 // QRectF geometry() const public
@@ -401,11 +401,11 @@ void tst_QGraphicsLinearLayout::geometry()
     QFETCH(int, layoutCount);
     QFETCH(int, itemSpacing);
     QFETCH(int, spacing);
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Orientation, orientation);
     QFETCH(QRectF, rect);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout &layout = *(new SubQGraphicsLinearLayout(orientation));
     scene.addItem(widget);
     widget->setLayout(&layout);
@@ -433,18 +433,18 @@ void tst_QGraphicsLinearLayout::geometry()
 
 void tst_QGraphicsLinearLayout::insertItem_data()
 {
-    QTest::addColumn<int>("itemCount");
-    QTest::addColumn<int>("layoutCount");
-    QTest::addColumn<int>("insertItemAt");
-    QTest::addColumn<bool>("isWidget");
+    BOBUIest::addColumn<int>("itemCount");
+    BOBUIest::addColumn<int>("layoutCount");
+    BOBUIest::addColumn<int>("insertItemAt");
+    BOBUIest::addColumn<bool>("isWidget");
     for (int i = -1; i < 4; ++i) {
         const QByteArray iB = QByteArray::number(i);
         for (int j = 0; j < 2; ++j) {
             const QByteArray postFix = iB + ' ' + QByteArray::number(j);
-            QTest::newRow(("0, 0, " + postFix).constData()) << 0 << 0 << i << (bool)j;
-            QTest::newRow(("1, 0, " + postFix).constData()) << 1 << 0 << i << (bool)j;
-            QTest::newRow(("0, 1, " + postFix).constData()) << 0 << 1 << i << (bool)j;
-            QTest::newRow(("2, 2, " + postFix).constData()) << 2 << 2 << i << (bool)j;
+            BOBUIest::newRow(("0, 0, " + postFix).constData()) << 0 << 0 << i << (bool)j;
+            BOBUIest::newRow(("1, 0, " + postFix).constData()) << 1 << 0 << i << (bool)j;
+            BOBUIest::newRow(("0, 1, " + postFix).constData()) << 0 << 1 << i << (bool)j;
+            BOBUIest::newRow(("2, 2, " + postFix).constData()) << 2 << 2 << i << (bool)j;
         }
     }
 }
@@ -474,7 +474,7 @@ void tst_QGraphicsLinearLayout::insertItem()
     else
         item = std::make_unique<SubQGraphicsLinearLayout>();
 
-    QSizeF oldSizeHint = layout.sizeHint(Qt::PreferredSize, QSizeF());
+    QSizeF oldSizeHint = layout.sizeHint(BobUI::PreferredSize, QSizeF());
     layout.insertItem(insertItemAt, item.get());
     QCOMPARE(layout.count(), itemCount + layoutCount + 1);
 
@@ -483,7 +483,7 @@ void tst_QGraphicsLinearLayout::insertItem()
     }
 
     layout.activate();
-    QSizeF newSizeHint = layout.sizeHint(Qt::PreferredSize, QSizeF());
+    QSizeF newSizeHint = layout.sizeHint(BobUI::PreferredSize, QSizeF());
     if (!isWidget && layout.count() == 1)
         QCOMPARE(oldSizeHint.width(), newSizeHint.width());
     else if (itemCount + layoutCount > 0)
@@ -492,18 +492,18 @@ void tst_QGraphicsLinearLayout::insertItem()
 
 void tst_QGraphicsLinearLayout::insertStretch_data()
 {
-    QTest::addColumn<int>("itemCount");
-    QTest::addColumn<int>("layoutCount");
-    QTest::addColumn<int>("insertItemAt");
-    QTest::addColumn<int>("stretch");
+    BOBUIest::addColumn<int>("itemCount");
+    BOBUIest::addColumn<int>("layoutCount");
+    BOBUIest::addColumn<int>("insertItemAt");
+    BOBUIest::addColumn<int>("stretch");
     for (int i = -1; i < 4; ++i) {
         const QByteArray iB = QByteArray::number(i);
         for (int j = 0; j < 2; ++j) {
             const QByteArray postFix = iB + ' ' + QByteArray::number(j);
-            QTest::newRow(("0, 0, " + postFix).constData()) << 0 << 0 << i << j;
-            QTest::newRow(("1, 0, " + postFix).constData()) << 1 << 0 << i << j;
-            QTest::newRow(("0, 1, " + postFix).constData()) << 0 << 1 << i << j;
-            QTest::newRow(("2, 2, " + postFix).constData()) << 2 << 2 << i << j;
+            BOBUIest::newRow(("0, 0, " + postFix).constData()) << 0 << 0 << i << j;
+            BOBUIest::newRow(("1, 0, " + postFix).constData()) << 1 << 0 << i << j;
+            BOBUIest::newRow(("0, 1, " + postFix).constData()) << 0 << 1 << i << j;
+            BOBUIest::newRow(("2, 2, " + postFix).constData()) << 2 << 2 << i << j;
         }
     }
 }
@@ -520,7 +520,7 @@ void tst_QGraphicsLinearLayout::insertStretch()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout *layout = new SubQGraphicsLinearLayout;
     scene.addItem(widget);
 
@@ -572,11 +572,11 @@ void tst_QGraphicsLinearLayout::insertStretch()
 
 void tst_QGraphicsLinearLayout::invalidate_data()
 {
-    QTest::addColumn<int>("count");
-    QTest::newRow("0") << 0;
-    QTest::newRow("1") << 1;
-    QTest::newRow("2") << 2;
-    QTest::newRow("3") << 3;
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::newRow("0") << 0;
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("2") << 2;
+    BOBUIest::newRow("3") << 3;
 }
 
 // void invalidate() public
@@ -585,7 +585,7 @@ void tst_QGraphicsLinearLayout::invalidate()
     QFETCH(int, count);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout &layout = *(new SubQGraphicsLinearLayout);
     scene.addItem(widget);
     widget->setLayout(&layout);
@@ -593,7 +593,7 @@ void tst_QGraphicsLinearLayout::invalidate()
     layout.setContentsMargins(0, 0, 0, 0);
     view.show();
     widget->show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     qApp->processEvents();
     layout.layoutRequest = 0;
 
@@ -601,7 +601,7 @@ void tst_QGraphicsLinearLayout::invalidate()
     QApplication::sendPostedEvents(0, 0);
     QCOMPARE(layout.layoutRequest, 1);
 
-    layout.setOrientation(Qt::Vertical);
+    layout.setOrientation(BobUI::Vertical);
     QApplication::sendPostedEvents(0, 0);
     QCOMPARE(layout.layoutRequest, 2);
 
@@ -651,20 +651,20 @@ void tst_QGraphicsLinearLayout::itemAt_visualOrder()
 
 void tst_QGraphicsLinearLayout::orientation_data()
 {
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::newRow("vertical") << Qt::Vertical;
-    QTest::newRow("horizontal") << Qt::Horizontal;
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::newRow("vertical") << BobUI::Vertical;
+    BOBUIest::newRow("horizontal") << BobUI::Horizontal;
 }
 
-// Qt::Orientation orientation() const public
+// BobUI::Orientation orientation() const public
 void tst_QGraphicsLinearLayout::orientation()
 {
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Orientation, orientation);
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
-    Qt::Orientation initialOrientation = (orientation == Qt::Vertical ? Qt::Horizontal : Qt::Vertical);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
+    BobUI::Orientation initialOrientation = (orientation == BobUI::Vertical ? BobUI::Horizontal : BobUI::Vertical);
     SubQGraphicsLinearLayout &layout = *(new SubQGraphicsLinearLayout(initialOrientation));
     scene.addItem(widget);
     widget->setLayout(&layout);
@@ -684,7 +684,7 @@ void tst_QGraphicsLinearLayout::orientation()
     for (i = 0; i < itemCount; ++i) {
         QGraphicsWidget *item = static_cast<QGraphicsWidget*>(layout.itemAt(i));
         qreal pos;
-        if (initialOrientation == Qt::Horizontal)
+        if (initialOrientation == BobUI::Horizontal)
             pos = item->pos().x();
         else
             pos = item->pos().y();
@@ -695,11 +695,11 @@ void tst_QGraphicsLinearLayout::orientation()
     layout.setOrientation(orientation);
     QCOMPARE(layout.orientation(), orientation);
     // important to resize to preferredsize when orientation is switched
-    widget->resize(widget->effectiveSizeHint(Qt::PreferredSize));
+    widget->resize(widget->effectiveSizeHint(BobUI::PreferredSize));
     qApp->processEvents();
     for (i = 0; i < positions.size(); ++i) {
         QGraphicsWidget *item = static_cast<QGraphicsWidget*>(layout.itemAt(i));
-        if (initialOrientation == Qt::Horizontal)
+        if (initialOrientation == BobUI::Horizontal)
             QCOMPARE(item->pos().y(), positions.at(i));
         else
             QCOMPARE(item->pos().x(), positions.at(i));
@@ -708,18 +708,18 @@ void tst_QGraphicsLinearLayout::orientation()
 
 void tst_QGraphicsLinearLayout::removeAt_data()
 {
-    QTest::addColumn<int>("itemCount");
-    QTest::addColumn<int>("layoutCount");
-    QTest::addColumn<int>("removeItemAt");
-    QTest::addColumn<Qt::Orientation>("orientation");
+    BOBUIest::addColumn<int>("itemCount");
+    BOBUIest::addColumn<int>("layoutCount");
+    BOBUIest::addColumn<int>("removeItemAt");
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
     for (int i = -1; i < 4; ++i) {
         const QByteArray iB = QByteArray::number(i);
-        for (Qt::Orientation orientation : {Qt::Vertical, Qt::Horizontal}) {
-            const QByteArrayView orientStr = orientation == Qt::Vertical ? ", vertical" : ", horizontal";
-            QTest::newRow(("0, 0, " + iB + orientStr).constData()) << 0 << 0 << i << orientation;
-            QTest::newRow(("1, 0, " + iB + orientStr).constData()) << 1 << 0 << i << orientation;
-            QTest::newRow(("0, 1, " + iB + orientStr).constData()) << 0 << 1 << i << orientation;
-            QTest::newRow(("2, 2, " + iB + orientStr).constData()) << 2 << 2 << i << orientation;
+        for (BobUI::Orientation orientation : {BobUI::Vertical, BobUI::Horizontal}) {
+            const QByteArrayView orientStr = orientation == BobUI::Vertical ? ", vertical" : ", horizontal";
+            BOBUIest::newRow(("0, 0, " + iB + orientStr).constData()) << 0 << 0 << i << orientation;
+            BOBUIest::newRow(("1, 0, " + iB + orientStr).constData()) << 1 << 0 << i << orientation;
+            BOBUIest::newRow(("0, 1, " + iB + orientStr).constData()) << 0 << 1 << i << orientation;
+            BOBUIest::newRow(("2, 2, " + iB + orientStr).constData()) << 2 << 2 << i << orientation;
         }
     }
 }
@@ -730,7 +730,7 @@ void tst_QGraphicsLinearLayout::removeAt()
     QFETCH(int, itemCount);
     QFETCH(int, layoutCount);
     QFETCH(int, removeItemAt);
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Orientation, orientation);
     if (removeItemAt >= layoutCount + itemCount)
         return;
 
@@ -744,7 +744,7 @@ void tst_QGraphicsLinearLayout::removeAt()
     for (auto &l : layouts)
         layout.addItem(&l);
 
-    QSizeF oldSizeHint = layout.sizeHint(Qt::PreferredSize, QSizeF());
+    QSizeF oldSizeHint = layout.sizeHint(BobUI::PreferredSize, QSizeF());
 
     QGraphicsLayoutItem *w = nullptr;
     if (removeItemAt >= 0 && removeItemAt < layout.count())
@@ -759,8 +759,8 @@ void tst_QGraphicsLinearLayout::removeAt()
     QCOMPARE(layout.count(), itemCount + layoutCount - (w ? 1 : 0));
 
     layout.activate();
-    QSizeF newSizeHint = layout.sizeHint(Qt::PreferredSize, QSizeF());
-    if (orientation == Qt::Horizontal)
+    QSizeF newSizeHint = layout.sizeHint(BobUI::PreferredSize, QSizeF());
+    if (orientation == BobUI::Horizontal)
         QVERIFY(oldSizeHint.width() >= newSizeHint.width());
     else
         QVERIFY(oldSizeHint.height() >= newSizeHint.height());
@@ -768,15 +768,15 @@ void tst_QGraphicsLinearLayout::removeAt()
 
 void tst_QGraphicsLinearLayout::removeItem_data()
 {
-    QTest::addColumn<int>("itemCount");
-    QTest::addColumn<int>("layoutCount");
-    QTest::addColumn<int>("removeItemAt");
+    BOBUIest::addColumn<int>("itemCount");
+    BOBUIest::addColumn<int>("layoutCount");
+    BOBUIest::addColumn<int>("removeItemAt");
     for (int i = -1; i < 4; ++i) {
         const QByteArray iB = QByteArray::number(i);
-        QTest::newRow(("0, 0, " + iB).constData()) << 0 << 0 << i;
-        QTest::newRow(("1, 0, " + iB).constData()) << 1 << 0 << i;
-        QTest::newRow(("0, 1, " + iB).constData()) << 0 << 1 << i;
-        QTest::newRow(("2, 2, " + iB).constData()) << 2 << 2 << i;
+        BOBUIest::newRow(("0, 0, " + iB).constData()) << 0 << 0 << i;
+        BOBUIest::newRow(("1, 0, " + iB).constData()) << 1 << 0 << i;
+        BOBUIest::newRow(("0, 1, " + iB).constData()) << 0 << 1 << i;
+        BOBUIest::newRow(("2, 2, " + iB).constData()) << 2 << 2 << i;
     }
 }
 
@@ -802,22 +802,22 @@ void tst_QGraphicsLinearLayout::removeItem()
     QGraphicsLayoutItem *w = nullptr;
     if (removeItemAt >= 0 && removeItemAt < layout.count())
         w = layout.itemAt(removeItemAt);
-    QSizeF oldSizeHint = layout.sizeHint(Qt::PreferredSize, QSizeF());
+    QSizeF oldSizeHint = layout.sizeHint(BobUI::PreferredSize, QSizeF());
     if (w)
         layout.removeItem(w);
 
     QCOMPARE(layout.count(), itemCount + layoutCount - (w ? 1 : 0));
 
     layout.activate();
-    QSizeF newSizeHint = layout.sizeHint(Qt::PreferredSize, QSizeF());
+    QSizeF newSizeHint = layout.sizeHint(BobUI::PreferredSize, QSizeF());
     QVERIFY(oldSizeHint.width() >= newSizeHint.width());
 }
 
 void tst_QGraphicsLinearLayout::setGeometry_data()
 {
-    QTest::addColumn<QRectF>("rect");
-    QTest::newRow("null") << QRectF();
-    QTest::newRow("small") << QRectF(0, 0, 10, 10);
+    BOBUIest::addColumn<QRectF>("rect");
+    BOBUIest::newRow("null") << QRectF();
+    BOBUIest::newRow("small") << QRectF(0, 0, 10, 10);
 }
 
 // void setGeometry(QRectF const& rect) public
@@ -826,7 +826,7 @@ void tst_QGraphicsLinearLayout::setGeometry()
     QFETCH(QRectF, rect);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout &layout = *(new SubQGraphicsLinearLayout);
     scene.addItem(widget);
     widget->setLayout(&layout);
@@ -874,11 +874,11 @@ void tst_QGraphicsLinearLayout::defaultSpacing()
     style2->horizontalSpacing = 25;
     style2->verticalSpacing = 23;
 
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     widget->setStyle(style.get());
 
     // Horizontal layout
-    SubQGraphicsLinearLayout *layout = new SubQGraphicsLinearLayout(Qt::Horizontal);
+    SubQGraphicsLinearLayout *layout = new SubQGraphicsLinearLayout(BobUI::Horizontal);
     widget->setLayout(layout);
     Q_ASSERT(widget->style());
     scene.addItem(widget);
@@ -894,36 +894,36 @@ void tst_QGraphicsLinearLayout::defaultSpacing()
     qreal styleSpacing = (qreal)style->pixelMetric(QStyle::PM_LayoutHorizontalSpacing);
     QCOMPARE(styleSpacing, qreal(5));
     QCOMPARE(styleSpacing, layout->spacing());
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize).width(), qreal(105));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize).width(), qreal(105));
     style->horizontalSpacing = 15;
     // If the style method changes return value, the layout must be invalidated by the application
     layout->invalidate();
     styleSpacing = (qreal)style->pixelMetric(QStyle::PM_LayoutHorizontalSpacing);
     QCOMPARE(styleSpacing, qreal(15));
     QCOMPARE(styleSpacing, layout->spacing());
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize).width(), qreal(115));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize).width(), qreal(115));
     widget->setStyle(style2.get());
     // If the style itself changes, the layout will pick that up
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize).width(), qreal(125));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize).width(), qreal(125));
     QCOMPARE(layout->spacing(), qreal(25));
 
     // Vertical layout
     widget->setStyle(style.get());
-    layout->setOrientation(Qt::Vertical);
+    layout->setOrientation(BobUI::Vertical);
     styleSpacing = (qreal)style->pixelMetric(QStyle::PM_LayoutVerticalSpacing);
     QCOMPARE(styleSpacing, qreal(3));
     QCOMPARE(styleSpacing, layout->spacing());
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize).height(), qreal(103));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize).height(), qreal(103));
     style->verticalSpacing = 13;
     // If the style method changes return value, the layout must be invalidated by the application
     layout->invalidate();
     styleSpacing = (qreal)style->pixelMetric(QStyle::PM_LayoutVerticalSpacing);
     QCOMPARE(styleSpacing, qreal(13));
     QCOMPARE(styleSpacing, layout->spacing());
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize).height(), qreal(113));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize).height(), qreal(113));
     widget->setStyle(style2.get());
     // If the style itself changes, the layout will pick that up
-    QCOMPARE(layout->effectiveSizeHint(Qt::PreferredSize).height(), qreal(123));
+    QCOMPARE(layout->effectiveSizeHint(BobUI::PreferredSize).height(), qreal(123));
     QCOMPARE(layout->spacing(), qreal(23));
 
 
@@ -932,11 +932,11 @@ void tst_QGraphicsLinearLayout::defaultSpacing()
 
 void tst_QGraphicsLinearLayout::setSpacing_data()
 {
-    QTest::addColumn<qreal>("spacing");
-    QTest::newRow("0") << (qreal)0;
-    QTest::newRow("5") << (qreal)5;
-    QTest::newRow("3.3") << (qreal)3.3;
-    QTest::newRow("-4.3") << (qreal)4.3;
+    BOBUIest::addColumn<qreal>("spacing");
+    BOBUIest::newRow("0") << (qreal)0;
+    BOBUIest::newRow("5") << (qreal)5;
+    BOBUIest::newRow("3.3") << (qreal)3.3;
+    BOBUIest::newRow("-4.3") << (qreal)4.3;
 }
 
 // void setSpacing(qreal spacing) public
@@ -946,7 +946,7 @@ void tst_QGraphicsLinearLayout::setSpacing()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout &layout = *(new SubQGraphicsLinearLayout);
     scene.addItem(widget);
     widget->setLayout(&layout);
@@ -957,7 +957,7 @@ void tst_QGraphicsLinearLayout::setSpacing()
     if (oldSpacing != -1) {
         for (int i = 0; i < 3; ++i)
             layout.addItem(new QGraphicsWidget);
-        QSizeF oldSizeHint = layout.sizeHint(Qt::PreferredSize);
+        QSizeF oldSizeHint = layout.sizeHint(BobUI::PreferredSize);
 
         layout.setSpacing(spacing);
         QCOMPARE(layout.spacing(), spacing);
@@ -965,7 +965,7 @@ void tst_QGraphicsLinearLayout::setSpacing()
         view.show();
         widget->show();
         QApplication::processEvents();
-        QSizeF newSizeHint = layout.sizeHint(Qt::PreferredSize);
+        QSizeF newSizeHint = layout.sizeHint(BobUI::PreferredSize);
 
         QCOMPARE(oldSizeHint.width() - oldSpacing * 2, newSizeHint.width() - spacing * 2);
     }
@@ -974,13 +974,13 @@ void tst_QGraphicsLinearLayout::setSpacing()
 
 void tst_QGraphicsLinearLayout::setItemSpacing_data()
 {
-    QTest::addColumn<int>("index");
-    QTest::addColumn<int>("spacing");
+    BOBUIest::addColumn<int>("index");
+    BOBUIest::addColumn<int>("spacing");
 
-    QTest::newRow("0 at 0") << 0 << 0;
-    QTest::newRow("10 at 0") << 0 << 10;
-    QTest::newRow("10 at 1") << 1 << 10;
-    QTest::newRow("10 at the end") << 4 << 10;
+    BOBUIest::newRow("0 at 0") << 0 << 0;
+    BOBUIest::newRow("10 at 0") << 0 << 10;
+    BOBUIest::newRow("10 at 1") << 1 << 10;
+    BOBUIest::newRow("10 at the end") << 4 << 10;
 }
 
 void tst_QGraphicsLinearLayout::setItemSpacing()
@@ -990,7 +990,7 @@ void tst_QGraphicsLinearLayout::setItemSpacing()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout *layout = new SubQGraphicsLinearLayout;
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -999,7 +999,7 @@ void tst_QGraphicsLinearLayout::setItemSpacing()
         QGraphicsWidget *w = new QGraphicsWidget;
         layout->addItem(w);
     }
-    QSizeF oldSizeHint = layout->sizeHint(Qt::PreferredSize);
+    QSizeF oldSizeHint = layout->sizeHint(BobUI::PreferredSize);
     qreal oldSpacing = 0;
     if (index < layout->count() - 1)
         oldSpacing = layout->spacing();
@@ -1009,7 +1009,7 @@ void tst_QGraphicsLinearLayout::setItemSpacing()
     layout->setItemSpacing(index, spacing);
     view.show();
     QApplication::processEvents();
-    QSizeF newSizeHint = layout->sizeHint(Qt::PreferredSize);
+    QSizeF newSizeHint = layout->sizeHint(BobUI::PreferredSize);
 
     // The remainder of this test is only applicable if the style uses uniform spacing
     if (oldSpacing >= 0) {
@@ -1022,7 +1022,7 @@ void tst_QGraphicsLinearLayout::itemSpacing()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout *layout = new SubQGraphicsLinearLayout;
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1077,12 +1077,12 @@ typedef QList<int> IntList;
 
 void tst_QGraphicsLinearLayout::setStretchFactor_data()
 {
-    QTest::addColumn<qreal>("totalSize");
-    QTest::addColumn<IntList>("stretches");
+    BOBUIest::addColumn<qreal>("totalSize");
+    BOBUIest::addColumn<IntList>("stretches");
 
-    QTest::newRow(QString("60 [1,2]").toLatin1()) << qreal(60.0) << (IntList() << 1 << 2);
-    QTest::newRow(QString("60 [1,2,3]").toLatin1()) << qreal(60.0) << (IntList() << 1 << 2 << 3);
-    QTest::newRow(QString("120 [1,2,3,6]").toLatin1()) << qreal(120.0) << (IntList() << 1 << 2 << 3 << 6);
+    BOBUIest::newRow(QString("60 [1,2]").toLatin1()) << qreal(60.0) << (IntList() << 1 << 2);
+    BOBUIest::newRow(QString("60 [1,2,3]").toLatin1()) << qreal(60.0) << (IntList() << 1 << 2 << 3);
+    BOBUIest::newRow(QString("120 [1,2,3,6]").toLatin1()) << qreal(120.0) << (IntList() << 1 << 2 << 3 << 6);
 }
 
 // void setStretchFactor(QGraphicsLayoutItem* item, int stretch) public
@@ -1092,7 +1092,7 @@ void tst_QGraphicsLinearLayout::setStretchFactor()
     QFETCH(IntList, stretches);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout &layout = *(new SubQGraphicsLinearLayout);
     scene.addItem(widget);
     widget->setLayout(&layout);
@@ -1147,12 +1147,12 @@ void tst_QGraphicsLinearLayout::testStretch()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *form = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *form = new QGraphicsWidget(0, BobUI::Window);
 
     scene.addItem(form);
     form->setMinimumSize(600, 600);
     form->setMaximumSize(600, 600);
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Horizontal, form);
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(BobUI::Horizontal, form);
     QGraphicsWidget *w1 = new RectWidget;
     w1->setPreferredSize(100,100);
     w1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -1171,7 +1171,7 @@ void tst_QGraphicsLinearLayout::testStretch()
 
     //view->setSceneRect(-50, -50, 800, 800);
     //view->show();
-    //QVERIFY(QTest::qWaitForWindowExposed(view));
+    //QVERIFY(BOBUIest::qWaitForWindowExposed(view));
     QCOMPARE(form->geometry().size(), QSizeF(600,600));
     QCOMPARE(w1->geometry(), QRectF(0, 0, 100, 100));
     QCOMPARE(w2->geometry(), QRectF(400, 0, 200, 200));
@@ -1179,43 +1179,43 @@ void tst_QGraphicsLinearLayout::testStretch()
 
 void tst_QGraphicsLinearLayout::defaultStretchFactors_data()
 {
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::addColumn<int>("count");
-    QTest::addColumn<IntList>("preferredSizeHints");
-    QTest::addColumn<IntList>("stretches");
-    QTest::addColumn<IntList>("ignoreFlag");
-    QTest::addColumn<QSizeF>("newSize");
-    QTest::addColumn<IntList>("expectedSizes");
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::addColumn<IntList>("preferredSizeHints");
+    BOBUIest::addColumn<IntList>("stretches");
+    BOBUIest::addColumn<IntList>("ignoreFlag");
+    BOBUIest::addColumn<QSizeF>("newSize");
+    BOBUIest::addColumn<IntList>("expectedSizes");
 
-    QTest::newRow("hor") << Qt::Horizontal << 3
+    BOBUIest::newRow("hor") << BobUI::Horizontal << 3
                             << (IntList() << 20 << 40 << 60)
                             << (IntList())
                             << (IntList())
                             << QSizeF()
                             << (IntList() << 20 << 40 << 60);
 
-    QTest::newRow("ver") << Qt::Vertical << 3
+    BOBUIest::newRow("ver") << BobUI::Vertical << 3
                             << (IntList() << 20 << 40 << 60)
                             << (IntList())
                             << (IntList())
                             << QSizeF()
                             << (IntList() << 20 << 40 << 60);
 
-    QTest::newRow("hor,ignore123") << Qt::Horizontal << 3
+    BOBUIest::newRow("hor,ignore123") << BobUI::Horizontal << 3
                             << (IntList() << 20 << 40 << 60)
                             << (IntList())
                             << (IntList() << 1 << 1 << 1)
                             << QSizeF()
                             << (IntList() << 0 << 0 << 0);
 
-    QTest::newRow("hor,ignore23") << Qt::Horizontal << 3
+    BOBUIest::newRow("hor,ignore23") << BobUI::Horizontal << 3
                             << (IntList() << 10 << 10 << 10)
                             << (IntList())
                             << (IntList() << 0 << 1 << 1)
                             << QSizeF(200, 50)
                             << (IntList());     //### stretches are not linear.
 
-    QTest::newRow("hor,ignore2") << Qt::Horizontal << 3
+    BOBUIest::newRow("hor,ignore2") << BobUI::Horizontal << 3
                             << (IntList() << 10 << 10 << 10)
                             << (IntList())
                             << (IntList() << 0 << 1 << 0)
@@ -1226,7 +1226,7 @@ void tst_QGraphicsLinearLayout::defaultStretchFactors_data()
 
 void tst_QGraphicsLinearLayout::defaultStretchFactors()
 {
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Orientation, orientation);
     QFETCH(int, count);
     QFETCH(IntList, preferredSizeHints);
     QFETCH(IntList, stretches);
@@ -1236,7 +1236,7 @@ void tst_QGraphicsLinearLayout::defaultStretchFactors()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout *layout = new SubQGraphicsLinearLayout(orientation);
     scene.addItem(widget);
     widget->setLayout(layout);
@@ -1249,14 +1249,14 @@ void tst_QGraphicsLinearLayout::defaultStretchFactors()
         RectWidget *item = new RectWidget(widget);
         layout->addItem(item);
         if (preferredSizeHints.value(i, -1) >= 0) {
-            item->setSizeHint(Qt::PreferredSize, QSizeF(preferredSizeHints.at(i), preferredSizeHints.at(i)));
+            item->setSizeHint(BobUI::PreferredSize, QSizeF(preferredSizeHints.at(i), preferredSizeHints.at(i)));
         }
         if (stretches.value(i, -1) >= 0) {
             layout->setStretchFactor(item, stretches.at(i));
         }
         if (ignoreFlag.value(i, 0) != 0) {
             QSizePolicy sp = item->sizePolicy();
-            if (orientation == Qt::Horizontal)
+            if (orientation == BobUI::Horizontal)
                 sp.setHorizontalPolicy(QSizePolicy::Policy(sp.horizontalPolicy() | QSizePolicy::IgnoreFlag));
             else
                 sp.setVerticalPolicy(QSizePolicy::Policy(sp.verticalPolicy() | QSizePolicy::IgnoreFlag));
@@ -1275,7 +1275,7 @@ void tst_QGraphicsLinearLayout::defaultStretchFactors()
     QApplication::processEvents();
     for (i = 0; i < count; ++i) {
         QSizeF itemSize = layout->itemAt(i)->geometry().size();
-        if (orientation == Qt::Vertical)
+        if (orientation == BobUI::Vertical)
             itemSize.transpose();
         if (i < expectedSizes.size())
             QCOMPARE(itemSize.width(), qreal(expectedSizes.at(i)));
@@ -1284,27 +1284,27 @@ void tst_QGraphicsLinearLayout::defaultStretchFactors()
     delete widget;
 }
 
-Q_DECLARE_METATYPE(Qt::SizeHint)
+Q_DECLARE_METATYPE(BobUI::SizeHint)
 void tst_QGraphicsLinearLayout::sizeHint_data()
 {
-    QTest::addColumn<Qt::SizeHint>("which");
-    QTest::addColumn<QSizeF>("constraint");
-    QTest::addColumn<qreal>("spacing");
-    QTest::addColumn<qreal>("layoutMargin");
-    QTest::addColumn<QSizeF>("sizeHint");
+    BOBUIest::addColumn<BobUI::SizeHint>("which");
+    BOBUIest::addColumn<QSizeF>("constraint");
+    BOBUIest::addColumn<qreal>("spacing");
+    BOBUIest::addColumn<qreal>("layoutMargin");
+    BOBUIest::addColumn<QSizeF>("sizeHint");
 
-    QTest::newRow("minimumSize") << Qt::MinimumSize << QSizeF() << qreal(0.0) << qreal(0.0) << QSizeF(30, 10);
-    QTest::newRow("preferredSize") << Qt::PreferredSize << QSizeF() << qreal(0.0) << qreal(0.0) << QSizeF(75, 25);
-    QTest::newRow("maximumSize") << Qt::MaximumSize << QSizeF() << qreal(0.0) << qreal(0.0) << QSizeF(150, 50);
-    QTest::newRow("minimumSize, spacing=3") << Qt::MinimumSize << QSizeF() << qreal(3.0) << qreal(0.0) << QSizeF(30 + 2*3, 10);
-    QTest::newRow("minimumSize, spacing=3, layoutMargin=10") << Qt::MinimumSize << QSizeF() << qreal(3.0) << qreal(10.0) << QSizeF(30 + 2*3 + 2*10, 10 + 2*10);
-    QTest::newRow("minimumSize, spacing=0, layoutMargin=7") << Qt::MinimumSize << QSizeF() << qreal(0.0) << qreal(7.0) << QSizeF(30 + 0 + 2*7, 10 + 2*7);
+    BOBUIest::newRow("minimumSize") << BobUI::MinimumSize << QSizeF() << qreal(0.0) << qreal(0.0) << QSizeF(30, 10);
+    BOBUIest::newRow("preferredSize") << BobUI::PreferredSize << QSizeF() << qreal(0.0) << qreal(0.0) << QSizeF(75, 25);
+    BOBUIest::newRow("maximumSize") << BobUI::MaximumSize << QSizeF() << qreal(0.0) << qreal(0.0) << QSizeF(150, 50);
+    BOBUIest::newRow("minimumSize, spacing=3") << BobUI::MinimumSize << QSizeF() << qreal(3.0) << qreal(0.0) << QSizeF(30 + 2*3, 10);
+    BOBUIest::newRow("minimumSize, spacing=3, layoutMargin=10") << BobUI::MinimumSize << QSizeF() << qreal(3.0) << qreal(10.0) << QSizeF(30 + 2*3 + 2*10, 10 + 2*10);
+    BOBUIest::newRow("minimumSize, spacing=0, layoutMargin=7") << BobUI::MinimumSize << QSizeF() << qreal(0.0) << qreal(7.0) << QSizeF(30 + 0 + 2*7, 10 + 2*7);
 }
 
-// QSizeF sizeHint(Qt::SizeHint which, QSizeF const& constraint) const public
+// QSizeF sizeHint(BobUI::SizeHint which, QSizeF const& constraint) const public
 void tst_QGraphicsLinearLayout::sizeHint()
 {
-    QFETCH(Qt::SizeHint, which);
+    QFETCH(BobUI::SizeHint, which);
     QFETCH(QSizeF, constraint);
     QFETCH(qreal, spacing);
     QFETCH(qreal, layoutMargin);
@@ -1312,7 +1312,7 @@ void tst_QGraphicsLinearLayout::sizeHint()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Window);
     SubQGraphicsLinearLayout &layout = *(new SubQGraphicsLinearLayout);
     scene.addItem(widget);
     widget->setLayout(&layout);
@@ -1335,7 +1335,7 @@ void tst_QGraphicsLinearLayout::updateGeometry()
     QGraphicsScene scene;
     QGraphicsView view(&scene);
 
-    QGraphicsWidget *window = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *window = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsWidget *w1 = new QGraphicsWidget(window);
     w1->setMinimumSize(100, 40);
     SubQGraphicsLinearLayout *layout = new SubQGraphicsLinearLayout;
@@ -1356,7 +1356,7 @@ void tst_QGraphicsLinearLayout::updateGeometry()
 
     {
         delete window;
-        window = new QGraphicsWidget(0, Qt::Window);
+        window = new QGraphicsWidget(0, BobUI::Window);
         SubQGraphicsLinearLayout *layout2a = new SubQGraphicsLinearLayout;
         QGraphicsWidget *w1 = new QGraphicsWidget(window);
         w1->setMinimumSize(110, 50);
@@ -1379,7 +1379,7 @@ void tst_QGraphicsLinearLayout::updateGeometry()
 
     {
         delete window;
-        window = new QGraphicsWidget(0, Qt::Window);
+        window = new QGraphicsWidget(0, BobUI::Window);
         scene.addItem(window);
         window->show();
         QGraphicsWidget *w1 = new QGraphicsWidget(window);
@@ -1398,7 +1398,7 @@ void tst_QGraphicsLinearLayout::updateGeometry()
 
     {
         delete window;
-        window = new QGraphicsWidget(0, Qt::Window);
+        window = new QGraphicsWidget(0, BobUI::Window);
         scene.addItem(window);
         QGraphicsWidget *w1 = new QGraphicsWidget(window);
         w1->setMinimumSize(100, 50);
@@ -1421,7 +1421,7 @@ void tst_QGraphicsLinearLayout::layoutDirection()
     QGraphicsScene scene;
     QGraphicsView view(&scene);
 
-    QGraphicsWidget *window = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *window = new QGraphicsWidget(0, BobUI::Window);
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout;
     layout->setContentsMargins(1, 2, 3, 4);
     layout->setSpacing(6);
@@ -1439,14 +1439,14 @@ void tst_QGraphicsLinearLayout::layoutDirection()
     window->setLayout(layout);
     view.show();
     window->resize(50, 20);
-    window->setLayoutDirection(Qt::LeftToRight);
+    window->setLayoutDirection(BobUI::LeftToRight);
     QApplication::processEvents();
     QCOMPARE(w1->geometry().left(), 1.0);
     QCOMPARE(w1->geometry().right(), 21.0);
     QCOMPARE(w2->geometry().left(), 27.0);
     QCOMPARE(w2->geometry().right(), 47.0);
 
-    window->setLayoutDirection(Qt::RightToLeft);
+    window->setLayoutDirection(BobUI::RightToLeft);
     QApplication::processEvents();
     QCOMPARE(w1->geometry().right(), 49.0);
     QCOMPARE(w1->geometry().left(), 29.0);
@@ -1474,7 +1474,7 @@ void tst_QGraphicsLinearLayout::removeLayout()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QRectF r1 = textEdit->geometry();
     QRectF r2 = pushButton->geometry();
@@ -1487,10 +1487,10 @@ void tst_QGraphicsLinearLayout::removeLayout()
 
 void tst_QGraphicsLinearLayout::avoidRecursionInInsertItem()
 {
-    QGraphicsWidget window(0, Qt::Window);
+    QGraphicsWidget window(0, BobUI::Window);
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(&window);
     QCOMPARE(layout->count(), 0);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsLinearLayout::insertItem: cannot insert itself");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsLinearLayout::insertItem: cannot insert itself");
     layout->insertItem(0, layout);
     QCOMPARE(layout->count(), 0);
 }
@@ -1521,7 +1521,7 @@ void tst_QGraphicsLinearLayout::testAlignmentInLargerLayout()
     QGraphicsScene *scene = new QGraphicsScene;
     QGraphicsWidget *form = new QGraphicsWidget;
     scene->addItem(form);
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical, form);
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(BobUI::Vertical, form);
     layout->setSpacing(0);
     layout->setContentsMargins(0,0,0,0);
 
@@ -1534,15 +1534,15 @@ void tst_QGraphicsLinearLayout::testAlignmentInLargerLayout()
     layout->setMinimumSize(QSizeF(200,200));
     layout->setMaximumSize(QSizeF(200,200));
 
-    layout->setAlignment(a, Qt::AlignCenter);
+    layout->setAlignment(a, BobUI::AlignCenter);
     layout->activate();
     QCOMPARE(a->geometry(), QRectF(50,50,100,100));
 
-    layout->setAlignment(a, Qt::AlignRight | Qt::AlignBottom);
+    layout->setAlignment(a, BobUI::AlignRight | BobUI::AlignBottom);
     layout->activate();
     QCOMPARE(a->geometry(), QRectF(100,100,100,100));
 
-    layout->setAlignment(a, Qt::AlignHCenter | Qt::AlignTop);
+    layout->setAlignment(a, BobUI::AlignHCenter | BobUI::AlignTop);
     layout->activate();
     QCOMPARE(a->geometry(), QRectF(50,0,100,100));
 
@@ -1550,14 +1550,14 @@ void tst_QGraphicsLinearLayout::testAlignmentInLargerLayout()
     b->setMaximumSize(100,100);
     layout->addItem(b);
 
-    layout->setAlignment(a, Qt::AlignCenter);
-    layout->setAlignment(b, Qt::AlignCenter);
+    layout->setAlignment(a, BobUI::AlignCenter);
+    layout->setAlignment(b, BobUI::AlignCenter);
     layout->activate();
     QCOMPARE(a->geometry(), QRectF(50,0,100,100));
     QCOMPARE(b->geometry(), QRectF(50,100,100,100));
 
-    layout->setAlignment(a, Qt::AlignRight | Qt::AlignBottom);
-    layout->setAlignment(b, Qt::AlignLeft | Qt::AlignTop);
+    layout->setAlignment(a, BobUI::AlignRight | BobUI::AlignBottom);
+    layout->setAlignment(b, BobUI::AlignLeft | BobUI::AlignTop);
     layout->activate();
     QCOMPARE(a->geometry(), QRectF(100,0,100,100));
     QCOMPARE(b->geometry(), QRectF(0,100,100,100));
@@ -1567,7 +1567,7 @@ void tst_QGraphicsLinearLayout::testOffByOneInLargerLayout() {
     QGraphicsScene *scene = new QGraphicsScene;
     QGraphicsWidget *form = new QGraphicsWidget;
     scene->addItem(form);
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical, form);
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(BobUI::Vertical, form);
     layout->setSpacing(0);
     layout->setContentsMargins(0,0,0,0);
 
@@ -1578,8 +1578,8 @@ void tst_QGraphicsLinearLayout::testOffByOneInLargerLayout() {
     layout->addItem(a);
     layout->addItem(b);
 
-    layout->setAlignment(a, Qt::AlignRight | Qt::AlignBottom);
-    layout->setAlignment(b, Qt::AlignLeft | Qt::AlignTop);
+    layout->setAlignment(a, BobUI::AlignRight | BobUI::AlignBottom);
+    layout->setAlignment(b, BobUI::AlignLeft | BobUI::AlignTop);
     layout->setMinimumSize(QSizeF(101,201));
     layout->setMaximumSize(QSizeF(101,201));
     layout->activate();
@@ -1601,7 +1601,7 @@ void tst_QGraphicsLinearLayout::testOffByOneInLargerLayout() {
 void tst_QGraphicsLinearLayout::testDefaultAlignment()
 {
     QGraphicsWidget *widget = new QGraphicsWidget;
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical, widget);
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(BobUI::Vertical, widget);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
@@ -1634,7 +1634,7 @@ void tst_QGraphicsLinearLayout::testDefaultAlignment()
 void tst_QGraphicsLinearLayout::combineSizePolicies()
 {
     QGraphicsWidget *widget = new QGraphicsWidget;
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Horizontal, widget);
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(BobUI::Horizontal, widget);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
@@ -1659,7 +1659,7 @@ void tst_QGraphicsLinearLayout::combineSizePolicies()
 void tst_QGraphicsLinearLayout::hiddenItems()
 {
     QGraphicsWidget *widget = new QGraphicsWidget;
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Horizontal, widget);
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(BobUI::Horizontal, widget);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(2);
 
@@ -1691,6 +1691,6 @@ void tst_QGraphicsLinearLayout::hiddenItems()
     QCOMPARE(layout->preferredWidth(), qreal(42));
 }
 
-QTEST_MAIN(tst_QGraphicsLinearLayout)
+BOBUIEST_MAIN(tst_QGraphicsLinearLayout)
 #include "tst_qgraphicslinearlayout.moc"
 

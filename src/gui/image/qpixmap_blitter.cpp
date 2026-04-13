@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpixmap_blitter_p.h"
 
@@ -14,8 +14,8 @@
 #include <private/qdrawhelper_p.h>
 #include <private/qfont_p.h>
 
-#ifndef QT_NO_BLITTABLE
-QT_BEGIN_NAMESPACE
+#ifndef BOBUI_NO_BLITTABLE
+BOBUI_BEGIN_NAMESPACE
 
 static int global_ser_no = 0;
 
@@ -23,19 +23,19 @@ QBlittablePlatformPixmap::QBlittablePlatformPixmap()
     : QPlatformPixmap(QPlatformPixmap::PixmapType,BlitterClass)
     , m_alpha(false)
     , m_devicePixelRatio(1.0)
-#ifdef QT_BLITTER_RASTEROVERLAY
+#ifdef BOBUI_BLITTER_RASTEROVERLAY
     ,m_rasterOverlay(0), m_unmergedCopy(0)
-#endif //QT_BLITTER_RASTEROVERLAY
+#endif //BOBUI_BLITTER_RASTEROVERLAY
 {
     setSerialNumber(++global_ser_no);
 }
 
 QBlittablePlatformPixmap::~QBlittablePlatformPixmap()
 {
-#ifdef QT_BLITTER_RASTEROVERLAY
+#ifdef BOBUI_BLITTER_RASTEROVERLAY
     delete m_rasterOverlay;
     delete m_unmergedCopy;
-#endif //QT_BLITTER_RASTEROVERLAY
+#endif //BOBUI_BLITTER_RASTEROVERLAY
 }
 
 QBlittable *QBlittablePlatformPixmap::blittable() const
@@ -73,17 +73,17 @@ int QBlittablePlatformPixmap::metric(QPaintDevice::PaintDeviceMetric metric) con
     case QPaintDevice::PdmHeight:
         return h;
     case QPaintDevice::PdmWidthMM:
-        return qRound(w * 25.4 / qt_defaultDpiX());
+        return qRound(w * 25.4 / bobui_defaultDpiX());
     case QPaintDevice::PdmHeightMM:
-        return qRound(h * 25.4 / qt_defaultDpiY());
+        return qRound(h * 25.4 / bobui_defaultDpiY());
     case QPaintDevice::PdmDepth:
         return 32;
     case QPaintDevice::PdmDpiX:
     case QPaintDevice::PdmPhysicalDpiX:
-        return qt_defaultDpiX();
+        return bobui_defaultDpiX();
     case QPaintDevice::PdmDpiY:
     case QPaintDevice::PdmPhysicalDpiY:
-        return qt_defaultDpiY();
+        return bobui_defaultDpiY();
     case QPaintDevice::PdmDevicePixelRatio:
         return devicePixelRatio();
     case QPaintDevice::PdmDevicePixelRatioScaled:
@@ -139,7 +139,7 @@ bool QBlittablePlatformPixmap::hasAlphaChannel() const
 }
 
 void QBlittablePlatformPixmap::fromImage(const QImage &image,
-                                     Qt::ImageConversionFlags flags)
+                                     BobUI::ImageConversionFlags flags)
 {
     m_alpha = image.hasAlphaChannel();
     m_devicePixelRatio = image.devicePixelRatio();
@@ -181,9 +181,9 @@ QPaintEngine *QBlittablePlatformPixmap::paintEngine() const
     return m_engine.data();
 }
 
-#ifdef QT_BLITTER_RASTEROVERLAY
+#ifdef BOBUI_BLITTER_RASTEROVERLAY
 
-static bool showRasterOverlay = !qEnvironmentVariableIsEmpty("QT_BLITTER_RASTEROVERLAY");
+static bool showRasterOverlay = !qEnvironmentVariableIsEmpty("BOBUI_BLITTER_RASTEROVERLAY");
 
 void QBlittablePlatformPixmap::mergeOverlay()
 {
@@ -216,7 +216,7 @@ QImage *QBlittablePlatformPixmap::overlay()
         m_rasterOverlay = new QImage(w,h,QImage::Format_ARGB32_Premultiplied);
         m_rasterOverlay->fill(0x00000000);
         uint color = QRandomGenerator::global()->bounded(11)+7;
-        m_overlayColor = QColor(Qt::GlobalColor(color));
+        m_overlayColor = QColor(BobUI::GlobalColor(color));
         m_overlayColor.setAlpha(0x88);
 
     }
@@ -269,8 +269,8 @@ QRectF QBlittablePlatformPixmap::clipAndTransformRect(const QRectF &rect) const
     return transformationRect;
 }
 
-#endif //QT_BLITTER_RASTEROVERLAY
+#endif //BOBUI_BLITTER_RASTEROVERLAY
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif //QT_NO_BLITTABLE
+#endif //BOBUI_NO_BLITTABLE

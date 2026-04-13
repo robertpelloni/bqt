@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtPlugin>
+#include <BobUIPlugin>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //! [0]
 namespace Foo
@@ -18,7 +18,7 @@ Q_DECLARE_INTERFACE(Foo::MyInterface, "org.examples.MyInterface")
 //! [1]
 class MyInstance : public QObject
 {
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDummyPlugin" FILE "mymetadata.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.QDummyPlugin" FILE "mymetadata.json")
 };
 //! [1]
 
@@ -27,4 +27,4 @@ class MyInstance : public QObject
 Q_IMPORT_PLUGIN(qjpeg)
 //! [2]
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

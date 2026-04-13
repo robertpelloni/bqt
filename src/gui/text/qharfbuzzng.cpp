@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2013 Konstantin Ritt
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qharfbuzzng_p.h"
 
@@ -10,11 +10,11 @@
 
 #include "qfontengine_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Unicode routines
 
-static const hb_script_t _qtscript_to_hbscript[] = {
+static const hb_script_t _bobuiscript_to_hbscript[] = {
     HB_SCRIPT_UNKNOWN,
     HB_SCRIPT_INHERITED,
     HB_SCRIPT_COMMON,
@@ -250,31 +250,31 @@ static const hb_script_t _qtscript_to_hbscript[] = {
     HB_SCRIPT_TULU_TIGALARI,
 #endif
 };
-static_assert(QChar::ScriptCount == sizeof(_qtscript_to_hbscript) / sizeof(_qtscript_to_hbscript[0]));
+static_assert(QChar::ScriptCount == sizeof(_bobuiscript_to_hbscript) / sizeof(_bobuiscript_to_hbscript[0]));
 
-hb_script_t hb_qt_script_to_script(QChar::Script script)
+hb_script_t hb_bobui_script_to_script(QChar::Script script)
 {
-    return _qtscript_to_hbscript[script];
+    return _bobuiscript_to_hbscript[script];
 }
 
-QChar::Script hb_qt_script_from_script(hb_script_t script)
+QChar::Script hb_bobui_script_from_script(hb_script_t script)
 {
     uint i = QChar::ScriptCount - 1;
-    while (i > QChar::Script_Unknown && _qtscript_to_hbscript[i] != script)
+    while (i > QChar::Script_Unknown && _bobuiscript_to_hbscript[i] != script)
         --i;
     return QChar::Script(i);
 }
 
 
 static hb_unicode_combining_class_t
-_hb_qt_unicode_combining_class(hb_unicode_funcs_t * /*ufuncs*/,
+_hb_bobui_unicode_combining_class(hb_unicode_funcs_t * /*ufuncs*/,
                                hb_codepoint_t unicode,
                                void * /*user_data*/)
 {
     return hb_unicode_combining_class_t(QChar::combiningClass(unicode));
 }
 
-static const hb_unicode_general_category_t _qtcategory_to_hbcategory[] = {
+static const hb_unicode_general_category_t _bobuicategory_to_hbcategory[] = {
     HB_UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK,    //   Mn
     HB_UNICODE_GENERAL_CATEGORY_SPACING_MARK,        //   Mc
     HB_UNICODE_GENERAL_CATEGORY_ENCLOSING_MARK,      //   Me
@@ -314,15 +314,15 @@ static const hb_unicode_general_category_t _qtcategory_to_hbcategory[] = {
 };
 
 static hb_unicode_general_category_t
-_hb_qt_unicode_general_category(hb_unicode_funcs_t * /*ufuncs*/,
+_hb_bobui_unicode_general_category(hb_unicode_funcs_t * /*ufuncs*/,
                                 hb_codepoint_t unicode,
                                 void * /*user_data*/)
 {
-    return _qtcategory_to_hbcategory[QChar::category(unicode)];
+    return _bobuicategory_to_hbcategory[QChar::category(unicode)];
 }
 
 static hb_codepoint_t
-_hb_qt_unicode_mirroring(hb_unicode_funcs_t * /*ufuncs*/,
+_hb_bobui_unicode_mirroring(hb_unicode_funcs_t * /*ufuncs*/,
                          hb_codepoint_t unicode,
                          void * /*user_data*/)
 {
@@ -330,15 +330,15 @@ _hb_qt_unicode_mirroring(hb_unicode_funcs_t * /*ufuncs*/,
 }
 
 static hb_script_t
-_hb_qt_unicode_script(hb_unicode_funcs_t * /*ufuncs*/,
+_hb_bobui_unicode_script(hb_unicode_funcs_t * /*ufuncs*/,
                       hb_codepoint_t unicode,
                       void * /*user_data*/)
 {
-    return _qtscript_to_hbscript[QChar::script(unicode)];
+    return _bobuiscript_to_hbscript[QChar::script(unicode)];
 }
 
 static hb_bool_t
-_hb_qt_unicode_compose(hb_unicode_funcs_t * /*ufuncs*/,
+_hb_bobui_unicode_compose(hb_unicode_funcs_t * /*ufuncs*/,
                        hb_codepoint_t a, hb_codepoint_t b,
                        hb_codepoint_t *ab,
                        void * /*user_data*/)
@@ -358,7 +358,7 @@ _hb_qt_unicode_compose(hb_unicode_funcs_t * /*ufuncs*/,
 }
 
 static hb_bool_t
-_hb_qt_unicode_decompose(hb_unicode_funcs_t * /*ufuncs*/,
+_hb_bobui_unicode_decompose(hb_unicode_funcs_t * /*ufuncs*/,
                          hb_codepoint_t ab,
                          hb_codepoint_t *a, hb_codepoint_t *b,
                          void * /*user_data*/)
@@ -417,12 +417,12 @@ struct _hb_unicode_funcs_t {
     _hb_unicode_funcs_t()
     {
         funcs = hb_unicode_funcs_create(NULL);
-        hb_unicode_funcs_set_combining_class_func(funcs, _hb_qt_unicode_combining_class, NULL, NULL);
-        hb_unicode_funcs_set_general_category_func(funcs, _hb_qt_unicode_general_category, NULL, NULL);
-        hb_unicode_funcs_set_mirroring_func(funcs, _hb_qt_unicode_mirroring, NULL, NULL);
-        hb_unicode_funcs_set_script_func(funcs, _hb_qt_unicode_script, NULL, NULL);
-        hb_unicode_funcs_set_compose_func(funcs, _hb_qt_unicode_compose, NULL, NULL);
-        hb_unicode_funcs_set_decompose_func(funcs, _hb_qt_unicode_decompose, NULL, NULL);
+        hb_unicode_funcs_set_combining_class_func(funcs, _hb_bobui_unicode_combining_class, NULL, NULL);
+        hb_unicode_funcs_set_general_category_func(funcs, _hb_bobui_unicode_general_category, NULL, NULL);
+        hb_unicode_funcs_set_mirroring_func(funcs, _hb_bobui_unicode_mirroring, NULL, NULL);
+        hb_unicode_funcs_set_script_func(funcs, _hb_bobui_unicode_script, NULL, NULL);
+        hb_unicode_funcs_set_compose_func(funcs, _hb_bobui_unicode_compose, NULL, NULL);
+        hb_unicode_funcs_set_decompose_func(funcs, _hb_bobui_unicode_decompose, NULL, NULL);
     }
     ~_hb_unicode_funcs_t()
     {
@@ -432,18 +432,18 @@ struct _hb_unicode_funcs_t {
     hb_unicode_funcs_t *funcs;
 };
 
-Q_GLOBAL_STATIC(_hb_unicode_funcs_t, qt_ufuncs)
+Q_GLOBAL_STATIC(_hb_unicode_funcs_t, bobui_ufuncs)
 
-hb_unicode_funcs_t *hb_qt_get_unicode_funcs()
+hb_unicode_funcs_t *hb_bobui_get_unicode_funcs()
 {
-    return qt_ufuncs()->funcs;
+    return bobui_ufuncs()->funcs;
 }
 
 
 // Font routines
 
 static hb_bool_t
-_hb_qt_get_font_h_extents(hb_font_t * /*font*/, void *font_data,
+_hb_bobui_get_font_h_extents(hb_font_t * /*font*/, void *font_data,
                           hb_font_extents_t *metrics,
                           void * /*user_data*/)
 {
@@ -458,7 +458,7 @@ _hb_qt_get_font_h_extents(hb_font_t * /*font*/, void *font_data,
 }
 
 static hb_bool_t
-_hb_qt_font_get_nominal_glyph(hb_font_t * /*font*/, void *font_data,
+_hb_bobui_font_get_nominal_glyph(hb_font_t * /*font*/, void *font_data,
                               hb_codepoint_t unicode,
                               hb_codepoint_t *glyph,
                               void * /*user_data*/)
@@ -472,7 +472,7 @@ _hb_qt_font_get_nominal_glyph(hb_font_t * /*font*/, void *font_data,
 }
 
 static hb_bool_t
-_hb_qt_font_get_variation_glyph(hb_font_t * /*font*/, void *font_data,
+_hb_bobui_font_get_variation_glyph(hb_font_t * /*font*/, void *font_data,
                                 hb_codepoint_t unicode, hb_codepoint_t /*variation_selector*/,
                                 hb_codepoint_t *glyph,
                                 void * /*user_data*/)
@@ -487,7 +487,7 @@ _hb_qt_font_get_variation_glyph(hb_font_t * /*font*/, void *font_data,
 }
 
 static hb_position_t
-_hb_qt_font_get_glyph_h_advance(hb_font_t *font, void *font_data,
+_hb_bobui_font_get_glyph_h_advance(hb_font_t *font, void *font_data,
                                 hb_codepoint_t glyph,
                                 void * /*user_data*/)
 {
@@ -501,13 +501,13 @@ _hb_qt_font_get_glyph_h_advance(hb_font_t *font, void *font_data,
     g.glyphs = &glyph;
     g.advances = &advance;
 
-    fe->recalcAdvances(&g, QFontEngine::ShaperFlags(hb_qt_font_get_use_design_metrics(font)));
+    fe->recalcAdvances(&g, QFontEngine::ShaperFlags(hb_bobui_font_get_use_design_metrics(font)));
 
     return advance.value();
 }
 
 static hb_position_t
-_hb_qt_font_get_glyph_h_kerning(hb_font_t *font, void *font_data,
+_hb_bobui_font_get_glyph_h_kerning(hb_font_t *font, void *font_data,
                                 hb_codepoint_t first_glyph, hb_codepoint_t second_glyph,
                                 void * /*user_data*/)
 {
@@ -522,13 +522,13 @@ _hb_qt_font_get_glyph_h_kerning(hb_font_t *font, void *font_data,
     g.glyphs = glyphs;
     g.advances = &advance;
 
-    fe->doKerning(&g, QFontEngine::ShaperFlags(hb_qt_font_get_use_design_metrics(font)));
+    fe->doKerning(&g, QFontEngine::ShaperFlags(hb_bobui_font_get_use_design_metrics(font)));
 
     return advance.value();
 }
 
 static hb_bool_t
-_hb_qt_font_get_glyph_extents(hb_font_t * /*font*/, void *font_data,
+_hb_bobui_font_get_glyph_extents(hb_font_t * /*font*/, void *font_data,
                               hb_codepoint_t glyph,
                               hb_glyph_extents_t *extents,
                               void * /*user_data*/)
@@ -547,7 +547,7 @@ _hb_qt_font_get_glyph_extents(hb_font_t * /*font*/, void *font_data,
 }
 
 static hb_bool_t
-_hb_qt_font_get_glyph_contour_point(hb_font_t * /*font*/, void *font_data,
+_hb_bobui_font_get_glyph_contour_point(hb_font_t * /*font*/, void *font_data,
                                     hb_codepoint_t glyph,
                                     unsigned int point_index, hb_position_t *x, hb_position_t *y,
                                     void * /*user_data*/)
@@ -570,33 +570,33 @@ _hb_qt_font_get_glyph_contour_point(hb_font_t * /*font*/, void *font_data,
 
 static hb_user_data_key_t _useDesignMetricsKey;
 
-void hb_qt_font_set_use_design_metrics(hb_font_t *font, uint value)
+void hb_bobui_font_set_use_design_metrics(hb_font_t *font, uint value)
 {
     hb_font_set_user_data(font, &_useDesignMetricsKey, (void *)quintptr(value), NULL, true);
 }
 
-uint hb_qt_font_get_use_design_metrics(hb_font_t *font)
+uint hb_bobui_font_get_use_design_metrics(hb_font_t *font)
 {
     return quintptr(hb_font_get_user_data(font, &_useDesignMetricsKey));
 }
 
 
-struct _hb_qt_font_funcs_t {
-    _hb_qt_font_funcs_t()
+struct _hb_bobui_font_funcs_t {
+    _hb_bobui_font_funcs_t()
     {
         funcs = hb_font_funcs_create();
 
-        hb_font_funcs_set_font_h_extents_func(funcs, _hb_qt_get_font_h_extents, NULL, NULL);
-        hb_font_funcs_set_nominal_glyph_func(funcs, _hb_qt_font_get_nominal_glyph, NULL, NULL);
-        hb_font_funcs_set_variation_glyph_func(funcs, _hb_qt_font_get_variation_glyph, NULL, NULL);
-        hb_font_funcs_set_glyph_h_advance_func(funcs, _hb_qt_font_get_glyph_h_advance, NULL, NULL);
-        hb_font_funcs_set_glyph_h_kerning_func(funcs, _hb_qt_font_get_glyph_h_kerning, NULL, NULL);
-        hb_font_funcs_set_glyph_extents_func(funcs, _hb_qt_font_get_glyph_extents, NULL, NULL);
-        hb_font_funcs_set_glyph_contour_point_func(funcs, _hb_qt_font_get_glyph_contour_point, NULL, NULL);
+        hb_font_funcs_set_font_h_extents_func(funcs, _hb_bobui_get_font_h_extents, NULL, NULL);
+        hb_font_funcs_set_nominal_glyph_func(funcs, _hb_bobui_font_get_nominal_glyph, NULL, NULL);
+        hb_font_funcs_set_variation_glyph_func(funcs, _hb_bobui_font_get_variation_glyph, NULL, NULL);
+        hb_font_funcs_set_glyph_h_advance_func(funcs, _hb_bobui_font_get_glyph_h_advance, NULL, NULL);
+        hb_font_funcs_set_glyph_h_kerning_func(funcs, _hb_bobui_font_get_glyph_h_kerning, NULL, NULL);
+        hb_font_funcs_set_glyph_extents_func(funcs, _hb_bobui_font_get_glyph_extents, NULL, NULL);
+        hb_font_funcs_set_glyph_contour_point_func(funcs, _hb_bobui_font_get_glyph_contour_point, NULL, NULL);
 
         hb_font_funcs_make_immutable(funcs);
     }
-    ~_hb_qt_font_funcs_t()
+    ~_hb_bobui_font_funcs_t()
     {
         hb_font_funcs_destroy(funcs);
     }
@@ -604,16 +604,16 @@ struct _hb_qt_font_funcs_t {
     hb_font_funcs_t *funcs;
 };
 
-Q_GLOBAL_STATIC(_hb_qt_font_funcs_t, qt_ffuncs)
+Q_GLOBAL_STATIC(_hb_bobui_font_funcs_t, bobui_ffuncs)
 
 
 static hb_blob_t *
-_hb_qt_reference_table(hb_face_t * /*face*/, hb_tag_t tag, void *user_data)
+_hb_bobui_reference_table(hb_face_t * /*face*/, hb_tag_t tag, void *user_data)
 {
     QFontEngine::FaceData *data = static_cast<QFontEngine::FaceData *>(user_data);
     Q_ASSERT(data);
 
-    qt_get_font_table_func_t get_font_table = data->get_font_table;
+    bobui_get_font_table_func_t get_font_table = data->get_font_table;
     Q_ASSERT(get_font_table);
 
     uint length = 0;
@@ -633,14 +633,14 @@ _hb_qt_reference_table(hb_face_t * /*face*/, hb_tag_t tag, void *user_data)
 }
 
 static inline hb_face_t *
-_hb_qt_face_create(QFontEngine *fe)
+_hb_bobui_face_create(QFontEngine *fe)
 {
     QFontEngine::FaceData *data = static_cast<QFontEngine::FaceData *>(malloc(sizeof(QFontEngine::FaceData)));
     Q_CHECK_PTR(data);
     data->user_data = fe->faceData.user_data;
     data->get_font_table = fe->faceData.get_font_table;
 
-    hb_face_t *face = hb_face_create_for_tables(_hb_qt_reference_table, (void *)data, free);
+    hb_face_t *face = hb_face_create_for_tables(_hb_bobui_reference_table, (void *)data, free);
 
     hb_face_set_index(face, fe->faceId().index);
     hb_face_set_upem(face, fe->emSquareSize().truncate());
@@ -649,33 +649,33 @@ _hb_qt_face_create(QFontEngine *fe)
 }
 
 static void
-_hb_qt_face_release(void *user_data)
+_hb_bobui_face_release(void *user_data)
 {
     hb_face_destroy(static_cast<hb_face_t *>(user_data));
 }
 
-hb_face_t *hb_qt_face_get_for_engine(QFontEngine *fe)
+hb_face_t *hb_bobui_face_get_for_engine(QFontEngine *fe)
 {
     Q_ASSERT(fe && fe->type() != QFontEngine::Multi);
 
     if (Q_UNLIKELY(!fe->face_))
-        fe->face_ = QFontEngine::Holder(_hb_qt_face_create(fe), _hb_qt_face_release);
+        fe->face_ = QFontEngine::Holder(_hb_bobui_face_create(fe), _hb_bobui_face_release);
 
     return static_cast<hb_face_t *>(fe->face_.get());
 }
 
 
 static inline hb_font_t *
-_hb_qt_font_create(QFontEngine *fe)
+_hb_bobui_font_create(QFontEngine *fe)
 {
-    hb_face_t *face = hb_qt_face_get_for_engine(fe);
+    hb_face_t *face = hb_bobui_face_get_for_engine(fe);
 
     hb_font_t *font = hb_font_create(face);
 
     const qreal y_ppem = fe->fontDef.pixelSize;
     const qreal x_ppem = (fe->fontDef.pixelSize * fe->fontDef.stretch) / 100.0;
 
-    hb_font_set_funcs(font, qt_ffuncs()->funcs, fe, nullptr);
+    hb_font_set_funcs(font, bobui_ffuncs()->funcs, fe, nullptr);
     hb_font_set_scale(font, QFixed::fromReal(x_ppem).value(), -QFixed::fromReal(y_ppem).value());
     hb_font_set_ppem(font, int(x_ppem), int(y_ppem));
 
@@ -685,19 +685,19 @@ _hb_qt_font_create(QFontEngine *fe)
 }
 
 static void
-_hb_qt_font_release(void *user_data)
+_hb_bobui_font_release(void *user_data)
 {
     hb_font_destroy(static_cast<hb_font_t *>(user_data));
 }
 
-hb_font_t *hb_qt_font_get_for_engine(QFontEngine *fe)
+hb_font_t *hb_bobui_font_get_for_engine(QFontEngine *fe)
 {
     Q_ASSERT(fe && fe->type() != QFontEngine::Multi);
 
     if (Q_UNLIKELY(!fe->font_))
-        fe->font_ = QFontEngine::Holder(_hb_qt_font_create(fe), _hb_qt_font_release);
+        fe->font_ = QFontEngine::Holder(_hb_bobui_font_create(fe), _hb_bobui_font_release);
 
     return static_cast<hb_font_t *>(fe->font_.get());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

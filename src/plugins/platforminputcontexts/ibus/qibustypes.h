@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIBUSTYPES_H
 #define QIBUSTYPES_H
@@ -8,13 +8,13 @@
 #include <qlist.h>
 #include <qevent.h>
 #include <QDBusArgument>
-#include <QTextCharFormat>
+#include <BOBUIextCharFormat>
 #include <QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_DECLARE_LOGGING_CATEGORY(qtQpaInputMethods)
-Q_DECLARE_LOGGING_CATEGORY(qtQpaInputMethodsSerialize)
+Q_DECLARE_LOGGING_CATEGORY(bobuiQpaInputMethods)
+Q_DECLARE_LOGGING_CATEGORY(bobuiQpaInputMethodsSerialize)
 
 class QIBusSerializable
 {
@@ -48,7 +48,7 @@ public:
 
     QIBusAttribute();
 
-    QTextCharFormat format() const;
+    BOBUIextCharFormat format() const;
 
     void serializeTo(QDBusArgument &argument) const;
     void deserializeFrom(const QDBusArgument &argument);
@@ -173,7 +173,7 @@ inline const QDBusArgument &operator>>(const QDBusArgument &argument, QIBusPropT
 Q_DECLARE_TYPEINFO(QIBusPropTypeClientCommitPreedit, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(QIBusPropTypeContentType, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QIBusAttribute)
 Q_DECLARE_METATYPE(QIBusAttributeList)

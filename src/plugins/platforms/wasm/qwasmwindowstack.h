@@ -1,16 +1,16 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMWINDOWSTACK_H
 #define QWASMWINDOWSTACK_H
 
 #include <qglobal.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qlist.h>
 #include <QDebug>
 
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWasmWindow;
 
@@ -27,7 +27,7 @@ class QWasmWindow;
 //
 // type Window {
 //    Window *transientParent() const;
-//    Qt::WindowFlags windowFlags() const;
+//    BobUI::WindowFlags windowFlags() const;
 //    bool isModal() const;
 // };
 
@@ -86,7 +86,7 @@ private:
     bool raiseImpl(Window *window);
     bool lowerImpl(Window *window);
     bool shouldBeAboveTransientParent(const Window *window) const;
-    bool shouldBeAboveTransientParentFlags(Qt::WindowFlags flags) const;
+    bool shouldBeAboveTransientParentFlags(BobUI::WindowFlags flags) const;
     void invariant();
     WindowOrderChangedCallbackType m_windowOrderChangedCallback;
 
@@ -97,6 +97,6 @@ private:
 
 #include "qwasmwindowstack.inc"
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWASMWINDOWSTACK_H

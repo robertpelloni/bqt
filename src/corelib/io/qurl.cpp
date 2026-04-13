@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 /*!
     \class QUrl
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QUrl class provides a convenient interface for working
     with URLs.
@@ -227,7 +227,7 @@
 
     Note that the case folding rules in \l{RFC 3491}{Nameprep}, which QUrl
     conforms to, require host names to always be converted to lower case,
-    regardless of the Qt::FormattingOptions used.
+    regardless of the BobUI::FormattingOptions used.
 
     The options from QUrl::ComponentFormattingOptions are also possible.
 
@@ -246,7 +246,7 @@
     \value PrettyDecoded   The component is returned in a "pretty form", with
                            most percent-encoded characters decoded. The exact
                            behavior of PrettyDecoded varies from component to
-                           component and may also change from Qt release to Qt
+                           component and may also change from BobUI release to BobUI
                            release. This is the default.
 
     \value EncodeSpaces    Leave space characters in their encoded form ("%20").
@@ -290,7 +290,7 @@
     \section2 Full decoding
 
     The FullyDecoded mode is similar to the behavior of the functions returning
-    QString in Qt 4.x, in that every character represents itself and never has
+    QString in BobUI 4.x, in that every character represents itself and never has
     any special meaning. This is true even for the percent character ('%'),
     which should be interpreted to mean a literal percent, not the beginning of
     a percent-encoded sequence. The same actual character, in all other
@@ -405,12 +405,12 @@
 #include "private/qipaddress_p.h"
 #include "qurlquery.h"
 #include "private/qdir_p.h"
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtMiscUtils;
+using namespace BobUI::StringLiterals;
+using namespace BobUIMiscUtils;
 
 inline static bool isHex(char c)
 {
@@ -573,7 +573,7 @@ public:
         QDirPrivate::PathNormalizations mode = QDirPrivate::UrlNormalizationMode;
         if (!isLocalFile())
             mode |= QDirPrivate::RemotePath;
-        return qt_normalizePathSegments(path, mode);
+        return bobui_normalizePathSegments(path, mode);
     }
     QString mergePaths(const QString &relativePath) const;
 
@@ -841,9 +841,9 @@ recodeFromUser(QString &output, const QString &input, const ushort *actions, QUr
     output.resize(0);
     qsizetype appended;
     if (mode == QUrl::DecodedMode)
-        appended = qt_encodeFromUser(output, input, actions);
+        appended = bobui_encodeFromUser(output, input, actions);
     else
-        appended = qt_urlRecode(output, input, {}, actions);
+        appended = bobui_urlRecode(output, input, {}, actions);
     if (!appended)
         output = input;
 }
@@ -855,7 +855,7 @@ recodeFromUser(QString &output, QStringView input, const ushort *actions, QUrl::
                "This function should only be called when parsing encoded components");
     Q_UNUSED(mode);
     output.resize(0);
-    if (qt_urlRecode(output, input, {}, actions))
+    if (bobui_urlRecode(output, input, {}, actions))
         return;
     output.append(input);
 }
@@ -869,7 +869,7 @@ static inline void appendToUser(QString &appendTo, QStringView value, QUrl::Form
     // do if that's what the user asked for (test only
     // ComponentFormattingOptions, ignore FormattingOptions).
     if ((options & 0xFFFF0000) == QUrl::PrettyDecoded ||
-            !qt_urlRecode(appendTo, value, options, actions))
+            !bobui_urlRecode(appendTo, value, options, actions))
         appendTo += value;
 
     // copy nullness, if necessary, because QString::operator+=(QStringView) doesn't
@@ -925,13 +925,13 @@ inline void QUrlPrivate::appendUserInfo(QString &appendTo, QUrl::FormattingOptio
         }
     }
 
-    if (!qt_urlRecode(appendTo, userName, options, userNameActions))
+    if (!bobui_urlRecode(appendTo, userName, options, userNameActions))
         appendTo += userName;
     if (options & QUrl::RemovePassword || !hasPassword()) {
         return;
     } else {
         appendTo += u':';
-        if (!qt_urlRecode(appendTo, password, options, passwordActions))
+        if (!bobui_urlRecode(appendTo, password, options, passwordActions))
             appendTo += password;
     }
 }
@@ -1213,14 +1213,14 @@ inline void QUrlPrivate::appendHost(QString &appendTo, QUrl::FormattingOptions o
     if (host.at(0).unicode() == '[') {
         // IPv6 addresses might contain a zone-id which needs to be recoded
         if (options != 0)
-            if (qt_urlRecode(appendTo, host, options, nullptr))
+            if (bobui_urlRecode(appendTo, host, options, nullptr))
                 return;
         appendTo += host;
     } else {
         // this is either an IPv4Address or a reg-name
         // if it is a reg-name, it is already stored in Unicode form
         if (options & QUrl::EncodeUnicode && !(options & 0x4000000))
-            appendTo += qt_ACE_do(host, ToAceOnly, AllowLeadingDot, {});
+            appendTo += bobui_ACE_do(host, ToAceOnly, AllowLeadingDot, {});
         else
             appendTo += host;
     }
@@ -1253,7 +1253,7 @@ static const QChar *parseIpFuture(QString &host, const QChar *begin, const QChar
         --end;
 
         QString decoded;
-        if (mode == QUrl::TolerantMode && qt_urlRecode(decoded, QStringView{begin, end}, QUrl::FullyDecoded, nullptr)) {
+        if (mode == QUrl::TolerantMode && bobui_urlRecode(decoded, QStringView{begin, end}, QUrl::FullyDecoded, nullptr)) {
             begin = decoded.constBegin();
             end = decoded.constEnd();
         }
@@ -1280,7 +1280,7 @@ static const QChar *parseIp6(QString &host, const QChar *begin, const QChar *end
     if (mode == QUrl::TolerantMode) {
         // this struct is kept in automatic storage because it's only 4 bytes
         const ushort decodeColon[] = { decode(':'), 0 };
-        if (qt_urlRecode(decodedBuffer, decoded, QUrl::ComponentFormattingOption::PrettyDecoded, decodeColon))
+        if (bobui_urlRecode(decodedBuffer, decoded, QUrl::ComponentFormattingOption::PrettyDecoded, decodeColon))
             decoded = decodedBuffer;
     }
 
@@ -1381,13 +1381,13 @@ QUrlPrivate::setHost(const QString &value, qsizetype from, qsizetype iend, QUrl:
     //  Unicode encoding (some non-ASCII characters case-fold to digits
     //                    when nameprepping is done)
     //
-    // The qt_ACE_do function below does IDNA normalization and the STD3 check.
+    // The bobui_ACE_do function below does IDNA normalization and the STD3 check.
     // That means a Unicode string may become an IPv4 address, but it cannot
     // produce a '[' or a '%'.
 
     // check for percent-encoding first
     QString s;
-    if (mode == QUrl::TolerantMode && qt_urlRecode(s, QStringView{begin, end}, { }, nullptr)) {
+    if (mode == QUrl::TolerantMode && bobui_urlRecode(s, QStringView{begin, end}, { }, nullptr)) {
         // something was decoded
         // anything encoded left?
         qsizetype pos = s.indexOf(QChar(0x25)); // '%'
@@ -1400,7 +1400,7 @@ QUrlPrivate::setHost(const QString &value, qsizetype from, qsizetype iend, QUrl:
         return setHost(s, 0, s.size(), QUrl::StrictMode);
     }
 
-    s = qt_ACE_do(value.mid(from, iend - from), NormalizeAce, ForbidLeadingDot, {});
+    s = bobui_ACE_do(value.mid(from, iend - from), NormalizeAce, ForbidLeadingDot, {});
     if (s.isEmpty()) {
         setError(InvalidRegNameError, value);
         return false;
@@ -1531,7 +1531,7 @@ QString QUrlPrivate::toLocalFile(QUrl::FormattingOptions options) const
     // magic for shared drive on windows
     if (!host.isEmpty()) {
         tmp = "//"_L1 + host;
-#ifdef Q_OS_WIN // QTBUG-42346, WebDAV is visible as local file on Windows only.
+#ifdef Q_OS_WIN // BOBUIBUG-42346, WebDAV is visible as local file on Windows only.
         if (scheme == webDavScheme())
             tmp += webDavSslTag();
 #endif
@@ -1743,14 +1743,14 @@ inline void QUrlPrivate::validate() const
     if (scheme == "mailto"_L1) {
         if (!host.isEmpty() || port != -1 || !userName.isEmpty() || !password.isEmpty()) {
             that->isValid = false;
-            that->errorInfo.setParams(0, QT_TRANSLATE_NOOP(QUrl, "expected empty host, username,"
+            that->errorInfo.setParams(0, BOBUI_TRANSLATE_NOOP(QUrl, "expected empty host, username,"
                                                            "port and password"),
                                       0, 0);
         }
     } else if (scheme == ftpScheme() || scheme == httpScheme()) {
         if (host.isEmpty() && !(path.isEmpty() && encodedPath.isEmpty())) {
             that->isValid = false;
-            that->errorInfo.setParams(0, QT_TRANSLATE_NOOP(QUrl, "the host is empty, but not the path"),
+            that->errorInfo.setParams(0, BOBUI_TRANSLATE_NOOP(QUrl, "the host is empty, but not the path"),
                                       0, 0);
         }
     }
@@ -1758,7 +1758,7 @@ inline void QUrlPrivate::validate() const
 #endif
 
 /*!
-    \macro QT_NO_URL_CAST_FROM_STRING
+    \macro BOBUI_NO_URL_CAST_FROM_STRING
     \relates QUrl
 
     Disables automatic conversions from QString (or char *) to QUrl.
@@ -1782,7 +1782,7 @@ inline void QUrlPrivate::validate() const
         url = baseurl.resolved(QUrl(filename));
     \endcode
 
-    \sa QT_NO_CAST_FROM_ASCII
+    \sa BOBUI_NO_CAST_FROM_ASCII
 */
 
 
@@ -1823,7 +1823,7 @@ inline void QUrlPrivate::validate() const
 
     \snippet code/src_corelib_io_qurl.cpp 1
 
-    Both functions are equivalent and, in Qt 5, both functions accept encoded
+    Both functions are equivalent and, in BobUI 5, both functions accept encoded
     data. Usually, the choice of the QUrl constructor or setUrl() versus
     fromEncoded() will depend on the source data: the constructor and setUrl()
     take a QString, whereas fromEncoded takes a QByteArray.
@@ -2950,11 +2950,11 @@ QByteArray QUrl::toEncoded(FormattingOptions options) const
     Parses the URL using \a mode. See setUrl() for more information on
     this parameter. QUrl::DecodedMode is not permitted in this context.
 
-    \note In Qt versions prior to 6.7, this function took a QByteArray, not
+    \note In BobUI versions prior to 6.7, this function took a QByteArray, not
     QByteArrayView. If you experience compile errors, it's because your code
     is passing objects that are implicitly convertible to QByteArray, but not
     QByteArrayView. Wrap the corresponding argument in \c{QByteArray{~~~}} to
-    make the cast explicit. This is backwards-compatible with old Qt versions.
+    make the cast explicit. This is backwards-compatible with old BobUI versions.
 
     \sa toEncoded(), setUrl()
 */
@@ -3013,7 +3013,7 @@ QByteArray QUrl::toPercentEncoding(const QString &input, const QByteArray &exclu
 */
 QString QUrl::fromAce(const QByteArray &domain, QUrl::AceProcessingOptions options)
 {
-    return qt_ACE_do(QString::fromLatin1(domain), NormalizeAce,
+    return bobui_ACE_do(QString::fromLatin1(domain), NormalizeAce,
                      ForbidLeadingDot /*FIXME: make configurable*/, options);
 }
 
@@ -3036,7 +3036,7 @@ QString QUrl::fromAce(const QByteArray &domain, QUrl::AceProcessingOptions optio
 */
 QByteArray QUrl::toAce(const QString &domain, AceProcessingOptions options)
 {
-    return qt_ACE_do(domain, ToAceOnly, ForbidLeadingDot /*FIXME: make configurable*/, options)
+    return bobui_ACE_do(domain, ToAceOnly, ForbidLeadingDot /*FIXME: make configurable*/, options)
             .toLatin1();
 }
 
@@ -3049,7 +3049,7 @@ QByteArray QUrl::toAce(const QString &domain, AceProcessingOptions options)
     provides a means of ordering URLs.
 */
 
-Qt::weak_ordering compareThreeWay(const QUrl &lhs, const QUrl &rhs)
+BobUI::weak_ordering compareThreeWay(const QUrl &lhs, const QUrl &rhs)
 {
     if (!lhs.d || !rhs.d) {
         bool thisIsEmpty = !lhs.d || lhs.d->isEmpty();
@@ -3058,50 +3058,50 @@ Qt::weak_ordering compareThreeWay(const QUrl &lhs, const QUrl &rhs)
         // sort an empty URL first
         if (thisIsEmpty) {
             if (!thatIsEmpty)
-                return Qt::weak_ordering::less;
+                return BobUI::weak_ordering::less;
             else
-                return Qt::weak_ordering::equivalent;
+                return BobUI::weak_ordering::equivalent;
         } else {
-            return Qt::weak_ordering::greater;
+            return BobUI::weak_ordering::greater;
         }
     }
 
     int cmp;
     cmp = lhs.d->scheme.compare(rhs.d->scheme);
     if (cmp != 0)
-        return Qt::compareThreeWay(cmp, 0);
+        return BobUI::compareThreeWay(cmp, 0);
 
     cmp = lhs.d->userName.compare(rhs.d->userName);
     if (cmp != 0)
-        return Qt::compareThreeWay(cmp, 0);
+        return BobUI::compareThreeWay(cmp, 0);
 
     cmp = lhs.d->password.compare(rhs.d->password);
     if (cmp != 0)
-        return Qt::compareThreeWay(cmp, 0);
+        return BobUI::compareThreeWay(cmp, 0);
 
     cmp = lhs.d->host.compare(rhs.d->host);
     if (cmp != 0)
-        return Qt::compareThreeWay(cmp, 0);
+        return BobUI::compareThreeWay(cmp, 0);
 
     if (lhs.d->port != rhs.d->port)
-        return Qt::compareThreeWay(lhs.d->port, rhs.d->port);
+        return BobUI::compareThreeWay(lhs.d->port, rhs.d->port);
 
     cmp = lhs.d->path.compare(rhs.d->path);
     if (cmp != 0)
-        return Qt::compareThreeWay(cmp, 0);
+        return BobUI::compareThreeWay(cmp, 0);
 
     if (lhs.d->hasQuery() != rhs.d->hasQuery())
-        return rhs.d->hasQuery() ? Qt::weak_ordering::less : Qt::weak_ordering::greater;
+        return rhs.d->hasQuery() ? BobUI::weak_ordering::less : BobUI::weak_ordering::greater;
 
     cmp = lhs.d->query.compare(rhs.d->query);
     if (cmp != 0)
-        return Qt::compareThreeWay(cmp, 0);
+        return BobUI::compareThreeWay(cmp, 0);
 
     if (lhs.d->hasFragment() != rhs.d->hasFragment())
-        return rhs.d->hasFragment() ? Qt::weak_ordering::less : Qt::weak_ordering::greater;
+        return rhs.d->hasFragment() ? BobUI::weak_ordering::less : BobUI::weak_ordering::greater;
 
     cmp = lhs.d->fragment.compare(rhs.d->fragment);
-    return Qt::compareThreeWay(cmp, 0);
+    return BobUI::compareThreeWay(cmp, 0);
 }
 
 /*!
@@ -3234,11 +3234,11 @@ QUrl &QUrl::operator =(const QUrl &url) noexcept
 /*!
     Assigns the specified \a url to this object.
 
-    This operator isn't available when the \l {QT_NO_URL_CAST_FROM_STRING} macro
+    This operator isn't available when the \l {BOBUI_NO_URL_CAST_FROM_STRING} macro
     is defined.
 */
-#ifdef QT_NO_URL_CAST_FROM_STRING
-#error You cannot define QT_NO_URL_CAST_FROM_STRING in QtCore, for ABI reasons
+#ifdef BOBUI_NO_URL_CAST_FROM_STRING
+#error You cannot define BOBUI_NO_URL_CAST_FROM_STRING in BobUICore, for ABI reasons
 #endif
 QUrl &QUrl::operator =(const QString &url)
 {
@@ -3321,7 +3321,7 @@ static QString fromNativeSeparators(const QString &pathName)
     "//servername/path/to/file.txt". Note that only certain platforms can
     actually open this file using QFile::open().
 
-    An empty \a localFile leads to an empty URL (since Qt 5.4).
+    An empty \a localFile leads to an empty URL (since BobUI 5.4).
 
     \snippet code/src_corelib_io_qurl.cpp 16
 
@@ -3361,7 +3361,7 @@ QUrl QUrl::fromLocalFile(const QString &localFile)
         qsizetype indexOfPath = deslashified.indexOf(u'/', 2);
         QStringView hostSpec = QStringView{deslashified}.mid(2, indexOfPath - 2);
         // Check for Windows-specific WebDAV specification: "//host@SSL/path".
-        if (hostSpec.endsWith(webDavSslTag(), Qt::CaseInsensitive)) {
+        if (hostSpec.endsWith(webDavSslTag(), BobUI::CaseInsensitive)) {
             hostSpec.truncate(hostSpec.size() - 4);
             scheme = webDavScheme();
         }
@@ -3458,13 +3458,13 @@ bool QUrl::isParentOf(const QUrl &childUrl) const
 }
 
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*! \relates QUrl
 
     Writes url \a url to the stream \a out and returns a reference
     to the stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator<<(QDataStream &out, const QUrl &url)
 {
@@ -3480,7 +3480,7 @@ QDataStream &operator<<(QDataStream &out, const QUrl &url)
     Reads a url into \a url from the stream \a in and returns a
     reference to the stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator>>(QDataStream &in, QUrl &url)
 {
@@ -3489,9 +3489,9 @@ QDataStream &operator>>(QDataStream &in, QUrl &url)
     url.setUrl(QString::fromLatin1(u));
     return in;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QUrl &url)
 {
     QDebugStateSaver saver(d);
@@ -3669,7 +3669,7 @@ QList<QUrl> QUrl::fromStringList(const QStringList &urls, ParsingMode mode)
 */
 size_t qHash(const QUrl &url, size_t seed) noexcept
 {
-    QtPrivate::QHashCombineWithSeed hasher(seed);
+    BobUIPrivate::QHashCombineWithSeed hasher(seed);
 
     // non-commutative, we must hash the port first
     if (!url.d)
@@ -3732,8 +3732,8 @@ static bool isIp6(const QString &text)
     \section1 Examples:
 
     \list
-    \li qt-project.org becomes http://qt-project.org
-    \li ftp.qt-project.org becomes ftp://ftp.qt-project.org
+    \li bobui-project.org becomes http://bobui-project.org
+    \li ftp.bobui-project.org becomes ftp://ftp.bobui-project.org
     \li hostname becomes http://hostname
     \li /home/user/test.html becomes file:///home/user/test.html
     \endlist
@@ -3798,7 +3798,7 @@ QUrl QUrl::fromUserInput(const QString &userInput, const QString &workingDirecto
     if (urlPrepended.isValid() && (!urlPrepended.host().isEmpty() || !urlPrepended.path().isEmpty())) {
         qsizetype dotIndex = trimmedString.indexOf(u'.');
         const QStringView hostscheme = QStringView{trimmedString}.left(dotIndex);
-        if (hostscheme.compare(ftpScheme(), Qt::CaseInsensitive) == 0)
+        if (hostscheme.compare(ftpScheme(), BobUI::CaseInsensitive) == 0)
             urlPrepended.setScheme(ftpScheme());
         return adjustFtpPath(urlPrepended);
     }
@@ -3806,4 +3806,4 @@ QUrl QUrl::fromUserInput(const QString &userInput, const QString &workingDirecto
     return QUrl();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

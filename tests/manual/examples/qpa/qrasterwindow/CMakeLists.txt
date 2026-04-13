@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(qrasterwindow LANGUAGES CXX)
@@ -10,11 +10,11 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/qpa/qrasterwindow")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(qrasterwindow
+bobui_add_executable(qrasterwindow
     main.cpp
 )
 
@@ -24,8 +24,8 @@ set_target_properties(qrasterwindow PROPERTIES
 )
 
 target_link_libraries(qrasterwindow PRIVATE
-    Qt6::Core
-    Qt6::Gui
+    BobUI6::Core
+    BobUI6::Gui
 )
 
 install(TARGETS qrasterwindow

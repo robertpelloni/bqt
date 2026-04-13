@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mouse.h"
 
@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <QRandomGenerator>
 #include <QStyleOption>
-#include <QtMath>
+#include <BobUIMath>
 
 constexpr qreal Pi = M_PI;
 constexpr qreal TwoPi = 2 * M_PI;
@@ -56,12 +56,12 @@ void Mouse::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     painter->drawEllipse(-10, -20, 20, 40);
 
     // Eyes
-    painter->setBrush(Qt::white);
+    painter->setBrush(BobUI::white);
     painter->drawEllipse(-10, -17, 8, 8);
     painter->drawEllipse(2, -17, 8, 8);
 
     // Nose
-    painter->setBrush(Qt::black);
+    painter->setBrush(BobUI::black);
     painter->drawEllipse(QRectF(-2, -22, 4, 4));
 
     // Pupils
@@ -69,7 +69,7 @@ void Mouse::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     painter->drawEllipse(QRectF(4.0 + mouseEyeDirection, -17, 4, 4));
 
     // Ears
-    painter->setBrush(scene()->collidingItems(this).isEmpty() ? Qt::darkYellow : Qt::red);
+    painter->setBrush(scene()->collidingItems(this).isEmpty() ? BobUI::darkYellow : BobUI::red);
     painter->drawEllipse(-17, -12, 16, 16);
     painter->drawEllipse(1, -12, 16, 16);
 
@@ -78,7 +78,7 @@ void Mouse::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     path.cubicTo(-5, 22, -5, 22, 0, 25);
     path.cubicTo(5, 27, 5, 32, 0, 30);
     path.cubicTo(-5, 32, -5, 42, 0, 35);
-    painter->setBrush(Qt::NoBrush);
+    painter->setBrush(BobUI::NoBrush);
     painter->drawPath(path);
 }
 //! [3]

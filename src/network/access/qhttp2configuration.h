@@ -1,17 +1,17 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHTTP2CONFIGURATION_H
 #define QHTTP2CONFIGURATION_H
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qshareddata.h>
 
-QT_REQUIRE_CONFIG(http);
+BOBUI_REQUIRE_CONFIG(http);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHttp2ConfigurationPrivate;
 class Q_NETWORK_EXPORT QHttp2Configuration
@@ -59,6 +59,6 @@ private:
 
 Q_DECLARE_SHARED(QHttp2Configuration)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHTTP2CONFIGURATION_H

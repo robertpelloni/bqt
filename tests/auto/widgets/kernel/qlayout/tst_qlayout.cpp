@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qmetaobject.h>
@@ -12,17 +12,17 @@
 #include <qdialog.h>
 #include <qsizegrip.h>
 #include <qlabel.h>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QStyleFactory>
-#include <QtWidgets/QSizePolicy>
-#include <QtWidgets/QComboBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QStyleFactory>
+#include <BobUIWidgets/QSizePolicy>
+#include <BobUIWidgets/QComboBox>
 #include <QPushButton>
 #include <QRadioButton>
 #include <private/qlayoutengine_p.h>
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qscopeguard.h>
 
 namespace {
     class LayoutWithContent : public QGridLayout
@@ -33,8 +33,8 @@ namespace {
             QWidget *minMaxSizeWdg = new QWidget();
             minMaxSizeWdg->setMinimumSize(40, 40);
             minMaxSizeWdg->setMaximumSize(140, 140);
-            QLabel *label1 = new QLabel(QStringLiteral("This is a qt label 1"));
-            QLabel *label2 = new QLabel(QStringLiteral("This is a qt label 2"));
+            QLabel *label1 = new QLabel(QStringLiteral("This is a bobui label 1"));
+            QLabel *label2 = new QLabel(QStringLiteral("This is a bobui label 2"));
             addWidget(minMaxSizeWdg, 0, 0);
             label1->setMaximumHeight(100);
             label2->setMaximumHeight(100);
@@ -62,13 +62,13 @@ namespace {
             activate();
         }
 
-        void clearConstraintAndResize(QSize sz, Qt::Orientations o = Qt::Horizontal | Qt::Vertical)
+        void clearConstraintAndResize(QSize sz, BobUI::Orientations o = BobUI::Horizontal | BobUI::Vertical)
         {
-            if (o == (Qt::Horizontal | Qt::Vertical))
+            if (o == (BobUI::Horizontal | BobUI::Vertical))
                 setSizeConstraint(QLayout::SizeConstraint::SetNoConstraint);
-            else if (o == Qt::Vertical)
+            else if (o == BobUI::Vertical)
                 setVerticalSizeConstraint(QLayout::SizeConstraint::SetNoConstraint);
-            else if (o == Qt::Horizontal)
+            else if (o == BobUI::Horizontal)
                 setHorizontalSizeConstraint(QLayout::SizeConstraint::SetNoConstraint);
 
             // Make sure we can always remove any set constraint as they are not removed by a change of the constraint.
@@ -80,7 +80,7 @@ namespace {
     };
 }
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 class tst_QLayout : public QObject
 {
@@ -186,7 +186,7 @@ void tst_QLayout::smartMaxSize()
 
     QCOMPARE(f.open(QIODevice::ReadOnly | QIODevice::Text), true);
 
-    QTextStream stream(&f);
+    BOBUIextStream stream(&f);
 
     while(!stream.atEnd()) {
         QString line = stream.readLine(200);
@@ -203,10 +203,10 @@ void tst_QLayout::smartMaxSize()
                                         QSizePolicy::MinimumExpanding,
                                         QSizePolicy::Ignored
                                         };
-    Qt::Alignment alignments[] = {  Qt::Alignment{},
-                                    Qt::AlignLeft,
-                                    Qt::AlignRight,
-                                    Qt::AlignHCenter
+    BobUI::Alignment alignments[] = {  BobUI::Alignment{},
+                                    BobUI::AlignLeft,
+                                    BobUI::AlignRight,
+                                    BobUI::AlignHCenter
                                     };
 
     int expectedIndex = 0;
@@ -221,7 +221,7 @@ void tst_QLayout::smartMaxSize()
                 for (size_t sh = 0; sh < sizeof(sizeCombinations)/sizeof(int); ++sh) {
                     int sizeHint = sizeCombinations[sh];
                     for (size_t a = 0; a < sizeof(alignments)/sizeof(int); ++a) {
-                        Qt::Alignment align = alignments[a];
+                        BobUI::Alignment align = alignments[a];
                         QSize sz = qSmartMaxSize(QSize(sizeHint, 1), QSize(minSize, 1), QSize(maxSize, 1), sizePolicy, align);
                         int width = sz.width();
                         int expectedWidth = expectedWidths[expectedIndex];
@@ -334,7 +334,7 @@ void tst_QLayout::layoutItemRect()
         QApplication::processEvents();
         QSize s = item.sizeHint();
 
-        item.setAlignment(Qt::AlignVCenter);
+        item.setAlignment(BobUI::AlignVCenter);
         item.setGeometry(QRect(QPoint(0, 0), s));
 
         QCOMPARE(radio->geometry().size(), radio->sizeHint());
@@ -348,7 +348,7 @@ void tst_QLayout::warnIfWrongParent()
     QWidget root;
     QHBoxLayout lay;
     lay.setParent(&root);
-    QTest::ignoreMessage(QtWarningMsg, "QLayout::parentWidget: A layout can only have another layout as a parent.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout::parentWidget: A layout can only have another layout as a parent.");
     QCOMPARE(lay.parentWidget(), nullptr);
 }
 
@@ -406,7 +406,7 @@ void tst_QLayout::testRetainSizeWhenHidden()
     layout.addWidget(label2);
 
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
     int normalHeight = widget.height();
 
     // a. Verify that a removed visible will mean lesser size after adjust
@@ -460,7 +460,7 @@ void tst_QLayout::removeWidget()
 
     QVERIFY(!childLayout.isNull());
 
-    // Test inactive layout consumes ChildRemoved event (QTBUG-124151)
+    // Test inactive layout consumes ChildRemoved event (BOBUIBUG-124151)
     layout.addWidget(w.get());
     layout.setEnabled(false);
     w.reset();
@@ -538,7 +538,7 @@ void tst_QLayout::sizeConstraints()
 
 void tst_QLayout::setupDataSizeConstraint()
 {
-    QTest::addColumn<QLayout::SizeConstraint>("constraint");
+    BOBUIest::addColumn<QLayout::SizeConstraint>("constraint");
 
     const auto constraints = {
         QLayout::SetFixedSize,
@@ -550,8 +550,8 @@ void tst_QLayout::setupDataSizeConstraint()
     };
 
     for (auto c : constraints) {
-        const QString desc = QLatin1String("Constraint_") + QTest::toString(c);
-        QTest::addRow("%s", qPrintable(desc)) << c;
+        const QString desc = QLatin1String("Constraint_") + BOBUIest::toString(c);
+        BOBUIest::addRow("%s", qPrintable(desc)) << c;
     }
 }
 
@@ -571,36 +571,36 @@ void tst_QLayout::checkVerticalSizeConstraint()
     // Check fixed size
     layout->applyVerticalSizeConstraint(QLayout::SetFixedSize);
     QCOMPARE(windowWdg.height(), layout->totalSizeHint().height());
-    layout->clearConstraintAndResize(QSize(100, 100), Qt::Vertical);
+    layout->clearConstraintAndResize(QSize(100, 100), BobUI::Vertical);
 
     const QSize verySmall(5, 5);
     const QSize veryBig(1500, 1500);
 
-    layout->clearConstraintAndResize(verySmall, Qt::Vertical);
+    layout->clearConstraintAndResize(verySmall, BobUI::Vertical);
     layout->applyVerticalSizeConstraint(QLayout::SetMinimumSize);
     QCOMPARE(windowWdg.size().height(), layout->minimumSize().height());
 
-    layout->clearConstraintAndResize(veryBig, Qt::Vertical);
+    layout->clearConstraintAndResize(veryBig, BobUI::Vertical);
     layout->applyVerticalSizeConstraint(QLayout::SetMinimumSize);
     QCOMPARE(windowWdg.size().height(), veryBig.height());
 
-    layout->clearConstraintAndResize(veryBig, Qt::Vertical);
+    layout->clearConstraintAndResize(veryBig, BobUI::Vertical);
     layout->applyVerticalSizeConstraint(QLayout::SetMaximumSize);
     QCOMPARE(windowWdg.size().height(), layout->maximumSize().height());
 
-    layout->clearConstraintAndResize(verySmall, Qt::Vertical);
+    layout->clearConstraintAndResize(verySmall, BobUI::Vertical);
     layout->applyVerticalSizeConstraint(QLayout::SetMaximumSize);
     QCOMPARE(windowWdg.size().height(), verySmall.height());
 
-    layout->clearConstraintAndResize(verySmall, Qt::Vertical);
+    layout->clearConstraintAndResize(verySmall, BobUI::Vertical);
     layout->applyVerticalSizeConstraint(QLayout::SetMinAndMaxSize);
     QCOMPARE(windowWdg.size().height(), layout->minimumSize().height());
 
-    layout->clearConstraintAndResize(veryBig, Qt::Vertical);
+    layout->clearConstraintAndResize(veryBig, BobUI::Vertical);
     layout->applyVerticalSizeConstraint(QLayout::SetMinAndMaxSize);
     QCOMPARE(windowWdg.size().height(), layout->maximumSize().height());
 
-    layout->clearConstraintAndResize(verySmall, Qt::Vertical);
+    layout->clearConstraintAndResize(verySmall, BobUI::Vertical);
     layout->applyVerticalSizeConstraint(QLayout::SetDefaultConstraint);
     QCOMPARE(windowWdg.size().height(), layout->totalMinimumSize().height());
 
@@ -634,40 +634,40 @@ void tst_QLayout::checkHorizontalSizeConstraint()
     // Fixed size
     layout->applyHorizontalSizeConstraint(QLayout::SetFixedSize);
     QCOMPARE(windowWdg.width(), layout->totalSizeHint().width());
-    layout->clearConstraintAndResize(QSize(100, 100), Qt::Horizontal);
+    layout->clearConstraintAndResize(QSize(100, 100), BobUI::Horizontal);
 
     const QSize verySmall(5, 5);
     const QSize veryBig(1500, 1500);
 
     // Minimum size
-    layout->clearConstraintAndResize(verySmall, Qt::Horizontal);
+    layout->clearConstraintAndResize(verySmall, BobUI::Horizontal);
     layout->applyHorizontalSizeConstraint(QLayout::SetMinimumSize);
     QCOMPARE(windowWdg.size().width(), layout->minimumSize().width());
 
-    layout->clearConstraintAndResize(veryBig, Qt::Horizontal);
+    layout->clearConstraintAndResize(veryBig, BobUI::Horizontal);
     layout->applyHorizontalSizeConstraint(QLayout::SetMinimumSize);
     QCOMPARE(windowWdg.size().width(), veryBig.width());
 
     // Maximum size
-    layout->clearConstraintAndResize(veryBig, Qt::Horizontal);
+    layout->clearConstraintAndResize(veryBig, BobUI::Horizontal);
     layout->applyHorizontalSizeConstraint(QLayout::SetMaximumSize);
     QCOMPARE(windowWdg.size().width(), layout->maximumSize().width());
 
-    layout->clearConstraintAndResize(verySmall, Qt::Horizontal);
+    layout->clearConstraintAndResize(verySmall, BobUI::Horizontal);
     layout->applyHorizontalSizeConstraint(QLayout::SetMaximumSize);
     QCOMPARE(windowWdg.size().width(), verySmall.width());
 
     // Min and Max
-    layout->clearConstraintAndResize(verySmall, Qt::Horizontal);
+    layout->clearConstraintAndResize(verySmall, BobUI::Horizontal);
     layout->applyHorizontalSizeConstraint(QLayout::SetMinAndMaxSize);
     QCOMPARE(windowWdg.size().width(), layout->minimumSize().width());
 
-    layout->clearConstraintAndResize(veryBig, Qt::Horizontal);
+    layout->clearConstraintAndResize(veryBig, BobUI::Horizontal);
     layout->applyHorizontalSizeConstraint(QLayout::SetMinAndMaxSize);
     QCOMPARE(windowWdg.size().width(), layout->maximumSize().width());
 
     // Default constraint
-    layout->clearConstraintAndResize(verySmall, Qt::Horizontal);
+    layout->clearConstraintAndResize(verySmall, BobUI::Horizontal);
     layout->applyHorizontalSizeConstraint(QLayout::SetDefaultConstraint);
     QCOMPARE(windowWdg.size().width(), layout->totalMinimumSize().width());
 
@@ -685,5 +685,5 @@ void tst_QLayout::checkHorizontalSizeConstraint()
     QCOMPARE(innerWidget->minimumSize().width(), 0);
 }
 
-QTEST_MAIN(tst_QLayout)
+BOBUIEST_MAIN(tst_QLayout)
 #include "tst_qlayout.moc"

@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#ifndef QT_TESTS_SHARED_FILESYSTEM_H_INCLUDED
-#define QT_TESTS_SHARED_FILESYSTEM_H_INCLUDED
+#ifndef BOBUI_TESTS_SHARED_FILESYSTEM_H_INCLUDED
+#define BOBUI_TESTS_SHARED_FILESYSTEM_H_INCLUDED
 
 #include <QDir>
 #include <QFile>
@@ -10,10 +10,10 @@
 #include <QScopedPointer>
 #include <QString>
 #include <QStringList>
-#include <QTemporaryDir>
+#include <BOBUIemporaryDir>
 
 #if defined(Q_OS_WIN)
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <winioctl.h>
 #ifndef IO_REPARSE_TAG_MOUNT_POINT
 #define IO_REPARSE_TAG_MOUNT_POINT       (0xA0000003L)
@@ -25,14 +25,14 @@
 #ifndef SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE // MinGW
 #define SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE (0x2)
 #endif
-QT_BEGIN_NAMESPACE
-namespace QTest {
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
     static QString uncServerName() { return qgetenv("COMPUTERNAME"); }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif
 
-// QTemporaryDir-based helper class for creating file-system hierarchies and cleaning up.
+// BOBUIemporaryDir-based helper class for creating file-system hierarchies and cleaning up.
 class FileSystem
 {
     Q_DISABLE_COPY(FileSystem)
@@ -84,9 +84,9 @@ public:
         if (CreateSymbolicLink(reinterpret_cast<const wchar_t*>(nativeSymLinkName.utf16()),
                                reinterpret_cast<const wchar_t*>(nativeTarget.utf16()), flags) == FALSE) {
             result.dwErr = GetLastError();
-            QTextStream(&result.errorMessage) << "CreateSymbolicLink(" <<  nativeSymLinkName << ", "
-                << nativeTarget << ", 0x" << Qt::hex << flags << Qt::dec << ") failed with error "
-                << result.dwErr << ": " << qt_error_string(int(result.dwErr));
+            BOBUIextStream(&result.errorMessage) << "CreateSymbolicLink(" <<  nativeSymLinkName << ", "
+                << nativeTarget << ", 0x" << BobUI::hex << flags << BobUI::dec << ") failed with error "
+                << result.dwErr << ": " << bobui_error_string(int(result.dwErr));
         } else {
             result.link = nativeSymLinkName;
             result.target = nativeTarget;
@@ -120,7 +120,7 @@ public:
                                   NULL, 0, NULL, NULL, NULL,
                                   fileSystem, sizeof(fileSystem)/sizeof(WCHAR)) == FALSE) {
             result.dwErr = GetLastError();
-            result.errorMessage = "GetVolumeInformationW() failed: " + qt_error_string(int(result.dwErr));
+            result.errorMessage = "GetVolumeInformationW() failed: " + bobui_error_string(int(result.dwErr));
             return result;
         }
         if (QString::fromWCharArray(fileSystem) != "NTFS") {
@@ -141,7 +141,7 @@ public:
                              FILE_FLAG_OPEN_REPARSE_POINT|FILE_FLAG_BACKUP_SEMANTICS, NULL );
         if (hFile == INVALID_HANDLE_VALUE) {
             result.dwErr = GetLastError();
-            result.errorMessage = "CreateFileW(" + linkName + ") failed: " + qt_error_string(int(result.dwErr));
+            result.errorMessage = "CreateFileW(" + linkName + ") failed: " + bobui_error_string(int(result.dwErr));
             return result;
         }
 
@@ -157,7 +157,7 @@ public:
                                  NULL, 0, &returnedLength, NULL);
         if (!ioc) {
             result.dwErr = GetLastError();
-            result.errorMessage = "DeviceIoControl() failed: " + qt_error_string(int(result.dwErr));
+            result.errorMessage = "DeviceIoControl() failed: " + bobui_error_string(int(result.dwErr));
         } else {
             result.link = linkName;
             result.target = target;
@@ -173,7 +173,7 @@ private:
         QString result = QDir::tempPath();
         if (!result.endsWith(QLatin1Char('/')))
             result.append(QLatin1Char('/'));
-        result += QStringLiteral("qt-test-filesystem-");
+        result += QStringLiteral("bobui-test-filesystem-");
         result += QCoreApplication::applicationName();
         result += QStringLiteral("-XXXXXX");
         return result;
@@ -191,7 +191,7 @@ private:
         return 0;
     }
 
-    QTemporaryDir m_temporaryDir;
+    BOBUIemporaryDir m_temporaryDir;
 };
 
 #endif // include guard

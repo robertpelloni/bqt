@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #include "qdbusunixfiledescriptor.h"
@@ -11,9 +11,9 @@
 
 BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_IMPL_METATYPE_EXTERN(QDBusUnixFileDescriptor)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusUnixFileDescriptor)
 
 /*!
     \class QDBusUnixFileDescriptor
@@ -24,7 +24,7 @@ QT_IMPL_METATYPE_EXTERN(QDBusUnixFileDescriptor)
     \brief The QDBusUnixFileDescriptor class holds one Unix file descriptor.
 
     The QDBusUnixFileDescriptor class is used to hold one Unix file
-    descriptor for use with the Qt D-Bus module. This allows applications to
+    descriptor for use with the BobUI D-Bus module. This allows applications to
     send and receive Unix file descriptors over the D-Bus connection, mapping
     automatically to the D-Bus type 'h'.
 
@@ -42,7 +42,7 @@ QT_IMPL_METATYPE_EXTERN(QDBusUnixFileDescriptor)
 
     Unix file descriptor passing is not available in all D-Bus connections.
     This feature is present with D-Bus library and bus daemon version 1.4 and
-    upwards on Unix systems. Qt D-Bus automatically enables the feature if such
+    upwards on Unix systems. BobUI D-Bus automatically enables the feature if such
     a version was found at compile-time and run-time.
 
     To verify that your connection does support passing file descriptors,
@@ -90,7 +90,7 @@ public:
     QAtomicInt fd;
 };
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QDBusUnixFileDescriptorPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QDBusUnixFileDescriptorPrivate)
 
 /*!
     Constructs a QDBusUnixFileDescriptor without a wrapped file descriptor.
@@ -228,7 +228,7 @@ bool QDBusUnixFileDescriptor::isSupported()
 void QDBusUnixFileDescriptor::setFileDescriptor(int fileDescriptor)
 {
     if (fileDescriptor != -1)
-        giveFileDescriptor(qt_safe_dup(fileDescriptor));
+        giveFileDescriptor(bobui_safe_dup(fileDescriptor));
 }
 
 /*!
@@ -248,7 +248,7 @@ void QDBusUnixFileDescriptor::giveFileDescriptor(int fileDescriptor)
 
     const int fdl = d->fd.loadRelaxed();
     if (fdl != -1)
-        qt_safe_close(fdl);
+        bobui_safe_close(fdl);
 
     if (fileDescriptor != -1)
         d->fd.storeRelaxed(fileDescriptor);
@@ -274,7 +274,7 @@ QDBusUnixFileDescriptorPrivate::~QDBusUnixFileDescriptorPrivate()
 {
     const int fdl = fd.loadRelaxed();
     if (fdl != -1)
-        qt_safe_close(fdl);
+        bobui_safe_close(fdl);
 }
 
 #else
@@ -302,6 +302,6 @@ QDBusUnixFileDescriptorPrivate::~QDBusUnixFileDescriptorPrivate()
 
 #endif
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 
 BOBUI_END_NAMESPACE

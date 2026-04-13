@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMENUBAR_P_H
 #define QMENUBAR_P_H
@@ -9,23 +9,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtWidgets/qstyleoption.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIWidgets/qstyleoption.h"
 #include <private/qmenu_p.h> // Mac needs what in this file!
 #include <qpa/qplatformmenu.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_REQUIRE_CONFIG(menubar);
+BOBUI_REQUIRE_CONFIG(menubar);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMenuBarExtension;
 class QMenuBarPrivate : public QWidgetPrivate
@@ -115,6 +115,6 @@ public:
     inline int indexOf(QAction *act) const { return q_func()->actions().indexOf(act); }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMENUBAR_P_H

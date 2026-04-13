@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qapplication.h"
 
@@ -12,7 +12,7 @@
 #include "qgraphicswidget_p.h"
 #include "qgraphicsscene.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QGraphicsLayout
@@ -20,7 +20,7 @@ QT_BEGIN_NAMESPACE
     in Graphics View.
     \since 4.4
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QGraphicsLayout is an abstract class that defines a virtual API for
     arranging QGraphicsWidget children and other QGraphicsLayoutItem objects
@@ -240,9 +240,9 @@ void QGraphicsLayout::activate()
         QGraphicsWidget *parentWidget = static_cast<QGraphicsWidget*>(parentItem);
         if (!parentWidget->parentLayoutItem()) {
             // we've reached the topmost widget, resize it
-            bool wasResized = parentWidget->testAttribute(Qt::WA_Resized);
+            bool wasResized = parentWidget->testAttribute(BobUI::WA_Resized);
             parentWidget->resize(parentWidget->size());
-            parentWidget->setAttribute(Qt::WA_Resized, wasResized);
+            parentWidget->setAttribute(BobUI::WA_Resized, wasResized);
         }
 
         setGeometry(parentItem->contentsRect());    // relayout children
@@ -484,4 +484,4 @@ bool QGraphicsLayout::instantInvalidatePropagation()
     return g_instantInvalidatePropagation;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef CHARACTERWIDGET_H
 #define CHARACTERWIDGET_H
@@ -9,10 +9,10 @@
 #include <QString>
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QMouseEvent;
 class QPaintEvent;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class CharacterWidget : public QWidget

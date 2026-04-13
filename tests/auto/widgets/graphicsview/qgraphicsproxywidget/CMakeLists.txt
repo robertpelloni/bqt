@@ -1,26 +1,26 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qgraphicsproxywidget Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qgraphicsproxywidget LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_qgraphicsproxywidget
+bobui_internal_add_test(tst_qgraphicsproxywidget
     SOURCES
         tst_qgraphicsproxywidget.cpp
     DEFINES
-        QTEST_QPA_MOUSE_HANDLING
-        QT_NO_CAST_FROM_ASCII
+        BOBUIEST_QPA_MOUSE_HANDLING
+        BOBUI_NO_CAST_FROM_ASCII
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Widgets
-        Qt::WidgetsPrivate
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Widgets
+        BobUI::WidgetsPrivate
 )

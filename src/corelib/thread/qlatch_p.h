@@ -1,6 +1,6 @@
 // Copyright (C) 2024 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLATCH_P_H
 #define QLATCH_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an implementation
+// This file is not part of the BobUI API. It exists purely as an implementation
 // detail. This header file may change from version to version without notice,
 // or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qbasicatomic.h>
-#include <QtCore/qtsan_impl.h>
+#include <BobUICore/qbasicatomic.h>
+#include <BobUICore/bobuisan_impl.h>
 
 #include <private/qglobal_p.h>
 
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QLatch
 {
@@ -39,7 +39,7 @@ public:
 
     void countDown(int n = 1) noexcept
     {
-        QtTsan::latchCountDown(&counter);
+        BobUITsan::latchCountDown(&counter);
         if (counter.fetchAndSubRelease(n) == n) // addAndFetch(n) == 0
             wakeUp();
     }
@@ -48,7 +48,7 @@ public:
     {
         if (pending() != 0)
             return false;
-        QtTsan::latchWait(&counter);
+        BobUITsan::latchWait(&counter);
         return true;
     }
 
@@ -56,7 +56,7 @@ public:
     {
         if (int current = counter.loadAcquire(); (current & CounterMask) != 0) {
             waitInternal(current);
-            QtTsan::latchWait(&counter);
+            BobUITsan::latchWait(&counter);
         }
     }
 
@@ -92,6 +92,6 @@ private:
 #undef Q_LATCH_EXPORT
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLATCH_P_H

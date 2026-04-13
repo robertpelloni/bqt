@@ -11,10 +11,10 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "CompanyName", "The Qt Company Ltd"
+            VALUE "CompanyName", "The BobUI Company Ltd"
             VALUE "FileDescription", "A Good File"
             VALUE "FileVersion", "1.0.0.0"
-            VALUE "LegalCopyright", "Copyright (C) 2019 The Qt Company Ltd."
+            VALUE "LegalCopyright", "Copyright (C) 2019 The BobUI Company Ltd."
             VALUE "InternalName", "foo"
             VALUE "OriginalFilename", "foo.exe"
             VALUE "ProductName", "A Good Product"

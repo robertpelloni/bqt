@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QCache>
 #include <QMutex>
-#include <QThreadStorage>
+#include <BOBUIhreadStorage>
 
 #define Counter ReentrantCounter
 
@@ -40,7 +40,7 @@ private:
 typedef int SomeClass;
 
 //! [7]
-QThreadStorage<QCache<QString, SomeClass> > caches;
+BOBUIhreadStorage<QCache<QString, SomeClass> > caches;
 
 void cacheObject(const QString &key, SomeClass *object)
 //! [7] //! [8]

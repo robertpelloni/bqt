@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandinputmethodeventbuilder_p.h"
 
@@ -7,17 +7,17 @@
 #include <QGuiApplication>
 #include <QInputMethod>
 #include <QPalette>
-#include <QTextCharFormat>
+#include <BOBUIextCharFormat>
 
-#ifdef QT_BUILD_WAYLANDCOMPOSITOR_LIB
-#include <QtWaylandCompositor/private/qwayland-server-text-input-unstable-v2.h>
-#include <QtWaylandCompositor/private/qwayland-server-text-input-unstable-v3.h>
+#ifdef BOBUI_BUILD_WAYLANDCOMPOSITOR_LIB
+#include <BobUIWaylandCompositor/private/qwayland-server-text-input-unstable-v2.h>
+#include <BobUIWaylandCompositor/private/qwayland-server-text-input-unstable-v3.h>
 #else
-#include <QtWaylandClient/private/qwayland-text-input-unstable-v2.h>
-#include <QtWaylandClient/private/qwayland-text-input-unstable-v3.h>
+#include <BobUIWaylandClient/private/qwayland-text-input-unstable-v2.h>
+#include <BobUIWaylandClient/private/qwayland-text-input-unstable-v3.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QWaylandInputMethodEventBuilder::~QWaylandInputMethodEventBuilder()
 {
@@ -47,7 +47,7 @@ void QWaylandInputMethodEventBuilder::setDeleteSurroundingText(uint32_t beforeLe
 
 void QWaylandInputMethodEventBuilder::addPreeditStyling(uint32_t index, uint32_t length, uint32_t style)
 {
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
 
     switch (style) {
     case ZWP_TEXT_INPUT_V2_PREEDIT_STYLE_NONE:
@@ -55,21 +55,21 @@ void QWaylandInputMethodEventBuilder::addPreeditStyling(uint32_t index, uint32_t
     case ZWP_TEXT_INPUT_V2_PREEDIT_STYLE_DEFAULT:
     case ZWP_TEXT_INPUT_V2_PREEDIT_STYLE_UNDERLINE:
         format.setFontUnderline(true);
-        format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+        format.setUnderlineStyle(BOBUIextCharFormat::SingleUnderline);
         m_preeditStyles.append(QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, index, length, format));
         break;
     case ZWP_TEXT_INPUT_V2_PREEDIT_STYLE_ACTIVE:
     case ZWP_TEXT_INPUT_V2_PREEDIT_STYLE_INACTIVE:
         format.setFontWeight(QFont::Bold);
         format.setFontUnderline(true);
-        format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+        format.setUnderlineStyle(BOBUIextCharFormat::SingleUnderline);
         m_preeditStyles.append(QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, index, length, format));
         break;
     case ZWP_TEXT_INPUT_V2_PREEDIT_STYLE_HIGHLIGHT:
     case ZWP_TEXT_INPUT_V2_PREEDIT_STYLE_SELECTION:
         {
             format.setFontUnderline(true);
-            format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+            format.setUnderlineStyle(BOBUIextCharFormat::SingleUnderline);
             QPalette palette = qApp->palette();
             format.setBackground(QBrush(palette.color(QPalette::Active, QPalette::Highlight)));
             format.setForeground(QBrush(palette.color(QPalette::Active, QPalette::HighlightedText)));
@@ -78,8 +78,8 @@ void QWaylandInputMethodEventBuilder::addPreeditStyling(uint32_t index, uint32_t
         break;
     case ZWP_TEXT_INPUT_V2_PREEDIT_STYLE_INCORRECT:
         format.setFontUnderline(true);
-        format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
-        format.setUnderlineColor(QColor(Qt::red));
+        format.setUnderlineStyle(BOBUIextCharFormat::WaveUnderline);
+        format.setUnderlineColor(QColor(BobUI::red));
         m_preeditStyles.append(QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, index, length, format));
         break;
     default:
@@ -99,10 +99,10 @@ QInputMethodEvent *QWaylandInputMethodEventBuilder::buildCommit(const QString &t
     const std::pair<int, int> replacement = replacementForDeleteSurrounding();
 
     if (m_cursor != 0 || m_anchor != 0) {
-        QString surrounding = QInputMethod::queryFocusObject(Qt::ImSurroundingText, QVariant()).toString();
-        const int cursor = QInputMethod::queryFocusObject(Qt::ImCursorPosition, QVariant()).toInt();
-        const int anchor = QInputMethod::queryFocusObject(Qt::ImAnchorPosition, QVariant()).toInt();
-        const int absoluteCursor = QInputMethod::queryFocusObject(Qt::ImAbsolutePosition, QVariant()).toInt();
+        QString surrounding = QInputMethod::queryFocusObject(BobUI::ImSurroundingText, QVariant()).toString();
+        const int cursor = QInputMethod::queryFocusObject(BobUI::ImCursorPosition, QVariant()).toInt();
+        const int anchor = QInputMethod::queryFocusObject(BobUI::ImAnchorPosition, QVariant()).toInt();
+        const int absoluteCursor = QInputMethod::queryFocusObject(BobUI::ImAbsolutePosition, QVariant()).toInt();
 
         const int absoluteOffset = absoluteCursor - cursor;
 
@@ -151,9 +151,9 @@ std::pair<int, int> QWaylandInputMethodEventBuilder::replacementForDeleteSurroun
     if (m_deleteBefore == 0 && m_deleteAfter == 0)
         return {0, 0};
 
-    const QString &surrounding = QInputMethod::queryFocusObject(Qt::ImSurroundingText, QVariant()).toString();
-    const int cursor = QInputMethod::queryFocusObject(Qt::ImCursorPosition, QVariant()).toInt();
-    const int anchor = QInputMethod::queryFocusObject(Qt::ImAnchorPosition, QVariant()).toInt();
+    const QString &surrounding = QInputMethod::queryFocusObject(BobUI::ImSurroundingText, QVariant()).toString();
+    const int cursor = QInputMethod::queryFocusObject(BobUI::ImCursorPosition, QVariant()).toInt();
+    const int anchor = QInputMethod::queryFocusObject(BobUI::ImAnchorPosition, QVariant()).toInt();
 
     const int selectionStart = qMin(cursor, anchor);
     const int selectionEnd = qMax(cursor, anchor);
@@ -164,108 +164,108 @@ std::pair<int, int> QWaylandInputMethodEventBuilder::replacementForDeleteSurroun
     return {-deleteBefore, deleteBefore + deleteAfter};
 }
 
-QWaylandInputMethodContentType QWaylandInputMethodContentType::convert(Qt::InputMethodHints hints)
+QWaylandInputMethodContentType QWaylandInputMethodContentType::convert(BobUI::InputMethodHints hints)
 {
     uint32_t hint = ZWP_TEXT_INPUT_V2_CONTENT_HINT_NONE;
     uint32_t purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_NORMAL;
 
-    if (hints & Qt::ImhHiddenText)
+    if (hints & BobUI::ImhHiddenText)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_HIDDEN_TEXT;
-    if (hints & Qt::ImhSensitiveData)
+    if (hints & BobUI::ImhSensitiveData)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_SENSITIVE_DATA;
-    if ((hints & Qt::ImhNoAutoUppercase) == 0)
+    if ((hints & BobUI::ImhNoAutoUppercase) == 0)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_AUTO_CAPITALIZATION;
-    if (hints & Qt::ImhPreferNumbers) {
+    if (hints & BobUI::ImhPreferNumbers) {
         // Nothing yet
     }
-    if (hints & Qt::ImhPreferUppercase)
+    if (hints & BobUI::ImhPreferUppercase)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_UPPERCASE;
-    if (hints & Qt::ImhPreferLowercase)
+    if (hints & BobUI::ImhPreferLowercase)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_LOWERCASE;
-    if ((hints & Qt::ImhNoPredictiveText) == 0) {
+    if ((hints & BobUI::ImhNoPredictiveText) == 0) {
         hint |= (ZWP_TEXT_INPUT_V2_CONTENT_HINT_AUTO_COMPLETION
                 | ZWP_TEXT_INPUT_V2_CONTENT_HINT_AUTO_CORRECTION);
     }
 
-    if ((hints & Qt::ImhDate) && (hints & Qt::ImhTime) == 0)
+    if ((hints & BobUI::ImhDate) && (hints & BobUI::ImhTime) == 0)
         purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_DATE;
-    else if ((hints & Qt::ImhDate) && (hints & Qt::ImhTime))
+    else if ((hints & BobUI::ImhDate) && (hints & BobUI::ImhTime))
         purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_DATETIME;
-    else if ((hints & Qt::ImhDate) == 0 && (hints & Qt::ImhTime))
+    else if ((hints & BobUI::ImhDate) == 0 && (hints & BobUI::ImhTime))
         purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_TIME;
 
-    if (hints & Qt::ImhPreferLatin)
+    if (hints & BobUI::ImhPreferLatin)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_LATIN;
-    if (hints & Qt::ImhMultiLine)
+    if (hints & BobUI::ImhMultiLine)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_MULTILINE;
-    if (hints & Qt::ImhDigitsOnly)
+    if (hints & BobUI::ImhDigitsOnly)
         purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_DIGITS;
-    if (hints & Qt::ImhFormattedNumbersOnly)
+    if (hints & BobUI::ImhFormattedNumbersOnly)
         purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_NUMBER;
-    if (hints & Qt::ImhUppercaseOnly)
+    if (hints & BobUI::ImhUppercaseOnly)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_UPPERCASE;
-    if (hints & Qt::ImhLowercaseOnly)
+    if (hints & BobUI::ImhLowercaseOnly)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_LOWERCASE;
-    if (hints & Qt::ImhDialableCharactersOnly)
+    if (hints & BobUI::ImhDialableCharactersOnly)
         purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_PHONE;
-    if (hints & Qt::ImhEmailCharactersOnly)
+    if (hints & BobUI::ImhEmailCharactersOnly)
        purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_EMAIL;
-    if (hints & Qt::ImhUrlCharactersOnly)
+    if (hints & BobUI::ImhUrlCharactersOnly)
        purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_URL;
-    if (hints & Qt::ImhLatinOnly)
+    if (hints & BobUI::ImhLatinOnly)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_LATIN;
 
     return QWaylandInputMethodContentType{hint, purpose};
 }
 
-QWaylandInputMethodContentType QWaylandInputMethodContentType::convertV3(Qt::InputMethodHints hints)
+QWaylandInputMethodContentType QWaylandInputMethodContentType::convertV3(BobUI::InputMethodHints hints)
 {
     uint32_t hint = ZWP_TEXT_INPUT_V3_CONTENT_HINT_NONE;
     uint32_t purpose = ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_NORMAL;
 
-    if (hints & Qt::ImhHiddenText)
+    if (hints & BobUI::ImhHiddenText)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_HIDDEN_TEXT;
-    if (hints & Qt::ImhSensitiveData)
+    if (hints & BobUI::ImhSensitiveData)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_SENSITIVE_DATA;
-    if ((hints & Qt::ImhNoAutoUppercase) == 0)
+    if ((hints & BobUI::ImhNoAutoUppercase) == 0)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_AUTO_CAPITALIZATION;
-    if (hints & Qt::ImhPreferNumbers) {
+    if (hints & BobUI::ImhPreferNumbers) {
         // Nothing yet
     }
-    if (hints & Qt::ImhPreferUppercase)
+    if (hints & BobUI::ImhPreferUppercase)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_UPPERCASE;
-    if (hints & Qt::ImhPreferLowercase)
+    if (hints & BobUI::ImhPreferLowercase)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_LOWERCASE;
-    if ((hints & Qt::ImhNoPredictiveText) == 0) {
+    if ((hints & BobUI::ImhNoPredictiveText) == 0) {
         hint |= (ZWP_TEXT_INPUT_V3_CONTENT_HINT_COMPLETION
                 | ZWP_TEXT_INPUT_V3_CONTENT_HINT_SPELLCHECK);
     }
 
-    if ((hints & Qt::ImhDate) && (hints & Qt::ImhTime) == 0)
+    if ((hints & BobUI::ImhDate) && (hints & BobUI::ImhTime) == 0)
         purpose = ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_DATE;
-    else if ((hints & Qt::ImhDate) && (hints & Qt::ImhTime))
+    else if ((hints & BobUI::ImhDate) && (hints & BobUI::ImhTime))
         purpose = ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_DATETIME;
-    else if ((hints & Qt::ImhDate) == 0 && (hints & Qt::ImhTime))
+    else if ((hints & BobUI::ImhDate) == 0 && (hints & BobUI::ImhTime))
         purpose = ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_TIME;
-    if (hints & Qt::ImhPreferLatin)
+    if (hints & BobUI::ImhPreferLatin)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_LATIN;
-    if (hints & Qt::ImhMultiLine)
+    if (hints & BobUI::ImhMultiLine)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_MULTILINE;
-    if (hints & Qt::ImhDigitsOnly)
+    if (hints & BobUI::ImhDigitsOnly)
         purpose = ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_DIGITS;
-    if (hints & Qt::ImhFormattedNumbersOnly)
+    if (hints & BobUI::ImhFormattedNumbersOnly)
         purpose = ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_NUMBER;
-    if (hints & Qt::ImhUppercaseOnly)
+    if (hints & BobUI::ImhUppercaseOnly)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_UPPERCASE;
-    if (hints & Qt::ImhLowercaseOnly)
+    if (hints & BobUI::ImhLowercaseOnly)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_LOWERCASE;
-    if (hints & Qt::ImhDialableCharactersOnly)
+    if (hints & BobUI::ImhDialableCharactersOnly)
         purpose = ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_PHONE;
-    if (hints & Qt::ImhEmailCharactersOnly)
+    if (hints & BobUI::ImhEmailCharactersOnly)
        purpose = ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_EMAIL;
-    if (hints & Qt::ImhUrlCharactersOnly)
+    if (hints & BobUI::ImhUrlCharactersOnly)
        purpose = ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_URL;
-    if (hints & Qt::ImhLatinOnly)
+    if (hints & BobUI::ImhLatinOnly)
         hint |= ZWP_TEXT_INPUT_V3_CONTENT_HINT_LATIN;
 
     return QWaylandInputMethodContentType{hint, purpose};
@@ -328,5 +328,5 @@ int QWaylandInputMethodEventBuilder::indexToWayland(const QString &text, int len
     return QStringView{text}.mid(base, length).toUtf8().size();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

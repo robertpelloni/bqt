@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "propertyprinter.h"
 
@@ -9,7 +9,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void qmakePropertyPrinter(const QList<QPair<QString, QString>> &values)
 {
@@ -34,4 +34,4 @@ void jsonPropertyPrinter(const QList<QPair<QString, QString>> &values)
     std::cout << document.toJson().constData();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

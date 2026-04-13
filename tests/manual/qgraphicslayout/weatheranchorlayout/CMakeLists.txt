@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
@@ -6,13 +6,13 @@
 #####################################################################
 cmake_minimum_required(VERSION 3.16)
 
-qt_internal_add_manual_test(weatheranchorlayout
+bobui_internal_add_manual_test(weatheranchorlayout
     GUI
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
 )
 
 # Resources:
@@ -25,7 +25,7 @@ set(weatheranchorlayout_resource_files
     "images/weather-few-clouds.png"
 )
 
-qt_add_resources(weatheranchorlayout "weatheranchorlayout"
+bobui_add_resources(weatheranchorlayout "weatheranchorlayout"
     PREFIX
         "/"
     FILES

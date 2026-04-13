@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef GRAPHWIDGET_H
 #define GRAPHWIDGET_H
@@ -26,8 +26,8 @@ public slots:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
-    void timerEvent(QTimerEvent *event) override;
-#if QT_CONFIG(wheelevent)
+    void timerEvent(BOBUIimerEvent *event) override;
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *event) override;
 #endif
     void drawBackground(QPainter *painter, const QRectF &rect) override;

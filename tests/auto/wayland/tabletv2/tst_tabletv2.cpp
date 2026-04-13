@@ -1,11 +1,11 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
 
 #include <qwayland-server-tablet-unstable-v2.h>
 
-#include <QtGui/QRasterWindow>
+#include <BobUIGui/QRasterWindow>
 
 using namespace MockCompositor;
 
@@ -14,7 +14,7 @@ constexpr int tabletVersion = 1; // protocol VERSION, not the name suffix (_v2)
 class TabletManagerV2;
 class TabletSeatV2;
 
-class TabletV2 : public QObject, public QtWaylandServer::zwp_tablet_v2
+class TabletV2 : public QObject, public BobUIWaylandServer::zwp_tablet_v2
 {
     Q_OBJECT
 public:
@@ -32,11 +32,11 @@ protected:
     void zwp_tablet_v2_destroy(Resource *resource) override;
 };
 
-class TabletToolV2 : public QObject, public QtWaylandServer::zwp_tablet_tool_v2
+class TabletToolV2 : public QObject, public BobUIWaylandServer::zwp_tablet_tool_v2
 {
     Q_OBJECT
 public:
-    using ToolType = QtWaylandServer::zwp_tablet_tool_v2::type;
+    using ToolType = BobUIWaylandServer::zwp_tablet_tool_v2::type;
     explicit TabletToolV2(TabletSeatV2 *tabletSeat, ToolType toolType, quint64 hardwareSerial)
         : m_tabletSeat(tabletSeat)
         , m_toolType(toolType)
@@ -81,7 +81,7 @@ protected:
     void zwp_tablet_tool_v2_destroy(Resource *resource) override;
 };
 
-class TabletPadV2 : public QObject, public QtWaylandServer::zwp_tablet_pad_v2
+class TabletPadV2 : public QObject, public BobUIWaylandServer::zwp_tablet_pad_v2
 {
     Q_OBJECT
 public:
@@ -99,7 +99,7 @@ protected:
     void zwp_tablet_pad_v2_destroy(Resource *resource) override;
 };
 
-class TabletSeatV2 : public QObject, public QtWaylandServer::zwp_tablet_seat_v2
+class TabletSeatV2 : public QObject, public BobUIWaylandServer::zwp_tablet_seat_v2
 {
     Q_OBJECT
 public:
@@ -125,7 +125,7 @@ public:
         tablet->send_done(tabletResource->handle);
     }
 
-    using ToolType = QtWaylandServer::zwp_tablet_tool_v2::type;
+    using ToolType = BobUIWaylandServer::zwp_tablet_tool_v2::type;
     TabletToolV2 *addTool(ToolType toolType = ToolType::type_pen, quint64 hardwareSerial = 0)
     {
         auto *tool = new TabletToolV2(this, toolType, hardwareSerial);
@@ -202,12 +202,12 @@ protected:
     }
 };
 
-class TabletManagerV2 : public Global, public QtWaylandServer::zwp_tablet_manager_v2
+class TabletManagerV2 : public Global, public BobUIWaylandServer::zwp_tablet_manager_v2
 {
     Q_OBJECT
 public:
     explicit TabletManagerV2(CoreCompositor *compositor, int version = 1)
-        : QtWaylandServer::zwp_tablet_manager_v2(compositor->m_display, version)
+        : BobUIWaylandServer::zwp_tablet_manager_v2(compositor->m_display, version)
         , m_version(version)
     {}
     bool isClean() override
@@ -262,7 +262,7 @@ void TabletV2::sendRemoved()
     m_tabletSeat->m_tabletsWaitingForDestroy.append(this);
 }
 
-void TabletV2::zwp_tablet_v2_destroy(QtWaylandServer::zwp_tablet_v2::Resource *resource)
+void TabletV2::zwp_tablet_v2_destroy(BobUIWaylandServer::zwp_tablet_v2::Resource *resource)
 {
     Q_UNUSED(resource);
     if (m_tabletSeat) {
@@ -331,7 +331,7 @@ uint TabletToolV2::sendFrame()
     return time;
 }
 
-void TabletToolV2::zwp_tablet_tool_v2_destroy(QtWaylandServer::zwp_tablet_tool_v2::Resource *resource)
+void TabletToolV2::zwp_tablet_tool_v2_destroy(BobUIWaylandServer::zwp_tablet_tool_v2::Resource *resource)
 {
     if (m_tabletSeat) {
         m_tabletSeat->m_toolsWaitingForDestroy.removeOne(resource);
@@ -349,7 +349,7 @@ void TabletPadV2::sendRemoved()
     QVERIFY(removed);
 }
 
-void TabletPadV2::zwp_tablet_pad_v2_destroy(QtWaylandServer::zwp_tablet_pad_v2::Resource *resource)
+void TabletPadV2::zwp_tablet_pad_v2_destroy(BobUIWaylandServer::zwp_tablet_pad_v2::Resource *resource)
 {
     if (m_tabletSeat) {
         m_tabletSeat->m_padsWaitingForDestroy.removeOne(resource);
@@ -390,13 +390,13 @@ public:
     }
 };
 
-Q_DECLARE_METATYPE(QtWaylandServer::zwp_tablet_tool_v2::type);
+Q_DECLARE_METATYPE(BobUIWaylandServer::zwp_tablet_tool_v2::type);
 Q_DECLARE_METATYPE(QPointingDevice::PointerType);
-Q_DECLARE_METATYPE(Qt::MouseButton);
+Q_DECLARE_METATYPE(BobUI::MouseButton);
 
 class tst_tabletv2 : public QObject, private TabletCompositor
 {
-    using ToolType = QtWaylandServer::zwp_tablet_tool_v2::type;
+    using ToolType = BobUIWaylandServer::zwp_tablet_tool_v2::type;
     Q_OBJECT
 private slots:
     void cleanup();
@@ -422,11 +422,11 @@ class ProximityFilter : public QObject {
 public:
     ProximityFilter() { qApp->installEventFilter(this); }
     ~ProximityFilter() override { qDeleteAll(m_events); }
-    QList<QTabletEvent *> m_events;
+    QList<BOBUIabletEvent *> m_events;
 
     int nextEventIndex = 0;
     int numEvents() const { return m_events.size() - nextEventIndex; }
-    QTabletEvent *popEvent()
+    BOBUIabletEvent *popEvent()
     {
         auto *event = m_events.value(nextEventIndex, nullptr);
         if (event)
@@ -441,11 +441,11 @@ protected:
         switch (event->type()) {
         case QEvent::TabletEnterProximity:
         case QEvent::TabletLeaveProximity: {
-            auto *e = static_cast<QTabletEvent *>(event);
-            auto *ev = new QTabletEvent(e->type(), e->pointingDevice(), e->position(), e->globalPosition(),
+            auto *e = static_cast<BOBUIabletEvent *>(event);
+            auto *ev = new BOBUIabletEvent(e->type(), e->pointingDevice(), e->position(), e->globalPosition(),
                                      e->pressure(), e->xTilt(), e->yTilt(),
                                      e->tangentialPressure(), e->rotation(), e->z(),
-                                     Qt::KeyboardModifier::NoModifier,
+                                     BobUI::KeyboardModifier::NoModifier,
                                      e->button(), e->buttons());
             m_events << ev;
             break;
@@ -467,7 +467,7 @@ void tst_tabletv2::cleanup()
     QCOMPOSITOR_COMPARE(tabletSeat()->m_tools.size(), 0);
     QCOMPOSITOR_COMPARE(tabletSeat()->m_pads.size(), 0);
 
-    QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
+    BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
 }
 
 void tst_tabletv2::bindsToManager()
@@ -481,7 +481,7 @@ void tst_tabletv2::createsTabletSeat()
     QCOMPOSITOR_TRY_VERIFY(tabletSeat());
     QCOMPOSITOR_TRY_VERIFY(tabletSeat()->resourceMap().contains(client()));
     QCOMPOSITOR_TRY_COMPARE(tabletSeat()->resourceMap().value(client())->version(), tabletVersion);
-    //TODO: Maybe also assert some capability reported though qt APIs?
+    //TODO: Maybe also assert some capability reported though bobui APIs?
 }
 
 void tst_tabletv2::destroysTablet()
@@ -593,8 +593,8 @@ void tst_tabletv2::proximityEvents()
         tool->sendFrame();
     });
 
-    QTRY_COMPARE(filter.numEvents(), 1);
-    QTabletEvent *enterEvent = filter.popEvent();
+    BOBUIRY_COMPARE(filter.numEvents(), 1);
+    BOBUIabletEvent *enterEvent = filter.popEvent();
     QCOMPARE(enterEvent->type(), QEvent::TabletEnterProximity);
 
     exec([&] {
@@ -603,8 +603,8 @@ void tst_tabletv2::proximityEvents()
         tool->sendFrame();
     });
 
-    QTRY_COMPARE(filter.numEvents(), 1);
-    QTabletEvent *leaveEvent = filter.popEvent();
+    BOBUIRY_COMPARE(filter.numEvents(), 1);
+    BOBUIabletEvent *leaveEvent = filter.popEvent();
     QCOMPARE(leaveEvent->type(), QEvent::TabletLeaveProximity);
 }
 
@@ -613,18 +613,18 @@ class TabletWindow : public QRasterWindow {
 public:
     ~TabletWindow() override { qDeleteAll(m_events); }
 
-    void tabletEvent(QTabletEvent *e) override
+    void tabletEvent(BOBUIabletEvent *e) override
     {
-        m_events << new QTabletEvent(e->type(), e->pointingDevice(), e->position(), e->globalPosition(),
+        m_events << new BOBUIabletEvent(e->type(), e->pointingDevice(), e->position(), e->globalPosition(),
                                      e->pressure(), e->xTilt(), e->yTilt(),
                                      e->tangentialPressure(), e->rotation(), e->z(),
-                                     Qt::KeyboardModifier::NoModifier,
+                                     BobUI::KeyboardModifier::NoModifier,
                                      e->button(), e->buttons());
         emit tabletEventReceived(m_events.last());
     }
     int nextEventIndex = 0;
     int numEvents() const { return m_events.size() - nextEventIndex; }
-    QTabletEvent *popEvent()
+    BOBUIabletEvent *popEvent()
     {
         auto *event = m_events.value(nextEventIndex, nullptr);
         if (event)
@@ -633,10 +633,10 @@ public:
     }
 
 signals:
-    void tabletEventReceived(QTabletEvent *event);
+    void tabletEventReceived(BOBUIabletEvent *event);
 
 private:
-    QList<QTabletEvent *> m_events;
+    QList<BOBUIabletEvent *> m_events;
 };
 
 void tst_tabletv2::moveEvent()
@@ -661,8 +661,8 @@ void tst_tabletv2::moveEvent()
         tool->sendMotion(QPointF(12 + margins.left(), 34 + margins.top()));
         tool->sendFrame();
     });
-    QTRY_VERIFY(window.numEvents());
-    QTabletEvent *event = window.popEvent();
+    BOBUIRY_VERIFY(window.numEvents());
+    BOBUIabletEvent *event = window.popEvent();
     QCOMPARE(event->type(), QEvent::TabletMove);
     QCOMPARE(event->pressure(), 0);
     QCOMPARE(event->position(), QPointF(12, 34));
@@ -670,26 +670,26 @@ void tst_tabletv2::moveEvent()
 
 void tst_tabletv2::pointerType_data()
 {
-    QTest::addColumn<ToolType>("toolType");
-    QTest::addColumn<QPointingDevice::PointerType>("pointerType");
-    QTest::addColumn<QInputDevice::DeviceType>("tabletDevice");
+    BOBUIest::addColumn<ToolType>("toolType");
+    BOBUIest::addColumn<QPointingDevice::PointerType>("pointerType");
+    BOBUIest::addColumn<QInputDevice::DeviceType>("tabletDevice");
 
-    QTest::newRow("pen") << ToolType::type_pen << QPointingDevice::PointerType::Pen << QInputDevice::DeviceType::Stylus;
-    QTest::newRow("eraser") << ToolType::type_eraser << QPointingDevice::PointerType::Eraser << QInputDevice::DeviceType::Stylus;
-    QTest::newRow("pencil") << ToolType::type_pencil << QPointingDevice::PointerType::Pen << QInputDevice::DeviceType::Stylus;
-    QTest::newRow("airbrush") << ToolType::type_airbrush << QPointingDevice::PointerType::Pen << QInputDevice::DeviceType::Airbrush;
-    QTest::newRow("brush") << ToolType::type_brush << QPointingDevice::PointerType::Pen << QInputDevice::DeviceType::Stylus; // TODO: is TabletDevice::Stylus the right thing?
-    QTest::newRow("lens") << ToolType::type_lens << QPointingDevice::PointerType::Cursor << QInputDevice::DeviceType::Puck;
+    BOBUIest::newRow("pen") << ToolType::type_pen << QPointingDevice::PointerType::Pen << QInputDevice::DeviceType::Stylus;
+    BOBUIest::newRow("eraser") << ToolType::type_eraser << QPointingDevice::PointerType::Eraser << QInputDevice::DeviceType::Stylus;
+    BOBUIest::newRow("pencil") << ToolType::type_pencil << QPointingDevice::PointerType::Pen << QInputDevice::DeviceType::Stylus;
+    BOBUIest::newRow("airbrush") << ToolType::type_airbrush << QPointingDevice::PointerType::Pen << QInputDevice::DeviceType::Airbrush;
+    BOBUIest::newRow("brush") << ToolType::type_brush << QPointingDevice::PointerType::Pen << QInputDevice::DeviceType::Stylus; // TODO: is TabletDevice::Stylus the right thing?
+    BOBUIest::newRow("lens") << ToolType::type_lens << QPointingDevice::PointerType::Cursor << QInputDevice::DeviceType::Puck;
     // TODO: also add tests for FourDMouse and RotationStylus (also need to send capabilities)
 
     // TODO: should these rather be mapped to touch/mouse events?
-    QTest::newRow("finger") << ToolType::type_finger << QPointingDevice::PointerType::Unknown << QInputDevice::DeviceType::Unknown;
-    QTest::newRow("mouse") << ToolType::type_mouse << QPointingDevice::PointerType::Cursor << QInputDevice::DeviceType::Unknown;
+    BOBUIest::newRow("finger") << ToolType::type_finger << QPointingDevice::PointerType::Unknown << QInputDevice::DeviceType::Unknown;
+    BOBUIest::newRow("mouse") << ToolType::type_mouse << QPointingDevice::PointerType::Cursor << QInputDevice::DeviceType::Unknown;
 }
 
 void tst_tabletv2::pointerType()
 {
-    using ToolType = QtWaylandServer::zwp_tablet_tool_v2::type;
+    using ToolType = BobUIWaylandServer::zwp_tablet_tool_v2::type;
     QFETCH(ToolType, toolType);
     QFETCH(QPointingDevice::PointerType, pointerType);
     QFETCH(QInputDevice::DeviceType, tabletDevice);
@@ -717,12 +717,12 @@ void tst_tabletv2::pointerType()
         tool->sendFrame();
     });
 
-    QTRY_COMPARE(filter.numEvents(), 1);
-    QTabletEvent *event = filter.popEvent();
+    BOBUIRY_COMPARE(filter.numEvents(), 1);
+    BOBUIabletEvent *event = filter.popEvent();
     QCOMPARE(event->pointerType(), pointerType);
     QCOMPARE(event->deviceType(), tabletDevice);
 
-    QTRY_VERIFY(window.numEvents());
+    BOBUIRY_VERIFY(window.numEvents());
     event = window.popEvent();
     QCOMPARE(event->pointerType(), pointerType);
     QCOMPARE(event->deviceType(), tabletDevice);
@@ -732,7 +732,7 @@ void tst_tabletv2::pointerType()
         tabletTool()->sendFrame();
     });
 
-    QTRY_VERIFY(filter.numEvents());
+    BOBUIRY_VERIFY(filter.numEvents());
     event = filter.popEvent();
     QCOMPARE(event->pointerType(), pointerType);
     QCOMPARE(event->deviceType(), tabletDevice);
@@ -764,11 +764,11 @@ void tst_tabletv2::hardwareSerial()
         tool->sendFrame();
     });
 
-    QTRY_COMPARE(filter.numEvents(), 1);
-    QTabletEvent *event = filter.popEvent();
+    BOBUIRY_COMPARE(filter.numEvents(), 1);
+    BOBUIabletEvent *event = filter.popEvent();
     QCOMPARE(event->pointingDevice()->uniqueId(), uid);
 
-    QTRY_VERIFY(window.numEvents());
+    BOBUIRY_VERIFY(window.numEvents());
     event = window.popEvent();
     QCOMPARE(event->pointingDevice()->uniqueId(), uid);
 
@@ -777,7 +777,7 @@ void tst_tabletv2::hardwareSerial()
         tabletTool()->sendFrame();
     });
 
-    QTRY_VERIFY(filter.numEvents());
+    BOBUIRY_VERIFY(filter.numEvents());
     event = filter.popEvent();
     QCOMPARE(event->pointingDevice()->uniqueId(), uid);
 }
@@ -792,17 +792,17 @@ void tst_tabletv2::hardwareSerial()
 
 void tst_tabletv2::buttons_data()
 {
-    QTest::addColumn<uint>("tabletButton");
-    QTest::addColumn<Qt::MouseButton>("mouseButton");
+    BOBUIest::addColumn<uint>("tabletButton");
+    BOBUIest::addColumn<BobUI::MouseButton>("mouseButton");
 
-    QTest::newRow("BTN_STYLUS2") << uint(BTN_STYLUS2) << Qt::MouseButton::RightButton;
-    QTest::newRow("BTN_STYLUS") << uint(BTN_STYLUS) << Qt::MouseButton::MiddleButton;
+    BOBUIest::newRow("BTN_STYLUS2") << uint(BTN_STYLUS2) << BobUI::MouseButton::RightButton;
+    BOBUIest::newRow("BTN_STYLUS") << uint(BTN_STYLUS) << BobUI::MouseButton::MiddleButton;
 }
 
 void tst_tabletv2::buttons()
 {
     QFETCH(uint, tabletButton);
-    QFETCH(Qt::MouseButton, mouseButton);
+    QFETCH(BobUI::MouseButton, mouseButton);
 
     QCOMPOSITOR_TRY_VERIFY(tabletSeat());
     exec([&] {
@@ -823,7 +823,7 @@ void tst_tabletv2::buttons()
         tabletTool()->sendFrame();
     });
 
-    QTRY_VERIFY(window.numEvents());
+    BOBUIRY_VERIFY(window.numEvents());
     window.popEvent();
 
     QCOMPOSITOR_TRY_VERIFY(tablet());
@@ -834,8 +834,8 @@ void tst_tabletv2::buttons()
         tabletTool()->sendFrame();
     });
 
-    QTRY_VERIFY(window.numEvents());
-    QTabletEvent *event = window.popEvent();
+    BOBUIRY_VERIFY(window.numEvents());
+    BOBUIabletEvent *event = window.popEvent();
     QCOMPARE(event->buttons(), mouseButton);
 
     exec([&] {
@@ -871,8 +871,8 @@ void tst_tabletv2::tabletEvents()
         tool->sendFrame();
     });
 
-    QTRY_VERIFY(window.numEvents());
-    QTabletEvent *event = window.popEvent();
+    BOBUIRY_VERIFY(window.numEvents());
+    BOBUIabletEvent *event = window.popEvent();
     QCOMPARE(event->type(), QEvent::TabletPress);
     QCOMPARE(event->pressure(), 1.0);
     QCOMPARE(event->position(), QPointF(12, 34));
@@ -890,7 +890,7 @@ void tst_tabletv2::tabletEvents()
         tabletTool()->sendFrame();
     });
 
-    QTRY_VERIFY(window.numEvents());
+    BOBUIRY_VERIFY(window.numEvents());
     event = window.popEvent();
     QCOMPARE(event->type(), QEvent::TabletMove);
     QVERIFY(qAbs(event->pressure() - 0.5) < 0.01);
@@ -904,7 +904,7 @@ void tst_tabletv2::tabletEvents()
         tabletTool()->sendMotion(QPointF(10, 11) + insideDecorations); // Change position only
         tabletTool()->sendFrame();
     });
-    QTRY_VERIFY(window.numEvents());
+    BOBUIRY_VERIFY(window.numEvents());
     event = window.popEvent();
     QCOMPARE(event->type(), QEvent::TabletMove);
     QVERIFY(qAbs(event->pressure() - 0.5) < 0.01);
@@ -922,7 +922,7 @@ void tst_tabletv2::tabletEvents()
         tabletTool()->sendFrame();
     });
 
-    QTRY_VERIFY(window.numEvents());
+    BOBUIRY_VERIFY(window.numEvents());
     event = window.popEvent();
     QCOMPARE(event->type(), QEvent::TabletRelease);
     QCOMPARE(event->pressure(), 0);

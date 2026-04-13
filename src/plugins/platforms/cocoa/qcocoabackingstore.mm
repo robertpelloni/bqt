@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -9,13 +9,13 @@
 #include "qcocoawindow.h"
 #include "qcocoahelpers.h"
 
-#include <QtCore/qmath.h>
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtGui/qpainter.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIGui/qpainter.h>
 
 #include <QuartzCore/CATransaction.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QCocoaBackingStore::QCocoaBackingStore(QWindow *window)
     : QPlatformBackingStore(window)
@@ -110,7 +110,7 @@ void QCALayerBackingStore::beginPaint(const QRegion &region)
         QPainter painter(m_buffers.back()->asImage());
         painter.setCompositionMode(QPainter::CompositionMode_Source);
         for (const QRect &rect : region)
-            painter.fillRect(rect, Qt::transparent);
+            painter.fillRect(rect, BobUI::transparent);
     }
 
     // We assume the client is going to paint the entire region
@@ -203,7 +203,7 @@ bool QCALayerBackingStore::recreateBackBufferIfNeeded()
 
         static auto pixelFormat = QImage::toPixelFormat(QImage::Format_ARGB32_Premultiplied);
         auto *newBackBuffer = new GraphicsBuffer(requestedBufferSize, devicePixelRatio, pixelFormat, colorSpace());
-        newBackBuffer->setObjectName("Qt Raster Backingstore");
+        newBackBuffer->setObjectName("BobUI Raster Backingstore");
 
         if (!m_staticContents.isEmpty() && m_buffers.back()) {
             // We implicitly support static backingstore content as a result of
@@ -301,9 +301,9 @@ bool QCALayerBackingStore::scroll(const QRegion &region, int dx, int dy)
         const qreal devicePixelRatio = backBufferImage->devicePixelRatio();
         const QPoint devicePixelDelta = scrollDelta * devicePixelRatio;
 
-        extern void qt_scrollRectInImage(QImage &, const QRect &, const QPoint &);
+        extern void bobui_scrollRectInImage(QImage &, const QRect &, const QPoint &);
 
-        qt_scrollRectInImage(*backBufferImage,
+        bobui_scrollRectInImage(*backBufferImage,
             QRect(inPlaceBoundingRect.topLeft() * devicePixelRatio,
                   inPlaceBoundingRect.size() * devicePixelRatio),
                   devicePixelDelta);
@@ -319,7 +319,7 @@ bool QCALayerBackingStore::scroll(const QRegion &region, int dx, int dy)
     // Mark the target region as filled. Note: We do not mark the source region
     // as dirty, even though the content has conceptually been "moved", as that
     // would complicate things when preserving from the front buffer. This matches
-    // the behavior of other backingstore implementations using qt_scrollRectInImage.
+    // the behavior of other backingstore implementations using bobui_scrollRectInImage.
     updateDirtyStates(region.translated(scrollDelta));
 
     qCInfo(lcQpaBackingStore) << "Scroll ended. Back buffer valid region is now" << m_buffers.back()->validRegion();
@@ -492,7 +492,7 @@ QImage QCALayerBackingStore::toImage() const
 
 void QCALayerBackingStore::backingPropertiesChanged()
 {
-    // Ideally this would be plumbed from the platform layer to QtGui, and
+    // Ideally this would be plumbed from the platform layer to BobUIGui, and
     // the QBackingStore would be recreated, but we don't have that code yet,
     // so at least make sure we update our backingstore when the backing
     // properties (color space e.g.) are changed.
@@ -597,7 +597,7 @@ void QCALayerBackingStore::blitBuffer(GraphicsBuffer *sourceBuffer, const QRegio
         QRect destinationRect((rect.topLeft() + destinationOffset) * destinationDevicePixelRatio,
                                rect.size() * destinationDevicePixelRatio);
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
         if (Q_UNLIKELY(!sourceBufferBounds.contains(sourceRect.bottomRight()))) {
             qCWarning(lcQpaBackingStore) << "Source buffer of size" << sourceBuffer->size()
                                          << "is too small to blit" << sourceRect;
@@ -644,6 +644,6 @@ QImage *QCALayerBackingStore::GraphicsBuffer::asImage()
     return &m_image;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcocoabackingstore.cpp"

@@ -1,23 +1,23 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #include "qsslkey.h"
 #include "qssl_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcSsl, "qt.network.ssl");
+Q_LOGGING_CATEGORY(lcSsl, "bobui.network.ssl");
 
 /*! \namespace QSsl
 
-    \brief The QSsl namespace declares enums common to all SSL classes in Qt Network.
+    \brief The QSsl namespace declares enums common to all SSL classes in BobUI Network.
     \since 4.3
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 */
 
 /*!
@@ -42,7 +42,7 @@ Q_LOGGING_CATEGORY(lcSsl, "qt.network.ssl");
     \value Opaque A key that should be treated as a 'black box' by QSslKey.
 
     The opaque key facility allows applications to add support for facilities
-    such as PKCS#11 that Qt does not currently offer natively.
+    such as PKCS#11 that BobUI does not currently offer natively.
 */
 
 /*!
@@ -66,7 +66,7 @@ Q_LOGGING_CATEGORY(lcSsl, "qt.network.ssl");
     entry that the certificate is valid for. The entry may contain wildcards.
 
     \value IpAddressEntry An IP address entry; the entry contains an IP address
-    entry that the certificate is valid for, introduced in Qt 5.13.
+    entry that the certificate is valid for, introduced in BobUI 5.13.
 
     \sa QSslCertificate::subjectAlternativeNames()
 */
@@ -149,7 +149,7 @@ Q_LOGGING_CATEGORY(lcSsl, "qt.network.ssl");
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     This enum describes the level of an alert message that was sent
     or received.
@@ -168,7 +168,7 @@ Q_LOGGING_CATEGORY(lcSsl, "qt.network.ssl");
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     See \l{RFC 8446, section 6}
     for the possible values and their meaning.
@@ -217,9 +217,9 @@ Q_LOGGING_CATEGORY(lcSsl, "qt.network.ssl");
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
-    In QtNetwork, some classes have backend-specific implementation and thus
+    In BobUINetwork, some classes have backend-specific implementation and thus
     can be left unimplemented. Enumerators in this enum indicate, which class
     has a working implementation in the backend.
 
@@ -240,9 +240,9 @@ Q_LOGGING_CATEGORY(lcSsl, "qt.network.ssl");
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
-    In QtNetwork TLS-related classes have public API, that may be left unimplemented
+    In BobUINetwork TLS-related classes have public API, that may be left unimplemented
     by some backend, for example, our SecureTransport backend does not support
     server-side ALPN. Enumerators from SupportedFeature enum indicate that a particular
     feature is supported.
@@ -257,6 +257,6 @@ Q_LOGGING_CATEGORY(lcSsl, "qt.network.ssl");
     \value Alerts Information about alert messages sent and received.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qssl.cpp"

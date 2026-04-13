@@ -1,18 +1,18 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2012 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
-#include <QtCore/QUrlQuery>
+#include <BobUICore/QUrlQuery>
 
 using QueryItemPair = std::pair<QString, QString>;
 using QueryItems = QList<QueryItemPair>;
 Q_DECLARE_METATYPE(QueryItems)
 Q_DECLARE_METATYPE(QUrl::ComponentFormattingOptions)
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QUrlQuery : public QObject
 {
@@ -78,7 +78,7 @@ static bool compare(const QueryItems &actual, const QueryItems &expected,
         const QueryItems items = *static_cast<const QueryItems *>(val);
         return qstrdup(prettyList(items).constData());
     };
-    return QTest::compare_helper(actual == expected, "Compared values are not the same",
+    return BOBUIest::compare_helper(actual == expected, "Compared values are not the same",
                                  &actual, &expected, formatter, formatter,
                                  actualStr, expectedStr, file, line);
 }
@@ -130,35 +130,35 @@ static QUrlQuery emptyQuery()
 
 void tst_QUrlQuery::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QUrlQuery>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QUrlQuery>();
 }
 
 void tst_QUrlQuery::compareEquality_data()
 {
-    QTest::addColumn<QUrlQuery>("url1");
-    QTest::addColumn<QUrlQuery>("url2");
-    QTest::addColumn<bool>("equal");
+    BOBUIest::addColumn<QUrlQuery>("url1");
+    BOBUIest::addColumn<QUrlQuery>("url2");
+    BOBUIest::addColumn<bool>("equal");
 
-    QTest::newRow("empty-empty") << QUrlQuery() << QUrlQuery() << true;
+    BOBUIest::newRow("empty-empty") << QUrlQuery() << QUrlQuery() << true;
 
     QUrlQuery notEmpty;
     notEmpty.addQueryItem("a", "b");
-    QTest::newRow("empty-notEmpty") << QUrlQuery() << notEmpty << false;
+    BOBUIest::newRow("empty-notEmpty") << QUrlQuery() << notEmpty << false;
 
     QUrlQuery notEmpty_copy = notEmpty;
-    QTest::newRow("sameItems") << notEmpty_copy << notEmpty << true;
+    BOBUIest::newRow("sameItems") << notEmpty_copy << notEmpty << true;
 
     QUrlQuery notEmpty_modified = notEmpty;
     notEmpty_modified.addQueryItem("c", "d");
-    QTest::newRow("addedItems") << notEmpty_copy << notEmpty_modified << false;
+    BOBUIest::newRow("addedItems") << notEmpty_copy << notEmpty_modified << false;
 
     QUrlQuery notEmpty2;
     notEmpty2.addQueryItem("c", "d");
-    QTest::newRow("differentItems") << notEmpty2 << notEmpty << false;
+    BOBUIest::newRow("differentItems") << notEmpty2 << notEmpty << false;
 
     QUrlQuery differentPairDelimiters;
     differentPairDelimiters.setQueryDelimiters('(', ')');
-    QTest::newRow("defaultDelimiters-differentDelimiters") << QUrlQuery() << differentPairDelimiters
+    BOBUIest::newRow("defaultDelimiters-differentDelimiters") << QUrlQuery() << differentPairDelimiters
                                                            << false;
 }
 
@@ -167,7 +167,7 @@ void tst_QUrlQuery::compareEquality()
     QFETCH(QUrlQuery, url1);
     QFETCH(QUrlQuery, url2);
     QFETCH(bool, equal);
-    QT_TEST_EQUALITY_OPS(url1, url2, equal);
+    BOBUI_TEST_EQUALITY_OPS(url1, url2, equal);
 }
 
 void tst_QUrlQuery::constructing()
@@ -188,7 +188,7 @@ void tst_QUrlQuery::constructing()
         QVERIFY(!copy.isDetached());
         QCOMPARE(copy, empty);
         QCOMPARE(qHash(copy), qHash(empty));
-        QT_TEST_EQUALITY_OPS(copy, empty, true);
+        BOBUI_TEST_EQUALITY_OPS(copy, empty, true);
 
         copy = empty;
         QCOMPARE(copy, empty);
@@ -221,7 +221,7 @@ void tst_QUrlQuery::constructing()
     QVERIFY(!other.isEmpty());
     QVERIFY(other.isDetached());
     QCOMPARE_NE(other, empty);
-    QT_TEST_EQUALITY_OPS(other, empty, false);
+    BOBUI_TEST_EQUALITY_OPS(other, empty, false);
 
     // copy-construct
     QUrlQuery copy(other);
@@ -326,7 +326,7 @@ void tst_QUrlQuery::addRemove()
         QVERIFY(allItems.contains(qItem("c", "d")));
 
         QCOMPARE_NE(query, original);
-        QT_TEST_EQUALITY_OPS(query, original, false);
+        BOBUI_TEST_EQUALITY_OPS(query, original, false);
     }
 
     {
@@ -349,13 +349,13 @@ void tst_QUrlQuery::addRemove()
         QCOMPARE(allItems.at(0).second, QString("b"));
 
         QCOMPARE(query, original);
-        QT_TEST_EQUALITY_OPS(query, original, true);
+        BOBUI_TEST_EQUALITY_OPS(query, original, true);
         QCOMPARE(qHash(query), qHash(original));
     }
 
     {
         // add an item with en empty value
-        QString emptyButNotNull(0, Qt::Uninitialized);
+        QString emptyButNotNull(0, BobUI::Uninitialized);
         QVERIFY(emptyButNotNull.isEmpty());
         QVERIFY(!emptyButNotNull.isNull());
 
@@ -373,7 +373,7 @@ void tst_QUrlQuery::addRemove()
         QVERIFY(allItems.contains(qItem("e", emptyButNotNull)));
 
         QCOMPARE_NE(query, original);
-        QT_TEST_EQUALITY_OPS(query, original, false);
+        BOBUI_TEST_EQUALITY_OPS(query, original, false);
     }
 
     {
@@ -459,24 +459,24 @@ void tst_QUrlQuery::multiplyAddSamePair()
 
 void tst_QUrlQuery::setQueryItems_data()
 {
-    QTest::addColumn<QueryItems>("items");
-    QString emptyButNotNull(0, Qt::Uninitialized);
+    BOBUIest::addColumn<QueryItems>("items");
+    QString emptyButNotNull(0, BobUI::Uninitialized);
 
-    QTest::newRow("empty") << QueryItems();
-    QTest::newRow("1-novalue") << (QueryItems() << qItem("a", QString()));
-    QTest::newRow("1-emptyvalue") << (QueryItems() << qItem("a", emptyButNotNull));
+    BOBUIest::newRow("empty") << QueryItems();
+    BOBUIest::newRow("1-novalue") << (QueryItems() << qItem("a", QString()));
+    BOBUIest::newRow("1-emptyvalue") << (QueryItems() << qItem("a", emptyButNotNull));
 
     QueryItems list;
     list << qItem("a", "b");
-    QTest::newRow("1-value") << list;
-    QTest::newRow("1-multi") << (list + qItem("a", "c"));
-    QTest::newRow("1-duplicated") << (list + qItem("a", "b"));
+    BOBUIest::newRow("1-value") << list;
+    BOBUIest::newRow("1-multi") << (list + qItem("a", "c"));
+    BOBUIest::newRow("1-duplicated") << (list + qItem("a", "b"));
 
     list << qItem("c", "d");
-    QTest::newRow("2") << list;
+    BOBUIest::newRow("2") << list;
 
     list << qItem("c", "e");
-    QTest::newRow("2-multi") << list;
+    BOBUIest::newRow("2-multi") << list;
 }
 
 void tst_QUrlQuery::setQueryItems()
@@ -497,54 +497,54 @@ void tst_QUrlQuery::setQueryItems()
 
 void tst_QUrlQuery::basicParsing_data()
 {
-    QTest::addColumn<QString>("queryString");
-    QTest::addColumn<QueryItems>("items");
-    QString emptyButNotNull(0, Qt::Uninitialized);
+    BOBUIest::addColumn<QString>("queryString");
+    BOBUIest::addColumn<QueryItems>("items");
+    QString emptyButNotNull(0, BobUI::Uninitialized);
 
-    QTest::newRow("null") << QString() << QueryItems();
-    QTest::newRow("empty") << "" << QueryItems();
+    BOBUIest::newRow("null") << QString() << QueryItems();
+    BOBUIest::newRow("empty") << "" << QueryItems();
 
-    QTest::newRow("1-novalue") << "a" << (QueryItems() << qItem("a", QString()));
-    QTest::newRow("1-emptyvalue") << "a=" << (QueryItems() << qItem("a", emptyButNotNull));
-    QTest::newRow("1-value") << "a=b" << (QueryItems() << qItem("a", "b"));
+    BOBUIest::newRow("1-novalue") << "a" << (QueryItems() << qItem("a", QString()));
+    BOBUIest::newRow("1-emptyvalue") << "a=" << (QueryItems() << qItem("a", emptyButNotNull));
+    BOBUIest::newRow("1-value") << "a=b" << (QueryItems() << qItem("a", "b"));
 
     // some longer keys
-    QTest::newRow("1-longkey-novalue") << "thisisalongkey" << (QueryItems() << qItem("thisisalongkey", QString()));
-    QTest::newRow("1-longkey-emptyvalue") << "thisisalongkey=" << (QueryItems() << qItem("thisisalongkey", emptyButNotNull));
-    QTest::newRow("1-longkey-value") << "thisisalongkey=b" << (QueryItems() << qItem("thisisalongkey", "b"));
+    BOBUIest::newRow("1-longkey-novalue") << "thisisalongkey" << (QueryItems() << qItem("thisisalongkey", QString()));
+    BOBUIest::newRow("1-longkey-emptyvalue") << "thisisalongkey=" << (QueryItems() << qItem("thisisalongkey", emptyButNotNull));
+    BOBUIest::newRow("1-longkey-value") << "thisisalongkey=b" << (QueryItems() << qItem("thisisalongkey", "b"));
 
     // longer values
-    QTest::newRow("1-longvalue-value") << "a=thisisalongreasonablyvalue"
+    BOBUIest::newRow("1-longvalue-value") << "a=thisisalongreasonablyvalue"
                                        << (QueryItems() << qItem("a", "thisisalongreasonablyvalue"));
-    QTest::newRow("1-longboth-value") << "thisisalongkey=thisisalongreasonablyvalue"
+    BOBUIest::newRow("1-longboth-value") << "thisisalongkey=thisisalongreasonablyvalue"
                                       << (QueryItems() << qItem("thisisalongkey", "thisisalongreasonablyvalue"));
 
     // two or more entries
     QueryItems baselist;
     baselist << qItem("a", "b") << qItem("c", "d");
-    QTest::newRow("2-ab-cd") << "a=b&c=d" << baselist;
-    QTest::newRow("2-cd-ab") << "c=d&a=b" << (QueryItems() << qItem("c", "d") << qItem("a", "b"));
+    BOBUIest::newRow("2-ab-cd") << "a=b&c=d" << baselist;
+    BOBUIest::newRow("2-cd-ab") << "c=d&a=b" << (QueryItems() << qItem("c", "d") << qItem("a", "b"));
 
     // the same entry multiply defined
-    QTest::newRow("2-a-a") << "a&a" << (QueryItems() << qItem("a", QString()) << qItem("a", QString()));
-    QTest::newRow("2-ab-a") << "a=b&a" << (QueryItems() << qItem("a", "b") << qItem("a", QString()));
-    QTest::newRow("2-ab-ab") << "a=b&a=b" << (QueryItems() << qItem("a", "b") << qItem("a", "b"));
-    QTest::newRow("2-ab-ac") << "a=b&a=c" << (QueryItems() << qItem("a", "b") << qItem("a", "c"));
+    BOBUIest::newRow("2-a-a") << "a&a" << (QueryItems() << qItem("a", QString()) << qItem("a", QString()));
+    BOBUIest::newRow("2-ab-a") << "a=b&a" << (QueryItems() << qItem("a", "b") << qItem("a", QString()));
+    BOBUIest::newRow("2-ab-ab") << "a=b&a=b" << (QueryItems() << qItem("a", "b") << qItem("a", "b"));
+    BOBUIest::newRow("2-ab-ac") << "a=b&a=c" << (QueryItems() << qItem("a", "b") << qItem("a", "c"));
 
     QueryItemPair novalue = qItem("somekey", QString());
     QueryItems list2 = baselist + novalue;
-    QTest::newRow("3-novalue-ab-cd") << "somekey&a=b&c=d" << (novalue + baselist);
-    QTest::newRow("3-ab-novalue-cd") << "a=b&somekey&c=d" << (QueryItems() << qItem("a", "b") << novalue << qItem("c", "d"));
-    QTest::newRow("3-ab-cd-novalue") << "a=b&c=d&somekey" << list2;
+    BOBUIest::newRow("3-novalue-ab-cd") << "somekey&a=b&c=d" << (novalue + baselist);
+    BOBUIest::newRow("3-ab-novalue-cd") << "a=b&somekey&c=d" << (QueryItems() << qItem("a", "b") << novalue << qItem("c", "d"));
+    BOBUIest::newRow("3-ab-cd-novalue") << "a=b&c=d&somekey" << list2;
 
     list2 << qItem("otherkeynovalue", QString());
-    QTest::newRow("4-ab-cd-novalue-novalue") << "a=b&c=d&somekey&otherkeynovalue" << list2;
+    BOBUIest::newRow("4-ab-cd-novalue-novalue") << "a=b&c=d&somekey&otherkeynovalue" << list2;
 
     QueryItemPair emptyvalue = qItem("somekey", emptyButNotNull);
     list2 = baselist + emptyvalue;
-    QTest::newRow("3-emptyvalue-ab-cd") << "somekey=&a=b&c=d" << (emptyvalue + baselist);
-    QTest::newRow("3-ab-emptyvalue-cd") << "a=b&somekey=&c=d" << (QueryItems() << qItem("a", "b") << emptyvalue << qItem("c", "d"));
-    QTest::newRow("3-ab-cd-emptyvalue") << "a=b&c=d&somekey=" << list2;
+    BOBUIest::newRow("3-emptyvalue-ab-cd") << "somekey=&a=b&c=d" << (emptyvalue + baselist);
+    BOBUIest::newRow("3-ab-emptyvalue-cd") << "a=b&somekey=&c=d" << (QueryItems() << qItem("a", "b") << emptyvalue << qItem("c", "d"));
+    BOBUIest::newRow("3-ab-cd-emptyvalue") << "a=b&c=d&somekey=" << list2;
 }
 
 void tst_QUrlQuery::basicParsing()
@@ -559,48 +559,48 @@ void tst_QUrlQuery::basicParsing()
 
 void tst_QUrlQuery::reconstructQuery_data()
 {
-    QTest::addColumn<QString>("queryString");
-    QTest::addColumn<QueryItems>("items");
-    QString emptyButNotNull(0, Qt::Uninitialized);
+    BOBUIest::addColumn<QString>("queryString");
+    BOBUIest::addColumn<QueryItems>("items");
+    QString emptyButNotNull(0, BobUI::Uninitialized);
 
-    QTest::newRow("null") << QString() << QueryItems();
-    QTest::newRow("empty") << "" << QueryItems();
+    BOBUIest::newRow("null") << QString() << QueryItems();
+    BOBUIest::newRow("empty") << "" << QueryItems();
 
-    QTest::newRow("1-novalue") << "a" << (QueryItems() << qItem("a", QString()));
-    QTest::newRow("1-emptyvalue") << "a=" << (QueryItems() << qItem("a", emptyButNotNull));
-    QTest::newRow("1-value") << "a=b" << (QueryItems() << qItem("a", "b"));
+    BOBUIest::newRow("1-novalue") << "a" << (QueryItems() << qItem("a", QString()));
+    BOBUIest::newRow("1-emptyvalue") << "a=" << (QueryItems() << qItem("a", emptyButNotNull));
+    BOBUIest::newRow("1-value") << "a=b" << (QueryItems() << qItem("a", "b"));
 
     // some longer keys
-    QTest::newRow("1-longkey-novalue") << "thisisalongkey" << (QueryItems() << qItem("thisisalongkey", QString()));
-    QTest::newRow("1-longkey-emptyvalue") << "thisisalongkey=" << (QueryItems() << qItem("thisisalongkey", emptyButNotNull));
-    QTest::newRow("1-longkey-value") << "thisisalongkey=b" << (QueryItems() << qItem("thisisalongkey", "b"));
+    BOBUIest::newRow("1-longkey-novalue") << "thisisalongkey" << (QueryItems() << qItem("thisisalongkey", QString()));
+    BOBUIest::newRow("1-longkey-emptyvalue") << "thisisalongkey=" << (QueryItems() << qItem("thisisalongkey", emptyButNotNull));
+    BOBUIest::newRow("1-longkey-value") << "thisisalongkey=b" << (QueryItems() << qItem("thisisalongkey", "b"));
 
     // longer values
-    QTest::newRow("1-longvalue-value") << "a=thisisalongreasonablyvalue"
+    BOBUIest::newRow("1-longvalue-value") << "a=thisisalongreasonablyvalue"
                                        << (QueryItems() << qItem("a", "thisisalongreasonablyvalue"));
-    QTest::newRow("1-longboth-value") << "thisisalongkey=thisisalongreasonablyvalue"
+    BOBUIest::newRow("1-longboth-value") << "thisisalongkey=thisisalongreasonablyvalue"
                                       << (QueryItems() << qItem("thisisalongkey", "thisisalongreasonablyvalue"));
 
     // two or more entries
     QueryItems baselist;
     baselist << qItem("a", "b") << qItem("c", "d");
-    QTest::newRow("2-ab-cd") << "a=b&c=d" << baselist;
+    BOBUIest::newRow("2-ab-cd") << "a=b&c=d" << baselist;
 
     // The same entry multiply defined
-    QTest::newRow("2-a-a") << "a&a" << (QueryItems() << qItem("a", QString()) << qItem("a", QString()));
-    QTest::newRow("2-ab-ab") << "a=b&a=b" << (QueryItems() << qItem("a", "b") << qItem("a", "b"));
-    QTest::newRow("2-ab-ac") << "a=b&a=c" << (QueryItems() << qItem("a", "b") << qItem("a", "c"));
-    QTest::newRow("2-ac-ab") << "a=c&a=b" << (QueryItems() << qItem("a", "c") << qItem("a", "b"));
-    QTest::newRow("2-cd-ab") << "c=d&a=b" << (QueryItems() << qItem("c", "d") << qItem("a", "b"));
+    BOBUIest::newRow("2-a-a") << "a&a" << (QueryItems() << qItem("a", QString()) << qItem("a", QString()));
+    BOBUIest::newRow("2-ab-ab") << "a=b&a=b" << (QueryItems() << qItem("a", "b") << qItem("a", "b"));
+    BOBUIest::newRow("2-ab-ac") << "a=b&a=c" << (QueryItems() << qItem("a", "b") << qItem("a", "c"));
+    BOBUIest::newRow("2-ac-ab") << "a=c&a=b" << (QueryItems() << qItem("a", "c") << qItem("a", "b"));
+    BOBUIest::newRow("2-cd-ab") << "c=d&a=b" << (QueryItems() << qItem("c", "d") << qItem("a", "b"));
 
     QueryItems list2 = baselist + qItem("somekey", QString());
-    QTest::newRow("3-ab-cd-novalue") << "a=b&c=d&somekey" << list2;
+    BOBUIest::newRow("3-ab-cd-novalue") << "a=b&c=d&somekey" << list2;
 
     list2 << qItem("otherkeynovalue", QString());
-    QTest::newRow("4-ab-cd-novalue-novalue") << "a=b&c=d&somekey&otherkeynovalue" << list2;
+    BOBUIest::newRow("4-ab-cd-novalue-novalue") << "a=b&c=d&somekey&otherkeynovalue" << list2;
 
     list2 = baselist + qItem("somekey", emptyButNotNull);
-    QTest::newRow("3-ab-cd-emptyvalue") << "a=b&c=d&somekey=" << list2;
+    BOBUIest::newRow("3-ab-cd-emptyvalue") << "a=b&c=d&somekey=" << list2;
 }
 
 void tst_QUrlQuery::reconstructQuery()
@@ -619,67 +619,67 @@ void tst_QUrlQuery::reconstructQuery()
 
 void tst_QUrlQuery::encodedSetQueryItems_data()
 {
-    QTest::addColumn<QString>("queryString");
-    QTest::addColumn<QString>("key");
-    QTest::addColumn<QString>("value");
-    QTest::addColumn<QUrl::ComponentFormattingOptions>("encoding");
-    QTest::addColumn<QString>("expectedQuery");
-    QTest::addColumn<QString>("expectedKey");
-    QTest::addColumn<QString>("expectedValue");
+    BOBUIest::addColumn<QString>("queryString");
+    BOBUIest::addColumn<QString>("key");
+    BOBUIest::addColumn<QString>("value");
+    BOBUIest::addColumn<QUrl::ComponentFormattingOptions>("encoding");
+    BOBUIest::addColumn<QString>("expectedQuery");
+    BOBUIest::addColumn<QString>("expectedKey");
+    BOBUIest::addColumn<QString>("expectedValue");
     typedef QUrl::ComponentFormattingOptions F;
 
-    QTest::newRow("nul") << "f%00=bar%00" << "f%00" << "bar%00" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("nul") << "f%00=bar%00" << "f%00" << "bar%00" << F(QUrl::PrettyDecoded)
                          << "f%00=bar%00" << "f%00" << "bar%00";
-    QTest::newRow("non-decodable-1") << "foo%01%7f=b%1ar" << "foo%01%7f" << "b%1ar" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("non-decodable-1") << "foo%01%7f=b%1ar" << "foo%01%7f" << "b%1ar" << F(QUrl::PrettyDecoded)
                                      << "foo%01%7F=b%1Ar" << "foo%01%7F" << "b%1Ar";
-    QTest::newRow("non-decodable-2") << "foo\x01\x7f=b\x1ar" << "foo\x01\x7f" << "b\x1Ar" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("non-decodable-2") << "foo\x01\x7f=b\x1ar" << "foo\x01\x7f" << "b\x1Ar" << F(QUrl::PrettyDecoded)
                                      << "foo%01%7F=b%1Ar" << "foo%01%7F" << "b%1Ar";
 
-    QTest::newRow("space") << "%20=%20" << "%20" << "%20" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("space") << "%20=%20" << "%20" << "%20" << F(QUrl::PrettyDecoded)
                            << " = " << " " << " ";
-    QTest::newRow("encode-space") << " = " << " " << " " << F(QUrl::FullyEncoded)
+    BOBUIest::newRow("encode-space") << " = " << " " << " " << F(QUrl::FullyEncoded)
                                   << "%20=%20" << "%20" << "%20";
 
     // tri-state
-    QTest::newRow("decode-non-delimiters") << "%3C%5C%3E=%7B%7C%7D%5E%60" << "%3C%5C%3E" << "%7B%7C%7D%5E%60" << F(QUrl::DecodeReserved)
+    BOBUIest::newRow("decode-non-delimiters") << "%3C%5C%3E=%7B%7C%7D%5E%60" << "%3C%5C%3E" << "%7B%7C%7D%5E%60" << F(QUrl::DecodeReserved)
                                     << "<\\>={|}^`" << "<\\>" << "{|}^`";
-    QTest::newRow("encode-non-delimiters") << "<\\>={|}^`" << "<\\>" << "{|}^`" << F(QUrl::EncodeReserved)
+    BOBUIest::newRow("encode-non-delimiters") << "<\\>={|}^`" << "<\\>" << "{|}^`" << F(QUrl::EncodeReserved)
                                            << "%3C%5C%3E=%7B%7C%7D%5E%60" << "%3C%5C%3E" << "%7B%7C%7D%5E%60";
-    QTest::newRow("pretty-non-delimiters") << "<\\>={|}^`" << "<\\>" << "{|}^`" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("pretty-non-delimiters") << "<\\>={|}^`" << "<\\>" << "{|}^`" << F(QUrl::PrettyDecoded)
                                            << "%3C%5C%3E=%7B%7C%7D%5E%60" << "<\\>" << "{|}^`";
 
-    QTest::newRow("equals") << "%3D=%3D" << "%3D" << "%3D" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("equals") << "%3D=%3D" << "%3D" << "%3D" << F(QUrl::PrettyDecoded)
                             << "%3D=%3D" << "=" << "=";
-    QTest::newRow("equals-2") << "%3D==" << "=" << "=" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("equals-2") << "%3D==" << "=" << "=" << F(QUrl::PrettyDecoded)
                               << "%3D=%3D" << "=" << "=";
-    QTest::newRow("ampersand") << "%26=%26" << "%26" << "%26" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("ampersand") << "%26=%26" << "%26" << "%26" << F(QUrl::PrettyDecoded)
                                << "%26=%26" << "&" << "&";
-    QTest::newRow("hash") << "#=#" << "%23" << "%23" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("hash") << "#=#" << "%23" << "%23" << F(QUrl::PrettyDecoded)
                             << "#=#" << "#" << "#";
-    QTest::newRow("decode-hash") << "%23=%23" << "%23" << "%23" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("decode-hash") << "%23=%23" << "%23" << "%23" << F(QUrl::PrettyDecoded)
                                  << "#=#" << "#" << "#";
 
-    QTest::newRow("percent") << "%25=%25" << "%25" << "%25" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("percent") << "%25=%25" << "%25" << "%25" << F(QUrl::PrettyDecoded)
                              << "%25=%25" << "%25" << "%25";
-    QTest::newRow("bad-percent-1") << "%=%" << "%" << "%" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("bad-percent-1") << "%=%" << "%" << "%" << F(QUrl::PrettyDecoded)
                                    << "%25=%25" << "%25" << "%25";
-    QTest::newRow("bad-percent-2") << "%2=%2" << "%2" << "%2" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("bad-percent-2") << "%2=%2" << "%2" << "%2" << F(QUrl::PrettyDecoded)
                                    << "%252=%252" << "%252" << "%252";
 
-    QTest::newRow("plus") << "+=+" << "+" << "+" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("plus") << "+=+" << "+" << "+" << F(QUrl::PrettyDecoded)
                             << "+=+" << "+" << "+";
-    QTest::newRow("2b") << "%2b=%2b" << "%2b" << "%2b" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("2b") << "%2b=%2b" << "%2b" << "%2b" << F(QUrl::PrettyDecoded)
                             << "%2B=%2B" << "%2B" << "%2B";
     // plus signs must not be touched
-    QTest::newRow("encode-plus") << "+=+" << "+" << "+" << F(QUrl::FullyEncoded)
+    BOBUIest::newRow("encode-plus") << "+=+" << "+" << "+" << F(QUrl::FullyEncoded)
                             << "+=+" << "+" << "+";
-    QTest::newRow("decode-2b") << "%2b=%2b" << "%2b" << "%2b" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("decode-2b") << "%2b=%2b" << "%2b" << "%2b" << F(QUrl::PrettyDecoded)
                             << "%2B=%2B" << "%2B" << "%2B";
 
 
-    QTest::newRow("unicode") << "q=R%C3%a9sum%c3%A9" << "q" << "R%C3%a9sum%c3%A9" << F(QUrl::PrettyDecoded)
+    BOBUIest::newRow("unicode") << "q=R%C3%a9sum%c3%A9" << "q" << "R%C3%a9sum%c3%A9" << F(QUrl::PrettyDecoded)
                              << QString::fromUtf8("q=R\xc3\xa9sum\xc3\xa9") << "q" << QString::fromUtf8("R\xc3\xa9sum\xc3\xa9");
-    QTest::newRow("encode-unicode") << QString::fromUtf8("q=R\xc3\xa9sum\xc3\xa9") << "q" << QString::fromUtf8("R\xc3\xa9sum\xc3\xa9")
+    BOBUIest::newRow("encode-unicode") << QString::fromUtf8("q=R\xc3\xa9sum\xc3\xa9") << "q" << QString::fromUtf8("R\xc3\xa9sum\xc3\xa9")
                                     << F(QUrl::FullyEncoded)
                                     << "q=R%C3%A9sum%C3%A9" << "q" << "R%C3%A9sum%C3%A9";
 }
@@ -815,15 +815,15 @@ void tst_QUrlQuery::old_queryItems()
 
 void tst_QUrlQuery::old_hasQueryItem_data()
 {
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<QString>("item");
-    QTest::addColumn<bool>("trueFalse");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<QString>("item");
+    BOBUIest::addColumn<bool>("trueFalse");
 
     // the old tests started with "http://www.foo.bar"
-    QTest::newRow("no query items") << "" << "baz" << false;
-    QTest::newRow("query item: hello") << "hello=world" << "hello" << true;
-    QTest::newRow("no query item: world") << "hello=world" << "world" << false;
-    QTest::newRow("query item: qt") << "hello=world&qt=rocks" << "qt" << true;
+    BOBUIest::newRow("no query items") << "" << "baz" << false;
+    BOBUIest::newRow("query item: hello") << "hello=world" << "hello" << true;
+    BOBUIest::newRow("no query item: world") << "hello=world" << "world" << false;
+    BOBUIest::newRow("query item: bobui") << "hello=world&bobui=rocks" << "bobui" << true;
 }
 
 void tst_QUrlQuery::old_hasQueryItem()
@@ -839,16 +839,16 @@ void tst_QUrlQuery::old_hasQueryItem()
 // this test doesn't make sense anymore
 void tst_QUrl::removeAllEncodedQueryItems_data()
 {
-    QTest::addColumn<QUrl>("url");
-    QTest::addColumn<QByteArray>("key");
-    QTest::addColumn<QUrl>("result");
+    BOBUIest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<QByteArray>("key");
+    BOBUIest::addColumn<QUrl>("result");
 
-    QTest::newRow("test1") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&bbb=b&ccc=c") << QByteArray("bbb") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&ccc=c");
-    QTest::newRow("test2") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&bbb=b&ccc=c") << QByteArray("aaa") << QUrl::fromEncoded("http://qt-project.org/foo?bbb=b&ccc=c");
-//    QTest::newRow("test3") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&bbb=b&ccc=c") << QByteArray("ccc") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&bbb=b");
-    QTest::newRow("test4") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&bbb=b&ccc=c") << QByteArray("b%62b") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&bbb=b&ccc=c");
-    QTest::newRow("test5") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&b%62b=b&ccc=c") << QByteArray("b%62b") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&ccc=c");
-    QTest::newRow("test6") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&b%62b=b&ccc=c") << QByteArray("bbb") << QUrl::fromEncoded("http://qt-project.org/foo?aaa=a&b%62b=b&ccc=c");
+    BOBUIest::newRow("test1") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&bbb=b&ccc=c") << QByteArray("bbb") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&ccc=c");
+    BOBUIest::newRow("test2") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&bbb=b&ccc=c") << QByteArray("aaa") << QUrl::fromEncoded("http://bobui-project.org/foo?bbb=b&ccc=c");
+//    BOBUIest::newRow("test3") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&bbb=b&ccc=c") << QByteArray("ccc") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&bbb=b");
+    BOBUIest::newRow("test4") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&bbb=b&ccc=c") << QByteArray("b%62b") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&bbb=b&ccc=c");
+    BOBUIest::newRow("test5") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&b%62b=b&ccc=c") << QByteArray("b%62b") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&ccc=c");
+    BOBUIest::newRow("test6") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&b%62b=b&ccc=c") << QByteArray("bbb") << QUrl::fromEncoded("http://bobui-project.org/foo?aaa=a&b%62b=b&ccc=c");
 }
 
 void tst_QUrl::removeAllEncodedQueryItems()
@@ -861,6 +861,6 @@ void tst_QUrl::removeAllEncodedQueryItems()
 }
 #endif
 
-QTEST_APPLESS_MAIN(tst_QUrlQuery)
+BOBUIEST_APPLESS_MAIN(tst_QUrlQuery)
 
 #include "tst_qurlquery.moc"

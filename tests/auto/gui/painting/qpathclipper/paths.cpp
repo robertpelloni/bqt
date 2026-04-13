@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "paths.h"
 
 QPainterPath Paths::rect()
@@ -553,7 +553,7 @@ QPainterPath Paths::node()
     m_rect.setHeight(100);
 
     QPainterPath shape;
-    shape.addRoundedRect(m_rect, 25, Qt::RelativeSize);
+    shape.addRoundedRect(m_rect, 25, BobUI::RelativeSize);
 
     const int conWidth = 10;
     const int xOffset  = 7;
@@ -644,7 +644,7 @@ QPainterPath Paths::windingFill()
     QPainterPath path;
     path.addRect(0, 0, 100, 100);
     path.addRect(50, 25, 100, 50);
-    path.setFillRule(Qt::WindingFill);
+    path.setFillRule(BobUI::WindingFill);
     return path;
 }
 
@@ -657,7 +657,7 @@ QPainterPath Paths::oddEvenFill()
     path.lineTo(150, 75);
     path.lineTo(150, 25);
     path.lineTo(50, 25);
-    path.setFillRule(Qt::OddEvenFill);
+    path.setFillRule(BobUI::OddEvenFill);
     return path;
 }
 

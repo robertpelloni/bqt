@@ -1,15 +1,15 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
-qt_internal_add_manual_test(sockify_sockets_auto
+bobui_internal_add_manual_test(sockify_sockets_auto
     SOURCES
         main.cpp
-        ../../qtwasmtestlib/qtwasmtestlib.cpp
+        ../../bobuiwasmtestlib/bobuiwasmtestlib.cpp
     LIBRARIES
-        Qt::Core
-        Qt::Network
+        BobUI::Core
+        BobUI::Network
 )
 
-include_directories(../../qtwasmtestlib/)
+include_directories(../../bobuiwasmtestlib/)
 
 add_custom_command(
     TARGET sockify_sockets_auto POST_BUILD
@@ -20,5 +20,5 @@ add_custom_command(
 add_custom_command(
     TARGET sockify_sockets_auto POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-            ${CMAKE_CURRENT_SOURCE_DIR}/../../qtwasmtestlib/qtwasmtestlib.js
-            ${CMAKE_CURRENT_BINARY_DIR}/qtwasmtestlib.js)
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../bobuiwasmtestlib/bobuiwasmtestlib.js
+            ${CMAKE_CURRENT_BINARY_DIR}/bobuiwasmtestlib.js)

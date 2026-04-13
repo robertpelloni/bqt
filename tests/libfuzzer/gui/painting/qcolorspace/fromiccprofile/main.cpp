@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <cstdlib>
 
@@ -25,7 +25,7 @@ static QImage::Format toFormat(QColorSpace::ColorModel model)
 
 extern "C" int LLVMFuzzerTestOneInput(const char *data, size_t size) {
     // to reduce noise and increase speed
-    static char quiet[] = "QT_LOGGING_RULES=qt.gui.icc=false";
+    static char quiet[] = "BOBUI_LOGGING_RULES=bobui.gui.icc=false";
     static int pe = putenv(quiet);
     Q_UNUSED(pe);
     static int argc = 3;

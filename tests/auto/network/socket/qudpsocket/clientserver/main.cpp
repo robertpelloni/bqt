@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/qudpsocket.h>
+#include <BobUINetwork/qudpsocket.h>
 
-#include <QtCore/qcoreevent.h>
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qcoreevent.h>
+#include <BobUICore/qcoreapplication.h>
 
 class ClientServer : public QUdpSocket
 {
@@ -49,7 +49,7 @@ public:
     }
 
 protected:
-    void timerEvent(QTimerEvent *event) override
+    void timerEvent(BOBUIimerEvent *event) override
     {
         static int n = 0;
         switch (type) {

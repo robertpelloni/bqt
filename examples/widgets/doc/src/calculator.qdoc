@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example widgets/calculator
@@ -20,7 +20,7 @@
     \li \c Calculator is the calculator widget, with all the
        calculator functionality.
     \li \c Button is the widget used for each of the calculator
-       button. It derives from QToolButton.
+       button. It derives from BOBUIoolButton.
     \endlist
 
     We will start by reviewing \c Calculator, then we will take a
@@ -157,7 +157,7 @@
     \snippet widgets/calculator/calculator.cpp 7
 
     Pressing one of the calculator's digit buttons will emit the
-    button's \l{QToolButton::clicked()}{clicked()} signal, which will
+    button's \l{BOBUIoolButton::clicked()}{clicked()} signal, which will
     trigger the \c digitClicked() slot.
 
     First, we find out which button sent the signal using
@@ -169,7 +169,7 @@
     the object has the wrong type, a null pointer is returned.
     Crashes due to null pointers are much easier to diagnose than
     crashes due to unsafe casts. Once we have the button, we extract
-    the operator using QToolButton::text().
+    the operator using BOBUIoolButton::text().
 
     The slot needs to consider two situations in particular. If \c
     display contains "0" and the user clicks the \uicontrol{0} button, it
@@ -313,7 +313,7 @@
 
     The \c Button class has a convenience constructor that takes a
     text label and a parent widget, and it reimplements QWidget::sizeHint()
-    to provide more space around the text than the amount QToolButton
+    to provide more space around the text than the amount BOBUIoolButton
     normally provides.
 
     \section1 Button Class Implementation
@@ -326,7 +326,7 @@
     widgets. The call to the
     \l{QWidget::setSizePolicy()}{setSizePolicy()} function in the
     constructor ensures that the button will expand horizontally to
-    fill all the available space; by default, \l{QToolButton}s don't
+    fill all the available space; by default, \l{BOBUIoolButton}s don't
     expand to fill available space. Without this call, the different
     buttons in a same column would have different widths.
 
@@ -335,7 +335,7 @@
 
     In \l{QWidget::sizeHint()}{sizeHint()}, we try to return a size
     that looks good for most buttons. We reuse the size hint of the
-    base class (QToolButton) but modify it in the following ways:
+    base class (BOBUIoolButton) but modify it in the following ways:
 
     \list
     \li We add 20 to the \l{QSize::height()}{height} component of the size hint.

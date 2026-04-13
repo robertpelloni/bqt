@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDINPUTMETHODCONTEXT_P_H
 #define QWAYLANDINPUTMETHODCONTEXT_P_H
@@ -8,32 +8,32 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/qpa/qplatforminputcontext.h>
-#include <QtGui/qevent.h>
-#include <QtCore/qlocale.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qhash.h>
+#include <BobUIGui/qpa/qplatforminputcontext.h>
+#include <BobUIGui/qevent.h>
+#include <BobUICore/qlocale.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qhash.h>
 
-#include <QtWaylandClient/private/qwayland-qt-text-input-method-unstable-v1.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUIWaylandClient/private/qwayland-bobui-text-input-method-unstable-v1.h>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
     class QWaylandDisplay;
 
-class QWaylandTextInputMethod : public QtWayland::qt_text_input_method_v1
+class QWaylandTextInputMethod : public BobUIWayland::bobui_text_input_method_v1
 {
 public:
-    QWaylandTextInputMethod(QWaylandDisplay *display, struct ::qt_text_input_method_v1 *textInputMethod);
+    QWaylandTextInputMethod(QWaylandDisplay *display, struct ::bobui_text_input_method_v1 *textInputMethod);
     ~QWaylandTextInputMethod() override;
 
     void text_input_method_v1_visible_changed(int32_t visible) override;
@@ -62,12 +62,12 @@ public:
         return m_locale;
     }
 
-    inline Qt::LayoutDirection inputDirection() const
+    inline BobUI::LayoutDirection inputDirection() const
     {
         return m_layoutDirection;
     }
 
-    void sendInputState(QInputMethodQueryEvent *state, Qt::InputMethodQueries queries = Qt::ImQueryInput);
+    void sendInputState(QInputMethodQueryEvent *state, BobUI::InputMethodQueries queries = BobUI::ImQueryInput);
 
 private:
     QHash<int, QList<QInputMethodEvent::Attribute> > m_pendingInputMethodEvents;
@@ -79,7 +79,7 @@ private:
     bool m_isVisible = false;
     QRectF m_keyboardRect;
     QLocale m_locale;
-    Qt::LayoutDirection m_layoutDirection;
+    BobUI::LayoutDirection m_layoutDirection;
 };
 
 class QWaylandInputMethodContext : public QPlatformInputContext
@@ -92,7 +92,7 @@ public:
     bool isValid() const override;
     void reset() override;
     void commit() override;
-    void update(Qt::InputMethodQueries) override;
+    void update(BobUI::InputMethodQueries) override;
     void invokeAction(QInputMethod::Action, int cursorPosition) override;
     void showInputPanel() override;
     void hideInputPanel() override;
@@ -100,7 +100,7 @@ public:
     bool isInputPanelVisible() const override;
     QRectF keyboardRect() const override;
     QLocale locale() const override;
-    Qt::LayoutDirection inputDirection() const override;
+    BobUI::LayoutDirection inputDirection() const override;
 
     void setFocusObject(QObject *object) override;
 
@@ -111,8 +111,8 @@ private:
     QPointer<QWindow> m_currentWindow;
 };
 
-} // QtWaylandClient
+} // BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDINPUTMETHODCONTEXT_P_H

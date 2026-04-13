@@ -1,0 +1,6 @@
+[styleOptionViewItem]
+wayland ubuntu-24.04 # BOBUIBUG-127920
+
+# BOBUIBUG-130743
+[taskBOBUIBUG_8376]
+vxworks

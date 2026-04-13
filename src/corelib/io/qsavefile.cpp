@@ -1,26 +1,26 @@
 // Copyright (C) 2012 David Faure <faure@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:guaranteed-behavior
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:guaranteed-behavior
 
 #include "qsavefile.h"
 
-#if QT_CONFIG(temporaryfile)
+#if BOBUI_CONFIG(temporaryfile)
 
 #include "qplatformdefs.h"
 #include "private/qsavefile_p.h"
 #include "qfileinfo.h"
 #include "qabstractfileengine_p.h"
 #include "qdebug.h"
-#include "qtemporaryfile.h"
+#include "bobuiemporaryfile.h"
 #include "private/qiodevice_p.h"
-#include "private/qtemporaryfile_p.h"
+#include "private/bobuiemporaryfile_p.h"
 #ifdef Q_OS_UNIX
 #include <errno.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QSaveFilePrivate::QSaveFilePrivate()
     : writeError(QFileDevice::NoError),
@@ -35,7 +35,7 @@ QSaveFilePrivate::~QSaveFilePrivate()
 
 /*!
     \class QSaveFile
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSaveFile class provides an interface for safely writing to files.
 
     \ingroup io
@@ -58,7 +58,7 @@ QSaveFilePrivate::~QSaveFilePrivate()
     an error happened, and will discard the temporary file in commit().
 
     Much like with QFile, the file is opened with open(). Data is usually read
-    and written using QDataStream or QTextStream, but you can also directly call
+    and written using QDataStream or BOBUIextStream, but you can also directly call
     \l write().
 
     Unlike QFile, calling close() is not allowed. commit() replaces it. If commit()
@@ -68,7 +68,7 @@ QSaveFilePrivate::~QSaveFilePrivate()
     To abort saving due to an application error, call cancelWriting(), so that
     even a call to commit() later on will not save.
 
-    \sa QTextStream, QDataStream, QFileInfo, QDir, QFile, QTemporaryFile
+    \sa BOBUIextStream, QDataStream, QFileInfo, QDir, QFile, BOBUIemporaryFile
 */
 
 /*!
@@ -155,7 +155,7 @@ void QSaveFile::setFileName(const QString &name)
     moment are \l ReadOnly (and therefore \l ReadWrite), \l Append, \l NewOnly and \l ExistingOnly;
     they will generate a runtime warning.
 
-    \sa setFileName(), QT_USE_NODISCARD_FILE_OPEN
+    \sa setFileName(), BOBUI_USE_NODISCARD_FILE_OPEN
 */
 bool QSaveFile::open(OpenMode mode)
 {
@@ -236,12 +236,12 @@ bool QSaveFile::open(OpenMode mode)
         return false;
     }
 
-    d->fileEngine.reset(new QTemporaryFileEngine(&d->finalFileName, QTemporaryFileEngine::Win32NonShared));
+    d->fileEngine.reset(new BOBUIemporaryFileEngine(&d->finalFileName, BOBUIemporaryFileEngine::Win32NonShared));
     // if the target file exists, we'll copy its permissions below,
     // but until then, let's ensure the temporary file is not accessible
     // to a third party
     int perm = (existingFile.exists() ? 0600 : 0666);
-    static_cast<QTemporaryFileEngine *>(d->fileEngine.get())->initialize(d->finalFileName, perm);
+    static_cast<BOBUIemporaryFileEngine *>(d->fileEngine.get())->initialize(d->finalFileName, perm);
     // Same as in QFile: QIODevice provides the buffering, so there's no need to request it from the file engine.
     if (!d->fileEngine->open(mode | QIODevice::Unbuffered)) {
         QFileDevice::FileError err = d->fileEngine->error();
@@ -417,8 +417,8 @@ bool QSaveFile::directWriteFallback() const
     return d->directWriteFallback;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsavefile.cpp"
 
-#endif // QT_CONFIG(temporaryfile)
+#endif // BOBUI_CONFIG(temporaryfile)

@@ -1,31 +1,31 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTYLESHEETSTYLE_P_H
 #define QSTYLESHEETSTYLE_P_H
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "private/qwindowsstyle_p.h"
 
-#ifndef QT_NO_STYLE_STYLESHEET
+#ifndef BOBUI_NO_STYLE_STYLESHEET
 
-#include "QtWidgets/qapplication.h"
-#include "QtWidgets/qstyleoption.h"
-#include "QtCore/qhash.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qset.h"
-#include "QtGui/qbrush.h"
-#include "QtGui/qevent.h"
+#include "BobUIWidgets/qapplication.h"
+#include "BobUIWidgets/qstyleoption.h"
+#include "BobUICore/qhash.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qset.h"
+#include "BobUIGui/qbrush.h"
+#include "BobUIGui/qevent.h"
 #include "private/qcssparser_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -74,7 +74,7 @@ public:
     QPixmap standardPixmap(StandardPixmap standardPixmap, const QStyleOption *option = nullptr,
                            const QWidget *w = nullptr ) const override;
     int layoutSpacing(QSizePolicy::ControlType control1, QSizePolicy::ControlType control2,
-                          Qt::Orientation orientation, const QStyleOption *option = nullptr,
+                          BobUI::Orientation orientation, const QStyleOption *option = nullptr,
                           const QWidget *widget = nullptr) const override;
     int styleHint(StyleHint sh, const QStyleOption *opt = nullptr, const QWidget *w = nullptr,
                   QStyleHintReturn *shret = nullptr) const override;
@@ -112,9 +112,9 @@ private:
     QRenderRule renderRule(const QWidget *, const QStyleOption *, int = 0) const;
     QSize defaultSize(const QWidget *, QSize, const QRect&, int) const;
     QRect positionRect(const QWidget *, const QRenderRule&, const QRenderRule&, int,
-                       const QRect&, Qt::LayoutDirection) const;
+                       const QRect&, BobUI::LayoutDirection) const;
     QRect positionRect(const QWidget *w, const QRenderRule &rule2, int pe,
-                       const QRect &originRect, Qt::LayoutDirection dir) const;
+                       const QRect &originRect, BobUI::LayoutDirection dir) const;
 
     mutable QCss::Parser parser;
 
@@ -130,7 +130,7 @@ private:
 
     QCss::StyleSheet getDefaultStyleSheet() const;
 
-    static Qt::Alignment resolveAlignment(Qt::LayoutDirection, Qt::Alignment);
+    static BobUI::Alignment resolveAlignment(BobUI::LayoutDirection, BobUI::Alignment);
     static bool isNaturalChild(const QObject *obj);
     static QPixmap loadPixmap(const QString &fileName, const QObject *context);
     bool initWidget(const QWidget *w) const;
@@ -180,16 +180,16 @@ public:
     QHash<const QWidget *, Tampered<QFont>> customFontWidgets;
 };
 template <typename T>
-class QTypeInfo<QStyleSheetStyleCaches::Tampered<T>>
-    : public QTypeInfoMerger<QStyleSheetStyleCaches::Tampered<T>, T> {};
+class BOBUIypeInfo<QStyleSheetStyleCaches::Tampered<T>>
+    : public BOBUIypeInfoMerger<QStyleSheetStyleCaches::Tampered<T>, T> {};
 
 
 // Returns a QStyleSheet from the given style.
-inline QStyleSheetStyle* qt_styleSheet(QStyle *style)
+inline QStyleSheetStyle* bobui_styleSheet(QStyle *style)
 {
     return qobject_cast<QStyleSheetStyle *>(style);
 }
 
-QT_END_NAMESPACE
-#endif // QT_NO_STYLE_STYLESHEET
+BOBUI_END_NAMESPACE
+#endif // BOBUI_NO_STYLE_STYLESHEET
 #endif // QSTYLESHEETSTYLE_P_H

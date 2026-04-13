@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui/QGuiApplication>
-#include <QTest>
+#include <BobUIGui/QGuiApplication>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtCore/QProcess>
+#include <BobUICore/QProcess>
 
 class tst_QProcess_and_GuiEventLoop : public QObject
 {
@@ -21,7 +21,7 @@ void tst_QProcess_and_GuiEventLoop::waitForAndEventLoop()
     QSKIP("Not supported on Android");
 #else
 
-    // based on testcase provided in QTBUG-39488
+    // based on testcase provided in BOBUIBUG-39488
     QByteArray msg = "Hello World";
 
     QProcess process;
@@ -53,6 +53,6 @@ void tst_QProcess_and_GuiEventLoop::waitForAndEventLoop()
 #endif
 }
 
-QTEST_MAIN(tst_QProcess_and_GuiEventLoop)
+BOBUIEST_MAIN(tst_QProcess_and_GuiEventLoop)
 
 #include "tst_qprocess_and_guieventloop.moc"

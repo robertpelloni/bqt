@@ -1,17 +1,17 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## cubemap_render Binary:
 #####################################################################
 
-qt_internal_add_manual_test(cubemap_render
+bobui_internal_add_manual_test(cubemap_render
     GUI
     SOURCES
         cubemap_render.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 # Resources:
@@ -24,7 +24,7 @@ set(cubemap_render_resource_files
     "cubemap_sample.vert.qsb"
 )
 
-qt_internal_add_resource(cubemap_render "cubemap_render"
+bobui_internal_add_resource(cubemap_render "cubemap_render"
     PREFIX
         "/"
     FILES

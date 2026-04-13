@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QBENCHMARK_P_H
 #define QBENCHMARK_P_H
@@ -10,34 +10,34 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE) && !defined(Q_OS_ANDROID)
-#define QTESTLIB_USE_PERF_EVENTS
+#if defined(Q_OS_LINUX) && !defined(BOBUI_LINUXBASE) && !defined(Q_OS_ANDROID)
+#define BOBUIESTLIB_USE_PERF_EVENTS
 #else
-#undef QTESTLIB_USE_PERF_EVENTS
+#undef BOBUIESTLIB_USE_PERF_EVENTS
 #endif
 
-#include <QtTest/private/qbenchmarkmeasurement_p.h>
-#include <QtCore/QMap>
-#include <QtTest/qttestglobal.h>
-#if QT_CONFIG(valgrind)
-#include <QtTest/private/qbenchmarkvalgrind_p.h>
+#include <BobUITest/private/qbenchmarkmeasurement_p.h>
+#include <BobUICore/QMap>
+#include <BobUITest/bobuitestglobal.h>
+#if BOBUI_CONFIG(valgrind)
+#include <BobUITest/private/qbenchmarkvalgrind_p.h>
 #endif
-#ifdef QTESTLIB_USE_PERF_EVENTS
-#include <QtTest/private/qbenchmarkperfevents_p.h>
+#ifdef BOBUIESTLIB_USE_PERF_EVENTS
+#include <BobUITest/private/qbenchmarkperfevents_p.h>
 #endif
-#include <QtTest/private/qbenchmarkevent_p.h>
-#include <QtTest/private/qbenchmarkmetric_p.h>
+#include <BobUITest/private/qbenchmarkevent_p.h>
+#include <BobUITest/private/qbenchmarkmetric_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QBenchmarkContext
 {
@@ -61,7 +61,7 @@ class QBenchmarkResult
 {
 public:
     QBenchmarkContext context;
-    QBenchmarkMeasurerBase::Measurement measurement = { -1, QTest::FramesPerSecond };
+    QBenchmarkMeasurerBase::Measurement measurement = { -1, BOBUIest::FramesPerSecond };
     int iterations = -1;
     bool setByMacro = true;
 
@@ -147,7 +147,7 @@ public:
 };
 
 // low-level API:
-namespace QTest
+namespace BOBUIest
 {
     int iterationCount() noexcept;
     void setIterationCountHint(int count);
@@ -157,6 +157,6 @@ namespace QTest
     QList<QBenchmarkMeasurerBase::Measurement> endBenchmarkMeasurement();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBENCHMARK_H

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "detailsdialog.h"
 
@@ -11,10 +11,10 @@ DetailsDialog::DetailsDialog(const QString &title, QWidget *parent)
 {
     nameLabel = new QLabel(tr("Name:"));
     addressLabel = new QLabel(tr("Address:"));
-    addressLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    addressLabel->setAlignment(BobUI::AlignLeft | BobUI::AlignTop);
 
     nameEdit = new QLineEdit;
-    addressEdit = new QTextEdit;
+    addressEdit = new BOBUIextEdit;
 
     offersCheckBox = new QCheckBox(tr("Send information about products and "
                                       "special offers"));
@@ -49,13 +49,13 @@ void DetailsDialog::setupItemsTable()
     items << tr("T-shirt") << tr("Badge") << tr("Reference book")
           << tr("Coffee cup");
 
-    itemsTable = new QTableWidget(items.count(), 2);
+    itemsTable = new BOBUIableWidget(items.count(), 2);
 
     for (int row = 0; row < items.count(); ++row) {
-        QTableWidgetItem *name = new QTableWidgetItem(items[row]);
-        name->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+        BOBUIableWidgetItem *name = new BOBUIableWidgetItem(items[row]);
+        name->setFlags(BobUI::ItemIsEnabled | BobUI::ItemIsSelectable);
         itemsTable->setItem(row, 0, name);
-        QTableWidgetItem *quantity = new QTableWidgetItem("1");
+        BOBUIableWidgetItem *quantity = new BOBUIableWidgetItem("1");
         itemsTable->setItem(row, 1, quantity);
     }
 }
@@ -69,7 +69,7 @@ QList<QPair<QString, int> > DetailsDialog::orderItems()
     for (int row = 0; row < items.count(); ++row) {
         QPair<QString, int> item;
         item.first = itemsTable->item(row, 0)->text();
-        int quantity = itemsTable->item(row, 1)->data(Qt::DisplayRole).toInt();
+        int quantity = itemsTable->item(row, 1)->data(BobUI::DisplayRole).toInt();
         item.second = qMax(0, quantity);
         orderList.append(item);
     }

@@ -81,7 +81,7 @@ jpeg_CreateCompress(j_compress_ptr cinfo, int version, size_t structsize)
   }
 
 #if JPEG_LIB_VERSION >= 80
-  /* Must do it here for emit_dqt in case jpeg_write_tables is used */
+  /* Must do it here for emit_dbobui in case jpeg_write_tables is used */
   cinfo->block_size = DCTSIZE;
   cinfo->natural_order = jpeg_natural_order;
   cinfo->lim_Se = DCTSIZE2 - 1;
@@ -145,12 +145,12 @@ GLOBAL(void)
 jpeg_suppress_tables(j_compress_ptr cinfo, boolean suppress)
 {
   int i;
-  JQUANT_TBL *qtbl;
+  JQUANT_TBL *bobuibl;
   JHUFF_TBL *htbl;
 
   for (i = 0; i < NUM_QUANT_TBLS; i++) {
-    if ((qtbl = cinfo->quant_tbl_ptrs[i]) != NULL)
-      qtbl->sent_table = suppress;
+    if ((bobuibl = cinfo->quant_tbl_ptrs[i]) != NULL)
+      bobuibl->sent_table = suppress;
   }
 
   for (i = 0; i < NUM_HUFF_TBLS; i++) {

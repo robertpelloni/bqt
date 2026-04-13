@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <ImageIO/ImageIO.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <UniformTypeIdentifiers/UTCoreTypes.h>
 
-#include <QtCore/qsystemdetection.h>
-#include <QtCore/qurl.h>
-#include <QtGui/qimage.h>
-#include <QtCore/qmimedata.h>
-#include <QtCore/qstringconverter.h>
+#include <BobUICore/qsystemdetection.h>
+#include <BobUICore/qurl.h>
+#include <BobUIGui/qimage.h>
+#include <BobUICore/qmimedata.h>
+#include <BobUICore/qstringconverter.h>
 
 #if defined(Q_OS_MACOS)
 #import <AppKit/AppKit.h>
@@ -17,7 +17,7 @@
 #include <MobileCoreServices/MobileCoreServices.h>
 #endif
 
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
 #import <UIKit/UIKit.h>
 #endif
 
@@ -26,9 +26,9 @@
 #include "qguiapplication.h"
 #include "private/qcore_mac_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*****************************************************************************
   QDnD debug facilities
@@ -43,15 +43,15 @@ using namespace Qt::StringLiterals;
     \since 6.5
 
     \ingroup draganddrop
-    \inmodule QtGui
+    \inmodule BobUIGui
 
-    Qt's drag and drop and clipboard facilities use the MIME
+    BobUI's drag and drop and clipboard facilities use the MIME
     standard. On X11, this maps trivially to the Xdnd protocol. On
     Mac, although some applications use MIME to describe clipboard
     contents, it is more common to use Apple's UTI format.
 
     QUtiMimeConverter's role is to bridge the gap between MIME and UTI;
-    By subclasses this class, one can extend Qt's drag and drop
+    By subclasses this class, one can extend BobUI's drag and drop
     and clipboard handling to convert to and from unsupported, or proprietary, UTI formats.
 
     Construct an instance of your converter implementation after instantiating
@@ -67,10 +67,10 @@ using namespace Qt::StringLiterals;
 
     Destroying the instance will unregister the converter and remove support
     for the conversion. It is also valid to heap-allocate the converter
-    instance; Qt takes ownership and will delete the converter object during
+    instance; BobUI takes ownership and will delete the converter object during
     QGuiApplication shut-down.
 
-    Qt has predefined support for the following UTIs:
+    BobUI has predefined support for the following UTIs:
     \list
         \li public.utf8-plain-text - converts to "text/plain"
         \li public.utf16-plain-text - converts to "text/plain"
@@ -78,13 +78,13 @@ using namespace Qt::StringLiterals;
         \li public.html - converts to "text/html"
         \li public.url - converts to "text/uri-list"
         \li public.file-url - converts to "text/uri-list"
-        \li public.tiff - converts to "application/x-qt-image"
+        \li public.tiff - converts to "application/x-bobui-image"
         \li public.vcard - converts to "text/plain"
         \li com.apple.traditional-mac-plain-text - converts to "text/plain"
-        \li com.apple.pict - converts to "application/x-qt-image"
+        \li com.apple.pict - converts to "application/x-bobui-image"
     \endlist
 
-    When working with MIME data, Qt will iterate through all instances of QUtiMimeConverter to find
+    When working with MIME data, BobUI will iterate through all instances of QUtiMimeConverter to find
     find an instance that can convert to, or from, a specific MIME type. It will do this by calling
     mimeForUti() or utiForMime() on each instance, starting with (and choosing) the last created
     instance first. The actual conversions will be done by using convertToMime() and convertFromMime().
@@ -200,7 +200,7 @@ public:
 QString QMacMimeAny::utiForMime(const QString &mime) const
 {
     // do not handle the mime type name in the drag pasteboard
-    if (mime == "application/x-qt-mime-type-name"_L1)
+    if (mime == "application/x-bobui-mime-type-name"_L1)
         return QString();
     QString ret = "com.trolltech.anymime."_L1 + mime;
     return ret.replace(u'/', "--"_L1);
@@ -252,8 +252,8 @@ public:
 
 QString QMacMimeTypeName::utiForMime(const QString &mime) const
 {
-    if (mime == "application/x-qt-mime-type-name"_L1)
-        return u"com.trolltech.qt.MimeTypeName"_s;
+    if (mime == "application/x-bobui-mime-type-name"_L1)
+        return u"com.trolltech.bobui.MimeTypeName"_s;
     return QString();
 }
 
@@ -271,7 +271,7 @@ QVariant QMacMimeTypeName::convertToMime(const QString &, const QList<QByteArray
 QList<QByteArray> QMacMimeTypeName::convertFromMime(const QString &, const QVariant &, const QString &) const
 {
     QList<QByteArray> ret;
-    ret.append(QString("x-qt-mime-type-name"_L1).toUtf8());
+    ret.append(QString("x-bobui-mime-type-name"_L1).toUtf8());
     return ret;
 }
 
@@ -398,7 +398,7 @@ QMacMimeUnicodeText::convertFromMime(const QString &, const QVariant &data,
         QStringEncoder::Flags f;
 #if defined(Q_OS_MACOS)
         // Some applications such as Microsoft Excel, don't deal well with
-        // a BOM present, so we follow the traditional approach of Qt on
+        // a BOM present, so we follow the traditional approach of BobUI on
         // macOS to not generate public.utf16-plain-text with a BOM.
         f = QStringEncoder::Flag::Default;
 #else
@@ -507,7 +507,7 @@ QMacMimeRtfText::convertToMime(const QString &mimeType,
     NSData *htmlData = [string dataFromRange:range documentAttributes:dict error:&error];
 
     // Note: We trim the data here, as NSAttributedString wrongly inserts a newline at the
-    // end when generating HTML, which HTML parsers (including our own QTextHtmlParser)
+    // end when generating HTML, which HTML parsers (including our own BOBUIextHtmlParser)
     // correctly treat as an additional white space in the body of the HTML document
     // (see HTML5 § 13.2.6.4.22 - The "after after body" insertion mode).
     return QByteArray::fromNSData(htmlData).trimmed();
@@ -731,8 +731,8 @@ QList<QByteArray> QMacMimeVCard::convertFromMime(const QString &mime,
     return ret;
 }
 
-extern QImage qt_mac_toQImage(CGImageRef image);
-extern CGImageRef qt_mac_toCGImage(const QImage &qImage);
+extern QImage bobui_mac_toQImage(CGImageRef image);
+extern CGImageRef bobui_mac_toCGImage(const QImage &qImage);
 
 class QMacMimeTiff : public QUtiMimeConverter
 {
@@ -747,7 +747,7 @@ public:
 
 QString QMacMimeTiff::utiForMime(const QString &mime) const
 {
-    if (mime.startsWith("application/x-qt-image"_L1))
+    if (mime.startsWith("application/x-bobui-image"_L1))
         return "public.tiff"_L1;
     return QString();
 }
@@ -755,7 +755,7 @@ QString QMacMimeTiff::utiForMime(const QString &mime) const
 QString QMacMimeTiff::mimeForUti(const QString &uti) const
 {
     if (uti == "public.tiff"_L1)
-        return "application/x-qt-image"_L1;
+        return "application/x-bobui-image"_L1;
     return QString();
 }
 
@@ -772,7 +772,7 @@ QVariant QMacMimeTiff::convertToMime(const QString &mime,
     QCFType<CGImageSourceRef> imageSource = CGImageSourceCreateWithData(tiffData, 0);
 
     if (QCFType<CGImageRef> image = CGImageSourceCreateImageAtIndex(imageSource, 0, 0))
-        return QVariant(qt_mac_toQImage(image));
+        return QVariant(bobui_mac_toQImage(image));
 
     return QVariant();
 }
@@ -796,7 +796,7 @@ QList<QByteArray> QMacMimeTiff::convertFromMime(const QString &mime,
         static_cast<NSString *>(kCGImagePropertyPixelHeight): @(img.height())
     };
 
-    CGImageDestinationAddImage(imageDestination, qt_mac_toCGImage(img),
+    CGImageDestinationAddImage(imageDestination, bobui_mac_toCGImage(img),
                                static_cast<CFDictionaryRef>(props));
     CGImageDestinationFinalize(imageDestination);
 
@@ -825,4 +825,4 @@ void registerBuiltInTypes()
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

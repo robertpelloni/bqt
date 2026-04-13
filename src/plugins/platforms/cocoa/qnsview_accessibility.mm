@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // This file is included from qnsview.mm, and only used to organize the code
 
@@ -8,18 +8,18 @@
 #include "qcocoaaccessibilityelement.h"
 #include "qcocoaintegration.h"
 
-#include <QtGui/qaccessible.h>
+#include <BobUIGui/qaccessible.h>
 
 #include <AppKit/NSAccessibility.h>
 
 @implementation QNSView (Accessibility)
 
-- (void)activateQtAccessibility
+- (void)activateBobUIAccessibility
 {
-    // Activate the Qt accessibility machinery for all entry points
+    // Activate the BobUI accessibility machinery for all entry points
     // below that may be triggered by system accessibility queries,
-    // as otherwise Qt is not aware that the system needs to know
-    // about all accessibility state changes in Qt.
+    // as otherwise BobUI is not aware that the system needs to know
+    // about all accessibility state changes in BobUI.
     QCocoaIntegration::instance()->accessibility()->setActive(true);
 }
 
@@ -42,7 +42,7 @@
 
 - (id)accessibilityAttributeValue:(NSString *)attribute
 {
-    [self activateQtAccessibility];
+    [self activateBobUIAccessibility];
 
     if ([attribute isEqualToString:NSAccessibilityChildrenAttribute])
         return NSAccessibilityUnignoredChildrenForOnlyChild([self childAccessibleElement]);
@@ -52,13 +52,13 @@
 
 - (id)accessibilityHitTest:(NSPoint)point
 {
-    [self activateQtAccessibility];
+    [self activateBobUIAccessibility];
     return [[self childAccessibleElement] accessibilityHitTest:point];
 }
 
 - (id)accessibilityFocusedUIElement
 {
-    [self activateQtAccessibility];
+    [self activateBobUIAccessibility];
     return [[self childAccessibleElement] accessibilityFocusedUIElement];
 }
 

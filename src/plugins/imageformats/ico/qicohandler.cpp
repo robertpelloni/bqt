@@ -1,28 +1,28 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 /*!
-    \class QtIcoHandler
+    \class BobUIIcoHandler
     \since 4.4
-    \brief The QtIcoHandler class provides support for the ICO image format.
+    \brief The BobUIIcoHandler class provides support for the ICO image format.
     \internal
 */
 
 
 
 #include "qicohandler.h"
-#include <QtCore/qendian.h>
+#include <BobUICore/qendian.h>
 #include <private/qendian_p.h>
-#include <QtGui/QImage>
-#include <QtCore/QBuffer>
-#include <QtCore/QFile>
-#include <QtCore/QLoggingCategory>
+#include <BobUIGui/QImage>
+#include <BobUICore/QBuffer>
+#include <BobUICore/QFile>
+#include <BobUICore/QLoggingCategory>
 #include <qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcIco, "qt.gui.imageio.ico")
+Q_LOGGING_CATEGORY(lcIco, "bobui.gui.imageio.ico")
 
 namespace {
 
@@ -586,11 +586,11 @@ bool ICOReader::write(QIODevice *device, const QList<QImage> &images)
             // because this is a maximum size of image in the ICO file.
             if (image.width() > 256 || image.height() > 256)
             {
-                image = image.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                image = image.scaled(256, 256, BobUI::KeepAspectRatio, BobUI::SmoothTransformation);
             }
             QImage maskImage(image.width(), image.height(), QImage::Format_Mono);
             image = image.convertToFormat(QImage::Format_ARGB32);
-            maskImage.fill(Qt::color1);
+            maskImage.fill(BobUI::color1);
 
             int    nbits = 32;
             int    bpl_bmp = ((image.width()*nbits+31)/32)*4;
@@ -677,9 +677,9 @@ bool ICOReader::write(QIODevice *device, const QList<QImage> &images)
 }
 
 /*!
-    Constructs an instance of QtIcoHandler initialized to use \a device.
+    Constructs an instance of BobUIIcoHandler initialized to use \a device.
 */
-QtIcoHandler::QtIcoHandler(QIODevice *device)
+BobUIIcoHandler::BobUIIcoHandler(QIODevice *device)
 {
     m_currentIconIndex = 0;
     setDevice(device);
@@ -687,14 +687,14 @@ QtIcoHandler::QtIcoHandler(QIODevice *device)
 }
 
 /*!
-    Destructor for QtIcoHandler.
+    Destructor for BobUIIcoHandler.
 */
-QtIcoHandler::~QtIcoHandler()
+BobUIIcoHandler::~BobUIIcoHandler()
 {
     delete m_pICOReader;
 }
 
-QVariant QtIcoHandler::option(ImageOption option) const
+QVariant BobUIIcoHandler::option(ImageOption option) const
 {
     if (option == Size || option == ImageFormat) {
         ICONDIRENTRY iconEntry;
@@ -724,17 +724,17 @@ QVariant QtIcoHandler::option(ImageOption option) const
     return QVariant();
 }
 
-bool QtIcoHandler::supportsOption(ImageOption option) const
+bool BobUIIcoHandler::supportsOption(ImageOption option) const
 {
     return (option == Size || option == ImageFormat);
 }
 
 /*!
  * Verifies if some values (magic bytes) are set as expected in the header of the file.
- * If the magic bytes were found, it is assumed that the QtIcoHandler can read the file.
+ * If the magic bytes were found, it is assumed that the BobUIIcoHandler can read the file.
  *
  */
-bool QtIcoHandler::canRead() const
+bool BobUIIcoHandler::canRead() const
 {
     if (knownCanRead)
         return true;
@@ -745,7 +745,7 @@ bool QtIcoHandler::canRead() const
         if (bCanRead)
             setFormat("ico");
     } else {
-        qCWarning(lcIco, "QtIcoHandler::canRead() called with no device");
+        qCWarning(lcIco, "BobUIIcoHandler::canRead() called with no device");
     }
     knownCanRead = bCanRead;
     return bCanRead;
@@ -754,7 +754,7 @@ bool QtIcoHandler::canRead() const
 /*! This static function is used by the plugin code, and is provided for convenience only.
     \a device must be an opened device with pointing to the start of the header data of the ICO file.
 */
-bool QtIcoHandler::canRead(QIODevice *device)
+bool BobUIIcoHandler::canRead(QIODevice *device)
 {
     Q_ASSERT(device);
     return ICOReader::canRead(device);
@@ -763,7 +763,7 @@ bool QtIcoHandler::canRead(QIODevice *device)
 /*! \reimp
 
 */
-bool QtIcoHandler::read(QImage *image)
+bool BobUIIcoHandler::read(QImage *image)
 {
     bool bSuccess = false;
     QImage img = m_pICOReader->iconAt(m_currentIconIndex);
@@ -781,7 +781,7 @@ bool QtIcoHandler::read(QImage *image)
 /*! \reimp
 
 */
-bool QtIcoHandler::write(const QImage &image)
+bool BobUIIcoHandler::write(const QImage &image)
 {
     QIODevice *device = QImageIOHandler::device();
     QList<QImage> imgs;
@@ -792,7 +792,7 @@ bool QtIcoHandler::write(const QImage &image)
 /*! \reimp
 
 */
-int QtIcoHandler::imageCount() const
+int BobUIIcoHandler::imageCount() const
 {
     return m_pICOReader->count();
 }
@@ -800,7 +800,7 @@ int QtIcoHandler::imageCount() const
 /*! \reimp
 
 */
-bool QtIcoHandler::jumpToImage(int imageNumber)
+bool BobUIIcoHandler::jumpToImage(int imageNumber)
 {
     if (imageNumber < imageCount()) {
         m_currentIconIndex = imageNumber;
@@ -813,9 +813,9 @@ bool QtIcoHandler::jumpToImage(int imageNumber)
 /*! \reimp
 
 */
-bool QtIcoHandler::jumpToNextImage()
+bool BobUIIcoHandler::jumpToNextImage()
 {
     return jumpToImage(m_currentIconIndex + 1);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef IMAGEITEM_H
 #define IMAGEITEM_H
 
-#include <QtCore>
-#include <QtWidgets/QGraphicsPixmapItem>
+#include <BobUICore>
+#include <BobUIWidgets/QGraphicsPixmapItem>
 
 //! [0]
 class ImageItem : public QObject, public QGraphicsPixmapItem
@@ -29,7 +29,7 @@ private Q_SLOTS:
     void updateItemPosition();
 
 private:
-    QTimeLine timeLine;
+    BOBUIimeLine timeLine;
     int recordId;
     double z;
 };

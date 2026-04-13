@@ -5,8 +5,8 @@ HEADERS     = bookdelegate.h bookwindow.h initdb.h
 RESOURCES   = books.qrc
 SOURCES     = bookdelegate.cpp main.cpp bookwindow.cpp
 
-QT += sql widgets widgets
-requires(qtConfig(tableview))
+BOBUI += sql widgets widgets
+requires(bobuiConfig(tableview))
 
-target.path = $$[QT_INSTALL_EXAMPLES]/sql/books
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/sql/books
 INSTALLS += target

@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 // Exposes platform capabilities as static properties
 
@@ -29,7 +29,7 @@ export class Platform {
         }
     })();
 
-    static #canLoadQt = Platform.#webAssemblySupported && Platform.#webGLSupported;
+    static #canLoadBobUI = Platform.#webAssemblySupported && Platform.#webGLSupported;
 
     static get webAssemblySupported() {
         return this.#webAssemblySupported;
@@ -40,8 +40,8 @@ export class Platform {
     static get webGLSupported() {
         return this.#webGLSupported;
     }
-    static get canLoadQt() {
-        return this.#canLoadQt;
+    static get canLoadBobUI() {
+        return this.#canLoadBobUI;
     }
 }
 
@@ -97,21 +97,21 @@ export class ResourceFetcher {
 
 // Represents a WASM module, wrapping the instantiation and execution thereof.
 export class CompiledModule {
-    #createQtAppInstanceFn;
+    #createBobUIAppInstanceFn;
     #js;
     #wasm;
     #resourceLocator;
-    #qtContainerElements;
+    #bobuiContainerElements;
 
-    constructor(createQtAppInstanceFn, js, wasm, resourceLocator, qtContainerElements) {
-        this.#createQtAppInstanceFn = createQtAppInstanceFn;
+    constructor(createBobUIAppInstanceFn, js, wasm, resourceLocator, bobuiContainerElements) {
+        this.#createBobUIAppInstanceFn = createBobUIAppInstanceFn;
         this.#js = js;
         this.#wasm = wasm;
         this.#resourceLocator = resourceLocator;
-        this.#qtContainerElements = qtContainerElements;
+        this.#bobuiContainerElements = bobuiContainerElements;
     }
 
-    static make(js, wasm, entryFunctionName, resourceLocator, qtContainerElements)
+    static make(js, wasm, entryFunctionName, resourceLocator, bobuiContainerElements)
     {
         const exports = {};
         const module = {};
@@ -123,7 +123,7 @@ export class CompiledModule {
         }
 
         return new CompiledModule(
-            module.exports, js, wasm, resourceLocator, qtContainerElements
+            module.exports, js, wasm, resourceLocator, bobuiContainerElements
         );
     }
 
@@ -134,7 +134,7 @@ export class CompiledModule {
 
             let testFinished = false;
             const testFinishedEvent = new CustomEvent('testFinished');
-            instance = await this.#createQtAppInstanceFn((() => {
+            instance = await this.#createBobUIAppInstanceFn((() => {
                 const params = this.#makeDefaultExecParams({
                     onInstantiationError: (error) => { reject(error); },
                 });
@@ -191,9 +191,9 @@ export class CompiledModule {
             type: 'text/javascript',
         });
 
-        // Add Qt container elements if provided
-        if (this.#qtContainerElements) {
-            instanceParams.qtContainerElements = this.#qtContainerElements;
+        // Add BobUI container elements if provided
+        if (this.#bobuiContainerElements) {
+            instanceParams.bobuiContainerElements = this.#bobuiContainerElements;
         }
 
         return instanceParams;
@@ -216,7 +216,7 @@ export class ModuleLoader {
     // Loads an emscripten module named |moduleName| from the main resource path. Provides
     // progress of 'downloading' and 'compiling' to the caller using the |onProgress| callback.
     async loadEmscriptenModule(
-        moduleName, onProgress, qtContainerElements
+        moduleName, onProgress, bobuiContainerElements
     ) {
         if (!Platform.webAssemblySupported)
             throw new Error('Web assembly not supported');
@@ -234,6 +234,6 @@ export class ModuleLoader {
         );
 
         const [js, wasm] = await Promise.all([jsLoadPromise, wasmLoadPromise]);
-        return CompiledModule.make(js, wasm, `${moduleName}_entry`, this.#resourceLocator, qtContainerElements);
+        return CompiledModule.make(js, wasm, `${moduleName}_entry`, this.#resourceLocator, bobuiContainerElements);
     }
 }

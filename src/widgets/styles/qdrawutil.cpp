@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdrawutil.h"
 #include "qbitmap.h"
@@ -14,11 +14,11 @@
 #include <qmath.h>
 #include <private/qhexstring_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \headerfile <qdrawutil.h>
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \title Drawing Utility Functions
 
     \sa QPainter
@@ -256,7 +256,7 @@ void qDrawShadeRect(QPainter *p, int x, int y, int w, int h,
     }
     if (fill) {
         int tlw = lineWidth + midLineWidth;
-        p->setPen(Qt::NoPen);
+        p->setPen(BobUI::NoPen);
         p->setBrush(*fill);
         p->drawRect(x+tlw, y+tlw, w-2*tlw, h-2*tlw);
     }
@@ -544,8 +544,8 @@ void qDrawPlainRect(QPainter *p, int x, int y, int w, int h, const QColor &c,
     if (lineWidth == 0 && !fill)
         return;
     if (lineWidth > 0)
-        p->setPen(QPen(c, lineWidth, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
-    p->setBrush(fill ? *fill : Qt::NoBrush);
+        p->setPen(QPen(c, lineWidth, BobUI::SolidLine, BobUI::SquareCap, BobUI::MiterJoin));
+    p->setBrush(fill ? *fill : BobUI::NoBrush);
     const QRectF r(x, y, w, h);
     const auto lw2 = lineWidth / 2.;
     const QRectF rect = r.marginsRemoved(QMarginsF(lw2, lw2, lw2, lw2));
@@ -579,7 +579,7 @@ void qDrawPlainRect(QPainter *p, int x, int y, int w, int h, const QColor &c,
     \sa qDrawShadeRect(), QStyle
 */
 
-// ### Qt7: Pass QPen instead of QColor for frame drawing
+// ### BobUI7: Pass QPen instead of QColor for frame drawing
 void qDrawPlainRoundedRect(QPainter *p, int x, int y, int w, int h,
                            qreal rx, qreal ry, const QColor &c,
                            int lineWidth, const QBrush *fill)
@@ -596,7 +596,7 @@ void qDrawPlainRoundedRect(QPainter *p, int x, int y, int w, int h,
         return;
     if (lineWidth > 0)
         p->setPen(QPen(c, lineWidth));
-    p->setBrush(fill ? *fill : Qt::NoBrush);
+    p->setBrush(fill ? *fill : BobUI::NoBrush);
     const QRectF r(x, y, w, h);
     const auto lw2 = lineWidth / 2.;
     const QRectF rect = r.marginsRemoved(QMarginsF(lw2, lw2, lw2, lw2));
@@ -839,26 +839,26 @@ void qDrawPlainRect(QPainter *p, const QRect &r, const QColor &c,
 */
 
 /*!
-    \class QTileRules
+    \class BOBUIileRules
     \since 4.6
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    \brief The QTileRules class provides the rules used to draw a
+    \brief The BOBUIileRules class provides the rules used to draw a
     pixmap or image split into nine segments.
 
     Spliiting is similar to \l{http://www.w3.org/TR/css3-background/}{CSS3 border-images}.
 
-    \sa Qt::TileRule, QMargins
+    \sa BobUI::TileRule, QMargins
 */
 
-/*! \fn QTileRules::QTileRules(Qt::TileRule horizontalRule, Qt::TileRule verticalRule)
-  Constructs a QTileRules with the given \a horizontalRule and
+/*! \fn BOBUIileRules::BOBUIileRules(BobUI::TileRule horizontalRule, BobUI::TileRule verticalRule)
+  Constructs a BOBUIileRules with the given \a horizontalRule and
   \a verticalRule.
  */
 
-/*! \fn QTileRules::QTileRules(Qt::TileRule rule)
-  Constructs a QTileRules with the given \a rule used for both
+/*! \fn BOBUIileRules::BOBUIileRules(BobUI::TileRule rule)
+  Constructs a BOBUIileRules with the given \a rule used for both
   the horizontal rule and the vertical rule.
  */
 
@@ -890,12 +890,12 @@ typedef QVarLengthArray<QPainter::PixmapFragment, 16> QPixmapFragmentsArray;
     This function is used to draw a scaled pixmap, similar to
     \l{http://www.w3.org/TR/css3-background/}{CSS3 border-images}
 
-    \sa Qt::TileRule, QTileRules, QMargins
+    \sa BobUI::TileRule, BOBUIileRules, QMargins
 */
 
 void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargins &targetMargins,
                        const QPixmap &pixmap, const QRect &sourceRect,const QMargins &sourceMargins,
-                       const QTileRules &rules
+                       const BOBUIileRules &rules
 #ifndef Q_QDOC
                        , QDrawBorderPixmap::DrawingHints hints
 #endif
@@ -928,9 +928,9 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
 
     int columns = 3;
     int rows = 3;
-    if (rules.horizontal != Qt::StretchTile && sourceCenterWidth != 0)
+    if (rules.horizontal != BobUI::StretchTile && sourceCenterWidth != 0)
         columns = qMax(3, 2 + qCeil(targetCenterWidth / qreal(sourceCenterWidth)));
-    if (rules.vertical != Qt::StretchTile && sourceCenterHeight != 0)
+    if (rules.vertical != BobUI::StretchTile && sourceCenterHeight != 0)
         rows = qMax(3, 2 + qCeil(targetCenterHeight / qreal(sourceCenterHeight)));
 
     xTarget.resize(columns + 1);
@@ -939,7 +939,7 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
     bool oldAA = painter->testRenderHint(QPainter::Antialiasing);
     if (painter->paintEngine()->type() != QPaintEngine::OpenGL
         && painter->paintEngine()->type() != QPaintEngine::OpenGL2
-        && oldAA && painter->combinedTransform().type() != QTransform::TxNone) {
+        && oldAA && painter->combinedTransform().type() != BOBUIransform::TxNone) {
         painter->setRenderHint(QPainter::Antialiasing, false);
     }
 
@@ -957,13 +957,13 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
     qreal dy = targetCenterHeight;
 
     switch (rules.horizontal) {
-    case Qt::StretchTile:
+    case BobUI::StretchTile:
         dx = targetCenterWidth;
         break;
-    case Qt::RepeatTile:
+    case BobUI::RepeatTile:
         dx = sourceCenterWidth;
         break;
-    case Qt::RoundTile:
+    case BobUI::RoundTile:
         dx = targetCenterWidth / qreal(columns - 2);
         break;
     }
@@ -972,13 +972,13 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
         xTarget[i] = xTarget[i - 1] + dx;
 
     switch (rules.vertical) {
-    case Qt::StretchTile:
+    case BobUI::StretchTile:
         dy = targetCenterHeight;
         break;
-    case Qt::RepeatTile:
+    case BobUI::RepeatTile:
         dy = sourceCenterHeight;
         break;
-    case Qt::RoundTile:
+    case BobUI::RoundTile:
         dy = targetCenterHeight / qreal(rows - 2);
         break;
     }
@@ -1059,7 +1059,7 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
                 d.x = (0.5 * (xTarget[i + 1] + xTarget[i]));
                 data.append(d);
             }
-            if (rules.horizontal == Qt::RepeatTile)
+            if (rules.horizontal == BobUI::RepeatTile)
                 data[data.size() - 1].width = ((xTarget[columns - 1] - xTarget[columns - 2]) / d.scaleX);
         }
         if (targetMargins.bottom() > 0 && sourceMargins.bottom() > 0) { // bottom
@@ -1075,7 +1075,7 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
                 d.x = (0.5 * (xTarget[i + 1] + xTarget[i]));
                 data.append(d);
             }
-            if (rules.horizontal == Qt::RepeatTile)
+            if (rules.horizontal == BobUI::RepeatTile)
                 data[data.size() - 1].width = ((xTarget[columns - 1] - xTarget[columns - 2]) / d.scaleX);
         }
     }
@@ -1095,7 +1095,7 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
                 d.y = (0.5 * (yTarget[i + 1] + yTarget[i]));
                 data.append(d);
             }
-            if (rules.vertical == Qt::RepeatTile)
+            if (rules.vertical == BobUI::RepeatTile)
                 data[data.size() - 1].height = ((yTarget[rows - 1] - yTarget[rows - 2]) / d.scaleY);
         }
         if (targetMargins.right() > 0 && sourceMargins.right() > 0) { // right
@@ -1111,7 +1111,7 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
                 d.y = (0.5 * (yTarget[i + 1] + yTarget[i]));
                 data.append(d);
             }
-            if (rules.vertical == Qt::RepeatTile)
+            if (rules.vertical == BobUI::RepeatTile)
                 data[data.size() - 1].height = ((yTarget[rows - 1] - yTarget[rows - 2]) / d.scaleY);
         }
     }
@@ -1135,10 +1135,10 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
                 d.x = (0.5 * (xTarget[i + 1] + xTarget[i]));
                 data.append(d);
             }
-            if (rules.horizontal == Qt::RepeatTile)
+            if (rules.horizontal == BobUI::RepeatTile)
                 data[data.size() - 1].width = repeatWidth;
         }
-        if (rules.vertical == Qt::RepeatTile) {
+        if (rules.vertical == BobUI::RepeatTile) {
             for (int i = 1; i < columns - 1; ++i)
                 data[data.size() - i].height = repeatHeight;
         }
@@ -1153,4 +1153,4 @@ void qDrawBorderPixmap(QPainter *painter, const QRect &targetRect, const QMargin
         painter->setRenderHint(QPainter::Antialiasing, true);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,14 +1,14 @@
 // Copyright (C) 2022 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandviewport_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandViewport::QWaylandViewport(::wp_viewport *viewport)
-    : QtWayland::wp_viewport(viewport)
+    : BobUIWayland::wp_viewport(viewport)
 {
 }
 
@@ -32,4 +32,4 @@ void QWaylandViewport::setDestination(const QSize &destination)
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

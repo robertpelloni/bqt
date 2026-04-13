@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMEVENT_H
 #define QWASMEVENT_H
@@ -7,16 +7,16 @@
 #include "qwasmplatform.h"
 #include "qwasmdom.h"
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qnamespace.h>
-#include <QtGui/qevent.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUIGui/qevent.h>
 #include <private/qstdweb_p.h>
 #include <QPoint>
 
 #include <emscripten/html5.h>
 #include <emscripten/val.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QWindow;
 
 enum class EventType {
@@ -66,8 +66,8 @@ struct KeyEvent : public Event
 {
     KeyEvent(EventType type, emscripten::val webEvent);
 
-    Qt::Key key;
-    QFlags<Qt::KeyboardModifier> modifiers;
+    BobUI::Key key;
+    QFlags<BobUI::KeyboardModifier> modifiers;
     bool deadKey;
     QString text;
     bool autoRepeat;
@@ -79,22 +79,22 @@ struct MouseEvent : public Event
 {
     MouseEvent(EventType type, emscripten::val webEvent);
 
-    static constexpr Qt::MouseButton buttonFromWeb(int webButton) {
+    static constexpr BobUI::MouseButton buttonFromWeb(int webButton) {
         switch (webButton) {
             case 0:
-                return Qt::LeftButton;
+                return BobUI::LeftButton;
             case 1:
-                return Qt::MiddleButton;
+                return BobUI::MiddleButton;
             case 2:
-                return Qt::RightButton;
+                return BobUI::RightButton;
             default:
-                return Qt::NoButton;
+                return BobUI::NoButton;
         }
     }
 
-    static constexpr Qt::MouseButtons buttonsFromWeb(unsigned short webButtons) {
-        // Coincidentally, Qt and web bitfields match.
-        return Qt::MouseButtons::fromInt(webButtons);
+    static constexpr BobUI::MouseButtons buttonsFromWeb(unsigned short webButtons) {
+        // Coincidentally, BobUI and web bitfields match.
+        return BobUI::MouseButtons::fromInt(webButtons);
     }
 
     static constexpr QEvent::Type mouseEventTypeFromEventType(
@@ -117,9 +117,9 @@ struct MouseEvent : public Event
     QPointF localPoint;
     QPointF pointInPage;
     QPointF pointInViewport;
-    Qt::MouseButton mouseButton;
-    Qt::MouseButtons mouseButtons;
-    QFlags<Qt::KeyboardModifier> modifiers;
+    BobUI::MouseButton mouseButton;
+    BobUI::MouseButtons mouseButtons;
+    QFlags<BobUI::KeyboardModifier> modifiers;
 };
 
 struct PointerEvent : public MouseEvent
@@ -146,7 +146,7 @@ struct DragEvent : public MouseEvent
     void acceptDragOver();
     void acceptDrop();
 
-    Qt::DropAction dropAction;
+    BobUI::DropAction dropAction;
     dom::DataTransfer dataTransfer;
     QWindow *targetWindow;
 };
@@ -160,6 +160,6 @@ struct WheelEvent : public MouseEvent
     QPointF delta;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif  // QWASMEVENT_H

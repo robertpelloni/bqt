@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qhighdpiscaling_p.h"
 #include "qguiapplication.h"
@@ -9,24 +9,24 @@
 #include "private/qscreen_p.h"
 #include <private/qguiapplication_p.h>
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qmetaobject.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qmetaobject.h>
 
 #include <algorithm>
 #include <optional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcHighDpi, "qt.highdpi");
+Q_LOGGING_CATEGORY(lcHighDpi, "bobui.highdpi");
 
-#ifndef QT_NO_HIGHDPISCALING
+#ifndef BOBUI_NO_HIGHDPISCALING
 
-static const char enableHighDpiScalingEnvVar[] = "QT_ENABLE_HIGHDPI_SCALING";
-static const char scaleFactorEnvVar[] = "QT_SCALE_FACTOR";
-static const char screenFactorsEnvVar[] = "QT_SCREEN_SCALE_FACTORS";
-static const char scaleFactorRoundingPolicyEnvVar[] = "QT_SCALE_FACTOR_ROUNDING_POLICY";
-static const char dpiAdjustmentPolicyEnvVar[] = "QT_DPI_ADJUSTMENT_POLICY";
-static const char usePhysicalDpiEnvVar[] = "QT_USE_PHYSICAL_DPI";
+static const char enableHighDpiScalingEnvVar[] = "BOBUI_ENABLE_HIGHDPI_SCALING";
+static const char scaleFactorEnvVar[] = "BOBUI_SCALE_FACTOR";
+static const char screenFactorsEnvVar[] = "BOBUI_SCREEN_SCALE_FACTORS";
+static const char scaleFactorRoundingPolicyEnvVar[] = "BOBUI_SCALE_FACTOR_ROUNDING_POLICY";
+static const char dpiAdjustmentPolicyEnvVar[] = "BOBUI_DPI_ADJUSTMENT_POLICY";
+static const char usePhysicalDpiEnvVar[] = "BOBUI_USE_PHYSICAL_DPI";
 
 [[maybe_unused]]
 static std::optional<QString> qEnvironmentVariableOptionalString(const char *name)
@@ -67,20 +67,20 @@ static std::optional<qreal> qEnvironmentVariableOptionalReal(const char *name)
     for simulation and testing purposes.
 
     The functions support scaling between the device independent coordinate
-    system used by Qt applications and the native coordinate system used by
+    system used by BobUI applications and the native coordinate system used by
     the platform plugins. Intended usage locations are the low level / platform
-    plugin interfacing parts of QtGui, for example the QWindow, QScreen and
+    plugin interfacing parts of BobUIGui, for example the QWindow, QScreen and
     QWindowSystemInterface implementation.
 
-    There are now up to three active coordinate systems in Qt:
+    There are now up to three active coordinate systems in BobUI:
 
      ---------------------------------------------------
     |  Application            Device Independent Pixels |   devicePixelRatio
-    |  Qt Widgets                                       |         =
-    |  Qt Gui                                           |
-    |---------------------------------------------------|   Qt Scale Factor
-    |  Qt Gui QPlatform*      Native Pixels             |         *
-    |  Qt platform plugin                               |
+    |  BobUI Widgets                                       |         =
+    |  BobUI Gui                                           |
+    |---------------------------------------------------|   BobUI Scale Factor
+    |  BobUI Gui QPlatform*      Native Pixels             |         *
+    |  BobUI platform plugin                               |
     |---------------------------------------------------|   OS Scale Factor
     |  Display                Device Pixels             |
     |  (Graphics Buffers)                               |
@@ -89,11 +89,11 @@ static std::optional<qreal> qEnvironmentVariableOptionalReal(const char *name)
     This is an simplification and shows the main coordinate system. All layers
     may work with device pixels in specific cases: OpenGL, creating the backing
     store, and QPixmap management. The "Native Pixels" coordinate system is
-    internal to Qt and should not be exposed to Qt users: Seen from the outside
+    internal to BobUI and should not be exposed to BobUI users: Seen from the outside
     there are only two coordinate systems: device independent pixels and device
     pixels.
 
-    The devicePixelRatio seen by applications is the product of the Qt scale
+    The devicePixelRatio seen by applications is the product of the BobUI scale
     factor and the OS scale factor (see QWindow::devicePixelRatio()). The value
     of the scale factors may be 1, in which case two or more of the coordinate
     systems are equivalent. Platforms that (may) have an OS scale factor include
@@ -106,42 +106,42 @@ static std::optional<qreal> qEnvironmentVariableOptionalReal(const char *name)
 
     'Classic': Device Independent Pixels = Native Pixels = Device Pixels
      ---------------------------------------------------    devicePixelRatio: 1
-    |  Application / Qt Gui             100 x 100       |
-    |                                                   |   Qt Scale Factor: 1
-    |  Qt Platform / OS                 100 x 100       |
+    |  Application / BobUI Gui             100 x 100       |
+    |                                                   |   BobUI Scale Factor: 1
+    |  BobUI Platform / OS                 100 x 100       |
     |                                                   |   OS Scale Factor: 1
     |  Display                          100 x 100       |
     -----------------------------------------------------
 
     '2x Apple Device': Device Independent Pixels = Native Pixels
      ---------------------------------------------------    devicePixelRatio: 2
-    |  Application / Qt Gui             100 x 100       |
-    |                                                   |   Qt Scale Factor: 1
-    |  Qt Platform / OS                 100 x 100       |
+    |  Application / BobUI Gui             100 x 100       |
+    |                                                   |   BobUI Scale Factor: 1
+    |  BobUI Platform / OS                 100 x 100       |
     |---------------------------------------------------|   OS Scale Factor: 2
     |  Display                          200 x 200       |
     -----------------------------------------------------
 
     'Windows at 200%': Native Pixels = Device Pixels
      ---------------------------------------------------    devicePixelRatio: 2
-    |  Application / Qt Gui             100 x 100       |
-    |---------------------------------------------------|   Qt Scale Factor: 2
-    |  Qt Platform / OS                 200 x 200       |
+    |  Application / BobUI Gui             100 x 100       |
+    |---------------------------------------------------|   BobUI Scale Factor: 2
+    |  BobUI Platform / OS                 200 x 200       |
     |                                                   |   OS Scale Factor: 1
     |  Display                          200 x 200       |
     -----------------------------------------------------
 
     * Configuration
 
-    - Enabling: In Qt 6, high-dpi scaling (the functionality implemented in this file)
-      is always enabled. The Qt scale factor value is typically determined by the
+    - Enabling: In BobUI 6, high-dpi scaling (the functionality implemented in this file)
+      is always enabled. The BobUI scale factor value is typically determined by the
       QPlatformScreen implementation - see below.
 
-      There is one environment variable based opt-out option: set QT_ENABLE_HIGHDPI_SCALING=0.
+      There is one environment variable based opt-out option: set BOBUI_ENABLE_HIGHDPI_SCALING=0.
       Keep in mind that this does not affect the OS scale factor, which is controlled by
       the operating system.
 
-    - Qt scale factor value: The Qt scale factor is the product of the screen scale
+    - BobUI scale factor value: The BobUI scale factor is the product of the screen scale
       factor and the global scale factor, which are independently either set or determined
       by the platform plugin. Several APIs are offered for this, targeting both developers
       and end users. All scale factors are of type qreal.
@@ -159,28 +159,28 @@ static std::optional<qreal> qEnvironmentVariableOptionalReal(const char *name)
 
             factor = logicalDpi / logicalBaseDpi
 
-        Alternatively, QT_SCREEN_SCALE_FACTORS can be used to set the screen
+        Alternatively, BOBUI_SCREEN_SCALE_FACTORS can be used to set the screen
         scale factors.
 
       2) The global scale factor
 
-        The QT_SCALE_FACTOR environment variable can be used to set a global scale
+        The BOBUI_SCALE_FACTOR environment variable can be used to set a global scale
         factor which applies to all application windows. This allows developing and
         testing at any DPR, independently of available hardware and without changing
         global desktop settings.
 
     - Rounding
 
-      Qt 6 does not round scale factors by default. Qt 5 rounds the screen scale factor
-      to the nearest integer (except for Qt on Android which does not round).
+      BobUI 6 does not round scale factors by default. BobUI 5 rounds the screen scale factor
+      to the nearest integer (except for BobUI on Android which does not round).
 
       The rounding policy can be set by the application, or on the environment:
 
         Application (C++):    QGuiApplication::setHighDpiScaleFactorRoundingPolicy()
-        User (environment):   QT_SCALE_FACTOR_ROUNDING_POLICY
+        User (environment):   BOBUI_SCALE_FACTOR_ROUNDING_POLICY
 
-      Note that the OS scale factor, and global scale factors set with QT_SCALE_FACTOR
-      are never rounded by Qt.
+      Note that the OS scale factor, and global scale factors set with BOBUI_SCALE_FACTOR
+      are never rounded by BobUI.
 
     * C++ API Overview
 
@@ -188,7 +188,7 @@ static std::optional<qreal> qEnvironmentVariableOptionalReal(const char *name)
 
       The QHighDpi namespace provides several functions for converting geometry
       between the device independent and native coordinate systems. These should
-      be used when calling "QPlatform*" API from QtGui. Callers are responsible
+      be used when calling "QPlatform*" API from BobUIGui. Callers are responsible
       for selecting a function variant based on geometry type:
 
             Type                        From Native                              To Native
@@ -207,14 +207,14 @@ static std::optional<qreal> qEnvironmentVariableOptionalReal(const char *name)
     - Activation
 
       QHighDpiScaling::isActive() returns true iff
-            Qt high-dpi scaling is enabled (e.g. with AA_EnableHighDpiScaling) AND
-            there is a Qt scale factor != 1
+            BobUI high-dpi scaling is enabled (e.g. with AA_EnableHighDpiScaling) AND
+            there is a BobUI scale factor != 1
 
       (the value of the OS scale factor does not affect this API)
 
-    - Calling QtGui from the platform plugins
+    - Calling BobUIGui from the platform plugins
 
-      Platform plugin code should be careful about calling QtGui geometry accessor
+      Platform plugin code should be careful about calling BobUIGui geometry accessor
       functions like geometry():
 
          QRect r = window->geometry();
@@ -224,7 +224,7 @@ static std::optional<qreal> qEnvironmentVariableOptionalReal(const char *name)
 
          QRect r = QHighDpi::toNativeWindowGeometry(window->geometry());
 
-      (Also consider if the call to QtGui is really needed - prefer calling QPlatform* API.)
+      (Also consider if the call to BobUIGui is really needed - prefer calling QPlatform* API.)
 */
 
 qreal QHighDpiScaling::m_factor = 1.0;
@@ -281,24 +281,24 @@ static QByteArray joinEnumValues(const EnumLookup<EnumType> *i1, const EnumLooku
     return result;
 }
 
-using ScaleFactorRoundingPolicyLookup = EnumLookup<Qt::HighDpiScaleFactorRoundingPolicy>;
+using ScaleFactorRoundingPolicyLookup = EnumLookup<BobUI::HighDpiScaleFactorRoundingPolicy>;
 
 static const ScaleFactorRoundingPolicyLookup scaleFactorRoundingPolicyLookup[] =
 {
-    {"Round", Qt::HighDpiScaleFactorRoundingPolicy::Round},
-    {"Ceil", Qt::HighDpiScaleFactorRoundingPolicy::Ceil},
-    {"Floor", Qt::HighDpiScaleFactorRoundingPolicy::Floor},
-    {"RoundPreferFloor", Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor},
-    {"PassThrough", Qt::HighDpiScaleFactorRoundingPolicy::PassThrough}
+    {"Round", BobUI::HighDpiScaleFactorRoundingPolicy::Round},
+    {"Ceil", BobUI::HighDpiScaleFactorRoundingPolicy::Ceil},
+    {"Floor", BobUI::HighDpiScaleFactorRoundingPolicy::Floor},
+    {"RoundPreferFloor", BobUI::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor},
+    {"PassThrough", BobUI::HighDpiScaleFactorRoundingPolicy::PassThrough}
 };
 
-static Qt::HighDpiScaleFactorRoundingPolicy
+static BobUI::HighDpiScaleFactorRoundingPolicy
     lookupScaleFactorRoundingPolicy(const QByteArray &v)
 {
     auto end = std::end(scaleFactorRoundingPolicyLookup);
     auto it = std::find(std::begin(scaleFactorRoundingPolicyLookup), end,
-                        ScaleFactorRoundingPolicyLookup{v.constData(), Qt::HighDpiScaleFactorRoundingPolicy::Unset});
-    return it != end ? it->value : Qt::HighDpiScaleFactorRoundingPolicy::Unset;
+                        ScaleFactorRoundingPolicyLookup{v.constData(), BobUI::HighDpiScaleFactorRoundingPolicy::Unset});
+    return it != end ? it->value : BobUI::HighDpiScaleFactorRoundingPolicy::Unset;
 }
 
 using DpiAdjustmentPolicyLookup = EnumLookup<QHighDpiScaling::DpiAdjustmentPolicy>;
@@ -328,32 +328,32 @@ qreal QHighDpiScaling::roundScaleFactor(qreal rawFactor)
     // Rounding down is then preferable since "small UI" is a more acceptable
     // high-DPI experience than "large UI".
 
-    Qt::HighDpiScaleFactorRoundingPolicy scaleFactorRoundingPolicy =
+    BobUI::HighDpiScaleFactorRoundingPolicy scaleFactorRoundingPolicy =
         QGuiApplication::highDpiScaleFactorRoundingPolicy();
 
     // Apply rounding policy.
     qreal roundedFactor = rawFactor;
     switch (scaleFactorRoundingPolicy) {
-    case Qt::HighDpiScaleFactorRoundingPolicy::Round:
+    case BobUI::HighDpiScaleFactorRoundingPolicy::Round:
         roundedFactor = qRound(rawFactor);
         break;
-    case Qt::HighDpiScaleFactorRoundingPolicy::Ceil:
+    case BobUI::HighDpiScaleFactorRoundingPolicy::Ceil:
         roundedFactor = qCeil(rawFactor);
         break;
-    case Qt::HighDpiScaleFactorRoundingPolicy::Floor:
+    case BobUI::HighDpiScaleFactorRoundingPolicy::Floor:
         roundedFactor = qFloor(rawFactor);
         break;
-    case Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor:
+    case BobUI::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor:
         // Round up for .75 and higher. This favors "small UI" over "large UI".
         roundedFactor = rawFactor - qFloor(rawFactor) < 0.75
             ? qFloor(rawFactor) : qCeil(rawFactor);
         break;
-    case Qt::HighDpiScaleFactorRoundingPolicy::PassThrough:
-    case Qt::HighDpiScaleFactorRoundingPolicy::Unset:
+    case BobUI::HighDpiScaleFactorRoundingPolicy::PassThrough:
+    case BobUI::HighDpiScaleFactorRoundingPolicy::Unset:
         break;
     }
 
-    // Clamp the minimum factor to 1. Qt does not currently render
+    // Clamp the minimum factor to 1. BobUI does not currently render
     // correctly with factors less than 1.
     roundedFactor = qMax(roundedFactor, qreal(1));
 
@@ -439,7 +439,7 @@ void QHighDpiScaling::initHighDpiScaling()
     if (envScaleFactorRoundingPolicy.has_value()) {
         QByteArray policyText = envScaleFactorRoundingPolicy.value();
         auto policyEnumValue = lookupScaleFactorRoundingPolicy(policyText);
-        if (policyEnumValue != Qt::HighDpiScaleFactorRoundingPolicy::Unset) {
+        if (policyEnumValue != BobUI::HighDpiScaleFactorRoundingPolicy::Unset) {
             // set directly to avoid setHighDpiScaleFactorRoundingPolicy() warning
             QGuiApplicationPrivate::highDpiScaleFactorRoundingPolicy = policyEnumValue;
         } else {
@@ -596,7 +596,7 @@ qreal QHighDpiScaling::screenSubfactor(const QPlatformScreen *screen)
         return factor;
 
     // Unlike the other code where factors are combined by multiplication,
-    // factors from QT_SCREEN_SCALE_FACTORS takes precedence over the factor
+    // factors from BOBUI_SCREEN_SCALE_FACTORS takes precedence over the factor
     // computed from platform plugin DPI. The rationale is that the user is
     // setting the factor to override erroneous DPI values.
     bool screenPropertyUsed = false;
@@ -743,7 +743,7 @@ QHighDpiScaling::ScaleAndOrigin QHighDpiScaling::scaleAndOrigin(const QWindow *w
     return scaleAndOrigin(targetScreen, position);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QHighDpiScaling::ScreenFactor &factor)
 {
     const QDebugStateSaver saver(debug);
@@ -755,7 +755,7 @@ QDebug operator<<(QDebug debug, const QHighDpiScaling::ScreenFactor &factor)
 }
 #endif
 
-#else // QT_NO_HIGHDPISCALING
+#else // BOBUI_NO_HIGHDPISCALING
 
 QHighDpiScaling::ScaleAndOrigin QHighDpiScaling::scaleAndOrigin(const QPlatformScreen *, QPoint *)
 {
@@ -772,8 +772,8 @@ QHighDpiScaling::ScaleAndOrigin QHighDpiScaling::scaleAndOrigin(const QWindow *,
     return { qreal(1), QPoint() };
 }
 
-#endif // QT_NO_HIGHDPISCALING
+#endif // BOBUI_NO_HIGHDPISCALING
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhighdpiscaling_p.cpp"

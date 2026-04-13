@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 add_subdirectory(qapplication)
@@ -7,7 +7,7 @@ add_subdirectory(qformlayout)
 add_subdirectory(qgridlayout)
 add_subdirectory(qlayout)
 add_subdirectory(qstackedlayout)
-add_subdirectory(qtooltip)
+add_subdirectory(bobuiooltip)
 add_subdirectory(qwidget_window)
 add_subdirectory(qwidgetmetatype)
 add_subdirectory(qwidgetrepaintmanager)
@@ -18,10 +18,10 @@ if(NOT APPLE)
     add_subdirectory(qgesturerecognizer)
 endif()
 add_subdirectory(qwidget)
-if(QT_FEATURE_shortcut)
+if(BOBUI_FEATURE_shortcut)
     add_subdirectory(qshortcut)
 endif()
-if(QT_FEATURE_action)
+if(BOBUI_FEATURE_action)
     add_subdirectory(qaction)
     add_subdirectory(qactiongroup)
     add_subdirectory(qwidgetaction)

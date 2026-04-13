@@ -1,6 +1,6 @@
 // Copyright (C) 2018 Intel Corporation.
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "converter.h"
 
@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const Converter *prepareConverter(QString format, Converter::Direction direction,
                                          QFile *stream)
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     outputFormats.prepend("auto"_L1);
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("Qt serialization format conversion tool"_L1);
+    parser.setApplicationDescription("BobUI serialization format conversion tool"_L1);
     parser.addHelpOption();
 
     QCommandLineOption inputFormatOption(QStringList{ "I"_L1, "input-format"_L1 });

@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qnetworkreplyimpl_p.h"
 #include "qnetworkaccessbackend_p.h"
 #include "qnetworkcookie.h"
 #include "qnetworkcookiejar.h"
 #include "qabstractnetworkcache.h"
-#include "QtCore/qcoreapplication.h"
-#include "QtCore/qdatetime.h"
-#include "QtNetwork/qsslconfiguration.h"
+#include "BobUICore/qcoreapplication.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUINetwork/qsslconfiguration.h"
 #include "qnetworkaccessmanager_p.h"
 
-#include <QtCore/QCoreApplication>
+#include <BobUICore/QCoreApplication>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QSharedPointer<char>, QSharedPointer_char)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QSharedPointer<char>, QSharedPointer_char)
 
 inline QNetworkReplyImplPrivate::QNetworkReplyImplPrivate()
     : backend(nullptr), outgoingData(nullptr),
@@ -153,7 +153,7 @@ void QNetworkReplyImplPrivate::_q_bufferOutgoingDataFinished()
     QObject::disconnect(outgoingData, SIGNAL(readChannelFinished()), q, SLOT(_q_bufferOutgoingDataFinished()));
 
     // finally, start the request
-    QMetaObject::invokeMethod(q, "_q_startOperation", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(q, "_q_startOperation", BobUI::QueuedConnection);
 }
 
 void QNetworkReplyImplPrivate::_q_bufferOutgoingData()
@@ -212,7 +212,7 @@ void QNetworkReplyImplPrivate::setup(QNetworkAccessManager::Operation op, const 
 
     q->QIODevice::open(QIODevice::ReadOnly);
     // Internal code that does a HTTP reply for the synchronous Ajax
-    // in Qt WebKit.
+    // in BobUI WebKit.
     QVariant synchronousHttpAttribute = req.attribute(
             static_cast<QNetworkRequest::Attribute>(QNetworkRequest::SynchronousRequestAttribute));
     // The synchronous HTTP is a corner case, we will put all upload data in one big QByteArray in the outgoingDataBuffer.
@@ -237,7 +237,7 @@ void QNetworkReplyImplPrivate::setup(QNetworkAccessManager::Operation op, const 
             // backend does not need upload buffering or
             // fixed size non-sequential
             // just start the operation
-            QMetaObject::invokeMethod(q, "_q_startOperation", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, "_q_startOperation", BobUI::QueuedConnection);
         } else {
             bool bufferingDisallowed =
                     req.attribute(QNetworkRequest::DoNotBufferUploadDataAttribute,
@@ -250,15 +250,15 @@ void QNetworkReplyImplPrivate::setup(QNetworkAccessManager::Operation op, const 
                         headers().value(QHttpHeaders::WellKnownHeader::ContentLength));
 
                 if (sizeOpt) {
-                    QMetaObject::invokeMethod(q, "_q_startOperation", Qt::QueuedConnection);
+                    QMetaObject::invokeMethod(q, "_q_startOperation", BobUI::QueuedConnection);
                 } else {
                     state = Buffering;
-                    QMetaObject::invokeMethod(q, "_q_bufferOutgoingData", Qt::QueuedConnection);
+                    QMetaObject::invokeMethod(q, "_q_bufferOutgoingData", BobUI::QueuedConnection);
                 }
             } else {
                 // _q_startOperation will be called when the buffering has finished.
                 state = Buffering;
-                QMetaObject::invokeMethod(q, "_q_bufferOutgoingData", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(q, "_q_bufferOutgoingData", BobUI::QueuedConnection);
             }
         }
     } else {
@@ -267,7 +267,7 @@ void QNetworkReplyImplPrivate::setup(QNetworkAccessManager::Operation op, const 
         if (backend && backend->isSynchronous())
             _q_startOperation();
         else
-            QMetaObject::invokeMethod(q, "_q_startOperation", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, "_q_startOperation", BobUI::QueuedConnection);
     }
 }
 
@@ -677,7 +677,7 @@ void QNetworkReplyImplPrivate::redirectionRequested(const QUrl &target)
 
 void QNetworkReplyImplPrivate::encrypted()
 {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     Q_Q(QNetworkReplyImpl);
     emit q->encrypted();
 #endif
@@ -685,7 +685,7 @@ void QNetworkReplyImplPrivate::encrypted()
 
 void QNetworkReplyImplPrivate::sslErrors(const QList<QSslError> &errors)
 {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     Q_Q(QNetworkReplyImpl);
     emit q->sslErrors(errors);
 #else
@@ -812,7 +812,7 @@ void QNetworkReplyImpl::setReadBufferSize(qint64 size)
         d->readFromBackend();
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void QNetworkReplyImpl::sslConfigurationImplementation(QSslConfiguration &configuration) const
 {
     Q_D(const QNetworkReplyImpl);
@@ -840,7 +840,7 @@ void QNetworkReplyImpl::ignoreSslErrorsImplementation(const QList<QSslError> &er
     if (d->backend)
         d->backend->ignoreSslErrors(errors);
 }
-#endif  // QT_NO_SSL
+#endif  // BOBUI_NO_SSL
 
 /*!
     \internal
@@ -912,7 +912,7 @@ bool QNetworkReplyImpl::event(QEvent *e)
     return QObject::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkreplyimpl_p.cpp"
 

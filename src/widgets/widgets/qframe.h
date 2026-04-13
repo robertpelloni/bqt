@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFRAME_H
 #define QFRAME_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QFramePrivate;
@@ -26,7 +26,7 @@ class Q_WIDGETS_EXPORT QFrame : public QWidget
     Q_PROPERTY(QRect frameRect READ frameRect WRITE setFrameRect DESIGNABLE false)
 
 public:
-    explicit QFrame(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit QFrame(QWidget* parent = nullptr, BobUI::WindowFlags f = BobUI::WindowFlags());
     ~QFrame();
 
     int frameStyle() const;
@@ -80,7 +80,7 @@ protected:
 
 
 protected:
-    QFrame(QFramePrivate &dd, QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    QFrame(QFramePrivate &dd, QWidget* parent = nullptr, BobUI::WindowFlags f = BobUI::WindowFlags());
     virtual void initStyleOption(QStyleOptionFrame *option) const;
 
 private:
@@ -90,6 +90,6 @@ private:
 
 Q_DECLARE_MIXED_ENUM_OPERATORS_SYMMETRIC(int, QFrame::Shape, QFrame::Shadow)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFRAME_H

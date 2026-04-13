@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qrhiimgui.h"
-#include <QtCore/qfile.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qevent.h>
-#include <QtGui/qclipboard.h>
-#include <QtGui/qimage.h>
+#include <BobUICore/qfile.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qclipboard.h>
+#include <BobUIGui/qimage.h>
 
 #include "imgui.h"
 
@@ -15,7 +15,7 @@ static_assert(sizeof(ImDrawVert) == 20);
 // switched to uint in imconfig.h to avoid trouble with 4 byte offset alignment reqs
 static_assert(sizeof(ImDrawIdx) == 4);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QShader getShader(const QString &name)
 {
@@ -412,184 +412,184 @@ void QRhiImgui::syncRenderer(QRhiImguiRenderer *renderer)
     renderer->f = std::move(f);
 }
 
-static void updateKeyboardModifiers(Qt::KeyboardModifiers modifiers)
+static void updateKeyboardModifiers(BobUI::KeyboardModifiers modifiers)
 {
     ImGuiIO &io(ImGui::GetIO());
-    io.AddKeyEvent(ImGuiKey_ModCtrl, modifiers.testFlag(Qt::ControlModifier));
-    io.AddKeyEvent(ImGuiKey_ModShift, modifiers.testFlag(Qt::ShiftModifier));
-    io.AddKeyEvent(ImGuiKey_ModAlt, modifiers.testFlag(Qt::AltModifier));
-    io.AddKeyEvent(ImGuiKey_ModSuper, modifiers.testFlag(Qt::MetaModifier));
+    io.AddKeyEvent(ImGuiKey_ModCtrl, modifiers.testFlag(BobUI::ControlModifier));
+    io.AddKeyEvent(ImGuiKey_ModShift, modifiers.testFlag(BobUI::ShiftModifier));
+    io.AddKeyEvent(ImGuiKey_ModAlt, modifiers.testFlag(BobUI::AltModifier));
+    io.AddKeyEvent(ImGuiKey_ModSuper, modifiers.testFlag(BobUI::MetaModifier));
 }
 
 static ImGuiKey mapKey(int k)
 {
     switch (k) {
-    case Qt::Key_Space:
+    case BobUI::Key_Space:
         return ImGuiKey_Space;
-    case Qt::Key_Apostrophe:
+    case BobUI::Key_Apostrophe:
         return ImGuiKey_Apostrophe;
-    case Qt::Key_Comma:
+    case BobUI::Key_Comma:
         return ImGuiKey_Comma;
-    case Qt::Key_Minus:
+    case BobUI::Key_Minus:
         return ImGuiKey_Minus;
-    case Qt::Key_Period:
+    case BobUI::Key_Period:
         return ImGuiKey_Period;
-    case Qt::Key_Slash:
+    case BobUI::Key_Slash:
         return ImGuiKey_Slash;
-    case Qt::Key_0:
+    case BobUI::Key_0:
         return ImGuiKey_0;
-    case Qt::Key_1:
+    case BobUI::Key_1:
         return ImGuiKey_1;
-    case Qt::Key_2:
+    case BobUI::Key_2:
         return ImGuiKey_2;
-    case Qt::Key_3:
+    case BobUI::Key_3:
         return ImGuiKey_3;
-    case Qt::Key_4:
+    case BobUI::Key_4:
         return ImGuiKey_4;
-    case Qt::Key_5:
+    case BobUI::Key_5:
         return ImGuiKey_5;
-    case Qt::Key_6:
+    case BobUI::Key_6:
         return ImGuiKey_6;
-    case Qt::Key_7:
+    case BobUI::Key_7:
         return ImGuiKey_8;
-    case Qt::Key_8:
+    case BobUI::Key_8:
         return ImGuiKey_8;
-    case Qt::Key_9:
+    case BobUI::Key_9:
         return ImGuiKey_9;
-    case Qt::Key_Semicolon:
+    case BobUI::Key_Semicolon:
         return ImGuiKey_Semicolon;
-    case Qt::Key_Equal:
+    case BobUI::Key_Equal:
         return ImGuiKey_Equal;
-    case Qt::Key_A:
+    case BobUI::Key_A:
         return ImGuiKey_A;
-    case Qt::Key_B:
+    case BobUI::Key_B:
         return ImGuiKey_B;
-    case Qt::Key_C:
+    case BobUI::Key_C:
         return ImGuiKey_C;
-    case Qt::Key_D:
+    case BobUI::Key_D:
         return ImGuiKey_D;
-    case Qt::Key_E:
+    case BobUI::Key_E:
         return ImGuiKey_E;
-    case Qt::Key_F:
+    case BobUI::Key_F:
         return ImGuiKey_F;
-    case Qt::Key_G:
+    case BobUI::Key_G:
         return ImGuiKey_G;
-    case Qt::Key_H:
+    case BobUI::Key_H:
         return ImGuiKey_H;
-    case Qt::Key_I:
+    case BobUI::Key_I:
         return ImGuiKey_I;
-    case Qt::Key_J:
+    case BobUI::Key_J:
         return ImGuiKey_J;
-    case Qt::Key_K:
+    case BobUI::Key_K:
         return ImGuiKey_K;
-    case Qt::Key_L:
+    case BobUI::Key_L:
         return ImGuiKey_L;
-    case Qt::Key_M:
+    case BobUI::Key_M:
         return ImGuiKey_M;
-    case Qt::Key_N:
+    case BobUI::Key_N:
         return ImGuiKey_N;
-    case Qt::Key_O:
+    case BobUI::Key_O:
         return ImGuiKey_O;
-    case Qt::Key_P:
+    case BobUI::Key_P:
         return ImGuiKey_P;
-    case Qt::Key_Q:
+    case BobUI::Key_Q:
         return ImGuiKey_Q;
-    case Qt::Key_R:
+    case BobUI::Key_R:
         return ImGuiKey_R;
-    case Qt::Key_S:
+    case BobUI::Key_S:
         return ImGuiKey_S;
-    case Qt::Key_T:
+    case BobUI::Key_T:
         return ImGuiKey_T;
-    case Qt::Key_U:
+    case BobUI::Key_U:
         return ImGuiKey_U;
-    case Qt::Key_V:
+    case BobUI::Key_V:
         return ImGuiKey_V;
-    case Qt::Key_W:
+    case BobUI::Key_W:
         return ImGuiKey_W;
-    case Qt::Key_X:
+    case BobUI::Key_X:
         return ImGuiKey_X;
-    case Qt::Key_Y:
+    case BobUI::Key_Y:
         return ImGuiKey_Y;
-    case Qt::Key_Z:
+    case BobUI::Key_Z:
         return ImGuiKey_Z;
-    case Qt::Key_BracketLeft:
+    case BobUI::Key_BracketLeft:
         return ImGuiKey_LeftBracket;
-    case Qt::Key_Backslash:
+    case BobUI::Key_Backslash:
         return ImGuiKey_Backslash;
-    case Qt::Key_BracketRight:
+    case BobUI::Key_BracketRight:
         return ImGuiKey_RightBracket;
-    case Qt::Key_QuoteLeft:
+    case BobUI::Key_QuoteLeft:
         return ImGuiKey_GraveAccent;
-    case Qt::Key_Escape:
+    case BobUI::Key_Escape:
         return ImGuiKey_Escape;
-    case Qt::Key_Tab:
+    case BobUI::Key_Tab:
         return ImGuiKey_Tab;
-    case Qt::Key_Backspace:
+    case BobUI::Key_Backspace:
         return ImGuiKey_Backspace;
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
+    case BobUI::Key_Return:
+    case BobUI::Key_Enter:
         return ImGuiKey_Enter;
-    case Qt::Key_Insert:
+    case BobUI::Key_Insert:
         return ImGuiKey_Insert;
-    case Qt::Key_Delete:
+    case BobUI::Key_Delete:
         return ImGuiKey_Delete;
-    case Qt::Key_Pause:
+    case BobUI::Key_Pause:
         return ImGuiKey_Pause;
-    case Qt::Key_Print:
+    case BobUI::Key_Print:
         return ImGuiKey_PrintScreen;
-    case Qt::Key_Home:
+    case BobUI::Key_Home:
         return ImGuiKey_Home;
-    case Qt::Key_End:
+    case BobUI::Key_End:
         return ImGuiKey_End;
-    case Qt::Key_Left:
+    case BobUI::Key_Left:
         return ImGuiKey_LeftArrow;
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         return ImGuiKey_UpArrow;
-    case Qt::Key_Right:
+    case BobUI::Key_Right:
         return ImGuiKey_RightArrow;
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         return ImGuiKey_DownArrow;
-    case Qt::Key_PageUp:
+    case BobUI::Key_PageUp:
         return ImGuiKey_PageUp;
-    case Qt::Key_PageDown:
+    case BobUI::Key_PageDown:
         return ImGuiKey_PageDown;
-    case Qt::Key_Shift:
+    case BobUI::Key_Shift:
         return ImGuiKey_LeftShift;
-    case Qt::Key_Control:
+    case BobUI::Key_Control:
         return ImGuiKey_LeftCtrl;
-    case Qt::Key_Meta:
+    case BobUI::Key_Meta:
         return ImGuiKey_LeftSuper;
-    case Qt::Key_Alt:
+    case BobUI::Key_Alt:
         return ImGuiKey_LeftAlt;
-    case Qt::Key_CapsLock:
+    case BobUI::Key_CapsLock:
         return ImGuiKey_CapsLock;
-    case Qt::Key_NumLock:
+    case BobUI::Key_NumLock:
         return ImGuiKey_NumLock;
-    case Qt::Key_ScrollLock:
+    case BobUI::Key_ScrollLock:
         return ImGuiKey_ScrollLock;
-    case Qt::Key_F1:
+    case BobUI::Key_F1:
         return ImGuiKey_F1;
-    case Qt::Key_F2:
+    case BobUI::Key_F2:
         return ImGuiKey_F2;
-    case Qt::Key_F3:
+    case BobUI::Key_F3:
         return ImGuiKey_F3;
-    case Qt::Key_F4:
+    case BobUI::Key_F4:
         return ImGuiKey_F4;
-    case Qt::Key_F5:
+    case BobUI::Key_F5:
         return ImGuiKey_F5;
-    case Qt::Key_F6:
+    case BobUI::Key_F6:
         return ImGuiKey_F6;
-    case Qt::Key_F7:
+    case BobUI::Key_F7:
         return ImGuiKey_F7;
-    case Qt::Key_F8:
+    case BobUI::Key_F8:
         return ImGuiKey_F8;
-    case Qt::Key_F9:
+    case BobUI::Key_F9:
         return ImGuiKey_F9;
-    case Qt::Key_F10:
+    case BobUI::Key_F10:
         return ImGuiKey_F10;
-    case Qt::Key_F11:
+    case BobUI::Key_F11:
         return ImGuiKey_F11;
-    case Qt::Key_F12:
+    case BobUI::Key_F12:
         return ImGuiKey_F12;
     default:
         break;
@@ -607,12 +607,12 @@ bool QRhiImgui::processEvent(QEvent *event)
     {
         QMouseEvent *me = static_cast<QMouseEvent *>(event);
         updateKeyboardModifiers(me->modifiers());
-        Qt::MouseButtons buttons = me->buttons();
-        if (buttons.testFlag(Qt::LeftButton) && !pressedMouseButtons.testFlag(Qt::LeftButton))
+        BobUI::MouseButtons buttons = me->buttons();
+        if (buttons.testFlag(BobUI::LeftButton) && !pressedMouseButtons.testFlag(BobUI::LeftButton))
             io.AddMouseButtonEvent(0, true);
-        if (buttons.testFlag(Qt::RightButton) && !pressedMouseButtons.testFlag(Qt::RightButton))
+        if (buttons.testFlag(BobUI::RightButton) && !pressedMouseButtons.testFlag(BobUI::RightButton))
             io.AddMouseButtonEvent(1, true);
-        if (buttons.testFlag(Qt::MiddleButton) && !pressedMouseButtons.testFlag(Qt::MiddleButton))
+        if (buttons.testFlag(BobUI::MiddleButton) && !pressedMouseButtons.testFlag(BobUI::MiddleButton))
             io.AddMouseButtonEvent(2, true);
         pressedMouseButtons = buttons;
    }
@@ -621,12 +621,12 @@ bool QRhiImgui::processEvent(QEvent *event)
     case QEvent::MouseButtonRelease:
     {
         QMouseEvent *me = static_cast<QMouseEvent *>(event);
-        Qt::MouseButtons buttons = me->buttons();
-        if (!buttons.testFlag(Qt::LeftButton) && pressedMouseButtons.testFlag(Qt::LeftButton))
+        BobUI::MouseButtons buttons = me->buttons();
+        if (!buttons.testFlag(BobUI::LeftButton) && pressedMouseButtons.testFlag(BobUI::LeftButton))
             io.AddMouseButtonEvent(0, false);
-        if (!buttons.testFlag(Qt::RightButton) && pressedMouseButtons.testFlag(Qt::RightButton))
+        if (!buttons.testFlag(BobUI::RightButton) && pressedMouseButtons.testFlag(BobUI::RightButton))
             io.AddMouseButtonEvent(1, false);
-        if (!buttons.testFlag(Qt::MiddleButton) && pressedMouseButtons.testFlag(Qt::MiddleButton))
+        if (!buttons.testFlag(BobUI::MiddleButton) && pressedMouseButtons.testFlag(BobUI::MiddleButton))
             io.AddMouseButtonEvent(2, false);
         pressedMouseButtons = buttons;
     }
@@ -669,4 +669,4 @@ bool QRhiImgui::processEvent(QEvent *event)
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

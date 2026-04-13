@@ -1,8 +1,8 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcolorspace.h>
 #include <qimage.h>
@@ -54,7 +54,7 @@ private slots:
     void primaries();
     void primariesXyz();
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void primaries2_data();
     void primaries2();
 #endif
@@ -105,40 +105,40 @@ void tst_QColorSpace::movable()
 
 void tst_QColorSpace::namedColorSpaces_data()
 {
-    QTest::addColumn<QColorSpace::NamedColorSpace>("namedColorSpace");
-    QTest::addColumn<bool>("isValid");
-    QTest::addColumn<QColorSpace::Primaries>("primariesId");
-    QTest::addColumn<QColorSpace::TransferFunction>("transferFunctionId");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("namedColorSpace");
+    BOBUIest::addColumn<bool>("isValid");
+    BOBUIest::addColumn<QColorSpace::Primaries>("primariesId");
+    BOBUIest::addColumn<QColorSpace::TransferFunction>("transferFunctionId");
 
-    QTest::newRow("sRGB") << QColorSpace::SRgb << true
+    BOBUIest::newRow("sRGB") << QColorSpace::SRgb << true
                           << QColorSpace::Primaries::SRgb
                           << QColorSpace::TransferFunction::SRgb;
-    QTest::newRow("sRGB Linear") << QColorSpace::SRgbLinear << true
+    BOBUIest::newRow("sRGB Linear") << QColorSpace::SRgbLinear << true
                                  << QColorSpace::Primaries::SRgb
                                  << QColorSpace::TransferFunction::Linear;
-    QTest::newRow("Adobe RGB") << QColorSpace::AdobeRgb << true
+    BOBUIest::newRow("Adobe RGB") << QColorSpace::AdobeRgb << true
                                << QColorSpace::Primaries::AdobeRgb
                                << QColorSpace::TransferFunction::Gamma;
-    QTest::newRow("Display-P3") << QColorSpace::DisplayP3 << true
+    BOBUIest::newRow("Display-P3") << QColorSpace::DisplayP3 << true
                                 << QColorSpace::Primaries::DciP3D65
                                 << QColorSpace::TransferFunction::SRgb;
-    QTest::newRow("ProPhoto RGB") << QColorSpace::ProPhotoRgb << true
+    BOBUIest::newRow("ProPhoto RGB") << QColorSpace::ProPhotoRgb << true
                                   << QColorSpace::Primaries::ProPhotoRgb
                                   << QColorSpace::TransferFunction::ProPhotoRgb;
-    QTest::newRow("BT.2020") << QColorSpace::Bt2020 << true
+    BOBUIest::newRow("BT.2020") << QColorSpace::Bt2020 << true
                              << QColorSpace::Primaries::Bt2020
                              << QColorSpace::TransferFunction::Bt2020;
-    QTest::newRow("BT.2100 PQ") << QColorSpace::Bt2100Pq << true
+    BOBUIest::newRow("BT.2100 PQ") << QColorSpace::Bt2100Pq << true
                                 << QColorSpace::Primaries::Bt2020
                                 << QColorSpace::TransferFunction::St2084;
-    QTest::newRow("BT.2100 HLG") << QColorSpace::Bt2100Hlg << true
+    BOBUIest::newRow("BT.2100 HLG") << QColorSpace::Bt2100Hlg << true
                                  << QColorSpace::Primaries::Bt2020
                                  << QColorSpace::TransferFunction::Hlg;
-    QTest::newRow("0") << QColorSpace::NamedColorSpace(0)
+    BOBUIest::newRow("0") << QColorSpace::NamedColorSpace(0)
                        << false
                        << QColorSpace::Primaries::Custom
                        << QColorSpace::TransferFunction::Custom;
-    QTest::newRow("1027") << QColorSpace::NamedColorSpace(1027)
+    BOBUIest::newRow("1027") << QColorSpace::NamedColorSpace(1027)
                           << false
                           << QColorSpace::Primaries::Custom
                           << QColorSpace::TransferFunction::Custom;
@@ -152,7 +152,7 @@ void tst_QColorSpace::namedColorSpaces()
     QFETCH(QColorSpace::TransferFunction, transferFunctionId);
 
     if (!isValid)
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("QColorSpace attempted constructed from invalid QColorSpace::NamedColorSpace"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("QColorSpace attempted constructed from invalid QColorSpace::NamedColorSpace"));
     QColorSpace colorSpace = namedColorSpace;
 
     QCOMPARE(colorSpace.isValid(), isValid);
@@ -177,7 +177,7 @@ void tst_QColorSpace::toIccProfile()
     Q_UNUSED(transferFunctionId);
 
     if (!isValid)
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("QColorSpace attempted constructed from invalid QColorSpace::NamedColorSpace"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("QColorSpace attempted constructed from invalid QColorSpace::NamedColorSpace"));
     QColorSpace colorSpace = namedColorSpace;
     QByteArray iccProfile = colorSpace.iccProfile();
     QCOMPARE(iccProfile.isEmpty(), !isValid);
@@ -198,46 +198,46 @@ void tst_QColorSpace::toIccProfile()
 
 void tst_QColorSpace::fromIccProfile_data()
 {
-    QTest::addColumn<QString>("testProfile");
-    QTest::addColumn<QColorSpace::NamedColorSpace>("namedColorSpace");
-    QTest::addColumn<QColorSpace::TransferFunction>("transferFunction");
-    QTest::addColumn<QColorSpace::TransformModel>("transformModel");
-    QTest::addColumn<QColorSpace::ColorModel>("colorModel");
-    QTest::addColumn<QString>("description");
+    BOBUIest::addColumn<QString>("testProfile");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("namedColorSpace");
+    BOBUIest::addColumn<QColorSpace::TransferFunction>("transferFunction");
+    BOBUIest::addColumn<QColorSpace::TransformModel>("transformModel");
+    BOBUIest::addColumn<QColorSpace::ColorModel>("colorModel");
+    BOBUIest::addColumn<QString>("description");
 
     QString prefix = QFINDTESTDATA("resources/");
     // Read the official sRGB ICCv2 profile:
-    QTest::newRow("sRGB2014 (ICCv2)") << prefix + "sRGB2014.icc" << QColorSpace::SRgb
+    BOBUIest::newRow("sRGB2014 (ICCv2)") << prefix + "sRGB2014.icc" << QColorSpace::SRgb
                                       << QColorSpace::TransferFunction::SRgb
                                       << QColorSpace::TransformModel::ThreeComponentMatrix
                                       << QColorSpace::ColorModel::Rgb << QString("sRGB2014");
     // My monitor's profile:
-    QTest::newRow("HP ZR30w (ICCv4)") << prefix + "HP_ZR30w.icc" << QColorSpace::NamedColorSpace(0)
+    BOBUIest::newRow("HP ZR30w (ICCv4)") << prefix + "HP_ZR30w.icc" << QColorSpace::NamedColorSpace(0)
                                       << QColorSpace::TransferFunction::Gamma
                                       << QColorSpace::TransformModel::ThreeComponentMatrix
                                       << QColorSpace::ColorModel::Rgb << QString("HP Z30i");
     // A profile to HD TV
-    QTest::newRow("VideoHD") << prefix + "VideoHD.icc" << QColorSpace::NamedColorSpace(0)
+    BOBUIest::newRow("VideoHD") << prefix + "VideoHD.icc" << QColorSpace::NamedColorSpace(0)
                              << QColorSpace::TransferFunction::Custom
                              << QColorSpace::TransformModel::ElementListProcessing
                              << QColorSpace::ColorModel::Rgb << QString("HDTV (Rec. 709)");
     // sRGB on PCSLab format
-    QTest::newRow("sRGB ICCv4 Appearance") << prefix + "sRGB_ICC_v4_Appearance.icc" << QColorSpace::NamedColorSpace(0)
+    BOBUIest::newRow("sRGB ICCv4 Appearance") << prefix + "sRGB_ICC_v4_Appearance.icc" << QColorSpace::NamedColorSpace(0)
                                            << QColorSpace::TransferFunction::Custom
                                            << QColorSpace::TransformModel::ElementListProcessing
                                            << QColorSpace::ColorModel::Rgb << QString("sRGB_ICC_v4_Appearance.icc");
     // Grayscale profile
-    QTest::newRow("sGrey-v4") << prefix + "sGrey-v4.icc" << QColorSpace::NamedColorSpace(0)
+    BOBUIest::newRow("sGrey-v4") << prefix + "sGrey-v4.icc" << QColorSpace::NamedColorSpace(0)
                                 << QColorSpace::TransferFunction::SRgb
                                 << QColorSpace::TransformModel::ThreeComponentMatrix
                                 << QColorSpace::ColorModel::Gray << QString("sGry");
     // CMYK profile
-    QTest::newRow("CGATS compat") << prefix + "CGATS001Compat-v2-micro.icc" << QColorSpace::NamedColorSpace(0)
+    BOBUIest::newRow("CGATS compat") << prefix + "CGATS001Compat-v2-micro.icc" << QColorSpace::NamedColorSpace(0)
                                   << QColorSpace::TransferFunction::Custom
                                   << QColorSpace::TransformModel::ElementListProcessing
                                   << QColorSpace::ColorModel::Cmyk << QString("uCMY");
     // BT.2100 PQ profile
-    QTest::newRow("BT.2100 PQ") << prefix + "Rec. ITU-R BT.2100 PQ.icc" << QColorSpace::Bt2100Pq
+    BOBUIest::newRow("BT.2100 PQ") << prefix + "Rec. ITU-R BT.2100 PQ.icc" << QColorSpace::Bt2100Pq
                                   << QColorSpace::TransferFunction::St2084
                                   << QColorSpace::TransformModel::ThreeComponentMatrix
                                   << QColorSpace::ColorModel::Rgb << QString("Rec. ITU-R BT.2100 PQ");
@@ -272,7 +272,7 @@ void tst_QColorSpace::fromIccProfile()
     QCOMPARE(fileColorSpace2, fileColorSpace);
 
     // Change description to force generation of new icc profile data.
-    fileColorSpace2.setDescription("Hello my QTest description");
+    fileColorSpace2.setDescription("Hello my BOBUIest description");
     iccProfile2 = fileColorSpace2.iccProfile();
     QCOMPARE_NE(iccProfile, iccProfile2);
     fileColorSpace2 = QColorSpace::fromIccProfile(iccProfile2);
@@ -283,18 +283,18 @@ void tst_QColorSpace::fromIccProfile()
 
 void tst_QColorSpace::imageConversion_data()
 {
-    QTest::addColumn<QColorSpace::NamedColorSpace>("fromColorSpace");
-    QTest::addColumn<QColorSpace::NamedColorSpace>("toColorSpace");
-    QTest::addColumn<int>("tolerance");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("fromColorSpace");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("toColorSpace");
+    BOBUIest::addColumn<int>("tolerance");
 
-    QTest::newRow("sRGB -> Display-P3") << QColorSpace::SRgb << QColorSpace::DisplayP3 << 0;
-    QTest::newRow("sRGB -> Adobe RGB") << QColorSpace::SRgb << QColorSpace::AdobeRgb << 2;
-    QTest::newRow("Adobe RGB -> sRGB") << QColorSpace::AdobeRgb << QColorSpace::SRgb << 2;
-    QTest::newRow("Adobe RGB -> Display-P3") << QColorSpace::AdobeRgb << QColorSpace::DisplayP3 << 4;
-    QTest::newRow("Display-P3 -> Adobe RGB") << QColorSpace::DisplayP3 << QColorSpace::AdobeRgb << 2;
-    QTest::newRow("Display-P3 -> sRGB") << QColorSpace::DisplayP3 << QColorSpace::SRgb << 0;
-    QTest::newRow("sRGB -> sRGB Linear") << QColorSpace::SRgb << QColorSpace::SRgbLinear << 0;
-    QTest::newRow("sRGB Linear -> sRGB") << QColorSpace::SRgbLinear << QColorSpace::SRgb << 0;
+    BOBUIest::newRow("sRGB -> Display-P3") << QColorSpace::SRgb << QColorSpace::DisplayP3 << 0;
+    BOBUIest::newRow("sRGB -> Adobe RGB") << QColorSpace::SRgb << QColorSpace::AdobeRgb << 2;
+    BOBUIest::newRow("Adobe RGB -> sRGB") << QColorSpace::AdobeRgb << QColorSpace::SRgb << 2;
+    BOBUIest::newRow("Adobe RGB -> Display-P3") << QColorSpace::AdobeRgb << QColorSpace::DisplayP3 << 4;
+    BOBUIest::newRow("Display-P3 -> Adobe RGB") << QColorSpace::DisplayP3 << QColorSpace::AdobeRgb << 2;
+    BOBUIest::newRow("Display-P3 -> sRGB") << QColorSpace::DisplayP3 << QColorSpace::SRgb << 0;
+    BOBUIest::newRow("sRGB -> sRGB Linear") << QColorSpace::SRgb << QColorSpace::SRgbLinear << 0;
+    BOBUIest::newRow("sRGB Linear -> sRGB") << QColorSpace::SRgbLinear << QColorSpace::SRgb << 0;
 }
 
 void tst_QColorSpace::imageConversion()
@@ -348,15 +348,15 @@ void tst_QColorSpace::imageConversion()
 
 void tst_QColorSpace::imageConversion64_data()
 {
-    QTest::addColumn<QColorSpace::NamedColorSpace>("fromColorSpace");
-    QTest::addColumn<QColorSpace::NamedColorSpace>("toColorSpace");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("fromColorSpace");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("toColorSpace");
 
-    QTest::newRow("sRGB -> Display-P3") << QColorSpace::SRgb << QColorSpace::DisplayP3;
-    QTest::newRow("sRGB -> Adobe RGB") << QColorSpace::SRgb << QColorSpace::AdobeRgb;
-    QTest::newRow("Display-P3 -> sRGB") << QColorSpace::DisplayP3 << QColorSpace::SRgb;
-    QTest::newRow("Display-P3 -> Adobe RGB") << QColorSpace::DisplayP3 << QColorSpace::AdobeRgb;
-    QTest::newRow("sRGB -> sRGB Linear") << QColorSpace::SRgb << QColorSpace::SRgbLinear;
-    QTest::newRow("sRGB Linear -> sRGB") << QColorSpace::SRgbLinear << QColorSpace::SRgb;
+    BOBUIest::newRow("sRGB -> Display-P3") << QColorSpace::SRgb << QColorSpace::DisplayP3;
+    BOBUIest::newRow("sRGB -> Adobe RGB") << QColorSpace::SRgb << QColorSpace::AdobeRgb;
+    BOBUIest::newRow("Display-P3 -> sRGB") << QColorSpace::DisplayP3 << QColorSpace::SRgb;
+    BOBUIest::newRow("Display-P3 -> Adobe RGB") << QColorSpace::DisplayP3 << QColorSpace::AdobeRgb;
+    BOBUIest::newRow("sRGB -> sRGB Linear") << QColorSpace::SRgb << QColorSpace::SRgbLinear;
+    BOBUIest::newRow("sRGB Linear -> sRGB") << QColorSpace::SRgbLinear << QColorSpace::SRgb;
 }
 
 void tst_QColorSpace::imageConversion64()
@@ -489,14 +489,14 @@ void tst_QColorSpace::imageConversion64PM()
 
 void tst_QColorSpace::imageConversionOverLargerGamut_data()
 {
-    QTest::addColumn<QColorSpace::NamedColorSpace>("fromColorSpace");
-    QTest::addColumn<QColorSpace::NamedColorSpace>("toColorSpace");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("fromColorSpace");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("toColorSpace");
 
-    QTest::newRow("sRGB -> Display-P3") << QColorSpace::SRgb << QColorSpace::DisplayP3;
-    QTest::newRow("sRGB -> Adobe RGB") << QColorSpace::SRgb << QColorSpace::AdobeRgb;
-    QTest::newRow("sRGB -> ProPhoto RGB") << QColorSpace::SRgb << QColorSpace::ProPhotoRgb;
-    QTest::newRow("Display-P3 -> ProPhoto RGB") << QColorSpace::DisplayP3 << QColorSpace::ProPhotoRgb;
-    QTest::newRow("Adobe RGB -> ProPhoto RGB") << QColorSpace::AdobeRgb << QColorSpace::ProPhotoRgb;
+    BOBUIest::newRow("sRGB -> Display-P3") << QColorSpace::SRgb << QColorSpace::DisplayP3;
+    BOBUIest::newRow("sRGB -> Adobe RGB") << QColorSpace::SRgb << QColorSpace::AdobeRgb;
+    BOBUIest::newRow("sRGB -> ProPhoto RGB") << QColorSpace::SRgb << QColorSpace::ProPhotoRgb;
+    BOBUIest::newRow("Display-P3 -> ProPhoto RGB") << QColorSpace::DisplayP3 << QColorSpace::ProPhotoRgb;
+    BOBUIest::newRow("Adobe RGB -> ProPhoto RGB") << QColorSpace::AdobeRgb << QColorSpace::ProPhotoRgb;
 }
 
 void tst_QColorSpace::imageConversionOverLargerGamut()
@@ -544,14 +544,14 @@ void tst_QColorSpace::imageConversionOverLargerGamut()
 
 void tst_QColorSpace::imageConversionOverLargerGamut2_data()
 {
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
-    QTest::newRow("rgbx16x4") << QImage::Format_RGBX16FPx4;
-    QTest::newRow("rgba16x4") << QImage::Format_RGBA16FPx4;
-    QTest::newRow("rgba16x4PM") << QImage::Format_RGBA16FPx4_Premultiplied;
-    QTest::newRow("rgbx32x4") << QImage::Format_RGBX32FPx4;
-    QTest::newRow("rgba32x4") << QImage::Format_RGBA32FPx4;
-    QTest::newRow("rgba32x4PM") << QImage::Format_RGBA32FPx4_Premultiplied;
+    BOBUIest::newRow("rgbx16x4") << QImage::Format_RGBX16FPx4;
+    BOBUIest::newRow("rgba16x4") << QImage::Format_RGBA16FPx4;
+    BOBUIest::newRow("rgba16x4PM") << QImage::Format_RGBA16FPx4_Premultiplied;
+    BOBUIest::newRow("rgbx32x4") << QImage::Format_RGBX32FPx4;
+    BOBUIest::newRow("rgba32x4") << QImage::Format_RGBA32FPx4;
+    BOBUIest::newRow("rgba32x4PM") << QImage::Format_RGBA32FPx4_Premultiplied;
 }
 
 void tst_QColorSpace::imageConversionOverLargerGamut2()
@@ -593,18 +593,18 @@ void tst_QColorSpace::imageConversionOverLargerGamut2()
 
 void tst_QColorSpace::imageConversionOverAnyGamutFP_data()
 {
-    QTest::addColumn<QColorSpace::NamedColorSpace>("fromColorSpace");
-    QTest::addColumn<QColorSpace::NamedColorSpace>("toColorSpace");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("fromColorSpace");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("toColorSpace");
 
-    QTest::newRow("sRGB -> Display-P3") << QColorSpace::SRgb << QColorSpace::DisplayP3;
-    QTest::newRow("sRGB -> Adobe RGB") << QColorSpace::SRgb << QColorSpace::AdobeRgb;
-    QTest::newRow("sRGB -> ProPhoto RGB") << QColorSpace::SRgb << QColorSpace::ProPhotoRgb;
-    QTest::newRow("Adobe RGB -> sRGB") << QColorSpace::AdobeRgb << QColorSpace::SRgb;
-    QTest::newRow("Adobe RGB -> Display-P3") << QColorSpace::AdobeRgb << QColorSpace::DisplayP3;
-    QTest::newRow("Adobe RGB -> ProPhoto RGB") << QColorSpace::AdobeRgb << QColorSpace::ProPhotoRgb;
-    QTest::newRow("Display-P3 -> sRGB") << QColorSpace::DisplayP3 << QColorSpace::SRgb;
-    QTest::newRow("Display-P3 -> Adobe RGB") << QColorSpace::DisplayP3 << QColorSpace::AdobeRgb;
-    QTest::newRow("Display-P3 -> ProPhoto RGB") << QColorSpace::DisplayP3 << QColorSpace::ProPhotoRgb;
+    BOBUIest::newRow("sRGB -> Display-P3") << QColorSpace::SRgb << QColorSpace::DisplayP3;
+    BOBUIest::newRow("sRGB -> Adobe RGB") << QColorSpace::SRgb << QColorSpace::AdobeRgb;
+    BOBUIest::newRow("sRGB -> ProPhoto RGB") << QColorSpace::SRgb << QColorSpace::ProPhotoRgb;
+    BOBUIest::newRow("Adobe RGB -> sRGB") << QColorSpace::AdobeRgb << QColorSpace::SRgb;
+    BOBUIest::newRow("Adobe RGB -> Display-P3") << QColorSpace::AdobeRgb << QColorSpace::DisplayP3;
+    BOBUIest::newRow("Adobe RGB -> ProPhoto RGB") << QColorSpace::AdobeRgb << QColorSpace::ProPhotoRgb;
+    BOBUIest::newRow("Display-P3 -> sRGB") << QColorSpace::DisplayP3 << QColorSpace::SRgb;
+    BOBUIest::newRow("Display-P3 -> Adobe RGB") << QColorSpace::DisplayP3 << QColorSpace::AdobeRgb;
+    BOBUIest::newRow("Display-P3 -> ProPhoto RGB") << QColorSpace::DisplayP3 << QColorSpace::ProPhotoRgb;
 }
 
 void tst_QColorSpace::imageConversionOverAnyGamutFP()
@@ -667,8 +667,8 @@ void tst_QColorSpace::imageConversionOverAnyGamutFP2()
 
 void tst_QColorSpace::imageConversionOverNonThreeComponentMatrix_data()
 {
-    QTest::addColumn<QColorSpace>("fromColorSpace");
-    QTest::addColumn<QColorSpace>("toColorSpace");
+    BOBUIest::addColumn<QColorSpace>("fromColorSpace");
+    BOBUIest::addColumn<QColorSpace>("toColorSpace");
 
     QString prefix = QFINDTESTDATA("resources/");
     QFile file1(prefix + "VideoHD.icc");
@@ -680,12 +680,12 @@ void tst_QColorSpace::imageConversionOverNonThreeComponentMatrix_data()
     QColorSpace hdtvColorSpace = QColorSpace::fromIccProfile(iccProfile1);
     QColorSpace srgbPcsColorSpace = QColorSpace::fromIccProfile(iccProfile2);
 
-    QTest::newRow("sRGB PCSLab -> sRGB") << srgbPcsColorSpace << QColorSpace(QColorSpace::SRgb);
-    QTest::newRow("sRGB -> sRGB PCSLab") << QColorSpace(QColorSpace::SRgb) << srgbPcsColorSpace;
-    QTest::newRow("HDTV -> sRGB") << hdtvColorSpace << QColorSpace(QColorSpace::SRgb);
-    QTest::newRow("sRGB -> HDTV") << QColorSpace(QColorSpace::SRgb) << hdtvColorSpace;
-    QTest::newRow("sRGB PCSLab -> HDTV") << srgbPcsColorSpace << hdtvColorSpace;
-    QTest::newRow("HDTV -> sRGB PCSLab") << hdtvColorSpace << srgbPcsColorSpace;
+    BOBUIest::newRow("sRGB PCSLab -> sRGB") << srgbPcsColorSpace << QColorSpace(QColorSpace::SRgb);
+    BOBUIest::newRow("sRGB -> sRGB PCSLab") << QColorSpace(QColorSpace::SRgb) << srgbPcsColorSpace;
+    BOBUIest::newRow("HDTV -> sRGB") << hdtvColorSpace << QColorSpace(QColorSpace::SRgb);
+    BOBUIest::newRow("sRGB -> HDTV") << QColorSpace(QColorSpace::SRgb) << hdtvColorSpace;
+    BOBUIest::newRow("sRGB PCSLab -> HDTV") << srgbPcsColorSpace << hdtvColorSpace;
+    BOBUIest::newRow("HDTV -> sRGB PCSLab") << hdtvColorSpace << srgbPcsColorSpace;
 }
 
 void tst_QColorSpace::imageConversionOverNonThreeComponentMatrix()
@@ -809,15 +809,15 @@ void tst_QColorSpace::primariesXyz()
     QCOMPARE(QColorSpacePrivate::get(proPhotoRgb)->toXyz, QColorMatrix::toXyzFromProPhotoRgb());
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QColorSpace::primaries2_data()
 {
-    QTest::addColumn<QColorSpace::Primaries>("primariesId");
+    BOBUIest::addColumn<QColorSpace::Primaries>("primariesId");
 
-    QTest::newRow("sRGB") << QColorSpace::Primaries::SRgb;
-    QTest::newRow("DCI-P3 (D65)") << QColorSpace::Primaries::DciP3D65;
-    QTest::newRow("Adobe RGB (1998)") << QColorSpace::Primaries::AdobeRgb;
-    QTest::newRow("ProPhoto RGB") << QColorSpace::Primaries::ProPhotoRgb;
+    BOBUIest::newRow("sRGB") << QColorSpace::Primaries::SRgb;
+    BOBUIest::newRow("DCI-P3 (D65)") << QColorSpace::Primaries::DciP3D65;
+    BOBUIest::newRow("Adobe RGB (1998)") << QColorSpace::Primaries::AdobeRgb;
+    BOBUIest::newRow("ProPhoto RGB") << QColorSpace::Primaries::ProPhotoRgb;
 }
 
 void tst_QColorSpace::primaries2()
@@ -851,7 +851,7 @@ void tst_QColorSpace::primaries2()
 
 void tst_QColorSpace::invalidPrimaries()
 {
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("QColorSpace attempted constructed from invalid primaries"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("QColorSpace attempted constructed from invalid primaries"));
     QColorSpace custom(QPointF(), QPointF(), QPointF(), QPointF(), QColorSpace::TransferFunction::Linear);
     QVERIFY(!custom.isValid());
 }
@@ -972,13 +972,13 @@ void tst_QColorSpace::description()
 
 void tst_QColorSpace::whitePoint_data()
 {
-    QTest::addColumn<QColorSpace::NamedColorSpace>("namedColorSpace");
-    QTest::addColumn<QPointF>("whitePoint");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("namedColorSpace");
+    BOBUIest::addColumn<QPointF>("whitePoint");
 
-    QTest::newRow("sRGB") << QColorSpace::SRgb << QColorVector::D65Chromaticity();
-    QTest::newRow("Adobe RGB") << QColorSpace::AdobeRgb << QColorVector::D65Chromaticity();
-    QTest::newRow("Display-P3") << QColorSpace::DisplayP3 << QColorVector::D65Chromaticity();
-    QTest::newRow("ProPhoto RGB") << QColorSpace::ProPhotoRgb << QColorVector::D50Chromaticity();
+    BOBUIest::newRow("sRGB") << QColorSpace::SRgb << QColorVector::D65Chromaticity();
+    BOBUIest::newRow("Adobe RGB") << QColorSpace::AdobeRgb << QColorVector::D65Chromaticity();
+    BOBUIest::newRow("Display-P3") << QColorSpace::DisplayP3 << QColorVector::D65Chromaticity();
+    BOBUIest::newRow("ProPhoto RGB") << QColorSpace::ProPhotoRgb << QColorVector::D50Chromaticity();
 }
 
 void tst_QColorSpace::whitePoint()
@@ -1126,5 +1126,5 @@ void tst_QColorSpace::hdrColorSpaces()
     }
 }
 
-QTEST_MAIN(tst_QColorSpace)
+BOBUIEST_MAIN(tst_QColorSpace)
 #include "tst_qcolorspace.moc"

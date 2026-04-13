@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSTHEME_H
 #define QIOSTHEME_H
 
 #import <UIKit/UIKit.h>
 
-#include <QtCore/QHash>
-#include <QtGui/QPalette>
+#include <BobUICore/QHash>
+#include <BobUIGui/QPalette>
 #include <qpa/qplatformtheme.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIOSTheme : public QPlatformTheme
 {
@@ -24,9 +24,9 @@ public:
     const QPalette *palette(Palette type = SystemPalette) const override;
     QVariant themeHint(ThemeHint hint) const override;
 
-    Qt::ColorScheme colorScheme() const override;
-    void requestColorScheme(Qt::ColorScheme scheme) override;
-    Qt::ContrastPreference contrastPreference() const override;
+    BobUI::ColorScheme colorScheme() const override;
+    void requestColorScheme(BobUI::ColorScheme scheme) override;
+    BobUI::ContrastPreference contrastPreference() const override;
 
 #if !defined(Q_OS_TVOS) && !defined(Q_OS_VISIONOS)
     QPlatformMenuItem* createPlatformMenuItem() const override;
@@ -47,10 +47,10 @@ public:
 
 private:
     static QPalette s_systemPalette;
-    static inline Qt::ColorScheme s_colorSchemeOverride = Qt::ColorScheme::Unknown;
+    static inline BobUI::ColorScheme s_colorSchemeOverride = BobUI::ColorScheme::Unknown;
     QMacNotificationObserver m_contentSizeCategoryObserver;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

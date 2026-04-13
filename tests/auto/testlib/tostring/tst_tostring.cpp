@@ -1,10 +1,10 @@
 // Copyright (C) 2023 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qtypes.h>
-#include <QtCore/qcompare.h>
+#include <BobUICore/bobuiypes.h>
+#include <BobUICore/qcompare.h>
 
 #include <memory>
 
@@ -29,11 +29,11 @@ private slots:
 
 void tst_toString::addColumns()
 {
-    QTest::addColumn<ToStringFunction>("fn");
-    QTest::addColumn<QByteArray>("expected");
-    QTest::addColumn<QByteArrayView>("expr");
-    QTest::addColumn<QByteArrayView>("file");
-    QTest::addColumn<int>("line");
+    BOBUIest::addColumn<ToStringFunction>("fn");
+    BOBUIest::addColumn<QByteArray>("expected");
+    BOBUIest::addColumn<QByteArrayView>("expr");
+    BOBUIest::addColumn<QByteArrayView>("file");
+    BOBUIest::addColumn<int>("line");
 }
 
 void tst_toString::testRows()
@@ -46,8 +46,8 @@ void tst_toString::testRows()
 
     std::unique_ptr<char []> ptr{fn()};
     const auto len = qstrlen(ptr.get());
-    QTest::qCompare(ptr.get(), expected, expr.data(), expected.data(), file.data(), line);
-    if (QTest::currentTestFailed()) {
+    BOBUIest::qCompare(ptr.get(), expected, expr.data(), expected.data(), file.data(), line);
+    if (BOBUIest::currentTestFailed()) {
         qDebug("tail diff:\n"
                "   actual:%s\n"
                " expected:%s",
@@ -59,8 +59,8 @@ void tst_toString::testRows()
 template <typename T> void addRow(QByteArrayView name, T &&value, QByteArrayView expression,
                                   const QByteArray &expected, QByteArrayView file, int line)
 {
-    ToStringFunction fn = [v = std::move(value)]() { return QTest::toString(v); };
-    QTest::newRow(name.data()) << fn << expected << expression << file << line;
+    ToStringFunction fn = [v = std::move(value)]() { return BOBUIest::toString(v); };
+    BOBUIest::newRow(name.data()) << fn << expected << expression << file << line;
 }
 
 #define ADD_ROW(name, expr, expected)         \
@@ -68,7 +68,7 @@ template <typename T> void addRow(QByteArrayView name, T &&value, QByteArrayView
 
 void tst_toString::int128()
 {
-#ifndef QT_SUPPORTS_INT128
+#ifndef BOBUI_SUPPORTS_INT128
     QSKIP("This test requires int128 support enabled in the compiler.");
 #else
     // ### port to data-driven once QVariant has support for qint128/quint128
@@ -83,38 +83,38 @@ void tst_toString::int128()
         accu *= -100;
         accu -= 28;
         QCOMPARE_EQ(accu, Q_INT128_MIN);
-        s.reset(QTest::toString(accu));
+        s.reset(BOBUIest::toString(accu));
         QCOMPARE(s.get(), "-170141183460469231731687303715884105728");
     }
 
     // now test with the macro, too:
-    s.reset(QTest::toString(Q_INT128_MIN));
+    s.reset(BOBUIest::toString(Q_INT128_MIN));
     QCOMPARE(s.get(), "-170141183460469231731687303715884105728");
 
-    s.reset(QTest::toString(Q_INT128_MIN + 1));
+    s.reset(BOBUIest::toString(Q_INT128_MIN + 1));
     QCOMPARE(s.get(), "-170141183460469231731687303715884105727");
 
-    s.reset(QTest::toString(Q_INT128_MAX));
+    s.reset(BOBUIest::toString(Q_INT128_MAX));
     QCOMPARE(s.get(), "170141183460469231731687303715884105727");
 
-    s.reset(QTest::toString(Q_INT128_MAX - 1));
+    s.reset(BOBUIest::toString(Q_INT128_MAX - 1));
     QCOMPARE(s.get(), "170141183460469231731687303715884105726");
 
-    s.reset(QTest::toString(Q_UINT128_MAX));
+    s.reset(BOBUIest::toString(Q_UINT128_MAX));
     QCOMPARE(s.get(), "340282366920938463463374607431768211455");
 
-    s.reset(QTest::toString(Q_UINT128_MAX - 1));
+    s.reset(BOBUIest::toString(Q_UINT128_MAX - 1));
     QCOMPARE(s.get(), "340282366920938463463374607431768211454");
 
-    s.reset(QTest::toString(quint128{0}));
+    s.reset(BOBUIest::toString(quint128{0}));
     QCOMPARE(s.get(), "0");
 
-    s.reset(QTest::toString(qint128{0}));
+    s.reset(BOBUIest::toString(qint128{0}));
     QCOMPARE(s.get(), "0");
 
-    s.reset(QTest::toString(qint128{-1}));
+    s.reset(BOBUIest::toString(qint128{-1}));
     QCOMPARE(s.get(), "-1");
-#endif // QT_SUPPORTS_INT128
+#endif // BOBUI_SUPPORTS_INT128
 }
 
 void tst_toString::chrono_duration_data()
@@ -219,18 +219,18 @@ void tst_toString::orderingTypeValue_data()
 {
     addColumns();
 #define CHECK(x) ADD_ROW(#x, x, #x)
-    CHECK(Qt::strong_ordering::equal);
-    CHECK(Qt::strong_ordering::less);
-    CHECK(Qt::strong_ordering::greater);
+    CHECK(BobUI::strong_ordering::equal);
+    CHECK(BobUI::strong_ordering::less);
+    CHECK(BobUI::strong_ordering::greater);
 
-    CHECK(Qt::partial_ordering::equivalent);
-    CHECK(Qt::partial_ordering::less);
-    CHECK(Qt::partial_ordering::greater);
-    CHECK(Qt::partial_ordering::unordered);
+    CHECK(BobUI::partial_ordering::equivalent);
+    CHECK(BobUI::partial_ordering::less);
+    CHECK(BobUI::partial_ordering::greater);
+    CHECK(BobUI::partial_ordering::unordered);
 
-    CHECK(Qt::weak_ordering::equivalent);
-    CHECK(Qt::weak_ordering::less);
-    CHECK(Qt::weak_ordering::greater);
+    CHECK(BobUI::weak_ordering::equivalent);
+    CHECK(BobUI::weak_ordering::less);
+    CHECK(BobUI::weak_ordering::greater);
 #ifdef __cpp_lib_three_way_comparison
     CHECK(std::strong_ordering::equal);
     CHECK(std::strong_ordering::less);
@@ -248,5 +248,5 @@ void tst_toString::orderingTypeValue_data()
 #undef CHECK
 }
 
-QTEST_APPLESS_MAIN(tst_toString)
+BOBUIEST_APPLESS_MAIN(tst_toString)
 #include "tst_tostring.moc"

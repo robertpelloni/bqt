@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Jeremy Lainé <jeremy.laine@m4x.org>
 // Copyright (C) 2023 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDNSLOOKUP_P_H
 #define QDNSLOOKUP_P_H
@@ -10,31 +10,31 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the QDnsLookup class.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include "QtCore/qmutex.h"
-#include "QtCore/qrunnable.h"
-#if QT_CONFIG(thread)
-#include "QtCore/qthreadpool.h"
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include "BobUICore/qmutex.h"
+#include "BobUICore/qrunnable.h"
+#if BOBUI_CONFIG(thread)
+#include "BobUICore/bobuihreadpool.h"
 #endif
-#include "QtNetwork/qdnslookup.h"
-#include "QtNetwork/qhostaddress.h"
+#include "BobUINetwork/qdnslookup.h"
+#include "BobUINetwork/qhostaddress.h"
 #include "private/qobject_p.h"
 #include "private/qurl_p.h"
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 #  include "qsslconfiguration.h"
 #endif
 
-QT_REQUIRE_CONFIG(dnslookup);
+BOBUI_REQUIRE_CONFIG(dnslookup);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //#define QDNSLOOKUP_DEBUG
 
@@ -61,7 +61,7 @@ public:
     QList<QDnsTlsAssociationRecord> tlsAssociationRecords;
     QList<QDnsTextRecord> textRecords;
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     std::optional<QSslConfiguration> sslConfiguration;
 #endif
 
@@ -75,7 +75,7 @@ public:
     void makeResolverSystemError(int code = -1)
     {
         Q_ASSERT(allAreEmpty());
-        setError(QDnsLookup::ResolverError, qt_error_string(code));
+        setError(QDnsLookup::ResolverError, bobui_error_string(code));
     }
 
     void makeTimeoutError()
@@ -188,7 +188,7 @@ public:
     QDnsLookupRunnable *runnable = nullptr;
     bool isFinished = false;
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     std::optional<QSslConfiguration> sslConfiguration;
 #endif
 
@@ -219,7 +219,7 @@ signals:
 private:
     template <typename T> static QString decodeLabel(T encodedLabel)
     {
-        return qt_ACE_do(encodedLabel.toString(), NormalizeAce, ForbidLeadingDot);
+        return bobui_ACE_do(encodedLabel.toString(), NormalizeAce, ForbidLeadingDot);
     }
     void query(QDnsLookupReply *reply);
 
@@ -229,7 +229,7 @@ private:
     quint16 port;
     QDnsLookup::Protocol protocol;
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     std::optional<QSslConfiguration> sslConfiguration;
 #endif
     friend QDebug operator<<(QDebug &, QDnsLookupRunnable *);
@@ -308,6 +308,6 @@ public:
     QByteArray value;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDNSLOOKUP_P_H

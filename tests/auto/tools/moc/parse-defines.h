@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef PARSE_DEFINES_H
 #define PARSE_DEFINES_H
@@ -104,9 +104,9 @@ public slots:
 signals:
     DEFINE_CMDLINE_SIGNAL;
 
-#define QTBUG55853(X) PD_DEFINE1(X, signalQTBUG55853)
+#define BOBUIBUG55853(X) PD_DEFINE1(X, signalBOBUIBUG55853)
 #define PD_EMPTY /* empty */
-    void QTBUG55853(PD_EMPTY)();
+    void BOBUIBUG55853(PD_EMPTY)();
 };
 
 #undef QString

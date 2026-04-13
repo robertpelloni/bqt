@@ -1,24 +1,24 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## exceptionthrow Binary:
 #####################################################################
 
-qt_internal_add_executable(throwonfailandskip
+bobui_internal_add_executable(throwonfailandskip
     EXCEPTIONS
     NO_INSTALL
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEFINES
-        QTEST_THROW_ON_FAIL
-        QTEST_THROW_ON_SKIP
+        BOBUIEST_THROW_ON_FAIL
+        BOBUIEST_THROW_ON_SKIP
     SOURCES
         tst_throwonfailandskip.cpp
     LIBRARIES
-        Qt::Test
+        BobUI::Test
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_apply_testlib_coverage_options(throwonfailandskip)
+bobui_internal_apply_testlib_coverage_options(throwonfailandskip)

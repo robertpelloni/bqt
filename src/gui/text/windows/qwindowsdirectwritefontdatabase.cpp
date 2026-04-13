@@ -1,22 +1,22 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsdirectwritefontdatabase_p.h"
 #include "qwindowsfontenginedirectwrite_p.h"
 #include "qwindowsfontdatabase_p.h"
 
-#include <QtCore/qendian.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qstringbuilder.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qstringbuilder.h>
+#include <BobUICore/qvarlengtharray.h>
 
 #include <dwrite_3.h>
 #include <d2d1.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Defined in gui/text/qfontdatabase.cpp
-Q_GUI_EXPORT QFontDatabase::WritingSystem qt_writing_system_for_script(int script);
+Q_GUI_EXPORT QFontDatabase::WritingSystem bobui_writing_system_for_script(int script);
 
 template<typename T>
 struct DirectWriteScope {
@@ -250,13 +250,13 @@ QSupportedWritingSystems QWindowsDirectWriteFontDatabase::supportedWritingSystem
                     for (uint i = 0; i < rangeCount; ++i) {
                         QChar::Script script = QChar::script(ranges.at(i).first);
 
-                        QFontDatabase::WritingSystem writingSystem = qt_writing_system_for_script(script);
+                        QFontDatabase::WritingSystem writingSystem = bobui_writing_system_for_script(script);
 
                         if (writingSystem > QFontDatabase::Any && writingSystem < QFontDatabase::WritingSystemsCount)
                             writingSystems.setSupported(writingSystem);
                     }
                 } else {
-                    const QString errorString = qt_error_string(int(hr));
+                    const QString errorString = bobui_error_string(int(hr));
                     qCWarning(lcQpaFonts) << "Failed to get unicode ranges for font:" << errorString;
                 }
             }
@@ -635,7 +635,7 @@ bool QWindowsDirectWriteFontDatabase::isPrivateFontFamily(const QString &family)
     return false;
 }
 
-static int QT_WIN_CALLBACK populateBitmapFonts(const LOGFONT *logFont,
+static int BOBUI_WIN_CALLBACK populateBitmapFonts(const LOGFONT *logFont,
                                                const TEXTMETRIC *textmetric,
                                                DWORD type,
                                                LPARAM lparam)
@@ -759,4 +759,4 @@ void QWindowsDirectWriteFontDatabase::invalidate()
     m_populatedBitmapFonts.squeeze();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

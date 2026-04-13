@@ -1,6 +1,6 @@
 TEMPLATE = app
-QT += widgets
-requires(qtConfig(treeview))
+BOBUI += widgets
+requires(bobuiConfig(treeview))
 
 HEADERS += model.h
 SOURCES += model.cpp main.cpp
@@ -12,5 +12,5 @@ build_all:!build_pass {
 }
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/interview
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/interview
 INSTALLS += target

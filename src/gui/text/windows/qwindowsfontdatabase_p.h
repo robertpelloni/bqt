@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSFONTDATABASE_H
 #define QWINDOWSFONTDATABASE_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,13 +18,13 @@
 #include "qwindowsfontdatabasebase_p.h"
 
 #include <qpa/qplatformfontdatabase.h>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qt_windows.h>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 
@@ -72,20 +72,20 @@ public:
     static void setFontOptions(unsigned options);
     static unsigned fontOptions();
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     static void debugFormat(QDebug &d, const LOGFONT &lf);
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
     struct FontHandle {
         FontHandle(const QString &name) : faceName(name) {}
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
         FontHandle(IDWriteFontFace *face, const QString &name);
-#endif // !QT_NO_DIRECTWRITE
+#endif // !BOBUI_NO_DIRECTWRITE
         ~FontHandle();
 
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
         IDWriteFontFace *fontFace = nullptr;
-#endif // !QT_NO_DIRECTWRITE
+#endif // !BOBUI_NO_DIRECTWRITE
         QString faceName;
     };
 
@@ -112,11 +112,11 @@ private:
     bool m_hasPopulatedAliases = false;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug, const QFontDef &def);
 #endif
 
-inline quint16 qt_getUShort(const unsigned char *p)
+inline quint16 bobui_getUShort(const unsigned char *p)
 {
     quint16 val;
     val = *p++ << 8;
@@ -141,9 +141,9 @@ struct QFontValues
     bool isUnderlined = false;
 };
 
-bool qt_localizedName(const QString &name);
-QString qt_getEnglishName(const QString &familyName, bool includeStyle = false);
-QFontNames qt_getCanonicalFontNames(const LOGFONT &lf);
+bool bobui_localizedName(const QString &name);
+QString bobui_getEnglishName(const QString &familyName, bool includeStyle = false);
+QFontNames bobui_getCanonicalFontNames(const LOGFONT &lf);
 
 struct FontAndStyle {
     QString font;
@@ -159,6 +159,6 @@ inline size_t qHash(const FontAndStyle &key, size_t seed) noexcept
     return qHashMulti(seed, key.font, key.style);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSFONTDATABASE_H

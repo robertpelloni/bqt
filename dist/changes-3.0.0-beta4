@@ -1,12 +1,12 @@
-Qt 3.0 Beta4 is not binary compatible with Beta3; any programs linked
+BobUI 3.0 Beta4 is not binary compatible with Beta3; any programs linked
 against Beta3 must be recompiled.
 
-Below you will find a description of general changes in the Qt
-Library and Qt Designer followed by a detailed list of changes in the
+Below you will find a description of general changes in the BobUI
+Library and BobUI Designer followed by a detailed list of changes in the
 API.
 
 
-The Qt Library
+The BobUI Library
 ========================================
 
 Documentation
@@ -19,14 +19,14 @@ of classes entitled Main Classes.
 Translations
 ------------
 
-Qt now includes French and German translations of the Qt library, as
-well as a template for translating Qt. These files are found in the
-translations directory of Qt, in both .ts and .qm formats.
+BobUI now includes French and German translations of the BobUI library, as
+well as a template for translating BobUI. These files are found in the
+translations directory of BobUI, in both .ts and .qm formats.
 
 Style Fixes
 -----------
 
-Qt 3.0.0 beta2 introduced a new QStyle API. This new API has changed
+BobUI 3.0.0 beta2 introduced a new QStyle API. This new API has changed
 between beta3 and beta4. These changes will affect both widget
 writers and style writers. The QStyle entry below explains what has
 changed.
@@ -41,7 +41,7 @@ A few bugs were fixed in the LiveConnect Plugin so that the grapher
 example works again on Windows.
 
 
-Qt Designer
+BobUI Designer
 ========================================
 
  - General usability improvements and bug fixes, and improved file
@@ -50,24 +50,24 @@ Qt Designer
  - New auto-indentation algorithm in the code editor.
 
 
-Qt Assistant
+BobUI Assistant
 ========================================
 
  - Added a Settings dialog and made more features customizable.
  - Sessions are now saved and restored.
- - A brief introduction to using Qt Assistant is now included.
+ - A brief introduction to using BobUI Assistant is now included.
 
 
-Qt Linguist
+BobUI Linguist
 ========================================
 
  - Phrase books are now provided in tools/linguist/phrasebooks.
- - Added support for Qt Designer's .ui.h mechanism to lupdate.
+ - Added support for BobUI Designer's .ui.h mechanism to lupdate.
  - Support for a larger subset of .pro file syntax in lupdate and
    lrelease.
 
 
-Qt Functions
+BobUI Functions
 ========================================
 
 QApplication
@@ -143,7 +143,7 @@ New property:
 QDataBrowser
 ------------
 
- - The setCursor() function is obsolete and will be removed for Qt 3
+ - The setCursor() function is obsolete and will be removed for BobUI 3
    release due to the incompatibility with some compilers. Use
    setSqlCursor() instead.
 
@@ -152,7 +152,7 @@ QDataTable
 
  - Dates and times in tables can now be displayed in different
    display formats.
- - The setCursor() function is obsolete and will be removed for Qt 3
+ - The setCursor() function is obsolete and will be removed for BobUI 3
    release due to the incompatibility with some compilers. Use
    setSqlCursor() instead.
 
@@ -283,7 +283,7 @@ QLibrary
 --------
 
  - Plugins now return the version number, threading model and debug
-   vs. release mode of the Qt library used in ucm_initialize(). If
+   vs. release mode of the BobUI library used in ucm_initialize(). If
    there is any kind of incompatibility, cancel the loading.
 
 QLineEdit
@@ -322,7 +322,7 @@ QPainter
    ClipDevice and ClipPainter are now called CoordDevice and
    CoordPainter.
  - Fixed escaping of ampersand character, so "&&", "&&&", etc., now
-   work as they did in Qt 2.x.
+   work as they did in BobUI 2.x.
 
 New functions:
 	void drawPixmap( const QRect& r, const QPixmap& pm );
@@ -517,7 +517,7 @@ QString
  - QString now provides section(), a function that parses simple
    fields.
  - The function similarityWith() has been removed from the API. If
-   you need it, write to qt-bugs@trolltech.com.
+   you need it, write to bobui-bugs@trolltech.com.
 
 New functions:
 	QString section( QChar sep, int start, int end,
@@ -546,18 +546,18 @@ QStyleOption
 
 A new class that encapsulates extra data sent to the style API.
 
-QTabBar
+BOBUIabBar
 -------
 
  - The accelerators are now working correctly after changing a tab.
 
-QTable
+BOBUIable
 ------
 
  - Fixed crash related to popup menu and cell edition.
  - Fixed not-drawing hidden cells.
 
-QTextCodec
+BOBUIextCodec
 ----------
 
  - Added MIME names for codecs.
@@ -567,12 +567,12 @@ QTextCodec
 New function:
 	const char *mimeName() const;
 
-QTextStream
+BOBUIextStream
 -----------
 
- - Fixed bug with stateful QTextEncoders.
+ - Fixed bug with stateful BOBUIextEncoders.
 
-QTextEdit
+BOBUIextEdit
 ---------
 
  - Respect disabling updates.
@@ -590,19 +590,19 @@ New functions:
 New property:
 	bool undoRedoEnabled
 
-QThread
+BOBUIhread
 -------
 
- - Fixed QThread::sleep() on Unix.
+ - Fixed BOBUIhread::sleep() on Unix.
 
-QTime
+BOBUIime
 -----
 
- - fromString() with format Qt::ISODate now recognizes milliseconds
+ - fromString() with format BobUI::ISODate now recognizes milliseconds
    if they are specified.
  - Make elapsed() a const function.
 
-QTimeEdit
+BOBUIimeEdit
 ---------
 
  - The default time separator respects the user's settings.
@@ -612,7 +612,7 @@ New functions:
 	QString separator() const;
 	virtual void setSeparator( const QString& s );
 
-QTooltip
+BOBUIooltip
 --------
 
  - Hide active tooltips when the user switches to another application.
@@ -681,7 +681,7 @@ QXml
 QXmlAttributes
 --------------
 
- - Added count() as equivalent to length() to be consistent with Qt
+ - Added count() as equivalent to length() to be consistent with BobUI
    conventions.
 
 New function:

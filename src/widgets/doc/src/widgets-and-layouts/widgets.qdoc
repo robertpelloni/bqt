@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
   \page widget-classes.html
   \title Widgets Classes
-  \ingroup qt-gui-concepts
-  \brief The primary elements for designing user interfaces in Qt.
+  \ingroup bobui-gui-concepts
+  \brief The primary elements for designing user interfaces in BobUI.
 
   \section1 The Widget Classes
 
-  The following sections list the widget classes. See the \l{Qt Widget
+  The following sections list the widget classes. See the \l{BobUI Widget
   Gallery} for some examples.
 
   \section2 Basic Widget Classes

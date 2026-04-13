@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbuspendingreply.h"
 #include "qdbuspendingcall_p.h"
 #include "qdbusmetatype.h"
 
-#include <QtCore/private/qlocking_p.h>
+#include <BobUICore/private/qlocking_p.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 /*!
     \class QDBusPendingReply
@@ -232,7 +232,7 @@ QDBusPendingReplyBase::QDBusPendingReplyBase()
 {
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 QDBusPendingReplyBase::~QDBusPendingReplyBase()
 {
 }
@@ -262,9 +262,9 @@ QVariant QDBusPendingReplyBase::argumentAt(int index) const
 void QDBusPendingReplyBase::setMetaTypes(int count, const QMetaType *types)
 {
     Q_ASSERT(d);
-    const auto locker = qt_scoped_lock(d->mutex);
+    const auto locker = bobui_scoped_lock(d->mutex);
     d->setMetaTypes(count, types);
     d->checkReceivedSignature();
 }
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

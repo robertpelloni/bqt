@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
 #include <QAction>
 #include <QCheckBox>
@@ -16,7 +16,7 @@
 #include <QMenu>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QVBoxLayout>
 #include <QMessageBox>
 
@@ -193,7 +193,7 @@ void Window::createMessageGroupBox()
 
     bodyLabel = new QLabel(tr("Body:"));
 
-    bodyEdit = new QTextEdit;
+    bodyEdit = new BOBUIextEdit;
     bodyEdit->setPlainText(tr("Don't believe me. Honestly, I don't have a "
                               "clue.\nClick this balloon for details."));
 

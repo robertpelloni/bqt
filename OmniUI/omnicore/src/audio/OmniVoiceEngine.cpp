@@ -6,7 +6,7 @@
 #include <QMediaDevices>
 #include <QAudioDevice>
 #include <QDebug>
-#include <QtConcurrent>
+#include <BobUIConcurrent>
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -79,7 +79,7 @@ void OmniVoiceEngine::stopListening() {
     if (m_pcmData.isEmpty()) return;
 
     // Offload WAV encoding and network dispatch to a background thread to prevent UI stalling
-    QFuture<void> future = QtConcurrent::run([this]() {
+    QFuture<void> future = BobUIConcurrent::run([this]() {
         QByteArray wavData = generateWavHeader(m_pcmData, 16000, 1, 16);
         
         // We utilize the OmniHttpClient we built in Phase 8 to POST the binary data

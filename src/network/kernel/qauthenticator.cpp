@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qauthenticator.h>
 #include <qauthenticator_p.h>
@@ -15,17 +15,17 @@
 #include <qstring.h>
 #include <qdatetime.h>
 #include <qrandom.h>
-#include <QtNetwork/qhttpheaders.h>
+#include <BobUINetwork/qhttpheaders.h>
 
 #ifdef Q_OS_WIN
 #include <qmutex.h>
 #include <rpc.h>
 #endif
 
-#if QT_CONFIG(sspi) // SSPI
+#if BOBUI_CONFIG(sspi) // SSPI
 #define SECURITY_WIN32 1
 #include <security.h>
-#elif QT_CONFIG(gssapi) // GSSAPI
+#elif BOBUI_CONFIG(gssapi) // GSSAPI
 #if defined(Q_OS_DARWIN)
 #include <GSS/GSS.h>
 #else
@@ -33,22 +33,22 @@
 #endif // Q_OS_DARWIN
 #endif // Q_CONFIG(sspi)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECLARE_LOGGING_CATEGORY(lcAuthenticator);
-Q_LOGGING_CATEGORY(lcAuthenticator, "qt.network.authenticator");
+Q_LOGGING_CATEGORY(lcAuthenticator, "bobui.network.authenticator");
 
 static QByteArray qNtlmPhase1();
 static QByteArray qNtlmPhase3(QAuthenticatorPrivate *ctx, const QByteArray& phase2data);
-#if QT_CONFIG(sspi) // SSPI
+#if BOBUI_CONFIG(sspi) // SSPI
 static bool q_SSPI_library_load();
 static QByteArray qSspiStartup(QAuthenticatorPrivate *ctx, QAuthenticatorPrivate::Method method,
                                QStringView host);
 static QByteArray qSspiContinue(QAuthenticatorPrivate *ctx, QAuthenticatorPrivate::Method method,
                                 QStringView host, QByteArrayView challenge = {});
-#elif QT_CONFIG(gssapi) // GSSAPI
+#elif BOBUI_CONFIG(gssapi) // GSSAPI
 static bool qGssapiTestGetCredentials(QStringView host);
 static QByteArray qGssapiStartup(QAuthenticatorPrivate *ctx, QStringView host);
 static QByteArray qGssapiContinue(QAuthenticatorPrivate *ctx, QByteArrayView challenge = {});
@@ -61,7 +61,7 @@ static QByteArray qGssapiContinue(QAuthenticatorPrivate *ctx, QByteArrayView cha
 
   \reentrant
   \ingroup network
-  \inmodule QtNetwork
+  \inmodule BobUINetwork
 
   The QAuthenticator class is usually used in the
   \l{QNetworkAccessManager::}{authenticationRequired()} and
@@ -371,14 +371,14 @@ void QAuthenticator::clear()
     d->phase = QAuthenticatorPrivate::Done;
 }
 
-#if QT_CONFIG(sspi) // SSPI
+#if BOBUI_CONFIG(sspi) // SSPI
 class QSSPIWindowsHandles
 {
 public:
     CredHandle credHandle;
     CtxtHandle ctxHandle;
 };
-#elif QT_CONFIG(gssapi) // GSSAPI
+#elif BOBUI_CONFIG(gssapi) // GSSAPI
 class QGssApiHandles
 {
 public:
@@ -431,13 +431,13 @@ bool QAuthenticatorPrivate::isMethodSupported(QByteArrayView method)
     if (separator != -1)
         method = method.first(separator);
     const auto isSupported = [method](QByteArrayView reference) {
-        return method.compare(reference, Qt::CaseInsensitive) == 0;
+        return method.compare(reference, BobUI::CaseInsensitive) == 0;
     };
     static const char methods[][10] = {
         "basic",
         "ntlm",
         "digest",
-#if QT_CONFIG(sspi) || QT_CONFIG(gssapi)
+#if BOBUI_CONFIG(sspi) || BOBUI_CONFIG(gssapi)
         "negotiate",
 #endif
     };
@@ -454,7 +454,7 @@ static bool verifyDigestMD5(QByteArrayView value)
         // Just compare the first 3 characters, that way we match other subvariants as well, such as
         // "MD5-sess"
         auto view = QByteArrayView(alg).first(3);
-        return view.compare("MD5", Qt::CaseInsensitive) == 0;
+        return view.compare("MD5", BobUI::CaseInsensitive) == 0;
     }
     return true; // assume it's ok if algorithm is not specified
 }
@@ -462,7 +462,7 @@ static bool verifyDigestMD5(QByteArrayView value)
 void QAuthenticatorPrivate::parseHttpResponse(const QHttpHeaders &headers,
                                               bool isProxy, QStringView host)
 {
-#if !QT_CONFIG(gssapi)
+#if !BOBUI_CONFIG(gssapi)
     Q_UNUSED(host);
 #endif
     const auto search = isProxy ? QHttpHeaders::WellKnownHeader::ProxyAuthenticate
@@ -482,22 +482,22 @@ void QAuthenticatorPrivate::parseHttpResponse(const QHttpHeaders &headers,
     QByteArrayView headerVal;
     for (const auto &current : headers.values(search)) {
         const QLatin1StringView str(current);
-        if (method < Basic && str.startsWith("basic"_L1, Qt::CaseInsensitive)) {
+        if (method < Basic && str.startsWith("basic"_L1, BobUI::CaseInsensitive)) {
             method = Basic;
             headerVal = QByteArrayView(current).mid(6);
-        } else if (method < Ntlm && str.startsWith("ntlm"_L1, Qt::CaseInsensitive)) {
+        } else if (method < Ntlm && str.startsWith("ntlm"_L1, BobUI::CaseInsensitive)) {
             method = Ntlm;
             headerVal = QByteArrayView(current).mid(5);
-        } else if (method < DigestMd5 && str.startsWith("digest"_L1, Qt::CaseInsensitive)) {
+        } else if (method < DigestMd5 && str.startsWith("digest"_L1, BobUI::CaseInsensitive)) {
             // Make sure the algorithm is actually MD5 before committing to it:
             if (!verifyDigestMD5(QByteArrayView(current).sliced(7)))
                 continue;
 
             method = DigestMd5;
             headerVal = QByteArrayView(current).mid(7);
-        } else if (method < Negotiate && str.startsWith("negotiate"_L1, Qt::CaseInsensitive)) {
-#if QT_CONFIG(sspi) || QT_CONFIG(gssapi) // if it's not supported then we shouldn't try to use it
-#if QT_CONFIG(gssapi)
+        } else if (method < Negotiate && str.startsWith("negotiate"_L1, BobUI::CaseInsensitive)) {
+#if BOBUI_CONFIG(sspi) || BOBUI_CONFIG(gssapi) // if it's not supported then we shouldn't try to use it
+#if BOBUI_CONFIG(gssapi)
             // For GSSAPI there needs to be a KDC set up for the host (afaict).
             // So let's only conditionally use it if we can fetch the credentials.
             // Sadly it's a bit slow because it requires a DNS lookup.
@@ -538,7 +538,7 @@ void QAuthenticatorPrivate::parseHttpResponse(const QHttpHeaders &headers,
         break;
     case DigestMd5: {
         privSetRealm(QString::fromLatin1(options.value("realm")));
-        if (options.value("stale").compare("true", Qt::CaseInsensitive) == 0) {
+        if (options.value("stale").compare("true", BobUI::CaseInsensitive) == 0) {
             phase = Start;
             nonceCount = 0;
         }
@@ -556,7 +556,7 @@ void QAuthenticatorPrivate::parseHttpResponse(const QHttpHeaders &headers,
 QByteArray QAuthenticatorPrivate::calculateResponse(QByteArrayView requestMethod,
                                                     QByteArrayView path, QStringView host)
 {
-#if !QT_CONFIG(sspi) && !QT_CONFIG(gssapi)
+#if !BOBUI_CONFIG(sspi) && !BOBUI_CONFIG(gssapi)
     Q_UNUSED(host);
 #endif
     QByteArray response;
@@ -578,7 +578,7 @@ QByteArray QAuthenticatorPrivate::calculateResponse(QByteArrayView requestMethod
     case QAuthenticatorPrivate::Ntlm:
         methodString = "NTLM";
         if (challenge.isEmpty()) {
-#if QT_CONFIG(sspi) // SSPI
+#if BOBUI_CONFIG(sspi) // SSPI
             QByteArray phase1Token;
             if (user.isEmpty()) { // Only pull from system if no user was specified in authenticator
                 phase1Token = qSspiStartup(this, method, host);
@@ -600,7 +600,7 @@ QByteArray QAuthenticatorPrivate::calculateResponse(QByteArrayView requestMethod
                     phase = Phase2;
             }
         } else {
-#if QT_CONFIG(sspi) // SSPI
+#if BOBUI_CONFIG(sspi) // SSPI
             QByteArray phase3Token;
             if (sspiWindowsHandles)
                 phase3Token = qSspiContinue(this, method, host, QByteArray::fromBase64(challenge));
@@ -621,9 +621,9 @@ QByteArray QAuthenticatorPrivate::calculateResponse(QByteArrayView requestMethod
         methodString = "Negotiate";
         if (challenge.isEmpty()) {
             QByteArray phase1Token;
-#if QT_CONFIG(sspi) // SSPI
+#if BOBUI_CONFIG(sspi) // SSPI
             phase1Token = qSspiStartup(this, method, host);
-#elif QT_CONFIG(gssapi) // GSSAPI
+#elif BOBUI_CONFIG(gssapi) // GSSAPI
             phase1Token = qGssapiStartup(this, host);
 #endif
 
@@ -636,10 +636,10 @@ QByteArray QAuthenticatorPrivate::calculateResponse(QByteArrayView requestMethod
             }
         } else {
             QByteArray phase3Token;
-#if QT_CONFIG(sspi) // SSPI
+#if BOBUI_CONFIG(sspi) // SSPI
             if (sspiWindowsHandles)
                 phase3Token = qSspiContinue(this, method, host, QByteArray::fromBase64(challenge));
-#elif QT_CONFIG(gssapi) // GSSAPI
+#elif BOBUI_CONFIG(gssapi) // GSSAPI
             if (gssApiHandles)
                 phase3Token = qGssapiContinue(this, QByteArray::fromBase64(challenge));
 #endif
@@ -766,7 +766,7 @@ static QByteArray digestMd5ResponseHelper(
     hash.addData(":");
     hash.addData(password);
     QByteArray ha1 = hash.result();
-    if (alg.compare("md5-sess", Qt::CaseInsensitive) == 0) {
+    if (alg.compare("md5-sess", BobUI::CaseInsensitive) == 0) {
         hash.reset();
         // RFC 2617 contains an error, it was:
         // hash.addData(ha1);
@@ -786,7 +786,7 @@ static QByteArray digestMd5ResponseHelper(
     hash.addData(method);
     hash.addData(":");
     hash.addData(digestUri);
-    if (qop.compare("auth-int", Qt::CaseInsensitive) == 0) {
+    if (qop.compare("auth-int", BobUI::CaseInsensitive) == 0) {
         hash.addData(":");
         hash.addData(hEntity);
     }
@@ -1541,7 +1541,7 @@ static QByteArray qNtlmPhase3(QAuthenticatorPrivate *ctx, const QByteArray& phas
 
 // ---------------------------- End of NTLM code ---------------------------------------
 
-#if QT_CONFIG(sspi) // SSPI
+#if BOBUI_CONFIG(sspi) // SSPI
 // ---------------------------- SSPI code ----------------------------------------------
 // See http://davenport.sourceforge.net/ntlm.html
 // and libcurl http_ntlm.c
@@ -1673,7 +1673,7 @@ static QByteArray qSspiContinue(QAuthenticatorPrivate *ctx, QAuthenticatorPrivat
 
 // ---------------------------- End of SSPI code ---------------------------------------
 
-#elif QT_CONFIG(gssapi) // GSSAPI
+#elif BOBUI_CONFIG(gssapi) // GSSAPI
 
 // ---------------------------- GSSAPI code ----------------------------------------------
 // See postgres src/interfaces/libpq/fe-auth.c
@@ -1810,6 +1810,6 @@ static bool qGssapiTestGetCredentials(QStringView host)
 
 #endif // gssapi
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qauthenticator.cpp"

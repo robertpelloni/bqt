@@ -1,20 +1,20 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSPOINTERHANDLER_H
 #define QWINDOWSPOINTERHANDLER_H
 
-#include "qtwindowsglobal.h"
-#include <QtCore/qt_windows.h>
+#include "bobuiwindowsglobal.h"
+#include <BobUICore/bobui_windows.h>
 
-#include <QtCore/qpointer.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qsharedpointer.h>
-#include <QtCore/qhash.h>
-#include <QtGui/qevent.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUICore/qhash.h>
+#include <BobUIGui/qevent.h>
 #include <qpa/qwindowsysteminterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindow;
 class QPointingDevice;
@@ -27,8 +27,8 @@ public:
 
     QWindowsPointerHandler() = default;
     ~QWindowsPointerHandler();
-    bool translatePointerEvent(QWindow *window, HWND hwnd, QtWindows::WindowsEventType et, MSG msg, LRESULT *result);
-    bool translateMouseEvent(QWindow *window, HWND hwnd, QtWindows::WindowsEventType et, MSG msg, LRESULT *result);
+    bool translatePointerEvent(QWindow *window, HWND hwnd, BobUIWindows::WindowsEventType et, MSG msg, LRESULT *result);
+    bool translateMouseEvent(QWindow *window, HWND hwnd, BobUIWindows::WindowsEventType et, MSG msg, LRESULT *result);
 
     const QPointingDevicePtr &touchDevice() const { return m_touchDevice; }
     void setTouchDevice(const QPointingDevicePtr &d) { m_touchDevice = d; }
@@ -38,21 +38,21 @@ public:
     void clearWindowUnderMouse() { m_windowUnderPointer = nullptr; }
     void clearEvents();
 
-    static Qt::MouseButtons queryMouseButtons();
+    static BobUI::MouseButtons queryMouseButtons();
 
 private:
-    bool translateTouchEvent(QWindow *window, HWND hwnd, QtWindows::WindowsEventType et, MSG msg, PVOID vTouchInfo, unsigned int count);
-    bool translatePenEvent(QWindow *window, HWND hwnd, QtWindows::WindowsEventType et, MSG msg, PVOID vPenInfo);
-    bool translateMouseWheelEvent(QWindow *window, QWindow *currentWindowUnderPointer, MSG msg, QPoint globalPos, Qt::KeyboardModifiers keyModifiers);
-    void handleCaptureRelease(QWindow *window, QWindow *currentWindowUnderPointer, HWND hwnd, QEvent::Type eventType, Qt::MouseButtons mouseButtons);
+    bool translateTouchEvent(QWindow *window, HWND hwnd, BobUIWindows::WindowsEventType et, MSG msg, PVOID vTouchInfo, unsigned int count);
+    bool translatePenEvent(QWindow *window, HWND hwnd, BobUIWindows::WindowsEventType et, MSG msg, PVOID vPenInfo);
+    bool translateMouseWheelEvent(QWindow *window, QWindow *currentWindowUnderPointer, MSG msg, QPoint globalPos, BobUI::KeyboardModifiers keyModifiers);
+    void handleCaptureRelease(QWindow *window, QWindow *currentWindowUnderPointer, HWND hwnd, QEvent::Type eventType, BobUI::MouseButtons mouseButtons);
     void handleEnterLeave(QWindow *window, QWindow *currentWindowUnderPointer, QPoint globalPos);
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     QPointingDevicePtr findTabletDevice(QPointingDevice::PointerType pointerType) const;
 #endif
 
     QPointingDevicePtr m_touchDevice;
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     QList<QPointingDevicePtr> m_tabletDevices;
     QPointingDevicePtr m_activeTabletDevice;
 #endif
@@ -63,11 +63,11 @@ private:
     QWindow *m_previousCaptureWindow = nullptr;
     bool m_needsEnterOnPointerUpdate = false;
     QEvent::Type m_lastEventType = QEvent::None;
-    Qt::MouseButton m_lastEventButton = Qt::NoButton;
+    BobUI::MouseButton m_lastEventButton = BobUI::NoButton;
     DWORD m_pointerType = 0;
     static qint64 m_nextInputDeviceId; // workaround until we know how to get system device IDs
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSPOINTERHANDLER_H

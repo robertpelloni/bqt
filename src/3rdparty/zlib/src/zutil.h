@@ -15,7 +15,7 @@
 
 #include <qconfig.h>
 
-#ifdef QT_VISIBILITY_AVAILABLE
+#ifdef BOBUI_VISIBILITY_AVAILABLE
 #define HAVE_HIDDEN
 #endif
 

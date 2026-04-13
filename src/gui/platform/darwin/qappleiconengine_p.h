@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QAPPLEICONENGINE_P_H
 #define QAPPLEICONENGINE_P_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/qiconengine.h>
+#include <BobUIGui/qiconengine.h>
 
-#include <QtCore/qhash.h>
+#include <BobUICore/qhash.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 Q_FORWARD_DECLARE_OBJC_CLASS(UIImage);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSImage);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QAppleIconEngine : public QIconEngine
 {
@@ -53,7 +53,7 @@ private:
     const QString m_iconName;
 #if defined(Q_OS_MACOS)
     const NSImage *m_image;
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
     const UIImage *m_image;
 #endif
     struct CacheKey {
@@ -77,6 +77,6 @@ private:
     mutable QHash<CacheKey, QPixmap> m_cache;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QAPPLEICONENGINE_P_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef Q_SPI_APPLICATION_H
 #define Q_SPI_APPLICATION_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtCore/QPointer>
-#include <QtCore/QQueue>
-#include <QtDBus/QDBusConnection>
-#include <QtGui/QAccessibleInterface>
-Q_MOC_INCLUDE(<QtDBus/QDBusMessage>)
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUICore/QPointer>
+#include <BobUICore/QQueue>
+#include <BobUIDBus/QDBusConnection>
+#include <BobUIGui/QAccessibleInterface>
+Q_MOC_INCLUDE(<BobUIDBus/QDBusMessage>)
 
-QT_REQUIRE_CONFIG(accessibility);
+BOBUI_REQUIRE_CONFIG(accessibility);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
  * Used for the root object.
@@ -57,6 +57,6 @@ private:
     QDBusConnection dbusConnection;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

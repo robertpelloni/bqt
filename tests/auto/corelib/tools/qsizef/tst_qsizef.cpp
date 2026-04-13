@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QSizeF>
 #ifdef QVARIANT_H
@@ -23,8 +23,8 @@ CHECK(const &&);
 
 #undef CHECK
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 #include <qsize.h>
 
 Q_DECLARE_METATYPE(QMarginsF)
@@ -67,23 +67,23 @@ private slots:
 
 void tst_QSizeF::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QSizeF>();
-    QTestPrivate::testEqualityOperatorsCompile<QSizeF, QSize>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QSizeF>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QSizeF, QSize>();
 }
 
 void tst_QSizeF::compare_data()
 {
-    QTest::addColumn<QSizeF>("lhs");
-    QTest::addColumn<QSizeF>("rhs");
-    QTest::addColumn<bool>("result");
-    QTest::addColumn<bool>("mixedResult");
+    BOBUIest::addColumn<QSizeF>("lhs");
+    BOBUIest::addColumn<QSizeF>("rhs");
+    BOBUIest::addColumn<bool>("result");
+    BOBUIest::addColumn<bool>("mixedResult");
 
     auto row = [&](QSizeF lhs, QSizeF rhs, bool res, bool mixedRes) {
         QString str;
         QDebug dbg(&str);
         dbg.nospace() << "(" << lhs.width() << ", " << lhs.height() << ") vs "
                       << "(" << rhs.width() << ", " << rhs.height() << ")";
-        QTest::addRow("%s", str.toLatin1().constData()) << lhs << rhs << res << mixedRes;
+        BOBUIest::addRow("%s", str.toLatin1().constData()) << lhs << rhs << res << mixedRes;
     };
 
     row(QSizeF(0.0, 0.0), QSizeF(0.0, 0.0), true, true);
@@ -100,10 +100,10 @@ void tst_QSizeF::compare()
     QFETCH(bool, result);
     QFETCH(bool, mixedResult);
 
-    QT_TEST_EQUALITY_OPS(lhs, rhs, result);
+    BOBUI_TEST_EQUALITY_OPS(lhs, rhs, result);
 
     const QSize rhsFixed = rhs.toSize();
-    QT_TEST_EQUALITY_OPS(lhs, rhsFixed, mixedResult);
+    BOBUI_TEST_EQUALITY_OPS(lhs, rhsFixed, mixedResult);
 }
 
 void tst_QSizeF::fuzzyCompare_data()
@@ -122,19 +122,19 @@ void tst_QSizeF::fuzzyCompare()
 
 void tst_QSizeF::isNull_data()
 {
-    QTest::addColumn<qreal>("width");
-    QTest::addColumn<qreal>("height");
-    QTest::addColumn<bool>("isNull");
+    BOBUIest::addColumn<qreal>("width");
+    BOBUIest::addColumn<qreal>("height");
+    BOBUIest::addColumn<bool>("isNull");
 
-    QTest::newRow("0, 0") << qreal(0.0) << qreal(0.0) << true;
-    QTest::newRow("-0, -0") << qreal(-0.0) << qreal(-0.0) << true;
-    QTest::newRow("0, -0") << qreal(0) << qreal(-0.0) << true;
-    QTest::newRow("-0, 0") << qreal(-0.0) << qreal(0) << true;
-    QTest::newRow("-0.1, 0") << qreal(-0.1) << qreal(0) << false;
-    QTest::newRow("0, -0.1") << qreal(0) << qreal(-0.1) << false;
-    QTest::newRow("0.1, 0") << qreal(0.1) << qreal(0) << false;
-    QTest::newRow("0, 0.1") << qreal(0) << qreal(0.1) << false;
-    QTest::newRow("qreal_min, -qreal_min") << qreal_min << -qreal_min << false;
+    BOBUIest::newRow("0, 0") << qreal(0.0) << qreal(0.0) << true;
+    BOBUIest::newRow("-0, -0") << qreal(-0.0) << qreal(-0.0) << true;
+    BOBUIest::newRow("0, -0") << qreal(0) << qreal(-0.0) << true;
+    BOBUIest::newRow("-0, 0") << qreal(-0.0) << qreal(0) << true;
+    BOBUIest::newRow("-0.1, 0") << qreal(-0.1) << qreal(0) << false;
+    BOBUIest::newRow("0, -0.1") << qreal(0) << qreal(-0.1) << false;
+    BOBUIest::newRow("0.1, 0") << qreal(0.1) << qreal(0) << false;
+    BOBUIest::newRow("0, 0.1") << qreal(0) << qreal(0.1) << false;
+    BOBUIest::newRow("qreal_min, -qreal_min") << qreal_min << -qreal_min << false;
 }
 
 void tst_QSizeF::isNull()
@@ -151,19 +151,19 @@ void tst_QSizeF::isNull()
 
 void tst_QSizeF::fuzzyIsNull_data()
 {
-    QTest::addColumn<qreal>("width");
-    QTest::addColumn<qreal>("height");
-    QTest::addColumn<bool>("fuzzyNull");
+    BOBUIest::addColumn<qreal>("width");
+    BOBUIest::addColumn<qreal>("height");
+    BOBUIest::addColumn<bool>("fuzzyNull");
 
-    QTest::newRow("0, 0") << qreal(0.0) << qreal(0.0) << true;
-    QTest::newRow("-0, -0") << qreal(-0.0) << qreal(-0.0) << true;
-    QTest::newRow("0, -0") << qreal(0) << qreal(-0.0) << true;
-    QTest::newRow("-0, 0") << qreal(-0.0) << qreal(0) << true;
-    QTest::newRow("-0.1, 0") << qreal(-0.1) << qreal(0) << false;
-    QTest::newRow("0, -0.1") << qreal(0) << qreal(-0.1) << false;
-    QTest::newRow("0.1, 0") << qreal(0.1) << qreal(0) << false;
-    QTest::newRow("0, 0.1") << qreal(0) << qreal(0.1) << false;
-    QTest::newRow("qreal_min, -qreal_min") << qreal_min << -qreal_min << true;
+    BOBUIest::newRow("0, 0") << qreal(0.0) << qreal(0.0) << true;
+    BOBUIest::newRow("-0, -0") << qreal(-0.0) << qreal(-0.0) << true;
+    BOBUIest::newRow("0, -0") << qreal(0) << qreal(-0.0) << true;
+    BOBUIest::newRow("-0, 0") << qreal(-0.0) << qreal(0) << true;
+    BOBUIest::newRow("-0.1, 0") << qreal(-0.1) << qreal(0) << false;
+    BOBUIest::newRow("0, -0.1") << qreal(0) << qreal(-0.1) << false;
+    BOBUIest::newRow("0.1, 0") << qreal(0.1) << qreal(0) << false;
+    BOBUIest::newRow("0, 0.1") << qreal(0) << qreal(0.1) << false;
+    BOBUIest::newRow("qreal_min, -qreal_min") << qreal_min << -qreal_min << true;
 }
 
 void tst_QSizeF::fuzzyIsNull()
@@ -178,49 +178,49 @@ void tst_QSizeF::fuzzyIsNull()
 
 void tst_QSizeF::scale() {
     QSizeF t1(10.4, 12.8);
-    t1.scale(60.6, 60.6, Qt::IgnoreAspectRatio);
+    t1.scale(60.6, 60.6, BobUI::IgnoreAspectRatio);
     QCOMPARE(t1, QSizeF(60.6, 60.6));
 
     QSizeF t2(10.4, 12.8);
-    t2.scale(43.52, 43.52, Qt::KeepAspectRatio);
+    t2.scale(43.52, 43.52, BobUI::KeepAspectRatio);
     QCOMPARE(t2, QSizeF(35.36, 43.52));
 
     QSizeF t3(9.6, 12.48);
-    t3.scale(31.68, 31.68, Qt::KeepAspectRatioByExpanding);
+    t3.scale(31.68, 31.68, BobUI::KeepAspectRatioByExpanding);
     QCOMPARE(t3, QSizeF(31.68, 41.184));
 
     QSizeF t4(12.8, 10.4);
-    t4.scale(43.52, 43.52, Qt::KeepAspectRatio);
+    t4.scale(43.52, 43.52, BobUI::KeepAspectRatio);
     QCOMPARE(t4, QSizeF(43.52, 35.36));
 
     QSizeF t5(12.48, 9.6);
-    t5.scale(31.68, 31.68, Qt::KeepAspectRatioByExpanding);
+    t5.scale(31.68, 31.68, BobUI::KeepAspectRatioByExpanding);
     QCOMPARE(t5, QSizeF(41.184, 31.68));
 
     QSizeF t6(0.0, 0.0);
-    t6.scale(200, 240, Qt::IgnoreAspectRatio);
+    t6.scale(200, 240, BobUI::IgnoreAspectRatio);
     QCOMPARE(t6, QSizeF(200, 240));
 
     QSizeF t7(0.0, 0.0);
-    t7.scale(200, 240, Qt::KeepAspectRatio);
+    t7.scale(200, 240, BobUI::KeepAspectRatio);
     QCOMPARE(t7, QSizeF(200, 240));
 
     QSizeF t8(0.0, 0.0);
-    t8.scale(200, 240, Qt::KeepAspectRatioByExpanding);
+    t8.scale(200, 240, BobUI::KeepAspectRatioByExpanding);
     QCOMPARE(t8, QSizeF(200, 240));
 }
 
 
 void tst_QSizeF::expandedTo_data() {
-    QTest::addColumn<QSizeF>("input1");
-    QTest::addColumn<QSizeF>("input2");
-    QTest::addColumn<QSizeF>("expected");
+    BOBUIest::addColumn<QSizeF>("input1");
+    BOBUIest::addColumn<QSizeF>("input2");
+    BOBUIest::addColumn<QSizeF>("expected");
 
-    QTest::newRow("data0") << QSizeF(10.4, 12.8) << QSizeF(6.6, 4.4) << QSizeF(10.4, 12.8);
-    QTest::newRow("data1") << QSizeF(0.0, 0.0) << QSizeF(6.6, 4.4) << QSizeF(6.6, 4.4);
+    BOBUIest::newRow("data0") << QSizeF(10.4, 12.8) << QSizeF(6.6, 4.4) << QSizeF(10.4, 12.8);
+    BOBUIest::newRow("data1") << QSizeF(0.0, 0.0) << QSizeF(6.6, 4.4) << QSizeF(6.6, 4.4);
     // This should pick the highest of w,h components independently of each other,
     // thus the result don't have to be equal to neither input1 nor input2.
-    QTest::newRow("data3") << QSizeF(6.6, 4.4) << QSizeF(4.4, 6.6) << QSizeF(6.6, 6.6);
+    BOBUIest::newRow("data3") << QSizeF(6.6, 4.4) << QSizeF(4.4, 6.6) << QSizeF(6.6, 6.6);
 }
 
 void tst_QSizeF::expandedTo() {
@@ -232,15 +232,15 @@ void tst_QSizeF::expandedTo() {
 }
 
 void tst_QSizeF::boundedTo_data() {
-    QTest::addColumn<QSizeF>("input1");
-    QTest::addColumn<QSizeF>("input2");
-    QTest::addColumn<QSizeF>("expected");
+    BOBUIest::addColumn<QSizeF>("input1");
+    BOBUIest::addColumn<QSizeF>("input2");
+    BOBUIest::addColumn<QSizeF>("expected");
 
-    QTest::newRow("data0") << QSizeF(10.4, 12.8) << QSizeF(6.6, 4.4) << QSizeF(6.6, 4.4);
-    QTest::newRow("data1") << QSizeF(0.0, 0.0) << QSizeF(6.6, 4.4) << QSizeF(0.0, 0.0);
+    BOBUIest::newRow("data0") << QSizeF(10.4, 12.8) << QSizeF(6.6, 4.4) << QSizeF(6.6, 4.4);
+    BOBUIest::newRow("data1") << QSizeF(0.0, 0.0) << QSizeF(6.6, 4.4) << QSizeF(0.0, 0.0);
     // This should pick the lowest of w,h components independently of each other,
     // thus the result don't have to be equal to neither input1 nor input2.
-    QTest::newRow("data3") << QSizeF(6.6, 4.4) << QSizeF(4.4, 6.6) << QSizeF(4.4, 4.4);
+    BOBUIest::newRow("data3") << QSizeF(6.6, 4.4) << QSizeF(4.4, 6.6) << QSizeF(4.4, 4.4);
 }
 
 void tst_QSizeF::boundedTo() {
@@ -253,13 +253,13 @@ void tst_QSizeF::boundedTo() {
 
 void tst_QSizeF::grownOrShrunkBy_data()
 {
-    QTest::addColumn<QSizeF>("input");
-    QTest::addColumn<QMarginsF>("margins");
-    QTest::addColumn<QSizeF>("grown");
-    QTest::addColumn<QSizeF>("shrunk");
+    BOBUIest::addColumn<QSizeF>("input");
+    BOBUIest::addColumn<QMarginsF>("margins");
+    BOBUIest::addColumn<QSizeF>("grown");
+    BOBUIest::addColumn<QSizeF>("shrunk");
 
     auto row = [](QSizeF i, QMarginsF m, QSizeF g, QSizeF s) {
-        QTest::addRow("{%g,%g}/{%g,%g,%g,%g}", i.width(), i.height(),
+        BOBUIest::addRow("{%g,%g}/{%g,%g,%g,%g}", i.width(), i.height(),
                       m.left(), m.top(), m.right(), m.bottom())
                 << i << m << g << s;
     };
@@ -292,12 +292,12 @@ void tst_QSizeF::grownOrShrunkBy()
 }
 
 void tst_QSizeF::transpose_data() {
-    QTest::addColumn<QSizeF>("input1");
-    QTest::addColumn<QSizeF>("expected");
+    BOBUIest::addColumn<QSizeF>("input1");
+    BOBUIest::addColumn<QSizeF>("expected");
 
-    QTest::newRow("data0") << QSizeF(10.4, 12.8) << QSizeF(12.8, 10.4);
-    QTest::newRow("data1") << QSizeF(0.0, 0.0) << QSizeF(0.0, 0.0);
-    QTest::newRow("data3") << QSizeF(6.6, 4.4) << QSizeF(4.4, 6.6);
+    BOBUIest::newRow("data0") << QSizeF(10.4, 12.8) << QSizeF(12.8, 10.4);
+    BOBUIest::newRow("data1") << QSizeF(0.0, 0.0) << QSizeF(0.0, 0.0);
+    BOBUIest::newRow("data3") << QSizeF(6.6, 4.4) << QSizeF(4.4, 6.6);
 }
 
 void tst_QSizeF::transpose() {
@@ -336,5 +336,5 @@ static_assert(s.width() == 100.0);
 static_assert(s.height() == 150.0);
 } // namespace ConstexprTests
 
-QTEST_APPLESS_MAIN(tst_QSizeF)
+BOBUIEST_APPLESS_MAIN(tst_QSizeF)
 #include "tst_qsizef.moc"

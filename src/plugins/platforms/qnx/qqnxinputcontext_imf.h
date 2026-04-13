@@ -1,5 +1,5 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXINPUTCONTEXT_H
 #define QQNXINPUTCONTEXT_H
@@ -7,15 +7,15 @@
 #include <qpa/qplatforminputcontext.h>
 #include "qqnxscreeneventfilter.h"
 
-#include <QtCore/QLocale>
-#include <QtCore/QMetaType>
-#include <QtCore/QList>
+#include <BobUICore/QLocale>
+#include <BobUICore/QMetaType>
+#include <BobUICore/QList>
 #include <qpa/qplatformintegration.h>
 
 #include "imf/imf_client.h"
 #include "imf/input_control.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QQnxAbstractVirtualKeyboard;
 class QQnxIntegration;
@@ -41,7 +41,7 @@ public:
     QRectF keyboardRect() const override;
     void reset() override;
     void commit() override;
-    void update(Qt::InputMethodQueries) override;
+    void update(BobUI::InputMethodQueries) override;
     bool handleKeyboardEvent(int flags, int sym, int mod, int scan, int cap, int sequenceId) override;
 
 
@@ -108,6 +108,6 @@ private:
     QQnxAbstractVirtualKeyboard &m_virtualKeyboard;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXINPUTCONTEXT_H

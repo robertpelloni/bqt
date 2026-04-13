@@ -1,14 +1,14 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testQPair">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp" line="0">
       <Description><![CDATA[Compared values are not the same
    Actual   (pair1): std::pair(1, 1)
    Expected (pair2): std::pair(1, 2)]]></Description>
@@ -16,7 +16,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testStdPair">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp" line="0">
       <Description><![CDATA[Compared values are not the same
    Actual   (pair1): std::pair(1, 1)
    Expected (pair2): std::pair(1, 2)]]></Description>

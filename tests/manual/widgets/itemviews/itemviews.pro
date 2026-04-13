@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS = qheaderview \
-  qtreeview \
-  qtreewidget \
+  bobuireeview \
+  bobuireewidget \
   tableview-span-navigation \
 

@@ -1,38 +1,38 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qhttpheaders.h"
 
-#include <QtNetwork/private/qnetworkrequest_p.h>
+#include <BobUINetwork/private/qnetworkrequest_p.h>
 
 #include <private/qoffsetstringarray_p.h>
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qset.h>
-#include <QtCore/qttypetraits.h>
-#include <QtCore/qxpfunctional.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/bobuitypetraits.h>
+#include <BobUICore/qxpfunctional.h>
 
 #include <q20algorithm.h>
 #include <string_view>
 #include <variant>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcQHttpHeaders, "qt.network.http.headers");
+Q_STATIC_LOGGING_CATEGORY(lcQHttpHeaders, "bobui.network.http.headers");
 
 /*!
     \class QHttpHeaders
     \since 6.7
     \ingroup
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief QHttpHeaders is a class for holding HTTP headers.
 
-    The class is an interface type for Qt networking APIs that
+    The class is an interface type for BobUI networking APIs that
     use or consume such headers.
 
     \section1 Allowed field name and value characters
@@ -88,7 +88,7 @@ Q_STATIC_LOGGING_CATEGORY(lcQHttpHeaders, "qt.network.http.headers");
 // It contains entries that are either "permanent"
 // or "deprecated" as of October 2023.
 // Usage relies on enum values keeping in same order.
-// ### Qt7 check if some of these headers have been obsoleted,
+// ### BobUI7 check if some of these headers have been obsoleted,
 // and also check if the enums benefit from reordering
 static constexpr auto headerNames = qOffsetStringArray(
     // IANA Permanent status:
@@ -756,7 +756,7 @@ private:
     QHttpHeaders::WellKnownHeader wellKnownHeader = NonWellKnownHeader;
     QByteArray headerName;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend QDataStream &operator<<(QDataStream &out, const HeaderName &headerName)
     {
         return out << headerName.asByteArray();
@@ -776,7 +776,7 @@ private:
         return in;
     }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
     friend bool comparesEqual(const HeaderName &lhs, const HeaderName &rhs) noexcept
     {
@@ -809,7 +809,7 @@ struct Header {
     HeaderName name;
     QByteArray value;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend QDataStream &operator<<(QDataStream &out, const Header &header)
     {
         return out << header.name << header.value;
@@ -847,7 +847,7 @@ public:
     QList<Header> headers;
 };
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QHttpHeadersPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QHttpHeadersPrivate)
 template <> void QExplicitlySharedDataPointer<QHttpHeadersPrivate>::detach()
 {
     if (!d) {
@@ -1027,7 +1027,7 @@ QHttpHeaders &QHttpHeaders::operator=(const QHttpHeaders &other)
     \memberswap{QHttpHeaders}
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     \fn QDebug QHttpHeaders::operator<<(QDebug debug,
                                         const QHttpHeaders &headers)
@@ -1053,14 +1053,14 @@ QDebug operator<<(QDebug debug, const QHttpHeaders &headers)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \since 6.12
     \fn QDataStream& QHttpHeaders::operator<<(QDataStream &out, const QHttpHeaders &headers)
 
     Writes \a headers to the \a out stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &out, const QHttpHeaders &headers)
 {
@@ -1076,7 +1076,7 @@ QDataStream &operator<<(QDataStream &out, const QHttpHeaders &headers)
 
     Reads headers from stream \a in into \a headers.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator>>(QDataStream &in, QHttpHeaders &headers)
 {
@@ -1084,7 +1084,7 @@ QDataStream &operator>>(QDataStream &in, QHttpHeaders &headers)
 
     return in >> headers.d->headers;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 
 static constexpr auto isValidHttpHeaderNameChar = [](uchar c) noexcept
@@ -1790,4 +1790,4 @@ void QHttpHeaders::clear()
     d->headers.clear();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,14 +1,14 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglfunctions_es2.h"
 #include "qopenglcontext.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QOpenGLFunctions_ES2
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
     \since 5.1
     \wrapper
     \brief The QOpenGLFunctions_ES2 class provides all functions for OpenGL ES 2.
@@ -67,4 +67,4 @@ QOpenGLVersionProfile QOpenGLFunctions_ES2::versionProfile()
     return v;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

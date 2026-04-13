@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrasterbackingstore_p.h"
 
-#include <QtGui/qbackingstore.h>
-#include <QtGui/qpainter.h>
+#include <BobUIGui/qbackingstore.h>
+#include <BobUIGui/qpainter.h>
 
 #include <private/qhighdpiscaling_p.h>
 #include <qpa/qplatformwindow.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QRasterBackingStore::QRasterBackingStore(QWindow *window)
     : QPlatformBackingStore(window)
@@ -49,13 +49,13 @@ bool QRasterBackingStore::scroll(const QRegion &region, int dx, int dy)
     if (window()->surfaceType() != QSurface::RasterSurface)
         return false;
 
-    extern void qt_scrollRectInImage(QImage &, const QRect &, const QPoint &);
+    extern void bobui_scrollRectInImage(QImage &, const QRect &, const QPoint &);
 
     const qreal devicePixelRatio = m_image.devicePixelRatio();
     const QPoint delta(dx * devicePixelRatio, dy * devicePixelRatio);
 
     const QRect rect = region.boundingRect();
-    qt_scrollRectInImage(m_image, QRect(rect.topLeft() * devicePixelRatio, rect.size() * devicePixelRatio), delta);
+    bobui_scrollRectInImage(m_image, QRect(rect.topLeft() * devicePixelRatio, rect.size() * devicePixelRatio), delta);
 
     return true;
 }
@@ -68,7 +68,7 @@ void QRasterBackingStore::beginPaint(const QRegion &region)
         m_image = QImage(effectiveBufferSize, format());
         m_image.setDevicePixelRatio(nativeWindowDevicePixelRatio);
         if (m_image.hasAlphaChannel())
-            m_image.fill(Qt::transparent);
+            m_image.fill(BobUI::transparent);
     }
 
     if (!m_image.hasAlphaChannel())
@@ -77,7 +77,7 @@ void QRasterBackingStore::beginPaint(const QRegion &region)
     QPainter painter(&m_image);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
     for (const QRect &rect : region)
-        painter.fillRect(rect, Qt::transparent);
+        painter.fillRect(rect, BobUI::transparent);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

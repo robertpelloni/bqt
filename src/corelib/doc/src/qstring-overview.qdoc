@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \group string-processing
@@ -8,7 +8,7 @@
 
     \section1 Overview
 
-    This page gives an overview over string classes in Qt, in particular the
+    This page gives an overview over string classes in BobUI, in particular the
     large amount of string containers and how to use them efficiently in
     performance-critical code.
 
@@ -19,7 +19,7 @@
     perform fine.} It also provides APIs for handling several encodings (for
     example \l{QString::fromLatin1()}). For many applications and especially when
     string-processing plays an insignificant role for performance, \l QString
-    will be a simple and sufficient solution. Some Qt functions return a \l
+    will be a simple and sufficient solution. Some BobUI functions return a \l
     QStringView. It can be converted to a QString with
     \l{QStringView::toString()} if required.
 
@@ -35,7 +35,7 @@
 
     \li All strings that only contain ASCII characters (for example log
     messages) can be encoded with Latin-1. Use the
-    \l{Qt::Literals::StringLiterals::operator""_L1}{string literal}
+    \l{BobUI::Literals::StringLiterals::operator""_L1}{string literal}
     \c{"foo"_L1}. Without
     this suffix, string literals in source code are assumed to be UTF-8
     encoded and processing them will be slower. Generally, try to use the
@@ -46,7 +46,7 @@
     array) and returns a \l QString with UTF-16 encoding as demanded by all UI
     elements. If the translation infrastructure is not used, you should use
     UTF-16 encoding throughout the whole application. Use the string literal
-    \c{u"foo"} to create UTF-16 string literals or the Qt specific literal
+    \c{u"foo"} to create UTF-16 string literals or the BobUI specific literal
     \c{u"foo"_s} to directly create a \l QString.
 
     \li When processing parts of a \l QString, instead of copying each part
@@ -70,7 +70,7 @@
 
     \section3 Encoding
 
-    Encoding-wise Qt supports UTF-16, UTF-8, Latin-1 (ISO 8859-1) and US-ASCII
+    Encoding-wise BobUI supports UTF-16, UTF-8, Latin-1 (ISO 8859-1) and US-ASCII
     (that is the common subset of Latin-1 and UTF-8) in one form or another.
     \list
       \li Latin-1 is a character encoding that uses a single byte per character
@@ -78,16 +78,16 @@
       \li UTF-8 is a variable-length character encoding that encodes all
           characters using one to four bytes. It is backwards compatible to
           US-ASCII and it is the common encoding for source code and similar
-          files. Qt assumes that source code is encoded in UTF-8.
+          files. BobUI assumes that source code is encoded in UTF-8.
       \li UTF-16 is a variable-length encoding that uses two or four bytes per
-          character. It is the common encoding for user-exposed text in Qt.
+          character. It is the common encoding for user-exposed text in BobUI.
     \endlist
-    See the \l{Unicode in Qt}{information about support for Unicode in Qt} for
+    See the \l{Unicode in BobUI}{information about support for Unicode in BobUI} for
     more information.
 
     Other encodings are supported in the form of single functions like
     \l{QString::fromUcs4()} or of the \l{QStringConverter} classes. Furthermore,
-    Qt provides an encoding-agnostic container for data, \l QByteArray, that is
+    BobUI provides an encoding-agnostic container for data, \l QByteArray, that is
     well-suited to storing binary data. \l QAnyStringView keeps track of the
     encoding of the underlying string and can thus carry a view onto strings
     with any of the supported encoding standards.
@@ -122,19 +122,19 @@
     fragments, it has to return an owning string; but where a function returns
     part of some persistently stored string, a view is usually more suitable.
 
-    Note that owning containers in Qt share their data \l{Implicit
+    Note that owning containers in BobUI share their data \l{Implicit
     Sharing}{implicitly}, meaning that it is also efficient to pass or return
     large containers by value, although slightly less efficient than passing by
     reference due to the reference counting. If you want to make use of the
-    implicit data sharing mechanism of Qt classes, you have to pass the string
+    implicit data sharing mechanism of BobUI classes, you have to pass the string
     as an owning container or a reference to one. Conversion to a view and back
     will always create an additional copy of the data.
 
-    Finally, Qt provides classes for single characters, lists of strings and
+    Finally, BobUI provides classes for single characters, lists of strings and
     string matchers. These classes are available for most supported encoding
-    standards in Qt, with some exceptions. Higher level functionality is
+    standards in BobUI, with some exceptions. Higher level functionality is
     provided by specialized classes, such as \l QLocale or \l
-    QTextBoundaryFinder. These high level classes usually rely on \l QString
+    BOBUIextBoundaryFinder. These high level classes usually rely on \l QString
     and its UTF-16 encoding. Some classes are templates and work with all
     available string classes.
 
@@ -143,11 +143,11 @@
     The C++ standard provides
     \l{https://en.cppreference.com/w/cpp/language/string_literal} {string
     literals} to create strings at compile-time. There are string literals
-    defined by the language and literals defined by Qt, so-called
+    defined by the language and literals defined by BobUI, so-called
     \l{https://en.cppreference.com/w/cpp/language/user_literal}{user-defined
     literals}. A string literal defined by C++ is enclosed in double quotes and
     can have a prefix that tells the compiler how to interpret its content. For
-    Qt, the UTF-16 string literal \c{u"foo"} is the most important. It creates
+    BobUI, the UTF-16 string literal \c{u"foo"} is the most important. It creates
     a string encoded in UTF-16 at compile-time, saving the need to convert from
     some other encoding at run-time. \l QStringView can be easily and
     efficiently constructed from one, so they can be passed to functions that
@@ -156,10 +156,10 @@
     User-defined literals have the same form as those defined by C++ but add a
     suffix after the closing quote. The encoding remains determined by the
     prefix, but the resulting literal is used to construct an object of some
-    user-defined type. Qt thus defines these for some of its own string types:
+    user-defined type. BobUI thus defines these for some of its own string types:
     \c{u"foo"_s} for \l QString, \c{"foo"_L1} for \l QLatin1StringView and
     \c{u"foo"_ba} for \l QByteArray. These are provided by using the
-    \l{Qt::Literals::StringLiterals}{StringLiterals Namespace}. A plain C++
+    \l{BobUI::Literals::StringLiterals}{StringLiterals Namespace}. A plain C++
     string literal \c{"foo"} will be
     understood as UTF-8 and conversion to QString and thus UTF-16 will be
     expensive. When you have string literals in plain ASCII, use \c{"foo"_L1}
@@ -174,9 +174,9 @@
     \header
         \li Encoding
         \li C++ String literal
-        \li Qt user-defined literal
+        \li BobUI user-defined literal
         \li C++ Character
-        \li Qt Character
+        \li BobUI Character
         \li Owning string
         \li Non-owning string
     \row
@@ -227,7 +227,7 @@
     any 16-bit character arrays, such as std::u16string or std::wstring on some
     platforms.
 
-    Qt also provides specialized lists for some of those types, that are \l
+    BobUI also provides specialized lists for some of those types, that are \l
     QStringList and \l QByteArrayView, as well as matchers, \l
     QLatin1StringMatcher and \l QByteArrayMatcher. The matchers also have
     static versions that are created at compile-time, \l
@@ -238,7 +238,7 @@
     \list
 
     \li \l QStringLiteral is a macro which is identical to \c{u"foo"_s} and
-    available without the \l{Qt::Literals::StringLiterals}{StringLiterals
+    available without the \l{BobUI::Literals::StringLiterals}{StringLiterals
     Namespace}. Preferably you should use the modern string literal.
 
     \li \l QLatin1String is a synonym for \l QLatin1StringView and exists for
@@ -259,7 +259,7 @@
     treatment, see the \l QLatin1StringView documentation.
 
     \li \l QStringRef is a reference to a portion of a \l QString, available in
-    the Qt5Compat module for backwards compatibility. It should be replaced by
+    the BobUI5Compat module for backwards compatibility. It should be replaced by
     \l QStringView.
 
     \endlist
@@ -277,7 +277,7 @@
             manner appropriate to the user's language and culture.
         \li \l QCollator and \l QCollatorSortKey to compare strings with
             respect to the users language, script or territory.
-        \li \l QTextBoundaryFinder to break up text ready for typesetting
+        \li \l BOBUIextBoundaryFinder to break up text ready for typesetting
             in accord with Unicode rules.
         \li \c{QStringBuilder}, an internal class that will substantially
             improve the performance of string concatenations with the \c{+}
@@ -288,7 +288,7 @@
     string classes. These are
 
     \list
-      \li \l QTextStream to stream into \l QIODevice, \l QByteArray or
+      \li \l BOBUIextStream to stream into \l QIODevice, \l QByteArray or
           \l QString
       \li \l QStringTokenizer to split strings
     \endlist
@@ -302,7 +302,7 @@
       \li Choose the most compact encoding.
     \endlist
 
-    Qt provides many functionalities to avoid memory allocations. Most Qt
+    BobUI provides many functionalities to avoid memory allocations. Most BobUI
     containers employ \l{Implicit Sharing} of their data. For implicit sharing
     to work, there must be an uninterrupted chain of the same class —
     converting from \l QString to \l QStringView and back will result in two \l
@@ -329,7 +329,7 @@
     The most efficient encoding (from most to least efficient Latin-1, UTF-8,
     UTF-16) should be chosen when no other constrains determine the encoding.
     For error handling and logging \l QLatin1StringView is usually sufficient.
-    User-visible strings in Qt are always of type \l {QString} and as such
+    User-visible strings in BobUI are always of type \l {QString} and as such
     UTF-16 encoded. Therefore it is most effective to use \l
     {QString}{QStrings}, \l {QStringView}{QStringViews} and \l
     {QStringLiteral}{QStringLiterals} throughout the life-time of a
@@ -359,9 +359,9 @@
     If the function saves the argument in an owning string (usually a
     setter function), it is most efficient to use the same owning string as
     function argument to make use of the implicit data sharing functionality of
-    Qt. The owning string can be passed as a \c const reference. Overloading
+    BobUI. The owning string can be passed as a \c const reference. Overloading
     functions with multiple owning and non-owning string types can lead to
-    overload ambiguity and should be avoided. Owning string types in Qt can be
+    overload ambiguity and should be avoided. Owning string types in BobUI can be
     automatically converted to their non-owning version or to \l
     QAnyStringView.
 
@@ -373,7 +373,7 @@
     existing owning strings (for example \l QString) are returned from a
     function in full (for example a getter function), it is most efficient to
     return them by reference. They can also be returned by value to allow
-    returning a temporary in the future. Qt's use of implicit sharing avoids
+    returning a temporary in the future. BobUI's use of implicit sharing avoids
     the performance impact of allocation and copying when returning by value.
 
     Parts of existing strings can be returned efficiently with a string view
@@ -384,14 +384,14 @@
 
     \image string_class_calling.svg "String class for calling a function"
 
-    To use a Qt API efficiently you should try to match the function argument
-    types. If you are limited in your choice, Qt will conduct various
+    To use a BobUI API efficiently you should try to match the function argument
+    types. If you are limited in your choice, BobUI will conduct various
     conversions: Owning strings are implicitly converted to non-owning
     strings, non-owning strings can create their owning counter parts,
     see for example \l QStringView::toString(). Encoding conversions are
     conducted implicitly in many cases but this should be avoided if possible.
     To avoid accidental implicit conversion from UTF-8 you can activate the
-    macro \l QT_NO_CAST_FROM_ASCII.
+    macro \l BOBUI_NO_CAST_FROM_ASCII.
 
     If you need to assemble a string at runtime before passing it to a function
     you will need an owning string and thus \l QString. If the function

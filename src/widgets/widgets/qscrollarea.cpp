@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qscrollarea.h"
 #include "private/qscrollarea_p.h"
@@ -14,7 +14,7 @@
 #include "private/qapplication_p.h"
 #include "private/qlayoutengine_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QScrollArea
@@ -23,7 +23,7 @@ QT_BEGIN_NAMESPACE
     another widget.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A scroll area is used to display the contents of a child widget
     within a frame. If the widget exceeds the size of the frame, the
@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
     \endtable
 
     The scroll bars appearance depends on the currently set \l
-    {Qt::ScrollBarPolicy}{scroll bar policies}. You can control the
+    {BobUI::ScrollBarPolicy}{scroll bar policies}. You can control the
     appearance of the scroll bars using the inherited functionality
     from QAbstractScrollArea.
 
@@ -136,7 +136,7 @@ QScrollArea::~QScrollArea()
 void QScrollAreaPrivate::updateWidgetPosition()
 {
     Q_Q(QScrollArea);
-    Qt::LayoutDirection dir = q->layoutDirection();
+    BobUI::LayoutDirection dir = q->layoutDirection();
     QRect scrolled = QStyle::visualRect(dir, viewport->rect(), QRect(QPoint(-hbar->value(), -vbar->value()), widget->size()));
     QRect aligned = QStyle::alignedRect(dir, alignment, widget->size(), viewport->rect());
     widget->move(widget->width() < viewport->width() ? aligned.x() : scrolled.x(),
@@ -161,7 +161,7 @@ void QScrollAreaPrivate::updateScrollBars()
             // If the height we calculated requires a vertical scrollbar,
             // then we need to constrain the width and calculate the height again,
             // otherwise we end up flipping the scrollbar on and off all the time.
-            if (vbarpolicy == Qt::ScrollBarAsNeeded) {
+            if (vbarpolicy == BobUI::ScrollBarAsNeeded) {
                 int vbarWidth = vbar->sizeHint().width();
                 QSize m_hfw = m.expandedTo(min).boundedTo(max);
                 // is there any point in searching?
@@ -241,7 +241,7 @@ void QScrollArea::setWidget(QWidget *widget)
     d->vbar->setValue(0);
     if (widget->parentWidget() != d->viewport)
         widget->setParent(d->viewport);
-    if (!widget->testAttribute(Qt::WA_Resized))
+    if (!widget->testAttribute(BobUI::WA_Resized))
         widget->resize(widget->sizeHint());
     d->widget = widget;
     d->widget->setAutoFillBackground(true);
@@ -277,7 +277,7 @@ bool QScrollArea::event(QEvent *e)
     if (e->type() == QEvent::StyleChange || e->type() == QEvent::LayoutRequest) {
         d->updateScrollBars();
     }
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     else if (QApplicationPrivate::keypadNavigationEnabled()) {
         if (e->type() == QEvent::Show)
             QApplication::instance()->installEventFilter(this);
@@ -295,7 +295,7 @@ bool QScrollArea::event(QEvent *e)
 bool QScrollArea::eventFilter(QObject *o, QEvent *e)
 {
     Q_D(QScrollArea);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (d->widget && o != d->widget && e->type() == QEvent::FocusIn
             && QApplicationPrivate::keypadNavigationEnabled()) {
         if (o->isWidgetType())
@@ -374,9 +374,9 @@ QSize QScrollArea::sizeHint() const
     } else {
         sz += QSize(12 * h, 8 * h);
     }
-    if (d->vbarpolicy == Qt::ScrollBarAlwaysOn)
+    if (d->vbarpolicy == BobUI::ScrollBarAlwaysOn)
         sz.setWidth(sz.width() + d->vbar->sizeHint().width());
-    if (d->hbarpolicy == Qt::ScrollBarAlwaysOn)
+    if (d->hbarpolicy == BobUI::ScrollBarAlwaysOn)
         sz.setHeight(sz.height() + d->hbar->sizeHint().height());
     return sz.boundedTo(QSize(36 * h, 24 * h));
 }
@@ -451,9 +451,9 @@ void QScrollArea::ensureWidgetVisible(QWidget *childWidget, int xmargin, int yma
     if (!d->widget->isAncestorOf(childWidget))
         return;
 
-    const QRect microFocus = childWidget->inputMethodQuery(Qt::ImCursorRectangle).toRect();
+    const QRect microFocus = childWidget->inputMethodQuery(BobUI::ImCursorRectangle).toRect();
     const QRect defaultMicroFocus =
-        childWidget->QWidget::inputMethodQuery(Qt::ImCursorRectangle).toRect();
+        childWidget->QWidget::inputMethodQuery(BobUI::ImCursorRectangle).toRect();
     QRect focusRect = (microFocus != defaultMicroFocus)
         ? QRect(childWidget->mapTo(d->widget, microFocus.topLeft()), microFocus.size())
         : QRect(childWidget->mapTo(d->widget, QPoint(0,0)), childWidget->size());
@@ -487,18 +487,18 @@ void QScrollArea::ensureWidgetVisible(QWidget *childWidget, int xmargin, int yma
 
     A valid alignment is a combination of the following flags:
     \list
-    \li \c Qt::AlignLeft
-    \li \c Qt::AlignHCenter
-    \li \c Qt::AlignRight
-    \li \c Qt::AlignTop
-    \li \c Qt::AlignVCenter
-    \li \c Qt::AlignBottom
+    \li \c BobUI::AlignLeft
+    \li \c BobUI::AlignHCenter
+    \li \c BobUI::AlignRight
+    \li \c BobUI::AlignTop
+    \li \c BobUI::AlignVCenter
+    \li \c BobUI::AlignBottom
     \endlist
     By default, the widget stays rooted to the top-left corner of the
     scroll area.
 */
 
-void QScrollArea::setAlignment(Qt::Alignment alignment)
+void QScrollArea::setAlignment(BobUI::Alignment alignment)
 {
     Q_D(QScrollArea);
     d->alignment = alignment;
@@ -506,12 +506,12 @@ void QScrollArea::setAlignment(Qt::Alignment alignment)
         d->updateWidgetPosition();
 }
 
-Qt::Alignment QScrollArea::alignment() const
+BobUI::Alignment QScrollArea::alignment() const
 {
     Q_D(const QScrollArea);
     return d->alignment;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qscrollarea.cpp"

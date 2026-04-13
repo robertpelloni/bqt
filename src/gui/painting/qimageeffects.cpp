@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qmath.h"
 #include "qdrawhelper_p.h"
@@ -8,12 +8,12 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 
 template <int shift>
-inline int qt_static_shift(int value)
+inline int bobui_static_shift(int value)
 {
     if (shift == 0)
         return value;
@@ -24,15 +24,15 @@ inline int qt_static_shift(int value)
 }
 
 template<int aprec, int zprec>
-inline void qt_blurinner(uchar *bptr, int &zR, int &zG, int &zB, int &zA, int alpha)
+inline void bobui_blurinner(uchar *bptr, int &zR, int &zG, int &zB, int &zA, int alpha)
 {
     QRgb *pixel = (QRgb *)bptr;
 
 #define Z_MASK (0xff << zprec)
-    const int A_zprec = qt_static_shift<zprec - 24>(*pixel) & Z_MASK;
-    const int R_zprec = qt_static_shift<zprec - 16>(*pixel) & Z_MASK;
-    const int G_zprec = qt_static_shift<zprec - 8>(*pixel)  & Z_MASK;
-    const int B_zprec = qt_static_shift<zprec>(*pixel)      & Z_MASK;
+    const int A_zprec = bobui_static_shift<zprec - 24>(*pixel) & Z_MASK;
+    const int R_zprec = bobui_static_shift<zprec - 16>(*pixel) & Z_MASK;
+    const int G_zprec = bobui_static_shift<zprec - 8>(*pixel)  & Z_MASK;
+    const int B_zprec = bobui_static_shift<zprec>(*pixel)      & Z_MASK;
 #undef Z_MASK
 
     const int zR_zprec = zR >> aprec;
@@ -47,17 +47,17 @@ inline void qt_blurinner(uchar *bptr, int &zR, int &zG, int &zB, int &zA, int al
 
 #define ZA_MASK (0xff << (zprec + aprec))
     *pixel =
-        qt_static_shift<24 - zprec - aprec>(zA & ZA_MASK)
-        | qt_static_shift<16 - zprec - aprec>(zR & ZA_MASK)
-        | qt_static_shift<8 - zprec - aprec>(zG & ZA_MASK)
-        | qt_static_shift<-zprec - aprec>(zB & ZA_MASK);
+        bobui_static_shift<24 - zprec - aprec>(zA & ZA_MASK)
+        | bobui_static_shift<16 - zprec - aprec>(zR & ZA_MASK)
+        | bobui_static_shift<8 - zprec - aprec>(zG & ZA_MASK)
+        | bobui_static_shift<-zprec - aprec>(zB & ZA_MASK);
 #undef ZA_MASK
 }
 
 const int alphaIndex = (QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3);
 
 template<int aprec, int zprec>
-inline void qt_blurinner_alphaOnly(uchar *bptr, int &z, int alpha)
+inline void bobui_blurinner_alphaOnly(uchar *bptr, int &z, int alpha)
 {
     const int A_zprec = int(*(bptr)) << zprec;
     const int z_zprec = z >> aprec;
@@ -66,7 +66,7 @@ inline void qt_blurinner_alphaOnly(uchar *bptr, int &z, int alpha)
 }
 
 template<int aprec, int zprec, bool alphaOnly>
-inline void qt_blurrow(QImage & im, int line, int alpha)
+inline void bobui_blurrow(QImage & im, int line, int alpha)
 {
     uchar *bptr = im.scanLine(line);
 
@@ -79,9 +79,9 @@ inline void qt_blurrow(QImage & im, int line, int alpha)
     const int im_width = im.width();
     for (int index = 0; index < im_width; ++index) {
         if (alphaOnly)
-            qt_blurinner_alphaOnly<aprec, zprec>(bptr, zA, alpha);
+            bobui_blurinner_alphaOnly<aprec, zprec>(bptr, zA, alpha);
         else
-            qt_blurinner<aprec, zprec>(bptr, zR, zG, zB, zA, alpha);
+            bobui_blurinner<aprec, zprec>(bptr, zR, zG, zB, zA, alpha);
         bptr += stride;
     }
 
@@ -90,9 +90,9 @@ inline void qt_blurrow(QImage & im, int line, int alpha)
     for (int index = im_width - 2; index >= 0; --index) {
         bptr -= stride;
         if (alphaOnly)
-            qt_blurinner_alphaOnly<aprec, zprec>(bptr, zA, alpha);
+            bobui_blurinner_alphaOnly<aprec, zprec>(bptr, zA, alpha);
         else
-            qt_blurinner<aprec, zprec>(bptr, zR, zG, zB, zA, alpha);
+            bobui_blurinner<aprec, zprec>(bptr, zR, zG, zB, zA, alpha);
     }
 }
 
@@ -136,31 +136,31 @@ void expblur(QImage &img, qreal radius, bool improvedQuality = false, int transp
     int img_height = img.height();
     for (int row = 0; row < img_height; ++row) {
         for (int i = 0; i <= int(improvedQuality); ++i)
-            qt_blurrow<aprec, zprec, alphaOnly>(img, row, alpha);
+            bobui_blurrow<aprec, zprec, alphaOnly>(img, row, alpha);
     }
 
     QImage temp(img.height(), img.width(), img.format());
     temp.setDevicePixelRatio(img.devicePixelRatio());
     if (transposed >= 0) {
         if (img.depth() == 8) {
-            qt_memrotate270(reinterpret_cast<const quint8*>(img.bits()),
+            bobui_memrotate270(reinterpret_cast<const quint8*>(img.bits()),
                             img.width(), img.height(), img.bytesPerLine(),
                             reinterpret_cast<quint8*>(temp.bits()),
                             temp.bytesPerLine());
         } else {
-            qt_memrotate270(reinterpret_cast<const quint32*>(img.bits()),
+            bobui_memrotate270(reinterpret_cast<const quint32*>(img.bits()),
                             img.width(), img.height(), img.bytesPerLine(),
                             reinterpret_cast<quint32*>(temp.bits()),
                             temp.bytesPerLine());
         }
     } else {
         if (img.depth() == 8) {
-            qt_memrotate90(reinterpret_cast<const quint8*>(img.bits()),
+            bobui_memrotate90(reinterpret_cast<const quint8*>(img.bits()),
                            img.width(), img.height(), img.bytesPerLine(),
                            reinterpret_cast<quint8*>(temp.bits()),
                            temp.bytesPerLine());
         } else {
-            qt_memrotate90(reinterpret_cast<const quint32*>(img.bits()),
+            bobui_memrotate90(reinterpret_cast<const quint32*>(img.bits()),
                            img.width(), img.height(), img.bytesPerLine(),
                            reinterpret_cast<quint32*>(temp.bits()),
                            temp.bytesPerLine());
@@ -170,17 +170,17 @@ void expblur(QImage &img, qreal radius, bool improvedQuality = false, int transp
     img_height = temp.height();
     for (int row = 0; row < img_height; ++row) {
         for (int i = 0; i <= int(improvedQuality); ++i)
-            qt_blurrow<aprec, zprec, alphaOnly>(temp, row, alpha);
+            bobui_blurrow<aprec, zprec, alphaOnly>(temp, row, alpha);
     }
 
     if (transposed == 0) {
         if (img.depth() == 8) {
-            qt_memrotate90(reinterpret_cast<const quint8*>(temp.bits()),
+            bobui_memrotate90(reinterpret_cast<const quint8*>(temp.bits()),
                            temp.width(), temp.height(), temp.bytesPerLine(),
                            reinterpret_cast<quint8*>(img.bits()),
                            img.bytesPerLine());
         } else {
-            qt_memrotate90(reinterpret_cast<const quint32*>(temp.bits()),
+            bobui_memrotate90(reinterpret_cast<const quint32*>(temp.bits()),
                            temp.width(), temp.height(), temp.bytesPerLine(),
                            reinterpret_cast<quint32*>(img.bits()),
                            img.bytesPerLine());
@@ -195,7 +195,7 @@ void expblur(QImage &img, qreal radius, bool improvedQuality = false, int transp
 #define AVG(a,b)  ( ((((a)^(b)) & 0xfefefefeUL) >> 1) + ((a)&(b)) )
 #define AVG16(a,b)  ( ((((a)^(b)) & 0xf7deUL) >> 1) + ((a)&(b)) )
 
-QImage qt_halfScaled(const QImage &source)
+QImage bobui_halfScaled(const QImage &source)
 {
     if (source.width() < 2 || source.height() < 2)
         return QImage();
@@ -289,7 +289,7 @@ QImage qt_halfScaled(const QImage &source)
 #undef AVG
 #undef AVG16
 
-Q_GUI_EXPORT void qt_blurImage(QPainter *p, QImage &blurImage, qreal radius, bool quality, bool alphaOnly, int transposed = 0)
+Q_GUI_EXPORT void bobui_blurImage(QPainter *p, QImage &blurImage, qreal radius, bool quality, bool alphaOnly, int transposed = 0)
 {
     if (blurImage.format() != QImage::Format_ARGB32_Premultiplied
         && blurImage.format() != QImage::Format_RGB32)
@@ -299,7 +299,7 @@ Q_GUI_EXPORT void qt_blurImage(QPainter *p, QImage &blurImage, qreal radius, boo
 
     qreal scale = 1;
     if (radius >= 4 && blurImage.width() >= 2 && blurImage.height() >= 2) {
-        blurImage = qt_halfScaled(blurImage);
+        blurImage = bobui_halfScaled(blurImage);
         scale = 2;
         radius *= qreal(0.5);
     }
@@ -316,7 +316,7 @@ Q_GUI_EXPORT void qt_blurImage(QPainter *p, QImage &blurImage, qreal radius, boo
     }
 }
 
-Q_GUI_EXPORT void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed = 0)
+Q_GUI_EXPORT void bobui_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed = 0)
 {
     if (blurImage.format() == QImage::Format_Indexed8 || blurImage.format() == QImage::Format_Grayscale8)
         expblur<12, 10, true>(blurImage, radius, quality, transposed);
@@ -324,4 +324,4 @@ Q_GUI_EXPORT void qt_blurImage(QImage &blurImage, qreal radius, bool quality, in
         expblur<12, 10, false>(blurImage, radius, quality, transposed);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

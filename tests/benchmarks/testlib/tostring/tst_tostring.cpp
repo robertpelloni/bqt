@@ -1,10 +1,10 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/qmath.h> // pi, e
+#include <BOBUIest>
+#include <BobUICore/qmath.h> // pi, e
 
-// Tests for QTest::toString
+// Tests for BOBUIest::toString
 class tst_toString : public QObject
 {
     Q_OBJECT
@@ -60,37 +60,37 @@ private slots:
 template <typename T>
 void tst_toString::numeric_data()
 {
-    QTest::addColumn<T>("datum");
+    BOBUIest::addColumn<T>("datum");
     const bool floaty = std::is_floating_point<T>::value;
 
-    QTest::newRow("zero") << T(0);
-    QTest::newRow("one") << T(1);
+    BOBUIest::newRow("zero") << T(0);
+    BOBUIest::newRow("one") << T(1);
     if (floaty) {
-        QTest::newRow("pi") << T(M_PI);
-        QTest::newRow("e") << T(M_E);
+        BOBUIest::newRow("pi") << T(M_PI);
+        BOBUIest::newRow("e") << T(M_E);
 
         // Stress canonicalisation of leading zeros on exponents:
-        QTest::newRow("milli") << T(1e-3);
-        QTest::newRow("micro") << T(1e-6);
-        QTest::newRow("mu0") << T(.4e-6 * M_PI); // Henry/metre
-        QTest::newRow("Planck") << T(662.606876e-36); // Joule.second/turn
+        BOBUIest::newRow("milli") << T(1e-3);
+        BOBUIest::newRow("micro") << T(1e-6);
+        BOBUIest::newRow("mu0") << T(.4e-6 * M_PI); // Henry/metre
+        BOBUIest::newRow("Planck") << T(662.606876e-36); // Joule.second/turn
     }
-    QTest::newRow("2e9") << T(2000000000);
-    QTest::newRow("c.s/m") << T(299792458);
-    QTest::newRow("Avogadro") << T(6.02214076e+23); // things/mol (c. 2^{79}, so ints overflow)
+    BOBUIest::newRow("2e9") << T(2000000000);
+    BOBUIest::newRow("c.s/m") << T(299792458);
+    BOBUIest::newRow("Avogadro") << T(6.02214076e+23); // things/mol (c. 2^{79}, so ints overflow)
 
-    QTest::newRow("lowest") << std::numeric_limits<T>::lowest();
-    QTest::newRow("max") << std::numeric_limits<T>::max();
+    BOBUIest::newRow("lowest") << std::numeric_limits<T>::lowest();
+    BOBUIest::newRow("max") << std::numeric_limits<T>::max();
     if (floaty) {
-        QTest::newRow("min") << std::numeric_limits<T>::min();
+        BOBUIest::newRow("min") << std::numeric_limits<T>::min();
 
         if (std::numeric_limits<T>::has_infinity) {
             const T uge = std::numeric_limits<T>::infinity();
-            QTest::newRow("inf") << uge;
-            QTest::newRow("-inf") << -uge;
+            BOBUIest::newRow("inf") << uge;
+            BOBUIest::newRow("-inf") << -uge;
         }
         if (std::numeric_limits<T>::has_quiet_NaN)
-            QTest::newRow("nan") << std::numeric_limits<T>::quiet_NaN();
+            BOBUIest::newRow("nan") << std::numeric_limits<T>::quiet_NaN();
     }
 }
 
@@ -100,7 +100,7 @@ void tst_toString::numeric()
     QFETCH(T, datum);
 
     QBENCHMARK {
-        auto tst = QTest::toString(datum);
+        auto tst = BOBUIest::toString(datum);
         delete [] tst;
     }
 }
@@ -130,5 +130,5 @@ void tst_toString::compare_eq()
     }
 }
 
-QTEST_MAIN(tst_toString)
+BOBUIEST_MAIN(tst_toString)
 #include "tst_tostring.moc"

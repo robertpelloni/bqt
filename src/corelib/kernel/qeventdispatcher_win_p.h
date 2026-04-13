@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVENTDISPATCHER_WIN_P_H
 #define QEVENTDISPATCHER_WIN_P_H
@@ -8,26 +8,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtCore/qabstracteventdispatcher.h"
-#include "QtCore/qt_windows.h"
-#include "QtCore/qhash.h"
-#include "QtCore/qatomic.h"
+#include "BobUICore/qabstracteventdispatcher.h"
+#include "BobUICore/bobui_windows.h"
+#include "BobUICore/qhash.h"
+#include "BobUICore/qatomic.h"
 
 #include "qabstracteventdispatcher_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEventDispatcherWin32Private;
 
 // forward declaration
-LRESULT QT_WIN_CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp);
+LRESULT BOBUI_WIN_CALLBACK bobui_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp);
 
 class Q_CORE_EXPORT QEventDispatcherWin32 : public QAbstractEventDispatcherV2
 {
@@ -38,17 +38,17 @@ public:
     explicit QEventDispatcherWin32(QObject *parent = nullptr);
     ~QEventDispatcherWin32();
 
-    bool QT_ENSURE_STACK_ALIGNED_FOR_SSE processEvents(QEventLoop::ProcessEventsFlags flags) override;
+    bool BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE processEvents(QEventLoop::ProcessEventsFlags flags) override;
 
     void registerSocketNotifier(QSocketNotifier *notifier) override;
     void unregisterSocketNotifier(QSocketNotifier *notifier) override;
 
-    void registerTimer(Qt::TimerId timerId, Duration interval, Qt::TimerType timerType,
+    void registerTimer(BobUI::TimerId timerId, Duration interval, BobUI::TimerType timerType,
                        QObject *object) final;
-    bool unregisterTimer(Qt::TimerId timerId) final;
+    bool unregisterTimer(BobUI::TimerId timerId) final;
     bool unregisterTimers(QObject *object) final;
     QList<TimerInfoV2> timersForObject(QObject *object) const final;
-    Duration remainingTime(Qt::TimerId timerId) const final;
+    Duration remainingTime(BobUI::TimerId timerId) const final;
 
     void wakeUp() override;
     void interrupt() override;
@@ -66,7 +66,7 @@ protected:
     void doUnregisterSocketNotifier(QSocketNotifier *notifier);
 
 private:
-    friend LRESULT QT_WIN_CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp);
+    friend LRESULT BOBUI_WIN_CALLBACK bobui_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp);
 };
 
 struct QSockNot {
@@ -90,18 +90,18 @@ struct WinTimerInfo {                           // internal timer info
     QObject *dispatcher;
     QObject *obj;                               // - object to receive events
     int timerId;
-    Qt::TimerType timerType;
+    BobUI::TimerType timerType;
     UINT fastTimerId;
     bool inTimerEvent;
     bool usesExtendedInterval;
     bool isSecondTimeout;
 };
 
-class QZeroTimerEvent : public QTimerEvent
+class QZeroTimerEvent : public BOBUIimerEvent
 {
 public:
     explicit inline QZeroTimerEvent(int timerId)
-        : QTimerEvent(timerId)
+        : BOBUIimerEvent(timerId)
     { t = QEvent::ZeroTimerEvent; }
 };
 
@@ -145,6 +145,6 @@ public:
     QList<MSG> queuedSocketEvents;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVENTDISPATCHER_WIN_P_H

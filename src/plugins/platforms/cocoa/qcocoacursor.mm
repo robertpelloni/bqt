@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -8,11 +8,11 @@
 #include "qcocoawindow.h"
 #include "qcocoascreen.h"
 #include "qcocoahelpers.h"
-#include <QtGui/private/qcoregraphics_p.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
 
-#include <QtGui/QBitmap>
+#include <BobUIGui/QBitmap>
 
-#if !defined(QT_APPLE_NO_PRIVATE_APIS)
+#if !defined(BOBUI_APPLE_NO_PRIVATE_APIS)
 @interface NSCursor()
 + (id)busyButClickableCursor;
 + (id)_helpCursor;
@@ -21,11 +21,11 @@
 + (id)_windowResizeNorthSouthCursor;
 + (id)_windowResizeEastWestCursor;
 @end
-#endif // QT_APPLE_NO_PRIVATE_APIS
+#endif // BOBUI_APPLE_NO_PRIVATE_APIS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QCocoaCursor::QCocoaCursor()
 {
@@ -34,7 +34,7 @@ QCocoaCursor::QCocoaCursor()
 QCocoaCursor::~QCocoaCursor()
 {
     // release cursors
-    QHash<Qt::CursorShape, NSCursor *>::const_iterator i = m_cursors.constBegin();
+    QHash<BobUI::CursorShape, NSCursor *>::const_iterator i = m_cursors.constBegin();
     while (i != m_cursors.constEnd()) {
         [*i release];
         ++i;
@@ -95,25 +95,25 @@ NSCursor *QCocoaCursor::convertCursor(QCursor *cursor)
     if (!cursor)
         return nil;
 
-    const Qt::CursorShape newShape = cursor->shape();
+    const BobUI::CursorShape newShape = cursor->shape();
     NSCursor *cocoaCursor = nil;
 
     // Check for a suitable built-in NSCursor first:
     switch (newShape) {
-    case Qt::ArrowCursor:
+    case BobUI::ArrowCursor:
         cocoaCursor= [NSCursor arrowCursor];
         break;
-    case Qt::ForbiddenCursor:
+    case BobUI::ForbiddenCursor:
         cocoaCursor = [NSCursor operationNotAllowedCursor];
         break;
-    case Qt::CrossCursor:
+    case BobUI::CrossCursor:
         cocoaCursor = [NSCursor crosshairCursor];
         break;
-    case Qt::IBeamCursor:
+    case BobUI::IBeamCursor:
         cocoaCursor = [NSCursor IBeamCursor];
         break;
-    case Qt::WhatsThisCursor:
-#if !defined(QT_APPLE_NO_PRIVATE_APIS)
+    case BobUI::WhatsThisCursor:
+#if !defined(BOBUI_APPLE_NO_PRIVATE_APIS)
         if ([NSCursor respondsToSelector:@selector(_helpCursor)]) {
             cocoaCursor = [NSCursor performSelector:@selector(_helpCursor)];
             break;
@@ -121,48 +121,48 @@ NSCursor *QCocoaCursor::convertCursor(QCursor *cursor)
 #endif
          // For now use the pointing hand as a fallback
         Q_FALLTHROUGH();
-    case Qt::PointingHandCursor:
+    case BobUI::PointingHandCursor:
         cocoaCursor = [NSCursor pointingHandCursor];
         break;
-    case Qt::SplitVCursor:
+    case BobUI::SplitVCursor:
         cocoaCursor = [NSCursor resizeUpDownCursor];
         break;
-    case Qt::SplitHCursor:
+    case BobUI::SplitHCursor:
         cocoaCursor = [NSCursor resizeLeftRightCursor];
         break;
-    case Qt::OpenHandCursor:
+    case BobUI::OpenHandCursor:
         cocoaCursor = [NSCursor openHandCursor];
         break;
-    case Qt::ClosedHandCursor:
+    case BobUI::ClosedHandCursor:
         cocoaCursor = [NSCursor closedHandCursor];
         break;
-    case Qt::DragMoveCursor:
+    case BobUI::DragMoveCursor:
         cocoaCursor = [NSCursor crosshairCursor];
         break;
-    case Qt::DragCopyCursor:
+    case BobUI::DragCopyCursor:
         cocoaCursor = [NSCursor dragCopyCursor];
         break;
-    case Qt::DragLinkCursor:
+    case BobUI::DragLinkCursor:
         cocoaCursor = [NSCursor dragLinkCursor];
         break;
-    case Qt::BusyCursor:
-#if !defined(QT_APPLE_NO_PRIVATE_APIS)
+    case BobUI::BusyCursor:
+#if !defined(BOBUI_APPLE_NO_PRIVATE_APIS)
         if ([NSCursor respondsToSelector:@selector(busyButClickableCursor)])
             cocoaCursor = [NSCursor performSelector:@selector(busyButClickableCursor)];
 #endif
         break;
-    case Qt::SizeVerCursor:
-    case Qt::SizeHorCursor:
-    case Qt::SizeBDiagCursor:
-    case Qt::SizeFDiagCursor: {
-#if QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
+    case BobUI::SizeVerCursor:
+    case BobUI::SizeHorCursor:
+    case BobUI::SizeBDiagCursor:
+    case BobUI::SizeFDiagCursor: {
+#if BOBUI_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
         if (@available(macOS 15, *)) {
             auto position = [newShape]{
                 switch (newShape) {
-                case Qt::SizeVerCursor: return NSCursorFrameResizePositionTop;
-                case Qt::SizeHorCursor: return NSCursorFrameResizePositionLeft;
-                case Qt::SizeBDiagCursor: return NSCursorFrameResizePositionTopRight;
-                case Qt::SizeFDiagCursor: return NSCursorFrameResizePositionTopLeft;
+                case BobUI::SizeVerCursor: return NSCursorFrameResizePositionTop;
+                case BobUI::SizeHorCursor: return NSCursorFrameResizePositionLeft;
+                case BobUI::SizeBDiagCursor: return NSCursorFrameResizePositionTopRight;
+                case BobUI::SizeFDiagCursor: return NSCursorFrameResizePositionTopLeft;
                 default: Q_UNREACHABLE();
                 }
             }();
@@ -171,20 +171,20 @@ NSCursor *QCocoaCursor::convertCursor(QCursor *cursor)
             break;
         }
 #endif // macOS 15 SDK
-#if !defined(QT_APPLE_NO_PRIVATE_APIS)
+#if !defined(BOBUI_APPLE_NO_PRIVATE_APIS)
         auto selector = [newShape]{
             switch (newShape) {
-            case Qt::SizeVerCursor: return @selector(_windowResizeNorthSouthCursor);
-            case Qt::SizeHorCursor: return @selector(_windowResizeEastWestCursor);
-            case Qt::SizeBDiagCursor: return @selector(_windowResizeNorthEastSouthWestCursor);
-            case Qt::SizeFDiagCursor: return @selector(_windowResizeNorthWestSouthEastCursor);
+            case BobUI::SizeVerCursor: return @selector(_windowResizeNorthSouthCursor);
+            case BobUI::SizeHorCursor: return @selector(_windowResizeEastWestCursor);
+            case BobUI::SizeBDiagCursor: return @selector(_windowResizeNorthEastSouthWestCursor);
+            case BobUI::SizeFDiagCursor: return @selector(_windowResizeNorthWestSouthEastCursor);
             default: Q_UNREACHABLE();
             }
         }();
 
         if ([NSCursor respondsToSelector:selector])
             cocoaCursor = [NSCursor performSelector:selector];
-#endif // QT_APPLE_NO_PRIVATE_APIS
+#endif // BOBUI_APPLE_NO_PRIVATE_APIS
         break;
     }
     default:
@@ -193,9 +193,9 @@ NSCursor *QCocoaCursor::convertCursor(QCursor *cursor)
 
     if (!cocoaCursor) {
         // No suitable OS cursor exist, use cursors provided
-        // by Qt for the rest. Check for a cached cursor:
+        // by BobUI for the rest. Check for a cached cursor:
         cocoaCursor = m_cursors.value(newShape);
-        if (cocoaCursor && cursor->shape() == Qt::BitmapCursor) {
+        if (cocoaCursor && cursor->shape() == BobUI::BitmapCursor) {
             [cocoaCursor release];
             cocoaCursor = nil;
         }
@@ -221,8 +221,8 @@ NSCursor *QCocoaCursor::createCursorData(QCursor *cursor)
      * 0xFF x 0xFF == fully opaque black
      * 0x00 x 0x00 == fully transparent
      */
-#define QT_USE_APPROXIMATE_CURSORS
-#ifdef QT_USE_APPROXIMATE_CURSORS
+#define BOBUI_USE_APPROXIMATE_CURSORS
+#ifdef BOBUI_USE_APPROXIMATE_CURSORS
     static const uchar cur_ver_bits[] = {
         0x00, 0x00, 0x00, 0x00, 0x01, 0x80, 0x03, 0xc0, 0x07, 0xe0, 0x0f, 0xf0,
         0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0x0f, 0xf0,
@@ -273,59 +273,59 @@ NSCursor *QCocoaCursor::createCursorData(QCursor *cursor)
     QPoint hotspot = cursor->hotSpot();
 
     switch (cursor->shape()) {
-    case Qt::BitmapCursor: {
+    case BobUI::BitmapCursor: {
         if (cursor->pixmap().isNull())
             return createCursorFromBitmap(cursor->bitmap(), cursor->mask(), hotspot);
         else
             return createCursorFromPixmap(cursor->pixmap(), hotspot);
         break; }
-    case Qt::BlankCursor: {
+    case BobUI::BlankCursor: {
         QPixmap pixmap = QPixmap(16, 16);
-        pixmap.fill(Qt::transparent);
+        pixmap.fill(BobUI::transparent);
         return createCursorFromPixmap(pixmap);
         break; }
-    case Qt::WaitCursor: {
-        QPixmap pixmap = QPixmap(":/qt-project.org/mac/cursors/images/spincursor.png"_L1);
+    case BobUI::WaitCursor: {
+        QPixmap pixmap = QPixmap(":/bobui-project.org/mac/cursors/images/spincursor.png"_L1);
         return createCursorFromPixmap(pixmap, hotspot);
         break; }
-    case Qt::SizeAllCursor: {
-        QPixmap pixmap = QPixmap(":/qt-project.org/mac/cursors/images/sizeallcursor.png"_L1);
+    case BobUI::SizeAllCursor: {
+        QPixmap pixmap = QPixmap(":/bobui-project.org/mac/cursors/images/sizeallcursor.png"_L1);
         return createCursorFromPixmap(pixmap, QPoint(8, 8));
         break; }
-    case Qt::BusyCursor: {
-        QPixmap pixmap = QPixmap(":/qt-project.org/mac/cursors/images/waitcursor.png"_L1);
+    case BobUI::BusyCursor: {
+        QPixmap pixmap = QPixmap(":/bobui-project.org/mac/cursors/images/waitcursor.png"_L1);
         return createCursorFromPixmap(pixmap, hotspot);
         break; }
-#define QT_USE_APPROXIMATE_CURSORS
-#ifdef QT_USE_APPROXIMATE_CURSORS
-    case Qt::SizeVerCursor:
+#define BOBUI_USE_APPROXIMATE_CURSORS
+#ifdef BOBUI_USE_APPROXIMATE_CURSORS
+    case BobUI::SizeVerCursor:
         cursorData = cur_ver_bits;
         cursorMaskData = mcur_ver_bits;
         hotspot = QPoint(8, 8);
         break;
-    case Qt::SizeHorCursor:
+    case BobUI::SizeHorCursor:
         cursorData = cur_hor_bits;
         cursorMaskData = mcur_hor_bits;
         hotspot = QPoint(8, 8);
         break;
-    case Qt::SizeBDiagCursor:
+    case BobUI::SizeBDiagCursor:
         cursorData = cur_fdiag_bits;
         cursorMaskData = mcur_fdiag_bits;
         hotspot = QPoint(8, 8);
         break;
-    case Qt::SizeFDiagCursor:
+    case BobUI::SizeFDiagCursor:
         cursorData = cur_bdiag_bits;
         cursorMaskData = mcur_bdiag_bits;
         hotspot = QPoint(8, 8);
         break;
-    case Qt::UpArrowCursor:
+    case BobUI::UpArrowCursor:
         cursorData = cur_up_arrow_bits;
         cursorMaskData = mcur_up_arrow_bits;
         hotspot = QPoint(8, 0);
         break;
 #endif
     default:
-        qWarning("Qt: QCursor::update: Invalid cursor shape %d", cursor->shape());
+        qWarning("BobUI: QCursor::update: Invalid cursor shape %d", cursor->shape());
         return nil;
     }
 
@@ -371,4 +371,4 @@ NSCursor *QCocoaCursor::createCursorFromPixmap(const QPixmap &pixmap, const QPoi
     return [[NSCursor alloc] initWithImage:image hotSpot:hotSpot];
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

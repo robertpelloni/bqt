@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMDRAG_H
 #define QPLATFORMDRAG_H
@@ -10,15 +10,15 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/QPixmap>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/QPixmap>
 
-QT_REQUIRE_CONFIG(draganddrop);
+BOBUI_REQUIRE_CONFIG(draganddrop);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 class QMouseEvent;
@@ -27,23 +27,23 @@ class QObject;
 class QEvent;
 class QPlatformDragPrivate;
 
-class Q_GUI_EXPORT QPlatformDropQtResponse
+class Q_GUI_EXPORT QPlatformDropBobUIResponse
 {
 public:
-    QPlatformDropQtResponse(bool accepted, Qt::DropAction acceptedAction);
+    QPlatformDropBobUIResponse(bool accepted, BobUI::DropAction acceptedAction);
     bool isAccepted() const;
-    Qt::DropAction acceptedAction() const;
+    BobUI::DropAction acceptedAction() const;
 
 private:
     bool m_accepted;
-    Qt::DropAction m_accepted_action;
+    BobUI::DropAction m_accepted_action;
 
 };
 
-class Q_GUI_EXPORT QPlatformDragQtResponse : public QPlatformDropQtResponse
+class Q_GUI_EXPORT QPlatformDragBobUIResponse : public QPlatformDropBobUIResponse
 {
 public:
-    QPlatformDragQtResponse(bool accepted, Qt::DropAction acceptedAction, QRect answerRect);
+    QPlatformDragBobUIResponse(bool accepted, BobUI::DropAction acceptedAction, QRect answerRect);
 
     QRect answerRect() const;
 
@@ -62,11 +62,11 @@ public:
 
     QDrag *currentDrag() const;
 
-    virtual Qt::DropAction drag(QDrag *m_drag) = 0;
+    virtual BobUI::DropAction drag(QDrag *m_drag) = 0;
     virtual void cancelDrag();
-    void updateAction(Qt::DropAction action);
+    void updateAction(BobUI::DropAction action);
 
-    virtual Qt::DropAction defaultAction(Qt::DropActions possibleActions, Qt::KeyboardModifiers modifiers) const;
+    virtual BobUI::DropAction defaultAction(BobUI::DropActions possibleActions, BobUI::KeyboardModifiers modifiers) const;
 
     static QPixmap defaultPixmap();
 
@@ -76,6 +76,6 @@ private:
     QPlatformDragPrivate *d_ptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

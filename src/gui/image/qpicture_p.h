@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPICTURE_P_H
 #define QPICTURE_P_H
@@ -8,30 +8,30 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtCore/qatomic.h"
-#include "QtCore/qbuffer.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qobjectdefs.h"
-#include "QtCore/qrect.h"
-#include "QtGui/qpicture.h"
-#include "QtGui/qpixmap.h"
-#include "QtGui/qpen.h"
-#include "QtGui/qbrush.h"
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUICore/qatomic.h"
+#include "BobUICore/qbuffer.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qobjectdefs.h"
+#include "BobUICore/qrect.h"
+#include "BobUIGui/qpicture.h"
+#include "BobUIGui/qpixmap.h"
+#include "BobUIGui/qpen.h"
+#include "BobUIGui/qbrush.h"
 #include "private/qobject_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPaintEngine;
 
-extern const char  *qt_mfhdr_tag;
+extern const char  *bobui_mfhdr_tag;
 
 class QPicturePrivate
 {
@@ -103,7 +103,7 @@ public:
         PdcSetOpacity = 66, // qreal
 
         PdcReservedStart = 0, // codes 0-199 are reserved
-        PdcReservedStop = 199 //   for Qt
+        PdcReservedStop = 199 //   for BobUI
     };
 
     QPicturePrivate();
@@ -129,6 +129,6 @@ public:
     QList<QPen> pen_list;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPICTURE_P_H

@@ -24,7 +24,7 @@
 
 #define _XOPEN_SOURCE 700
 #define  _DARWIN_C_SOURCE 1         /* need MAP_ANON */
-#include <QtTest>
+#include <BobUITest>
 #include "cbor.h"
 #include <stdio.h>
 #include <stdarg.h>
@@ -39,7 +39,7 @@
 #endif
 
 
-namespace QTest {
+namespace BOBUIest {
 template<> char *toString<CborError>(const CborError &err)
 {
     return qstrdup(cbor_error_string(err));
@@ -379,38 +379,38 @@ void tst_Parser::integers()
 
 static void addHalfFloat()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<unsigned>("expectedRaw");
-    QTest::addColumn<double>("expectedValue");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<unsigned>("expectedRaw");
+    BOBUIest::addColumn<double>("expectedValue");
 
-    QTest::newRow("+0") << raw("\x00\x00") << 0U << 0.0;
-    QTest::newRow("-0") << raw("\x80\x00") << 0x8000U << 0.0;
+    BOBUIest::newRow("+0") << raw("\x00\x00") << 0U << 0.0;
+    BOBUIest::newRow("-0") << raw("\x80\x00") << 0x8000U << 0.0;
 
-    QTest::newRow("min.denorm") << raw("\x00\x01") << 1U << ldexp(1.0, -14) * ldexp(1.0, -10);
-    QTest::newRow("-min.denorm") << raw("\x80\x01") << 0x8001U << ldexp(-1.0, -14) * ldexp(1.0, -10);
+    BOBUIest::newRow("min.denorm") << raw("\x00\x01") << 1U << ldexp(1.0, -14) * ldexp(1.0, -10);
+    BOBUIest::newRow("-min.denorm") << raw("\x80\x01") << 0x8001U << ldexp(-1.0, -14) * ldexp(1.0, -10);
 
-    QTest::newRow("max.denorm") << raw("\x03\xff") << 0x03ffU << ldexp(1.0, -14) * (1.0 - ldexp(1.0, -10));
-    QTest::newRow("-max.denorm") << raw("\x83\xff") << 0x83ffU << ldexp(-1.0, -14) * (1.0 - ldexp(1.0, -10));
+    BOBUIest::newRow("max.denorm") << raw("\x03\xff") << 0x03ffU << ldexp(1.0, -14) * (1.0 - ldexp(1.0, -10));
+    BOBUIest::newRow("-max.denorm") << raw("\x83\xff") << 0x83ffU << ldexp(-1.0, -14) * (1.0 - ldexp(1.0, -10));
 
-    QTest::newRow("min.norm") << raw("\x04\x00") << 0x0400U << ldexp(1.0, -14);
-    QTest::newRow("-min.norm") << raw("\x84\x00") << 0x8400U << ldexp(-1.0, -14);
+    BOBUIest::newRow("min.norm") << raw("\x04\x00") << 0x0400U << ldexp(1.0, -14);
+    BOBUIest::newRow("-min.norm") << raw("\x84\x00") << 0x8400U << ldexp(-1.0, -14);
 
-    QTest::newRow("1.0") << raw("\x3c\x00") << 0x3c00U << 1.0;
-    QTest::newRow("-1.0") << raw("\xbc\x00") << 0xbc00U << -1.0;
+    BOBUIest::newRow("1.0") << raw("\x3c\x00") << 0x3c00U << 1.0;
+    BOBUIest::newRow("-1.0") << raw("\xbc\x00") << 0xbc00U << -1.0;
 
-    QTest::newRow("1.5") << raw("\x3e\x00") << 0x3e00U << 1.5;
-    QTest::newRow("-1.5") << raw("\xbe\x00") << 0xbe00U << -1.5;
+    BOBUIest::newRow("1.5") << raw("\x3e\x00") << 0x3e00U << 1.5;
+    BOBUIest::newRow("-1.5") << raw("\xbe\x00") << 0xbe00U << -1.5;
 
-    QTest::newRow("max") << raw("\x7b\xff") << 0x7bffU << ldexp(1.0, 15) * (2.0 - ldexp(1.0, -10));
-    QTest::newRow("-max") << raw("\xfb\xff") << 0xfbffU << ldexp(-1.0, 15) * (2.0 - ldexp(1.0, -10));
+    BOBUIest::newRow("max") << raw("\x7b\xff") << 0x7bffU << ldexp(1.0, 15) * (2.0 - ldexp(1.0, -10));
+    BOBUIest::newRow("-max") << raw("\xfb\xff") << 0xfbffU << ldexp(-1.0, 15) * (2.0 - ldexp(1.0, -10));
 
-    QTest::newRow("inf") << raw("\x7c\x00") << 0x7c00U << double(INFINITY);
-    QTest::newRow("-inf") << raw("\xfc\x00") << 0xfc00U << double(-INFINITY);
+    BOBUIest::newRow("inf") << raw("\x7c\x00") << 0x7c00U << double(INFINITY);
+    BOBUIest::newRow("-inf") << raw("\xfc\x00") << 0xfc00U << double(-INFINITY);
 
-    QTest::newRow("nan") << raw("\x7c\x01") << 0x7c01U << double(NAN);
-    QTest::newRow("nan2") << raw("\xfc\x01") << 0xfc01U << double(NAN);
-    QTest::newRow("nan3") << raw("\x7e\x00") << 0x7e00U << double(NAN);
-    QTest::newRow("nan4") << raw("\xfe\x00") << 0xfe00U << double(NAN);
+    BOBUIest::newRow("nan") << raw("\x7c\x01") << 0x7c01U << double(NAN);
+    BOBUIest::newRow("nan2") << raw("\xfc\x01") << 0xfc01U << double(NAN);
+    BOBUIest::newRow("nan3") << raw("\x7e\x00") << 0x7e00U << double(NAN);
+    BOBUIest::newRow("nan4") << raw("\xfe\x00") << 0xfe00U << double(NAN);
 }
 
 void tst_Parser::halfFloat_data()
@@ -897,8 +897,8 @@ static void chunkedStringTest(const QByteArray &data, const QString &concatenate
         QVERIFY2(!err, QByteArray("Got error \"") + cbor_error_string(err) + "\"");
 
         size_t nn = n;
-        QByteArray buffer(n + 1, Qt::Uninitialized);
-        QByteArray buffer2(n + 1, Qt::Uninitialized);
+        QByteArray buffer(n + 1, BobUI::Uninitialized);
+        QByteArray buffer2(n + 1, BobUI::Uninitialized);
         buffer[int(n)] = 0xff;
         buffer2[int(n)] = 0xff;
         QString formatted;
@@ -986,55 +986,55 @@ void tst_Parser::chunkedStringInUndefArray()
 
 void tst_Parser::stringLength_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("emptybytestring") << raw("\x40") << 0;
-    QTest::newRow("bytestring1") << raw("\x41 ") << 1;
-    QTest::newRow("bytestring1-nul") << raw("\x41\0") << 1;
-    QTest::newRow("bytestring5") << raw("\x45Hello") << 5;
-    QTest::newRow("bytestring24") << raw("\x58\x18""123456789012345678901234") << 24;
-    QTest::newRow("bytestring256") << raw("\x59\1\0") + QByteArray(256, '3') << 256;
+    BOBUIest::newRow("emptybytestring") << raw("\x40") << 0;
+    BOBUIest::newRow("bytestring1") << raw("\x41 ") << 1;
+    BOBUIest::newRow("bytestring1-nul") << raw("\x41\0") << 1;
+    BOBUIest::newRow("bytestring5") << raw("\x45Hello") << 5;
+    BOBUIest::newRow("bytestring24") << raw("\x58\x18""123456789012345678901234") << 24;
+    BOBUIest::newRow("bytestring256") << raw("\x59\1\0") + QByteArray(256, '3') << 256;
 
     // text strings
-    QTest::newRow("emptytextstring") << raw("\x60") << 0;
-    QTest::newRow("textstring1") << raw("\x61 ") << 1;
-    QTest::newRow("textstring1-nul") << raw("\x61\0") << 1;
-    QTest::newRow("textstring5") << raw("\x65Hello") << 5;
-    QTest::newRow("textstring24") << raw("\x78\x18""123456789012345678901234") << 24;
-    QTest::newRow("textstring256") << raw("\x79\1\0") + QByteArray(256, '3') << 256;
+    BOBUIest::newRow("emptytextstring") << raw("\x60") << 0;
+    BOBUIest::newRow("textstring1") << raw("\x61 ") << 1;
+    BOBUIest::newRow("textstring1-nul") << raw("\x61\0") << 1;
+    BOBUIest::newRow("textstring5") << raw("\x65Hello") << 5;
+    BOBUIest::newRow("textstring24") << raw("\x78\x18""123456789012345678901234") << 24;
+    BOBUIest::newRow("textstring256") << raw("\x79\1\0") + QByteArray(256, '3') << 256;
 
     // strings with overlong length
-    QTest::newRow("emptybytestring*1") << raw("\x58\x00") << 0;
-    QTest::newRow("emptytextstring*1") << raw("\x78\x00") << 0;
-    QTest::newRow("emptybytestring*2") << raw("\x59\x00\x00") << 0;
-    QTest::newRow("emptytextstring*2") << raw("\x79\x00\x00") << 0;
-    QTest::newRow("emptybytestring*4") << raw("\x5a\0\0\0\0") << 0;
-    QTest::newRow("emptytextstring*4") << raw("\x7a\0\0\0\0") << 0;
-    QTest::newRow("emptybytestring*8") << raw("\x5b\0\0\0\0\0\0\0\0") << 0;
-    QTest::newRow("emptytextstring*8") << raw("\x7b\0\0\0\0\0\0\0\0") << 0;
-    QTest::newRow("bytestring5*1") << raw("\x58\x05Hello") << 5;
-    QTest::newRow("textstring5*1") << raw("\x78\x05Hello") << 5;
-    QTest::newRow("bytestring5*2") << raw("\x59\0\5Hello") << 5;
-    QTest::newRow("textstring5*2") << raw("\x79\0\x05Hello") << 5;
-    QTest::newRow("bytestring5*4") << raw("\x5a\0\0\0\5Hello") << 5;
-    QTest::newRow("textstring5*4") << raw("\x7a\0\0\0\x05Hello") << 5;
-    QTest::newRow("bytestring5*8") << raw("\x5b\0\0\0\0\0\0\0\5Hello") << 5;
-    QTest::newRow("textstring5*8") << raw("\x7b\0\0\0\0\0\0\0\x05Hello") << 5;
+    BOBUIest::newRow("emptybytestring*1") << raw("\x58\x00") << 0;
+    BOBUIest::newRow("emptytextstring*1") << raw("\x78\x00") << 0;
+    BOBUIest::newRow("emptybytestring*2") << raw("\x59\x00\x00") << 0;
+    BOBUIest::newRow("emptytextstring*2") << raw("\x79\x00\x00") << 0;
+    BOBUIest::newRow("emptybytestring*4") << raw("\x5a\0\0\0\0") << 0;
+    BOBUIest::newRow("emptytextstring*4") << raw("\x7a\0\0\0\0") << 0;
+    BOBUIest::newRow("emptybytestring*8") << raw("\x5b\0\0\0\0\0\0\0\0") << 0;
+    BOBUIest::newRow("emptytextstring*8") << raw("\x7b\0\0\0\0\0\0\0\0") << 0;
+    BOBUIest::newRow("bytestring5*1") << raw("\x58\x05Hello") << 5;
+    BOBUIest::newRow("textstring5*1") << raw("\x78\x05Hello") << 5;
+    BOBUIest::newRow("bytestring5*2") << raw("\x59\0\5Hello") << 5;
+    BOBUIest::newRow("textstring5*2") << raw("\x79\0\x05Hello") << 5;
+    BOBUIest::newRow("bytestring5*4") << raw("\x5a\0\0\0\5Hello") << 5;
+    BOBUIest::newRow("textstring5*4") << raw("\x7a\0\0\0\x05Hello") << 5;
+    BOBUIest::newRow("bytestring5*8") << raw("\x5b\0\0\0\0\0\0\0\5Hello") << 5;
+    BOBUIest::newRow("textstring5*8") << raw("\x7b\0\0\0\0\0\0\0\x05Hello") << 5;
 
     // strings with undefined length
-    QTest::newRow("_emptybytestring") << raw("\x5f\xff") << 0;
-    QTest::newRow("_emptytextstring") << raw("\x7f\xff") << 0;
-    QTest::newRow("_emptybytestring2") << raw("\x5f\x40\xff") << 0;
-    QTest::newRow("_emptytextstring2") << raw("\x7f\x60\xff") << 0;
-    QTest::newRow("_emptybytestring3") << raw("\x5f\x40\x40\xff") << 0;
-    QTest::newRow("_emptytextstring3") << raw("\x7f\x60\x60\xff") << 0;
-    QTest::newRow("_bytestring5*2") << raw("\x5f\x43Hel\x42lo\xff") << 5;
-    QTest::newRow("_textstring5*2") << raw("\x7f\x63Hel\x62lo\xff") << 5;
-    QTest::newRow("_bytestring5*5") << raw("\x5f\x41H\x41""e\x41l\x41l\x41o\xff") << 5;
-    QTest::newRow("_textstring5*5") << raw("\x7f\x61H\x61""e\x61l\x61l\x61o\xff") << 5;
-    QTest::newRow("_bytestring5*6") << raw("\x5f\x41H\x41""e\x40\x41l\x41l\x41o\xff") << 5;
-    QTest::newRow("_textstring5*6") << raw("\x7f\x61H\x61""e\x61l\x60\x61l\x61o\xff") << 5;
+    BOBUIest::newRow("_emptybytestring") << raw("\x5f\xff") << 0;
+    BOBUIest::newRow("_emptytextstring") << raw("\x7f\xff") << 0;
+    BOBUIest::newRow("_emptybytestring2") << raw("\x5f\x40\xff") << 0;
+    BOBUIest::newRow("_emptytextstring2") << raw("\x7f\x60\xff") << 0;
+    BOBUIest::newRow("_emptybytestring3") << raw("\x5f\x40\x40\xff") << 0;
+    BOBUIest::newRow("_emptytextstring3") << raw("\x7f\x60\x60\xff") << 0;
+    BOBUIest::newRow("_bytestring5*2") << raw("\x5f\x43Hel\x42lo\xff") << 5;
+    BOBUIest::newRow("_textstring5*2") << raw("\x7f\x63Hel\x62lo\xff") << 5;
+    BOBUIest::newRow("_bytestring5*5") << raw("\x5f\x41H\x41""e\x41l\x41l\x41o\xff") << 5;
+    BOBUIest::newRow("_textstring5*5") << raw("\x7f\x61H\x61""e\x61l\x61l\x61o\xff") << 5;
+    BOBUIest::newRow("_bytestring5*6") << raw("\x5f\x41H\x41""e\x40\x41l\x41l\x41o\xff") << 5;
+    BOBUIest::newRow("_textstring5*6") << raw("\x7f\x61H\x61""e\x61l\x60\x61l\x61o\xff") << 5;
 }
 
 void tst_Parser::stringLength()
@@ -1060,76 +1060,76 @@ void tst_Parser::stringLength()
 
 void tst_Parser::stringCompare_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<bool>("expected");
 
     // compare empty to empty
-    QTest::newRow("empty-empty") << raw("\x60") << QString() << true;
-    QTest::newRow("_empty-empty") << raw("\x7f\xff") << QString() << true;
-    QTest::newRow("_empty*1-empty") << raw("\x7f\x60\xff") << QString() << true;
-    QTest::newRow("_empty*2-empty") << raw("\x7f\x60\x60\xff") << QString() << true;
+    BOBUIest::newRow("empty-empty") << raw("\x60") << QString() << true;
+    BOBUIest::newRow("_empty-empty") << raw("\x7f\xff") << QString() << true;
+    BOBUIest::newRow("_empty*1-empty") << raw("\x7f\x60\xff") << QString() << true;
+    BOBUIest::newRow("_empty*2-empty") << raw("\x7f\x60\x60\xff") << QString() << true;
 
     // compare empty to non-empty
-    QTest::newRow("empty-nonempty") << raw("\x60") << "Hello" << false;
-    QTest::newRow("_empty-nonempty") << raw("\x7f\xff") << "Hello" << false;
-    QTest::newRow("_empty*1-nonempty") << raw("\x7f\x60\xff") << "Hello" << false;
-    QTest::newRow("_empty*2-nonempty") << raw("\x7f\x60\x60\xff") << "Hello" << false;
+    BOBUIest::newRow("empty-nonempty") << raw("\x60") << "Hello" << false;
+    BOBUIest::newRow("_empty-nonempty") << raw("\x7f\xff") << "Hello" << false;
+    BOBUIest::newRow("_empty*1-nonempty") << raw("\x7f\x60\xff") << "Hello" << false;
+    BOBUIest::newRow("_empty*2-nonempty") << raw("\x7f\x60\x60\xff") << "Hello" << false;
 
     // compare same strings
-    QTest::newRow("same-short-short") << raw("\x65Hello") << "Hello" << true;
-    QTest::newRow("same-_short*1-short") << raw("\x7f\x65Hello\xff") << "Hello" << true;
-    QTest::newRow("same-_short*2-short") << raw("\x7f\x63Hel\x62lo\xff") << "Hello" << true;
-    QTest::newRow("same-_short*5-short") << raw("\x7f\x61H\x61""e\x61l\x61l\x61o\xff") << "Hello" << true;
-    QTest::newRow("same-_short*8-short") << raw("\x7f\x61H\x60\x61""e\x60\x61l\x61l\x60\x61o\xff") << "Hello" << true;
-    QTest::newRow("same-long-long") << raw("\x78\x2aGood morning, good afternoon and goodnight")
+    BOBUIest::newRow("same-short-short") << raw("\x65Hello") << "Hello" << true;
+    BOBUIest::newRow("same-_short*1-short") << raw("\x7f\x65Hello\xff") << "Hello" << true;
+    BOBUIest::newRow("same-_short*2-short") << raw("\x7f\x63Hel\x62lo\xff") << "Hello" << true;
+    BOBUIest::newRow("same-_short*5-short") << raw("\x7f\x61H\x61""e\x61l\x61l\x61o\xff") << "Hello" << true;
+    BOBUIest::newRow("same-_short*8-short") << raw("\x7f\x61H\x60\x61""e\x60\x61l\x61l\x60\x61o\xff") << "Hello" << true;
+    BOBUIest::newRow("same-long-long") << raw("\x78\x2aGood morning, good afternoon and goodnight")
                                     << "Good morning, good afternoon and goodnight" << true;
-    QTest::newRow("same-_long*1-long") << raw("\x7f\x78\x2aGood morning, good afternoon and goodnight\xff")
+    BOBUIest::newRow("same-_long*1-long") << raw("\x7f\x78\x2aGood morning, good afternoon and goodnight\xff")
                                        << "Good morning, good afternoon and goodnight" << true;
-    QTest::newRow("same-_long*2-long") << raw("\x7f\x78\x1cGood morning, good afternoon\x6e and goodnight\xff")
+    BOBUIest::newRow("same-_long*2-long") << raw("\x7f\x78\x1cGood morning, good afternoon\x6e and goodnight\xff")
                                        << "Good morning, good afternoon and goodnight" << true;
 
     // compare different strings (same length)
-    QTest::newRow("diff-same-length-short-short") << raw("\x65Hello") << "World" << false;
-    QTest::newRow("diff-same-length-_short*1-short") << raw("\x7f\x65Hello\xff") << "World" << false;
-    QTest::newRow("diff-same-length-_short*2-short") << raw("\x7f\x63Hel\x62lo\xff") << "World" << false;
-    QTest::newRow("diff-same-length-_short*5-short") << raw("\x7f\x61H\x61""e\x61l\x61l\x61o\xff") << "World" << false;
-    QTest::newRow("diff-same-length-_short*8-short") << raw("\x7f\x61H\x60\x61""e\x60\x61l\x61l\x60\x61o\xff") << "World" << false;
-    QTest::newRow("diff-same-length-long-long") << raw("\x78\x2aGood morning, good afternoon and goodnight")
+    BOBUIest::newRow("diff-same-length-short-short") << raw("\x65Hello") << "World" << false;
+    BOBUIest::newRow("diff-same-length-_short*1-short") << raw("\x7f\x65Hello\xff") << "World" << false;
+    BOBUIest::newRow("diff-same-length-_short*2-short") << raw("\x7f\x63Hel\x62lo\xff") << "World" << false;
+    BOBUIest::newRow("diff-same-length-_short*5-short") << raw("\x7f\x61H\x61""e\x61l\x61l\x61o\xff") << "World" << false;
+    BOBUIest::newRow("diff-same-length-_short*8-short") << raw("\x7f\x61H\x60\x61""e\x60\x61l\x61l\x60\x61o\xff") << "World" << false;
+    BOBUIest::newRow("diff-same-length-long-long") << raw("\x78\x2aGood morning, good afternoon and goodnight")
                                                 << "Good morning, good afternoon and goodnight, world" << false;
-    QTest::newRow("diff-same-length-_long*1-long") << raw("\x7f\x78\x2aGood morning, good afternoon and goodnight\xff")
+    BOBUIest::newRow("diff-same-length-_long*1-long") << raw("\x7f\x78\x2aGood morning, good afternoon and goodnight\xff")
                                                    << "Good morning, good afternoon and goodnight, world" << false;
-    QTest::newRow("diff-same-length-_long*2-long") << raw("\x7f\x78\x1cGood morning, good afternoon\x6e and goodnight\xff")
+    BOBUIest::newRow("diff-same-length-_long*2-long") << raw("\x7f\x78\x1cGood morning, good afternoon\x6e and goodnight\xff")
                                                    << "Good morning, good afternoon and goodnight, world" << false;
 
     // compare different strings (different length)
-    QTest::newRow("diff-diff-length-short-short") << raw("\x65Hello") << "Hello World" << false;
-    QTest::newRow("diff-diff-length-_short*1-short") << raw("\x7f\x65Hello\xff") << "Hello World" << false;
-    QTest::newRow("diff-diff-length-_short*2-short") << raw("\x7f\x63Hel\x62lo\xff") << "Hello World" << false;
-    QTest::newRow("diff-diff-length-_short*5-short") << raw("\x7f\x61H\x61""e\x61l\x61l\x61o\xff") << "Hello World" << false;
-    QTest::newRow("diff-diff-length-_short*8-short") << raw("\x7f\x61H\x60\x61""e\x60\x61l\x61l\x60\x61o\xff") << "Hello World" << false;
-    QTest::newRow("diff-diff-length-long-long") << raw("\x78\x2aGood morning, good afternoon and goodnight")
+    BOBUIest::newRow("diff-diff-length-short-short") << raw("\x65Hello") << "Hello World" << false;
+    BOBUIest::newRow("diff-diff-length-_short*1-short") << raw("\x7f\x65Hello\xff") << "Hello World" << false;
+    BOBUIest::newRow("diff-diff-length-_short*2-short") << raw("\x7f\x63Hel\x62lo\xff") << "Hello World" << false;
+    BOBUIest::newRow("diff-diff-length-_short*5-short") << raw("\x7f\x61H\x61""e\x61l\x61l\x61o\xff") << "Hello World" << false;
+    BOBUIest::newRow("diff-diff-length-_short*8-short") << raw("\x7f\x61H\x60\x61""e\x60\x61l\x61l\x60\x61o\xff") << "Hello World" << false;
+    BOBUIest::newRow("diff-diff-length-long-long") << raw("\x78\x2aGood morning, good afternoon and goodnight")
                                                 << "Good morning, good afternoon and goodnight World" << false;
-    QTest::newRow("diff-diff-length-_long*1-long") << raw("\x7f\x78\x2aGood morning, good afternoon and goodnight\xff")
+    BOBUIest::newRow("diff-diff-length-_long*1-long") << raw("\x7f\x78\x2aGood morning, good afternoon and goodnight\xff")
                                                    << "Good morning, good afternoon and goodnight World" << false;
-    QTest::newRow("diff-diff-length-_long*2-long") << raw("\x7f\x78\x1cGood morning, good afternoon\x6e and goodnight\xff")
+    BOBUIest::newRow("diff-diff-length-_long*2-long") << raw("\x7f\x78\x1cGood morning, good afternoon\x6e and goodnight\xff")
                                                    << "Good morning, good afternoon and goodnight World" << false;
 
     // compare against non-strings
-    QTest::newRow("unsigned") << raw("\0") << "0" << false;
-    QTest::newRow("negative") << raw("\x20") << "-1" << false;
-    QTest::newRow("emptybytestring") << raw("\x40") << "" << false;
-    QTest::newRow("_emptybytestring") << raw("\x5f\xff") << "" << false;
-    QTest::newRow("shortbytestring") << raw("\x45Hello") << "Hello" << false;
-    QTest::newRow("longbytestring") << raw("\x58\x2aGood morning, good afternoon and goodnight")
+    BOBUIest::newRow("unsigned") << raw("\0") << "0" << false;
+    BOBUIest::newRow("negative") << raw("\x20") << "-1" << false;
+    BOBUIest::newRow("emptybytestring") << raw("\x40") << "" << false;
+    BOBUIest::newRow("_emptybytestring") << raw("\x5f\xff") << "" << false;
+    BOBUIest::newRow("shortbytestring") << raw("\x45Hello") << "Hello" << false;
+    BOBUIest::newRow("longbytestring") << raw("\x58\x2aGood morning, good afternoon and goodnight")
                                     << "Good morning, good afternoon and goodnight" << false;
-    QTest::newRow("emptyarray") << raw("\x80") << "" << false;
-    QTest::newRow("emptymap") << raw("\xa0") << "" << false;
-    QTest::newRow("array") << raw("\x81\x65Hello") << "Hello" << false;
-    QTest::newRow("map") << raw("\xa1\x65Hello\x65World") << "Hello World" << false;
-    QTest::newRow("false") << raw("\xf4") << "false" << false;
-    QTest::newRow("true") << raw("\xf5") << "true" << false;
-    QTest::newRow("null") << raw("\xf6") << "null" << false;
+    BOBUIest::newRow("emptyarray") << raw("\x80") << "" << false;
+    BOBUIest::newRow("emptymap") << raw("\xa0") << "" << false;
+    BOBUIest::newRow("array") << raw("\x81\x65Hello") << "Hello" << false;
+    BOBUIest::newRow("map") << raw("\xa1\x65Hello\x65World") << "Hello World" << false;
+    BOBUIest::newRow("false") << raw("\xf4") << "false" << false;
+    BOBUIest::newRow("true") << raw("\xf5") << "true" << false;
+    BOBUIest::newRow("null") << raw("\xf6") << "null" << false;
 }
 
 void compareOneString(const QByteArray &data, const QString &string, bool expected, int line)
@@ -1183,58 +1183,58 @@ void tst_Parser::mapFind_data()
     //  we are searching for string "needle"
     //  if present, the value should be the string "haystack" (with tag 42)
 
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("emptymap") << raw("\xa0") << false;
-    QTest::newRow("_emptymap") << raw("\xbf\xff") << false;
+    BOBUIest::newRow("emptymap") << raw("\xa0") << false;
+    BOBUIest::newRow("_emptymap") << raw("\xbf\xff") << false;
 
     // maps not containing our items
-    QTest::newRow("absent-unsigned-unsigned") << raw("\xa1\0\0") << false;
-    QTest::newRow("absent-taggedunsigned-unsigned") << raw("\xa1\xc0\0\0") << false;
-    QTest::newRow("absent-unsigned-taggedunsigned") << raw("\xa1\0\xc0\0") << false;
-    QTest::newRow("absent-taggedunsigned-taggedunsigned") << raw("\xa1\xc0\0\xc0\0") << false;
-    QTest::newRow("absent-string-unsigned") << raw("\xa1\x68haystack\0") << false;
-    QTest::newRow("absent-taggedstring-unsigned") << raw("\xa1\xc0\x68haystack\0") << false;
-    QTest::newRow("absent-string-taggedunsigned") << raw("\xa1\x68haystack\xc0\0") << false;
-    QTest::newRow("absent-taggedstring-taggedunsigned") << raw("\xa1\xc0\x68haystack\xc0\0") << false;
-    QTest::newRow("absent-string-string") << raw("\xa1\x68haystack\x66needle") << false;
-    QTest::newRow("absent-string-taggedstring") << raw("\xa1\x68haystack\xc0\x66needle") << false;
-    QTest::newRow("absent-taggedstring-string") << raw("\xa1\xc0\x68haystack\x66needle") << false;
-    QTest::newRow("absent-string-taggedstring") << raw("\xa1\xc0\x68haystack\xc0\x66needle") << false;
+    BOBUIest::newRow("absent-unsigned-unsigned") << raw("\xa1\0\0") << false;
+    BOBUIest::newRow("absent-taggedunsigned-unsigned") << raw("\xa1\xc0\0\0") << false;
+    BOBUIest::newRow("absent-unsigned-taggedunsigned") << raw("\xa1\0\xc0\0") << false;
+    BOBUIest::newRow("absent-taggedunsigned-taggedunsigned") << raw("\xa1\xc0\0\xc0\0") << false;
+    BOBUIest::newRow("absent-string-unsigned") << raw("\xa1\x68haystack\0") << false;
+    BOBUIest::newRow("absent-taggedstring-unsigned") << raw("\xa1\xc0\x68haystack\0") << false;
+    BOBUIest::newRow("absent-string-taggedunsigned") << raw("\xa1\x68haystack\xc0\0") << false;
+    BOBUIest::newRow("absent-taggedstring-taggedunsigned") << raw("\xa1\xc0\x68haystack\xc0\0") << false;
+    BOBUIest::newRow("absent-string-string") << raw("\xa1\x68haystack\x66needle") << false;
+    BOBUIest::newRow("absent-string-taggedstring") << raw("\xa1\x68haystack\xc0\x66needle") << false;
+    BOBUIest::newRow("absent-taggedstring-string") << raw("\xa1\xc0\x68haystack\x66needle") << false;
+    BOBUIest::newRow("absent-string-taggedstring") << raw("\xa1\xc0\x68haystack\xc0\x66needle") << false;
 
-    QTest::newRow("absent-string-emptyarray") << raw("\xa1\x68haystack\x80") << false;
-    QTest::newRow("absent-string-_emptyarray") << raw("\xa1\x68haystack\x9f\xff") << false;
-    QTest::newRow("absent-string-array1") << raw("\xa1\x68haystack\x81\0") << false;
-    QTest::newRow("absent-string-array2") << raw("\xa1\x68haystack\x85\0\1\2\3\4") << false;
-    QTest::newRow("absent-string-array3") << raw("\xa1\x68haystack\x85\x63one\x63two\x65three\x64""four\x64""five") << false;
+    BOBUIest::newRow("absent-string-emptyarray") << raw("\xa1\x68haystack\x80") << false;
+    BOBUIest::newRow("absent-string-_emptyarray") << raw("\xa1\x68haystack\x9f\xff") << false;
+    BOBUIest::newRow("absent-string-array1") << raw("\xa1\x68haystack\x81\0") << false;
+    BOBUIest::newRow("absent-string-array2") << raw("\xa1\x68haystack\x85\0\1\2\3\4") << false;
+    BOBUIest::newRow("absent-string-array3") << raw("\xa1\x68haystack\x85\x63one\x63two\x65three\x64""four\x64""five") << false;
 
-    QTest::newRow("absent-string-emptymap") << raw("\xa1\x68haystack\xa0") << false;
-    QTest::newRow("absent-string-_emptymap") << raw("\xa1\x68haystack\xbf\xff") << false;
-    QTest::newRow("absent-string-map") << raw("\xa1\x68haystack\xa1\x68haystack\x66needle") << false;
-    QTest::newRow("absent-string-map2") << raw("\xa1\x68haystack\xa1\x68haystack\x66needle\61z\62yx") << false;
+    BOBUIest::newRow("absent-string-emptymap") << raw("\xa1\x68haystack\xa0") << false;
+    BOBUIest::newRow("absent-string-_emptymap") << raw("\xa1\x68haystack\xbf\xff") << false;
+    BOBUIest::newRow("absent-string-map") << raw("\xa1\x68haystack\xa1\x68haystack\x66needle") << false;
+    BOBUIest::newRow("absent-string-map2") << raw("\xa1\x68haystack\xa1\x68haystack\x66needle\61z\62yx") << false;
 
     // maps containing our items
-    QTest::newRow("alone") << raw("\xa1\x66needle\xd8\x2a\x68haystack") << true;
-    QTest::newRow("tagged") << raw("\xa1\xc1\x66needle\xd8\x2a\x68haystack") << true;
-    QTest::newRow("doubletagged") << raw("\xa1\xc1\xc2\x66needle\xd8\x2a\x68haystack") << true;
-    QTest::newRow("chunked") << raw("\xa1\x7f\x66needle\xff\xd8\x2a\x68haystack") << true;
-    QTest::newRow("chunked*2") << raw("\xa1\x7f\x60\x66needle\xff\xd8\x2a\x68haystack") << true;
-    QTest::newRow("chunked*2bis") << raw("\xa1\x7f\x66needle\x60\xff\xd8\x2a\x68haystack") << true;
-    QTest::newRow("chunked*3") << raw("\xa1\x7f\x62ne\x62""ed\x62le\xff\xd8\x2a\x68haystack") << true;
-    QTest::newRow("chunked*8") << raw("\xa1\x7f\x61n\x61""e\x60\x61""e\x61""d\x60\x62le\x60\xff\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("alone") << raw("\xa1\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("tagged") << raw("\xa1\xc1\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("doubletagged") << raw("\xa1\xc1\xc2\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("chunked") << raw("\xa1\x7f\x66needle\xff\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("chunked*2") << raw("\xa1\x7f\x60\x66needle\xff\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("chunked*2bis") << raw("\xa1\x7f\x66needle\x60\xff\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("chunked*3") << raw("\xa1\x7f\x62ne\x62""ed\x62le\xff\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("chunked*8") << raw("\xa1\x7f\x61n\x61""e\x60\x61""e\x61""d\x60\x62le\x60\xff\xd8\x2a\x68haystack") << true;
 
-    QTest::newRow("1before") << raw("\xa2\x68haystack\x66needle\x66needle\xd8\x2a\x68haystack") << true;
-    QTest::newRow("tagged-1before") << raw("\xa2\xc1\x68haystack\x66needle\xc1\x66needle\xd8\x2a\x68haystack") << true;
-    QTest::newRow("doubletagged-1before2") << raw("\xa2\xc1\xc2\x68haystack\x66needle\xc1\xc2\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("1before") << raw("\xa2\x68haystack\x66needle\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("tagged-1before") << raw("\xa2\xc1\x68haystack\x66needle\xc1\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("doubletagged-1before2") << raw("\xa2\xc1\xc2\x68haystack\x66needle\xc1\xc2\x66needle\xd8\x2a\x68haystack") << true;
 
-    QTest::newRow("arraybefore") << raw("\xa2\x61z\x80\x66needle\xd8\x2a\x68haystack") << true;
-    QTest::newRow("nestedarraybefore") << raw("\xa2\x61z\x81\x81\0\x66needle\xd8\x2a\x68haystack") << true;
-    QTest::newRow("arrayarraybefore") << raw("\xa2\x82\1\2\x80\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("arraybefore") << raw("\xa2\x61z\x80\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("nestedarraybefore") << raw("\xa2\x61z\x81\x81\0\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("arrayarraybefore") << raw("\xa2\x82\1\2\x80\x66needle\xd8\x2a\x68haystack") << true;
 
-    QTest::newRow("mapbefore") << raw("\xa2\x61z\xa0\x66needle\xd8\x2a\x68haystack") << true;
-    QTest::newRow("nestedmapbefore") << raw("\xa2\x61z\xa1\0\x81\0\x66needle\xd8\x2a\x68haystack") << true;
-    QTest::newRow("mapmapbefore") << raw("\xa2\xa1\1\2\xa0\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("mapbefore") << raw("\xa2\x61z\xa0\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("nestedmapbefore") << raw("\xa2\x61z\xa1\0\x81\0\x66needle\xd8\x2a\x68haystack") << true;
+    BOBUIest::newRow("mapmapbefore") << raw("\xa2\xa1\1\2\xa0\x66needle\xd8\x2a\x68haystack") << true;
 }
 
 void tst_Parser::mapFind()
@@ -1269,46 +1269,46 @@ void tst_Parser::mapFind()
 
 void tst_Parser::checkedIntegers_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QVariant>("result");       // QVariant so we can note numbers out of int64_t range
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QVariant>("result");       // QVariant so we can note numbers out of int64_t range
 
-    QTest::newRow("0") << raw("\x00") << QVariant(Q_INT64_C(0));
-    QTest::newRow("1") << raw("\x01") << QVariant(Q_INT64_C(1));
-    QTest::newRow("10") << raw("\x0a") << QVariant(Q_INT64_C(10));
-    QTest::newRow("23") << raw("\x17") << QVariant(Q_INT64_C(23));
-    QTest::newRow("24") << raw("\x18\x18") << QVariant(Q_INT64_C(24));
-    QTest::newRow("UINT8_MAX") << raw("\x18\xff") << QVariant(Q_INT64_C(255));
-    QTest::newRow("UINT8_MAX+1") << raw("\x19\x01\x00") << QVariant(Q_INT64_C(256));
-    QTest::newRow("UINT16_MAX") << raw("\x19\xff\xff") << QVariant(Q_INT64_C(65535));
-    QTest::newRow("UINT16_MAX+1") << raw("\x1a\0\1\x00\x00") << QVariant(Q_INT64_C(65536));
-    QTest::newRow("INT32_MAX") << raw("\x1a\x7f\xff\xff\xff") << QVariant(Q_INT64_C(2147483647));
-    QTest::newRow("INT32_MAX+1") << raw("\x1a\x80\x00\x00\x00") << QVariant(Q_INT64_C(2147483648));
-    QTest::newRow("UINT32_MAX") << raw("\x1a\xff\xff\xff\xff") << QVariant(Q_INT64_C(4294967295));
-    QTest::newRow("UINT32_MAX+1") << raw("\x1b\0\0\0\1\0\0\0\0") << QVariant(Q_INT64_C(4294967296));
-    QTest::newRow("UINT64_MAX") << raw("\x1b" "\xff\xff\xff\xff" "\xff\xff\xff\xff")
+    BOBUIest::newRow("0") << raw("\x00") << QVariant(Q_INT64_C(0));
+    BOBUIest::newRow("1") << raw("\x01") << QVariant(Q_INT64_C(1));
+    BOBUIest::newRow("10") << raw("\x0a") << QVariant(Q_INT64_C(10));
+    BOBUIest::newRow("23") << raw("\x17") << QVariant(Q_INT64_C(23));
+    BOBUIest::newRow("24") << raw("\x18\x18") << QVariant(Q_INT64_C(24));
+    BOBUIest::newRow("UINT8_MAX") << raw("\x18\xff") << QVariant(Q_INT64_C(255));
+    BOBUIest::newRow("UINT8_MAX+1") << raw("\x19\x01\x00") << QVariant(Q_INT64_C(256));
+    BOBUIest::newRow("UINT16_MAX") << raw("\x19\xff\xff") << QVariant(Q_INT64_C(65535));
+    BOBUIest::newRow("UINT16_MAX+1") << raw("\x1a\0\1\x00\x00") << QVariant(Q_INT64_C(65536));
+    BOBUIest::newRow("INT32_MAX") << raw("\x1a\x7f\xff\xff\xff") << QVariant(Q_INT64_C(2147483647));
+    BOBUIest::newRow("INT32_MAX+1") << raw("\x1a\x80\x00\x00\x00") << QVariant(Q_INT64_C(2147483648));
+    BOBUIest::newRow("UINT32_MAX") << raw("\x1a\xff\xff\xff\xff") << QVariant(Q_INT64_C(4294967295));
+    BOBUIest::newRow("UINT32_MAX+1") << raw("\x1b\0\0\0\1\0\0\0\0") << QVariant(Q_INT64_C(4294967296));
+    BOBUIest::newRow("UINT64_MAX") << raw("\x1b" "\xff\xff\xff\xff" "\xff\xff\xff\xff")
                                 << QVariant();  // out of range
 
     // negative integers
-    QTest::newRow("-1") << raw("\x20") << QVariant(Q_INT64_C(-1));
-    QTest::newRow("-2") << raw("\x21") << QVariant(Q_INT64_C(-2));
-    QTest::newRow("-24") << raw("\x37") << QVariant(Q_INT64_C(-24));
-    QTest::newRow("-25") << raw("\x38\x18") << QVariant(Q_INT64_C(-25));
-    QTest::newRow("-UINT8_MAX") << raw("\x38\xff") << QVariant(Q_INT64_C(-256));
-    QTest::newRow("-UINT8_MAX-1") << raw("\x39\x01\x00") << QVariant(Q_INT64_C(-257));
-    QTest::newRow("-UINT16_MAX") << raw("\x39\xff\xff") << QVariant(Q_INT64_C(-65536));
-    QTest::newRow("-UINT16_MAX-1") << raw("\x3a\0\1\x00\x00") << QVariant(Q_INT64_C(-65537));
-    QTest::newRow("INT32_MIN") << raw("\x3a\x7f\xff\xff\xff") << QVariant(Q_INT64_C(-2147483648));
-    QTest::newRow("INT32_MIN-1") << raw("\x3a\x80\x00\x00\x00") << QVariant(Q_INT64_C(-2147483649));
-    QTest::newRow("-UINT32_MAX") << raw("\x3a\xff\xff\xff\xff") << QVariant(Q_INT64_C(-4294967296));
-    QTest::newRow("-UINT32_MAX-1") << raw("\x3b\0\0\0\1\0\0\0\0") << QVariant(Q_INT64_C(-4294967297));
-    QTest::newRow("INT64_MIN+1") << raw("\x3b\x7f\xff\xff\xff""\xff\xff\xff\xfe")
+    BOBUIest::newRow("-1") << raw("\x20") << QVariant(Q_INT64_C(-1));
+    BOBUIest::newRow("-2") << raw("\x21") << QVariant(Q_INT64_C(-2));
+    BOBUIest::newRow("-24") << raw("\x37") << QVariant(Q_INT64_C(-24));
+    BOBUIest::newRow("-25") << raw("\x38\x18") << QVariant(Q_INT64_C(-25));
+    BOBUIest::newRow("-UINT8_MAX") << raw("\x38\xff") << QVariant(Q_INT64_C(-256));
+    BOBUIest::newRow("-UINT8_MAX-1") << raw("\x39\x01\x00") << QVariant(Q_INT64_C(-257));
+    BOBUIest::newRow("-UINT16_MAX") << raw("\x39\xff\xff") << QVariant(Q_INT64_C(-65536));
+    BOBUIest::newRow("-UINT16_MAX-1") << raw("\x3a\0\1\x00\x00") << QVariant(Q_INT64_C(-65537));
+    BOBUIest::newRow("INT32_MIN") << raw("\x3a\x7f\xff\xff\xff") << QVariant(Q_INT64_C(-2147483648));
+    BOBUIest::newRow("INT32_MIN-1") << raw("\x3a\x80\x00\x00\x00") << QVariant(Q_INT64_C(-2147483649));
+    BOBUIest::newRow("-UINT32_MAX") << raw("\x3a\xff\xff\xff\xff") << QVariant(Q_INT64_C(-4294967296));
+    BOBUIest::newRow("-UINT32_MAX-1") << raw("\x3b\0\0\0\1\0\0\0\0") << QVariant(Q_INT64_C(-4294967297));
+    BOBUIest::newRow("INT64_MIN+1") << raw("\x3b\x7f\xff\xff\xff""\xff\xff\xff\xfe")
                                << QVariant(std::numeric_limits<qint64>::min() + 1);
-    QTest::newRow("INT64_MIN") << raw("\x3b\x7f\xff\xff\xff""\xff\xff\xff\xff")
+    BOBUIest::newRow("INT64_MIN") << raw("\x3b\x7f\xff\xff\xff""\xff\xff\xff\xff")
                                << QVariant(std::numeric_limits<qint64>::min());
-    QTest::newRow("INT64_MIN-1") << raw("\x3b\x80\0\0\0""\0\0\0\0") << QVariant();  // out of range
-    QTest::newRow("-UINT64_MAX") << raw("\x3b" "\xff\xff\xff\xff" "\xff\xff\xff\xfe")
+    BOBUIest::newRow("INT64_MIN-1") << raw("\x3b\x80\0\0\0""\0\0\0\0") << QVariant();  // out of range
+    BOBUIest::newRow("-UINT64_MAX") << raw("\x3b" "\xff\xff\xff\xff" "\xff\xff\xff\xfe")
                                    << QVariant();   // out of range
-    QTest::newRow("-UINT64_MAX+1") << raw("\x3b" "\xff\xff\xff\xff" "\xff\xff\xff\xff")
+    BOBUIest::newRow("-UINT64_MAX+1") << raw("\x3b" "\xff\xff\xff\xff" "\xff\xff\xff\xff")
                                    << QVariant();   // out of range
 }
 
@@ -1375,13 +1375,13 @@ void tst_Parser::validation()
     CborError err3 = cbor_value_validate(&w.first, CborValidateBasic);
     err = parseOne(&w.first, &decoded);
     QCOMPARE(err, expectedError);
-    if (!QByteArray(QTest::currentDataTag()).contains("utf8")) {
+    if (!QByteArray(BOBUIest::currentDataTag()).contains("utf8")) {
         QCOMPARE(err2, expectedError);
         QCOMPARE(err3, expectedError);
     }
 
     // see if we've got a map
-    if (QByteArray(QTest::currentDataTag()).startsWith("map")) {
+    if (QByteArray(BOBUIest::currentDataTag()).startsWith("map")) {
         w.init(data, uint32_t(flags));      // reinit
         QVERIFY(cbor_value_is_array(&w.first));
 
@@ -1404,107 +1404,107 @@ void tst_Parser::strictValidation_data()
     addValidationColumns();
 
     // Canonical validation - fixed types
-    QTest::newRow("unsigned-0") << raw("\x00") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("unsigned-24") << raw("\x18\x18") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("unsigned-256") << raw("\x19\1\0") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("unsigned-65536") << raw("\x1a\0\1\0\0") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("unsigned-4294967296") << raw("\x1b\0\0\0\1\0\0\0\0") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("overlong-unsigned-0*1") << raw("\x18\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-unsigned-0*2") << raw("\x19\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-unsigned-0*4") << raw("\x1a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-unsigned-0*8") << raw("\x1b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-unsigned-24*2") << raw("\x19\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-unsigned-24*4") << raw("\x1a\0\0\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-unsigned-24*8") << raw("\x1b\0\0\0\0\0\0\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-unsigned-256*4") << raw("\x1a\0\0\1\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-unsigned-256*8") << raw("\x1b\0\0\0\0\0\0\1\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-unsigned-65536*8") << raw("\x1b\0\0\0\0\0\1\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("negative-1") << raw("\x20") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("negative-25") << raw("\x38\x38") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("negative-257") << raw("\x39\1\0") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("negative-65537") << raw("\x3a\0\1\0\0") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("negative-4294967297") << raw("\x3b\0\0\0\1\0\0\0\0") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("overlong-negative-1*1") << raw("\x38\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-negative-1*2") << raw("\x39\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-negative-1*4") << raw("\x3a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-negative-1*8") << raw("\x3b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-negative-25*2") << raw("\x39\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-negative-25*4") << raw("\x3a\0\0\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-negative-25*8") << raw("\x3b\0\0\0\0\0\0\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-negative-257*4") << raw("\x3a\0\0\1\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-negative-257*8") << raw("\x3b\0\0\0\0\0\0\1\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-negative-65537*8") << raw("\x3b\0\0\0\0\0\1\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("simple-0") << raw("\xe0") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("false") << raw("\xf4") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("true") << raw("\xf5") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("null") << raw("\xf6") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("undefined") << raw("\xf7") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("simple-32") << raw("\xf8\x20") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("fp-nan") << raw("\xf9\x7e\00") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("fp--inf") << raw("\xf9\xfc\00") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("fp-+inf") << raw("\xf9\x7c\00") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("overlong-fp-nan_f") << raw("\xfa\x7f\xc0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-fp--inf_f") << raw("\xfa\xff\x80\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-fp-+inf_f") << raw("\xfa\x7f\x80\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-fp-nan") << raw("\xfb\x7f\xf8\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-fp--inf") << raw("\xfb\xff\xf0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-fp-+inf") << raw("\xfb\x7f\xf0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("unsigned-0") << raw("\x00") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("unsigned-24") << raw("\x18\x18") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("unsigned-256") << raw("\x19\1\0") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("unsigned-65536") << raw("\x1a\0\1\0\0") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("unsigned-4294967296") << raw("\x1b\0\0\0\1\0\0\0\0") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("overlong-unsigned-0*1") << raw("\x18\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-unsigned-0*2") << raw("\x19\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-unsigned-0*4") << raw("\x1a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-unsigned-0*8") << raw("\x1b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-unsigned-24*2") << raw("\x19\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-unsigned-24*4") << raw("\x1a\0\0\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-unsigned-24*8") << raw("\x1b\0\0\0\0\0\0\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-unsigned-256*4") << raw("\x1a\0\0\1\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-unsigned-256*8") << raw("\x1b\0\0\0\0\0\0\1\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-unsigned-65536*8") << raw("\x1b\0\0\0\0\0\1\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("negative-1") << raw("\x20") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("negative-25") << raw("\x38\x38") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("negative-257") << raw("\x39\1\0") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("negative-65537") << raw("\x3a\0\1\0\0") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("negative-4294967297") << raw("\x3b\0\0\0\1\0\0\0\0") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("overlong-negative-1*1") << raw("\x38\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-negative-1*2") << raw("\x39\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-negative-1*4") << raw("\x3a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-negative-1*8") << raw("\x3b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-negative-25*2") << raw("\x39\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-negative-25*4") << raw("\x3a\0\0\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-negative-25*8") << raw("\x3b\0\0\0\0\0\0\0\x18") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-negative-257*4") << raw("\x3a\0\0\1\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-negative-257*8") << raw("\x3b\0\0\0\0\0\0\1\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-negative-65537*8") << raw("\x3b\0\0\0\0\0\1\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("simple-0") << raw("\xe0") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("false") << raw("\xf4") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("true") << raw("\xf5") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("null") << raw("\xf6") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("undefined") << raw("\xf7") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("simple-32") << raw("\xf8\x20") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("fp-nan") << raw("\xf9\x7e\00") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("fp--inf") << raw("\xf9\xfc\00") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("fp-+inf") << raw("\xf9\x7c\00") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("overlong-fp-nan_f") << raw("\xfa\x7f\xc0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-fp--inf_f") << raw("\xfa\xff\x80\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-fp-+inf_f") << raw("\xfa\x7f\x80\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-fp-nan") << raw("\xfb\x7f\xf8\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-fp--inf") << raw("\xfb\xff\xf0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-fp-+inf") << raw("\xfb\x7f\xf0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
 
     // canonical - lengths
     QByteArray data24(24, 0x20);    // also decodes as -1
     QByteArray data256(256, 0x40);  // also decodes as h''
     QByteArray data65536(65536, 0x60);// also decodes as ""
-    QTest::newRow("bytearray-0") << raw("\x40") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("bytearray-24") << (raw("\x58\x18") + data24) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("bytearray-256") << (raw("\x59\1\0") + data256) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("bytearray-65536") << (raw("\x5a\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("_bytearray-0") << raw("\x5f\xff") << int(CborValidateCanonicalFormat) << CborErrorUnknownLength;
-    QTest::newRow("overlong-bytearray-0*1") << raw("\x58\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-bytearray-0*2") << raw("\x59\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-bytearray-0*4") << raw("\x5a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-bytearray-0*8") << raw("\x5b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-bytearray-24*2") << (raw("\x59\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-bytearray-24*4") << (raw("\x5a\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-bytearray-24*8") << (raw("\x5b\0\0\0\0\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-bytearray-256*4") << (raw("\x5a\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-bytearray-256*8") << (raw("\x5b\0\0\0\0\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-bytearray-65536*8") << (raw("\x5b\0\0\0\0\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("string-0") << raw("\x60") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("string-24") << (raw("\x78\x18") + data24) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("string-256") << (raw("\x79\1\0") + data256) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("string-65536") << (raw("\x7a\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("_string-0") << raw("\x7f\xff") << int(CborValidateCanonicalFormat) << CborErrorUnknownLength;
-    QTest::newRow("overlong-string-0*1") << raw("\x78\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-string-0*2") << raw("\x79\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-string-0*4") << raw("\x7a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-string-0*8") << raw("\x7b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-string-24*2") << (raw("\x79\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-string-24*4") << (raw("\x7a\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-string-24*8") << (raw("\x7b\0\0\0\0\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-string-256*4") << (raw("\x7a\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-string-256*8") << (raw("\x7b\0\0\0\0\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-string-65536*8") << (raw("\x7b\0\0\0\0\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("array-0") << raw("\x80") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("array-24") << (raw("\x98\x18") + data24) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("array-256") << (raw("\x99\1\0") + data256) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("array-65536") << (raw("\x9a\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("_array-0") << raw("\x9f\xff") << int(CborValidateCanonicalFormat) << CborErrorUnknownLength;
-    QTest::newRow("overlong-array-0*1") << raw("\x98\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-array-0*2") << raw("\x99\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-array-0*4") << raw("\x9a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-array-0*8") << raw("\x9b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-array-24*2") << (raw("\x99\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-array-24*4") << (raw("\x9a\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-array-24*8") << (raw("\x9b\0\0\0\0\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-array-256*4") << (raw("\x9a\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-array-256*8") << (raw("\x9b\0\0\0\0\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-array-65536*8") << (raw("\x9b\0\0\0\0\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("bytearray-0") << raw("\x40") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("bytearray-24") << (raw("\x58\x18") + data24) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("bytearray-256") << (raw("\x59\1\0") + data256) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("bytearray-65536") << (raw("\x5a\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("_bytearray-0") << raw("\x5f\xff") << int(CborValidateCanonicalFormat) << CborErrorUnknownLength;
+    BOBUIest::newRow("overlong-bytearray-0*1") << raw("\x58\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-bytearray-0*2") << raw("\x59\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-bytearray-0*4") << raw("\x5a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-bytearray-0*8") << raw("\x5b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-bytearray-24*2") << (raw("\x59\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-bytearray-24*4") << (raw("\x5a\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-bytearray-24*8") << (raw("\x5b\0\0\0\0\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-bytearray-256*4") << (raw("\x5a\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-bytearray-256*8") << (raw("\x5b\0\0\0\0\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-bytearray-65536*8") << (raw("\x5b\0\0\0\0\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("string-0") << raw("\x60") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("string-24") << (raw("\x78\x18") + data24) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("string-256") << (raw("\x79\1\0") + data256) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("string-65536") << (raw("\x7a\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("_string-0") << raw("\x7f\xff") << int(CborValidateCanonicalFormat) << CborErrorUnknownLength;
+    BOBUIest::newRow("overlong-string-0*1") << raw("\x78\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-string-0*2") << raw("\x79\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-string-0*4") << raw("\x7a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-string-0*8") << raw("\x7b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-string-24*2") << (raw("\x79\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-string-24*4") << (raw("\x7a\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-string-24*8") << (raw("\x7b\0\0\0\0\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-string-256*4") << (raw("\x7a\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-string-256*8") << (raw("\x7b\0\0\0\0\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-string-65536*8") << (raw("\x7b\0\0\0\0\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("array-0") << raw("\x80") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("array-24") << (raw("\x98\x18") + data24) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("array-256") << (raw("\x99\1\0") + data256) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("array-65536") << (raw("\x9a\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("_array-0") << raw("\x9f\xff") << int(CborValidateCanonicalFormat) << CborErrorUnknownLength;
+    BOBUIest::newRow("overlong-array-0*1") << raw("\x98\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-array-0*2") << raw("\x99\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-array-0*4") << raw("\x9a\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-array-0*8") << raw("\x9b\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-array-24*2") << (raw("\x99\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-array-24*4") << (raw("\x9a\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-array-24*8") << (raw("\x9b\0\0\0\0\0\0\0\x18") + data24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-array-256*4") << (raw("\x9a\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-array-256*8") << (raw("\x9b\0\0\0\0\0\0\1\0") + data256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-array-65536*8") << (raw("\x9b\0\0\0\0\0\1\0\0") + data65536) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
 
     // we need unique, sorted, string keys for map
     // we'll make all key-value pairs a total of 4 bytes
     char mapentry[] = { 0x62, 0, 0, 0x20 };
-    QByteArray mapdata24(24 * sizeof(mapentry), Qt::Uninitialized);
-    QByteArray mapdata256(256 * sizeof(mapentry), Qt::Uninitialized);
+    QByteArray mapdata24(24 * sizeof(mapentry), BobUI::Uninitialized);
+    QByteArray mapdata256(256 * sizeof(mapentry), BobUI::Uninitialized);
     char *mapdata24ptr = mapdata24.data();
     char *mapdata256ptr = mapdata256.data();
     for (int i = 0; i < 256; ++i) {
@@ -1514,250 +1514,250 @@ void tst_Parser::strictValidation_data()
         if (i < 24)
             memcpy(mapdata24ptr + i * sizeof(mapentry), mapentry, sizeof(mapentry));
     }
-    QTest::newRow("map-0") << raw("\xa0") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("map-24") << (raw("\xb8\x18") + mapdata24) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("map-256") << (raw("\xb9\1\0") + mapdata256) << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("_map-0") << raw("\xbf\xff") << int(CborValidateCanonicalFormat) << CborErrorUnknownLength;
-    QTest::newRow("overlong-map-0*1") << raw("\xb8\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-map-0*2") << raw("\xb9\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-map-0*4") << raw("\xba\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-map-0*8") << raw("\xbb\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-map-24*2") << (raw("\xb9\0\x18") + mapdata24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-map-24*4") << (raw("\xba\0\0\0\x18") + mapdata24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-map-24*8") << (raw("\xbb\0\0\0\0\0\0\0\x18") + mapdata24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-map-256*4") << (raw("\xba\0\0\1\0") + mapdata256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-map-256*8") << (raw("\xbb\0\0\0\0\0\0\1\0") + mapdata256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("unsorted-length-map-UU") << raw("\xa2\1\1\0\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
-    QTest::newRow("unsorted-length-map-UUU") << raw("\xa3\1\1\1\1\0\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
-    QTest::newRow("unsorted-length-map-SS") << raw("\xa2\x61z\1\x60\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
-    QTest::newRow("unsorted-length-map-SSS") << raw("\xa3\x61z\1\x61z\2\x60\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
-    QTest::newRow("unsorted-length-map-SB") << raw("\xa2\x61z\1\x40\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
-    QTest::newRow("unsorted-length-map-AS") << raw("\xa2\x83\0\x20\x45Hello\1\x60\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
-    QTest::newRow("unsorted-content-map-SS") << raw("\xa2\x61z\1\x61y\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
-    QTest::newRow("unsorted-content-map-AS") << raw("\xa2\x81\x21\1\x61\x21\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
+    BOBUIest::newRow("map-0") << raw("\xa0") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("map-24") << (raw("\xb8\x18") + mapdata24) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("map-256") << (raw("\xb9\1\0") + mapdata256) << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("_map-0") << raw("\xbf\xff") << int(CborValidateCanonicalFormat) << CborErrorUnknownLength;
+    BOBUIest::newRow("overlong-map-0*1") << raw("\xb8\x00") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-map-0*2") << raw("\xb9\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-map-0*4") << raw("\xba\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-map-0*8") << raw("\xbb\0\0\0\0\0\0\0\0") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-map-24*2") << (raw("\xb9\0\x18") + mapdata24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-map-24*4") << (raw("\xba\0\0\0\x18") + mapdata24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-map-24*8") << (raw("\xbb\0\0\0\0\0\0\0\x18") + mapdata24) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-map-256*4") << (raw("\xba\0\0\1\0") + mapdata256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-map-256*8") << (raw("\xbb\0\0\0\0\0\0\1\0") + mapdata256) << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("unsorted-length-map-UU") << raw("\xa2\1\1\0\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
+    BOBUIest::newRow("unsorted-length-map-UUU") << raw("\xa3\1\1\1\1\0\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
+    BOBUIest::newRow("unsorted-length-map-SS") << raw("\xa2\x61z\1\x60\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
+    BOBUIest::newRow("unsorted-length-map-SSS") << raw("\xa3\x61z\1\x61z\2\x60\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
+    BOBUIest::newRow("unsorted-length-map-SB") << raw("\xa2\x61z\1\x40\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
+    BOBUIest::newRow("unsorted-length-map-AS") << raw("\xa2\x83\0\x20\x45Hello\1\x60\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
+    BOBUIest::newRow("unsorted-content-map-SS") << raw("\xa2\x61z\1\x61y\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
+    BOBUIest::newRow("unsorted-content-map-AS") << raw("\xa2\x81\x21\1\x61\x21\0") << int(CborValidateCanonicalFormat) << CborErrorMapNotSorted;
 
-    QTest::newRow("tag-0") << raw("\xc0\x60") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("tag-24") << raw("\xd8\x18\x40") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("tag-65536") << raw("\xda\0\1\0\0\x60") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("tag-4294967296") << raw("\xdb\0\0\0\1\0\0\0\0\x60") << int(CborValidateCanonicalFormat) << CborNoError;
-    QTest::newRow("overlong-tag-0*1") << raw("\xd8\x00\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-tag-0*2") << raw("\xd9\0\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-tag-0*4") << raw("\xda\0\0\0\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-tag-0*8") << raw("\xdb\0\0\0\0\0\0\0\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-tag-24*2") << raw("\xd9\0\x18\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-tag-24*4") << raw("\xda\0\0\0\x18\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-tag-24*8") << raw("\xdb\0\0\0\0\0\0\0\x18\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-tag-256*4") << raw("\xda\0\0\1\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-tag-256*8") << raw("\xdb\0\0\0\0\0\0\1\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-tag-65536*8") << raw("\xdb\0\0\0\0\0\1\0\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("tag-0") << raw("\xc0\x60") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("tag-24") << raw("\xd8\x18\x40") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("tag-65536") << raw("\xda\0\1\0\0\x60") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("tag-4294967296") << raw("\xdb\0\0\0\1\0\0\0\0\x60") << int(CborValidateCanonicalFormat) << CborNoError;
+    BOBUIest::newRow("overlong-tag-0*1") << raw("\xd8\x00\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-tag-0*2") << raw("\xd9\0\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-tag-0*4") << raw("\xda\0\0\0\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-tag-0*8") << raw("\xdb\0\0\0\0\0\0\0\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-tag-24*2") << raw("\xd9\0\x18\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-tag-24*4") << raw("\xda\0\0\0\x18\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-tag-24*8") << raw("\xdb\0\0\0\0\0\0\0\x18\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-tag-256*4") << raw("\xda\0\0\1\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-tag-256*8") << raw("\xdb\0\0\0\0\0\0\1\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-tag-65536*8") << raw("\xdb\0\0\0\0\0\1\0\0\x60") << int(CborValidateCanonicalFormat) << CborErrorOverlongEncoding;
 
     // non-canonical: string length in chunked transfer
-    QTest::newRow("overlong-_bytearray-0*1") << raw("\x5f\x58\x00\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearray-0*2") << raw("\x5f\x59\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearray-0*4") << raw("\x5f\x5a\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearray-0*8") << raw("\x5f\x5b\0\0\0\0\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearray-24*2") << (raw("\x5f\x59\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearray-24*4") << (raw("\x5f\x5a\0\0\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearray-24*8") << (raw("\x5f\x5b\0\0\0\0\0\0\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearray-256*4") << (raw("\x5f\x5a\0\0\1\0") + data256 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearray-256*8") << (raw("\x5f\x5b\0\0\0\0\0\0\1\0") + data256 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearray-65536*8") << (raw("\x5f\x5b\0\0\0\0\0\1\0\0") + data65536 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearrayx2-0*1") << raw("\x5f\x40\x58\x00\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearrayx2-0*2") << raw("\x5f\x40\x59\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearrayx2-0*4") << raw("\x5f\x40\x5a\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_bytearrayx2-0*8") << raw("\x5f\x40\x5b\0\0\0\0\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-0*1") << raw("\x7f\x78\x00\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-0*2") << raw("\x7f\x79\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-0*4") << raw("\x7f\x7a\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-0*8") << raw("\x7f\x7b\0\0\0\0\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-24*2") << (raw("\x7f\x79\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-24*4") << (raw("\x7f\x7a\0\0\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-24*8") << (raw("\x7f\x7b\0\0\0\0\0\0\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-256*4") << (raw("\x7f\x7a\0\0\1\0") + data256 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-256*8") << (raw("\x7f\x7b\0\0\0\0\0\0\1\0") + data256 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_string-65536*8") << (raw("\x7f\x7b\0\0\0\0\0\1\0\0") + data65536 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_stringx2-0*1") << raw("\x7f\x60\x78\x00\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_stringx2-0*2") << raw("\x7f\x60\x79\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_stringx2-0*4") << raw("\x7f\x60\x7a\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
-    QTest::newRow("overlong-_stringx2-0*8") << raw("\x7f\x60\x7b\0\0\0\0\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-0*1") << raw("\x5f\x58\x00\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-0*2") << raw("\x5f\x59\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-0*4") << raw("\x5f\x5a\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-0*8") << raw("\x5f\x5b\0\0\0\0\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-24*2") << (raw("\x5f\x59\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-24*4") << (raw("\x5f\x5a\0\0\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-24*8") << (raw("\x5f\x5b\0\0\0\0\0\0\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-256*4") << (raw("\x5f\x5a\0\0\1\0") + data256 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-256*8") << (raw("\x5f\x5b\0\0\0\0\0\0\1\0") + data256 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearray-65536*8") << (raw("\x5f\x5b\0\0\0\0\0\1\0\0") + data65536 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearrayx2-0*1") << raw("\x5f\x40\x58\x00\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearrayx2-0*2") << raw("\x5f\x40\x59\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearrayx2-0*4") << raw("\x5f\x40\x5a\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_bytearrayx2-0*8") << raw("\x5f\x40\x5b\0\0\0\0\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-0*1") << raw("\x7f\x78\x00\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-0*2") << raw("\x7f\x79\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-0*4") << raw("\x7f\x7a\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-0*8") << raw("\x7f\x7b\0\0\0\0\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-24*2") << (raw("\x7f\x79\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-24*4") << (raw("\x7f\x7a\0\0\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-24*8") << (raw("\x7f\x7b\0\0\0\0\0\0\0\x18") + data24 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-256*4") << (raw("\x7f\x7a\0\0\1\0") + data256 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-256*8") << (raw("\x7f\x7b\0\0\0\0\0\0\1\0") + data256 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_string-65536*8") << (raw("\x7f\x7b\0\0\0\0\0\1\0\0") + data65536 + '\xff') << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_stringx2-0*1") << raw("\x7f\x60\x78\x00\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_stringx2-0*2") << raw("\x7f\x60\x79\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_stringx2-0*4") << raw("\x7f\x60\x7a\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
+    BOBUIest::newRow("overlong-_stringx2-0*8") << raw("\x7f\x60\x7b\0\0\0\0\0\0\0\0\xff") << int(CborValidateShortestNumbers) << CborErrorOverlongEncoding;
 
     // strict mode
     // UTF-8 sequences with invalid continuation bytes
-    QTest::newRow("invalid-utf8-bad-continuation-1char") << raw("\x61\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-bad-continuation-2chars-1") << raw("\x62\xc2\xc0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-bad-continuation-2chars-2") << raw("\x62\xc3\xdf") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-bad-continuation-2chars-3") << raw("\x62\xc7\xf0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-bad-continuation-3chars-1") << raw("\x63\xe0\xa0\xc0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-bad-continuation-3chars-2") << raw("\x63\xe0\xc0\xa0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-bad-continuation-4chars-1") << raw("\x64\xf0\x90\x80\xc0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-bad-continuation-4chars-2") << raw("\x64\xf0\x90\xc0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-bad-continuation-4chars-3") << raw("\x64\xf0\xc0\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-bad-continuation-1char") << raw("\x61\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-bad-continuation-2chars-1") << raw("\x62\xc2\xc0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-bad-continuation-2chars-2") << raw("\x62\xc3\xdf") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-bad-continuation-2chars-3") << raw("\x62\xc7\xf0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-bad-continuation-3chars-1") << raw("\x63\xe0\xa0\xc0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-bad-continuation-3chars-2") << raw("\x63\xe0\xc0\xa0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-bad-continuation-4chars-1") << raw("\x64\xf0\x90\x80\xc0") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-bad-continuation-4chars-2") << raw("\x64\xf0\x90\xc0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-bad-continuation-4chars-3") << raw("\x64\xf0\xc0\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
     // Too short UTF-8 sequences (in an array so there's a byte after that would make it valid UTF-8 if it were part of the string)
-    QTest::newRow("invalid-utf8-too-short-2chars") << raw("\x82\x61\xc2\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-too-short-3chars-1") << raw("\x82\x61\xe0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-too-short-3chars-2") << raw("\x82\x62\xe0\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-too-short-4chars-1") << raw("\x82\x61\xf0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-too-short-4chars-2") << raw("\x82\x62\xf0\x90\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-too-short-4chars-3") << raw("\x82\x63\xf0\x90\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-too-short-2chars") << raw("\x82\x61\xc2\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-too-short-3chars-1") << raw("\x82\x61\xe0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-too-short-3chars-2") << raw("\x82\x62\xe0\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-too-short-4chars-1") << raw("\x82\x61\xf0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-too-short-4chars-2") << raw("\x82\x62\xf0\x90\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-too-short-4chars-3") << raw("\x82\x63\xf0\x90\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
     // UTF-16 surrogages encoded in UTF-8
-    QTest::newRow("invalid-utf8-hi-surrogate") << raw("\x63\xed\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-lo-surrogate") << raw("\x63\xed\xb0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-surrogate-pair") << raw("\x66\xed\xa0\x80\xed\xb0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-hi-surrogate") << raw("\x63\xed\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-lo-surrogate") << raw("\x63\xed\xb0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-surrogate-pair") << raw("\x66\xed\xa0\x80\xed\xb0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
     // Non-Unicode UTF-8 sequences
-    QTest::newRow("invalid-utf8-non-unicode-1") << raw("\x64\xf4\x90\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-non-unicode-2") << raw("\x65\xf8\x88\x80\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-non-unicode-3") << raw("\x66\xfc\x84\x80\x80\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-non-unicode-4") << raw("\x66\xfd\xbf\xbf\xbf\xbf\xbf") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-non-unicode-1") << raw("\x64\xf4\x90\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-non-unicode-2") << raw("\x65\xf8\x88\x80\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-non-unicode-3") << raw("\x66\xfc\x84\x80\x80\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-non-unicode-4") << raw("\x66\xfd\xbf\xbf\xbf\xbf\xbf") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
     // invalid bytes in UTF-8
-    QTest::newRow("invalid-utf8-fe") << raw("\x61\xfe") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-ff") << raw("\x61\xff") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-fe") << raw("\x61\xfe") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-ff") << raw("\x61\xff") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
     // Overlong sequences
-    QTest::newRow("invalid-utf8-overlong-1-2") << raw("\x62\xc1\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-1-3") << raw("\x63\xe0\x81\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-1-4") << raw("\x64\xf0\x80\x81\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-1-5") << raw("\x65\xf8\x80\x80\x81\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-1-6") << raw("\x66\xfc\x80\x80\x80\x81\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-2-3") << raw("\x63\xe0\x82\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-2-4") << raw("\x64\xf0\x80\x82\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-2-5") << raw("\x65\xf8\x80\x80\x82\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-2-6") << raw("\x66\xfc\x80\x80\x80\x82\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-3-4") << raw("\x64\xf0\x80\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-3-5") << raw("\x65\xf8\x80\x80\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-3-6") << raw("\x66\xfc\x80\x80\x80\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-4-5") << raw("\x65\xf8\x80\x84\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
-    QTest::newRow("invalid-utf8-overlong-4-6") << raw("\x66\xfc\x80\x80\x84\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-1-2") << raw("\x62\xc1\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-1-3") << raw("\x63\xe0\x81\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-1-4") << raw("\x64\xf0\x80\x81\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-1-5") << raw("\x65\xf8\x80\x80\x81\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-1-6") << raw("\x66\xfc\x80\x80\x80\x81\x81") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-2-3") << raw("\x63\xe0\x82\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-2-4") << raw("\x64\xf0\x80\x82\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-2-5") << raw("\x65\xf8\x80\x80\x82\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-2-6") << raw("\x66\xfc\x80\x80\x80\x82\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-3-4") << raw("\x64\xf0\x80\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-3-5") << raw("\x65\xf8\x80\x80\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-3-6") << raw("\x66\xfc\x80\x80\x80\xa0\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-4-5") << raw("\x65\xf8\x80\x84\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
+    BOBUIest::newRow("invalid-utf8-overlong-4-6") << raw("\x66\xfc\x80\x80\x84\x80\x80") << int(CborValidateStrictMode) << CborErrorInvalidUtf8TextString;
 
-    QTest::newRow("nonunique-content-map-UU") << raw("\xa2\0\1\0\2") << int(CborValidateStrictMode) << CborErrorMapKeysNotUnique;
-    QTest::newRow("nonunique-content-map-SS") << raw("\xa2\x61z\1\x61z\2") << int(CborValidateStrictMode) << CborErrorMapKeysNotUnique;
-    QTest::newRow("nonunique-content-map-AA") << raw("\xa2\x81\x65Hello\1\x81\x65Hello\2") << int(CborValidateStrictMode) << CborErrorMapKeysNotUnique;
+    BOBUIest::newRow("nonunique-content-map-UU") << raw("\xa2\0\1\0\2") << int(CborValidateStrictMode) << CborErrorMapKeysNotUnique;
+    BOBUIest::newRow("nonunique-content-map-SS") << raw("\xa2\x61z\1\x61z\2") << int(CborValidateStrictMode) << CborErrorMapKeysNotUnique;
+    BOBUIest::newRow("nonunique-content-map-AA") << raw("\xa2\x81\x65Hello\1\x81\x65Hello\2") << int(CborValidateStrictMode) << CborErrorMapKeysNotUnique;
 
-    QTest::newRow("tag-0-unsigned") << raw("\xc0\x00") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-0-bytearray") << raw("\xc0\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-0-string") << raw("\xc0\x60") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-0-tag-0-string") << raw("\xc0\xc0\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-1-unsigned") << raw("\xc1\x00") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-1-negative") << raw("\xc1\x20") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-1-bytearray") << raw("\xc1\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-2-bytearray") << raw("\xc2\x40") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-2-string") << raw("\xc2\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-3-bytearray") << raw("\xc3\x40") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-3-string") << raw("\xc3\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-4-string") << raw("\xc4\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-4-array") << raw("\xc4\x82\0\1") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-5-string") << raw("\xc5\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-5-array") << raw("\xc5\x82\0\1") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-21-bytearray") << raw("\xd5\x40") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-21-string") << raw("\xd5\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-21-array") << raw("\xd5\x80") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-21-map") << raw("\xd5\xa0") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-22-bytearray") << raw("\xd6\x40") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-22-string") << raw("\xd6\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-22-array") << raw("\xd6\x80") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-22-map") << raw("\xd6\xa0") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-23-bytearray") << raw("\xd7\x40") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-23-string") << raw("\xd7\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-23-array") << raw("\xd7\x80") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-23-map") << raw("\xd7\xa0") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-24-bytearray") << raw("\xd8\x18\x40") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-24-string") << raw("\xd8\x18\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-32-bytearray") << raw("\xd8\x20\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-32-string") << raw("\xd8\x20\x60") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-33-bytearray") << raw("\xd8\x21\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-33-string") << raw("\xd8\x21\x60") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-34-bytearray") << raw("\xd8\x22\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-34-string") << raw("\xd8\x22\x60") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-35-bytearray") << raw("\xd8\x23\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-35-string") << raw("\xd8\x23\x60") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-36-bytearray") << raw("\xd8\x24\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-36-string") << raw("\xd8\x24\x60") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-unsigned") << raw("\xd9\xd9\xf7\x00") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-negative") << raw("\xd9\xd9\xf7\x20") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-bytearray") << raw("\xd9\xd9\xf7\x40") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-string") << raw("\xd9\xd9\xf7\x60") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-array") << raw("\xd9\xd9\xf7\x80") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-map") << raw("\xd9\xd9\xf7\xa0") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-tag-0-unsigned") << raw("\xd9\xd9\xf7\xc0\x00") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
-    QTest::newRow("tag-55799-tag-0-string") << raw("\xd9\xd9\xf7\xc0\x60") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-simple0") << raw("\xd9\xd9\xf7\xe0") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-false") << raw("\xd9\xd9\xf7\xf4") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-true") << raw("\xd9\xd9\xf7\xf5") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-null") << raw("\xd9\xd9\xf7\xf6") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-undefined") << raw("\xd9\xd9\xf7\xf7") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-simple32") << raw("\xd9\xd9\xf7\xf8\x20") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-half") << raw("\xd9\xd9\xf7\xf9\0\0") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-float") << raw("\xd9\xd9\xf7\xfa\0\0\0\0") << int(CborValidateStrictMode) << CborNoError;
-    QTest::newRow("tag-55799-double") << raw("\xd9\xd9\xf7\xfb\0\0\0\0\0\0\0\0") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-0-unsigned") << raw("\xc0\x00") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-0-bytearray") << raw("\xc0\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-0-string") << raw("\xc0\x60") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-0-tag-0-string") << raw("\xc0\xc0\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-1-unsigned") << raw("\xc1\x00") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-1-negative") << raw("\xc1\x20") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-1-bytearray") << raw("\xc1\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-2-bytearray") << raw("\xc2\x40") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-2-string") << raw("\xc2\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-3-bytearray") << raw("\xc3\x40") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-3-string") << raw("\xc3\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-4-string") << raw("\xc4\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-4-array") << raw("\xc4\x82\0\1") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-5-string") << raw("\xc5\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-5-array") << raw("\xc5\x82\0\1") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-21-bytearray") << raw("\xd5\x40") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-21-string") << raw("\xd5\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-21-array") << raw("\xd5\x80") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-21-map") << raw("\xd5\xa0") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-22-bytearray") << raw("\xd6\x40") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-22-string") << raw("\xd6\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-22-array") << raw("\xd6\x80") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-22-map") << raw("\xd6\xa0") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-23-bytearray") << raw("\xd7\x40") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-23-string") << raw("\xd7\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-23-array") << raw("\xd7\x80") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-23-map") << raw("\xd7\xa0") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-24-bytearray") << raw("\xd8\x18\x40") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-24-string") << raw("\xd8\x18\x60") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-32-bytearray") << raw("\xd8\x20\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-32-string") << raw("\xd8\x20\x60") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-33-bytearray") << raw("\xd8\x21\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-33-string") << raw("\xd8\x21\x60") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-34-bytearray") << raw("\xd8\x22\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-34-string") << raw("\xd8\x22\x60") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-35-bytearray") << raw("\xd8\x23\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-35-string") << raw("\xd8\x23\x60") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-36-bytearray") << raw("\xd8\x24\x40") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-36-string") << raw("\xd8\x24\x60") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-unsigned") << raw("\xd9\xd9\xf7\x00") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-negative") << raw("\xd9\xd9\xf7\x20") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-bytearray") << raw("\xd9\xd9\xf7\x40") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-string") << raw("\xd9\xd9\xf7\x60") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-array") << raw("\xd9\xd9\xf7\x80") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-map") << raw("\xd9\xd9\xf7\xa0") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-tag-0-unsigned") << raw("\xd9\xd9\xf7\xc0\x00") << int(CborValidateStrictMode) << CborErrorInappropriateTagForType;
+    BOBUIest::newRow("tag-55799-tag-0-string") << raw("\xd9\xd9\xf7\xc0\x60") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-simple0") << raw("\xd9\xd9\xf7\xe0") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-false") << raw("\xd9\xd9\xf7\xf4") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-true") << raw("\xd9\xd9\xf7\xf5") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-null") << raw("\xd9\xd9\xf7\xf6") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-undefined") << raw("\xd9\xd9\xf7\xf7") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-simple32") << raw("\xd9\xd9\xf7\xf8\x20") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-half") << raw("\xd9\xd9\xf7\xf9\0\0") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-float") << raw("\xd9\xd9\xf7\xfa\0\0\0\0") << int(CborValidateStrictMode) << CborNoError;
+    BOBUIest::newRow("tag-55799-double") << raw("\xd9\xd9\xf7\xfb\0\0\0\0\0\0\0\0") << int(CborValidateStrictMode) << CborNoError;
 
     // excluded non-finite
-    QTest::newRow("excluded-fp-nan") << raw("\xfb\x7f\xf8\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp-nan_f") << raw("\xfa\x7f\xc0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp--inf_f") << raw("\xfa\xff\x80\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp--inf") << raw("\xfb\xff\xf0\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp-+inf_f") << raw("\xfa\x7f\x80\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp-+inf") << raw("\xfb\x7f\xf0\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-nan") << raw("\xfb\x7f\xf8\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-nan_f") << raw("\xfa\x7f\xc0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp--inf_f") << raw("\xfa\xff\x80\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp--inf") << raw("\xfb\xff\xf0\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-+inf_f") << raw("\xfa\x7f\x80\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-+inf") << raw("\xfb\x7f\xf0\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
 
     // excluded undefined
-    QTest::newRow("no-undefined") << raw("\xf7") << int(CborValidateNoUndefined) << CborErrorExcludedType;
+    BOBUIest::newRow("no-undefined") << raw("\xf7") << int(CborValidateNoUndefined) << CborErrorExcludedType;
 
     // exclude non-finite
-    QTest::newRow("excluded-fp-nan_f16") << raw("\xf9\x7e\00") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp--inf_f16") << raw("\xf9\xfc\00") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp-+inf_f16") << raw("\xf9\x7c\00") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp-nan_f") << raw("\xfa\x7f\xc0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp--inf_f") << raw("\xfa\xff\x80\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp-+inf_f") << raw("\xfa\x7f\x80\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp-nan") << raw("\xfb\x7f\xf8\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp--inf") << raw("\xfb\xff\xf0\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
-    QTest::newRow("excluded-fp-+inf") << raw("\xfb\x7f\xf0\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-nan_f16") << raw("\xf9\x7e\00") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp--inf_f16") << raw("\xf9\xfc\00") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-+inf_f16") << raw("\xf9\x7c\00") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-nan_f") << raw("\xfa\x7f\xc0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp--inf_f") << raw("\xfa\xff\x80\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-+inf_f") << raw("\xfa\x7f\x80\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-nan") << raw("\xfb\x7f\xf8\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp--inf") << raw("\xfb\xff\xf0\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
+    BOBUIest::newRow("excluded-fp-+inf") << raw("\xfb\x7f\xf0\0\0\0\0\0\0") << int(CborValidateFiniteFloatingPoint) << CborErrorExcludedValue;
 
     // exclude non-string keys in maps
-    QTest::newRow("excluded-map-unsigned") << raw("\xa1\x00\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-negative") << raw("\xa1\x20\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-bytearray") << raw("\xa1\x40\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("map-string") << raw("\xa1\x60\1") << int(CborValidateMapKeysAreString) << CborNoError;
-    QTest::newRow("map-tag-0-string") << raw("\xa1\xc0\x60\1") << int(CborValidateMapKeysAreString) << CborNoError;
-    QTest::newRow("excluded-map-array") << raw("\xa1\x80\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-map") << raw("\xa1\xa0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-simple-0") << raw("\xa1\xe0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-false") << raw("\xa1\xf4\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-true") << raw("\xa1\xf5\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-null") << raw("\xa1\xf6\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-undefined") << raw("\xa1\xf7\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-half") << raw("\xa1\xf9\0\0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-float") << raw("\xa1\xfa\0\0\0\0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
-    QTest::newRow("excluded-map-double") << raw("\xa1\xfb\0\0\0\0\0\0\0\0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-unsigned") << raw("\xa1\x00\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-negative") << raw("\xa1\x20\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-bytearray") << raw("\xa1\x40\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("map-string") << raw("\xa1\x60\1") << int(CborValidateMapKeysAreString) << CborNoError;
+    BOBUIest::newRow("map-tag-0-string") << raw("\xa1\xc0\x60\1") << int(CborValidateMapKeysAreString) << CborNoError;
+    BOBUIest::newRow("excluded-map-array") << raw("\xa1\x80\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-map") << raw("\xa1\xa0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-simple-0") << raw("\xa1\xe0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-false") << raw("\xa1\xf4\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-true") << raw("\xa1\xf5\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-null") << raw("\xa1\xf6\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-undefined") << raw("\xa1\xf7\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-half") << raw("\xa1\xf9\0\0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-float") << raw("\xa1\xfa\0\0\0\0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
+    BOBUIest::newRow("excluded-map-double") << raw("\xa1\xfb\0\0\0\0\0\0\0\0\1") << int(CborValidateMapKeysAreString) << CborErrorMapKeyNotString;
 
     // unknown simple types
-    QTest::newRow("unknown-simple-type-0") << raw("\xe0") << int(CborValidateNoUnknownSimpleTypes) << CborErrorUnknownSimpleType;
-    QTest::newRow("unknown-simple-type-32") << raw("\xf8\x20") << int(CborValidateNoUnknownSimpleTypes) << CborErrorUnknownSimpleType;
-    QTest::newRow("allowed-simple-type-32") << raw("\xf8\x20") << int(CborValidateNoUnknownSimpleTypesSA) << CborNoError;
+    BOBUIest::newRow("unknown-simple-type-0") << raw("\xe0") << int(CborValidateNoUnknownSimpleTypes) << CborErrorUnknownSimpleType;
+    BOBUIest::newRow("unknown-simple-type-32") << raw("\xf8\x20") << int(CborValidateNoUnknownSimpleTypes) << CborErrorUnknownSimpleType;
+    BOBUIest::newRow("allowed-simple-type-32") << raw("\xf8\x20") << int(CborValidateNoUnknownSimpleTypesSA) << CborNoError;
 
     // unknown tags
-    QTest::newRow("unknown-tag-6") << raw("\xc6\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
-    QTest::newRow("unknown-tag-31") << raw("\xd8\x1f\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
-    QTest::newRow("unknown-tag-256") << raw("\xd9\1\0\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
-    QTest::newRow("unknown-tag-65536") << raw("\xda\0\1\0\0\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
-    QTest::newRow("unknown-tag-4294967296") << raw("\xdb\0\0\0\1\0\0\0\0\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
-    QTest::newRow("allowed-tag-31") << raw("\xd8\x1f\x60") << int(CborValidateNoUnknownTagsSA) << CborNoError;
-    QTest::newRow("allowed-tag-256") << raw("\xd9\1\0\x60") << int(CborValidateNoUnknownTagsSR) << CborNoError;
+    BOBUIest::newRow("unknown-tag-6") << raw("\xc6\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
+    BOBUIest::newRow("unknown-tag-31") << raw("\xd8\x1f\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
+    BOBUIest::newRow("unknown-tag-256") << raw("\xd9\1\0\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
+    BOBUIest::newRow("unknown-tag-65536") << raw("\xda\0\1\0\0\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
+    BOBUIest::newRow("unknown-tag-4294967296") << raw("\xdb\0\0\0\1\0\0\0\0\x60") << int(CborValidateNoUnknownTags) << CborErrorUnknownTag;
+    BOBUIest::newRow("allowed-tag-31") << raw("\xd8\x1f\x60") << int(CborValidateNoUnknownTagsSA) << CborNoError;
+    BOBUIest::newRow("allowed-tag-256") << raw("\xd9\1\0\x60") << int(CborValidateNoUnknownTagsSR) << CborNoError;
 
     // excluded tags
-    QTest::newRow("excluded-tag-0") << raw("\xc0\x60") << int(CborValidateNoTags) << CborErrorExcludedType;
-    QTest::newRow("excluded-tag-24") << raw("\xd8\x18\x40") << int(CborValidateNoTags) << CborErrorExcludedType;
-    QTest::newRow("excluded-tag-55799") << raw("\xd9\xd9\xf7\x60") << int(CborValidateNoTags) << CborErrorExcludedType;
+    BOBUIest::newRow("excluded-tag-0") << raw("\xc0\x60") << int(CborValidateNoTags) << CborErrorExcludedType;
+    BOBUIest::newRow("excluded-tag-24") << raw("\xd8\x18\x40") << int(CborValidateNoTags) << CborErrorExcludedType;
+    BOBUIest::newRow("excluded-tag-55799") << raw("\xd9\xd9\xf7\x60") << int(CborValidateNoTags) << CborErrorExcludedType;
 
     // complete data
-    QTest::newRow("garbage-data-0") << raw("\0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-1") << raw("\x20\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-2") << raw("\x40\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-3") << raw("\x60\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-4") << raw("\x80\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-5") << raw("\xa0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-6") << raw("\xc0\x60\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-7") << raw("\xf4\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-f16") << raw("\xf9\0\0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-f32") << raw("\xfa\0\0\0\0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
-    QTest::newRow("garbage-data-f64") << raw("\xfb\0\0\0\0\0\0\0\0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-0") << raw("\0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-1") << raw("\x20\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-2") << raw("\x40\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-3") << raw("\x60\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-4") << raw("\x80\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-5") << raw("\xa0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-6") << raw("\xc0\x60\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-7") << raw("\xf4\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-f16") << raw("\xf9\0\0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-f32") << raw("\xfa\0\0\0\0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
+    BOBUIest::newRow("garbage-data-f64") << raw("\xfb\0\0\0\0\0\0\0\0\1") << int(CborValidateCompleteData) << CborErrorGarbageAtEnd;
 }
 
 void tst_Parser::strictValidation()
@@ -1804,17 +1804,17 @@ void tst_Parser::incompleteData()
 
 void tst_Parser::endPointer_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<int>("offset");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<int>("offset");
 
-    QTest::newRow("number1") << raw("\x81\x01\x01") << 2;
-    QTest::newRow("number24") << raw("\x81\x18\x18\x01") << 3;
-    QTest::newRow("string") << raw("\x81\x61Z\x01") << 3;
-    QTest::newRow("indefinite-string") << raw("\x81\x7f\x61Z\xff\x01") << 5;
-    QTest::newRow("array") << raw("\x81\x02\x01") << 2;
-    QTest::newRow("indefinite-array") << raw("\x81\x9f\x02\xff\x01") << 4;
-    QTest::newRow("object") << raw("\x81\xa1\x03\x02\x01") << 4;
-    QTest::newRow("indefinite-object") << raw("\x81\xbf\x03\x02\xff\x01") << 5;
+    BOBUIest::newRow("number1") << raw("\x81\x01\x01") << 2;
+    BOBUIest::newRow("number24") << raw("\x81\x18\x18\x01") << 3;
+    BOBUIest::newRow("string") << raw("\x81\x61Z\x01") << 3;
+    BOBUIest::newRow("indefinite-string") << raw("\x81\x7f\x61Z\xff\x01") << 5;
+    BOBUIest::newRow("array") << raw("\x81\x02\x01") << 2;
+    BOBUIest::newRow("indefinite-array") << raw("\x81\x9f\x02\xff\x01") << 4;
+    BOBUIest::newRow("object") << raw("\x81\xa1\x03\x02\x01") << 4;
+    BOBUIest::newRow("indefinite-object") << raw("\x81\xbf\x03\x02\xff\x01") << 5;
 }
 
 void tst_Parser::endPointer()
@@ -1835,16 +1835,16 @@ void tst_Parser::endPointer()
 void tst_Parser::recursionLimit_data()
 {
     static const int recursions = CBOR_PARSER_MAX_RECURSIONS + 2;
-    QTest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QByteArray>("data");
 
-    QTest::newRow("array") << QByteArray(recursions, '\x81') + '\x20';
-    QTest::newRow("_array") << QByteArray(recursions, '\x9f') + '\x20' + QByteArray(recursions, '\xff');
+    BOBUIest::newRow("array") << QByteArray(recursions, '\x81') + '\x20';
+    BOBUIest::newRow("_array") << QByteArray(recursions, '\x9f') + '\x20' + QByteArray(recursions, '\xff');
 
     QByteArray data;
     for (int i = 0; i < recursions; ++i)
         data += "\xa1\x65Hello";
     data += '\2';
-    QTest::newRow("map-recursive-values") << data;
+    BOBUIest::newRow("map-recursive-values") << data;
 
     data.clear();
     for (int i = 0; i < recursions; ++i)
@@ -1852,25 +1852,25 @@ void tst_Parser::recursionLimit_data()
     data += '\2';
     for (int i = 0; i < recursions; ++i)
         data += "\xff";
-    QTest::newRow("_map-recursive-values") << data;
+    BOBUIest::newRow("_map-recursive-values") << data;
 
     data = QByteArray(recursions, '\xa1');
     data += '\2';
     for (int i = 0; i < recursions; ++i)
         data += "\x7f\x64quux\xff";
-    QTest::newRow("map-recursive-keys") << data;
+    BOBUIest::newRow("map-recursive-keys") << data;
 
     data = QByteArray(recursions, '\xbf');
     data += '\2';
     for (int i = 0; i < recursions; ++i)
         data += "\1\xff";
-    QTest::newRow("_map-recursive-keys") << data;
+    BOBUIest::newRow("_map-recursive-keys") << data;
 
     data.clear();
     for (int i = 0; i < recursions / 2; ++i)
         data += "\x81\xa1\1";
     data += '\2';
-    QTest::newRow("mixed") << data;
+    BOBUIest::newRow("mixed") << data;
 }
 
 void tst_Parser::recursionLimit()
@@ -1901,5 +1901,5 @@ void tst_Parser::recursionLimit()
     }
 }
 
-QTEST_MAIN(tst_Parser)
+BOBUIEST_MAIN(tst_Parser)
 #include "tst_parser.moc"

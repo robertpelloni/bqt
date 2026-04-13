@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
@@ -9,9 +9,9 @@ if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/FindPackageHints.cmake")
     include("${CMAKE_CURRENT_LIST_DIR}/FindPackageHints.cmake")
 endif()
 
-find_package(Qt6Core REQUIRED HINTS ${Qt6Tests_PREFIX_PATH})
+find_package(BobUI6Core REQUIRED HINTS ${BobUI6Tests_PREFIX_PATH})
 
-qt6_add_plugin(test_plugin ${PLUGIN_OPTIONS})
+bobui6_add_plugin(test_plugin ${PLUGIN_OPTIONS})
 
 set(plugin_source_path "${CMAKE_CURRENT_BINARY_DIR}/plugin.cpp")
 file(GENERATE OUTPUT "${plugin_source_path}" CONTENT "int foo() {return 0;}")
@@ -26,7 +26,7 @@ endif()
 if(NOT plugin_target_type STREQUAL "${EXPECTED_PLUGIN_TARGET_TYPE}")
     set(info "")
     list(APPEND info "PLUGIN_OPTIONS: ${PLUGIN_OPTIONS}")
-    list(APPEND info "QT6_IS_SHARED_LIBS_BUILD: ${QT6_IS_SHARED_LIBS_BUILD}")
+    list(APPEND info "BOBUI6_IS_SHARED_LIBS_BUILD: ${BOBUI6_IS_SHARED_LIBS_BUILD}")
     list(APPEND info "EXPECTED_PLUGIN_TARGET_TYPE: ${EXPECTED_PLUGIN_TARGET_TYPE}")
     list(JOIN info "\n" info)
     message(FATAL_ERROR

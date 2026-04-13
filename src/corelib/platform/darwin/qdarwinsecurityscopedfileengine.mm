@@ -1,17 +1,17 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdarwinsecurityscopedfileengine_p.h"
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qstandardpaths.h>
-#include <QtCore/qreadwritelock.h>
-#include <QtCore/qscopedvaluerollback.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qstandardpaths.h>
+#include <BobUICore/qreadwritelock.h>
+#include <BobUICore/qscopedvaluerollback.h>
 
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtCore/private/qfsfileengine_p.h>
-#include <QtCore/private/qfilesystemengine_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUICore/private/qfsfileengine_p.h>
+#include <BobUICore/private/qfilesystemengine_p.h>
 
 #include <thread>
 #include <mutex>
@@ -19,18 +19,18 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <Foundation/NSURL.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcSecEngine, "qt.core.io.security-scoped-fileengine", QtCriticalMsg)
+Q_STATIC_LOGGING_CATEGORY(lcSecEngine, "bobui.core.io.security-scoped-fileengine", BobUICriticalMsg)
 
 template<typename T> class BackgroundLoader;
 
 /*
     File engine handler for security scoped file paths.
 
-    Installs itself as soon as QtCore is loaded if the application
+    Installs itself as soon as BobUICore is loaded if the application
     is sandboxed (optionally on macOS, and always on iOS and friends).
 */
 class SecurityScopedFileEngineHandler : public QAbstractFileEngineHandler
@@ -112,7 +112,7 @@ BackgroundLoader<SecurityScopedFileEngineHandler>& SecurityScopedFileEngineHandl
 {
     using Handler = BackgroundLoader<SecurityScopedFileEngineHandler>;
     static Handler handler = []() -> Handler {
-        if (!qt_apple_isSandboxed())
+        if (!bobui_apple_isSandboxed())
             return Handler{false};
 
         qCInfo(lcSecEngine) << "Application sandbox is active. Registering security-scoped file engine.";
@@ -135,7 +135,7 @@ Q_CONSTRUCTOR_FUNCTION(initializeSecurityScopedFileEngineHandler);
     dialogs or drag-and-drop should use this function to ensure that
     the security scoped file engine handler knows about the URL.
 */
-QUrl qt_apple_urlFromPossiblySecurityScopedURL(NSURL *url)
+QUrl bobui_apple_urlFromPossiblySecurityScopedURL(NSURL *url)
 {
     if (auto &handler = SecurityScopedFileEngineHandler::get())
         handler->registerPossiblySecurityScopedURL(url);
@@ -347,7 +347,7 @@ std::unique_ptr<QAbstractFileEngine> SecurityScopedFileEngineHandler::create(con
 
     {
         // Check if there's another engine that claims to handle the given file name.
-        // This covers non-QFSFileEngines like QTemporaryFileEngine, and QResourceFileEngine.
+        // This covers non-QFSFileEngines like BOBUIemporaryFileEngine, and QResourceFileEngine.
         // If there isn't one, we'll get nullptr back, and know that we can access the
         // file via our special QFSFileEngine.
         QScopedValueRollback<bool> rollback(recursionGuard, true);
@@ -445,7 +445,7 @@ std::unique_ptr<QAbstractFileEngine> SecurityScopedFileEngineHandler::create(con
         if (bookmarkDataIsStale) {
             // This occurs when for example the file has been renamed, moved,
             // or deleted. Normally this would be the place to update the
-            // bookmark to point to the new location, but Qt clients may not
+            // bookmark to point to the new location, but BobUI clients may not
             // be prepared for QFiles changing their file-names under their
             // feet so we treat it as a missing file.
             qCDebug(lcSecEngine) << "Bookmark for" << cacheKey << "was stale";
@@ -549,4 +549,4 @@ NSString *SecurityScopedFileEngineHandler::cacheKeyForPath(const QString &path)
     return QDir::cleanPath(normalized).toNSString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPIXELFORMAT_H
 #define QPIXELFORMAT_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qmetaobject.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qmetaobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPixelFormat
 {
@@ -203,7 +203,7 @@ private:
     friend Q_DECL_CONST_FUNCTION constexpr inline bool operator!=(QPixelFormat fmt1, QPixelFormat fmt2)
     { return !(fmt1 == fmt2); }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QPixelFormat &format);
 #endif
 };
@@ -211,7 +211,7 @@ static_assert(sizeof(QPixelFormat) == sizeof(quint64));
 Q_DECLARE_TYPEINFO(QPixelFormat, Q_PRIMITIVE_TYPE);
 
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     QPixelFormat Q_GUI_EXPORT QPixelFormat_createYUV(QPixelFormat::YUVLayout yuvLayout,
                                                      uchar alphaSize,
                                                      QPixelFormat::AlphaUsage alphaUsage,
@@ -370,7 +370,7 @@ inline QPixelFormat qPixelFormatYuv(QPixelFormat::YUVLayout layout,
                                     QPixelFormat::TypeInterpretation typeInt=QPixelFormat::UnsignedByte,
                                     QPixelFormat::ByteOrder b_order=QPixelFormat::BigEndian)
 {
-    return QtPrivate::QPixelFormat_createYUV(layout,
+    return BobUIPrivate::QPixelFormat_createYUV(layout,
                                              alfa,
                                              usage,
                                              position,
@@ -379,6 +379,6 @@ inline QPixelFormat qPixelFormatYuv(QPixelFormat::YUVLayout layout,
                                              b_order);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QPIXELFORMAT_H

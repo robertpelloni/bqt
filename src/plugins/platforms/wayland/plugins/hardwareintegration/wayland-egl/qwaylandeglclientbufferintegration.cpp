@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandeglclientbufferintegration_p.h"
 
@@ -8,7 +8,7 @@
 
 #include <wayland-client-core.h>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 #include <private/qeglconvenience_p.h>
 #include <private/qeglpbuffer_p.h>
 
@@ -20,9 +20,9 @@ typedef EGLDisplay (*PFNEGLGETPLATFORMDISPLAYEXTPROC) (EGLenum platform, void *n
 #define EGL_PLATFORM_WAYLAND_KHR 0x31D8
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 static const char *qwaylandegl_threadedgl_blacklist_vendor[] = {
     0
@@ -41,7 +41,7 @@ QWaylandEglClientBufferIntegration::~QWaylandEglClientBufferIntegration()
 
 void QWaylandEglClientBufferIntegration::initialize(QWaylandDisplay *display)
 {
-#if QT_CONFIG(egl_extension_platform_wayland)
+#if BOBUI_CONFIG(egl_extension_platform_wayland)
     m_eglDisplay = eglGetPlatformDisplay(EGL_PLATFORM_WAYLAND_EXT, display->wl_display(), nullptr);
 #else
     if (q_hasEglExtension(EGL_NO_DISPLAY, "EGL_EXT_platform_base")) {
@@ -77,13 +77,13 @@ void QWaylandEglClientBufferIntegration::initialize(QWaylandDisplay *display)
 
     EGLint major,minor;
     if (!eglInitialize(m_eglDisplay, &major, &minor)) {
-        qCWarning(lcQpaWayland) <<  "Failed to initialize EGL display" << Qt::hex << eglGetError();
+        qCWarning(lcQpaWayland) <<  "Failed to initialize EGL display" << BobUI::hex << eglGetError();
         m_eglDisplay = EGL_NO_DISPLAY;
         return;
     }
 
     m_supportsThreading = true;
-    if (qEnvironmentVariableIsSet("QT_OPENGL_NO_SANITY_CHECK"))
+    if (qEnvironmentVariableIsSet("BOBUI_OPENGL_NO_SANITY_CHECK"))
         return;
 
     const char *vendor = eglQueryString(m_eglDisplay, EGL_VENDOR);
@@ -94,7 +94,7 @@ void QWaylandEglClientBufferIntegration::initialize(QWaylandDisplay *display)
         }
     }
 
-    // On desktop NVIDIA resizing QtQuick freezes them when using threaded rendering QTBUG-95817
+    // On desktop NVIDIA resizing BobUIQuick freezes them when using threaded rendering BOBUIBUG-95817
     // In order to support threaded rendering on embedded platforms where resizing is not needed
     // we check if XDG_CURRENT_DESKTOP is set which desktop environments should set
     if (qstrcmp(vendor, "NVIDIA") == 0 && qEnvironmentVariableIsSet("XDG_CURRENT_DESKTOP")) {
@@ -179,4 +179,4 @@ EGLDisplay QWaylandEglClientBufferIntegration::eglDisplay() const
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

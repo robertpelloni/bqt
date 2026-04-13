@@ -1,10 +1,10 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QLocale>
-#include <QTest>
+#include <BOBUIest>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QLocale : public QObject
 {
@@ -41,7 +41,7 @@ private Q_SLOTS:
 
 static QString data()
 {
-    return QStringLiteral("/qt-5/qtbase/tests/benchmarks/corelib/tools/qlocale");
+    return QStringLiteral("/bobui-5/bobuibase/tests/benchmarks/corelib/tools/qlocale");
 }
 
 // Make individual cycles O(a few) msecs, rather than tiny fractions thereof:
@@ -49,10 +49,10 @@ static QString data()
 
 void tst_QLocale::fromString_data()
 {
-    QTest::addColumn<QString>("name");
+    BOBUIest::addColumn<QString>("name");
 
-    QTest::newRow("C") << QStringLiteral("C");
-#define ROW(name) QTest::newRow(name) << QStringLiteral(name)
+    BOBUIest::newRow("C") << QStringLiteral("C");
+#define ROW(name) BOBUIest::newRow(name) << QStringLiteral(name)
     ROW("en-Latn-DE");
     ROW("sd-Deva-IN");
     ROW("az-Cyrl-AZ");
@@ -92,12 +92,12 @@ void tst_QLocale::fromString()
 
 void tst_QLocale::fromTags_data()
 {
-    QTest::addColumn<QLocale::Language>("language");
-    QTest::addColumn<QLocale::Script>("script");
-    QTest::addColumn<QLocale::Territory>("territory");
+    BOBUIest::addColumn<QLocale::Language>("language");
+    BOBUIest::addColumn<QLocale::Script>("script");
+    BOBUIest::addColumn<QLocale::Territory>("territory");
 
 #define ROW(name, lang, text, land) \
-        QTest::newRow(name) << QLocale::lang << QLocale::text << QLocale::land
+        BOBUIest::newRow(name) << QLocale::lang << QLocale::text << QLocale::land
     ROW("C", C, AnyScript, AnyTerritory);
     ROW("en-Latn-DE", English, LatinScript, Germany);
     ROW("sd-Deva-IN", Sindhi, DevanagariScript, India);
@@ -140,11 +140,11 @@ void tst_QLocale::fromTags()
 
 void tst_QLocale::fromLangScript_data()
 {
-    QTest::addColumn<QLocale::Language>("language");
-    QTest::addColumn<QLocale::Script>("script");
+    BOBUIest::addColumn<QLocale::Language>("language");
+    BOBUIest::addColumn<QLocale::Script>("script");
 
 #define ROW(name, lang, text) \
-        QTest::newRow(name) << QLocale::lang << QLocale::text
+        BOBUIest::newRow(name) << QLocale::lang << QLocale::text
     ROW("C", C, AnyScript);
     ROW("en-Latn", English, LatinScript);
     ROW("sd-Deva", Sindhi, DevanagariScript);
@@ -180,11 +180,11 @@ void tst_QLocale::fromLangScript()
 
 void tst_QLocale::fromLangLand_data()
 {
-    QTest::addColumn<QLocale::Language>("language");
-    QTest::addColumn<QLocale::Territory>("territory");
+    BOBUIest::addColumn<QLocale::Language>("language");
+    BOBUIest::addColumn<QLocale::Territory>("territory");
 
 #define ROW(name, lang, land) \
-        QTest::newRow(name) << QLocale::lang << QLocale::land
+        BOBUIest::newRow(name) << QLocale::lang << QLocale::land
     ROW("C", C, AnyTerritory);
     ROW("en-DE", English, Germany);
     ROW("sd-IN", Sindhi, India);
@@ -219,11 +219,11 @@ void tst_QLocale::fromLangLand()
 
 void tst_QLocale::fromScriptLand_data()
 {
-    QTest::addColumn<QLocale::Script>("script");
-    QTest::addColumn<QLocale::Territory>("territory");
+    BOBUIest::addColumn<QLocale::Script>("script");
+    BOBUIest::addColumn<QLocale::Territory>("territory");
 
 #define ROW(name, text, land) \
-        QTest::newRow(name) << QLocale::text << QLocale::land
+        BOBUIest::newRow(name) << QLocale::text << QLocale::land
     ROW("Any", AnyScript, AnyTerritory);
     ROW("Latn-DE", LatinScript, Germany);
     ROW("Deva-IN", DevanagariScript, India);
@@ -260,10 +260,10 @@ void tst_QLocale::fromScriptLand()
 
 void tst_QLocale::fromLang_data()
 {
-    QTest::addColumn<QLocale::Language>("language");
+    BOBUIest::addColumn<QLocale::Language>("language");
 
 #define ROW(name, lang) \
-        QTest::newRow(name) << QLocale::lang
+        BOBUIest::newRow(name) << QLocale::lang
     ROW("C", C);
     ROW("en", English);
     ROW("sd", Sindhi);
@@ -288,10 +288,10 @@ void tst_QLocale::fromLang()
 
 void tst_QLocale::fromScript_data()
 {
-    QTest::addColumn<QLocale::Script>("script");
+    BOBUIest::addColumn<QLocale::Script>("script");
 
 #define ROW(name, text) \
-        QTest::newRow(name) << QLocale::text
+        BOBUIest::newRow(name) << QLocale::text
     ROW("Any", AnyScript);
     ROW("Latn", LatinScript);
     ROW("Deva", DevanagariScript);
@@ -313,10 +313,10 @@ void tst_QLocale::fromScript()
 
 void tst_QLocale::fromLand_data()
 {
-    QTest::addColumn<QLocale::Territory>("territory");
+    BOBUIest::addColumn<QLocale::Territory>("territory");
 
 #define ROW(name, land) \
-        QTest::newRow(name) << QLocale::land
+        BOBUIest::newRow(name) << QLocale::land
     ROW("Any", AnyTerritory);
     ROW("DE", Germany);
     ROW("IN", India);
@@ -373,67 +373,67 @@ void tst_QLocale::number_QString()
 template <typename Integer>
 void toWholeCommon_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<QString>("locale");
-    QTest::addColumn<bool>("good");
-    QTest::addColumn<Integer>("expected");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("locale");
+    BOBUIest::addColumn<bool>("good");
+    BOBUIest::addColumn<Integer>("expected");
 
-    QTest::newRow("C: empty") << u""_s << u"C"_s << false << Integer(0ull);
-    QTest::newRow("C: spaces") << u" \t\n\r\f\v\u00A0\u202F "_s << u"C"_s << false << Integer(0ull);
-    QTest::newRow("C: 0") << u"0"_s << u"C"_s << true << Integer(0ull);
-    QTest::newRow("C:  0 ") << u" 0 "_s << u"C"_s << true << Integer(0ull);
-    QTest::newRow("C: spaces0spaces") << u" \t\n\r\f\v\u00A0\u202F 0 \t\n\r\f\v\u00A0\u202F "_s
+    BOBUIest::newRow("C: empty") << u""_s << u"C"_s << false << Integer(0ull);
+    BOBUIest::newRow("C: spaces") << u" \t\n\r\f\v\u00A0\u202F "_s << u"C"_s << false << Integer(0ull);
+    BOBUIest::newRow("C: 0") << u"0"_s << u"C"_s << true << Integer(0ull);
+    BOBUIest::newRow("C:  0 ") << u" 0 "_s << u"C"_s << true << Integer(0ull);
+    BOBUIest::newRow("C: spaces0spaces") << u" \t\n\r\f\v\u00A0\u202F 0 \t\n\r\f\v\u00A0\u202F "_s
                                       << u"C"_s << true << Integer(0ull);
-    QTest::newRow("C: 1234") << u"1234"_s << u"C"_s << true << Integer(1234ull);
-    QTest::newRow("C:     1234") << u"    1234"_s << u"C"_s << true << Integer(1234ull);
-    QTest::newRow("C: 1234    ") << u"1234    "_s << u"C"_s << true << Integer(1234ull);
+    BOBUIest::newRow("C: 1234") << u"1234"_s << u"C"_s << true << Integer(1234ull);
+    BOBUIest::newRow("C:     1234") << u"    1234"_s << u"C"_s << true << Integer(1234ull);
+    BOBUIest::newRow("C: 1234    ") << u"1234    "_s << u"C"_s << true << Integer(1234ull);
     // C locale omits grouping, but doesn't reject it.
-    QTest::newRow("C: 1,234") << u"1,234"_s << u"C"_s << true << Integer(1234ull);
-    QTest::newRow("C: 123456789")
+    BOBUIest::newRow("C: 1,234") << u"1,234"_s << u"C"_s << true << Integer(1234ull);
+    BOBUIest::newRow("C: 123456789")
             << u"123456789"_s << u"C"_s << true << Integer(123456789ull);
-    QTest::newRow("C: 123,456,789")
+    BOBUIest::newRow("C: 123,456,789")
             << u"123,456,789"_s << u"C"_s << true << Integer(123456789ull);
 
-    QTest::newRow("en: empty") << u""_s << u"en"_s << false << Integer(0ull);
-    QTest::newRow("en: spaces") << u" \t\n\r\f\v "_s << u"en"_s << false << Integer(0ull);
-    QTest::newRow("en: 0") << u"0"_s << u"en"_s << true << Integer(0ull);
-    QTest::newRow("en:  0") << u" 0"_s << u"en"_s << true << Integer(0ull);
-    QTest::newRow("en: 0 ") << u"0 "_s << u"en"_s << true << Integer(0ull);
-    QTest::newRow("en: spaces0spaces") << u" \t\n\r\f\v\u00A0\u202F 0 \t\n\r\f\v\u00A0\u202F "_s
+    BOBUIest::newRow("en: empty") << u""_s << u"en"_s << false << Integer(0ull);
+    BOBUIest::newRow("en: spaces") << u" \t\n\r\f\v "_s << u"en"_s << false << Integer(0ull);
+    BOBUIest::newRow("en: 0") << u"0"_s << u"en"_s << true << Integer(0ull);
+    BOBUIest::newRow("en:  0") << u" 0"_s << u"en"_s << true << Integer(0ull);
+    BOBUIest::newRow("en: 0 ") << u"0 "_s << u"en"_s << true << Integer(0ull);
+    BOBUIest::newRow("en: spaces0spaces") << u" \t\n\r\f\v\u00A0\u202F 0 \t\n\r\f\v\u00A0\u202F "_s
                                        << u"en"_s << true << Integer(0ull);
-    QTest::newRow("en: 1234") << u"1234"_s << u"en"_s << true << Integer(1234ull);
-    QTest::newRow("en:     1234") << u"    1234"_s << u"en"_s << true << Integer(1234ull);
-    QTest::newRow("en: 1234    ") << u"1234    "_s << u"en"_s << true << Integer(1234ull);
-    QTest::newRow("en: 1,234") << u"1,234"_s << u"en"_s << true << Integer(1234ull);
-    QTest::newRow("en: 123,456,789")
+    BOBUIest::newRow("en: 1234") << u"1234"_s << u"en"_s << true << Integer(1234ull);
+    BOBUIest::newRow("en:     1234") << u"    1234"_s << u"en"_s << true << Integer(1234ull);
+    BOBUIest::newRow("en: 1234    ") << u"1234    "_s << u"en"_s << true << Integer(1234ull);
+    BOBUIest::newRow("en: 1,234") << u"1,234"_s << u"en"_s << true << Integer(1234ull);
+    BOBUIest::newRow("en: 123,456,789")
             << u"123,456,789"_s << u"en"_s << true << Integer(123456789ull);
-    QTest::newRow("en: 123456789")
+    BOBUIest::newRow("en: 123456789")
             << u"123456789"_s << u"en"_s << true << Integer(123456789ull);
 
-    QTest::newRow("de: empty") << u""_s << u"de"_s << false << Integer(0ull);
-    QTest::newRow("de: spaces") << u" \t\n\r\f\v "_s << u"de"_s << false << Integer(0ull);
-    QTest::newRow("de: 0") << u"0"_s << u"de"_s << true << Integer(0ull);
-    QTest::newRow("de:  0") << u" 0"_s << u"de"_s << true << Integer(0ull);
-    QTest::newRow("de: 0 ") << u"0 "_s << u"de"_s << true << Integer(0ull);
-    QTest::newRow("de: spaces0spaces") << u" \t\n\r\f\v\u00A0\u202F 0 \t\n\r\f\v\u00A0\u202F"_s
+    BOBUIest::newRow("de: empty") << u""_s << u"de"_s << false << Integer(0ull);
+    BOBUIest::newRow("de: spaces") << u" \t\n\r\f\v "_s << u"de"_s << false << Integer(0ull);
+    BOBUIest::newRow("de: 0") << u"0"_s << u"de"_s << true << Integer(0ull);
+    BOBUIest::newRow("de:  0") << u" 0"_s << u"de"_s << true << Integer(0ull);
+    BOBUIest::newRow("de: 0 ") << u"0 "_s << u"de"_s << true << Integer(0ull);
+    BOBUIest::newRow("de: spaces0spaces") << u" \t\n\r\f\v\u00A0\u202F 0 \t\n\r\f\v\u00A0\u202F"_s
                                        << u"de"_s << true << Integer(0ull);
-    QTest::newRow("de: 1234") << u"1234"_s << u"de"_s << true << Integer(1234ull);
-    QTest::newRow("de:     1234") << u"    1234"_s << u"de"_s << true << Integer(1234ull);
-    QTest::newRow("de: 1234    ") << u"1234    "_s << u"de"_s << true << Integer(1234ull);
-    QTest::newRow("de: 1.234") << u"1.234"_s << u"de"_s << true << Integer(1234ull);
-    QTest::newRow("de: 123.456.789")
+    BOBUIest::newRow("de: 1234") << u"1234"_s << u"de"_s << true << Integer(1234ull);
+    BOBUIest::newRow("de:     1234") << u"    1234"_s << u"de"_s << true << Integer(1234ull);
+    BOBUIest::newRow("de: 1234    ") << u"1234    "_s << u"de"_s << true << Integer(1234ull);
+    BOBUIest::newRow("de: 1.234") << u"1.234"_s << u"de"_s << true << Integer(1234ull);
+    BOBUIest::newRow("de: 123.456.789")
             << u"123.456.789"_s << u"de"_s << true << Integer(123456789ull);
-    QTest::newRow("de: 123456789")
+    BOBUIest::newRow("de: 123456789")
             << u"123456789"_s << u"de"_s << true << Integer(123456789ull);
 
     // Locales with non-single-character signs:
-    QTest::newRow("ar_EG: +403") // Arabic, Egypt
+    BOBUIest::newRow("ar_EG: +403") // Arabic, Egypt
             << u"\u061c+\u0664\u0660\u0663"_s << u"ar_EG"_s << true << Integer(403ull);
-    QTest::newRow("ar_EG: !403") // Arabic Letter Mark in place of sign
+    BOBUIest::newRow("ar_EG: !403") // Arabic Letter Mark in place of sign
             << u"\u061c\u0664\u0660\u0663"_s << u"ar_EG"_s << true << Integer(403ull);
-    QTest::newRow("fa_IR: +403") // Farsi, Iran
+    BOBUIest::newRow("fa_IR: +403") // Farsi, Iran
             << u"\u200e+\u06f4\u06f0\u06f3"_s << u"fa_IR"_s << true << Integer(403ull);
-    QTest::newRow("fa_IR: !403") // L-to-R mark in place of sign
+    BOBUIest::newRow("fa_IR: !403") // L-to-R mark in place of sign
             << u"\u200e\u06f4\u06f0\u06f3"_s << u"fa_IR"_s << true << Integer(403ull);
 }
 
@@ -441,21 +441,21 @@ void tst_QLocale::toLongLong_data()
 {
     toWholeCommon_data<qlonglong>();
 
-    QTest::newRow("C: -1234") << u"-1234"_s << u"C"_s << true << -1234ll;
-    QTest::newRow("C:     -1234") << u"    -1234"_s << u"C"_s << true << -1234ll;
-    QTest::newRow("C: -1234    ") << u"-1234    "_s << u"C"_s << true << -1234ll;
-    QTest::newRow("C: -123456789") << u"-123456789"_s << u"C"_s << true << -123456789ll;
-    QTest::newRow("C: qlonglong-max")
+    BOBUIest::newRow("C: -1234") << u"-1234"_s << u"C"_s << true << -1234ll;
+    BOBUIest::newRow("C:     -1234") << u"    -1234"_s << u"C"_s << true << -1234ll;
+    BOBUIest::newRow("C: -1234    ") << u"-1234    "_s << u"C"_s << true << -1234ll;
+    BOBUIest::newRow("C: -123456789") << u"-123456789"_s << u"C"_s << true << -123456789ll;
+    BOBUIest::newRow("C: qlonglong-max")
             << u"9223372036854775807"_s << u"C"_s << true
             << std::numeric_limits<qlonglong>::max();
-    QTest::newRow("C: qlonglong-min")
+    BOBUIest::newRow("C: qlonglong-min")
             << u"-9223372036854775808"_s << u"C"_s << true
             << std::numeric_limits<qlonglong>::min();
 
     // Locales with multi-character signs:
-    QTest::newRow("ar_EG: -403") // Arabic, Egypt
+    BOBUIest::newRow("ar_EG: -403") // Arabic, Egypt
             << u"\u061c-\u0664\u0660\u0663"_s << u"ar_EG"_s << true << -403ll;
-    QTest::newRow("fa_IR: -403") // Farsi, Iran
+    BOBUIest::newRow("fa_IR: -403") // Farsi, Iran
             << u"\u200e\u2212\u06f4\u06f0\u06f3"_s << u"fa_IR"_s << true << -403ll;
 }
 
@@ -480,10 +480,10 @@ void tst_QLocale::toULongLong_data()
 {
     toWholeCommon_data<qulonglong>();
 
-    QTest::newRow("C: qlonglong-max + 1")
+    BOBUIest::newRow("C: qlonglong-max + 1")
             << u"9223372036854775808"_s << u"C"_s << true
             << (qulonglong(std::numeric_limits<qlonglong>::max()) + 1);
-    QTest::newRow("C: qulonglong-max")
+    BOBUIest::newRow("C: qulonglong-max")
             << u"18446744073709551615"_s << u"C"_s << true
             << std::numeric_limits<qulonglong>::max();
 }
@@ -508,90 +508,90 @@ void tst_QLocale::toULongLong()
 
 void tst_QLocale::toDouble_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<QString>("locale");
-    QTest::addColumn<bool>("good");
-    QTest::addColumn<double>("expected");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("locale");
+    BOBUIest::addColumn<bool>("good");
+    BOBUIest::addColumn<double>("expected");
 
-    QTest::newRow("C: empty") << u""_s << u"C"_s << false << 0.0;
-    QTest::newRow("C: spaces") << u" \t\n\r\f\v "_s << u"C"_s << false << 0.0;
-    QTest::newRow("C: 0") << u"0"_s << u"C"_s << true << 0.0;
-    QTest::newRow("C:  0") << u" 0"_s << u"C"_s << true << 0.0;
-    QTest::newRow("C: 0 ") << u"0 "_s << u"C"_s << true << 0.0;
-    QTest::newRow("C: spaces0spaces") << u" \t\n\r\f\v\u00A0\u202F 0 \t\n\r\f\v\u00A0\u202F"_s
+    BOBUIest::newRow("C: empty") << u""_s << u"C"_s << false << 0.0;
+    BOBUIest::newRow("C: spaces") << u" \t\n\r\f\v "_s << u"C"_s << false << 0.0;
+    BOBUIest::newRow("C: 0") << u"0"_s << u"C"_s << true << 0.0;
+    BOBUIest::newRow("C:  0") << u" 0"_s << u"C"_s << true << 0.0;
+    BOBUIest::newRow("C: 0 ") << u"0 "_s << u"C"_s << true << 0.0;
+    BOBUIest::newRow("C: spaces0spaces") << u" \t\n\r\f\v\u00A0\u202F 0 \t\n\r\f\v\u00A0\u202F"_s
                                       << u"C"_s << true << 0.0;
-    QTest::newRow("C: 0.12340") << u"0.12340"_s << u"C"_s << true << 0.12340;
-    QTest::newRow("C:     0.12340") << u"    0.12340"_s << u"C"_s << true << 0.12340;
-    QTest::newRow("C: 0.12340    ") << u"0.12340    "_s << u"C"_s << true << 0.12340;
-    QTest::newRow("C: -0.12340") << u"-0.12340"_s << u"C"_s << true << -0.12340;
-    QTest::newRow("C:     -0.12340") << u"    -0.12340"_s << u"C"_s << true << -0.12340;
-    QTest::newRow("C: -0.12340    ") << u"-0.12340    "_s << u"C"_s << true << -0.12340;
-    QTest::newRow("C: &minus;0.12340") << u"\u2212" "0.12340"_s << u"C"_s << true << -0.12340;
-    QTest::newRow("C: 1.0e-4") << u"1.0e-4"_s << u"C"_s << true << 1.0e-4;
-    QTest::newRow("C: 1.0e&minus;4") << u"1.0e\u2212" "4"_s << u"C"_s << true << 1.0e-4;
-    QTest::newRow("C: 1.0e+4") << u"1.0e+4"_s << u"C"_s << true << 1.0e+4;
-    QTest::newRow("C: 10.e+3") << u"10.e+3"_s << u"C"_s << true << 1.0e+4;
-    QTest::newRow("C: 10e+3.") << u"10e+3."_s << u"C"_s << false << 0.0; // exp...dot
-    QTest::newRow("C: 1e4") << u"1e4"_s << u"C"_s << true << 1.0e+4;
+    BOBUIest::newRow("C: 0.12340") << u"0.12340"_s << u"C"_s << true << 0.12340;
+    BOBUIest::newRow("C:     0.12340") << u"    0.12340"_s << u"C"_s << true << 0.12340;
+    BOBUIest::newRow("C: 0.12340    ") << u"0.12340    "_s << u"C"_s << true << 0.12340;
+    BOBUIest::newRow("C: -0.12340") << u"-0.12340"_s << u"C"_s << true << -0.12340;
+    BOBUIest::newRow("C:     -0.12340") << u"    -0.12340"_s << u"C"_s << true << -0.12340;
+    BOBUIest::newRow("C: -0.12340    ") << u"-0.12340    "_s << u"C"_s << true << -0.12340;
+    BOBUIest::newRow("C: &minus;0.12340") << u"\u2212" "0.12340"_s << u"C"_s << true << -0.12340;
+    BOBUIest::newRow("C: 1.0e-4") << u"1.0e-4"_s << u"C"_s << true << 1.0e-4;
+    BOBUIest::newRow("C: 1.0e&minus;4") << u"1.0e\u2212" "4"_s << u"C"_s << true << 1.0e-4;
+    BOBUIest::newRow("C: 1.0e+4") << u"1.0e+4"_s << u"C"_s << true << 1.0e+4;
+    BOBUIest::newRow("C: 10.e+3") << u"10.e+3"_s << u"C"_s << true << 1.0e+4;
+    BOBUIest::newRow("C: 10e+3.") << u"10e+3."_s << u"C"_s << false << 0.0; // exp...dot
+    BOBUIest::newRow("C: 1e4") << u"1e4"_s << u"C"_s << true << 1.0e+4;
 
     // NaN and infinity:
-    QTest::newRow("C: nan") << u"nan"_s << u"C"_s << true << qQNaN();
-    QTest::newRow("C: NaN") << u"NaN"_s << u"C"_s << true << qQNaN();
-    QTest::newRow("C: -nan") << u"-nan"_s << u"C"_s << false << 0.0;
-    QTest::newRow("C: +nan") << u"+nan"_s << u"C"_s << false << 0.0;
-    QTest::newRow("C: inf") << u"inf"_s << u"C"_s << true << qInf();
-    QTest::newRow("C: Inf") << u"Inf"_s << u"C"_s << true << qInf();
-    QTest::newRow("C: +inf") << u"+inf"_s << u"C"_s << true << qInf();
-    QTest::newRow("C: -inf") << u"-inf"_s << u"C"_s << true << -qInf();
+    BOBUIest::newRow("C: nan") << u"nan"_s << u"C"_s << true << qQNaN();
+    BOBUIest::newRow("C: NaN") << u"NaN"_s << u"C"_s << true << qQNaN();
+    BOBUIest::newRow("C: -nan") << u"-nan"_s << u"C"_s << false << 0.0;
+    BOBUIest::newRow("C: +nan") << u"+nan"_s << u"C"_s << false << 0.0;
+    BOBUIest::newRow("C: inf") << u"inf"_s << u"C"_s << true << qInf();
+    BOBUIest::newRow("C: Inf") << u"Inf"_s << u"C"_s << true << qInf();
+    BOBUIest::newRow("C: +inf") << u"+inf"_s << u"C"_s << true << qInf();
+    BOBUIest::newRow("C: -inf") << u"-inf"_s << u"C"_s << true << -qInf();
 
     // Wantonly long-form representations, with trailing and leading zeros:
-    QTest::newRow("C: 1e-64 long-form")
+    BOBUIest::newRow("C: 1e-64 long-form")
             << (u"0."_s + QString(63, u'0') + u'1' + QString(962, u'0')) << u"C"_s << true << 1e-64;
-    QTest::newRow("C: 1e+64 long-form")
+    BOBUIest::newRow("C: 1e+64 long-form")
             << (QString(961, u'0') + u'1' + QString(64, u'0') + u".0"_s) << u"C"_s << true << 1e+64;
-    QTest::newRow("C: long-form 1 via e+64")
+    BOBUIest::newRow("C: long-form 1 via e+64")
             << (u"0."_s + QString(63, u'0') + u'1' + QString(962, u'0') + u"e+64"_s)
             << u"C"_s << true << 1.0;
-    QTest::newRow("C: long-form 1 via e-64")
+    BOBUIest::newRow("C: long-form 1 via e-64")
             << (QString(961, u'0') + u'1' + QString(64, u'0') + u".0e-64"_s)
             << u"C"_s << true << 1.0;
-    QTest::newRow("C: 12345678.9") << u"12345678.9"_s << u"C"_s << true << 12345678.9;
+    BOBUIest::newRow("C: 12345678.9") << u"12345678.9"_s << u"C"_s << true << 12345678.9;
 
     // With and without grouping, en vs de for flipped separators:
-    QTest::newRow("en: 12345678.9") << u"12345678.9"_s << u"en"_s << true << 12345678.9;
-    QTest::newRow("en: 12,345,678.9") << u"12,345,678.9"_s << u"en"_s << true << 12'345'678.9;
-    QTest::newRow("de: 12345678,9") << u"12345678,9"_s << u"de"_s << true << 12345678.9;
-    QTest::newRow("de: 12.345.678,9") << u"12.345.678,9"_s << u"de"_s << true << 12'345'678.9;
+    BOBUIest::newRow("en: 12345678.9") << u"12345678.9"_s << u"en"_s << true << 12345678.9;
+    BOBUIest::newRow("en: 12,345,678.9") << u"12,345,678.9"_s << u"en"_s << true << 12'345'678.9;
+    BOBUIest::newRow("de: 12345678,9") << u"12345678,9"_s << u"de"_s << true << 12345678.9;
+    BOBUIest::newRow("de: 12.345.678,9") << u"12.345.678,9"_s << u"de"_s << true << 12'345'678.9;
 
-    // NaN and infinity are locale-independent (for now - QTBUG-95460)
-    QTest::newRow("cy: nan") << u"nan"_s << u"cy"_s << true << qQNaN();
-    QTest::newRow("cy: NaN") << u"NaN"_s << u"cy"_s << true << qQNaN();
-    QTest::newRow("cy: -nan") << u"-nan"_s << u"cy"_s << false << 0.0;
-    QTest::newRow("cy: +nan") << u"+nan"_s << u"cy"_s << false << 0.0;
-    QTest::newRow("cy: inf") << u"inf"_s << u"cy"_s << true << qInf();
-    QTest::newRow("cy: Inf") << u"Inf"_s << u"cy"_s << true << qInf();
-    QTest::newRow("cy: +inf") << u"+inf"_s << u"cy"_s << true << qInf();
-    QTest::newRow("cy: -inf") << u"-inf"_s << u"cy"_s << true << -qInf();
-    // Samples ready for QTBUG-95460:
-    QTest::newRow("en: &infin;") << u"\u221e"_s << u"en"_s << true << qInf();
-    QTest::newRow("ga: Nuimh") << u"Nuimh"_s << u"ga"_s << true << qQNaN();
+    // NaN and infinity are locale-independent (for now - BOBUIBUG-95460)
+    BOBUIest::newRow("cy: nan") << u"nan"_s << u"cy"_s << true << qQNaN();
+    BOBUIest::newRow("cy: NaN") << u"NaN"_s << u"cy"_s << true << qQNaN();
+    BOBUIest::newRow("cy: -nan") << u"-nan"_s << u"cy"_s << false << 0.0;
+    BOBUIest::newRow("cy: +nan") << u"+nan"_s << u"cy"_s << false << 0.0;
+    BOBUIest::newRow("cy: inf") << u"inf"_s << u"cy"_s << true << qInf();
+    BOBUIest::newRow("cy: Inf") << u"Inf"_s << u"cy"_s << true << qInf();
+    BOBUIest::newRow("cy: +inf") << u"+inf"_s << u"cy"_s << true << qInf();
+    BOBUIest::newRow("cy: -inf") << u"-inf"_s << u"cy"_s << true << -qInf();
+    // Samples ready for BOBUIBUG-95460:
+    BOBUIest::newRow("en: &infin;") << u"\u221e"_s << u"en"_s << true << qInf();
+    BOBUIest::newRow("ga: Nuimh") << u"Nuimh"_s << u"ga"_s << true << qQNaN();
 
     // Locales with multi-character exponents:
-    QTest::newRow("sv_SE: 4e-3") // Swedish, Sweden
+    BOBUIest::newRow("sv_SE: 4e-3") // Swedish, Sweden
             << u"4\u00d7" "10^\u2212" "03"_s << u"sv_SE"_s << true << 4e-3;
-    QTest::newRow("sv_SE: 4x-3") // Only first character of exponent
+    BOBUIest::newRow("sv_SE: 4x-3") // Only first character of exponent
             << u"4\u00d7\u2212" "03"_s << u"sv_SE"_s << false << 0.0;
-    QTest::newRow("se_NO: 4e-3") // Northern Sami, Norway
+    BOBUIest::newRow("se_NO: 4e-3") // Northern Sami, Norway
             << u"4\u00b7" "10^\u2212" "03"_s << u"se_NO"_s << true << 4e-3;
-    QTest::newRow("se_NO: 4x-3") // Only first character of exponent
+    BOBUIest::newRow("se_NO: 4x-3") // Only first character of exponent
             << u"4\u00b7\u2212" "03"_s << u"se_NO"_s << false << 0.0;
-    QTest::newRow("ar_EG: 4e-3") // Arabic, Egypt
+    BOBUIest::newRow("ar_EG: 4e-3") // Arabic, Egypt
             << u"\u0664\u0623\u0633\u061c-\u0660\u0663"_s << u"ar_EG"_s << true << 4e-3;
-    QTest::newRow("ar_EG: 4x-3") // Only first character of exponent
+    BOBUIest::newRow("ar_EG: 4x-3") // Only first character of exponent
             << u"\u0664\u0623\u061c-\u0660\u0663"_s << u"ar_EG"_s << false << 0.0;
-    QTest::newRow("ar_EG: 4e!3") // Arabic Letter Mark in place of sign
+    BOBUIest::newRow("ar_EG: 4e!3") // Arabic Letter Mark in place of sign
             << u"\u0664\u0623\u0633\u061c\u0660\u0663"_s << u"ar_EG"_s << true << 4e3;
-    QTest::newRow("ar_EG: 4x!3") // Only first character of sign and exponent
+    BOBUIest::newRow("ar_EG: 4x!3") // Only first character of sign and exponent
             << u"\u0664\u0623\u061c\u0660\u0663"_s << u"ar_EG"_s << false << 0.0;
 }
 
@@ -608,12 +608,12 @@ void tst_QLocale::toDouble()
     QBENCHMARK {
         actual = loc.toDouble(text, &ok);
     }
-    QEXPECT_FAIL("en: &infin;", "Localized infinity support missing: QTBUG-95460", Abort);
-    QEXPECT_FAIL("ga: Nuimh", "Localized NaN support missing: QTBUG-95460", Abort);
+    QEXPECT_FAIL("en: &infin;", "Localized infinity support missing: BOBUIBUG-95460", Abort);
+    QEXPECT_FAIL("ga: Nuimh", "Localized NaN support missing: BOBUIBUG-95460", Abort);
     QCOMPARE(ok, good);
     QCOMPARE(actual, expected);
 }
 
-QTEST_MAIN(tst_QLocale)
+BOBUIEST_MAIN(tst_QLocale)
 
 #include "tst_bench_qlocale.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [0]
 QNetworkAccessManager *manager = new QNetworkAccessManager(this);
@@ -11,13 +11,13 @@ manager->setCache(diskCache);
 //! [0]
 
 //! [1]
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 // do a normal request (preferred from network, as this is the default)
-QNetworkRequest request(QUrl(u"http://qt-project.org"_s));
+QNetworkRequest request(QUrl(u"http://bobui-project.org"_s));
 manager->get(request);
 
 // do a request preferred from cache
-QNetworkRequest request2(QUrl(u"http://qt-project.org"_s));
+QNetworkRequest request2(QUrl(u"http://bobui-project.org"_s));
 request2.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
 manager->get(request2);
 //! [1]

@@ -1,6 +1,6 @@
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@edeltech.ch>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowscontext.h"
 #include "qwindowsintegration.h"
@@ -8,19 +8,19 @@
 #include "qwindowskeymapper.h"
 #include "qwindowsnativeinterface.h"
 #include "qwindowspointerhandler.h"
-#include "qtwindowsglobal.h"
+#include "bobuiwindowsglobal.h"
 #include "qwindowsmenu.h"
 #include "qwindowsmimeregistry.h"
 #include "qwindowsinputcontext.h"
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 #  include "qwindowstabletsupport.h"
 #endif
 #include "qwindowstheme.h"
 #include <private/qguiapplication_p.h>
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #  include "uiautomation/qwindowsuiaaccessibility.h"
 #endif
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
 # include <private/qsessionmanager_p.h>
 # include "qwindowssessionmanager.h"
 #endif
@@ -28,29 +28,29 @@
 #include "qwindowstheme.h"
 #include "qwindowswindowclassregistry.h"
 
-#include <QtGui/qwindow.h>
+#include <BobUIGui/qwindow.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qwindowsysteminterface_p.h>
 #include <qpa/qplatformnativeinterface.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qopenglcontext.h>
-#include <QtGui/qpointingdevice.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qopenglcontext.h>
+#include <BobUIGui/qpointingdevice.h>
 
-#include <QtCore/qhash.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qsysinfo.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qscopeguard.h>
-#include <QtCore/private/qwinregistry_p.h>
-#if QT_CONFIG(cpp_winrt)
-#  include <QtCore/private/qfactorycacheregistration_p.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qsysinfo.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUICore/private/qwinregistry_p.h>
+#if BOBUI_CONFIG(cpp_winrt)
+#  include <BobUICore/private/qfactorycacheregistration_p.h>
 #endif
-#include <QtCore/private/qsystemerror_p.h>
-#include <QtCore/private/quniquehandle_types_windows_p.h>
+#include <BobUICore/private/qsystemerror_p.h>
+#include <BobUICore/private/quniquehandle_types_windows_p.h>
 
-#include <QtGui/private/qwindowsguieventdispatcher_p.h>
-#include <QtGui/private/qwindowsthemecache_p.h>
+#include <BobUIGui/private/qwindowsguieventdispatcher_p.h>
+#include <BobUIGui/private/qwindowsthemecache_p.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -59,23 +59,23 @@
 #include <wtsapi32.h>
 #include <shellscalingapi.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcQpaWindow, "qt.qpa.window")
-Q_LOGGING_CATEGORY(lcQpaEvents, "qt.qpa.events")
-Q_LOGGING_CATEGORY(lcQpaGl, "qt.qpa.gl")
-Q_LOGGING_CATEGORY(lcQpaMime, "qt.qpa.mime")
-Q_LOGGING_CATEGORY(lcQpaInputMethods, "qt.qpa.input.methods")
-Q_LOGGING_CATEGORY(lcQpaDialogs, "qt.qpa.dialogs")
-Q_LOGGING_CATEGORY(lcQpaMenus, "qt.qpa.menus")
-Q_LOGGING_CATEGORY(lcQpaTablet, "qt.qpa.input.tablet")
-Q_LOGGING_CATEGORY(lcQpaAccessibility, "qt.qpa.accessibility")
-Q_LOGGING_CATEGORY(lcQpaUiAutomation, "qt.qpa.uiautomation")
-Q_LOGGING_CATEGORY(lcQpaTrayIcon, "qt.qpa.trayicon")
-Q_LOGGING_CATEGORY(lcQpaScreen, "qt.qpa.screen")
-Q_LOGGING_CATEGORY(lcQpaTheme, "qt.qpa.theme")
+Q_LOGGING_CATEGORY(lcQpaWindow, "bobui.qpa.window")
+Q_LOGGING_CATEGORY(lcQpaEvents, "bobui.qpa.events")
+Q_LOGGING_CATEGORY(lcQpaGl, "bobui.qpa.gl")
+Q_LOGGING_CATEGORY(lcQpaMime, "bobui.qpa.mime")
+Q_LOGGING_CATEGORY(lcQpaInputMethods, "bobui.qpa.input.methods")
+Q_LOGGING_CATEGORY(lcQpaDialogs, "bobui.qpa.dialogs")
+Q_LOGGING_CATEGORY(lcQpaMenus, "bobui.qpa.menus")
+Q_LOGGING_CATEGORY(lcQpaTablet, "bobui.qpa.input.tablet")
+Q_LOGGING_CATEGORY(lcQpaAccessibility, "bobui.qpa.accessibility")
+Q_LOGGING_CATEGORY(lcQpaUiAutomation, "bobui.qpa.uiautomation")
+Q_LOGGING_CATEGORY(lcQpaTrayIcon, "bobui.qpa.trayicon")
+Q_LOGGING_CATEGORY(lcQpaScreen, "bobui.qpa.screen")
+Q_LOGGING_CATEGORY(lcQpaTheme, "bobui.qpa.theme")
 
 int QWindowsContext::verbose = 0;
 
@@ -105,7 +105,7 @@ static inline bool useRTL_Extensions()
     return false;
 }
 
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
 static inline QWindowsSessionManager *platformSessionManager()
 {
     auto *guiPrivate = static_cast<QGuiApplicationPrivate*>(QObjectPrivate::get(qApp));
@@ -117,7 +117,7 @@ static inline bool sessionManagerInteractionBlocked()
 {
     return platformSessionManager()->isInteractionBlocked();
 }
-#else // QT_CONFIG(sessionmanager)
+#else // BOBUI_CONFIG(sessionmanager)
 static inline bool sessionManagerInteractionBlocked() { return false; }
 #endif
 
@@ -145,7 +145,7 @@ struct QWindowsContextPrivate {
     QWindowsMimeRegistry m_mimeConverter;
     QWindowsScreenManager m_screenManager;
     QSharedPointer<QWindowCreationContext> m_creationContext;
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     QScopedPointer<QWindowsTabletSupport> m_tabletSupport;
 #endif
     const HRESULT m_oleInitializeResult;
@@ -183,7 +183,7 @@ QWindowsContext::QWindowsContext() :
 
 QWindowsContext::~QWindowsContext()
 {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     d->m_tabletSupport.reset(); // Destroy internal window before unregistering classes.
 #endif
 
@@ -199,7 +199,7 @@ QWindowsContext::~QWindowsContext()
     d->m_screenManager.destroyWindow();
 
     if (d->m_oleInitializeResult == S_OK || d->m_oleInitializeResult == S_FALSE) {
-#ifdef QT_USE_FACTORY_CACHE_REGISTRATION
+#ifdef BOBUI_USE_FACTORY_CACHE_REGISTRATION
         detail::QWinRTFactoryCacheRegistration::clearAllCaches();
 #endif
         OleUninitialize();
@@ -248,7 +248,7 @@ void QWindowsContext::registerTouchWindows()
 
 bool QWindowsContext::initTablet()
 {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     d->m_tabletSupport.reset(QWindowsTabletSupport::create());
     return true;
 #else
@@ -258,7 +258,7 @@ bool QWindowsContext::initTablet()
 
 bool QWindowsContext::disposeTablet()
 {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     d->m_tabletSupport.reset();
     return true;
 #else
@@ -266,7 +266,7 @@ bool QWindowsContext::disposeTablet()
 #endif
 }
 
-LRESULT QT_WIN_CALLBACK qWindowsPowerWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT BOBUI_WIN_CALLBACK qWindowsPowerWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if (message != WM_POWERBROADCAST || wParam != PBT_POWERSETTINGCHANGE)
         return DefWindowProc(hwnd, message, wParam, lParam);
@@ -284,7 +284,7 @@ LRESULT QT_WIN_CALLBACK qWindowsPowerWindowProc(HWND hwnd, UINT message, WPARAM 
             // Repaint the windows when returning from sleeping display mode.
             const auto tlw = QGuiApplication::topLevelWindows();
             for (auto w : tlw) {
-                if (w->isVisible() && w->windowState() != Qt::WindowMinimized) {
+                if (w->isVisible() && w->windowState() != BobUI::WindowMinimized) {
                     if (auto tw = QWindowsWindow::windowsWindowOf(w)) {
                         if (HWND hwnd = tw->handle()) {
                             InvalidateRect(hwnd, nullptr, false);
@@ -302,7 +302,7 @@ bool QWindowsContext::initPowerNotificationHandler()
     if (d->m_powerNotification)
         return false;
 
-    d->m_powerDummyWindow = createDummyWindow(QStringLiteral("PowerDummyWindow"), L"QtPowerDummyWindow", qWindowsPowerWindowProc);
+    d->m_powerDummyWindow = createDummyWindow(QStringLiteral("PowerDummyWindow"), L"BobUIPowerDummyWindow", qWindowsPowerWindowProc);
     if (!d->m_powerDummyWindow)
         return false;
 
@@ -317,7 +317,7 @@ bool QWindowsContext::initPowerNotificationHandler()
 
 void QWindowsContext::setTabletAbsoluteRange(int a)
 {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     QWindowsTabletSupport::setAbsoluteRange(a);
 #else
     Q_UNUSED(a);
@@ -329,88 +329,88 @@ void QWindowsContext::setDetectAltGrModifier(bool a)
     d->m_keyMapper.setDetectAltGrModifier(a);
 }
 
-[[nodiscard]] static inline QtWindows::DpiAwareness
-    dpiAwarenessContextToQtDpiAwareness(DPI_AWARENESS_CONTEXT context)
+[[nodiscard]] static inline BobUIWindows::DpiAwareness
+    dpiAwarenessContextToBobUIDpiAwareness(DPI_AWARENESS_CONTEXT context)
 {
     // IsValidDpiAwarenessContext() will handle the NULL pointer case.
     if (!IsValidDpiAwarenessContext(context))
-        return QtWindows::DpiAwareness::Invalid;
+        return BobUIWindows::DpiAwareness::Invalid;
     if (AreDpiAwarenessContextsEqual(context, DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED))
-        return QtWindows::DpiAwareness::Unaware_GdiScaled;
+        return BobUIWindows::DpiAwareness::Unaware_GdiScaled;
     if (AreDpiAwarenessContextsEqual(context, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
-        return QtWindows::DpiAwareness::PerMonitorVersion2;
+        return BobUIWindows::DpiAwareness::PerMonitorVersion2;
     if (AreDpiAwarenessContextsEqual(context, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE))
-        return QtWindows::DpiAwareness::PerMonitor;
+        return BobUIWindows::DpiAwareness::PerMonitor;
     if (AreDpiAwarenessContextsEqual(context, DPI_AWARENESS_CONTEXT_SYSTEM_AWARE))
-        return QtWindows::DpiAwareness::System;
+        return BobUIWindows::DpiAwareness::System;
     if (AreDpiAwarenessContextsEqual(context, DPI_AWARENESS_CONTEXT_UNAWARE))
-        return QtWindows::DpiAwareness::Unaware;
-    return QtWindows::DpiAwareness::Invalid;
+        return BobUIWindows::DpiAwareness::Unaware;
+    return BobUIWindows::DpiAwareness::Invalid;
 }
 
-QtWindows::DpiAwareness QWindowsContext::windowDpiAwareness(HWND hwnd)
+BobUIWindows::DpiAwareness QWindowsContext::windowDpiAwareness(HWND hwnd)
 {
     if (!hwnd)
-        return QtWindows::DpiAwareness::Invalid;
+        return BobUIWindows::DpiAwareness::Invalid;
     const auto context = GetWindowDpiAwarenessContext(hwnd);
-    return dpiAwarenessContextToQtDpiAwareness(context);
+    return dpiAwarenessContextToBobUIDpiAwareness(context);
 }
 
-QtWindows::DpiAwareness QWindowsContext::processDpiAwareness()
+BobUIWindows::DpiAwareness QWindowsContext::processDpiAwareness()
 {
     // Although we have GetDpiAwarenessContextForProcess(), however,
     // it's only available on Win10 1903+, which is a little higher
-    // than Qt's minimum supported version (1809), so we can't use it.
+    // than BobUI's minimum supported version (1809), so we can't use it.
     // Luckily, MS docs said GetThreadDpiAwarenessContext() will also
     // return the default DPI_AWARENESS_CONTEXT for the process if
     // SetThreadDpiAwarenessContext() was never called. So we can use
     // it as an equivalent.
     const auto context = GetThreadDpiAwarenessContext();
-    return dpiAwarenessContextToQtDpiAwareness(context);
+    return dpiAwarenessContextToBobUIDpiAwareness(context);
 }
 
 [[nodiscard]] static inline DPI_AWARENESS_CONTEXT
-    qtDpiAwarenessToDpiAwarenessContext(QtWindows::DpiAwareness dpiAwareness)
+    bobuiDpiAwarenessToDpiAwarenessContext(BobUIWindows::DpiAwareness dpiAwareness)
 {
     switch (dpiAwareness) {
-    case QtWindows::DpiAwareness::Invalid:
+    case BobUIWindows::DpiAwareness::Invalid:
         return nullptr;
-    case QtWindows::DpiAwareness::Unaware:
+    case BobUIWindows::DpiAwareness::Unaware:
         return DPI_AWARENESS_CONTEXT_UNAWARE;
-    case QtWindows::DpiAwareness::System:
+    case BobUIWindows::DpiAwareness::System:
         return DPI_AWARENESS_CONTEXT_SYSTEM_AWARE;
-    case QtWindows::DpiAwareness::PerMonitor:
+    case BobUIWindows::DpiAwareness::PerMonitor:
         return DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE;
-    case QtWindows::DpiAwareness::PerMonitorVersion2:
+    case BobUIWindows::DpiAwareness::PerMonitorVersion2:
         return DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
-    case QtWindows::DpiAwareness::Unaware_GdiScaled:
+    case BobUIWindows::DpiAwareness::Unaware_GdiScaled:
         return DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED;
     }
     return nullptr;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
-QDebug operator<<(QDebug d, QtWindows::DpiAwareness dpiAwareness)
+#ifndef BOBUI_NO_DEBUG_STREAM
+QDebug operator<<(QDebug d, BobUIWindows::DpiAwareness dpiAwareness)
 {
     const QDebugStateSaver saver(d);
-    QString message = u"QtWindows::DpiAwareness::"_s;
+    QString message = u"BobUIWindows::DpiAwareness::"_s;
     switch (dpiAwareness) {
-    case QtWindows::DpiAwareness::Invalid:
+    case BobUIWindows::DpiAwareness::Invalid:
         message += u"Invalid"_s;
         break;
-    case QtWindows::DpiAwareness::Unaware:
+    case BobUIWindows::DpiAwareness::Unaware:
         message += u"Unaware"_s;
         break;
-    case QtWindows::DpiAwareness::System:
+    case BobUIWindows::DpiAwareness::System:
         message += u"System"_s;
         break;
-    case QtWindows::DpiAwareness::PerMonitor:
+    case BobUIWindows::DpiAwareness::PerMonitor:
         message += u"PerMonitor"_s;
         break;
-    case QtWindows::DpiAwareness::PerMonitorVersion2:
+    case BobUIWindows::DpiAwareness::PerMonitorVersion2:
         message += u"PerMonitorVersion2"_s;
         break;
-    case QtWindows::DpiAwareness::Unaware_GdiScaled:
+    case BobUIWindows::DpiAwareness::Unaware_GdiScaled:
         message += u"Unaware_GdiScaled"_s;
         break;
     }
@@ -419,16 +419,16 @@ QDebug operator<<(QDebug d, QtWindows::DpiAwareness dpiAwareness)
 }
 #endif
 
-bool QWindowsContext::setProcessDpiAwareness(QtWindows::DpiAwareness dpiAwareness)
+bool QWindowsContext::setProcessDpiAwareness(BobUIWindows::DpiAwareness dpiAwareness)
 {
     qCDebug(lcQpaWindow) << __FUNCTION__ << dpiAwareness;
     [[maybe_unused]] const auto updatePMv2Status = qScopeGuard([](){
         QWindowsContextPrivate::m_v2DpiAware =
-            processDpiAwareness() == QtWindows::DpiAwareness::PerMonitorVersion2;
+            processDpiAwareness() == BobUIWindows::DpiAwareness::PerMonitorVersion2;
     });
     if (processDpiAwareness() == dpiAwareness)
         return true;
-    const auto context = qtDpiAwarenessToDpiAwarenessContext(dpiAwareness);
+    const auto context = bobuiDpiAwarenessToDpiAwarenessContext(dpiAwareness);
     if (!IsValidDpiAwarenessContext(context)) {
         qCWarning(lcQpaWindow) << dpiAwareness << "is not supported by current system.";
         return false;
@@ -437,10 +437,10 @@ bool QWindowsContext::setProcessDpiAwareness(QtWindows::DpiAwareness dpiAwarenes
         qCWarning(lcQpaWindow).noquote().nospace()
             << "SetProcessDpiAwarenessContext() failed: "
             << QSystemError::windowsString()
-            << "\nQt's default DPI awareness context is "
+            << "\nBobUI's default DPI awareness context is "
             << "DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2. If you know what you "
-            << "are doing, you can overwrite this default using qt.conf "
-            << "(https://doc.qt.io/qt-6/highdpi.html#configuring-windows).";
+            << "are doing, you can overwrite this default using bobui.conf "
+            << "(https://doc.bobui.io/bobui-6/highdpi.html#configuring-windows).";
         return false;
     }
     return true;
@@ -598,11 +598,11 @@ static inline bool findPlatformWindowHelper(const POINT &screenPoint, unsigned c
         *hwnd = child;
         return true;
     }
-    // QTBUG-40555: despite CWP_SKIPINVISIBLE, it is possible to hit on invisible
+    // BOBUIBUG-40555: despite CWP_SKIPINVISIBLE, it is possible to hit on invisible
     // full screen windows of other applications that have WS_EX_TRANSPARENT set
     // (for example created by  screen sharing applications). In that case, try to
-    // find a Qt window by searching again with CWP_SKIPTRANSPARENT.
-    // Note that Qt 5 uses WS_EX_TRANSPARENT for Qt::WindowTransparentForInput
+    // find a BobUI window by searching again with CWP_SKIPTRANSPARENT.
+    // Note that BobUI 5 uses WS_EX_TRANSPARENT for BobUI::WindowTransparentForInput
     // as well.
     if (!(cwexFlags & CWP_SKIPTRANSPARENT)
         && (GetWindowLongPtr(child, GWL_EXSTYLE) & WS_EX_TRANSPARENT)) {
@@ -626,7 +626,7 @@ QWindowsWindow *QWindowsContext::findPlatformWindowAt(HWND parent,
     QWindowsWindow *result = nullptr;
     const POINT screenPoint = { screenPointIn.x(), screenPointIn.y() };
     while (findPlatformWindowHelper(screenPoint, cwex_flags, this, &parent, &result)) {}
-    // QTBUG-40815: ChildWindowFromPointEx() can hit on special windows from
+    // BOBUIBUG-40815: ChildWindowFromPointEx() can hit on special windows from
     // screen recorder applications like ScreenToGif. Fall back to WindowFromPoint().
     if (result == nullptr) {
         if (const HWND window = WindowFromPoint(screenPoint))
@@ -678,7 +678,7 @@ QWindowsScreenManager &QWindowsContext::screenManager()
 
 QWindowsTabletSupport *QWindowsContext::tabletSupport() const
 {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     return d->m_tabletSupport.data();
 #else
     return 0;
@@ -764,7 +764,7 @@ bool QWindowsContext::shouldHaveNonClientDpiScaling(const QWindow *window)
 
     return window->isTopLevel()
         && !window->property(QWindowsWindow::embeddedNativeParentHandleProperty).isValid()
-#if QT_CONFIG(opengl) // /QTBUG-62901, EnableNonClientDpiScaling has problems with GL
+#if BOBUI_CONFIG(opengl) // /BOBUIBUG-62901, EnableNonClientDpiScaling has problems with GL
         && (window->surfaceType() != QSurface::OpenGLSurface
             || QOpenGLContext::openGLModuleType() != QOpenGLContext::LibGL)
 #endif
@@ -802,7 +802,7 @@ static inline bool isInputMessage(UINT m)
 static bool enableNonClientDpiScaling(HWND hwnd)
 {
     bool result = false;
-    if (QWindowsContext::windowDpiAwareness(hwnd) == QtWindows::DpiAwareness::PerMonitor) {
+    if (QWindowsContext::windowDpiAwareness(hwnd) == BobUIWindows::DpiAwareness::PerMonitor) {
         result = EnableNonClientDpiScaling(hwnd) != FALSE;
         if (!result) {
             const DWORD errorCode = GetLastError();
@@ -820,7 +820,7 @@ static bool enableNonClientDpiScaling(HWND hwnd)
 */
 
 bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
-                                  QtWindows::WindowsEventType et,
+                                  BobUIWindows::WindowsEventType et,
                                   WPARAM wParam, LPARAM lParam,
                                   LRESULT *result,
                                   QWindowsWindow **platformWindowPtr)
@@ -834,12 +834,12 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
     msg.lParam = lParam;
     msg.time = GetMessageTime();
     msg.pt.x = msg.pt.y = 0;
-    if (et != QtWindows::CursorEvent && (et & (QtWindows::MouseEventFlag | QtWindows::NonClientEventFlag))) {
+    if (et != BobUIWindows::CursorEvent && (et & (BobUIWindows::MouseEventFlag | BobUIWindows::NonClientEventFlag))) {
         msg.pt.x = GET_X_LPARAM(lParam);
         msg.pt.y = GET_Y_LPARAM(lParam);
         // For non-client-area messages, these are screen coordinates (as expected
         // in the MSG structure), otherwise they are client coordinates.
-        if (!(et & QtWindows::NonClientEventFlag)) {
+        if (!(et & BobUIWindows::NonClientEventFlag)) {
             clientToScreen(msg.hwnd, &msg.pt);
         }
     } else {
@@ -849,7 +849,7 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
     QWindowsWindow *platformWindow = findPlatformWindow(hwnd);
     *platformWindowPtr = platformWindow;
 
-    // Run the native event filters. QTBUG-67095: Exclude input messages which are sent
+    // Run the native event filters. BOBUIBUG-67095: Exclude input messages which are sent
     // by QEventDispatcherWin32::processEvents()
     if (!isInputMessage(msg.message) && filterNativeEvent(&msg, result))
         return true;
@@ -857,7 +857,7 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
     if (platformWindow && filterNativeEvent(platformWindow->window(), &msg, result))
         return true;
 
-    if (et & QtWindows::InputMethodEventFlag) {
+    if (et & BobUIWindows::InputMethodEventFlag) {
         QWindowsInputContext *windowsInputContext = ::windowsInputContext();
         // Disable IME assuming this is a special implementation hooking into keyboard input.
         // "Real" IME implementations should use a native event filter intercepting IME events.
@@ -866,13 +866,13 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
             return false;
         }
         switch (et) {
-        case QtWindows::InputMethodStartCompositionEvent:
+        case BobUIWindows::InputMethodStartCompositionEvent:
             return windowsInputContext->startComposition(hwnd);
-        case QtWindows::InputMethodCompositionEvent:
+        case BobUIWindows::InputMethodCompositionEvent:
             return windowsInputContext->composition(hwnd, lParam);
-        case QtWindows::InputMethodEndCompositionEvent:
+        case BobUIWindows::InputMethodEndCompositionEvent:
             return windowsInputContext->endComposition(hwnd);
-        case QtWindows::InputMethodRequest:
+        case BobUIWindows::InputMethodRequest:
             return windowsInputContext->handleIME_Request(wParam, lParam, result);
         default:
             break;
@@ -880,37 +880,37 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
     } // InputMethodEventFlag
 
     switch (et) {
-    case QtWindows::GestureEvent:
+    case BobUIWindows::GestureEvent:
         // TODO???
         break;
-    case QtWindows::InputMethodOpenCandidateWindowEvent:
-    case QtWindows::InputMethodCloseCandidateWindowEvent:
+    case BobUIWindows::InputMethodOpenCandidateWindowEvent:
+    case BobUIWindows::InputMethodCloseCandidateWindowEvent:
         // TODO: Release/regrab mouse if a popup has mouse grab.
         return false;
-    case QtWindows::DestroyEvent:
+    case BobUIWindows::DestroyEvent:
         if (platformWindow && !platformWindow->testFlag(QWindowsWindow::WithinDestroy)) {
             qWarning() << "External WM_DESTROY received for " << platformWindow->window()
                        << ", parent: " << platformWindow->window()->parent()
                        << ", transient parent: " << platformWindow->window()->transientParent();
             }
         return false;
-    case QtWindows::ClipboardEvent:
+    case BobUIWindows::ClipboardEvent:
         return false;
-    case QtWindows::CursorEvent: // Sent to windows that do not have capture (see QTBUG-58590).
+    case BobUIWindows::CursorEvent: // Sent to windows that do not have capture (see BOBUIBUG-58590).
         if (QWindowsCursor::hasOverrideCursor()) {
             QWindowsCursor::enforceOverrideCursor();
             return true;
         }
         break;
-    case QtWindows::UnknownEvent:
+    case BobUIWindows::UnknownEvent:
         return false;
-    case QtWindows::AccessibleObjectFromWindowRequest:
-#if QT_CONFIG(accessibility)
+    case BobUIWindows::AccessibleObjectFromWindowRequest:
+#if BOBUI_CONFIG(accessibility)
         return QWindowsUiaAccessibility::handleWmGetObject(hwnd, wParam, lParam, result);
 #else
         return false;
 #endif
-    case QtWindows::SettingChangedEvent: {
+    case BobUIWindows::SettingChangedEvent: {
         QWindowsWindow::settingsChanged();
         return d->m_screenManager.handleScreenChanges();
     }
@@ -923,16 +923,16 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
     // Pass on to current creation context
     if (!platformWindow && !d->m_creationContext.isNull()) {
         switch (et) {
-        case QtWindows::QuerySizeHints:
+        case BobUIWindows::QuerySizeHints:
             d->m_creationContext->applyToMinMaxInfo(reinterpret_cast<MINMAXINFO *>(lParam));
             return true;
-        case QtWindows::ResizeEvent:
+        case BobUIWindows::ResizeEvent:
             d->m_creationContext->obtainedSize = QSize(LOWORD(lParam), HIWORD(lParam));
             return true;
-        case QtWindows::MoveEvent:
+        case BobUIWindows::MoveEvent:
             d->m_creationContext->obtainedPos = QPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
             return true;
-        case QtWindows::NonClientCreate:
+        case BobUIWindows::NonClientCreate:
             if (shouldHaveNonClientDpiScaling(d->m_creationContext->window) &&
                 // DPI aware V2 processes always have NonClientDpiScaling enabled
                 // and there is no need to make an API call to manually enable.
@@ -940,9 +940,9 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
                     enableNonClientDpiScaling(msg.hwnd);
                 }
             return false;
-        case QtWindows::CalculateSize:
+        case BobUIWindows::CalculateSize:
             return QWindowsGeometryHint::handleCalculateSize(d->m_creationContext->window, d->m_creationContext->customMargins, msg, result);
-        case QtWindows::GeometryChangingEvent:
+        case BobUIWindows::GeometryChangingEvent:
             return QWindowsWindow::handleGeometryChangingMessage(&msg, d->m_creationContext->window,
                                                                  d->m_creationContext->margins + d->m_creationContext->customMargins);
         default:
@@ -956,31 +956,31 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
         if (QWindowsContext::verbose > 1)
             qCDebug(lcQpaEvents) << "Event window: " << platformWindow->window();
     } else {
-        qWarning("%s: No Qt Window found for event 0x%x (%s), hwnd=0x%p.",
+        qWarning("%s: No BobUI Window found for event 0x%x (%s), hwnd=0x%p.",
                  __FUNCTION__, message,
                  QWindowsGuiEventDispatcher::windowsMessageName(message), hwnd);
         return false;
     }
 
     switch (et) {
-    case QtWindows::DeviceChangeEvent:
+    case BobUIWindows::DeviceChangeEvent:
         if (d->m_systemInfo & QWindowsContext::SI_SupportsTouch)
             break;
         // See if there are any touch devices added
         if (wParam == DBT_DEVNODES_CHANGED)
             initTouch();
         break;
-    case QtWindows::InputLanguageChangeEvent:
+    case BobUIWindows::InputLanguageChangeEvent:
         if (QWindowsInputContext *wic = windowsInputContext())
             wic->handleInputLanguageChanged(wParam, lParam);
         Q_FALLTHROUGH();
-    case QtWindows::KeyDownEvent:
-    case QtWindows::KeyEvent:
-    case QtWindows::InputMethodKeyEvent:
-    case QtWindows::InputMethodKeyDownEvent:
-    case QtWindows::AppCommandEvent:
+    case BobUIWindows::KeyDownEvent:
+    case BobUIWindows::KeyEvent:
+    case BobUIWindows::InputMethodKeyEvent:
+    case BobUIWindows::InputMethodKeyDownEvent:
+    case BobUIWindows::AppCommandEvent:
         return sessionManagerInteractionBlocked() ||  d->m_keyMapper.translateKeyEvent(platformWindow->window(), hwnd, msg, result);
-    case QtWindows::MenuAboutToShowEvent:
+    case BobUIWindows::MenuAboutToShowEvent:
         if (sessionManagerInteractionBlocked())
             return true;
         if (QWindowsPopupMenu::notifyAboutToShow(reinterpret_cast<HMENU>(wParam)))
@@ -988,7 +988,7 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
         if (platformWindow == nullptr || platformWindow->menuBar() == nullptr)
             return false;
         return platformWindow->menuBar()->notifyAboutToShow(reinterpret_cast<HMENU>(wParam));
-    case QtWindows::MenuCommandEvent:
+    case BobUIWindows::MenuCommandEvent:
         if (sessionManagerInteractionBlocked())
             return true;
         if (QWindowsPopupMenu::notifyTriggered(LOWORD(wParam)))
@@ -996,111 +996,111 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
         if (platformWindow == nullptr || platformWindow->menuBar() == nullptr)
             return false;
         return platformWindow->menuBar()->notifyTriggered(LOWORD(wParam));
-    case QtWindows::MoveEvent:
+    case BobUIWindows::MoveEvent:
         platformWindow->handleMoved();
         return true;
-    case QtWindows::ResizeEvent: {
+    case BobUIWindows::ResizeEvent: {
         QWindow *window = platformWindow->window();
         platformWindow->handleResized(static_cast<int>(wParam), lParam);
-        if (window->flags().testFlags(Qt::ExpandedClientAreaHint))
+        if (window->flags().testFlags(BobUI::ExpandedClientAreaHint))
             platformWindow->updateCustomTitlebar();
         return true;
     }
-    case QtWindows::QuerySizeHints:
+    case BobUIWindows::QuerySizeHints:
         platformWindow->getSizeHints(reinterpret_cast<MINMAXINFO *>(lParam));
         return true;// maybe available on some SDKs revisit WM_NCCALCSIZE
-    case QtWindows::CalculateSize:
+    case BobUIWindows::CalculateSize:
         return QWindowsGeometryHint::handleCalculateSize(platformWindow->window(), platformWindow->customMargins(), msg, result);
-    case QtWindows::NonClientHitTest: {
+    case BobUIWindows::NonClientHitTest: {
         QWindow *window = platformWindow->window();
-        if (window->flags().testFlags(Qt::ExpandedClientAreaHint))
+        if (window->flags().testFlags(BobUI::ExpandedClientAreaHint))
             platformWindow->updateCustomTitlebar();
         return platformWindow->handleNonClientHitTest(QPoint(msg.pt.x, msg.pt.y), result);
     }
-    case QtWindows::NonClientActivate:
+    case BobUIWindows::NonClientActivate:
         return platformWindow->handleNonClientActivate(result);
-    case QtWindows::GeometryChangingEvent:
+    case BobUIWindows::GeometryChangingEvent:
         return platformWindow->handleGeometryChanging(&msg);
-    case QtWindows::ExposeEvent: {
+    case BobUIWindows::ExposeEvent: {
         QWindow *window = platformWindow->window();
-        if (window->flags().testFlags(Qt::ExpandedClientAreaHint))
+        if (window->flags().testFlags(BobUI::ExpandedClientAreaHint))
             platformWindow->updateCustomTitlebar();
         return platformWindow->handleWmPaint(hwnd, message, wParam, lParam, result);
     }
-    case QtWindows::NonClientMouseEvent:
+    case BobUIWindows::NonClientMouseEvent:
         if (!platformWindow->frameStrutEventsEnabled())
             break;
         return sessionManagerInteractionBlocked() || d->m_pointerHandler.translateMouseEvent(platformWindow->window(), hwnd, et, msg, result);
-    case QtWindows::NonClientPointerEvent:
+    case BobUIWindows::NonClientPointerEvent:
         if (!platformWindow->frameStrutEventsEnabled())
             break;
         return sessionManagerInteractionBlocked() || d->m_pointerHandler.translatePointerEvent(platformWindow->window(), hwnd, et, msg, result);
-    case QtWindows::EnterSizeMoveEvent:
+    case BobUIWindows::EnterSizeMoveEvent:
         platformWindow->setFlag(QWindowsWindow::ResizeMoveActive);
         if (!IsZoomed(hwnd))
             platformWindow->updateRestoreGeometry();
         return true;
-    case QtWindows::ExitSizeMoveEvent:
+    case BobUIWindows::ExitSizeMoveEvent:
         platformWindow->clearFlag(QWindowsWindow::ResizeMoveActive);
         platformWindow->checkForScreenChanged();
         handleExitSizeMove(platformWindow->window());
         if (!IsZoomed(hwnd))
             platformWindow->updateRestoreGeometry();
         return true;
-    case QtWindows::ScrollEvent:
+    case BobUIWindows::ScrollEvent:
         // TODO???
         break;
-    case QtWindows::MouseWheelEvent:
-    case QtWindows::MouseEvent:
-    case QtWindows::LeaveEvent:
+    case BobUIWindows::MouseWheelEvent:
+    case BobUIWindows::MouseEvent:
+    case BobUIWindows::LeaveEvent:
         {
             QWindow *window = platformWindow->window();
-            while (window && (window->flags() & Qt::WindowTransparentForInput))
+            while (window && (window->flags() & BobUI::WindowTransparentForInput))
                 window = window->parent();
             if (!window)
                 return false;
             return sessionManagerInteractionBlocked() || d->m_pointerHandler.translateMouseEvent(window, hwnd, et, msg, result);
         }
         break;
-    case QtWindows::TouchEvent:
+    case BobUIWindows::TouchEvent:
         // TODO???
         break;
-    case QtWindows::PointerEvent:
+    case BobUIWindows::PointerEvent:
         return sessionManagerInteractionBlocked() || d->m_pointerHandler.translatePointerEvent(platformWindow->window(), hwnd, et, msg, result);
-    case QtWindows::FocusInEvent: // see QWindowsWindow::requestActivateWindow().
-        if (platformWindow->window()->flags() & Qt::WindowDoesNotAcceptFocus)
+    case BobUIWindows::FocusInEvent: // see QWindowsWindow::requestActivateWindow().
+        if (platformWindow->window()->flags() & BobUI::WindowDoesNotAcceptFocus)
             return false;
         [[fallthrough]];
-    case QtWindows::FocusOutEvent:
+    case BobUIWindows::FocusOutEvent:
         handleFocusEvent(et, platformWindow);
         return true;
-    case QtWindows::ShowEventOnParentRestoring: // QTBUG-40696, prevent Windows from re-showing hidden transient children (dialogs).
+    case BobUIWindows::ShowEventOnParentRestoring: // BOBUIBUG-40696, prevent Windows from re-showing hidden transient children (dialogs).
         if (!platformWindow->window()->isVisible()) {
             *result = 0;
             return true;
         }
         break;
-    case QtWindows::HideEvent:
+    case BobUIWindows::HideEvent:
         platformWindow->handleHidden();
         return false;// Indicate transient children should be hidden by windows (SW_PARENTCLOSING)
-    case QtWindows::CloseEvent:
+    case BobUIWindows::CloseEvent:
         QWindowSystemInterface::handleCloseEvent(platformWindow->window());
         return true;
-    case QtWindows::ThemeChanged: {
+    case BobUIWindows::ThemeChanged: {
         return true;
     }
-    case QtWindows::CompositionSettingsChanged:
+    case BobUIWindows::CompositionSettingsChanged:
         platformWindow->handleCompositionSettingsChanged();
         return true;
-    case QtWindows::ActivateWindowEvent:
-        if (platformWindow->window()->flags() & Qt::WindowDoesNotAcceptFocus) {
+    case BobUIWindows::ActivateWindowEvent:
+        if (platformWindow->window()->flags() & BobUI::WindowDoesNotAcceptFocus) {
             *result = LRESULT(MA_NOACTIVATE);
             return true;
         }
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
         if (!d->m_tabletSupport.isNull())
             d->m_tabletSupport->notifyActivate();
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
         if (platformWindow->testFlag(QWindowsWindow::BlockedByModal))
             if (const QWindow *modalWindow = QGuiApplication::modalWindow()) {
                 QWindowsWindow *platformWindow = QWindowsWindow::windowsWindowOf(modalWindow);
@@ -1108,34 +1108,34 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
                 platformWindow->alertWindow();
             }
         break;
-    case QtWindows::MouseActivateWindowEvent:
-    case QtWindows::PointerActivateWindowEvent:
-        if (platformWindow->window()->flags() & Qt::WindowDoesNotAcceptFocus) {
+    case BobUIWindows::MouseActivateWindowEvent:
+    case BobUIWindows::PointerActivateWindowEvent:
+        if (platformWindow->window()->flags() & BobUI::WindowDoesNotAcceptFocus) {
             *result = LRESULT(MA_NOACTIVATE);
             return true;
         }
         break;
-#ifndef QT_NO_CONTEXTMENU
-    case QtWindows::ContextMenu:
+#ifndef BOBUI_NO_CONTEXTMENU
+    case BobUIWindows::ContextMenu:
         return handleContextMenuEvent(platformWindow->window(), msg);
 #endif
-    case QtWindows::WhatsThisEvent: {
-#ifndef QT_NO_WHATSTHIS
+    case BobUIWindows::WhatsThisEvent: {
+#ifndef BOBUI_NO_WHATSTHIS
         QWindowSystemInterface::handleEnterWhatsThisEvent();
         return true;
 #endif
     }   break;
-    case QtWindows::DpiScaledSizeEvent:
+    case BobUIWindows::DpiScaledSizeEvent:
         platformWindow->handleDpiScaledSize(wParam, lParam, result);
         return true;
-    case QtWindows::DpiChangedEvent:
+    case BobUIWindows::DpiChangedEvent:
         platformWindow->handleDpiChanged(hwnd, wParam, lParam);
         return true;
-    case QtWindows::DpiChangedAfterParentEvent:
+    case BobUIWindows::DpiChangedAfterParentEvent:
         platformWindow->handleDpiChangedAfterParent(hwnd);
         return true;
-#if QT_CONFIG(sessionmanager)
-    case QtWindows::QueryEndSessionApplicationEvent: {
+#if BOBUI_CONFIG(sessionmanager)
+    case BobUIWindows::QueryEndSessionApplicationEvent: {
         QWindowsSessionManager *sessionManager = platformSessionManager();
         if (sessionManager->isActive()) { // bogus message from windows
             *result = sessionManager->wasCanceled() ? 0 : 1;
@@ -1155,7 +1155,7 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
         *result = sessionManager->wasCanceled() ? 0 : 1;
         return true;
     }
-    case QtWindows::EndSessionApplicationEvent: {
+    case BobUIWindows::EndSessionApplicationEvent: {
         QWindowsSessionManager *sessionManager = platformSessionManager();
 
         sessionManager->setActive(false);
@@ -1168,14 +1168,14 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
         if (endsession && !qGuiAppPriv->aboutToQuitEmitted) {
             qGuiAppPriv->aboutToQuitEmitted = true;
             int index = QGuiApplication::staticMetaObject.indexOfSignal("aboutToQuit()");
-            qApp->qt_metacall(QMetaObject::InvokeMetaMethod, index, nullptr);
+            qApp->bobui_metacall(QMetaObject::InvokeMetaMethod, index, nullptr);
             // since the process will be killed immediately quit() has no real effect
             QGuiApplication::quit();
         }
         return true;
     }
-#endif // !defined(QT_NO_SESSIONMANAGER)
-    case QtWindows::TaskbarButtonCreated:
+#endif // !defined(BOBUI_NO_SESSIONMANAGER)
+    case BobUIWindows::TaskbarButtonCreated:
         // Apply application badge if this is the first time we have a taskbar
         // button, or after Explorer restart.
         QWindowsIntegration::instance()->updateApplicationBadge();
@@ -1191,18 +1191,18 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
  * QWindowSystemInterface instead of sending 0 and ignore its consecutive
  * focus-in event.
  * This helps applications that do handling in focus-out events. */
-void QWindowsContext::handleFocusEvent(QtWindows::WindowsEventType et,
+void QWindowsContext::handleFocusEvent(BobUIWindows::WindowsEventType et,
                                        QWindowsWindow *platformWindow)
 {
     QWindow *nextActiveWindow = nullptr;
-    if (et == QtWindows::FocusInEvent) {
+    if (et == BobUIWindows::FocusInEvent) {
         QWindow *topWindow = QWindowsWindow::topLevelOf(platformWindow->window());
         QWindow *modalWindow = nullptr;
         if (QGuiApplicationPrivate::instance()->isWindowBlocked(topWindow, &modalWindow) && topWindow != modalWindow) {
             modalWindow->requestActivate();
             return;
         }
-        // QTBUG-32867: Invoking WinAPI SetParent() can cause focus-in for the
+        // BOBUIBUG-32867: Invoking WinAPI SetParent() can cause focus-in for the
         // window which is not desired for native child widgets.
         if (platformWindow->testFlag(QWindowsWindow::WithinSetParent)) {
             QWindow *currentFocusWindow = QGuiApplication::focusWindow();
@@ -1222,11 +1222,11 @@ void QWindowsContext::handleFocusEvent(QtWindows::WindowsEventType et,
     }
     if (nextActiveWindow != d->m_lastActiveWindow) {
          d->m_lastActiveWindow = nextActiveWindow;
-         QWindowSystemInterface::handleFocusWindowChanged(nextActiveWindow, Qt::ActiveWindowFocusReason);
+         QWindowSystemInterface::handleFocusWindowChanged(nextActiveWindow, BobUI::ActiveWindowFocusReason);
     }
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 bool QWindowsContext::handleContextMenuEvent(QWindow *window, const MSG &msg)
 {
     bool mouseTriggered = false;
@@ -1245,7 +1245,7 @@ bool QWindowsContext::handleContextMenuEvent(QWindow *window, const MSG &msg)
             {
                 // This is the case that user has right clicked in the window's caption,
                 // We should call DefWindowProc() to display a default shortcut menu
-                // instead of sending a Qt window system event.
+                // instead of sending a BobUI window system event.
                 return false;
             }
         }
@@ -1269,17 +1269,17 @@ void QWindowsContext::handleExitSizeMove(QWindow *window)
     //    Mouse is left in pressed state after press on size grip (inside window),
     //    no further mouse events are received
     // For cases 1,3, intercept WM_EXITSIZEMOVE to sync the buttons.
-    const Qt::MouseButtons currentButtons = QWindowsPointerHandler::queryMouseButtons();
-    const Qt::MouseButtons appButtons = QGuiApplication::mouseButtons();
+    const BobUI::MouseButtons currentButtons = QWindowsPointerHandler::queryMouseButtons();
+    const BobUI::MouseButtons appButtons = QGuiApplication::mouseButtons();
     if (currentButtons == appButtons)
         return;
-    const Qt::KeyboardModifiers keyboardModifiers = keyMapper()->queryKeyboardModifiers();
+    const BobUI::KeyboardModifiers keyboardModifiers = keyMapper()->queryKeyboardModifiers();
     const QPoint globalPos = QWindowsCursor::mousePosition();
     const QPlatformWindow *platWin = window->handle();
     const QPoint localPos = platWin->mapFromGlobal(globalPos);
     const QEvent::Type type = platWin->geometry().contains(globalPos)
         ? QEvent::MouseButtonRelease : QEvent::NonClientAreaMouseButtonRelease;
-    for (Qt::MouseButton button : {Qt::LeftButton, Qt::RightButton, Qt::MiddleButton}) {
+    for (BobUI::MouseButton button : {BobUI::LeftButton, BobUI::RightButton, BobUI::MiddleButton}) {
         if (appButtons.testFlag(button) && !currentButtons.testFlag(button)) {
             QWindowSystemInterface::handleMouseEvent(window, localPos, globalPos,
                 currentButtons, button, type, keyboardModifiers);
@@ -1344,17 +1344,17 @@ static inline bool isTopLevel(HWND hwnd)
 
 */
 
-LRESULT QT_WIN_CALLBACK qWindowsWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT BOBUI_WIN_CALLBACK qWindowsWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     LRESULT result;
-    const QtWindows::WindowsEventType et = windowsEventType(message, wParam, lParam);
+    const BobUIWindows::WindowsEventType et = windowsEventType(message, wParam, lParam);
     QWindowsWindow *platformWindow = nullptr;
     const RECT ncCalcSizeFrame = rectFromNcCalcSize(message, wParam, lParam, 0);
     const bool handled = QWindowsContext::instance()->windowsProc(hwnd, message, et, wParam, lParam, &result, &platformWindow);
     if (QWindowsContext::verbose > 1 && lcQpaEvents().isDebugEnabled()) {
         if (const char *eventName = QWindowsGuiEventDispatcher::windowsMessageName(message)) {
             qCDebug(lcQpaEvents).nospace() << "EVENT: hwd=" << hwnd << ' ' << eventName
-                << " msg=0x" << Qt::hex << message << " et=0x" << et << Qt::dec << " wp="
+                << " msg=0x" << BobUI::hex << message << " et=0x" << et << BobUI::dec << " wp="
                 << int(wParam) << " at " << GET_X_LPARAM(lParam) << ','
                 << GET_Y_LPARAM(lParam) << " handled=" << handled;
         }
@@ -1365,7 +1365,7 @@ LRESULT QT_WIN_CALLBACK qWindowsWndProc(HWND hwnd, UINT message, WPARAM wParam, 
     // Capture WM_NCCALCSIZE on top level windows and obtain the window margins by
     // subtracting the rectangles before and after processing. This will correctly
     // capture client code overriding the message and allow for per-monitor margins
-    // for High DPI (QTBUG-53255, QTBUG-40578).
+    // for High DPI (BOBUIBUG-53255, BOBUIBUG-40578).
     if (message == WM_NCCALCSIZE && !isEmptyRect(ncCalcSizeFrame) && isTopLevel(hwnd) && !isMinimized(hwnd)) {
         const QMargins margins =
             marginsFromRects(ncCalcSizeFrame, rectFromNcCalcSize(message, wParam, lParam, 0));
@@ -1409,4 +1409,4 @@ bool QWindowsContext::filterNativeEvent(QWindow *window, MSG *msg, LRESULT *resu
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

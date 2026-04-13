@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2012 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Christoph Schleifenbaum <christoph.schleifenbaum@kdab.com>
 // Copyright (c) 2007-2008, Apple, Inc.
 // SPDX-License-Identifier: BSD-3-Clause
-// Qt-Security score:significant reason:default
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
 #include "qcocoasystemtrayicon.h"
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
-#include <qtemporaryfile.h>
+#include <bobuiemporaryfile.h>
 #include <qimagewriter.h>
 #include <qdebug.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include "qcocoamenu.h"
 #include "qcocoansmenu.h"
@@ -22,15 +22,15 @@
 #include "qcocoahelpers.h"
 #include "qcocoaintegration.h"
 #include "qcocoascreen.h"
-#include <QtGui/private/qcoregraphics_p.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
 
 // NSUserNotification was deprecated in macOS 11.
 // We should be using UserNotifications.framework instead.
-// See QTBUG-110998 for more information.
-#define NSUserNotificationCenter QT_IGNORE_DEPRECATIONS(NSUserNotificationCenter)
-#define NSUserNotification QT_IGNORE_DEPRECATIONS(NSUserNotification)
+// See BOBUIBUG-110998 for more information.
+#define NSUserNotificationCenter BOBUI_IGNORE_DEPRECATIONS(NSUserNotificationCenter)
+#define NSUserNotification BOBUI_IGNORE_DEPRECATIONS(NSUserNotification)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QCocoaSystemTrayIcon::init()
 {
@@ -140,7 +140,7 @@ void QCocoaSystemTrayIcon::updateIcon(const QIcon &icon)
 
     // Scale large pixmaps to fit the available menu bar area.
     if (pixmap.height() > maxPixmapHeight)
-        pixmap = pixmap.scaledToHeight(maxPixmapHeight, Qt::SmoothTransformation);
+        pixmap = pixmap.scaledToHeight(maxPixmapHeight, BobUI::SmoothTransformation);
 
     // The icon will be stretched over the full height of the menu bar
     // therefore we create a second pixmap which has the full height
@@ -148,7 +148,7 @@ void QCocoaSystemTrayIcon::updateIcon(const QIcon &icon)
                                             menuHeight * devicePixelRatio,
                          menuHeight * devicePixelRatio);
     QPixmap fullHeightPixmap(fullHeightSize);
-    fullHeightPixmap.fill(Qt::transparent);
+    fullHeightPixmap.fill(BobUI::transparent);
     if (!pixmap.isNull()) {
         QPainter p(&fullHeightPixmap);
         QRect r = pixmap.rect();
@@ -227,7 +227,7 @@ void QCocoaSystemTrayIcon::showMessage(const QString &title, const QString &mess
     // The assigned image is scaled by the system to fit into the tile,
     // but without taking aspect ratio into account, so let's pad the
     // image up front if it's not already square.
-    image = qt_mac_padToSquareImage(image);
+    image = bobui_mac_padToSquareImage(image);
 
     notification.contentImage = [NSImage imageFromQImage:image];
 
@@ -251,10 +251,10 @@ void QCocoaSystemTrayIcon::emitActivated()
     if (mouseEvent.clickCount == 2) {
         activationReason = QPlatformSystemTrayIcon::DoubleClick;
     } else {
-        auto mouseButton = cocoaButton2QtButton(mouseEvent);
-        if (mouseButton == Qt::MiddleButton)
+        auto mouseButton = cocoaButton2BobUIButton(mouseEvent);
+        if (mouseButton == BobUI::MiddleButton)
             activationReason = QPlatformSystemTrayIcon::MiddleClick;
-        else if (mouseButton == Qt::RightButton)
+        else if (mouseButton == BobUI::RightButton)
             activationReason = QPlatformSystemTrayIcon::Context;
         else
             activationReason = QPlatformSystemTrayIcon::Trigger;
@@ -263,7 +263,7 @@ void QCocoaSystemTrayIcon::emitActivated()
     emit activated(activationReason);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 @implementation QStatusItemDelegate
 
@@ -306,4 +306,4 @@ QT_END_NAMESPACE
 
 @end
 
-#endif // QT_NO_SYSTEMTRAYICON
+#endif // BOBUI_NO_SYSTEMTRAYICON

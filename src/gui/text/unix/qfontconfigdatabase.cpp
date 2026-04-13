@@ -1,85 +1,85 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfontconfigdatabase_p.h"
 #include "qfontenginemultifontconfig_p.h"
 
-#include <QtGui/private/qfontengine_ft_p.h>
+#include <BobUIGui/private/qfontengine_ft_p.h>
 
-#include <QtCore/QList>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QFile>
+#include <BobUICore/QList>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QFile>
 
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qplatformscreen.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformservices.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qguiapplication.h>
 
-#include <QtCore/private/qduplicatetracker_p.h>
+#include <BobUICore/private/qduplicatetracker_p.h>
 
 #include <fontconfig/fontconfig.h>
 #if FC_VERSION >= 20402
 #include <fontconfig/fcfreetype.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static inline int mapToQtWeightForRange(int fcweight, int fcLower, int fcUpper, int qtLower, int qtUpper)
+static inline int mapToBobUIWeightForRange(int fcweight, int fcLower, int fcUpper, int bobuiLower, int bobuiUpper)
 {
-    return qtLower + ((fcweight - fcLower) * (qtUpper - qtLower)) / (fcUpper - fcLower);
+    return bobuiLower + ((fcweight - fcLower) * (bobuiUpper - bobuiLower)) / (fcUpper - fcLower);
 }
 
 static inline int weightFromFcWeight(int fcweight)
 {
     // Font Config uses weights from 0 to 215 (the highest enum value) while QFont ranges from
     // 1 to 1000. The spacing between the values for the enums are uneven so a linear mapping from
-    // Font Config values to Qt would give surprising results.  So, we do a piecewise linear
+    // Font Config values to BobUI would give surprising results.  So, we do a piecewise linear
     // mapping.  This ensures that where there is a corresponding enum on both sides (for example
     // FC_WEIGHT_DEMIBOLD and QFont::DemiBold) we map one to the other but other values map
-    // to intermediate Qt weights.
+    // to intermediate BobUI weights.
 
     if (fcweight <= FC_WEIGHT_THIN)
         return QFont::Thin;
     if (fcweight <= FC_WEIGHT_ULTRALIGHT)
-        return mapToQtWeightForRange(fcweight, FC_WEIGHT_THIN, FC_WEIGHT_ULTRALIGHT, QFont::Thin, QFont::ExtraLight);
+        return mapToBobUIWeightForRange(fcweight, FC_WEIGHT_THIN, FC_WEIGHT_ULTRALIGHT, QFont::Thin, QFont::ExtraLight);
     if (fcweight <= FC_WEIGHT_LIGHT)
-        return mapToQtWeightForRange(fcweight, FC_WEIGHT_ULTRALIGHT, FC_WEIGHT_LIGHT, QFont::ExtraLight, QFont::Light);
+        return mapToBobUIWeightForRange(fcweight, FC_WEIGHT_ULTRALIGHT, FC_WEIGHT_LIGHT, QFont::ExtraLight, QFont::Light);
     if (fcweight <= FC_WEIGHT_NORMAL)
-        return mapToQtWeightForRange(fcweight, FC_WEIGHT_LIGHT, FC_WEIGHT_NORMAL, QFont::Light, QFont::Normal);
+        return mapToBobUIWeightForRange(fcweight, FC_WEIGHT_LIGHT, FC_WEIGHT_NORMAL, QFont::Light, QFont::Normal);
     if (fcweight <= FC_WEIGHT_MEDIUM)
-        return mapToQtWeightForRange(fcweight, FC_WEIGHT_NORMAL, FC_WEIGHT_MEDIUM, QFont::Normal, QFont::Medium);
+        return mapToBobUIWeightForRange(fcweight, FC_WEIGHT_NORMAL, FC_WEIGHT_MEDIUM, QFont::Normal, QFont::Medium);
     if (fcweight <= FC_WEIGHT_DEMIBOLD)
-        return mapToQtWeightForRange(fcweight, FC_WEIGHT_MEDIUM, FC_WEIGHT_DEMIBOLD, QFont::Medium, QFont::DemiBold);
+        return mapToBobUIWeightForRange(fcweight, FC_WEIGHT_MEDIUM, FC_WEIGHT_DEMIBOLD, QFont::Medium, QFont::DemiBold);
     if (fcweight <= FC_WEIGHT_BOLD)
-        return mapToQtWeightForRange(fcweight, FC_WEIGHT_DEMIBOLD, FC_WEIGHT_BOLD, QFont::DemiBold, QFont::Bold);
+        return mapToBobUIWeightForRange(fcweight, FC_WEIGHT_DEMIBOLD, FC_WEIGHT_BOLD, QFont::DemiBold, QFont::Bold);
     if (fcweight <= FC_WEIGHT_ULTRABOLD)
-        return mapToQtWeightForRange(fcweight, FC_WEIGHT_BOLD, FC_WEIGHT_ULTRABOLD, QFont::Bold, QFont::ExtraBold);
+        return mapToBobUIWeightForRange(fcweight, FC_WEIGHT_BOLD, FC_WEIGHT_ULTRABOLD, QFont::Bold, QFont::ExtraBold);
     if (fcweight <= FC_WEIGHT_BLACK)
-        return mapToQtWeightForRange(fcweight, FC_WEIGHT_ULTRABOLD, FC_WEIGHT_BLACK, QFont::ExtraBold, QFont::Black);
+        return mapToBobUIWeightForRange(fcweight, FC_WEIGHT_ULTRABOLD, FC_WEIGHT_BLACK, QFont::ExtraBold, QFont::Black);
     if (fcweight <= FC_WEIGHT_ULTRABLACK)
-        return mapToQtWeightForRange(fcweight, FC_WEIGHT_BLACK, FC_WEIGHT_ULTRABLACK, QFont::Black,
+        return mapToBobUIWeightForRange(fcweight, FC_WEIGHT_BLACK, FC_WEIGHT_ULTRABLACK, QFont::Black,
                                      QFONT_WEIGHT_MAX);
     return QFONT_WEIGHT_MAX;
 }
 
 static inline int stretchFromFcWidth(int fcwidth)
 {
-    // Font Config enums for width match pretty closely with those used by Qt so just use
+    // Font Config enums for width match pretty closely with those used by BobUI so just use
     // Font Config values directly while enforcing the same limits imposed by QFont.
     const int maxStretch = 4000;
-    int qtstretch;
+    int bobuistretch;
     if (fcwidth < 1)
-        qtstretch = 1;
+        bobuistretch = 1;
     else if (fcwidth > maxStretch)
-        qtstretch = maxStretch;
+        bobuistretch = maxStretch;
     else
-        qtstretch = fcwidth;
+        bobuistretch = fcwidth;
 
-    return qtstretch;
+    return bobuistretch;
 }
 
 static const char specialLanguages[][6] = {
@@ -645,7 +645,7 @@ void QFontconfigDatabase::populateFontDatabase()
     FcFontSetDestroy (fonts);
 
     struct FcDefaultFont {
-        const char *qtname;
+        const char *bobuiname;
         const char *rawname;
         bool fixed;
     };
@@ -660,11 +660,11 @@ void QFontconfigDatabase::populateFontDatabase()
     QSupportedWritingSystems ws;
     ws.setSupported(QFontDatabase::Latin);
 
-    while (f->qtname) {
-        QString familyQtName = QString::fromLatin1(f->qtname);
-        registerFont(familyQtName,QString(),QString(),QFont::Normal,QFont::StyleNormal,QFont::Unstretched,true,true,0,f->fixed,false,ws,nullptr);
-        registerFont(familyQtName,QString(),QString(),QFont::Normal,QFont::StyleItalic,QFont::Unstretched,true,true,0,f->fixed,false,ws,nullptr);
-        registerFont(familyQtName,QString(),QString(),QFont::Normal,QFont::StyleOblique,QFont::Unstretched,true,true,0,f->fixed,false,ws,nullptr);
+    while (f->bobuiname) {
+        QString familyBobUIName = QString::fromLatin1(f->bobuiname);
+        registerFont(familyBobUIName,QString(),QString(),QFont::Normal,QFont::StyleNormal,QFont::Unstretched,true,true,0,f->fixed,false,ws,nullptr);
+        registerFont(familyBobUIName,QString(),QString(),QFont::Normal,QFont::StyleItalic,QFont::Unstretched,true,true,0,f->fixed,false,ws,nullptr);
+        registerFont(familyBobUIName,QString(),QString(),QFont::Normal,QFont::StyleOblique,QFont::Unstretched,true,true,0,f->fixed,false,ws,nullptr);
         ++f;
     }
 
@@ -905,7 +905,7 @@ static FcPattern *queryFont(const FcChar8 *file, const QByteArray &data, int id,
         return FcFreeTypeQuery(file, id, blanks, count);
     }
 
-    FT_Library lib = qt_getFreetype();
+    FT_Library lib = bobui_getFreetype();
 
     FcPattern *pattern = nullptr;
 
@@ -1028,7 +1028,7 @@ void QFontconfigDatabase::setupFontEngine(QFontEngineFT *engine, const QFontDef 
 
     if (services) {
         const QList<QByteArray> desktopEnv = services->desktopEnvironment().split(':');
-        preferXftConf = !(desktopEnv.contains("KDE") || desktopEnv.contains("LXQT") || desktopEnv.contains("UKUI"));
+        preferXftConf = !(desktopEnv.contains("KDE") || desktopEnv.contains("LXBOBUI") || desktopEnv.contains("UKUI"));
     }
 
     QFontEngine::GlyphFormat format;
@@ -1191,4 +1191,4 @@ bool QFontconfigDatabase::supportsVariableApplicationFonts() const
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

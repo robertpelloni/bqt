@@ -1,22 +1,22 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## qimagereader Binary:
 #####################################################################
 
-qt_internal_add_manual_test(qimagereader
+bobui_internal_add_manual_test(qimagereader
     GUI
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
 )
 set(qimagereader_resource_files
-    "Qt_logostrap_CMYK.jpg"
+    "BobUI_logostrap_CMYK.jpg"
 )
-qt_add_resources(qimagereader "qimagereader"
+bobui_add_resources(qimagereader "qimagereader"
     PREFIX
         "/"
     FILES

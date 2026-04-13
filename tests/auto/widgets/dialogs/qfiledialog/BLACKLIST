@@ -1,6 +1,6 @@
 [completer_data]
-vxworks # QTBUG-135963
+vxworks # BOBUIBUG-135963
 [completer]
-vxworks # QTBUG-135963
+vxworks # BOBUIBUG-135963
 [clearLineEdit]
-vxworks # QTBUG-135966
+vxworks # BOBUIBUG-135966

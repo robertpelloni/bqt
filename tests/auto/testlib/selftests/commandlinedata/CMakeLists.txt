@@ -1,21 +1,21 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## commandlinedata Binary:
 #####################################################################
 
-qt_internal_add_executable(commandlinedata
+bobui_internal_add_executable(commandlinedata
     NO_INSTALL
     EXCEPTIONS
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     SOURCES
         tst_commandlinedata.cpp
     LIBRARIES
-        Qt::Test
+        BobUI::Test
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_apply_testlib_coverage_options(commandlinedata)
+bobui_internal_apply_testlib_coverage_options(commandlinedata)

@@ -1,10 +1,10 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSMIMECONVERTER_P_H
 #define QWINDOWSMIMECONVERTER_P_H
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
 struct tagFORMATETC;
 using FORMATETC = tagFORMATETC;
@@ -12,7 +12,7 @@ struct tagSTGMEDIUM;
 using STGMEDIUM = tagSTGMEDIUM;
 struct IDataObject;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMetaType;
 class QMimeData;
@@ -27,17 +27,17 @@ public:
 
     static int registerMimeType(const QString &mimeType);
 
-    // for converting from Qt
+    // for converting from BobUI
     virtual bool canConvertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData) const = 0;
     virtual bool convertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData, STGMEDIUM * pmedium) const = 0;
     virtual QList<FORMATETC> formatsForMime(const QString &mimeType, const QMimeData *mimeData) const = 0;
 
-    // for converting to Qt
+    // for converting to BobUI
     virtual bool canConvertToMime(const QString &mimeType, IDataObject *pDataObj) const = 0;
     virtual QVariant convertToMime(const QString &mimeType, IDataObject *pDataObj, QMetaType preferredType) const = 0;
     virtual QString mimeForFormat(const FORMATETC &formatetc) const = 0;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSMIMECONVERTER_H

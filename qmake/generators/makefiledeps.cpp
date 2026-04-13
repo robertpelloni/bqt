@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "makefiledeps.h"
 #include "option.h"
@@ -19,7 +19,7 @@
 #include <time.h>
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // FIXME: a line ending in CRLF gets counted as two lines.
 #if 1
@@ -793,7 +793,7 @@ bool QMakeSourceFileInfo::findDeps(SourceFile *file)
         if(inc) {
             if(!includes)
                 includes = new SourceFiles;
-            /* QTBUG-72383: Local includes "foo.h" must first be resolved relative to the
+            /* BOBUIBUG-72383: Local includes "foo.h" must first be resolved relative to the
              * sourceDir, only global includes <bar.h> are unique. */
             SourceFile *dep = try_local ? nullptr : includes->lookupFile(inc);
             if(!dep) {
@@ -834,7 +834,7 @@ bool QMakeSourceFileInfo::findDeps(SourceFile *file)
                         dep->file = lfn;
                         dep->type = QMakeSourceFileInfo::TYPE_C;
                         files->addFile(dep);
-                        /* QTBUG-72383: Local includes "foo.h" are keyed by the resolved
+                        /* BOBUIBUG-72383: Local includes "foo.h" are keyed by the resolved
                          * path (stored in dep itself), only global includes <bar.h> are
                          * unique keys immediately. */
                         const char *key = try_local ? nullptr : inc;
@@ -1010,4 +1010,4 @@ bool QMakeSourceFileInfo::findMocs(SourceFile *file)
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

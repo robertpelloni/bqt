@@ -1,32 +1,32 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2015-2016 Oleksandr Tymoshenko <gonzo@bluezbox.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qbsdfbintegration.h"
 #include "qbsdfbscreen.h"
 
-#include <QtGui/private/qgenericunixfontdatabase_p.h>
-#include <QtGui/private/qgenericunixeventdispatcher_p.h>
+#include <BobUIGui/private/qgenericunixfontdatabase_p.h>
+#include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
 
-#include <QtFbSupport/private/qfbvthandler_p.h>
-#include <QtFbSupport/private/qfbbackingstore_p.h>
-#include <QtFbSupport/private/qfbwindow_p.h>
-#include <QtFbSupport/private/qfbcursor_p.h>
+#include <BobUIFbSupport/private/qfbvthandler_p.h>
+#include <BobUIFbSupport/private/qfbbackingstore_p.h>
+#include <BobUIFbSupport/private/qfbwindow_p.h>
+#include <BobUIFbSupport/private/qfbcursor_p.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatforminputcontext.h>
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qplatformservices.h>
 
-#if QT_CONFIG(tslib)
-#include <QtInputSupport/private/qtslib_p.h>
+#if BOBUI_CONFIG(tslib)
+#include <BobUIInputSupport/private/bobuislib_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QBsdFbIntegration::QBsdFbIntegration(const QStringList &paramList)
 {
@@ -50,7 +50,7 @@ void QBsdFbIntegration::initialize()
     m_nativeInterface.reset(new QPlatformNativeInterface);
     m_vtHandler.reset(new QFbVtHandler);
 
-    if (!qEnvironmentVariableIntValue("QT_QPA_FB_DISABLE_INPUT"))
+    if (!qEnvironmentVariableIntValue("BOBUI_QPA_FB_DISABLE_INPUT"))
         createInputHandlers();
 }
 
@@ -105,10 +105,10 @@ QPlatformServices *QBsdFbIntegration::services() const
 
 void QBsdFbIntegration::createInputHandlers()
 {
-#if QT_CONFIG(tslib)
-    const bool useTslib = qEnvironmentVariableIntValue("QT_QPA_FB_TSLIB");
+#if BOBUI_CONFIG(tslib)
+    const bool useTslib = qEnvironmentVariableIntValue("BOBUI_QPA_FB_TSLIB");
     if (useTslib)
-        new QTsLibMouseHandler("TsLib"_L1, QString());
+        new BOBUIsLibMouseHandler("TsLib"_L1, QString());
 #endif
 }
 
@@ -117,4 +117,4 @@ QPlatformNativeInterface *QBsdFbIntegration::nativeInterface() const
     return m_nativeInterface.data();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

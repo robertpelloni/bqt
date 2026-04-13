@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MODEL_H
 #define MODEL_H
@@ -19,16 +19,16 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
-    QVariant headerData(int section, Qt::Orientation orientation,
+    QVariant headerData(int section, BobUI::Orientation orientation,
 //! [0] //! [1]
-                        int role = Qt::DisplayRole) const override;
+                        int role = BobUI::DisplayRole) const override;
 //! [1]
 
 //! [2]
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
     bool setData(const QModelIndex &index, const QVariant &value,
 //! [2] //! [3]
-                 int role = Qt::EditRole) override;
+                 int role = BobUI::EditRole) override;
 //! [3]
 
 //! [4]

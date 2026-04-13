@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Ivan Komissarov
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef STORAGEMODEL_H
 #define STORAGEMODEL_H
@@ -33,8 +33,8 @@ public:
     int rowCount(const QModelIndex &parent) const override;
 
     QVariant data(const QModelIndex &index, int role) const override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
+    QVariant headerData(int section, BobUI::Orientation orientation, int role) const override;
 
 public slots:
     void refresh();

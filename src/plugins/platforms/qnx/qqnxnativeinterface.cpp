@@ -1,9 +1,9 @@
 // Copyright (C) 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxnativeinterface.h"
 
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
 #include "qqnxglcontext.h"
 #endif
 
@@ -15,16 +15,16 @@
 
 #include "qqnxintegration.h"
 
-#if !defined(QT_NO_OPENGL)
-#include <QtGui/QOpenGLContext>
+#if !defined(BOBUI_NO_OPENGL)
+#include <BobUIGui/QOpenGLContext>
 #endif
 
-#include <QtGui/QScreen>
-#include <QtGui/QWindow>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QQnxNativeInterface::QQnxNativeInterface(QQnxIntegration *integration)
     : m_integration(integration)
@@ -60,7 +60,7 @@ void *QQnxNativeInterface::nativeResourceForIntegration(const QByteArray &resour
     if (resource == "screenContext")
         return m_integration->screenContext();
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     if (resource.toLower() == "egldisplay")
         return m_integration->eglDisplay();
 #endif
@@ -68,7 +68,7 @@ void *QQnxNativeInterface::nativeResourceForIntegration(const QByteArray &resour
     return 0;
 }
 
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
 void *QQnxNativeInterface::nativeResourceForContext(const QByteArray &resource, QOpenGLContext *context)
 {
     if (resource == "eglcontext" && context)
@@ -103,4 +103,4 @@ QPlatformNativeInterface::NativeResourceForIntegrationFunction QQnxNativeInterfa
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qxcbglintegration.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaGl, "qt.qpa.gl")
+Q_LOGGING_CATEGORY(lcQpaGl, "bobui.qpa.gl")
 
 QXcbGlIntegration::QXcbGlIntegration()
 {
@@ -21,4 +21,4 @@ bool QXcbGlIntegration::handleXcbEvent(xcb_generic_event_t *event, uint response
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

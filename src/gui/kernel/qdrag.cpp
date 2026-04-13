@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qdrag.h>
 #include "private/qguiapplication_p.h"
@@ -9,20 +9,20 @@
 #include <qpoint.h>
 #include "qdnd_p.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QDrag
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup draganddrop
     \brief The QDrag class provides support for MIME-based drag and drop data
     transfer.
 
     Drag and drop is an intuitive way for users to copy or move data around in an
     application, and is used in many desktop environments as a mechanism for copying
-    data between applications. Drag and drop support in Qt is centered around the
+    data between applications. Drag and drop support in BobUI is centered around the
     QDrag class that handles most of the details of a drag and drop operation.
 
     The data to be transferred by the drag and drop operation is contained in a
@@ -33,7 +33,7 @@ QT_BEGIN_NAMESPACE
 
     Note that setMimeData() assigns ownership of the QMimeData object to the
     QDrag object. The QDrag must be constructed on the heap with a parent QObject
-    to ensure that Qt can clean up after the drag and drop operation has been
+    to ensure that BobUI can clean up after the drag and drop operation has been
     completed.
 
     A pixmap can be used to represent the data while the drag is in
@@ -80,9 +80,9 @@ QDrag::QDrag(QObject *dragSource)
     d->target = nullptr;
     d->data = nullptr;
     d->hotspot = QPoint(-10, -10);
-    d->executed_action = Qt::IgnoreAction;
-    d->supported_actions = Qt::IgnoreAction;
-    d->default_action = Qt::IgnoreAction;
+    d->executed_action = BobUI::IgnoreAction;
+    d->supported_actions = BobUI::IgnoreAction;
+    d->default_action = BobUI::IgnoreAction;
 }
 
 /*!
@@ -192,15 +192,15 @@ QObject *QDrag::target() const
     \b{Note:} On Linux and \macos, the drag and drop operation
     can take some time, but this function does not block the event
     loop. Other events are still delivered to the application while
-    the operation is performed. On Windows, the Qt event loop is
+    the operation is performed. On Windows, the BobUI event loop is
     blocked during the operation.
 
     \sa cancel()
 */
 
-Qt::DropAction QDrag::exec(Qt::DropActions supportedActions)
+BobUI::DropAction QDrag::exec(BobUI::DropActions supportedActions)
 {
-    return exec(supportedActions, Qt::IgnoreAction);
+    return exec(supportedActions, BobUI::IgnoreAction);
 }
 
 /*!
@@ -216,28 +216,28 @@ Qt::DropAction QDrag::exec(Qt::DropActions supportedActions)
     \b{Note:} On Linux and \macos, the drag and drop operation
     can take some time, but this function does not block the event
     loop. Other events are still delivered to the application while
-    the operation is performed. On Windows, the Qt event loop is
+    the operation is performed. On Windows, the BobUI event loop is
     blocked during the operation. However, QDrag::exec() on
     Windows causes processEvents() to be called frequently to keep the GUI responsive.
     If any loops or operations are called while a drag operation is active, it will block the drag operation.
 */
 
-Qt::DropAction QDrag::exec(Qt::DropActions supportedActions, Qt::DropAction defaultDropAction)
+BobUI::DropAction QDrag::exec(BobUI::DropActions supportedActions, BobUI::DropAction defaultDropAction)
 {
     Q_D(QDrag);
     if (!d->data) {
         qWarning("QDrag: No mimedata set before starting the drag");
         return d->executed_action;
     }
-    Qt::DropAction transformedDefaultDropAction = Qt::IgnoreAction;
+    BobUI::DropAction transformedDefaultDropAction = BobUI::IgnoreAction;
 
-    if (defaultDropAction == Qt::IgnoreAction) {
-        if (supportedActions & Qt::MoveAction) {
-            transformedDefaultDropAction = Qt::MoveAction;
-        } else if (supportedActions & Qt::CopyAction) {
-            transformedDefaultDropAction = Qt::CopyAction;
-        } else if (supportedActions & Qt::LinkAction) {
-            transformedDefaultDropAction = Qt::LinkAction;
+    if (defaultDropAction == BobUI::IgnoreAction) {
+        if (supportedActions & BobUI::MoveAction) {
+            transformedDefaultDropAction = BobUI::MoveAction;
+        } else if (supportedActions & BobUI::CopyAction) {
+            transformedDefaultDropAction = BobUI::CopyAction;
+        } else if (supportedActions & BobUI::LinkAction) {
+            transformedDefaultDropAction = BobUI::LinkAction;
         }
     } else {
         transformedDefaultDropAction = defaultDropAction;
@@ -247,7 +247,7 @@ Qt::DropAction QDrag::exec(Qt::DropActions supportedActions, Qt::DropAction defa
     QPointer<QDrag> self = this;
     auto executed_action = QDragManager::self()->drag(self.data());
     if (self.isNull())
-        return Qt::IgnoreAction;
+        return BobUI::IgnoreAction;
     d->executed_action = executed_action;
     return d->executed_action;
 }
@@ -261,7 +261,7 @@ Qt::DropAction QDrag::exec(Qt::DropActions supportedActions, Qt::DropAction defa
     all platforms. X11 and macOS has been tested to work. Windows
     does not support it.
 */
-void QDrag::setDragCursor(const QPixmap &cursor, Qt::DropAction action)
+void QDrag::setDragCursor(const QPixmap &cursor, BobUI::DropAction action)
 {
     Q_D(QDrag);
     if (cursor.isNull())
@@ -276,28 +276,28 @@ void QDrag::setDragCursor(const QPixmap &cursor, Qt::DropAction action)
     \since 5.0
 */
 
-QPixmap QDrag::dragCursor(Qt::DropAction action) const
+QPixmap QDrag::dragCursor(BobUI::DropAction action) const
 {
-    typedef QMap<Qt::DropAction, QPixmap>::const_iterator Iterator;
+    typedef QMap<BobUI::DropAction, QPixmap>::const_iterator Iterator;
 
     Q_D(const QDrag);
     const Iterator it = d->customCursors.constFind(action);
     if (it != d->customCursors.constEnd())
         return it.value();
 
-    Qt::CursorShape shape = Qt::ForbiddenCursor;
+    BobUI::CursorShape shape = BobUI::ForbiddenCursor;
     switch (action) {
-    case Qt::MoveAction:
-        shape = Qt::DragMoveCursor;
+    case BobUI::MoveAction:
+        shape = BobUI::DragMoveCursor;
         break;
-    case Qt::CopyAction:
-        shape = Qt::DragCopyCursor;
+    case BobUI::CopyAction:
+        shape = BobUI::DragCopyCursor;
         break;
-    case Qt::LinkAction:
-        shape = Qt::DragLinkCursor;
+    case BobUI::LinkAction:
+        shape = BobUI::DragLinkCursor;
         break;
     default:
-        shape = Qt::ForbiddenCursor;
+        shape = BobUI::ForbiddenCursor;
     }
     return QGuiApplicationPrivate::instance()->getPixmapCursor(shape);
 }
@@ -307,7 +307,7 @@ QPixmap QDrag::dragCursor(Qt::DropAction action) const
 
     \sa exec(), defaultAction()
 */
-Qt::DropActions QDrag::supportedActions() const
+BobUI::DropActions QDrag::supportedActions() const
 {
     Q_D(const QDrag);
     return d->supported_actions;
@@ -319,14 +319,14 @@ Qt::DropActions QDrag::supportedActions() const
 
     \sa exec(), supportedActions()
 */
-Qt::DropAction QDrag::defaultAction() const
+BobUI::DropAction QDrag::defaultAction() const
 {
     Q_D(const QDrag);
     return d->default_action;
 }
 
 /*!
-    Cancels a drag operation initiated by Qt.
+    Cancels a drag operation initiated by BobUI.
 
     \note This is currently implemented on Windows and X11.
 
@@ -340,7 +340,7 @@ void QDrag::cancel()
 }
 
 /*!
-    \fn void QDrag::actionChanged(Qt::DropAction action)
+    \fn void QDrag::actionChanged(BobUI::DropAction action)
 
     This signal is emitted when the \a action associated with the
     drag changes.
@@ -357,6 +357,6 @@ void QDrag::cancel()
     \sa target(), actionChanged()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdrag.cpp"

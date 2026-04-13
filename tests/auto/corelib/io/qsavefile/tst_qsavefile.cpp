@@ -1,12 +1,12 @@
 // Copyright (C) 2012 David Faure <faure@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSaveFile>
 #include <qcoreapplication.h>
 #include <qstring.h>
 #include <qsystemdetection.h>
-#include <qtemporaryfile.h>
+#include <bobuiemporaryfile.h>
 #include <qfile.h>
 #include <qdir.h>
 #include <qset.h>
@@ -19,14 +19,14 @@
 #endif
 
 #if defined(Q_OS_WIN)
-# include <qt_windows.h>
+# include <bobui_windows.h>
 #endif
 
 #ifdef Q_OS_INTEGRITY
 #include "qplatformdefs.h"
 #endif
 
-// Restore permissions so that the QTemporaryDir cleanup can happen
+// Restore permissions so that the BOBUIemporaryDir cleanup can happen
 class PermissionRestorer
 {
     Q_DISABLE_COPY(PermissionRestorer)
@@ -111,7 +111,7 @@ void tst_QSaveFile::basics()
 
 void tst_QSaveFile::stdfilesystem()
 {
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
     using namespace std::filesystem;
     QSaveFile f;
     f.setFileName(path("foobar"));
@@ -134,7 +134,7 @@ void tst_QSaveFile::stdfilesystem()
 
 void tst_QSaveFile::transactionalWrite()
 {
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     const QString targetFile = dir.path() + QString::fromLatin1("/outfile");
     QFile::remove(targetFile);
@@ -160,7 +160,7 @@ void tst_QSaveFile::transactionalWrite()
     // their metadata.
     // Interestingly, this delay is enough to fix similar tests in the rest
     // of tst_QSaveFile's functions.
-    QTRY_VERIFY(file.fileTime(QFile::FileModificationTime).isValid());
+    BOBUIRY_VERIFY(file.fileTime(QFile::FileModificationTime).isValid());
 #else
     QVERIFY(file.fileTime(QFile::FileModificationTime).isValid());
 #endif
@@ -182,7 +182,7 @@ void tst_QSaveFile::transactionalWrite()
     QCOMPARE(QFile::permissions(targetFile), QFile::permissions(otherFile));
 }
 
-// QTBUG-77007: Simulate the case of an application with a loop prompting
+// BOBUIBUG-77007: Simulate the case of an application with a loop prompting
 // to retry saving on failure. Create a read-only file first (Unix only)
 void tst_QSaveFile::retryTransactionalWrite()
 {
@@ -193,7 +193,7 @@ void tst_QSaveFile::retryTransactionalWrite()
     if (geteuid() == 0)
         QSKIP("This test does not work as the root user");
 #endif //Q_OS_UNIX
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
 
     const char *data = "Hello";
@@ -226,7 +226,7 @@ void tst_QSaveFile::saveTwice()
     const char *hello = "Hello";
     // Check that we can reuse a QSaveFile object
     // (and test the case of an existing target file)
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     const QString targetFile = dir.path() + QString::fromLatin1("/outfile");
     QSaveFile file(targetFile);
@@ -248,14 +248,14 @@ void tst_QSaveFile::saveTwice()
 
 void tst_QSaveFile::textStreamManualFlush()
 {
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     const QString targetFile = dir.path() + QString::fromLatin1("/outfile");
     QSaveFile file(targetFile);
     QVERIFY2(file.open(QIODevice::WriteOnly), msgCannotOpen(file).constData());
 
     const char *data = "Manual flush";
-    QTextStream ts(&file);
+    BOBUIextStream ts(&file);
     ts << data;
     ts.flush();
     QCOMPARE(file.error(), QFile::NoError);
@@ -271,13 +271,13 @@ void tst_QSaveFile::textStreamManualFlush()
 
 void tst_QSaveFile::textStreamAutoFlush()
 {
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     const QString targetFile = dir.path() + QString::fromLatin1("/outfile");
     QSaveFile file(targetFile);
     QVERIFY2(file.open(QIODevice::WriteOnly), msgCannotOpen(file).constData());
 
-    QTextStream ts(&file);
+    BOBUIextStream ts(&file);
     ts << "Auto-flush.";
     // no flush
     QVERIFY(file.commit()); // QIODevice::close will emit aboutToClose, which will flush the stream
@@ -289,10 +289,10 @@ void tst_QSaveFile::textStreamAutoFlush()
 
 void tst_QSaveFile::transactionalWriteNoPermissionsOnDir_data()
 {
-    QTest::addColumn<bool>("directWriteFallback");
+    BOBUIest::addColumn<bool>("directWriteFallback");
 
-    QTest::newRow("default") << false;
-    QTest::newRow("directWriteFallback") << true;
+    BOBUIest::newRow("default") << false;
+    BOBUIest::newRow("directWriteFallback") << true;
 }
 
 void tst_QSaveFile::transactionalWriteNoPermissionsOnDir()
@@ -303,7 +303,7 @@ void tst_QSaveFile::transactionalWriteNoPermissionsOnDir()
         QSKIP("Test is not applicable with root privileges");
 #endif
     QFETCH(bool, directWriteFallback);
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     QVERIFY(QFile(dir.path()).setPermissions(QFile::ReadOwner | QFile::ExeOwner));
     PermissionRestorer permissionRestorer(dir.path());
@@ -361,7 +361,7 @@ void tst_QSaveFile::transactionalWriteNoPermissionsOnFile()
         QSKIP("Test is not applicable with root privileges");
 #endif
     // Setup an existing but readonly file
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     const QString targetFile = dir.path() + QString::fromLatin1("/outfile");
     QFile file(targetFile);
@@ -382,14 +382,14 @@ void tst_QSaveFile::transactionalWriteNoPermissionsOnFile()
 
 void tst_QSaveFile::transactionalWriteCanceled()
 {
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     const QString targetFile = dir.path() + QString::fromLatin1("/outfile");
     QFile::remove(targetFile);
     QSaveFile file(targetFile);
     QVERIFY2(file.open(QIODevice::WriteOnly), msgCannotOpen(file).constData());
 
-    QTextStream ts(&file);
+    BOBUIextStream ts(&file);
     ts << "This writing operation will soon be canceled.\n";
     ts.flush();
     QCOMPARE(file.error(), QFile::NoError);
@@ -410,7 +410,7 @@ void tst_QSaveFile::transactionalWritePermissionsErrorRenaming()
     if (::geteuid() == 0)
         QSKIP("Test is not applicable with root privileges");
 #endif
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     const QString targetFile = dir.path() + QString::fromLatin1("/outfile");
     QSaveFile file(targetFile);
@@ -442,7 +442,7 @@ void tst_QSaveFile::transactionalWritePermissionsErrorRenaming()
 
 void tst_QSaveFile::transactionalWriteTypeErrorRenaming()
 {
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     const QString targetFile = dir.path() + QString::fromLatin1("/outfile");
     QSaveFile file(targetFile);
@@ -460,7 +460,7 @@ void tst_QSaveFile::transactionalWriteTypeErrorRenaming()
     QVERIFY(!file.commit());
     QCOMPARE(file.error(), QFile::RenameError);
 #ifdef Q_OS_UNIX
-    QCOMPARE(file.errorString(), qt_error_string(EISDIR));
+    QCOMPARE(file.errorString(), bobui_error_string(EISDIR));
 #endif
 
     target.refresh();
@@ -471,7 +471,7 @@ void tst_QSaveFile::symlink()
 {
 #ifdef Q_OS_UNIX
     QByteArray someData = "some data";
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
 
     const QString targetFile = dir.path() + QLatin1String("/outfile");
@@ -524,7 +524,7 @@ void tst_QSaveFile::symlink()
     }
 
     // link to a link in another directory
-    QTemporaryDir dir2;
+    BOBUIemporaryDir dir2;
     QVERIFY2(dir2.isValid(), qPrintable(dir2.errorString()));
 
     const QString linkFile2 = dir2.path() + QLatin1String("/linkfile");
@@ -584,7 +584,7 @@ void tst_QSaveFile::symlink()
 
 void tst_QSaveFile::directory()
 {
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
 
     const QString subdir = dir.path() + QLatin1String("/subdir");
@@ -608,9 +608,9 @@ void tst_QSaveFile::directory()
 
 [[maybe_unused]] static void bufferedAndUnbuffered()
 {
-    QTest::addColumn<QIODevice::OpenMode>("mode");
-    QTest::newRow("unbuffered") << QIODevice::OpenMode(QIODevice::Unbuffered);
-    QTest::newRow("buffered") << QIODevice::OpenMode();
+    BOBUIest::addColumn<QIODevice::OpenMode>("mode");
+    BOBUIest::newRow("unbuffered") << QIODevice::OpenMode(QIODevice::Unbuffered);
+    BOBUIest::newRow("buffered") << QIODevice::OpenMode();
 }
 
 #ifdef Q_OS_UNIX
@@ -641,7 +641,7 @@ void tst_QSaveFile::writeFailToDevFull()
         // error reported immediately
         QCOMPARE(written, -1);
         QCOMPARE(saveFile.error(), QFile::ResourceError);
-        QCOMPARE(saveFile.errorString(), qt_error_string(ENOSPC));
+        QCOMPARE(saveFile.errorString(), bobui_error_string(ENOSPC));
     } else {
         // error reported only on .commit()
         QCOMPARE(written, data.size());
@@ -689,7 +689,7 @@ void tst_QSaveFile::writeFailResourceLimit()
     QFETCH(QIODevice::OpenMode, mode);
     mode |= QIODevice::WriteOnly;
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     const QString targetFile = dir.path() + QString::fromLatin1("/outfile");
     QFile::remove(targetFile);
@@ -712,7 +712,7 @@ void tst_QSaveFile::writeFailResourceLimit()
         QCOMPARE_LT(written, data.size());
         QCOMPARE(lastWrite, -1);
         QCOMPARE(saveFile.error(), QFile::WriteError);
-        QCOMPARE(saveFile.errorString(), qt_error_string(EFBIG));
+        QCOMPARE(saveFile.errorString(), bobui_error_string(EFBIG));
     } else {
         // error reported only on .commit()
         QCOMPARE(written, data.size());
@@ -726,11 +726,11 @@ void tst_QSaveFile::writeFailResourceLimit()
 #ifdef Q_OS_WIN
 void tst_QSaveFile::alternateDataStream_data()
 {
-    QTest::addColumn<bool>("directWriteFallback");
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<bool>("directWriteFallback");
+    BOBUIest::addColumn<bool>("success");
 
-    QTest::newRow("default") << false << false;
-    QTest::newRow("directWriteFallback") << true << true;
+    BOBUIest::newRow("default") << false << false;
+    BOBUIest::newRow("directWriteFallback") << true << true;
 }
 
 void tst_QSaveFile::alternateDataStream()
@@ -739,7 +739,7 @@ void tst_QSaveFile::alternateDataStream()
     QFETCH(bool, success);
     static const char newContent[] = "New content\r\n";
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     QString baseName = dir.path() + QLatin1String("/base");
     {
@@ -779,5 +779,5 @@ void tst_QSaveFile::alternateDataStream()
 }
 #endif
 
-QTEST_MAIN(tst_QSaveFile)
+BOBUIEST_MAIN(tst_QSaveFile)
 #include "tst_qsavefile.moc"

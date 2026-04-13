@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef MOC_H
 #define MOC_H
@@ -10,13 +10,13 @@
 #include <qjsondocument.h>
 #include <qjsonarray.h>
 #include <qjsonobject.h>
-#include <qtmocconstants.h>
-#include <qtyperevision.h>
+#include <bobuimocconstants.h>
+#include <bobuiyperevision.h>
 #include <stdio.h>
 
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QMetaObject;
 
@@ -55,7 +55,7 @@ struct EnumDef
     QByteArray enumName;
     QByteArray type;
     QList<QByteArray> values;
-    QFlags<QtMocConstants::EnumFlags> flags = {};
+    QFlags<BobUIMocConstants::EnumFlags> flags = {};
     QJsonObject toJson(const ClassDef &cdef) const;
     QByteArray qualifiedType(const ClassDef *cdef) const;
     int lineNumber = 0;
@@ -117,7 +117,7 @@ struct PropertyDef
         if (name.isEmpty())
             return false;
         QByteArray s("set");
-        s += QtMiscUtils::toAsciiUpper(name[0]);
+        s += BobUIMiscUtils::toAsciiUpper(name[0]);
         s += name.mid(1);
         return (s == write);
     }
@@ -163,7 +163,7 @@ struct BaseDef {
     QByteArray classname;
     QByteArray qualified;
     QList<ClassInfoDef> classInfoList;
-    QMap<QByteArray, QFlags<QtMocConstants::EnumFlags>> enumDeclarations;
+    QMap<QByteArray, QFlags<BobUIMocConstants::EnumFlags>> enumDeclarations;
     QList<EnumDef> enumList;
     QMap<QByteArray, QByteArray> flagAliases;
     qsizetype begin = 0;
@@ -279,7 +279,7 @@ public:
     void createPropertyDef(PropertyDef &def, int propertyIndex, PropertyMode mode);
 
     void parsePropertyAttributes(PropertyDef &propDef);
-    void parseEnumOrFlag(BaseDef *def, QtMocConstants::EnumFlags flags);
+    void parseEnumOrFlag(BaseDef *def, BobUIMocConstants::EnumFlags flags);
     void parseFlag(BaseDef *def);
     enum class EncounteredQmlMacro {Yes, No};
     EncounteredQmlMacro parseClassInfo(BaseDef *def);
@@ -302,7 +302,7 @@ public:
     bool testFunctionAttribute(FunctionDef *def);
     bool testFunctionAttribute(Token tok, FunctionDef *def);
     bool testFunctionRevision(FunctionDef *def);
-    QTypeRevision parseRevision();
+    BOBUIypeRevision parseRevision();
 
     bool skipCxxAttributes();
 
@@ -323,6 +323,6 @@ inline QByteArray noRef(const QByteArray &type)
     return type;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // MOC_H

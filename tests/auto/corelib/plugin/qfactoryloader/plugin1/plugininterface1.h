@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef PLUGININTERFACE1_H
 #define PLUGININTERFACE1_H
 
-#include <QtCore/QtGlobal>
+#include <BobUICore/BobUIGlobal>
 
 struct PluginInterface1 {
     virtual ~PluginInterface1() {}
     virtual QString pluginName() const = 0;
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#define PluginInterface1_iid "org.qt-project.Qt.autotests.plugininterface1"
+#define PluginInterface1_iid "org.bobui-project.BobUI.autotests.plugininterface1"
 
 Q_DECLARE_INTERFACE(PluginInterface1, PluginInterface1_iid)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PLUGININTERFACE1_H

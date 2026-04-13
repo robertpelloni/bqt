@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsservices.h"
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-#include <QtCore/qurl.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qthread.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/bobuihread.h>
 
-#include <QtCore/private/qwinregistry_p.h>
-#include <QtCore/private/qfunctions_win_p.h>
+#include <BobUICore/private/qwinregistry_p.h>
+#include <BobUICore/private/qfunctions_win_p.h>
 
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <intshcut.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-class QWindowsShellExecuteThread : public QThread
+class QWindowsShellExecuteThread : public BOBUIhread
 {
 public:
     explicit QWindowsShellExecuteThread(const wchar_t *operation, const wchar_t *file,
@@ -50,13 +50,13 @@ private:
 static QString msgShellExecuteFailed(const QUrl &url, quintptr code)
 {
     QString result;
-    QTextStream(&result) <<"ShellExecute '" <<  url.toString() << "' failed (error " << code << ").";
+    BOBUIextStream(&result) <<"ShellExecute '" <<  url.toString() << "' failed (error " << code << ").";
     return result;
 }
 
 // Retrieve the web browser and open the URL. This should be used for URLs with
-// fragments which don't work when using ShellExecute() directly (QTBUG-14460,
-// QTBUG-55300).
+// fragments which don't work when using ShellExecute() directly (BOBUIBUG-14460,
+// BOBUIBUG-55300).
 static bool openWebBrowser(const QUrl &url)
 {
     WCHAR browserExecutable[MAX_PATH] = {};
@@ -68,12 +68,12 @@ static bool openWebBrowser(const QUrl &url)
     }
     QString browser = QString::fromWCharArray(browserExecutable, browserExecutableSize - 1);
     // Workaround for "old" MS Edge entries. Instead of LaunchWinApp.exe we can just use msedge.exe
-    if (browser.contains("LaunchWinApp.exe"_L1, Qt::CaseInsensitive))
+    if (browser.contains("LaunchWinApp.exe"_L1, BobUI::CaseInsensitive))
         browser = "msedge.exe"_L1;
     const QString urlS = url.toString(QUrl::FullyEncoded);
 
     // Run ShellExecute() in a thread since it may spin the event loop.
-    // Prevent it from interfering with processing of posted events (QTBUG-85676).
+    // Prevent it from interfering with processing of posted events (BOBUIBUG-85676).
     QWindowsShellExecuteThread thread(operation,
                                       reinterpret_cast<const wchar_t *>(browser.utf16()),
                                       reinterpret_cast<const wchar_t *>(urlS.utf16()));
@@ -98,7 +98,7 @@ static inline bool shellExecute(const QUrl &url)
 
 
     // Run ShellExecute() in a thread since it may spin the event loop.
-    // Prevent it from interfering with processing of posted events (QTBUG-85676).
+    // Prevent it from interfering with processing of posted events (BOBUIBUG-85676).
     QWindowsShellExecuteThread thread(nullptr,
                                       reinterpret_cast<const wchar_t *>(nativeFilePath.utf16()),
                                       nullptr);
@@ -131,7 +131,7 @@ static inline QString mailCommand()
     keyName += mailto + "\\Shell\\Open\\Command"_L1;
     qCDebug(lcQpaServices) << "keyName=" << keyName;
     const QString command = QWinRegistryKey(HKEY_CLASSES_ROOT, keyName).stringValue(L"");
-    // QTBUG-57816: As of Windows 10, if there is no mail client installed, an entry like
+    // BOBUIBUG-57816: As of Windows 10, if there is no mail client installed, an entry like
     // "rundll32.exe .. url.dll,MailToProtocolHandler %l" is returned. Launching it
     // silently fails or brings up a broken dialog after a long time, so exclude it and
     // fall back to ShellExecute() which brings up the URL association dialog.
@@ -158,7 +158,7 @@ static inline bool launchMail(const QUrl &url)
     //Make sure the path for the process is in quotes
     const QChar doubleQuote = u'"';
     if (!command.startsWith(doubleQuote)) {
-        const int exeIndex = command.indexOf(".exe "_L1, 0, Qt::CaseInsensitive);
+        const int exeIndex = command.indexOf(".exe "_L1, 0, BobUI::CaseInsensitive);
         if (exeIndex != -1) {
             command.insert(exeIndex + 4, doubleQuote);
             command.prepend(doubleQuote);
@@ -198,4 +198,4 @@ bool QWindowsServices::openDocument(const QUrl &url)
     return shellExecute(url);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

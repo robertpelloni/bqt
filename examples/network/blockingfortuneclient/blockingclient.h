@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef BLOCKINGCLIENT_H
 #define BLOCKINGCLIENT_H
@@ -8,13 +8,13 @@
 
 #include "fortunethread.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
 class QAction;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class BlockingClient : public QWidget

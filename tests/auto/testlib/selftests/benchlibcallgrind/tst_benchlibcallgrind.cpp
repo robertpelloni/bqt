@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QCoreApplication>
+#include <BOBUIest>
+#include <BobUICore/QCoreApplication>
 
 #if __has_include(<valgrind/valgrind.h>)
 #  include <valgrind/valgrind.h>
@@ -53,7 +53,7 @@ void tst_BenchlibCallgrind::twoHundredMillionInstructions()
 #endif
 }
 
-QTEST_MAIN_WRAPPER(tst_BenchlibCallgrind,
+BOBUIEST_MAIN_WRAPPER(tst_BenchlibCallgrind,
     std::vector<const char*> args(argv, argv + argc);
     // Add the -callgrind argument unless (it's there anyway or) we're the
     // recursive invocation with -callgrindchild passed.
@@ -66,7 +66,7 @@ QTEST_MAIN_WRAPPER(tst_BenchlibCallgrind,
         argc = int(args.size());
         argv = const_cast<char**>(&args[0]);
     }
-    QTEST_MAIN_SETUP())
+    BOBUIEST_MAIN_SETUP())
 
 #undef HAVE_VALGRIND_H
 #include "tst_benchlibcallgrind.moc"

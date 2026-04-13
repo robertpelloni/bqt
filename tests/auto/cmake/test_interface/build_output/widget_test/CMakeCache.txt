@@ -179,8 +179,8 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//The directory containing a CMake configuration file for Qt6Widgets.
-Qt6Widgets_DIR:PATH=Qt6Widgets_DIR-NOTFOUND
+//The directory containing a CMake configuration file for BobUI6Widgets.
+BobUI6Widgets_DIR:PATH=BobUI6Widgets_DIR-NOTFOUND
 
 //Value Computed by CMake
 test_interface_try_compile_BINARY_DIR:STATIC=C:/Users/hyper/workspace/bobui/tests/auto/cmake/test_interface/build_output/widget_test

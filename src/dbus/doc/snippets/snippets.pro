@@ -1,3 +1,3 @@
 #! [qmake_use]
-QT += dbus
+BOBUI += dbus
 #! [qmake_use]

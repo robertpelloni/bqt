@@ -1,10 +1,10 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwasmsuspendresumecontrol_p.h"
 #include "qstdweb_p.h"
 
-#include <QtCore/qapplicationstatic.h>
+#include <BobUICore/qapplicationstatic.h>
 
 #include <emscripten.h>
 #include <emscripten/val.h>
@@ -44,9 +44,9 @@ QWasmSuspendResumeControl *QWasmSuspendResumeControl::s_suspendResumeControl = n
 // Setup/constructor function for Module.suspendResumeControl.
 // FIXME if assigning to the Module object from C++ is/becomes possible
 // then this does not need to be a separate JS function.
-void qtSuspendResumeControlClearJs() {
+void bobuiSuspendResumeControlClearJs() {
     EM_ASM({
-        Module.qtSuspendResumeControl = ({
+        Module.bobuiSuspendResumeControl = ({
             resume: null,
             asyncifyEnabled: false, // asyncify 1 or JSPI enabled
             eventHandlers: {},
@@ -57,16 +57,16 @@ void qtSuspendResumeControlClearJs() {
 }
 
 // Suspends the calling thread
-EM_ASYNC_JS(void, qtSuspendJs, (), {
+EM_ASYNC_JS(void, bobuiSuspendJs, (), {
     return new Promise(resolve => {
-        Module.qtSuspendResumeControl.resume = resolve;
+        Module.bobuiSuspendResumeControl.resume = resolve;
     });
 });
 
 // Registers a JS event handler which when called registers its index
 // as the "current" event handler, and then resumes the wasm instance.
 // The wasm instance will then call the C++ event after it is resumed.
-void qtRegisterEventHandlerJs(int index) {
+void bobuiRegisterEventHandlerJs(int index) {
     EM_ASM({
 
         function createNamedFunction(name, parent, obj) {
@@ -97,7 +97,7 @@ void qtRegisterEventHandlerJs(int index) {
         }
 
         let index = $0;
-        let control = Module.qtSuspendResumeControl;
+        let control = Module.bobuiSuspendResumeControl;
         let handler = (arg) => {
             // Copy the top level object, alias the rest.
             // functions are copied by creating new forwarding functions.
@@ -133,7 +133,7 @@ void qtRegisterEventHandlerJs(int index) {
                     // is not suspended.
                 } else {
                     // The instance is not suspended, call the handler directly
-                    Module.qtSendPendingEvents();
+                    Module.bobuiSendPendingEvents();
                 }
             }
         };
@@ -143,17 +143,17 @@ void qtRegisterEventHandlerJs(int index) {
 
 QWasmSuspendResumeControl::QWasmSuspendResumeControl()
 {
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     Q_ASSERT(emscripten_is_main_runtime_thread());
 #endif
-    qtSuspendResumeControlClearJs();
+    bobuiSuspendResumeControlClearJs();
     suspendResumeControlJs().set("asyncifyEnabled", qstdweb::haveAsyncify());
     QWasmSuspendResumeControl::s_suspendResumeControl = this;
 }
 
 QWasmSuspendResumeControl::~QWasmSuspendResumeControl()
 {
-    qtSuspendResumeControlClearJs();
+    bobuiSuspendResumeControlClearJs();
     QWasmSuspendResumeControl::s_suspendResumeControl = nullptr;
 }
 
@@ -169,7 +169,7 @@ uint32_t QWasmSuspendResumeControl::registerEventHandler(std::function<void(val)
     static uint32_t i = 0;
     ++i;
     m_eventHandlers.emplace(i, std::move(handler));
-    qtRegisterEventHandlerJs(i);
+    bobuiRegisterEventHandlerJs(i);
     return i;
 }
 
@@ -188,13 +188,13 @@ val QWasmSuspendResumeControl::jsEventHandlerAt(uint32_t index)
 
 emscripten::val QWasmSuspendResumeControl::suspendResumeControlJs()
 {
-    return val::module_property("qtSuspendResumeControl");
+    return val::module_property("bobuiSuspendResumeControl");
 }
 
 // Suspends the calling thread.
 void QWasmSuspendResumeControl::suspend()
 {
-    qtSuspendJs();
+    bobuiSuspendJs();
 }
 
 void QWasmSuspendResumeControl::suspendExclusive(QList<uint32_t> eventHandlerIndices)
@@ -204,13 +204,13 @@ void QWasmSuspendResumeControl::suspendExclusive(QList<uint32_t> eventHandlerInd
     };
 
     suspendResumeControlJs().set("exclusiveEventHandler", eventHandlerIndices.back());
-    qtSuspendJs();
+    bobuiSuspendJs();
 }
 
 // Sends any pending events. Returns the number of sent events.
 int QWasmSuspendResumeControl::sendPendingEvents()
 {
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     Q_ASSERT(emscripten_is_main_runtime_thread());
 #endif
     emscripten::val control = suspendResumeControlJs();
@@ -242,14 +242,14 @@ int QWasmSuspendResumeControl::sendPendingEvents()
     return count;
 }
 
-void qtSendPendingEvents()
+void bobuiSendPendingEvents()
 {
     if (QWasmSuspendResumeControl::s_suspendResumeControl)
         QWasmSuspendResumeControl::s_suspendResumeControl->sendPendingEvents();
 }
 
-EMSCRIPTEN_BINDINGS(qtSuspendResumeControl) {
-    emscripten::function("qtSendPendingEvents", qtSendPendingEvents QT_WASM_EMSCRIPTEN_ASYNC);
+EMSCRIPTEN_BINDINGS(bobuiSuspendResumeControl) {
+    emscripten::function("bobuiSendPendingEvents", bobuiSendPendingEvents BOBUI_WASM_EMSCRIPTEN_ASYNC);
 }
 
 //

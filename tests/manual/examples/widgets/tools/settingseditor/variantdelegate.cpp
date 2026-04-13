@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "variantdelegate.h"
 
@@ -8,7 +8,7 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QRegularExpressionValidator>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 #include <algorithm>
 
@@ -87,7 +87,7 @@ void VariantDelegate::paint(QPainter *painter,
                             const QModelIndex &index) const
 {
     if (index.column() == 2) {
-        QVariant value = index.model()->data(index, Qt::UserRole);
+        QVariant value = index.model()->data(index, BobUI::UserRole);
         if (!isSupportedType(value.userType())) {
             QStyleOptionViewItem myOption = option;
             myOption.state &= ~QStyle::State_Enabled;
@@ -106,7 +106,7 @@ QWidget *VariantDelegate::createEditor(QWidget *parent,
     if (index.column() != 2)
         return nullptr;
 
-    QVariant originalValue = index.model()->data(index, Qt::UserRole);
+    QVariant originalValue = index.model()->data(index, BobUI::UserRole);
     if (!isSupportedType(originalValue.userType()))
         return nullptr;
 
@@ -170,7 +170,7 @@ QWidget *VariantDelegate::createEditor(QWidget *parent,
     case QMetaType::QSize:
         regExp = m_typeChecker->sizeExp;
         break;
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
         regExp = m_typeChecker->timeExp;
         break;
     case QMetaType::UInt:
@@ -192,7 +192,7 @@ QWidget *VariantDelegate::createEditor(QWidget *parent,
 void VariantDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
-    QVariant value = index.model()->data(index, Qt::UserRole);
+    QVariant value = index.model()->data(index, BobUI::UserRole);
     if (auto spinBox = qobject_cast<QSpinBox *>(editor)) {
         const auto userType = value.userType();
         if (userType == QMetaType::UInt || userType == QMetaType::ULongLong)
@@ -213,7 +213,7 @@ void VariantDelegate::setEditorData(QWidget *editor,
 void VariantDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
-    const QVariant originalValue = index.model()->data(index, Qt::UserRole);
+    const QVariant originalValue = index.model()->data(index, BobUI::UserRole);
     QVariant value;
 
     if (auto spinBox = qobject_cast<QSpinBox *>(editor)) {
@@ -247,7 +247,7 @@ void VariantDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
             break;
         case QMetaType::QDate:
             {
-                QDate date = QDate::fromString(text, Qt::ISODate);
+                QDate date = QDate::fromString(text, BobUI::ISODate);
                 if (!date.isValid())
                     return;
                 value = date;
@@ -255,7 +255,7 @@ void VariantDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
             break;
         case QMetaType::QDateTime:
             {
-                QDateTime dateTime = QDateTime::fromString(text, Qt::ISODate);
+                QDateTime dateTime = QDateTime::fromString(text, BobUI::ISODate);
                 if (!dateTime.isValid())
                     return;
                 value = dateTime;
@@ -277,9 +277,9 @@ void VariantDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
         case QMetaType::QStringList:
             value = text.split(',');
             break;
-        case QMetaType::QTime:
+        case QMetaType::BOBUIime:
             {
-                QTime time = QTime::fromString(text, Qt::ISODate);
+                BOBUIime time = BOBUIime::fromString(text, BobUI::ISODate);
                 if (!time.isValid())
                     return;
                 value = time;
@@ -291,8 +291,8 @@ void VariantDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
         }
     }
 
-    model->setData(index, displayText(value), Qt::DisplayRole);
-    model->setData(index, value, Qt::UserRole);
+    model->setData(index, displayText(value), BobUI::DisplayRole);
+    model->setData(index, value, BobUI::UserRole);
 }
 
 bool VariantDelegate::isSupportedType(int type)
@@ -312,7 +312,7 @@ bool VariantDelegate::isSupportedType(int type)
     case QMetaType::QSize:
     case QMetaType::QString:
     case QMetaType::QStringList:
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
     case QMetaType::UInt:
     case QMetaType::ULongLong:
         return true;
@@ -344,9 +344,9 @@ QString VariantDelegate::displayText(const QVariant &value)
                    .arg(color.blue()).arg(color.alpha());
         }
     case QMetaType::QDate:
-        return value.toDate().toString(Qt::ISODate);
+        return value.toDate().toString(BobUI::ISODate);
     case QMetaType::QDateTime:
-        return value.toDateTime().toString(Qt::ISODate);
+        return value.toDateTime().toString(BobUI::ISODate);
     case QMetaType::UnknownType:
         return "<Invalid>";
     case QMetaType::QPoint:
@@ -368,8 +368,8 @@ QString VariantDelegate::displayText(const QVariant &value)
         }
     case QMetaType::QStringList:
         return value.toStringList().join(',');
-    case QMetaType::QTime:
-        return value.toTime().toString(Qt::ISODate);
+    case QMetaType::BOBUIime:
+        return value.toTime().toString(BobUI::ISODate);
     default:
         break;
     }

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Qt SQL Browser</string>
+   <string>BobUI SQL Browser</string>
   </property>
   <layout class="QVBoxLayout">
    <property name="spacing">
@@ -29,7 +29,7 @@
       </sizepolicy>
      </property>
      <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
+      <enum>BobUI::Orientation::Horizontal</enum>
      </property>
      <widget class="ConnectionWidget" name="connectionWidget">
       <property name="sizePolicy">
@@ -39,7 +39,7 @@
        </sizepolicy>
       </property>
      </widget>
-     <widget class="QTableView" name="table">
+     <widget class="BOBUIableView" name="table">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>2</horstretch>
@@ -47,7 +47,7 @@
        </sizepolicy>
       </property>
       <property name="contextMenuPolicy">
-       <enum>Qt::ContextMenuPolicy::ActionsContextMenu</enum>
+       <enum>BobUI::ContextMenuPolicy::ActionsContextMenu</enum>
       </property>
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
@@ -80,7 +80,7 @@
        <number>9</number>
       </property>
       <item>
-       <widget class="QTextEdit" name="sqlEdit">
+       <widget class="BOBUIextEdit" name="sqlEdit">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
@@ -112,7 +112,7 @@
         <item>
          <spacer>
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>BobUI::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -168,7 +168,7 @@
  <customwidgets>
   <customwidget>
    <class>ConnectionWidget</class>
-   <extends>QTreeView</extends>
+   <extends>BOBUIreeView</extends>
    <header>connectionwidget.h</header>
   </customwidget>
  </customwidgets>

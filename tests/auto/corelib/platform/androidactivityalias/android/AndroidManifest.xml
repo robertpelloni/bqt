@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.qtproject.example"
+    package="org.bobuiproject.example"
     android:installLocation="auto"
     android:versionCode="-- %%INSERT_VERSION_CODE%% --"
     android:versionName="-- %%INSERT_VERSION_NAME%% --">
@@ -12,7 +12,7 @@
         android:normalScreens="true"
         android:smallScreens="true" />
     <application
-        android:name="org.qtproject.qt.android.bindings.QtApplication"
+        android:name="org.bobuiproject.bobui.android.bindings.BobUIApplication"
         android:hardwareAccelerated="true"
         android:label="-- %%INSERT_APP_NAME%% --"
         android:icon="-- %%INSERT_APP_ICON%% --"
@@ -21,7 +21,7 @@
         android:fullBackupOnly="false">
 
         <activity
-            android:name="org.qtproject.qt.android.bindings.QtActivity"
+            android:name="org.bobuiproject.bobui.android.bindings.BobUIActivity"
             android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
             android:label="-- %%INSERT_APP_NAME%% --"
             android:launchMode="singleTop"
@@ -38,7 +38,7 @@
         </activity>
 
         <activity
-            android:name=".QtActivityTest"
+            android:name=".BobUIActivityTest"
             android:process=":testprocess"
             android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
             android:label="-- %%INSERT_APP_NAME%% --"
@@ -55,8 +55,8 @@
             android:enabled="true"
             android:exported="true"
             android:icon="-- %%INSERT_APP_ICON%% --"
-            android:label="Qt Activity Alias"
-            android:targetActivity=".QtActivityTest">
+            android:label="BobUI Activity Alias"
+            android:targetActivity=".BobUIActivityTest">
         </activity-alias>
 
         <activity-alias
@@ -64,8 +64,8 @@
             android:enabled="true"
             android:exported="true"
             android:icon="-- %%INSERT_APP_ICON%% --"
-            android:label="Qt Activity Alias with Metadata"
-            android:targetActivity=".QtActivityTest">
+            android:label="BobUI Activity Alias with Metadata"
+            android:targetActivity=".BobUIActivityTest">
 
             <meta-data
                 android:name="android.app.lib_name"
@@ -77,8 +77,8 @@
             android:enabled="true"
             android:exported="true"
             android:icon="-- %%INSERT_APP_ICON%% --"
-            android:label="Qt Activity Alias with Metadata"
-            android:targetActivity=".QtActivityTest">
+            android:label="BobUI Activity Alias with Metadata"
+            android:targetActivity=".BobUIActivityTest">
 
             <meta-data
                 android:name="android.app.lib_name"
@@ -87,12 +87,12 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.qtprovider"
+            android:authorities="${applicationId}.bobuiprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/qtprovider_paths"/>
+                android:resource="@xml/bobuiprovider_paths"/>
         </provider>
     </application>
 </manifest>

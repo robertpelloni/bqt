@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILEDIALOG_P_H
 #define QFILEDIALOG_P_H
@@ -9,24 +9,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 
 #include "qfiledialog.h"
 #include "private/qdialog_p.h"
 #include "qplatformdefs.h"
 
-#include <QtGui/private/qfilesystemmodel_p.h>
+#include <BobUIGui/private/qfilesystemmodel_p.h>
 #include <qlistview.h>
-#include <qtreeview.h>
+#include <bobuireeview.h>
 #include <qcombobox.h>
-#include <qtoolbutton.h>
+#include <bobuioolbutton.h>
 #include <qlabel.h>
 #include <qevent.h>
 #include <qlineedit.h>
@@ -35,12 +35,12 @@
 #include <qdialogbuttonbox.h>
 #include <qabstractproxymodel.h>
 #include <qfileiconprovider.h>
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
 #include <qcompleter.h>
 #endif
 #include <qpointer.h>
 #include "qsidebar_p.h"
-#if QT_CONFIG(fscompleter)
+#if BOBUI_CONFIG(fscompleter)
 #include "qfscompleter_p.h"
 #endif
 
@@ -48,9 +48,9 @@
 #include <unistd.h>
 #endif
 
-QT_REQUIRE_CONFIG(filedialog);
+BOBUI_REQUIRE_CONFIG(filedialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFileDialogListView;
 class QFileDialogTreeView;
@@ -151,7 +151,7 @@ public:
 #endif
     }
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     void saveSettings();
     bool restoreFromSettings();
 #endif
@@ -193,7 +193,7 @@ public:
     void fileRenamed(const QString &path, const QString &oldName, const QString &newName);
 
     // layout
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
     QAbstractProxyModel *proxyModel;
 #endif
 
@@ -201,9 +201,9 @@ public:
     QStringList watching;
     QFileSystemModel *model;
 
-#if QT_CONFIG(fscompleter)
+#if BOBUI_CONFIG(fscompleter)
     QFSCompleter *completer;
-#endif //QT_CONFIG(fscompleter)
+#endif //BOBUI_CONFIG(fscompleter)
 
     QString setWindowTitle;
 
@@ -300,10 +300,10 @@ private:
     QFileDialogPrivate *d_ptr;
 };
 
-class QFileDialogTreeView : public QTreeView
+class QFileDialogTreeView : public BOBUIreeView
 {
 public:
-    QFileDialogTreeView(QWidget *parent) : QTreeView(parent), d_ptr(nullptr) {}
+    QFileDialogTreeView(QWidget *parent) : BOBUIreeView(parent), d_ptr(nullptr) {}
     void setFileDialogPrivate(QFileDialogPrivate *d_pointer);
     QSize sizeHint() const override;
 
@@ -314,14 +314,14 @@ private:
 };
 
 QModelIndex QFileDialogPrivate::mapToSource(const QModelIndex &index) const {
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
     return proxyModel ? proxyModel->mapToSource(index) : index;
 #else
     return index;
 #endif
 }
 QModelIndex QFileDialogPrivate::mapFromSource(const QModelIndex &index) const {
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
     return proxyModel ? proxyModel->mapFromSource(index) : index;
 #else
     return index;
@@ -402,6 +402,6 @@ QString QFileDialogPrivate::selectedNameFilter_sys() const
     return QString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILEDIALOG_P_H

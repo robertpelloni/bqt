@@ -1,6 +1,6 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QUNIQUEHANDLE_TYPES_P_H
 #define QUNIQUEHANDLE_TYPES_P_H
@@ -9,37 +9,37 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/private/quniquehandle_p.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/private/quniquehandle_p.h>
 
 #include <cstdio>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtUniqueHandleTraits {
+namespace BobUIUniqueHandleTraits {
 
 #ifdef Q_OS_WIN
 
 struct InvalidHandleTraits
 {
-    using Type = Qt::HANDLE;
+    using Type = BobUI::HANDLE;
     static Type invalidValue() noexcept
     {
-        return Qt::HANDLE(-1); // AKA INVALID_HANDLE_VALUE
+        return BobUI::HANDLE(-1); // AKA INVALID_HANDLE_VALUE
     }
     Q_CORE_EXPORT static bool close(Type handle) noexcept;
 };
 
 struct NullHandleTraits
 {
-    using Type = Qt::HANDLE;
+    using Type = BobUI::HANDLE;
     static Type invalidValue() noexcept { return nullptr; }
     Q_CORE_EXPORT static bool close(Type handle) noexcept;
 };
@@ -60,23 +60,23 @@ struct FILEHandleTraits
     Q_CORE_EXPORT static bool close(Type handle);
 };
 
-} // namespace QtUniqueHandleTraits
+} // namespace BobUIUniqueHandleTraits
 
 #ifdef Q_OS_WIN
 
-using QUniqueWin32Handle = QUniqueHandle<QtUniqueHandleTraits::InvalidHandleTraits>;
-using QUniqueWin32NullHandle = QUniqueHandle<QtUniqueHandleTraits::NullHandleTraits>;
+using QUniqueWin32Handle = QUniqueHandle<BobUIUniqueHandleTraits::InvalidHandleTraits>;
+using QUniqueWin32NullHandle = QUniqueHandle<BobUIUniqueHandleTraits::NullHandleTraits>;
 
 #endif
 
 #ifdef Q_OS_UNIX
 
-using QUniqueFileDescriptorHandle = QUniqueHandle<QtUniqueHandleTraits::FileDescriptorHandleTraits>;
+using QUniqueFileDescriptorHandle = QUniqueHandle<BobUIUniqueHandleTraits::FileDescriptorHandleTraits>;
 
 #endif
 
-using QUniqueFILEHandle = QUniqueHandle<QtUniqueHandleTraits::FILEHandleTraits>;
+using QUniqueFILEHandle = QUniqueHandle<BobUIUniqueHandleTraits::FILEHandleTraits>;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

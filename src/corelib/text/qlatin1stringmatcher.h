@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QLATIN1STRINGMATCHER_H
 #define QLATIN1STRINGMATCHER_H
@@ -9,12 +9,12 @@
 #include <iterator>
 #include <limits>
 
-#include <QtCore/q20algorithm.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/q20algorithm.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T> constexpr inline bool isLatin1OrUtf16View = false;
 template <> constexpr inline bool isLatin1OrUtf16View<QLatin1StringView> = true;
 template <> constexpr inline bool isLatin1OrUtf16View<QStringView> = true;
@@ -143,13 +143,13 @@ class QLatin1StringMatcher
 public:
     Q_CORE_EXPORT QLatin1StringMatcher() noexcept;
     Q_CORE_EXPORT explicit QLatin1StringMatcher(
-            QLatin1StringView pattern, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+            QLatin1StringView pattern, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
     Q_CORE_EXPORT ~QLatin1StringMatcher() noexcept;
 
     Q_CORE_EXPORT void setPattern(QLatin1StringView pattern) noexcept;
     Q_CORE_EXPORT QLatin1StringView pattern() const noexcept;
-    Q_CORE_EXPORT void setCaseSensitivity(Qt::CaseSensitivity cs) noexcept;
-    Q_CORE_EXPORT Qt::CaseSensitivity caseSensitivity() const noexcept;
+    Q_CORE_EXPORT void setCaseSensitivity(BobUI::CaseSensitivity cs) noexcept;
+    Q_CORE_EXPORT BobUI::CaseSensitivity caseSensitivity() const noexcept;
 
     Q_CORE_EXPORT qsizetype indexIn(QLatin1StringView haystack, qsizetype from = 0) const noexcept;
     Q_CORE_EXPORT qsizetype indexIn(QStringView haystack, qsizetype from = 0) const noexcept;
@@ -159,12 +159,12 @@ private:
     void freeSearcher() noexcept;
 
     QLatin1StringView m_pattern;
-    Qt::CaseSensitivity m_cs;
-    typedef QtPrivate::q_boyer_moore_searcher_hashed_needle<const char *,
-                                                            QtPrivate::QCaseSensitiveLatin1Hash>
+    BobUI::CaseSensitivity m_cs;
+    typedef BobUIPrivate::q_boyer_moore_searcher_hashed_needle<const char *,
+                                                            BobUIPrivate::QCaseSensitiveLatin1Hash>
             CaseSensitiveSearcher;
-    typedef QtPrivate::q_boyer_moore_searcher_hashed_needle<const char *,
-                                                            QtPrivate::QCaseInsensitiveLatin1Hash>
+    typedef BobUIPrivate::q_boyer_moore_searcher_hashed_needle<const char *,
+                                                            BobUIPrivate::QCaseInsensitiveLatin1Hash>
             CaseInsensitiveSearcher;
     union {
         CaseSensitiveSearcher m_caseSensitiveSearcher;
@@ -177,6 +177,6 @@ private:
     char m_foldBuffer[256];
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLATIN1MATCHER_H

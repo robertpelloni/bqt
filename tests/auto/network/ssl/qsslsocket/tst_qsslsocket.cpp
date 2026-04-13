@@ -1,30 +1,30 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2014 Governikus GmbH & Co. KG.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qrandom.h>
-#include <QtCore/qscopeguard.h>
-#include <QtNetwork/qhostaddress.h>
-#include <QtNetwork/qhostinfo.h>
-#include <QtNetwork/qnetworkproxy.h>
-#include <QtNetwork/qsslcipher.h>
-#include <QtNetwork/qsslconfiguration.h>
-#include <QtNetwork/qsslkey.h>
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qtcpserver.h>
-#include <QtNetwork/qsslpresharedkeyauthenticator.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qrandom.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUINetwork/qhostaddress.h>
+#include <BobUINetwork/qhostinfo.h>
+#include <BobUINetwork/qnetworkproxy.h>
+#include <BobUINetwork/qsslcipher.h>
+#include <BobUINetwork/qsslconfiguration.h>
+#include <BobUINetwork/qsslkey.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/bobuicpserver.h>
+#include <BobUINetwork/qsslpresharedkeyauthenticator.h>
 
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QNetworkProxy>
 #include <QAuthenticator>
-#include <QTestEventLoop>
+#include <BOBUIestEventLoop>
 #include <QSignalSpy>
 #include <QSemaphore>
 
@@ -34,11 +34,11 @@
 #include "../../../network-settings.h"
 #include "../shared/tlshelpers.h"
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
 #include "../shared/qopenssl_symbols.h"
 #endif
 
-#include "private/qtlsbackend_p.h"
+#include "private/bobuilsbackend_p.h"
 
 #include "private/qsslsocket_p.h"
 #include "private/qsslconfiguration_p.h"
@@ -47,8 +47,8 @@
 
 using namespace std::chrono_literals;
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 // make these enum values available without causing deprecation warnings:
 namespace Test {
 #define COPY(tag, v) \
@@ -60,7 +60,7 @@ COPY(Dtls, 1_0)
 COPY(Tls, 1_1)
 #undef COPY
 } // namespace Test
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 Q_DECLARE_METATYPE(QSslSocket::SslMode)
 typedef QList<QSslError::SslError> SslErrorList;
@@ -80,17 +80,17 @@ typedef QSharedPointer<QSslSocket> QSslSocketPtr;
 // Use this cipher to force PSK key sharing.
 // Also, it's a cipher w/o auth, to check that we emit the signals warning
 // about the identity of the peer.
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
 static const QString PSK_CIPHER_WITHOUT_AUTH = QStringLiteral("PSK-AES256-CBC-SHA");
 static const quint16 PSK_SERVER_PORT = 4433;
 static const QByteArray PSK_CLIENT_PRESHAREDKEY = QByteArrayLiteral("\x1a\x2b\x3c\x4d\x5e\x6f");
-static const QByteArray PSK_SERVER_IDENTITY_HINT = QByteArrayLiteral("QtTestServerHint");
+static const QByteArray PSK_SERVER_IDENTITY_HINT = QByteArrayLiteral("BobUITestServerHint");
 static const QByteArray PSK_CLIENT_IDENTITY = QByteArrayLiteral("Client_identity");
-#endif  // QT_CONFIG(openssl)
+#endif  // BOBUI_CONFIG(openssl)
 
-QT_BEGIN_NAMESPACE
-void qt_ForceTlsSecurityLevel();
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+void bobui_ForceTlsSecurityLevel();
+BOBUI_END_NAMESPACE
 
 class tst_QSslSocket : public QObject
 {
@@ -104,18 +104,18 @@ public:
     static void enterLoop(int secs)
     {
         ++loopLevel;
-        QTestEventLoop::instance().enterLoop(secs);
+        BOBUIestEventLoop::instance().enterLoop(secs);
     }
 
     static bool timeout()
     {
-        return QTestEventLoop::instance().timeout();
+        return BOBUIestEventLoop::instance().timeout();
     }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     QSslSocketPtr newSocket();
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     enum PskConnectTestType {
         PskConnectDoNotHandlePsk,
         PskConnectEmptyCredentials,
@@ -126,19 +126,19 @@ public:
         PskConnectRightCredentialsVerifyPeer,
         PskConnectRightCredentialsDoNotVerifyPeer,
     };
-#endif // QT_CONFIG(openssl)
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(openssl)
+#endif // BOBUI_CONFIG(ssl)
 
 public slots:
     void initTestCase_data();
     void initTestCase();
     void init();
     void cleanup();
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
     void proxyAuthenticationRequired(const QNetworkProxy &, QAuthenticator *auth);
 #endif
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 private slots:
     void activeBackend();
     void backends();
@@ -151,9 +151,9 @@ private slots:
     void sslErrors_data();
     void sslErrors();
     void ciphers();
-#if QT_CONFIG(securetransport)
+#if BOBUI_CONFIG(securetransport)
     void tls13Ciphers();
-#endif // QT_CONFIG(securetransport)
+#endif // BOBUI_CONFIG(securetransport)
     void connectToHostEncrypted();
     void connectToHostEncryptedWithVerificationPeerName();
     void sessionCipher();
@@ -163,7 +163,7 @@ private slots:
     void peerCertificate();
     void peerCertificateChain();
     void privateKey();
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     void privateKeyOpaque();
 #endif
     void protocol();
@@ -204,7 +204,7 @@ private slots:
     void verifyAndDefaultConfiguration();
     void disconnectFromHostWhenConnecting();
     void disconnectFromHostWhenConnected();
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     void closeWhileEmittingSocketError();
 #endif
     void resetProxy();
@@ -220,13 +220,13 @@ private slots:
     void encryptWithoutConnecting();
     void resume_data();
     void resume();
-    void qtbug18498_peek();
-    void qtbug18498_peek2();
+    void bobuibug18498_peek();
+    void bobuibug18498_peek2();
     void dhServer();
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     void dhServerCustomParamsNull();
     void dhServerCustomParams();
-#endif // QT_CONFIG(openssl)
+#endif // BOBUI_CONFIG(openssl)
     void ecdhServer();
     void verifyClientCertificate_data();
     void verifyClientCertificate();
@@ -234,7 +234,7 @@ private slots:
 
     void allowedProtocolNegotiation();
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     void simplePskConnect_data();
     void simplePskConnect();
     void ephemeralServerKey_data();
@@ -243,13 +243,13 @@ private slots:
     void forwardReadChannelFinished();
     void signatureAlgorithm_data();
     void signatureAlgorithm();
-#endif // QT_CONFIG(openssl)
+#endif // BOBUI_CONFIG(openssl)
 
     void unsupportedProtocols_data();
     void unsupportedProtocols();
 
     void oldErrorsOnSocketReuse();
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     void alertMissingCertificate();
     void alertInvalidCertificate();
     void selfSignedCertificates_data();
@@ -268,7 +268,7 @@ protected slots:
         // exit one.
         if (loopLevel > 0) {
             --loopLevel;
-            QTestEventLoop::instance().exitLoop();
+            BOBUIestEventLoop::instance().exitLoop();
         }
     }
 
@@ -300,7 +300,7 @@ private:
     bool isTestingSchannel = false;
     QSslError::SslError flukeCertificateError = QSslError::CertificateUntrusted;
     bool hasServerAlpn = false;
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 private:
     static int loopLevel;
 public:
@@ -314,7 +314,7 @@ public:
 #endif
         }
         if (isTestingSchannel) {
-            // Copied from qtls_schannel.cpp #supportsTls13()
+            // Copied from bobuils_schannel.cpp #supportsTls13()
             static bool supported = []() {
                 const auto current = QOperatingSystemVersion::current();
                 const auto minimum =
@@ -330,11 +330,11 @@ public:
 };
 QString tst_QSslSocket::testDataDir;
 
-#if QT_CONFIG(ssl)
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(ssl)
+#if BOBUI_CONFIG(openssl)
 Q_DECLARE_METATYPE(tst_QSslSocket::PskConnectTestType)
-#endif // QT_CONFIG(openssl)
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(openssl)
+#endif // BOBUI_CONFIG(ssl)
 
 int tst_QSslSocket::loopLevel = 0;
 
@@ -344,29 +344,29 @@ QString httpServerCertChainPath()
 {
     // DOCKERTODO: note how we use CA certificate on the real server. The docker container
     // is using a different cert with a "special" CN. Check if it's important!
-#ifdef QT_TEST_SERVER
-    return tst_QSslSocket::testDataDir + QStringLiteral("certs/qt-test-server-cert.pem");
+#ifdef BOBUI_TEST_SERVER
+    return tst_QSslSocket::testDataDir + QStringLiteral("certs/bobui-test-server-cert.pem");
 #else
-    return tst_QSslSocket::testDataDir + QStringLiteral("certs/qt-test-server-cacert.pem");
-#endif // QT_TEST_SERVER
+    return tst_QSslSocket::testDataDir + QStringLiteral("certs/bobui-test-server-cacert.pem");
+#endif // BOBUI_TEST_SERVER
 }
 
 } // unnamed namespace
 
 tst_QSslSocket::tst_QSslSocket()
 {
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     qRegisterMetaType<QList<QSslError> >("QList<QSslError>");
     qRegisterMetaType<QSslError>("QSslError");
     qRegisterMetaType<QAbstractSocket::SocketState>("QAbstractSocket::SocketState");
     qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     qRegisterMetaType<QSslPreSharedKeyAuthenticator *>();
     qRegisterMetaType<tst_QSslSocket::PskConnectTestType>();
-#endif // QT_CONFIG(openssl)
+#endif // BOBUI_CONFIG(openssl)
 
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 }
 
 enum ProxyTests {
@@ -383,17 +383,17 @@ enum ProxyTests {
 
 void tst_QSslSocket::initTestCase_data()
 {
-    QTest::addColumn<bool>("setProxy");
-    QTest::addColumn<int>("proxyType");
+    BOBUIest::addColumn<bool>("setProxy");
+    BOBUIest::addColumn<int>("proxyType");
 
-    QTest::newRow("WithoutProxy") << false << 0;
-    QTest::newRow("WithSocks5Proxy") << true << int(Socks5Proxy);
-    QTest::newRow("WithSocks5ProxyAuth") << true << int(Socks5Proxy | AuthBasic);
+    BOBUIest::newRow("WithoutProxy") << false << 0;
+    BOBUIest::newRow("WithSocks5Proxy") << true << int(Socks5Proxy);
+    BOBUIest::newRow("WithSocks5ProxyAuth") << true << int(Socks5Proxy | AuthBasic);
 
-    QTest::newRow("WithHttpProxy") << true << int(HttpProxy);
-    QTest::newRow("WithHttpProxyBasicAuth") << true << int(HttpProxy | AuthBasic);
+    BOBUIest::newRow("WithHttpProxy") << true << int(HttpProxy);
+    BOBUIest::newRow("WithHttpProxyBasicAuth") << true << int(HttpProxy | AuthBasic);
     // uncomment the line below when NTLM works
-//    QTest::newRow("WithHttpProxyNtlmAuth") << true << int(HttpProxy | AuthNtlm);
+//    BOBUIest::newRow("WithHttpProxyNtlmAuth") << true << int(HttpProxy | AuthNtlm);
 }
 
 void tst_QSslSocket::initTestCase()
@@ -409,52 +409,52 @@ void tst_QSslSocket::initTestCase()
     // select 'openssl' if available, and if not: 'securetransport' (Darwin) or
     // 'schannel' (Windows). Check what we actually have:
     const auto &tlsBackends = QSslSocket::availableBackends();
-    if (tlsBackends.contains(QTlsBackend::builtinBackendNames[QTlsBackend::nameIndexOpenSSL])) {
+    if (tlsBackends.contains(BOBUIlsBackend::builtinBackendNames[BOBUIlsBackend::nameIndexOpenSSL])) {
         isTestingOpenSsl = true;
         flukeCertificateError = QSslError::SelfSignedCertificate;
-#if QT_CONFIG(openssl)
-        opensslResolved = qt_auto_test_resolve_OpenSSL_symbols();
+#if BOBUI_CONFIG(openssl)
+        opensslResolved = bobui_auto_test_resolve_OpenSSL_symbols();
         // This is where OpenSSL moved several protocols under
         // non-default (0) security level (the default is 1).
         isSecurityLevel0Required = OPENSSL_VERSION_NUMBER >= 0x30100010;
 #else
         opensslResolved = false; // Not 'unused variable' anymore.
 #endif
-    } else if (tlsBackends.contains(QTlsBackend::builtinBackendNames[QTlsBackend::nameIndexSchannel])) {
+    } else if (tlsBackends.contains(BOBUIlsBackend::builtinBackendNames[BOBUIlsBackend::nameIndexSchannel])) {
         isTestingSchannel = true;
     } else {
-        QVERIFY(tlsBackends.contains(QTlsBackend::builtinBackendNames[QTlsBackend::nameIndexSecureTransport]));
+        QVERIFY(tlsBackends.contains(BOBUIlsBackend::builtinBackendNames[BOBUIlsBackend::nameIndexSecureTransport]));
         isTestingSecureTransport = true;
     }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     qDebug("Using SSL library %s (%ld)",
            qPrintable(QSslSocket::sslLibraryVersionString()),
            QSslSocket::sslLibraryVersionNumber());
-#ifdef QT_TEST_SERVER
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::socksProxyServerName(), 1080));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::socksProxyServerName(), 1081));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3128));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3129));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3130));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpServerName(), 443));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::imapServerName(), 993));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::echoServerName(), 13));
+#ifdef BOBUI_TEST_SERVER
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::socksProxyServerName(), 1080));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::socksProxyServerName(), 1081));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3128));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3129));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3130));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpServerName(), 443));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::imapServerName(), 993));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::echoServerName(), 13));
 #else
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
-#endif // QT_TEST_SERVER
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_TEST_SERVER
+#endif // BOBUI_CONFIG(ssl)
 }
 
 void tst_QSslSocket::init()
 {
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy) {
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
         QFETCH_GLOBAL(int, proxyType);
-        const QString socksProxyAddr = QtNetworkSettings::socksProxyServerIp().toString();
-        const QString httpProxyAddr = QtNetworkSettings::httpProxyServerIp().toString();
+        const QString socksProxyAddr = BobUINetworkSettings::socksProxyServerIp().toString();
+        const QString httpProxyAddr = BobUINetworkSettings::httpProxyServerIp().toString();
         QNetworkProxy proxy;
 
         switch (proxyType) {
@@ -481,22 +481,22 @@ void tst_QSslSocket::init()
         QNetworkProxy::setApplicationProxy(proxy);
 #else
         QSKIP("No proxy support");
-#endif // QT_CONFIG(networkproxy)
+#endif // BOBUI_CONFIG(networkproxy)
     }
 
-    QT_PREPEND_NAMESPACE(qt_ForceTlsSecurityLevel)();
+    BOBUI_PREPEND_NAMESPACE(bobui_ForceTlsSecurityLevel)();
 
-    qt_qhostinfo_clear_cache();
+    bobui_qhostinfo_clear_cache();
 }
 
 void tst_QSslSocket::cleanup()
 {
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
     QNetworkProxy::setApplicationProxy(QNetworkProxy::DefaultProxy);
 #endif
 }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 QSslSocketPtr tst_QSslSocket::newSocket()
 {
     const auto socket = QSslSocketPtr::create();
@@ -504,22 +504,22 @@ QSslSocketPtr tst_QSslSocket::newSocket()
     proxyAuthCalled = 0;
     connect(socket.data(), SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
             SLOT(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
-            Qt::DirectConnection);
+            BobUI::DirectConnection);
 
     return socket;
 }
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
 void tst_QSslSocket::proxyAuthenticationRequired(const QNetworkProxy &, QAuthenticator *auth)
 {
     ++proxyAuthCalled;
     auth->setUser("qsockstest");
     auth->setPassword("password");
 }
-#endif // QT_CONFIG(networkproxy)
+#endif // BOBUI_CONFIG(networkproxy)
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 
 void tst_QSslSocket::activeBackend()
 {
@@ -528,7 +528,7 @@ void tst_QSslSocket::activeBackend()
         return;
 
     // We cannot set non-existing as active:
-    const QString nonExistingBackend = QStringLiteral("TheQtTLS");
+    const QString nonExistingBackend = QStringLiteral("TheBobUITLS");
     QCOMPARE(QSslSocket::setActiveBackend(nonExistingBackend), false);
     QCOMPARE(QSslSocket::supportedProtocols(nonExistingBackend).size(), 0);
     QCOMPARE(QSslSocket::supportedFeatures(nonExistingBackend), QList<QSsl::SupportedFeature>());
@@ -572,7 +572,7 @@ void tst_QSslSocket::activeBackend()
 }
 
 namespace {
-struct MockTlsBackend : QTlsBackend
+struct MockTlsBackend : BOBUIlsBackend
 {
     MockTlsBackend(const QString &mockName) : name(mockName)
     {
@@ -609,16 +609,16 @@ void tst_QSslSocket::backends()
     if (setProxy) // Not interesting for backend test.
         return;
 
-    // We are here, protected by QT_CONFIG(ssl). Some backend must be pre-existing.
+    // We are here, protected by BOBUI_CONFIG(ssl). Some backend must be pre-existing.
     // Let's test the 'real' backend:
-    auto backendNames = QTlsBackend::availableBackendNames();
+    auto backendNames = BOBUIlsBackend::availableBackendNames();
     const auto sizeBefore = backendNames.size();
     QVERIFY(sizeBefore > 0);
 
     const QString tlsBackend = QSslSocket::activeBackend();
-    QVERIFY(tlsBackend == QTlsBackend::builtinBackendNames[QTlsBackend::nameIndexOpenSSL]
-            || tlsBackend == QTlsBackend::builtinBackendNames[QTlsBackend::nameIndexSchannel]
-            || tlsBackend == QTlsBackend::builtinBackendNames[QTlsBackend::nameIndexSecureTransport]);
+    QVERIFY(tlsBackend == BOBUIlsBackend::builtinBackendNames[BOBUIlsBackend::nameIndexOpenSSL]
+            || tlsBackend == BOBUIlsBackend::builtinBackendNames[BOBUIlsBackend::nameIndexSchannel]
+            || tlsBackend == BOBUIlsBackend::builtinBackendNames[BOBUIlsBackend::nameIndexSecureTransport]);
 
     const auto builtinProtocols = QSslSocket::supportedProtocols(tlsBackend);
     QVERIFY(builtinProtocols.contains(QSsl::SecureProtocols));
@@ -629,7 +629,7 @@ void tst_QSslSocket::backends()
     QVERIFY(builtinFeatures.contains(QSsl::SupportedFeature::ClientSideAlpn));
 
     // Verify that non-dummy backend can be found:
-    auto *systemBackend = QTlsBackend::findBackend(tlsBackend);
+    auto *systemBackend = BOBUIlsBackend::findBackend(tlsBackend);
     QVERIFY(systemBackend);
 
     const auto protocols = QList<QSsl::SslProtocol>{QSsl::SecureProtocols};
@@ -645,12 +645,12 @@ void tst_QSslSocket::backends()
     QVERIFY(!backendNames.contains(nonExisting));
     {
         MockTlsBackend factoryA(nameA);
-        backendNames = QTlsBackend::availableBackendNames();
+        backendNames = BOBUIlsBackend::availableBackendNames();
         QVERIFY(backendNames.contains(nameA));
         QVERIFY(!backendNames.contains(nameB));
         QVERIFY(!backendNames.contains(nonExisting));
 
-        const auto *backendA = QTlsBackend::findBackend(nameA);
+        const auto *backendA = BOBUIlsBackend::findBackend(nameA);
         QVERIFY(backendA);
         QCOMPARE(backendA->backendName(), nameA);
 
@@ -668,19 +668,19 @@ void tst_QSslSocket::backends()
         QCOMPARE(factoryA.implementedClasses(), classes);
 
         // That's a helper function (static member function):
-        QCOMPARE(QTlsBackend::supportedProtocols(nameA), protocols);
-        QCOMPARE(QTlsBackend::supportedFeatures(nameA), features);
-        QCOMPARE(QTlsBackend::implementedClasses(nameA), classes);
+        QCOMPARE(BOBUIlsBackend::supportedProtocols(nameA), protocols);
+        QCOMPARE(BOBUIlsBackend::supportedFeatures(nameA), features);
+        QCOMPARE(BOBUIlsBackend::implementedClasses(nameA), classes);
 
         MockTlsBackend factoryB(nameB);
-        QVERIFY(QTlsBackend::availableBackendNames().contains(nameA));
-        QVERIFY(QTlsBackend::availableBackendNames().contains(nameB));
-        QVERIFY(!QTlsBackend::availableBackendNames().contains(nonExisting));
+        QVERIFY(BOBUIlsBackend::availableBackendNames().contains(nameA));
+        QVERIFY(BOBUIlsBackend::availableBackendNames().contains(nameB));
+        QVERIFY(!BOBUIlsBackend::availableBackendNames().contains(nonExisting));
 
-        const auto *nullBackend = QTlsBackend::findBackend(nonExisting);
+        const auto *nullBackend = BOBUIlsBackend::findBackend(nonExisting);
         QCOMPARE(nullBackend, nullptr);
     }
-    backendNames = QTlsBackend::availableBackendNames();
+    backendNames = BOBUIlsBackend::availableBackendNames();
     QCOMPARE(backendNames.size(), sizeBefore);
     // Check we cleaned up our factories:
     QVERIFY(!backendNames.contains(nameA));
@@ -708,7 +708,7 @@ void tst_QSslSocket::constructing()
     QCOMPARE(socket.sslConfiguration(), QSslConfiguration::defaultConfiguration());
     QCOMPARE(socket.errorString(), QString("Unknown error"));
     char c = '\0';
-    QTest::ignoreMessage(QtWarningMsg, readNotOpenMessage);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, readNotOpenMessage);
     QVERIFY(!socket.getChar(&c));
     QCOMPARE(c, '\0');
     QVERIFY(!socket.isOpen());
@@ -717,30 +717,30 @@ void tst_QSslSocket::constructing()
     QVERIFY(!socket.isTextModeEnabled());
     QVERIFY(!socket.isWritable());
     QCOMPARE(socket.openMode(), QIODevice::NotOpen);
-    QTest::ignoreMessage(QtWarningMsg, "QIODevice::peek (QSslSocket): device not open");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QIODevice::peek (QSslSocket): device not open");
     QVERIFY(socket.peek(2).isEmpty());
     QCOMPARE(socket.pos(), qint64(0));
-    QTest::ignoreMessage(QtWarningMsg, writeNotOpenMessage);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, writeNotOpenMessage);
     QVERIFY(!socket.putChar('c'));
-    QTest::ignoreMessage(QtWarningMsg, readNotOpenMessage);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, readNotOpenMessage);
     QVERIFY(socket.read(2).isEmpty());
-    QTest::ignoreMessage(QtWarningMsg, readNotOpenMessage);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, readNotOpenMessage);
     QCOMPARE(socket.read(0, 0), qint64(-1));
-    QTest::ignoreMessage(QtWarningMsg, readNotOpenMessage);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, readNotOpenMessage);
     QVERIFY(socket.readAll().isEmpty());
-    QTest::ignoreMessage(QtWarningMsg, "QIODevice::readLine (QSslSocket): device not open");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QIODevice::readLine (QSslSocket): device not open");
     char buf[10];
     QCOMPARE(socket.readLine(buf, sizeof(buf)), qint64(-1));
-    QTest::ignoreMessage(QtWarningMsg, "QIODevice::seek (QSslSocket): Cannot call seek on a sequential device");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QIODevice::seek (QSslSocket): Cannot call seek on a sequential device");
     QVERIFY(!socket.reset());
-    QTest::ignoreMessage(QtWarningMsg, "QIODevice::seek (QSslSocket): Cannot call seek on a sequential device");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QIODevice::seek (QSslSocket): Cannot call seek on a sequential device");
     QVERIFY(!socket.seek(2));
     QCOMPARE(socket.size(), qint64(0));
     QVERIFY(!socket.waitForBytesWritten(10));
     QVERIFY(!socket.waitForReadyRead(10));
-    QTest::ignoreMessage(QtWarningMsg, writeNotOpenMessage);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, writeNotOpenMessage);
     QCOMPARE(socket.write(0, 0), qint64(-1));
-    QTest::ignoreMessage(QtWarningMsg, writeNotOpenMessage);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, writeNotOpenMessage);
     QCOMPARE(socket.write(QByteArray()), qint64(-1));
     QCOMPARE(socket.error(), QAbstractSocket::UnknownSocketError);
     QVERIFY(!socket.flush());
@@ -750,14 +750,14 @@ void tst_QSslSocket::constructing()
     QCOMPARE(socket.peerAddress(), QHostAddress());
     QVERIFY(socket.peerName().isEmpty());
     QCOMPARE(socket.peerPort(), quint16(0));
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
     QCOMPARE(socket.proxy().type(), QNetworkProxy::DefaultProxy);
 #endif
     QCOMPARE(socket.readBufferSize(), qint64(0));
     QCOMPARE(socket.socketDescriptor(), qintptr(-1));
     QCOMPARE(socket.socketType(), QAbstractSocket::TcpSocket);
     QVERIFY(!socket.waitForConnected(10));
-    QTest::ignoreMessage(QtWarningMsg, "QSslSocket::waitForDisconnected() is not allowed in UnconnectedState");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSslSocket::waitForDisconnected() is not allowed in UnconnectedState");
     QVERIFY(!socket.waitForDisconnected(10));
     QCOMPARE(socket.protocol(), QSsl::SecureProtocols);
 
@@ -801,10 +801,10 @@ void tst_QSslSocket::configNoOnDemandLoad()
     QCOMPARE(customConfig, socket.sslConfiguration());
 }
 
-static void downgrade_TLS_QTQAINFRA_4499(QSslSocket &socket)
+static void downgrade_TLS_BOBUIQAINFRA_4499(QSslSocket &socket)
 {
     // Set TLS 1.0 or above because the server doesn't support TLS 1.2 or above
-    // QTQAINFRA-4499
+    // BOBUIQAINFRA-4499
     QSslConfiguration config = socket.sslConfiguration();
     config.setProtocol(Test::TlsV1_0OrLater);
     socket.setSslConfiguration(config);
@@ -825,7 +825,7 @@ void tst_QSslSocket::simpleConnect()
 
     QSslSocket socket;
 
-    downgrade_TLS_QTQAINFRA_4499(socket);
+    downgrade_TLS_BOBUIQAINFRA_4499(socket);
 
     QSignalSpy connectedSpy(&socket, SIGNAL(connected()));
     QSignalSpy hostFoundSpy(&socket, SIGNAL(hostFound()));
@@ -841,7 +841,7 @@ void tst_QSslSocket::simpleConnect()
     connect(&socket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(exitLoop()));
 
     // Start connecting
-    socket.connectToHost(QtNetworkSettings::imapServerName(), 993);
+    socket.connectToHost(BobUINetworkSettings::imapServerName(), 993);
     QCOMPARE(socket.state(), QAbstractSocket::HostLookupState);
     enterLoop(10);
 
@@ -893,7 +893,7 @@ void tst_QSslSocket::simpleConnectWithIgnore()
     QSignalSpy encryptedSpy(&socket, SIGNAL(encrypted()));
     QSignalSpy sslErrorsSpy(&socket, SIGNAL(sslErrors(QList<QSslError>)));
 
-    downgrade_TLS_QTQAINFRA_4499(socket);
+    downgrade_TLS_BOBUIQAINFRA_4499(socket);
 
     connect(&socket, SIGNAL(readyRead()), this, SLOT(exitLoop()));
     connect(&socket, SIGNAL(encrypted()), this, SLOT(exitLoop()));
@@ -902,7 +902,7 @@ void tst_QSslSocket::simpleConnectWithIgnore()
     connect(&socket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(exitLoop()));
 
     // Start connecting
-    socket.connectToHost(QtNetworkSettings::imapServerName(), 993);
+    socket.connectToHost(BobUINetworkSettings::imapServerName(), 993);
     QVERIFY(socket.state() != QAbstractSocket::UnconnectedState); // something must be in progress
     enterLoop(10);
 
@@ -923,7 +923,7 @@ void tst_QSslSocket::simpleConnectWithIgnore()
 
     QByteArray data = socket.readAll();
     socket.disconnectFromHost();
-    QVERIFY2(QtNetworkSettings::compareReplyIMAPSSL(data), data.constData());
+    QVERIFY2(BobUINetworkSettings::compareReplyIMAPSSL(data), data.constData());
 }
 
 void tst_QSslSocket::sslErrors_data()
@@ -932,14 +932,14 @@ void tst_QSslSocket::sslErrors_data()
     if (isSecurityLevel0Required)
         QSKIP("Testing with OpenSSL backend, but security level 0 is required for TLS v1.1 or earlier");
 
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<int>("port");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<int>("port");
 
-    QString name = QtNetworkSettings::serverLocalName();
-    QTest::newRow(qPrintable(name)) << name << 993;
+    QString name = BobUINetworkSettings::serverLocalName();
+    BOBUIest::newRow(qPrintable(name)) << name << 993;
 
-    name = QtNetworkSettings::httpServerIp().toString();
-    QTest::newRow(qPrintable(name)) << name << 443;
+    name = BobUINetworkSettings::httpServerIp().toString();
+    BOBUIest::newRow(qPrintable(name)) << name << 443;
 }
 
 void tst_QSslSocket::sslErrors()
@@ -950,27 +950,27 @@ void tst_QSslSocket::sslErrors()
     QSslSocketPtr socket = newSocket();
 
     QVERIFY(socket);
-    downgrade_TLS_QTQAINFRA_4499(*socket);
+    downgrade_TLS_BOBUIQAINFRA_4499(*socket);
 
     QSignalSpy sslErrorsSpy(socket.data(), SIGNAL(sslErrors(QList<QSslError>)));
     QSignalSpy peerVerifyErrorSpy(socket.data(), SIGNAL(peerVerifyError(QSslError)));
 
-#ifdef QT_TEST_SERVER
+#ifdef BOBUI_TEST_SERVER
     // On the old test server we had the same certificate on different services.
     // The idea of this test is to fail with 'HostNameMismatch', when we're using
     // either serverLocalName() or IP address directly. With Docker we connect
     // to IMAP server, and we have to connect using imapServerName() and passing
     // 'host' as peerVerificationName to the overload of connectToHostEncrypted().
     if (port == 993) {
-        socket->connectToHostEncrypted(QtNetworkSettings::imapServerName(), port, host);
+        socket->connectToHostEncrypted(BobUINetworkSettings::imapServerName(), port, host);
     } else
-#endif // QT_TEST_SERVER
+#endif // BOBUI_TEST_SERVER
     {
         socket->connectToHostEncrypted(host, port);
     }
 
     if (!socket->waitForConnected())
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     socket->waitForEncrypted(10000);
 
     // check the SSL errors contain HostNameMismatch and an error due to
@@ -1075,11 +1075,11 @@ void tst_QSslSocket::ciphers()
     }
 }
 
-#if QT_CONFIG(securetransport)
+#if BOBUI_CONFIG(securetransport)
 void tst_QSslSocket::tls13Ciphers()
 {
     // SecureTransport introduced several new ciphers under
-    // "TLS 1.3 ciphersuites" section. Since Qt 6 we respect
+    // "TLS 1.3 ciphersuites" section. Since BobUI 6 we respect
     // the ciphers from QSslConfiguration. In case of default
     // configuration, these are the same we report and we
     // were failing (for historical reasons) to report those
@@ -1109,7 +1109,7 @@ void tst_QSslSocket::tls13Ciphers()
     QCOMPARE(ciph.supportedBits(), 256);
     QCOMPARE(ciph.usedBits(), 256);
 }
-#endif // QT_CONFIG(securetransport)
+#endif // BOBUI_CONFIG(securetransport)
 
 void tst_QSslSocket::connectToHostEncrypted()
 {
@@ -1127,13 +1127,13 @@ void tst_QSslSocket::connectToHostEncrypted()
             this, SLOT(untrustedWorkaroundSlot(QList<QSslError>)));
 #endif
 
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
 
     // This should pass unconditionally when using fluke's CA certificate.
     // or use untrusted certificate workaround
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && !socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     socket->disconnectFromHost();
     QVERIFY(socket->waitForDisconnected());
@@ -1141,7 +1141,7 @@ void tst_QSslSocket::connectToHostEncrypted()
 
     QCOMPARE(socket->mode(), QSslSocket::SslClientMode);
 
-    socket->connectToHost(QtNetworkSettings::echoServerName(), 13);
+    socket->connectToHost(BobUINetworkSettings::echoServerName(), 13);
 
     QCOMPARE(socket->mode(), QSslSocket::UnencryptedMode);
 
@@ -1165,17 +1165,17 @@ void tst_QSslSocket::connectToHostEncryptedWithVerificationPeerName()
             this, SLOT(untrustedWorkaroundSlot(QList<QSslError>)));
 #endif
 
-#ifdef QT_TEST_SERVER
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443, QtNetworkSettings::httpServerName());
+#ifdef BOBUI_TEST_SERVER
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443, BobUINetworkSettings::httpServerName());
 #else
     // Connect to the server with its local name, but use the full name for verification.
-    socket->connectToHostEncrypted(QtNetworkSettings::serverLocalName(), 443, QtNetworkSettings::httpServerName());
+    socket->connectToHostEncrypted(BobUINetworkSettings::serverLocalName(), 443, BobUINetworkSettings::httpServerName());
 #endif
 
     // This should pass unconditionally when using fluke's CA certificate.
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && !socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     socket->disconnectFromHost();
     QVERIFY(socket->waitForDisconnected());
@@ -1192,12 +1192,12 @@ void tst_QSslSocket::sessionCipher()
     this->socket = socket.data();
     connect(socket.data(), SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(ignoreErrorSlot()));
     QVERIFY(socket->sessionCipher().isNull());
-    socket->connectToHost(QtNetworkSettings::httpServerName(), 443 /* https */);
+    socket->connectToHost(BobUINetworkSettings::httpServerName(), 443 /* https */);
     QVERIFY2(socket->waitForConnected(10000), qPrintable(socket->errorString()));
     QVERIFY(socket->sessionCipher().isNull());
     socket->startClientEncryption();
     if (!socket->waitForEncrypted(5000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     QVERIFY(!socket->sessionCipher().isNull());
 
     qDebug() << "Supported Ciphers:" << QSslConfiguration::supportedCiphers();
@@ -1211,10 +1211,10 @@ void tst_QSslSocket::sessionCipher()
 
 void tst_QSslSocket::localCertificate_data()
 {
-    QTest::addColumn<QString>("certificatePath");
-    QTest::addColumn<QString>("keyPath");
-    QTest::newRow("fluke") << (testDataDir + "certs/fluke.cert") << (testDataDir + "certs/fluke.key");
-    QTest::newRow("no-common-name") << (testDataDir + "certs/no_common_name.crt") << (testDataDir + "certs/no_common_name.key");
+    BOBUIest::addColumn<QString>("certificatePath");
+    BOBUIest::addColumn<QString>("keyPath");
+    BOBUIest::newRow("fluke") << (testDataDir + "certs/fluke.cert") << (testDataDir + "certs/fluke.key");
+    BOBUIest::newRow("no-common-name") << (testDataDir + "certs/no_common_name.crt") << (testDataDir + "certs/no_common_name.key");
 }
 
 void tst_QSslSocket::localCertificate()
@@ -1241,10 +1241,10 @@ void tst_QSslSocket::localCertificate()
     QVERIFY(!socket->localCertificateChain().isEmpty());
     QVERIFY(!socket->privateKey().isNull());
 
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && !socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 }
 
 void tst_QSslSocket::mode()
@@ -1260,7 +1260,7 @@ void tst_QSslSocket::peerCertificateChain()
     if (!QSslSocket::supportsSsl())
         return;
 
-    QSKIP("QTBUG-29941 - Unstable auto-test due to intermittently unreachable host");
+    QSKIP("BOBUIBUG-29941 - Unstable auto-test due to intermittently unreachable host");
 
     QSslSocketPtr socket = newSocket();
     this->socket = socket.data();
@@ -1274,12 +1274,12 @@ void tst_QSslSocket::peerCertificateChain()
             this, SLOT(untrustedWorkaroundSlot(QList<QSslError>)));
 #endif
 
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     QCOMPARE(socket->mode(), QSslSocket::UnencryptedMode);
     QVERIFY(socket->peerCertificateChain().isEmpty());
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && !socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     QList<QSslCertificate> certChain = socket->peerCertificateChain();
     QVERIFY(certChain.size() > 0);
@@ -1289,12 +1289,12 @@ void tst_QSslSocket::peerCertificateChain()
     QVERIFY(socket->waitForDisconnected());
 
     // connect again to a different server
-    socket->connectToHostEncrypted("www.qt.io", 443);
+    socket->connectToHostEncrypted("www.bobui.io", 443);
     socket->ignoreSslErrors();
     QCOMPARE(socket->mode(), QSslSocket::UnencryptedMode);
     QVERIFY(socket->peerCertificateChain().isEmpty());
     if (setProxy && !socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     QCOMPARE(socket->peerCertificateChain().first(), socket->peerCertificate());
     QVERIFY(socket->peerCertificateChain() != certChain);
@@ -1303,14 +1303,14 @@ void tst_QSslSocket::peerCertificateChain()
     QVERIFY(socket->waitForDisconnected());
 
     // now do it again back to the original server
-    socket->connectToHost(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHost(BobUINetworkSettings::httpServerName(), 443);
     QCOMPARE(socket->mode(), QSslSocket::UnencryptedMode);
     QVERIFY(socket->peerCertificateChain().isEmpty());
     QVERIFY2(socket->waitForConnected(10000), qPrintable(socket->errorString()));
 
     socket->startClientEncryption();
     if (setProxy && !socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     QCOMPARE(socket->peerCertificateChain().first(), socket->peerCertificate());
     QCOMPARE(socket->peerCertificateChain(), certChain);
@@ -1323,7 +1323,7 @@ void tst_QSslSocket::privateKey()
 {
 }
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
 void tst_QSslSocket::privateKeyOpaque()
 {
 #ifndef OPENSSL_NO_DEPRECATED_3_0
@@ -1353,13 +1353,13 @@ void tst_QSslSocket::privateKeyOpaque()
     socket->setSslConfiguration(sslConfig);
 
     socket->setLocalCertificate(testDataDir + "certs/fluke.cert");
-    socket->setPrivateKey(QSslKey(reinterpret_cast<Qt::HANDLE>(pkey)));
+    socket->setPrivateKey(QSslKey(reinterpret_cast<BobUI::HANDLE>(pkey)));
 
     socket->setPeerVerifyMode(QSslSocket::QueryPeer);
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && !socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 #endif // OPENSSL_NO_DEPRECATED_3_0
 }
 #endif // Feature 'openssl'.
@@ -1385,99 +1385,99 @@ void tst_QSslSocket::protocol()
     QCOMPARE(socket->protocol(), QSsl::SecureProtocols);
     QFETCH_GLOBAL(bool, setProxy);
     {
-        // qt-test-server allows TLSV1.
+        // bobui-test-server allows TLSV1.
         socket->setProtocol(Test::TlsV1_0);
         QCOMPARE(socket->protocol(), Test::TlsV1_0);
-        socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
         if (setProxy && !socket->waitForEncrypted())
-            QSKIP("Skipping flaky test - See QTBUG-29941");
+            QSKIP("Skipping flaky test - See BOBUIBUG-29941");
         QCOMPARE(socket->protocol(), Test::TlsV1_0);
         socket->abort();
         QCOMPARE(socket->protocol(), Test::TlsV1_0);
-        socket->connectToHost(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHost(BobUINetworkSettings::httpServerName(), 443);
         QVERIFY2(socket->waitForConnected(), qPrintable(socket->errorString()));
         socket->startClientEncryption();
         if (setProxy && !socket->waitForEncrypted())
-            QSKIP("Skipping flaky test - See QTBUG-29941");
+            QSKIP("Skipping flaky test - See BOBUIBUG-29941");
         QCOMPARE(socket->protocol(), Test::TlsV1_0);
         socket->abort();
     }
     {
-        // qt-test-server probably doesn't allow TLSV1.1
+        // bobui-test-server probably doesn't allow TLSV1.1
         socket->setProtocol(Test::TlsV1_1);
         QCOMPARE(socket->protocol(), Test::TlsV1_1);
-        socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
         if (setProxy && !socket->waitForEncrypted())
-            QSKIP("Skipping flaky test - See QTBUG-29941");
+            QSKIP("Skipping flaky test - See BOBUIBUG-29941");
         QCOMPARE(socket->protocol(), Test::TlsV1_1);
         socket->abort();
         QCOMPARE(socket->protocol(), Test::TlsV1_1);
-        socket->connectToHost(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHost(BobUINetworkSettings::httpServerName(), 443);
         QVERIFY2(socket->waitForConnected(), qPrintable(socket->errorString()));
         socket->startClientEncryption();
         if (setProxy && !socket->waitForEncrypted())
-            QSKIP("Skipping flaky test - See QTBUG-29941");
+            QSKIP("Skipping flaky test - See BOBUIBUG-29941");
         QCOMPARE(socket->protocol(), Test::TlsV1_1);
         socket->abort();
     }
     {
-        // qt-test-server probably doesn't allows TLSV1.2
+        // bobui-test-server probably doesn't allows TLSV1.2
         socket->setProtocol(QSsl::TlsV1_2);
         QCOMPARE(socket->protocol(), QSsl::TlsV1_2);
-        socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
         if (setProxy && !socket->waitForEncrypted())
-            QSKIP("Skipping flaky test - See QTBUG-29941");
+            QSKIP("Skipping flaky test - See BOBUIBUG-29941");
         QCOMPARE(socket->protocol(), QSsl::TlsV1_2);
         socket->abort();
         QCOMPARE(socket->protocol(), QSsl::TlsV1_2);
-        socket->connectToHost(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHost(BobUINetworkSettings::httpServerName(), 443);
         QVERIFY2(socket->waitForConnected(), qPrintable(socket->errorString()));
         socket->startClientEncryption();
         if (setProxy && !socket->waitForEncrypted())
-            QSKIP("Skipping flaky test - See QTBUG-29941");
+            QSKIP("Skipping flaky test - See BOBUIBUG-29941");
         QCOMPARE(socket->protocol(), QSsl::TlsV1_2);
         socket->abort();
     }
 
     if (supportsTls13()) {
-        // qt-test-server probably doesn't allow TLSV1.3
+        // bobui-test-server probably doesn't allow TLSV1.3
         socket->setProtocol(QSsl::TlsV1_3);
         QCOMPARE(socket->protocol(), QSsl::TlsV1_3);
-        socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
         if (!socket->waitForEncrypted(10'000))
-            QSKIP("TLS 1.3 is not supported by the test server or the test is flaky - see QTBUG-29941");
+            QSKIP("TLS 1.3 is not supported by the test server or the test is flaky - see BOBUIBUG-29941");
         QCOMPARE(socket->protocol(), QSsl::TlsV1_3);
         socket->abort();
         QCOMPARE(socket->protocol(), QSsl::TlsV1_3);
-        socket->connectToHost(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHost(BobUINetworkSettings::httpServerName(), 443);
         QVERIFY2(socket->waitForConnected(), qPrintable(socket->errorString()));
         socket->startClientEncryption();
         if (!socket->waitForEncrypted(10'000))
-            QSKIP("TLS 1.3 is not supported by the test server or the test is flaky - see QTBUG-29941");
+            QSKIP("TLS 1.3 is not supported by the test server or the test is flaky - see BOBUIBUG-29941");
         QCOMPARE(socket->sessionProtocol(), QSsl::TlsV1_3);
         socket->abort();
     }
     {
-        // qt-test-server allows SSLV3, so it allows AnyProtocol.
+        // bobui-test-server allows SSLV3, so it allows AnyProtocol.
         socket->setProtocol(QSsl::AnyProtocol);
         QCOMPARE(socket->protocol(), QSsl::AnyProtocol);
-        socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
         if (setProxy && !socket->waitForEncrypted())
-            QSKIP("Skipping flaky test - See QTBUG-29941");
+            QSKIP("Skipping flaky test - See BOBUIBUG-29941");
         QCOMPARE(socket->protocol(), QSsl::AnyProtocol);
         socket->abort();
         QCOMPARE(socket->protocol(), QSsl::AnyProtocol);
-        socket->connectToHost(QtNetworkSettings::httpServerName(), 443);
+        socket->connectToHost(BobUINetworkSettings::httpServerName(), 443);
         QVERIFY2(socket->waitForConnected(), qPrintable(socket->errorString()));
         socket->startClientEncryption();
         if (setProxy && !socket->waitForEncrypted())
-            QSKIP("Skipping flaky test - See QTBUG-29941");
+            QSKIP("Skipping flaky test - See BOBUIBUG-29941");
         QCOMPARE(socket->protocol(), QSsl::AnyProtocol);
         socket->abort();
     }
 }
 
-class SslServer : public QTcpServer
+class SslServer : public BOBUIcpServer
 {
     Q_OBJECT
 public:
@@ -1589,39 +1589,39 @@ protected slots:
 
 void tst_QSslSocket::protocolServerSide_data()
 {
-    QTest::addColumn<QSsl::SslProtocol>("serverProtocol");
-    QTest::addColumn<QSsl::SslProtocol>("clientProtocol");
-    QTest::addColumn<bool>("works");
+    BOBUIest::addColumn<QSsl::SslProtocol>("serverProtocol");
+    BOBUIest::addColumn<QSsl::SslProtocol>("clientProtocol");
+    BOBUIest::addColumn<bool>("works");
 
-    QTest::newRow("any-any") << QSsl::AnyProtocol << QSsl::AnyProtocol << true;
-    QTest::newRow("secure-secure") << QSsl::SecureProtocols << QSsl::SecureProtocols << true;
+    BOBUIest::newRow("any-any") << QSsl::AnyProtocol << QSsl::AnyProtocol << true;
+    BOBUIest::newRow("secure-secure") << QSsl::SecureProtocols << QSsl::SecureProtocols << true;
 
-    QTest::newRow("tls1.0-secure") << Test::TlsV1_0 << QSsl::SecureProtocols << false;
-    QTest::newRow("secure-tls1.0") << QSsl::SecureProtocols << Test::TlsV1_0 << false;
-    QTest::newRow("secure-any") << QSsl::SecureProtocols << QSsl::AnyProtocol << true;
+    BOBUIest::newRow("tls1.0-secure") << Test::TlsV1_0 << QSsl::SecureProtocols << false;
+    BOBUIest::newRow("secure-tls1.0") << QSsl::SecureProtocols << Test::TlsV1_0 << false;
+    BOBUIest::newRow("secure-any") << QSsl::SecureProtocols << QSsl::AnyProtocol << true;
 
-    QTest::newRow("tls1.0orlater-tls1.2") << Test::TlsV1_0OrLater << QSsl::TlsV1_2 << true;
+    BOBUIest::newRow("tls1.0orlater-tls1.2") << Test::TlsV1_0OrLater << QSsl::TlsV1_2 << true;
     if (supportsTls13())
-        QTest::newRow("tls1.0orlater-tls1.3") << Test::TlsV1_0OrLater << QSsl::TlsV1_3 << true;
+        BOBUIest::newRow("tls1.0orlater-tls1.3") << Test::TlsV1_0OrLater << QSsl::TlsV1_3 << true;
 
-    QTest::newRow("tls1.1orlater-tls1.0") << Test::TlsV1_1OrLater << Test::TlsV1_0 << false;
-    QTest::newRow("tls1.1orlater-tls1.2") << Test::TlsV1_1OrLater << QSsl::TlsV1_2 << true;
+    BOBUIest::newRow("tls1.1orlater-tls1.0") << Test::TlsV1_1OrLater << Test::TlsV1_0 << false;
+    BOBUIest::newRow("tls1.1orlater-tls1.2") << Test::TlsV1_1OrLater << QSsl::TlsV1_2 << true;
 
     if (supportsTls13())
-        QTest::newRow("tls1.1orlater-tls1.3") << Test::TlsV1_1OrLater << QSsl::TlsV1_3 << true;
+        BOBUIest::newRow("tls1.1orlater-tls1.3") << Test::TlsV1_1OrLater << QSsl::TlsV1_3 << true;
 
-    QTest::newRow("tls1.2orlater-tls1.0") << QSsl::TlsV1_2OrLater << Test::TlsV1_0 << false;
-    QTest::newRow("tls1.2orlater-tls1.1") << QSsl::TlsV1_2OrLater << Test::TlsV1_1 << false;
-    QTest::newRow("tls1.2orlater-tls1.2") << QSsl::TlsV1_2OrLater << QSsl::TlsV1_2 << true;
+    BOBUIest::newRow("tls1.2orlater-tls1.0") << QSsl::TlsV1_2OrLater << Test::TlsV1_0 << false;
+    BOBUIest::newRow("tls1.2orlater-tls1.1") << QSsl::TlsV1_2OrLater << Test::TlsV1_1 << false;
+    BOBUIest::newRow("tls1.2orlater-tls1.2") << QSsl::TlsV1_2OrLater << QSsl::TlsV1_2 << true;
     if (supportsTls13()) {
-        QTest::newRow("tls1.2orlater-tls1.3") << QSsl::TlsV1_2OrLater << QSsl::TlsV1_3 << true;
-        QTest::newRow("tls1.3orlater-tls1.0") << QSsl::TlsV1_3OrLater << Test::TlsV1_0 << false;
-        QTest::newRow("tls1.3orlater-tls1.1") << QSsl::TlsV1_3OrLater << Test::TlsV1_1 << false;
-        QTest::newRow("tls1.3orlater-tls1.2") << QSsl::TlsV1_3OrLater << QSsl::TlsV1_2 << false;
-        QTest::newRow("tls1.3orlater-tls1.3") << QSsl::TlsV1_3OrLater << QSsl::TlsV1_3 << true;
+        BOBUIest::newRow("tls1.2orlater-tls1.3") << QSsl::TlsV1_2OrLater << QSsl::TlsV1_3 << true;
+        BOBUIest::newRow("tls1.3orlater-tls1.0") << QSsl::TlsV1_3OrLater << Test::TlsV1_0 << false;
+        BOBUIest::newRow("tls1.3orlater-tls1.1") << QSsl::TlsV1_3OrLater << Test::TlsV1_1 << false;
+        BOBUIest::newRow("tls1.3orlater-tls1.2") << QSsl::TlsV1_3OrLater << QSsl::TlsV1_2 << false;
+        BOBUIest::newRow("tls1.3orlater-tls1.3") << QSsl::TlsV1_3OrLater << QSsl::TlsV1_3 << true;
     }
 
-    QTest::newRow("any-secure") << QSsl::AnyProtocol << QSsl::SecureProtocols << true;
+    BOBUIest::newRow("any-secure") << QSsl::AnyProtocol << QSsl::SecureProtocols << true;
 }
 
 void tst_QSslSocket::protocolServerSide()
@@ -1642,7 +1642,7 @@ void tst_QSslSocket::protocolServerSide()
 
     QEventLoop loop;
     connect(&server, SIGNAL(socketError(QAbstractSocket::SocketError)), &loop, SLOT(quit()));
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
     QSslSocket client;
     socket = &client;
@@ -1711,7 +1711,7 @@ void tst_QSslSocket::serverCipherPreferences()
         QVERIFY(server.listen());
 
         QEventLoop loop;
-        QTimer::singleShot(5000, &loop, SLOT(quit()));
+        BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
         QSslSocket client;
         socket = &client;
@@ -1735,7 +1735,7 @@ void tst_QSslSocket::serverCipherPreferences()
     }
 
     {
-        if (QTestPrivate::isRunningArmOnX86())
+        if (BOBUIestPrivate::isRunningArmOnX86())
             QSKIP("This test is known to crash on QEMU emulation for no good reason.");
         // Now using the client preferences
         SslServer server;
@@ -1747,7 +1747,7 @@ void tst_QSslSocket::serverCipherPreferences()
         QVERIFY(server.listen());
 
         QEventLoop loop;
-        QTimer::singleShot(5000, &loop, SLOT(quit()));
+        BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
         QSslSocket client;
         socket = &client;
@@ -1783,7 +1783,7 @@ void tst_QSslSocket::setCaCertificates()
 
     auto sslConfig = socket.sslConfiguration();
     sslConfig.setCaCertificates(
-                QSslCertificate::fromPath(testDataDir + "certs/qt-test-server-cacert.pem"));
+                QSslCertificate::fromPath(testDataDir + "certs/bobui-test-server-cacert.pem"));
     socket.setSslConfiguration(sslConfig);
     QCOMPARE(socket.sslConfiguration().caCertificates().size(), 1);
 
@@ -1828,7 +1828,7 @@ void tst_QSslSocket::setLocalCertificateChain()
     QVERIFY(server.listen());
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
     const std::unique_ptr<QSslSocket, QScopedPointerDeleteLater> client(new QSslSocket);
     socket = client.get();
@@ -1866,7 +1866,7 @@ void tst_QSslSocket::tlsConfiguration()
     QCOMPARE(tlsConfig.sessionProtocol(), QSsl::UnknownProtocol);
     QSslConfiguration nullConfig;
     QVERIFY(nullConfig.isNull());
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     nullConfig.setEllipticCurves(tlsConfig.ellipticCurves());
     QCOMPARE(nullConfig.ellipticCurves(), tlsConfig.ellipticCurves());
 #endif
@@ -1875,7 +1875,7 @@ void tst_QSslSocket::tlsConfiguration()
     backendConfig["DTLSTIMEOUTMS"] = QVariant::fromValue(1000);
     nullConfig.setBackendConfiguration(backendConfig);
     QCOMPARE(nullConfig.backendConfiguration(), backendConfig);
-    QTest::ignoreMessage(QtWarningMsg, "QSslConfiguration::setPeerVerifyDepth: cannot set negative depth of -1000");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSslConfiguration::setPeerVerifyDepth: cannot set negative depth of -1000");
     nullConfig.setPeerVerifyDepth(-1000);
     QVERIFY(nullConfig.peerVerifyDepth() != -1000);
     nullConfig.setPeerVerifyDepth(100);
@@ -1895,7 +1895,7 @@ void tst_QSslSocket::setSocketDescriptor()
     QVERIFY(server.listen());
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
     QSslSocket client;
     socket = &client;
@@ -1916,19 +1916,19 @@ void tst_QSslSocket::setSocketDescriptor()
 
 void tst_QSslSocket::setSslConfiguration_data()
 {
-    QTest::addColumn<QSslConfiguration>("configuration");
-    QTest::addColumn<bool>("works");
+    BOBUIest::addColumn<QSslConfiguration>("configuration");
+    BOBUIest::addColumn<bool>("works");
 
-    QTest::newRow("empty") << QSslConfiguration() << false;
+    BOBUIest::newRow("empty") << QSslConfiguration() << false;
     QSslConfiguration conf = QSslConfiguration::defaultConfiguration();
-    QTest::newRow("default") << conf << false; // does not contain test server cert
+    BOBUIest::newRow("default") << conf << false; // does not contain test server cert
 
     if (!isTestingSecureTransport) {
         QList<QSslCertificate> testServerCert = QSslCertificate::fromPath(httpServerCertChainPath());
         conf.setCaCertificates(testServerCert);
-        QTest::newRow("set-root-cert") << conf << true;
+        BOBUIest::newRow("set-root-cert") << conf << true;
         conf.setProtocol(QSsl::SecureProtocols);
-        QTest::newRow("secure") << conf << true;
+        BOBUIest::newRow("secure") << conf << true;
     } else {
         qWarning("Skipping the cases with certificate, SecureTransport does not like old certificate on the test server");
     }
@@ -1944,11 +1944,11 @@ void tst_QSslSocket::setSslConfiguration()
     socket->setSslConfiguration(configuration);
 
     this->socket = socket.data();
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     QFETCH(bool, works);
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && (socket->waitForEncrypted(10000) != works))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     if (works) {
         socket->disconnectFromHost();
         QVERIFY2(socket->waitForDisconnected(), qPrintable(socket->errorString()));
@@ -1964,17 +1964,17 @@ void tst_QSslSocket::waitForEncrypted()
     this->socket = socket.data();
 
     connect(this->socket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(ignoreErrorSlot()));
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
 
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && !socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 }
 
 void tst_QSslSocket::waitForEncryptedMinusOne()
 {
 #ifdef Q_OS_WIN
-    QSKIP("QTBUG-24451 - indefinite wait may hang");
+    QSKIP("BOBUIBUG-24451 - indefinite wait may hang");
 #endif
     if (!QSslSocket::supportsSsl())
         return;
@@ -1983,11 +1983,11 @@ void tst_QSslSocket::waitForEncryptedMinusOne()
     this->socket = socket.data();
 
     connect(this->socket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(ignoreErrorSlot()));
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
 
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && !socket->waitForEncrypted(-1))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 }
 
 void tst_QSslSocket::waitForConnectedEncryptedReadyRead()
@@ -2003,18 +2003,18 @@ void tst_QSslSocket::waitForConnectedEncryptedReadyRead()
     this->socket = socket.data();
 
     // Set TLS 1.0 or above because the server doesn't support TLS 1.2 or above
-    // QTQAINFRA-4499
+    // BOBUIQAINFRA-4499
     QSslConfiguration config = socket->sslConfiguration();
     config.setProtocol(Test::TlsV1_0OrLater);
     socket->setSslConfiguration(config);
 
     connect(this->socket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(ignoreErrorSlot()));
-    socket->connectToHostEncrypted(QtNetworkSettings::imapServerName(), 993);
+    socket->connectToHostEncrypted(BobUINetworkSettings::imapServerName(), 993);
 
     QVERIFY2(socket->waitForConnected(10000), qPrintable(socket->errorString()));
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && !socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     // We only do this if we have no bytes available to read already because readyRead will
     // not be emitted again.
@@ -2207,20 +2207,20 @@ void tst_QSslSocket::wildcard()
     connect(socket, SIGNAL(sslErrors(QList<QSslError>)),
             this, SLOT(untrustedWorkaroundSlot(QList<QSslError>)));
 #endif
-    socket->connectToHostEncrypted(QtNetworkSettings::wildcardServerName(), 4443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::wildcardServerName(), 4443);
 
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && !socket->waitForEncrypted(3000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     QSslCertificate certificate = socket->peerCertificate();
-    QVERIFY(certificate.subjectInfo(QSslCertificate::CommonName).contains(QString(QtNetworkSettings::serverLocalName() + ".*." + QtNetworkSettings::serverDomainName())));
-    QVERIFY(certificate.issuerInfo(QSslCertificate::CommonName).contains(QtNetworkSettings::serverName()));
+    QVERIFY(certificate.subjectInfo(QSslCertificate::CommonName).contains(QString(BobUINetworkSettings::serverLocalName() + ".*." + BobUINetworkSettings::serverDomainName())));
+    QVERIFY(certificate.issuerInfo(QSslCertificate::CommonName).contains(BobUINetworkSettings::serverName()));
 
     socket->close();
 }
 
-class SslServer2 : public QTcpServer
+class SslServer2 : public BOBUIcpServer
 {
 protected:
     void incomingConnection(qintptr socketDescriptor) override
@@ -2255,7 +2255,7 @@ void tst_QSslSocket::setEmptyKey()
     QSslSocket socket;
     socket.connectToHostEncrypted("127.0.0.1", server.serverPort());
 
-    QTestEventLoop::instance().enterLoop(2);
+    BOBUIestEventLoop::instance().enterLoop(2);
 
     QCOMPARE(socket.state(), QAbstractSocket::ConnectedState);
     QCOMPARE(socket.error(), QAbstractSocket::UnknownSocketError);
@@ -2400,7 +2400,7 @@ class SetReadBufferSize_task_250027_handler : public QObject {
     Q_OBJECT
 public slots:
     void readyReadSlot() {
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
     }
     void waitSomeMore(QSslSocket *socket) {
         QElapsedTimer t;
@@ -2415,7 +2415,7 @@ public slots:
 
 void tst_QSslSocket::setReadBufferSize_task_250027()
 {
-    QSKIP("QTBUG-29730 - flakey test blocking integration");
+    QSKIP("BOBUIBUG-29730 - flakey test blocking integration");
 
     // do not execute this when a proxy is set.
     QFETCH_GLOBAL(bool, setProxy);
@@ -2425,32 +2425,32 @@ void tst_QSslSocket::setReadBufferSize_task_250027()
     QSslSocketPtr socket = newSocket();
     socket->setReadBufferSize(1000); // limit to 1 kb/sec
     socket->ignoreSslErrors();
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     socket->ignoreSslErrors();
     QVERIFY2(socket->waitForConnected(10*1000), qPrintable(socket->errorString()));
     if (setProxy && !socket->waitForEncrypted(10*1000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     // exit the event loop as soon as we receive a readyRead()
     SetReadBufferSize_task_250027_handler setReadBufferSize_task_250027_handler;
     connect(socket.data(), SIGNAL(readyRead()), &setReadBufferSize_task_250027_handler, SLOT(readyReadSlot()));
 
     // provoke a response by sending a request
-    socket->write("GET /qtest/fluke.gif HTTP/1.0\n"); // this file is 27 KB
+    socket->write("GET /bobuiest/fluke.gif HTTP/1.0\n"); // this file is 27 KB
     socket->write("Host: ");
-    socket->write(QtNetworkSettings::httpServerName().toLocal8Bit().constData());
+    socket->write(BobUINetworkSettings::httpServerName().toLocal8Bit().constData());
     socket->write("\n");
     socket->write("Connection: close\n");
     socket->write("\n");
     socket->flush();
 
-    QTestEventLoop::instance().enterLoop(10);
+    BOBUIestEventLoop::instance().enterLoop(10);
     setReadBufferSize_task_250027_handler.waitSomeMore(socket.data());
     QByteArray firstRead = socket->readAll();
     // First read should be some data, but not the whole file
     QVERIFY(firstRead.size() > 0 && firstRead.size() < 20*1024);
 
-    QTestEventLoop::instance().enterLoop(10);
+    BOBUIestEventLoop::instance().enterLoop(10);
     setReadBufferSize_task_250027_handler.waitSomeMore(socket.data());
     QByteArray secondRead = socket->readAll();
     // second read should be some more data
@@ -2458,7 +2458,7 @@ void tst_QSslSocket::setReadBufferSize_task_250027()
     int secondReadSize = secondRead.size();
 
     if (secondReadSize <= 0) {
-        QEXPECT_FAIL("", "QTBUG-29730", Continue);
+        QEXPECT_FAIL("", "BOBUIBUG-29730", Continue);
     }
 
     QVERIFY(secondReadSize > 0);
@@ -2466,7 +2466,7 @@ void tst_QSslSocket::setReadBufferSize_task_250027()
     socket->close();
 }
 
-class SslServer3 : public QTcpServer
+class SslServer3 : public BOBUIcpServer
 {
     Q_OBJECT
 public:
@@ -2505,7 +2505,7 @@ protected slots:
     }
 };
 
-class ThreadedSslServer: public QThread
+class ThreadedSslServer: public BOBUIhread
 {
     Q_OBJECT
 public:
@@ -2537,12 +2537,12 @@ protected:
         emit listening();
 
         // delayed acceptance:
-        QTest::qSleep(100);
+        BOBUIest::qSleep(100);
         bool ret = server.waitForNewConnection(2000);
         Q_UNUSED(ret);
 
         // delayed start of encryption
-        QTest::qSleep(100);
+        BOBUIest::qSleep(100);
         QSslSocket *socket = server.socket;
         if (!socket || !socket->isValid())
             return;             // error
@@ -2552,21 +2552,21 @@ protected:
             return;             // error
 
         // delayed reading data
-        QTest::qSleep(100);
+        BOBUIest::qSleep(100);
         if (!socket->waitForReadyRead(2000) && socket->bytesAvailable() == 0)
             return;             // error
         socket->readAll();
         dataReadSemaphore.release();
 
         // delayed sending data
-        QTest::qSleep(100);
+        BOBUIest::qSleep(100);
         socket->write("Hello, World");
         while (socket->bytesToWrite())
             if (!socket->waitForBytesWritten(2000))
                 return;         // error
 
         // delayed replying (reading then sending)
-        QTest::qSleep(100);
+        BOBUIest::qSleep(100);
         if (!socket->waitForReadyRead(2000))
             return;             // error
         socket->write("Hello, World");
@@ -2575,7 +2575,7 @@ protected:
                 return;         // error
 
         // delayed disconnection:
-        QTest::qSleep(100);
+        BOBUIest::qSleep(100);
         socket->disconnectFromHost();
         if (!socket->waitForDisconnected(2000))
             return;             // error
@@ -2588,7 +2588,7 @@ protected:
 void tst_QSslSocket::waitForMinusOne()
 {
 #ifdef Q_OS_WIN
-    QSKIP("QTBUG-24451 - indefinite wait may hang");
+    QSKIP("BOBUIBUG-24451 - indefinite wait may hang");
 #endif
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy)
@@ -2604,7 +2604,7 @@ void tst_QSslSocket::waitForMinusOne()
 
     // connect to the server
     QSslSocket socket;
-    QTest::qSleep(100);
+    BOBUIest::qSleep(100);
     socket.connectToHost("127.0.0.1", server.serverPort);
     QVERIFY(socket.waitForConnected(-1));
     socket.ignoreSslErrors();
@@ -2612,7 +2612,7 @@ void tst_QSslSocket::waitForMinusOne()
 
     // first verification: this waiting should take 200 ms
     if (!socket.waitForEncrypted(-1))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     QVERIFY(socket.isEncrypted());
     QCOMPARE(socket.state(), QAbstractSocket::ConnectedState);
     QCOMPARE(socket.bytesAvailable(), Q_INT64_C(0));
@@ -2647,7 +2647,7 @@ void tst_QSslSocket::waitForMinusOne()
     QCOMPARE(socket.read(&aux, 1), -1);
 }
 
-class VerifyServer : public QTcpServer
+class VerifyServer : public BOBUIcpServer
 {
     Q_OBJECT
 public:
@@ -2681,9 +2681,9 @@ void tst_QSslSocket::verifyMode()
     socket.setPeerVerifyMode(QSslSocket::VerifyPeer);
     QCOMPARE(socket.peerVerifyMode(), QSslSocket::VerifyPeer);
 
-    socket.connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket.connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     if (socket.waitForEncrypted())
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     QList<QSslError> expectedErrors = QList<QSslError>()
                                       << QSslError(flukeCertificateError, socket.peerCertificate());
@@ -2698,7 +2698,7 @@ void tst_QSslSocket::verifyMode()
     clientSocket.ignoreSslErrors();
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
     connect(&clientSocket, SIGNAL(encrypted()), &loop, SLOT(quit()));
     loop.exec();
 
@@ -2712,7 +2712,7 @@ void tst_QSslSocket::verifyDepth()
     QCOMPARE(socket.peerVerifyDepth(), 0);
     socket.setPeerVerifyDepth(1);
     QCOMPARE(socket.peerVerifyDepth(), 1);
-    QTest::ignoreMessage(QtWarningMsg, "QSslSocket::setPeerVerifyDepth: cannot set negative depth of -1");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSslSocket::setPeerVerifyDepth: cannot set negative depth of -1");
     socket.setPeerVerifyDepth(-1);
     QCOMPARE(socket.peerVerifyDepth(), 1);
 }
@@ -2731,7 +2731,7 @@ void tst_QSslSocket::verifyAndDefaultConfiguration()
         QSslConfiguration::setDefaultConfiguration(conf);
     });
 
-    auto chain = QSslCertificate::fromPath(testDataDir + QStringLiteral("certs/qtiochain.crt"), QSsl::Pem);
+    auto chain = QSslCertificate::fromPath(testDataDir + QStringLiteral("certs/bobuiiochain.crt"), QSsl::Pem);
     QCOMPARE(chain.size(), 2);
     QVERIFY(!chain.at(0).isNull());
     QVERIFY(!chain.at(1).isNull());
@@ -2739,7 +2739,7 @@ void tst_QSslSocket::verifyAndDefaultConfiguration()
     // At least, test that 'verify' did not alter the default configuration:
     QCOMPARE(defaultCACertificates, QSslConfiguration::defaultConfiguration().caCertificates());
     if (!errors.isEmpty())
-        QSKIP("The certificate for qt.io could not be trusted, skipping the rest of the test");
+        QSKIP("The certificate for bobui.io could not be trusted, skipping the rest of the test");
 #ifdef Q_OS_WINDOWS
     const auto fakeCaChain = QSslCertificate::fromPath(testDataDir + QStringLiteral("certs/fluke.cert"));
     QCOMPARE(fakeCaChain.size(), 1);
@@ -2757,7 +2757,7 @@ void tst_QSslSocket::verifyAndDefaultConfiguration()
 void tst_QSslSocket::disconnectFromHostWhenConnecting()
 {
     QSslSocketPtr socket = newSocket();
-    socket->connectToHostEncrypted(QtNetworkSettings::imapServerName(), 993);
+    socket->connectToHostEncrypted(BobUINetworkSettings::imapServerName(), 993);
     socket->ignoreSslErrors();
     socket->write("XXXX LOGOUT\r\n");
     QAbstractSocket::SocketState state = socket->state();
@@ -2772,7 +2772,7 @@ void tst_QSslSocket::disconnectFromHostWhenConnecting()
     QVERIFY(socket->state() == QAbstractSocket::HostLookupState ||
             socket->state() == QAbstractSocket::ConnectingState);
     if (!socket->waitForDisconnected(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     QCOMPARE(socket->state(), QAbstractSocket::UnconnectedState);
     // we did not call close, so the socket must be still open
     QVERIFY(socket->isOpen());
@@ -2786,10 +2786,10 @@ void tst_QSslSocket::disconnectFromHostWhenConnecting()
 void tst_QSslSocket::disconnectFromHostWhenConnected()
 {
     QSslSocketPtr socket = newSocket();
-    socket->connectToHostEncrypted(QtNetworkSettings::imapServerName(), 993);
+    socket->connectToHostEncrypted(BobUINetworkSettings::imapServerName(), 993);
     socket->ignoreSslErrors();
     if (!socket->waitForEncrypted(5000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     socket->write("XXXX LOGOUT\r\n");
     QCOMPARE(socket->state(), QAbstractSocket::ConnectedState);
     socket->disconnectFromHost();
@@ -2798,9 +2798,9 @@ void tst_QSslSocket::disconnectFromHostWhenConnected()
     QCOMPARE(socket->bytesToWrite(), qint64(0));
 }
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
 
-class BrokenPskHandshake : public QTcpServer
+class BrokenPskHandshake : public BOBUIcpServer
 {
 public:
     void socketError(QAbstractSocket::SocketError error)
@@ -2809,7 +2809,7 @@ public:
         QSslSocket *clientSocket = qobject_cast<QSslSocket *>(sender());
         Q_ASSERT(clientSocket);
         clientSocket->close();
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
     }
 private:
 
@@ -2850,10 +2850,10 @@ void tst_QSslSocket::closeWhileEmittingSocketError()
 
     clientSocket.connectToHostEncrypted(QStringLiteral("127.0.0.1"), handshake.serverPort());
     // Make sure we have some data buffered so that close will try to flush:
-    clientSocket.write(QByteArray(1000000, Qt::Uninitialized));
+    clientSocket.write(QByteArray(1000000, BobUI::Uninitialized));
 
-    QTestEventLoop::instance().enterLoop(1s);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1s);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(socketErrorSpy.size(), 1);
 }
@@ -2862,7 +2862,7 @@ void tst_QSslSocket::closeWhileEmittingSocketError()
 
 void tst_QSslSocket::resetProxy()
 {
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy)
         return;
@@ -2879,11 +2879,11 @@ void tst_QSslSocket::resetProxy()
     config.addCaCertificates(httpServerCertChainPath());
     socket.setSslConfiguration(config);
     socket.setProxy(goodProxy);
-    socket.connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket.connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     QVERIFY2(socket.waitForConnected(10000), qPrintable(socket.errorString()));
     socket.abort();
     socket.setProxy(badProxy);
-    socket.connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket.connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     QVERIFY(! socket.waitForConnected(10000));
 
     // don't forget to login
@@ -2900,19 +2900,19 @@ void tst_QSslSocket::resetProxy()
     config2.addCaCertificates(httpServerCertChainPath());
     socket2.setSslConfiguration(config2);
     socket2.setProxy(badProxy);
-    socket2.connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket2.connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     QVERIFY(! socket2.waitForConnected(10000));
     socket2.abort();
     socket2.setProxy(goodProxy);
-    socket2.connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket2.connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     QVERIFY2(socket2.waitForConnected(10000), qPrintable(socket.errorString()));
-#endif // QT_CONFIG(networkproxy)
+#endif // BOBUI_CONFIG(networkproxy)
 }
 
 void tst_QSslSocket::ignoreSslErrorsList_data()
 {
-    QTest::addColumn<QList<QSslError> >("expectedSslErrors");
-    QTest::addColumn<int>("expectedSslErrorSignalCount");
+    BOBUIest::addColumn<QList<QSslError> >("expectedSslErrors");
+    BOBUIest::addColumn<int>("expectedSslErrorSignalCount");
 
     // construct the list of errors that we will get with the SSL handshake and that we will ignore
     QList<QSslError> expectedSslErrors;
@@ -2922,15 +2922,15 @@ void tst_QSslSocket::ignoreSslErrorsList_data()
     QSslError wrongError(flukeCertificateError);
 
 
-    QTest::newRow("SSL-failure-empty-list") << expectedSslErrors << 1;
+    BOBUIest::newRow("SSL-failure-empty-list") << expectedSslErrors << 1;
     expectedSslErrors.append(wrongError);
-    QTest::newRow("SSL-failure-wrong-error") << expectedSslErrors << 1;
+    BOBUIest::newRow("SSL-failure-wrong-error") << expectedSslErrors << 1;
     expectedSslErrors.append(rightError);
-    QTest::newRow("allErrorsInExpectedList1") << expectedSslErrors << 0;
+    BOBUIest::newRow("allErrorsInExpectedList1") << expectedSslErrors << 0;
     expectedSslErrors.removeAll(wrongError);
-    QTest::newRow("allErrorsInExpectedList2") << expectedSslErrors << 0;
+    BOBUIest::newRow("allErrorsInExpectedList2") << expectedSslErrors << 0;
     expectedSslErrors.removeAll(rightError);
-    QTest::newRow("SSL-failure-empty-list-again") << expectedSslErrors << 1;
+    BOBUIest::newRow("SSL-failure-empty-list-again") << expectedSslErrors << 1;
 }
 
 void tst_QSslSocket::ignoreSslErrorsList()
@@ -2947,11 +2947,11 @@ void tst_QSslSocket::ignoreSslErrorsList()
     QFETCH(int, expectedSslErrorSignalCount);
     QSignalSpy sslErrorsSpy(&socket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)));
 
-    socket.connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket.connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
 
     bool expectEncryptionSuccess = (expectedSslErrorSignalCount == 0);
     if (socket.waitForEncrypted(10000) != expectEncryptionSuccess)
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     QCOMPARE(sslErrorsSpy.size(), expectedSslErrorSignalCount);
 }
 
@@ -2978,13 +2978,13 @@ void tst_QSslSocket::ignoreSslErrorsListWithSlot()
             this, SLOT(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
     connect(&socket, SIGNAL(sslErrors(QList<QSslError>)),
             this, SLOT(ignoreErrorListSlot(QList<QSslError>)));
-    socket.connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket.connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
 
     QFETCH(int, expectedSslErrorSignalCount);
     bool expectEncryptionSuccess = (expectedSslErrorSignalCount == 0);
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && (socket.waitForEncrypted(10000) != expectEncryptionSuccess))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 }
 
 void tst_QSslSocket::abortOnSslErrors()
@@ -3002,7 +3002,7 @@ void tst_QSslSocket::abortOnSslErrors()
     clientSocket.ignoreSslErrors();
 
     QEventLoop loop;
-    QTimer::singleShot(1000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(1000, &loop, SLOT(quit()));
     loop.exec();
 
     QCOMPARE(clientSocket.state(), QAbstractSocket::UnconnectedState);
@@ -3015,21 +3015,21 @@ void tst_QSslSocket::readFromClosedSocket()
     QSslSocketPtr socket = newSocket();
 
     socket->ignoreSslErrors();
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     socket->ignoreSslErrors();
     socket->waitForConnected();
     socket->waitForEncrypted();
     // provoke a response by sending a request
-    socket->write("GET /qtest/fluke.gif HTTP/1.1\n");
+    socket->write("GET /bobuiest/fluke.gif HTTP/1.1\n");
     socket->write("Host: ");
-    socket->write(QtNetworkSettings::httpServerName().toLocal8Bit().constData());
+    socket->write(BobUINetworkSettings::httpServerName().toLocal8Bit().constData());
     socket->write("\n");
     socket->write("\n");
     socket->waitForBytesWritten();
     socket->waitForReadyRead();
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && (socket->state() != QAbstractSocket::ConnectedState))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     QVERIFY(socket->bytesAvailable());
     socket->close();
     QVERIFY(!socket->bytesAvailable());
@@ -3046,7 +3046,7 @@ void tst_QSslSocket::writeBigChunk()
     this->socket = socket.data();
 
     connect(this->socket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(ignoreErrorSlot()));
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
 
     QByteArray data;
     // Originally, the test had this: '1024*1024*10; // 10 MB'
@@ -3056,7 +3056,7 @@ void tst_QSslSocket::writeBigChunk()
                                           data.size() / int(sizeof(quint32)));
 
     if (!socket->waitForEncrypted(10000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     QString errorBefore = socket->errorString();
 
     int ret = socket->write(data.constData(), data.size());
@@ -3097,7 +3097,7 @@ void tst_QSslSocket::blacklistedCertificates()
     receiver->connectToHost("127.0.0.1", server.serverPort());
     QVERIFY(receiver->waitForConnected(5000));
     if (!server.waitForNewConnection(0))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 
     QSslSocket *sender = server.socket;
     QVERIFY(sender);
@@ -3136,7 +3136,7 @@ void tst_QSslSocket::encryptWithoutConnecting()
     if (!QSslSocket::supportsSsl())
         return;
 
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "QSslSocket::startClientEncryption: cannot start handshake when not connected");
 
     QSslSocket sock;
@@ -3149,13 +3149,13 @@ void tst_QSslSocket::resume_data()
     if (isSecurityLevel0Required)
         QSKIP("Testing with OpenSSL backend, but security level 0 is required for TLS v1.1 or earlier");
 
-    QTest::addColumn<bool>("ignoreErrorsAfterPause");
-    QTest::addColumn<QList<QSslError> >("errorsToIgnore");
-    QTest::addColumn<bool>("expectSuccess");
+    BOBUIest::addColumn<bool>("ignoreErrorsAfterPause");
+    BOBUIest::addColumn<QList<QSslError> >("errorsToIgnore");
+    BOBUIest::addColumn<bool>("expectSuccess");
 
     QList<QSslError> errorsList;
-    QTest::newRow("DoNotIgnoreErrors") << false << QList<QSslError>() << false;
-    QTest::newRow("ignoreAllErrors") << true << QList<QSslError>() << true;
+    BOBUIest::newRow("DoNotIgnoreErrors") << false << QList<QSslError>() << false;
+    BOBUIest::newRow("ignoreAllErrors") << true << QList<QSslError>() << true;
 
     // Note, httpServerCertChainPath() it's ... because we use the same certificate on
     // different services. We'll be actually connecting to IMAP server.
@@ -3163,10 +3163,10 @@ void tst_QSslSocket::resume_data()
     QSslError rightError(flukeCertificateError, certs.at(0));
     QSslError wrongError(flukeCertificateError);
     errorsList.append(wrongError);
-    QTest::newRow("ignoreSpecificErrors-Wrong") << true << errorsList << false;
+    BOBUIest::newRow("ignoreSpecificErrors-Wrong") << true << errorsList << false;
     errorsList.clear();
     errorsList.append(rightError);
-    QTest::newRow("ignoreSpecificErrors-Right") << true << errorsList << true;
+    BOBUIest::newRow("ignoreSpecificErrors-Right") << true << errorsList << true;
 }
 
 void tst_QSslSocket::resume()
@@ -3185,7 +3185,7 @@ void tst_QSslSocket::resume()
     socket.setPauseMode(QAbstractSocket::PauseOnSslErrors);
 
     // Set TLS 1.0 or above because the server doesn't support TLS 1.2 or above
-    // QTQAINFRA-4499
+    // BOBUIQAINFRA-4499
     QSslConfiguration config = socket.sslConfiguration();
     config.setProtocol(Test::TlsV1_0OrLater);
     socket.setSslConfiguration(config);
@@ -3194,17 +3194,17 @@ void tst_QSslSocket::resume()
     QSignalSpy encryptedSpy(&socket, SIGNAL(encrypted()));
     QSignalSpy errorSpy(&socket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)));
 
-    connect(&socket, SIGNAL(sslErrors(QList<QSslError>)), &QTestEventLoop::instance(), SLOT(exitLoop()));
-    connect(&socket, SIGNAL(encrypted()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    connect(&socket, SIGNAL(sslErrors(QList<QSslError>)), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    connect(&socket, SIGNAL(encrypted()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
     connect(&socket, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
             this, SLOT(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
-    connect(&socket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    connect(&socket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
-    socket.connectToHostEncrypted(QtNetworkSettings::imapServerName(), 993);
-    QTestEventLoop::instance().enterLoop(10);
+    socket.connectToHostEncrypted(BobUINetworkSettings::imapServerName(), 993);
+    BOBUIestEventLoop::instance().enterLoop(10);
     QFETCH_GLOBAL(bool, setProxy);
-    if (setProxy && QTestEventLoop::instance().timeout())
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+    if (setProxy && BOBUIestEventLoop::instance().timeout())
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
     QCOMPARE(sslErrorSpy.size(), 1);
     QCOMPARE(errorSpy.size(), 0);
     QCOMPARE(encryptedSpy.size(), 0);
@@ -3216,8 +3216,8 @@ void tst_QSslSocket::resume()
             socket.ignoreSslErrors(errorsToIgnore);
     }
     socket.resume();
-    QTestEventLoop::instance().enterLoop(10);
-    QVERIFY(!QTestEventLoop::instance().timeout()); // quit by encrypted() or error() signal
+    BOBUIestEventLoop::instance().enterLoop(10);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout()); // quit by encrypted() or error() signal
     if (expectSuccess) {
         QCOMPARE(encryptedSpy.size(), 1);
         QVERIFY(socket.isEncrypted());
@@ -3292,7 +3292,7 @@ void WebSocket::onReadyReadFirstBytes (void)
     _startServerEncryption();
 }
 
-class SslServer4 : public QTcpServer
+class SslServer4 : public BOBUIcpServer
 {
     Q_OBJECT
 public:
@@ -3306,7 +3306,7 @@ protected:
     }
 };
 
-void tst_QSslSocket::qtbug18498_peek()
+void tst_QSslSocket::bobuibug18498_peek()
 {
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy)
@@ -3364,7 +3364,7 @@ void tst_QSslSocket::qtbug18498_peek()
     QCOMPARE(read_data, data);
 }
 
-class SslServer5 : public QTcpServer
+class SslServer5 : public BOBUIcpServer
 {
     Q_OBJECT
 public:
@@ -3379,7 +3379,7 @@ protected:
     }
 };
 
-void tst_QSslSocket::qtbug18498_peek2()
+void tst_QSslSocket::bobuibug18498_peek2()
 {
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy)
@@ -3395,7 +3395,7 @@ void tst_QSslSocket::qtbug18498_peek2()
     QSslSocket *server = listener.socket.get();
 
     QVERIFY(server->write("HELLO\r\n", 7));
-    QTRY_COMPARE(client->bytesAvailable(), 7);
+    BOBUIRY_COMPARE(client->bytesAvailable(), 7);
     char c;
     QCOMPARE(client->peek(&c,1), 1);
     QCOMPARE(c, 'H');
@@ -3414,7 +3414,7 @@ void tst_QSslSocket::qtbug18498_peek2()
     bigblock.fill('#', QIODEVICE_BUFFERSIZE + 1024);
     QVERIFY(client->write(QByteArray("head")));
     QVERIFY(client->write(bigblock));
-    QTRY_COMPARE(server->bytesAvailable(), bigblock.size() + 4);
+    BOBUIRY_COMPARE(server->bytesAvailable(), bigblock.size() + 4);
     QCOMPARE(server->read(4), QByteArray("head"));
     QCOMPARE(server->peek(bigblock.size()), bigblock);
     b.reserve(bigblock.size());
@@ -3430,7 +3430,7 @@ void tst_QSslSocket::qtbug18498_peek2()
     QCOMPARE(server->readAll(), bigblock);
 
     QVERIFY(client->write("STARTTLS\r\n"));
-    QTRY_COMPARE(server->bytesAvailable(), 10);
+    BOBUIRY_COMPARE(server->bytesAvailable(), 10);
     QCOMPARE(server->peek(&c,1), 1);
     QCOMPARE(c, 'S');
     b = server->peek(3);
@@ -3463,7 +3463,7 @@ void tst_QSslSocket::qtbug18498_peek2()
     client->startClientEncryption();
 
     QVERIFY(server->write("hello\r\n", 7));
-    QTRY_COMPARE(client->bytesAvailable(), 7);
+    BOBUIRY_COMPARE(client->bytesAvailable(), 7);
     QVERIFY(server->mode() == QSslSocket::SslServerMode && client->mode() == QSslSocket::SslClientMode);
     QCOMPARE(client->peek(&c,1), 1);
     QCOMPARE(c, 'h');
@@ -3474,7 +3474,7 @@ void tst_QSslSocket::qtbug18498_peek2()
     QCOMPARE(client->readAll(), QByteArray("ello\r\n"));
 
     QVERIFY(client->write("goodbye\r\n"));
-    QTRY_COMPARE(server->bytesAvailable(), 9);
+    BOBUIRY_COMPARE(server->bytesAvailable(), 9);
     QCOMPARE(server->peek(&c,1), 1);
     QCOMPARE(c, 'g');
     QCOMPARE(server->readAll(), QByteArray("goodbye\r\n"));
@@ -3502,7 +3502,7 @@ void tst_QSslSocket::dhServer()
     QVERIFY(server.listen());
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
     QSslSocket client;
     socket = &client;
@@ -3516,7 +3516,7 @@ void tst_QSslSocket::dhServer()
     QCOMPARE(client.state(), QAbstractSocket::ConnectedState);
 }
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
 void tst_QSslSocket::dhServerCustomParamsNull()
 {
     if (!isTestingOpenSsl)
@@ -3538,7 +3538,7 @@ void tst_QSslSocket::dhServerCustomParamsNull()
     QVERIFY(server.listen());
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
     QSslSocket client;
     QSslConfiguration config = client.sslConfiguration();
@@ -3577,7 +3577,7 @@ void tst_QSslSocket::dhServerCustomParams()
     // Custom 2048-bit DH parameters generated with 'openssl dhparam -outform DER -out out.der -check -2 2048'
     const auto dh = QSslDiffieHellmanParameters::fromEncoded(QByteArray::fromBase64(QByteArrayLiteral(
         "MIIBCAKCAQEAvVA7b8keTfjFutCtTJmP/pnQfw/prKa+GMed/pBWjrC4N1YwnI8h/A861d9WE/VWY7XMTjvjX3/0"
-        "aaU8wEe0EXNpFdlTH+ZMQctQTSJOyQH0RCTwJfDGPCPT9L+c9GKwEKWORH38Earip986HJc0w3UbnfIwXUdsWHiXi"
+        "aaU8wEe0EXNpFdlTH+ZMQctBOBUISJOyQH0RCTwJfDGPCPT9L+c9GKwEKWORH38Earip986HJc0w3UbnfIwXUdsWHiXi"
         "Z6r3cpyBmTKlsXTFiDVAOUXSiO8d/zOb6zHZbDfyB/VbtZRmnA7TXVn9oMzC0g9+FXHdrV4K+XfdvNZdCegvoAZiy"
         "R6ZQgNG9aZ36/AQekhg060hp55f9HDPgXqYeNeXBiferjUtU7S9b3s83XhOJAr01/0Tf5dENwCfg2gK36TM8cC4wI"
         "BAg==")), QSsl::Der);
@@ -3588,7 +3588,7 @@ void tst_QSslSocket::dhServerCustomParams()
     QVERIFY(server.listen());
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
     QSslSocket client;
     socket = &client;
@@ -3603,7 +3603,7 @@ void tst_QSslSocket::dhServerCustomParams()
     QCOMPARE(client.state(), QAbstractSocket::ConnectedState);
     QCOMPARE(client.sessionCipher(), cipherWithDH);
 }
-#endif // QT_CONFIG(openssl)
+#endif // BOBUI_CONFIG(openssl)
 
 void tst_QSslSocket::ecdhServer()
 {
@@ -3624,7 +3624,7 @@ void tst_QSslSocket::ecdhServer()
     QVERIFY(server.listen());
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
     QSslSocket client;
     socket = &client;
@@ -3640,19 +3640,19 @@ void tst_QSslSocket::ecdhServer()
 
 void tst_QSslSocket::verifyClientCertificate_data()
 {
-    QTest::addColumn<QSslSocket::PeerVerifyMode>("peerVerifyMode");
-    QTest::addColumn<QList<QSslCertificate> >("clientCerts");
-    QTest::addColumn<QSslKey>("clientKey");
-    QTest::addColumn<bool>("works");
+    BOBUIest::addColumn<QSslSocket::PeerVerifyMode>("peerVerifyMode");
+    BOBUIest::addColumn<QList<QSslCertificate> >("clientCerts");
+    BOBUIest::addColumn<QSslKey>("clientKey");
+    BOBUIest::addColumn<bool>("works");
 
     // no certificate
     QList<QSslCertificate> noCerts;
     QSslKey noKey;
 
-    QTest::newRow("NoCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << noCerts << noKey << true;
-    QTest::newRow("NoCert:QueryPeer") << QSslSocket::QueryPeer << noCerts << noKey << true;
-    QTest::newRow("NoCert:VerifyNone") << QSslSocket::VerifyNone << noCerts << noKey << true;
-    QTest::newRow("NoCert:VerifyPeer") << QSslSocket::VerifyPeer << noCerts << noKey << false;
+    BOBUIest::newRow("NoCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << noCerts << noKey << true;
+    BOBUIest::newRow("NoCert:QueryPeer") << QSslSocket::QueryPeer << noCerts << noKey << true;
+    BOBUIest::newRow("NoCert:VerifyNone") << QSslSocket::VerifyNone << noCerts << noKey << true;
+    BOBUIest::newRow("NoCert:VerifyPeer") << QSslSocket::VerifyPeer << noCerts << noKey << false;
 
     // self-signed certificate
     QList<QSslCertificate> flukeCerts = QSslCertificate::fromPath(testDataDir + "certs/fluke.cert");
@@ -3663,10 +3663,10 @@ void tst_QSslSocket::verifyClientCertificate_data()
     QSslKey flukeKey(flukeFile.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
     QVERIFY(!flukeKey.isNull());
 
-    QTest::newRow("SelfSignedCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << flukeCerts << flukeKey << true;
-    QTest::newRow("SelfSignedCert:QueryPeer") << QSslSocket::QueryPeer << flukeCerts << flukeKey << true;
-    QTest::newRow("SelfSignedCert:VerifyNone") << QSslSocket::VerifyNone << flukeCerts << flukeKey << true;
-    QTest::newRow("SelfSignedCert:VerifyPeer") << QSslSocket::VerifyPeer << flukeCerts << flukeKey << false;
+    BOBUIest::newRow("SelfSignedCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << flukeCerts << flukeKey << true;
+    BOBUIest::newRow("SelfSignedCert:QueryPeer") << QSslSocket::QueryPeer << flukeCerts << flukeKey << true;
+    BOBUIest::newRow("SelfSignedCert:VerifyNone") << QSslSocket::VerifyNone << flukeCerts << flukeKey << true;
+    BOBUIest::newRow("SelfSignedCert:VerifyPeer") << QSslSocket::VerifyPeer << flukeCerts << flukeKey << false;
 
     // valid certificate, but wrong usage (server certificate)
     QList<QSslCertificate> serverCerts = QSslCertificate::fromPath(testDataDir + "certs/bogus-server.crt");
@@ -3677,10 +3677,10 @@ void tst_QSslSocket::verifyClientCertificate_data()
     QSslKey serverKey(serverFile.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
     QVERIFY(!serverKey.isNull());
 
-    QTest::newRow("ValidServerCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << serverCerts << serverKey << true;
-    QTest::newRow("ValidServerCert:QueryPeer") << QSslSocket::QueryPeer << serverCerts << serverKey << true;
-    QTest::newRow("ValidServerCert:VerifyNone") << QSslSocket::VerifyNone << serverCerts << serverKey << true;
-    QTest::newRow("ValidServerCert:VerifyPeer") << QSslSocket::VerifyPeer << serverCerts << serverKey << false;
+    BOBUIest::newRow("ValidServerCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << serverCerts << serverKey << true;
+    BOBUIest::newRow("ValidServerCert:QueryPeer") << QSslSocket::QueryPeer << serverCerts << serverKey << true;
+    BOBUIest::newRow("ValidServerCert:VerifyNone") << QSslSocket::VerifyNone << serverCerts << serverKey << true;
+    BOBUIest::newRow("ValidServerCert:VerifyPeer") << QSslSocket::VerifyPeer << serverCerts << serverKey << false;
 
     // valid certificate, correct usage (client certificate)
     QList<QSslCertificate> validCerts = QSslCertificate::fromPath(testDataDir + "certs/bogus-client.crt");
@@ -3691,19 +3691,19 @@ void tst_QSslSocket::verifyClientCertificate_data()
     QSslKey validKey(validFile.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
     QVERIFY(!validKey.isNull());
 
-    QTest::newRow("ValidClientCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << validCerts << validKey << true;
-    QTest::newRow("ValidClientCert:QueryPeer") << QSslSocket::QueryPeer << validCerts << validKey << true;
-    QTest::newRow("ValidClientCert:VerifyNone") << QSslSocket::VerifyNone << validCerts << validKey << true;
-    QTest::newRow("ValidClientCert:VerifyPeer") << QSslSocket::VerifyPeer << validCerts << validKey << true;
+    BOBUIest::newRow("ValidClientCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << validCerts << validKey << true;
+    BOBUIest::newRow("ValidClientCert:QueryPeer") << QSslSocket::QueryPeer << validCerts << validKey << true;
+    BOBUIest::newRow("ValidClientCert:VerifyNone") << QSslSocket::VerifyNone << validCerts << validKey << true;
+    BOBUIest::newRow("ValidClientCert:VerifyPeer") << QSslSocket::VerifyPeer << validCerts << validKey << true;
 
     // valid certificate, correct usage (client certificate), with chain
     validCerts += QSslCertificate::fromPath(testDataDir + "certs/bogus-ca.crt");
     QCOMPARE(validCerts.size(), 2);
 
-    QTest::newRow("ValidChainedClientCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << validCerts << validKey << true;
-    QTest::newRow("ValidChainedClientCert:QueryPeer") << QSslSocket::QueryPeer << validCerts << validKey << true;
-    QTest::newRow("ValidChainedClientCert:VerifyNone") << QSslSocket::VerifyNone << validCerts << validKey << true;
-    QTest::newRow("ValidChainedClientCert:VerifyPeer") << QSslSocket::VerifyPeer << validCerts << validKey << true;
+    BOBUIest::newRow("ValidChainedClientCert:AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << validCerts << validKey << true;
+    BOBUIest::newRow("ValidChainedClientCert:QueryPeer") << QSslSocket::QueryPeer << validCerts << validKey << true;
+    BOBUIest::newRow("ValidChainedClientCert:VerifyNone") << QSslSocket::VerifyNone << validCerts << validKey << true;
+    BOBUIest::newRow("ValidChainedClientCert:VerifyPeer") << QSslSocket::VerifyPeer << validCerts << validKey << true;
 }
 
 void tst_QSslSocket::verifyClientCertificate()
@@ -3740,7 +3740,7 @@ void tst_QSslSocket::verifyClientCertificate()
     QVERIFY(server.listen());
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
     QFETCH(QList<QSslCertificate>, clientCerts);
     QFETCH(QSslKey, clientKey);
@@ -3791,7 +3791,7 @@ void tst_QSslSocket::verifyClientCertificate()
 
 void tst_QSslSocket::readBufferMaxSize()
 {
-    // QTBUG-94186: originally, only SecureTransport was
+    // BOBUIBUG-94186: originally, only SecureTransport was
     // running this test (since it was a bug in that backend,
     // see comment below), after TLS plugins were introduced,
     // we enabled this test on all backends, as a part of
@@ -3803,7 +3803,7 @@ void tst_QSslSocket::readBufferMaxSize()
         QSKIP("This test is flaky with TLS backend other than SecureTransport");
 
 
-    // QTBUG-55170:
+    // BOBUIBUG-55170:
     // SecureTransport back-end was ignoring read-buffer
     // size limit, resulting (potentially) in a constantly
     // growing internal buffer.
@@ -3841,7 +3841,7 @@ void tst_QSslSocket::readBufferMaxSize()
     connect(&server, &SslServer::socketEncrypted, &loop, earlyQuitter);
 
     // Wait for 'encrypted' first:
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
     loop.exec();
 
     QCOMPARE(client->state(), QAbstractSocket::ConnectedState);
@@ -3851,7 +3851,7 @@ void tst_QSslSocket::readBufferMaxSize()
     const QByteArray message(int(0xffff), 'a');
     server.socket->write(message);
 
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
     loop.exec();
 
     int readSoFar = client->bytesAvailable();
@@ -3861,7 +3861,7 @@ void tst_QSslSocket::readBufferMaxSize()
 
     client->setReadBufferSize(0);
 
-    QTimer::singleShot(1500, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(1500, &loop, SLOT(quit()));
     loop.exec();
 
     QCOMPARE(client->bytesAvailable() + readSoFar, message.size());
@@ -3869,7 +3869,7 @@ void tst_QSslSocket::readBufferMaxSize()
 
 void tst_QSslSocket::setEmptyDefaultConfiguration() // this test should be last, as it has some side effects
 {
-    // used to produce a crash in QSslConfigurationPrivate::deepCopyDefaultConfiguration, QTBUG-13265
+    // used to produce a crash in QSslConfigurationPrivate::deepCopyDefaultConfiguration, BOBUIBUG-13265
 
     if (!QSslSocket::supportsSsl())
         return;
@@ -3881,10 +3881,10 @@ void tst_QSslSocket::setEmptyDefaultConfiguration() // this test should be last,
     socket = client.data();
 
     connect(socket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(ignoreErrorSlot()));
-    socket->connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+    socket->connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     QFETCH_GLOBAL(bool, setProxy);
     if (setProxy && socket->waitForEncrypted(4000))
-        QSKIP("Skipping flaky test - See QTBUG-29941");
+        QSKIP("Skipping flaky test - See BOBUIBUG-29941");
 }
 
 void tst_QSslSocket::allowedProtocolNegotiation()
@@ -3916,7 +3916,7 @@ void tst_QSslSocket::allowedProtocolNegotiation()
     clientSocket.ignoreSslErrors();
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
 
     // Need to wait for both sides to emit encrypted as the ordering of which
     // ones emits encrypted() changes depending on whether we use TLS 1.2 or 1.3
@@ -3935,7 +3935,7 @@ void tst_QSslSocket::allowedProtocolNegotiation()
     QCOMPARE(server.socket->sslConfiguration().nextNegotiatedProtocol(), expectedNegotiated);
 }
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
 class PskProvider : public QObject
 {
     Q_OBJECT
@@ -3984,7 +3984,7 @@ public slots:
     }
 };
 
-class PskServer : public QTcpServer
+class PskServer : public BOBUIcpServer
 {
     Q_OBJECT
 public:
@@ -4045,21 +4045,21 @@ void tst_QSslSocket::simplePskConnect_data()
     if (!isTestingOpenSsl)
         QSKIP("The active TLS backend does support PSK");
 
-    QTest::addColumn<PskConnectTestType>("pskTestType");
-    QTest::newRow("PskConnectDoNotHandlePsk") << PskConnectDoNotHandlePsk;
-    QTest::newRow("PskConnectEmptyCredentials") << PskConnectEmptyCredentials;
-    QTest::newRow("PskConnectWrongCredentials") << PskConnectWrongCredentials;
-    QTest::newRow("PskConnectWrongIdentity") << PskConnectWrongIdentity;
-    QTest::newRow("PskConnectWrongPreSharedKey") << PskConnectWrongPreSharedKey;
-    QTest::newRow("PskConnectRightCredentialsPeerVerifyFailure") << PskConnectRightCredentialsPeerVerifyFailure;
-    QTest::newRow("PskConnectRightCredentialsVerifyPeer") << PskConnectRightCredentialsVerifyPeer;
-    QTest::newRow("PskConnectRightCredentialsDoNotVerifyPeer") << PskConnectRightCredentialsDoNotVerifyPeer;
+    BOBUIest::addColumn<PskConnectTestType>("pskTestType");
+    BOBUIest::newRow("PskConnectDoNotHandlePsk") << PskConnectDoNotHandlePsk;
+    BOBUIest::newRow("PskConnectEmptyCredentials") << PskConnectEmptyCredentials;
+    BOBUIest::newRow("PskConnectWrongCredentials") << PskConnectWrongCredentials;
+    BOBUIest::newRow("PskConnectWrongIdentity") << PskConnectWrongIdentity;
+    BOBUIest::newRow("PskConnectWrongPreSharedKey") << PskConnectWrongPreSharedKey;
+    BOBUIest::newRow("PskConnectRightCredentialsPeerVerifyFailure") << PskConnectRightCredentialsPeerVerifyFailure;
+    BOBUIest::newRow("PskConnectRightCredentialsVerifyPeer") << PskConnectRightCredentialsVerifyPeer;
+    BOBUIest::newRow("PskConnectRightCredentialsDoNotVerifyPeer") << PskConnectRightCredentialsDoNotVerifyPeer;
 }
 
 void tst_QSslSocket::simplePskConnect()
 {
     QFETCH(PskConnectTestType, pskTestType);
-    QSKIP("This test requires change 1f8cab2c3bcd91335684c95afa95ae71e00a94e4 on the network test server, QTQAINFRA-917");
+    QSKIP("This test requires change 1f8cab2c3bcd91335684c95afa95ae71e00a94e4 on the network test server, BOBUIQAINFRA-917");
 
     if (!QSslSocket::supportsSsl())
         QSKIP("No SSL support");
@@ -4196,7 +4196,7 @@ void tst_QSslSocket::simplePskConnect()
     }
 
     // Start connecting
-    socket.connectToHost(QtNetworkSettings::serverName(), PSK_SERVER_PORT);
+    socket.connectToHost(BobUINetworkSettings::serverName(), PSK_SERVER_PORT);
     QCOMPARE(socket.state(), QAbstractSocket::HostLookupState);
     enterLoop(10);
 
@@ -4287,7 +4287,7 @@ void tst_QSslSocket::simplePskConnect()
 
     case PskConnectRightCredentialsVerifyPeer:
     case PskConnectRightCredentialsDoNotVerifyPeer:
-        socket.write("Hello from Qt TLS/PSK!");
+        socket.write("Hello from BobUI TLS/PSK!");
         QVERIFY(socket.waitForBytesWritten());
         break;
     }
@@ -4318,10 +4318,10 @@ void tst_QSslSocket::ephemeralServerKey_data()
     if (!isTestingOpenSsl)
         QSKIP("The active TLS backend does not support ephemeral keys");
 
-    QTest::addColumn<QString>("cipher");
-    QTest::addColumn<bool>("emptyKey");
+    BOBUIest::addColumn<QString>("cipher");
+    BOBUIest::addColumn<bool>("emptyKey");
 
-    QTest::newRow("ForwardSecrecyCipher") << "ECDHE-RSA-AES256-SHA" << (QSslSocket::sslLibraryVersionNumber() < 0x10002000L);
+    BOBUIest::newRow("ForwardSecrecyCipher") << "ECDHE-RSA-AES256-SHA" << (QSslSocket::sslLibraryVersionNumber() < 0x10002000L);
 }
 
 void tst_QSslSocket::ephemeralServerKey()
@@ -4429,7 +4429,7 @@ void tst_QSslSocket::pskServer()
     QCOMPARE(socket.state(), QAbstractSocket::ConnectedState);
 
     // check writing
-    socket.write("Hello from Qt TLS/PSK!");
+    socket.write("Hello from BobUI TLS/PSK!");
     QVERIFY(socket.waitForBytesWritten());
 
     // disconnect
@@ -4450,11 +4450,11 @@ void tst_QSslSocket::signatureAlgorithm_data()
         QSKIP("Test is not valid for TLS 1.3/OpenSSL 1.1.1");
     }
 
-    QTest::addColumn<QByteArrayList>("serverSigAlgPairs");
-    QTest::addColumn<QSsl::SslProtocol>("serverProtocol");
-    QTest::addColumn<QByteArrayList>("clientSigAlgPairs");
-    QTest::addColumn<QSsl::SslProtocol>("clientProtocol");
-    QTest::addColumn<QAbstractSocket::SocketState>("state");
+    BOBUIest::addColumn<QByteArrayList>("serverSigAlgPairs");
+    BOBUIest::addColumn<QSsl::SslProtocol>("serverProtocol");
+    BOBUIest::addColumn<QByteArrayList>("clientSigAlgPairs");
+    BOBUIest::addColumn<QSsl::SslProtocol>("clientProtocol");
+    BOBUIest::addColumn<QAbstractSocket::SocketState>("state");
 
     const QByteArray dsaSha1("DSA+SHA1");
     const QByteArray ecdsaSha1("ECDSA+SHA1");
@@ -4463,43 +4463,43 @@ void tst_QSslSocket::signatureAlgorithm_data()
     const QByteArray rsaSha384("RSA+SHA384");
     const QByteArray rsaSha512("RSA+SHA512");
 
-    QTest::newRow("match_TlsV1_2")
+    BOBUIest::newRow("match_TlsV1_2")
         << QByteArrayList({rsaSha256})
         << QSsl::TlsV1_2
         << QByteArrayList({rsaSha256})
         << QSsl::AnyProtocol
         << QAbstractSocket::ConnectedState;
-    QTest::newRow("no_hashalg_match_TlsV1_2")
+    BOBUIest::newRow("no_hashalg_match_TlsV1_2")
         << QByteArrayList({rsaSha256})
         << QSsl::TlsV1_2
         << QByteArrayList({rsaSha512})
         << QSsl::AnyProtocol
         << QAbstractSocket::UnconnectedState;
-    QTest::newRow("no_sigalg_match_TlsV1_2")
+    BOBUIest::newRow("no_sigalg_match_TlsV1_2")
         << QByteArrayList({ecdsaSha512})
         << QSsl::TlsV1_2
         << QByteArrayList({rsaSha512})
         << QSsl::AnyProtocol
         << QAbstractSocket::UnconnectedState;
-    QTest::newRow("no_cipher_match_AnyProtocol")
+    BOBUIest::newRow("no_cipher_match_AnyProtocol")
         << QByteArrayList({rsaSha512})
         << QSsl::AnyProtocol
         << QByteArrayList({ecdsaSha512})
         << QSsl::AnyProtocol
         << QAbstractSocket::UnconnectedState;
-    QTest::newRow("match_multiple-choice")
+    BOBUIest::newRow("match_multiple-choice")
         << QByteArrayList({dsaSha1, rsaSha256, rsaSha384, rsaSha512})
         << QSsl::AnyProtocol
         << QByteArrayList({ecdsaSha1, rsaSha384, rsaSha512, ecdsaSha512})
         << QSsl::AnyProtocol
         << QAbstractSocket::ConnectedState;
-    QTest::newRow("match_client_longer")
+    BOBUIest::newRow("match_client_longer")
         << QByteArrayList({dsaSha1, rsaSha256})
         << QSsl::AnyProtocol
         << QByteArrayList({ecdsaSha1, ecdsaSha512, rsaSha256})
         << QSsl::AnyProtocol
         << QAbstractSocket::ConnectedState;
-    QTest::newRow("match_server_longer")
+    BOBUIest::newRow("match_server_longer")
         << QByteArrayList({ecdsaSha1, ecdsaSha512, rsaSha256})
         << QSsl::AnyProtocol
         << QByteArrayList({dsaSha1, rsaSha256})
@@ -4507,25 +4507,25 @@ void tst_QSslSocket::signatureAlgorithm_data()
         << QAbstractSocket::ConnectedState;
 
     // signature algorithms do not match, but are ignored because the tls version is not v1.2
-    QTest::newRow("client_ignore_TlsV1_1")
+    BOBUIest::newRow("client_ignore_TlsV1_1")
         << QByteArrayList({rsaSha256})
         << Test::TlsV1_1
         << QByteArrayList({rsaSha512})
         << QSsl::AnyProtocol
         << QAbstractSocket::ConnectedState;
-    QTest::newRow("server_ignore_TlsV1_1")
+    BOBUIest::newRow("server_ignore_TlsV1_1")
         << QByteArrayList({rsaSha256})
         << QSsl::AnyProtocol
         << QByteArrayList({rsaSha512})
         << Test::TlsV1_1
         << QAbstractSocket::ConnectedState;
-    QTest::newRow("client_ignore_TlsV1_0")
+    BOBUIest::newRow("client_ignore_TlsV1_0")
         << QByteArrayList({rsaSha256})
         << Test::TlsV1_0
         << QByteArrayList({rsaSha512})
         << QSsl::AnyProtocol
         << QAbstractSocket::ConnectedState;
-    QTest::newRow("server_ignore_TlsV1_0")
+    BOBUIest::newRow("server_ignore_TlsV1_0")
         << QByteArrayList({rsaSha256})
         << QSsl::AnyProtocol
         << QByteArrayList({rsaSha512})
@@ -4559,7 +4559,7 @@ void tst_QSslSocket::signatureAlgorithm()
     socket = &client;
 
     QEventLoop loop;
-    QTimer::singleShot(5000, &loop, &QEventLoop::quit);
+    BOBUIimer::singleShot(5000, &loop, &QEventLoop::quit);
     connect(socket, &QAbstractSocket::errorOccurred, &loop, &QEventLoop::quit);
     connect(socket, QOverload<const QList<QSslError> &>::of(&QSslSocket::sslErrors), this, &tst_QSslSocket::ignoreErrorSlot);
     connect(socket, &QSslSocket::encrypted, &loop, &QEventLoop::quit);
@@ -4583,26 +4583,26 @@ void tst_QSslSocket::forwardReadChannelFinished()
     QSignalSpy readChannelFinishedSpy(&socket, &QAbstractSocket::readChannelFinished);
     connect(&socket, &QSslSocket::encrypted, [&socket]() {
         const auto data = QString("GET /ip HTTP/1.0\r\nHost: %1\r\n\r\nAccept: */*\r\n\r\n")
-                .arg(QtNetworkSettings::serverLocalName()).toUtf8();
+                .arg(BobUINetworkSettings::serverLocalName()).toUtf8();
         socket.write(data);
     });
     connect(&socket, &QSslSocket::readChannelFinished,
-            &QTestEventLoop::instance(), &QTestEventLoop::exitLoop);
-    socket.connectToHostEncrypted(QtNetworkSettings::httpServerName(), 443);
+            &BOBUIestEventLoop::instance(), &BOBUIestEventLoop::exitLoop);
+    socket.connectToHostEncrypted(BobUINetworkSettings::httpServerName(), 443);
     enterLoop(10);
     QVERIFY(readChannelFinishedSpy.size());
 }
 
-#endif // QT_CONFIG(openssl)
+#endif // BOBUI_CONFIG(openssl)
 
 void tst_QSslSocket::unsupportedProtocols_data()
 {
-    QTest::addColumn<QSsl::SslProtocol>("unsupportedProtocol");
-    QTest::newRow("DtlsV1_0") << Test::DtlsV1_0;
-    QTest::newRow("DtlsV1_2") << QSsl::DtlsV1_2;
-    QTest::newRow("DtlsV1_0OrLater") << Test::DtlsV1_0OrLater;
-    QTest::newRow("DtlsV1_2OrLater") << QSsl::DtlsV1_2OrLater;
-    QTest::newRow("UnknownProtocol") << QSsl::UnknownProtocol;
+    BOBUIest::addColumn<QSsl::SslProtocol>("unsupportedProtocol");
+    BOBUIest::newRow("DtlsV1_0") << Test::DtlsV1_0;
+    BOBUIest::newRow("DtlsV1_2") << QSsl::DtlsV1_2;
+    BOBUIest::newRow("DtlsV1_0OrLater") << Test::DtlsV1_0OrLater;
+    BOBUIest::newRow("DtlsV1_2OrLater") << QSsl::DtlsV1_2OrLater;
+    BOBUIest::newRow("UnknownProtocol") << QSsl::UnknownProtocol;
 }
 
 void tst_QSslSocket::unsupportedProtocols()
@@ -4653,11 +4653,11 @@ void tst_QSslSocket::unsupportedProtocols()
         server.protocol = unsupportedProtocol;
         QVERIFY(server.listen());
 
-        QTestEventLoop loop;
+        BOBUIestEventLoop loop;
         connect(&server, &SslServer::socketError, [&loop](QAbstractSocket::SocketError)
                 {loop.exitLoop();});
 
-        QTcpSocket client;
+        BOBUIcpSocket client;
         client.connectToHost(QHostAddress::LocalHost, server.serverPort());
         loop.enterLoop(timeout);
         QVERIFY(!loop.timeout());
@@ -4690,10 +4690,10 @@ void tst_QSslSocket::oldErrorsOnSocketReuse()
     });
 
     socket.connectToHostEncrypted(QString::fromLatin1("localhost"), server.serverPort());
-    QVERIFY(QTest::qWaitFor([&socket](){ return socket.isEncrypted(); }));
+    QVERIFY(BOBUIest::qWaitFor([&socket](){ return socket.isEncrypted(); }));
     socket.disconnectFromHost();
     if (socket.state() != QAbstractSocket::UnconnectedState) {
-        QVERIFY(QTest::qWaitFor(
+        QVERIFY(BOBUIest::qWaitFor(
             [&socket](){
                 return socket.state() == QAbstractSocket::UnconnectedState;
         }));
@@ -4707,7 +4707,7 @@ void tst_QSslSocket::oldErrorsOnSocketReuse()
     QVERIFY(server.listen(QHostAddress::SpecialAddress::LocalHost));
 
     socket.connectToHostEncrypted(QString::fromLatin1("localhost"), server.serverPort());
-    QVERIFY(QTest::qWaitFor([&socket](){ return socket.isEncrypted(); }));
+    QVERIFY(BOBUIest::qWaitFor([&socket](){ return socket.isEncrypted(); }));
 
     for (const auto &error : oldList) {
         QVERIFY2(!errorList.contains(error),
@@ -4715,7 +4715,7 @@ void tst_QSslSocket::oldErrorsOnSocketReuse()
     }
 }
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
 
 void tst_QSslSocket::alertMissingCertificate()
 {
@@ -4749,9 +4749,9 @@ void tst_QSslSocket::alertMissingCertificate()
 
     clientSocket.connectToHostEncrypted(server.serverAddress().toString(), server.serverPort());
 
-    QTestEventLoop runner;
+    BOBUIestEventLoop runner;
     auto *context = &runner;
-    QTimer::singleShot(500, context, [&runner](){
+    BOBUIimer::singleShot(500, context, [&runner](){
         runner.exitLoop();
     });
 
@@ -4773,7 +4773,7 @@ void tst_QSslSocket::alertMissingCertificate()
         // quickly, before the server has finished processing. So wait for the
         // inevitable disconnect.
         QCOMPARE(clientSocket.sessionProtocol(), QSsl::TlsV1_3);
-        connect(&clientSocket, &QSslSocket::disconnected, &runner, &QTestEventLoop::exitLoop);
+        connect(&clientSocket, &QSslSocket::disconnected, &runner, &BOBUIestEventLoop::exitLoop);
         runner.enterLoop(10s);
     }
 
@@ -4812,9 +4812,9 @@ void tst_QSslSocket::alertInvalidCertificate()
 
     clientSocket.connectToHostEncrypted(server.serverAddress().toString(), server.serverPort());
 
-    QTestEventLoop runner;
+    BOBUIestEventLoop runner;
     auto *context = &runner;
-    QTimer::singleShot(500, context, [&runner](){
+    BOBUIimer::singleShot(500, context, [&runner](){
         runner.exitLoop();
     });
 
@@ -4843,10 +4843,10 @@ void tst_QSslSocket::selfSignedCertificates_data()
     if (!isTestingOpenSsl)
         QSKIP("The active TLS backend does not detect the required error");
 
-    QTest::addColumn<bool>("clientKnown");
+    BOBUIest::addColumn<bool>("clientKnown");
 
-    QTest::newRow("Client known") << true;
-    QTest::newRow("Client unknown") << false;
+    BOBUIest::newRow("Client known") << true;
+    BOBUIest::newRow("Client unknown") << false;
 }
 
 void tst_QSslSocket::selfSignedCertificates()
@@ -4938,9 +4938,9 @@ void tst_QSslSocket::selfSignedCertificates()
 
     clientSocket.connectToHostEncrypted(server.serverAddress().toString(), server.serverPort());
 
-    QTestEventLoop runner;
+    BOBUIestEventLoop runner;
     auto *context = &runner;
-    QTimer::singleShot(500, context,
+    BOBUIimer::singleShot(500, context,
                        [&runner]() {
                            runner.exitLoop();
                        }
@@ -4966,7 +4966,7 @@ void tst_QSslSocket::selfSignedCertificates()
         QVERIFY(clientSocket.isEncrypted());
     } else {
         QVERIFY(serverSpy.size() > 0);
-        QEXPECT_FAIL("", "Failing to trigger signal, QTBUG-81661", Continue);
+        QEXPECT_FAIL("", "Failing to trigger signal, BOBUIBUG-81661", Continue);
         QVERIFY(clientSpy.size() > 0);
         QVERIFY(server.socket && !server.socket->isEncrypted());
         QVERIFY(!clientSocket.isEncrypted());
@@ -4978,10 +4978,10 @@ void tst_QSslSocket::pskHandshake_data()
     if (!isTestingOpenSsl)
         QSKIP("The active TLS backend does not support PSK");
 
-    QTest::addColumn<bool>("pskRight");
+    BOBUIest::addColumn<bool>("pskRight");
 
-    QTest::newRow("Psk right") << true;
-    QTest::newRow("Psk wrong") << false;
+    BOBUIest::newRow("Psk right") << true;
+    BOBUIest::newRow("Psk wrong") << false;
 }
 
 void tst_QSslSocket::pskHandshake()
@@ -5078,9 +5078,9 @@ void tst_QSslSocket::pskHandshake()
 
     clientSocket.connectToHostEncrypted(server.serverAddress().toString(), server.serverPort());
 
-    QTestEventLoop runner;
+    BOBUIestEventLoop runner;
     auto *context = &runner;
-    QTimer::singleShot(500, context, [&runner]() {
+    BOBUIimer::singleShot(500, context, [&runner]() {
         runner.exitLoop();
     });
 
@@ -5114,10 +5114,10 @@ void tst_QSslSocket::pskHandshake()
     }
 }
 
-#endif // QT_CONFIG(openssl)
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(openssl)
+#endif // BOBUI_CONFIG(ssl)
 
 
-QTEST_MAIN(tst_QSslSocket)
+BOBUIEST_MAIN(tst_QSslSocket)
 
 #include "tst_qsslsocket.moc"

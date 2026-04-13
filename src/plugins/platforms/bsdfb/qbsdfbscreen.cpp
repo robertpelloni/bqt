@@ -1,16 +1,16 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2015-2016 Oleksandr Tymoshenko <gonzo@bluezbox.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qbsdfbscreen.h"
-#include <QtFbSupport/private/qfbcursor_p.h>
-#include <QtFbSupport/private/qfbwindow_p.h>
-#include <QtCore/QFile>
-#include <QtCore/QRegularExpression>
-#include <QtGui/QPainter>
+#include <BobUIFbSupport/private/qfbcursor_p.h>
+#include <BobUIFbSupport/private/qfbwindow_p.h>
+#include <BobUICore/QFile>
+#include <BobUICore/QRegularExpression>
+#include <BobUIGui/QPainter>
 
-#include <private/qcore_unix_p.h> // overrides QT_OPEN
+#include <private/qcore_unix_p.h> // overrides BOBUI_OPEN
 #include <qimage.h>
 #include <qdebug.h>
 
@@ -29,9 +29,9 @@
 #include <sys/consio.h>
 #include <sys/fbio.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 enum {
     DefaultDPI = 100
@@ -41,10 +41,10 @@ static int openFramebufferDevice(const QString &dev)
 {
     const QByteArray devPath = QFile::encodeName(dev);
 
-    int fd = QT_OPEN(devPath.constData(), O_RDWR);
+    int fd = BOBUI_OPEN(devPath.constData(), O_RDWR);
 
     if (fd == -1)
-        fd = QT_OPEN(devPath.constData(), O_RDONLY);
+        fd = BOBUI_OPEN(devPath.constData(), O_RDONLY);
 
     return fd;
 }
@@ -113,7 +113,7 @@ QBsdFbScreen::~QBsdFbScreen()
 {
     if (m_framebufferFd != -1) {
         munmap(m_mmap.data - m_mmap.offset, m_mmap.size);
-        qt_safe_close(m_framebufferFd);
+        bobui_safe_close(m_framebufferFd);
     }
 }
 
@@ -246,4 +246,4 @@ QPixmap QBsdFbScreen::grabWindow(WId wid, int x, int y, int width, int height) c
     return QPixmap();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

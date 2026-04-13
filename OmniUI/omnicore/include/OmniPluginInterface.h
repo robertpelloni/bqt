@@ -1,7 +1,7 @@
 #ifndef OMNIPLUGININTERFACE_H
 #define OMNIPLUGININTERFACE_H
 
-#include <QtPlugin>
+#include <BobUIPlugin>
 #include <QString>
 
 class QQmlEngine;

@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore>
+#include <BobUICore>
 
 using namespace std;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 void examples()
 {
@@ -34,12 +34,12 @@ void examples()
 
 //! [8]
     QStringList files;
-    files << "$QTDIR/src/moc/moc.y"
-          << "$QTDIR/src/moc/moc.l"
-          << "$QTDIR/include/qconfig.h";
+    files << "$BOBUIDIR/src/moc/moc.y"
+          << "$BOBUIDIR/src/moc/moc.l"
+          << "$BOBUIDIR/include/qconfig.h";
 
-    files.replaceInStrings("$QTDIR", "/usr/lib/qt");
-    // files: [ "/usr/lib/qt/src/moc/moc.y", ...]
+    files.replaceInStrings("$BOBUIDIR", "/usr/lib/bobui");
+    // files: [ "/usr/lib/bobui/src/moc/moc.y", ...]
 //! [8]
 
     QString str1, str2, str3;
@@ -90,7 +90,7 @@ void examples()
     {
 //! [18]
     QStringList veryLongList;
-    QStringMatcher matcher(u"Straße", Qt::CaseInsensitive);
+    QStringMatcher matcher(u"Straße", BobUI::CaseInsensitive);
     QStringList filtered = veryLongList.filter(matcher);
 //! [18]
     }
@@ -98,7 +98,7 @@ void examples()
     {
 //! [19]
     QStringList veryLargeList;
-    QLatin1StringMatcher matcher("Street"_L1, Qt::CaseInsensitive);
+    QLatin1StringMatcher matcher("Street"_L1, BobUI::CaseInsensitive);
     QStringList filtered = veryLargeList.filter(matcher);
 //! [19]
     }

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page datastreamformat.html
-    \title Serializing Qt Data Types
+    \title Serializing BobUI Data Types
     \brief List of data types that can be serialized by QDataStream.
 
-    The \l QDataStream class allows you to serialize the Qt data types
+    The \l QDataStream class allows you to serialize the BobUI data types
     listed in this section.
 
-    It is always best to cast integers to a Qt integer type, such as
+    It is always best to cast integers to a BobUI integer type, such as
     \l{qint16} or \l{quint32}, when reading and writing. This ensures that
     you always know exactly what size integers you are reading and
     writing, no matter what the underlying platform and architecture
@@ -89,19 +89,19 @@
     \li QSizePolicy
     \li QStandardItem
     \li QString
-    \li QTableWidgetItem
-    \li QTextBlockFormat
-    \li QTextCharFormat
-    \li QTextFormat
-    \li QTextFrameFormat
-    \li QTextLength
-    \li QTextListFormat
-    \li QTextTableCellFormat
-    \li QTimeZone
-    \li QTime
-    \li QTransform
-    \li QTreeWidgetItem
-    \li QTypeRevision
+    \li BOBUIableWidgetItem
+    \li BOBUIextBlockFormat
+    \li BOBUIextCharFormat
+    \li BOBUIextFormat
+    \li BOBUIextFrameFormat
+    \li BOBUIextLength
+    \li BOBUIextListFormat
+    \li BOBUIextTableCellFormat
+    \li BOBUIimeZone
+    \li BOBUIime
+    \li BOBUIransform
+    \li BOBUIreeWidgetItem
+    \li BOBUIypeRevision
     \li QUrl
     \li QUuid
     \li QVariant
@@ -111,6 +111,6 @@
     \li QVersionNumber
     \endlist
 
-    \sa {JSON Support in Qt}, {CBOR Support in Qt}
+    \sa {JSON Support in BobUI}, {CBOR Support in BobUI}
 
 */

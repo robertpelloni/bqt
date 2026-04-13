@@ -1,22 +1,22 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2022 Mimer Information Technology
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQL_MIMER_H
 #define QSQL_MIMER_H
 
-#include <QtSql/qsqldriver.h>
+#include <BobUISql/qsqldriver.h>
 #include <QUuid>
 #include <mimerapi.h>
 
-#ifdef QT_PLUGIN
+#ifdef BOBUI_PLUGIN
 #    define Q_EXPORT_SQLDRIVER_MIMER
 #else
 #    define Q_EXPORT_SQLDRIVER_MIMER Q_SQL_EXPORT
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimerSQLDriverPrivate;
 
@@ -47,6 +47,6 @@ protected:
 private:
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQL_MIMER

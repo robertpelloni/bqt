@@ -1,9 +1,9 @@
-Qt 4.3.1 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.3.0.
+BobUI 4.3.1 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.3.0.
 
-The Qt version 4.3 series is binary compatible with the 4.2.x, 4.1.x and
-4.0.x series. Applications compiled for Qt 4.0, 4.1 or 4.2 will continue to
-run with Qt 4.3.
+The BobUI version 4.3 series is binary compatible with the 4.2.x, 4.1.x and
+4.0.x series. Applications compiled for BobUI 4.0, 4.1 or 4.2 will continue to
+run with BobUI 4.3.
 
 ****************************************************************************
 *                           General                                        *
@@ -13,7 +13,7 @@ General Improvements
 --------------------
 
 - Translations
-    * Updated the German translation to provide complete coverage of Qt.
+    * Updated the German translation to provide complete coverage of BobUI.
 
 - QDBusView
     * Added icons for Mac OS X and Windows.
@@ -68,7 +68,7 @@ General Improvements
     * [166677] Windows only: Fixed an issue with alert() where windows
       would keep flashing after being activated by the user.
     * [168974] Fixed problems with compilation that could occur when
-      QT3_SUPPORT and QT_NO_CURSOR were defined.
+      BOBUI3_SUPPORT and BOBUI_NO_CURSOR were defined.
 
 - QComboBox
     * [165130] Mac OS X only: Fixed bug that caused an editable combo box to
@@ -97,7 +97,7 @@ General Improvements
 - QGLWidget
     * [162085] X11 only: Fixed usage of QGLWidget on multiple X11 screens.
     * [164707] X11 only: Fixed the transparent overlay color usage to make
-      it possible to draw with a solid black color. Qt::transparent is now
+      it possible to draw with a solid black color. BobUI::transparent is now
       always returned as the transparent color in an overlay.
     * [162143] Fixed a crash that could occur when calling renderPixmap()
       with extremely large sizes. It now gracefully fails instead.
@@ -119,7 +119,7 @@ General Improvements
     * [160828] Fixed bug in QGraphicsScene/View::render() which could cause
       nothing to be rendered for QPicture target devices.
     * [163919] Scroll bar ranges are no longer reset to (0,0) when the
-      scroll bars are disabled (Qt::ScrollBarAlwaysOff).
+      scroll bars are disabled (BobUI::ScrollBarAlwaysOff).
     * [163537] Scroll bar ranges are now correct also for styles with a
       viewport frame only around the viewport itself (e.g., Motif and Mac
       OS X style).
@@ -138,7 +138,7 @@ General Improvements
 
 - QImage
     * [163727] Fixed artifacts in scaled images that could occur when using
-      Qt::FastTransformation.
+      BobUI::FastTransformation.
     * [169908] Fixed a crash that could occur when reading 4-bit
       uncompressed BMP images.
 
@@ -246,7 +246,7 @@ General Improvements
 
 - QPrintEngine
     * [166499] Windows only: Fixed a bug that could cause printing from a
-      QTextEdit to produce incorrect wrong results under certain
+      BOBUIextEdit to produce incorrect wrong results under certain
       circumstances.
     * [161915] Mac OS X only: Drawing vertical lines with a dot pattern now
       work correctly on OS X 10.3.9.
@@ -267,7 +267,7 @@ General Improvements
       correctly.
 
 - QRasterPaintEngine
-    * [166710] Fixed bug that prevented Qt::OpaqueMode from being taken into
+    * [166710] Fixed bug that prevented BobUI::OpaqueMode from being taken into
       account under certain circumstances when QPainter::fillRect() was
       called.
     * [159538] Fixed drawing of a monochrome image into another monochrome
@@ -320,14 +320,14 @@ General Improvements
     * [169571] Fixed a crash that could occur after disconnecting from a
       remote address.
 
-- QTcpSocket
+- BOBUIcpSocket
     * [169183] Removed a qWarning() when reading from a closed socket
       (regression from 4.2.3).
 
-- QTemporaryFile
+- BOBUIemporaryFile
     * [167565] Fixed a regression from 4.2.3; size() would always return 0.
 
-- QTextEdit
+- BOBUIextEdit
     * [161577] Fixed regression causing Shift-Backspace to be ignored.
     * [165833] Fixed floating point overflow causing incorrect page heights
       for text documents.
@@ -335,10 +335,10 @@ General Improvements
       NoWrap line break mode when there is a horizontal scroll bar.
     * [163446] Fixed excessive emission of selectionChanged() signals when
       moving the cursor.
-    * [167701] Fixed QTextEdit::setLineWrapMode to not change the
+    * [167701] Fixed BOBUIextEdit::setLineWrapMode to not change the
       wordWrapMode property when called with NoWrap.
 
-- QTextDocument
+- BOBUIextDocument
     * [160631] Fixed missing HTML export of page break policies.
     * [163258] Fixed bug that prevented text table borders from being drawn
       in QLabels and tool tips.
@@ -347,10 +347,10 @@ General Improvements
     * [168406] Fixed rendering bug which would cause incorrect background
       fills for paragraphs with a left margin set.
 
-- QTextLayout
+- BOBUIextLayout
     * [166083] Fixed incorrect line breaking when breaking at a tab
       character.
-    * [165861] Fixed support for QTextOption::NoWrap.
+    * [165861] Fixed support for BOBUIextOption::NoWrap.
 
 - QLabel
     * [162515] Fixed bug that prevented QLabel's alignment from being
@@ -470,7 +470,7 @@ Windows
     * [169376] Fixed a race condition that would cause a crash when
       stopping timers in a thread.
     * [165440] Fixed a crash that could occur when using Google's Pinyin
-      input method with Qt.
+      input method with BobUI.
 
 Mac OS X
 --------
@@ -487,7 +487,7 @@ Mac OS X
       precompiled header to interfere with the Objective-C 'id' keyword.
     * [165659] Fixed bold/italic font rendering for some fonts.
 
-Qtopia Core
+BobUIopia Core
 -----------
 
     * Fixed support for bitmap fonts.

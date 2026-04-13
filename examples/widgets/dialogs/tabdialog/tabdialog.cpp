@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "tabdialog.h"
 
@@ -11,7 +11,7 @@ TabDialog::TabDialog(const QString &fileName, QWidget *parent)
 {
     QFileInfo fileInfo(fileName);
 
-    tabWidget = new QTabWidget;
+    tabWidget = new BOBUIabWidget;
     tabWidget->addTab(new GeneralTab(fileInfo), tr("General"));
     tabWidget->addTab(new PermissionsTab(fileInfo), tr("Permissions"));
     tabWidget->addTab(new ApplicationsTab(fileInfo), tr("Applications"));

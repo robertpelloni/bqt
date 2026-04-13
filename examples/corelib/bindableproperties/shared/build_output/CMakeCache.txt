@@ -204,7 +204,7 @@ Project_IS_TOP_LEVEL:STATIC=ON
 Project_SOURCE_DIR:STATIC=C:/Users/hyper/workspace/bobui/examples/corelib/bindableproperties/shared
 
 //Dependencies for the target
-bindableproperties_shared_LIB_DEPENDS:STATIC=general;Qt6::Core;general;Qt6::Gui;general;Qt6::Widgets;
+bindableproperties_shared_LIB_DEPENDS:STATIC=general;BobUI6::Core;general;BobUI6::Gui;general;BobUI6::Widgets;
 
 
 ########################

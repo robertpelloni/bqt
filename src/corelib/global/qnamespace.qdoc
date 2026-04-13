@@ -1,18 +1,18 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2020 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \namespace Qt
-    \inmodule QtCore
-    \keyword Qt Namespace
+    \namespace BobUI
+    \inmodule BobUICore
+    \keyword BobUI Namespace
 
-    \brief The Qt namespace contains miscellaneous identifiers
-    used throughout the Qt library.
+    \brief The BobUI namespace contains miscellaneous identifiers
+    used throughout the BobUI library.
 */
 
 /*!
-    \enum Qt::Orientation
+    \enum BobUI::Orientation
 
     This type is used to signify an object's orientation.
 
@@ -23,7 +23,7 @@
 */
 
 /*!
-    \enum Qt::AlignmentFlag
+    \enum BobUI::AlignmentFlag
 
     This enum type is used to describe alignment. It contains
     horizontal and vertical flags that can be combined to produce
@@ -52,20 +52,20 @@
     \value AlignCenter Centers in both dimensions.
 
     You can use at most one horizontal and one vertical flag at a
-    time. Qt::AlignCenter counts as both horizontal and vertical.
+    time. BobUI::AlignCenter counts as both horizontal and vertical.
 
     Three enum values are useful in applications that can be run in
     right-to-left mode:
 
     \value AlignAbsolute  If the widget's layout direction is
-        Qt::RightToLeft (instead of Qt::LeftToRight, the default),
-        Qt::AlignLeft refers to the \e right edge and Qt::AlignRight
+        BobUI::RightToLeft (instead of BobUI::LeftToRight, the default),
+        BobUI::AlignLeft refers to the \e right edge and BobUI::AlignRight
         to the \e left edge. This is normally the desired behavior.
-        If you want Qt::AlignLeft to always mean "left" and
-        Qt::AlignRight to always mean "right", combine the flag with
-        Qt::AlignAbsolute.
-    \value AlignLeading  Synonym for Qt::AlignLeft.
-    \value AlignTrailing  Synonym for Qt::AlignRight.
+        If you want BobUI::AlignLeft to always mean "left" and
+        BobUI::AlignRight to always mean "right", combine the flag with
+        BobUI::AlignAbsolute.
+    \value AlignLeading  Synonym for BobUI::AlignLeft.
+    \value AlignTrailing  Synonym for BobUI::AlignRight.
 
     Masks:
 
@@ -76,7 +76,7 @@
 */
 
 /*!
-    \enum Qt::ApplicationAttribute
+    \enum BobUI::ApplicationAttribute
 
     This enum describes attributes that change the behavior of
     application-wide features. These are enabled and disabled using
@@ -84,7 +84,7 @@
     QCoreApplication::testAttribute().
 
 
-    \value [since 6.7] AA_QtQuickUseDefaultSizePolicy Qt Quick Layouts use the built-in size
+    \value [since 6.7] AA_BobUIQuickUseDefaultSizePolicy BobUI Quick Layouts use the built-in size
            policy of \l Item. For example, when this is set, \l Button fills the available
            width, but has a fixed height. When this is not set, it will use the default
            sizing behavior of the layout it's in, which is to use its implicit size as the
@@ -107,7 +107,7 @@
     \value AA_DontShowShortcutsInContextMenus Actions with the Shortcut property
            won't be shown in any shortcut menus unless specifically set by the
            QAction::shortcutVisibleInContextMenu property. This value was added
-           in Qt 5.10, and is by default based on the value reported by
+           in BobUI 5.10, and is by default based on the value reported by
            QStyleHints::showShortcutsInContextMenus(). To override the default
            behavior, set the style hint before QCoreApplication has been
            instantiated, or set this attribute after QCoreApplication has
@@ -117,9 +117,9 @@
 
     \value AA_DontCreateNativeWidgetSiblings Ensures that siblings of native
            widgets stay non-native unless specifically set by the
-           Qt::WA_NativeWindow attribute.
+           BobUI::WA_NativeWindow attribute.
 
-    \value AA_PluginApplication Indicates that Qt is used to author a plugin. Depending
+    \value AA_PluginApplication Indicates that BobUI is used to author a plugin. Depending
            on the operating system, it suppresses specific initializations that do not
            necessarily make sense in the plugin case.
            For example on \macos, this includes avoiding loading our nib for the main
@@ -127,7 +127,7 @@
            attribute to true will also set the AA_DontUseNativeMenuBar attribute
            to true. It also disables native event filters.
            This attribute must be set before QGuiApplication constructed.
-           This value was added in Qt 5.7.
+           This value was added in BobUI 5.7.
 
     \value AA_DontUseNativeMenuBar All menubars created while this attribute is
            set to true won't be used as a native menubar (e.g, the menubar at
@@ -136,16 +136,16 @@
     \value AA_MacDontSwapCtrlAndMeta Keyboard shortcuts on Apple platforms are typically
            based on the Command (or Cmd) keyboard modifier, represented by
            the ⌘ symbol. For example, the 'Copy' action is Command+C (⌘+C).
-           To ease cross platform development Qt will by default remap Command
-           to the Qt::ControlModifier, to align with other platforms. This
+           To ease cross platform development BobUI will by default remap Command
+           to the BobUI::ControlModifier, to align with other platforms. This
            allows creating keyboard shortcuts such as "Ctrl+J", which on
            \macos will then map to Command+J, as expected by \macos users. The
            actual Control (or Ctrl) modifier on Apple platforms, represented by ⌃,
-           is mapped to Qt::MetaModifier.
+           is mapped to BobUI::MetaModifier.
 
-           When this attribute is true Qt will not do the remapping, and pressing
-           the Command modifier will result in Qt::MetaModifier, while pressing
-           the Control modifier will result in Qt::ControlModifier.
+           When this attribute is true BobUI will not do the remapping, and pressing
+           the Command modifier will result in BobUI::MetaModifier, while pressing
+           the Control modifier will result in BobUI::ControlModifier.
 
            Note that the \l QKeySequence::StandardKey sequences will always be
            based on the same modifier (i.e., QKeySequence::Copy will be
@@ -173,12 +173,12 @@
            \e opengl32.dll or \e libGL.so) on platforms that use dynamic loading
            of the OpenGL implementation. This attribute must be set before
            QGuiApplication is constructed.
-           This value was added in Qt 5.3.
+           This value was added in BobUI 5.3.
 
     \value AA_UseOpenGLES Forces the usage of OpenGL ES 2.0 or higher on
            platforms that use dynamic loading of the OpenGL implementation.
            This attribute must be set before QGuiApplication is constructed.
-           This value was added in Qt 5.3.
+           This value was added in BobUI 5.3.
 
     \value AA_UseSoftwareOpenGL Forces the usage of a software based OpenGL
            implementation on platforms that use dynamic loading of the OpenGL
@@ -187,37 +187,37 @@
            OpenGL 2.1. The value may have no effect if no such OpenGL
            implementation is available. The default name of this library is
            \c opengl32sw.dll and can be overridden by setting the environment
-           variable \e QT_OPENGL_DLL. See the platform-specific pages, for
-           instance \l{Qt for Windows}, for more information. This attribute
+           variable \e BOBUI_OPENGL_DLL. See the platform-specific pages, for
+           instance \l{BobUI for Windows}, for more information. This attribute
            must be set before QGuiApplication is constructed.
-           This value was added in Qt 5.4.
+           This value was added in BobUI 5.4.
 
     \value AA_ShareOpenGLContexts Enables resource sharing between the OpenGL
            contexts used by classes like QOpenGLWidget and QQuickWidget. This
            allows sharing OpenGL resources, like textures, between QOpenGLWidget
            instances that belong to different top-level windows.
-           This value was added in Qt 5.4.
+           This value was added in BobUI 5.4.
 
     \value AA_SetPalette Indicates whether a palette was explicitly set on the
-           QGuiApplication. This value was added in Qt 5.5.
+           QGuiApplication. This value was added in BobUI 5.5.
 
-    \value AA_UseStyleSheetPropagationInWidgetStyles By default, Qt Style Sheets
+    \value AA_UseStyleSheetPropagationInWidgetStyles By default, BobUI Style Sheets
            disable regular QWidget palette and font propagation. When this flag
            is enabled, font and palette changes done from a style sheet will propagate
            a single time, when the style sheet is set.
            See \l{The Style Sheet Syntax#Inheritance}{The Style Sheet Syntax - Inheritance}
            for more details.
-           This value was added in Qt 5.7.
+           This value was added in BobUI 5.7.
 
     \value AA_DontUseNativeDialogs All dialogs created while this attribute is
            set to true won't use the native dialogs provided by the platform.
-           This value was added in Qt 5.7.
+           This value was added in BobUI 5.7.
 
     \value AA_SynthesizeMouseForUnhandledTabletEvents All tablet events
            that are not accepted by the application will be translated
            to mouse events instead. This attribute is enabled
            by default.
-           This value was added in Qt 5.7.
+           This value was added in BobUI 5.7.
 
     \value AA_CompressHighFrequencyEvents Enables compression of certain frequent events.
            On the X11 windowing system, the default value is true, which means that
@@ -235,24 +235,24 @@
            you can unset this attribute. Notice that input events from tablet devices
            will not be compressed. See AA_CompressTabletEvents if you want these to be
            compressed as well.
-           This value was added in Qt 5.7.
+           This value was added in BobUI 5.7.
 
     \value AA_CompressTabletEvents Enables compression of input events from tablet devices.
            Notice that AA_CompressHighFrequencyEvents must be true for events compression
            to be enabled, and that this flag extends the former to tablet events.
            Currently supported on the X11 windowing system, Windows 8 and above.
            The default value is false.
-           This value was added in Qt 5.10.
+           This value was added in BobUI 5.10.
 
     \value AA_DontCheckOpenGLContextThreadAffinity When making a context
            current using QOpenGLContext, do not check that the
            \l{QObject#Thread Affinity}{QObject thread affinity}
            of the QOpenGLContext object is the same thread calling
            \l{QOpenGLContext::makeCurrent}{makeCurrent()}.
-           This value was added in Qt 5.8.
+           This value was added in BobUI 5.8.
 
     \value AA_DisableShaderDiskCache Disables caching of shader program binaries
-           on disk. By default Qt Quick, QPainter's OpenGL backend, and any
+           on disk. By default BobUI Quick, QPainter's OpenGL backend, and any
            application using QOpenGLShaderProgram with one of its
            \e addCacheableShaderFromSource overloads will employ a disk-based
            program binary cache in either the shared or per-process cache storage
@@ -261,7 +261,7 @@
            disk-based caching of shaders.
 
     \value AA_DisableSessionManager Disables the QSessionManager.
-           By default Qt will connect to a running session manager for a GUI
+           By default BobUI will connect to a running session manager for a GUI
            application on supported platforms, use of a session manager may be
            redundant for system services.
            This attribute must be set before QGuiApplication is constructed.
@@ -277,7 +277,7 @@
            combo box menus, and non-native menubar menus) created while this
            attribute is set to true will not be represented as native top
            level windows, unless required by the implementation.
-           This value was added in Qt 6.8.
+           This value was added in BobUI 6.8.
 
     \omitvalue AA_AttributeCount
     \omitvalue AA_EnableHighDpiScaling
@@ -286,7 +286,7 @@
 */
 
 /*!
-    \enum Qt::MouseButton
+    \enum BobUI::MouseButton
 
     This enum type describes the different mouse buttons.
 
@@ -352,7 +352,7 @@
 */
 
 /*!
-    \enum Qt::KeyboardModifier
+    \enum BobUI::KeyboardModifier
 
     This enum describes the modifier keys.
 
@@ -373,17 +373,17 @@
     when an arrow key is pressed as the arrow keys are considered part of the
     keypad.
 
-    \note On Windows Keyboards, Qt::MetaModifier and Qt::Key_Meta are mapped
+    \note On Windows Keyboards, BobUI::MetaModifier and BobUI::Key_Meta are mapped
     to the Windows key.
 
     \sa MouseButton, Modifier
 */
 
 /*!
-    \enum Qt::Modifier
+    \enum BobUI::Modifier
 
     This enum provides shorter names for the keyboard modifier keys
-    supported by Qt.
+    supported by BobUI.
 
     \note On \macos, the \c CTRL value corresponds to
     the Command keys on the keyboard, and the \c META value
@@ -399,9 +399,9 @@
 */
 
 /*!
-    \enum Qt::GlobalColor
+    \enum BobUI::GlobalColor
 
-    Qt's predefined QColor objects:
+    BobUI's predefined QColor objects:
 
     \value white       \span {id="color-white"} {White (#ffffff) }
     \value black       \span {id="color-black"} {Black (#000000) }
@@ -429,7 +429,7 @@
 */
 
 /*!
-    \enum Qt::PenStyle
+    \enum BobUI::PenStyle
 
     This enum type defines the pen styles that can be drawn using
     QPainter. The styles are:
@@ -440,17 +440,17 @@
     \li \inlineimage qpen-dash.png
     \li \inlineimage qpen-dot.png
     \row
-    \li Qt::SolidLine
-    \li Qt::DashLine
-    \li Qt::DotLine
+    \li BobUI::SolidLine
+    \li BobUI::DashLine
+    \li BobUI::DotLine
     \row
     \li \inlineimage qpen-dashdot.png
     \li \inlineimage qpen-dashdotdot.png
     \li \inlineimage qpen-custom.png
     \row
-    \li Qt::DashDotLine
-    \li Qt::DashDotDotLine
-    \li Qt::CustomDashLine
+    \li BobUI::DashDotLine
+    \li BobUI::DashDotDotLine
+    \li BobUI::CustomDashLine
     \endtable
 
     \value NoPen  no line at all. For example, QPainter::drawRect()
@@ -470,9 +470,9 @@
 */
 
 /*!
-    \enum Qt::PenCapStyle
+    \enum BobUI::PenCapStyle
 
-    This enum type defines the pen cap styles supported by Qt, i.e.
+    This enum type defines the pen cap styles supported by BobUI, i.e.
     the line end caps that can be drawn using QPainter.
 
     \table
@@ -481,9 +481,9 @@
     \li \inlineimage qpen-flat.png
     \li \inlineimage qpen-roundcap.png
     \row
-    \li Qt::SquareCap
-    \li Qt::FlatCap
-    \li Qt::RoundCap
+    \li BobUI::SquareCap
+    \li BobUI::FlatCap
+    \li BobUI::RoundCap
     \endtable
 
     \value FlatCap  a square line end that does not cover the end
@@ -497,9 +497,9 @@
 */
 
 /*!
-    \enum Qt::PenJoinStyle
+    \enum BobUI::PenJoinStyle
 
-    This enum type defines the pen join styles supported by Qt, i.e.
+    This enum type defines the pen join styles supported by BobUI, i.e.
     which joins between two connected lines can be drawn using
     QPainter.
 
@@ -509,9 +509,9 @@
     \li \inlineimage qpen-miter.png
     \li \inlineimage qpen-roundjoin.png
     \row
-    \li Qt::BevelJoin
-    \li Qt::MiterJoin
-    \li Qt::RoundJoin
+    \li BobUI::BevelJoin
+    \li BobUI::MiterJoin
+    \li BobUI::RoundJoin
     \endtable
 
     \value MiterJoin  The outer edges of the lines are extended to
@@ -526,9 +526,9 @@
 */
 
 /*!
-    \enum Qt::BrushStyle
+    \enum BobUI::BrushStyle
 
-    This enum type defines the brush styles supported by Qt, i.e. the
+    This enum type defines the brush styles supported by BobUI, i.e. the
     fill pattern of shapes drawn using QPainter.
 
     \image brush-styles.png Brush Styles
@@ -557,7 +557,7 @@
 */
 
 /*!
-    \enum Qt::TextFlag
+    \enum BobUI::TextFlag
 
     This enum type is used to define some modifier flags. Some of
     these flags only make sense in the context of printing:
@@ -573,11 +573,11 @@
     \value TextWordWrap Breaks lines at appropriate points, e.g. at word
            boundaries.
     \value TextWrapAnywhere Breaks lines anywhere, even within words.
-    \value TextHideMnemonic Same as Qt::TextShowMnemonic but doesn't draw
+    \value TextHideMnemonic Same as BobUI::TextShowMnemonic but doesn't draw
            the underlines.
     \value TextDontPrint Treat this text as "hidden" and don't print it.
     \value TextIncludeTrailingSpaces When this option is set,
-           QTextLine::naturalTextWidth() and QTextLine::naturalTextRect() will
+           BOBUIextLine::naturalTextWidth() and BOBUIextLine::naturalTextRect() will
            return a value that includes the width of trailing spaces in the
            text; otherwise this width is excluded.
     \value TextJustificationForced Ensures that text lines are justified.
@@ -587,14 +587,14 @@
     \omitvalue TextForceRightToLeft
 
     You can use as many modifier flags as you want, except that
-    Qt::TextSingleLine and Qt::TextWordWrap cannot be combined.
+    BobUI::TextSingleLine and BobUI::TextWordWrap cannot be combined.
 
     Flags that are inappropriate for a given use are generally
     ignored.
 */
 
 /*!
-    \enum Qt::BGMode
+    \enum BobUI::BGMode
 
     Background mode:
 
@@ -603,7 +603,7 @@
 */
 
 /*!
-    \enum Qt::ConnectionType
+    \enum BobUI::ConnectionType
 
     This enum describes the types of connection that can be used
     between signals and slots. In particular, it determines whether a
@@ -612,8 +612,8 @@
 
     \value AutoConnection
            \b (Default) If the receiver \l{QObject#Thread Affinity}{lives in} the
-           thread that emits the signal, Qt::DirectConnection is used. Otherwise,
-           Qt::QueuedConnection is used. The connection type is
+           thread that emits the signal, BobUI::DirectConnection is used. Otherwise,
+           BobUI::QueuedConnection is used. The connection type is
            determined when the signal is emitted.
 
     \value DirectConnection
@@ -626,27 +626,27 @@
            receiver's thread.
 
     \value BlockingQueuedConnection
-           Same as Qt::QueuedConnection, except that the signalling thread blocks
+           Same as BobUI::QueuedConnection, except that the signalling thread blocks
            until the slot returns. This connection must \e not be used if the
            receiver lives in the signalling thread, or else the application
            will deadlock.
 
     \value UniqueConnection
            This is a flag that can be combined with any one of the above
-           connection types, using a bitwise OR. When Qt::UniqueConnection is
+           connection types, using a bitwise OR. When BobUI::UniqueConnection is
            set, QObject::connect() will fail if the connection already exists
            (i.e. if the same signal is already connected to the same slot
            for the same pair of objects).
 
     \value SingleShotConnection
            This is a flag that can be combined with any one of the above
-           connection types, using a bitwise OR. When Qt::SingleShotConnection
+           connection types, using a bitwise OR. When BobUI::SingleShotConnection
            is set, the slot is going to be called only once; the connection
            will be automatically broken when the signal is emitted.
-           This flag was introduced in Qt 6.0.
+           This flag was introduced in BobUI 6.0.
 
     With queued connections, the parameters must be of types that are
-    known to Qt's meta-object system, because Qt needs to copy the
+    known to BobUI's meta-object system, because BobUI needs to copy the
     arguments to store them in an event behind the scenes. If you try
     to use a queued connection and get the error message:
 
@@ -657,13 +657,13 @@
 
     When using signals and slots with multiple threads, see \l{Signals and Slots Across Threads}.
 
-    \sa {Multi-threading in Qt}, QObject::connect(), qRegisterMetaType(), Q_DECLARE_METATYPE()
+    \sa {Multi-threading in BobUI}, QObject::connect(), qRegisterMetaType(), Q_DECLARE_METATYPE()
 */
 
 /*!
-    \enum Qt::DateFormat
+    \enum BobUI::DateFormat
 
-    \value TextDate The default Qt format, which includes the day and month
+    \value TextDate The default BobUI format, which includes the day and month
     name, the day number in the month, and the year in full. The day and month
     names will be short names in English (C locale). This effectively uses, for
     a date, format \c{ddd MMM d yyyy}, for a time \c{HH:mm:ss} and combines
@@ -671,11 +671,11 @@
     zone-offset suffix, where relevant.  When reading from a string, a
     fractional part is also recognized on the seconds of a time part, as
     \c{HH:mm:ss.zzz}, and some minor variants on the format may be recognized,
-    for compatibility with earlier versions of Qt and with changes to the format
+    for compatibility with earlier versions of BobUI and with changes to the format
     planned for the future. In particular, the zone-offset suffix presently uses
     \c{GMT[±tzoff]} with a \c{tzoff} in \c{HH[[:]mm]} format (two-digit hour and
     optional two-digit minutes, with optional colon separator); this shall
-    change to use \c{UTC} in place of \c{GMT} in a future release of Qt, so the
+    change to use \c{UTC} in place of \c{GMT} in a future release of BobUI, so the
     planned \c{UTC} format is recognized.
 
     \value ISODateWithMs \l{ISO 8601} extended format: uses \c{yyyy-MM-dd} for
@@ -731,12 +731,12 @@
     some GMT-based zones-names, such as \c{Etc/GMT+3}, which use the opposite
     convention).
 
-    \sa QDate::toString(), QTime::toString(), QDateTime::toString(),
-        QDate::fromString(), QTime::fromString(), QDateTime::fromString()
+    \sa QDate::toString(), BOBUIime::toString(), QDateTime::toString(),
+        QDate::fromString(), BOBUIime::fromString(), QDateTime::fromString()
 */
 
 /*!
-    \enum Qt::TimeSpec
+    \enum BobUI::TimeSpec
 
     \value LocalTime Local time, controlled by a system time-zone setting.
     \value UTC Coordinated Universal Time.
@@ -751,9 +751,9 @@
 
     When specifying a datetime using OffsetFromUTC, the offset from UTC must
     also be supplied (it is measured in seconds). To specify a datetime using
-    TimeZone, a QTimeZone must be supplied. From Qt 6.5, a QTimeZone can now
+    TimeZone, a BOBUIimeZone must be supplied. From BobUI 6.5, a BOBUIimeZone can now
     package a timespec with, where needed, an offset as a lightweight time
-    description, so that passing a QTimeZone now provides a uniform way to use
+    description, so that passing a BOBUIimeZone now provides a uniform way to use
     datetime APIs, saving the need to call them differently for different
     timespecs.
 
@@ -767,11 +767,11 @@
     information and data cached by QDateTime objects created before
     the update, using either LocalTime or TimeZone.
 
-    \sa QTimeZone, QDateTime
+    \sa BOBUIimeZone, QDateTime
 */
 
 /*!
-    \enum Qt::DayOfWeek
+    \enum BobUI::DayOfWeek
 
     \value Monday
     \value Tuesday
@@ -783,14 +783,14 @@
 */
 
 /*!
-    \enum Qt::CaseSensitivity
+    \enum BobUI::CaseSensitivity
 
     \value CaseInsensitive
     \value CaseSensitive
 */
 
 /*!
-    \enum Qt::ToolBarArea
+    \enum BobUI::ToolBarArea
 
     \value LeftToolBarArea
     \value RightToolBarArea
@@ -803,7 +803,7 @@
 */
 
 /*!
-    \enum Qt::DockWidgetArea
+    \enum BobUI::DockWidgetArea
 
     Represents the areas a QDockWidget can be plugged to.
     \note A floating dock widget with tabs can be docked anywhere.
@@ -820,7 +820,7 @@
 */
 
 /*!
-    \enum Qt::ColorScheme
+    \enum BobUI::ColorScheme
 
     Represents the appearance of an application's theme,
     defined by QGuiApplication::palette().
@@ -831,7 +831,7 @@
 */
 
 /*!
-    \enum Qt::ImageConversionFlag
+    \enum BobUI::ImageConversionFlag
 
     The options marked "(default)" are set if no other values from
     the list are included (since the defaults are zero):
@@ -884,11 +884,11 @@
 */
 
 /*!
-    \enum Qt::UIEffect
+    \enum BobUI::UIEffect
 
     This enum describes the available UI effects.
 
-    By default, Qt will try to use the platform specific desktop
+    By default, BobUI will try to use the platform specific desktop
     settings for each effect. Use the
     QApplication::setDesktopSettingsAware() function (passing \c false
     as argument) to prevent this, and the
@@ -910,7 +910,7 @@
     \sa QApplication::setEffectEnabled(), QGuiApplication::setDesktopSettingsAware()
 */
 
-/*! \enum Qt::AspectRatioMode
+/*! \enum BobUI::AspectRatioMode
 
     This enum type defines what happens to the aspect ratio when
     scaling an rectangle.
@@ -931,7 +931,7 @@
     \sa QSize::scale(), QImage::scaled()
 */
 
-/*! \enum Qt::TransformationMode
+/*! \enum BobUI::TransformationMode
 
     This enum type defines whether image transformations (e.g.,
     scaling) should be smooth or not.
@@ -944,7 +944,7 @@
     \sa QImage::scaled()
 */
 
-/*! \enum Qt::Axis
+/*! \enum BobUI::Axis
 
     This enum type defines three values to represent the three
     axes in the cartesian coordinate system.
@@ -953,11 +953,11 @@
     \value YAxis  The Y axis.
     \value ZAxis  The Z axis.
 
-    \sa QTransform::rotate(), QTransform::rotateRadians()
+    \sa BOBUIransform::rotate(), BOBUIransform::rotateRadians()
  */
 
 /*!
-    \enum Qt::WidgetAttribute
+    \enum BobUI::WidgetAttribute
 
     \keyword widget attributes
 
@@ -975,13 +975,13 @@
     continue operating normally in "What's This?" mode. This is set by the
     widget's author.
 
-    \value WA_DeleteOnClose Makes Qt delete this widget when the
+    \value WA_DeleteOnClose Makes BobUI delete this widget when the
     widget has accepted the close event (see QWidget::closeEvent()).
 
     \value WA_Disabled Indicates that the widget is disabled, i.e.
     it does not receive any mouse or keyboard events. There is also a
     getter functions QWidget::isEnabled().  This is set/cleared by the
-    Qt kernel.
+    BobUI kernel.
 
     \value WA_DontShowOnScreen Indicates that the widget is hidden or is
     not a part of the viewable Desktop.
@@ -998,7 +998,7 @@
     This implies WA_UpdatesDisabled. This is set/cleared by
     QWidget::setUpdatesEnabled().
 
-    \value WA_Hover Forces Qt to generate paint events when the mouse
+    \value WA_Hover Forces BobUI to generate paint events when the mouse
     enters or leaves the widget. This feature is typically used when
     implementing custom styles.
 
@@ -1012,7 +1012,7 @@
     and disables it if not set. By default key compression is off, so
     widgets receive one key press event for each key press (or more,
     since autorepeat is usually on). If you turn it on and your
-    program doesn't keep up with key input, Qt may try to compress key
+    program doesn't keep up with key input, BobUI may try to compress key
     events so that more than one character can be processed in each
     event.
     For example, a word processor widget might receive 2, 3 or more
@@ -1020,8 +1020,8 @@
     takes too long for the CPU.
     If a widget supports multiple character unicode input, it is
     always safe to turn the compression on.
-    Qt performs key event compression only for printable characters.
-    Qt::Modifier keys, cursor movement keys, function keys and
+    BobUI performs key event compression only for printable characters.
+    BobUI::Modifier keys, cursor movement keys, function keys and
     miscellaneous action keys (e.g. Escape, Enter, Backspace,
     PrintScreen) will stop key event compression, even if there are
     more compressible key events available.
@@ -1060,7 +1060,7 @@
     \macos.
 
     \value WA_Mapped Indicates that the widget is mapped on screen.
-    This is set/cleared by the Qt kernel.
+    This is set/cleared by the BobUI kernel.
 
     \value WA_MouseNoMask Makes the widget receive mouse events for
     the entire widget regardless of the currently set mask,
@@ -1086,7 +1086,7 @@
 
     \value WA_NoMouseReplay Used for pop-up widgets. Indicates that the most
     recent mouse press event should not be replayed when the pop-up widget
-    closes. The flag is set by the widget's author and cleared by the Qt kernel
+    closes. The flag is set by the widget's author and cleared by the BobUI kernel
     every time the widget receives a new mouse event.
 
     \value WA_NoMousePropagation Prohibits mouse events from being propagated
@@ -1120,16 +1120,16 @@
     \value WA_OutsideWSRange Indicates that the widget is outside
     the valid range of the window system's coordinate system. A widget
     outside the valid range cannot be mapped on screen. This is
-    set/cleared by the Qt kernel.
+    set/cleared by the BobUI kernel.
 
     \value WA_PaintOnScreen Indicates that the widget wants to draw directly
     onto the screen. Widgets with this attribute set do not participate in
     composition management, i.e. they cannot be semi-transparent or shine
     through semi-transparent overlapping widgets. \b Note: This flag is only
-    supported on X11 and it disables double buffering. On Qt for Embedded
+    supported on X11 and it disables double buffering. On BobUI for Embedded
     Linux, the flag only works when set on a top-level widget and it relies on
     support from the active screen driver. This flag is set or cleared by the
-    widget's author. To render outside of Qt's paint system, e.g., if you
+    widget's author. To render outside of BobUI's paint system, e.g., if you
     require native painting primitives, you need to reimplement
     QWidget::paintEngine() to return 0 and set this flag.
 
@@ -1141,17 +1141,17 @@
     of the other widgets.
 
     \value WA_PendingMoveEvent Indicates that a move event is pending, e.g.,
-    when a hidden widget was moved. This flag is set or cleared by the Qt
+    when a hidden widget was moved. This flag is set or cleared by the BobUI
     kernel.
 
     \value WA_PendingResizeEvent Indicates that a resize event is pending,
     e.g., when a hidden widget was resized. This flag is set or cleared by the
-    Qt kernel.
+    BobUI kernel.
 
     \value WA_QuitOnClose Indicates that the widget should be taken into account
     when deciding whether to quit the application when the last window is closed.
     This behavior can be modified with the QGuiApplication::quitOnLastWindowClosed
-    property. By default this attribute is set for all widgets of type Qt::Window.
+    property. By default this attribute is set for all widgets of type BobUI::Window.
 
     \value WA_Resized Indicates that the widget has an explicit size. This flag
     is set or cleared by QWidget::resize() and QWidget::setGeometry().
@@ -1180,13 +1180,13 @@
     the widget's author.
 
     \value WA_StyleSheet Indicates that the widget is styled using a
-    \l{Qt Style Sheets}{style sheet}. WA_StyleSheet is set whenever a widget
+    \l{BobUI Style Sheets}{style sheet}. WA_StyleSheet is set whenever a widget
     is subject to a style sheet, even if the style sheet did not affect the
     widget appearance.
 
     \value WA_StyleSheetTarget Indicates that the widget appearance was modified
-    by a \l{Qt Style Sheets}{style sheet}. WA_StyleSheet will also be set.
-    This value was introduced in Qt 5.12.
+    by a \l{BobUI Style Sheets}{style sheet}. WA_StyleSheet will also be set.
+    This value was introduced in BobUI 5.12.
 
     \value WA_TabletTracking Indicates that the widget has tablet
     tracking enabled. See QWidget::tabletTracking.
@@ -1195,8 +1195,8 @@
     translucent background, i.e., any non-opaque regions of the widgets will be
     translucent because the widget will have an alpha channel. Setting this
     flag causes WA_NoSystemBackground to be set. On Windows the widget also
-    needs the Qt::FramelessWindowHint window flag to be set. This flag is set
-    or cleared by the widget's author. As of Qt 5.0, toggling this attribute
+    needs the BobUI::FramelessWindowHint window flag to be set. This flag is set
+    or cleared by the widget's author. As of BobUI 5.0, toggling this attribute
     after the widget has been shown is not uniformly supported across
     platforms. When translucent background is desired, set the attribute early
     when creating the widget, and avoid altering it afterwards.
@@ -1204,10 +1204,10 @@
     \value WA_UnderMouse Indicates that the widget is under the mouse cursor.
     The value is not updated correctly during drag and drop operations. There
     is also a getter function, QWidget::underMouse(). This flag is set or
-    cleared by the Qt kernel.
+    cleared by the BobUI kernel.
 
     \value WA_UpdatesDisabled Indicates that updates are blocked (including the
-    system background). This flag is set or cleared by the Qt kernel.
+    system background). This flag is set or cleared by the BobUI kernel.
     \b Warning: This flag must \e never be set or cleared by the widget's author.
 
     \value WA_WindowModified Indicates that the window is marked as modified.
@@ -1232,7 +1232,7 @@
 
     \value WA_NativeWindow Indicates that a native window is created for the
     widget. Enabling this flag will also force a native window for the widget's
-    ancestors unless Qt::WA_DontCreateNativeAncestors is set.
+    ancestors unless BobUI::WA_DontCreateNativeAncestors is set.
 
     \value WA_DontCreateNativeAncestors Indicates that the widget's ancestors
     are kept non-native even though the widget itself is native.
@@ -1250,51 +1250,51 @@
     \value WA_X11NetWmWindowTypeToolBar Adds _NET_WM_WINDOW_TYPE_TOOLBAR to the
     window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This attribute
-    has no effect on non-X11 platforms. \b Note: Qt automatically sets this
-    attribute for QToolBar.
+    has no effect on non-X11 platforms. \b Note: BobUI automatically sets this
+    attribute for BOBUIoolBar.
 
     \value WA_X11NetWmWindowTypeMenu Adds _NET_WM_WINDOW_TYPE_MENU to the
     window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This attribute
-    has no effect on non-X11 platforms. \b Note: Qt automatically sets this
+    has no effect on non-X11 platforms. \b Note: BobUI automatically sets this
     attribute for QMenu when torn-off.
 
     \value WA_X11NetWmWindowTypeUtility Adds _NET_WM_WINDOW_TYPE_UTILITY to the
     window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This attribute
-    has no effect on non-X11 platforms. \b Note: Qt automatically sets this
-    attribute for the Qt::Tool window type.
+    has no effect on non-X11 platforms. \b Note: BobUI automatically sets this
+    attribute for the BobUI::Tool window type.
 
     \value WA_X11NetWmWindowTypeSplash Adds _NET_WM_WINDOW_TYPE_SPLASH to the
     window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This attribute
-    has no effect on non-X11 platforms. \b Note: Qt automatically sets this
-    attribute for the Qt::SplashScreen window type.
+    has no effect on non-X11 platforms. \b Note: BobUI automatically sets this
+    attribute for the BobUI::SplashScreen window type.
 
     \value WA_X11NetWmWindowTypeDialog Adds _NET_WM_WINDOW_TYPE_DIALOG
     to the window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms. \b Note: Qt automatically sets
-    this attribute for the Qt::Dialog and Qt::Sheet window types.
+    attribute has no effect on non-X11 platforms. \b Note: BobUI automatically sets
+    this attribute for the BobUI::Dialog and BobUI::Sheet window types.
 
     \value WA_X11NetWmWindowTypeDropDownMenu Adds
     _NET_WM_WINDOW_TYPE_DROPDOWN_MENU to the window's
     _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms. \b Note: Qt
+    attribute has no effect on non-X11 platforms. \b Note: BobUI
     automatically sets this attribute for QMenu objects added to a QMenuBar.
 
     \value WA_X11NetWmWindowTypePopupMenu Adds _NET_WM_WINDOW_TYPE_POPUP_MENU
     to the window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This attribute
-    has no effect on non-X11 platforms. \b Note: Qt automatically sets this
+    has no effect on non-X11 platforms. \b Note: BobUI automatically sets this
     attribute for QMenu.
 
     \value WA_X11NetWmWindowTypeToolTip Adds _NET_WM_WINDOW_TYPE_TOOLTIP to the
     window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This attribute
-    has no effect on non-X11 platforms. \b Note: Qt automatically sets this
-    attribute for the Qt::ToolTip window type.
+    has no effect on non-X11 platforms. \b Note: BobUI automatically sets this
+    attribute for the BobUI::ToolTip window type.
 
     \value WA_X11NetWmWindowTypeNotification Adds
     _NET_WM_WINDOW_TYPE_NOTIFICATION to the window's _NET_WM_WINDOW_TYPE X11
@@ -1304,16 +1304,16 @@
     \value WA_X11NetWmWindowTypeCombo Adds _NET_WM_WINDOW_TYPE_COMBO
     to the window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This attribute
-    has no effect on non-X11 platforms. \b Note: Qt automatically sets this
+    has no effect on non-X11 platforms. \b Note: BobUI automatically sets this
     attribute for the QComboBox pop-up.
 
     \value WA_X11NetWmWindowTypeDND Adds _NET_WM_WINDOW_TYPE_DND to
     the window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This attribute
-    has no effect on non-X11 platforms. \b Note: Qt automatically sets this
+    has no effect on non-X11 platforms. \b Note: BobUI automatically sets this
     attribute on the feedback widget used during a drag.
 
-    \value WA_AcceptTouchEvents Allows touch events (see QTouchEvent)
+    \value WA_AcceptTouchEvents Allows touch events (see BOBUIouchEvent)
     to be sent to the widget. Must be set on all widgets that can
     handle touch events. Without this attribute set, events from a
     touch device will be sent as mouse events.
@@ -1335,7 +1335,7 @@
     \value WA_ContentsMarginsRespectsSafeArea A QWidget respects the safe
     area margins of a window by incorporating the margins into its contents'
     margins by default. This means, that a QLayout will use the content area
-    of a widget for its layout, unless the Qt::WA_LayoutOnEntireRect attribute
+    of a widget for its layout, unless the BobUI::WA_LayoutOnEntireRect attribute
     is set. This along with a contents margin of 0 can be used on the actual
     layout, to allow for example a background image to underlay the status bar and other
     system areas on an iOS device, while still allowing child widgets of
@@ -1373,16 +1373,16 @@
     \omitvalue WA_AttributeCount
 */
 
-/*! \typedef Qt::HANDLE
+/*! \typedef BobUI::HANDLE
 
     A handle type for system objects, defined as \c{void *}
     on all platforms.
 */
 
 /*!
-    \enum Qt::Key
+    \enum BobUI::Key
 
-    The key names used by Qt.
+    The key names used by BobUI.
 
     \value Key_Escape
     \value Key_Tab
@@ -1842,15 +1842,15 @@
     \value Key_MediaLast
     \value Key_unknown
 
-    \value Key_Call     A key to answer or initiate a call (see Qt::Key_ToggleCallHangup for a key to toggle current call state)
-    \value Key_Camera   A key to activate the camera shutter. On Windows Runtime, the environment variable QT_QPA_ENABLE_CAMERA_KEYS must be set to receive the event.
-    \value Key_CameraFocus  A key to focus the camera. On Windows Runtime, the environment variable QT_QPA_ENABLE_CAMERA_KEYS must be set to receive the event.
+    \value Key_Call     A key to answer or initiate a call (see BobUI::Key_ToggleCallHangup for a key to toggle current call state)
+    \value Key_Camera   A key to activate the camera shutter. On Windows Runtime, the environment variable BOBUI_QPA_ENABLE_CAMERA_KEYS must be set to receive the event.
+    \value Key_CameraFocus  A key to focus the camera. On Windows Runtime, the environment variable BOBUI_QPA_ENABLE_CAMERA_KEYS must be set to receive the event.
     \value Key_Context1
     \value Key_Context2
     \value Key_Context3
     \value Key_Context4
     \value Key_Flip
-    \value Key_Hangup   A key to end an ongoing call (see Qt::Key_ToggleCallHangup for a key to toggle current call state)
+    \value Key_Hangup   A key to end an ongoing call (see BobUI::Key_ToggleCallHangup for a key to toggle current call state)
     \value Key_No
     \value Key_Select
     \value Key_Yes
@@ -1870,10 +1870,10 @@
 */
 
 /*!
-    \enum Qt::HitTestAccuracy
+    \enum BobUI::HitTestAccuracy
 
     This enum contains the types of accuracy that can be used by the
-    QTextDocument class when testing for mouse clicks on text documents.
+    BOBUIextDocument class when testing for mouse clicks on text documents.
 
     \value ExactHit The point at which input occurred must coincide
                     exactly with input-sensitive parts of the document.
@@ -1882,10 +1882,10 @@
 */
 
 /*!
-    \enum Qt::WhiteSpaceMode
+    \enum BobUI::WhiteSpaceMode
 
     This enum describes the types of whitespace mode that are used by
-    the QTextDocument class to meet the requirements of different kinds
+    the BOBUIextDocument class to meet the requirements of different kinds
     of textual information.
 
     \value WhiteSpaceNormal         The whitespace mode used to display
@@ -1898,7 +1898,7 @@
 */
 
 /*!
-    \enum Qt::CheckState
+    \enum BobUI::CheckState
 
     This enum describes the state of checkable items, controls, and widgets.
 
@@ -1908,12 +1908,12 @@
                             children are checked.
     \value Checked          The item is checked.
 
-    \sa QCheckBox, Qt::ItemFlags, Qt::ItemDataRole
+    \sa QCheckBox, BobUI::ItemFlags, BobUI::ItemDataRole
 */
 
 
 /*!
-    \enum Qt::ToolButtonStyle
+    \enum BobUI::ToolButtonStyle
 
     The style of the tool button, describing how the button's text and
     icon should be displayed.
@@ -1926,7 +1926,7 @@
 */
 
 /*!
-    \enum Qt::Corner
+    \enum BobUI::Corner
 
     This enum type specifies a corner in a rectangle:
 
@@ -1937,7 +1937,7 @@
 */
 
 /*!
-    \enum Qt::Edge
+    \enum BobUI::Edge
 
     This enum type specifies an edge in a rectangle:
 
@@ -1950,7 +1950,7 @@
 */
 
 /*!
-    \enum Qt::ScrollBarPolicy
+    \enum BobUI::ScrollBarPolicy
 
     This enum type describes the various modes of QAbstractScrollArea's scroll
     bars.
@@ -1970,7 +1970,7 @@
 */
 
 /*!
-    \enum Qt::ArrowType
+    \enum BobUI::ArrowType
 
     \value NoArrow
     \value UpArrow
@@ -1980,7 +1980,7 @@
 */
 
 /*!
-    \enum Qt::FocusReason
+    \enum BobUI::FocusReason
 
     This enum specifies why the focus changed. It will be passed
     through QWidget::setFocus and can be retrieved in the QFocusEvent
@@ -2005,7 +2005,7 @@
 */
 
 /*!
-    \enum Qt::WindowState
+    \enum BobUI::WindowState
 
     \keyword window state
 
@@ -2023,7 +2023,7 @@
 */
 
 /*!
-    \enum Qt::ApplicationState
+    \enum BobUI::ApplicationState
 
     \keyword application state
 
@@ -2053,7 +2053,7 @@
 */
 
 /*!
-    \enum Qt::ScreenOrientation
+    \enum BobUI::ScreenOrientation
 
     This enum type specifies the various orientations a screen might have.
 
@@ -2066,7 +2066,7 @@
 */
 
 /*!
-    \enum Qt::ContextMenuPolicy
+    \enum BobUI::ContextMenuPolicy
 
     This enum type defines the various policies a widget can have with
     respect to showing a context menu.
@@ -2084,7 +2084,7 @@
 */
 
 /*!
-    \enum Qt::ContextMenuTrigger
+    \enum BobUI::ContextMenuTrigger
     \since 6.8
 
     This enum type defines the mouse event used to trigger a context menu event.
@@ -2096,7 +2096,7 @@
 */
 
 /*!
-    \enum Qt::FocusPolicy
+    \enum BobUI::FocusPolicy
 
     This enum type defines the various policies a widget can have with
     respect to acquiring keyboard focus.
@@ -2107,14 +2107,14 @@
                     and clicking. On \macos this will also
                     be indicate that the widget accepts tab focus
                     when in 'Text/List focus mode'.
-    \value WheelFocus  like Qt::StrongFocus plus the widget accepts
+    \value WheelFocus  like BobUI::StrongFocus plus the widget accepts
                     focus by using the mouse wheel.
     \value NoFocus  the widget does not accept focus.
 
 */
 
 /*!
-    \enum Qt::TabFocusBehavior
+    \enum BobUI::TabFocusBehavior
     \since 5.5
 
     This enum type provides different focus behaviors for tab navigation.
@@ -2127,7 +2127,7 @@
 */
 
 /*!
-    \enum Qt::ShortcutContext
+    \enum BobUI::ShortcutContext
 
     For a QEvent::Shortcut event to occur, the shortcut's key sequence
     must be entered by the user in a context where the shortcut is
@@ -2147,7 +2147,7 @@
 */
 
 /*!
-    \enum Qt::WindowType
+    \enum BobUI::WindowType
 
     \keyword window flag
 
@@ -2161,7 +2161,7 @@
     \value Widget  This is the default type for QWidget. Widgets of
                    this type are child widgets if they have a parent,
                    and independent windows if they have no parent.
-                   See also Qt::Window and Qt::SubWindow.
+                   See also BobUI::Window and BobUI::SubWindow.
 
     \value Window  Indicates that the widget is a window, usually
                    with a window system frame and a title bar,
@@ -2200,17 +2200,17 @@
                    collections of tool buttons. If there is a parent,
                    the tool window will always be kept on top of it.
                    If there isn't a parent, you may consider using
-                   Qt::WindowStaysOnTopHint as well. If the window
+                   BobUI::WindowStaysOnTopHint as well. If the window
                    system supports it, a tool window can be decorated
                    with a somewhat lighter frame. It can also be
-                   combined with Qt::FramelessWindowHint.
+                   combined with BobUI::FramelessWindowHint.
                    On \macos, tool windows correspond to the
                    \l{https://developer.apple.com/documentation/appkit/nspanel}{NSPanel}
                    class of windows. This means that the window lives on a
                    level above normal windows making it impossible to put a normal
                    window on top of it. By default, tool windows will disappear
                    when the application is inactive.  This can be controlled by
-                   the Qt::WA_MacAlwaysShowToolWindow attribute.
+                   the BobUI::WA_MacAlwaysShowToolWindow attribute.
 
     \value ToolTip Indicates that the widget is a tooltip. This is
                    used internally to implement
@@ -2289,20 +2289,20 @@
     WindowCloseButtonHint.
 
     \value WindowMinimizeButtonHint  Adds a minimize button. On
-           some platforms this implies Qt::WindowSystemMenuHint for it to work.
+           some platforms this implies BobUI::WindowSystemMenuHint for it to work.
 
     \value WindowMaximizeButtonHint  Adds a maximize button. On
-           some platforms this implies Qt::WindowSystemMenuHint for it to work.
+           some platforms this implies BobUI::WindowSystemMenuHint for it to work.
 
     \value WindowMinMaxButtonsHint  Adds a minimize and a maximize
-           button. On some platforms this implies Qt::WindowSystemMenuHint for it to work.
+           button. On some platforms this implies BobUI::WindowSystemMenuHint for it to work.
 
     \value WindowCloseButtonHint  Adds a close button. On
-           some platforms this implies Qt::WindowSystemMenuHint for it
+           some platforms this implies BobUI::WindowSystemMenuHint for it
            to work.
 
     \value WindowContextHelpButtonHint  Adds a context help button to dialogs.
-           On some platforms this implies Qt::WindowSystemMenuHint for it to work.
+           On some platforms this implies BobUI::WindowSystemMenuHint for it to work.
 
     \omitvalue MacWindowToolBarButtonHint
 
@@ -2321,7 +2321,7 @@
     \value WindowStaysOnTopHint  Informs the window system that the
            window should stay on top of all other windows. Note that
            on some window managers on X11 you also have to pass
-           Qt::X11BypassWindowManagerHint for this flag to work
+           BobUI::X11BypassWindowManagerHint for this flag to work
            correctly.
 
     \value WindowStaysOnBottomHint Informs the window system that the
@@ -2349,7 +2349,7 @@
 
     \note On Windows, this prevents the window from appearing in the taskbar.
 
-    \value MaximizeUsingFullscreenGeometryHint Deprecated alias for Qt::ExpandedClientAreaHint
+    \value MaximizeUsingFullscreenGeometryHint Deprecated alias for BobUI::ExpandedClientAreaHint
 
     \value [since 6.9] ExpandedClientAreaHint Requests that the window's client area is
            expanded to areas where it might be obscured by, or conflicting with other UI
@@ -2359,7 +2359,7 @@
 
     \value [since 6.9] NoTitleBarBackgroundHint Requests that the window's title bar is drawn
            without a background color. This flag is useful in combination with
-           Qt::ExpandedClientAreaHint, to give the perception that the window's
+           BobUI::ExpandedClientAreaHint, to give the perception that the window's
            client area seamlessly blends with the titlebar area and controls.
 
     \value WindowType_Mask  A mask for extracting the window type
@@ -2369,14 +2369,14 @@
 */
 
 /*!
-    \enum Qt::FindChildOption
+    \enum BobUI::FindChildOption
 
     \value FindDirectChildrenOnly    Looks only at the direct children of the object.
     \value FindChildrenRecursively   Looks at all children of the object (recursive search).
 */
 
 /*!
-    \enum Qt::DropAction
+    \enum BobUI::DropAction
 
     \value CopyAction       Copy the data to the target.
     \value MoveAction       Move the data from the source to the target.
@@ -2392,7 +2392,7 @@
 */
 
 /*!
-    \enum Qt::SortOrder
+    \enum BobUI::SortOrder
 
     This enum describes how the items in a widget are sorted.
 
@@ -2404,7 +2404,7 @@
 */
 
 /*!
-    \enum Qt::SplitBehaviorFlags
+    \enum BobUI::SplitBehaviorFlags
     \since 5.14
 
     This enum specifies how the QString::split() functions should behave with
@@ -2417,7 +2417,7 @@
 */
 
 /*!
-    \enum Qt::ClipOperation
+    \enum BobUI::ClipOperation
 
     \value NoClip This operation turns clipping off.
 
@@ -2429,7 +2429,7 @@
 */
 
 /*!
-    \enum Qt::ItemSelectionMode
+    \enum BobUI::ItemSelectionMode
 
     This enum is used in QGraphicsItem, QGraphicsScene and QGraphicsView to
     specify how items are selected, or how to determine if shapes and items
@@ -2462,7 +2462,7 @@
 */
 
 /*!
-    \enum Qt::ItemSelectionOperation
+    \enum BobUI::ItemSelectionOperation
 
     This enum is used in QGraphicsScene to specify what to do with currently selected
     items when setting a selection area.
@@ -2477,7 +2477,7 @@
 */
 
 /*!
-    \enum Qt::FillRule
+    \enum BobUI::FillRule
 
     Specifies which method should be used to fill the paths and polygons.
 
@@ -2501,7 +2501,7 @@
 */
 
 /*!
-    \enum Qt::TextFormat
+    \enum BobUI::TextFormat
 
     This enum is used in widgets that can display both plain text and
     rich text, for example QLabel. It is used for deciding whether a text
@@ -2517,15 +2517,15 @@
         of rich text.
 
     \value AutoText The text string is interpreted as for
-        Qt::RichText if Qt::mightBeRichText() returns \c true, otherwise
-        as Qt::PlainText.
+        BobUI::RichText if BobUI::mightBeRichText() returns \c true, otherwise
+        as BobUI::PlainText.
 
     \value MarkdownText The text string is interpreted as Markdown-formatted text.
-        This enum value was added in Qt 5.14.
+        This enum value was added in BobUI 5.14.
 */
 
 /*!
-    \enum Qt::CursorShape
+    \enum BobUI::CursorShape
 
     This enum type defines the various cursors that can be used.
 
@@ -2612,9 +2612,9 @@
 */
 
 /*!
-    \enum Qt::LayoutDirection
+    \enum BobUI::LayoutDirection
 
-    Specifies the direction of Qt's layouts and text handling.
+    Specifies the direction of BobUI's layouts and text handling.
 
     \value LeftToRight  Left-to-right layout.
     \value RightToLeft  Right-to-left layout.
@@ -2630,11 +2630,11 @@
     When LayoutDirectionAuto is used in conjunction with text layouting, it will imply that the text
     directionality is determined from the content of the string to be layouted.
 
-    \sa QGuiApplication::setLayoutDirection(), QWidget::setLayoutDirection(), QTextOption::setTextDirection(), QString::isRightToLeft()
+    \sa QGuiApplication::setLayoutDirection(), QWidget::setLayoutDirection(), BOBUIextOption::setTextDirection(), QString::isRightToLeft()
 */
 
 /*!
-    \enum Qt::AnchorPoint
+    \enum BobUI::AnchorPoint
 
     Specifies a side of a layout item that can be anchored. This is used by
     QGraphicsAnchorLayout.
@@ -2652,7 +2652,7 @@
 */
 
 /*!
-    \enum Qt::InputMethodHint
+    \enum BobUI::InputMethodHint
 
     \value ImhNone                   No hints.
 
@@ -2676,8 +2676,8 @@
 
     \value ImhMultiLine              Multiple lines can be entered into the text field.
 
-    \value ImhNoEditMenu             Do not use built-in edit menu. This flag was introduced in Qt 5.11.
-    \value ImhNoTextHandles          Do not use built-in text cursor and selection handles. This flag was introduced in Qt 5.11.
+    \value ImhNoEditMenu             Do not use built-in edit menu. This flag was introduced in BobUI 5.11.
+    \value ImhNoTextHandles          Do not use built-in text cursor and selection handles. This flag was introduced in BobUI 5.11.
 
     Flags that restrict input (exclusive flags):
 
@@ -2702,7 +2702,7 @@
 */
 
 /*!
-    \enum Qt::InputMethodQuery
+    \enum BobUI::InputMethodQuery
 
     \value ImEnabled            The widget accepts input method input.
     \value ImCursorRectangle    The rectangle covering the area of the input cursor in widget coordinates.
@@ -2717,7 +2717,7 @@
     \value ImAnchorPosition     The position of the selection anchor. This may be less or greater than
                                 \c ImCursorPosition, depending on which side of selection the cursor is.
                                 If there is no selection, it returns the same as \c ImCursorPosition.
-    \value ImHints              The hints for input method on expected input. (See Qt::InputMethodHints)
+    \value ImHints              The hints for input method on expected input. (See BobUI::InputMethodHints)
     \value ImPreferredLanguage  The preferred input language.
     \value ImPlatformData       Platform specific data for input method.
     \value ImAbsolutePosition   The logical position of the cursor within the entire document. The position does
@@ -2729,11 +2729,11 @@
                                 but \b{must} not return an empty string unless the cursor is at the end of the document.
     \value ImEnterKeyType       The Enter key type.
     \value ImAnchorRectangle    The bounding rectangle of the selection anchor.
-                                This value was added in Qt 5.7.
+                                This value was added in BobUI 5.7.
     \value ImInputItemClipRectangle The actual exposed input item rectangle. Parts of the input item might be
                                 clipped. This value will take clipping into consideration and return the actual painted
                                 item rectangle. The rectangle is in widget coordinates.
-    \value ImReadOnly           The widget is read only. This value was added in Qt 6.2.
+    \value ImReadOnly           The widget is read only. This value was added in BobUI 6.2.
 
     Masks:
 
@@ -2744,7 +2744,7 @@
 */
 
 /*!
-    \enum Qt::EnterKeyType
+    \enum BobUI::EnterKeyType
 
     This can be used to alter the appearance of the Return key on an on-screen keyboard.
 
@@ -2775,7 +2775,7 @@
 */
 
 /*!
-    \enum Qt::ItemDataRole
+    \enum BobUI::ItemDataRole
 
     Each item in the model has a set of data elements associated with
     it, each with its own role. The roles are used by the view to indicate
@@ -2801,16 +2801,16 @@
     \value FontRole             The font used for items rendered with the default
                                 delegate. (QFont)
     \value TextAlignmentRole    The alignment of the text for items rendered with the
-                                default delegate. (Qt::Alignment)
+                                default delegate. (BobUI::Alignment)
     \value BackgroundRole       The background brush used for items rendered with
                                 the default delegate. (QBrush)
     \value ForegroundRole       The foreground brush (text color, typically)
                                 used for items rendered with the default delegate.
                                 (QBrush)
     \value CheckStateRole       This role is used to obtain the checked state of
-                                an item. (Qt::CheckState)
+                                an item. (BobUI::CheckState)
     \value InitialSortOrderRole This role is used to obtain the initial sort order
-                                of a header view section. (Qt::SortOrder).
+                                of a header view section. (BobUI::SortOrder).
 
     Accessibility roles (with associated types):
 
@@ -2840,7 +2840,7 @@
 */
 
 /*!
-    \enum Qt::ItemFlag
+    \enum BobUI::ItemFlag
 
     This enum describes the properties of an item:
 
@@ -2852,28 +2852,28 @@
     \value ItemIsUserCheckable It can be checked or unchecked by the user.
     \value ItemIsEnabled The user can interact with the item.
     \value ItemIsAutoTristate The item's state depends on the state of its children.
-           This enables automatic management of the state of parent items in QTreeWidget
+           This enables automatic management of the state of parent items in BOBUIreeWidget
            (checked if all children are checked, unchecked if all children are unchecked,
            or partially checked if only some children are checked).
     \value ItemNeverHasChildren The item never has child items.
            This is used for optimization purposes only.
     \value ItemIsUserTristate The user can cycle through three separate states.
-           This value was added in Qt 5.5.
+           This value was added in BobUI 5.5.
 
     Note that checkable items need to be given both a suitable set of flags
     and an initial state, indicating whether the item is checked or not.
     This is handled automatically for model/view components, but needs
-    to be explicitly set for instances of QListWidgetItem, QTableWidgetItem,
-    and QTreeWidgetItem.
+    to be explicitly set for instances of QListWidgetItem, BOBUIableWidgetItem,
+    and BOBUIreeWidgetItem.
 
     Note that it is undefined behavior to reimplement QAbstractItemModel::hasChildren
-    to return true for an index if that index has the Qt::ItemNeverHasChildren flag set.
+    to return true for an index if that index has the BobUI::ItemNeverHasChildren flag set.
 
     \sa QAbstractItemModel
 */
 
 /*!
-    \enum Qt::MatchFlag
+    \enum BobUI::MatchFlag
 
     This enum describes the type of matches that can be used when searching
     for items in a model.
@@ -2892,7 +2892,7 @@
            parameter and will directly be used to perform the search. The case
            sensitivity flag will be ignored as the QRegularExpression object is
            expected to be fully configured.
-           This enum value was added in Qt 5.15.
+           This enum value was added in BobUI 5.15.
     \value MatchWildcard           Performs string-based matching using a string with
            wildcards as the search term.
     \value MatchWrap               Perform a search that wraps around, so that when
@@ -2901,16 +2901,16 @@
     \value MatchRecursive          Searches the entire hierarchy.
     \omitvalue MatchTypeMask
 
-    \note Qt::MatchExactly, Qt::MatchContains, Qt::MatchStartsWith,
-          Qt::MatchEndsWith, Qt::MatchRegularExpression, Qt::MatchWildcard, and
-          Qt::MatchFixedString are mutually exclusive. The behavior achieved by
-          setting several of them in a Qt::MatchFlags argument is undefined.
+    \note BobUI::MatchExactly, BobUI::MatchContains, BobUI::MatchStartsWith,
+          BobUI::MatchEndsWith, BobUI::MatchRegularExpression, BobUI::MatchWildcard, and
+          BobUI::MatchFixedString are mutually exclusive. The behavior achieved by
+          setting several of them in a BobUI::MatchFlags argument is undefined.
 
     \sa QString::compare(), QRegularExpression
 */
 
 /*!
-    \enum Qt::TextElideMode
+    \enum BobUI::TextElideMode
 
     This enum specifies where the ellipsis should appear when
     displaying texts that don't fit:
@@ -2923,17 +2923,17 @@
                         the text contains multi-length variants. Elision in this case must be done
                         by clipping to the component width.
 
-    Qt::ElideMiddle is normally the most appropriate choice for URLs (e.g.,
-    "\l{http://bugreports.qt.io/browse/QTWEBSITE-13}{http://bugreports.qt.../QTWEBSITE-13/}"),
-    whereas Qt::ElideRight is appropriate
+    BobUI::ElideMiddle is normally the most appropriate choice for URLs (e.g.,
+    "\l{http://bugreports.bobui.io/browse/BOBUIWEBSITE-13}{http://bugreports.bobui.../BOBUIWEBSITE-13/}"),
+    whereas BobUI::ElideRight is appropriate
     for other strings (e.g.,
-    "\l{http://doc.qt.io/archives/qq/qq09-mac-deployment.html}{Deploying Applications on Ma...}").
+    "\l{http://doc.bobui.io/archives/qq/qq09-mac-deployment.html}{Deploying Applications on Ma...}").
 
-    \sa QAbstractItemView::textElideMode, QFontMetrics::elidedText(), AlignmentFlag, QTabBar::elideMode
+    \sa QAbstractItemView::textElideMode, QFontMetrics::elidedText(), AlignmentFlag, BOBUIabBar::elideMode
 */
 
 /*!
-    \enum Qt::WindowModality
+    \enum BobUI::WindowModality
 
     \keyword modal
 
@@ -2950,7 +2950,7 @@
 */
 
 /*!
-    \enum Qt::TextInteractionFlag
+    \enum BobUI::TextInteractionFlag
 
     This enum specifies how a text displaying widget reacts to user input.
 
@@ -2963,11 +2963,11 @@
     \value TextEditable               The text is fully editable.
 
     \value TextEditorInteraction      The default for a text editor.
-    \value TextBrowserInteraction     The default for QTextBrowser.
+    \value TextBrowserInteraction     The default for BOBUIextBrowser.
 */
 
 /*!
-    \enum Qt::MaskMode
+    \enum BobUI::MaskMode
 
     This enum specifies the behavior of the
     QPixmap::createMaskFromColor() and QImage::createMaskFromColor()
@@ -2978,17 +2978,17 @@
 */
 
 /*!
-    \enum Qt::DockWidgetAreaSizes
+    \enum BobUI::DockWidgetAreaSizes
     \internal
 */
 
 /*!
-    \enum Qt::ToolBarAreaSizes
+    \enum BobUI::ToolBarAreaSizes
     \internal
 */
 
 /*!
-    \enum Qt::EventPriority
+    \enum BobUI::EventPriority
 
     This enum can be used to specify event priorities.
 
@@ -3012,7 +3012,7 @@
     \sa QCoreApplication::postEvent()
 */
 /*!
-    \enum Qt::SizeHint
+    \enum BobUI::SizeHint
     \since 4.4
 
     This enum is used by QGraphicsLayoutItem::sizeHint()
@@ -3027,7 +3027,7 @@
 */
 
 /*!
-    \enum Qt::SizeMode
+    \enum BobUI::SizeMode
     \since 4.4
 
     This enum is used by QPainter::drawRoundedRect() and QPainterPath::addRoundedRect()
@@ -3040,7 +3040,7 @@
 */
 
 /*!
-    \enum Qt::WindowFrameSection
+    \enum BobUI::WindowFrameSection
     \since 4.4
 
     This enum is used to describe parts of a window frame. It is returned by
@@ -3065,7 +3065,7 @@
 */
 
 /*!
-  \enum Qt::TileRule
+  \enum BobUI::TileRule
   \since 4.6
 
   This enum describes how to repeat or stretch the parts of an image
@@ -3081,17 +3081,17 @@
 */
 
 /*!
-    \enum Qt::Initialization
+    \enum BobUI::Initialization
     \internal
 */
 
 /*!
-    \enum Qt::Disambiguated_t
+    \enum BobUI::Disambiguated_t
     \internal
 */
 
 /*!
-    \enum Qt::CoordinateSystem
+    \enum BobUI::CoordinateSystem
     \since 4.6
 
     This enum specifies the coordinate system.
@@ -3103,11 +3103,11 @@
     of the object.
 */
 
-/*! \enum Qt::TouchPointState
+/*! \enum BobUI::TouchPointState
     \since 4.6
 
     This enum represents the state of a touch point at the time a
-    QTouchEvent occurred.
+    BOBUIouchEvent occurred.
 
     \value TouchPointUnknownState The state of the touch point is not known.
     \value TouchPointPressed The touch point is now pressed.
@@ -3117,7 +3117,7 @@
 */
 
 /*!
-    \enum Qt::GestureState
+    \enum BobUI::GestureState
     \since 4.6
 
     This enum type describes the state of a gesture.
@@ -3132,7 +3132,7 @@
 */
 
 /*!
-    \enum Qt::GestureType
+    \enum BobUI::GestureType
     \since 4.6
 
     This enum type describes the standard gestures.
@@ -3148,13 +3148,13 @@
 
     User-defined gestures are registered with the
     QGestureRecognizer::registerRecognizer() function which generates a custom
-    gesture ID with the Qt::CustomGesture flag set.
+    gesture ID with the BobUI::CustomGesture flag set.
 
     \sa QGesture, QWidget::grabGesture(), QGraphicsObject::grabGesture()
 */
 
 /*!
-    \enum Qt::GestureFlag
+    \enum BobUI::GestureFlag
     \since 4.6
 
     This enum type describes additional flags that can be used when subscribing
@@ -3166,10 +3166,10 @@
 
     \value ReceivePartialGestures Allows any ignored gesture events to be
     propagated to parent widgets which have specified this hint. By default
-    only gestures that are in the Qt::GestureStarted state are propagated and
+    only gestures that are in the BobUI::GestureStarted state are propagated and
     the widget always gets the full gesture sequence starting with a gesture in
-    the Qt::GestureStarted state and ending with a gesture in the
-    Qt::GestureFinished or Qt::GestureCanceled states.
+    the BobUI::GestureStarted state and ending with a gesture in the
+    BobUI::GestureFinished or BobUI::GestureCanceled states.
 
     \value [since 4.7] IgnoredGesturesPropagateToParent Allows fine-tuning of
     gesture event propagation. By setting the flag when
@@ -3180,7 +3180,7 @@
 */
 
 /*!
-    \enum Qt::NativeGestureType
+    \enum BobUI::NativeGestureType
     \since 5.2
 
     This enum returns the gesture type.
@@ -3196,14 +3196,14 @@
 */
 
 /*!
-    \enum Qt::NavigationMode
+    \enum BobUI::NavigationMode
     \since 4.6
 
     This enum type describes the mode for moving focus.
 
     \value NavigationModeNone                Only the touch screen is used.
-    \value NavigationModeKeypadTabOrder      Qt::Key_Up and Qt::Key_Down are used to change focus.
-    \value NavigationModeKeypadDirectional   Qt::Key_Up, Qt::Key_Down, Qt::Key_Left and Qt::Key_Right are used to change focus.
+    \value NavigationModeKeypadTabOrder      BobUI::Key_Up and BobUI::Key_Down are used to change focus.
+    \value NavigationModeKeypadDirectional   BobUI::Key_Up, BobUI::Key_Down, BobUI::Key_Left and BobUI::Key_Right are used to change focus.
     \value NavigationModeCursorAuto          The mouse cursor is used to change focus,
                                              it is displayed only on non touchscreen devices.
                                              The keypad is used to implement a virtual cursor, unless
@@ -3221,7 +3221,7 @@
 */
 
 /*!
-    \enum Qt::CursorMoveStyle
+    \enum BobUI::CursorMoveStyle
 
     This enum describes the movement style available to text cursors. The options
     are:
@@ -3236,7 +3236,7 @@
 */
 
 /*!
-    \enum Qt::TimerType
+    \enum BobUI::TimerType
 
     The timer type indicates how accurate a timer can be.
 
@@ -3244,31 +3244,31 @@
     \value CoarseTimer Coarse timers try to keep accuracy within 5% of the desired interval
     \value VeryCoarseTimer Very coarse timers only keep full second accuracy
 
-    On UNIX (including Linux, \macos, and iOS), Qt will keep millisecond accuracy
-    for Qt::PreciseTimer. For Qt::CoarseTimer, the interval will be adjusted up
+    On UNIX (including Linux, \macos, and iOS), BobUI will keep millisecond accuracy
+    for BobUI::PreciseTimer. For BobUI::CoarseTimer, the interval will be adjusted up
     to 5% to align the timer with other timers that are expected to fire at or
     around the same time. The objective is to make most timers wake up at the
     same time, thereby reducing CPU wakeups and power consumption.
 
-    On Windows, Qt will use Windows's Multimedia timer facility (if available)
-    for Qt::PreciseTimer and normal Windows timers for Qt::CoarseTimer and
-    Qt::VeryCoarseTimer.
+    On Windows, BobUI will use Windows's Multimedia timer facility (if available)
+    for BobUI::PreciseTimer and normal Windows timers for BobUI::CoarseTimer and
+    BobUI::VeryCoarseTimer.
 
-    On all platforms, the interval for Qt::VeryCoarseTimer is rounded to the
+    On all platforms, the interval for BobUI::VeryCoarseTimer is rounded to the
     nearest full second (e.g. an interval of 23500ms will be rounded to
     24000ms, and 20300ms to 20000ms).
 */
 
 /*!
-    \enum Qt::TimerId
+    \enum BobUI::TimerId
     \since 6.8
     \relates QObject
-    \relates QTimer
+    \relates BOBUIimer
     \relates QChronoTimer
 
-    This is used to represent timer IDs (for example, QTimer and QChronoTimer).
+    This is used to represent timer IDs (for example, BOBUIimer and QChronoTimer).
     The underlying type is \c int. You can use \l qToUnderlying() to convert
-    Qt::TimerId to \c int.
+    BobUI::TimerId to \c int.
 
     \value Invalid Represents a no-op timer ID; its usage depends on the
     context, for example, this is the value returned by QObject::startTimer()
@@ -3276,17 +3276,17 @@
     this value when the timer is inactive, that is, \c timer.isActive()
     returns \c false.
 
-    \sa QTimer::id(), QChronoTimer::id(), QObject::startTimer()
+    \sa BOBUIimer::id(), QChronoTimer::id(), QObject::startTimer()
 */
 
 /*!
-    \enum Qt::ScrollPhase
+    \enum BobUI::ScrollPhase
     \since 5.2
 
     This enum describes the phase of scrolling.
 
     \value NoScrollPhase The input device doesn't support scroll phase.
-    This value was introduced in Qt 5.7.
+    This value was introduced in BobUI 5.7.
 
     \value ScrollBegin Scrolling is about to begin, but the scrolling
     distance did not yet change.
@@ -3298,11 +3298,11 @@
 
     \value ScrollMomentum The user no longer touches the input device,
     but scrolling continues due to scroll momentum.
-    This value was introduced in Qt 5.12.
+    This value was introduced in BobUI 5.12.
 */
 
 /*!
-    \enum Qt::MouseEventSource
+    \enum BobUI::MouseEventSource
     \since 5.3
 
     This enum describes the source of a mouse event and can be useful
@@ -3317,25 +3317,25 @@
     \value MouseEventSynthesizedBySystem Indicates that the mouse
     event was synthesized from a touch event by the platform.
 
-    \value MouseEventSynthesizedByQt Indicates that the mouse event was
-    synthesized from an unhandled touch event by Qt.
+    \value MouseEventSynthesizedByBobUI Indicates that the mouse event was
+    synthesized from an unhandled touch event by BobUI.
 
     \value MouseEventSynthesizedByApplication Indicates that the mouse
     event was synthesized by the application. This allows
     distinguishing application-generated mouse events from the ones
-    that are coming from the system or are synthesized by Qt. This
-    value was introduced in Qt 5.6
+    that are coming from the system or are synthesized by BobUI. This
+    value was introduced in BobUI 5.6
 
-    \sa Qt::AA_SynthesizeMouseForUnhandledTouchEvents
+    \sa BobUI::AA_SynthesizeMouseForUnhandledTouchEvents
 */
 
 /*!
-    \enum Qt::MouseEventFlag
+    \enum BobUI::MouseEventFlag
     \since 5.3
 
     This enum provides additional information concerning a QMouseEvent.
 
-    \value MouseEventCreatedDoubleClick Indicates that Qt has created a
+    \value MouseEventCreatedDoubleClick Indicates that BobUI has created a
     \l {QEvent::MouseButtonDblClick}{MouseButtonDblClick} event from this event. The flag is set in the causing
     \l {QEvent::MouseButtonPress}{MouseButtonPress}, and not in the resulting \l {QEvent::MouseButtonDblClick}{MouseButtonDblClick}.
 
@@ -3344,7 +3344,7 @@
 */
 
 /*!
-  \enum Qt::ChecksumType
+  \enum BobUI::ChecksumType
   \since 5.9
 
   This enum describes the possible standards used by qChecksum().
@@ -3355,7 +3355,7 @@
 */
 
 /*!
-  \enum Qt::HighDpiScaleFactorRoundingPolicy
+  \enum BobUI::HighDpiScaleFactorRoundingPolicy
   \since 5.14
 
   This enum describes the possible High-DPI scale factor rounding policies, which
@@ -3375,7 +3375,7 @@
 */
 
 /*!
-    \enum Qt::PermissionStatus
+    \enum BobUI::PermissionStatus
 
     This enum describes the possible statuses of a permissions.
 
@@ -3407,7 +3407,7 @@
 */
 
 /*!
-  \enum Qt::ReturnByValueConstant
+  \enum BobUI::ReturnByValueConstant
   \since 5.15
 
   This is a dummy type, designed to help users transition from certain deprecated APIs to their replacement APIs.
@@ -3422,7 +3422,7 @@
 
 /*!
   \class QKeyCombination
-  \inmodule QtCore
+  \inmodule BobUICore
   \since 6.0
   \brief The QKeyCombination class stores a combination of a key with optional modifiers.
 
@@ -3435,7 +3435,7 @@
 */
 
 /*!
-  \fn QKeyCombination::QKeyCombination(Qt::Key key = Qt::Key_unknown) noexcept
+  \fn QKeyCombination::QKeyCombination(BobUI::Key key = BobUI::Key_unknown) noexcept
 
   Constructs a QKeyCombination object that represents the key \a key
   and no modifiers.
@@ -3444,7 +3444,7 @@
 */
 
 /*!
-  \fn QKeyCombination::QKeyCombination(Qt::Modifiers modifiers, Qt::Key key = Qt::Key_unknown) noexcept
+  \fn QKeyCombination::QKeyCombination(BobUI::Modifiers modifiers, BobUI::Key key = BobUI::Key_unknown) noexcept
 
   Constructs a QKeyCombination object that represents the combination
   of \a key with the modifiers \a modifiers.
@@ -3453,7 +3453,7 @@
 */
 
 /*!
-  \fn QKeyCombination::QKeyCombination(Qt::KeyboardModifiers modifiers, Qt::Key key = Qt::Key_unknown) noexcept
+  \fn QKeyCombination::QKeyCombination(BobUI::KeyboardModifiers modifiers, BobUI::Key key = BobUI::Key_unknown) noexcept
 
   Constructs a QKeyCombination object that represents the combination
   of \a key with the modifiers \a modifiers.
@@ -3462,7 +3462,7 @@
 */
 
 /*!
-  \fn Qt::KeyboardModifiers QKeyCombination::keyboardModifiers() const noexcept
+  \fn BobUI::KeyboardModifiers QKeyCombination::keyboardModifiers() const noexcept
 
   Returns the keyboard modifiers represented by this QKeyCombination object.
 
@@ -3470,7 +3470,7 @@
 */
 
 /*!
-  \fn Qt::Key QKeyCombination::key() const noexcept
+  \fn BobUI::Key QKeyCombination::key() const noexcept
 
   Returns the key represented by this QKeyCombination object.
 
@@ -3482,8 +3482,8 @@
 
   Constructs a QKeyCombination object by extracting the key and the
   modifiers out of \a combined, which must be the result of a bitwise
-  OR between a value of type Qt::Key and value of type
-  Qt::KeyboardModifiers. toCombined() can be used in order to produce
+  OR between a value of type BobUI::Key and value of type
+  BobUI::KeyboardModifiers. toCombined() can be used in order to produce
   valid values for \a combined.
 
   \sa toCombined()
@@ -3500,7 +3500,7 @@
   \sa fromCombined(), key(), keyboardModifiers()
 */
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
   \fn QKeyCombination::operator int() const noexcept
   \deprecated
@@ -3524,10 +3524,10 @@
 */
 
 /*!
-  \fn QKeyCombination Qt::operator|(Qt::Modifier modifier, Qt::Key key) noexcept
-  \fn QKeyCombination Qt::operator|(Qt::KeyboardModifier modifier, Qt::Key key) noexcept
-  \fn QKeyCombination Qt::operator|(Qt::Key key, Qt::Modifier modifier) noexcept
-  \fn QKeyCombination Qt::operator|(Qt::Key key, Qt::KeyboardModifier modifier) noexcept
+  \fn QKeyCombination BobUI::operator|(BobUI::Modifier modifier, BobUI::Key key) noexcept
+  \fn QKeyCombination BobUI::operator|(BobUI::KeyboardModifier modifier, BobUI::Key key) noexcept
+  \fn QKeyCombination BobUI::operator|(BobUI::Key key, BobUI::Modifier modifier) noexcept
+  \fn QKeyCombination BobUI::operator|(BobUI::Key key, BobUI::KeyboardModifier modifier) noexcept
 
   \relates QKeyCombination
 
@@ -3536,10 +3536,10 @@
 */
 
 /*!
-  \fn QKeyCombination Qt::operator|(Qt::Modifiers modifiers, Qt::Key key) noexcept
-  \fn QKeyCombination Qt::operator|(Qt::KeyboardModifiers modifiers, Qt::Key key) noexcept
-  \fn QKeyCombination Qt::operator|(Qt::Key key, Qt::Modifiers modifiers) noexcept
-  \fn QKeyCombination Qt::operator|(Qt::Key key, Qt::KeyboardModifiers modifiers) noexcept
+  \fn QKeyCombination BobUI::operator|(BobUI::Modifiers modifiers, BobUI::Key key) noexcept
+  \fn QKeyCombination BobUI::operator|(BobUI::KeyboardModifiers modifiers, BobUI::Key key) noexcept
+  \fn QKeyCombination BobUI::operator|(BobUI::Key key, BobUI::Modifiers modifiers) noexcept
+  \fn QKeyCombination BobUI::operator|(BobUI::Key key, BobUI::KeyboardModifiers modifiers) noexcept
 
   \relates QKeyCombination
 
@@ -3548,10 +3548,10 @@
 */
 
 /*!
-  \fn QKeyCombination Qt::operator+(Qt::Modifier modifier, Qt::Key key) noexcept
-  \fn QKeyCombination Qt::operator+(Qt::KeyboardModifier modifier, Qt::Key key) noexcept
-  \fn QKeyCombination Qt::operator+(Qt::Key key, Qt::Modifier modifier) noexcept
-  \fn QKeyCombination Qt::operator+(Qt::Key key, Qt::KeyboardModifier modifier) noexcept
+  \fn QKeyCombination BobUI::operator+(BobUI::Modifier modifier, BobUI::Key key) noexcept
+  \fn QKeyCombination BobUI::operator+(BobUI::KeyboardModifier modifier, BobUI::Key key) noexcept
+  \fn QKeyCombination BobUI::operator+(BobUI::Key key, BobUI::Modifier modifier) noexcept
+  \fn QKeyCombination BobUI::operator+(BobUI::Key key, BobUI::KeyboardModifier modifier) noexcept
 
   \relates QKeyCombination
   \deprecated
@@ -3563,10 +3563,10 @@
 */
 
 /*!
-  \fn QKeyCombination Qt::operator+(Qt::Modifiers modifiers, Qt::Key key) noexcept
-  \fn QKeyCombination Qt::operator+(Qt::KeyboardModifiers modifiers, Qt::Key key) noexcept
-  \fn QKeyCombination Qt::operator+(Qt::Key key, Qt::Modifiers modifiers) noexcept
-  \fn QKeyCombination Qt::operator+(Qt::Key key, Qt::KeyboardModifiers modifiers) noexcept
+  \fn QKeyCombination BobUI::operator+(BobUI::Modifiers modifiers, BobUI::Key key) noexcept
+  \fn QKeyCombination BobUI::operator+(BobUI::KeyboardModifiers modifiers, BobUI::Key key) noexcept
+  \fn QKeyCombination BobUI::operator+(BobUI::Key key, BobUI::Modifiers modifiers) noexcept
+  \fn QKeyCombination BobUI::operator+(BobUI::Key key, BobUI::KeyboardModifiers modifiers) noexcept
 
   \relates QKeyCombination
   \deprecated
@@ -3582,7 +3582,7 @@
   \qhashold{QKeyCombination}
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
   \fn QDebug operator<<(QDebug debug, QKeyCombination combination)
   \relates QKeyCombination
@@ -3594,7 +3594,7 @@
 */
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
   \fn QDataStream &operator<<(QDataStream &out, QKeyCombination combination)
   \relates QKeyCombination
@@ -3602,7 +3602,7 @@
   Writes the combination \a combination into the stream \a out.
   Returns \a out.
 
-  \sa {Serializing Qt Data Types}
+  \sa {Serializing BobUI Data Types}
 */
 
 /*!
@@ -3612,6 +3612,6 @@
   Reads the combination \a combination from the stream \a in.
   Returns \a in.
 
-  \sa {Serializing Qt Data Types}
+  \sa {Serializing BobUI Data Types}
 */
 #endif

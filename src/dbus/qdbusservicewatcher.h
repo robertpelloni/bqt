@@ -1,15 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSSERVICEWATCHER_H
 #define QDBUSSERVICEWATCHER_H
 
+<<<<<<< HEAD
 #include <QtCore/QObject>
 #include <QtCore/qcontainerfwd.h> // Q(String)List
+=======
+#include <BobUICore/QObject>
+#include <BobUICore/qcontainerfwd.h> // Q(String)List
+>>>>>>> origin/dev
 #include <BobUIDBus/bobuidbusglobal.h>
 
-#if !defined(QT_NO_DBUS) && !defined(QT_NO_QOBJECT)
+#if !defined(BOBUI_NO_DBUS) && !defined(BOBUI_NO_QOBJECT)
 
 BOBUI_BEGIN_NAMESPACE
 
@@ -68,5 +73,5 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QDBusServiceWatcher::WatchMode)
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS || QT_NO_QOBJECT
+#endif // BOBUI_NO_DBUS || BOBUI_NO_QOBJECT
 #endif // QDBUSSERVICEWATCHER_H

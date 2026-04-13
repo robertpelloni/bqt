@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 // Experimental DRM dumb buffer backend.
 //
@@ -13,15 +13,15 @@
 #include <QLoggingCategory>
 #include <QGuiApplication>
 #include <QPainter>
-#include <QtFbSupport/private/qfbcursor_p.h>
-#include <QtFbSupport/private/qfbwindow_p.h>
-#include <QtKmsSupport/private/qkmsdevice_p.h>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUIFbSupport/private/qfbcursor_p.h>
+#include <BobUIFbSupport/private/qfbwindow_p.h>
+#include <BobUIKmsSupport/private/qkmsdevice_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
 #include <sys/mman.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qLcFbDrm, "qt.qpa.fb")
+Q_LOGGING_CATEGORY(qLcFbDrm, "bobui.qpa.fb")
 
 static const int BUFFER_COUNT = 2;
 
@@ -89,7 +89,7 @@ QLinuxFbDevice::QLinuxFbDevice(QKmsScreenConfig *screenConfig)
 
 bool QLinuxFbDevice::open()
 {
-    int fd = qt_safe_open(devicePath().toLocal8Bit().constData(), O_RDWR | O_CLOEXEC);
+    int fd = bobui_safe_open(devicePath().toLocal8Bit().constData(), O_RDWR | O_CLOEXEC);
     if (fd == -1) {
         qErrnoWarning("Could not open DRM device %s", qPrintable(devicePath()));
         return false;
@@ -98,7 +98,7 @@ bool QLinuxFbDevice::open()
     uint64_t hasDumbBuf = 0;
     if (drmGetCap(fd, DRM_CAP_DUMB_BUFFER, &hasDumbBuf) == -1 || !hasDumbBuf) {
         qWarning("Dumb buffers not supported");
-        qt_safe_close(fd);
+        bobui_safe_close(fd);
         return false;
     }
 
@@ -118,7 +118,7 @@ void QLinuxFbDevice::close()
 
     if (fd() != -1) {
         qCDebug(qLcFbDrm, "Closing DRM device");
-        qt_safe_close(fd());
+        bobui_safe_close(fd());
         setFd(-1);
     }
 }
@@ -429,6 +429,6 @@ QPixmap QLinuxFbDrmScreen::grabWindow(WId wid, int x, int y, int width, int heig
     return QPixmap();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlinuxfbdrmscreen.cpp"

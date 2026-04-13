@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLAYOUT_H
 #define QLAYOUT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
-#include <QtWidgets/qlayoutitem.h>
-#include <QtWidgets/qsizepolicy.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qmargins.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUIWidgets/qlayoutitem.h>
+#include <BobUIWidgets/qsizepolicy.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qmargins.h>
 
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QLayout;
@@ -60,8 +60,8 @@ public:
     QMargins contentsMargins() const;
     QRect contentsRect() const;
 
-    bool setAlignment(QWidget *w, Qt::Alignment alignment);
-    bool setAlignment(QLayout *l, Qt::Alignment alignment);
+    bool setAlignment(QWidget *w, BobUI::Alignment alignment);
+    bool setAlignment(QLayout *l, BobUI::Alignment alignment);
     using QLayoutItem::setAlignment;
 
     void setSizeConstraint(SizeConstraint constraint);
@@ -91,7 +91,7 @@ public:
     void removeWidget(QWidget *w);
     void removeItem(QLayoutItem *);
 
-    Qt::Orientations expandingDirections() const override;
+    BobUI::Orientations expandingDirections() const override;
     QSize minimumSize() const override;
     QSize maximumSize() const override;
     virtual void setGeometry(const QRect&) override;
@@ -104,7 +104,7 @@ public:
     QSizePolicy::ControlTypes controlTypes() const override;
 
     virtual QLayoutItem *replaceWidget(QWidget *from, QWidget *to,
-                                       Qt::FindChildOptions options = Qt::FindChildrenRecursively);
+                                       BobUI::FindChildOptions options = BobUI::FindChildrenRecursively);
 
     int totalMinimumHeightForWidth(int w) const;
     int totalHeightForWidth(int w) const;
@@ -140,10 +140,10 @@ private:
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //### support old includes
-#include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qgridlayout.h>
+#include <BobUIWidgets/qboxlayout.h>
+#include <BobUIWidgets/qgridlayout.h>
 
 #endif // QLAYOUT_H

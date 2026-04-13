@@ -1,23 +1,23 @@
 // Copyright (C) 2025 Intel Corporation.
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef Q20BIT_H
 #define Q20BIT_H
 
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q20type_traits.h>
 
 #if defined(__cpp_lib_bitops) || defined(__cpp_lib_int_pow2)
 #  include <bit>
 #else
-#  include <QtCore/qtypes.h>
+#  include <BobUICore/bobuiypes.h>
 #  include <limits>
 
 #  ifdef Q_CC_MSVC
 // avoiding qsimd.h -> immintrin.h unless necessary, because it increases
 // compilation time
-#    include <QtCore/qsimd.h>
+#    include <BobUICore/qsimd.h>
 #    include <intrin.h>
 #  endif
 #endif
@@ -26,10 +26,10 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. Types and functions defined in this
+// This file is not part of the BobUI API. Types and functions defined in this
 // file can reliably be replaced by their std counterparts, once available.
 // You may use these definitions in your own code, but be aware that we
-// will remove them once Qt depends on the C++ version that supports
+// will remove them once BobUI depends on the C++ version that supports
 // them in namespace std. There will be NO deprecation warning, the
 // definitions will JUST go away.
 //
@@ -38,7 +38,7 @@
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace q20 {
 #if defined(__cpp_lib_bitops)
@@ -173,7 +173,7 @@ popcount(T v) noexcept
     return __builtin_popcount(v);
 #  endif
 
-#  ifdef QT_SUPPORTS_IS_CONSTANT_EVALUATED
+#  ifdef BOBUI_SUPPORTS_IS_CONSTANT_EVALUATED
     // Try hardware functions if not constexpr. Note: no runtime detection.
     if (!is_constant_evaluated()) {
         if constexpr (std::is_integral_v<decltype(detail::hw_popcount(v))>)
@@ -225,7 +225,7 @@ countl_zero(T v) noexcept
     return __builtin_clz(v) - (32 - std::numeric_limits<T>::digits);
 #endif
 
-#ifdef QT_SUPPORTS_IS_CONSTANT_EVALUATED
+#ifdef BOBUI_SUPPORTS_IS_CONSTANT_EVALUATED
     // Try hardware functions if not constexpr. Note: no runtime detection.
     if (!is_constant_evaluated()) {
         if constexpr (std::is_integral_v<decltype(detail::hw_countl_zero(v))>)
@@ -275,7 +275,7 @@ countr_zero(T v) noexcept
     return __builtin_ctz(v);
 #endif
 
-#ifdef QT_SUPPORTS_IS_CONSTANT_EVALUATED
+#ifdef BOBUI_SUPPORTS_IS_CONSTANT_EVALUATED
     // Try hardware functions if not constexpr. Note: no runtime detection.
     if (!is_constant_evaluated()) {
         if constexpr (std::is_integral_v<decltype(detail::hw_countr_zero(v))>)
@@ -290,10 +290,10 @@ countr_zero(T v) noexcept
 
     // see http://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightParallel
     int c = std::numeric_limits<T>::digits; // c will be the number of zero bits on the right
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4146)   // unary minus operator applied to unsigned type, result still unsigned
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4146)   // unary minus operator applied to unsigned type, result still unsigned
     v &= T(-v);
-QT_WARNING_POP
+BOBUI_WARNING_POP
     if (v) c--;
     if constexpr (sizeof(T) == sizeof(quint32)) {
         if (v & 0x0000FFFF) c -= 16;
@@ -360,6 +360,6 @@ bit_floor(T v) noexcept
 #endif // __cpp_lib_int_pow2
 } // namespace q20
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // Q20BIT_H

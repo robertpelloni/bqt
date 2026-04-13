@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'qoverload.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,19 +9,19 @@
 #ifndef QOVERLOAD_H
 #define QOVERLOAD_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QLCDNumber>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QLCDNumber>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QMenuBar>
+#include <BobUIWidgets/QSlider>
+#include <BobUIWidgets/QStatusBar>
+#include <BobUIWidgets/BOBUIoolBar>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_MainWindow
 {
@@ -32,7 +32,7 @@ public:
     QLabel *label;
     QLCDNumber *lcdNumber;
     QMenuBar *menuBar;
-    QToolBar *mainToolBar;
+    BOBUIoolBar *mainToolBar;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -48,7 +48,7 @@ public:
         verticalLayout->setObjectName("verticalLayout");
         horizontalSlider = new QSlider(centralWidget);
         horizontalSlider->setObjectName("horizontalSlider");
-        horizontalSlider->setOrientation(Qt::Orientation::Horizontal);
+        horizontalSlider->setOrientation(BobUI::Orientation::Horizontal);
 
         verticalLayout->addWidget(horizontalSlider);
 
@@ -67,9 +67,9 @@ public:
         menuBar->setObjectName("menuBar");
         menuBar->setGeometry(QRect(0, 0, 400, 26));
         MainWindow->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(MainWindow);
+        mainToolBar = new BOBUIoolBar(MainWindow);
         mainToolBar->setObjectName("mainToolBar");
-        MainWindow->addToolBar(Qt::ToolBarArea::TopToolBarArea, mainToolBar);
+        MainWindow->addToolBar(BobUI::ToolBarArea::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName("statusBar");
         MainWindow->setStatusBar(statusBar);
@@ -93,6 +93,6 @@ namespace Ui {
     class MainWindow: public Ui_MainWindow {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOVERLOAD_H

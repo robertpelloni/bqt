@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 if (NOT (WIN32 OR UIKIT))
@@ -14,7 +14,7 @@ endif()
 # ---- Set up an intermediate imported library for libmingw32.a ----
 
 set(export_name_prefix "${INSTALL_CMAKE_NAMESPACE}EntryPointPrivate")
-qt_path_join(config_install_dir ${QT_CONFIG_INSTALL_DIR} ${export_name_prefix})
+bobui_path_join(config_install_dir ${BOBUI_CONFIG_INSTALL_DIR} ${export_name_prefix})
 
 set(extra_cmake_includes_arg)
 if(MINGW)
@@ -26,13 +26,13 @@ if(MINGW)
 
     set(mingw32target_config_file "${INSTALL_CMAKE_NAMESPACE}EntryPointMinGW32Target.cmake")
     configure_file("EntryPointMinGW32Target.cmake.in" "${mingw32target_config_file}" @ONLY)
-    qt_copy_or_install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${mingw32target_config_file}"
+    bobui_copy_or_install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${mingw32target_config_file}"
         DESTINATION "${config_install_dir}")
     # In prefix builds we also need to copy the file into the build config directory, so that the
-    # build-dir Qt6Config.cmake finds the files when building other repos in a top-level build.
-    if(QT_WILL_INSTALL)
+    # build-dir BobUI6Config.cmake finds the files when building other repos in a top-level build.
+    if(BOBUI_WILL_INSTALL)
         get_filename_component(absolute_config_install_dir "${config_install_dir}" ABSOLUTE
-            BASE_DIR "${QT_BUILD_DIR}")
+            BASE_DIR "${BOBUI_BUILD_DIR}")
         file(COPY "${CMAKE_CURRENT_BINARY_DIR}/${mingw32target_config_file}"
              DESTINATION "${absolute_config_install_dir}")
     endif()
@@ -41,15 +41,15 @@ if(MINGW)
 endif()
 
 # ---- The header-only target produces the actual module ----
-qt_internal_add_module(EntryPointPrivate
+bobui_internal_add_module(EntryPointPrivate
     HEADER_MODULE
     INTERNAL_MODULE
-    NO_SYNC_QT
+    NO_SYNC_BOBUI
     NO_MODULE_HEADERS
     NO_PRIVATE_MODULE
     NO_ADDITIONAL_TARGET_INFO
     ${extra_cmake_includes_arg}
-    QT_LICENSE_ID QT_COMMERCIAL_OR_BSD3
+    BOBUI_LICENSE_ID BOBUI_COMMERCIAL_OR_BSD3
 )
 
 set(export_targets EntryPointPrivate)
@@ -66,34 +66,34 @@ endif()
 
 if(using_entrypoint_library)
     # ---- While the static library target does the work ----
-    qt_internal_add_cmake_library(EntryPointImplementation STATIC
+    bobui_internal_add_cmake_library(EntryPointImplementation STATIC
         INCLUDE_DIRECTORIES
-           $<TARGET_PROPERTY:Qt::Core,INTERFACE_INCLUDE_DIRECTORIES>
+           $<TARGET_PROPERTY:BobUI::Core,INTERFACE_INCLUDE_DIRECTORIES>
     )
 
     list(APPEND export_targets EntryPointImplementation)
 
     set_target_properties(EntryPointImplementation PROPERTIES
-        OUTPUT_NAME "${INSTALL_CMAKE_NAMESPACE}EntryPoint${QT_LIBINFIX}"
-        ARCHIVE_OUTPUT_DIRECTORY "${QT_BUILD_DIR}/${INSTALL_LIBDIR}"
+        OUTPUT_NAME "${INSTALL_CMAKE_NAMESPACE}EntryPoint${BOBUI_LIBINFIX}"
+        ARCHIVE_OUTPUT_DIRECTORY "${BOBUI_BUILD_DIR}/${INSTALL_LIBDIR}"
     )
 
-    qt_handle_multi_config_output_dirs(EntryPointImplementation)
-    qt_internal_add_target_aliases(EntryPointImplementation)
-    qt_set_common_target_properties(EntryPointImplementation)
+    bobui_handle_multi_config_output_dirs(EntryPointImplementation)
+    bobui_internal_add_target_aliases(EntryPointImplementation)
+    bobui_set_common_target_properties(EntryPointImplementation)
 endif()
 
 # ---- Now we're ready to set up the platform specifics ----
 
 if(WIN32)
-    qt_internal_extend_target(EntryPointImplementation
-        SOURCES qtentrypoint_win.cpp
+    bobui_internal_extend_target(EntryPointImplementation
+        SOURCES bobuientrypoint_win.cpp
         LIBRARIES shell32
     )
 
     if(MSVC)
         # Store debug information inside the static lib
-        qt_internal_replace_compiler_flags(
+        bobui_internal_replace_compiler_flags(
             "/Zi" "/Z7"
             CONFIGS DEBUG RELWITHDEBINFO)
     endif()
@@ -102,50 +102,50 @@ if(WIN32)
         # Link against EntryPointImplementation via EntryPointMinGW32
         target_link_libraries(EntryPointPrivate INTERFACE EntryPointMinGW32)
         set_property(TARGET EntryPointPrivate
-            APPEND PROPERTY INTERFACE_QT_MODULE_LDFLAGS "-lmingw32"
+            APPEND PROPERTY INTERFACE_BOBUI_MODULE_LDFLAGS "-lmingw32"
         )
 
-        target_compile_definitions(EntryPointPrivate INTERFACE QT_NEEDS_QMAIN)
-        qt_internal_extend_target(EntryPointImplementation DEFINES QT_NEEDS_QMAIN)
+        target_compile_definitions(EntryPointPrivate INTERFACE BOBUI_NEEDS_QMAIN)
+        bobui_internal_extend_target(EntryPointImplementation DEFINES BOBUI_NEEDS_QMAIN)
     endif()
 
-    qt_internal_add_sync_header_dependencies(EntryPointImplementation Core)
+    bobui_internal_add_sync_header_dependencies(EntryPointImplementation Core)
 endif()
 
 if(UIKIT)
     set_target_properties(EntryPointPrivate PROPERTIES
-        INTERFACE_LINK_OPTIONS "-Wl,-e,_qt_main_wrapper"
+        INTERFACE_LINK_OPTIONS "-Wl,-e,_bobui_main_wrapper"
     )
     set_property(TARGET EntryPointPrivate
-        APPEND PROPERTY INTERFACE_QT_MODULE_LDFLAGS "-Wl,-e,_qt_main_wrapper"
+        APPEND PROPERTY INTERFACE_BOBUI_MODULE_LDFLAGS "-Wl,-e,_bobui_main_wrapper"
     )
 endif()
 
 # ---- Finally, make sure the static library can be consumed by clients -----
 
 if(using_entrypoint_library)
-    target_link_libraries(EntryPointPrivate INTERFACE Qt6::EntryPointImplementation)
+    target_link_libraries(EntryPointPrivate INTERFACE BobUI6::EntryPointImplementation)
 
-    qt_internal_get_target_property(entrypoint_implementation_ldflags
-        EntryPointImplementation QT_MODULE_LDFLAGS)
+    bobui_internal_get_target_property(entrypoint_implementation_ldflags
+        EntryPointImplementation BOBUI_MODULE_LDFLAGS)
 
     set_target_properties(EntryPointPrivate PROPERTIES
-        INTERFACE_QT_MODULE_PRI_EXTRA_CONTENT "
-QT.entrypoint_implementation.name = QtEntryPointImplementation
-QT.entrypoint_implementation.module = Qt6EntryPoint${QT_LIBINFIX}
-QT.entrypoint_implementation.ldflags = ${entrypoint_implementation_ldflags}
-QT.entrypoint_implementation.libs = $$QT_MODULE_LIB_BASE
-QT.entrypoint_implementation.module_config = staticlib v2 internal_module
+        INTERFACE_BOBUI_MODULE_PRI_EXTRA_CONTENT "
+BOBUI.entrypoint_implementation.name = BobUIEntryPointImplementation
+BOBUI.entrypoint_implementation.module = BobUI6EntryPoint${BOBUI_LIBINFIX}
+BOBUI.entrypoint_implementation.ldflags = ${entrypoint_implementation_ldflags}
+BOBUI.entrypoint_implementation.libs = $$BOBUI_MODULE_LIB_BASE
+BOBUI.entrypoint_implementation.module_config = staticlib v2 internal_module
 "
-        INTERFACE_QT_MODULE_DEPENDS "entrypoint_implementation"
+        INTERFACE_BOBUI_MODULE_DEPENDS "entrypoint_implementation"
     )
 
     set(export_name "${INSTALL_CMAKE_NAMESPACE}EntryPointPrivateTargets")
-    qt_install(TARGETS EntryPointImplementation EXPORT ${export_name})
-    qt_generate_prl_file(EntryPointImplementation "${INSTALL_LIBDIR}")
+    bobui_install(TARGETS EntryPointImplementation EXPORT ${export_name})
+    bobui_generate_prl_file(EntryPointImplementation "${INSTALL_LIBDIR}")
 endif()
 
-qt_internal_export_additional_targets_file(
+bobui_internal_export_additional_targets_file(
     TARGETS ${export_targets}
     EXPORT_NAME_PREFIX ${export_name_prefix}
     CONFIG_INSTALL_DIR "${config_install_dir}")

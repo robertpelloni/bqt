@@ -1,5 +1,5 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef ANDROIDJNIMENU_H
 #define ANDROIDJNIMENU_H
@@ -7,7 +7,7 @@
 #include <jni.h>
 #include <qglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidPlatformMenuBar;
 class QAndroidPlatformMenu;
@@ -17,7 +17,7 @@ class QRect;
 class QPoint;
 class QJniEnvironment;
 
-namespace QtAndroidMenu
+namespace BobUIAndroidMenu
 {
     // Menu support
     void openOptionsMenu();
@@ -35,6 +35,6 @@ namespace QtAndroidMenu
     bool registerNatives(QJniEnvironment &env);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ANDROIDJNIMENU_H

@@ -1,6 +1,6 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRANGEMODEL_IMPL_H
 #define QRANGEMODEL_IMPL_H
@@ -12,28 +12,28 @@
 #endif
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qquasivirtual_impl.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qscopedvaluerollback.h>
-#include <QtCore/qset.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qquasivirtual_impl.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qscopedvaluerollback.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qvarlengtharray.h>
 
 #include <algorithm>
 #include <functional>
 #include <iterator>
 #include <type_traits>
-#include <QtCore/qxptype_traits.h>
+#include <BobUICore/qxptype_traits.h>
 #include <tuple>
-#include <QtCore/q23utility.h>
+#include <BobUICore/q23utility.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QRangeModelDetails
 {
@@ -77,7 +77,7 @@ namespace QRangeModelDetails
     //       to support users-specific ptrs?
     template <typename T>
     using is_any_unique_ptr = is_any_of<T,
-#ifndef QT_NO_SCOPED_POINTER
+#ifndef BOBUI_NO_SCOPED_POINTER
             QScopedPointer,
 #endif
             std::unique_ptr
@@ -299,17 +299,17 @@ namespace QRangeModelDetails
 
     // Test if a type is an associative container that we can use for multi-role
     // data, i.e. has a key_type and a mapped_type typedef, and maps from int,
-    // Qt::ItemDataRole, or QString to QVariant. This excludes std::set (and
+    // BobUI::ItemDataRole, or QString to QVariant. This excludes std::set (and
     // unordered_set), which are not useful for us anyway even though they are
     // considered associative containers.
     template <typename C, typename = void> struct is_multi_role : std::false_type
     {
         static constexpr bool int_key = false;
     };
-    template <typename C> // Qt::ItemDataRole -> QVariant, or QString -> QVariant, int -> QVariant
+    template <typename C> // BobUI::ItemDataRole -> QVariant, or QString -> QVariant, int -> QVariant
     struct is_multi_role<C, std::void_t<typename C::key_type, typename C::mapped_type>>
         : std::conjunction<std::disjunction<std::is_same<typename C::key_type, int>,
-                                            std::is_same<typename C::key_type, Qt::ItemDataRole>,
+                                            std::is_same<typename C::key_type, BobUI::ItemDataRole>,
                                             std::is_same<typename C::key_type, QString>>,
                            std::is_same<typename C::mapped_type, QVariant>>
     {
@@ -417,20 +417,20 @@ namespace QRangeModelDetails
     template <typename T>
     struct item_access<T,
         std::void_t<decltype(QRangeModelItemAccess<T>::readRole(std::declval<const T&>(),
-                                                                Qt::DisplayRole)),
+                                                                BobUI::DisplayRole)),
                     decltype(QRangeModelItemAccess<T>::writeRole(std::declval<T&>(),
                                                                  std::declval<QVariant>(),
-                                                                 Qt::DisplayRole))
+                                                                 BobUI::DisplayRole))
                    >
         > : std::true_type
     {
         using ItemAccess = QRangeModelItemAccess<T>;
         static_assert(std::is_invocable_r_v<bool,
-            decltype(ItemAccess::writeRole), T&, QVariant, Qt::ItemDataRole>,
+            decltype(ItemAccess::writeRole), T&, QVariant, BobUI::ItemDataRole>,
             "The return type of the ItemAccess::writeRole implementation "
             "needs to be convertible to a bool!");
         static_assert(std::is_invocable_r_v<QVariant,
-            decltype(ItemAccess::readRole), const T&, Qt::ItemDataRole>,
+            decltype(ItemAccess::readRole), const T&, BobUI::ItemDataRole>,
             "The return type of the ItemAccess::readRole implementation "
             "needs to be convertible to QVariant!");
     };
@@ -497,7 +497,7 @@ namespace QRangeModelDetails
             using type = q20::remove_cvref_t<C>;
             constexpr size_t size = std::tuple_size_v<type>;
             Q_ASSERT(idx < std::tuple_size_v<type>);
-            QtPrivate::applyIndexSwitch<size>(idx, [&](auto idxConstant) {
+            BobUIPrivate::applyIndexSwitch<size>(idx, [&](auto idxConstant) {
                 function(get<idxConstant>(std::forward<C>(container)));
             });
         }
@@ -508,7 +508,7 @@ namespace QRangeModelDetails
             Q_ASSERT(std::size_t(section) < size);
 
             QVariant result;
-            QtPrivate::applyIndexSwitch<size>(section, [&result](auto idxConstant) {
+            BobUIPrivate::applyIndexSwitch<size>(section, [&result](auto idxConstant) {
                 using ElementType = std::tuple_element_t<idxConstant.value, T>;
                 const QMetaType metaType = QMetaType::fromType<
                                                 QRangeModelDetails::wrapped_t<ElementType>
@@ -901,11 +901,11 @@ class QRangeModel;
 // forward declare so that we can declare friends
 template <typename, typename, typename> class QRangeModelAdapter;
 
-class QRangeModelImplBase : public QtPrivate::QQuasiVirtualInterface<QRangeModelImplBase>
+class QRangeModelImplBase : public BobUIPrivate::QQuasiVirtualInterface<QRangeModelImplBase>
 {
 private:
     using Self = QRangeModelImplBase;
-    using QtPrivate::QQuasiVirtualInterface<Self>::Method;
+    using BobUIPrivate::QQuasiVirtualInterface<Self>::Method;
 protected:
     // Helper for calling a lambda with the element of a statically
     // sized range (tuple or array) with a runtime index.
@@ -929,7 +929,7 @@ public:
 
     // overridable prototypes (quasi-pure-virtual methods)
     void invalidateCaches();
-    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &data, int role);
+    bool setHeaderData(int section, BobUI::Orientation orientation, const QVariant &data, int role);
     bool setData(const QModelIndex &index, const QVariant &data, int role);
     bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &data);
     bool clearItemData(const QModelIndex &index);
@@ -944,8 +944,8 @@ public:
     QModelIndex sibling(int row, int column, const QModelIndex &index) const;
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    BobUI::ItemFlags flags(const QModelIndex &index) const;
+    QVariant headerData(int section, BobUI::Orientation orientation, int role) const;
     QVariant data(const QModelIndex &index, int role) const;
     QMap<int, QVariant> itemData(const QModelIndex &index) const;
     inline QHash<int, QByteArray> roleNames() const;
@@ -1074,9 +1074,9 @@ protected:
 template <typename Structure, typename Range,
           typename Protocol = QRangeModelDetails::table_protocol_t<Range>>
 class QRangeModelImpl
-        : public QtPrivate::QQuasiVirtualSubclass<QRangeModelImpl<Structure, Range, Protocol>,
+        : public BobUIPrivate::QQuasiVirtualSubclass<QRangeModelImpl<Structure, Range, Protocol>,
                                                   QRangeModelImplBase>,
-          private QtPrivate::CompactStorage<Protocol>
+          private BobUIPrivate::CompactStorage<Protocol>
 {
 public:
     using range_type = QRangeModelDetails::wrapped_t<Range>;
@@ -1095,7 +1095,7 @@ public:
                                                     >,
                                                     typename row_traits::item_type
                                                 >;
-    using ProtocolStorage = QtPrivate::CompactStorage<Protocol>;
+    using ProtocolStorage = BobUIPrivate::CompactStorage<Protocol>;
 
     using const_row_reference = decltype(*std::declval<typename ModelData::const_iterator&>());
 
@@ -1108,7 +1108,7 @@ public:
 protected:
 
     using Self = QRangeModelImpl<Structure, Range, Protocol>;
-    using Ancestor = QtPrivate::QQuasiVirtualSubclass<Self, QRangeModelImplBase>;
+    using Ancestor = BobUIPrivate::QQuasiVirtualSubclass<Self, QRangeModelImplBase>;
 
     Structure& that() { return static_cast<Structure &>(*this); }
     const Structure& that() const { return static_cast<const Structure &>(*this); }
@@ -1219,7 +1219,7 @@ public:
     void invalidateCaches() { m_data.invalidateCaches(); }
 
     // Not implemented
-    bool setHeaderData(int , Qt::Orientation , const QVariant &, int ) { return false; }
+    bool setHeaderData(int , BobUI::Orientation , const QVariant &, int ) { return false; }
 
     // actual implementations
     QModelIndex index(int row, int column, const QModelIndex &parent) const
@@ -1250,12 +1250,12 @@ public:
         return this->createIndex(row, column, parentRow);
     }
 
-    Qt::ItemFlags flags(const QModelIndex &index) const
+    BobUI::ItemFlags flags(const QModelIndex &index) const
     {
         if (!index.isValid())
-            return Qt::NoItemFlags;
+            return BobUI::NoItemFlags;
 
-        Qt::ItemFlags f = Structure::defaultFlags();
+        BobUI::ItemFlags f = Structure::defaultFlags();
 
         if constexpr (isMutable()) {
             if constexpr (row_traits::hasMetaObject) {
@@ -1263,10 +1263,10 @@ public:
                     const QMetaObject mo = wrapped_row_type::staticMetaObject;
                     const QMetaProperty prop = mo.property(index.column() + mo.propertyOffset());
                     if (prop.isWritable())
-                        f |= Qt::ItemIsEditable;
+                        f |= BobUI::ItemIsEditable;
                 }
             } else if constexpr (static_column_count <= 0) {
-                f |= Qt::ItemIsEditable;
+                f |= BobUI::ItemIsEditable;
             } else if constexpr (std::is_reference_v<row_reference> && !std::is_const_v<row_reference>) {
                 // we want to know if the elements in the tuple are const; they'd always be, if
                 // we didn't remove the const of the range first.
@@ -1276,24 +1276,24 @@ public:
                     QRangeModelImplBase::for_element_at(mutableRow, index.column(), [&f](auto &&ref){
                         using target_type = decltype(ref);
                         if constexpr (std::is_const_v<std::remove_reference_t<target_type>>)
-                            f &= ~Qt::ItemIsEditable;
+                            f &= ~BobUI::ItemIsEditable;
                         else if constexpr (std::is_lvalue_reference_v<target_type>)
-                            f |= Qt::ItemIsEditable;
+                            f |= BobUI::ItemIsEditable;
                     });
                 } else {
                     // If there's no usable value stored in the row, then we can't
                     // do anything with this item.
-                    f &= ~Qt::ItemIsEditable;
+                    f &= ~BobUI::ItemIsEditable;
                 }
             }
         }
         return f;
     }
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const
+    QVariant headerData(int section, BobUI::Orientation orientation, int role) const
     {
         QVariant result;
-        if (role != Qt::DisplayRole || orientation != Qt::Horizontal
+        if (role != BobUI::DisplayRole || orientation != BobUI::Horizontal
          || section < 0 || section >= columnCount({})) {
             return this->itemModel().QAbstractItemModel::headerData(section, orientation, role);
         }
@@ -1316,13 +1316,13 @@ public:
 
     static constexpr bool isRangeModelRole(int role)
     {
-        return role == Qt::RangeModelDataRole
-            || role == Qt::RangeModelAdapterRole;
+        return role == BobUI::RangeModelDataRole
+            || role == BobUI::RangeModelAdapterRole;
     }
 
     static constexpr bool isPrimaryRole(int role)
     {
-        return role == Qt::DisplayRole || role == Qt::EditRole;
+        return role == BobUI::DisplayRole || role == BobUI::EditRole;
     }
 
     QMap<int, QVariant> itemData(const QModelIndex &index) const
@@ -1373,15 +1373,15 @@ public:
 
             const auto readModelData = [&value](QModelRoleData &roleData){
                 const int role = roleData.role();
-                if (role == Qt::RangeModelDataRole) {
-                    // Qt QML support: "modelData" role returns the entire multi-role item.
+                if (role == BobUI::RangeModelDataRole) {
+                    // BobUI QML support: "modelData" role returns the entire multi-role item.
                     // QML can only use raw pointers to QObject (so we unwrap), and gadgets
                     // only by value (so we take the reference).
                     if constexpr (std::is_copy_assignable_v<wrapped_value_type>)
                         roleData.setData(QVariant::fromValue(QRangeModelDetails::refTo(value)));
                     else
                         roleData.setData(QVariant::fromValue(QRangeModelDetails::pointerTo(value)));
-                } else if (role == Qt::RangeModelAdapterRole) {
+                } else if (role == BobUI::RangeModelAdapterRole) {
                     // for QRangeModelAdapter however, we want to respect smart pointer wrappers
                     if constexpr (std::is_copy_assignable_v<value_type>)
                         roleData.setData(QVariant::fromValue(value));
@@ -1469,8 +1469,8 @@ public:
             auto emitDataChanged = qScopeGuard([&success, this, &index, role]{
                 if (success) {
                     Q_EMIT this->dataChanged(index, index,
-                                       role == Qt::EditRole || role == Qt::RangeModelDataRole
-                                    || role == Qt::RangeModelAdapterRole
+                                       role == BobUI::EditRole || role == BobUI::RangeModelDataRole
+                                    || role == BobUI::RangeModelAdapterRole
                                             ? QList<int>{} : QList<int>{role});
                 }
             });
@@ -1530,7 +1530,7 @@ public:
                         QRangeModelDetails::refTo(target) = *data.value<value_type *>();
                         return true;
                     }
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
                     qCritical("Not able to assign %s to %s",
                                 qPrintable(QDebug::toString(data)), targetMetaType.name());
 #endif
@@ -1552,7 +1552,7 @@ public:
                         return writeProperty(column, QRangeModelDetails::pointerTo(target), data);
                     }
                 } else if constexpr (multi_role::value) {
-                    Qt::ItemDataRole roleToSet = Qt::ItemDataRole(role);
+                    BobUI::ItemDataRole roleToSet = BobUI::ItemDataRole(role);
                     // If there is an entry for EditRole, overwrite that; otherwise,
                     // set the entry for DisplayRole.
                     const auto roleNames = [this]() -> QHash<int, QByteArray> {
@@ -1562,13 +1562,13 @@ public:
                         else
                             return {};
                     }();
-                    if (role == Qt::EditRole) {
+                    if (role == BobUI::EditRole) {
                         if constexpr (multi_role::int_key) {
                             if (target.find(roleToSet) == target.end())
-                                roleToSet = Qt::DisplayRole;
+                                roleToSet = BobUI::DisplayRole;
                         } else {
                             if (target.find(roleNames.value(roleToSet)) == target.end())
-                                roleToSet = Qt::DisplayRole;
+                                roleToSet = BobUI::DisplayRole;
                         }
                     }
                     if constexpr (multi_role::int_key)
@@ -1677,7 +1677,7 @@ public:
                         );
 
                         if (invalid != data.keyEnd()) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
                             qWarning("No role name set for %d", *invalid);
 #endif
                             return false;
@@ -1700,7 +1700,7 @@ public:
                                 continue;
                             if (!writeRole(role, QRangeModelDetails::pointerTo(targetCopy), value)) {
                                 const QByteArray roleName = roleNames.value(role);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
                                 qWarning("Failed to write value '%s' to role '%s'",
                                          qPrintable(QDebug::toString(value)), roleName.data());
 #endif
@@ -1816,7 +1816,7 @@ public:
                 break;
             }
         } else {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             qWarning("All items in the range must be QObject subclasses");
 #endif
         }
@@ -2313,9 +2313,9 @@ protected:
         using item_type = std::remove_pointer_t<ItemType>;
         QVariant result;
         QMetaProperty prop = roleProperty<item_type>(role);
-        if (!prop.isValid() && role == Qt::EditRole) {
-            role = Qt::DisplayRole;
-            prop = roleProperty<item_type>(Qt::DisplayRole);
+        if (!prop.isValid() && role == BobUI::EditRole) {
+            role = BobUI::DisplayRole;
+            prop = roleProperty<item_type>(BobUI::DisplayRole);
         }
 
         if (prop.isValid()) {
@@ -2369,8 +2369,8 @@ protected:
     {
         using item_type = std::remove_pointer_t<ItemType>;
         auto prop = roleProperty<item_type>(role);
-        if (!prop.isValid() && role == Qt::EditRole)
-            prop = roleProperty<item_type>(Qt::DisplayRole);
+        if (!prop.isValid() && role == BobUI::EditRole)
+            prop = roleProperty<item_type>(BobUI::DisplayRole);
 
         return prop.isValid() ? writeProperty(prop, gadget, data) : false;
     }
@@ -2566,9 +2566,9 @@ protected:
         return Base::fixedColumnCount();
     }
 
-    static constexpr Qt::ItemFlags defaultFlags()
+    static constexpr BobUI::ItemFlags defaultFlags()
     {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        return BobUI::ItemIsEnabled | BobUI::ItemIsSelectable;
     }
 
     static constexpr bool canInsertRowsImpl()
@@ -2848,7 +2848,7 @@ protected:
         if constexpr (Base::dynamicColumns()) {
             if (column < int(Base::size(*QRangeModelDetails::pos(*this->m_data.model(), row))))
                 return this->createIndex(row, column);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             // if we got here, then column < columnCount(), but this row is too short
             qCritical("QRangeModel: Column-range at row %d is not large enough!", row);
 #endif
@@ -2885,9 +2885,9 @@ protected:
         }
     }
 
-    static constexpr Qt::ItemFlags defaultFlags()
+    static constexpr BobUI::ItemFlags defaultFlags()
     {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemNeverHasChildren;
+        return BobUI::ItemIsEnabled | BobUI::ItemIsSelectable | BobUI::ItemNeverHasChildren;
     }
 
     static constexpr bool canInsertRowsImpl()
@@ -2983,7 +2983,7 @@ protected:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // Q_QDOC
 

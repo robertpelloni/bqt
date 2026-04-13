@@ -1,6 +1,6 @@
 #!/bin/bash
-# Copyright (C) 2023 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2023 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 PICK_TO_BRANCHES="6.11 6.10 6.8 6.5 5.15"
 UPSTREAM=https://publicsuffix.org/list/public_suffix_list.dat
@@ -10,7 +10,7 @@ PUBLIC_SUFFIX_LIST_DAT_DIR="$(mktemp -d)"
 MAKE_DAFSA=src/3rdparty/libpsl/src/psl-make-dafsa
 PSL_DATA_CPP=src/3rdparty/libpsl/psl_data.cpp
 PUBLIC_SUFFIX_LIST_DAFSA=tests/auto/network/access/qnetworkcookiejar/testdata/publicsuffix/public_suffix_list.dafsa
-ATTRIBUTION_JSON=src/3rdparty/libpsl/qt_attribution.json
+ATTRIBUTION_JSON=src/3rdparty/libpsl/bobui_attribution.json
 
 function msg() {
     echo "$@" 1>&2
@@ -25,7 +25,7 @@ function check_or_die() {
     TYPE=$1
     OP=$2
     FILE="$3"
-    test $OP "$FILE" || die "$TYPE \"$FILE\" not found (test $OP \"$FILE\" failed). Please run $THIS from \$SRCDIR/qtbase."
+    test $OP "$FILE" || die "$TYPE \"$FILE\" not found (test $OP \"$FILE\" failed). Please run $THIS from \$SRCDIR/bobuibase."
 }
 
 function run_or_die() {
@@ -55,7 +55,7 @@ run_or_die "$MAKE_DAFSA" "$DAT_FILE" "$PSL_DATA_CPP"
 run_or_die "$MAKE_DAFSA" --output-format=binary "$DAT_FILE" "$PUBLIC_SUFFIX_LIST_DAFSA"
 rm "$DAT_FILE"
 
-# update the first Version line in qt_attribution.json with the new SHA1 and date:
+# update the first Version line in bobui_attribution.json with the new SHA1 and date:
 run_or_die sed -i -E -e "1,/\"Version\":/{ /\"Version\":/ { s/(Version\": )\".*?\"/\\1\"${VERSION}\"/ } }" "$ATTRIBUTION_JSON"
 
 # update the first "PURL" line with the new SHA1:

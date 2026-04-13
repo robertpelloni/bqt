@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef CPPWRITEINITIALIZATION_H
 #define CPPWRITEINITIALIZATION_H
@@ -9,12 +9,12 @@
 #include <qset.h>
 #include <qmap.h>
 #include <qstack.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 
 enum class ConnectionSyntax;
 namespace language { struct SignalSlot; }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Driver;
 class Uic;
@@ -123,8 +123,8 @@ private:
     QString trCall(DomString *str, const QString &defaultString = QString()) const;
     QString noTrCall(DomString *str, const QString &defaultString = QString()) const;
     QString autoTrCall(DomString *str, const QString &defaultString = QString()) const;
-    inline QTextStream &autoTrOutput(const DomProperty *str);
-    QTextStream &autoTrOutput(const DomString *str, const QString &defaultString = QString());
+    inline BOBUIextStream &autoTrOutput(const DomProperty *str);
+    BOBUIextStream &autoTrOutput(const DomString *str, const QString &defaultString = QString());
     // Apply a comma-separated list of values using a function "setSomething(int idx, value)"
     void writePropertyList(const QString &varName, const QString &setFunction, const QString &value, const QString &defaultValue);
 
@@ -140,7 +140,7 @@ private:
     class Item {
         Q_DISABLE_COPY_MOVE(Item)
     public:
-        Item(const QString &itemClassName, const QString &indent, QTextStream &setupUiStream, QTextStream &retranslateUiStream, Driver *driver);
+        Item(const QString &itemClassName, const QString &indent, BOBUIextStream &setupUiStream, BOBUIextStream &retranslateUiStream, Driver *driver);
         ~Item();
         enum EmptyItemPolicy {
             DontConstruct,
@@ -169,17 +169,17 @@ private:
 
         const QString m_itemClassName;
         const QString m_indent;
-        QTextStream &m_setupUiStream;
-        QTextStream &m_retranslateUiStream;
+        BOBUIextStream &m_setupUiStream;
+        BOBUIextStream &m_retranslateUiStream;
         Driver *m_driver;
     };
     using Items = QList<Item *>;
 
     static void addInitializer(Item *item, const QString &name, int column,
                                const QString &value, const QString &directive = QString(), bool translatable = false);
-    static void addQtFlagsInitializer(Item *item, const DomPropertyMap &properties,
+    static void addBobUIFlagsInitializer(Item *item, const DomPropertyMap &properties,
                                       const QString &name, int column = -1);
-    void addQtEnumInitializer(Item *item,
+    void addBobUIEnumInitializer(Item *item,
                     const DomPropertyMap &properties, const QString &name, int column = -1) const;
     void addBrushInitializer(Item *item,
                     const DomPropertyMap &properties, const QString &name, int column = -1);
@@ -210,7 +210,7 @@ private:
     QString writeIconProperties(const DomResourceIcon *i);
     void writeThemeIconCheckAssignment(const QString &themeValue, const QString &iconName,
                                        const DomResourceIcon *i);
-    void writePixmapFunctionIcon(QTextStream &output, const QString &iconName,
+    void writePixmapFunctionIcon(BOBUIextStream &output, const QString &iconName,
                                  const QString &indent, const DomResourceIcon *i) const;
     QString writeSizePolicy(const DomSizePolicy *sp);
     QString writeBrushInitialization(const DomBrush *brush);
@@ -222,7 +222,7 @@ private:
 
     const Uic *m_uic;
     Driver *m_driver;
-    QTextStream &m_output;
+    BOBUIextStream &m_output;
     const Option &m_option;
     QString m_indent;
     QString m_dindent;
@@ -233,7 +233,7 @@ private:
         QString labelVarName;
         QString buddyAttributeName;
     };
-    friend class QTypeInfo<Buddy>;
+    friend class BOBUIypeInfo<Buddy>;
 
     QStack<DomWidget*> m_widgetChain;
     QStack<DomLayout*> m_layoutChain;
@@ -261,11 +261,11 @@ private:
         // Write out the layout margin and spacing properties applying the defaults.
         void writeProperties(const QString &indent, const QString &varName,
                              const DomPropertyMap &pm, int marginType,
-                             bool suppressMarginDefault, QTextStream &str) const;
+                             bool suppressMarginDefault, BOBUIextStream &str) const;
     private:
         void writeProperty(int p, const QString &indent, const QString &objectName, const DomPropertyMap &pm,
                            const QString &propertyName, const QString &setter, int defaultStyleValue,
-                           bool suppressDefault, QTextStream &str) const;
+                           bool suppressDefault, BOBUIextStream &str) const;
 
         enum Properties { Margin, Spacing, NumProperties };
         enum StateFlags { HasDefaultValue = 1, HasDefaultFunction = 2};
@@ -285,13 +285,13 @@ private:
     bool m_mainFormUsedInRetranslateUi = false;
 
     QString m_delayedInitialization;
-    QTextStream m_delayedOut;
+    BOBUIextStream m_delayedOut;
 
     QString m_refreshInitialization;
-    QTextStream m_refreshOut;
+    BOBUIextStream m_refreshOut;
 
     QString m_delayedActionInitialization;
-    QTextStream m_actionOut;
+    BOBUIextStream m_actionOut;
 
     bool m_layoutWidget = false;
     bool m_firstThemeIcon = true;
@@ -302,6 +302,6 @@ private:
 
 Q_DECLARE_TYPEINFO(CPP::WriteInitialization::Buddy, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // CPPWRITEINITIALIZATION_H

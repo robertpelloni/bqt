@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example widgets/analogclock
@@ -33,7 +33,7 @@
     When the widget is constructed, we set up a one-second timer to
     keep track of the current time, and we connect it to the standard
     \l{QWidget::update()}{update()} slot so that the clock face is
-    updated when the timer emits the \l{QTimer::timeout()}{timeout()}
+    updated when the timer emits the \l{BOBUIimer::timeout()}{timeout()}
     signal. Finally, we resize the widget so that it is displayed at a
     reasonable size.
 
@@ -44,7 +44,7 @@
     first shown, and when it is covered then exposed, but it is also
     executed when the  widget's \l{QWidget::update()}{update()} slot
     is called. Since we connected the timer's
-    \l{QTimer::timeout()}{timeout()} signal to this slot, it will be
+    \l{BOBUIimer::timeout()}{timeout()} signal to this slot, it will be
     called at least once per second.
 
     Before we set up the painter and draw the clock, we first define
@@ -96,7 +96,7 @@
     \image analogclock-viewport.png
            {Shows widget coordinate system and origin on clock face}
 
-    We set the pen to be Qt::NoPen because we don't want any outline,
+    We set the pen to be BobUI::NoPen because we don't want any outline,
     and we use a solid brush with the color appropriate for
     displaying hours. Brushes are used when filling in polygons and
     other geometric shapes.

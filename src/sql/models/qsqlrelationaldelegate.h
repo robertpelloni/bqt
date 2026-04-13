@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLRELATIONALDELEGATE_H
 #define QSQLRELATIONALDELEGATE_H
 
-#include <QtSql/qtsqlglobal.h>
+#include <BobUISql/bobuisqlglobal.h>
 
-QT_REQUIRE_CONFIG(sqlmodel);
+BOBUI_REQUIRE_CONFIG(sqlmodel);
 
-#ifdef QT_WIDGETS_LIB
+#ifdef BOBUI_WIDGETS_LIB
 
-#include <QtWidgets/qstyleditemdelegate.h>
-#if QT_CONFIG(listview)
-#include <QtWidgets/qlistview.h>
+#include <BobUIWidgets/qstyleditemdelegate.h>
+#if BOBUI_CONFIG(listview)
+#include <BobUIWidgets/qlistview.h>
 #endif
-#if QT_CONFIG(combobox)
-#include <QtWidgets/qcombobox.h>
+#if BOBUI_CONFIG(combobox)
+#include <BobUIWidgets/qcombobox.h>
 #endif
-#include <QtSql/qsqldriver.h>
-#include <QtSql/qsqlrelationaltablemodel.h>
-#include <QtCore/qmetaobject.h>
-QT_BEGIN_NAMESPACE
+#include <BobUISql/qsqldriver.h>
+#include <BobUISql/qsqlrelationaltablemodel.h>
+#include <BobUICore/qmetaobject.h>
+BOBUI_BEGIN_NAMESPACE
 
 class QSqlRelationalDelegate : public QStyledItemDelegate
 {
@@ -72,7 +72,7 @@ public:
             // Taken from QItemDelegate::setEditorData() as we need
             // to present the DisplayRole and not the EditRole which
             // is the id reference to the related model
-            QVariant v = index.data(Qt::DisplayRole);
+            QVariant v = index.data(BobUI::DisplayRole);
             const QByteArray n = editor->metaObject()->userProperty().name();
             if (!n.isEmpty()) {
                 if (!v.isValid())
@@ -104,17 +104,17 @@ void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex 
     int childEditIndex = fieldIndex(childModel, driver,
                                     sqlModel->relation(index.column()).indexColumn());
     sqlModel->setData(index,
-            childModel->data(childModel->index(currentItem, childColIndex), Qt::DisplayRole),
-            Qt::DisplayRole);
+            childModel->data(childModel->index(currentItem, childColIndex), BobUI::DisplayRole),
+            BobUI::DisplayRole);
     sqlModel->setData(index,
-            childModel->data(childModel->index(currentItem, childEditIndex), Qt::EditRole),
-            Qt::EditRole);
+            childModel->data(childModel->index(currentItem, childEditIndex), BobUI::EditRole),
+            BobUI::EditRole);
 }
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_WIDGETS_LIB
+#endif // BOBUI_WIDGETS_LIB
 
 #endif // QSQLRELATIONALDELEGATE_H

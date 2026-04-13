@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformintegration.h"
 
@@ -8,19 +8,19 @@
 #include <qpa/qplatformaccessibility.h>
 #include <qpa/qplatformkeymapper.h>
 #include <qpa/qplatformtheme.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qpixmap_raster_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qpixmap_raster_p.h>
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <private/qdnd_p.h>
 #include <private/qsimpledrag_p.h>
 #endif
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 # include <qpa/qplatformsessionmanager.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     Accessor for the platform integration's fontdatabase.
@@ -47,7 +47,7 @@ QPlatformFontDatabase *QPlatformIntegration::fontDatabase() const
 
 */
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
 QPlatformClipboard *QPlatformIntegration::clipboard() const
 {
@@ -60,12 +60,12 @@ QPlatformClipboard *QPlatformIntegration::clipboard() const
 
 #endif
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!
     Accessor for the platform integration's drag object.
 
     Default implementation returns QSimpleDrag. This class supports only drag
-    and drop operations within the same Qt application.
+    and drop operations within the same BobUI application.
 */
 QPlatformDrag *QPlatformIntegration::drag() const
 {
@@ -75,7 +75,7 @@ QPlatformDrag *QPlatformIntegration::drag() const
     }
     return drag;
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 QPlatformNativeInterface * QPlatformIntegration::nativeInterface() const
 {
@@ -104,9 +104,9 @@ QPlatformServices *QPlatformIntegration::services() const
     functions where the name starts with create. However, functions which don't have a name
     starting with create acts as accessors to member variables.
 
-    It is not trivial to create or build a platform plugin outside of the Qt source tree. Therefore
+    It is not trivial to create or build a platform plugin outside of the BobUI source tree. Therefore
     the recommended approach for making new platform plugin is to copy an existing plugin inside
-    the QTSRCTREE/src/plugins/platform and develop the plugin inside the source tree.
+    the BOBUISRCTREE/src/plugins/platform and develop the plugin inside the source tree.
 
     The minimal platform integration is the smallest platform integration it is possible to make,
     which makes it an ideal starting point for new plugins. For a slightly more advanced plugin,
@@ -201,7 +201,7 @@ QPlatformServices *QPlatformIntegration::services() const
     platform plugins may however choose to enhance the behavior in the backend
     implementation for QOpenGLContext::getProcAddress() and support returning a function
     pointer also for the standard, non-extension functions. This capability is a
-    prerequisite for dynamic OpenGL loading. Starting with Qt 5.7, the platform plugin
+    prerequisite for dynamic OpenGL loading. Starting with BobUI 5.7, the platform plugin
     is required to have this capability.
 
     \value [since 5.5] ApplicationIcon The platform supports setting the application icon.
@@ -218,11 +218,11 @@ QPlatformServices *QPlatformIntegration::services() const
     from a non-exposed to exposed state or back.
 
     \value RhiBasedRendering The platform supports one or more of the 3D rendering APIs
-    that Qt Quick and other components can use via the Qt Rendering Hardware Interface. On
+    that BobUI Quick and other components can use via the BobUI Rendering Hardware Interface. On
     platforms where it is clear upfront that the platform cannot, or does not want to,
     support rendering via 3D graphics APIs such as OpenGL, Vulkan, Direct 3D, or Metal,
     this capability can be reported as \c false. That in effect means that in modules
-    where there is an alternative, such as Qt Quick with its \c software backend, an
+    where there is an alternative, such as BobUI Quick with its \c software backend, an
     automatic fallback to that alternative may occur, if applicable. The default
     implementation of hasCapability() returns \c true.
 
@@ -267,7 +267,7 @@ QPlatformPixmap *QPlatformIntegration::createPlatformPixmap(QPlatformPixmap::Pix
     return new QRasterPlatformPixmap(type);
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 /*!
     Factory function for QPlatformOpenGLContext. The \a context parameter is a pointer to
     the context for which a platform-specific context backend needs to be
@@ -293,7 +293,7 @@ QPlatformOpenGLContext *QPlatformIntegration::createPlatformOpenGLContext(QOpenG
     qWarning("This plugin does not support createPlatformOpenGLContext!");
     return nullptr;
 }
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 /*!
    Factory function for QPlatformSharedGraphicsCache. This function will return 0 if the platform
@@ -363,7 +363,7 @@ QPlatformKeyMapper *QPlatformIntegration::keyMapper() const
     return keyMapper;
 }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 /*!
   Returns the platforms accessibility.
@@ -444,31 +444,31 @@ QVariant QPlatformIntegration::styleHint(StyleHint hint) const
     return 0;
 }
 
-Qt::WindowState QPlatformIntegration::defaultWindowState(Qt::WindowFlags flags) const
+BobUI::WindowState QPlatformIntegration::defaultWindowState(BobUI::WindowFlags flags) const
 {
     // Leave popup-windows as is
-    if (flags & Qt::Popup & ~Qt::Window)
-        return Qt::WindowNoState;
+    if (flags & BobUI::Popup & ~BobUI::Window)
+        return BobUI::WindowNoState;
 
-     if (flags & Qt::SubWindow)
-        return Qt::WindowNoState;
+     if (flags & BobUI::SubWindow)
+        return BobUI::WindowNoState;
 
     if (styleHint(QPlatformIntegration::ShowIsFullScreen).toBool())
-        return Qt::WindowFullScreen;
+        return BobUI::WindowFullScreen;
     else if (styleHint(QPlatformIntegration::ShowIsMaximized).toBool())
-        return Qt::WindowMaximized;
+        return BobUI::WindowMaximized;
 
-    return Qt::WindowNoState;
+    return BobUI::WindowNoState;
 }
 
-Qt::KeyboardModifiers QPlatformIntegration::queryKeyboardModifiers() const
+BobUI::KeyboardModifiers QPlatformIntegration::queryKeyboardModifiers() const
 {
     return QGuiApplication::keyboardModifiers();
 }
 
 /*!
   Should be used to obtain a list of possible shortcuts for the given key
-  event. Shortcuts should be encoded as int(Qt::Key + Qt::KeyboardModifiers).
+  event. Shortcuts should be encoded as int(BobUI::Key + BobUI::KeyboardModifiers).
 
   One example for more than one possibility is the key combination of Shift+5.
   That one might trigger a shortcut which is set as "Shift+5" as well as one
@@ -505,7 +505,7 @@ QPlatformOffscreenSurface *QPlatformIntegration::createPlatformOffscreenSurface(
     return nullptr;
 }
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 /*!
    \since 5.2
 
@@ -550,14 +550,14 @@ void QPlatformIntegration::beep() const
 
    Overrides should ensure there's a callback into the QWSI
    function handleApplicationTermination so that the quit can
-   be propagated to QtGui and the application.
+   be propagated to BobUIGui and the application.
 */
 void QPlatformIntegration::quit() const
 {
     QWindowSystemInterface::handleApplicationTermination<QWindowSystemInterface::SynchronousDelivery>();
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 /*!
   Platform integration function for querying the OpenGL implementation type.
 
@@ -608,7 +608,7 @@ void QPlatformIntegration::setApplicationBadge(qint64 number)
     Q_UNUSED(number);
 }
 
-#if QT_CONFIG(vulkan) || defined(Q_QDOC)
+#if BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
 
 /*!
     Factory function for QPlatformVulkanInstance. The \a instance parameter is a
@@ -628,6 +628,6 @@ QPlatformVulkanInstance *QPlatformIntegration::createPlatformVulkanInstance(QVul
     return nullptr;
 }
 
-#endif // QT_CONFIG(vulkan)
+#endif // BOBUI_CONFIG(vulkan)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

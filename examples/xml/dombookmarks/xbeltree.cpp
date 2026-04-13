@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "xbeltree.h"
 
@@ -9,17 +9,17 @@
 
 #include <QDesktopServices>
 #include <QGuiApplication>
-#if QT_CONFIG(clipboard) && QT_CONFIG(contextmenu)
+#if BOBUI_CONFIG(clipboard) && BOBUI_CONFIG(contextmenu)
 #  include <QClipboard>
 #  include <QContextMenuEvent>
 #endif
 
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QUrl>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-enum { DomElementRole = Qt::UserRole + 1 };
+enum { DomElementRole = BobUI::UserRole + 1 };
 
 Q_DECLARE_METATYPE(QDomElement)
 
@@ -33,7 +33,7 @@ static const auto foldedAttribute = u"folded"_s;
 
 //! [0]
 XbelTree::XbelTree(QWidget *parent)
-    : QTreeWidget(parent)
+    : BOBUIreeWidget(parent)
 {
     header()->setSectionResizeMode(QHeaderView::Stretch);
     setHeaderLabels({tr("Title"), tr("Location")});
@@ -46,10 +46,10 @@ XbelTree::XbelTree(QWidget *parent)
 }
 //! [0]
 
-#if QT_CONFIG(clipboard) && QT_CONFIG(contextmenu)
+#if BOBUI_CONFIG(clipboard) && BOBUI_CONFIG(contextmenu)
 void XbelTree::contextMenuEvent(QContextMenuEvent *event)
 {
-    const QTreeWidgetItem *item = itemAt(event->pos());
+    const BOBUIreeWidgetItem *item = itemAt(event->pos());
     if (!item)
         return;
     const QString url = item->text(1);
@@ -62,7 +62,7 @@ void XbelTree::contextMenuEvent(QContextMenuEvent *event)
     else if (action == openAction)
         QDesktopServices::openUrl(QUrl(url));
 }
-#endif // QT_CONFIG(clipboard) && QT_CONFIG(contextmenu)
+#endif // BOBUI_CONFIG(clipboard) && BOBUI_CONFIG(contextmenu)
 
 //! [1]
 bool XbelTree::read(QIODevice *device)
@@ -93,7 +93,7 @@ bool XbelTree::read(QIODevice *device)
 
     clear();
 
-    disconnect(this, &QTreeWidget::itemChanged, this, &XbelTree::updateDomElement);
+    disconnect(this, &BOBUIreeWidget::itemChanged, this, &XbelTree::updateDomElement);
 
     QDomElement child = root.firstChildElement(folderElement);
     while (!child.isNull()) {
@@ -101,7 +101,7 @@ bool XbelTree::read(QIODevice *device)
         child = child.nextSiblingElement(folderElement);
     }
 
-    connect(this, &QTreeWidget::itemChanged, this, &XbelTree::updateDomElement);
+    connect(this, &BOBUIreeWidget::itemChanged, this, &XbelTree::updateDomElement);
 
     return true;
 }
@@ -112,13 +112,13 @@ bool XbelTree::write(QIODevice *device) const
 {
     const int IndentSize = 4;
 
-    QTextStream out(device);
+    BOBUIextStream out(device);
     domDocument.save(out, IndentSize);
     return true;
 }
 //! [2]
 
-void XbelTree::updateDomElement(const QTreeWidgetItem *item, int column)
+void XbelTree::updateDomElement(const BOBUIreeWidgetItem *item, int column)
 {
     QDomElement element = qvariant_cast<QDomElement>(item->data(0, DomElementRole));
     if (!element.isNull()) {
@@ -139,15 +139,15 @@ void XbelTree::updateDomElement(const QTreeWidgetItem *item, int column)
 
 //! [3]
 void XbelTree::parseFolderElement(const QDomElement &element,
-                                  QTreeWidgetItem *parentItem)
+                                  BOBUIreeWidgetItem *parentItem)
 {
-    QTreeWidgetItem *item = createItem(element, parentItem);
+    BOBUIreeWidgetItem *item = createItem(element, parentItem);
 
     QString title = element.firstChildElement(titleElement).text();
     if (title.isEmpty())
         title = tr("Folder");
 
-    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    item->setFlags(item->flags() | BobUI::ItemIsEditable);
     item->setIcon(0, folderIcon);
     item->setText(0, title);
 
@@ -161,19 +161,19 @@ void XbelTree::parseFolderElement(const QDomElement &element,
         if (child.tagName() == folderElement) {
             parseFolderElement(child, item);
         } else if (child.tagName() == bookmarkElement) {
-            QTreeWidgetItem *childItem = createItem(child, item);
+            BOBUIreeWidgetItem *childItem = createItem(child, item);
 
             QString title = child.firstChildElement(titleElement).text();
             if (title.isEmpty())
                 title = tr("Folder");
 
-            childItem->setFlags(item->flags() | Qt::ItemIsEditable);
+            childItem->setFlags(item->flags() | BobUI::ItemIsEditable);
             childItem->setIcon(0, bookmarkIcon);
             childItem->setText(0, title);
             childItem->setText(1, child.attribute(hrefAttribute));
         } else if (child.tagName() == "separator"_L1) {
-            QTreeWidgetItem *childItem = createItem(child, item);
-            childItem->setFlags(item->flags() & ~(Qt::ItemIsSelectable | Qt::ItemIsEditable));
+            BOBUIreeWidgetItem *childItem = createItem(child, item);
+            childItem->setFlags(item->flags() & ~(BobUI::ItemIsSelectable | BobUI::ItemIsEditable));
             childItem->setText(0, dots);
         }
         child = child.nextSiblingElement();
@@ -181,14 +181,14 @@ void XbelTree::parseFolderElement(const QDomElement &element,
 }
 //! [3]
 
-QTreeWidgetItem *XbelTree::createItem(const QDomElement &element,
-                                      QTreeWidgetItem *parentItem)
+BOBUIreeWidgetItem *XbelTree::createItem(const QDomElement &element,
+                                      BOBUIreeWidgetItem *parentItem)
 {
-    QTreeWidgetItem *item;
+    BOBUIreeWidgetItem *item;
     if (parentItem) {
-        item = new QTreeWidgetItem(parentItem);
+        item = new BOBUIreeWidgetItem(parentItem);
     } else {
-        item = new QTreeWidgetItem(this);
+        item = new BOBUIreeWidgetItem(this);
     }
     item->setData(0, DomElementRole, QVariant::fromValue(element));
     return item;

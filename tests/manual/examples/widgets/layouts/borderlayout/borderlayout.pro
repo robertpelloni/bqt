@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS     = borderlayout.h \
               window.h
@@ -7,5 +7,5 @@ SOURCES     = borderlayout.cpp \
               window.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/layouts/borderlayout
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/layouts/borderlayout
 INSTALLS += target

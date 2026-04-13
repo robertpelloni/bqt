@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qminimaleglscreen.h"
 #include "qminimaleglwindow.h"
 
-#include <QtGui/private/qeglconvenience_p.h>
-#ifndef QT_NO_OPENGL
-# include <QtGui/private/qeglplatformcontext_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
+#ifndef BOBUI_NO_OPENGL
+# include <BobUIGui/private/qeglplatformcontext_p.h>
 #endif
 
 #ifdef Q_OPENKODE
@@ -14,11 +14,11 @@
 #include <KD/NV_initialize.h>
 #endif //Q_OPENKODE
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // #define QEGL_EXTRA_DEBUG
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
 class QMinimalEglContext : public QEGLPlatformContext
 {
@@ -86,7 +86,7 @@ void QMinimalEglScreen::createAndSetPlatformContext()
 {
     QSurfaceFormat platformFormat;
 
-    QByteArray depthString = qgetenv("QT_QPA_EGLFS_DEPTH");
+    QByteArray depthString = qgetenv("BOBUI_QPA_EGLFS_DEPTH");
     if (depthString.toInt() == 16) {
         platformFormat.setDepthBufferSize(16);
         platformFormat.setRedBufferSize(5);
@@ -104,7 +104,7 @@ void QMinimalEglScreen::createAndSetPlatformContext()
         m_format = QImage::Format_RGB32;
     }
 
-    if (!qEnvironmentVariableIsEmpty("QT_QPA_EGLFS_MULTISAMPLE"))
+    if (!qEnvironmentVariableIsEmpty("BOBUI_QPA_EGLFS_MULTISAMPLE"))
         platformFormat.setSamples(4);
 
     EGLConfig config = q_configFromGLFormat(m_dpy, platformFormat);
@@ -131,7 +131,7 @@ void QMinimalEglScreen::createAndSetPlatformContext()
     }
     //    qWarning("Created surface %dx%d\n", w, h);
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QEGLPlatformContext *platformContext = new QMinimalEglContext(platformFormat, nullptr, m_dpy);
     m_platformContext = platformContext;
 #endif
@@ -162,7 +162,7 @@ QImage::Format QMinimalEglScreen::format() const
         createAndSetPlatformContext();
     return m_format;
 }
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 QPlatformOpenGLContext *QMinimalEglScreen::platformContext() const
 {
     if (!m_platformContext) {
@@ -172,4 +172,4 @@ QPlatformOpenGLContext *QMinimalEglScreen::platformContext() const
     return m_platformContext;
 }
 #endif
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

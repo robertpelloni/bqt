@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QIdentityProxyModel>
 #include <QDateTime>
@@ -25,9 +25,9 @@ class DateFormatProxyModel : public QIdentityProxyModel
     m_formatString = formatString;
   }
 
-  QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+  QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override
   {
-    if (role != Qt::DisplayRole)
+    if (role != BobUI::DisplayRole)
       return QIdentityProxyModel::data(index, role);
 
     const QModelIndex sourceIndex = mapToSource(index);
@@ -38,7 +38,7 @@ class DateFormatProxyModel : public QIdentityProxyModel
   QMap<int, QVariant> itemData(const QModelIndex &proxyIndex) const override
   {
       QMap<int, QVariant> map = QIdentityProxyModel::itemData(proxyIndex);
-      map[Qt::DisplayRole] = data(proxyIndex);
+      map[BobUI::DisplayRole] = data(proxyIndex);
       return map;
   }
 

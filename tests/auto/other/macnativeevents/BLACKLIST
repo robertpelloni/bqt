@@ -1,4 +1,4 @@
-# QTBUG-22775
+# BOBUIBUG-22775
 [testDragWindow]
 osx
 [testMouseEnter]
@@ -21,7 +21,7 @@ osx
 osx
 macos ci
 # The following key tests fail after switching to synchronous
-# expose events, and we don't know why yet. QTBUG-62042
+# expose events, and we don't know why yet. BOBUIBUG-62042
 [testKeyPressOnToplevel]
 osx
 [testModifierShift]
@@ -30,10 +30,10 @@ osx
 osx
 [testModifierCtrl]
 osx
-# QTQAINFRA-1292
+# BOBUIQAINFRA-1292
 [testPushButtonPressRelease]
 macos ci
 
-# QTQAINFRA-1292
+# BOBUIQAINFRA-1292
 [testModifierCtrlWithDontSwapCtrlAndMeta]
 macos ci

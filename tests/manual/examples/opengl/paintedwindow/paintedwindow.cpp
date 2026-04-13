@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "paintedwindow.h"
 
@@ -9,7 +9,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QScreen>
-#include <QTimer>
+#include <BOBUIimer>
 
 #include <qmath.h>
 
@@ -20,7 +20,7 @@ PaintedWindow::PaintedWindow()
     format.setSamples(4);
 
     setSurfaceType(QWindow::OpenGLSurface);
-    setFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+    setFlags(BobUI::Window | BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint | BobUI::WindowMinMaxButtonsHint | BobUI::WindowCloseButtonHint);
     setFormat(format);
 
     create();
@@ -45,7 +45,7 @@ PaintedWindow::PaintedWindow()
     reportContentOrientationChange(screen()->orientation());
 
     m_targetOrientation = contentOrientation();
-    m_nextTargetOrientation = Qt::PrimaryOrientation;
+    m_nextTargetOrientation = BobUI::PrimaryOrientation;
 
     connect(screen(), &QScreen::orientationChanged, this, &PaintedWindow::orientationChanged);
     connect(m_animation, &QAbstractAnimation::finished, this, &PaintedWindow::rotationDone);
@@ -60,19 +60,19 @@ void PaintedWindow::exposeEvent(QExposeEvent *)
 
 void PaintedWindow::mousePressEvent(QMouseEvent *)
 {
-    Qt::ScreenOrientation o = contentOrientation();
+    BobUI::ScreenOrientation o = contentOrientation();
     switch (o) {
-    case Qt::LandscapeOrientation:
-        orientationChanged(Qt::PortraitOrientation);
+    case BobUI::LandscapeOrientation:
+        orientationChanged(BobUI::PortraitOrientation);
         break;
-    case Qt::PortraitOrientation:
-        orientationChanged(Qt::InvertedLandscapeOrientation);
+    case BobUI::PortraitOrientation:
+        orientationChanged(BobUI::InvertedLandscapeOrientation);
         break;
-    case Qt::InvertedLandscapeOrientation:
-        orientationChanged(Qt::InvertedPortraitOrientation);
+    case BobUI::InvertedLandscapeOrientation:
+        orientationChanged(BobUI::InvertedPortraitOrientation);
         break;
-    case Qt::InvertedPortraitOrientation:
-        orientationChanged(Qt::LandscapeOrientation);
+    case BobUI::InvertedPortraitOrientation:
+        orientationChanged(BobUI::LandscapeOrientation);
         break;
     default:
         Q_ASSERT(false);
@@ -81,7 +81,7 @@ void PaintedWindow::mousePressEvent(QMouseEvent *)
     paint();
 }
 
-void PaintedWindow::orientationChanged(Qt::ScreenOrientation newOrientation)
+void PaintedWindow::orientationChanged(BobUI::ScreenOrientation newOrientation)
 {
     if (contentOrientation() == newOrientation)
         return;
@@ -120,10 +120,10 @@ void PaintedWindow::orientationChanged(Qt::ScreenOrientation newOrientation)
 void PaintedWindow::rotationDone()
 {
     reportContentOrientationChange(m_targetOrientation);
-    if (m_nextTargetOrientation != Qt::PrimaryOrientation) {
+    if (m_nextTargetOrientation != BobUI::PrimaryOrientation) {
         Q_ASSERT(m_animation->state() != QAbstractAnimation::Running);
         orientationChanged(m_nextTargetOrientation);
-        m_nextTargetOrientation = Qt::PrimaryOrientation;
+        m_nextTargetOrientation = BobUI::PrimaryOrientation;
     }
 }
 
@@ -147,9 +147,9 @@ void PaintedWindow::paint()
     QPainterPath path;
     path.addEllipse(rect);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.fillRect(rect, Qt::transparent);
+    painter.fillRect(rect, BobUI::transparent);
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-    painter.fillPath(path, Qt::blue);
+    painter.fillPath(path, BobUI::blue);
 
     if (contentOrientation() != m_targetOrientation) {
         painter.setRenderHint(QPainter::SmoothPixmapTransform);
@@ -181,5 +181,5 @@ void PaintedWindow::paint(QPainter *painter, const QRect &rect)
     QFont font;
     font.setPixelSize(64);
     painter->setFont(font);
-    painter->drawText(rect, Qt::AlignCenter, "Hello");
+    painter->drawText(rect, BobUI::AlignCenter, "Hello");
 }

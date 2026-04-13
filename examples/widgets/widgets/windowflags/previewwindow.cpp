@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "previewwindow.h"
 
 #include <QPushButton>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QVBoxLayout>
 
 //! [0]
 PreviewWindow::PreviewWindow(QWidget *parent)
     : QWidget(parent)
 {
-    textEdit = new QTextEdit;
+    textEdit = new BOBUIextEdit;
     textEdit->setReadOnly(true);
-    textEdit->setLineWrapMode(QTextEdit::NoWrap);
+    textEdit->setLineWrapMode(BOBUIextEdit::NoWrap);
 
     closeButton = new QPushButton(tr("&Close"));
     connect(closeButton, &QPushButton::clicked,
@@ -29,58 +29,58 @@ PreviewWindow::PreviewWindow(QWidget *parent)
 //! [0]
 
 //! [1]
-void PreviewWindow::setWindowFlags(Qt::WindowFlags flags)
+void PreviewWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
     QWidget::setWindowFlags(flags);
 
     QString text;
 
-    Qt::WindowFlags type = (flags & Qt::WindowType_Mask);
-    if (type == Qt::Window)
-        text = "Qt::Window";
-    else if (type == Qt::Dialog)
-        text = "Qt::Dialog";
-    else if (type == Qt::Sheet)
-        text = "Qt::Sheet";
-    else if (type == Qt::Drawer)
-        text = "Qt::Drawer";
-    else if (type == Qt::Popup)
-        text = "Qt::Popup";
-    else if (type == Qt::Tool)
-        text = "Qt::Tool";
-    else if (type == Qt::ToolTip)
-        text = "Qt::ToolTip";
-    else if (type == Qt::SplashScreen)
-        text = "Qt::SplashScreen";
+    BobUI::WindowFlags type = (flags & BobUI::WindowType_Mask);
+    if (type == BobUI::Window)
+        text = "BobUI::Window";
+    else if (type == BobUI::Dialog)
+        text = "BobUI::Dialog";
+    else if (type == BobUI::Sheet)
+        text = "BobUI::Sheet";
+    else if (type == BobUI::Drawer)
+        text = "BobUI::Drawer";
+    else if (type == BobUI::Popup)
+        text = "BobUI::Popup";
+    else if (type == BobUI::Tool)
+        text = "BobUI::Tool";
+    else if (type == BobUI::ToolTip)
+        text = "BobUI::ToolTip";
+    else if (type == BobUI::SplashScreen)
+        text = "BobUI::SplashScreen";
 
-    if (flags & Qt::MSWindowsFixedSizeDialogHint)
-        text += "\n| Qt::MSWindowsFixedSizeDialogHint";
-    if (flags & Qt::X11BypassWindowManagerHint)
-        text += "\n| Qt::X11BypassWindowManagerHint";
-    if (flags & Qt::FramelessWindowHint)
-        text += "\n| Qt::FramelessWindowHint";
-    if (flags & Qt::NoDropShadowWindowHint)
-        text += "\n| Qt::NoDropShadowWindowHint";
-    if (flags & Qt::WindowTitleHint)
-        text += "\n| Qt::WindowTitleHint";
-    if (flags & Qt::WindowSystemMenuHint)
-        text += "\n| Qt::WindowSystemMenuHint";
-    if (flags & Qt::WindowMinimizeButtonHint)
-        text += "\n| Qt::WindowMinimizeButtonHint";
-    if (flags & Qt::WindowMaximizeButtonHint)
-        text += "\n| Qt::WindowMaximizeButtonHint";
-    if (flags & Qt::WindowCloseButtonHint)
-        text += "\n| Qt::WindowCloseButtonHint";
-    if (flags & Qt::WindowContextHelpButtonHint)
-        text += "\n| Qt::WindowContextHelpButtonHint";
-    if (flags & Qt::WindowShadeButtonHint)
-        text += "\n| Qt::WindowShadeButtonHint";
-    if (flags & Qt::WindowStaysOnTopHint)
-        text += "\n| Qt::WindowStaysOnTopHint";
-    if (flags & Qt::WindowStaysOnBottomHint)
-        text += "\n| Qt::WindowStaysOnBottomHint";
-    if (flags & Qt::CustomizeWindowHint)
-        text += "\n| Qt::CustomizeWindowHint";
+    if (flags & BobUI::MSWindowsFixedSizeDialogHint)
+        text += "\n| BobUI::MSWindowsFixedSizeDialogHint";
+    if (flags & BobUI::X11BypassWindowManagerHint)
+        text += "\n| BobUI::X11BypassWindowManagerHint";
+    if (flags & BobUI::FramelessWindowHint)
+        text += "\n| BobUI::FramelessWindowHint";
+    if (flags & BobUI::NoDropShadowWindowHint)
+        text += "\n| BobUI::NoDropShadowWindowHint";
+    if (flags & BobUI::WindowTitleHint)
+        text += "\n| BobUI::WindowTitleHint";
+    if (flags & BobUI::WindowSystemMenuHint)
+        text += "\n| BobUI::WindowSystemMenuHint";
+    if (flags & BobUI::WindowMinimizeButtonHint)
+        text += "\n| BobUI::WindowMinimizeButtonHint";
+    if (flags & BobUI::WindowMaximizeButtonHint)
+        text += "\n| BobUI::WindowMaximizeButtonHint";
+    if (flags & BobUI::WindowCloseButtonHint)
+        text += "\n| BobUI::WindowCloseButtonHint";
+    if (flags & BobUI::WindowContextHelpButtonHint)
+        text += "\n| BobUI::WindowContextHelpButtonHint";
+    if (flags & BobUI::WindowShadeButtonHint)
+        text += "\n| BobUI::WindowShadeButtonHint";
+    if (flags & BobUI::WindowStaysOnTopHint)
+        text += "\n| BobUI::WindowStaysOnTopHint";
+    if (flags & BobUI::WindowStaysOnBottomHint)
+        text += "\n| BobUI::WindowStaysOnBottomHint";
+    if (flags & BobUI::CustomizeWindowHint)
+        text += "\n| BobUI::CustomizeWindowHint";
 
     textEdit->setPlainText(text);
 }

@@ -1,4 +1,4 @@
-QT += core gui widgets opengl openglwidgets
+BOBUI += core gui widgets opengl openglwidgets
 
 TARGET = cube
 TEMPLATE = app
@@ -18,5 +18,5 @@ RESOURCES += \
     textures.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/opengl/cube
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/opengl/cube
 INSTALLS += target

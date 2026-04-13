@@ -1,19 +1,19 @@
-Here is a list of user-visible changes in Qt from 1.2 to 1.30.  As
+Here is a list of user-visible changes in BobUI from 1.2 to 1.30.  As
 usual, we fixed some bugs, made some more speedups, and improved the
 documentation.
 
 Keyboard accelerators and traversal are significantly improved.
 
-Two new extensions included with Qt 1.30. They are not part of the library:
+Two new extensions included with BobUI 1.30. They are not part of the library:
 
 Netscape plugin support. You can now write portable Netscape plugins
-using Qt. See the qt/extensions/nsplugin directory in the distribution.
+using BobUI. See the bobui/extensions/nsplugin directory in the distribution.
 
 The ImageIO extension library gives a framework for adding new image
-formats, including PNG and JPEG in this release. See the qt/extensions/imageio
+formats, including PNG and JPEG in this release. See the bobui/extensions/imageio
 directory in the distribution.
 
-The OpenGL extension for Qt now resides in qt/extensions.
+The OpenGL extension for BobUI now resides in bobui/extensions.
 
 
 ****************************************************************************
@@ -52,7 +52,7 @@ Windows GUI style to match Windows more closely.
 
 Improved Postscript output.
 
-Color handling has been improved; better 32-to-8 conversion; Qt
+Color handling has been improved; better 32-to-8 conversion; BobUI
 prefers to use Macintosh/Netscape color cube in 8-bit mode; more and
 better dithering support.
 
@@ -82,7 +82,7 @@ QApplication::setDoubleClickInterval() sets the double click timeout
 The layout example is new and more informative.
 
 There is a new openGL example; extension/opengl/examples/box/ shows
-how to control an openGL widget using Qt user interface components.
+how to control an openGL widget using BobUI user interface components.
 
 
 ****************************************************************************
@@ -136,8 +136,8 @@ QMessageBox::message()
  - see QMessageBox::information/warning/critical
 QMultiLineEdit::getCursorPosition()
  - see QMultiLineEdit::cursorPosition()
-QTabDialog::setOKButton()
- - see QTabDialog::setOkButton()
+BOBUIabDialog::setOKButton()
+ - see BOBUIabDialog::setOkButton()
 
 ****************************************************************************
 *      New public/protected functions added to existing classes            *
@@ -207,7 +207,7 @@ QMenuData::insertItem(QPixmap const &, char const *, QObject const *, char const
 QMenuData::insertItem(QPixmap const &, char const *, QPopupMenu *, int, int)
 QMenuData::insertItem(QPixmap const &, char const *, int, int)
 QMessageBox::about(QWidget *, char const *, char const *)
-QMessageBox::aboutQt(QWidget *, char const *)
+QMessageBox::aboutBobUI(QWidget *, char const *)
 QMessageBox::buttonText(int) const
 QMessageBox::critical(QWidget *, char const *, char const *, char const *, char const *, char const *, int, int)
 QMessageBox::critical(QWidget *, char const *, char const *, int, int, int)
@@ -239,27 +239,27 @@ QPopupMenu::exec()
 QPopupMenu::setActiveItem(int)
 QRegion::eor(QRegion const &) const
 QSize::transpose()
-QTabBar::setCurrentTab(QTab *)
-QTabBar::setCurrentTab(int)
-QTabBar::setShape(QTabBar::Shape)
-QTabBar::shape() const
-QTabBar::tab(int)
-QTabBar::tabList()
-QTabDialog::addTab(QWidget *, QTab *)
-QTabDialog::hasOkButton() const
-QTabDialog::selected(char const *)
-QTabDialog::setTabBar(QTabBar *)
-QTabDialog::showPage(QWidget *)
-QTabDialog::styleChange(GUIStyle)
-QTabDialog::tabBar() const
-QTabDialog::tabLabel(QWidget *)
-QTableView::minViewX() const
-QTableView::minViewY() const
-QTableView::updateTableSize()
-QToolTip::font()
-QToolTip::palette()
-QToolTip::setFont(QFont const &)
-QToolTip::setPalette(QPalette const &)
+BOBUIabBar::setCurrentTab(BOBUIab *)
+BOBUIabBar::setCurrentTab(int)
+BOBUIabBar::setShape(BOBUIabBar::Shape)
+BOBUIabBar::shape() const
+BOBUIabBar::tab(int)
+BOBUIabBar::tabList()
+BOBUIabDialog::addTab(QWidget *, BOBUIab *)
+BOBUIabDialog::hasOkButton() const
+BOBUIabDialog::selected(char const *)
+BOBUIabDialog::setTabBar(BOBUIabBar *)
+BOBUIabDialog::showPage(QWidget *)
+BOBUIabDialog::styleChange(GUIStyle)
+BOBUIabDialog::tabBar() const
+BOBUIabDialog::tabLabel(QWidget *)
+BOBUIableView::minViewX() const
+BOBUIableView::minViewY() const
+BOBUIableView::updateTableSize()
+BOBUIoolTip::font()
+BOBUIoolTip::palette()
+BOBUIoolTip::setFont(QFont const &)
+BOBUIoolTip::setPalette(QPalette const &)
 QWidget::backgroundMode() const
 QWidget::create(unsigned int, bool, bool)
 QWidget::destroy(bool, bool)

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILESYSTEMMETADATA_P_H
 #define QFILESYSTEMMETADATA_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -17,14 +17,14 @@
 //
 
 #include "qplatformdefs.h"
-#include <QtCore/qglobal.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qtimezone.h>
-#include <QtCore/private/qabstractfileengine_p.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/bobuiimezone.h>
+#include <BobUICore/private/qabstractfileengine_p.h>
 
 // Platform-specific includes
 #ifdef Q_OS_WIN
-#  include <QtCore/qt_windows.h>
+#  include <BobUICore/bobui_windows.h>
 #  ifndef IO_REPARSE_TAG_SYMLINK
 #     define IO_REPARSE_TAG_SYMLINK (0xA000000CL)
 #  endif
@@ -34,7 +34,7 @@
 struct statx;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFileSystemEngine;
 
@@ -203,8 +203,8 @@ public:
 
 #ifdef Q_OS_UNIX
     void fillFromStatxBuf(const struct statx &statBuffer);
-    void fillFromStatBuf(const QT_STATBUF &statBuffer);
-    void fillFromDirEnt(const QT_DIRENT &statBuffer);
+    void fillFromStatBuf(const BOBUI_STATBUF &statBuffer);
+    void fillFromDirEnt(const BOBUI_DIRENT &statBuffer);
 #endif
 
 #if defined(Q_OS_WIN)
@@ -284,25 +284,25 @@ inline QDateTime QFileSystemMetaData::fileTime(QFile::FileTime time) const
 inline QDateTime QFileSystemMetaData::birthTime() const
 {
     return birthTime_
-        ? QDateTime::fromMSecsSinceEpoch(birthTime_, QTimeZone::UTC)
+        ? QDateTime::fromMSecsSinceEpoch(birthTime_, BOBUIimeZone::UTC)
         : QDateTime();
 }
 inline QDateTime QFileSystemMetaData::metadataChangeTime() const
 {
     return metadataChangeTime_
-        ? QDateTime::fromMSecsSinceEpoch(metadataChangeTime_, QTimeZone::UTC)
+        ? QDateTime::fromMSecsSinceEpoch(metadataChangeTime_, BOBUIimeZone::UTC)
         : QDateTime();
 }
 inline QDateTime QFileSystemMetaData::modificationTime() const
 {
     return modificationTime_
-        ? QDateTime::fromMSecsSinceEpoch(modificationTime_, QTimeZone::UTC)
+        ? QDateTime::fromMSecsSinceEpoch(modificationTime_, BOBUIimeZone::UTC)
         : QDateTime();
 }
 inline QDateTime QFileSystemMetaData::accessTime() const
 {
     return accessTime_
-        ? QDateTime::fromMSecsSinceEpoch(accessTime_, QTimeZone::UTC)
+        ? QDateTime::fromMSecsSinceEpoch(accessTime_, BOBUIimeZone::UTC)
         : QDateTime();
 }
 
@@ -390,6 +390,6 @@ inline void QFileSystemMetaData::fillFromFindInfo(BY_HANDLE_FILE_INFORMATION &fi
 }
 #endif // Q_OS_WIN
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // include guard

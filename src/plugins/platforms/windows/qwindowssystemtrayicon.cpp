@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
 #include "qwindowssystemtrayicon.h"
 #include "qwindowscontext.h"
@@ -10,31 +10,31 @@
 #include "qwindowsscreen.h"
 #include "qwindowswindowclassregistry.h"
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qpixmap.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qsettings.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qsettings.h>
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <commctrl.h>
 #include <shellapi.h>
 #include <shlobj.h>
 #include <windowsx.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const UINT q_uNOTIFYICONID = 0;
 
 static uint MYWM_TASKBARCREATED = 0;
 #define MYWM_NOTIFYICON (WM_APP+101)
 
-Q_GUI_EXPORT HICON qt_pixmapToWinHICON(const QPixmap &);
+Q_GUI_EXPORT HICON bobui_pixmapToWinHICON(const QPixmap &);
 
 // Copy QString data to a limited wchar_t array including \0.
 static inline void qStringToLimitedWCharArray(QString in, wchar_t *target, int maxLength)
@@ -89,7 +89,7 @@ static int indexOfHwnd(HWND hwnd)
     return -1;
 }
 
-LRESULT QT_WIN_CALLBACK qWindowsTrayIconWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT BOBUI_WIN_CALLBACK qWindowsTrayIconWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if (message == MYWM_TASKBARCREATED || message == MYWM_NOTIFYICON
         || message == WM_INITMENU || message == WM_INITMENUPOPUP
@@ -122,7 +122,7 @@ static inline HWND createTrayIconMessageWindow()
     const QString className = ctx->registerWindowClass(
         "TrayIconMessageWindowClass"_L1,
         qWindowsTrayIconWndProc);
-    const wchar_t windowName[] = L"QTrayIconMessageWindow";
+    const wchar_t windowName[] = L"BOBUIrayIconMessageWindow";
     return CreateWindowEx(0, reinterpret_cast<const wchar_t *>(className.utf16()),
                           windowName, WS_OVERLAPPED,
                           CW_USEDEFAULT, CW_USEDEFAULT,
@@ -233,7 +233,7 @@ void QWindowsSystemTrayIcon::showMessage(const QString &title, const QString &me
         tnd.dwInfoFlags = NIIF_INFO;
     } else {
         tnd.dwInfoFlags = NIIF_USER | NIIF_LARGE_ICON;
-        m_hMessageIcon = qt_pixmapToWinHICON(pm);
+        m_hMessageIcon = bobui_pixmapToWinHICON(pm);
         tnd.hBalloonIcon = m_hMessageIcon;
     }
     tnd.hWnd = m_hwnd;
@@ -362,7 +362,7 @@ HICON QWindowsSystemTrayIcon::createIcon(const QIcon &icon)
     const QSize size = icon.actualSize(requestedSize);
     const QPixmap pm = icon.pixmap(size);
     if (!pm.isNull())
-        m_hIcon = qt_pixmapToWinHICON(pm);
+        m_hIcon = bobui_pixmapToWinHICON(pm);
     return oldIcon;
 }
 
@@ -386,12 +386,12 @@ bool QWindowsSystemTrayIcon::winEvent(const MSG &message, long *result)
             emit activated(DoubleClick);     // release we must ignore it
             break;
         case WM_CONTEXTMENU: {
-            // QTBUG-67966: Coordinates may be out of any screen in PROCESS_DPI_UNAWARE mode
+            // BOBUIBUG-67966: Coordinates may be out of any screen in PROCESS_DPI_UNAWARE mode
             // since hi-res coordinates are delivered in this case (Windows issue).
             // Default to primary screen with check to prevent a crash.
             const QPoint globalPos = QPoint(GET_X_LPARAM(message.wParam), GET_Y_LPARAM(message.wParam));
-            // QTBUG-130832: QMenu relies on lastCursorPosition being up to date. When this code
-            // is called it still holds the last known mouse position inside a Qt window. Do a
+            // BOBUIBUG-130832: QMenu relies on lastCursorPosition being up to date. When this code
+            // is called it still holds the last known mouse position inside a BobUI window. Do a
             // forced update of this position.
             QGuiApplicationPrivate::lastCursorPosition = QCursor::pos().toPointF();
             const auto &screenManager = QWindowsContext::instance()->screenManager();
@@ -446,7 +446,7 @@ bool QWindowsSystemTrayIcon::winEvent(const MSG &message, long *result)
     return false;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 void QWindowsSystemTrayIcon::formatDebug(QDebug &d) const
 {
@@ -468,6 +468,6 @@ QDebug operator<<(QDebug d, const QWindowsSystemTrayIcon *t)
     d << ')';
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

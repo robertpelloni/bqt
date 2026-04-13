@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 /*
     model.cpp
@@ -7,7 +7,7 @@
     Provides a table model for use in various examples.
 */
 
-#include <QtGui>
+#include <BobUIGui>
 
 #include "model.h"
 
@@ -63,7 +63,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role == Qt::DisplayRole)
+    if (role == BobUI::DisplayRole)
         return rowList[index.row()][index.column()];
     else
         return QVariant();
@@ -75,13 +75,13 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     requested, we return an invalid variant.
 */
 
-QVariant TableModel::headerData(int section, Qt::Orientation orientation,
+QVariant TableModel::headerData(int section, BobUI::Orientation orientation,
                                 int role) const
 {
-    if (role != Qt::DisplayRole)
+    if (role != BobUI::DisplayRole)
         return QVariant();
 
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         return QStringLiteral("Column %1").arg(section);
     else
         return QStringLiteral("Row %1").arg(section);
@@ -92,12 +92,12 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
     enabled, selectable, and editable.
 */
 
-Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags TableModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return Qt::ItemIsEnabled;
+        return BobUI::ItemIsEnabled;
 
-    return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+    return QAbstractTableModel::flags(index) | BobUI::ItemIsEditable;
 }
 
 /*!
@@ -113,7 +113,7 @@ Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 bool TableModel::setData(const QModelIndex &index,
                          const QVariant &value, int role)
 {
-    if (!index.isValid() || role != Qt::EditRole)
+    if (!index.isValid() || role != BobUI::EditRole)
         return false;
 
     rowList[index.row()][index.column()] = value.toString();

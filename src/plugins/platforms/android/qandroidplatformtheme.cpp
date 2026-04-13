@@ -1,5 +1,5 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "androidjnimain.h"
 #include "androidjnimenu.h"
@@ -24,13 +24,13 @@
 #include <private/qhighdpiscaling_p.h>
 #include <qandroidplatformintegration.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaMenus, "qt.qpa.menus")
+Q_LOGGING_CATEGORY(lcQpaMenus, "bobui.qpa.menus")
 
-Q_DECLARE_JNI_CLASS(QtWindowInsetsController, "org/qtproject/qt/android/QtWindowInsetsController")
+Q_DECLARE_JNI_CLASS(BobUIWindowInsetsController, "org/bobuiproject/bobui/android/BobUIWindowInsetsController")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
     const int textStyle_bold = 1;
@@ -166,10 +166,10 @@ QJsonObject AndroidStyle::loadStyleData()
     if (!stylePath.isEmpty() && !stylePath.endsWith(slashChar))
         stylePath += slashChar;
 
-    const Qt::ColorScheme colorScheme = QAndroidPlatformTheme::instance()
+    const BobUI::ColorScheme colorScheme = QAndroidPlatformTheme::instance()
                                       ? QAndroidPlatformTheme::instance()->colorScheme()
                                       : QAndroidPlatformIntegration::colorScheme();
-    if (colorScheme == Qt::ColorScheme::Dark)
+    if (colorScheme == BobUI::ColorScheme::Dark)
         stylePath += "darkUiMode/"_L1;
 
     Q_ASSERT(!stylePath.isEmpty());
@@ -194,7 +194,7 @@ QJsonObject AndroidStyle::loadStyleData()
 
 static void loadAndroidStyle(QPalette *defaultPalette, std::shared_ptr<AndroidStyle> &style)
 {
-    double pixelDensity = QHighDpiScaling::isActive() ? QtAndroid::pixelDensity() : 1.0;
+    double pixelDensity = QHighDpiScaling::isActive() ? BobUIAndroid::pixelDensity() : 1.0;
     if (style) {
         style->m_standardPalette = QPalette();
         style->m_palettes.clear();
@@ -224,16 +224,16 @@ static void loadAndroidStyle(QPalette *defaultPalette, std::shared_ptr<AndroidSt
             continue;
         }
         QJsonObject item = value.toObject();
-        QJsonObject::const_iterator attributeIterator = item.find("qtClass"_L1);
-        QByteArray qtClassName;
+        QJsonObject::const_iterator attributeIterator = item.find("bobuiClass"_L1);
+        QByteArray bobuiClassName;
         if (attributeIterator != item.constEnd()) {
-            // The item has palette and font information for a specific Qt Class (e.g. QWidget, QPushButton, etc.)
-            qtClassName = attributeIterator.value().toString().toLatin1();
+            // The item has palette and font information for a specific BobUI Class (e.g. QWidget, QPushButton, etc.)
+            bobuiClassName = attributeIterator.value().toString().toLatin1();
         }
         const int ft = fontType(key);
-        if (ft > -1 || !qtClassName.isEmpty()) {
+        if (ft > -1 || !bobuiClassName.isEmpty()) {
             // Extract font information, calling default QFont constructor breaks
-            // initialization order. See QTQAINFRA-6893
+            // initialization order. See BOBUIQAINFRA-6893
             QFont font(QGuiApplicationPrivate::platformIntegration()->fontDatabase()->defaultFont());
 
             // Font size (in pixels)
@@ -266,8 +266,8 @@ static void loadAndroidStyle(QPalette *defaultPalette, std::shared_ptr<AndroidSt
                 }
                 font.setStyleHint(styleHint, QFont::PreferMatch);
             }
-            if (!qtClassName.isEmpty())
-                style->m_QWidgetsFonts.insert(qtClassName, font);
+            if (!bobuiClassName.isEmpty())
+                style->m_QWidgetsFonts.insert(bobuiClassName, font);
 
             if (ft > -1) {
                 style->m_fonts.insert(ft, font);
@@ -276,7 +276,7 @@ static void loadAndroidStyle(QPalette *defaultPalette, std::shared_ptr<AndroidSt
         }
 
         const int pt = paletteType(key);
-        if (pt > -1 || !qtClassName.isEmpty()) {
+        if (pt > -1 || !bobuiClassName.isEmpty()) {
             // Extract palette information
             QPalette palette = *defaultPalette;
 
@@ -345,7 +345,7 @@ void QAndroidPlatformTheme::updateColorScheme()
 
 void QAndroidPlatformTheme::updateStyle()
 {
-    QColor windowText = Qt::black;
+    QColor windowText = BobUI::black;
     QColor background(229, 229, 229);
     QColor light = background.lighter(150);
     QColor mid(background.darker(130));
@@ -354,15 +354,15 @@ void QAndroidPlatformTheme::updateStyle()
     QColor disabledBase(background);
     QColor dark = background.darker(150);
     QColor darkDisabled = dark.darker(110);
-    QColor text = Qt::black;
-    QColor highlightedText = Qt::black;
+    QColor text = BobUI::black;
+    QColor highlightedText = BobUI::black;
     QColor disabledText = QColor(190, 190, 190);
     QColor button(241, 241, 241);
     QColor shadow(201, 201, 201);
     QColor highlight(148, 210, 231);
     QColor disabledShadow = shadow.lighter(150);
 
-    if (colorScheme() == Qt::ColorScheme::Dark) {
+    if (colorScheme() == BobUI::ColorScheme::Dark) {
         // Colors were prepared based on Theme.DeviceDefault.DayNight
         windowText = QColor(250, 250, 250);
         background = QColor(48, 48, 48);
@@ -426,58 +426,58 @@ QPlatformMenuItem *QAndroidPlatformTheme::createPlatformMenuItem() const
 void QAndroidPlatformTheme::showPlatformMenuBar()
 {
     qCDebug(lcQpaMenus) << "Showing platform menu bar";
-    QtAndroidMenu::openOptionsMenu();
+    BobUIAndroidMenu::openOptionsMenu();
 }
 
-Qt::ColorScheme QAndroidPlatformTheme::colorScheme() const
+BobUI::ColorScheme QAndroidPlatformTheme::colorScheme() const
 {
-    if (m_colorSchemeOverride != Qt::ColorScheme::Unknown)
+    if (m_colorSchemeOverride != BobUI::ColorScheme::Unknown)
         return m_colorSchemeOverride;
     return QAndroidPlatformIntegration::colorScheme();
 }
 
-void QAndroidPlatformTheme::requestColorScheme(Qt::ColorScheme scheme)
+void QAndroidPlatformTheme::requestColorScheme(BobUI::ColorScheme scheme)
 {
     m_colorSchemeOverride = scheme;
     QMetaObject::invokeMethod(qGuiApp, [this]{
         updateColorScheme();
     });
 
-    if (m_colorSchemeOverride == Qt::ColorScheme::Unknown)
+    if (m_colorSchemeOverride == BobUI::ColorScheme::Unknown)
         return;
 
     const auto iface = qGuiApp->nativeInterface<QNativeInterface::QAndroidApplication>();
     iface->runOnAndroidMainThread([=]() {
-        bool isLight = scheme == Qt::ColorScheme::Light;
-        QtJniTypes::QtWindowInsetsController::callStaticMethod("setStatusBarColorHint",
-            iface->context().object<QtJniTypes::Activity>(), isLight);
-        QtJniTypes::QtWindowInsetsController::callStaticMethod("setNavigationBarColorHint",
-            iface->context().object<QtJniTypes::Activity>(), isLight);
+        bool isLight = scheme == BobUI::ColorScheme::Light;
+        BobUIJniTypes::BobUIWindowInsetsController::callStaticMethod("setStatusBarColorHint",
+            iface->context().object<BobUIJniTypes::Activity>(), isLight);
+        BobUIJniTypes::BobUIWindowInsetsController::callStaticMethod("setNavigationBarColorHint",
+            iface->context().object<BobUIJniTypes::Activity>(), isLight);
     });
 }
 
 extern "C" JNIEXPORT bool JNICALL
-Java_org_qtproject_qt_android_QtActivityDelegateBase_canOverrideColorSchemeHint(JNIEnv *, jobject)
+Java_org_bobuiproject_bobui_android_BobUIActivityDelegateBase_canOverrideColorSchemeHint(JNIEnv *, jobject)
 {
     if (!QAndroidPlatformTheme::instance())
         return true;
 
-    return QAndroidPlatformTheme::instance()->colorSchemeOverride() == Qt::ColorScheme::Unknown;
+    return QAndroidPlatformTheme::instance()->colorSchemeOverride() == BobUI::ColorScheme::Unknown;
 }
 
-static Qt::ContrastPreference s_contrastPreference = Qt::ContrastPreference::NoPreference;
+static BobUI::ContrastPreference s_contrastPreference = BobUI::ContrastPreference::NoPreference;
 
-Qt::ContrastPreference QAndroidPlatformTheme::contrastPreference() const
+BobUI::ContrastPreference QAndroidPlatformTheme::contrastPreference() const
 {
     return s_contrastPreference;
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_org_qtproject_qt_android_QtActivityDelegateBase_updateUiContrast(JNIEnv *, jobject,
+Java_org_bobuiproject_bobui_android_BobUIActivityDelegateBase_updateUiContrast(JNIEnv *, jobject,
                                                                       jfloat newUiContrast)
 {
-    s_contrastPreference = newUiContrast > 0.5f ? Qt::ContrastPreference::HighContrast
-                                                : Qt::ContrastPreference::NoPreference;
+    s_contrastPreference = newUiContrast > 0.5f ? BobUI::ContrastPreference::HighContrast
+                                                : BobUI::ContrastPreference::NoPreference;
 }
 
 static inline int paletteType(QPlatformTheme::Palette type)
@@ -553,7 +553,7 @@ QIconEngine *QAndroidPlatformTheme::createIconEngine(const QString &iconName) co
 QIcon QAndroidPlatformTheme::fileIcon(const QFileInfo &fileInfo,
                                       QPlatformTheme::IconOptions options) const
 {
-#ifndef QT_NO_ICON
+#ifndef BOBUI_NO_ICON
     std::unique_ptr<QIconEngine> iconEngine(new QAndroidPlatformFileIconEngine(fileInfo, options));
     if (iconEngine->isNull()) {
         // If we didn't get an icon for the file type, return a generic file
@@ -571,7 +571,7 @@ QVariant QAndroidPlatformTheme::themeHint(ThemeHint hint) const
 {
     switch (hint) {
     case StyleNames:
-        if (qEnvironmentVariableIntValue("QT_USE_ANDROID_NATIVE_STYLE")
+        if (qEnvironmentVariableIntValue("BOBUI_USE_ANDROID_NATIVE_STYLE")
                 && m_androidStyleData) {
             return QStringList("android"_L1);
         }
@@ -580,7 +580,7 @@ QVariant QAndroidPlatformTheme::themeHint(ThemeHint hint) const
         return QVariant(QPlatformDialogHelper::AndroidLayout);
     case MouseDoubleClickDistance:
     {
-            int minimumDistance = qEnvironmentVariableIntValue("QT_ANDROID_MINIMUM_MOUSE_DOUBLE_CLICK_DISTANCE");
+            int minimumDistance = qEnvironmentVariableIntValue("BOBUI_ANDROID_MINIMUM_MOUSE_DOUBLE_CLICK_DISTANCE");
             int ret = minimumDistance;
 
             QAndroidPlatformIntegration *platformIntegration
@@ -626,7 +626,7 @@ QString QAndroidPlatformTheme::standardButtonText(int button) const
 bool QAndroidPlatformTheme::usePlatformNativeDialog(QPlatformTheme::DialogType type) const
 {
     if (type == MessageDialog)
-        return qEnvironmentVariableIntValue("QT_USE_ANDROID_NATIVE_DIALOGS") == 1;
+        return qEnvironmentVariableIntValue("BOBUI_USE_ANDROID_NATIVE_DIALOGS") == 1;
     if (type == FileDialog)
         return true;
     return false;
@@ -636,12 +636,12 @@ QPlatformDialogHelper *QAndroidPlatformTheme::createPlatformDialogHelper(QPlatfo
 {
     switch (type) {
     case MessageDialog:
-        return new QtAndroidDialogHelpers::QAndroidPlatformMessageDialogHelper;
+        return new BobUIAndroidDialogHelpers::QAndroidPlatformMessageDialogHelper;
     case FileDialog:
-        return new QtAndroidFileDialogHelper::QAndroidPlatformFileDialogHelper;
+        return new BobUIAndroidFileDialogHelper::QAndroidPlatformFileDialogHelper;
     default:
         return 0;
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

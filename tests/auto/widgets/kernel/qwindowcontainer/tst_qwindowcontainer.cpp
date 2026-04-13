@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qapplication.h>
 #include <qwindow.h>
@@ -76,11 +76,11 @@ void tst_QWindowContainer::cleanup()
 
 void tst_QWindowContainer::testShow()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget root;
-    root.setWindowTitle(QTest::currentTestFunction());
+    root.setWindowTitle(BOBUIest::currentTestFunction());
     root.setGeometry(m_availableGeometry.x() + 100, m_availableGeometry.y() + 100, 400, 400);
 
     Window *window = new Window();
@@ -90,7 +90,7 @@ void tst_QWindowContainer::testShow()
 
     root.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window));
 }
 
 
@@ -101,12 +101,12 @@ void tst_QWindowContainer::testPositionAndSize()
     window->setGeometry(m_availableGeometry.x() + 300, m_availableGeometry.y() + 400, 500, 600);
 
     QScopedPointer<QWidget> container(QWidget::createWindowContainer(window));
-    container->setWindowTitle(QTest::currentTestFunction());
+    container->setWindowTitle(BOBUIest::currentTestFunction());
     container->setGeometry(50, 50, 200, 200);
 
 
     container->show();
-    QVERIFY(QTest::qWaitForWindowExposed(container.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(container.data()));
 
     QCOMPARE(window->x(), 0);
     QCOMPARE(window->y(), 0);
@@ -122,7 +122,7 @@ void tst_QWindowContainer::testSizeHints()
     window->setGeometry(m_availableGeometry.x() + 300, m_availableGeometry.y() + 400, 500, 600);
 
     QScopedPointer<QWidget> container(QWidget::createWindowContainer(window));
-    container->setWindowTitle(QTest::currentTestFunction());
+    container->setWindowTitle(BOBUIest::currentTestFunction());
 
     QVBoxLayout *vbox = new QVBoxLayout(tlw.data());
     vbox->addWidget(container.data());
@@ -140,24 +140,24 @@ void tst_QWindowContainer::testSizeHints()
 
 void tst_QWindowContainer::testExposeObscure()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     Window *window = new Window();
 
     QScopedPointer<QWidget> container(QWidget::createWindowContainer(window));
-    container->setWindowTitle(QTest::currentTestFunction());
+    container->setWindowTitle(BOBUIest::currentTestFunction());
     container->setGeometry(m_availableGeometry.x() + 50, m_availableGeometry.y() + 50, 200, 200);
 
     container->show();
-    QVERIFY(QTest::qWaitForWindowExposed(container.data()));
-    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(container.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window));
 
     QVERIFY(window->numberOfExposes > 0);
 
     container->hide();
 
-    QTRY_VERIFY(window->numberOfObscures > 0);
+    BOBUIRY_VERIFY(window->numberOfObscures > 0);
 }
 
 
@@ -184,7 +184,7 @@ void tst_QWindowContainer::testBehindTheScenesDeletion()
     // The child got removed, showing not should not have any side effects,
     // such as for instance, crashing...
     container->show();
-    QVERIFY(QTest::qWaitForWindowExposed(container));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(container));
     delete container;
 }
 
@@ -192,11 +192,11 @@ void tst_QWindowContainer::testBehindTheScenesDeletion()
 
 void tst_QWindowContainer::testActivation()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget root;
-    root.setWindowTitle(QTest::currentTestFunction());
+    root.setWindowTitle(BOBUIest::currentTestFunction());
 
     QWindow *window = new QWindow();
     QWidget *container = QWidget::createWindowContainer(window, &root);
@@ -206,9 +206,9 @@ void tst_QWindowContainer::testActivation()
 
     root.show();
     root.activateWindow();
-    QVERIFY(QTest::qWaitForWindowExposed(&root));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&root));
 
-    QVERIFY(QTest::qWaitForWindowActive(root.windowHandle()));
+    QVERIFY(BOBUIest::qWaitForWindowActive(root.windowHandle()));
     QCOMPARE(QGuiApplication::focusWindow(), root.windowHandle());
 
     // Verify that all states in the root widget indicate it is active
@@ -219,11 +219,11 @@ void tst_QWindowContainer::testActivation()
     // Under KDE (ubuntu 12.10), we experience that doing two activateWindow in a row
     // does not work. The second gets ignored by the window manager, even though the
     // timestamp in the xcb connection is unique for both.
-    if (!QGuiApplication::platformName().compare(QLatin1String("xcb"), Qt::CaseInsensitive))
-        QTest::qWait(100);
+    if (!QGuiApplication::platformName().compare(QLatin1String("xcb"), BobUI::CaseInsensitive))
+        BOBUIest::qWait(100);
 
     window->requestActivate();
-    QTRY_COMPARE(QGuiApplication::focusWindow(), window);
+    BOBUIRY_COMPARE(QGuiApplication::focusWindow(), window);
 
     // Verify that all states in the root widget still indicate it is active
     QVERIFY(root.windowHandle()->isActive());
@@ -237,14 +237,14 @@ void tst_QWindowContainer::testUnparenting()
 {
     QPointer<QWindow> window(new QWindow());
     QScopedPointer<QWidget> container(QWidget::createWindowContainer(window));
-    container->setWindowTitle(QTest::currentTestFunction());
+    container->setWindowTitle(BOBUIest::currentTestFunction());
     container->setGeometry(m_availableGeometry.x() + 100, m_availableGeometry.y() + 100, 200, 100);
 
     window->setParent(nullptr);
 
     container->show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(container.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(container.data()));
 
     // Window should not be made visible by container..
     QVERIFY(!window->isVisible());
@@ -272,36 +272,36 @@ void tst_QWindowContainer::testReparenting()
 
 void tst_QWindowContainer::testUnparentReparent()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget root;
 
     QWindow *window = new QWindow();
     QScopedPointer<QWidget> container(QWidget::createWindowContainer(window, &root));
-    container->setWindowTitle(QTest::currentTestFunction());
+    container->setWindowTitle(BOBUIest::currentTestFunction());
     container->setGeometry(m_availableGeometry.x() + 100, m_availableGeometry.y() + 100, 200, 100);
 
     root.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&root));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&root));
 
-    QTRY_VERIFY(window->isVisible());
+    BOBUIRY_VERIFY(window->isVisible());
 
     container->setParent(nullptr);
-    QTRY_VERIFY(!window->isVisible());
+    BOBUIRY_VERIFY(!window->isVisible());
 
     container->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window));
-    QTRY_VERIFY(window->isVisible());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window));
+    BOBUIRY_VERIFY(window->isVisible());
 
-    container->setParent(&root); // This should not crash (QTBUG-63168)
+    container->setParent(&root); // This should not crash (BOBUIBUG-63168)
 }
 
 void tst_QWindowContainer::testAncestorChange()
 {
     QWidget root;
-    root.setWindowTitle(QStringLiteral("Root ") + QTest::currentTestFunction());
+    root.setWindowTitle(QStringLiteral("Root ") + BOBUIest::currentTestFunction());
     QWidget *left = new QWidget(&root);
     QWidget *right = new QWidget(&root);
 
@@ -320,7 +320,7 @@ void tst_QWindowContainer::testAncestorChange()
     //      |   + window
     //      + right
     root.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&root));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&root));
     QCOMPARE(window->geometry(), QRect(0, 0, 100, 100));
 
     container->setParent(right);
@@ -332,7 +332,7 @@ void tst_QWindowContainer::testAncestorChange()
     QCOMPARE(window->geometry(), QRect(100, 0, 100, 100));
 
     QWidget *newRoot = new QWidget(&root);
-    newRoot->setWindowTitle(QStringLiteral("newRoot ") + QTest::currentTestFunction());
+    newRoot->setWindowTitle(QStringLiteral("newRoot ") + BOBUIest::currentTestFunction());
     newRoot->setGeometry(50, 50, 200, 200);
     right->setParent(newRoot);
     //      Root
@@ -349,7 +349,7 @@ void tst_QWindowContainer::testAncestorChange()
     QScopedPointer<QWidget> newRootGuard(newRoot);
     newRoot->setGeometry(m_availableGeometry.x() + 100, m_availableGeometry.y() + 100, 200, 200);
     newRoot->show();
-    QVERIFY(QTest::qWaitForWindowExposed(newRoot));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(newRoot));
     QCOMPARE(newRoot->windowHandle(), window->parent());
     //      newRoot
     //      + right
@@ -362,45 +362,45 @@ void tst_QWindowContainer::testAncestorChange()
 void tst_QWindowContainer::testDockWidget()
 {
     QMainWindow mainWindow;
-    mainWindow.setWindowTitle(QTest::currentTestFunction());
+    mainWindow.setWindowTitle(BOBUIest::currentTestFunction());
     mainWindow.resize(200, 200);
     mainWindow.move(m_availableGeometry.center() - QPoint(100, 100));
 
-    QDockWidget *dock = new QDockWidget(QStringLiteral("Dock ") + QTest::currentTestFunction());
+    QDockWidget *dock = new QDockWidget(QStringLiteral("Dock ") + BOBUIest::currentTestFunction());
     QWindow *window = new QWindow();
     QWidget *container = QWidget::createWindowContainer(window);
     dock->setWidget(container);
-    mainWindow.addDockWidget(Qt::RightDockWidgetArea, dock);
+    mainWindow.addDockWidget(BobUI::RightDockWidgetArea, dock);
 
     mainWindow.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
     QCOMPARE(window->parent(), mainWindow.window()->windowHandle());
 
     dock->setFloating(true);
-    QTRY_VERIFY(window->parent() != mainWindow.window()->windowHandle());
+    BOBUIRY_VERIFY(window->parent() != mainWindow.window()->windowHandle());
 
     dock->setFloating(false);
-    QTRY_COMPARE(window->parent(), mainWindow.window()->windowHandle());
+    BOBUIRY_COMPARE(window->parent(), mainWindow.window()->windowHandle());
 }
 
 void tst_QWindowContainer::testNativeContainerParent()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget root;
-    root.setWindowTitle(QTest::currentTestFunction());
+    root.setWindowTitle(BOBUIest::currentTestFunction());
     root.setGeometry(m_availableGeometry.x() + 50, m_availableGeometry.y() + 50, 200, 200);
 
     Window *window = new Window();
     QWidget *container = QWidget::createWindowContainer(window, &root);
-    container->setAttribute(Qt::WA_NativeWindow);
+    container->setAttribute(BobUI::WA_NativeWindow);
     container->setGeometry(50, 50, 150, 150);
 
     root.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(window));
-    QTRY_COMPARE(window->parent(), container->windowHandle());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window));
+    BOBUIRY_COMPARE(window->parent(), container->windowHandle());
 }
 
 class EventWindow : public QWindow
@@ -444,14 +444,14 @@ void tst_QWindowContainer::embedWidgetWindow()
         QWidget parent;
         QWidget *widget = new QWidget;
         widget->show();
-        QVERIFY(QTest::qWaitForWindowExposed(widget));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(widget));
         QVERIFY(widget->windowHandle());
         QPointer<QWindow> widgetWindow = widget->windowHandle();
         auto *container = QWidget::createWindowContainer(widgetWindow, &parent);
         QCOMPARE(container, widget);
         QCOMPARE(widget->parent(), &parent);
         delete widget;
-        QTRY_VERIFY(widgetWindow.isNull());
+        BOBUIRY_VERIFY(widgetWindow.isNull());
     }
 
     QPointer<QWidget> widget = new QWidget;
@@ -459,15 +459,15 @@ void tst_QWindowContainer::embedWidgetWindow()
     {
         QWidget parent;
         widget->show();
-        QVERIFY(QTest::qWaitForWindowExposed(widget));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(widget));
         QVERIFY(widget->windowHandle());
         widgetWindow = widget->windowHandle();
         auto *container = QWidget::createWindowContainer(widgetWindow, &parent);
         QCOMPARE(container, widget);
         QCOMPARE(widget->parent(), &parent);
     }
-    QTRY_VERIFY(widget.isNull());
-    QTRY_VERIFY(widgetWindow.isNull());
+    BOBUIRY_VERIFY(widget.isNull());
+    BOBUIRY_VERIFY(widgetWindow.isNull());
 
 }
 
@@ -478,53 +478,53 @@ void tst_QWindowContainer::testFocus()
 
     QLineEdit *lineEdit = new QLineEdit(&root);
     lineEdit->setGeometry(0, 0, m_availableGeometry.width() * 0.1, 17);
-    lineEdit->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+    lineEdit->setFocusPolicy(BobUI::FocusPolicy::StrongFocus);
 
     QWindow *embedded = new QWindow();
     QWidget *container = QWidget::createWindowContainer(embedded, &root);
     container->setGeometry(0, lineEdit->height() + 10, m_availableGeometry.width() * 0.2, m_availableGeometry.height() - (lineEdit->height() + 10));
-    container->setFocusPolicy(Qt::StrongFocus);
+    container->setFocusPolicy(BobUI::StrongFocus);
 
     root.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&root));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&root));
     lineEdit->setFocus();
-    QTRY_VERIFY(lineEdit->hasFocus());
+    BOBUIRY_VERIFY(lineEdit->hasFocus());
     QCOMPARE(QGuiApplication::focusWindow(), root.windowHandle());
     QCOMPARE(QApplication::focusWidget(), lineEdit);
 
     // embedded window gets focused because of mouse click
     QPoint embeddedCenter = container->rect().center();
-    QTest::mousePress(root.windowHandle(), Qt::LeftButton, {}, embeddedCenter);
-    QVERIFY(QTest::qWaitForWindowFocused(embedded));
+    BOBUIest::mousePress(root.windowHandle(), BobUI::LeftButton, {}, embeddedCenter);
+    QVERIFY(BOBUIest::qWaitForWindowFocused(embedded));
     QVERIFY(container->hasFocus());
     QCOMPARE(QGuiApplication::focusWindow(), embedded);
     QCOMPARE(QApplication::focusWidget(), container);
     QVERIFY(!lineEdit->hasFocus());
 
-    QTest::mouseClick(lineEdit, Qt::LeftButton, {});
-    QVERIFY(QTest::qWaitForWindowFocused(root.windowHandle()));
+    BOBUIest::mouseClick(lineEdit, BobUI::LeftButton, {});
+    QVERIFY(BOBUIest::qWaitForWindowFocused(root.windowHandle()));
     QCOMPARE(QGuiApplication::focusWindow(), root.windowHandle());
     QCOMPARE(QApplication::focusWidget(), lineEdit);
     QVERIFY(lineEdit->hasFocus());
 
     // embedded window gets focused because of Tab key event
-    QTest::keyClick(root.windowHandle(), Qt::Key_Tab);
-    QVERIFY(QTest::qWaitForWindowFocused(embedded));
+    BOBUIest::keyClick(root.windowHandle(), BobUI::Key_Tab);
+    QVERIFY(BOBUIest::qWaitForWindowFocused(embedded));
     QVERIFY(container->hasFocus());
     QCOMPARE(QGuiApplication::focusWindow(), embedded);
     QCOMPARE(QApplication::focusWidget(), container);
     QVERIFY(!lineEdit->hasFocus());
     // A key tab event sent to the root window should cause
     // the nextInFocusChain of the window container to get focused
-    QTest::keyClick(root.windowHandle(), Qt::Key_Tab);
-    QVERIFY(QTest::qWaitForWindowFocused(root.windowHandle()));
+    BOBUIest::keyClick(root.windowHandle(), BobUI::Key_Tab);
+    QVERIFY(BOBUIest::qWaitForWindowFocused(root.windowHandle()));
     QCOMPARE(QGuiApplication::focusWindow(), root.windowHandle());
     QCOMPARE(QApplication::focusWidget(), lineEdit);
     QVERIFY(lineEdit->hasFocus());
 
     // embedded window gets focused programmatically
     embedded->requestActivate();
-    QVERIFY(QTest::qWaitForWindowFocused(embedded));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(embedded));
     QVERIFY(container->hasFocus());
     QCOMPARE(QGuiApplication::focusWindow(), embedded);
     QCOMPARE(QApplication::focusWidget(), container);
@@ -541,14 +541,14 @@ public:
 void tst_QWindowContainer::parentDestroyed()
 {
     CreateDestroyWidget topLevel;
-    topLevel.setAttribute(Qt::WA_NativeWindow);
+    topLevel.setAttribute(BobUI::WA_NativeWindow);
     QVERIFY(topLevel.windowHandle());
 
     QPointer<QWindow> window = new QWindow;
     QWidget *container = QWidget::createWindowContainer(window.get());
     container->setParent(&topLevel);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
     QCOMPARE(window->parent(), topLevel.windowHandle());
 
     // Destroying the widget should not wipe out the contained QWindow
@@ -557,10 +557,10 @@ void tst_QWindowContainer::parentDestroyed()
 
     // Recreating the top level should once again reparent the contained window
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
     QCOMPARE(window->parent(), topLevel.windowHandle());
 }
 
-QTEST_MAIN(tst_QWindowContainer)
+BOBUIEST_MAIN(tst_QWindowContainer)
 
 #include "tst_qwindowcontainer.moc"

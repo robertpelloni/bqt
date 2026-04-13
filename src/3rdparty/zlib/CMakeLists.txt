@@ -1,6 +1,6 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
-qt_internal_add_3rdparty_library(BundledZLIB
+bobui_internal_add_3rdparty_library(BundledZLIB
     STATIC
     SKIP_AUTOMOC
     SOURCES
@@ -31,18 +31,18 @@ qt_internal_add_3rdparty_library(BundledZLIB
         src/zutil.c
         src/zutil.h
     DEFINES
-        QT_BUILD_CORE_LIB
+        BOBUI_BUILD_CORE_LIB
     INCLUDE_DIRECTORIES
         $<TARGET_PROPERTY:Core,INCLUDE_DIRECTORIES>
 )
 
-qt_internal_add_sync_header_dependencies(BundledZLIB Core)
+bobui_internal_add_sync_header_dependencies(BundledZLIB Core)
 
-qt_disable_warnings(BundledZLIB)
+bobui_disable_warnings(BundledZLIB)
 
-qt_set_symbol_visibility_hidden(BundledZLIB)
+bobui_set_symbol_visibility_hidden(BundledZLIB)
 
-qt_internal_add_3rdparty_header_module(ZlibPrivate
+bobui_internal_add_3rdparty_header_module(ZlibPrivate
     EXTERNAL_HEADERS
         src/zlib.h
         src/zconf.h

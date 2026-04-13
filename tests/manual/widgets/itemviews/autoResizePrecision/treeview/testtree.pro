@@ -1,2 +1,2 @@
 SOURCES = testtree.cpp
-QT += widgets
+BOBUI += widgets

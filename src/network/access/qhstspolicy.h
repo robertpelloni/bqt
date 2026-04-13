@@ -1,17 +1,17 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHSTSPOLICY_H
 #define QHSTSPOLICY_H
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#include <QtCore/qshareddata.h>
-#include <QtCore/qflags.h>
-#include <QtCore/qurl.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qflags.h>
+#include <BobUICore/qurl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHstsPolicyPrivate;
 class QDateTime;
@@ -59,6 +59,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QHstsPolicy::PolicyFlags)
 
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHSTSPOLICY_H
